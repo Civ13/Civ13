@@ -221,7 +221,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_storage_space = 28
 
 /obj/item/weapon/storage/backpack/rucksack/small
-	name = "army rucksack"
+	name = "small army rucksack"
 	desc = "A small black army rucksack, made to allow you to be mobile while carrying everything you need."
 	icon_state = "smallruck"
 	item_state = "smallruck"
@@ -229,7 +229,65 @@ obj/item/weapon/storage/backpack/ww2/american
 	w_class = 4
 	slot_flags = SLOT_BACK
 	max_w_class = 4
-	max_storage_space = 18
+	max_storage_space = 14
+
+/obj/item/weapon/storage/backpack/rucksack/small/extracap
+	name = "army rucksack"
+	desc = "A bit small black army rucksack, made to allow you to be mobile while carrying everything you need."
+	max_storage_space = 22
+
+/obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh
+	New()
+		..()
+		new/obj/item/stack/medical/advanced/bruise_pack(src)
+		new/obj/item/stack/medical/advanced/ointment(src)
+		new/obj/item/stack/medical/advanced/sulfa(src)
+		new/obj/item/stack/medical/splint(src)
+		new/obj/item/weapon/storage/pill_bottle/tramadol(src)
+		new/obj/item/roller(src)
+		new/obj/item/weapon/pill_pack/adrenaline(src)
+		new/obj/item/weapon/storage/firstaid/surgery(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/milpack
+	New()
+		..()
+		new/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full(src)
+		new/obj/item/weapon/can/filled(src)
+		new/obj/item/weapon/reagent_containers/syringe/adrenaline(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+		new/obj/item/weapon/reagent_containers/pill/paracetamol(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/medical
+	New()
+		..()
+		new/obj/item/stack/medical/advanced/bruise_pack(src)
+		new/obj/item/stack/medical/advanced/ointment(src)
+		new/obj/item/stack/medical/advanced/sulfa(src)
+		new/obj/item/stack/medical/splint(src)
+		new/obj/item/weapon/storage/pill_bottle/tramadol(src)
+		new/obj/item/weapon/pill_pack/adrenaline(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/command
+	New()
+		..()
+		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/grenade/coldwar/rgd5(src)
+		new/obj/item/weapon/compass(src)
+		new/obj/item/weapon/grenade/smokebomb(src)
+		new/obj/item/weapon/storage/box/sandbags(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/commandami
+	New()
+		..()
+		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/grenade/coldwar/m67(src)
+		new/obj/item/weapon/compass(src)
+		new/obj/item/weapon/grenade/smokebomb(src)
+		new/obj/item/weapon/storage/box/sandbags(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
 
 /obj/item/weapon/storage/backpack/rucksack/rpg
 	New()

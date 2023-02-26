@@ -1077,3 +1077,304 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
+
+/////////////////////SIBERIAD//////////////////////////////////
+
+/datum/job/american/siberiad/lt
+	title = "Operation lead"
+	en_meaning = "Operation lead"
+	rank_abbreviation = "Opl."
+	spawn_location = "JoinLateFAR"
+
+	is_siberiad = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+
+	uses_squads = TRUE
+	whitelisted = TRUE
+
+	additional_languages = list("Russian" = 70)
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/siberiad/lt/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ucp(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/white(H), slot_wear_mask)
+//gun
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/mk18(H), slot_shoulder)
+//belt
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/mk18(H), slot_belt)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
+	uniform.attackby(armour2, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/commandami(H), slot_back)
+
+	H.civilization = "Coalition"
+	H.add_note("Role", "You are a <b>[title]</b>. Command your men and lead them well, Your men count on you!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/american/siberiad/squadlead
+	title = "Infantry Squad leader"
+	en_meaning = "Infantry Squad leader"
+	rank_abbreviation = "Sl."
+	spawn_location = "JoinLateFAR"
+
+	is_siberiad = TRUE
+	is_squad_leader = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("Russian" = 20)
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/american/siberiad/squadlead/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ucp(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,2)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_grenade(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/m16/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m16(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16/sf(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/m16/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m16(null)
+			uniform.attackby(webbing, H)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/medical(H), slot_back)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh(H), slot_back)
+	H.civilization = "Coalition"
+	H.add_note("Role", "You are a <b>[title]</b>. Take orders from your Operation Leader and lead your squad towards victory!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/american/siberiad/heavy
+	title = "Heavy infantry"
+	en_meaning = "Heavy infantry"
+	rank_abbreviation = "Mg."
+	spawn_location = "JoinLateFAR"
+
+	is_siberiad = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("Russian" = 10)
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/american/siberiad/heavy/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ucp(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,3)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m60(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/olive/m60(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/m60/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m60(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/m249/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m249(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/c6(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c6belt(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/c6/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/c6(null)
+			uniform.attackby(webbing, H)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+
+	H.civilization = "Coalition"
+	H.add_note("Role", "You are a <b>[title]</b>.As a heavy infantryman You Provide Firepower and Suppresive fire for your squad!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/american/siberiad/infantry
+	title = "Light Infantry"
+	en_meaning = "Light Infantry"
+	rank_abbreviation = " ."
+	spawn_location = "JoinLateFAR"
+
+	is_siberiad = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("Russian" = 10)
+	min_positions = 9
+	max_positions = 90
+
+/datum/job/american/siberiad/infantry/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ucp(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,5)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/nonfrag/m26(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_ww2/garand/webbing = new /obj/item/clothing/accessory/storage/webbing/us_ww2/garand(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/m16/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m16(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/sten(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/sten(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/sten/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/sten(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/springfield(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/springfield(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_vest/springfield/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/springfield(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand/match(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/us_ww2/garand/webbing = new /obj/item/clothing/accessory/storage/webbing/us_ww2/garand(null)
+			uniform.attackby(webbing, H)
+//helmet
+	if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_tanker(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
+//back
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/milpack(H), slot_back)
+
+	H.civilization = "Coalition"
+	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE

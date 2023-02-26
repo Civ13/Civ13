@@ -115,6 +115,7 @@
 /datum/job/var/is_permfrb = FALSE
 /datum/job/var/is_warsawger = FALSE
 /datum/job/var/is_warpol = FALSE
+/datum/job/var/is_siberiad = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE
