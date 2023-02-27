@@ -391,6 +391,20 @@
 	density = TRUE
 	bound_width = 96
 	bound_height = 64
+/obj/structure/props/car_wreck/alt
+	icon_state = "car_wreck2"
+/obj/structure/props/car_wreck/vertical
+	icon_state = "car_wreck_vert"
+	bound_width = 32
+	bound_height = 96
+/obj/structure/props/car_wreck/van
+	icon_state = "van_wreck"
+/obj/structure/props/car_wreck/van/alt
+	icon_state = "van_wreck2"
+/obj/structure/props/car_wreck/truck
+	icon_state = "truck_wreck"
+	bound_width = 128
+	bound_height = 64
 
 /obj/structure/props/watts_tower
 	name = "sculpture tower"
