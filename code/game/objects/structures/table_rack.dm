@@ -31,13 +31,22 @@
 	fixedsprite = TRUE
 
 /obj/structure/table/nightstand
-	name = "nightstand"
+	name = "night stand"
 	desc = "A night stand."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "nightstand"
 	flipped = -1
 	low = TRUE
 	fixedsprite = TRUE
+
+/obj/structure/table/nightstand/small
+	desc = "A small dark wood night stand."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nightstand_small"
+
+/obj/structure/table/nightstand/alt
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nightstand_alt"
 
 /obj/structure/table/rack/shelf
 	name = "shelf"

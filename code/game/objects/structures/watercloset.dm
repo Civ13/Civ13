@@ -1085,3 +1085,17 @@
 				process_heat(L)
 	wash_floor()
 	reagents.add_reagent("water", reagents.get_free_space())
+
+//////////////////Fountains////////////////
+
+/obj/structure/fountain
+	name = "fountain"
+	icon = 'icons/obj/fountain.dmi'
+	icon_state = "fountain"
+	bound_width = 64
+	bound_height = 64
+	density = TRUE
+	opacity = FALSE
+
+/obj/structure/fountain/no_bottom
+	icon_state = "fountain_tb"
