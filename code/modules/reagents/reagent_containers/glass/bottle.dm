@@ -70,6 +70,17 @@
 		reagents.add_reagent("adrenaline", 60)
 		update_icon()
 
+/obj/item/weapon/reagent_containers/glass/bottle/opium
+	name = "opium bottle"
+	desc = "A small bottle. Contains opium - a great painkiller."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "bottle-4"
+
+	New()
+		..()
+		reagents.add_reagent("opium", 60)
+		update_icon()
+
 /obj/item/weapon/reagent_containers/glass/bottle/toxin
 	name = "toxin bottle"
 	desc = "A small bottle of toxins. Do not drink, it is poisonous."

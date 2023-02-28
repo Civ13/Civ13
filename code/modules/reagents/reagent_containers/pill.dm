@@ -115,6 +115,14 @@
 		..()
 		reagents.add_reagent("paracetamol", 15)
 
+/obj/item/weapon/reagent_containers/pill/aspirin
+	name = "aspirin pill"
+	desc = "Aspirin! A painkiller for the ages."
+	icon_state = "pill8"
+	New()
+		..()
+		reagents.add_reagent("aspirin", 10)
+
 /obj/item/weapon/reagent_containers/pill/tramadol
 	name = "Tramadol pill"
 	desc = "A simple painkiller."
