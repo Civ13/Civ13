@@ -98,7 +98,7 @@
 
 			if(stop_at_turf)
 				break
-			
+
 			distance++
 
 /obj/item/weapon/reagent_containers/glass/flamethrower
@@ -157,6 +157,30 @@
 /obj/item/weapon/reagent_containers/glass/flamethrower/type100/filled/New()
 	..()
 	reagents.add_reagent("gasoline",100)
+
+/obj/item/weapon/flamethrower/eins
+	name = "Einstossflammenwerfer 46 hose"
+	desc = "Single use flamethrower hose, aim carefully."
+	w_class = 3
+	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_SHOULDER
+	max_range = 5
+	icon_state = "eins"
+	item_state = "eins"
+	base_icon = "eins"
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/eins //until someone makes it so the eins is just a single item that you can fire and drop there will be a canister
+	name = "Einstossflammenwerfer 46 canister"
+	desc = "A eins single use flamethrower canister. put it on your back to use it with the hose."
+	icon_state = "eins_back"
+	item_state = "eins_back"
+	slowdown = 0.2
+	amount_per_transfer_from_this = 1
+	volume = 5
+	w_class = 3
+
+/obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled/New()
+	..()
+	reagents.add_reagent("gasoline",5)
 
 /obj/item/weapon/flamethrower/roks2
 	name = "ROKS2 Flamethrower hose"
