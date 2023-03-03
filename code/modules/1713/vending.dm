@@ -710,6 +710,8 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/grenade/ww2/stg1924 = 3,
 		/obj/item/weapon/grenade/antitank/stg24_bundle = 2,
 		/obj/item/weapon/gun/launcher/rocket/panzerfaust = 2,
+		/obj/item/weapon/flamethrower/eins = 2,
+		/obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled = 2,
 		/obj/item/weapon/attachment/bayonet = 15,
 	)
 

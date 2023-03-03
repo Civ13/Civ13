@@ -502,6 +502,7 @@
 #include "code\game\objects\map_metadata\omaha.dm"
 #include "code\game\objects\map_metadata\ong_thahn.dm"
 #include "code\game\objects\map_metadata\operation_falcon.dm"
+#include "code\game\objects\map_metadata\osowiec.dm"
 #include "code\game\objects\map_metadata\pavlov_house.dm"
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
