@@ -72,7 +72,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bottle/opium
 	name = "opium bottle"
-	desc = "A small bottle. Contains opium - a great painkiller."
+	desc = "A small bottle. Contains opium - a strong painkiller."
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle-4"
 
