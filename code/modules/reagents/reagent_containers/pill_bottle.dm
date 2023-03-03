@@ -42,32 +42,29 @@
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 
-/obj/item/weapon/storage/pill_bottle/paracetomol
-	name = "bottle of paracetomol pills"
-	desc = "Contains pills used to counter pain."
+/obj/item/weapon/storage/pill_bottle/paracetamol
+	name = "bottle of paracetamol pills"
+	desc = "Contains pills used to counter mild to moderate pain."
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
-		new /obj/item/weapon/reagent_containers/pill/paracetamol( src )
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
+		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
 
-/obj/item/weapon/storage/pill_bottle/
-	name = "bottle of  pills"
-	desc = "Contains pills used to stabilize patients."
 
 /obj/item/weapon/storage/pill_bottle/penicillin
 	name = "bottle of penicillin pills"
