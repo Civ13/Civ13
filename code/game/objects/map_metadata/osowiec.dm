@@ -11,13 +11,13 @@
 		GERMAN)
 
 	roundend_condition_sides = list(
-		list(RUSSIAN) = /area/caribbean/farm,
-		list(GERMAN) = /area/caribbean/japanese/land/inside/command,
+		list(RUSSIAN) = /area/caribbean/japanese/land/inside/command,
+		list(GERMAN) = /area/caribbean/island,
 		)
 	age = "1915"
 	faction_distribution_coeffs = list(RUSSIAN = 0.3, GERMAN = 0.7)
 	battle_name = "Siege of The Osowiec fort"
-	mission_start_message = "<font size=3>The <b>German army</b> and the <b>Russian Army</b> are battling for the control of the osowiec fort! The Russians will win if they hold the fort for <b>30 minutes</b> The germans will win if the manage to hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=3>The <b>German army</b> and the <b>Russian Army</b> are battling for the control of the osowiec fort! The Russians will win if they hold the fort for <b>30 minutes</b> The germans will win if the manage to capture and hold the fort for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	ordinal_age = 5
