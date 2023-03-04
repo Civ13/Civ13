@@ -91,10 +91,10 @@
 
 /obj/item/weapon/pill_pack/aspirin
 	name = "aspirin pill pack"
-	desc = "Good painkiller."
+	desc = "Also known as acetylsalicylic acid. Mild painkiller."
 	pill_type = /obj/item/weapon/reagent_containers/pill/aspirin
 
-/obj/item/weapon/pill_pack/paracetomol
-	name = "paracetomol pill pack"
-	desc = "Tylenol! A painkiller for the ages."
+/obj/item/weapon/pill_pack/paracetamol
+	name = "paracetamol pill pack"
+	desc = "Also known as acetaminophen. Moderate painkiller."
 	pill_type = /obj/item/weapon/reagent_containers/pill/paracetamol

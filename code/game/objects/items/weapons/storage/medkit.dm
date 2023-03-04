@@ -55,8 +55,8 @@
 	return
 
 /obj/item/weapon/storage/firstaid/early
-	name = "Medicine kit"
-	desc = "Cointains some drugs and a antiseptic to help someone survive."
+	name = "medicine kit"
+	desc = "Contains some drugs and a antiseptic to help someone survive."
 	icon_state = "bezerk2"
 	item_state = "bezerk2"
 	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_POCKET
