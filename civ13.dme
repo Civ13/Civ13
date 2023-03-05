@@ -353,7 +353,6 @@
 #include "code\game\objects\items\clothing\under\accessories\accessory.dm"
 #include "code\game\objects\items\clothing\under\accessories\armband.dm"
 #include "code\game\objects\items\clothing\under\accessories\badges.dm"
-#include "code\game\objects\items\clothing\under\accessories\badges_ww2.dm"
 #include "code\game\objects\items\clothing\under\accessories\holster.dm"
 #include "code\game\objects\items\clothing\under\accessories\lockets.dm"
 #include "code\game\objects\items\clothing\under\accessories\sheaths.dm"
