@@ -674,3 +674,4 @@
 	anchored = FALSE
 	flammable = TRUE
 	w_class = 4.0
+
