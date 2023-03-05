@@ -709,7 +709,7 @@ bullet_act
 					for(var/mob/living/human/NB in view(6,src))
 						if (!NB.orc)
 							NB.mood -= 10
-							NB.ptsd += 1
+							//NB.ptsd += 1
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
 	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.

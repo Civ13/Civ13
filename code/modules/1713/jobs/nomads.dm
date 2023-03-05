@@ -199,7 +199,7 @@
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		else if (map.ordinal_age == 6)
-			if (map.ID == MAP_NATIONSRP)
+			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 				spawn(5)
 					if (gender == "male")
@@ -209,12 +209,18 @@
 						else if (original_job_title == "Civilization B Citizen")
 							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
 							update_icons(1)
+						else if (original_job_title == "Civilization C Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
+							update_icons(1)
 					else
 						if (original_job_title == "Civilization A Citizen")
 							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
 							update_icons(1)
 						else if (original_job_title == "Civilization B Citizen")
 							equip_to_slot_or_del(new /obj/item/clothing/under/modern8(src), slot_w_uniform)
+							update_icons(1)
+						else if (original_job_title == "Civilization C Citizen")
+							equip_to_slot_or_del(new /obj/item/clothing/under/modern3(src), slot_w_uniform)
 							update_icons(1)
 			else
 				if (gender == "male")
@@ -521,30 +527,6 @@
 						real_name = name
 						add_note("Known Languages", "Greek")
 						return
-		else if (map.ID == MAP_NATIONSRP)
-			spawn(5)
-				//west
-				if (x<75)
-					add_language("Gaelic",TRUE)
-					remove_language("English")
-					remove_note("Known Languages","English")
-					for (var/datum/language/gaelic/A in languages)
-						default_language = A
-					name = species.get_random_gaelic_name(gender)
-					real_name = name
-					add_note("Known Languages", "Gaelic")
-					return
-				//EAST
-				else
-					add_language("Latin",TRUE)
-					remove_language("English")
-					remove_note("Known Languages","English")
-					for (var/datum/language/latin/A in languages)
-						default_language = A
-					name = species.get_random_roman_name(gender)
-					real_name = name
-					add_note("Known Languages", "Latin")
-					return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
