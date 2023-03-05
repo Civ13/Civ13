@@ -140,8 +140,31 @@
 	civname_a = "Redmenian Nation"
 	civname_b = "Blugoslavian Nation"
 	var/newnamea = list("Redmenian Nation" = list(default_research,default_research,default_research,null,0,"star","#D7A326","#DA1515"))
-	var/newnameb = list("Blugoslavian Nation" = list(default_research,default_research,default_research,null,0,"sun","B5AA6C","#2A44CF"))
+	var/newnameb = list("Blugoslavian Nation" = list(default_research,default_research,default_research,null,0,"sun","#B5AA6C","#2A44CF"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
+
+/obj/map_metadata/nationsrp/triple
+	ID = MAP_NATIONSRP_TRIPLE
+	title = "Triple Nations RP"
+	availablefactions = list("Civilization A Citizen", "Civilization B Citizen", "Civilization C Citizen")
+	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	default_research = 145
+	ordinal_age = 4
+
+/obj/map_metadata/nationsrp/triple/New()
+	..()
+	civname_a = "Latin Nation"
+	civname_b = "Gaelic Nation"
+	civname_c = "German Nation"
+	var/newnamea = list("Latin Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
+	var/newnameb = list("Gaelic Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
+	var/newnamec = list("German Nation" = list(default_research,default_research,default_research,null,0,"saltire","#0B5394","#B45F06"))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	custom_civs += newnamec
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	civc_research = list(default_research,default_research,default_research,null)
