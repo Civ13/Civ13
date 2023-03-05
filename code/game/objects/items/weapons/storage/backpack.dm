@@ -141,6 +141,20 @@
 	base_icon = "germanpack"
 	max_storage_space = 24
 
+/obj/item/weapon/storage/backpack/ww2/german/russianat
+	name = "russian backpack"
+	desc = "It's a standard issue backpack for Soviet military personel"
+	New()
+		..()
+		new /obj/item/weapon/grenade/ww2/rgd33(src)
+		new /obj/item/weapon/grenade/ww2/rgd33(src)
+		new /obj/item/weapon/grenade/antitank(src)
+		new /obj/item/weapon/grenade/antitank(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
+		new /obj/item/weapon/plastique/russian(src)
+		new /obj/item/weapon/plastique/russian(src)
+
 /obj/item/weapon/storage/backpack/paratrooper
 	name = "Parachute"
 	desc = "A backpack with a built in parachute."
@@ -206,6 +220,75 @@ obj/item/weapon/storage/backpack/ww2/american
 	max_w_class = 4
 	max_storage_space = 28
 
+/obj/item/weapon/storage/backpack/rucksack/small
+	name = "small army rucksack"
+	desc = "A small black army rucksack, made to allow you to be mobile while carrying everything you need."
+	icon_state = "smallruck"
+	item_state = "smallruck"
+	base_icon = "smallruck"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 4
+	max_storage_space = 14
+
+/obj/item/weapon/storage/backpack/rucksack/small/extracap
+	name = "army rucksack"
+	desc = "A bit small black army rucksack, made to allow you to be mobile while carrying everything you need."
+	max_storage_space = 22
+
+/obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh
+	New()
+		..()
+		new/obj/item/stack/medical/advanced/bruise_pack(src)
+		new/obj/item/stack/medical/advanced/ointment(src)
+		new/obj/item/stack/medical/advanced/sulfa(src)
+		new/obj/item/stack/medical/splint(src)
+		new/obj/item/weapon/storage/pill_bottle/tramadol(src)
+		new/obj/item/roller(src)
+		new/obj/item/weapon/pill_pack/adrenaline(src)
+		new/obj/item/weapon/storage/firstaid/surgery(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/milpack
+	New()
+		..()
+		new/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full(src)
+		new/obj/item/weapon/can/filled(src)
+		new/obj/item/weapon/reagent_containers/syringe/adrenaline(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+		new/obj/item/weapon/reagent_containers/pill/paracetamol(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/medical
+	New()
+		..()
+		new/obj/item/stack/medical/advanced/bruise_pack(src)
+		new/obj/item/stack/medical/advanced/ointment(src)
+		new/obj/item/stack/medical/advanced/sulfa(src)
+		new/obj/item/stack/medical/splint(src)
+		new/obj/item/weapon/storage/pill_bottle/tramadol(src)
+		new/obj/item/weapon/pill_pack/adrenaline(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/command
+	New()
+		..()
+		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/grenade/coldwar/rgd5(src)
+		new/obj/item/weapon/compass(src)
+		new/obj/item/weapon/grenade/smokebomb(src)
+		new/obj/item/weapon/storage/box/sandbags(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/commandami
+	New()
+		..()
+		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/grenade/coldwar/m67(src)
+		new/obj/item/weapon/compass(src)
+		new/obj/item/weapon/grenade/smokebomb(src)
+		new/obj/item/weapon/storage/box/sandbags(src)
+		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+
 /obj/item/weapon/storage/backpack/rucksack/rpg
 	New()
 		..()
@@ -258,6 +341,13 @@ obj/item/weapon/storage/backpack/ww2/american
 	slot_flags = SLOT_BACK
 	max_w_class = 3
 	max_storage_space = 22
+
+/obj/item/weapon/storage/backpack/duffel/black
+	name = "black duffel bag"
+	desc = "A generic black duffel bag."
+	icon_state = "bduffel"
+	item_state = "bduffel"
+	base_icon = "bduffel"
 
 /obj/item/weapon/storage/backpack/buttpack
 	name = "US Army buttpack"
@@ -380,3 +470,31 @@ obj/item/weapon/storage/backpack/ww2/american
 		new /obj/item/ammo_magazine/m1911(src)
 		new /obj/item/weapon/grenade/coldwar/m67(src)
 		new /obj/item/weapon/grenade/incendiary/anm14(src)
+
+/obj/item/weapon/storage/backpack/duffel/un
+	name = "United Nations Assault backpack"
+	desc = "A duffel bag full of basic supplies."
+
+/obj/item/weapon/storage/backpack/duffel/un/mk
+	New()
+		..()
+		new /obj/item/weapon/gun_cleaning_kit(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/mk18(src)
+		new /obj/item/ammo_magazine/m1911(src)
+		new /obj/item/weapon/grenade/coldwar/m67(src)
+
+/obj/item/weapon/storage/backpack/duffel/un/p90
+	New()
+		..()
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/weapon/material/shovel/trench(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/ammo_magazine/p90(src)
+		new /obj/item/weapon/grenade/coldwar/nonfrag/m26(src)

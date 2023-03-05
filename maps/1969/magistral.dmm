@@ -237,7 +237,7 @@
 "eC" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/caribbean/roofed/desert)
 "eD" = (/turf/floor/wood,/area/caribbean/roofed/desert)
 "eE" = (/obj/structure/window/classic/reinforced,/obj/structure/barricade,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/roofed/desert)
-"eF" = (/obj/structure/closet/crate/empty,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/head/helmet/modern/sovietfacehelmet,/obj/structure/wild/rock/basalt,/obj/item/clothing/head/catears,/obj/item/clothing/accessory/armor/coldwar/plates/b5,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"eF" = (/obj/structure/closet/crate/empty,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/head/helmet/modern/sovietfacehelmet,/obj/structure/wild/rock/basalt,/obj/item/clothing/accessory/catears,/obj/item/clothing/accessory/armor/coldwar/plates/b5,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eG" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eH" = (/obj/structure/wild/tree/dead_tree,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
@@ -316,7 +316,7 @@
 "gd" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/obj/item/mine/boobytrap,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ge" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gf" = (/obj/structure/toilet,/turf/floor/plating/white,/area/caribbean/roofed/desert)
-"gg" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/suit/storage/jacket/custom/hoodie,/obj/item/clothing/suit/storage/hazard/green,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/under/civ1,/obj/item/clothing/under/insurgent_black,/turf/floor/wood,/area/caribbean/roofed/desert)
+"gg" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/suit/storage/jacket/custom/hoodie,/obj/item/clothing/suit/storage/hazard/green,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/under/civ1,/obj/item/clothing/under/insurgent_black,/obj/item/clothing/accessory/catears,/turf/floor/wood,/area/caribbean/roofed/desert)
 "gh" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/beret_red,/obj/item/clothing/under/insurgent_sand,/turf/floor/wood,/area/caribbean/roofed/desert)
 "gi" = (/obj/structure/sink,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gj" = (/turf/floor/plating/white,/area/caribbean/roofed/desert)
@@ -552,7 +552,12 @@
 "kF" = (/obj/structure/sign/minefield,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "kG" = (/obj/structure/closet/crate/empty,/obj/item/clothing/head/nbc/olive,/obj/item/clothing/suit/nbc/olive,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/weapon/grenade/chemical/white_phosphorus,/obj/item/clothing/gloves/thick/firefighter,/turf/floor/beach/sand/dark,/area/caribbean/roofed/desert)
 "kH" = (/obj/item/clothing/mask/gas/japanese,/obj/item/clothing/mask/gas/japanese,/obj/item/clothing/mask/gas/japanese,/obj/item/clothing/mask/gas/japanese,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"kI" = (/turf/floor/dirt/burned,/area/caribbean/nomads/desert)
+"kJ" = (/obj/item/weapon/gun/projectile/submachinegun/ak74,/turf/floor/beach/sand/dark,/area/caribbean/nomads/desert)
+"kK" = (/obj/item/ammo_magazine/ak74,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"kL" = (/obj/structure/broken_hind,/turf/floor/dirt/burned,/area/caribbean/nomads/desert)
 "kM" = (/obj/item/weapon/flame/candle/lard/on,/turf/floor/beach/sand/dark,/area/caribbean/arab/caves)
+"kN" = (/obj/item/ammo_magazine/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/turf/floor/dirt/burned,/area/caribbean/nomads/desert)
 "lL" = (/obj/structure/lamp/lamp_small/tank/red{dir = 8},/obj/structure/vehicleparts/frame/mtlb/rbc,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/pill_bottle/citalopram,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "mU" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ny" = (/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean/nomads/desert)
@@ -866,16 +871,16 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahOaMaMaMaMhPaMaMaMaMaMaMaaaaaaaaaaaaaaaaaaaaaaaaaaaabggkgkgkgkgkgkgkgkgkgkgkgkgkgkgkbhababababababapabapFdJbJbJbJbJbJbJbJbaCaCaCaCfQaFaCaCaCaCaC
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafAhQhQhQhQhQhQhQhQhQhQhQaMaMaMmUmUmUhpaaaahpmUaMyjaMbQgkgkgRgSgTgUgVgWgXgYgZhagBgkgkbhababababababapezapbgobobobobobobobaCaCaCaCaCfQfQfQaCaCaCaC
 ababababababababababababababababababababababababababababbgbTgkgkgkgkgkgwgkhTgkgwgkgkgkgkgkhWhUgvgvhVgkgkgkgkgkgkkxfSfSfSfSfSfSfSfSfSfSjlgkgkbhababababababababezYLfmfnfnMlfnfnfnaCaCaCaCaCaCaFfQaEaEaEaE
-abababapababababababababababababababababababagabababababbgbTgkgkgkjEhJhKhFhRhLhXgkhYhYhYhYhYfSfSfSfShYhYhYhYhYgkkyfSgGgFgHgHgIgIgPfSfShigkgkXbaKJbJbJbJbJbfrabezjhWyclclclclclclaCaCaCaCaCaEfQfQaEaEaEaE
-abababababababababababababababeGabababababagababababababbgbTgkhFgkjmfSfShSfSfSjlgkjnfSfSfSfSfSfSfSfSfSfSfSfSjlgkjnfSgEhkgDjzhdhchyfSfShjgkgkobobRfobobobobKgabezabezabapapababycycycycycHhHhIRZuZuZuZuIR
-ababababababababababababababababababababababababababababbgbTgkhFgkhKfSfShSfSfSfSgkhZfSfSfSfSfSfSfSfSfSfSfSfSiagkkzfSfSfSfSfSfSfSfSfSfShigkgkfnfnfnMlfnfnfoAYabapabapezapapapabZuEeycHhHhZuIRZuIRZuIRrqIR
-ababababababababababesababagababababababababapabababababbgbTgkhFgkgkgkhGgkgkhTgvgkhZfSfSfSfSfSfSfSfSfSfSfSfSiagkgkgJgKgLgMgHgHgOgQhefSfSgkgkclclclclclclrIShezezezezezapapezapEeZuaFfQaEfQaFfQaEaEfQaFaE
-ababababababababababababababababababababababababababababbgbTgkgphChDhCfShEhHjjfShbhZfSfSfSjofSfSfSfSjofSfSfSiahbgkgkgkgkgkgkgkgkgkgkgvgvgkgkabababababababapabapapapapapababaFZuZufQaFfQaFfQaEaEaEfQaFaE
-aCababababapabababababababababababababababesababababababbgbTgkfSfSfSfSfSfSfSfSjlgkfSfSfSfSgkgmgmgmgmgkfSfSfSiDgkgAgAfSfSjphhhhjHhBjJfSfSjKgkbBababapapabezapabapapabababababaCycHhaEfQkMfQaEaEfQaFfQfQaE
-aCaCaCabababeHabababababababababababababababapabababababbgbTgkfSfSfSfSfSfSfSfSfSgvfSfSfSfSgngogqgrgsgxfSfSfSfSgvfSfSfSfSfSfSfSfSfSfSfSfSfSgvapapabapapapapapapapabababababaCaCycHhaEaEaEaEaEaFOpfQfQaEaE
-aCaCaCaCabababezababababababababababagabababababababababbgbTgkfSfSfShDhCgNhIjjfSgvfSfSfSfSgnhfhgibjkgxfSfSfSfSgvfSfSfSfSfSfSfSfSfSjIkmfSfSgvapapcQapapapapapapapezababababaCaCHhHhaEfQaFfQfQaFfQaEaEaEaE
-aCaCaCaCaCaCaCabababababababababababababababababababababbgbTgkjnfSgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkjqgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkfSfSgkbhapapababababapapezabababababaCaCHhHhaFOpfQkufQaEaEaEaEaEaE
-aEaEaEaCaCaCaCabababababababababababababerabababababababbgbTgkfSfSgkgkgkgkgkgkgkgkgkgkgkiEjrjsjsjtjujwiEgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkjnfSgkbhbBabababababapapezababapapaCaCaCHhHhfQfQfQaEaEaEaEaEaEaEaE
+abababapabababababababababababababababababapapapapabababbgbTgkgkgkjEhJhKhFhRhLhXgkhYhYhYhYhYfSfSfSfShYhYhYhYhYgkkyfSgGgFgHgHgIgIgPfSfShigkgkXbaKJbJbJbJbJbfrabezjhWyclclclclclclaCaCaCaCaCaEfQfQaEaEaEaE
+abababababababababababababababeGababapababapapapababababbgbTgkhFgkjmfSfShSfSfSjlgkjnfSfSfSfSfSfSfSfSfSfSfSfSjlgkjnfSgEhkgDjzhdhchyfSfShjgkgkobobRfobobobobKgabezabezabapapababycycycycycHhHhIRZuZuZuZuIR
+ababababababababababababababababababkIkIkIkIabababapababbgbTgkhFgkhKfSfShSfSfSfSgkhZfSfSfSfSfSfSfSfSfSfSfSfSiagkkzfSfSfSfSfSfSfSfSfSfShigkgkfnfnfnMlfnfnfoAYabapabapezapapapabZuEeycHhHhZuIRZuIRZuIRrqIR
+ababababababababababesababapapabkIkIkIkIkIabapabababababbgbTgkhFgkgkgkhGgkgkhTgvgkhZfSfSfSfSfSfSfSfSfSfSfSfSiagkgkgJgKgLgMgHgHgOgQhefSfSgkgkclclclclclclrIShezezezezezapapezapEeZuaFfQaEfQaFfQaEaEfQaFaE
+ababababababababababapkJkKabababkIkIababababababababababbgbTgkgphChDhCfShEhHjjfShbhZfSfSfSjofSfSfSfSjofSfSfSiahbgkgkgkgkgkgkgkgkgkgkgvgvgkgkabababababababapabapapapapapababaFZuZufQaFfQaFfQaEaEaEfQaFaE
+aCababababapababababapabkIkIkIkIkIababababesababababababbgbTgkfSfSfSfSfSfSfSfSjlgkfSfSfSfSgkgmgmgmgmgkfSfSfSiDgkgAgAfSfSjphhhhjHhBjJfSfSjKgkbBababapapabezapabapapabababababaCycHhaEfQkMfQaEaEfQaFfQfQaE
+aCaCaCabababeHababkIapkIkIkIkIabababababababapabababababbgbTgkfSfSfSfSfSfSfSfSfSgvfSfSfSfSgngogqgrgsgxfSfSfSfSgvfSfSfSfSfSfSfSfSfSfSfSfSfSgvapapabapapapapapapapabababababaCaCycHhaEaEaEaEaEaFOpfQfQaEaE
+aCaCaCaCabababezkIkIapkLkIkIabababapagabababababababababbgbTgkfSfSfShDhCgNhIjjfSgvfSfSfSfSgnhfhgibjkgxfSfSfSfSgvfSfSfSfSfSfSfSfSfSjIkmfSfSgvapapcQapapapapapapapezababababaCaCHhHhaEfQaFfQfQaFfQaEaEaEaE
+aCaCaCaCaCaCaCabababababkIkIkIkNababababababababababababbgbTgkjnfSgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkjqgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkfSfSgkbhapapababababapapezabababababaCaCHhHhaFOpfQkufQaEaEaEaEaEaE
+aEaEaEaCaCaCaCababababapababababababababerabababababababbgbTgkfSfSgkgkgkgkgkgkgkgkgkgkgkiEjrjsjsjtjujwiEgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkjnfSgkbhbBabababababapapezababapapaCaCaCHhHhfQfQfQaEaEaEaEaEaEaEaE
 aEaEaEaEaEaCaCabababababababababababababababababababababbgbTgkfSfSgvfSfSfSfSfSfSfSfSfSjqjtjtjtjtjtjtjtjtjqfSfSfSfSfSfSfSfSfSfSfSfSfSgvfSfSgkbhababababababapapapababababaCaCaCHhHhiufRfRiriririririririr
 aEaEaEaEaEaCaCaCabababababapesabababababababababababababbgbTgkfSfSgvfSfSjofSfSfSjofSfSjxjDjtjtjtjtjtjtjFkbfSfSfSjofSfSfSfSfSjofSfSfSgvfSfSgkbhababababababapabapabababaCaCaCaEHhHhaEivfRfRfRfRfRfRfRfRfR
 ZOaEaEaEaEaCaCaCababababababababababababababababababababbgbTgkauaugkgkgkgkgkgkgkgkgkgkgkglkckdkekfkgkhglgkgkgkgkgkgkgkgkgkgkgkgkgkgkgkhzhAgkbhabababababababezapababaCaCaCaCaEHhHhaEaEfRiriririririririr

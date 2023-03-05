@@ -1111,6 +1111,16 @@
 	new/obj/item/ammo_magazine/pkm/c100(src)
 	new/obj/item/ammo_magazine/pkm/c100(src)
 
+/obj/item/weapon/storage/belt/destructionpouch
+/obj/item/weapon/storage/belt/destructionpouch/New()
+	..()
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+	new /obj/item/weapon/grenade/ww2/stg1924(src)
+
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
 	..()
@@ -1288,6 +1298,27 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/mk18
+/obj/item/weapon/storage/belt/smallpouches/mk18/New()
+	..()
+	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/p90
+/obj/item/weapon/storage/belt/smallpouches/p90/New()
+	new /obj/item/ammo_magazine/p90(src)
+	new /obj/item/ammo_magazine/p90(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/sten
+/obj/item/weapon/storage/belt/smallpouches/sten/New()
+	new /obj/item/ammo_magazine/sten2(src)
+	new /obj/item/ammo_magazine/sten2(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 /* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
@@ -1301,6 +1332,46 @@
 	w_class = 1
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/mask/headscarfgrey ////German Toque head scarf Issued to soldiers during WW2 to wear as a neck warmer
+	name = "grey headscarf"
+	desc = "A headscarf,it protects your face from the cold."
+	icon_state = "headscarfgrey"
+	item_state = "headscarfgrey"
+	worn_state = "headscarfgrey"
+	body_parts_covered = FACE|HEAD
+	slot_flags = SLOT_BELT|SLOT_MASK
+	flags_inv = BLOCKHAIR
+	w_class = 1
+	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
+	flammable = TRUE
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/mask/headscarfgrey/asbestos
+	name = "Asbestos headscarf"
+	desc = "A Heavy Asbestos farbic headscarf, it protects your head from heat and cold."
+	icon_state = "headscarfgreyA"
+	item_state = "headscarfgreyA"
+	worn_state = "headscarfgreyA"
+	body_parts_covered = FACE|HEAD
+	w_class = 2
+	max_heat_protection_temperature = HELMET_MAX_HEAT_PROTECTION_TEMPERATURE*4
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 35, bomb = 25, bio = 5, rad = 5)
+	heat_protection = HEAD|FACE
+	flammable = FALSE
+	cold_protection = HEAD|FACE
+
+/obj/item/clothing/mask/headscarfgrey/olive
+	name = "olive headscarf"
+	icon_state = "headscarfolive"
+	item_state = "headscarfolive"
+	worn_state = "headscarfolive"
+
+/obj/item/clothing/mask/headscarfgrey/white
+	name = "white headscarf"
+	icon_state = "headscarfwhite"
+	item_state = "headscarfwhite"
+	worn_state = "headscarfwhite"
 
 /obj/item/clothing/head/commando_bandana
 	name = "olive drab bandana"
@@ -1352,6 +1423,13 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
 	New()
@@ -1517,6 +1595,60 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/us_vest/m16
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/m60
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/m249
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/c6
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/sten
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+
+/obj/item/clothing/accessory/storage/webbing/us_vest/springfield
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+
 /obj/item/clothing/accessory/storage/webbing/us_bandolier
 	name = "US Army bandolier"
 	desc = "A large cotton bandolier with several small pouches."
@@ -1576,7 +1708,7 @@
 		new /obj/item/ammo_casing/grenade_l(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
-	name = "survival bebbing"
+	name = "survival webbing"
 	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
 	slots = 11
 	w_class = 4 // Heavier because it can hold a lot of stuff.
@@ -1674,6 +1806,24 @@
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 100)
 	ripable = FALSE
 
+/obj/item/clothing/suit/nbcponcho
+	name = "NBC poncho"
+	desc = "a NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
+	icon_state = "nbcponcho"
+	item_state = "nbcponcho"
+	worn_state = "nbcponcho"
+	w_class = 1 // its light
+	item_flags = AIRTIGHT
+	flags_inv = HIDEFACE|BLOCKHAIR
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD|FEET|HANDS
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 5, bomb = 5, bio = 100, rad = 75)
+	ripable = FALSE
+
+/obj/item/clothing/suit/nbcponcho/white
+	name = "White NBC poncho"
+	icon_state = "nbcponchowhite"
+	item_state = "nbcponchowhite"
+	worn_state = "nbcponchowhite"
 /* Astronaut Suit and Helmet*/
 
 /obj/item/clothing/head/astronaut
@@ -1719,6 +1869,7 @@
 	item_state = "toughguy"
 	worn_state = "toughguy"
 	body_parts_covered = HANDS
+	armor = list(melee = 30, arrow = 5, gun = 5, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	slot_flags = SLOT_GLOVES
 
 /obj/item/clothing/shoes/toughguy

@@ -56,6 +56,11 @@
 	icon_state = "jap"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/poland
+	name = "polish armband"
+	desc = "A polish armband!"
+	icon_state = "polisharmband"
+	slot = "armband"
 
 //jewelry
 
@@ -106,6 +111,17 @@
 	desc = "A yellow armband, used to identify the Sheriff's deputies."
 	icon_state = "spanish"
 	slot = "armband"
+//catears
+/obj/item/clothing/accessory/catears
+	name = "cat tail and ears"
+	desc = "intresting"
+	icon_state = "kitty"
+	item_state = "kitty"
+	worn_state = "kitty"
+	body_parts_covered = FALSE
+	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
+	slot = "decor"
+	ripable = FALSE
 
 //customizable
 /obj/item/clothing/accessory/custom
@@ -326,7 +342,6 @@
 	item_state = "pauldron_dy"
 	worn_state = "pauldron_dy"
 	slot = "decor"
-
 
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)

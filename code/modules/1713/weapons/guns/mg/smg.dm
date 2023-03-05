@@ -205,7 +205,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -213,14 +213,14 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica
 	name = "Blyskawica"
-	desc = "Polish Underground state Submachine gun, chambered in 9mm Luger."
+	desc = "Polish Underground State submachine gun, chambered in 9mm Luger."
 	icon_state = "blyskawica"
 	item_state = "blyskawica"
 	base_icon = "blyskawica"
 	weight = 4.12
 	equiptimer = 10
 	firemodes = list(
-		list(name="full auto",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
 		)
 	sel_mode = 1
 	effectiveness_mod = 0.95
@@ -337,7 +337,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 7
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.4, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -358,7 +358,7 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -400,7 +400,7 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -423,11 +423,11 @@
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.25, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.25, recoil=0, move_delay=2, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 0.99
+	effectiveness_mod = 0.85
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -444,7 +444,7 @@
 	equiptimer = 14
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -463,16 +463,16 @@
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/ppd
 	name = "PPD-40"
-	desc = "Soviet submachinegun typically equipped with drum magazines. Chambered in 7.62x25mm Tokarev."
+	desc = "Early Soviet submachinegun. Chambered in 7.62x25mm Tokarev."
 	icon_state = "ppd"
-	item_state = "ppsh"
+	item_state = "ppd"
 	base_icon = "ppd"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
@@ -481,28 +481,28 @@
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.7
 	equiptimer = 15
-	effectiveness_mod = 0.96
+	effectiveness_mod = 0.84
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.3, 0.4, 0.5, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=5, dispersion = list(0.7, 1.2, 1.3, 1.4, 1.6)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(0.8, 1.3, 1.4, 1.5, 1.6)),
 		)
 
 	sel_mode = 1
-/obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
-			icon_state = "[base_icon]"
-			item_state = "ppsh"
-			return
-		else
-			icon_state = "[base_icon]_mag"
-			item_state = "ppsh"
-			return
-	else
-		icon_state = "[base_icon]_open"
-		item_state = "ppsh_open"
-	update_held_icon()
-	return
+///obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon() //doesnt work, loading in a mag/drum makes the gun inhand sprite have no mag/drum, keeping it here though.
+//	if (ammo_magazine)
+//		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
+//			icon_state = "[base_icon]"
+//			item_state = "ppd"
+//			return
+//		else
+//			icon_state = "[base_icon]_mag"
+//			item_state = "ppd"
+//			return
+//	else
+//		icon_state = "[base_icon]_open"
+//		item_state = "ppd_open"
+//	update_held_icon()
+//	return
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47
 	name = "AKM"
@@ -970,6 +970,39 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12
+	name = "AK-12"
+	desc = "A fifth generation Modern AK variant, chambered in 5.45x39mm."
+	icon_state = "ak12"
+	item_state = "ak12"
+	base_icon = "ak12"
+	caliber = "a545x39"
+	weight = 3.05
+	effectiveness_mod = 1.13
+	equiptimer = 12
+	magazine_type = /obj/item/ammo_magazine/ak74
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	equiptimer = 12
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
+	name = "AK-15"
+	desc = "A fifth generation Modern AK variant, chambered in 7.62×39mm."
+	icon_state = "ak12"
+	item_state = "ak12"
+	base_icon = "ak12"
+	caliber = "a762x39"
+	weight = 3.07
+	effectiveness_mod = 1.13
+	equiptimer = 12
+	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	equiptimer = 12
+	sel_mode = 1
+
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
 	desc = "An American assault rifle, chambered in 5.56x45mm."
@@ -1719,7 +1752,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.4, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name="burst fire",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, move_delay=2, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
 		list(name="full auto",	burst=1, burst_delay=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
 		)
 	effectiveness_mod = 1.15

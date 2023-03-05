@@ -334,6 +334,39 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	return
 
+/obj/item/weapon/storage/box/nbcbox
+	name = "NBC Protection Box"
+	desc = "cointains items that might increase your chances of survival against a Nuclear biological or a chemical attack."
+	icon_state = "boxnbc"
+	item_state = "boxnbc"
+	w_class = 3
+	slot_flags = SLOT_BELT|SLOT_POCKET
+	can_hold = list(
+		/obj/item/clothing/accessory,
+		/obj/item/clothing/suit/nbcponcho,
+		/obj/item/weapon/pill_pack/potassium_iodide,
+		/obj/item/weapon/pill_pack/adrenaline,
+		/obj/item/clothing/mask/gas,
+		/obj/item/stack/medical
+		)
+/obj/item/weapon/storage/box/nbcbox/sov/New()
+	..()
+	new /obj/item/clothing/mask/gas/soviet/gp5(src)
+	new /obj/item/weapon/pill_pack/adrenaline(src)
+	new /obj/item/weapon/pill_pack/potassium_iodide(src)
+	new /obj/item/clothing/suit/nbcponcho(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/advanced/sulfa/small(src)
+	return
+/obj/item/weapon/storage/box/nbcbox/ami/New()
+	..()
+	new /obj/item/clothing/mask/gas/modern2(src)
+	new /obj/item/weapon/pill_pack/adrenaline(src)
+	new /obj/item/weapon/pill_pack/potassium_iodide(src)
+	new /obj/item/clothing/suit/nbcponcho/white(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/advanced/sulfa/small(src)
+	return
 /obj/item/weapon/matchbox
 	name = "matchbox"
 	desc = "A small box of premium matches."

@@ -389,7 +389,7 @@
 "hy" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "hz" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "hA" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"hB" = (/obj/structure/closet/crate/brick,/turf/floor/trench,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"hB" = (/obj/structure/closet/crate/empty,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/obj/item/weapon/clay/advclaybricks/fired,/turf/floor/trench,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "hC" = (/obj/structure/closet/crate/empty,/obj/item/stack/material/steel/twentyfive,/obj/item/stack/material/steel/twentyfive,/turf/floor/trench,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "hD" = (/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/turf/floor/trench,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "hE" = (/obj/item/weapon/flamethrower/flammenwerfer,/obj/item/weapon/flamethrower/flammenwerfer,/obj/item/weapon/fire_extinguisher/ww2,/obj/item/weapon/fire_extinguisher/ww2,/obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled,/obj/item/weapon/reagent_containers/glass/flamethrower/flammenwerfer/filled,/obj/item/clothing/gloves/thick/firefighter,/obj/item/clothing/gloves/thick/firefighter,/obj/structure/closet/crate/empty,/obj/item/clothing/mask/gas/german,/obj/item/clothing/mask/gas/german,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
@@ -458,7 +458,7 @@
 "iP" = (/obj/structure/closet/cabinet,/obj/item/clothing/mask/gas/japanese,/obj/item/clothing/mask/gas/japanese,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "iQ" = (/obj/structure/closet/crate/ww2/ppsh,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "iR" = (/obj/structure/closet/crate/ww2/mosin,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"iS" = (/obj/random/mine/ap,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"iS" = (/obj/item/mine/ap/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "iT" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade/horizontal,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "iU" = (/obj/structure/closet/coffin,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "iV" = (/obj/structure/closet/coffin,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
@@ -472,7 +472,7 @@
 "jd" = (/obj/structure/closet/fridge/icebox,/obj/item/weapon/reagent_containers/food/snacks/meatsteak,/obj/item/weapon/reagent_containers/food/snacks/meatsteak,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "je" = (/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "jf" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"jg" = (/obj/random/mine/ap,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"jg" = (/obj/item/mine/ap/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "jh" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov,/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "ji" = (/obj/structure/closet/crate/empty,/obj/item/weapon/flamethrower/roks2,/obj/item/weapon/flamethrower/roks2,/obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled,/obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled,/obj/item/clothing/gloves/thick/firefighter,/obj/item/clothing/gloves/thick/firefighter,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "jj" = (/obj/structure/curtain/open/privacy,/turf/floor/plating/white,/area/caribbean/roofed/temperate)
@@ -554,25 +554,25 @@
 "kH" = (/obj/structure/window/barrier/sandbag,/obj/structure/table/modern/table,/obj/item/weapon/telephone/wireless,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "kI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/table/modern/flipped{dir = 1},/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "kJ" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"; transmitter_on = 0},/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
-"kK" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/random/mine/ap,/obj/item/flashlight/flare/alwayson,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kK" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/item/mine/ap/armed,/obj/item/flashlight/flare/alwayson,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "kL" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "kM" = (/obj/structure/bed/chair/wood,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "kN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/table/modern/table,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
-"kO" = (/obj/random/mine/ap,/obj/random/mine/ap,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kO" = (/obj/item/mine/ap/armed,/obj/item/mine/ap/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "kP" = (/obj/covers/brick_wall,/obj/structure/window/barrier/sandbag,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "kQ" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "kR" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two{ambience = list("sound/ambience/battle1.ogg")})
 "kS" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"kT" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/random/mine/ap,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kT" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/mine/ap/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "kU" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
-"kV" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/random/mine/ap,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"kW" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/random/mine/ap,/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"kX" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/random/mine/ap,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"kY" = (/obj/random/mine/ap,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"kZ" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/random/mine/ap,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kV" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/item/mine/ap/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kW" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/item/mine/ap/armed,/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kX" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/mine/ap/armed,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kY" = (/obj/item/mine/ap/armed,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"kZ" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/item/mine/ap/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "la" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"lb" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/random/mine/ap,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"lc" = (/obj/structure/barbwire,/obj/random/mine/ap,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"lb" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/item/mine/ap/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"lc" = (/obj/structure/barbwire,/obj/item/mine/ap/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "ld" = (/obj/item/mine/boobytrap,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "le" = (/obj/effect/decal/cleanable/generic,/obj/item/mine/boobytrap,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "lf" = (/obj/item/mine/boobytrap,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
@@ -653,6 +653,7 @@
 "mC" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mD" = (/obj/structure/iv_drip,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mE" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/item/violin,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
+"mF" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mG" = (/obj/item/weapon/storage/ammo_can/german_mg,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "mH" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "mI" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/structure/window/barrier/sandbag,/obj/structure/barricade/steel,/obj/structure/barricade/horizontal,/obj/structure/barbwire,/turf/floor/wood,/area/caribbean/roofed/temperate)
@@ -716,6 +717,7 @@
 "nO" = (/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nP" = (/obj/structure/closet/cabinet,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nQ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
+"nR" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov,/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "nS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/bed/bedroll,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "nT" = (/obj/item/weapon/bedsheet,/obj/structure/bed/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nU" = (/obj/structure/closet/cabinet,/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
@@ -723,21 +725,22 @@
 "nW" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/bed/bedroll,/turf/floor/carpet/tealcarpet,/area/caribbean/roofed/temperate)
 "nX" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/carpet/orangecarpet,/area/caribbean/roofed/temperate)
 "nY" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/box/canned,/obj/item/weapon/storage/box/canned,/obj/item/weapon/storage/ww2,/obj/item/weapon/storage/ww2,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/roofed/temperate)
+"nZ" = (/obj/structure/cannon/modern/tank/german88/field{anchored = 0; dir = 1},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oa" = (/obj/covers/brick_wall,/obj/covers/brick_wall,/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "ob" = (/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/wood/fancywood,/area/caribbean/no_mans_land/capturable/one)
 "oc" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/item/weapon/storage/ww2,/turf/floor/carpet/pinkcarpet,/area/caribbean/roofed/temperate)
 "od" = (/obj/structure/table/wood,/obj/item/weapon/storage/ww2,/turf/floor/carpet/bluecarpet,/area/caribbean/roofed/temperate)
 "oe" = (/obj/structure/shelf,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/spray/cleaner,/obj/item/weapon/fire_extinguisher/ww2,/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "of" = (/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"og" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oh" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oi" = (/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oj" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"ok" = (/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"ol" = (/obj/item/weapon/storage/toolbox/mechanical,/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/drivers,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"om" = (/obj/structure/vehicleparts/axis/car{color = "#505050"; name = "Sdkfz 251"},/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"og" = (/turf/floor/plating/road,/area/caribbean)
+"oh" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"oi" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/plating/road,/area/caribbean)
+"oj" = (/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean)
+"ok" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/weapon/fire_extinguisher/ww2,/turf/floor/plating/road,/area/caribbean)
+"ol" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/engine/internal/gasoline/premade/panzeriv{desc = "A relatively cheap six-stroke gasoline engine."; name = "six-stroke gasoline engine"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/plating/road,/area/caribbean)
+"om" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/sdfkzfront/right/door,/turf/floor/plating/road,/area/caribbean)
 "on" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oo" = (/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline{density = 0},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"oo" = (/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"; vehicle_size = "2x4"},/obj/structure/vehicleparts/frame/car/left/metalreinforced,/turf/floor/plating/road,/area/caribbean)
 "op" = (/obj/structure/barbwire,/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/one)
 "oq" = (/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/one)
 "or" = (/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
@@ -747,18 +750,18 @@
 "ov" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "ow" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "ox" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oy" = (/obj/structure/barbwire,/obj/random/mine/ap,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"oy" = (/obj/structure/barbwire,/obj/item/mine/ap/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oz" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barricade/steel,/obj/item/mine/at/armed,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "oA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/classic/brickfull,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/item/mine/at/armed,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "oB" = (/obj/structure/barbwire,/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oC" = (/obj/structure/barbwire,/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oD" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/random/mine/ap,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"oD" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/item/mine/ap/armed,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oE" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oF" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/mine/at/armed,/turf/floor/winter/grass,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oG" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barricade,/obj/structure/barricade/steel,/obj/item/mine/at/armed,/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "oH" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/flashlight/flare/alwayson,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oI" = (/obj/item/flashlight/flare/alwayson,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"oJ" = (/obj/random/mine/ap,/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"oJ" = (/obj/item/mine/ap/armed,/obj/item/mine/at/armed,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oK" = (/obj/item/flashlight/flare/alwayson,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oL" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/item/flashlight/flare/alwayson,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oM" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/item/flashlight/flare/alwayson,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
@@ -771,7 +774,7 @@
 "oT" = (/obj/item/weapon/storage/backpack/duffel,/obj/item/weapon/storage/backpack/duffel,/obj/item/weapon/storage/backpack/duffel,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oU" = (/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/turf/floor/trench,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "oV" = (/obj/item/ammo_magazine/ptrd_pouch,/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{gun_safety = 0},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"oW" = (/obj/structure/cannon/modern/tank/german88/field{dir = 1},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"oW" = (/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1; layer = 4},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34,/obj/structure/vehicleparts/frame/sdfkzfront/rf,/turf/floor/plating/road,/area/caribbean)
 "oX" = (/obj/item/ammo_magazine/ptrd_pouch,/obj/item/ammo_magazine/ptrd_pouch,/obj/item/ammo_magazine/ptrd_pouch,/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd{gun_safety = 0},/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "oY" = (/obj/covers/brick_wall,/obj/structure/window/barrier/sandbag,/obj/structure/sign/portrait/stalin,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "oZ" = (/obj/structure/props/engineprops/dieselgeni,/turf/floor/winter,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
@@ -780,7 +783,7 @@
 "pc" = (/obj/item/weapon/wrench,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "pd" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "pe" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
-"pf" = (/obj/structure/vehicleparts/frame/car/rf/armored,/obj/structure/vehicleparts/movement/tracks,/obj/structure/engine/internal/gasoline/premade/panzeriv{desc = "A relatively cheap six-stroke gasoline engine."; name = "six-stroke gasoline engine"},/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
+"pf" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/turf/floor/plating/road,/area/caribbean)
 "pg" = (/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/item/cannon_ball/shell/tank/HE88,/obj/structure/closet/crate/empty,/turf/floor/plating/road,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "ph" = (/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/obj/item/weapon/grenade/antitank/stg24_bundle,/turf/floor/dirt,/area/caribbean/nomads{ambience = list("sound/ambience/battle1.ogg")})
 "HT" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall{ambience = list("sound/ambience/battle1.ogg")})
@@ -809,7 +812,7 @@ euaoaoaoafaoaoaoaoaoaocDcDcDcDcDcDcPafafaofTdulkajajajaffNduafaoaoaocDcDcDcDcDcD
 afaoaoafaoaoaoafaoaocPhAhAhAhAhAgTcDcDaoaofNduafjLjLjLoZfTcBaoaoaocDgTgTgTgTgTgTgTgTcDaoafafaoafaoeuaoaofTcBaoaoaoafapapaqaqaqaqaqaqapapafaf
 euafafafafaoafaobSdEdEdEezezezezezdEdEdEdEdEdEdEeBeBeBeHeHdEdEdEeLeLeLeLeLeLeLeLeLeLeQafafafaoiSoIeuafaofTduafaoaoafapapaqaqaqaqaqaqapapafaf
 euoKafafafaoafbSdEdEnbeSeSeSeSeSeSeSdEdEdEdEeVeVfcfcfcfdfddEdEdEeLeLnceLeLeLeLeLeLdEdEeQafafafaocBafotaofNduafaoaoafapapaqaqaqaqaqaqapapaoaf
-afafafafafaoafdEdEdEfhfcfcfcfcfcfcfcfjeHeHdEeVfcfcfcfcfcfndEdEdEftftfcgrgtgugvgwfjdEdEdEafaoaofNcBaffNkTfNduaoafaoafapapaqaqaqaqaqaqapapafeG
+afafafafafaoafdEdEdEfhfcfcfcfcfcfcfcmFeHeHdEeVfcfcfcfcfcfndEdEdEftftfcgrgtgugvgwfjdEdEdEafaoaofNcBaffNkTfNduaoafaoafapapaqaqaqaqaqaqapapafeG
 aoafaoaoaoaofNdEdEfjfcfcfcfcfcfcfcfcfcgAgCgDeVfcfcfcfcfcfceVdEdEftgEgEgEgFgIgEgEfcgJdEdEafaoaofNduiSfVcBaoaofNoLaoafapapaqaqaqaqaqaqapapafaf
 afaoaoafaffTgqgKgOfcfcfcgQfcgQgRgQfcfcgAfcgDeVfcgwgwgwfcfceVdEgSgUgEgEgEgXgIgEgEgEfcgJeHduaoaofNduaffNcBaoafkVcBaoafapapaqaqaqaqaqaqapapbzao
 aoafafaoaffTgqgKgOfcfcdEnbhedEdEdEgSfcfcfcgZfcfcfcfcfcfcfceVdEdEhcgEhdgEgEhegEgEgEgEhfhggWcBaffTduafowcBaoaffToxafafapapaqaqaqaqaqaqapapafaJ
@@ -865,19 +868,20 @@ afafafaoaoafaoaoaoaoaoaoafeuaoafafafeueueuafaoaoaoaoafafafapapaqaqaqaqaqaqapapaf
 afafafafafafafafafafafafafeueuafafafafafafafafafafafafafafdqapaqaqaqaqaqaqapapafeEcZavavbybIaoafafafeFaoafafaoaoaoaoaoaSaoaoafafeMafaoafafao
 aoaoafafafcPcDcPcPcPcDcPcPcDcPcDcDcPcPcPcDcPcPcPdocEcEdocFapapaqaqaqaqaqaqapapafeEaleUajdYexeGafafaJafaoaoafaoaoafafafafbzaoafafafafaoaoaoaf
 aobbafcRcRcRcScScTcRcRcRcUcVcRcRcWcXevcRcRcReDakhHavfobybIapapaqaqaqaqaqaqapapafeEalajajdpexafafafafafafeKcGaoafaoafaoafafaoaoaoaoaoafafafaf
-aoeIcHcRdbdcdddecTcRdfdgdedhcYdidjdkdcdldmdnafakalajajamexapapaqaqogohaqaqapapafeJjTajajdpanafafafeKafafeKaoaoafaoafaoafafaoaoaoaoaoafafafaf
-aSaocHdrdbcTcTcTcTcRdscTcTcTcTcTcTcTcTcTcTdtduakalajajdYexapapaqoiojokaqaqapapafafafafcIcIbqcIcIbqcIcIbqafeOafafafcDcDcPcPcPcPcDcDcPcDcDcPcP
-afcYdvdwdbcTcTcTcTcTcTcTcTcTcTdxcTcTcTcTcTdydueJalajajamexapapaqaqolomaqaqapapafbgafakdMavfkflflflavavdOanafafafdvcJcKfefefefefefefefefecKcL
-afafeNdzcYcTcTcTcTdAcTcTcTcTcTcTcTcTcTcTgPcRduaJafafafafafonapaqaqpfooaqaqapapafePafcMdSajfpfmfmajfpajdUbTafafeRcHfgasefefefmgmambawawmsaLcN
+aoeIcHcRdbdcdddecTcRdfdgdedhcYdidjdkdcdldmdnafakalajajamexapapaqogohoiaqaqapapafeJjTajajdpanafafafeKafafeKaoaoafaoafaoafafaoaoaoaoaoafafafaf
+aSaocHdrdbcTcTcTcTcRdscTcTcTcTcTcTcTcTcTcTdtduakalajajdYexapapaqojokolaqaqapapafafafafcIcIbqcIcIbqcIcIbqafeOafafafcDcDcPcPcPcPcDcDcPcDcDcPcP
+afcYdvdwdbcTcTcTcTcTcTcTcTcTcTdxcTcTcTcTcTdydueJalajajamexapapaqogomooaqaqapapafbgafakdMavfkflflflavavdOanafafafdvcJcKfefefefefefefefefecKcL
+afafeNdzcYcTcTcTcTdAcTcTcTcTcTcTcTcTcTcTgPcRduaJnRafafafafonapaqogoWpfaqaqapapafePafcMdSajfpfmfmajfpajdUbTafafeRcHfgasefefefmgmambawawmsaLcN
 afbgdvcRcYdBcTcTdCcRcTcTcTdDiKdFcYdfdGdHdHcRduafafafeGafafapapaqaqaqaqaqaqapapafafaoakdZbHfqbHfqajbHbHeabTaoeDaodvcOejaNfSfSfSfSfSfSfSelfucN
 afafafdIcYcRcRdJcYcYcYcYcYcRdgdgcRcRcRdKdjcRduafaoaoafafafapapaqaqaqaqaqaqapapafeGafafcQcbcbcQcQajcQcQdaaopbafafdvjCbFfSfSfSfSfzfSfSfSfSfAaQ
 afafafafafdLdLdLdLafafafafdLdLdLdLdLdLdLdLdLafaoaoafafafhEapapaqaqaqaqaqaqapapafafajajajajajajajajajajajajajajajajfwfSfSfSfSfziffzfSfSfSfAaQ
-afafafaoafaoafafafafafeueueueuafafafafafafafafaoafeueuafafapapaqaqoWaqaqaqapapafafafaocIbqbqcIdPajlubqbqiGiHhFaohajDbFfSfSfSfSfzfSfSiglzlVaQ
+afafafaoafaoafafafafafeueueueuafafafafafafafafaoafeueuafafapapaqaqnZaqaqaqapapafafafaocIbqbqcIdPajlubqbqiGiHhFaohajDbFfSfSfSfSfzfSfSiglzlVaQ
 afafaoafafaoafafeueueuafafafeuafaoaoafaoafafafafeueuafaoaoapapaqaqpcpepgaqapapaJafcCakegavehehavajavaveilwaJbzdRhaariifSfSfSfSfSfSfSijaNfAcN
 afaoaoafafaoafeueuafafafeueuaoaoafafafafaoaoafeudNcoaoaophapapaqaqaqaqaqaqapapafafeTcMalajajajajajajajamlweGaoaooQaKikaNfSlUlPmflOfSfSfSfAcN
 afaoafafeueuaoeueuaoeuaoaoaoaoaoaoaoaoaoaoeuaoafdTcrafaopaapapaqaqaqaqaqaqapiViUbgaoakalajajajajajajajamandWaodWafarildXedlQlRlRlQedlYedimaQ
 bpafaoaoaoafafafafaoeueueueuafafafafafafaoaoafafdTcsmGafecapapaqaqaqaqaqaqiViViUiUafcMenbcaGaTaFbdajbceogMgLgNcnhbepbRbRbRekeklTlTbRbRememes
 "}
+
 (1,1,2) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

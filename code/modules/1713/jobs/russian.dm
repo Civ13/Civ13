@@ -512,6 +512,7 @@
 	spawn_location = "JoinLateRUDoc"
 	is_karelia = TRUE
 	is_ww2 = TRUE
+	is_bordersov = FALSE
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
@@ -583,6 +584,10 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//webbing
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun(null)
+	uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a designated automatic rifleman of the Red Army. Keep the enemy pinned down!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -605,6 +610,7 @@
 	spawn_location = "JoinLateRU"
 	can_be_female = TRUE
 	is_ww2 = TRUE
+	is_sovaprif = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
 
@@ -635,6 +641,16 @@
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -658,6 +674,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_karelia = FALSE
+	is_sovaprif = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -671,9 +688,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		if (prob(40))
-			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_wear_id)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
@@ -682,21 +697,37 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (mosinonly == TRUE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+		uniform.attackby(webbing, H)
 	else
-		if (prob(40))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-		else
-			if (prob(10))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
+		var/randimpw = rand(1,3)
+		switch(randimpw)
+			if (1)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+				uniform.attackby(webbing, H)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+				uniform.attackby(webbing, H)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
+				uniform.attackby(webbing, H)
+
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_box/ap(H), slot_r_store)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+//Extra AT weapon
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/rpg40(H), slot_l_hand)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank assistant, find your Anti-tank gunner and assist him. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -735,6 +766,7 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/roks2(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -742,13 +774,19 @@
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower for the Red Army. Follow your <b>Sergeant's</b> orders!")
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower solider of the red army, Assault enemy positions and tanks with your flamethrower. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
@@ -793,6 +831,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin(null)
+	uniform.attackby(webbing, H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -844,25 +885,57 @@
 //weapons
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	if (map.ID == MAP_REICHSTAG)
-		if (prob(15))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
-		else
-			if (prob(15))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
-	else
-		if (prob(10))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-		else
-			if (prob(10))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+//weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+	var/randgun = rand(1,4)
+	switch(randgun)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			if (prob(50))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt(null)
+				uniform.attackby(webbing, H)
+			else
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag(null)
+				uniform.attackby(webbing, H)
+		if (2)
+			if (prob(70))
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+			else
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+				if (prob(50))
+					var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+					uniform.attackby(webbing, H)
+				else
+					var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade(null)
+					uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			if (prob(50))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+				uniform.attackby(webbing, H)
+			else if (prob(30))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke(null)
+				uniform.attackby(webbing, H)
+			else if (prob(10))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+				uniform.attackby(webbing, H)
+			else
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
+				uniform.attackby(webbing, H)
+		if (4) //this is here so the chances to have a boltie are higher
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			if (prob(50))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+				uniform.attackby(webbing, H)
+			else if (prob(30))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke(null)
+				uniform.attackby(webbing, H)
+			else if (prob(40))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+				uniform.attackby(webbing, H)
+			else
+				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
+				uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Red Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -873,8 +946,458 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+////////////////////////////////////////////////////////////////
+////////////////////1941 Barbarossa/////////////////////////////
+
+/datum/job/russian/nkvdborderley
+	title = "NKVD Pogranichnik Leytenant"
+	en_meaning = "NKVD Border Guard Lieutenant"
+	rank_abbreviation = "NKVD Leyt."
 
 
+	spawn_location = "JoinLateRUCap"
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/nkvdborderley/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet_officer(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/nkvd_cap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filledwar(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the NKVD attached to this border District. You are the highest ranking officer here, Organize your defenses Comrade and Make sure that the soliders follow orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	return TRUE
+
+/datum/job/russian/nkvdborderser
+	title = "NKVD pogranichnik"
+	en_meaning = "NKVD Border guard"
+	rank_abbreviation = "NKVD Pgr."
+
+	spawn_location = "JoinLateRU"
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	whitelisted = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	can_be_female = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/russian/nkvdborderser/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filledwar(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/nkvd_cap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+	give_random_name(H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+	uniform.attackby(webbing, H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple border guard,help your motherland by organizing defenses according to the <b>Leytenant's</b> orders!")
+	H.add_note("NKVD", "-Your job is to make sure the soldiers follow STAVKA's orders. You can even discipline the officers if need be!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/russian/borderscout
+	title = "Razvedchik"
+	en_meaning = "Soviet Scout"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	uses_squads = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	whitelisted = TRUE
+	can_be_female = TRUE
+	additional_languages = list("English" = 15, "German" = 25, "Polish" = 35, "Ukrainian" = 40)
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/russian/borderscout/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//radio
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+//weapon
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,2)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/svt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/svt(null)
+			uniform.attackby(webbing, H)
+//inhandweapon
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_l_store)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a soviet scout, report enemy positions and movements to your squad leader, always be up front!, Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/russian/borderserg
+	title = "K.A. Opolchenets Serjant"
+	en_meaning = "Milita Squad Leader"
+	rank_abbreviation = "Srj."
+
+	spawn_location = "JoinLateRU"
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	can_be_female = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/russian/borderserg/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
+//head
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
+
+//weapons
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_pps(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a Milita squad. Organize your squad according to the <b>Leytenant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/russian/sovmilitamedic
+	title = "Opolchenets medik"
+	en_meaning = "Soviet Milita Medic"
+	rank_abbreviation = "Doc."
+
+	spawn_location = "JoinLateRUDoc"
+	can_be_female = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	is_medic = TRUE
+	min_positions = 1
+	max_positions = 4
+	additional_languages = list("English" = 5, "German" = 5, "Polish" = 15, "Ukrainian" = 10)
+
+/datum/job/russian/sovmilitamedic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform) // for now
+//head
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm15medic(H), slot_head)
+//other
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//gun
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,4)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tt30(H), slot_l_store)
+			var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+			uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, you were given minimal training, now you are here to save people, or kill them. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/russian/borderat
+	title = "Protivotankovyy Prizyvnik"
+	en_meaning = "Anti tank conscript"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	is_squad_leader = FALSE
+	uses_squads = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	can_be_female = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/russian/borderat/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//belt
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/russianat(H), slot_back)
+//weapons
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimrr = rand(1,2)
+	switch(randimrr)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch/ap(H), slot_l_store)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch(H), slot_r_store)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ptrd_pouch/ap(H), slot_l_store)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+			uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, as a anti tank specialist, you are equipped with the greatest anti tank weapons the soviet union can give you, set up ambushes and destroy enemy tanks! follow your <b>Sergeant's</b> orders!")
+	H.add_note("AT", "-Your PTRD rifle can only penetrate light armor or broken armor, use your AT grenades to immobilize a enemy tank then break their door with your charge and throw in a grenade to clear it out!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/russian/bordermil
+	title = "Granitsa Opolchenets"
+	en_meaning = "Soviet Border Militia"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	uses_squads = TRUE
+	is_ww2 = FALSE
+	is_karelia = FALSE
+	is_bordersov = TRUE
+	can_be_female = TRUE
+	additional_languages = list("English" = 5, "German" = 15, "Polish" = 25, "Ukrainian" = 20)
+
+	min_positions = 10
+	max_positions = 90
+
+/datum/job/russian/bordermil/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	var/randimc = rand(1,4)
+	switch(randimc)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+//head
+	var/randimh = rand(1,5)
+	switch(randimh)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+//weapon
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,6)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun(null)
+			uniform.attackby(webbing, H)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple milita, Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Milita", "-Your aim sucks, Follow your Squad Leader and set up ambushes so you can actually achive something!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
 
 ////////////////////////////////////////////////////////////////
@@ -1504,8 +2027,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
 	give_random_name(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a squad of Soviet Guards Mechanized Infantry. Coordinate with the Tanks and defeat the enemy!")
@@ -1548,18 +2069,22 @@
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
-//back
-	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
-	else
-		if (prob(70))
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_belt)
-		else
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
-
+//weapon
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
-	uniform.attackby(webbing, H)
+	var/randimpw = rand(1,3)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/pps(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svt(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault(null)
+			uniform.attackby(webbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Soviet Guards Mechanized Infantry. Follow your commander's orders and coordinate with the Tanks!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -1615,7 +2140,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Guards. Place mines, sandbags, barbed wire, and help repair the vehicles!")
+	H.add_note("Role", "You are a <b>[title]</b>, a sapper of the Guards. Place mines or remove them, sandbags, barbed wire,destroy enemy tanks and positions, and help repair the vehicles!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1734,7 +2259,7 @@
 
 		if (2)
 			if (prob(60))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_hand)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_l_hand)
@@ -1766,15 +2291,15 @@
 	else if (randsuits == 6)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 
-	H.add_note("Role", "You are a <b>[title]</b>, you volunteered to defend Moscow. Good luck, comrade!")
+	H.add_note("Role", "You are a <b>[title]</b>, you were conscripted or volunteered to fight for the soviet union,with minimal training you will defeat fascism!")
 
 	give_random_name(H)
-	H.setStat("strength", STAT_NORMAL)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
@@ -2265,6 +2790,312 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
+	give_random_name(H)
+
+	return TRUE
+
+/////////////////////SIBERIAD//////////////////////////////////
+
+/datum/job/russian/siberiad/lt
+	title = "Operatsionnyy rukovoditel"
+	en_meaning = "Operation lead"
+	rank_abbreviation = "Opr."
+	spawn_location = "JoinLateRU"
+
+	is_siberiad = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+
+	uses_squads = TRUE
+	whitelisted = TRUE
+
+	additional_languages = list("English" = 70)
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/siberiad/lt/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba/winter(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/white(H), slot_wear_mask)
+//gun
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12(H), slot_shoulder)
+//belt
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/winter(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+	uniform.attackby(armour2, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour2.attackby(plates1, H)
+	armour2.attackby(plates2, H)
+	uniform.attackby(armour2, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/command(H), slot_back)
+
+	H.civilization = "Soviet"
+	H.add_note("Role", "You are a <b>[title]</b>. Command your men and lead them well, Your men count on you!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/russian/siberiad/squadlead
+	title = "Komandir pekhotnogo vzvoda"
+	en_meaning = "Infantry Squad leader"
+	rank_abbreviation = "Kpv."
+	spawn_location = "JoinLateRU"
+
+	is_siberiad = TRUE
+	is_squad_leader = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("English" = 20)
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/russian/siberiad/squadlead/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,2)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_trench(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
+			uniform.attackby(webbing, H)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/winter(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/klyaksa(H), slot_wear_suit)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/medical(H), slot_back)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh(H), slot_back)
+	H.civilization = "Soviet"
+	H.add_note("Role", "You are a <b>[title]</b>. Take orders from your Operation Leader and lead your squad towards victory!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/russian/siberiad/heavy
+	title = "Tyazhelaya pekhota"
+	en_meaning = "Heavy infantry"
+	rank_abbreviation = "H."
+	spawn_location = "JoinLateRU"
+
+	is_siberiad = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("English" = 10)
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/russian/siberiad/heavy/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka/frag(H), slot_w_uniform)
+//thermal
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+	uniform.attackby(armour2, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
+	armour2.attackby(plates1, H)
+	armour2.attackby(plates2, H)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,3)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/white/pkm(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/russian/guns/pkm/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/pkm(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpk74(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/white/rpk(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/russian/guns/rpk/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/rpk(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/white/rpd(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/russian/guns/rpd/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/rpd(null)
+			uniform.attackby(webbing, H)
+//helmet
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//id
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/klyaksa(H), slot_wear_suit)
+//other shit
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+
+	H.civilization = "Soviet"
+	H.add_note("Role", "You are a <b>[title]</b>.As a heavy infantryman You Provide Firepower and Suppresive fire for your squad!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/russian/siberiad/infantry
+	title = "Legkaya pekhota"
+	en_meaning = "Light Infantry"
+	rank_abbreviation = " "
+	spawn_location = "JoinLateRU"
+
+	is_siberiad = TRUE
+
+	uses_squads = TRUE
+	whitelisted = FALSE
+
+	additional_languages = list("English" = 5)
+	min_positions = 9
+	max_positions = 90
+
+/datum/job/russian/siberiad/infantry/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/british/red = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
+//gun
+	var/randimpw = rand(1,4)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/mosin(H), slot_belt)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+			uniform.attackby(webbing, H)
+//helmet
+	if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/winter(H), slot_head)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/klyaksa(H), slot_wear_suit)
+//back
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/milpack(H), slot_back)
+
+	H.civilization = "Soviet"
+	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
 	give_random_name(H)
 
 	return TRUE

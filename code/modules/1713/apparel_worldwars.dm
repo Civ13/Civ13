@@ -1443,6 +1443,10 @@ obj/item/clothing/head/ww2/cra_cap
 	item_state = "trenchsuit"
 	worn_state = "trenchsuit"
 
+/obj/item/clothing/under/ww1/trenchsuit/poland //looks very similiar to the ww2 polish uniform so lets pretend that its the polish uniform
+	name = "polish uniform"
+	desc = "A polish uniform, used by the army."
+
 /obj/item/clothing/under/ww1/french
 	name = "french uniform"
 	desc = "A french light blue uniform, used by the French Army."
@@ -1462,6 +1466,144 @@ obj/item/clothing/head/ww2/cra_cap
 		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/weapon/grenade/modern/f1(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/weapon/attachment/bayonet(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/snipermosin
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svtassault
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_pps(hold)
+		new/obj/item/ammo_magazine/c762x25_pps(hold)
+		new/obj/item/ammo_magazine/c762x25_pps(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/grenade
+	New()
+		..()
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppshassault
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/dp(hold)
+		new/obj/item/ammo_magazine/dp(hold)
+		new/obj/item/ammo_magazine/dp(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup
+	name = "Stormgroup Webbing"
+	desc = "Specially made webbing used by stormgroups."
+	slots = 9
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack,/obj/item/weapon/gun/projectile/pistol)
+
+obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/svt
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/ammo_magazine/mosinbox(hold)
+		new/obj/item/ammo_magazine/svt(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+		new/obj/item/weapon/compass(hold)
+		new/obj/item/weapon/attachment/bayonet(hold)
+
+obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/ammo_magazine/c762x25_ppsh(hold)
+		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(hold)
+		new/obj/item/weapon/grenade/ww2/rgd33(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+		new/obj/item/weapon/compass(hold)
+		new/obj/item/weapon/attachment/bayonet(hold)
+
 /obj/item/clothing/accessory/storage/webbing/russian
 	name = "russian webbing"
 	desc = "4 green poly pouches."
@@ -1472,6 +1614,33 @@ obj/item/clothing/head/ww2/cra_cap
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/russian/guns
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/pkm
+	New()
+		..()
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/ammo_magazine/pkm/c100(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/rpk
+	New()
+		..()
+		new /obj/item/ammo_magazine/rpk74/drum(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/ammo_magazine/rpk74(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/rpd
+	New()
+		..()
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/ammo_magazine/rpd(hold)
+		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
 	icon_state = "german_vest"
@@ -1490,12 +1659,34 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98(hold)
 
-/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault
 	New()
 		..()
 		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/weapon/grenade/modern/stg1915(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke
+	New()
+		..()
 		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34
+	New()
+		..()
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/ammo_magazine/mg34(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
+	New()
+		..()
 		new/obj/item/ammo_magazine/gewehr98box(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser
 	New()
 		..()
@@ -1512,6 +1703,15 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/mp40(hold)
 		new/obj/item/ammo_magazine/mp40(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault
+	New()
+		..()
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/ammo_magazine/mp40(hold)
+		new/obj/item/weapon/grenade/ww2/stg1924(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43
 	New()
 		..()
@@ -1519,6 +1719,16 @@ obj/item/clothing/head/ww2/cra_cap
 		new/obj/item/ammo_magazine/g43(hold)
 		new/obj/item/ammo_magazine/g43(hold)
 		new/obj/item/ammo_magazine/g43(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg
+	New()
+		..()
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/ammo_magazine/stg(hold)
+		new/obj/item/weapon/grenade/modern/stg1915(hold)
+		new/obj/item/weapon/grenade/antitank/stg24_bundle(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"
@@ -1750,6 +1960,35 @@ obj/item/clothing/head/ww2/cra_cap
 	new/obj/item/ammo_magazine/browning(src)
 	new/obj/item/ammo_magazine/browning(src)
 
+/obj/item/weapon/storage/ammo_can/ak74
+/obj/item/weapon/storage/ammo_can/ak74/New()
+	..()
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+	new/obj/item/ammo_magazine/ak74(src)
+
+/obj/item/weapon/storage/ammo_can/stanag
+/obj/item/weapon/storage/ammo_can/stanag/New()
+	..()
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16(src)
+	new/obj/item/ammo_magazine/m16/box(src)
+	new/obj/item/ammo_magazine/m16/box(src)
+
+/obj/item/weapon/storage/ammo_can/dp
+/obj/item/weapon/storage/ammo_can/dp/New()
+	..()
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
 	desc = "A soviet uniform, used by infantry in the Red Army."
@@ -1844,6 +2083,13 @@ obj/item/clothing/head/ww2/cra_cap
 	item_state = "amoeba"
 	worn_state = "amoeba"
 
+/obj/item/clothing/under/ww2/soviet_amoeba/winter
+	name = "soviet winter amoeba outfit"
+	desc = "A soviet camouflage outfit, concieved for reconnaissance units."
+	icon_state = "amoebaw"
+	item_state = "amoebaw"
+	worn_state = "amoebaw"
+
 /obj/item/clothing/shoes/jackboots/soviet
 	name = "soviet sapogi boots"
 	desc = "Jackboots of soviet origin. Also known as 'Yuftevyje sapogi'."
@@ -1926,6 +2172,20 @@ obj/item/clothing/head/ww2/cra_cap
 		hold.storage_slots = slots
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/us_ww2/garand
+	New()
+		..()
+		new /obj/item/stack/medical/bruise_pack/gauze(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
+		new /obj/item/ammo_magazine/garand(hold)
 ////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/under/ww2/finnish
 	name = "finnish uniform"
@@ -2293,6 +2553,10 @@ obj/item/clothing/head/ww2/cra_cap
 		worn_state = "sovhelm_winter"
 		item_state_slots["sovhelm_winter"] = "sovhelm_winter"
 
+/obj/item/clothing/head/helmet/ww2/soviet/winter
+	icon_state = "sovhelm_winter"
+	item_state = "sovhelm_winter"
+	worn_state = "sovhelm_winter"
 
 /obj/item/clothing/head/helmet/ww2/usm1
 	name = "M1 Helmet"
@@ -2806,7 +3070,6 @@ obj/item/clothing/head/ww2/cra_cap
 	heat_protection = LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 
 
-
 /obj/item/weapon/storage/belt/gulagguard/filled/New()
 	..()
 	new /obj/item/weapon/material/classic_baton(src)
@@ -2816,8 +3079,19 @@ obj/item/clothing/head/ww2/cra_cap
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/pen/pencil(src)
 	new /obj/item/weapon/clipboard/full(src)
-	new /obj/item/weapon/pen(src)
+
+/obj/item/weapon/storage/belt/gulagguard/filledwar/New()
+	..()
+	new /obj/item/weapon/material/classic_baton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
 
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
 	icon_state = "gerbelt"

@@ -55,6 +55,16 @@
 	icon_state = "moderngasmask"
 	item_state = "moderngasmask"
 
+/obj/item/clothing/mask/gas/halfmask
+	blocks_scope = FALSE
+	name = "Half mask"
+	restricts_view = 1
+	icon_state = "halfmask"
+	item_state = "halfmask"
+	flags_inv = FALSE
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 15, bomb = 5, bio = 100, rad = 70)
+	body_parts_covered = FACE
+
 /obj/item/clothing/mask/gas/japanese
 	icon_state = "t99"
 	item_state = "t99"

@@ -786,17 +786,52 @@
 	throw_range = 6
 	heavy_armor_penetration = 18
 
+/obj/item/weapon/grenade/antitank/n73
+	name = "N73 AT grenade"
+	desc = "A British anti-tank hand percussion grenade used during WW2. Also known as \"Thermos\". "
+	icon_state = "n73"
+	heavy_armor_penetration = 20
+
+/obj/item/weapon/grenade/antitank/n74
+	name = "N74 AT grenade"
+	desc = "A British anti-tank hand grenade used during WW2. Also known as the \"Sticky Bomb\"."
+	icon_state = "n74"
+	heavy_armor_penetration = 18
+
+/obj/item/weapon/grenade/antitank/n75
+	name = "n75 AT grenade"
+	desc = "A British anti-tank hand grenade used during WW2. Also known as the \"Hawkins grenade\". Can also be used as an AT-mine."
+	icon_state = "n75"
+	heavy_armor_penetration = 22
+	throw_range = 7
+	secondary_action = TRUE
+
+/obj/item/weapon/grenade/antitank/n75/secondary_attack_self(mob/living/human/user)
+	if (secondary_action)
+		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
+		if (inp == "Yes")
+			user << "Placing the mine..."
+			if (do_after(user, 60, src))
+				if (src)
+					user << "You successfully place the mine here using \the [src]."
+					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
+					BT.origin = src.type
+					firer = user
+					qdel(src)
+		else
+			return
+
 /obj/item/weapon/grenade/antitank/type99
 	name = "Type 99 AT mine"
 	icon_state = "type99"
-	desc = "A japanese anti-tank mine that can also be used as a grenade"
+	desc = "A japanese anti-tank mine that can also be used as a grenade."
 	det_time = 50
 	throw_range = 8
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you wan't to place a mine here?", "Mining", "No", list("Yes","No"))
+		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
 			user << "Placing the mine..."
 			if (do_after(user, 60, src))

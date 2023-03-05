@@ -12,7 +12,7 @@ Parts of code courtesy of Super3222
 	var/zoomed = FALSE
 	var/datum/action/toggle_scope/azoom
 	attachment_type = ATTACH_SCOPE
-	slot_flags = SLOT_POCKET|SLOT_BELT
+	slot_flags = SLOT_POCKET|SLOT_BELT|SLOT_ID
 	value = 15
 
 /obj/item/weapon/attachment/scope/Destroy()
