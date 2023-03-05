@@ -29,7 +29,7 @@
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
 			NB.mood -= 10
-			NB.ptsd += 1
+			//NB.ptsd += 1
 
 proc/delayed_decay(var/mob/living/L,var/timer=3000)
 	spawn(timer)
