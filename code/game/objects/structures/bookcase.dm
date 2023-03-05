@@ -82,7 +82,7 @@
 	var/check2 = tech2 + sum2
 	var/check3 = tech3 + sum3
 	var/sum = check1+check2+check3
-	var/msg = "This holds too much information, you feel tired and cant figure it out. Maybe you should try small bits."
+	var/msg = "This holds too much information, you feel tired and can't figure it out. Maybe you should try small bits."
 	if (map.age1_done == FALSE)
 		if (world.time < 36000 && sum >= 57)
 			user << msg
