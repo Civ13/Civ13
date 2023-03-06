@@ -159,19 +159,25 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	else if (randshoe2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-//coat
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
+//coat
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26medic(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm_medic(H), slot_head)
-//medicalshit
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+//belt
+	if (prob(55))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/early(H), slot_belt)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	else if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 //gloves
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
@@ -180,7 +186,6 @@
 	uniform.attackby(wze, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a well trained medic,heal your comrades and make sure everyone is in a good state, Follow your <b>Squad Leader's</b> orders!")
-
 	give_random_name(H)
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
@@ -189,7 +194,7 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_HIGH)
 	return TRUE
 
 /datum/job/polish/warsaw/armedmilita
@@ -437,6 +442,8 @@
 //belt
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt(H), slot_belt)
+	else if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/early(H), slot_belt)
 //backpack
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel(H), slot_back)
