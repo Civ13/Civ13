@@ -186,10 +186,11 @@
 				MAP_WAKE_ISLAND = 14,
 				MAP_NANJING = 14,
 				MAP_OMAHA = 20,
-//				MAP_IWO_JIMA = 40,
+//				MAP_SIEGEMOSCOW = 20,
 				MAP_FOREST = 20,
 //				MAP_KARELIA = 14,
 				MAP_BERLIN = 20,
+//				MAP_IWO_JIMA = 40,
 			)
 
 		else if (epoch == "Early Fire Arms (1650-1930)")
@@ -205,7 +206,7 @@
 				MAP_LITTLE_CREEK_TDM = 0,
 				MAP_MISSIONARY_RIDGE = 10,
 				MAP_NAVAL = 0,
-		//		MAP_SKULLISLAND = 0,
+//				MAP_SKULLISLAND = 0,
 				MAP_SUPPLY_RAID = 0,
 				MAP_BRIDGE = 0,
 				MAP_RECIFE = 10,
@@ -219,7 +220,7 @@
 				MAP_TRIBES = 0,
 			)
 		else if (epoch == "Chad Mode")
-	// chad mode group for TDM
+	//	Chad Mode - TDM
 			maps = list(
 				MAP_JUNGLE_OF_THE_CHADS = 0,
 			)
@@ -228,7 +229,6 @@
 			maps = list(
 				MAP_KARAK = 0,
 				MAP_CAMP = 0,
-				MAP_SAMMIRHAYEED = 10,
 				MAP_OASIS = 0,
 				MAP_HERACLEA = 0,
 				MAP_CLASH = 0,
@@ -236,10 +236,11 @@
 				MAP_GLADIATORS = 0,
 				MAP_TEUTOBURG = 8,
 				MAP_HERACLEA = 8,
+				MAP_SAMMIRHAYEED = 10,
 			)
 		else if (epoch == "HRP TDM (Gulag, Occupation, AOTD, etc)")
 			maps = list(
-//				MAP_FOOTBALL = 8,
+				MAP_FOOTBALL = 8,
 				MAP_GULAG13 = 6,
 //				MAP_ABASHIRI = 6,
 //				MAP_RIVER_KWAI = 0,
@@ -328,11 +329,11 @@
 			. = TRUE
 	return .
 
-/process/mapswap/proc/swap(var/winner = "Naval")
+/process/mapswap/proc/swap(var/winner = "Karak")
 	next_map_title = winner
 	winner = uppertext(winner)
 	if (!maps.Find(winner))
-		winner = maps[1]
+		winner = maps[0]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
 	if (!done)
 		processes.python.execute("mapswap.py", list(winner))
