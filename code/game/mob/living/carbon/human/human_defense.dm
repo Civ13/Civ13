@@ -220,7 +220,7 @@ bullet_act
 		gib()
 		spawn (0.01)
 			qdel(P)
-	if (def_zone == "chest" && prob(30))
+	if ((def_zone == "chest" || def_zone == "groin") && prob(20))
 		if (back && istype(back, /obj/item/weapon/reagent_containers/glass/flamethrower))
 			var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = back
 			if (FM.reagents.get_reagent_amount("gasoline")>10)
