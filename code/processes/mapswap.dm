@@ -329,11 +329,11 @@
 			. = TRUE
 	return .
 
-/process/mapswap/proc/swap(var/winner = "Naval")
+/process/mapswap/proc/swap(var/winner = "Karak")
 	next_map_title = winner
 	winner = uppertext(winner)
 	if (!maps.Find(winner))
-		winner = maps[1]
+		winner = maps[0]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
 	if (!done)
 		processes.python.execute("mapswap.py", list(winner))
