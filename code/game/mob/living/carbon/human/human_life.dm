@@ -1535,6 +1535,8 @@
 						holder2.icon_state = "sov_basic"
 					else
 						holder2.icon_state = "roc_basic"
+				if (POLISH)
+					holder2.icon_state = "pol_basic"
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
