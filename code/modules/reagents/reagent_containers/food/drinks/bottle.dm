@@ -20,10 +20,16 @@
 
 	w_class = 3
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/New(mob/user)
+/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/New()
 	..()
-	var/obj/item/weapon/reagent_containers/glass/rag/ragg = new /obj/item/weapon/reagent_containers/glass/rag(null)
-	rag = ragg
+	icon_state_full = icon_state
+	if (findtext(icon_state, "bottle") || findtext(icon_state, "canteen"))
+		icon_state_empty = icon_state
+	else
+		icon_state_empty = "[icon_state]_empty"
+	reagents.add_reagent("vodka", 100)
+	var/obj/item/weapon/reagent_containers/glass/rag/R = new /obj/item/weapon/reagent_containers/glass/rag(null)
+	rag = R
 	rag.forceMove(src)
 	flags &= ~OPENCONTAINER
 	update_icon()

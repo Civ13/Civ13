@@ -1018,7 +1018,7 @@
 	description = "An alcoholic beverage made from malted barley, hops, yeast, and water."
 	taste_description = "beer"
 	color = "#E68500E6"
-	strength = 70
+	strength = 50
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/wheatbeer
@@ -1027,7 +1027,7 @@
 	description = "An alcoholic beverage made from malted wheat, hops, yeast, and water."
 	taste_description = "wheat beer"
 	color = "#E68500E6"
-	strength = 70
+	strength = 50
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/bluecuracao
@@ -1037,7 +1037,7 @@
 	taste_description = "oranges"
 	taste_mult = 1.1
 	color = "#0000CD"
-	strength = 40
+	strength = 30
 
 /datum/reagent/ethanol/cognac
 	name = "Cognac"
@@ -1046,7 +1046,7 @@
 	taste_description = "rich and smooth alcohol"
 	taste_mult = 1.1
 	color = "#AB3C05"
-	strength = 30
+	strength = 80
 
 /datum/reagent/ethanol/deadrum
 	name = "Deadrum"
@@ -1054,7 +1054,7 @@
 	description = "Popular with the sailors. Not very popular with everyone else."
 	taste_description = "salty sea water"
 	color = "#664300"
-	strength = 40
+	strength = 80
 
 /datum/reagent/ethanol/deadrum/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
@@ -1066,7 +1066,7 @@
 	description = "It's gin. I say, good sir."
 	taste_description = "grain alcohol and a hint of a christmas tree"
 	color = "#ffffff80"
-	strength = 20
+	strength = 60
 
 //Base type for alchoholic drinks containing coffee
 /datum/reagent/ethanol/coffee
@@ -1090,7 +1090,7 @@
 	taste_description = "richness, bitterness and a hint of creaminess"
 	taste_mult = 1.1
 	color = "#562E00D9"
-	strength = 15
+	strength = 30
 
 /datum/reagent/ethanol/watermelonliquor
 	name = "Watermelon Liquor"
@@ -1107,7 +1107,7 @@
 	taste_description = "smooth alcohol, richness and sweetness"
 	taste_mult = 1.1
 	color = "#E832008C"
-	strength = 30
+	strength = 70
 
 /datum/reagent/ethanol/sake
 	name = "Sake"
@@ -1157,7 +1157,7 @@
 	description = "Number one drink AND fueling choice for Russians worldwide."
 	taste_description = "grain alcohol"
 	color = "#ffffff80" // rgb: FALSE, 100, 200
-	strength = 25
+	strength = 90
 
 /datum/reagent/ethanol/whiskey
 	name = "Whiskey"
@@ -1165,7 +1165,7 @@
 	description = "A superb and well-aged single-malt whiskey. Damn."
 	taste_description = "richness, molasses and a hint of smoke"
 	color = "#AB3C05D9"
-	strength = 25
+	strength = 70
 
 /datum/reagent/ethanol/wine
 	name = "Wine"
