@@ -210,7 +210,10 @@
 		return "Vietnamese"
 
 	if (constant == POLISH)
-		return "Polish"
+		if (map.ID == "WARSAW")
+			return "Polish Home Army"
+		else
+			return "Polish"
 
 	if (constant == CHINESE)
 		if (map.ID == "LONG_MARCH")

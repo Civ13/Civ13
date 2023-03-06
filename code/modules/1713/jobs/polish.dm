@@ -10,14 +10,13 @@
 /datum/job/polish/warsaw/lead
 	title = "Dowódca Armii Krajowej"
 	en_meaning = "Polish Home Army Commander"
-	rank_abbreviation = "Mjr."
+	rank_abbreviation = "Maj."
 
 	can_be_female = TRUE
 	is_warpol = TRUE
 	whitelisted = TRUE
-	is_officer = TRUE
 	is_commander = TRUE
-	additional_languages = list("English" = 52, "German" = 75, "Ukrainian" = 30)
+	additional_languages = list("English" = 50, "German" = 75, "Russian" = 50, "Ukrainian" = 50)
 	spawn_location = "JoinLatePol"
 	min_positions = 1
 	max_positions = 2
@@ -71,16 +70,16 @@
 	return TRUE
 
 /datum/job/polish/warsaw/sl
-	title = "Dowódca drużyny polskiej Armii Krajowej"
-	en_meaning = "Polish home Army Squad Leader"
-	rank_abbreviation = "Szer."
+	title = "Dowódca Drużyny Polskiej Armii Krajowej"
+	en_meaning = "Polish Home Army Squad Leader"
+	rank_abbreviation = "Srj."
 
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	can_be_female = TRUE
 	whitelisted = TRUE
 	is_warpol = TRUE
-	additional_languages = list("English" = 12, "German" = 45, "Ukrainian" = 10)
+	additional_languages = list("Russian" = 20, "German" = 45, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 2
 	max_positions = 4
@@ -132,7 +131,7 @@
 
 /datum/job/polish/warsaw/medic
 	title = "Medyk Armii Krajowej"
-	en_meaning = "Home army medic"
+	en_meaning = "Polish Home Army Medic"
 	rank_abbreviation = ""
 
 	uses_squads = TRUE
@@ -141,7 +140,7 @@
 	is_warpol = TRUE
 	is_medic = TRUE
 
-	additional_languages = list("English" = 5, "German" = 25, "Ukrainian" = 20)
+	additional_languages = list("Russian" = 20, "German" = 25, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 2
 	max_positions = 6
@@ -194,14 +193,14 @@
 	return TRUE
 
 /datum/job/polish/warsaw/armedmilita
-	title = "Uzbrojona milicja"
-	en_meaning = "Home army armed milita"
+	title = "Uzbrojona Milicja"
+	en_meaning = "Polish Home Army Armed Militia"
 	rank_abbreviation = ""
 
 	uses_squads = TRUE
 	can_be_female = TRUE
 	is_warpol = TRUE
-	additional_languages = list("English" = 5, "German" = 25, "Ukrainian" = 20)
+	additional_languages = list("Russian" = 5, "German" = 25, "Ukrainian" = 20)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
 	max_positions = 45
@@ -318,7 +317,7 @@
 	uses_squads = TRUE
 	is_warpol = TRUE
 	can_be_female = TRUE
-	additional_languages = list("English" = 15, "German" = 15, "Ukrainian" = 10)
+	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 10)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
 	max_positions = 90
@@ -398,14 +397,14 @@
 
 /datum/job/polish/warsaw/greyrank
 	title = "Szare Szeregi"
-	en_meaning = "Grey rank"
+	en_meaning = "Grey Rank"
 	rank_abbreviation = ""
 
 	uses_squads = TRUE
 	can_be_female = TRUE
 	is_warpol = TRUE
 	can_be_minor = TRUE
-	additional_languages = list("English" = 15, "German" = 15, "Ukrainian" = 15)
+	additional_languages = list("Russian" = 15, "German" = 15, "Ukrainian" = 15)
 	spawn_location = "JoinLatePol"
 	min_positions = 10
 	max_positions = 20
@@ -453,7 +452,7 @@
 	uniform.attackby(carf, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a polish teenager scout. you volunteered to fight for poland, Follow your <b>Squad Leader's</b> orders!")
-	H.add_note("Age", "- Due to your age you are overally less skilled, use static weaponry,help with logistics, distract enemies.")
+	H.add_note("Age", "Due to your young age you are overall less skilled than the regular soldier. Instead of directly fighting, you should assist with static weaponry, help out with logistics and distract enemies.")
 	give_random_name(H)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -465,10 +464,10 @@
 	H.setStat("medical", STAT_LOW)
 	return TRUE
 
-/////////////////////////////////////////////red army warsaw reinforcements////////////////////////////////////
+/////////////////////////////////////////////Red army warsaw reinforcements////////////////////////////////////
 
 /datum/job/polish/warsaw/redarmypolsl
-	title = "polski sierżant Armii Czerwonej"
+	title = "Polski Sierżant Armii Czerwonej"
 	en_meaning = "Polish Red Army Sergeant"
 	rank_abbreviation = "Srj."
 
@@ -479,7 +478,7 @@
 	is_squad_leader = TRUE
 
 	can_be_female = TRUE
-	additional_languages = list("English" = 5, "German" = 15, "Russian" = 100)
+	additional_languages = list("Ukrainian" = 10, "German" = 15, "Russian" = 100)
 
 	min_positions = 1
 	max_positions = 2
@@ -526,8 +525,8 @@
 	return TRUE
 
 /datum/job/polish/warsaw/redarmypol
-	title = "polski żołnierz Armii Czerwonej"
-	en_meaning = "Polish Red Army Solider"
+	title = "Polski Żołnierz Armii Czerwonej"
+	en_meaning = "Polish Red Army Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLatePol"
@@ -535,7 +534,7 @@
 	whitelisted = TRUE
 	is_warpol = TRUE
 	can_be_female = TRUE
-	additional_languages = list("English" = 5, "German" = 15, "Russian" = 100)
+	additional_languages = list("Ukrainian" = 5, "German" = 15, "Russian" = 100)
 
 	min_positions = 10
 	max_positions = 10
