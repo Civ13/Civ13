@@ -740,6 +740,7 @@ var/civmax_research = list(230,230,230)
 		RUSSIAN = 0,
 		CHECHEN = 0,
 		FINNISH = 0,
+		POLISH = 0,
 		NORWEGIAN = 0,
 		SWEDISH = 0,
 		DANISH = 0,
@@ -873,6 +874,8 @@ var/civmax_research = list(230,230,230)
 			return "Chinese"
 		if (FILIPINO)
 			return "Filipino"
+		if (POLISH)
+			return "Polish"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)

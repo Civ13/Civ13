@@ -1119,6 +1119,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_chinese.len] Chinese "
 	if (FILIPINO in map.faction_organization)
 		dat += "[alive_filipino.len] Filipino "
+	if (POLISH in map.faction_organization)
+		dat += "[alive_swedish.len] Poles "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1148,6 +1150,7 @@ var/global/redirect_all_players = null
 		AMERICAN = FALSE,
 		VIETNAMESE = FALSE,
 		CHINESE = FALSE,
+		POLISH = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -1234,7 +1237,11 @@ var/global/redirect_all_players = null
 
 		if (istype(job, /datum/job/vietnamese) && !vietnamese_toggled)
 			job_is_available = FALSE
+
 		if (istype(job, /datum/job/chinese) && !chinese_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/polish) && !polish_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 
