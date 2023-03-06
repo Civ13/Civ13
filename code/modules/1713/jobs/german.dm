@@ -1732,7 +1732,7 @@
 
 /datum/job/german/ss_abbruchspezialist
 	title = "Waffen-SS Abbruchspezialist"
-	en_meaning = "Waffen SS demolition specialist"
+	en_meaning = "Demolitions Specialist"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
