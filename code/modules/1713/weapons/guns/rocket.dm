@@ -122,6 +122,11 @@
 	force = 10
 	load_delay = 45
 
+/obj/item/weapon/gun/launcher/rocket/rpg7/loaded/New()
+	..()
+	rockets += new /obj/item/ammo_casing/rocket/pg7v(src)
+	update_icon()
+
 /obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
 	..()
 	if(rockets.len)
