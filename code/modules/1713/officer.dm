@@ -41,7 +41,7 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/proc/find_nco()
 	set category = "Officer"
 	set name = "Find Squad Leader"
-	set desc="Check where your squad leader is."
+	set desc = "Check where your squad leader is."
 
 	if(!original_job.uses_squads || squad < 1)
 		return
@@ -70,7 +70,7 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/proc/Squad_Announcement()
 	set category = "Officer"
 	set name = "Squad Announcement"
-	set desc="Announce to everyone in your squad."
+	set desc = "Announce to everyone in your squad."
 	if (stat != DEAD)
 		var/messaget = "Squad Leader Message"
 		var/message = input("Global message to send:", "IC Announcement", null, null)
@@ -89,7 +89,7 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"
-	set desc="Announce to everyone in your faction."
+	set desc = "Announce to everyone in your faction."
 	if (stat != DEAD)
 		var/messaget = "Announcement"
 		var/message = input("Global message to send:", "IC Announcement", null, null)
@@ -407,7 +407,7 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/proc/find_hvt()
 	set category = "Officer"
 	set name = "Locate HVT"
-	set desc="Check where the HVT is."
+	set desc = "Check where the HVT is."
 
 	var/count = 0
 	for (var/mob/living/human/H in player_list)

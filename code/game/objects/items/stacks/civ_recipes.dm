@@ -111,8 +111,8 @@
 
 datum/admins/proc/print_crafting_recipes()
 	set category = "Debug"
-	set desc="Print all the ingame crafting recipes into a text file."
-	set name="Print Crafting Recipes"
+	set desc = "Print all the ingame crafting recipes into a text file."
+	set name = "Print Crafting Recipes"
 	var/recipe_list = file("recipes.txt")
 	if (fexists(recipe_list))
 		fdel(recipe_list)

@@ -130,7 +130,7 @@
 	weight = 3.85
 	load_delay = 8
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -156,8 +156,8 @@
 	weight = 3.85
 	load_delay = 8
 	firemodes = list(
-		list(name="single shot",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
-		list(name="full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
+		list(name = "single shot",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
+		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -204,7 +204,7 @@
 	good_mags = list(/obj/item/ammo_magazine/sks)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=4)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -243,7 +243,7 @@
 	good_mags = list(/obj/item/ammo_magazine/svd)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=8)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=8)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -287,7 +287,7 @@
 	good_mags = list(/obj/item/ammo_magazine/gewehr98)
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 	force = 10
 	throwforce = 20
@@ -312,7 +312,7 @@
 	good_mags = list(/obj/item/ammo_magazine/g43, /obj/item/ammo_magazine/gewehr98)
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 	force = 10
 	throwforce = 20
@@ -338,7 +338,7 @@
 	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=4)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=4)
 		)
 	force = 10
 	throwforce = 20
@@ -372,7 +372,7 @@
 	good_mags = list(/obj/item/ammo_magazine/ar15)
 	weight = 4.9
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 	force = 10
 	throwforce = 20
@@ -396,7 +396,7 @@
 	good_mags = list(/obj/item/ammo_magazine/vintorez)
 	weight = 1.90
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 		)
 	gun_type = GUN_TYPE_RIFLE
 	effectiveness_mod = 1.09

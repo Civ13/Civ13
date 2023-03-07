@@ -42,7 +42,7 @@
 					if (!done)
 						var/statlist = "1,1,1,1,1,1,1,1,1,1"
 						for(var/mob/living/human/GLAD1 in world)
-							if (GLAD1.original_job_title == "Gladiator" && GLAD1.stat != DEAD && GLAD1.client && GLAD1.name==splitdata[1] && GLAD1.client.ckey==splitdata[2])
+							if (GLAD1.original_job_title == "Gladiator" && GLAD1.stat != DEAD && GLAD1.client && GLAD1.name ==splitdata[1] && GLAD1.client.ckey==splitdata[2])
 								statlist = "[GLAD1.stats["strength"][1]],[GLAD1.stats["crafting"][1]],[GLAD1.stats["rifle"][1]],[GLAD1.stats["dexterity"][1]],[GLAD1.stats["swords"][1]],[GLAD1.stats["pistol"][1]],[GLAD1.stats["bows"][1]],[GLAD1.stats["medical"][1]],[GLAD1.stats["philosophy"][1]],[GLAD1.stats["machinegun"][1]],[GLAD1.stats["stamina"][1]]"
 						GD.gladiator_stats += list(list(splitdata[2],splitdata[1],statlist,0,1,1))
 					timer = world.time + 600

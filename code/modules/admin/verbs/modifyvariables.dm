@@ -10,7 +10,7 @@ var/list/VVckey_edit = list("key", "ckey")
 /client/proc/cmd_modify_object_variables(obj/O as obj|mob|turf|area in world)   // Acceptable 'in world', as VV would be incredibly hampered otherwise
 	set category = "Debug"
 	set name = "Edit Variables"
-	set desc="(target) Edit a target item's variables"
+	set desc = "(target) Edit a target item's variables"
 	modify_variables(O)
 
 */

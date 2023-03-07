@@ -68,7 +68,7 @@
 	full_auto = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 0),)
 
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -235,7 +235,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 10.5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
@@ -257,7 +257,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 10
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
@@ -291,7 +291,7 @@
 	good_mags = list(/obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm)
 	weight = 7.5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
@@ -311,7 +311,7 @@
 	good_mags = list(/obj/item/ammo_magazine/rpd)
 	weight = 5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
@@ -331,7 +331,7 @@
 	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74)
 	weight = 5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
@@ -369,7 +369,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 8
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
