@@ -104,7 +104,7 @@
 
 /obj/item/ammo_magazine/fg42/small
 	name = "FG 42 small magazine (7.92x57mm)"
-	icon_state = "fg42"
+	icon_state = "fg42_small"
 	max_ammo = 100
 	weight = 0.2
 
