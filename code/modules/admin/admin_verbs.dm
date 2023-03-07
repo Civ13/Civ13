@@ -896,7 +896,7 @@ var/global/list/global_colour_matrix = null
 	return
 
 /client/proc/radiation_emission()
-	set category = "Special"
+	set category = "Fun"
 	set name = "Radiation Emission"
 	set desc = "Emits radiation for a set duration."
 	if (!check_rights(R_SPAWN))
@@ -919,7 +919,7 @@ var/global/list/global_colour_matrix = null
 	log_game("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
 
 /client/proc/nuke()
-	set category = "Special"
+	set category = "Fun"
 	set name = "Nuke the Map"
 	set desc = "Spawns a large explosion and turns the whole map into a wasteland."
 	if (!check_rights(R_SPAWN))

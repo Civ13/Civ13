@@ -53,7 +53,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		return "asks"
 	return verb
 
-/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE, var/howl = FALSE, var/original_message = "")
+/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name = "", var/alt_message=null, var/animal = FALSE, var/howl = FALSE, var/original_message = "")
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
 			src << "<span class = 'red'>You cannot speak in IC (Muted).</span>"
