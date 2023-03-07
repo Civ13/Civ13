@@ -257,11 +257,11 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=0.2, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "full auto",	burst=1, burst_delay=0.27, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "semi auto",	burst=1, burst_delay=0.3, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name = "full auto",	burst=1, burst_delay=0.4, recoil=0, move_delay=3, dispersion = list(0.8, 1.3, 1.3, 1.4, 1.6)),
 		)
 	sel_mode = 1
-	effectiveness_mod = 1.05
+	effectiveness_mod = 0.95
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE
 
 /obj/item/weapon/gun/projectile/submachinegun/fg42/scope/New()
