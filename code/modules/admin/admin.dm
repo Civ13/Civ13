@@ -1213,7 +1213,7 @@ client/proc/debug_variables_map()
 	set desc = "Display some of the global vars."
 	set name = "Display Worldvars"
 
-	src << "World Variables:"
+	src << "<b>World Variables:</b>"
 	src << "Radiation: [get_global_radiation()]"
 	src << "Pollution: [get_global_pollution()]"
 	src << "Chickens: [chicken_count.len]"
@@ -1226,25 +1226,26 @@ client/proc/debug_variables_map()
 	src << "Wolves: [wolf_count.len]"
 	src << "Bears: [bear_count.len]"
 
-/datum/admins/proc/set_global_radiation()
+
+/datum/admins/proc/set_radiation()
 	set category = "Fun"
 	set desc = "Set the radiation level of the world."
 	set name = "Set World Radiation"
 
 	var/num = input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", 0) as num
-	if (!isnum(num) || num<0)
+	if (!isnum(num) || num < 0)
 		return
 	else
 		set_global_radiation(num)
 		world.log << "[usr] set the worlds radiation to [num]."
 
-/datum/admins/proc/set_global_pollution()
+/datum/admins/proc/set_pollution()
 	set category = "Fun"
 	set desc = "Set the pollution level of the world."
 	set name = "Set World Pollution"
 
 	var/num = input(usr, "Enter what you want the world's pollution to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Pollution", 0) as num
-	if (!isnum(num) || num<0)
+	if (!isnum(num) || num < 0)
 		return
 	else
 		set_global_pollution(num)
