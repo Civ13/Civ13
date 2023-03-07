@@ -590,7 +590,7 @@
 /mob/living/human/proc/undercover()
 	set category = "IC"
 	set name = "Toggle Undercover"
-	set desc= "Hide your identity for undercover police operations."
+	set desc = "Hide your identity for undercover police operations."
 
 	var/jobtype = "none"
 	if (findtext(name, "Deputy") || findtext(name, "Detective"))

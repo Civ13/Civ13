@@ -158,7 +158,7 @@
 /obj/item/weapon/storage/backpack/paratrooper
 	name = "Parachute"
 	desc = "A backpack with a built in parachute."
-	icon_state = "parachute0"
+	icon_state = "parachute"
 	item_state = "parachute"
 	worn_state = "parachute"
 	base_icon = "parachute"

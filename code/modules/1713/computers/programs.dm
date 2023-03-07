@@ -1918,7 +1918,7 @@
 	var/faction2_loadout_points = 1400
 
 	var/list/dutch_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
-	var/list/rus_choice = list("T-90A (1000)","BMD-2 Infantry Fighting Vehicle (600)", "KamAZ-4350 Truck (300)")
+	var/list/rus_choice = list("T-90A Tank (1000)","BMD-2 Infantry Fighting Vehicle (600)", "KamAZ-4350 Truck (300)")
 	var/list/british_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
 
 /datum/program/carspawn/do_html(mob/living/human/user)
@@ -2070,6 +2070,11 @@
 						sleep(0.5)
 						do_html(user)
 						return
+				else
+					mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
+					sleep(0.5)
+					do_html(user)
+					return
 			if ("BRITISH")
 				if (faction1_loadout_points)
 					if (faction1_loadout_points >= cost)
@@ -2085,10 +2090,7 @@
 					do_html(user)
 					return
 			else
-				mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
-				sleep(0.5)
-				do_html(user)
-				return
+				user << "<h1>Your faction does not have any points pool, report this to a developer! (Bierkraan#9876)</h1>"
 
 		switch (href_list["vehiclegiver"])
 			if ("2A6 Leopard Tank (1000)")

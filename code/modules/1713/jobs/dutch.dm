@@ -874,8 +874,9 @@
 
 	return TRUE
 
-/datum/job/dutch/modern_emplaced_gunner
-	title = "Emplaced Weapons Specialist"
+/datum/job/dutch/emplaced_weapon_specialist
+	title = "Emplaced Wapen Specialist"
+	en_meaning = "Emplaced Weapons Specialist"
 	rank_abbreviation = "Kpl"
 	spawn_location = "JoinLateRN"
 
@@ -887,7 +888,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/dutch/modern_emplaced_gunner/equip(var/mob/living/human/H)
+/datum/job/dutch/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -923,7 +924,8 @@
 	return TRUE
 
 /datum/job/dutch/weapon_specialist
-	title = "Weapons Specialist"
+	title = "Wapen Specialist"
+	en_meaning = "Weapons Specialist"
 	rank_abbreviation = "Kpl"
 	spawn_location = "JoinLateRN"
 
