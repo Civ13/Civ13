@@ -253,7 +253,7 @@
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
 	magazine_type = /obj/item/ammo_magazine/fg42
-	good_mags = list(/obj/item/ammo_magazine/fg42)
+	good_mags = list(/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
