@@ -458,7 +458,7 @@
 	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/rubber = 10,
 	/obj/item/ammo_magazine/shellbox/beanbag = 10,
-	/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 5,
+	/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 5,
 	/obj/item/ammo_casing/grenade_l/teargas = 20,
 	/obj/item/weapon/grenade/flashbang = 20,
 	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
