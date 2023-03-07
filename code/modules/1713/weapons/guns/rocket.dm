@@ -761,7 +761,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
+	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	release_force = 9
@@ -801,7 +801,7 @@
 	log_game("[key_name_admin(user)] used a grenade launcher ([src.name]) at [target].")
 	..()
 
-/obj/item/weapon/gun/launcher/grenadelauncher/M79
+/obj/item/weapon/gun/launcher/grenadelauncher/m79
 	name = "M79 Grenade Launcher"
 	desc = "American multi-use grenade launcher."
 	icon_state = "m79"
@@ -809,7 +809,7 @@
 	slot_flags = SLOT_SHOULDER
 	force = 10
 
-/obj/item/weapon/gun/launcher/grenadelauncher/M79/proc/unload(mob/user)
+/obj/item/weapon/gun/launcher/grenadelauncher/m79/proc/unload(mob/user)
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
 		rockets.len--
@@ -818,7 +818,7 @@
 	else
 		user << "<span class='warning'>\The [src] is empty.</span>"
 
-/obj/item/weapon/gun/launcher/grenadelauncher/M79/attack_hand(mob/user)
+/obj/item/weapon/gun/launcher/grenadelauncher/m79/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
 		unload(user)
 	else

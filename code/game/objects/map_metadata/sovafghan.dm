@@ -374,7 +374,7 @@
 	products = list(
 		/obj/item/weapon/gun/projectile/submachinegun/m16 = 30,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 10,
-		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 10,
+		/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 10,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 10,
 
@@ -388,7 +388,7 @@
 	prices = list(
 		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
-		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 200,
+		/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 200,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 150,
 
