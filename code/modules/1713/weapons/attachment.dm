@@ -258,15 +258,34 @@ Current Defines (_defines/attachment.dm)
 
 /////////////////OPTICS//////////////////////////////
 
+/obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
+	if (do_after(user, 15, user))
+		G.attachments -= src
+		G.actions -= actions
+		G.verbs -= verbs
+		G.attachment_slots += attachment_type
+		dropped(user)
+		A_attached = FALSE
+		loc = get_turf(src)
+		user << "You remove [src] from the [G]."
+		G.accuracy = initial(G.accuracy)
+		G.recoil = initial(G.recoil)
+	else
+		return
+
 /obj/item/weapon/attachment/scope/iron_sights
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
 
+/obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
+	return
+
 /obj/item/weapon/attachment/scope/iron_sights/mg
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT + 5
+
 /obj/item/weapon/attachment/scope/iron_sights/mg/type99
 	name = "telescopic sights"
 	attachment_type = ATTACH_IRONSIGHTS
@@ -325,25 +344,6 @@ Current Defines (_defines/attachment.dm)
 				W.update_icon()
 		else
 			return
-
-/obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		G.attachments -= src
-		G.actions -= actions
-		G.verbs -= verbs
-		G.attachment_slots += attachment_type
-		dropped(user)
-		A_attached = FALSE
-		loc = get_turf(src)
-		user << "You remove [src] from the [G]."
-		G.accuracy = initial(G.accuracy)
-		G.recoil = initial(G.recoil)
-	else
-		return
-
-/obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
-	return
-
 
 /////////////////ADVANCED OPTICS//////////////////////////////
 
@@ -440,6 +440,12 @@ Current Defines (_defines/attachment.dm)
 	max_zoom = ZOOM_CONSTANT+2
 	acc_modifier = 1.1
 
+/obj/item/weapon/attachment/scope/adjustable/advanced/fg42
+	name = "FG42 sight"
+	icon_state = "fg42"
+	desc = "A 1.5x scope. Increases magnification and reduces some parallax error."
+	max_zoom = ZOOM_CONSTANT+2
+	acc_modifier = 1.1
 
 /////////////////UNDER BARREL//////////////////////////////
 

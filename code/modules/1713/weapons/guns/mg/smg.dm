@@ -243,6 +243,32 @@
 	sel_mode = 1
 	effectiveness_mod = 1.2
 
+/obj/item/weapon/gun/projectile/submachinegun/fg42
+	name = "FG42"
+	desc = "A German automatic rifle that was developed specifically for the use of the Fallschirmjäger airborne infantry, it is chambered in 7.92x57 Mauser."
+	icon_state = "fg42"
+	item_state = "fg42"
+	base_icon = "fg42"
+	weight = 4.2
+	caliber = "a792x57"
+	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
+	magazine_type = /obj/item/ammo_magazine/fg42
+	good_mags = list(/obj/item/ammo_magazine/fg42)
+	full_auto = TRUE
+	equiptimer = 12
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0.2, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name = "full auto",	burst=1, burst_delay=0.27, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+	sel_mode = 1
+	effectiveness_mod = 1.05
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE
+
+/obj/item/weapon/gun/projectile/submachinegun/fg42/scope/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/fg42/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/fg42(src)
+	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/uzi
 	name = "Uzi"
 	desc = "An Israeli submachinegun chambered in 9mm Parabellum."
@@ -260,7 +286,7 @@
 		list(name = "full auto",	burst=1, burst_delay=0.9, recoil=0, move_delay=3, dispersion = list(1.3, 1.4, 1.5, 1.6, 1.7)),
 		)
 	sel_mode = 1
-	effectiveness_mod = 1.1
+	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/submachinegun/mac10
 	name = "MAC-10"
@@ -279,7 +305,7 @@
 		list(name = "full auto",	burst=1, burst_delay=0.5, recoil=0, move_delay=3, dispersion = list(1.5, 1.6, 1.7, 1.8, 1.9)),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.7
+	effectiveness_mod = 0.9
 
 /obj/item/weapon/gun/projectile/submachinegun/tec9
 	name = "TEC-9"
