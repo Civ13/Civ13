@@ -213,7 +213,7 @@
 	effectiveness_mod = 1.05
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
-/obj/item/weapon/gun/projectile/semiautomatic/sks/china
+/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese
 	name = "Type 56 carbine"
 	desc = "Chinese variant of the Soviet semi-automatic rifle chambered in 7.62x39mm."
 	weight = 3.86

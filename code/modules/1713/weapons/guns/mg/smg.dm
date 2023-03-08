@@ -475,7 +475,7 @@
 
 	sel_mode = 1
 
-/obj/item/weapon/gun/projectile/submachinegun/ppsh/china
+/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese
 	name = "Type 50"
 	desc = "Chinese Variant of the Iconic Soviet submachinegun. Chambered in 7.62x25mm Tokarev."
 	weight = 3.61
@@ -610,7 +610,7 @@
 	item_state = "ak47gold"
 	base_icon = "ak47gold"
 
-/obj/item/weapon/gun/projectile/submachinegun/ak47/china
+/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese
 	name = "Type 56 Assault Rifle"
 	desc = "Chinese 7.62x39mm rifle. It is a variant of the Soviet-designed AK-47."
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms

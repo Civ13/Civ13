@@ -1619,13 +1619,13 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
-/obj/item/clothing/accessory/storage/webbing/light/china
+/obj/item/clothing/accessory/storage/webbing/light/chinese
 	name = "Chinese light webbing"
 	slots = 4
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(hold)
-/obj/item/clothing/accessory/storage/webbing/light/china/gewehr98
+/obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98
 	New()
 		..()
 		new/obj/item/ammo_magazine/gewehr98(hold)
@@ -1634,7 +1634,7 @@
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/ammo_magazine/gewehr98(hold)
 
-/obj/item/clothing/accessory/storage/webbing/light/china/ak47
+/obj/item/clothing/accessory/storage/webbing/light/chinese/ak47
 	New()
 		..()
 		new/obj/item/ammo_magazine/ak47(hold)
@@ -1642,7 +1642,7 @@
 		new/obj/item/ammo_magazine/ak47(hold)
 		new/obj/item/ammo_magazine/ak47(hold)
 
-/obj/item/clothing/accessory/storage/webbing/light/china/sks
+/obj/item/clothing/accessory/storage/webbing/light/chinese/sks
 	New()
 		..()
 		new/obj/item/ammo_magazine/sks(hold)
