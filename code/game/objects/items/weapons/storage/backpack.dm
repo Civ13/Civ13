@@ -309,7 +309,8 @@ obj/item/weapon/storage/backpack/ww2/american
 	slot_flags = SLOT_BACK
 	can_hold = list(
 		/obj/item/ammo_casing/rocket/og7v,
-		/obj/item/ammo_casing/rocket/pg7v)
+		/obj/item/ammo_casing/rocket/pg7v,
+		/obj/item/ammo_casing/rocket/atgm)
 	max_w_class = 4
 	max_storage_space = 24
 
