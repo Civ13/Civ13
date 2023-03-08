@@ -79,7 +79,6 @@
 
 
 /obj/map_metadata/siegemoscow/update_win_condition()
-
 	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE
@@ -165,12 +164,30 @@
 /obj/map_metadata/smallsiegemoscow
 	ID = MAP_SMALLSIEGEMOSCOW
 	title = "Central Siege of Moscow"
-	grace_wall_timer = 4800
+	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
-
+	respawn_delay = 1200
+	no_winner ="The Politburo is under Soviet control."
+	no_hardcore = TRUE
+	faction_organization = list(
+		RUSSIAN,
+		GERMAN)
+	roundend_condition_sides = list(
+		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable,
+		list(GERMAN) = /area/caribbean/british,
+		)
+	age = "1942"
+	ordinal_age = 6
 	faction_distribution_coeffs = list(RUSSIAN = 0.5, GERMAN = 0.5)
 	battle_name = "Battle for Moscow"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Russians will win if they hold out for <b>40 minutes</b>. The Germans will win if they manage to reach and hold the Politburo in the Administration building!</font>"
+	faction1 = RUSSIAN
+	faction2 = GERMAN
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
+	songs = list(
+		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
+	gamemode = "Siege"
+	grace_wall_timer = 4800
 
 /obj/map_metadata/smallsiegemoscow/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -224,7 +241,6 @@
 		return ""
 
 /obj/map_metadata/smallsiegemoscow/update_win_condition()
-
 	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE

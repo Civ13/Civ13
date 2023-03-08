@@ -16,7 +16,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dc15)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -73,7 +73,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dc15)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -101,7 +101,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dc15a, /obj/item/ammo_magazine/tibannagas/dc15)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -129,7 +129,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/e5)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -157,7 +157,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/e11, /obj/item/ammo_magazine/tibannagas/dc15a)
 	weight = 3.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -185,7 +185,7 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/a280)
 	weight = 5.85
 	firemodes = list(
-		list(name="single shot",burst=1, move_delay=0, fire_delay=2)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -271,7 +271,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name="full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/update_icon()
@@ -296,7 +296,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -310,7 +310,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name="full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -423,8 +423,8 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/lasgun
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/lasgun)
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
 		)
 	weight = 3.08
 	force = 20

@@ -75,39 +75,6 @@
 	invisibility = 101
 	var/hostile = FALSE
 
-/obj/effect/spawner/mobspawner/skeletons
-	name = "skeleton spawner"
-	create_path = /mob/living/simple_animal/hostile/human/skeleton
-	timer = 400
-
-/obj/effect/spawner/mobspawner/compsognathus
-	name = "compsognathus spawner"
-	create_path = /mob/living/simple_animal/hostile/dinosaur/compsognathus
-	timer = 400
-
-/obj/effect/spawner/mobspawner/dimetrodon
-	name = "dimetrodon spawner"
-	hostile = TRUE
-	max_number = 2
-	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/dinosaur/dimetrodon
-	timer = 1500
-
-/obj/effect/spawner/mobspawner/pachycephalosaurus
-	name = "pachycephalosaurus spawner"
-	hostile = TRUE
-	max_number = 2
-	max_range = 10
-	create_path = /mob/living/simple_animal/hostile/dinosaur/pachycephalosaurus
-	timer = 1500
-
-/obj/effect/spawner/mobspawner/skeletons/off
-	activated = FALSE
-
-/obj/effect/spawner/mobspawner/attacker
-	name = "attacking skeleton spawner"
-	create_path = /mob/living/simple_animal/hostile/human/skeleton/attacker
-
 /obj/effect/spawner/mobspawner/New()
 	..()
 	invisibility = 101
@@ -164,6 +131,39 @@
 
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
+
+/obj/effect/spawner/mobspawner/skeletons
+	name = "skeleton spawner"
+	create_path = /mob/living/simple_animal/hostile/human/skeleton
+	timer = 400
+
+/obj/effect/spawner/mobspawner/compsognathus
+	name = "compsognathus spawner"
+	create_path = /mob/living/simple_animal/hostile/dinosaur/compsognathus
+	timer = 400
+
+/obj/effect/spawner/mobspawner/dimetrodon
+	name = "dimetrodon spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/dinosaur/dimetrodon
+	timer = 1500
+
+/obj/effect/spawner/mobspawner/pachycephalosaurus
+	name = "pachycephalosaurus spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/dinosaur/pachycephalosaurus
+	timer = 1500
+
+/obj/effect/spawner/mobspawner/skeletons/off
+	activated = FALSE
+
+/obj/effect/spawner/mobspawner/attacker
+	name = "attacking skeleton spawner"
+	create_path = /mob/living/simple_animal/hostile/human/skeleton/attacker
 
 /obj/effect/spawner/mobspawner/ww2
 	timer = 300

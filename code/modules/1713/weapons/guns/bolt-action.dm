@@ -335,8 +335,6 @@
 	bolt_safety = FALSE
 	bolt_delay = 3
 
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper
-
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)

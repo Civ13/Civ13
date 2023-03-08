@@ -1049,7 +1049,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 8,
 		/obj/item/weapon/gun/projectile/automatic/pkm = 8,
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 4,
-		/obj/item/weapon/gun/launcher/grenadelauncher/M79 = 4,
+		/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 4,
 		/obj/item/weapon/gun/projectile/pistol/makarov  = 15,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,

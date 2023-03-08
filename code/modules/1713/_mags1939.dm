@@ -92,6 +92,22 @@
 	name = "MP5 magazine (9x19mm)"
 	icon_state = "mp5"
 
+/obj/item/ammo_magazine/fg42
+	name = "FG 42 magazine (7.92x57mm)"
+	icon_state = "fg42"
+	mag_type = MAGAZINE
+	caliber = "a792x57"
+	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 20
+	weight = 0.28
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/fg42/small
+	name = "FG 42 small magazine (7.92x57mm)"
+	icon_state = "fg42_small"
+	max_ammo = 10
+	weight = 0.2
+
 /obj/item/ammo_magazine/mg34
 	name = "MG34 magazine (7.92x57mm)"
 	icon_state = "mg34"

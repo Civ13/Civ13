@@ -1719,6 +1719,15 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/mp40(hold)
 		new/obj/item/weapon/grenade/ww2/stg1924(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/fg42
+	New()
+		..()
+		new/obj/item/ammo_magazine/fg42(hold)
+		new/obj/item/ammo_magazine/fg42(hold)
+		new/obj/item/ammo_magazine/fg42/small(hold)
+		new/obj/item/ammo_magazine/fg42/small(hold)
+		new/obj/item/ammo_magazine/fg42/small(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/g43
 	New()
 		..()

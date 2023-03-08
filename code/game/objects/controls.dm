@@ -37,7 +37,6 @@
 					G.icon_state = "blast0"
 					G.density = TRUE
 					G.opacity = TRUE
-				return
 			else
 				visible_message("[user] opens the blast doors!")
 				G.open = TRUE
@@ -49,7 +48,6 @@
 					G.icon_state = "blast1"
 					G.density = FALSE
 					G.opacity = FALSE
-				return
 
 /obj/structure/gatecontrol/blastcontrol/garage
 	name = "garage shutter control"
@@ -68,7 +66,6 @@
 					G.icon_state = "garage_closed"
 					G.density = TRUE
 					G.opacity = TRUE
-				return
 			else
 				visible_message("[user] opens the shutters!")
 				G.open = TRUE
@@ -79,7 +76,6 @@
 					G.icon_state = "garage_open"
 					G.density = FALSE
 					G.opacity = FALSE
-				return
 
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
@@ -97,7 +93,6 @@
 					spawn(30)
 						G.icon_state = "gate0"
 						G.density = TRUE
-				return
 			else
 				visible_message("[user] opens the gates!")
 				G.open = TRUE
@@ -108,7 +103,6 @@
 					spawn(30)
 						G.icon_state = "gate1"
 						G.density = FALSE
-				return
 
 /obj/structure/gatecontrol/sandstone/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
@@ -122,7 +116,6 @@
 				spawn(30)
 					G.icon_state = "s_gate0"
 					G.density = TRUE
-				return
 			else
 				visible_message("[user] opens the gates!")
 				G.open = TRUE
@@ -132,7 +125,6 @@
 				spawn(30)
 					G.icon_state = "s_gate1"
 					G.density = FALSE
-				return
 
 /obj/structure/gate
 	name = "gate"
@@ -362,7 +354,6 @@
 					spawn(30)
 						G.icon_state = "whiterun2"
 						G.density = TRUE
-				return
 			else
 				visible_message("[user] opens the gates!")
 				G.open = TRUE
@@ -373,7 +364,7 @@
 					spawn(30)
 						G.icon_state = "whiterun2_open"
 						G.density = FALSE
-				return
+
 		for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
 			if (G.open)
 				visible_message("[user] closes the gates!")
@@ -385,7 +376,6 @@
 					spawn(30)
 						G.icon_state = "whiterun1"
 						G.density = TRUE
-				return
 			else
 				visible_message("[user] opens the gates!")
 				G.open = TRUE
@@ -396,8 +386,6 @@
 					spawn(30)
 						G.icon_state = "whiterun1_open"
 						G.density = FALSE
-				return
-
 
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/gate/barrier

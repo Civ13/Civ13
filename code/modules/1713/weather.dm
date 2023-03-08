@@ -1,7 +1,8 @@
 /var/global/weather = WEATHER_NONE
 /var/global/weather_intensity = 1.0
-/var/global/global_pollution = 0.0
+
 /var/global/global_radiation = 0.0
+/var/global/global_pollution = 0.0
 
 /proc/change_global_radiation(amount)
 	global_radiation += amount
