@@ -679,9 +679,20 @@ Shinobi's unfinished welder stuff - siro*/
 	slot_flags = SLOT_BELT
 	time = 3
 	max_offset = 2
+
 /obj/item/weapon/compass/modern/tacmap
 	name = "tactical map"
 	desc = "A tablet programmed specifically to navigate combatants through rough terrain and to let them know where they are."
+	var/image/img
+
+/obj/item/weapon/compass/modern/tacmap/New()
+	..()
+	switch (map.ID)
+		if ("OPERATION_FALCON")
+			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
+
+/obj/item/weapon/compass/modern/tacmap/examine(mob/user)
+	user << browse(getFlatIcon(img),"window=popup;size=630x630")
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick
