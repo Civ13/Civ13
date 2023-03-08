@@ -705,6 +705,30 @@
 	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
+/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized
+	name = "Chinese helmet"
+	desc = "A steel helmet used by the People's Liberation Army."
+	icon_state = "chi_korea_helm"
+	item_state = "chi_korea_helm"
+	worn_state = "chi_korea_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 35, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	health = 100
+
+/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter
+	name = "White Chinese helmet"
+	icon_state = "chi_whitehelm"
+	item_state = "chi_whitehelm"
+	worn_state = "chi_whitehelm"
+
+/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/med
+	name = "Medical Chinese helmet"
+	desc = "A steel helmet used by the medics in the People's Liberation Army."
+	icon_state = "chi_med"
+	item_state = "chi_med"
+	worn_state = "chi_med"
+
 /obj/item/clothing/head/nva_hat
 	name = "NVA cap"
 	desc = "A field cap with the markings of an NVA officer."
@@ -981,10 +1005,20 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/ssh_68/med
+	icon_state = "ssh_68med"
+	item_state = "ssh_68med"
+	worn_state = "ssh_68med"
+
 /obj/item/clothing/head/helmet/modern/ssh_68/winter
 	icon_state = "ssh_68_winter"
 	item_state = "ssh_68_winter"
 	worn_state = "ssh_68_winter"
+
+/obj/item/clothing/head/helmet/modern/ssh_68/winter/med
+	icon_state = "ssh_68wintmed"
+	item_state = "ssh_68wintmed"
+	worn_state = "ssh_68wintmed"
 
 /obj/item/clothing/suit/b3 //need checking these assets before path name change, but i've updated the name to a real B3 russian armor circa 1980's
 	name = "6B3 body armor"
@@ -1585,6 +1619,38 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/light/china
+	name = "Chinese light webbing"
+	slots = 4
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+/obj/item/clothing/accessory/storage/webbing/light/china/gewehr98
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+
+/obj/item/clothing/accessory/storage/webbing/light/china/ak47
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/light/china/sks
+	New()
+		..()
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+
 /obj/item/clothing/accessory/storage/webbing/us_vest
 	name = "US Army webbing"
 	desc = "A large webbing with several small pockets."
@@ -1884,7 +1950,24 @@
 	siemens_coefficient = 0.6
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+    //china cold war
+/obj/item/clothing/under/chinaguard
+	name = "Chinese Red Guard Uniform"
+	desc = "An uniform worn by the Red guard."
+	icon_state = "redguard"
+	item_state = "redguard"
+	worn_state = "redguard"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 5, arrow = 5, gun = FALSE, energy = 2, bomb = 5, bio = 10, rad = 10)
 
+obj/item/clothing/head/chinaguardcap
+	name = "Chinese Red Guard cap"
+	desc = "A cap worn by the Chinese Red guard."
+	icon_state = "redguardcap"
+	item_state = "redguardcap"
+	worn_state = "redguardcap"
+	body_parts_covered = HEAD
+	armor = list(melee = 5, arrow = FALSE, gun = 1, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	/* Sovie apparel 70-80'ss*/
 
 /obj/item/clothing/under/afghanka

@@ -1641,6 +1641,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new /obj/item/ammo_magazine/rpd(hold)
 		new /obj/item/ammo_magazine/rpd(hold)
 		new /obj/item/weapon/grenade/coldwar/rgd5(hold)
+/obj/item/clothing/accessory/storage/webbing/russian/guns/ak47
+	New()
+		..()
+		new /obj/item/ammo_magazine/ak47(hold)
+		new /obj/item/ammo_magazine/ak47(hold)
+		new /obj/item/ammo_magazine/ak47(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
 	icon_state = "german_vest"

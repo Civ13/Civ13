@@ -213,6 +213,12 @@
 	effectiveness_mod = 1.05
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/semiautomatic/sks/china
+	name = "Type 56 carbine"
+	desc = "Chinese variant of the Soviet semi-automatic rifle chambered in 7.62x39mm."
+	weight = 3.86
+	effectiveness_mod = 1.06
+
 /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
 	name = "SKS-M"
 	desc = "Soviet semi-automatic rifle chambered in 7.62x39mm. This is the updated version based on the Type 63 that is compatible with AK-47 magazines."
