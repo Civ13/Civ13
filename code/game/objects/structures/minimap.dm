@@ -178,6 +178,7 @@
 	name = "map of the area"
 	desc = "A large board with the map of the area."
 	icon_state = "map_board"
+	density = TRUE
 	var/image/img
 
 /obj/structure/sign/map_board/New()
