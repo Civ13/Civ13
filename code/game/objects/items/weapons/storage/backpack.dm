@@ -299,6 +299,54 @@ obj/item/weapon/storage/backpack/ww2/american
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 
+/obj/item/weapon/storage/backpack/rpg_pack
+	name = "RPG-7 rocket backpack"
+	desc = "An ammunition carrier made out of canvas. This one is able to carry up to 3 rockets."
+	icon_state = "backpack_rpg_tan"
+	item_state = "backpack_rpg_tan"
+	base_icon = "backpack_rpg_tan"
+	w_class = 4
+	slot_flags = SLOT_BACK
+	can_hold = list(
+		/obj/item/ammo_casing/rocket/og7v,
+		/obj/item/ammo_casing/rocket/pg7v,
+		/obj/item/ammo_casing/rocket/atgm)
+	max_w_class = 4
+	max_storage_space = 24
+
+/obj/item/weapon/storage/backpack/rpg_pack/olive
+	icon_state = "backpack_rpg_olive"
+	item_state = "backpack_rpg_olive"
+	base_icon = "backpack_rpg_olive"
+
+/obj/item/weapon/storage/backpack/rpg_pack/filled
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+
+/obj/item/weapon/storage/backpack/rpg_pack/filled/at
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+
+/obj/item/weapon/storage/backpack/rpg_pack/olive/filled
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/og7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+
+/obj/item/weapon/storage/backpack/rpg_pack/olive/filled/at
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+		new/obj/item/ammo_casing/rocket/pg7v(src)
+
 /obj/item/weapon/storage/backpack/heavyrucksack
 	name = "heavy rucksack"
 	desc = "A big heavyduty rucksack made for big, heavy objects."
