@@ -73,9 +73,9 @@
 	icon_state = "redcross"
 
 /obj/structure/sign/mcd
-	name = "MC DONALDS"
+	name = "MC RONALDS"
 	desc = "A sign fat people usually like."
-	icon_state = "mcd"
+	icon_state = "mcr"
 
 /obj/structure/sign/mcd/tfc
 	name = "Texas Fried Chicken"
