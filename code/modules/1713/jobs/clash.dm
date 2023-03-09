@@ -36,7 +36,7 @@
 	//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/vikingsword/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map_clash(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/map_tdm/clash(H), slot_l_store)
 	H.f_style = pick("Lumberjack Beard")
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Bear Clan</b>, a fearsome clan. Organize your <b>Clan</b> and lead your fighters to victory!</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

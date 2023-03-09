@@ -1,7 +1,7 @@
 /datum/admins/proc/persistent()
 	set category = "Server"
-	set desc="Set the current round as Persistent."
-	set name="Persistence"
+	set desc = "Set the current round as Persistent."
+	set name = "Persistence"
 
 	if (map && !map.persistence)
 		map.persistence = TRUE
@@ -25,8 +25,8 @@
 
 /datum/admins/proc/persistent_chad()
 	set category = "Server"
-	set desc="Set the current round as persistent Chad Mode +."
-	set name="Persistence Chad Mode +"
+	set desc = "Set the current round as persistent Chad Mode +."
+	set name = "Persistence Chad Mode +"
 
 	if (map && !map.perschadplus)
 		map.perschadplus = TRUE

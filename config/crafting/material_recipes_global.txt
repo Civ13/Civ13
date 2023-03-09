@@ -1664,6 +1664,7 @@ RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_d
 RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,25,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold watch,/obj/item/clothing/gloves/watch/goldwatch,6,200,0,1,none,110,60,0,8,null
+RECIPE: /material/gold/,gold medal,/obj/item/clothing/accessory/medal/gold,2,150,0,1,none,60,60,0,8,null
 
 //*****************| GOLD DECORATION |***************************
 
@@ -1689,6 +1690,7 @@ RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/k
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,expensive watch,/obj/item/clothing/gloves/watch/specialwatch,6,200,0,1,none,110,60,0,8,null
+RECIPE: /material/silver/,silver medal,/obj/item/clothing/accessory/medal/silver,2,150,0,1,none,60,60,0,8,null
 
 //*****************| SILVER DECORATION |***************************
 
@@ -1924,6 +1926,7 @@ RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze
 
 RECIPE: /material/bronze/,bronze arm bangles,/obj/item/clothing/accessory/armband/armbangle/bronze,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/bronze/,spiked bracers,/obj/item/clothing/accessory/armband/punk,3,95,0,1,none,180,0,0,8,null
+RECIPE: /material/bronze/,bronze medal,/obj/item/clothing/accessory/medal/bronze,2,150,0,1,none,60,60,0,8,null
 
 //*********************| BRONZE DECORATION & MONUMENTS |*************************
 

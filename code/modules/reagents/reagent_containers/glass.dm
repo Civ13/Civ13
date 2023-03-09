@@ -963,6 +963,21 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	icon_state = "fueltank_large_tank"
 	volume = 450
 
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap
+	name = "High capacity fueltank"
+	icon_state = "fueltank_large_tank"
+	volume = 550
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap/fueled
+	New()
+		..()
+		reagents.add_reagent("diesel",550)
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap/fueledgasoline
+	New()
+		..()
+		reagents.add_reagent("gasoline",550)
+
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled
 	New()
 		..()

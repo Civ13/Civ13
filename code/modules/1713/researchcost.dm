@@ -15,7 +15,7 @@
 	not_disassemblable = TRUE
 
 /obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (!map.civilizations || map.ID == MAP_NATIONSRP || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+	if (!map.civilizations || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
 
 	if (!W)
@@ -30,23 +30,23 @@
 		return
 	if (map.age1_done == FALSE)
 		if (world.time < 36000 && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (19*3))
-			H << "You are already too advanced. You can research again in [(36000-world.time)/600/60] hours."
+			H << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 			return
 	else if (map.age1_done == TRUE && map.age2_done == FALSE)
 		if (world.time < map.age2_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age1_top*3))
-			H << "You are already too advanced. You can research again in [(map.age2_timer-world.time)/600/60] hours."
+			H << "You are already too advanced. You can research again in [(map.age2_timer-world.time)/600] minutes."
 			return
 	else if (map.age2_done == TRUE && map.age3_done == FALSE)
 		if (world.time < map.age3_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age2_top*3))
-			H << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600/60] hours."
+			H << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
 			return
 	else if (map.age3_done == TRUE && map.age4_done == FALSE)
 		if (world.time < map.age3_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age3_top*3))
-			H << "You are already too advanced. You can research again in [(map.age4_timer-world.time)/600/60] hours."
+			H << "You are already too advanced. You can research again in [(map.age4_timer-world.time)/600] minutes."
 			return
 	else if (map.age4_done == TRUE && map.age5_done == FALSE)
 		if (world.time < map.age5_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age4_top*3))
-			H << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600/60] hours."
+			H << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes."
 			return
 	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return

@@ -534,6 +534,63 @@
 	speedlist = list(1=10,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
+/obj/structure/vehicleparts/axis/car/ba64
+	name = "Ba-64 armored car"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 7
+	reg_number = ""
+	color = "#3d5931"
+	turret_type = "none"
+	vehicle_size = "2x3"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/car/t20komsomoletstractor
+	name = "T-20 Komsomolets tractor"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=10,2=6,3=4,4=3,5=2)
+	turntimer = 6
+	reg_number = ""
+	color = "#3d5931"
+	turret_type = "none"
+	vehicle_size = "2x4"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/car/unattr
+	name = "UN Attack Vehicle"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 7
+	maxpower = 1000
+	speedlist = list(1=10,2=6,3=4,4=3)
+	turntimer = 6
+	reg_number = ""
+	color = "#ffffff"
+	turret_type = "none"
+	vehicle_size = "2x4"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/car/kamaz
 	name = "KamAZ-4350 Truck"
 	desc = "A powered axis from a car."
@@ -561,6 +618,10 @@
 /obj/structure/engine/internal/gasoline/premade/v6
 	name = "V6 gasoline engine"
 	enginesize = 7000
+
+/obj/structure/engine/internal/gasoline/premade/mik
+	name = "V12 Mikulin M-17T gasoline engine"
+	enginesize = 15000
 
 /obj/structure/engine/internal/diesel/premade/erstenklasse
 	enginesize = 5500

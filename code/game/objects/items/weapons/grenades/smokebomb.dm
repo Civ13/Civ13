@@ -48,6 +48,13 @@
 	det_time = 30
 	item_state = "m18smoke"
 
+/obj/item/weapon/grenade/smokebomb/rdg1
+	desc = "It is set to detonate in 4 seconds."
+	name = "RDG-1 smoke grenade"
+	icon_state = "rdg1"
+	det_time = 40
+	item_state = "rdg1"
+
 /obj/item/weapon/grenade/smokebomb/rdg2
 	desc = "It is set to detonate in 3 seconds."
 	name = "RDG-2 smoke grenade"

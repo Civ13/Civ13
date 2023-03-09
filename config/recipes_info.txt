@@ -1,4 +1,4 @@
-/////////////////////////////AGES///////////////////////
+///////////////////////////// AGES ///////////////////////
 0-15 Stone Age (?-3000 B.C.)
 15-20 Copper Age (3000 BC to 500 B.C.)
 20-30 Bronze Age (500 B.C. to 400 A.D.)
@@ -12,10 +12,10 @@
 145-175 World War II (1934 to 1957)
 175-210 Cold War (1958 to 1984)
 210- Modern Era (1985 to 2020)
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 
 format:
-material, name, path, cost, building time, only one per turf?, on the floor?, category, research 1 needed, research 2 needed, research 3 needed, max ordinal age (inclusive), material name (optional - use null if not necessary)
+material, name, path, cost, building time, only one per turf?, on the floor?, category, industrial research needed, military research needed, health research needed, max ordinal age (inclusive), material name (optional - use null if not necessary)
 
 // Research //
 
@@ -23,7 +23,7 @@ material, name, path, cost, building time, only one per turf?, on the floor?, ca
 2 - Military
 3 - Medicine
 
-// HERES THE GODDAMN ORDINAL AGES//
+// Ordinal Aages //
 0 stone age
 1 bronze
 2 medieval

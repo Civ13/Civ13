@@ -133,7 +133,7 @@
 				qdel(affecting)
 				for(var/mob/living/human/NB in view(6,src))
 					NB.mood -= 10
-					NB.ptsd += 1
+					//NB.ptsd += 1
 			spawn(300)
 				invisibility = 101
 			return

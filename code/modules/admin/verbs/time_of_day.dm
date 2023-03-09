@@ -12,7 +12,7 @@
 
 /client/proc/change_wind_dir()
 	set category = "Debug"
-	set name = "Change Wind Direction"
+	set name = "Change Wind Direction (USE VAR EDIT!)"
 
 	if (!check_rights(R_ADMIN))
 		src << "<span class = 'danger'>You don't have the permissions.</span>"
@@ -41,7 +41,7 @@
 
 /client/proc/change_wind_spd()
 	set category = "Debug"
-	set name = "Change Wind Speed"
+	set name = "Change Wind Speed (USE VAR EDIT!)"
 
 	if (!check_rights(R_ADMIN))
 		src << "<span class = 'danger'>You don't have the permissions.</span>"

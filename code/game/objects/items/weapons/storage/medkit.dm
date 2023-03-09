@@ -54,6 +54,24 @@
 	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
 	return
 
+/obj/item/weapon/storage/firstaid/early
+	name = "medicine kit"
+	desc = "Contains some drugs and a antiseptic to help someone survive."
+	icon_state = "bezerk2"
+	item_state = "bezerk2"
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_POCKET
+
+
+/obj/item/weapon/storage/firstaid/early/New()
+	..()
+	if (empty) return
+	new /obj/item/weapon/reagent_containers/syringe(src)
+	new /obj/item/weapon/reagent_containers/glass/bottle/opium(src)
+	new /obj/item/weapon/reagent_containers/glass/bottle/adrenaline(src)
+	new /obj/item/weapon/reagent_containers/glass/bottle/antitoxin(src)
+	new /obj/item/stack/medical/advanced/sulfa(src)
+	return
+
 /obj/item/weapon/storage/firstaid/advsmall
 	name = "first-aid kit"
 	desc = "Contains basic first-aid medicine."

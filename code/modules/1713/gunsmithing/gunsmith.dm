@@ -1008,7 +1008,7 @@
 			weight = 3.85
 			load_delay = 8
 			firemodes = list(
-				list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+				list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
 				)
 		if ("Open-Bolt (small)")
 			item_state = "pps"
@@ -1021,7 +1021,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine,/obj/item/ammo_magazine/emptymagazine/rifle)
 			firemodes = list(
-				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
+				list(name = "full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
 			load_method = MAGAZINE
 			load_delay = 8
@@ -1084,7 +1084,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
-				list(name="full auto",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
+				list(name = "full auto",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
 				)
 			weight = 10
 			slot_flags = 0
@@ -1159,8 +1159,8 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+				list(name = "full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1226,9 +1226,9 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+				list(name = "burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+				list(name = "full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1790,8 +1790,8 @@
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod *= 0.87
+		effectiveness_mod *= 0.92
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod /= 0.87
+		effectiveness_mod /= 0.92
 

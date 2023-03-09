@@ -1,7 +1,7 @@
 /client/proc/cmd_mass_modify_object_variables(atom/A, var/var_name)
 	set category = "Debug"
 	set name = "Mass Edit Variables"
-	set desc="(target) Edit all instances of a target item's variables"
+	set desc = "(target) Edit all instances of a target item's variables"
 
 	var/method = FALSE	//0 means strict type detection while TRUE means this type and all subtypes (IE: /obj/item with this set to TRUE will set it to ALL itms)
 

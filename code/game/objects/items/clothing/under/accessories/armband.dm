@@ -56,6 +56,11 @@
 	icon_state = "jap"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/poland
+	name = "polish armband"
+	desc = "A polish armband!"
+	icon_state = "polisharmband"
+	slot = "armband"
 
 //jewelry
 
@@ -337,7 +342,6 @@
 	item_state = "pauldron_dy"
 	worn_state = "pauldron_dy"
 	slot = "decor"
-
 
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)
