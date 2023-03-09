@@ -118,7 +118,7 @@
 	desc = "Russian multi-use rocket."
 	icon_state = "rpg7_empty"
 	item_state = "rpg"
-	slot_flags = SLOT_SHOULDER
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	force = 10
 	load_delay = 45
 
@@ -155,7 +155,7 @@
 	desc = "Multi-use rocket."
 	icon_state = "rpg7_empty"
 	item_state = "rpg"
-	slot_flags = SLOT_SHOULDER
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	force = 10
 	recoil = 2
 	load_delay = 50
@@ -166,7 +166,7 @@
 	desc = "German single-use rocket."
 	icon_state = "panzerfaust"
 	item_state = "panzerfaust"
-	slot_flags = SLOT_SHOULDER
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	force = 10
 	recoil = 2
 	fire_delay = 12
@@ -388,7 +388,7 @@
 	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
 	icon_state = "m72law"
 	item_state = "m72law"
-	slot_flags = SLOT_SHOULDER
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	force = 15
 	recoil = 2
 	fire_delay = 10
