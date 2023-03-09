@@ -2308,13 +2308,12 @@
 /datum/job/russian/modern_lieutenant
 	title = "Starshiy Leitenant"
 	en_meaning = "1st Lieutenant"
-	rank_abbreviation = "Stl."
+	rank_abbreviation = "St. Lt."
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
-	uses_squads = TRUE
 	whitelisted = TRUE
 
 	additional_languages = list("English" = 70)
