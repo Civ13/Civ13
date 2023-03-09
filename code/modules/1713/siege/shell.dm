@@ -53,6 +53,24 @@
 	heavy_armor_penetration = 15
 	damage = 225
 
+/obj/item/cannon_ball/shell/tank/AP45
+	atype = "AP"
+	caliber = 45
+	heavy_armor_penetration = 40
+	damage = 75
+
+/obj/item/cannon_ball/shell/tank/APCR45
+	atype = "APCR"
+	caliber = 45
+	heavy_armor_penetration = 60
+	damage = 90
+
+/obj/item/cannon_ball/shell/tank/HE45
+	atype = "HE"
+	caliber = 45
+	heavy_armor_penetration = 8
+	damage = 290
+
 /obj/item/cannon_ball/shell/tank/AP57
 	atype = "AP"
 	caliber = 57
@@ -372,7 +390,6 @@
 	new /obj/item/cannon_ball/shell/tank/HE57(storage)
 	new /obj/item/cannon_ball/shell/tank/HE57(storage)
 
-
 	new /obj/item/cannon_ball/shell/tank/AP57(storage)
 	new /obj/item/cannon_ball/shell/tank/AP57(storage)
 	new /obj/item/cannon_ball/shell/tank/AP57(storage)
@@ -386,6 +403,27 @@
 	new /obj/item/cannon_ball/shell/tank/APCR57(storage)
 	update_icon()
 
+/obj/structure/shellrack/full45/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+	new /obj/item/cannon_ball/shell/tank/HE45(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP45(storage)
+	new /obj/item/cannon_ball/shell/tank/AP45(storage)
+	new /obj/item/cannon_ball/shell/tank/AP45(storage)
+	new /obj/item/cannon_ball/shell/tank/AP45(storage)
+	new /obj/item/cannon_ball/shell/tank/AP45(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	update_icon()
 
 /obj/structure/shellrack/full75/New()
 	..()

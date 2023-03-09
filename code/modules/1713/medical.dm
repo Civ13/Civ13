@@ -88,3 +88,13 @@
 	name = "potassium iodide pill pack"
 	desc = "Used for radiation emergencies."
 	pill_type = /obj/item/weapon/reagent_containers/pill/potassium_iodide
+
+/obj/item/weapon/pill_pack/aspirin
+	name = "aspirin pill pack"
+	desc = "Also known as acetylsalicylic acid. Mild painkiller."
+	pill_type = /obj/item/weapon/reagent_containers/pill/aspirin
+
+/obj/item/weapon/pill_pack/paracetamol
+	name = "paracetamol pill pack"
+	desc = "Also known as acetaminophen. Moderate painkiller."
+	pill_type = /obj/item/weapon/reagent_containers/pill/paracetamol

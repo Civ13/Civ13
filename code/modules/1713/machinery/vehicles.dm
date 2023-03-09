@@ -102,6 +102,30 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/bt7
+	name = "BT-7"
+	speeds = 7
+	speedlist = list(1=12,2=8,3=6,4=5,5=4,6=3,7=2)
+	reg_number = ""
+	color = "#5c784f"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/su85
+	name = "SU-85"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#506945"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/kv1a
 	name = "KV-1A"
 	speeds = 4
@@ -650,3 +674,4 @@
 	anchored = FALSE
 	flammable = TRUE
 	w_class = 4.0
+

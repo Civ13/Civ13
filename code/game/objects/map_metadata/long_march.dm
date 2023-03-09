@@ -13,7 +13,7 @@
 		list(CHINESE) = /area/caribbean/no_mans_land/tundra,
 		list(CIVILIAN) = /area/caribbean/japanese/land/inside/command,
 		)
-	age = "1937"
+	age = "1935"
 	ordinal_age = 5
 	faction_distribution_coeffs = list(CHINESE = 0.6, CIVILIAN = 0.4)
 	battle_name = "The Long March"

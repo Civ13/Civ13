@@ -62,19 +62,22 @@
 
 	if (!istype(usr, /mob/living))
 		return
-	usr << "You start flipping the table..."
-	if (do_after(usr, 50, src))
-		flipped = !flipped
-		if (flipped)
-			visible_message("<span class='warning'>[usr] flips the table!</span>")
-			if (istype(usr, /mob/living))
-				var/mob/living/L = usr
-				dir = L.dir
-		else
-			visible_message("[usr] puts the table back up.")
-			layer = 2.8
-
-		update_icon()
+	if (istype(src, /obj/structure/table/modern/billiard))
+		usr << "You can't flip the table, it's too heavy."
+		return
+	else
+		usr << "You start flipping the table..."
+		if (do_after(usr, 50, src))
+			flipped = !flipped
+			if (flipped)
+				visible_message("<span class='warning'>[usr] flips the table!</span>")
+				if (istype(usr, /mob/living))
+					var/mob/living/L = usr
+					dir = L.dir
+			else
+				visible_message("[usr] puts the table back up.")
+				layer = 2.8
+			update_icon()
 
 /obj/structure/table/verb/rotate_left()
 	set name = "Rotate left"
@@ -536,3 +539,15 @@
 	New()
 		..()
 		update_icon()
+
+/obj/structure/table/modern/billiard
+	name = "billiard table"
+	desc = "A bounded table on which cue sports are played."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "billard"
+	frame = /obj/structure/table_frame/wood
+	framestack = /obj/item/stack/material/wood
+	buildstack = /obj/item/stack/material/cloth
+	flammable = TRUE
+	flipped = FALSE
+	fixedsprite = TRUE

@@ -970,6 +970,68 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
+	else if (map.ID == MAP_NATIONSRP_TRIPLE)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		spawn(5)
+			//west
+			if (original_job_title == "Civilization A Citizen")
+				add_language("Latin",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/latin/A in languages)
+					default_language = A
+				name = species.get_random_roman_name(gender)
+				real_name = name
+				add_note("Known Languages", "Latin")
+				possible_h_list = list("Light Brown","Dark Brown","Black","Brown")
+				possible_e_list = list("Green","Brown","Black")
+				possible_s_list = list(-35,-60)
+			//east
+			else if (original_job_title == "Civilization B Citizen")
+				add_language("Gaelic",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/gaelic/A in languages)
+					default_language = A
+				name = species.get_random_gaelic_name(gender)
+				real_name = name
+				add_note("Known Languages", "Gaelic")
+				possible_h_list = list("Orange","Light Brown","Red","Brown")
+				possible_e_list = list("Green","Blue")
+				possible_s_list = list(-15,-30)
+			else if (original_job_title == "Civilization C Citizen")
+				add_language("German",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/german/A in languages)
+					default_language = A
+				name = species.get_random_german_name(gender)
+				real_name = name
+				add_note("Known Languages", "German")
+				possible_h_list = list("Light Brown","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-15,-30)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRPMED)
 		var/new_hair = "Dark Brown"
 		var/new_eyes = "Black"
@@ -1018,6 +1080,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRP_WW2)
 		var/new_hair = "Dark Brown"
 		var/new_eyes = "Black"
@@ -1066,6 +1129,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRP_COLDWAR)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -1114,6 +1178,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -1162,6 +1227,7 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+		
 	else
 		if (faction_text == ARAB)
 			s_tone = -90

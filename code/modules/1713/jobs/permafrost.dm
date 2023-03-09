@@ -8,8 +8,8 @@
 	is_yeltsin = FALSE
 	is_grozny = FALSE
 	is_squad_leader = TRUE
-	is_officer = TRUE
-	is_commander = TRUE
+	is_permfr = TRUE
+
 	whitelisted = TRUE
 	uses_squads = TRUE
 
@@ -75,6 +75,7 @@
 
 	is_yeltsin = FALSE
 	is_grozny = FALSE
+	is_permfr = TRUE
 
 	uses_squads = TRUE
 
@@ -110,8 +111,14 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/grey_eisenbruck(H), slot_head)
+	if (prob(90))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_wear_mask)
+	if (prob(90))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/grey_eisenbruck(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/grey_eisenbruck(H), slot_head)
 
 //weapon
 	var/randimpw = rand(1,5)
@@ -150,11 +157,14 @@
 	is_kremlin = FALSE
 	is_yeltsin = FALSE
 	is_grozny = FALSE
-	is_commander = TRUE
+	is_permfrb = TRUE
+	is_squad_leader = TRUE
+
+	uses_squads = TRUE
 	whitelisted = TRUE
 
 	min_positions = 1
-	max_positions = 5
+	max_positions = 3
 
 /datum/job/civilian/russian/perma/bunkL/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -201,6 +211,8 @@
 	is_kremlin = FALSE
 	is_yeltsin = FALSE
 	is_grozny = FALSE
+	is_permfrb = TRUE
+	uses_squads = TRUE
 
 /datum/job/civilian/russian/perma/bunk/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -247,7 +259,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/watch(H), slot_gloves)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/specialwatch(H), slot_gloves)
-
+//gun
 	 H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_l_hand)
 
 //suit

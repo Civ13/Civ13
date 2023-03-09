@@ -858,9 +858,10 @@
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
 
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/dutch(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass/modern/tacmap(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
@@ -874,8 +875,9 @@
 
 	return TRUE
 
-/datum/job/dutch/modern_emplaced_gunner
-	title = "Emplaced Weapons Specialist"
+/datum/job/dutch/emplaced_weapon_specialist
+	title = "Emplaced Wapen Specialist"
+	en_meaning = "Emplaced Weapons Specialist"
 	rank_abbreviation = "Kpl"
 	spawn_location = "JoinLateRN"
 
@@ -887,7 +889,7 @@
 	min_positions = 1
 	max_positions = 2
 
-/datum/job/dutch/modern_emplaced_gunner/equip(var/mob/living/human/H)
+/datum/job/dutch/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -923,7 +925,8 @@
 	return TRUE
 
 /datum/job/dutch/weapon_specialist
-	title = "Weapons Specialist"
+	title = "Wapen Specialist"
+	en_meaning = "Weapons Specialist"
 	rank_abbreviation = "Kpl"
 	spawn_location = "JoinLateRN"
 

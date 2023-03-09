@@ -32,8 +32,9 @@
 #define TEAM_NO 21
 #define TEAM_SE 22
 #define TEAM_DK 23
+#define TEAM_PO 24
 
-var/global/soldiers[23]
+var/global/soldiers[24]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -240,6 +241,14 @@ var/global/soldiers[23]
 
 /datum/faction/arab/base_type()
 	return "/datum/faction/arab"
+
+/datum/faction/polish
+	icon_state = ""
+	title = "Polish Soldier"
+	team = TEAM_PO
+
+/datum/faction/polish/base_type()
+	return "/datum/faction/polish"
 // CODE
 /datum/faction/New(var/mob/living/human/H, var/datum/job/J)
 
@@ -304,5 +313,8 @@ var/global/soldiers[23]
 	else if (istype(J, /datum/job/danish))
 		if ("[type]" == "/datum/faction/danish")
 			soldiers[DANISH]++
+	else if (istype(J, /datum/job/polish))
+		if ("[type]" == "/datum/faction/polish")
+			soldiers[POLISH]++
 	H.all_factions += src
 	..()

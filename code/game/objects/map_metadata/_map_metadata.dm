@@ -41,6 +41,7 @@ var/civmax_research = list(230,230,230)
 		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
 	var/mission_start_message = "Round will start soon!"
 	var/is_RP = FALSE
+	var/mosinonly = FALSE
 	var/squads = 1
 	var/list/faction1_squads = list(
 		1 = list(),
@@ -739,6 +740,7 @@ var/civmax_research = list(230,230,230)
 		RUSSIAN = 0,
 		CHECHEN = 0,
 		FINNISH = 0,
+		POLISH = 0,
 		NORWEGIAN = 0,
 		SWEDISH = 0,
 		DANISH = 0,
@@ -872,6 +874,8 @@ var/civmax_research = list(230,230,230)
 			return "Chinese"
 		if (FILIPINO)
 			return "Filipino"
+		if (POLISH)
+			return "Polish"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -924,9 +928,11 @@ var/civmax_research = list(230,230,230)
 		if (VIETNAMESE)
 			return "Vietcong group"
 		if (CHINESE)
-			return "Poeple's Liberation Army"
+			return "People's Liberation Army"
 		if (FILIPINO)
 			return "Philippine Revolutionary Army"
+		if (POLISH)
+			return "Polish Home Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -971,6 +977,8 @@ var/civmax_research = list(230,230,230)
 			return "Chinese"
 		if ("Philippine Revolutionary Army")
 			return "Filipino"
+		if ("Polish Home Army")
+			return "Polish"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

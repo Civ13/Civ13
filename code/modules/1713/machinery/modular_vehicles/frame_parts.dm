@@ -150,6 +150,14 @@ var/global/list/vehicle_walls = list( \
 	resistance = 150
 	noroof = FALSE
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/left/metalreinforced
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon_state = "frame_steel"
+	flammable = TRUE
+	resistance = 150
+	noroof = FALSE
+	w_left = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/right/metal
 	name = "steel frame"
 	desc = "a steel vehicle frame."
@@ -344,30 +352,40 @@ var/global/list/license_plate_numbers = list()
 						pixel_y = 0
 /obj/structure/vehicleparts/license_plate/us
 	icon_state = "license_plate_us"
-
-/obj/structure/vehicleparts/license_plate/eu
-	icon_state = "license_plate_eur"
-
 /obj/structure/vehicleparts/license_plate/us/front
 	icon_state = "license_plate_us"
 	front = TRUE
-/obj/structure/vehicleparts/license_plate/eu/front
-	icon_state = "license_plate_eur"
-	front = TRUE
-
 /obj/structure/vehicleparts/license_plate/us/centered
 	icon_state = "license_plate_us"
 	centered = TRUE
-/obj/structure/vehicleparts/license_plate/eu/centered
-	icon_state = "license_plate_eur"
-	centered = TRUE
-
 /obj/structure/vehicleparts/license_plate/us/centered/front
 	icon_state = "license_plate_us"
 	front = TRUE
 	centered = TRUE
+
+/obj/structure/vehicleparts/license_plate/eu
+	icon_state = "license_plate_eur"
+/obj/structure/vehicleparts/license_plate/eu/front
+	icon_state = "license_plate_eur"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/eu/centered
+	icon_state = "license_plate_eur"
+	centered = TRUE
 /obj/structure/vehicleparts/license_plate/eu/centered/front
 	icon_state = "license_plate_eur"
+	front = TRUE
+	centered = TRUE
+
+/obj/structure/vehicleparts/license_plate/nl
+	icon_state = "license_plate_nl"
+/obj/structure/vehicleparts/license_plate/nl/front
+	icon_state = "license_plate_nl"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/nl/centered
+	icon_state = "license_plate_nl"
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/nl/centered/front
+	icon_state = "license_plate_nl"
 	front = TRUE
 	centered = TRUE
 

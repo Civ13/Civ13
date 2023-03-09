@@ -1263,7 +1263,7 @@
 
 /obj/item/clothing/mask/necklace/christian/gold
 	name = "christian gold necklace"
-	desc = " A chritian necklace, it's made out of gold. Expensive."
+	desc = " A golden necklace with a christian cross. It is made out of gold. Looks expensive."
 	icon_state = "necklace_christian_gold"
 	item_state = "necklace_christian_gold"
 

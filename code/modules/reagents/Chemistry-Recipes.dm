@@ -20,8 +20,8 @@
 //prints all the recipes into a txt file
 datum/admins/proc/print_chemical_reactions()
 	set category = "Debug"
-	set desc="Print all the ingame chemical reactions into a txt file."
-	set name="Print Chemical Reactions"
+	set desc = "Print all the ingame chemical reactions into a txt file."
+	set name = "Print Chemical Reactions"
 	var/paths = typesof(/datum/chemical_reaction) - /datum/chemical_reaction
 	var/recipe_list = file("recipes.txt")
 	if (fexists(recipe_list))

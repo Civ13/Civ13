@@ -1934,6 +1934,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			var/obj/structure/noticeboard/N = O
 			N.loc = get_step(user, user.dir)
 			return
+		if (istype(O, /obj/item/clothing/accessory/medal))
+			if (customdesc != "")
+				O.desc = customdesc
+			var/obj/item/clothing/accessory/medal/M = O
+			M.loc = get_turf(user)
+			return
 		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
