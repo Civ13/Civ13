@@ -1370,6 +1370,15 @@
 	new/obj/item/ammo_magazine/ak74(src)
 	new/obj/item/ammo_magazine/ak74(src)
 
+/obj/item/weapon/storage/belt/smallpouches/green/officeruni
+	storage_slots = 4
+/obj/item/weapon/storage/belt/smallpouches/green/officeruni/New()
+	..()
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new/obj/item/weapon/compass(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff/New()
 	..()

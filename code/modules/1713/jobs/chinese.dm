@@ -1092,3 +1092,299 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
+
+//////////////////////////////sovietsino borderconflict////////////////////////////////
+
+/datum/job/chinese/sovcon/pla/commisar
+	title = "Zhengwei"
+	en_meaning = "PLA Political Commisar"
+	rank_abbreviation = "Zhe."
+	spawn_location = "JoinLateCH"
+
+	is_pla = FALSE
+	is_officer = TRUE
+	is_sinosovbor = TRUE
+	can_be_female = TRUE
+
+	can_get_coordinates = TRUE
+
+	min_positions = 2
+	max_positions = 2
+
+/datum/job/chinese/sovcon/pla/commisar/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka/down(H), slot_head)
+//coat
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/chinese/officer(H), slot_wear_suit)
+//belt
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/officeruni(H), slot_belt)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/green_webbing/akm/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/akm(null)
+	uniform.attackby(webbing, H)
+	H.add_note("Role", "You are a <b>[title]</b>, Give out orders to your Squads and Lead them towards Victory!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/chinese/sovcon/pla/sergeant
+	title = "Junshi"
+	en_meaning = "PLA Sergeant"
+	rank_abbreviation = "Ju."
+	spawn_location = "JoinLateCH"
+
+	is_pla = FALSE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	is_sinosovbor = TRUE
+	can_be_female = TRUE
+
+	can_get_coordinates = TRUE
+
+	min_positions = 4
+	max_positions = 4
+
+/datum/job/chinese/sovcon/pla/sergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+//head
+	if (prob(90))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka/down(H), slot_head)
+//coat
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/chinese/officer(H), slot_wear_suit)
+//belt
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/officeruni(H), slot_belt)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/green_webbing/akm/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/akm(null)
+	uniform.attackby(webbing, H)
+	H.add_note("Role", "You are a <b>[title]</b>, Lead your Squad!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+
+/datum/job/chinese/sovcon/pla/corpsman
+	title = "Zhan Yi"
+	rank_abbreviation = "Sdb."
+	en_meaning = "PLA Combat Doctor"
+	spawn_location = "JoinLateCH"
+
+	is_pla = FALSE
+	is_medic = TRUE
+	is_sinosovbor = TRUE
+	uses_squads = TRUE
+	can_be_female = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/chinese/sovcon/pla/corpsman/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/med(H), slot_head)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+//coat
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/chinese(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/white = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/chinese/sovcon/pla/infantry
+	title = "Jiefanqjun qing bubing"
+	en_meaning = "PLA Light infantry"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateCH"
+	is_pla = FALSE
+	uses_squads = TRUE
+	is_sinosovbor = TRUE
+	can_be_female = TRUE
+
+	min_positions = 10
+	max_positions = 120
+
+/datum/job/chinese/sovcon/pla/infantry/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_winter(H), slot_w_uniform)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/cra_cap(H), slot_head)
+	else if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/chinese_ushanka(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter(H), slot_head)
+//coat
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/chinese(H), slot_wear_suit)
+//belt
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/custom(H), slot_belt)
+//gun
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,6)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/ak47/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/ak47(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/chinese(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/sks/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/sks(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun/webbing = new/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/dpgun(null)
+			uniform.attackby(webbing, H)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/chinese(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_hand)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/sks/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/sks(null)
+			uniform.attackby(webbing, H)
+	H.add_note("Role", "You are a <b>[title]</b>, an infantryman of the PLA's Ground Forces. Follow orders given by your superiors and defeat the enemy!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/chinese/sovcon/pla/redguard
+	title = "Hong Weibing Wenyuan"
+	en_meaning = "Red Guard conscripts"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateCH"
+	is_pla = FALSE
+	uses_squads = TRUE
+	is_sinosovbor = TRUE
+	can_be_female = TRUE
+
+	min_positions = 10
+	max_positions = 90
+
+/datum/job/chinese/sovcon/pla/redguard/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/chinaguard(H), slot_w_uniform)
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/chinaguardcap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/cra_uni(H), slot_w_uniform)
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/cra_cap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter(H), slot_head)
+//belt
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/custom(H), slot_belt)
+//bayo
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+//gun
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,3)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks/chinese(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/sks/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/sks(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/ppsh(null)
+			uniform.attackby(webbing, H)
+	H.add_note("Role", "You are a <b>[title]</b>, a conscript from the red guard. Follow orders given by your superiors and defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE

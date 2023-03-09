@@ -1216,6 +1216,86 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 	)
 
+//sovietsinoborder
+
+/obj/structure/vending/sixties/china/apparel
+	name = "Chinese apparel rack"
+	desc = "Basic wear for soldiers of the People's Liberation Army."
+	icon_state = "apparel_china"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/chinese_winter = 15,
+		/obj/item/clothing/suit/storage/coat/chinese = 15,
+		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/ww2/chicap = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+	)
+/obj/structure/vending/sixties/china/weapons
+	name = "Chinese Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_japan"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese = 15,
+		/obj/item/ammo_magazine/gewehr98box = 10,
+		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 5,
+		/obj/item/ammo_magazine/ak47 = 20,
+		/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese = 5,
+		/obj/item/ammo_magazine/sks = 25,
+		/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese = 5,
+		/obj/item/ammo_magazine/c762x25_ppsh = 15,
+		/obj/item/weapon/gun/projectile/automatic/dp28 = 2,
+		/obj/item/ammo_magazine/dp = 15,
+		/obj/item/ammo_magazine/mauser = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+	)
+
+/obj/structure/vending/sixties/soviet/apparel
+	name = "Soviet Army apparel and gear rack"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/combat = 15,
+		/obj/item/clothing/under/ww2/soviet_amoeba/winter = 5,
+		/obj/item/clothing/under/ww2/soviet_berezka = 5,
+		/obj/item/clothing/accessory/armor/modern/plate = 2,
+		/obj/item/clothing/suit/storage/coat/ww2/soviet = 5,
+		/obj/item/clothing/mask/gas/soviet/gp5 = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68/winter = 10,
+		/obj/item/clothing/head/sov_ushanka_new = 10,
+		/obj/item/clothing/head/ww2/sov_ushanka/down = 10,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 5,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+	)
+/obj/structure/vending/sixties/soviet/weapons
+	name = "Soviet Army weapons and ammo rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak47 = 5,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 5,
+		/obj/item/ammo_magazine/ak47 = 25,
+		/obj/item/weapon/gun/projectile/automatic/rpd = 2,
+		/obj/item/ammo_magazine/rpd = 10,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
+		/obj/item/ammo_magazine/makarov = 25,
+		/obj/item/weapon/gun/projectile/semiautomatic/sks = 2,
+		/obj/item/ammo_magazine/sks = 25,
+		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
+		/obj/item/ammo_magazine/svd = 15,
+	)
+
 ///////////Star Wars stuff//////////////////////
 
 /obj/structure/vending/starwars/imperial/apparel
