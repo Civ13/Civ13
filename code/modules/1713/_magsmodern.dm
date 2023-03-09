@@ -581,6 +581,25 @@
 	multiple_sprites = TRUE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/pzb_case
+	name = "7.92x44mm case"
+	icon_state = "pzb39"
+	mag_type = MAGAZINE
+	caliber = "a792x44"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/pzb_pouch
+	name = "heavy bullet pouch (7.92x44mm)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a792x44
+	caliber = "a792x44"
+	max_ammo = 6
+	weight = 0.8
+	multiple_sprites = TRUE
+	pouch = TRUE
+
 /obj/item/ammo_magazine/a50cal_can
 	name = ".50 BMG ammo can"
 	icon_state = "b762x51"

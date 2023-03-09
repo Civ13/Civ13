@@ -342,7 +342,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd
 	name = "PTRD-41"
-	desc = "A soviet anti-material rifle chamber in 14.5x114mm designed to take out tanks."
+	desc = "A soviet anti-material rifle chambered in 14.5x114mm designed to take out tanks."
 	icon_state = "ptrd"
 	item_state = "ptrd"
 	base_icon = "ptrd"
@@ -360,6 +360,42 @@
 	load_method = SINGLE_CASING
 	ammo_type = list (/obj/item/ammo_casing/a145, /obj/item/ammo_casing/a145_ap)
 	magazine_type = /obj/item/ammo_magazine/mosin
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
+	accuracy = TRUE
+	accuracy_increase_mod = 2.00
+	accuracy_decrease_mod = 6.00
+	move_delay = 4
+	fire_delay = 4
+	equiptimer = 20
+	gun_safety = FALSE
+	load_delay = 20
+	bolt_open = FALSE
+	bolt_safety = FALSE
+	bolt_delay = 6
+
+// /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd/ptrs - To be added soon, just needs an icon change
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39
+	name = "PzB 39"
+	desc = "A German anti-tank rifle chambered in 7.92x44mm."
+	icon_state = "pzb39"
+	item_state = "pzb39"
+	base_icon = "pzb39"
+	attachment_slots = ATTACH_IRONSIGHTS
+	w_class = 4
+	force = 10
+	throwforce = 5
+	max_shells = 1
+	KD_chance = KD_CHANCE_HIGH
+	slot_flags = null
+	caliber = "a792x44"
+	weight = 8
+	recoil = 3
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | MAGAZINE
+	ammo_type = list (/obj/item/ammo_casing/a792x44)
+	magazine_type = /obj/item/ammo_magazine/pzb_case
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
 	accuracy = TRUE
