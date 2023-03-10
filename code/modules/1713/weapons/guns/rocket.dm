@@ -562,7 +562,7 @@
 	name = "HEAT ATGM rocket"
 	desc = "A High-Explosive Anti-Tank (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
 	icon_state = "atgmHE"
-	projectile_type = /obj/item/missile/explosive/atgm/he
+	projectile_type = /obj/item/missile/explosive/atgm_he
 
 // Missile projectiles
 
@@ -726,8 +726,17 @@
 /obj/item/missile/explosive/atgm
 	icon_state = "atgm_missile"
 	heavy_armor_penetration = 700
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 0, 2, 2)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
 
-/obj/item/missile/explosive/atgm/he
+/obj/item/missile/explosive/atgm_he
+	icon_state = "atgm_missile"
 	heavy_armor_penetration = 20
 	throw_impact(atom/hit_atom)
 		if(primed)
@@ -739,15 +748,8 @@
 		return
 
 /obj/item/missile/explosive/atgm/apcr
+	icon_state = "atgm_missile"
 	heavy_armor_penetration = 600
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 0, 2, 2)
-			handle_vehicle_hit(hit_atom,firer)
-			qdel(src)
-		else
-			..()
-		return
 
 // M79
 /obj/item/weapon/gun/launcher/grenadelauncher
@@ -758,7 +760,7 @@
 	w_class = 5
 	throw_speed = 2
 	throw_range = 10
-	force = 5.0
+	force = 10
 	flags =  CONDUCT
 	slot_flags = 0
 	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
@@ -769,6 +771,7 @@
 	fire_delay = 4
 	equiptimer = 20
 	load_delay = 10
+
 /obj/item/weapon/gun/launcher/grenadelauncher/examine(mob/user)
 	if(!..(user, 2))
 		return
@@ -786,6 +789,15 @@
 			user << "You put \the [I] in \the [src]."
 		else
 			usr << "\The [src] cannot hold more grenades."
+
+/obj/item/weapon/gun/launcher/grenadelauncher/proc/unload(mob/user)
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
+		rockets.len--
+		user.put_in_hands(G)
+		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
+	else
+		user << "<span class='warning'>\The [src] is empty.</span>"
 
 /obj/item/weapon/gun/launcher/grenadelauncher/consume_next_projectile()
 	if(rockets.len)
@@ -824,6 +836,19 @@
 	else
 		..()
 
+/obj/item/weapon/gun/launcher/grenadelauncher/m79
+	name = "M79 Grenade Launcher"
+	desc = "An American multi-use grenade launcher."
+	icon_state = "m79"
+	item_state = "m79"
+
+/obj/item/weapon/gun/launcher/grenadelauncher/m320
+	name = "M320 Standalone Grenade Launcher"
+	desc = "A German made multi-use standalone grenade launcher."
+	icon_state = "m79"
+	item_state = "m79"
+	equiptimer = 15
+
 /obj/item/ammo_casing/grenade_l
 	icon = 'icons/obj/grenade.dmi'
 	name = "40mm grenade"
@@ -834,11 +859,70 @@
 	w_class = 4
 	slot_flags = SLOT_POCKET
 
+/obj/item/ammo_casing/grenade_l/fragmentation
+	name = "40mm frag grenade"
+	desc = "A fragmentation explosive designed to be fired from a launcher."
+	icon_state = "g40mm_gas"
+	projectile_type = /obj/item/missile/grenade_fragmentation
+
 /obj/item/ammo_casing/grenade_l/teargas
 	name = "40mm tear gas canister"
-	desc = "A canister of tear gas, to be fired from a launcher."
+	desc = "A canister of tear gas designed to be fired from a launcher."
 	icon_state = "g40mm_gas"
 	projectile_type = /obj/item/missile/teargas
+
+/obj/item/missile/grenade
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "g40mm"
+	heavy_armor_penetration = 6
+	primed = null
+	throwforce = 12
+	allow_spin = TRUE
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 2)
+			qdel(src)
+		else
+			..()
+		return
+/obj/item/missile/grenade_fragmentation
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "g40mm"
+	heavy_armor_penetration = 6
+	primed = null
+	throwforce = 12
+	allow_spin = TRUE
+	var/num_fragments = 30
+	var/spread_range = 6
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/fragment_damage = 15
+	var/damage_step = 2
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom,0,1,2,1)
+			handle_vehicle_hit(hit_atom,firer)
+			var/turf/T = get_turf(hit_atom)
+			if(!T) return
+			var/list/target_turfs = getcircle(T, spread_range)
+			var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+			for (var/turf/TT in target_turfs)
+				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+				P.damage = fragment_damage
+				P.pellets = fragments_per_projectile
+				P.range_step = damage_step
+				P.shot_from = name
+				P.launch_fragment(TT)
+
+				// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
+				for (var/mob/living/L in T)
+					P.attack_mob(L, 0, 0)
+
+			spawn (5)
+				qdel(src)
+		else
+			..()
+		return
 
 /obj/item/missile/teargas
 	icon = 'icons/obj/grenade.dmi'
@@ -875,18 +959,3 @@
 	qdel(smoke)
 	smoke = null
 	return ..()
-
-/obj/item/missile/grenade
-	icon = 'icons/obj/grenade.dmi'
-	icon_state = "g40mm"
-	heavy_armor_penetration = 6
-	primed = null
-	throwforce = 12
-	allow_spin = TRUE
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 1, 2, 2)
-			qdel(src)
-		else
-			..()
-		return
