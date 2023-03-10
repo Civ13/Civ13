@@ -1,0 +1,476 @@
+"aa" = (/turf/floor/winter,/area/caribbean/nomads/taiga)
+"ab" = (/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"ac" = (/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"ad" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"ae" = (/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"af" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"ag" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"ah" = (/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"ai" = (/obj/covers/repairedfloor,/obj/covers/wood/stairs{dir = 1},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"aj" = (/obj/structure/railing{dir = 4},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"ak" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 8},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"al" = (/obj/covers/repairedfloor,/obj/covers/wood,/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"am" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 4},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"an" = (/obj/structure/railing{dir = 8},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"ao" = (/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"ap" = (/obj/covers/repairedfloor,/obj/covers/wood/stairs,/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"aq" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/taiga)
+"ar" = (/obj/structure/cell_tower,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"as" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/roofed/taiga)
+"at" = (/obj/covers/brick_wall,/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/brick,/area/caribbean/roofed/taiga)
+"au" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"av" = (/obj/structure/window/barrier/railing/brick,/obj/covers/jail/steeljail,/obj/structure/window/classic/brickfull,/turf/floor/dirt/winter,/area/caribbean/roofed/taiga)
+"aw" = (/obj/structure/simple_door/key_door/soviet,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"ax" = (/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ay" = (/turf/floor/wood,/area/caribbean/roofed/taiga)
+"az" = (/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aA" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aB" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aC" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_33%"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aD" = (/obj/structure/table/modern/table,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aE" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aF" = (/obj/structure/table/modern/table,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/whistle,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aG" = (/obj/covers/brick_wall,/obj/structure/sign/clock,/turf/wall/brick,/area/caribbean/roofed/taiga)
+"aH" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aJ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/closet/crate/empty,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/compass,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aL" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aM" = (/obj/structure/table/modern/table,/obj/item/weapon/compass,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aN" = (/obj/structure/window/barrier/railing/brick{dir = 1},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aO" = (/obj/covers/brick_wall,/obj/structure/sign/clock,/turf/wall/brick,/area/caribbean/no_mans_land/capturable/one)
+"aP" = (/obj/item/weapon/storage/toolbox/emergency,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"aQ" = (/obj/structure/window/barrier/railing/brick,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/taiga)
+"aR" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aS" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aT" = (/obj/structure/window/barrier/railing/brick{dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/taiga)
+"aU" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aV" = (/obj/covers/cobblestone/stairs{dir = 8},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aW" = (/obj/structure/window/barrier/railing/brick{dir = 4},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aX" = (/obj/structure/window/barrier/railing/brick{dir = 8},/obj/covers/jail/steeljail,/obj/structure/window/classic/brickfull,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"aY" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"aZ" = (/obj/structure/vending/sixties/soviet/weapons,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"ba" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bb" = (/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bc" = (/obj/structure/window/barrier/sandbag,/obj/structure/cannon/modern{maxrange = "80"; maxsway = "20"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bd" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"be" = (/obj/covers/cobblestone/stairs,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"bf" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bg" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"bh" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bi" = (/obj/covers/brick_wall,/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/brick,/area/caribbean/no_mans_land/capturable/one)
+"bj" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bk" = (/obj/structure/simple_door/key_door/soviet,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bl" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/no_mans_land/capturable/one)
+"bm" = (/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bn" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/early,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/box/firstaid/advsmall,/obj/item/weapon/storage/box/firstaid/advsmall,/obj/item/weapon/storage/box/firstaid/advsmall,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bo" = (/obj/structure/table/modern/table,/obj/item/camera/coldwar,/obj/item/camera_film,/obj/item/camera_film,/obj/item/camera_film,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bp" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bq" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"br" = (/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bs" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bt" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/table/modern/table,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bu" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov/border,/turf/wall/brick,/area/caribbean/roofed/taiga)
+"bv" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_33%"},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"bw" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"bx" = (/obj/structure/window/barrier/railing/brick,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"by" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bz" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bA" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/nomads/taiga)
+"bB" = (/obj/structure/window/barrier/railing/brick,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"bC" = (/obj/structure/table/modern/table,/obj/item/trombone,/obj/item/weapon/telephone/wireless,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bD" = (/obj/structure/window/classic/brickfull,/obj/structure/window/barrier/sandbag/incomplete{dir = 8; icon_state = "sandbag_33%"},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"bE" = (/obj/structure/window/barrier/railing/brick{dir = 1},/obj/covers/jail/steeljail,/obj/structure/window/classic/brickfull,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"bF" = (/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bG" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bH" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"bI" = (/obj/structure/flag/soviet,/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"bJ" = (/obj/structure/flag/soviet,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"bK" = (/turf/floor/beach/water/ice,/area/caribbean/nomads/taiga)
+"bL" = (/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"bM" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 8},/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"bN" = (/obj/covers/repairedfloor,/obj/covers/wood,/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"bO" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"bP" = (/obj/structure/railing{dir = 8},/turf/floor/beach/water/deep,/area/caribbean/nomads/taiga)
+"bQ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"bR" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/beach/water/ice,/area/caribbean/nomads/taiga)
+"bS" = (/obj/structure/barbwire,/turf/floor/beach/water/ice,/area/caribbean/nomads/taiga)
+"bT" = (/obj/structure/barbwire,/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"bU" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bV" = (/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement/armored,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"bW" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/armored/reversed,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"bX" = (/obj/structure/vehicleparts/frame/car/right,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"bY" = (/obj/structure/vehicleparts/frame/car/left,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"bZ" = (/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"ca" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 2},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cb" = (/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cc" = (/obj/effect/autoassembler,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"cd" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"ce" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cf" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{icon_state = "maxim_ww2"; dir = 1},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cg" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"ch" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_33%"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"ci" = (/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/item/ammo_magazine/sks,/obj/structure/closet/crate/empty,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cj" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"ck" = (/obj/structure/barricade,/obj/structure/sign/flag/chinese/prc,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"cl" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cm" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0; doorcode = 4975},/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"cn" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#FFFFFF"; name = "Troop Truck"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0; doorcode = 4975},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"co" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cp" = (/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cq" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/roof_support,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cr" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCH"},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cs" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCH"},/turf/floor/dirt/winter,/area/caribbean/roofed/taiga)
+"ct" = (/obj/structure/vehicleparts/frame/car/rf,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/armored,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"cu" = (/obj/structure/vehicleparts/frame/car/lf,/obj/structure/engine/internal/diesel{maxpower = 1000},/obj/structure/vehicleparts/movement/armored/reversed,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"cv" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cw" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 8; icon_state = "sandbag_33%"},/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"cx" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/roof_support,/turf/floor/dirt/winter,/area/caribbean/roofed/taiga)
+"cy" = (/obj/structure/curtain/leather/open,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cz" = (/mob/living/simple_animal/horse/white,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cA" = (/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"cB" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"cC" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cD" = (/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cE" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cF" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCH"},/turf/floor/winter/grass,/area/caribbean/roofed/taiga)
+"cG" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/roof_support,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cH" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cI" = (/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cJ" = (/obj/covers/tent,/obj/structure/sign/flag/chinese/prc,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cK" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cL" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/compass,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cM" = (/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/structure/closet/crate/empty,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cN" = (/obj/structure/closet/crate/bayonets,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"cO" = (/obj/structure/closet/crate/bayonets,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cP" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"cQ" = (/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/roofed/taiga)
+"cR" = (/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/incendiary,/obj/item/cannon_ball/mortar_shell/smoke,/obj/item/cannon_ball/mortar_shell/smoke,/obj/item/cannon_ball/mortar_shell/smoke,/obj/item/cannon_ball/mortar_shell/smoke,/obj/item/cannon_ball/mortar_shell/smoke,/obj/structure/closet/crate/ww2,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cS" = (/obj/item/weapon/wrench,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/compass,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cT" = (/obj/structure/cannon/mortar,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cU" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/obj/item/weapon/grenade/modern/custom,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"cV" = (/turf/wall/indestructable/black,/area/caribbean/roofed/taiga)
+"cW" = (/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"cX" = (/obj/structure/vending/sixties/china/apparel,/turf/floor/dirt,/area/caribbean/roofed/taiga)
+"cY" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"cZ" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"da" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/roofed/taiga)
+"db" = (/obj/structure/window/barrier/sandbag/incomplete,/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_33%"},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/roofed/taiga)
+"dc" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/lamp/lamp_big/alwayson{dir = 4},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/winter,/area/caribbean/roofed/taiga)
+"dd" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"de" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"df" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"dg" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"dh" = (/obj/structure/table/modern/table,/obj/item/violin,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"di" = (/obj/structure/vending/sixties/soviet/apparel,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dj" = (/obj/structure/closet/crate/empty,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dk" = (/obj/item/stack/material/barbwire/twnt,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dl" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/closet/crate/sandbags,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dm" = (/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dn" = (/obj/structure/closet/crate/sandbags,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"do" = (/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/coldwar/rgd5,/obj/item/weapon/grenade/coldwar/rgd5,/obj/item/weapon/grenade/coldwar/rgd5,/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dp" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"dq" = (/obj/structure/window/barrier/sandbag/incomplete,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"dr" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"ds" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"},/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"dt" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"du" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dv" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"dw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dx" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"dy" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dz" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dA" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dB" = (/obj/covers/brick_wall,/obj/structure/sign/custom/golden{name = "Radio station"},/turf/wall/brick,/area/caribbean/roofed/taiga)
+"dC" = (/obj/covers/tent,/obj/structure/sign/flag/chinese/prc,/turf/floor/dirt,/area/caribbean/roofed/taiga)
+"dD" = (/obj/structure/sign/flag/chinese/prc,/obj/structure/barricade/wood_pole,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dE" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/nomads/taiga)
+"dF" = (/obj/structure/simple_door/key_door/soviet,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dG" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/structure/shelf,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dH" = (/obj/structure/grille/chainlinkfence{icon_state = "chainlinkfence"; dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dI" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
+"dJ" = (/obj/structure/grille/chainlinkfence{icon_state = "chainlinkfence"; dir = 8},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dK" = (/obj/structure/grille/chainlinkfence/corner,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dL" = (/obj/structure/grille/chainlinkfence,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dM" = (/obj/structure/grille/chainlinkfence/corner{dir = 1},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"dN" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dO" = (/obj/structure/props/engineprops/diesel,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dP" = (/obj/structure/props/stove,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dQ" = (/obj/item/weapon/storage/box/cutlery,/obj/item/weapon/storage/box/drinkingglasses,/obj/item/weapon/storage/box/canned,/obj/structure/shelf,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dR" = (/obj/covers/brick_wall,/obj/structure/props/radiator,/turf/wall/brick,/area/caribbean/no_mans_land/capturable/one)
+"dS" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dT" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel/low,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dU" = (/obj/structure/sink{dir = 8; pixel_x = -12},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"dV" = (/obj/covers/brick_wall,/obj/structure/sign/nosmoking2,/turf/wall/brick,/area/caribbean/nomads/taiga)
+"dW" = (/obj/covers/brick_wall,/obj/structure/sign/nosmoking,/turf/wall/brick,/area/caribbean/nomads/taiga)
+"dX" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"dY" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"dZ" = (/obj/structure/wild/tree/live_tree/pine/snow,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"ea" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"eb" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
+"ec" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"ed" = (/obj/structure/vending/sixties/soviet/weapons,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ee" = (/obj/covers/cobblestone/stairs{dir = 8; icon_state = "rampup"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ef" = (/obj/structure/table/modern/table,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/obj/item/weapon/key/soviet,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eg" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/wireless,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eh" = (/obj/structure/window/classic/brickfull,/obj/structure/curtain/leather/open,/obj/covers/jail/steeljail,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ei" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/compass,/obj/item/weapon/compass,/obj/structure/shelf,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ej" = (/obj/covers/jail/steeljail,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ek" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"el" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"em" = (/obj/structure/simple_door/key_door/custom/jail/steeljail/guard,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"en" = (/obj/structure/table/modern/table,/obj/structure/radiorecorder,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eo" = (/obj/item/weapon/storage/box/handcuffs,/obj/structure/shelf,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ep" = (/obj/covers/brick_wall,/obj/structure/sign/securearea,/turf/wall/brick,/area/caribbean/nomads/taiga)
+"eq" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov,/turf/wall/brick,/area/caribbean/nomads/taiga)
+"er" = (/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRULt"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"es" = (/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"et" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eu" = (/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ev" = (/obj/structure/bed/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ew" = (/obj/structure/vending/sixties/soviet/apparel,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ex" = (/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ey" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"ez" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eA" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/early,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eB" = (/obj/structure/closet/crate/empty,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/item/roller,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eC" = (/obj/structure/table/rack/coatrack,/obj/item/clothing/suit/storage/coat/ww2/sovcoat,/obj/item/violin,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eD" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
+"eE" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
+"eF" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
+"eG" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
+"eH" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
+"eI" = (/obj/structure/vehicleparts/frame/car/right,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 8},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"eJ" = (/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/nomads/taiga)
+"eK" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"eL" = (/obj/covers/wood_wall/log/corner,/turf/wall/wood,/area/caribbean/roofed/taiga)
+"eM" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 4},/turf/wall/wood,/area/caribbean/roofed/taiga)
+"eN" = (/obj/covers/wood_wall/log,/turf/wall/wood,/area/caribbean/roofed/taiga)
+"eO" = (/obj/structure/oven,/obj/item/clothing/gloves/oven,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eP" = (/obj/item/weapon/bedsheet,/obj/structure/bed/wood,/turf/floor/wood/fancywood,/area/caribbean/roofed/taiga)
+"eQ" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1,/turf/floor/wood/fancywood,/area/caribbean/roofed/taiga)
+"eR" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eS" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/fancywood,/area/caribbean/roofed/taiga)
+"eT" = (/turf/floor/wood/fancywood,/area/caribbean/roofed/taiga)
+"eU" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/turf/floor/wood/fancywood,/area/caribbean/roofed/taiga)
+"eV" = (/obj/structure/sink{dir = 8; pixel_x = -12},/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eW" = (/obj/item/weapon/storage/box/canned,/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eX" = (/obj/item/weapon/storage/box/cutlery,/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eY" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/item/weapon/beartrap/armed,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"eZ" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/window/barrier/sandbag/incomplete,/obj/structure/window/barrier/sandbag/incomplete{dir = 8; icon_state = "sandbag_33%"},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"fa" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"fb" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/window/barrier/sandbag/incomplete,/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"fc" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 8},/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_33%"},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"fd" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"fe" = (/obj/covers/repairedfloor,/obj/covers/wood,/obj/structure/railing{dir = 4},/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/beach/water,/area/caribbean/nomads/taiga)
+"ff" = (/obj/structure/toilet/outhouse,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
+"fg" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/roofed/taiga)
+"fh" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fi" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fj" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fk" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fl" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fm" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fn" = (/turf/floor/dirt/underground/icy/rock,/area/caribbean/nomads/taiga)
+"fo" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"fp" = (/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"fq" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
+"fr" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/trench,/area/caribbean/nomads/taiga)
+"fs" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 4},/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/wood,/area/caribbean/roofed/taiga)
+"ft" = (/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"fu" = (/obj/covers/tent,/obj/structure/sign/flag/chinese/prc,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fv" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fw" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fx" = (/obj/structure/vending/sixties/china/weapons,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fy" = (/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fz" = (/obj/structure/vending/sixties/china/apparel,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fA" = (/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fB" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
+"fC" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"fD" = (/obj/map_metadata/vojchi,/turf/wall/indestructable/black,/area/caribbean/roofed/taiga)
+"fE" = (/turf/floor/dirt/underground/icy/rock,/area/caribbean/no_mans_land/invisible_wall/taiga)
+"fF" = (/obj/structure/closet/crate/empty,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"fG" = (/obj/item/violin,/turf/floor/winter,/area/caribbean/nomads/taiga)
+
+(1,1,1) = {"
+aaaaaaaaaaabacadaaaaaaaaaaaaaaaaaaaaacacaaaaabaaaaaeaaaaaaaeabaaaaaaabaaaaaaaacAcAaacAcAaaaeaaaaabaaaaaaaaaaabacadaaaaaaaaaaaaaaaaabaaaaafaaaaaaaaaaaaaaaaaaaaaeabaaabaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaeDeDaaaadEdEdEdEdEdEdEdEdEdEdEdEdEdEdE
+aaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaeaaaaaeaaabaaaaaaaaaaabaaaaabaaaaaaaaabaaabaacAcAaacAabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaeaaaaaeaeaaaaaaaaaaabaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaeaeaaaaeDeDaaaadEegefeoededeiaxeeeeeeeeaxaxer
+aaaaabaaaaaeaeaaaaaaaaaaaaaaaaaeaaaaaeaaaaaaaaaaaeaaaaabaaaaaaaaaaaaababaaabaaaacAcAcAcAaaaaaaaaaaaaaaabaaaaaeaeaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeabaaabaaaaaaaaaaaaaaaaabaaaaeDeDaaaadEaxaxaxaxaxaxaxdEdEdEdEesaxet
+aaaaaaaaaaaaababaaaaaaaaaaaaababaaaaaaabaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaacAcAcAaaaaaaaaabaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaeaaaaabaaaeaaaaaaaaacaaaaaaacaaaeaaaaababaaabaaaaaaaaacaaaaaaaaaaaaacaaeDeDaaaaehaxaxaxaxaxaxaxejaxekdEesaxet
+aaaaaeaaaaaaaaacaaaaaaaeaaaaabaaaaababababaaaaabaaaaaaaaabaaaaaaaaacaaaaaaaaaaaacAcAcAcAaaaaaaaaaaabaaaeaaaaaaaaacaaaaaaaaaeabaaaeaaacaaaaaaaaaaabaaaaabaaabaaabaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaeDeDaaaaehaxaxeAexeBaxaxemaxekdEeuaxet
+aaaaaeaaabaeaaaaaaaaabaaaaaaaaaaaaaaabaaabaaaaaaaaaaaaababaaaaaaaaaaaaaaababaaaacAcAabaaaaaaacaaaaaaaaaeaaabaeaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaagaaababaaaaaaaaaaaaaaaaeDeDaaaadEeCaxaxeJaxaxaxdEdEdEdEeuaxax
+aaaaaaaaababaaaeaaaaabaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaacAcAabcAaaaaaaaaababaaaaaaababaaaeaaaaabaaaaabaaaeaaaaaaaaaaaaababaaaaaaababaaaaabaaaaaaagaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaaaeDeDaaaadEelaxaxaxaxaxaxejaxekdEeuaxax
+aaabaaaaaaaaaaaaaaaaaaaaabaaaaaaaaacaaaaabaaaaaaaaaaacaaaaaaaaaeaaaaaaaaaeaaaacAcAababcAaaaeaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaadaaaeaaaaaeaaafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaeaaaaaaaaaaaaaaaeaaaaaeaaaaeDeDaaaadEenaxeweweyezaxemaxekdEeuaxev
+aaaaaaabaaaaabacaaaaaaaaaaaaaaababababaaaeabaaaaaaaaaaaaaaaaababaaabaaaaaeaaaacAcAcAcAcAaaaaaaabaeaaaaaaabaaaaabacaaaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaaeaeababaaaaaaaaaeaaaaaaaeaaaaaeabaaaaaaaaaaaaaaabaaaaeDeDaaaaepeqdFdEdEehehdEdEdEdEdEdEdEdE
+aaaeaaabaaaaaaaaaaaaaaaaaaaaababababababaaabaeaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaacAcAabcAaaaaaaaaaaabaaaeaaabaaaaaaaaaaaaaaaaaaaaaaaeaeaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaeDeDaaafaaaaaaaaaaaaaaaaaaaaaaaeaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaeabaaaaaeaaaaaaaaaaaaaaaaaaaaaaadaaaacAcAabcAaaaaaaacabaaaaaaaaaaaaaaaaaaaaaaaaaeabaaaaaeaaaaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaagaaaaeEeDaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaa
+acaaaaaaaaaaabaaaaabaaabaaabaaaaaaabaaaaaaaaaaacacaaaaabaaaaaeaaaaaaaaabaaaaaacAcAcAcAaaaaaaaaaaaaacaaaaaaaaaaabaaaaabaaaaabacaaaaaaaaabacadaaaeaaaaaeaaabaaabababaaaaaaabaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaaeDeDeDeDeDeDeDeFeDeDeDeDeDeDeDeGeDeDeD
+aaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaeaaaaaeaaabaaaaaaaaaaabaaababacaacAcAcAcAabaaaaaeaaaaaaaaaaaaaaaaababaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafaaaaaaaeaaaaaaaaeHeDeGeGeDeDeDeDeDeDeEeDeDeDeDeDeDeDeD
+aaaaaaaaaaababaaaaaaababaaaaabaaaaabaaaaaeaaaaaeaaaaaaaaaaaeaaaaabaaaaabaaaacAaacAcAaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaabaaaeaaaaaaaaaaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+aaaeaaafaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaaaaaaabaaaaaaabaaaaaaabaaaaabaaaaaaabababaaaaaaaaaaaaaaaaaeaaafaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaeaaaaaaaeaaafaaagaaaaaaaaaaaaaaaaaaaaabaaaaaaaeaaaaaaaaaeaaaaaeaaaaaaaaaeaaafaaagaaacacaaaaaaaaab
+aaaaabaaaaabaaaaaeaeababaaaaaaaaaaaaaeabaaaaababababaaaaabaaaaaaaaabaeaaaaaaabcAabaaaaaaaaaaabaeaaaaaaabaaaaabaaaaaeaeababaaaaaaabaaaaaaaaacaaaaaaaaaaaaabaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaab
+aaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaabaaaaaaaaaaaaababaaacaacAabcAaaaaaaaaaaabaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabacadaaaaabaeaaaaaaaaabaaaaaaaaagaaaaaaaaaaaeaaabaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaabab
+aaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaaaeaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaacAaacAabaaaaaaaaabacaaaaaaaaabababaeaaaaaaaaacaaaaaaaaaaaaafaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaabaaaeaaaaaaaaaaaacAcA
+aaabacadaaaeaaaaaeaaabaaababaaaaaaaeaeaaaaaaacaaaaabaaaaaaaaaaacaaaaaaaaaacAcAcAabcAaaaaaaabaaaaaaaaababadaaaeaaaaaeaaabaaabababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaaaabaaaaabacaaaaaaaaaaaaaaaaaaaaaaabacadaaacaaaaaacAcAcAcAcA
+aaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaababababaaaeabaaaaaaaaaaaaaaaaaaaaaacAaaaaabaaaaabababaaaaaaaaabaaaaaaaaaaabaaaaaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAabcAcAab
+aaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaababababababaaabaeaaaaaaaaaaaaaaaaaaabcAcAaacAaaaaabababaaaeabababaaaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaacAcAabcAcAcAcAcAaaabcAcAabcAcAcAcAcAcAcAcAcA
+aaaaaaaaaaaeaaaaaaaeaaafaaagaaaaaaaaaaaaaeaaaaaaaaaeabaaaaaeaaaaaaaaafaaaaaacAabaaabaaaaababaaaaababaaaaaaaaaeaaaaaaaeaaafaaagaaacaaaaababababaaaacAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAabaaababababababcAcAcAcAcAcAcAabcAcAcAcAcAcAcAcAcAcAcAcAcAcAcA
+aaaeabaaaeaaacaaaaaaaaaaabaaaaabaaabaaaaaaaaabaaaaaeababababaaabaaaaaaaaaaaacAcAababaaaaabaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababcAcAcAcAcAcAcAcAcAcAcAcAcAcAaacAcAcAcAcAcAcAcAcAcAcAcAcAcAcAabcAcAcAcAcAcAabcAaaababcAcAcAcAcAcAcAcAcAcAcA
+aaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaacAcAabcAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababcAabcAcAcAabcAcAcAcAabcAcAcAcAcAcAcAabcAcAcAcAcAaacAaacAaaaacAabcAabaaaaaaaacAcAcAaaaacAcAcAcAabcAabcAcAaaaaaaaaaaaaab
+aaaaabaaaeaaaaaaaaaaaaababaaaaaaababaaabaaaaabaaaaaeaeaaaaaaaaaaaaaaabaaaaaacAaaabcAaaaaaaaaaaaaaaaaaaaaaacAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAaaabcAaaabaaababaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaa
+aaaaadaaaeaaaaaeaaafaaaaaaaaaaaaaaaaaaaaaaaaaaabaeaaaaaaaaaaaaaaaaabadaaaaaacAcAcAcAaaaaaaaaaaaaaaaacAcAcAcAcAcAcAcAcAcAcAcAcAcAababcAcAabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaabaaaaaaaaaaacaaaaaaaaaaaaaaaeaaaaaa
+aaaaaaaaaaaaaaaaabaaaaabaaaaaeaeababaaaaaaaaaaaeaaaaaaaaaaaaaaabababaaaaaacAcAcAcAcAcAaacAaacAcAcAcAcAaaabcAcAcAcAcAcAcAaaababababcAcAaaaaacaaaaaaaaaaabaaaaabaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaa
+aaaaaaaaaeaeaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaababaaabaaaaaaaacAcAabcAcAcAabcAcAcAabcAcAcAcAcAcAaaabaaaaabaaaaaaaaaaaeabaaaeaaacaaaaaaaaaaabaaaaabaaabaaabaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaababaaaaaaaaaaaaaaaeaaaaaa
+aeabaaaaaeaaaaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaeaaabaaaaaaaaabaaaaabaaaaaaaacAcAcAaaaacAcAcAcAcAcAababaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaaaaabaaaeaaaaaaaaaaaaaaaeaaaaaaaaaeaaaaae
+aaabacaaaaaaaaabacadaaaeaaaaaeaaabaaabaaaaaaaeaeaaaaabaaaaaaaaaaabaaacaaaacAcAcAcAcAcAcAcAcAababcAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaeaaaaaaaaaaaaababaaaaaaababaaaaabaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaaaaaaaaab
+aaaeaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaacAcAcAcAcAcAcAcAcAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadaaaeaaaaaeaaafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaeaaaaaeaaacaaaaaaaaaaabaaaaabaaabaaabaaaaaaaaabaaaaaaaaaa
+aaaeaaaaaaaaaaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcAcAaaabcAaeabaaaeaaacaaaaaaaaaaabaaaaabaaabaaabaaaaaaaaaaaaaaaaaaaaabaaaaabaaaaaeaeababaaaaaaaaaeaaaaaaaeaaaaaeaaaaaaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaag
+aaaaaaaeaaaaaaaaaaaaaaaeaaaaaaaeaaafaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAcAcAaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaeaeaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaeaaaaaaaaaaaaababaaaaaaababaaaaabaaaaaaagaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaabaaaeaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaabacadaaaaaaaaaacAcAabaaaaaaabaaaeaaaaaaaaaaaaababaaaaaaababaaaaabaaaeabaaaaaeaaaaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaaafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaeaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaeaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAaaaaaaadaaaeaaaaaeaaafaaaaaaaaaaaaaaaaaaaaabaaaaabacaaaaaaaaabacadaaaeaaaaaeaaabaaabababaaaaaaabaaaaaaaaagaaaaaaaaabaaaaabaaaaaeaeababaaaaaaaaaeaaaaaaaeaaaaae
+aaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaeaaaaaaaaaaaacAcAcAaaaaaaaaaaaaaaaaaaabaaaaabaaaaaeaeababaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaeaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+acacaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAaaaaaaaaaaaeaeaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaaaaeaaaaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaaaaaacAcAcAaaaeabaaaaaeaaaaaaaaababaeaaaaaaaaacaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaeaaaaaaaeaaafaaagaaaaaaaaaaaaaaaaaaaaaaaaaaabacadaaaeaaaaaeaaabaaabababaaaaaaabaaaaaaaaag
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadudvacaadudwaacAcAcAaaaaabacaaaaaaaaabacadaaaeaaaaaeaaabaaabababaaaaaaabaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaacaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaeaeaaaaaaaaaaaaaaaaaaaaaaaaaadxdybbbbdzdwabcAcAabaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaafaaagaaaaacaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaaa
+aeaeaaaeaeaeaeaaacaeaeacaaaaaaaaaeaaaaaaaaaaaaaaacaaaaaaaaaaaaaadAdAdAdAacabcAcAabaaaaaeaaaaaaaaaaaeaeaaaaaeaeaaaaaaaaaaaaaaaaaeaaafaaaaaaaeaaaaaaaaaaaaaeaaaaaeaeaaaaaaaaaaaaaaacaaaaaaaaaeaaaaaaaaaaaaaaaeaaaaaaaeaaafaaagaaaaaaaaaaaaaaaaaaaa
+aeaeaeaeaeaaaeaaaeaeaaaeaaaaaaaaaaaaaaaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAabaeaaaaaaaeaaaaaaaaaaaaaaaeaaaaaaaeaaafaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaa
+aeaeaeaeaeaeaaaeaaaaaaaaaaaeaaaaacaaaaaaaaaaaaaaaaaaaaaeaaaaacaeaeaaaeaaaecAcAcAaeaeaeaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaeaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaaaeaeacaeaaae
+ahaaaaacaaaaaaaeacaaaaaaaaaaaaahahahaaahaaaaaaaaaaaaaaaaaaaaaeaaaeaeaaaeabcAcAabacaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaaaeaaaeaeaeaeaeaeaeaeaaaeacaeaeaaaaaaaaaa
+ahahahahahaaaaaaaaaaahahahahahahahahahahahahahaaaaahaaaaahahahahahahahahaacAababacahahahahahahahaaahahahaaahahahahahaaahahahaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaeaeaeaeaeaeaaaaaaacaeacaeaaaaaaaaaaaaaaaaaaaeaeaeaaaeaeaeaeaeaaaaaaaa
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahaiaiaiaiahahahahahahahahahahahahahahahahahahahahahahahahahahaaaaaaaaahahahahaaahaaaaaaaaaaahahahahahahahahahahaeaeahahahahahahahahaaaaaaaaaaaaaaaaaaahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahaoahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahaoahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahaoahahahahahahahahaoaoaoahahahaoahahahahahahahahahahahahahahahajakalalamanaoahahahaoaoahaoaoaoahahahaoaoaoaoaoahaoaoaoaoaoaoaoaoahahahahahahahahahahahahahahahahahahaoaoahahahahahahahahahahahahahahahahahahahahahaoahahahahaoahahahahah
+ahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahahahajakalalamanahaoahaoaoaoaoaoaoaoaoahaoaoaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahaoahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoajakalalamanaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoajakalalamanaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoajakalalamanaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoajakalalamanahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoajakalalamanaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahajakalalamanaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahajakalalamanahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajakalalamanahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajakalalamanahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajakalalamanaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajakalalamanaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoajakalalamanaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahajakalalamanahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahapapapapahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahaecAcAcAaeahahahahahahaoaoaoaoaoahahaoahahahahaoaoahahaoahahaoahaoahahahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaecAcAcAaeaeahahahaoahahahahahaoaoahahahahahahahahahahahahahahahahahahaeahahahahahahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahaeaeaecAaecAaaaeaeahahahahahahahahahaoahahahahahahahahahahahahahahahaeahaeaeaeaeahahaeaeahahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeabcAabcAaaaaaeaeaaaeaeaaahahahahahahahahahahahahahahahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahaoahahahahahahahaeaeaeabcAcAcAaadXaaecaeaeaeaeaeahaeaeaeeaecaeaeaeahahaeaeaeaeaeaeaeaeaeaaaaaaaaaaaaaaaeaeaeaeaeaeahahahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaaaeabcAcAcAaaaaaaaaaaaedYaeaeaeeaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaIaJaaaaaaaKaLaeaeaeeaaeaeaeaeaeahahahahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaeaacAcAcAcAaaaaagaadXaaaaaaaaaaaaaaaeaeaeaqaqaqaqaqaqaqaqaeaeaeaeaeaeaIaJaaaaaaaIaLaeaeaeecaeaedZaeaeaeaeaeaeahahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaaaacAcAcAcAaaaaaaaaaaacaaaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaadXaIaJaaaaaaaIaLacaaaaaaaaaaaeaeaeaeaeaeaeaeahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaeaaaacAcAcAabaaaaaaaaaaaaaaaqaqaqaqaqaqaqaqaqaqaaararaaaqaqaqaqaqaqaaaaaIbabbbcbbbdaLaadXaaaaaqaqaqaqaqaqaqaqaeaeahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaedXaaaacAcAabaqaqaqaqaqaqaqaqaqaqasasasatauauauasasasasasauauasasaqaqaaaaaabpbpbpbpbpaaaaaaaaaqaqasasavavasasaqaqaeahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaeaeaaaaaaaacAcAabaqaqaqaqaqaqaqaqaqaqawazaAaBaCaEaCaFaHaMaOaPaCaCaZasaqaqaaaaaaaaaaaaaaaaaaaaaaaaaqasasasaNaNatasasaqaeaeahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaeaaaaaaaacAcAabaaaaaaaaaadTdSaaaaaqaqdBazbfaBazazazazbhazbibjazazaZasaqaqaqaqaqaqaqaqaqaqaqaqaqaqaQasaGaRayayaSasasaqdZaeahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahaeaedXaaaaaaaacAcAabaaaaaaaadEdEdEdEaaaqaqaUaBazazazazazazazazbkazazdIblasaqaqaaaaaaaaaaaaaaaaaaaaaaaTaxaVawayayayayaWaXaqaaaeahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahaeaeaaacaaaacAcAcAaaaaaaagaadEdGdPdVaaaqaqaYaBbmazazazazazbmazdRblazazbnasaqaqaaaadXaaaaaaaaaaagaaaaaTbeasasbgayayayaWaXaqaeaeahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahaeaeaaaaaaaaaacAcAabaaaaaaaaaadEdNaxdFaqaqaqasbobtbCbFbGbFbHcjdhbldiazazdjasaqaqaaaaaaaaagaaaaaaaaaaaaaqaqasasaDayayayasasaqaeacahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahaeaeaIbqbrbsaLcAcAabaIbqbrbsaLdEdUdQdEaaaqaqbuasasasbvbvbwasasasasdiazdIblasaqaqaaaaaaaaaaaaaaaadXaaaaaqaqasasbxbBbxbxasasaqaeaeahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaIbybzbAaLcAcAabaIbyfrbAaLdWdFdEdEaaaqaqaqaqaqaqaqaqaqaqaqaqasblazazdkbDaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqbuasbEbEasbuaqaqaeaeaeahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahaeaabpbpbpaacAcAabaabpbpbpaadJaadOdHaaaqaqaqaqaqaqaqaqaqaqaqaqasdlazazdmbDaqaqaaaaaaaaaaaaaaaaaaagaaaaaaaqaqaqaqaqaqaqaqaeaeacaeahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaeaaaaaacAcAabaaaaaaaaaadKdLdLdMaaaaaaaaaaaaaaaaaeaeaaaqaqasdnbFbGdoasaqaqaaaadXaaaaaeaeaeaeaadXaaaaaaagaaaeaeaeaeacaeaeaeahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahaeaeaeaaaacAcAabaaaaebaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaqaqasasbvbwasasaqaqaaaaaaaeaeaedYaeaeaeaeaeaaaeaeaeaeaeaeaeaedYaeaeahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoaoaoahahahahahaeaeaeaecAcAabaaaaaaaaaeaeaeeaaeaedYaeaedYaeaeaeaeaeaeaqaqaqaqaqaqaqaqaqaqaeaeaeecaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeacaeaeahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaecAcAcAabaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaqaqaqaqaqaqaqaqaqaqaeaeaeaeaeaeaeaeaeaedpdqdsdtaeaeaeaeaeaeaeaeaeahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahahahbIabcAcAabbJaeaeahahahaeaeahahahaeaeaeaedYaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahaeaedrdraeaeaeacaeaeaeaeaeahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahahahahaiaiaiaiahahahahahahahahahahahahahahahahahaeaeaeaeaIbqbrbrbsaLaeaeaeaeaeaeahahahahahahaeaeaeaeaeaeaeaeacaeaeahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahajakalalamanahahahahahahahahahahahahahahahahahahaeaeaIbybzbzbAaLaeaeaeahahahahahahahahahahahahahaeaeaeaeaeaeahbKahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahajakalalamanahaoahahaoahahahahahahahahahahahahahahaeaabpbpbpbpaaaeaeahahahahahahahahaoahahahahahahbKbKbKahahbKahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahajakalalamanahahahahaoahahaoahahaoahahahahahahahahahaeahahaeahaebKahahahahahahahahahahahahahahahahahahbKbKbKahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoahaoaoaoahahahahahahahahahahahbKbKahahahahahahahahaoaoaoahahbQbQbQbQbQbRbQbQbQbQbQbQbQaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahbKahbKbKahahaoahahaoaoaoaoaoaoaoaoaoaobTbTbTbTbSbTbSbSbTbTbTaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahbKahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKahbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobQbRbRbQbRbRbRbQbQaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobKbKbKbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobSbSbTbSbSbSbTaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahbKbKbKaoaoaoaobKaoaoaoaoaoaoaoaoaoaoaoaoaobKbKbKbKbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahbKbKbKaoaoaobKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaobKbKbKbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKbKaoaoaobKbKaoaoaoaoaoaoaoaoaoaoaoaoahaobKbKbKbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKbKaoaoaoaoaoaoaobKbKbKbKaoaoaoaoaoaoahahbKbKbKbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahahahaoaoaoaoaoaoaoaobKbKaoaoaobKbKbKaoaoahbKbKbKbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobKahahahaoaoaoaoaoaoaoaoaoaoaoaoaobKaoaoaoaoahbKbKbKbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaobKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahaoaoaoaobKbKbKaoaoaoaoaoaoaobKbKbKaoahbKbKbKbKahbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahbKbKaoaoaobKbKbKaoaoaoaoaoaoaoaobKbKaoahbKbKbKahbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahbKbKaoaoaoaobKaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKahbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKbKahbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahbKahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKbKahbKbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKbKbKahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKahbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKahbKaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKahbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahbKbKahbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKahahbKahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahbKbKahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahbKbKbKbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahbKbKbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKbKbKbKahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKbKbKahbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+ahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahbKbKahahahbKbKahbKbKahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahbKahbKbKahbKbKbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+ahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobLbMbNbNbObPaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaobKbKbKahahbKbKbKahahbKahahaoaoaoaoaoaoaoaoaoaoaoaoaoaobQbQbRbRbRbRbRbRbRbRbRbQaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+ahahahahahahahahahahaoaoaoaoaoaoaoaoaoaoahahahahahahahahahahahahahbLbMbNbNbObPahahaoaoaoaoaoaoaoaoahahahahahahaobKahahahbKbKbKbKbKahahbKahahahahaoahahahahahahahahaoaobTbTbTbSbSbSbSbSbSbTbSbTaoaoaoaoaoaoaoaoaoaoaoahahahaoaoaoaoaoahahahahahah
+ahahahahahahahahahahahaoaoaoahahahahahahahahahahahahahahahahahahahbLbMbNbNbObPahahahahahahahahahahahahahahahahahahahahahbKbKbKbKbKahahbKbKbKahahahahahahahahahahahahahahahbKbKbKbKbKbKbKbKbKbKaoahahahahahahahahaoahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajeZfaalfbanahahahahahahahahahahahahahahahahahahahahahbKbKahbKahahahahbKbKahahahahahahahahahahahahahahbKbKbKbKahbKbKbKbKbKahahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajfcfdalfeanahahahahahahahahahahahahahahahahbKbKbKbKbKbKbKbKbKbKbKahahahbKahahahahahahahahahahahahahahahahbKbKahbKbKahahbKbKahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahbKahahbKahbKbKbKahbKbKbKbKbKbKahahahahahahahahahahahahahbKbKbKbKahahahahbKbKahbKahahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahbKbKbKbKbKbKbKbKahbKbKbKahahahbKahahahahahahahahahahahahahbKbKahahahahbKahbKbKbKbKahahahahahahahahahahahahahahahahahahahahahahahah
+ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahahahahahbKbKahbKbKbKbKbKbKahahahahahahahahahahahahahahahahahahahbKbKbKbKahahbKbKbKahahahahahahahahahahahahahahahahahahahahahahahah
+aaahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahajakalalamanahahahahahahahahahahahahahahahahahahaaaaahahbKbKahbKbKahbKahahahahahahahahahahahahahahbKbKbKbKbKbKbKbKbKbKbKbKbKahahahahahahahahahahahahahahahahahahahahahahahahah
+aaahahahahahahahahahahahaaaaaaaaahahahahahahahaaaaaaaaaaaaahahahahahapapapapahahahaaaaaaaaaaaaahahahahaaaaahahaaaaaaaaaaaabKahahbKahbKbKahahaaaaaaaaaaahahahahaaaaaabKbKbKaaaaaadDaaaaaaaaaaaaaaaaaaaaahahahahahahahahahahahahahahahahahahahahah
+aaaaaaahahahahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaackabcAcAabckaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahaaaaaaaaahahaaaaah
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacAcAcAabaaaaacaaacaaaaaaaaaeaaaaaaaaaaaaaaaeaeaeaeaeaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaeaaaeaeaaaeaeaeaeaaaeaeaeaaaeaeaaaaaeaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaae
+aaacacaaaaaaaeaaaeaaaaaeaeaeaaaeaeaaaaaaaeaaaaaeaaaaaaaaaaaaaaaaaaaacAababaaaaaaaaaaaaaaaeaeacaaaeaaaaaeaaaeaeacaaaeaeaeaaacaaaaaaaaaaaaaeaeaeaeaaaeaeaeaeaeaeaaaeaeaeaeaeaeaaaeaeaaaaaeaeaeaeaeaaaaaeaaaaaaaaaaaeaeaeaeaeaeaaaeaaaeacaeaeaaaeae
+aaaeaaaeaaaaaaaaaaacaaacaaaaaaaeaeaeaaaaaaaeaaaaaaacacaaacacaaaaaaaacAabcAaaaaaeaaaeaeaeaaaaaaacaaaaaaaaaaaaacaaaaaeaeaeaaaaaeaaacacaaaaaeaeaaaaaaaaaaaeaeaeaeaaaeaeaeaeaaacaaaaaaaaaaacacacacaaacaaaaacaeaeaaaaaaaaaeaaaeaeacacacacaeaeaeaeaeaa
+aeaaaaaaaeaeaaaaacacaaaeaaaaaeaeaaaaaeacaaaaaaaaaeaeaaaaaaaaaeaeacaaabcAcAcAaaadaaaaaaaaaaaaaaaaaaaeaaaeaeaeaeffaeaeaeaeaeaeaeaaaeaaaeaaaaaeaaaaaaaaaaaaaaaaaaaaaeaaaaacacaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaaaaaaaaaaaaaaaeaeaeaaaaaeaeaeae
+aeaeaaaeaeaeaeabababaeaaaeaeaeaaaeaaabacaaaaacaaaaaaadaaaaaaaeaaaaaaababcAcAaaaaaaabaaaaaaaaaaaaaaaaacaaaaeLeMeMeLeMeMeLaaaaaaaaaaaaaaacacaaacaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaacacaaabacacaaaaacaaacacaaacacacaaaaaaaaaaaaaaaaaaaa
+abaaaaaeaeacaeaeabaaaeaaaeaeaaaaaaaaabaeacacacaaaaaeaeaeaaaaaaaaaaaaabcAcAcAaaaaabababaaaaaaaeababacaaaaaaeNaSeOeNePeQeNaaacaaacacacaaaaaaaaaaaaaaaaabaaacaaaaacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagabacabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abaaaaaaaaaaaaabaaaaaaaaaaacaaaaaaaaaaaaaaaaaaaeaaaaabaaaaaaaeaaadaacAcAcAabaeaaabaaabaaaaagaaacacaaaaaaaaeRayayeSeTeTeUaaaaaaaaacaaabaaaaaaaaaaabaaabaaagaaacacaaaaaaaaaaaeaaaaaaababababaaabacaaaaaaaaaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaabaaaa
+aaaaaaaaaaabacadaaaaaaaaaaaaaaaaabaaaaaeaeaaaaaaabaeaaaaaaaaaaaaaaaacAcAcAabababaaaeaaaaaaaaaeaaafaaaaaaaaeNeVayeLfseMeLaaaaaeaaaaababaaaaaaaaaaababaaabaaaeaaafaaabaaaaababaaaaaaaaaeaaaaaeaaaaaaaaabaaaaaeaaaaaaaaaeabafaaaaaaababaaaaaaaaaaaa
+aaaaaaaaaaababaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaabaeaaaaaaaaaaaeaeaaabcAcAcAaaabaaababaaababaaaaaaaaabaabUaaeNfgayayayeWeNaaaaabaaaaaaaaaaaaaaaaaaabaaababaaaaaaaaaeaabUaaaaaaaaaaaaabaaagaaacacaaaaabaaaaaaaaaaaaaaaaabaaaaaaacaaaaaaaaaaaaaaaaaa
+aaaaabaaaaaeaeaaaaaaaaaaaaaaaaaaaeaaaaaaaaacababaaaaaaaaabababaaaaabcAcAcAaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaeNaSayayayeXeNaaaaaaaaaaaaaaababababaafCaaacacaaaaaaaaaaaaaaaaaaaaaaaeababaaaaaeaaafaaaaabaaaaaaababaaaaaaababaaaaaaaaaaaaabaaaaaaaaaa
+aaaaaaaaaaaaababaaaaaaaaaaaaaaaaaeaaabaeaaaaaaaaaaaaabababaaaaaaaaabcAcAcAababaaaaacabaaadaaaaaaabaaaaaaaaeLeMeYeReReMeLaaaaaaabaaaaaaabaaaaaaaaaaaaababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaeabaaaaaaaaacabaaaaaaaaaaabaaaaaaaaaaaaaaababaaaa
+aaaaaeaaaaaaaaacaaaaaaaeaaaaaaaaaaabababaaaaaaaaaaaaaaaaagaaaaadaaababcAcAcAabaaadaaaaaaaaaaabacadaaaaaaaaaaaaabaaaaaaaaaaaeaaabaeaaaaaaaaaaaeaaaaaeaaaaabaaaeaaafaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaabacadaaaaaaaaaaaaaaaaaaaaaa
+aaaaaeaaabaeaaaaaaaaabaaaaaaaaaaaeaeaaaaabaaaaaaaaabaaaaaaaaaaaaaaababcAcAcAabaaacaaaaabaaaaaaaaaaaaababaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaabacaaaaaaaaaaaaabaaabaaaaaaacaaaaaaaaaaaaaaaaabaaaaaaaaabaaaaaaaaaa
+aaaaaaaaababaaaeaaaaabaaaaaaaaaeaeaaaaaaaaaeaaababaaaeaaaaaeaaaaaaaaabcAcAcAabaaaaaaaaaeaaaaaeaeaaababaaaaababaaabababaaaaaaagaaacabaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaaaaaaabacadaaaaaaaaaaaaaaaaaeaaaaaeaeaaabaeaaaaabaaaeaaaaaaaa
+aaabaaaaaaaaaaaaaaaaaaaaabaaaaaaabaaaaaaaaaaaaababababaaaaaaaeaaaaaacAcAcAcAabaaaaaaaaaaaaaaaaaaabaaaaaaababaaaaaaaaaaaaaaaaaaaaababaaaaabababababacaaaaaaaaaaaaababaaaaaaaaacaaaaaaaaaaaaababcAcAcAabababababababababaaabaaabaaababaaaaabaaabab
+aaaaaaabaaaaabacaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababaaaaaaaaabaaaaabcAcAabcAabaaaaaaaaabaaabcAababcAabababababcAabababaaababababababababcAcAababababababaaababacadaaaaaaaaaaaaaaaaaeaaababababababcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAab
+aaaeaaabaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaabababaaaaaaaaaaacaaaaaacAabcAabababaaaaabaaaecAcAcAcAcAcAcAabcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAaacAcAababaaabaaaaaaaaaaaaaaaaaaaaaaaaaaababcAcAabcAcAcAcAcAcAabcAcAcAabcAcAcAcAcAcAcAcAcAcAabcAcAcAcA
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaabacaaaaaaaaaaaaaaaaaaaacAabcAabcAabababcAaacAabcAcAababcAcAcAcAcAcAcAcAcAcAcAcAababababcAcAabaacAcAcAcAcAcAababababababababababaaaaababcAcAcAcAcAcAcAcAaaaaaaabaaaaaaaaaaababaeabaaababaaaaabacaaaaaa
+acaaaaaaaaaaabaaaaabaaabaaabaaaaaeaaabaaaaaaaaaaaaaaaaaaacaaaaaaaacAabaacAcAabcAcAcAababcAcAababaaaaababababaaaaabaaaaabaaaaaaacaaaacAcAcAcAcAcAcAcAcAcAcAcAcAaacAaacAcAcAcAaacAcAcAcAaaaeaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaababaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaacAaaabcAcAcAababcAabcAaaababaaaeaaaaaaabaeabaaaeabaaabaaaaaaaaaaaaaaaaabababaacAcAcAcAcAcAcAcAcAcAcAcAcAcAcAcAabaaaaaaabaaaaaaaaaaabaaaaagaaacacaaaaaaaaaaaaafaaaaaaaaaaaaaaaa
+aaaaaaaaaaababaaaaaaababaaaaabacaaaaaaaaaaaaaaaaaeabaaaaabaaaaafaaabaaaacAcAcAcAabababaaaaaaaaaaaaaaaaaaabaaaaaaaaabaaaaaaaaacaaaaaaaaaaaaabaaaaaaaaaaaeaaaaababababababcAcAabaaaaaeaeaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaa
+aaaeaaafaaaaaaaaaaaaaaaaaaaaabaaaaaaaaacabaaaaaaaaaaaeaaabaaaaaaaacAcAabcAabcAabaaaaaaaaaaaaaaaaaaaaaeaaabaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaaaaaaaaaaababaaaeaaaaabaaaaaaaaabaeaaaaaaaaaeaaaaaaaaaeaaaaaeaaababaaaeaaafaaagaaabacaaaaaaaaaa
+aaaaabaaaaabaaaaaeaeababaaaaaaabaaaaaaaaabaaaaaaaaaeaaaaaaaaaaagabaaabcAcAcAabaaaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaeaaaaababaaaaaaaaaaaaabaaaaaeaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaabacaaaaaaaaae
+aaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaabababcAcAcAcAabaaaaaaaaaaabaaaaabacaaaaaaaaaaaaaaaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaabaaaaabaaaaabacfnaaaaaaaaaaaaaaaaaafnfnaaaaaaaeaaababaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaabaeaaaa
+aaaaaaababaeaaaaaaaaacaaaaaaaaaaaaafaaaaaaaaaaaaaaaaaaaaaaabaaababcAcAabcAcAababaaaaaaaeaaabaaaaaaabaaaaaaaaaaacaaaaaaaeaaaaaaaaaaaeaaaaaeaaaaaaaaaaaeaaabaaaaaafnfnaaaaaaaaaaaeaafnfnfnfnaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaabaaaeaaaaaaaaaaaaaaaa
+aaabacadaaaeaaaaaeaaabaaabababaaaaaaaaaaaaaaaaaaaeabaaaaaaabababcAabcAcAcAcAaaabaaaaaaaaaaaaaaaaaaaaabaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaabaaaeaaaaaaaaaaaaaaaaaafnfnfnaaaaaaaaaaaafnfnfnfnaaabacaaaaaaaaaaaaaaabaaaaaaabacadaaacaaaaababaaaeaaaa
+fhfhfhfhfhfhfhfhfmfhfhfhfhfhfhfhfhfkfhflflfhfhfhfhfmfmfjfmfmcBcBfmcBcBcBcBfmfmfmfhfmflfhfhfhfhfhfhfhfmfifhfhfhfhfhfmfhfhfhfhfhfhfhfhfhfhfhfhfhfhfmflfhfhfhfmfhfhfEfEfEfhfhfhfhfhfhfifEfmfhfhfhfhfhfhfhfmfhflfhfhfhfhfhfhfhfhfhfhflfmfhfhfififhfh
+fhfififhfhfififhfhfhfhfhfhfhfhfhfhfhfhfhfhfhfhfhfmfmfmfmcBcBcBcBcBcBcBcBfmfmfmfhfmfhfhfhfhfhflflfhfhfmfhfhfifhfhfhfmfifhfhfhfhfmfhfhfhfhfkfhflflfhfhfhfhfhfmflfhfhfEfhfhfifhfhfhfhfhfhfhfhfhfhfhfmfmfmfmfhfhfhfhfifhfhfififhfhfhfhfhfhfhfhfhfhfh
+aaaaaaaaaaaeaaaaaaaeaaafaaagaaacaaaaaaabaaabababababcAcAcAcAcAababaacAabaaababaaaaaaaaaaaeaaaaaeaaabaaaaaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaabacaaaaaaaaaaabaaaaaeaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaafnfnfn
+aaabaaaaabacadaaaaaaaeaaaaaaabaaaaaaaaababcAcAcAcAabaacAcAababaaabcAabaaacaaaaaaaaaaaaaeaaaaaeaaaaaaaaaaaeaaaaabaaaaaaaaaeaaafaaaaaaaeaaaaaeaaaaaaaaaeaaafaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaeaaaaaaaaaeaaabaaaaacaaaaaaaaaaaefnfnfnfn
+aaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcAcAcAababcAcAcAcAabcAcAcAaaaaaaaaaaaaaaaaaaaaababaaaaaaabaaaaaaabaaaaaaabaaaaaaaaaaaaabaaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaeaaaafnfnaaaaaaaaaaaaaaaaaaababaeaaabaaaaaaaeaaaaaeaaabaaaaaaaafnfnfnfnfnfn
+aaaeaaaaabaeaaaaaaaaaaaaaeaaaaababaacAababababcAcAcAcAcAcAaaaaaaaeababaaaaaaaaaaaeaaabaaaaababababaaaaabaaaaaaaaabaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnfnfnaaaaaaaaaaaaaaaaaaababaaacaaaaaaaaaaaaabaaaaaaaaaafnfnfnfnfnfnfnfn
+acabaaaaaaaaaaaeaaaaaaaaaaaaababaacAabcAcAcAcAcAcAabababaeaaaaaeaeabaaaaaaabaaaaaaaaaaaaaaaaabaaabaaaaaaaaaaaaababaaabaaaaaaabaaaeaaaaaaaaacaaabaaaaaaaaabaaaeaaaaaaaafnfnfnfnaaaaaaafaaaaaaaaaaaaabaaaaaaaaaaaaabacaaaaaaaafnfnfnfnfnfnfnfnfnfn
+dddddddddddedgdddddddedgdddddeddddcPcPcPcPcPcPcPdedddddddddddddddedddddddddededgddddddaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaabababadaaaeaaaaaaaaaaaaabaaaaabacadaaaeaaaaaeaafnfnfnaaaaaaaaaaaaaaaaaaaaabaeaaaaaaaaaaaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfn
+dddddedddddddddddddddddddededddedecPcPdddecPcPdededddddgddddddddddddddddddddddddddddddaaaaacaaaaabaaaaaaaaaaacaaaaaaaaaaabaaaaaaaaaaaaaaacaaabaaaaaaaaaaaaaaaaaaaaabaaaafnaaaaaaaaaaagaaacacaaababaaaaaaafaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfn
+aaafaaaaaaaaaaaaaaaaaaababbVbWaaabcAcAabcAcAababaaaaaaaaaaaaaaaaaaaaafaaaaaaaaaaaaddddababababaaaeabaaaaaaaaaaaaaaababaaaeaeaaaaaeaeababaaaaaaabaaaaaeaeabaaaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+aaaaaaaaabaaaaaaaaabaaaaabeIbYaaaacAcAcAcAcAabaabZcacbcaaaaaaaabaaagaaacacaaaaaaaadddeabababababaaabaeaaaaaaaaaaaaaaabaaaaaaaaaaaeaaabaaaaaaaaaaaaaaaaaaaaaaaeaaabaaaaaeaaaaaaaaaeaaaaaeaaaaabaaaeaaafaaagaaacacfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+aaagaaacabaaaaaaaaaaabaaccbXbYabcAcAababcAcAaacdcecfcgchaaababcicJclclcpcpclclcJaaddddaeaaaaaaaaaeabaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaaaeaaaaaaaaaeaaaaaaaaacaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+aaaaaaaaaaaaaaaaaaaaaaababcmcnaacAcAabcAcAcAabcdcoaaaaaaaaabaacicqcrcscrcrcrcrcxaafoddaaaaabaaaaaeababababaaabaaaaaeaaaaaaaaaaabaeaaabababaaaaaeaaaaaeaaaaaaaaaaaaaaaaaaaaaeaaabaaaaaaaaaaaaaaaaaaaaaaaaaaacaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+aaaaacaaaaaeaaaaaaaaaaaaabctcuaacAcAcAcAcAcAabcvcwaaaaaaaaaaabaacycDcDcDcDcDcrcEaadeddaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaabaeaaabaaaaaaaaaaaaaaabaaaeaaaaaaaaaaaaaaababaaaaaaaaaaacaaaaaaaaaaaaabaaaeaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+aaaeaaaaaaaaaaaaaaabaaaaaaabababcAcAcAcAcAcAabababaaaaaaaaaaabaacycDcDcDcDcDcrcEaadedeaaaaabaaaaaeaeaaaaaaaaaaaaaaadaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaafnfnaaaaabaaaaabacabaaaaaaaaaaaaaaaaaaaaabacadaaacfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+fnacaaaaaaaaaaaaaaaaaaabaaababababcAcAabcUcUeKabaaaaaaaaaaaaaacCcqcrcFcrcrcrcrcGaadeddaaaaaaabaeaaaaaaaaaaaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaafnfnfnaeaaabaaaaaaababaaaaaaaaacfnfnfnfnfnfnaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+fnfnfnaaaaabaaababaaabaaaaaaaaaaaaababftfufvclclfGaaaaaaabaaaacCcJcHcHcIcIcHcHdCacfqddaaaaaaaeaaaaaaaaaaaaaaabababacaaaaabaaaaaaaaaaaaaaaaaaacacaaaaaaaafnfnfnaaaaaaaaaaabaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+fnfnfnfnfnadaaababaaababaaabaaaaabczcAfpfwfxfxcQaaabaaaaaaaaaacLcMcNcOcWcWaaaaaeaaddddaaaaaaaaaaabaaaaaaaaababaaabaaaaaaaaabaaacacaaaaaaaaaaabababaaaaaaabfnaaaaaaaaaaaaabaaaeaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+fnfnfnfnfnfnaaabababaaabaaaaaaaaaaaacAabfwfyfycDaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaeaeddddaaaaaaaeaaabaaaaaaaaabaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+cVcVcVcVcVcVfnaaaaaaaaaaaaaaaaaaabczcAcAfwfyfyfyabaaaaaaaaaeaaaaaaacaaaaaaaaaaaaaaddddaaaaaeaeaaaaabaaaaaaaaaaabaaaaafaaaaaaaaaaababaaaaaaaaababafaaaaaaaaaaaaaaabaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+cVcVcVcVcVcVfnfnaaaaaaaaaaabaaaaabaacAcAcKfzcXfAababaacRcScTaacScTfFaaabaeaaaaaeaedgddaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaeaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaaaaeaabUaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+cVcVcYcZcVcVfnfnaaaaaaaaaaaaaaaaababcAcAcJfBcHcHcAabaaaacWaaaecWaaacaaaaaaaaaaaaaaddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagaaacacaaaaaaaaaaaaaaaaaaaaagaaacacaaaaaaaaaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+fDcVdadbdccVfnfnaaaaaaaaaaaaaaaaaaaacAcAcAcAabaacAabaaaaaaaaaaaaaaaaaaaacWcWcWaeaedfddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaafnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfnfn
+"}

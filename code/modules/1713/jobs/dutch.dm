@@ -554,14 +554,13 @@
 /datum/job/dutch/modern_lieutenant
 	title = "Eerste Luitenant"
 	en_meaning = "Lieutenant"
-	rank_abbreviation = "Lt"
+	rank_abbreviation = "Lt."
 	spawn_location = "JoinLateRNCap"
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
-	uses_squads = TRUE
 	whitelisted = TRUE
 
 	additional_languages = list("English" = 70)
@@ -611,7 +610,7 @@
 /datum/job/dutch/modern_squadleader
 	title = "Sergeant der Eerste Klasse"
 	en_meaning = "Squad Leader"
-	rank_abbreviation = "Sgt"
+	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -666,7 +665,7 @@
 /datum/job/dutch/modern_medic
 	title = "Veld Arts"
 	en_meaning = "Doctor"
-	rank_abbreviation = "AR"
+	rank_abbreviation = "Ar."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -724,7 +723,7 @@
 /datum/job/dutch/modern_radioman
 	title = "Korporaal der Eerste Klasse"
 	en_meaning = "Radioman"
-	rank_abbreviation = "Kpl1"
+	rank_abbreviation = "Kpl1."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -778,7 +777,7 @@
 /datum/job/dutch/modern_rifleman
 	title = "Soldaat der Eerste Klasse"
 	en_meaning = "Soldier First Class"
-	rank_abbreviation = "Sld1"
+	rank_abbreviation = "Sld1."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -830,7 +829,7 @@
 /datum/job/dutch/modern_tanker
 	title = "Huzaar Cavalerie"
 	en_meaning = "Tanker"
-	rank_abbreviation = "Sgt"
+	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
@@ -927,7 +926,7 @@
 /datum/job/dutch/weapon_specialist
 	title = "Wapen Specialist"
 	en_meaning = "Weapons Specialist"
-	rank_abbreviation = "Kpl"
+	rank_abbreviation = "Kpl."
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE

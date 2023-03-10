@@ -58,9 +58,9 @@
 
 /obj/map_metadata/forest/cross_message(faction)
 	if (faction == GERMAN)
-		return "<font size = 4>The germans may cross!,</font>"
+		return "<font size = 4>The Germans may now cross!</font>"
 	else if (faction == RUSSIAN)
-		return "<font size = 4>The soviets may cross!</font>"
+		return "<font size = 4>The Soviets may now cross!</font>"
 	else
 		return ""
 
