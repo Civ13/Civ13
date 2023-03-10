@@ -1225,8 +1225,33 @@ obj/structure/vending/hezammo
 	products = list(
 		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
 		/obj/item/clothing/under/chinese_winter = 15,
+		/obj/item/clothing/under/chinaguard = 15,
+		/obj/item/clothing/under/ww2/cra_uni = 15,
 		/obj/item/clothing/suit/storage/coat/chinese = 15,
 		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter = 15,
+		/obj/item/clothing/head/ww2/cra_cap = 15,
+		/obj/item/clothing/head/chinaguardcap = 15,
+		/obj/item/clothing/head/ww2/chicap = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+	)
+/obj/structure/vending/sixties/china/apparelnotwinter
+	name = "Chinese apparel rack"
+	desc = "Basic wear for soldiers of the People's Liberation Army."
+	icon_state = "apparel_china"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/chinaguard = 15,
+		/obj/item/clothing/under/ww2/cra_uni = 15,
+		/obj/item/clothing/suit/storage/coat/chinese = 15,
+		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 15,
+		/obj/item/clothing/head/ww2/cra_cap = 15,
+		/obj/item/clothing/head/chinaguardcap = 15,
 		/obj/item/clothing/head/ww2/chicap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
