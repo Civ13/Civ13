@@ -3136,9 +3136,9 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filledwar(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/gulagguard/filledwarak(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -3276,8 +3276,8 @@
 	return TRUE
 
 /datum/job/russian/sovcon/heavysibinfantry
-	title = "K.A. Tyazhelaya Sibirskaya Pekhota"
-	en_meaning = "Red army Heavy Siberian infantry"
+	title = "K.A. Sibirskaya Pulemetchik"
+	en_meaning = "Red army Siberian Machinegunner"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
@@ -3353,7 +3353,7 @@
 
 	is_medic = TRUE
 	min_positions = 1
-	max_positions = 2
+	max_positions = 3
 
 /datum/job/russian/sovcon/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

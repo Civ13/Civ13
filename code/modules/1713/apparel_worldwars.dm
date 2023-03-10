@@ -3109,6 +3109,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	new /obj/item/ammo_magazine/c762x25_ppsh(src)
 	new /obj/item/ammo_magazine/c762x25_ppsh(src)
 
+/obj/item/weapon/storage/belt/gulagguard/filledwarak/New()
+	..()
+	new /obj/item/weapon/material/classic_baton(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+
 /obj/item/weapon/storage/belt/smallpouches/gerbelt
 	icon_state = "gerbelt"
 	item_state = "gerbelt"
