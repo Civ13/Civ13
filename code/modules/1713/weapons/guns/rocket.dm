@@ -808,6 +808,12 @@
 		return M
 	return null
 
+/obj/item/weapon/gun/launcher/grenadelauncher/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src)
+		unload(user)
+	else
+		..()
+
 /obj/item/weapon/gun/launcher/grenadelauncher/handle_post_fire(mob/user, atom/target)
 	message_admins("[key_name_admin(user)] fired a grenade from a grenade launcher ([src.name]) at [target].")
 	log_game("[key_name_admin(user)] used a grenade launcher ([src.name]) at [target].")
@@ -820,21 +826,6 @@
 	item_state = "m79"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-
-/obj/item/weapon/gun/launcher/grenadelauncher/m79/proc/unload(mob/user)
-	if(rockets.len)
-		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
-		rockets.len--
-		user.put_in_hands(G)
-		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
-	else
-		user << "<span class='warning'>\The [src] is empty.</span>"
-
-/obj/item/weapon/gun/launcher/grenadelauncher/m79/attack_hand(mob/user)
-	if(user.get_inactive_hand() == src)
-		unload(user)
-	else
-		..()
 
 /obj/item/weapon/gun/launcher/grenadelauncher/m79
 	name = "M79 Grenade Launcher"
@@ -885,6 +876,7 @@
 		else
 			..()
 		return
+		
 /obj/item/missile/grenade_fragmentation
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "g40mm"
