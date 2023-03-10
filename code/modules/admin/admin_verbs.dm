@@ -58,6 +58,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_change_custom_event,
 	/client/proc/allow_character_respawn,	// Allows a ghost to respawn ,
 	/datum/admins/proc/ic_announce,
+	/datum/admins/proc/custom_faction_announce, //Allows for a custom faction announcement on TDM maps.
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
 	/client/proc/view_chemical_reaction_logs,
@@ -96,6 +97,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/Jump,
 	/client/proc/jumptocoord,
 	/datum/admins/proc/ic_announce,
+	/datum/admins/proc/custom_faction_announce,
 	/client/proc/start_epochswap_vote,
 	)
 
