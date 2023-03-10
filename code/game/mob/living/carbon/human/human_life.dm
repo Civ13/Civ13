@@ -1531,7 +1531,7 @@
 				if (FILIPINO)
 					holder2.icon_state = "fp_basic"
 				if (CHINESE)
-					if(map && map.ordinal_age >= 8)
+					if((map && map.ordinal_age >= 7) || map.ID == MAP_RETREAT)
 						holder2.icon_state = "sov_basic"
 					else
 						holder2.icon_state = "roc_basic"
