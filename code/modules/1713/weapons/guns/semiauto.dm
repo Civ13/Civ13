@@ -217,7 +217,6 @@
 	name = "Type 56 carbine"
 	desc = "Chinese variant of the Soviet semi-automatic rifle chambered in 7.62x39mm."
 	weight = 3.86
-	effectiveness_mod = 1.06
 
 /obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
 	name = "SKS-M"

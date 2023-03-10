@@ -16,7 +16,7 @@
 		)
 	age = "1969"
 	ordinal_age = 7
-	faction_distribution_coeffs = list(CHINESE = 0.7, RUSSIAN = 0.3)
+	faction_distribution_coeffs = list(CHINESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "Sino Soviet Border conflict"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Soviets will win if they hold out for <b>45 minutes</b>. The Chinese will win if they manage to reach the <b>Radio Station</b> and hold it.</font>"
 	faction1 = CHINESE
