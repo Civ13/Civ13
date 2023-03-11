@@ -336,6 +336,33 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 30px'>[message]</p></span>"
 		log_admin("Announce: [key_name(usr)] - [messaget] : [message]")
 
+/datum/admins/proc/custom_faction_announce()
+	set category = "Special"
+	set name = "Custom Faction Announcement"
+	set desc = "Announce events for a specific faction."
+	if (!check_rights(0))	return
+
+	if (!map.civilizations)
+		var/list/choicelist = list("Cancel")
+		for (var/i in map.faction_organization)
+			choicelist += i
+		var/faction_choice = WWinput(src, "Which faction to announce?", "Custom Faction Announcement", "Cancel", choicelist)
+		if (faction_choice == "Cancel")
+			return
+		else
+			var/messaget = input("Message Title:", "Custom Faction Announcement", null, null)
+			var/message = input("Global message to send:", "Custom Faction Announcement", null, null)
+			if (message)
+				if (!check_rights(R_SERVER,0))
+					message = sanitize(message, 500, extra = FALSE)
+				message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
+				for (var/mob/living/human/M)
+					if (faction_choice == M.faction_text)
+						M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 10px'>[message]</p></span>", 2)
+						log_admin("Custom Faction Announcement: [key_name(usr)] - [messaget] : [message]")
+	else
+		return
+
 
 /datum/admins/proc/toggleooc()
 	set category = "Server"

@@ -1097,7 +1097,7 @@
 
 /datum/job/chinese/sovcon/pla/commisar
 	title = "Zhengwei"
-	en_meaning = "PLA Political Commisar"
+	en_meaning = "PLA Political Commissar"
 	rank_abbreviation = "Zhe."
 	spawn_location = "JoinLateCH"
 
@@ -1247,7 +1247,7 @@
 
 /datum/job/chinese/sovcon/pla/infantry
 	title = "Jiefanqjun qing bubing"
-	en_meaning = "PLA Light infantry"
+	en_meaning = "PLA Light Infantry"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCH"
 	is_pla = FALSE
@@ -1325,7 +1325,7 @@
 
 /datum/job/chinese/sovcon/pla/redguard
 	title = "Hong Weibing Wenyuan"
-	en_meaning = "Red Guard conscripts"
+	en_meaning = "Red Guard Conscript"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCH"
 	is_pla = FALSE

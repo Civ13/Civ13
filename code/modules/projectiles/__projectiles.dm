@@ -592,6 +592,12 @@ obj/item/projectile/bullet/rifle/a556x45
 	armor_penetration = 80
 	heavy_armor_penetration = 40
 
+/obj/item/projectile/bullet/rifle/a792x44
+	damage = DAMAGE_OH_GOD + 80
+	penetrating = 20
+	armor_penetration = 80
+	heavy_armor_penetration = 40
+
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20
 	penetrating = 1

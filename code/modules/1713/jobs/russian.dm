@@ -2308,13 +2308,12 @@
 /datum/job/russian/modern_lieutenant
 	title = "Starshiy Leitenant"
 	en_meaning = "1st Lieutenant"
-	rank_abbreviation = "Stl."
+	rank_abbreviation = "St. Lt."
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE
 	is_officer = TRUE
 
-	uses_squads = TRUE
 	whitelisted = TRUE
 
 	additional_languages = list("English" = 70)
@@ -2619,9 +2618,11 @@
 	uniform.attackby(plates2, H)
 //equipment
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mp443(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp443(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mp443(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass/modern/tacmap(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>. Drop down from the sky and help your fellow soldiers on the ground!")
