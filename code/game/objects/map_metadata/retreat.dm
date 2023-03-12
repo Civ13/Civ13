@@ -88,14 +88,14 @@ var/no_loop_ret = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Chinese</b> have successfuly deterred the withdrawal! The Americans have halted the Retreat!"
+		var/message = "The <b>Chinese</b> have successfuly deterred the withdrawal! The Americans have halted their retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_ret == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Americans</b> have crossed the bridge into friendly territory! The retreat is completed!"
+		var/message = "The <b>Americans</b> have crossed the bridge into friendly territory and made it to their HQ! The retreat is completed!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
