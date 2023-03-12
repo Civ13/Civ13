@@ -599,7 +599,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a792x94
-	name = "7.92x44 cartridge"
+	name = "7.92x94mm cartridge"
 	desc = "A big heavy brass casing designed to penetrate armor."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"

@@ -378,7 +378,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39
 	name = "PzB 39"
-	desc = "A German anti-tank rifle chambered in 7.92x44mm."
+	desc = "A German anti-tank rifle chambered in 7.92x94mm."
 	icon_state = "pzb39"
 	item_state = "pzb39"
 	base_icon = "pzb39"
