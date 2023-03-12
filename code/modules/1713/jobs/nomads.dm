@@ -840,6 +840,8 @@
 /datum/job/civilian/civc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_c
+	if (map.ID == MAP_NATIONSRP_TRIPLE)
+		H.make_nation()
 	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
