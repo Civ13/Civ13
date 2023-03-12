@@ -67,7 +67,7 @@
 		return
 	else
 		usr << "You start flipping the table..."
-		if (do_after(usr, 50, src))
+		if (do_after(usr, 12, src))
 			flipped = !flipped
 			if (flipped)
 				visible_message("<span class='warning'>[usr] flips the table!</span>")
