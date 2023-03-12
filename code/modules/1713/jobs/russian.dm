@@ -3103,27 +3103,27 @@
 
 	return TRUE
 
-//////////////////////////////sovietsino borderconflict////////////////////////////////
-/datum/job/russian/sovcon/kgbley
-	title = "KGB Pogranichnik Leytenant"
-	en_meaning = "KGB Border Guard Lieutenant"
+//////////////////////////////Sino-Soviet Border Conflict////////////////////////////////
+
+/datum/job/russian/soviet_border/kgb_lt
+	title = "Leytenant Pogranichnikh Voysk KGB"
+	en_meaning = "Soviet Border Troops Lieutenant"
 	rank_abbreviation = "KGB Leyt."
 
-
 	spawn_location = "JoinLateRUCap"
-	is_officer = TRUE
+	
 	is_commander = TRUE
 	whitelisted = TRUE
+	
 	is_sinosovbor = TRUE
 	is_ww2 = FALSE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/sovcon/kgbley/equip(var/mob/living/human/H)
+/datum/job/russian/soviet_border/kgb_lt/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
@@ -3155,25 +3155,26 @@
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	return TRUE
 
-/datum/job/russian/sovcon/pogr
-	title = "Pogranichnik"
-	en_meaning = "Border guard"
-	rank_abbreviation = "Pgr."
+/datum/job/russian/soviet_border/sergeant
+	title = "Serzhant Pogranichnikh Voysk KGB"
+	en_meaning = "Soviet Border Troops Sergeant"
+	rank_abbreviation = "Srz."
 
 	spawn_location = "JoinLateRU"
+
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	whitelisted = TRUE
-	is_ww2 = FALSE
+	whitelisted = FALSE
+
 	is_sinosovbor = TRUE
+	is_ww2 = FALSE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	can_be_female = TRUE
 
 	min_positions = 2
-	max_positions = 20
+	max_positions = 12
 
-/datum/job/russian/sovcon/pogr/equip(var/mob/living/human/H)
+/datum/job/russian/soviet_border/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(40))
@@ -3197,7 +3198,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/russian/guns/ak47/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/ak47(null)
 	uniform.attackby(webbing, H)
-	H.add_note("Role", "You are a <b>[title]</b>, a simple border guard,Get back to your Post and Follow your <b>Leytenant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>. Get back to your post and follow your <b>Leytenant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -3208,23 +3209,24 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sovcon/lightsibinfantry
-	title = "K.A. Legkaya Pekhota"
-	en_meaning = "Red army Light infantry"
+/datum/job/russian/soviet_border/guard
+	title = "Ryadovoy Pogranichnikh Voysk KGB"
+	en_meaning = "Soviet Border Troops Private"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
+
 	uses_squads = TRUE
+
 	is_ww2 = FALSE
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 70
 
-/datum/job/russian/sovcon/lightsibinfantry/equip(var/mob/living/human/H)
+/datum/job/russian/soviet_border/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(90))
@@ -3265,7 +3267,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a Light Infantry Solider stationed at the chinese border.Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -3276,23 +3278,23 @@
 	H.setStat("medical", STAT_NORMAL)
 	return TRUE
 
-/datum/job/russian/sovcon/heavysibinfantry
-	title = "K.A.Pulemetchik"
-	en_meaning = "Red army Machinegunner"
+/datum/job/russian/soviet_border/machinegunner
+	title = "Pulemetchik Pogranichnikh Voysk KGB"
+	en_meaning = "Soviet Border Troops Machinegunner"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_ww2 = FALSE
+	
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	can_be_female = TRUE
 
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/sovcon/heavysibinfantry/equip(var/mob/living/human/H)
+/datum/job/russian/soviet_border/machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(40))
@@ -3327,7 +3329,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a Heavy Infantry Solider stationed at the chinese border,Use your Superior Firepower to provide supression.Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Use your superior firepower to provide supression. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -3340,23 +3342,25 @@
 	return TRUE
 
 
-/datum/job/russian/sovcon/doctor
-	title = "K.A Medik"
-	en_meaning = "Red Army Doctor"
-	rank_abbreviation = "Dr."
-	uses_squads = TRUE
+/datum/job/russian/soviet_border/medic
+	title = "Sanitar Pogranichnikh Voysk KGB"
+	en_meaning = "Soviet Border Troops Corpsman"
+	rank_abbreviation = "Efr."
+	
+	spawn_location = "JoinLateRU"
+
 	is_ww2 = FALSE
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
+	
 	can_be_female = TRUE
-	spawn_location = "JoinLateRU"
-
+	
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/russian/sovcon/doctor/equip(var/mob/living/human/H)
+/datum/job/russian/soviet_border/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3372,7 +3376,7 @@
 	var/obj/item/clothing/accessory/armband/redcross/white = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, keep the soliders healthy and well.")
+	H.add_note("Role", "You are a <b>[en_meaning]</b>, the only qualified medical personnel present, keep the soliders healthy and well.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -3381,6 +3385,5 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-
 
 	return TRUE
