@@ -4,7 +4,7 @@
 	lobby_icon = "icons/lobby/vojchi.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/two,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
 	respawn_delay = 1200
-	no_winner ="The Radio station stays under soviet control, the PRC has halted the attack."
+	no_winner ="The Radio station stays under soviet control."
 	no_hardcore = FALSE
 	faction_organization = list(
 		RUSSIAN,
@@ -22,6 +22,10 @@
 	faction1 = CHINESE
 	faction2 = RUSSIAN
 	grace_wall_timer = 3000
+	artillery_count = 5
+	artillery_timer = 2900 //CAS but a airfield is nearby
+	valid_artillery = list("Explosive","Napalm","Creeping Barrage","White Phosphorus")
+	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Song of Zhenbao Island - Sino-Soviet War Song:1" = "sound/music/zhenbao.ogg",)

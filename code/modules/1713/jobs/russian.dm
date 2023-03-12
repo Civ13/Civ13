@@ -3209,8 +3209,8 @@
 	return TRUE
 
 /datum/job/russian/sovcon/lightsibinfantry
-	title = "K.A. Legkaya Sibirskaya Pekhota"
-	en_meaning = "Red army Light Siberian infantry"
+	title = "K.A. Legkaya Pekhota"
+	en_meaning = "Red army Light infantry"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
@@ -3222,7 +3222,7 @@
 	can_be_female = TRUE
 
 	min_positions = 2
-	max_positions = 50
+	max_positions = 70
 
 /datum/job/russian/sovcon/lightsibinfantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3277,8 +3277,8 @@
 	return TRUE
 
 /datum/job/russian/sovcon/heavysibinfantry
-	title = "K.A. Sibirskaya Pulemetchik"
-	en_meaning = "Red army Siberian Machinegunner"
+	title = "K.A.Pulemetchik"
+	en_meaning = "Red army Machinegunner"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
@@ -3290,7 +3290,7 @@
 	can_be_female = TRUE
 
 	min_positions = 1
-	max_positions = 30
+	max_positions = 4
 
 /datum/job/russian/sovcon/heavysibinfantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3354,7 +3354,7 @@
 
 	is_medic = TRUE
 	min_positions = 1
-	max_positions = 3
+	max_positions = 4
 
 /datum/job/russian/sovcon/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
