@@ -148,7 +148,7 @@
 "cR" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean)
 "cS" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "cT" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
-"cU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
+"cU" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "cV" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "cW" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean)
 "cX" = (/obj/structure/closet/crate/ww2/svt,/turf/floor/winter,/area/caribbean)
@@ -164,13 +164,13 @@
 "dh" = (/obj/effect/spawner/mobspawner/ww2/american,/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "di" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "dj" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean)
-"dk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean)
+"dk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "dl" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "dm" = (/obj/structure/table/modern/table,/obj/item/camera/coldwar,/obj/item/camera_film,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "dn" = (/obj/structure/simple_door/key_door/american,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "do" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
 "dp" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/tracks,/turf/floor/dirt/winter,/area/caribbean)
-"dq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
+"dq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "dr" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "ds" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "dt" = (/obj/structure/sign/flag/usa,/turf/wall/wood,/area/caribbean/japanese/land/inside/command)
@@ -242,57 +242,72 @@
 "eH" = (/turf/floor/dirt/winter,/area/caribbean/no_mans_land/invisible_wall/one)
 "eI" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
 "eJ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{icon_state = "browning"; dir = 4},/turf/floor/trench,/area/caribbean/japanese/land/outside)
-"eK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean)
-"eL" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean)
+"eK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"eL" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "eM" = (/obj/structure/closet/crate/bayonets,/turf/floor/trench,/area/caribbean)
-"eN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt/winter,/area/caribbean)
+"eN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
 "eO" = (/obj/structure/barbwire,/turf/floor/dirt/winter,/area/caribbean)
 "eP" = (/obj/structure/barbwire,/turf/floor/winter,/area/caribbean)
 "eQ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire,/turf/floor/winter,/area/caribbean)
 "eR" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean)
 "eS" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean)
 "eT" = (/obj/effect/spawner/mobspawner/ww2/american/mg,/turf/floor/trench,/area/caribbean/japanese/land/outside)
-"eU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/winter,/area/caribbean)
-"eV" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"eU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"eV" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "eW" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/japanese/land/outside)
-"eX" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/winter,/area/caribbean)
-"eY" = (/turf/floor/winter,/turf/floor/trench,/area/caribbean)
-"eZ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/winter,/area/caribbean)
-"fa" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
-"fb" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean)
+"eX" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"eY" = (/turf/floor/winter,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"eZ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"fa" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"fb" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "fc" = (/obj/item/ammo_magazine/browning,/turf/floor/trench,/area/caribbean/japanese/land/outside)
-"fd" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean)
-"fe" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
-"ff" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean)
+"fd" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fe" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"ff" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "fg" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean)
-"fh" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean)
-"fi" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean)
+"fh" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fi" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american/mg,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fj" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "fk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/japanese/land/outside)
 "fl" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fm" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{icon_state = "browning"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fn" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter,/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/two)
-"fo" = (/obj/effect/spawner/mobspawner/ww2/american,/turf/floor/trench,/area/caribbean)
-"fp" = (/obj/effect/spawner/mobspawner/ww2/american/lead,/turf/floor/trench,/area/caribbean)
-"fq" = (/obj/effect/spawner/mobspawner/ww2/american/mg,/turf/floor/trench,/area/caribbean)
-"fr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire,/turf/floor/winter,/area/caribbean)
-"fs" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/winter,/area/caribbean)
+"fo" = (/obj/effect/spawner/mobspawner/ww2/american,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fp" = (/obj/effect/spawner/mobspawner/ww2/american/lead,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fq" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"fr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"fs" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
 "ft" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 4},/obj/effect/spawner/mobspawner/ww2/american/lead,/turf/floor/wood,/area/caribbean/japanese/land/inside/command)
 "fu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/winter,/turf/floor/trench,/area/caribbean)
 "fv" = (/obj/effect/spawner/mobspawner/ww2/american/medic,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"fw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean)
-"fx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean)
+"fw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fy" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fz" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{icon_state = "browning"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "fA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
-"fB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean)
-"fC" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
-"fD" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
-"fE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"fB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"fC" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
+"fD" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
+"fE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "fF" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/turf/floor/trench,/area/caribbean)
-"fG" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/turf/floor/trench,/area/caribbean)
+"fG" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "hM" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall/inside)
+"no" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"ou" = (/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"tC" = (/obj/structure/barbwire,/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"uh" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "wF" = (/obj/item/flashlight/lantern/on/anchored,/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/inside)
+"xt" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
+"yr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"Bq" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"ID" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"JY" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/japanese/land/outside)
+"Ll" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/simple_animal/hostile/human/ww2_american,/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"Lx" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"NF" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"NR" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/japanese/land/outside)
+"Py" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/japanese/land/outside)
+"Wx" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean/japanese/land/outside)
 
 (1,1,1) = {"
 atatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatatat
@@ -879,22 +894,22 @@ cCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCaaaaaacOcOcVbxabcNabababababalababababababab
 cCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcYcOcOcOcOcZbxabcPcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcPaRbSbScScTcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRcRaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cCcCcCcCcCcCcCcCcCcCcDcDcDcDcDcDcDcGcYcOdidvcOeJbxabcNabababababababababababababababababababababcNaRbSbScWaRaRabababababababababababababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cCcCcCcCcCcDcDcDcDcDcDcDcDcDcDcDcGcGcOcOcOeWfccVbxabcPcRdbdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfcNabcNaRbSbScWaRdgdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cCcCcCcCcDcDcDcDcGcGcDcDcEcDcDcGcGcGcOcOcOcOcOcVbxabcNabdgbFaLfdaLfgaLfgaLfgaLfdaLfgaLfgaLfhbxabcNaRbSbScWbSbwfiaLaLfgaLaLfgaLfgaLaLfdaLaLfgaLaLfgaLaLfgaLfdaLaLfgaLaLfgaLaLaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cDcDcDcDcDcDcEcDcDcGcGcGcGcGcGcGcGcGcOcOeTfjcOcZbxabcNabdgaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXbxabcNaRbSbScWbSbwaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-cDcDcDcDcDcDcDcDcDdhcDcGcGcGcGcGcGcGcOcOdifkfccVbxabcNabdgaOaNdkdoaNcUdqdoaNcUdqdoaNcUaWaNaXbxabcNaRbSbScWbSbwaOaNdkdoaNcUdqdoaNcUardoaNcUdqdoaNcUardoaNcUdqdoaNcUardoaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadadadadadadadadadacDcGcGcGcHcHcHcGflflflflflfmbxabcNabdgaOaNeKaNaNfoaNaNaNaNaNaNaNaNeLaNaXbxabcNaRbSbScWaRfuaOaNeLaNaNaNfqaNaNaNeLaNaNaNfqaNaNaNeLaNaNfoaNaNaNaNeLaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadcdcdcdddcdcdcdedacDcGcGcGcHcHcHcHeNeNeNeNeNeNeOeOeOePeQaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXeRcRcPaRbSbSeScTfFaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadcdldmdcdcdcdcdcdncDcGcGcHcHcHcHcHaRaRaRababaRababaRaRaRaRaRfrePeOfscTeUaRaRababababababaRaRaRaRaRaRbSbSaRaRaRaRaRaRaRaRaRaRaRaRabababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadcdcdrdcdcdcdcdsdtducGcHcHcHcHcHcHbSaRaRaRaRababaRaRaRabababaLaLbaeZaReXaRaRaRababababaRaRaRaRaRaRaRbSbSaRaRaRaRaRaRaRaRaRaRaRababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadcftdwdcdcdcdcdxdacDcGcHcHcHcHcHcHbSaRaRaRaRaRaRaRaRabaRabaRaNaNaXeZaReXaRaRaRaRaRaRaRaRaRaRaRaRaRaRbSbSaRaRaRaRaRababababababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dadydcdzdAdcdcdcdxdacDcGcHcHcHcHcHcHbSaRaRbSbSbSaRaRaRaRaRaRaRaNaNaXeZaReXaRababeUcTcTcTcTcTcTcTcTcTcTeVeVcTfGcRcRcRcRcRcRcRcPabababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdBdBdBdBdBdBdBdBdBcDcGcHcHcHcHcHcHbSbSbSbSbSbSbSbSbSbSaRaRaRaNaNaXeZaRdgabababeXaRaRaRaRaRaRaRaRaRaRbSbSaReYabababababababcNabababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdCdDdCdDdEdFdFdGdBcDcDcGcHcHcHcHcHcTcTcTcTeVeVeVeVeVbSbSbSbSaNaNaXeZabdgababaReXaReXdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfcNabcNababababababbZababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdFdFfvdFdFdFfvdHdIcDcGcGcHcHcHcHcHeZaRaRaRaRaRaRaRcWbSbSbSbSaNaNaXcNabeXaRaRaReXaReXfwaLfgaLfdaLfgaLfdaLaLfgaLfdaLaLfxbxabcNababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdKdFdKdFdKdFdFdHdIcDcGcGcGcHcGcHcHfafafafafafacTaReZaRbSaRbSaNaNaXeZaRfbbSaRbSfbaRfbaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXbxabcNabababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdVdFdKdFdKdFdFdWdBcDcDcGcGcGcGcGcHfyfyfyfyfyfzbxaReZaRaRaRaRfDfEfCeSbSfbbSbSbSfbbSfbaOaNdkdoaNcUdqdoaNcUdqdoaNcUaWaNaXbxabcNabababbZabababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdXdXdXdXdFdFfvdFdYducDcDcDcDcDcGcGcOcOfAfAfccZbxaReZaRaRaRaReXaRaRaRaReXbSbSaReXaReXaOaNeKaNaNaNfpfqaNaNfqaNaNaNeKaNfBbxabcNabababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBdFdFdFdXdFfvdFdFdZcDcDcDcDcDcDcDcDcOcOcOcOcOcVbxabcNaRaRaRaReUcTcTcTcTfeaRaRaRfecTfeaOaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaXbxabcNabababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-dBeaeeefegehdFdFdFdBcDcDcDcDcDcDcDcDcYeTfAfAfccZbxabcNabaRabaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaNffaNfBbxabcNabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-eidBdBdBdBdBdBdBdBdBcDcDcDcDcEcDcDcDcYcOcOcOcOeJbxabcNaRabababaRabababaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRababaRabaRaRaNaNaNaXbxabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+cCcCcCcCcDcDcDcDcGcGcDcDcEcDcDcGcGcGcOcOcOcOcOcVbxabcNabdguhfyfdfyLlfyLlfyLlfyfdfyLlfyLlfyfhbxabcNaRbSbScWbSbwfifyfyLlfyfyLlfyLlfyfyfdfyfyLlfyfyLlfyfyLlfyfdfyfyLlfyaLfgaLaLaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+cDcDcDcDcDcDcEcDcDcGcGcGcGcGcGcGcGcGcOcOeTfjcOcZbxabcNabdgNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcVbxabcNaRbSbScWbSbwNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOaNaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+cDcDcDcDcDcDcDcDcDdhcDcGcGcGcGcGcGcGcOcOdifkfccVbxabcNabdgNRcOdkPycOdidqPycOdidqPycOdidvcOcVbxabcNaRbSbScWbSbwNRcOdkPycOdidqPycOdicUPycOdidqPycOdicUPycOdidqPycOdicUdoaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadadadadadadadadadacDcGcGcGcHcHcHcGflflflflflfmbxabcNabdgNRcOeKcOcOfocOcOcOcOcOcOcOcOeLcOcVbxabcNaRbSbScWaRfuNRcOeLcOcOcOeTcOcOcOeLcOcOcOeTcOcOcOeLcOcOfocOcOcOcOeLaNaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadcdcdcdddcdcdcdedacDcGcGcGcHcHcHcHeNeNeNeNeNeNeOeOeOePeQNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcVeRcRcPaRbSbSeScTfFNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOaNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadcdldmdcdcdcdcdcdncDcGcGcHcHcHcHcHcGcGcGcDcDcGcDcDcGcGcGcGcGfroutCfsfqeUcGcGcDcDcDcDcDcDcGcGcGcGcGcGcHcHcGcGcGcGcGcGcGcGcGcGcGcGcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadcdcdrdcdcdcdcdsdtducGcHcHcHcHcHcHcHcGcGcGcGcDcDcGcGcGcDcDcDfyfyyreZcGeXcGcGcGcDcDcDcDcGcGcGcGcGcGcGcHcHcGcGcGcGcGcGcGcGcGcGcGcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadcftdwdcdcdcdcdxdacDcGcHcHcHcHcHcHcHcGcGcGcGcGcGcGcGcDcGcDcGcOcOcVeZcGeXcGcGcGcGcGcGcGcGcGcGcGcGcGcGcHcHcGcGcGcGcGcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dadydcdzdAdcdcdcdxdacDcGcHcHcHcHcHcHcHcGcGcHcHcHcGcGcGcGcGcGcGcOcOcVeZcGeXcGcDcDeUfqfqfqfqfqfqfqfqfqfqeVeVfqfGWxWxWxWxWxWxWxBqcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdBdBdBdBdBdBdBdBdBcDcGcHcHcHcHcHcHcHcHcHcHcHcHcHcHcHcHcGcGcGcOcOcVeZcGNFcDcDcDeXcGcGcGcGcGcGcGcGcGcGcHcHcGeYcDcDcDcDcDcDcDLxcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdCdDdCdDdEdFdFdGdBcDcDcGcHcHcHcHcHfqfqfqfqeVeVeVeVeVcHcHcHcHcOcOcVeZcDNFcDcDcGeXcGeXnononononononononononononononononoLxcDLxcDcDcDcDcDcDcEcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdFdFfvdFdFdFfvdHdIcDcGcGcHcHcHcHcHeZcGcGcGcGcGcGcGJYcHcHcHcHcOcOcVLxcDeXcGcGcGeXcGeXfwfyLlfyfdfyLlfyfdfyfyLlfyfdfyfyfxIDcDLxcDcDcDcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdKdFdKdFdKdFdFdHdIcDcGcGcGcHcGcHcHfafafafafafafqcGeZcGcHcGcHcOcOcVeZcGfbcHcGcHfbcGfbNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcVIDcDLxcDcDcDcDcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdVdFdKdFdKdFdFdWdBcDcDcGcGcGcGcGcHfyfyfyfyfyfzIDcGeZcGcGcGcGfDfEfCxtcHfbcHcHcHfbcHfbNRcOdkPycOdidqPycOdidqPycOdidvcOcVIDcDLxcDcDcDcEcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdXdXdXdXdFdFfvdFdYducDcDcDcDcDcGcGcOcOfAfAfccZIDcGeZcGcGcGcGeXcGcGcGcGeXcHcHcGeXcGeXNRcOeKcOcOcOfpeTcOcOeTcOcOcOeKcOfBIDcDLxcDcDcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBdFdFdFdXdFfvdFdFdZcDcDcDcDcDcDcDcDcOcOcOcOcOcVIDcDLxcGcGcGcGeUfqfqfqfqfecGcGcGfefqfeNRcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcVIDcDLxcDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dBeaeeefegehdFdFdFdBcDcDcDcDcDcDcDcDcYeTfAfAfccZIDcDLxcDcGcDcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcOffcOfBIDcDLxcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+eidBdBdBdBdBdBdBdBdBcDcDcDcDcEcDcDcDcYcOcOcOcOeJIDcDLxcGcDcDcDcGcDcDcDcGcGcGcGcGcGcGcGcGcGcGcGcGcGcGcDcDcGcDcGcGcOcOcOcVIDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
