@@ -1157,7 +1157,7 @@
 	can_get_coordinates = TRUE
 
 	min_positions = 4
-	max_positions = 4
+	max_positions = 12
 
 /datum/job/chinese/sovcon/pla/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1236,7 +1236,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
