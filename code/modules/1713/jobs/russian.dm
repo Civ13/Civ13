@@ -3271,7 +3271,11 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
-
+//grenade
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/rdg2(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/rgd5(H), slot_r_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
@@ -3333,7 +3337,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/winter(H), slot_head)
 //coat
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
-
+//grenade
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/rdg2(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/rgd5(H), slot_r_store)
+//extra grenade
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/rdg2(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/rgd5(H), slot_l_store)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Use your superior firepower to provide supression. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
