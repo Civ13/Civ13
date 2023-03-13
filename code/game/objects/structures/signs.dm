@@ -466,6 +466,11 @@
 	desc = "A sign indicating a sale."
 	icon_state = "sale"
 
+/obj/structure/sign/rent
+	name = "FOR RENT sign"
+	desc = "A sign indicating something for rent."
+	icon_state = "rent"
+
 /obj/structure/sign/deer_trophy
 	name = "hunting deer trophy"
 	desc = "Looks like we finally found Bambi..."
