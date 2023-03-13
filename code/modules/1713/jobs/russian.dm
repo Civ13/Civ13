@@ -3111,14 +3111,16 @@
 	rank_abbreviation = "KGB Leyt."
 
 	spawn_location = "JoinLateRUCap"
-	
+
 	is_commander = TRUE
 	whitelisted = TRUE
-	
+
 	is_sinosovbor = TRUE
 	is_ww2 = FALSE
 	is_karelia = FALSE
 	is_bordersov = FALSE
+	is_radioman = TRUE
+	can_get_coordinates = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -3170,6 +3172,7 @@
 	is_ww2 = FALSE
 	is_karelia = FALSE
 	is_bordersov = FALSE
+	can_get_coordinates = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -3286,7 +3289,7 @@
 	spawn_location = "JoinLateRU"
 	uses_squads = TRUE
 	is_ww2 = FALSE
-	
+
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
@@ -3346,16 +3349,16 @@
 	title = "Sanitar Pogranichnikh Voysk KGB"
 	en_meaning = "Soviet Border Troops Corpsman"
 	rank_abbreviation = "Efr."
-	
+
 	spawn_location = "JoinLateRU"
 
 	is_ww2 = FALSE
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	
+
 	can_be_female = TRUE
-	
+
 	is_medic = TRUE
 	min_positions = 1
 	max_positions = 4
@@ -3372,9 +3375,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/early(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/white = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[en_meaning]</b>, the only qualified medical personnel present, keep the soliders healthy and well.")
 	H.setStat("strength", STAT_NORMAL)
