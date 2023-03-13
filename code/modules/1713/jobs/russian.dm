@@ -3174,8 +3174,6 @@
 	is_bordersov = FALSE
 	can_get_coordinates = TRUE
 
-	can_be_female = TRUE
-
 	min_positions = 2
 	max_positions = 12
 
@@ -3227,7 +3225,6 @@
 	is_sinosovbor = TRUE
 	is_karelia = FALSE
 	is_bordersov = FALSE
-	can_be_female = TRUE
 
 	min_positions = 2
 	max_positions = 70
