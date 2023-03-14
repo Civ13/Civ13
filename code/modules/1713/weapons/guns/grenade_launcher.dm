@@ -198,12 +198,6 @@
 		/obj/item/weapon/grenade/smokebomb
 		)
 
-/obj/item/weapon/gun/launcher/grenade/standalone/New()
-	..()
-	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
-	update_icon()
-
 /obj/item/weapon/gun/launcher/grenade/standalone/consume_next_projectile()
 	if(!cover_opened)
 		return ..()

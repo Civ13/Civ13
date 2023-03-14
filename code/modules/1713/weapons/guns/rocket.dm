@@ -9,6 +9,11 @@
 	var/throw_distance = 18
 	fire_sound_text = "a launcher firing"
 
+/obj/item/weapon/gun/launcher/grenade/standalone/New()
+	..()
+	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
+	
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
 	return TRUE
