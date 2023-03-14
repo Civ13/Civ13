@@ -1097,7 +1097,7 @@
 
 /datum/job/chinese/sovcon/pla/commisar
 	title = "Zhengwei"
-	en_meaning = "PLA Political Commisar"
+	en_meaning = "PLA Political Commissar"
 	rank_abbreviation = "Zhe."
 	spawn_location = "JoinLateCH"
 
@@ -1157,7 +1157,7 @@
 	can_get_coordinates = TRUE
 
 	min_positions = 4
-	max_positions = 4
+	max_positions = 12
 
 /datum/job/chinese/sovcon/pla/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1236,7 +1236,7 @@
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and alive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
@@ -1247,7 +1247,7 @@
 
 /datum/job/chinese/sovcon/pla/infantry
 	title = "Jiefanqjun qing bubing"
-	en_meaning = "PLA Light infantry"
+	en_meaning = "PLA Light Infantry"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCH"
 	is_pla = FALSE
@@ -1325,7 +1325,7 @@
 
 /datum/job/chinese/sovcon/pla/redguard
 	title = "Hong Weibing Wenyuan"
-	en_meaning = "Red Guard conscripts"
+	en_meaning = "Red Guard Conscript"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateCH"
 	is_pla = FALSE

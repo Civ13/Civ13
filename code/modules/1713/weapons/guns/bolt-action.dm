@@ -378,7 +378,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39
 	name = "PzB 39"
-	desc = "A German anti-tank rifle chambered in 7.92x44mm."
+	desc = "A German anti-tank rifle chambered in 7.92x94mm."
 	icon_state = "pzb39"
 	item_state = "pzb39"
 	base_icon = "pzb39"
@@ -389,12 +389,12 @@
 	max_shells = 1
 	KD_chance = KD_CHANCE_HIGH
 	slot_flags = null
-	caliber = "a792x44"
+	caliber = "a792x94"
 	weight = 8
 	recoil = 3
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | MAGAZINE
-	ammo_type = list (/obj/item/ammo_casing/a792x44)
+	ammo_type = list (/obj/item/ammo_casing/a792x94)
 	magazine_type = /obj/item/ammo_magazine/pzb_case
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'

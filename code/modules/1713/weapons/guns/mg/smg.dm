@@ -67,6 +67,7 @@
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
+	var/one_handed = FALSE
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 
@@ -74,7 +75,7 @@
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
-	if (!user.has_empty_hand(both = FALSE))
+	if (!user.has_empty_hand(both = FALSE) && one_handed == FALSE)
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	if (jammed_until > world.time)
@@ -287,6 +288,7 @@
 		)
 	sel_mode = 1
 	effectiveness_mod = 1.05
+	one_handed = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/mac10
 	name = "MAC-10"
@@ -306,6 +308,7 @@
 		)
 	sel_mode = 1
 	effectiveness_mod = 0.9
+	one_handed = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/tec9
 	name = "TEC-9"
@@ -328,6 +331,7 @@
 	effectiveness_mod = 0.8
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS
+	one_handed = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/skorpion
 	name = "Skorpion"
@@ -347,6 +351,7 @@
 		)
 	sel_mode = 1
 	effectiveness_mod = 0.95
+	one_handed = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"

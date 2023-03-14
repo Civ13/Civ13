@@ -598,14 +598,14 @@
 	caliber = "a145"
 	value = 7
 
-/obj/item/ammo_casing/a792x44
-	name = "7.92x44 cartridge"
+/obj/item/ammo_casing/a792x94
+	name = "7.92x94mm cartridge"
 	desc = "A big heavy brass casing designed to penetrate armor."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"
 	weight = 0.08
-	projectile_type = /obj/item/projectile/bullet/rifle/a792x44
-	caliber = "a792x44"
+	projectile_type = /obj/item/projectile/bullet/rifle/a792x94
+	caliber = "a792x94"
 	value = 7
 
 /obj/item/ammo_casing/a65x50/weak

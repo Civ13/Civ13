@@ -56,7 +56,8 @@
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
-				M << "<span class = 'red'><b>Your [affecting.name] gets cut by \the [src]!</b></span>"
+				if (affecting)
+					M << "<span class = 'red'><b>Your [affecting.name] gets cut by \the [src]!</b></span>"
 			else
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
@@ -65,7 +66,8 @@
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
-				M << "<span class = 'red'><b>Your [affecting.name] gets deeply cut by \the [src]!</b></span>"
+				if (affecting)
+					M << "<span class = 'red'><b>Your [affecting.name] gets deeply cut by \the [src]!</b></span>"
 			// stop crawling until we're up to prevent buggy crawling
 			H.scrambling = TRUE
 			spawn (35)

@@ -53,6 +53,21 @@
 			user << "You are not part of this Nation."
 			return
 
+/obj/structure/voting/civc
+	name = "ballot box"
+	icon_state = "bet_box_blue"
+	New()
+		..()
+		spawn(10)
+			nation = civname_c
+			name = "[nation] ballot box"
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.original_job_title == "Civilization C Citizen")
+			..()
+		else
+			user << "You are not part of this Nation."
+			return
+
 /obj/structure/voting/pirates
 	name = "ballot box"
 	icon_state = "bet_box_red"
