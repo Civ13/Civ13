@@ -49,6 +49,7 @@
 	custom_civs += newnamec
 	custom_civs += newnamed
 	load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
+	override_global_recipes = "sovafghan"
 	spawn(4800)
 		points_check()
 

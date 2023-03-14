@@ -83,6 +83,8 @@
 							current_res = list(210,210,210)
 				else
 					current_res = map.custom_civs[user.civilization]
+			if (map && map.override_global_recipes != "global")
+				faction = map.override_global_recipes
 			generate_recipes_civs(current_res,faction)
 	return recipes
 

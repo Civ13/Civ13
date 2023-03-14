@@ -87,3 +87,4 @@ obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_kwai.txt")
+		override_global_recipes = "kwai"

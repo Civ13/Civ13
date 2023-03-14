@@ -79,6 +79,7 @@
 	custom_civs += newnameg
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
+		override_global_recipes = "camp"
 	spawn(15000)
 		spawn_disks(TRUE)
 	spawn(100)

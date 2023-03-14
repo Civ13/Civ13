@@ -452,6 +452,7 @@
 	gen_ship(sfaction = "spanish", ssize = 6, slat = 0, slon = 0)
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_voyage.txt")
+		override_global_recipes = "voyage"
 		config.no_respawn_delays = FALSE
 /obj/map_metadata/voyage/cross_message()
 	return ""

@@ -22,7 +22,8 @@ var/civmax_research = list(230,230,230)
 	var/list/valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME, WEATHER_NONE, WEATHER_SMOG)
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
-
+	var/override_global_recipes = "global"
+	
 	var/victory_time = 36000
 	var/grace_wall_timer = 0
 //faction stuff
@@ -1171,11 +1172,13 @@ var/civmax_research = list(230,230,230)
 
 	if (fexists(F3))
 		var/list/craftlist_temp = file2list(F3,"\n")
+		var/current_list = replacetext(F3,"material_recipes_","")
+		current_list = replacetext(current_list,".txt","")
 		for (var/i in craftlist_temp)
 			if (findtext(i, ",") && findtext(i,"RECIPE: ") && !(findtext(i,"//")))
 				var/tmpi = replacetext(i, "RECIPE: ", "")
 				var/list/current = splittext(tmpi, ",")
-				craftlist_lists["INDIANS"] += list(current)
+				craftlist_lists[current_list] += list(current)
 				if (current.len != 13)
 					world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13)."
 /obj/map_metadata/proc/give_stock_points(tfaction = "", value = 0)
