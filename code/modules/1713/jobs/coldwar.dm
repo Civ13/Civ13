@@ -765,7 +765,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/grenadelauncher/m79(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/grenade/standalone/m79(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/us_gren(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")

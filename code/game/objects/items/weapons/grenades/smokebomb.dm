@@ -332,3 +332,26 @@
 /obj/item/weapon/grenade/chemical/cs_gas
 	name = "CS gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/csgas
+
+/obj/item/weapon/grenade/smokebomb/ugl/attack_self(mob/user)
+	return
+
+/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
+	name = "40x46mm 'M676' grenade shell"
+	desc = "Smoke Round, Cannot be thrown as the usual grenade, by the way."
+	icon_state = "M406s"
+
+/obj/item/weapon/grenade/smokebomb/ugl/vog25
+	name = "40x103mm 'GRD-50' grenade shell"
+	desc = "Smoke Round, Cannot be thrown as the usual grenade, by the way."
+	icon_state = "40x103mmshells"
+
+/obj/item/weapon/grenade/chemical/ugl/attack_self(mob/user)
+	return
+
+/obj/item/weapon/grenade/chemical/ugl/teargas
+	name = "tear gas grenade"
+	desc = "Concentrated Capsaicin. Contents under pressure. Use with caution."
+	icon_state = "M406s"
+	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
+
