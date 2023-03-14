@@ -2344,7 +2344,7 @@
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke(H), slot_belt)
 
