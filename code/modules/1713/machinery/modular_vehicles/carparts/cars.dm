@@ -738,10 +738,11 @@
 /obj/structure/emergency_lights/proc/check_sound()
 	if (world.realtime >= lastsoundcheck)
 		if (on)
-			playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
-			lastsoundcheck = world.realtime+55
-			spawn(55)
-				check_sound()
+			if (map.ID == MAP_DRUG_BUST || map.ID == MAP_BANK_ROBBERY)
+				playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
+				lastsoundcheck = world.realtime+55
+				spawn(55)
+					check_sound()
 /obj/structure/emergency_lights/proc/check_color()
 	if (on)
 		set_light(7,1,pol_color)
