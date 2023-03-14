@@ -94,14 +94,14 @@ Parts of code courtesy of Super3222
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator
 	name = "laser designator"
-	desc = "A laser designator for marking airstrikes. <b>You have 3 airstrikes left.</b>"
+	desc = "A laser designator for marking airstrikes. <b>You have 5 airstrikes left.</b>"
 	icon_state = "laser_designator"
 	max_zoom = ZOOM_CONSTANT*4
 	attachable = FALSE
 	value = 15
 	w_class = ITEM_SIZE_SMALL
 	var/checking = FALSE
-	var/airstrikes_remaining = 3
+	var/airstrikes_remaining = 5
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
 	desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining] airstrikes left.</b>"
