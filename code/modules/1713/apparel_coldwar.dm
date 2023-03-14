@@ -1759,19 +1759,19 @@
 	slots = 8
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing/grenade_l,/obj/item/weapon/key)
+		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/key)
 
 /obj/item/clothing/accessory/storage/webbing/m79_vest/filled
 	New()
 		..()
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"
