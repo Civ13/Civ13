@@ -158,7 +158,7 @@
 		..()
 
 
-/obj/structure/vending/attack_hand(mob/user as mob)
+/obj/structure/vending/attack_hand(mob/living/user as mob)
 
 	ui_interact(user)
 
