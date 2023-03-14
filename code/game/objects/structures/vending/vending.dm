@@ -159,8 +159,10 @@
 
 
 /obj/structure/vending/attack_hand(mob/living/user as mob)
-
-	ui_interact(user)
+	if (!user || !isliving(user))
+		return
+	else
+		ui_interact(user)
 
 /**
  *  Display the NanoUI window for the vending machine.
