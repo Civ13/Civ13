@@ -92,10 +92,10 @@
 		if (istype(H.buckled, /obj/structure/bed/chair/commander)) //TO DO TODO: move it to wheels.dm
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P
 			if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
-				P = H.r_hand
+				P = H.l_hand
 				P.rangecheck(H,A)
 			else if (istype(H.r_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
-				P = H.l_hand
+				P = H.r_hand
 				P.rangecheck(H,A)
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()

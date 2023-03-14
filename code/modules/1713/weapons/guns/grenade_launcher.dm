@@ -175,15 +175,16 @@
 
 //Grenade Launcher
 /obj/item/weapon/gun/launcher/grenade/standalone
-	name = "Report to Developer"
-	desc = "I SHOULDN'T BE HERE!!!"
+	name = "Standalone Grenade Launcher"
+	desc = "A generic standalone grenade launcher"
 	icon_state = "hk69"
 	item_state = "hk69"
 	w_class = ITEM_SIZE_LARGE
 	max_grenades = 0
 	gun_safety = TRUE
 	release_force = 2
-	throw_distance = 40
+	throw_distance = 4
+	equiptimer = 25
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
 	var/cover_opened = FALSE
 	whitelisted_grenades = list(
