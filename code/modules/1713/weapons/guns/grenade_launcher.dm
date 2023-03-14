@@ -60,7 +60,7 @@
 
 /obj/item/weapon/gun/launcher/grenade/attackby(obj/item/I, mob/user)
 	if((istype(I, /obj/item/weapon/grenade)))
-		do_after(user, 1, src, can_move = TRUE)
+		if(do_after(user, 10, src, can_move = TRUE))
 			load(I, user)
 	else
 		..()
