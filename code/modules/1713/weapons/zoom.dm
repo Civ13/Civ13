@@ -11,6 +11,7 @@ Parts of code courtesy of Super3222
 	var/zoom_amt = 3
 	var/zoomed = FALSE
 	var/datum/action/toggle_scope/azoom
+	flammable = FALSE
 	attachment_type = ATTACH_SCOPE
 	slot_flags = SLOT_POCKET|SLOT_BELT|SLOT_ID
 	value = 15
@@ -64,8 +65,6 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 	var/obj/structure/bed/chair/commander/commanderchair = null
-	anchored = FALSE
-	flammable = FALSE
 	nothrow = TRUE
 	nodrop = TRUE
 	w_class = 5
@@ -92,6 +91,59 @@ Parts of code courtesy of Super3222
 		checking = FALSE
 	else
 		checking = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator
+	name = "laser designator"
+	desc = "A laser designator for marking airstrikes. <b>You have 3 airstrikes left.</b>"
+	icon_state = "laser_designator"
+	max_zoom = ZOOM_CONSTANT*4
+	attachable = FALSE
+	value = 15
+	w_class = ITEM_SIZE_SMALL
+	var/checking = FALSE
+	var/airstrikes_remaining = 3
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
+	..()
+	desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining] airstrikes left.</b>"
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
+	if (checking)
+		return
+
+	checking = TRUE
+	var/dist1 = abs(H.x-target.x)
+	var/dist2 = abs(H.y-target.y)
+	var/distcon = max(dist1,dist2)
+	var/gdir = get_dir(H, target)
+	H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
+	if (do_after(H, 8, src, can_move = FALSE))
+		H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
+		checking = FALSE
+
+		var/turf/T = locate(target.x,target.y,target.z)
+		airstrike(T,H)
+	else
+		checking = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob)
+	airstrikes_remaining--
+	var/strikenum = 4
+	var/xoffset
+	var/yoffset
+	switch(user.faction_text)
+		if ("DUTCH")
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
+		if ("RUSSIAN")
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			world << SPAN_DANGER("<font size=4>The clouds open up as a Su-25 cuts through and fires off a burst of rockets!</font>")
+	spawn(15)
+		for (var/i = 1, i <= strikenum, i++)
+			spawn(i*8)
+				xoffset = rand(-4,4)
+				yoffset = rand(-4,4)
+				explosion(locate((T.x + xoffset),(T.y + yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null

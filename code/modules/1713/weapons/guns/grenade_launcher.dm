@@ -148,7 +148,6 @@
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
 		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
-		/*/obj/item/device/grenade/flare/ugl/m203flare*/
 		)
 
 	blacklisted_grenades = list(
@@ -255,7 +254,7 @@
 
 /obj/item/weapon/gun/launcher/grenade/standalone/hk69
 	name = "HK69A1 grenade launcher"
-	desc = "A German made 40mm grenade launcher."
+	desc = "A German made multi-use 40mm grenade launcher."
 	icon_state = "hk69"
 	item_state = "hk69"
 	whitelisted_grenades = list(
@@ -271,7 +270,7 @@
 
 /obj/item/weapon/gun/launcher/grenade/standalone/m79
 	name = "M79 Grenade Launcher"
-	desc = "American multi-use grenade launcher."
+	desc = "An American multi-use 40mm grenade launcher."
 	icon_state = "m79"
 	item_state = "m79"
 	whitelisted_grenades = list(

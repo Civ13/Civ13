@@ -382,7 +382,7 @@
 		/obj/item/ammo_magazine/m16 = 80,
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_casing/rocket/bazooka = 20,
-		/obj/item/weapon/grenade/frag/ugl/vog25 = 30,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 30,
 		/obj/item/weapon/plastique/c4 = 10,
 	)
 	prices = list(
@@ -396,7 +396,7 @@
 		/obj/item/ammo_magazine/m16 = 20,
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_casing/rocket/bazooka = 60,
-		/obj/item/weapon/grenade/frag/ugl/vog25 = 40,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
 		/obj/item/weapon/plastique/c4 = 80,
 	)
 	attack_hand(mob/living/human/user as mob)
