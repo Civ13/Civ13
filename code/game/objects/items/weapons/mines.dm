@@ -103,7 +103,7 @@
 
 /obj/item/mine/kick_act(mob/user as mob)
 	if (anchored)
-		if(ishuman(user))
+		if(ishuman(user) && in_range(src, user))
 			user.visible_message("<span class = 'warning'>\The [user] kicks \the [src]! What an idiot!</span>")
 			Bumped(user)
 	else
