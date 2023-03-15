@@ -73,5 +73,5 @@
 
 /obj/effect/spawner/lootdrop/explosives
 	name = "explosives spawner"
-	loot = list(/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/flashbang/m84,/obj/item/weapon/grenade/incendiary/anm14,/obj/item/weapon/grenade/chemical/mustard,/obj/item/weapon/grenade/chemical/chlorine,/obj/item/weapon/grenade/coldwar/m67,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/mine/ap,/obj/item/weapon/gun/launcher/rocket/panzerfaust)
+	loot = list(/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/flashbang/m84,/obj/item/weapon/grenade/incendiary/anm14,/obj/item/weapon/grenade/chemical/mustard,/obj/item/weapon/grenade/chemical/chlorine,/obj/item/weapon/grenade/coldwar/m67,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/mine/ap,/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust)
 	nr = 2

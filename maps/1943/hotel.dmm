@@ -567,7 +567,7 @@
 "Tt" = (/obj/structure/props/bathtub,/obj/structure/curtain/open,/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "Tu" = (/obj/effect/decal/cleanable/blood/writing{dir = 8},/obj/effect/decal/cleanable/blood/writing{dir = 5},/turf/floor/wood,/area/caribbean/german/inside)
 "TF" = (/obj/structure/closet/crate/bin,/turf/floor/plating/steel,/area/caribbean/houses)
-"TN" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/launcher/rocket/panzerfaust,/obj/item/weapon/gun/launcher/rocket/panzerfaust,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/german/inside)
+"TN" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust,/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/german/inside)
 "TQ" = (/obj/structure/table/rack,/obj/item/clothing/under/civf2,/obj/item/clothing/under/civfr,/turf/floor/plating/steel,/area/caribbean/houses)
 "TS" = (/turf/floor/plating/cobblestone,/area/caribbean/german)
 "Uf" = (/obj/structure/vehicleparts/frame/car/left/metal,/obj/structure/bed/chair/carseat/left/dark,/turf/floor/plating/road/yellowline{dir = 8},/area/caribbean)

@@ -99,6 +99,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
+		override_global_recipes = "camp"
 	spawn(3000)
 		check_points_msg()
 		config.no_respawn_delays = FALSE

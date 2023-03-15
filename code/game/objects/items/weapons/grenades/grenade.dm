@@ -497,22 +497,6 @@
 		else
 			return
 
-/obj/item/projectile/bullet/pellet/fragment
-	damage = 18
-	range_step = 2
-
-	base_spread = FALSE //causes it to be treated as a shrapnel explosion instead of cone
-	spread_step = 12
-
-	silenced = TRUE //embedding messages are still produced so it's kind of weird when enabled.
-	no_attack_log = TRUE
-	muzzle_type = null
-
-	embed = TRUE
-	sharp = TRUE
-
-
-
 /obj/item/weapon/grenade/suicide_vest
 	name = "suicide vest"
 	desc = "An IED suicide vest. Deadly!"

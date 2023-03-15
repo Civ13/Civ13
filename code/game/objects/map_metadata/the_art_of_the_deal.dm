@@ -79,6 +79,7 @@
 	custom_civs += newnameg
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_camp.txt")
+		override_global_recipes = "camp"
 	spawn(15000)
 		spawn_disks(TRUE)
 	spawn(100)
@@ -458,8 +459,8 @@
 	/obj/item/weapon/gun/projectile/shotgun/pump/remington870 = 10,
 	/obj/item/ammo_magazine/shellbox/rubber = 10,
 	/obj/item/ammo_magazine/shellbox/beanbag = 10,
-	/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 5,
-	/obj/item/ammo_casing/grenade_l/teargas = 20,
+	/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 5,
+	/obj/item/weapon/grenade/chemical/ugl/teargas = 10,
 	/obj/item/weapon/grenade/flashbang = 20,
 	/obj/item/weapon/grenade/chemical/xylyl_bromide = 10,
 	/obj/item/weapon/grenade/smokebomb/m18smoke = 10,

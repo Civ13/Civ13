@@ -589,7 +589,7 @@
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/dutch(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
 
@@ -834,8 +834,6 @@
 
 	is_operation_falcon = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6
@@ -886,7 +884,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 2
+	max_positions = 4
 
 /datum/job/dutch/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -935,7 +933,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 2
+	max_positions = 6
 
 /datum/job/dutch/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

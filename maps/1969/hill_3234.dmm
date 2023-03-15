@@ -36,7 +36,7 @@
 "aJ" = (/obj/structure/barbwire,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
 "aK" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "aL" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/beach/sand,/area/caribbean/nomads/desert)
-"aM" = (/obj/item/weapon/gun/launcher/rocket/m72law,/obj/item/weapon/gun/launcher/rocket/m72law,/obj/item/weapon/gun/launcher/rocket/m72law,/obj/item/weapon/gun/launcher/rocket/m72law,/obj/structure/table/modern/table,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
+"aM" = (/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/structure/table/modern/table,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "aN" = (/obj/structure/window/barrier/sandbag,/obj/structure/flag/soviet,/turf/floor/trench,/area/caribbean/nomads/desert)
 "aO" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/nomads/desert)
 "aP" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/beach/sand,/area/caribbean/nomads/desert)

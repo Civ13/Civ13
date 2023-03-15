@@ -1759,20 +1759,38 @@
 	slots = 8
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing/grenade_l,/obj/item/weapon/key)
+		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
 
 /obj/item/clothing/accessory/storage/webbing/m79_vest/filled
 	New()
 		..()
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
-		new /obj/item/ammo_casing/grenade_l(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
 
+/obj/item/clothing/accessory/storage/webbing/grenadier
+	name = "Grenadier Webbing"
+	desc = "A large webbing with several small pockets."
+	icon_state = "m79_vest"
+	item_state = "m79_vest"
+	slots = 8
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"
 	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."

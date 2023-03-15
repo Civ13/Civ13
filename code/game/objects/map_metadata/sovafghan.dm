@@ -49,6 +49,7 @@
 	custom_civs += newnamec
 	custom_civs += newnamed
 	load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
+	override_global_recipes = "sovafghan"
 	spawn(4800)
 		points_check()
 
@@ -374,7 +375,7 @@
 	products = list(
 		/obj/item/weapon/gun/projectile/submachinegun/m16 = 30,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 10,
-		/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 10,
+		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 10,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 10,
 
@@ -382,13 +383,13 @@
 		/obj/item/ammo_magazine/m16 = 80,
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_casing/rocket/bazooka = 20,
-		/obj/item/ammo_casing/grenade_l = 30,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 30,
 		/obj/item/weapon/plastique/c4 = 10,
 	)
 	prices = list(
 		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
-		/obj/item/weapon/gun/launcher/grenadelauncher/m79 = 200,
+		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 200,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 150,
 
@@ -396,7 +397,7 @@
 		/obj/item/ammo_magazine/m16 = 20,
 		/obj/item/ammo_magazine/m14 = 30,
 		/obj/item/ammo_casing/rocket/bazooka = 60,
-		/obj/item/ammo_casing/grenade_l = 40,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
 		/obj/item/weapon/plastique/c4 = 80,
 	)
 	attack_hand(mob/living/human/user as mob)

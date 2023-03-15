@@ -463,15 +463,13 @@
 	if (prob(5))
 		M.emote(pick("twitch", "blink_r", "shiver", "scream"))
 		M.hallucination = max(M.hallucination, 1)
-		if (prob(50))
-			M.forcesay(pick("Hell yes!", "Got some spare change?", "It's all because of the CIA!", "Shut up! They are listening!", "Aliens, man, fucking aliens!!", "You ain’t catchin’ me!", "Everything has a street value!", "You know they know!", "Reptilians are ruling this county!", "Watch out for the New World Order!"))
 	M.add_chemical_effect(CE_PAINKILLER, 50)
 	M.addictions["cocaine"] += 3
-	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
+	M.add_chemical_effect(CE_SPEEDBOOST, 3)
 	M.add_chemical_effect(CE_PULSE, 2)
 	M.make_jittery(5)
 	M.make_dizzy(10)
-	M.apply_effect(STUTTER)
+	M.apply_effect(3, STUTTER, FALSE)
 	M.mood += removed*30
 
 /datum/reagent/crack/overdose(var/mob/living/human/M, var/alien, var/removed)
@@ -480,7 +478,7 @@
 	M.adjustBrainLoss(6 * removed)
 	M.add_chemical_effect(CE_PULSE, 6)
 	M.hallucination = max(M.hallucination, 3)
-	M.apply_effect(3, STUTTER)
+	M.apply_effect(3, STUTTER, FALSE)
 	M.mood -= 30
 
 /datum/reagent/pervitin

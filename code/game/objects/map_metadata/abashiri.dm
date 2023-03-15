@@ -98,6 +98,7 @@
 	..()
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_abashiri.txt")
+		override_global_recipes = "abashiri"
 	spawn(3000)
 		check_points_msg()
 		config.no_respawn_delays = FALSE

@@ -1949,6 +1949,68 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher
+	name = "C7"
+	desc = "A Canadian Colt C7 assault rifle, chambered in 5.56x45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "c7"
+	item_state = "c7"
+	base_icon = "c7"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
+	weight = 2.98
+	equiptimer = 13
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1, 1, 0.9)),
+		)
+	effectiveness_mod = 1.20
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
+
+	launcher = /obj/item/weapon/gun/launcher/grenade/underslung/gp25
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/New()
+	..()
+	launcher = new launcher(src)
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/attackby(obj/item/I, mob/user)
+	if((istype(I, /obj/item/weapon/grenade)))//load check it for it's type
+		playsound(src, 'sound/weapons/guns/interact/launcher_insertgrenade.ogg', 50, 1)
+		launcher.load(I, user)
+	else
+		..()
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src && use_launcher)
+		playsound(src, 'sound/weapons/guns/interact/launcher_openbarrel.ogg', 50, 1)
+		launcher.unload(user)
+	else
+		..()
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0)
+	if(use_launcher )
+		launcher.Fire(target, user, params, pointblank, reflex)
+		if(!launcher.chambered)
+			switch_firemodes() //switch back automatically
+			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
+	else
+		..()
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/verb/set_gp()
+	set name = "Grenade Launcher"
+	set category = "Object"
+	set src in usr
+
+	if(launcher)
+		use_launcher = !use_launcher
+		if(do_after(usr, 5, src))
+			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : " take your gun back."]</span>")
+			playsound(src, 'sound/weapons/guns/interact/launcher_select.ogg', 50, 1)
+
 /obj/item/weapon/gun/projectile/submachinegun/c7/c8
 	name = "C8"
 	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."

@@ -520,7 +520,7 @@
 "jZ" = (/obj/item/weapon/gun/projectile/automatic/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen/box,/obj/item/ammo_magazine/madsen,/turf/floor/winter,/area/caribbean/nomads/snow)
 "ka" = (/obj/item/roller,/obj/item/roller,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kb" = (/obj/item/violin,/obj/item/trombone,/turf/floor/plating/road,/area/caribbean/nomads/snow)
-"kc" = (/obj/item/weapon/gun/launcher/rocket/panzerfaust,/turf/floor/plating/road,/area/caribbean/nomads/snow)
+"kc" = (/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust,/turf/floor/plating/road,/area/caribbean/nomads/snow)
 "kd" = (/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/obj/item/weapon/grenade/coldwar/nonfrag/m26,/turf/floor/winter,/area/caribbean/nomads/snow)
 "ke" = (/obj/item/weapon/grenade/coldwar/m26,/obj/item/weapon/grenade/coldwar/m26,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kf" = (/obj/item/weapon/pill_pack/pervitin,/turf/floor/winter,/area/caribbean/roofed/tundra)

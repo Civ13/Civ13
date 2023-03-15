@@ -2344,7 +2344,7 @@
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/russian(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke(H), slot_belt)
 
@@ -2596,8 +2596,6 @@
 
 	is_operation_falcon = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6
@@ -2649,7 +2647,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 2
+	max_positions = 4
 
 /datum/job/russian/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2698,7 +2696,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 2
+	max_positions = 6
 
 /datum/job/russian/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2750,8 +2748,6 @@
 	is_paratrooper = TRUE
 	whitelisted = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6
@@ -2775,10 +2771,9 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
-	SP.attached(null,HGUN,TRUE)
-	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
-	FP.attached(null,HGUN,TRUE)
+	if(prob(40))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_trench(H), slot_belt)
