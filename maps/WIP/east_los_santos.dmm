@@ -342,6 +342,13 @@
 "nj" = (
 /turf/floor/plating/marble/black,
 /area/caribbean)
+"nq" = (
+/obj/structure/grille/chainlinkfence,
+/obj/structure/grille/chainlinkfence/corner{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "nt" = (
 /obj/structure/simple_door/key_door/anyone/singledoor/privacy,
 /turf/floor/plating/marble/grid,
@@ -469,9 +476,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed/temperate)
 "td" = (
-/obj/structure/grille/chainlinkfence/corner{
-	dir = 1
-	},
+/obj/structure/grille/chainlinkfence,
 /obj/structure/grille/chainlinkfence{
 	dir = 4
 	},
@@ -1045,9 +1050,8 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Ln" = (
-/obj/structure/grille/chainlinkfence/corner{
-	dir = 1
-	},
+/obj/structure/grille/chainlinkfence,
+/obj/structure/grille/chainlinkfence/corner,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Lz" = (
@@ -2048,7 +2052,7 @@ Zh
 Zh
 gA
 JD
-Sn
+Ln
 CQ
 CQ
 CQ
@@ -2075,7 +2079,7 @@ CQ
 CQ
 CQ
 CQ
-Sn
+Ln
 RY
 AF
 Zh
@@ -3322,7 +3326,7 @@ Zh
 Zh
 gA
 JD
-Sn
+nq
 CQ
 CQ
 CQ
@@ -3349,7 +3353,7 @@ CQ
 CQ
 CQ
 CQ
-Sn
+nq
 RY
 AF
 Zh
@@ -8475,7 +8479,7 @@ Zh
 Zh
 vn
 vn
-Sn
+nq
 CQ
 CQ
 CQ
@@ -8657,7 +8661,7 @@ Zh
 Zh
 vn
 vn
-Sn
+Ln
 CQ
 CQ
 CQ
@@ -8812,7 +8816,7 @@ mb
 OF
 CQ
 CQ
-Sn
+nq
 EH
 UD
 UD
@@ -12270,7 +12274,7 @@ mb
 CQ
 CQ
 CQ
-Sn
+Ln
 Zh
 Zh
 Zh
