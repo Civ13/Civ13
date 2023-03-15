@@ -206,7 +206,7 @@
 "dX" = (/obj/structure/window/barrier/sandbag/incomplete,/turf/floor/dirt/burned,/area/caribbean/houses)
 "dY" = (/obj/structure/oven,/turf/floor/dirt/burned,/area/caribbean/houses)
 "dZ" = (/obj/item/mine/boobytrap,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/houses)
-"ea" = (/obj/item/weapon/gun/launcher/rocket/panzerfaust,/turf/floor/wood,/area/caribbean/houses)
+"ea" = (/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust,/turf/floor/wood,/area/caribbean/houses)
 "eb" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "ec" = (/mob/living/simple_animal/blackbat,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ed" = (/obj/structure/wild/burnedtree{icon_state = "burnedtree5"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean/nomads/forest/snow)

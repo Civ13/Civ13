@@ -136,8 +136,10 @@
 	..()
 	if(rockets.len)
 		icon_state = "rpg7"
+		item_state = "rpg"
 	else
 		icon_state = "rpg7_empty"
+		item_state = "rpg_empty"
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/proc/unload(mob/user)
 	if(rockets.len)
@@ -164,47 +166,6 @@
 	force = 10
 	recoil = 2
 	load_delay = 50
-
-//Panzerfaust
-/obj/item/weapon/gun/launcher/rocket/panzerfaust
-	name = "Panzerfaust 60"
-	desc = "German single-use rocket."
-	icon_state = "panzerfaust"
-	item_state = "panzerfaust"
-	slot_flags = SLOT_SHOULDER | SLOT_BACK
-	force = 10
-	recoil = 2
-	fire_delay = 12
-	release_force = 12
-	throw_distance = 10
-
-/obj/item/weapon/gun/launcher/rocket/panzerfaust/New()
-	..()
-	rockets += new /obj/item/ammo_casing/rocket/panzerfaust(src)
-	update_icon()
-
-/obj/item/weapon/gun/launcher/rocket/panzerfaust/attackby(obj/item/I as obj, mob/user as mob)
-	if(istype(I, /obj/item/ammo_casing/rocket))
-		user << "<span class='warning'>You can't reload a [src]!</span>"
-		return
-
-/obj/item/weapon/gun/launcher/rocket/panzerfaust/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "panzerfaust"
-	else
-		icon_state = "panzerfaust_empty"
-
-/obj/item/weapon/gun/launcher/rocket/panzerfaust/proc/unload(mob/user)
-	if(rockets.len)
-		user << "<span class='warning'>You can't unload a [src]!</span>"
-		return
-	else
-		user << "<span class='warning'>\The [src] is already used.</span>"
-		return
-
-/obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
-	..()
 
 // Flare gun
 
@@ -388,36 +349,38 @@
 	return null
 
 //MLAW
-/obj/item/weapon/gun/launcher/rocket/m72law
-	name = "M72 LAW"
-	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
-	icon_state = "m72law"
-	item_state = "m72law"
+//Panzerfaust
+/obj/item/weapon/gun/launcher/rocket/single_shot
+	name = "Single Shot Launcher"
+	desc = "DONT USE THIS!"
+	icon_state = "panzerfaust"
+	item_state = "panzerfaust"
 	slot_flags = SLOT_SHOULDER | SLOT_BACK
-	force = 15
+	force = 10
 	recoil = 2
-	fire_delay = 10
-	release_force = 15
+	fire_delay = 12
+	release_force = 12
 	throw_distance = 10
+	var/rocket_path
 
-/obj/item/weapon/gun/launcher/rocket/m72law/New()
+/obj/item/weapon/gun/launcher/rocket/single_shot/New()
 	..()
-	rockets += new /obj/item/ammo_casing/rocket/m72law(src)
+	rockets += new rocket_path(src)
 	update_icon()
 
-/obj/item/weapon/gun/launcher/rocket/m72law/attackby(obj/item/I as obj, mob/user as mob)
+/obj/item/weapon/gun/launcher/rocket/single_shot/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
 		user << "<span class='warning'>You can't reload a [src]!</span>"
 		return
 
-/obj/item/weapon/gun/launcher/rocket/m72law/update_icon()
+/obj/item/weapon/gun/launcher/rocket/single_shot/update_icon()
 	..()
 	if(rockets.len)
-		icon_state = "m72law"
+		icon_state = "[initial(icon_state)]"
 	else
-		icon_state = "m72law_empty"
+		icon_state = "[initial(icon_state)]"
 
-/obj/item/weapon/gun/launcher/rocket/m72law/proc/unload(mob/user)
+/obj/item/weapon/gun/launcher/rocket/single_shot/proc/unload(mob/user)
 	if(rockets.len)
 		user << "<span class='warning'>You can't unload a [src]!</span>"
 		return
@@ -425,9 +388,51 @@
 		user << "<span class='warning'>\The [src] is already used.</span>"
 		return
 
-/obj/item/weapon/gun/launcher/rocket/m72law/attack_hand(mob/user)
+/obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)
 	..()
 
+/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust
+	name = "Panzerfaust 60"
+	desc = "German single-use rocket."
+	icon_state = "panzerfaust"
+	item_state = "panzerfaust"
+	force = 10
+	recoil = 2
+	fire_delay = 12
+	release_force = 12
+	throw_distance = 10
+	rocket_path = /obj/item/ammo_casing/rocket/panzerfaust
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "[initial(icon_state)]"
+	else
+		icon_state = "[initial(icon_state)]_empty"
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/m72law
+	name = "M72 LAW"
+	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
+	icon_state = "m72law"
+	item_state = "m72law"
+	force = 15
+	recoil = 2
+	fire_delay = 10
+	release_force = 15
+	throw_distance = 10
+	rocket_path = /obj/item/ammo_casing/rocket/m72law
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22
+	name = "RPG 22"
+	desc = "A light, Russian portable one-shot 72.5 mm (2.85 in) unguided anti-tank weapon."
+	icon_state = "rpg22"
+	item_state = "rpg22"
+	force = 15
+	recoil = 2
+	fire_delay = 10
+	release_force = 15
+	throw_distance = 10
+	rocket_path = /obj/item/ammo_casing/rocket/rpg22
 
 //Bazooka
 /obj/item/weapon/gun/launcher/rocket/bazooka
@@ -524,8 +529,14 @@
 	projectile_type = /obj/item/missile/explosive/panzerfaust
 
 /obj/item/ammo_casing/rocket/m72law
-	name = "m72 LAW rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a m72 LAW launcher."
+	name = "M72 LAW rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a M72 LAW launcher."
+	icon_state = "rocket"
+	projectile_type = /obj/item/missile/explosive/m72law
+
+/obj/item/ammo_casing/rocket/rpg22
+	name = "RPG 22 rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a RPG 22 launcher."
 	icon_state = "rocket"
 	projectile_type = /obj/item/missile/explosive/m72law
 

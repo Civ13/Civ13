@@ -67,7 +67,7 @@
 "bq" = (/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "br" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/map_tdm/sovafghan,/turf/floor/plating/tiled/woodh,/area/caribbean/desert/buildings{name = "Buildings"})
 "bs" = (/obj/covers/marbletile,/obj/structure/bed/chair/wood/red{dir = 8},/turf/floor/plating/marble/tile,/area/caribbean/no_mans_land/capturable/three{name = "Palace"})
-"bt" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/launcher/rocket/m72law,/obj/item/weapon/gun/launcher/rocket/m72law,/obj/item/weapon/gun/launcher/rocket/m72law,/turf/floor/dirt/dust,/area/caribbean/desert)
+"bt" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/turf/floor/dirt/dust,/area/caribbean/desert)
 "bu" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/custom/customhood,/turf/floor/wood/fancywood,/area/caribbean/desert/buildings{name = "Buildings"})
 "bv" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/custom/customhood,/obj/item/clothing/head/custom/customhood,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
 "bw" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/desert)

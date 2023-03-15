@@ -666,7 +666,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr71(H), slot_l_hand)
 	if (prob(40))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust(H), slot_shoulder)
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/eins(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled(H), slot_back)
@@ -720,7 +720,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr71(H), slot_l_hand)
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust(H), slot_shoulder)
 	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/eins(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled(H), slot_back)
@@ -1495,7 +1495,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/ss(H), slot_head)
 //hand
 	if (prob(5))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/panzerfaust(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust(H), slot_l_hand)
 //guns
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,4)
