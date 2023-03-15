@@ -82,7 +82,7 @@
 		return ""
 
 
-var/no_loop_tantive = FALSE
+var/no_loop_intra = FALSE
 
 /obj/map_metadata/intramuros/update_win_condition()
 
