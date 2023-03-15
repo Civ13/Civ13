@@ -36,7 +36,7 @@
 "aJ" = (/obj/covers/roads/cobble,/turf/floor/grass,/area/caribbean)
 "aK" = (/obj/covers/roads/dirt,/turf/floor/grass,/area/caribbean)
 "aL" = (/obj/covers/roads/cobble,/turf/floor/plating/road,/area/caribbean)
-"aM" = (/obj/structure/vending/yeltsinammo{name = "North korean ammo crate"; products = "list(/obj/item/ammo_magazine/ak74 = 50, /obj/item/ammo_magazine/pkm/c100 = 25, /obj/item/ammo_magazine/svd = 25, /obj/item/ammo_casing/grenade_l/teargas = 16, /obj/item/ammo_magazine/tt30 = 15, /obj/item/ammo_magazine/pkm = 8, /obj/item/ammo_magazine/maxim = 8)"},/turf/floor/plating/steel,/area/caribbean)
+"aM" = (/obj/structure/vending/yeltsinammo{name = "North korean ammo crate"; products = "list(/obj/item/ammo_magazine/ak74 = 50, /obj/item/ammo_magazine/pkm/c100 = 25, /obj/item/ammo_magazine/svd = 25, /obj/item/weapon/grenade/frag/ugl/shell40mm/teargas = 16, /obj/item/ammo_magazine/tt30 = 15, /obj/item/ammo_magazine/pkm = 8, /obj/item/ammo_magazine/maxim = 8)"},/turf/floor/plating/steel,/area/caribbean)
 "aN" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aO" = (/obj/covers/brick_wall,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "aP" = (/obj/structure/window/classic/brickfull,/obj/covers/jail/steeljail,/turf/floor/plating/cobblestone/vertical,/area/caribbean)

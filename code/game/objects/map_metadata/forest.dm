@@ -3,7 +3,7 @@
 	title = "Forest"
 	lobby_icon = "icons/lobby/ww2.png"
 	no_winner ="The battle for the city is still going on."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/not_dynamic, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	faction_organization = list(
 		GERMAN,

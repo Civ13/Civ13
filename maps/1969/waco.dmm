@@ -431,7 +431,7 @@
 "zj" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 4; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/houses)
 "zp" = (/obj/structure/wild/flowers{icon_state = "flower2"},/turf/floor/grass,/area/caribbean)
 "zA" = (/obj/structure/vehicleparts/frame/car/van/rfc{broken = 1},/obj/structure/bed/chair/carseat/right/dark,/turf/floor/dirt,/area/caribbean)
-"zE" = (/obj/structure/closet/crate/ww2{name = "Gas grenades"},/obj/item/ammo_casing/grenade_l/teargas,/obj/item/ammo_casing/grenade_l/teargas,/obj/item/weapon/gun/launcher/grenadelauncher/m79,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean)
+"zE" = (/obj/structure/closet/crate/ww2{name = "Gas grenades"},/obj/item/weapon/grenade/frag/ugl/shell40mm/teargas,/obj/item/weapon/grenade/frag/ugl/shell40mm/teargas,/obj/item/weapon/gun/launcher/grenade/standalone/m79,/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean)
 "zL" = (/obj/structure/multiz/ladder/ww2/stairsdown{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "zN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
 "zY" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
