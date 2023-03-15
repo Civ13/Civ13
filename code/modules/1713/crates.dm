@@ -591,7 +591,7 @@ obj/structure/closet/crate/ww2/ammo_mg34
 	paths = list(/obj/item/ammo_magazine/mg34belt = 10)
 obj/structure/closet/crate/ww2/panzerfaust
 	name = "Panzerfaust crate"
-	paths = list(/obj/item/weapon/gun/launcher/rocket/panzerfaust = 6)
+	paths = list(/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust = 6)
 
 obj/structure/closet/crate/ww2/atmines
 	name = "anti-tank mines crate"

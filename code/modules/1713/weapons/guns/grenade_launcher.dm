@@ -1,12 +1,14 @@
 /obj/item/weapon/gun/launcher/grenade
 	name = "grenade launcher"
 	desc = "A bulky pump-action grenade launcher. Holds up to 6 grenades in a revolving magazine."
-	icon_state = "riotgun"
-	item_state = "riotgun"
+	icon_state = "grenade_launcher"
+	item_state = "grenade_launcher"
 	w_class = ITEM_SIZE_HUGE
 	force = 10
+	
 	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
 	fire_sound_text = "a metallic thunk"
+	recoil = 0
 	throw_distance = 40
 	release_force = 5
 	gun_safety = FALSE
@@ -180,6 +182,7 @@
 	item_state = "hk69"
 	w_class = ITEM_SIZE_LARGE
 	max_grenades = 0
+	recoil = 1
 	gun_safety = TRUE
 	release_force = 2
 	throw_distance = 40
