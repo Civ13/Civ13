@@ -537,7 +537,7 @@
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\vadso_city.dm"
 #include "code\game\objects\map_metadata\vitebsk.dm"
-#include "code\game\objects\map_metadata\vojchi.dm"
+#include "code\game\objects\map_metadata\zhenbao.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\map_metadata\waco.dm"
 #include "code\game\objects\map_metadata\wake_island.dm"
