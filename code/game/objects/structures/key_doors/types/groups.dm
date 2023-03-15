@@ -424,6 +424,11 @@
 /obj/structure/simple_door/key_door/soviet/guard
 	keyslot_type = /datum/keyslot/soviet/guard
 	unique_door_name = "GULAG locked"
+/obj/structure/simple_door/key_door/soviet/guard/chainlink
+	icon_state = "chainlink"
+	basic_icon = "chainlink"
+	override_opacity = TRUE
+	override_material = TRUE
 /obj/structure/simple_door/key_door/soviet/guard/max
 	keyslot_type = /datum/keyslot/soviet/guard/max
 	unique_door_name = "Maximum Security locked"
