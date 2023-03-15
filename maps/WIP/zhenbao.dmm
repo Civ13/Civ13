@@ -287,7 +287,7 @@
 "fA" = (/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
 "fB" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/turf/floor/dirt/dust,/area/caribbean/roofed/taiga)
 "fC" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt,/area/caribbean/nomads/taiga)
-"fD" = (/obj/map_metadata/vojchi,/turf/wall/indestructable/black,/area/caribbean/roofed/taiga)
+"fD" = (/obj/map_metadata/zhenbao,/turf/wall/indestructable/black,/area/caribbean/roofed/taiga)
 "fE" = (/turf/floor/dirt/underground/icy/rock,/area/caribbean/no_mans_land/invisible_wall/taiga)
 "fF" = (/obj/structure/closet/crate/empty,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/head/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/obj/item/clothing/suit/storage/ghillie/winter,/turf/floor/winter,/area/caribbean/nomads/taiga)
 "fG" = (/obj/item/violin,/turf/floor/winter,/area/caribbean/nomads/taiga)
