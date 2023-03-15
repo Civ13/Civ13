@@ -253,6 +253,7 @@
 	icon_state = "chainlinkfence_corner"
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 	cuttable = FALSE
+	density = FALSE
 
 // DOOR
 
