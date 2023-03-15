@@ -81,7 +81,7 @@
 		return ""
 
 
-var/no_loop_intra = FALSE
+var/no_loop_tantive = FALSE
 
 /obj/map_metadata/tantiveiv/update_win_condition()
 
@@ -94,13 +94,13 @@ var/no_loop_intra = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_intra == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_tantive == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Imperials</b> have captured the Vantive IV Bridge!! The commandeering of the Vantive IV has been achieved!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_intra = TRUE
+		no_loop_tantive = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
