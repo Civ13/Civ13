@@ -127,20 +127,6 @@
 	health = 70
 	hitsound = 'sound/weapons/blade_parry1.ogg'
 
-/obj/structure/grille/chainlinkfence
-	name = "chain-link fence"
-	desc = "A woven steel fence."
-	icon = 'icons/obj/fence.dmi'
-	icon_state = "chainlinkfence"
-	health = 50
-	hitsound = 'sound/weapons/blade_parry1.ogg'
-
-/obj/structure/grille/chainlinkfence/corner
-	name = "chain-link fence"
-	desc = "A woven steel fence."
-	icon_state = "chainlinkfence_corner"
-	hitsound = 'sound/weapons/blade_parry1.ogg'
-
 /obj/structure/grille/metalsheetfence
 	name = "metal fence"
 	desc = "A sheet metal fence."
@@ -174,6 +160,148 @@
 	icon_state = "metal_fence_corner4"
 /obj/structure/grille/metalsheetfence/corner/yellow
 	icon_state = "metal_fence_corner5"
+
+//////////////CHAIN-LINK FENCES////////////////
+
+/obj/structure/grille/chainlinkfence
+	name = "chain-link fence"
+	desc = "A woven steel fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "chainlinkfence"
+	health = 50
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+
+	var/cuttable = TRUE
+	var/hole_size = 0
+	var/invulnerable = FALSE
+
+/obj/structure/grille/chainlinkfence/New()
+	.=..()
+	update_cut_status()
+
+/obj/structure/grille/chainlinkfence/examine(mob/user)
+	.=..()
+	switch(hole_size)
+		if (1)
+			user.show_message("There is a small hole in \the [src].")
+		if (2)
+			user.show_message("There is a large hole in \the [src].")
+		if (3)
+			user.show_message("\The [src] has been completely cut through.")
+
+/obj/structure/grille/chainlinkfence/attackby(obj/item/W, mob/living/human/user)
+	if(istype(W, /obj/item/weapon/wirecutters))
+		if(!cuttable)
+			to_chat(user, "<span class='notice'>This section of the fence can't be cut.</span>")
+			return
+		if(invulnerable)
+			to_chat(user, "<span class='notice'>This fence is too strong to cut through.</span>")
+			return
+		var/current_stage = hole_size
+		if(current_stage >= 3)
+			to_chat(user, "<span class='notice'>This fence has been completely cut already.</span>")
+			return
+
+		user.visible_message("<span class='danger'>\The [user] starts cutting through \the [src] with \the [W].</span>",\
+		"<span class='danger'>You start cutting through \the [src] with \the [W].</span>")
+
+		if(do_after(user, (120/user.getStatCoeff("crafting")), src))
+			if(current_stage == hole_size)
+				switch(++hole_size)
+					if (1)
+						visible_message("<span class='notice'>\The [user] cuts into \the [src] some more.</span>")
+						climbable = FALSE
+					if (2)
+						visible_message("<span class='notice'>\The [user] cuts into \the [src] some more.</span>")
+						to_chat(user, "<span class='info'>You could probably fit yourself through that hole now. Although climbing through would be much faster if you made it even bigger.</span>")
+						climbable = TRUE
+					if (3)
+						visible_message("<span class='notice'>\The [user] completely cuts through \the [src].</span>")
+						to_chat(user, "<span class='info'>The hole in \the [src] is now big enough to walk through.</span>")
+						climbable = FALSE
+
+				update_cut_status()
+
+	return TRUE
+
+/obj/structure/grille/chainlinkfence/proc/update_cut_status()
+	if(!cuttable)
+		return
+	density = TRUE
+	switch(hole_size)
+		if(0)
+			icon_state = initial(icon_state)
+		if(1)
+			icon_state = "chainlinkfence_cut1"
+		if(2)
+			icon_state = "chainlinkfence_cut2"
+		if(3)
+			icon_state = "chainlinkfence_cut3"
+			density = FALSE
+
+/obj/structure/grille/chainlinkfence/cut
+	icon_state = "chainlinkfence_cut1"
+	hole_size = 1
+/obj/structure/grille/chainlinkfence/cut/larger
+	icon_state = "chainlinkfence_cut2"
+	hole_size = 2
+/obj/structure/grille/chainlinkfence/cut/larger/complete
+	icon_state = "chainlinkfence_cut3"
+	hole_size = 3
+
+/obj/structure/grille/chainlinkfence/corner
+	icon_state = "chainlinkfence_corner"
+	hitsound = 'sound/weapons/blade_parry1.ogg'
+	cuttable = FALSE
+
+// DOOR
+
+/obj/structure/grille/chainlinkfence/door
+	name = "chain-link fence door"
+	desc = "A woven steel fence door."
+	icon_state = "chainlinkfence_door"
+	cuttable = FALSE
+	var/open = FALSE
+
+/obj/structure/grille/chainlinkfence/door/New()
+	. = ..()
+	update_door_status()
+
+/obj/structure/grille/chainlinkfence/door/opened
+	icon_state = "chainlinkfence_door_open"
+	open = TRUE
+	density = TRUE
+
+/obj/structure/grille/chainlinkfence/door/attack_hand(mob/user)
+	if(can_open(user))
+		toggle(user)
+	return TRUE
+
+/obj/structure/grille/chainlinkfence/door/proc/toggle(mob/user)
+	switch(open)
+		if(FALSE)
+			visible_message("<span class='notice'>\The [user] opens \the [src].</span>")
+			open = TRUE
+		if(TRUE)
+			visible_message("<span class='notice'>\The [user] closes \the [src].</span>")
+			open = FALSE
+
+	update_door_status()
+	playsound(src, 'sound/machines/click.ogg', 100, 1)
+
+/obj/structure/grille/chainlinkfence/door/proc/update_door_status()
+	switch(open)
+		if(FALSE)
+			density = TRUE
+			icon_state = "chainlinkfence_door"
+		if(TRUE)
+			density = FALSE
+			icon_state = "chainlinkfence_door_open"
+
+/obj/structure/grille/chainlinkfence/door/proc/can_open(mob/user)
+	return TRUE
+
+////////////////////////////////////////////////
 
 /obj/structure/wallclock
 	name = "standing clock"

@@ -18,9 +18,12 @@
 	desc = "A wall-mounted storage unit for first-aid supplies"
 	icon_state = "medical_wall"
 	icon_closed = "medical_wall"
-	icon_opened = "medical_wall"
+	icon_opened = "medical_wall_open"
 	anchored = TRUE
 	density =  FALSE
+	wall_mounted = TRUE
+	store_mobs = FALSE
+	storage_capacity = 2
 	New()
 		..()
 		new /obj/item/weapon/storage/firstaid/advsmall(src)
@@ -33,6 +36,9 @@
 	icon_opened = "extinguisher_empty"
 	anchored = TRUE
 	density = FALSE
+	wall_mounted = TRUE
+	store_mobs = FALSE
+	storage_capacity = 2
 	var/obj/item/weapon/fire_extinguisher/has_extinguisher
 
 /obj/structure/closet/cabinet/extinguisher_cabinet/New()
