@@ -27,11 +27,11 @@
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
-			user << "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>"
+			user << SPAN_NOTICE("You toggle \the [src]'s safety <b>OFF</b>.")
 			return
 		else
 			safetyon = TRUE
-			user << "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>"
+			user << SPAN_NOTICE("You toggle \the [src]'s safety <b>ON</b>.")
 			return
 
 
@@ -54,10 +54,10 @@
 
 /obj/item/weapon/gun/launcher/special_check(mob/user)
 	if (!user.has_empty_hand(both = FALSE))
-		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		user << SPAN_WARNING("You need both hands to fire \the [src]!")
 		return FALSE
 	if (gun_safety && safetyon)
-		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		user << SPAN_WARNING("You can't fire \the [src] while the safety is on!")
 		return FALSE
 	return TRUE
 
@@ -75,6 +75,7 @@
 	fire_sound = 'sound/effects/bang.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
+	var/caliber = "rocket"
 	release_force = 15
 	throw_distance = 30
 	fire_delay = 6
@@ -85,9 +86,9 @@
 	if(!..(user, 2))
 		return
 	if (rockets)
-		user << "<b>LOADED</B>"
+		user << SPAN_NOTICE("<b>LOADED</B>")
 	else
-		user << "<b>UNLOADED</B>"
+		user << SPAN_NOTICE("<b>UNLOADED</B>")
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -99,6 +100,22 @@
 			update_icon()
 		else
 			usr << "\The [src] cannot hold more rockets."
+
+/obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
+		rockets.len--
+		user.put_in_hands(G)
+		user.visible_message("\The [user] removes \a [G] from [src].", SPAN_NOTICE("You remove \a [G] from \the [src]."))
+		update_icon()
+	else
+		user << SPAN_WARNING("\The [src] is empty.")
+
+/obj/item/weapon/gun/launcher/rocket/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src)
+		unload(user)
+	else
+		..()
 
 /obj/item/weapon/gun/launcher/rocket/consume_next_projectile()
 	if(rockets.len)
@@ -140,22 +157,6 @@
 	else
 		icon_state = "[initial(icon_state)]_empty"
 		item_state = "[initial(item_state)]_empty"
-
-/obj/item/weapon/gun/launcher/rocket/rpg7/proc/unload(mob/user)
-	if(rockets.len)
-		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
-		rockets.len--
-		user.put_in_hands(G)
-		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
-		update_icon()
-	else
-		user << "<span class='warning'>\The [src] is empty.</span>"
-
-/obj/item/weapon/gun/launcher/rocket/rpg7/attack_hand(mob/user)
-	if(user.get_inactive_hand() == src)
-		unload(user)
-	else
-		..()
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/makeshift
 	name = "RPG-7"
@@ -245,7 +246,7 @@
 
 /obj/item/weapon/gun/launcher/flaregun/special_check(mob/user)
 	if (open)
-		user << "<span class='warning'>You can't fire \the [src] while it is break open!</span>"
+		user << SPAN_WARNING("You can't fire \the [src] while it is break open!")
 		return FALSE
 	return TRUE
 
@@ -370,7 +371,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
-		user << "<span class='warning'>You can't reload a [src]!</span>"
+		user << SPAN_WARNING("You can't reload a [src]!")
 		return
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/update_icon()
@@ -380,12 +381,12 @@
 	else
 		icon_state = "[initial(icon_state)]"
 
-/obj/item/weapon/gun/launcher/rocket/single_shot/proc/unload(mob/user)
+/obj/item/weapon/gun/launcher/rocket/single_shot/unload(mob/user)
 	if(rockets.len)
-		user << "<span class='warning'>You can't unload a [src]!</span>"
+		user << SPAN_WARNING("You can't unload a [src]!")
 		return
 	else
-		user << "<span class='warning'>\The [src] is already used.</span>"
+		user << SPAN_WARNING("\The [src] is already used.")
 		return
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)
@@ -421,7 +422,7 @@
 	recoil = 2
 	fire_delay = 10
 	release_force = 15
-	throw_distance = 10
+	throw_distance = 18
 	rocket_path = /obj/item/ammo_casing/rocket/m72law
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22
@@ -433,7 +434,7 @@
 	recoil = 2
 	fire_delay = 10
 	release_force = 15
-	throw_distance = 10
+	throw_distance = 18
 	rocket_path = /obj/item/ammo_casing/rocket/rpg22
 
 //Bazooka
@@ -441,10 +442,10 @@
 	name = "M1A1 Bazooka"
 	desc = "An American rocket launcher made for cracking open fortified defenses and enemy armor."
 	icon_state = "bazooka_empty"
-	var/caliber = "bazooka"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
 	force = 10
+	caliber = "bazooka"
 
 /obj/item/weapon/gun/launcher/rocket/bazooka/update_icon()
 	..()
@@ -453,31 +454,31 @@
 	else
 		icon_state = "bazooka_empty"
 
-/obj/item/weapon/gun/launcher/rocket/bazooka/proc/unload(mob/user)
-	if(rockets.len)
-		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
-		rockets.len--
-		user.put_in_hands(G)
-		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
-		update_icon()
-	else
-		user << "<span class='warning'>\The [src] is empty.</span>"
+/obj/item/weapon/gun/launcher/rocket/rpb43
+	name = "Raketen-Panzerbüchse 43"
+	desc = "A reusable 88mm anti-tank rocket launcher developed by Germany during World War II."
+	icon_state = "rpb43_empty"
+	item_state = "rpb43"
+	slot_flags = SLOT_SHOULDER
+	force = 10
+	caliber = "rpb43"
 
-/obj/item/weapon/gun/launcher/rocket/bazooka/attack_hand(mob/user)
-	if(user.get_inactive_hand() == src)
-		unload(user)
+/obj/item/weapon/gun/launcher/rocket/rpb43/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "rpb43"
 	else
-		..()
+		icon_state = "rpb43_empty"
 
 //Fatman
 /obj/item/weapon/gun/launcher/rocket/fatman
 	name = "Fatman"
 	desc = "An American rocket launcher made for firing small nuclear rockets."
 	icon_state = "fatman_empty"
-	var/caliber = "nuclear"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
 	force = 10
+	caliber = "nuclear"
 
 /obj/item/weapon/gun/launcher/rocket/fatman/update_icon()
 	..()
@@ -485,22 +486,6 @@
 		icon_state = "fatman"
 	else
 		icon_state = "fatman_empty"
-
-/obj/item/weapon/gun/launcher/rocket/fatman/proc/unload(mob/user)
-	if(rockets.len)
-		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
-		rockets.len--
-		user.put_in_hands(G)
-		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
-		update_icon()
-	else
-		user << "<span class='warning'>\The [src] is empty.</span>"
-
-/obj/item/weapon/gun/launcher/rocket/fatman/attack_hand(mob/user)
-	if(user.get_inactive_hand() == src)
-		unload(user)
-	else
-		..()
 
 ////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -521,8 +506,13 @@
 	icon_state = "m6a1"
 	projectile_type = /obj/item/missile
 	caliber = "bazooka"
-	w_class = 4
-	slot_flags = SLOT_BELT
+
+/obj/item/ammo_casing/rocket/rpb43
+	name = "RPzB. Gr. 4312"
+	desc = "A high explosive anti tank warhead and propeller designed to be fired from a Raketen-Panzerbüchse."
+	icon_state = "RPzB"
+	projectile_type = /obj/item/missile
+	caliber = "rpb43"
 
 /obj/item/ammo_casing/rocket/panzerfaust
 	name = "panzerfaust rocket"
@@ -612,44 +602,44 @@
 		switch(penloc)
 			if ("left")
 				F.w_left[5] -= heavy_armor_penetration
-				visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+				visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big>"))
 			if ("right")
 				F.w_right[5] -= heavy_armor_penetration
-				visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+				visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big>"))
 			if ("front")
 				F.w_front[5] -= heavy_armor_penetration
-				visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+				visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big>"))
 			if ("back")
 				F.w_back[5] -= heavy_armor_penetration
-				visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+				visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big>"))
 			if ("frontleft")
 				if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
 					F.w_left[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big>"))
 				else
 					F.w_front[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big>"))
 			if ("frontright")
 				if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
 					F.w_right[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big>"))
 				else
 					F.w_front[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big>"))
 			if ("backleft")
 				if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
 					F.w_left[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big>"))
 				else
 					F.w_back[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big>"))
 			if ("backright")
 				if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
 					F.w_right[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big>"))
 				else
 					F.w_back[5] -= heavy_armor_penetration
-					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+					visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big>"))
 		F.try_destroy()
 		for(var/obj/structure/vehicleparts/movement/MV in F)
 			MV.broken = TRUE
