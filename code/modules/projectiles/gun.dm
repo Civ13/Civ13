@@ -76,7 +76,7 @@
 	var/list/dispersion = list(0)
 
 	var/obj/item/weapon/attachment/bayonet = null
-	var/launcher = null
+	var/obj/item/weapon/gun/launcher/grenade/underslung/launcher = null
 	var/use_launcher = FALSE
 
 	var/gun_type = GUN_TYPE_GENERIC

@@ -1971,11 +1971,11 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
 
-	var/launcher = /obj/item/weapon/gun/launcher/grenade/underslung/gp25
+	launcher = /obj/item/weapon/gun/launcher/grenade/underslung/gp25
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/New()
 	..()
-	launcher = new(src)
+	launcher = new launcher(src)
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/attackby(obj/item/I, mob/user)
 	if((istype(I, /obj/item/weapon/grenade)))//load check it for it's type
@@ -1992,10 +1992,7 @@
 		..()
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0)
-	if(use_launcher && !roundstarted)
-		to_chat(user, "<span class='warning'>There is no reason to fire an underbarrel grenade!</span>")
-		return
-	if(use_launcher && roundstarted)
+	if(use_launcher )
 		launcher.Fire(target, user, params, pointblank, reflex)
 		if(!launcher.chambered)
 			switch_firemodes() //switch back automatically
@@ -2012,7 +2009,7 @@
 		use_launcher = !use_launcher
 		if(do_after(usr, 5, src))
 			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : " take your gun back."]</span>")
-			playsound(src, 'sound/weapons/gunporn/gp25_select.ogg', 50, 1)
+			playsound(src, 'sound/weapons/guns/interact/launcher_select.ogg', 50, 1)
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/c8
 	name = "C8"
