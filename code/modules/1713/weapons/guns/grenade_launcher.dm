@@ -5,11 +5,9 @@
 	item_state = "riotgun"
 	w_class = ITEM_SIZE_HUGE
 	force = 10
-
-
 	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
 	fire_sound_text = "a metallic thunk"
-	throw_distance = 7
+	throw_distance = 40
 	release_force = 5
 	gun_safety = FALSE
 
@@ -110,6 +108,7 @@
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
 	w_class = ITEM_SIZE_NORMAL
 	force = 5
+	throw_distance = 40
 	max_grenades = 0
 
 /obj/item/weapon/gun/launcher/grenade/underslung/attack_self()
@@ -183,7 +182,7 @@
 	max_grenades = 0
 	gun_safety = TRUE
 	release_force = 2
-	throw_distance = 4
+	throw_distance = 40
 	equiptimer = 25
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
 	var/cover_opened = FALSE
