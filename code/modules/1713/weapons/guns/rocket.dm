@@ -136,8 +136,10 @@
 	..()
 	if(rockets.len)
 		icon_state = "rpg7"
+		item_state = "rpg"
 	else
 		icon_state = "rpg7_empty"
+		item_state = "rpg_empty"
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/proc/unload(mob/user)
 	if(rockets.len)
@@ -376,7 +378,7 @@
 	if(rockets.len)
 		icon_state = "[initial(icon_state)]"
 	else
-		icon_state = "[initial(icon_state)]_empty"
+		icon_state = "[initial(icon_state)]"
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/proc/unload(mob/user)
 	if(rockets.len)
@@ -400,6 +402,13 @@
 	release_force = 12
 	throw_distance = 10
 	rocket_path = /obj/item/ammo_casing/rocket/panzerfaust
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "[initial(icon_state)]"
+	else
+		icon_state = "[initial(icon_state)]_empty"
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/m72law
 	name = "M72 LAW"

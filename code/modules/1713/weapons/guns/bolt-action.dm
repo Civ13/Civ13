@@ -304,9 +304,9 @@
 /obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
 	name = "Barrett M99"
 	desc = "A single-shot anti-material rifle designed by the Barrett Firearms Company."
-	icon_state = "a50calss"
-	item_state = "a50calss"
-	base_icon = "a50calss"
+	icon_state = "m99"
+	item_state = "barrett"
+	base_icon = "m99"
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	w_class = 4
 	force = 10
