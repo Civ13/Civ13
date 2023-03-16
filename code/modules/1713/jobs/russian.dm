@@ -643,7 +643,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
-	give_random_name(H)
 	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
 	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
