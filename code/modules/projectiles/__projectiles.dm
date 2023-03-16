@@ -582,21 +582,27 @@ obj/item/projectile/bullet/rifle/a556x45
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = DAMAGE_OH_GOD + 90
-	penetrating = 10
-	armor_penetration = 50
-	heavy_armor_penetration = 20
+	penetrating = 20
+	armor_penetration = 65
+	heavy_armor_penetration = 30
 
 /obj/item/projectile/bullet/rifle/a145_ap
 	damage = DAMAGE_OH_GOD + 80
-	penetrating = 20
-	armor_penetration = 80
-	heavy_armor_penetration = 40
+	penetrating = 25
+	armor_penetration = 85
+	heavy_armor_penetration = 50
 
 /obj/item/projectile/bullet/rifle/a792x94
-	damage = DAMAGE_OH_GOD + 80
+	damage = DAMAGE_OH_GOD + 85
 	penetrating = 20
-	armor_penetration = 80
-	heavy_armor_penetration = 40
+	armor_penetration = 60
+	heavy_armor_penetration = 25
+
+/obj/item/projectile/bullet/rifle/a792x94_ap
+	damage = DAMAGE_OH_GOD + 80
+	penetrating = 25
+	armor_penetration = 85
+	heavy_armor_penetration = 45
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20

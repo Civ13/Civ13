@@ -600,10 +600,29 @@
 	weight = 0.8
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/pzb_case_ap
+	name = "7.92x94mm AP case"
+	icon_state = "pzb39"
+	mag_type = MAGAZINE
+	caliber = "a792x94_ap"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/pzb_pouch
 	name = "heavy bullet pouch (7.92x94mm)"
 	icon_state = "pouch_closed"
 	ammo_type = /obj/item/ammo_casing/a792x94
+	caliber = "a792x94"
+	max_ammo = 6
+	weight = 0.8
+	multiple_sprites = TRUE
+	pouch = TRUE
+
+/obj/item/ammo_magazine/pzb_pouch_ap
+	name = "heavy bullet pouch (7.92x94mm AP)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a792x94_ap
 	caliber = "a792x94"
 	max_ammo = 6
 	weight = 0.8
@@ -740,7 +759,7 @@
 	else
 		if (stored.len > 0)
 			icon_state = "[initial(icon_state)]-[stored.len]"
-		else 
+		else
 			icon_state = "flarepouch-0"
 
 /obj/item/flare_pouch/attackby(var/obj/item/W, mob/user as mob)

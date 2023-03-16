@@ -13,7 +13,7 @@
 	..()
 	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
 	spawn_add_attachment(A, src)
-	
+
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
 	return TRUE
@@ -454,21 +454,22 @@
 	else
 		icon_state = "bazooka_empty"
 
-/obj/item/weapon/gun/launcher/rocket/rpb43
-	name = "Raketen-Panzerbüchse 43"
+/obj/item/weapon/gun/launcher/rocket/rpb54
+	name = "Raketen-Panzerbüchse 54"
 	desc = "A reusable 88mm anti-tank rocket launcher developed by Germany during World War II."
-	icon_state = "rpb43_empty"
-	item_state = "rpb43"
+	icon_state = "rpb54_empty"
+	item_state = "rpb54"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	caliber = "rpb43"
+	caliber = "rpb54"
+	fire_sound = 'sound/weapons/guns/fire/panzershreck.ogg'
 
-/obj/item/weapon/gun/launcher/rocket/rpb43/update_icon()
+/obj/item/weapon/gun/launcher/rocket/rpb54/update_icon()
 	..()
 	if(rockets.len)
-		icon_state = "rpb43"
+		icon_state = "rpb54"
 	else
-		icon_state = "rpb43_empty"
+		icon_state = "rpb54_empty"
 
 //Fatman
 /obj/item/weapon/gun/launcher/rocket/fatman
@@ -507,12 +508,12 @@
 	projectile_type = /obj/item/missile
 	caliber = "bazooka"
 
-/obj/item/ammo_casing/rocket/rpb43
+/obj/item/ammo_casing/rocket/rpb54
 	name = "RPzB. Gr. 4312"
 	desc = "A high explosive anti tank warhead and propeller designed to be fired from a Raketen-Panzerbüchse."
-	icon_state = "RPzB"
+	icon_state = "rpb54"
 	projectile_type = /obj/item/missile
-	caliber = "rpb43"
+	caliber = "rpb54"
 
 /obj/item/ammo_casing/rocket/panzerfaust
 	name = "panzerfaust rocket"

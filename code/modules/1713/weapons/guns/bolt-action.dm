@@ -399,7 +399,7 @@
 	recoil = 3
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | MAGAZINE
-	ammo_type = list (/obj/item/ammo_casing/a792x94)
+	ammo_type = list (/obj/item/ammo_casing/a792x94, /obj/item/ammo_casing/a792x94_ap)
 	magazine_type = /obj/item/ammo_magazine/pzb_case
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
