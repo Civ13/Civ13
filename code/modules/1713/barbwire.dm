@@ -39,7 +39,7 @@
 		if (ishuman(M))
 			var/mob/living/human/H = M
 			if (prob (33))
-				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
+				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
 				if (affecting && affecting.take_damage(5, FALSE))
 					H.UpdateDamageIcon()
@@ -49,7 +49,7 @@
 				if (affecting)
 					M << "<span class = 'red'><b>Your [affecting.name] gets slightly cut by \the [src]!</b></span>"
 			else if (prob (33))
-				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
+				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
 				if (affecting && affecting.take_damage(10, FALSE))
 					H.UpdateDamageIcon()
@@ -59,7 +59,7 @@
 				if (affecting)
 					M << "<span class = 'red'><b>Your [affecting.name] gets cut by \the [src]!</b></span>"
 			else
-				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
+				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
 				if (affecting && affecting.take_damage(15, FALSE))
 					H.UpdateDamageIcon()
@@ -108,7 +108,7 @@
 						affecting = H.get_organ("r_hand")
 
 					user << "<span class = 'red'><b>Your hand slips, causing \the [src] to gauge your [affecting.name] open!</b></span>"
-					playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
+					playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 					if (affecting.take_damage(18, FALSE))
 						H.UpdateDamageIcon()
 					H.updatehealth()
