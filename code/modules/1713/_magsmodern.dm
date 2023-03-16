@@ -590,6 +590,15 @@
 	weight = 0.8
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/pzb_case_ap
+	name = "7.92x94mm AP case"
+	icon_state = "pzb39"
+	mag_type = MAGAZINE
+	caliber = "a792x94_ap"
+	max_ammo = 10
+	weight = 0.8
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/pzb_pouch
 	name = "heavy bullet pouch (7.92x94mm)"
 	icon_state = "pouch_closed"

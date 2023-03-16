@@ -462,6 +462,7 @@
 	slot_flags = SLOT_SHOULDER
 	force = 10
 	caliber = "rpb54"
+	fire_sound = 'sound/weapons/guns/fire/panzershreck.ogg'
 
 /obj/item/weapon/gun/launcher/rocket/rpb54/update_icon()
 	..()
