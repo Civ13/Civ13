@@ -29,7 +29,7 @@
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
-	projectile.icon_state = "[initial(icon_state)]_active"
+	projectile.icon_state = "[initial(projectile.icon_state)]_active"
 	return TRUE
 
 /obj/item/weapon/gun/launcher/grenade/examine(mob/user)
