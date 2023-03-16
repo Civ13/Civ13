@@ -47,6 +47,8 @@
 		. = TRUE
 	else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
 		. = TRUE
+	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
+		. = TRUE
 	else
 		. = FALSE
 
