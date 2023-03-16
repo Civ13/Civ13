@@ -546,7 +546,7 @@
 	icon_state = "a50cal"
 	mag_type = MAGAZINE
 	w_class = ITEM_SIZE_LARGE
-	caliber = "a50cal
+	caliber = "a50cal"
 	ammo_type = /obj/item/ammo_casing/a50cal
 	max_ammo = 10
 	multiple_sprites = TRUE
