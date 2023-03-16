@@ -277,7 +277,7 @@
 	force = 12.0
 	flags = CONDUCT
 	throwforce = 1.0
-	w_class = ITEM_SIZE_GARGANTUAN.0
+	w_class = ITEM_SIZE_GARGANTUAN
 	item_state = "jackhammer"
 	attack_verb = list("drilled", "bludgeoned", "stabbed", "whacked")
 	sharp = FALSE

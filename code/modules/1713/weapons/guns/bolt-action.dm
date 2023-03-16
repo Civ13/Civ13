@@ -22,7 +22,7 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	var/bolt_open_sound = 'sound/weapons/guns/interact/bolt_open.ogg'
-	var/bolt_close_sound = 'sound/weapons/guns/interact/close_open.ogg'
+	var/bolt_close_sound = 'sound/weapons/guns/interact/bolt_close.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
 //	scoped_accuracy = 2
