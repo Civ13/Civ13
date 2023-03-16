@@ -7,7 +7,7 @@
 	icon_state = "beartrap0"
 	desc = "A mechanically activated leg trap. Low-tech, but reliable. Looks like it could really hurt if you set it off."
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	var/deployed = FALSE
 
 /obj/item/weapon/beartrap/armed
@@ -126,7 +126,7 @@
 	icon_state = "punji0"
 	desc = "A simple hole with sharp sticks inside, covered with leaves. Deadly."
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	flammable = TRUE
 	var/deployed = FALSE
 	flags = FALSE

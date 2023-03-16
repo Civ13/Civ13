@@ -247,7 +247,7 @@
 	throw_speed = 0.5
 	throw_range = 9
 	item_state = "football"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	layer = 6
 	opacity = FALSE
 	density = FALSE
@@ -496,7 +496,7 @@
 	throw_speed = 1.5
 	throw_range = 7
 	item_state = "basketball"
-	w_class = 4 //Stops people from hiding it in their backpack.
+	w_class = ITEM_SIZE_LARGE //Stops people from hiding it in their backpack.
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand.dmi',

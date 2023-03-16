@@ -33,23 +33,23 @@
 	icon_state = "trashbag0"
 	item_state = "trashbag"
 
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	max_w_class = 2
 	can_hold = list() // any
 
 /obj/item/weapon/storage/bag/trash/update_icon()
 	if (contents.len >= 2 && contents.len < 4)
 		icon_state = "trashbag1"
-		w_class = 2
+		w_class = ITEM_SIZE_SMALL
 	else if (contents.len >= 4 && contents.len < 7)
 		icon_state = "trashbag2"
-		w_class = 3
+		w_class = ITEM_SIZE_NORMAL
 	else if (contents.len >= 7)
 		icon_state = "trashbag3"
-		w_class = 4
+		w_class = ITEM_SIZE_LARGE
 	else
 		icon_state = "trashbag0"
-		w_class = 1
+		w_class = ITEM_SIZE_TINY
 
 // -----------------------------
 //		Plastic Bag
@@ -62,7 +62,7 @@
 	icon_state = "plasticbag"
 	item_state = "plasticbag"
 
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	max_w_class = 2
 	can_hold = list() // any
 	allow_quick_gather = FALSE
@@ -78,7 +78,7 @@
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "satchel"
 	slot_flags = SLOT_BELT | SLOT_POCKET
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	max_storage_space = 100
 	max_w_class = 3
 	can_hold = list(/obj/item/stack/ore)
@@ -93,7 +93,7 @@
 	icon_state = "plantbag"
 	max_storage_space = 100
 	max_w_class = 3
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	can_hold = list(/obj/item/weapon/reagent_containers/food/snacks/grown,/obj/item/seeds,/obj/item/weapon/grown)
 */
 
@@ -110,7 +110,7 @@
 	desc = "A patented storage system designed for any kind of mineral sheet."
 
 	var/capacity = 300; //the number of sheets it can carry.
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	storage_slots = 7
 
 	allow_quick_empty = TRUE // this function is superceded
@@ -242,5 +242,5 @@
 	desc = "A bag for carrying lots of cash. It's got a big dollar sign printed on the front."
 	max_storage_space = 15
 	max_w_class = 3
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	can_hold = list(/obj/item/stack/money, /obj/item/stack/material/gold, /obj/item/stack/material/silver, /obj/item/stack/material/diamond)

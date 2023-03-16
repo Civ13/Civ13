@@ -18,7 +18,7 @@
 
 	dropsound = 'sound/effects/drop_glass.ogg'
 
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/New()
 	..()

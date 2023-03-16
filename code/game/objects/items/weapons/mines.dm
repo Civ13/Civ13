@@ -8,7 +8,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "mine"
 	force = 5.0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	layer = OBJ_LAYER + 0.01 //because they go in crates
 	throwforce = 5.0
 	throw_range = 6
@@ -154,7 +154,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "mine"
 	force = 10.0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = 5.0
 	throw_range = 6
 	throw_speed = 3
@@ -212,7 +212,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "mine"
 	force = 12.0
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	throwforce = 2.0
 	throw_range = 3
 	throw_speed = 3
@@ -268,7 +268,7 @@
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "boobytrap_armed"
 	force = 10.0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = 5.0
 	throw_range = 6
 	throw_speed = 3

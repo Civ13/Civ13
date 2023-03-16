@@ -4,7 +4,7 @@
 	desc = "A simple and crude bow."
 	icon_state = "bow0"
 	item_state = "bow0"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	throw_range = 5
 	throw_speed = 5
 	force = 6
@@ -111,7 +111,7 @@
 	flammable = TRUE
 	load_delay = 10
 	projtype = "arrow"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 
 /obj/item/weapon/gun/projectile/bow/longbow
@@ -189,7 +189,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	icon_state = "sling0"
 	item_state = "sling0"
 	icotype = "sling"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throw_range = 6
 	throw_speed = 2
 	force = 6

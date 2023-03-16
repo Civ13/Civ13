@@ -333,5 +333,5 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "catapult projectile"
 	icon_state = "catapult"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 15

@@ -37,7 +37,7 @@
 	icon_state = "buckler"
 	item_state = "buckler"
 	var/base_block_chance = 25
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_BACK | SLOT_ACCESSORY
 	var/material = "wood"
 	health = 20 // hardness of wood
@@ -62,7 +62,7 @@
 	item_state = "steel_shield"
 	material = "steel"
 	health = 30
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 38 //minor change to make the upgrade worthwhile
 	slowdown = 0.3
 
@@ -72,7 +72,7 @@
 	item_state = "iron_shield"
 	material = "iron"
 	health = 25
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 33
 	slowdown = 0.25
 
@@ -82,7 +82,7 @@
 	item_state = "bronze_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 30
 	slowdown = 0.2
 
@@ -93,7 +93,7 @@
 	item_state = "athenian_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 45
 	slowdown = 0.4
 
@@ -112,7 +112,7 @@
 	item_state = "athenian_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 35
 	slowdown = 0.4
 
@@ -123,7 +123,7 @@
 	item_state = "spartan_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 35
 	slowdown = 0.4
 
@@ -134,7 +134,7 @@
 	item_state = "pegasus_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 35
 	slowdown = 0.4
 
@@ -145,7 +145,7 @@
 	item_state = "owl_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 35
 	slowdown = 0.4
 
@@ -158,7 +158,7 @@
 	item_state = "egyptian_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 35
 	slowdown = 0.4
 
@@ -169,7 +169,7 @@
 	item_state = "scutum"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 37
 	slowdown = 0.3
 
@@ -180,7 +180,7 @@
 	item_state = "roman_shield"
 	material = "bronze"
 	health = 23
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 37
 	slowdown = 0.3
 
@@ -205,7 +205,7 @@
 	icon_state = "roman_buckler"
 	item_state = "roman_buckler"
 	base_block_chance = 25 //nerfed from 257
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -219,7 +219,7 @@
 	material = "wood"
 	slot_flags = SLOT_BACK
 	health = 20
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	base_block_chance = 30
 	slowdown = 0.1
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
@@ -261,7 +261,7 @@
 	item_state = "semioval_shield"
 	material = "iron"
 	health = 25
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.3
 
@@ -283,7 +283,7 @@
 	item_state = "semioval_shield"
 	material = "iron"
 	health = 25
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 37
 	slowdown = 0.3
 
@@ -304,7 +304,7 @@
 	icon_state = "red_buckler"
 	item_state = "red_buckler"
 	base_block_chance = 25
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -316,7 +316,7 @@ obj/item/weapon/shield/blue_buckler
 	item_state = "blue_buckler"
 	base_block_chance = 25
 	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -333,7 +333,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "arabic_shield"
 	base_block_chance = 30
 	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY | SLOT_ACCESSORY
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.22
@@ -346,7 +346,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "orc_shield"
 	material = "iron"
 	health = 25
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.3
 
@@ -357,7 +357,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "chitin_buckler"
 	material = "chitin"
 	health = 20
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 25
 	slowdown = 0.2
 
@@ -368,7 +368,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "chitin_shield"
 	material = "chitin"
 	health = 25
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 37
 	slowdown = 0.35
 
@@ -382,7 +382,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "metal_riot"
 	material = "iron"
 	health = 90
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	base_block_chance = 65
 	slowdown = 0.35
 
@@ -393,7 +393,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "metal_riot"
 	material = "steel"
 	health = 90
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	base_block_chance = 85
 	slowdown = 2.85
 //////////////////////////////////////SKYRIM////////////////////////////////////////
@@ -403,7 +403,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "iron_shield_tes13"
 	material = "iron"
 	health = 60
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05
 /obj/item/weapon/shield/tes13/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
@@ -430,7 +430,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "stormcloak"
 	material = "wood"
 	health = 60
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05
 
@@ -440,7 +440,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "whiterun"
 	material = "wood"
 	health = 60
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05
 
@@ -450,6 +450,6 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "imperial_kite"
 	material = "wood"
 	health = 60
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05

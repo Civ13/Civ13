@@ -196,7 +196,7 @@
 	density = FALSE
 	opacity = FALSE
 	slot_flags = SLOT_ID | SLOT_POCKET
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_HARMLESS
 	icon_override = TRUE

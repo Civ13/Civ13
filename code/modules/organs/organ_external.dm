@@ -1127,7 +1127,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "torso"
 	min_broken_damage = 55
 	max_damage = 101
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	body_part = UPPER_TORSO
 	vital = TRUE
 	amputation_point = "spine"
@@ -1146,7 +1146,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "groin"
 	min_broken_damage = 55
 	max_damage = 101
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	body_part = LOWER_TORSO
 	cannot_amputate = TRUE
 	vital = TRUE
@@ -1164,7 +1164,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "l_arm"
 	min_broken_damage = 40
 	max_damage = 60
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = ARM_LEFT
 	parent_organ = "chest"
 	joint = "left elbow"
@@ -1185,7 +1185,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "l_leg"
 	min_broken_damage = 40
 	max_damage = 70
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = LEG_LEFT
 	icon_position = LEFT
 	parent_organ = "groin"
@@ -1208,7 +1208,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "l_foot"
 	min_broken_damage = 35
 	max_damage = 65
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_part = FOOT_LEFT
 	icon_position = LEFT
 	parent_organ = "l_leg"
@@ -1235,7 +1235,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	icon_name = "l_hand"
 	min_broken_damage = 35
 	max_damage = 60
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_part = HAND_LEFT
 	parent_organ = "l_arm"
 	joint = "left wrist"
@@ -1260,7 +1260,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "head"
 	min_broken_damage = 40
 	max_damage = 60
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = HEAD
 	vital = TRUE
 	parent_organ = "chest"
@@ -1345,7 +1345,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/stack/teeth
 	name = "teeth"
 	singular_name = "tooth"
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	throwforce = 2
 	max_amount = 32
 	desc = "Welp. Someone had their teeth knocked out."

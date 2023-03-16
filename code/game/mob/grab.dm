@@ -29,7 +29,7 @@
 	layer = 21
 	abstract = TRUE
 	item_state = "nothing"
-	w_class = 5.0
+	w_class = ITEM_SIZE_HUGE
 
 
 /obj/item/weapon/grab/New(mob/user, mob/victim)

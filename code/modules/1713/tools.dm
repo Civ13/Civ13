@@ -8,7 +8,7 @@
 	force = 4.0
 	throwforce = 3.0
 	item_state = "plough"
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flags = FALSE
 
 	attack_verb = list("bashed", "bludgeoned", "whacked")
@@ -37,7 +37,7 @@
 /obj/item/weapon/foldable
 	force = 12
 	nothrow = TRUE
-	w_class = 6
+	w_class = ITEM_SIZE_GARGANTUAN
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = null
@@ -96,7 +96,7 @@
 	force = 8.0
 	throwforce = 4.0
 	item_state = "shovel"
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = FALSE
 	edge = TRUE
@@ -177,7 +177,7 @@
 	item_state = "spade"
 	force = 15.0
 	throwforce = 20.0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	weight = 1.18
 	usespeed = 0.8
 
@@ -199,7 +199,7 @@
 	force = 1.0
 	var/path = /obj/item/weapon/material/shovel/spade/foldable
 	secondary_action = TRUE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/foldable_shovel/trench
 	name = "foldable entrenching tool"
@@ -234,7 +234,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "pickaxe"
 	flags = CONDUCT
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	item_state = "pickaxe"
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = FALSE
@@ -277,7 +277,7 @@
 	force = 12.0
 	flags = CONDUCT
 	throwforce = 1.0
-	w_class = 6.0
+	w_class = ITEM_SIZE_GARGANTUAN.0
 	item_state = "jackhammer"
 	attack_verb = list("drilled", "bludgeoned", "stabbed", "whacked")
 	sharp = FALSE
@@ -311,7 +311,7 @@
 	force = 2.0
 	throwforce = 1.0
 	item_state = "berriesgatherer"
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
@@ -325,7 +325,7 @@
 	icon_state = "chisel"
 	force = 2.0
 	throwforce = 1.0
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
@@ -361,7 +361,7 @@
 	icon_state = "chisel_metal"
 	force = 2.25
 	throwforce = 1.25
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE

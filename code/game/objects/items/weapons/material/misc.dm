@@ -127,7 +127,7 @@
 	default_material = "iron"
 	force_divisor = 0.35 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.35 // as above
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("slashed", "clawed", "forked")
 	cooldownw = 9
 
@@ -362,7 +362,7 @@
 	icon_state = "hatchet"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE
 	edge = TRUE
 	default_material = "iron"
@@ -399,7 +399,7 @@
 	icon_state = "machete"
 	force_divisor = 0.7 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE
 	edge = TRUE
 	material = "iron"
@@ -420,7 +420,7 @@
 	icon_state = "machete1"
 	force_divisor = 0.6 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE
 	edge = TRUE
 	material = "iron"
@@ -476,7 +476,7 @@
 	default_material = "steel"
 	force_divisor = 0.6 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE
 	edge = TRUE
 	attack_verb = list("chopped", "torn", "cut")
@@ -495,7 +495,7 @@
 	item_state = "hoe"
 	force_divisor = 0.25 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.25 // as above
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("slashed", "sliced", "cut", "clawed")
 	cooldownw = 5
 
@@ -509,7 +509,7 @@
 	edge = TRUE
 	throw_speed = TRUE
 	throw_range = 3
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_SHOULDER
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
 	cooldownw = 5
@@ -524,7 +524,7 @@
 	edge = TRUE
 	throw_speed = TRUE
 	throw_range = 3
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_SHOULDER
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
 	cooldownw = 5
@@ -962,7 +962,7 @@
 	material = "iron"
 	force_divisor = 0.6 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	sharp = TRUE
 	edge = TRUE
 	attack_verb = list("chopped", "torn", "cut")
@@ -1002,7 +1002,7 @@
 	material = "bone"
 	force_divisor = 0.6 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	sharp = TRUE
 	edge = TRUE
 	attack_verb = list("chopped", "torn", "cut")
@@ -1103,7 +1103,7 @@
 	material = "steel"
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	sharp = TRUE
 	edge = TRUE
 	attack_verb = list("chopped", "torn", "cut")
@@ -1140,7 +1140,7 @@
 	force = 100
 	force_divisor = 1 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 1 // 15 with weight 20 (steel)
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	sharp = TRUE
 	edge = TRUE
 	attack_verb = list("chopped", "torn", "cut")

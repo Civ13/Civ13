@@ -18,13 +18,13 @@
 	var/cable_color = "red"
 	desc = "A coil of insulated power cable."
 	throwforce = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throw_speed = 3
 	throw_range = 5
 	slot_flags = SLOT_BELT
 	attack_verb = list("whipped", "lashed", "disciplined", "flogged")
 	singular_name = "cable piece"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/usesound = 'sound/items/deconstruct.ogg'
 	value = 0.25
 	flags = CONDUCT
@@ -37,7 +37,7 @@
 /obj/item/connector
 	name = "cable connector"
 	desc = "a cable connector, used to merge or split cables."
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	layer = 3.92
 	icon = 'icons/obj/machines/power.dmi'
 	icon_state = "connector"

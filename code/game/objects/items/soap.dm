@@ -5,7 +5,7 @@
 	gender = PLURAL
 	icon = 'icons/obj/items.dmi'
 	icon_state = "soap"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = FALSE
 	throw_speed = 4
 	throw_range = 20
@@ -32,7 +32,7 @@
 	gender = PLURAL
 	icon = 'icons/obj/items.dmi'
 	icon_state = "soap_lard_1"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = FALSE
 	throw_speed = 4
 	throw_range = 20

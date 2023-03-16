@@ -319,7 +319,7 @@
 	desc = "Contains basic first-aid medicine."
 	icon_state = "advfirstaid2"
 	item_state = "advfirstaid2"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	can_hold = list(
 		/obj/item/stack/medical/advanced/bruise_pack,
 		/obj/item/stack/medical/advanced/ointment,
@@ -339,7 +339,7 @@
 	desc = "cointains items that might increase your chances of survival against a Nuclear biological or a chemical attack."
 	icon_state = "boxnbc"
 	item_state = "boxnbc"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_BELT|SLOT_POCKET
 	can_hold = list(
 		/obj/item/clothing/accessory,
@@ -373,7 +373,7 @@
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "matchbox"
 	item_state = "zippo"
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_BELT
 	var/maxcap = 10
 	var/currcap = 10

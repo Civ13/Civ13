@@ -6,7 +6,7 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "crowbar"
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 	var/limb_type = "none"

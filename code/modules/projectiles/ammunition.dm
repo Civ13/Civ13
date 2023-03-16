@@ -6,7 +6,7 @@
 	flags = CONDUCT
 	slot_flags = SLOT_EARS
 	throwforce = TRUE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 	flags = CONDUCT
 	var/leaves_residue = TRUE
@@ -73,7 +73,7 @@
 	slot_flags = SLOT_BELT
 	item_state = "syringe_kit"
 	throwforce = 5
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throw_speed = 4
 	throw_range = 10
 	secondary_action = 1
@@ -220,7 +220,7 @@
 	caliber = null
 	max_ammo = 100
 	weight = 1
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	multiple_sprites = TRUE
 	belt = TRUE
 

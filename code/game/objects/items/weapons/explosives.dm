@@ -6,7 +6,7 @@
 	icon_state = "plastic-explosive0"
 	item_state = "zippo"
 	flags = NOBLUDGEON | CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	var/timer = 10
 	var/atom/target = null
 	var/open_panel = FALSE

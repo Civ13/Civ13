@@ -119,7 +119,7 @@
 	icon_state = "svt"
 	item_state = "svt"
 	base_icon = "svt"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
 	caliber = "a762x54"
@@ -145,7 +145,7 @@
 	icon_state = "avtomat"
 	item_state = "svt"
 	base_icon = "avtomat"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 25
 	caliber = "a65x50"
@@ -172,7 +172,7 @@
 	icon_state = "remington11"
 	item_state = "remington11"
 	base_icon = "remington11"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING
 	max_shells = 5
 	caliber = "12gauge"
@@ -193,7 +193,7 @@
 	item_state = "mosin"
 	base_icon = "sks"
 	fire_sound = 'sound/weapons/guns/fire/SKS.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
 	caliber = "a762x39"
@@ -236,7 +236,7 @@
 	icon_state = "svd"
 	item_state = "svd"
 	base_icon = "svd"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
 	caliber = "a762x54"
@@ -281,7 +281,7 @@
 	icon_state = "g41"
 	item_state = "g41"
 	base_icon = "g41"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
 	caliber = "a792x57"
@@ -305,7 +305,7 @@
 	icon_state = "g43"
 	item_state = "g43"
 	base_icon = "g43"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
 	load_delay = 8
@@ -330,7 +330,7 @@
 	icon_state = "m1garand"
 	item_state = "m1garand"
 	base_icon = "m1garand"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 8
 	caliber = "a3006"
@@ -353,7 +353,7 @@
 /obj/item/weapon/gun/projectile/semiautomatic/m1garand/match //Match grade weapons are built to a higher standard than service grade weapons.
 	name = "M1 Garand Match"
 	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine, this one was made with better quality control."
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 4.8
 	force = 15
 	throwforce = 25
@@ -366,7 +366,7 @@
 	icon_state = "m4"
 	item_state = "m4"
 	base_icon = "m4"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	load_delay = 5
 	caliber = "a556x45"
@@ -394,7 +394,7 @@
 	caliber = "a9x39"
 	ammo_type = /obj/item/ammo_casing/a9x39
 	damage_modifier = 1.2
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	fire_sound = 'sound/weapons/guns/fire/silenced_pistol.ogg'
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/vintorez
@@ -409,6 +409,38 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/semiautomatic/vintorez/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/semiautomatic/barrett
+	name = "Barrett M82"
+	desc = "The Barrett M82 is a recoil-operated, semi-automatic anti-materiel rifle developed by the American company Barrett Firearms Manufacturing. Chambered in .50 BMG."
+	icon_state = "m82"
+	item_state = "barrett"
+	base_icon = "m82"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	w_class = ITEM_SIZE_HUGE
+	KD_chance = KD_CHANCE_HIGH
+	slot_flags = null
+	caliber = "a50cal"
+	load_method = MAGAZINE
+	ammo_type = list (/obj/item/ammo_casing/a50cal, /obj/item/ammo_casing/a50cal_ap, /obj/item/ammo_casing/a50cal_he)
+	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	reload_sound = 'sound/weapons/guns/interact/barrett_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/barrett_magout.ogg'
+	magazine_type = /obj/item/ammo_magazine/vintorez
+	good_mags = list(/obj/item/ammo_magazine/vintorez)
+	weight = 14.8
+	recoil = 3
+	firemodes = list(
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
+		)
+	gun_type = GUN_TYPE_RIFLE
+	effectiveness_mod = 2.0
+	equiptimer = 15
+	
+/obj/item/weapon/gun/projectile/semiautomatic/barrett/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)

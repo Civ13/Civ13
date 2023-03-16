@@ -6,7 +6,7 @@
 	icon = 'icons/obj/guns/ancient.dmi'
 	icon_state = "musket"
 	item_state = "musket"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	throw_range = 4
 	throw_speed = 2
 	force = 10
@@ -328,7 +328,7 @@
 	item_state = "pistol"
 	recoil = 2
 	force = 6
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.5
@@ -473,7 +473,7 @@
 	item_state = "pistol"
 	recoil = 2.1
 	force = 6.1
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.5
@@ -547,7 +547,7 @@
 	item_state = "pistol"
 	recoil = 2.5
 	force = 8
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.9
@@ -616,7 +616,7 @@
 	item_state = "pistol"
 	recoil = 2.1
 	force = 6.1
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	fire_sound = 'sound/weapons/guns/fire/hpistol.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.5
@@ -696,7 +696,7 @@
 	gtype = "pistol"
 	gun_type = GUN_TYPE_PISTOL
 	weight = 2.5
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	value = 80
 	effectiveness_mod = 0.6
 	attachment_slots = ATTACH_IRONSIGHTS

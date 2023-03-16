@@ -5,7 +5,7 @@
 	name = "pill pack"
 	desc = "Pills in sterile and handy pack."
 	icon = 'icons/obj/surgery.dmi'
-	w_class = TRUE//Packed very effective
+	w_class = ITEM_SIZE_TINY//Packed very effective
 	icon_state = "pill_pack"
 	var/pill_type = null
 	var/pop_sound = 'sound/effects/pop_pill.ogg'

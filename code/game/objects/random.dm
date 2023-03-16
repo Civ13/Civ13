@@ -236,7 +236,7 @@ Example for later use:
 	desc = "Ooooh what could be inside??? If you see this report it to a developer"
 	icon = 'icons/misc/mark.dmi'
 	icon_state = "dice"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/stashed = list()
 
 /obj/item/weapon/hiddenstash/New()

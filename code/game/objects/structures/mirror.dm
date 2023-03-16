@@ -98,7 +98,7 @@
 	desc = "A simple glass mirror."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "mirror"
-	w_class = 3		//big
+	w_class = ITEM_SIZE_NORMAL		//big
 	value = 0
 
 /obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)

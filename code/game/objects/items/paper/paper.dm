@@ -11,7 +11,7 @@
 	item_state = "paper"
 	var/base_icon = "paper"
 	throwforce = FALSE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	throw_range = TRUE
 	throw_speed = TRUE
 	layer = 4

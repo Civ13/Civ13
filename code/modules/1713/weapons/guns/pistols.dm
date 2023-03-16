@@ -74,7 +74,7 @@
 	name = "Type A Nambu"
 	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
 	icon_state = "nambu"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
@@ -97,7 +97,7 @@
 	name = "Type 14 Nambu"
 	desc = "Standard issue Japanese pistol. Chambered in 8x22mm Nambu."
 	icon_state = "nambu_ww2"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/c8mmnambu
@@ -120,7 +120,7 @@
 	name = "Luger P08"
 	desc = "A Luger P08 chambered in 9x19mm parabellum, german design."
 	icon_state = "luger"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/luger
@@ -143,7 +143,7 @@
 	name = "Walther P38"
 	desc = "A Walther P38 chambered in 9x19mm parabellum, german design."
 	icon_state = "waltherp38"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/walther
@@ -174,7 +174,7 @@
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
 	icon_state = "glock17"
 	fire_delay = 2.3
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
@@ -210,7 +210,7 @@
 	icon_state = "sig250"
 	item_state = "sig250"
 	fire_delay = 2.3
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/sig250
@@ -234,7 +234,7 @@
 	desc = "A modern experimental pistol made by Kalashnikov (chambered in 9x19mm)."
 	icon_state = "pl14"
 	fire_delay = 1.8
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/pl14
@@ -259,7 +259,7 @@
 	desc = "A Russian made pistol firing loaded on 9x19mm."
 	icon_state = "mp443"
 	fire_delay = 3.15
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp443
@@ -283,7 +283,7 @@
 	desc = "A modern pistol, loaded on 9x19mm, reliable and fast."
 	icon_state = "tarusg3"
 	fire_delay = 2.3
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
@@ -307,7 +307,7 @@
 	desc = "The SIG Sauer P220 is a semi-automatic pistol. Designed in 1975."
 	icon_state = "p220"
 	fire_delay = 3.7
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/p220
@@ -338,7 +338,7 @@
 	desc = "Some retarded fake shit invented by Re1taz."
 	icon_state = "iogb7"
 	fire_delay = 1.1
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
@@ -361,7 +361,7 @@
 	name = "Mauser C96"
 	desc = "An early German pistol that can chamber 7.62x25mm TT."
 	icon_state = "mauser"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
@@ -385,7 +385,7 @@
 	name = "Borchardt C93"
 	desc = "A German semi-automatic pistol chambered in 7.65x25mm Borchardt."
 	icon_state = "borchardt"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a765x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/borchardt
@@ -407,7 +407,7 @@
 	name = "Colt M1903 Pocket Hammerless"
 	desc = "An early, compact Colt pistol chambered in .32 ACP."
 	icon_state = "coltpockethammerless"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	equiptimer = 4
 	caliber = "a32acp"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
@@ -432,7 +432,7 @@
 	name = "Colt M1908 Pocket Hammerless"
 	desc = "A later version of the compact Colt pistol, chambered in .380 ACP."
 	icon_state = "coltpockethammerless"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a380acp"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/colthammerless/a380acp
@@ -447,7 +447,7 @@
 	name = "Bergmann No.2"
 	desc = "A particularly unique-in-appearance early German semi-automatic pistol."
 	icon_state = "bergmann"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/Nambu.ogg'
 	magazine_type = /obj/item/ammo_magazine/bergmann
@@ -471,7 +471,7 @@
 	name = "M1911A1"
 	desc = "The standard issue pistol of the US Armed forces from 1911 to 1985. Chambered in .45 ACP."
 	icon_state = "colt"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
@@ -495,7 +495,7 @@
 	name = "Colt Mark IV"
 	desc = "A slightly upgraded model of the M1911A1. Chambered in .45 ACP."
 	icon_state = "colt"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/m1911
@@ -525,7 +525,7 @@
 	name = "TT-33"
 	desc = "The standard issue pistol of the Soviet Union before the 1950's. Chambered in 7.62x25mm Tokarev."
 	icon_state = "tt30"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/tt30
@@ -561,7 +561,7 @@
 	name = "Makarov PM"
 	desc = "The standard issue pistol of the Soviet Union and Russian Federation after the 1950's. Chambered in 9x18mm Makarov."
 	icon_state = "makarov"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x18"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
 	magazine_type = /obj/item/ammo_magazine/makarov
@@ -591,7 +591,7 @@
 	name = "Beretta M9"
 	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger."
 	icon_state = "m9beretta"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
@@ -620,7 +620,7 @@
 	name = "Beretta M9"
 	desc = "The standard issue pistol of US Armed Forces from 1985 to 2017. Chambered in 9mm Luger. This one blends in with the desert"
 	icon_state = "tanm9"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
@@ -642,7 +642,7 @@
 	name = "Jericho 941"
 	desc = "The standard issue pistol of the IDF of the late 20th century. Chambered in 9mm Parabellum."
 	icon_state = "jericho941"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/jericho
@@ -664,7 +664,7 @@
 	name = "Desert Eagle"
 	desc = "Designed and developed by Magnum Research Inc. Chambered in 50cal."
 	icon_state = "deagle"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a50cal"
 	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
 	magazine_type = /obj/item/ammo_magazine/deagle
@@ -688,7 +688,7 @@
 	name = "Desert Eagle (44.magnum)"
 	desc = "Designed and developed by Magnum Research Inc. Chambered in 44.magnum."
 	icon_state = "deagle"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a44magnum"
 	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
 	magazine_type = /obj/item/ammo_magazine/deagle
@@ -712,7 +712,7 @@
 	name = "Browning hi-power"
 	desc = "Produced by Fabrique Nationale of Belgium, This old handgun is chambered in 9mm Parabellum."
 	icon_state = "browning_hp"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/9mm.ogg'
 	magazine_type = /obj/item/ammo_magazine/browninghp
@@ -736,7 +736,7 @@
 	name = "STI 2011"
 	desc = "A high end specialized version of a m1911 made by the request of the US marshal service chambered .45 S&W."
 	icon_state = "sti2011"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	magazine_type = /obj/item/ammo_magazine/sti2011

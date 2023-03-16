@@ -10,7 +10,7 @@
 /obj/item/weapon/reagent_containers/glass/rag
 	name = "cleaning rag"
 	desc = "For cleaning up messes, you suppose."
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	icon = 'icons/obj/trash.dmi'
 	icon_state = "rag"
 	amount_per_transfer_from_this = 5

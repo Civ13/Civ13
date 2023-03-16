@@ -263,7 +263,7 @@
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "cone1"
 	anchored = FALSE
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	flags = FALSE
 
 /obj/item/weapon/trafficcone/New()

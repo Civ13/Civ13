@@ -13,7 +13,7 @@
 	gender = PLURAL
 	organ_tag = "kidneys"
 	parent_organ = "groin"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	min_broken_damage = 65
 	relative_size = 30
 /obj/item/organ/kidneys/process()
@@ -72,7 +72,7 @@
 	icon_state = "liver"
 	organ_tag = "liver"
 	parent_organ = "groin"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	relative_size = 60
 /obj/item/organ/liver/process()
 
@@ -128,7 +128,7 @@
 	parent_organ = "groin"
 	organ_tag = "appendix"
 	var/inflamed = FALSE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	relative_size = 10
 /obj/item/organ/appendix/update_icon()
 	..()

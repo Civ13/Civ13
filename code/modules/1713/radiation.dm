@@ -124,7 +124,7 @@
 /obj/item/weapon/geiger_counter //DISCLAIMER: I know nothing about how real-life Geiger counters work. This will not be realistic. ~Xhuis
 	name = "geiger counter"
 	desc = "A device used to detect radiation."
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_BELT|SLOT_ID|SLOT_POCKET
 	icon = 'icons/obj/device.dmi'
 	icon_state = "geiger_off"

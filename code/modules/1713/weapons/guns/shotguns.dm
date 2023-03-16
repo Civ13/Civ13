@@ -64,7 +64,7 @@
 	icon_state = "shotgun"
 	item_state = "shotgun"
 	max_shells = 6
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	force = 10
 	flags =  CONDUCT
 	slot_flags = SLOT_SHOULDER
@@ -108,7 +108,7 @@
 	icon_state = "doublebarreled"
 	item_state = "shotgun"
 	max_shells = 2
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	force = 10
 	flags =  CONDUCT
 	slot_flags = SLOT_SHOULDER
@@ -200,7 +200,7 @@
 	icon_state = "mts225"
 	item_state = "shotgun"
 	max_shells = 5
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	force = 10
 	flags =  CONDUCT
 	slot_flags = SLOT_SHOULDER

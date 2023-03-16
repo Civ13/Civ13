@@ -5,7 +5,7 @@
  * Utensils
  */
 /obj/item/weapon/material/kitchen/utensil
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	thrown_force_divisor = TRUE
 	attack_verb = list("attacked", "stabbed", "poked")
 	sharp = TRUE
@@ -133,7 +133,7 @@
 	icon_state = "razorblade"
 	item_state = "knife"
 	force_divisor = 0.2
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack_self(mob/user)
 	..()
@@ -252,7 +252,7 @@
 	hitsound = null
 	attack_verb = list("patted", "tapped")
 	force_divisor = 0.05
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throwforce = 0
 	throw_speed = 3
 	throw_range = 5
@@ -275,7 +275,7 @@
 		sharp = TRUE
 		throwforce = 5
 		hitsound = 'sound/weapons/bladeslice.ogg'
-		w_class = 3
+		w_class = ITEM_SIZE_NORMAL
 		force_divisor = 0.7
 		attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	else

@@ -5,7 +5,7 @@
 	desc = "Use this to cover holes."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired2"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 0
 	flags = FALSE

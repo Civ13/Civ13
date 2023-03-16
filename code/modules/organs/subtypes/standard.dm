@@ -6,7 +6,7 @@
 	name = "upper body"
 	limb_name = "chest"
 	icon_name = "torso"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	body_part = UPPER_TORSO
 	vital = TRUE
 	amputation_point = "spine"
@@ -20,7 +20,7 @@
 	name = "lower body"
 	limb_name = "groin"
 	icon_name = "groin"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	body_part = LOWER_TORSO
 	vital = TRUE
 	parent_organ = "chest"
@@ -33,7 +33,7 @@
 	limb_name = "l_arm"
 	name = "left arm"
 	icon_name = "l_arm"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = ARM_LEFT
 	parent_organ = "chest"
 	joint = "left elbow"
@@ -52,7 +52,7 @@
 	limb_name = "l_leg"
 	name = "left leg"
 	icon_name = "l_leg"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = LEG_LEFT
 	icon_position = LEFT
 	parent_organ = "groin"
@@ -73,7 +73,7 @@
 	limb_name = "l_foot"
 	name = "left foot"
 	icon_name = "l_foot"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_part = FOOT_LEFT
 	icon_position = LEFT
 	parent_organ = "l_leg"
@@ -99,7 +99,7 @@
 	limb_name = "l_hand"
 	name = "left hand"
 	icon_name = "l_hand"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_part = HAND_LEFT
 	parent_organ = "l_arm"
 	joint = "left wrist"
@@ -123,7 +123,7 @@
 	limb_name = "head"
 	icon_name = "head"
 	name = "head"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	body_part = HEAD
 	vital = TRUE
 	parent_organ = "chest"

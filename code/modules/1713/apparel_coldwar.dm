@@ -1363,7 +1363,7 @@
 	worn_state = "balaclava"
 	body_parts_covered = FACE|EYES|HEAD
 	flags_inv = HIDEFACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
 
@@ -1376,7 +1376,7 @@
 	body_parts_covered = FACE|HEAD
 	slot_flags = SLOT_BELT|SLOT_MASK
 	flags_inv = BLOCKHAIR
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
 	flammable = TRUE
 	cold_protection = HEAD|FACE
@@ -1388,7 +1388,7 @@
 	item_state = "headscarfgreyA"
 	worn_state = "headscarfgreyA"
 	body_parts_covered = FACE|HEAD
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	max_heat_protection_temperature = HELMET_MAX_HEAT_PROTECTION_TEMPERATURE*4
 	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = 35, bomb = 25, bio = 5, rad = 5)
 	heat_protection = HEAD|FACE
@@ -1421,7 +1421,7 @@
 	item_state = "sovietbala"
 	worn_state = "sovietbala"
 	body_parts_covered = FACE|EYES|HEAD
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
 
@@ -1795,7 +1795,7 @@
 	name = "survival webbing"
 	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
 	slots = 11
-	w_class = 4 // Heavier because it can hold a lot of stuff.
+	w_class = ITEM_SIZE_LARGE // Heavier because it can hold a lot of stuff.
 	icon_state = "survival_webbing"
 	item_state = "survival_webbing"
 	New()
@@ -1896,7 +1896,7 @@
 	icon_state = "nbcponcho"
 	item_state = "nbcponcho"
 	worn_state = "nbcponcho"
-	w_class = 1 // its light
+	w_class = ITEM_SIZE_TINY // its light
 	item_flags = AIRTIGHT
 	flags_inv = HIDEFACE|BLOCKHAIR
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD|FEET|HANDS

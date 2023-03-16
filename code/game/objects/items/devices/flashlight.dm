@@ -6,7 +6,7 @@
 	var/off_state = "flashlight_off"
 	var/on_state = "flashlight_on"
 	item_state = "flashlight"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	flags = CONDUCT

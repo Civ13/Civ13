@@ -8,7 +8,7 @@ obj/item/weapon/snowball
 	throwforce = 0
 	throw_speed = TRUE
 	throw_range = 7
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flags = FALSE
 
 	flammable = FALSE

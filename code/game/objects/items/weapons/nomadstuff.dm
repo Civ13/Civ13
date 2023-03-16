@@ -6,7 +6,7 @@
 	icon_state = "bedroll_r"
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flags = FALSE
 
 	attack_verb = list("battered","whacked")
@@ -93,7 +93,7 @@
 	icon_state = "tent_r"
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flags = FALSE
 
 	attack_verb = list("battered","whacked")
@@ -217,7 +217,7 @@
 	icon_state = "leash"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flags = FALSE
 
 	attack_verb = list("whipped")

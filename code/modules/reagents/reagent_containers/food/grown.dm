@@ -5,7 +5,7 @@
 	name = "some magical supertype of all grown foods. Why is this even here"
 	nutriment_amt = 1
 	nutriment_desc = list("fruit" = TRUE)
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	value = 3
 	bitesize = 2
 	decay = 25*600

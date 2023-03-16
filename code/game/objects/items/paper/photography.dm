@@ -16,7 +16,7 @@
 	desc = "A camera film cartridge. Insert it into a camera to reload it."
 	icon_state = "film"
 	item_state = "film"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 
 /********
@@ -30,7 +30,7 @@ var/global/photo_count = 0
 	icon_state = "photo"
 	item_state = "paper"
 	flags = FALSE
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	var/id
 	var/icon/img	//Big photo image
 	var/scribble	//Scribble on the back.
@@ -110,7 +110,7 @@ var/global/photo_count = 0
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "album"
 	item_state = "briefcase"
-	w_class = 2.0 //same as book
+	w_class = ITEM_SIZE_SMALL //same as book
 	storage_slots = 8 //yes, that's storage_slots. Photos are w_class 1 so this has as many slots equal to the number of photos you could put in a box
 	can_hold = list(/obj/item/weapon/photo)
 	flags = FALSE
@@ -147,7 +147,7 @@ var/global/photo_count = 0
 	desc = "A polaroid camera."
 	icon_state = "camera_modern"
 	item_state = "camera"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	var/pictures_max = 10

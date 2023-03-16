@@ -2,7 +2,7 @@
 	name = "gun"
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled

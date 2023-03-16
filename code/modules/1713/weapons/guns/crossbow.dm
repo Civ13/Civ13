@@ -3,7 +3,7 @@
 	desc = "A heavy and powerful bow."
 	icon_state = "crossbow0"
 	item_state = "crossbow0"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	throw_range = 4
 	throw_speed = 5
 	force = 8

@@ -67,7 +67,7 @@ Parts of code courtesy of Super3222
 	var/obj/structure/bed/chair/commander/commanderchair = null
 	nothrow = TRUE
 	nodrop = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	var/checking = FALSE
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval

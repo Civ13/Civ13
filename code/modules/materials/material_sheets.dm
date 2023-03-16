@@ -3,7 +3,7 @@
 /obj/item/stack/material
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	throw_speed = 3
 	throw_range = 3
 	max_amount = 50
@@ -203,14 +203,14 @@
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
 	value = 40
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/stack/material/obsidian
 	name = "obsidian"
 	icon_state = "sheet-obsidian"
 	default_type = "obsidian"
 	value = 7
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/stack/material/rope
 	name = "Rope"
@@ -302,7 +302,7 @@
 	icon_state = "tobacco_green"
 	default_type = "tobacco"
 	value = 2
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	dried_type = /obj/item/stack/material/tobacco
 	dry_size = 9
 
@@ -311,7 +311,7 @@
 	icon_state = "tobacco"
 	default_type = "tobacco"
 	value = 3
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 
 /obj/item/stack/material/coca
@@ -320,7 +320,7 @@
 	icon_state = "coca"
 	default_type = "coca"
 	value = 2
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 
 /obj/item/stack/material/poppy
@@ -329,7 +329,7 @@
 	icon_state = "poppy"
 	default_type = "poppy"
 	value = 5
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 
 /obj/item/stack/material/straw
@@ -337,7 +337,7 @@
 	icon_state = "sheet-straw"
 	default_type = "straw"
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
@@ -443,7 +443,7 @@
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/rettedfabric
@@ -451,7 +451,7 @@
 	icon_state = "sheet-rettedfabric"
 	default_type = "rettedfabric"
 	value = 1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/rawkevlar
@@ -459,21 +459,21 @@
 	icon_state = "sheet-rawkevlar"
 	default_type = "rawkevlar"
 	value = 1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/preparedkevlar
 	name = "prepared kevlar"
 	icon_state = "sheet-preparedkevlar"
 	default_type = "preparedkevlar"
 	value = 1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/kevlar
 	name = "kevlar sheets"
 	icon_state = "sheet-kevlar"
 	default_type = "kevlar"
 	value = 15
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/rags
 	name = "rags"
@@ -481,7 +481,7 @@
 	icon_state = "rag"
 	default_type = "rags"
 	value = 0.5
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 
 /obj/item/stack/material/wool
@@ -489,7 +489,7 @@
 	icon_state = "woolpile"
 	default_type = "wool"
 	value = 2
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/woolcloth
@@ -497,7 +497,7 @@
 	icon_state = "wool_roll"
 	default_type = "woolcloth"
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/leather
@@ -506,7 +506,7 @@
 	icon_state = "sheet-leather"
 	default_type = "leather"
 	value = 2
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 /*
 /obj/item/stack/material/scales/gator_scale  //placeholder for alternative scaly hide crafting
@@ -515,7 +515,7 @@
 	icon_state = "sheet-scales"
 	default_type = "alligator scales"
 	value = 2
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 */
 
@@ -525,7 +525,7 @@
 	icon_state = "sheet-bearpelt"
 	default_type = "pelt"
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/pelt/bearpelt/black
@@ -534,7 +534,7 @@
 	icon_state = "sheet-bearpelt"
 	default_type = "bearpelt"
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 /obj/item/stack/material/pelt/bearpelt/brown
 	name = "brown bear pelt"
@@ -555,7 +555,7 @@
 	desc = "A pelt from a skinned wolf."
 	icon_state = "sheet-wolfpelt"
 	default_type = "wolfpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -564,7 +564,7 @@
 	desc = "A pelt from a skinned white wolf."
 	icon_state = "sheet-whitewolfpelt"
 	default_type = "whitewolfpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -573,7 +573,7 @@
 	desc = "A pelt from a skinned cat."
 	icon_state = "sheet-catpelt"
 	default_type = "catpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 /obj/item/stack/material/pelt/pantherpelt
@@ -581,7 +581,7 @@
 	desc = "A pelt from a skinned panther."
 	icon_state = "sheet-pantherpelt"
 	default_type = "pantherpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -590,7 +590,7 @@
 	desc = "A pelt from a skinned lion."
 	icon_state = "sheet-lionpelt"
 	default_type = "lionpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -599,7 +599,7 @@
 	desc = "A pelt from a skinned alligator."
 	icon_state = "sheet-gatorpelt"
 	default_type = "gatorpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 	value = 3
 
@@ -608,7 +608,7 @@
 	desc = "A pelt from a skinned lizard."
 	icon_state = "sheet-lizardpelt"
 	default_type = "lizardpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 	value = 3
 
@@ -617,7 +617,7 @@
 	desc = "A pelt from a skinned monkey."
 	icon_state = "sheet-monkeypelt"
 	default_type = "monkeypelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -626,7 +626,7 @@
 	desc = "A pelt from a skinned fox."
 	icon_state = "sheet-foxpelt"
 	default_type = "foxpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 /obj/item/stack/material/pelt/foxpelt/white
@@ -634,7 +634,7 @@
 	desc = "A pelt from a skinned white fox."
 	icon_state = "sheet-whitefoxpelt"
 	default_type = "whitefoxpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 3
 
@@ -643,7 +643,7 @@
 	desc = "A wooly pelt from a skinned sheep."
 	icon_state = "sheet-sheeppelt"
 	default_type = "sheeppelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 2
 
@@ -652,7 +652,7 @@
 	desc = "A pelt from a skinned goat."
 	icon_state = "sheet-goatpelt"
 	default_type = "goatpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 2
 
@@ -661,7 +661,7 @@
 	desc = "A pelt from skinned cattle."
 	icon_state = "sheet-cowpelt"
 	default_type = "cowpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 5
 
@@ -670,7 +670,7 @@
 	desc = "A pelt from a skinned bison."
 	icon_state = "sheet-bisonpelt"
 	default_type = "bisonpelt"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	value = 15
 
@@ -680,7 +680,7 @@
 	icon_state = "sheet-orcpelt"
 	default_type = "orcpelt"
 	value = 0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/pelt/humanpelt
@@ -689,7 +689,7 @@
 	icon_state = "sheet-humanpelt"
 	default_type = "humanpelt"
 	value = 0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
 /obj/item/stack/material/pelt/humanpelt/New()
@@ -704,7 +704,7 @@
 	default_type = "ant"
 	flammable = TRUE
 	value = 4
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/chitin
 	name = "chitin"
@@ -713,7 +713,7 @@
 	default_type = "chitin"
 	flammable = TRUE
 	value = 4
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/pelt/orcpelt
 	name = "orc skin"
@@ -722,7 +722,7 @@
 	default_type = "orcpelt"
 	flammable = TRUE
 	value = 0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/pelt/gorillapelt
 	name = "gorilla pelt"
@@ -731,7 +731,7 @@
 	default_type = "gorillapelt"
 	flammable = TRUE
 	value = 3
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/stack/material/glass
 	name = "glass"
@@ -752,7 +752,7 @@
 	icon_state = "sheet-bone"
 	default_type = "bone"
 	dropsound = 'sound/effects/drop_wood.ogg'
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	value = 0
 	singular_name = "bone"
 
@@ -773,7 +773,7 @@
 	icon_state = "fossil_1"
 	default_type = "stone"
 	dropsound = 'sound/effects/drop_wood.ogg'
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	value = 10
 	max_amount = 1
 	singular_name = "fossil"
@@ -786,7 +786,7 @@
 	name = "steel rods"
 	icon_state = "rods"
 	default_type = "steelrods"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	value = 6
 	max_amount = 500
 	singular_name = "steel rod"*/

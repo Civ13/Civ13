@@ -6,7 +6,7 @@
 	item_state = "paper"
 	throwforce = FALSE
 	flags = FALSE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_ID | SLOT_POCKET
 	throw_range = TRUE
 	throw_speed = TRUE

@@ -136,7 +136,7 @@
 	name = "golden cup"
 	icon_state = "golden_cup"
 	item_state = "" //nope :(
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	force = WEAPON_FORCE_PAINFUL
 	throwforce = 10
 	amount_per_transfer_from_this = 20
@@ -202,7 +202,7 @@
 	desc = "A paper water cup."
 	icon_state = "water_cup_e"
 	possible_transfer_amounts = null
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	volume = 10
 	center_of_mass = list("x"=16, "y"=12)
 	New()
@@ -321,7 +321,7 @@
 	desc = "Something's off about this."
 	icon = 'icons/obj/drinks.dmi'
 	var/is_edible = FALSE
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/cocktail_stuff/attack(mob/M as mob, mob/user as mob)
 	if (!is_edible)

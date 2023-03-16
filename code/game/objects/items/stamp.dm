@@ -5,7 +5,7 @@
 	icon_state = "stamp-rn"
 	item_state = "stamp"
 	throwforce = FALSE
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	throw_speed = 7
 	throw_range = 15
 	attack_verb = list("stamped")

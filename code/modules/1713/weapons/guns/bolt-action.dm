@@ -7,7 +7,7 @@
 	icon_state = "mosin"
 	item_state = "mosin" //placeholder
 	var/base_icon = "mosin"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	force = 10
 	throwforce = 20
 	max_shells = 5
@@ -303,21 +303,22 @@
 	max_shells = 1
 	load_delay = 7
 
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal
+/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett
 	name = "Barrett M99"
 	desc = "A single-shot anti-material rifle designed by the Barrett Firearms Company."
 	icon_state = "m99"
 	item_state = "barrett"
 	base_icon = "m99"
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	w_class = 4
+	w_class = ITEM_SIZE_HUGE
 	force = 10
 	throwforce = 5
 	max_shells = 1
 	KD_chance = KD_CHANCE_HIGH
 	slot_flags = null
 	caliber = "a50cal"
-	weight = 8
+	weight = 14.8
+	effectiveness_mod = 2.0
 	recoil = 3
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -339,7 +340,7 @@
 	bolt_safety = FALSE
 	bolt_delay = 3
 
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper/New()
+/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
@@ -351,7 +352,7 @@
 	item_state = "ptrd"
 	base_icon = "ptrd"
 	attachment_slots = ATTACH_IRONSIGHTS
-	w_class = 4
+	w_class = ITEM_SIZE_HUGE
 	force = 10
 	throwforce = 5
 	max_shells = 1
@@ -387,7 +388,7 @@
 	item_state = "pzb39"
 	base_icon = "pzb39"
 	attachment_slots = ATTACH_IRONSIGHTS
-	w_class = 4
+	w_class = ITEM_SIZE_HUGE
 	force = 10
 	throwforce = 5
 	max_shells = 1
@@ -1010,7 +1011,7 @@
 	caliber = "a762x54"
 	damage_modifier = 0.8
 	weight = 1.4
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	effectiveness_mod = 0.77
 	value = 60
 	slot_flags = SLOT_BELT|SLOT_HOLSTER|SLOT_SHOULDER

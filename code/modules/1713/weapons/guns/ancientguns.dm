@@ -6,7 +6,7 @@ obj/item/weapon/gun/projectile/ancient
 	icon = 'icons/obj/guns/ancient.dmi'
 	icon_state = "handcannon"
 	item_state = "musket"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	throw_range = 3
 	throw_speed = 2
 	force = 13

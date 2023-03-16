@@ -46,7 +46,7 @@
 "aT" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "aU" = (/obj/structure/window/classic/metal,/obj/structure/barricade/vertical,/obj/structure/curtain/leather,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "aV" = (/obj/structure/window/classic/metal,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/roofed/tundra)
-"aW" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal,/obj/item/weapon/gun_cleaning_kit,/obj/structure/lamp/lamp_big/broken,/turf/floor/wood,/area/caribbean/roofed/tundra)
+"aW" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett,/obj/item/weapon/gun_cleaning_kit,/obj/structure/lamp/lamp_big/broken,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "aX" = (/obj/structure/table/modern/table,/obj/item/ammo_magazine/a50cal,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "aY" = (/obj/structure/brazier/potbellystove,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "aZ" = (/obj/structure/barricade/horizontal,/turf/floor/wood,/area/caribbean/roofed/tundra)

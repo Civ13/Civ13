@@ -17,7 +17,7 @@
 		slot_l_hand_str = "backpack",
 		slot_r_hand_str = "backpack",
 		)
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 4
 	max_storage_space = 22 // can hold 2 w_class 4 items. 28 let it hold 3
@@ -162,7 +162,7 @@
 	item_state = "parachute"
 	worn_state = "parachute"
 	base_icon = "parachute"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	max_storage_space = 0
 
 /obj/item/weapon/storage/backpack/ww2/german/sapper
@@ -215,7 +215,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "rucksack"
 	item_state = "backpack"
 	base_icon = "rucksack"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 4
 	max_storage_space = 28
@@ -226,7 +226,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "smallruck"
 	item_state = "smallruck"
 	base_icon = "smallruck"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 4
 	max_storage_space = 14
@@ -305,7 +305,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "backpack_rpg_tan"
 	item_state = "backpack_rpg_tan"
 	base_icon = "backpack_rpg_tan"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	can_hold = list(
 		/obj/item/ammo_casing/rocket/og7v,
@@ -353,7 +353,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "heavyrucksack"
 	item_state = "backpack"
 	base_icon = "heavyrucksack"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BACK
 	max_w_class = 5
 	max_storage_space = 28
@@ -374,7 +374,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "civback"
 	item_state = "backpack"
 	base_icon = "civback"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 5
 	max_storage_space = 28
@@ -385,7 +385,7 @@ obj/item/weapon/storage/backpack/ww2/american
 	icon_state = "duffel"
 	item_state = "duffel"
 	base_icon = "duffel"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 3
 	max_storage_space = 22

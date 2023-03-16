@@ -53,7 +53,7 @@
 	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a545x39
 	max_ammo = 65
 	multiple_sprites = TRUE
@@ -118,7 +118,7 @@
 	icon_state = "556x45"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 65
 	multiple_sprites = TRUE
@@ -149,7 +149,7 @@
 	icon_state = "762x51"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 65
 	multiple_sprites = TRUE
@@ -226,7 +226,7 @@
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
@@ -239,7 +239,7 @@
 	icon_state = "b762x54"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 100
@@ -250,7 +250,7 @@
 	icon_state = "rpd"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	ammo_type = /obj/item/ammo_casing/a762x39
 	max_ammo = 100
@@ -262,7 +262,7 @@
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	ammo_type = /obj/item/ammo_casing/a545x39
 	max_ammo = 45
 	multiple_sprites = TRUE
@@ -272,7 +272,7 @@
 	icon_state = "rpk74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	ammo_type = /obj/item/ammo_casing/a545x39
 	max_ammo = 75
@@ -294,7 +294,7 @@
 	icon_state = "9mm"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 60
 	multiple_sprites = TRUE
@@ -315,7 +315,7 @@
 	icon_state = "b762"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 150
 	multiple_sprites = TRUE
@@ -617,7 +617,7 @@
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 100
@@ -629,7 +629,7 @@
 	icon_state = "b762x51"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 200
@@ -652,7 +652,7 @@
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a30"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	max_ammo = 16
@@ -665,7 +665,7 @@
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a30"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/frag/a3uor6
 	max_ammo = 16
@@ -687,7 +687,7 @@
 	desc = "A pouch for holding flares."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "flarepouch"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_POCKET|SLOT_BELT
 	var/max = 6
 	var/initial_amount = null

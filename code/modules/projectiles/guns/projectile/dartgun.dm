@@ -94,7 +94,7 @@
 
 	item_state = null
 	base_icon = "dartgun-empty"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|MAGAZINE
 	load_delay = 8
 	slot_flags = SLOT_BELT
@@ -138,7 +138,7 @@
 	icon_state = "blowgun"
 	base_icon = "blowgun"
 	item_state = "blowgun"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	load_method = SINGLE_CASING
 	load_delay = 4
 	slot_flags = SLOT_BELT
@@ -279,7 +279,7 @@
 	icon_state = "dartbolt"
 	base_icon = "dartbolt"
 	item_state = "dartbolt"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING
 	max_shells = 1
 	load_delay = 8
@@ -321,7 +321,7 @@
 
 	item_state = null
 	base_icon = "magdart"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|MAGAZINE
 	load_delay = 8
 	slot_flags = SLOT_SHOULDER

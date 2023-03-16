@@ -493,7 +493,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 /obj/item/weapon/paper_bin/police
 	name = "incomming documents"
 	desc = "incomming documents and warrants will arrive here."
@@ -639,7 +639,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	throw_speed = TRUE
 	throw_range = 2
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flammable = FALSE
 	slot_flags = SLOT_POCKET|SLOT_BELT
 

@@ -191,7 +191,7 @@
 "Ab" = (/obj/structure/shelf/palette{anchored = 1},/obj/item/weapon/reagent_containers/cocaineblocks/three,/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Storage Depot"})
 "Ah" = (/obj/covers/brick_wall,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Ak" = (/obj/structure/table/glass,/turf/floor/wood,/area/caribbean/british/land/inside)
-"Am" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty,/obj/item/weapon/melee/baseball_bat/aluminium{w_class = 1},/turf/floor/wood,/area/caribbean/british/land/inside)
+"Am" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty,/obj/item/weapon/melee/baseball_bat/aluminium{w_class = ITEM_SIZE_TINY},/turf/floor/wood,/area/caribbean/british/land/inside)
 "As" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/british/land/inside)
 "AN" = (/obj/item/tape/police{icon_state = "tape_dir_0"; pixel_x = -5},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "AT" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)

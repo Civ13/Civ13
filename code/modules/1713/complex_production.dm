@@ -52,7 +52,7 @@
 	force = WEAPON_FORCE_WEAK+5
 	flags = FALSE
 	throw_range = 2
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = TRUE
 	var/bloody = TRUE
 	var/ready = FALSE
@@ -312,7 +312,7 @@
 	icon_state = "chicken_carcass"
 	force = WEAPON_FORCE_WEAK
 	throw_range = 2
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flammable = TRUE
 	var/rotten = FALSE
 	flags = FALSE

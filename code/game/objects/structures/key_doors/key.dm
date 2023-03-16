@@ -4,7 +4,7 @@
 	icon_state = "key"
 	item_state = "key"
 	name = "a key"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	dropsound = 'sound/effects/drop_knife.ogg'
 	value = 0
 
@@ -13,6 +13,6 @@
 	icon = 'icons/obj/key.dmi'
 	icon_state = "modern"
 	name = "modern key."
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	dropsound = 'sound/effects/drop_knife.ogg'
 	value = 0

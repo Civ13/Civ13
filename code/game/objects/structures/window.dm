@@ -3,7 +3,7 @@
 	desc = "A window."
 	icon = 'icons/obj/windows.dmi'
 	density = TRUE
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	layer = 3.2//Just above doors
 	anchored = 1.0

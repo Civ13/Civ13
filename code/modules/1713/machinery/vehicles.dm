@@ -331,7 +331,7 @@
 	flammable = FALSE
 	nothrow = TRUE
 	nodrop = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	flags = CONDUCT
 	secondary_action = TRUE
 	var/obj/structure/vehicle/origin = null
@@ -534,7 +534,7 @@
 	maxengine = 125
 	maxfueltank = 75
 	weight = 20
-	w_class = 6
+	w_class = ITEM_SIZE_GARGANTUAN
 	step = 1
 	maxstep = 3
 	targettype = /obj/structure/vehicle/motorcycle
@@ -673,5 +673,5 @@
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 

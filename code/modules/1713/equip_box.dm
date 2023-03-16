@@ -54,7 +54,7 @@
 	var/list/options = list()
 	switch (user.faction_text)
 		if ("DUTCH")
-			options["Sniper"] = list(/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper,/obj/item/ammo_magazine/a50cal,/obj/item/ammo_magazine/a50cal)
+			options["Sniper"] = list(/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper,/obj/item/ammo_magazine/a50cal,/obj/item/ammo_magazine/a50cal)
 			options["Anti-Tank"] = list(/obj/item/weapon/gun/launcher/rocket/single_shot/m72law)
 			options["Breacher"] = list(/obj/item/weapon/gun/projectile/shotgun/pump/remington870,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox)
 			options["Grenadier"] = list(/obj/item/weapon/gun/launcher/grenade/standalone/hk69,/obj/item/clothing/accessory/storage/webbing/grenadier)

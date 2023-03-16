@@ -118,7 +118,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
 	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))

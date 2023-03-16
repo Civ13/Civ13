@@ -93,7 +93,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/armorplatesswimmer
 	name = "swimmer plate"
@@ -110,7 +110,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/armorplatessharpshooter
 	name = "sharpshooter plate"
@@ -127,7 +127,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/armorplate
 	name = "armor plate"
@@ -144,7 +144,7 @@
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/accessory/armor/knee_protections
 	name = "knee protections"
@@ -165,7 +165,7 @@
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/accessory/armor/legguards
 	name = "leg guards"
@@ -186,7 +186,7 @@
 	slowdown = 0.3
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/accessory/armor/elbow_protections
 	name = "elbow protections"
@@ -207,7 +207,7 @@
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/accessory/armor/armguards
 	name = "arm guards"
@@ -228,7 +228,7 @@
 	slowdown = 0.1
 	sharp = FALSE
 	edge = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	/* Armored Plate Suits*/
 
@@ -242,7 +242,7 @@
 	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
 	value = 120
 	slowdown = 0.4
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 6
 
 /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ucp
@@ -271,7 +271,7 @@
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 1.0
 
 /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen
@@ -284,7 +284,7 @@
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 1.0
 
 /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack
@@ -297,7 +297,7 @@
 	armor = list(melee = 30, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 1.0
 
 /obj/item/clothing/accessory/armor/nomads/pcarriertan
@@ -310,7 +310,7 @@
 	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /obj/item/clothing/accessory/armor/nomads/pcarrierblack
@@ -323,7 +323,7 @@
 	armor = list(melee = 65, arrow = 95, gun = 76, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.35
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /obj/item/clothing/accessory/armor/nomads/thickcarrier
@@ -336,7 +336,7 @@
 	armor = list(melee = 30, arrow = 30, gun = 78, energy = 16, bomb = 30, bio = 15, rad = FALSE)
 	value = 90
 	slowdown = 0.10
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	weight = 3.0
 
 /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier_ukraine
@@ -349,7 +349,7 @@
 	armor = list(melee = 40, arrow = 20, gun = 40, energy = 20, bomb = 30, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.1
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 1.0
 	slots = 3
 
@@ -363,7 +363,7 @@
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 130
 	slowdown = 0.2
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /* Us Army*/
@@ -429,7 +429,7 @@
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.3
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki
@@ -873,7 +873,7 @@
 	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.3
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /obj/item/weapon/storage/belt/smallpouches/m24
@@ -896,7 +896,7 @@
 	armor = list(melee = 80, arrow = 95, gun = 65, energy = 35, bomb = 64, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.4
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
 /obj/item/clothing/accessory/armor/nomads/civiliankevlar
@@ -909,7 +909,7 @@
 	armor = list(melee = 60, arrow = 90, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.30
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.6
 
 /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press
@@ -1085,7 +1085,7 @@
 	worn_state = "sealvest"
 	body_parts_covered = UPPER_TORSO
 	armor = list(melee = 10, arrow = 5, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 5, rad = 5)
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	ripable = FALSE
 
 /obj/item/clothing/suit/lifejacket/yellow
@@ -1287,7 +1287,7 @@
 	armor = list(melee = 40, arrow = 95, gun = 82, energy = 30, bomb = 35, bio = 20, rad = FALSE)
 	value = 90
 	slowdown = 0.2
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	weight = 2
 
 //my nerd shit (skyfire)//
@@ -1531,7 +1531,7 @@
 	armor = list(melee = 110, arrow = 100, gun = 130, energy = 50, bomb = 90, bio = 100, rad = FALSE)
 	value = 160
 	slowdown = 0.2
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	weight = 3.4
 
 /obj/item/clothing/head/helmet/ioghelmet //too broad, this is meant to be some sort of extreme sports armorwear or something.

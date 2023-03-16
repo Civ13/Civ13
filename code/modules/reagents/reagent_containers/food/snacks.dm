@@ -33,7 +33,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	dried_type = null //Item, that will appear after drying (or dehydrating) process
 	dry_size = 2 //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
 	var/dry = FALSE //That this must be used for smoking not usual snack... think about it!
-	w_class = 2 //Size of the object, used in sized storage system
+	w_class = ITEM_SIZE_SMALL //Size of the object, used in sized storage system
 	decay = 15*600 //Decay time limit, in deciseconds. 0 means it doesn't decay. See details at food.dm in food_decay()
 	decaytimer = 0 //Timer of decaying. See details at food.dm in food_decay()
 	var/non_vegetarian = FALSE //If not edible for vegetarians make it TRUE, don't forget to add it to meat dishes
@@ -130,9 +130,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	if (reagents)
 		var/appraise_volume_in_milliliters = AVim()
 		switch (appraise_volume_in_milliliters)
-			if (0 to 100)	w_class = 1
-			if (100 to 500)	w_class = 2
-			else			w_class = 3
+			if (0 to 100)	w_class = ITEM_SIZE_TINY
+			if (100 to 500)	w_class = ITEM_SIZE_SMALL
+			else			w_class = ITEM_SIZE_NORMAL
 		if (!biteamount)
 			if (bitesize)
 				biteamount = ceil(reagents.total_volume/bitesize)
@@ -1332,7 +1332,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 // sliceable is just an organization type path, it doesn't have any additional code or variables tied to it.
 /////////////////////////////////////////////////Sliceable////////////////////////////////////////
 /obj/item/weapon/reagent_containers/food/snacks/sliceable
-	w_class = 3 //Whole pizzas and cakes shouldn't fit in a pocket, you can slice them if you want to do that.
+	w_class = ITEM_SIZE_NORMAL //Whole pizzas and cakes shouldn't fit in a pocket, you can slice them if you want to do that.
 	decay = 17*600
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza

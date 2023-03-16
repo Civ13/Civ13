@@ -26,7 +26,7 @@
 	amount = 10
 	max_amount = 500
 	attack_verb = list("hit")
-	w_class = 2.0 // fits in pockets
+	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
 	real_value = 1
 	var/novariants = TRUE

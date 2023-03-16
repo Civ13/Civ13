@@ -6,7 +6,7 @@
 	icon_state = "target_dummy"
 	var/target_type = "dummy"
 	density = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	var/health = 100
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -189,7 +189,7 @@
 	desc = "A set of preadjusted cheap armor, to extend the life of a training dummy."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "dummy_armor"
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	throwforce = FALSE
 	throw_speed = 1
 	throw_range = 3
@@ -202,7 +202,7 @@
 	icon_state = "target_dummy_wreckage"
 	target_type = "dummy"
 	density = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	health = 10
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -241,7 +241,7 @@
 	icon_state = "target_dummy_target"
 	target_type = "target"
 	density = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	health = 100
 	not_movable = FALSE
 	not_disassemblable = FALSE
