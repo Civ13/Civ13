@@ -650,8 +650,7 @@
 	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-//gun
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_l_hand)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
