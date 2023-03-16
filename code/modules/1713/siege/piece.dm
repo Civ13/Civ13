@@ -413,13 +413,13 @@
 
 				travelled = 0
 				high = TRUE
-				if (!istype(loaded, /obj/item/cannon_ball/shell/gas))
-					explosion = TRUE
-				else
+				if (istype(loaded, /obj/item/cannon_ball/shell/gas))
+					explosion = FALSE
+					reagent_payload = loaded.reagent_payload
+				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/smoke))
 					explosion = FALSE
 					reagent_payload = loaded.reagent_payload
 				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
-					explosion = FALSE
 					nuclear = TRUE
 				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/incendiary))
 					explosion = FALSE
@@ -498,11 +498,11 @@
 							if (incendiary)
 								if (istype(src,/obj/structure/cannon/mortar))
 									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in range(3,target))
+									for (var/turf/floor/T in circlerangeturfs(target,3))
 										ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in range(3,target))
+									for (var/turf/floor/T in circlerangeturfs(target,3))
 										ignite_turf(T, 12, 90)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
