@@ -372,6 +372,20 @@
 	det_time = 50
 	throw_range = 10
 
+/obj/item/weapon/grenade/coldwar/hg85
+	name = "HG 85 grenade"
+	desc = "The HG 85 is a round fragmentation hand grenade designed for the Swiss Armed Forces."
+	icon_state = "hg85"
+	det_time = 50
+	throw_range = 10
+
+/obj/item/weapon/grenade/coldwar/hg85/l109
+	name = "L109 grenade"
+	desc = "The L109 is the British designation for the HG 85. It differs from the HG 85 in that it has a special safety clip, which is similar to the safety clip on the American M67 grenade.."
+	icon_state = "l109"
+	det_time = 50
+	throw_range = 10
+
 /obj/item/weapon/grenade/coldwar/rgd5
 	name = "RGD-5 grenade"
 	desc = "A Soviet fragmentation grenade designed in the 1950's."
