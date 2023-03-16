@@ -290,3 +290,61 @@ quinine
 	New()
 		..()
 		reagents.add_reagent("dragon_powder", 10)
+
+
+//Science Fiction - Dredd
+/obj/item/weapon/reagent_containers/pill/slo_mo
+	name = "Slo-Mo"
+	desc = "The drug appears to slow the users perception of time to 1% of its normal speed."
+	icon = 'icons/obj/clothing/masks.dmi'
+	icon_state = "crackpipeoff"
+	item_state = "crackpipeoff"
+	New()
+		..()
+		reagents.add_reagent("methamphetamine", 15)
+		reagents.add_reagent("peyote", 15)
+		reagents.add_reagent("tramadol", 15)
+		reagents.add_reagent("citalopram", 15)
+	attack(mob/M as mob, mob/user as mob, def_zone)
+		if (M == user)
+			if (!M.can_eat(src))
+				return
+
+			M << "<span class='notice'>You smoke \the [src], and throw it away</span>"
+			M.drop_from_inventory(src) //icon update
+			if (reagents.total_volume)
+				reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
+			qdel(src)
+			return TRUE
+
+		else if (istype(M, /mob/living/human))
+			if (!M.can_force_feed(user, src))
+				return
+
+			user.visible_message("<span class='warning'>[user] attempts to force [M] to smoke \the [src].</span>")
+
+			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+			if (!do_mob(user, M))
+				return
+
+			user.drop_from_inventory(src) //icon update
+			user.visible_message("<span class='warning'>[user] forces [M] to smoke \the [src].</span>")
+
+			var/contained = reagentlist()
+			M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been forced to smoke [name] by [key_name(user)] Reagents: [contained]</font>")
+			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [name] to [key_name(M)] Reagents: [contained]</font>")
+			msg_admin_attack("[key_name_admin(user)] fed [key_name_admin(M)] with [name] Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+
+			if (reagents.total_volume)
+				reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
+			qdel(src)
+
+			return TRUE
+
+		return FALSE
+
+	afterattack(obj/target, mob/user, proximity)
+		if (!proximity) return
+			qdel(src)
+
+		return
