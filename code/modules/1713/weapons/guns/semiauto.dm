@@ -429,8 +429,8 @@
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	reload_sound = 'sound/weapons/guns/interact/barrett_magin.ogg'
 	unload_sound = 'sound/weapons/guns/interact/barrett_magout.ogg'
-	magazine_type = /obj/item/ammo_magazine/vintorez
-	good_mags = list(/obj/item/ammo_magazine/vintorez)
+	magazine_type = /obj/item/ammo_magazine/barrett
+	good_mags = list(/obj/item/ammo_magazine/barrett)
 	weight = 14.8
 	recoil = 3
 	firemodes = list(

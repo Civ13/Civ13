@@ -541,6 +541,16 @@
 	multiple_sprites = TRUE
 	pouch = TRUE
 
+/obj/item/ammo_magazine/barrett
+	name = "magazine (.50 BMG)"
+	icon_state = "a50cal"
+	mag_type = MAGAZINE
+	w_class = ITEM_SIZE_LARGE
+	caliber = "a50cal
+	ammo_type = /obj/item/ammo_casing/a50cal
+	max_ammo = 10
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ptrd_pouch
 	name = "heavy bullet pouch (14.5x114mm)"
 	icon_state = "pouch_closed"
