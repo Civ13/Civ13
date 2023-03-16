@@ -121,16 +121,21 @@ Parts of code courtesy of Super3222
 				var/distcon = max(dist1,dist2)
 				var/gdir = get_dir(H, target)
 				H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
-				var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "NORTH", list("NORTH", "EAST", "SOUTH", "WEST"))
-				if (do_after(H, 8, src, can_move = FALSE))
-					H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
-					checking = FALSE
+				var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
+				if (input != "Cancel")
+					if (do_after(H, 80, src, can_move = FALSE))
+						H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
+						checking = FALSE
 
-					var/turf/T = locate(target.x,target.y,target.z)
-					airstrike(T,H,input)
-					debounce = world.time + delay
+						var/turf/T = locate(target.x,target.y,target.z)
+						airstrike(T,H,input)
+						debounce = world.time + delay
+					else
+						H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+						checking = FALSE
 				else
-					checking = FALSE
+					H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+					return
 			else
 				H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
 				return

@@ -294,42 +294,22 @@
 
 /obj/structure/catapult/verb/rotate_left()
 	set category = null
-	set name = "Rotate left"
+	set name = "Rotate Left"
 	set src in range(2, usr)
 	if (anchored)
 		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
 	else
-		switch(dir)
-			if (EAST)
-				dir = SOUTH
-
-			if (WEST)
-				dir = NORTH
-
-			if (NORTH)
-				dir = EAST
-
-			if (SOUTH)
-				dir = WEST
-
+		set_dir(turn(dir, -90))
 	return
 
 /obj/structure/catapult/verb/rotate_right()
 	set category = null
-	set name = "Rotate right"
+	set name = "Rotate Right"
 	set src in range(2, usr)
 	if (anchored)
 		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
 	else
-		switch(dir)
-			if (EAST)
-				dir = SOUTH
-			if (WEST)
-				dir = NORTH
-			if (NORTH)
-				dir = EAST
-			if (SOUTH)
-				dir = WEST
+		set_dir(turn(dir, 90))
 
 	return
 

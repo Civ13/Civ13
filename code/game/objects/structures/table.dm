@@ -80,7 +80,7 @@
 			update_icon()
 
 /obj/structure/table/verb/rotate_left()
-	set name = "Rotate left"
+	set name = "Rotate Left"
 	set category = null
 	set src in oview(1)
 
@@ -92,7 +92,7 @@
 	return
 
 /obj/structure/table/verb/rotate_right()
-	set name = "Rotate right"
+	set name = "Rotate Right"
 	set category = null
 	set src in oview(1)
 
