@@ -260,6 +260,28 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+/obj/structure/urinal
+	name = "urinal"
+	desc = "Satinary plumbing fixture designed for urination only. Or not."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "urinal"
+	density = FALSE
+	anchored = TRUE	
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/urinal/attackby(obj/item/I, mob/user)
+	if(istype(I, /obj/item/weapon/grab))
+		var/obj/item/weapon/grab/G = I
+		if(isliving(G.affecting))
+			var/mob/living/GM = G.affecting
+			if(!GM.loc == get_turf(src))
+				to_chat(user, SPAN_WARNING("[GM.name] needs to be on the urinal."))
+				return
+			user.visible_message(SPAN_DANGER("[user] slams [GM.name] into the [src]!"))
+			GM.adjustBruteLoss(8)
+	. = ..()
+
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."
