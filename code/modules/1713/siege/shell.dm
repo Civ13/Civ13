@@ -2,7 +2,7 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon ball"
 	icon_state = "cannon_ball"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 15
 	flags = CONDUCT
 	var/reagent_payload = null
@@ -29,7 +29,7 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "artillery shell"
 	icon_state = "shell"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 20
 	atype = "HE"
 
@@ -37,7 +37,7 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon shell"
 	icon_state = "shellHE"
-	w_class = 5.0
+	w_class = ITEM_SIZE_HUGE
 	value = 20
 	caliber = 75
 	heavy_armor_penetration = 15
@@ -217,7 +217,7 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "mortar shell"
 	icon_state = "shell_mortar"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 20
 
 /obj/item/cannon_ball/mortar_shell/type89
@@ -283,7 +283,7 @@
 	name = "Nuclear Rocket"
 	desc = "You might want to step back a bit..."
 	icon_state = "shell_nuclear_rocket"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 80
 
 /obj/item/cannon_ball/shell/nuclear
@@ -291,7 +291,7 @@
 	name = "Nuclear Shell"
 	desc = "A nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 25
 
 /obj/item/cannon_ball/shell/nuclear/makeshift
@@ -299,7 +299,7 @@
 	name = "Makeshift Nuclear Shell"
 	desc = "A makeshift nuclear shell, once the genie is out of the bottle you can't put it back in..."
 	icon_state = "shell_nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 20
 
 /obj/item/cannon_ball/shell/nuclear/W9
@@ -307,7 +307,7 @@
 	name = "W9 Atomic Demolition Munition"
 	desc = "A W9 nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 40
 
 /obj/item/cannon_ball/shell/nuclear/W19
@@ -315,7 +315,7 @@
 	name = "W19 Katie Nuclear Shell"
 	desc = "A W19 Katie nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 30
 
 /obj/item/cannon_ball/shell/nuclear/W33
@@ -323,7 +323,7 @@
 	name = "W33 Nuclear Shell"
 	desc = "A W33 nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 20
 
 /obj/item/cannon_ball/shell/nuclear/W33Boosted
@@ -331,7 +331,7 @@
 	name = "Boosted W33 Nuclear Shell"
 	desc = "A boosted nuclear shell for extra destruction"
 	icon_state = "shell_nuclear_boosted"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	value = 50
 
 

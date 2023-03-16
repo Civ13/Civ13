@@ -9,7 +9,7 @@
 	var/beat_sound = 'sound/effects/singlebeat.ogg'
 	var/tmp/next_blood_squirt = 0
 	var/efficiency = 1.0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	relative_size = 15
 	max_damage = 45
 	var/open

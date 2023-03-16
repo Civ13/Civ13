@@ -815,7 +815,7 @@
 	icon_state = "hazard_y"
 	item_state = "hazard_y"
 	worn_state = "hazard_y"
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/clothing/suit/storage/hazard/green
 	name = "green hazard vest"

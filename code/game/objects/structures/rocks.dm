@@ -69,7 +69,7 @@
 	force = 5
 	sharp = FALSE
 	edge = FALSE
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	throw_speed = 7
 	throw_range = 10
 	allow_spin = TRUE

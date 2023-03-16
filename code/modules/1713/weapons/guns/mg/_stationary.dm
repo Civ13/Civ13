@@ -18,7 +18,7 @@
 	layer = MOB_LAYER + 3
 	anchored = TRUE
 	density = TRUE
-	w_class = 6
+	w_class = ITEM_SIZE_GARGANTUAN
 	load_method = SINGLE_CASING
 	handle_casings = REMOVE_CASINGS
 	max_shells = 6000

@@ -386,7 +386,7 @@ var/global/datum/controller/occupations/job_master
 		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job item
 		spawn (SAFE_SPAWN_TIME*2)
 			for (var/obj/item/weapon/gun/projectile/gun in H.contents)
-				if (gun.w_class == 5 && gun.gun_type == GUN_TYPE_MG) // MG
+				if (gun.w_class == ITEM_SIZE_HUGE && gun.gun_type == GUN_TYPE_MG) // MG
 					if (H.back && istype(H.back, /obj/item/weapon/storage/backpack))
 						for (var/v in 1 to 3)
 							H.back.contents += new gun.magazine_type(H)

@@ -146,7 +146,7 @@
 	icon_state = "candlebox"
 	opened = 1 //no closed state
 	throwforce = 2
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	max_storage_space = 5
 	slot_flags = SLOT_BELT
 
@@ -163,7 +163,7 @@
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "cigpacket"
 	item_state = "cigpacket"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
 	max_storage_space = 6
@@ -254,7 +254,7 @@
 	icon_state = "cigarcase"
 	item_state = "cigarcase"
 	icon = 'icons/obj/cigarettes.dmi'
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	max_storage_space = 6
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
@@ -276,7 +276,7 @@
 	item_state = "medalcase"
 	key_type = "medal"
 	icon = 'icons/obj/cigarettes.dmi'
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throwforce = WEAPON_FORCE_HARMLESS
 	slot_flags = SLOT_BELT
 	storage_slots = 14

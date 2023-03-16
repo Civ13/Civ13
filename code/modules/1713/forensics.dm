@@ -3,7 +3,7 @@
 
 /obj/item/weapon/forensics
 	icon = 'icons/obj/forensics.dmi'
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 var/const/FINGERPRINT_COMPLETE = 6
 proc/is_complete_print(var/print)
@@ -44,7 +44,7 @@ proc/is_complete_print(var/print)
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "evidenceobj"
 	item_state = null
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/obj/item/stored_item = null
 
 /obj/item/weapon/evidencebag/MouseDrop(var/obj/item/I as obj)
@@ -154,7 +154,7 @@ proc/is_complete_print(var/print)
 	desc = "Plastic cards used to mark points of interests on the scene. Just like in the holoshows!"
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "card1"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	layer = MOB_LAYER + 1  //so you can mark bodies
 	var/number = 1
 
@@ -222,7 +222,7 @@ atom/proc/add_fibers(mob/living/human/M)
 
 /obj/item/weapon/forensics/sample
 	name = "forensic sample"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	var/list/evidence = list()
 
 /obj/item/weapon/forensics/sample/New(var/newloc, var/atom/supplied)
@@ -345,7 +345,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	name = "fiber collection kit"
 	desc = "A magnifying glass and tweezers. Used to lift suit fibers."
 	icon_state = "m_glass"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/evidence_type = "fiber"
 	var/evidence_path = /obj/item/weapon/forensics/sample/fibers
 
@@ -510,7 +510,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "uv_off"
 	slot_flags = SLOT_BELT
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	item_state = "electronic"
 	action_button_name = "Toggle UV light"
 
@@ -580,7 +580,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	name = "microscope slide"
 	desc = "A pair of thin glass panes used in the examination of samples beneath a microscope. Used with fibers and GSR swab tests to examine the samples in the microscope. To empty them, use in hand."
 	icon_state = "slide"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	var/obj/item/weapon/forensics/swab/has_swab
 	var/obj/item/weapon/forensics/sample/fibers/has_sample
 
@@ -887,7 +887,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	desc = "A cardboard box for crime scene marker cards."
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "cards"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/storage/box/csi_markers/New()
 	..()

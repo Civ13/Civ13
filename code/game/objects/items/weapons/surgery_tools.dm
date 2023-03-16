@@ -16,7 +16,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "retractor"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/surgery/retractor/bronze
 	name = "bronze retractor"
@@ -24,7 +24,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_retractor"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 /*
  * Hemostat
  */
@@ -34,7 +34,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "hemostat"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("attacked", "pinched")
 
 /obj/item/weapon/surgery/hemostat/bronze
@@ -43,7 +43,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_hemostat"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("attacked", "pinched")
 /*
  * Cautery
@@ -54,7 +54,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "cautery"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("burnt")
 
 /obj/item/weapon/surgery/cautery/bronze
@@ -63,7 +63,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bronze_cautery"
 	flags = CONDUCT
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("burnt")
 /*
  * Scalpel
@@ -77,7 +77,7 @@
 	force = WEAPON_FORCE_DANGEROUS
 	sharp = TRUE
 	edge = TRUE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_EARS
 	throwforce = 5.0
 	throw_speed = WEAPON_FORCE_WEAK
@@ -93,7 +93,7 @@
 	force = WEAPON_FORCE_DANGEROUS
 	sharp = TRUE
 	edge = TRUE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_EARS
 	throwforce = 5.0
 	throw_speed = WEAPON_FORCE_WEAK
@@ -110,7 +110,7 @@
 	hitsound = 'sound/weapons/circsawhit.ogg'
 	flags = CONDUCT
 	force = WEAPON_FORCE_ROBUST
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = 3
 	throw_range = 5
@@ -126,7 +126,7 @@
 	hitsound = 'sound/weapons/circsawhit.ogg'
 	flags = CONDUCT
 	force = WEAPON_FORCE_ROBUST
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = 3
 	throw_range = 5
@@ -143,7 +143,7 @@
 	hitsound = 'sound/weapons/circsawhit.ogg'
 	flags = CONDUCT
 	force = WEAPON_FORCE_DANGEROUS
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("drilled")
 
 /obj/item/weapon/surgery/bonesetter
@@ -155,7 +155,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 3
 	throw_range = 5
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("attacked", "hit", "bludgeoned")
 
 /obj/item/weapon/surgery/bonesetter/bronze
@@ -167,5 +167,5 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 3
 	throw_range = 5
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("attacked", "hit", "bludgeoned")

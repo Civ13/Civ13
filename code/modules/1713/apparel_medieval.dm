@@ -2245,7 +2245,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = FACE|EYES
 	flags = CONDUCT
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	armor = list(melee = 20, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE) //nerfed, armor stacking bad.
 	restricts_view = 1
 

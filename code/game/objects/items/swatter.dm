@@ -6,7 +6,7 @@
 	item_state = "swatter"
 	throwforce = TRUE
 	force = WEAPON_FORCE_HARMLESS
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throw_speed = 3
 	throw_range = 9
 
@@ -18,6 +18,6 @@
 	item_state = "swatter_modern"
 	throwforce = TRUE
 	force = WEAPON_FORCE_HARMLESS
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throw_speed = 3
 	throw_range = 9

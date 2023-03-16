@@ -13,7 +13,7 @@
 	force = WEAPON_FORCE_WEAK+2
 	throwforce = WEAPON_FORCE_WEAK
 	flammable = FALSE
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_BELT
 	var/active = FALSE
 	var/lastfire = 0
@@ -161,7 +161,7 @@
 /obj/item/weapon/flamethrower/eins
 	name = "Einstossflammenwerfer 46 hose"
 	desc = "Single use flamethrower hose, aim carefully."
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_SHOULDER
 	max_range = 5
 	icon_state = "eins"
@@ -176,7 +176,7 @@
 	slowdown = 0.2
 	amount_per_transfer_from_this = 1
 	volume = 5
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 /obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled/New()
 	..()

@@ -5,7 +5,7 @@
 	icon_state = "keychain_0"
 	name = "keychain"
 	desc = "This holds your keys"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	max_w_class = 1
 	storage_slots = 20 // up to 20 keys can spawn
 	max_storage_space = 1000 // more or less infinite space for stolen keys

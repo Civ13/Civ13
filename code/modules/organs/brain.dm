@@ -7,7 +7,7 @@
 	vital = TRUE
 	icon_state = "brain"
 	force = 1.0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = 1.0
 	throw_speed = 3
 	throw_range = 5

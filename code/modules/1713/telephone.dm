@@ -10,7 +10,7 @@
 	opacity = FALSE
 	force = WEAPON_FORCE_WEAK+3
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	var/phonenumber = 0
 	var/ringing = FALSE
 	var/ringingnum = FALSE
@@ -252,7 +252,7 @@ var/list/global/phone_numbers = list()
 	throwforce = WEAPON_FORCE_WEAK
 	wireless = TRUE
 	maxrange = 40
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	New()
 		..()
 		spawn(10)

@@ -240,7 +240,7 @@
 	desc = "A box. Contains food."
 	icon_state = "foodbox"
 	item_state = "foodbox"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	max_w_class = 2
 	max_storage_space = 5
 	flammable = TRUE
@@ -290,6 +290,6 @@
 	desc = "A small pack of food."
 	icon_state = "chippack"
 	item_state = "chippack"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	max_w_class = 1
 	max_storage_space = 3

@@ -7,7 +7,7 @@
 	item_state = "claylump"
 	throwforce = WEAPON_FORCE_WEAK
 	force = WEAPON_FORCE_WEAK
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throw_speed = 3
 	throw_range = 5
 	var/result = "none"
@@ -178,7 +178,7 @@
 	amount_per_transfer_from_this = 10
 	volume = 100
 	center_of_mass = list("x"=17, "y"=10)
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/Bump(atom/A)
@@ -251,7 +251,7 @@
 	icon_state = "verysmallclaypot"
 	amount_per_transfer_from_this = 2
 	volume = 25
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot
 	name = "small clay pot"
@@ -260,7 +260,7 @@
 	icon_state = "smallclaypot"
 	amount_per_transfer_from_this = 5
 	volume = 55
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	New()
 		..()
 		icon_state = "smallclaypot[pick(1,2)]"
@@ -272,7 +272,7 @@
 	icon_state = "claypot1"
 	amount_per_transfer_from_this = 10
 	volume = 90
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	New()
 		..()
 		icon_state = "claypot[pick(1,2,3)]"
@@ -285,7 +285,7 @@
 	icon_state = "bigclaypot1"
 	amount_per_transfer_from_this = 10
 	volume = 130
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	New()
 		..()
 		icon_state = "bigclaypot[pick(1,2)]"
@@ -297,7 +297,7 @@
 	icon_state = "clayjug1"
 	amount_per_transfer_from_this = 10
 	volume = 100
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	New()
 		..()
 		icon_state = "clayjug[pick(1,2)]"
@@ -309,7 +309,7 @@
 	icon_state = "claybowl"
 	amount_per_transfer_from_this = 10
 	volume = 55
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claycup
 	name = "clay cup"
@@ -318,7 +318,7 @@
 	icon_state = "claycup"
 	amount_per_transfer_from_this = 10
 	volume = 40
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claywinecup
 	name = "clay wine cup"
@@ -327,7 +327,7 @@
 	icon_state = "claywinecup"
 	amount_per_transfer_from_this = 5
 	volume = 30
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayvase
 	name = "clay vase"
@@ -336,7 +336,7 @@
 	icon_state = "clayvase"
 	amount_per_transfer_from_this = 15
 	volume = 130
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypitcher
 	name = "clay pitcher"
@@ -345,7 +345,7 @@
 	icon_state = "claypitcher"
 	amount_per_transfer_from_this = 15
 	volume = 80
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher
 	name = "large clay pitcher"
@@ -354,7 +354,7 @@
 	icon_state = "largeclaypitcher"
 	amount_per_transfer_from_this = 20
 	volume = 130
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/stack/material))
@@ -415,7 +415,7 @@
 	item_state = "clayshards"
 	throwforce = WEAPON_FORCE_WEAK+1
 	force = WEAPON_FORCE_WEAK+4
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	throw_speed = 5
 	throw_range = 8
 	flags = FALSE
@@ -430,7 +430,7 @@
 	flags = FALSE
 	throwforce = WEAPON_FORCE_WEAK
 	force = WEAPON_FORCE_WEAK
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throw_speed = 3
 	throw_range = 5
 	var/result = "none"

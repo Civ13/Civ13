@@ -8,7 +8,7 @@
 /obj/item/weapon/storage
 	name = "storage"
 	icon = 'icons/obj/storage.dmi'
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	var/list/can_hold = new/list() //List of objects which this item can store (if set, it can't store anything else)
 	var/list/cant_hold = new/list() //List of objects which this item can't store (in effect only if can_hold isn't set)
 	var/list/is_seeing = new/list() //List of mobs which are currently seeing the contents of this item's storage
@@ -684,15 +684,15 @@
 	if (storage_cost)
 		return storage_cost
 	else
-		if (w_class == TRUE)
+		if (w_class == ITEM_SIZE_TINY)
 			return TRUE
-		if (w_class == 2)
+		if (w_class == ITEM_SIZE_SMALL)
 			return 2
-		if (w_class == 3)
+		if (w_class == ITEM_SIZE_NORMAL)
 			return 4
-		if (w_class == 4)
+		if (w_class == ITEM_SIZE_LARGE)
 			return 8
-		if (w_class == 5)
+		if (w_class == ITEM_SIZE_HUGE)
 			return 16
 		else
 			return 1000

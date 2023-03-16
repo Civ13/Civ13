@@ -4,7 +4,7 @@
 	icon_state ="book"
 	throw_speed = TRUE
 	throw_range = 5
-	w_class = 3		 //upped to three because books are, y'know, pretty big. (and you could hide them inside eachother recursively forever)
+	w_class = ITEM_SIZE_NORMAL		 //upped to three because books are, y'know, pretty big. (and you could hide them inside eachother recursively forever)
 	attack_verb = list("bashed", "whacked")
 	var/dat			 // Actual page content
 	var/due_date = FALSE // Game time in TRUE/10th seconds

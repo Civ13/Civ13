@@ -17,7 +17,7 @@
  * Twohanded
  */
 /obj/item/weapon/material/twohanded
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	var/wielded = 0
 	var/force_wielded = 0
 	var/force_unwielded
@@ -122,7 +122,7 @@
 
 ///////////OFFHAND///////////////
 /obj/item/weapon/material/twohanded/offhand
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	icon_state = "offhand"
 	name = "offhand"
 	default_material = "placeholder"
@@ -185,7 +185,7 @@
 	throwforce = 5.0
 	throw_speed = 1
 	throw_range = 5
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	force_wielded = 30
 	wieldsound = 'sound/weapons/saberon.ogg'
 	unwieldsound = 'sound/weapons/saberoff.ogg'

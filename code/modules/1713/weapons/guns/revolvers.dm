@@ -179,7 +179,7 @@
 	name = "M1895 Nagant"
 	desc = "Russian officer's revolver."
 	icon_state = "nagant"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a762x38"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
@@ -202,7 +202,7 @@
 	name = "Modèle 1892 Revolver"
 	desc = "French officer's revolver."
 	icon_state = "m1892"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a8x27"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -219,7 +219,7 @@
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
 	icon_state = "coltsaa"
 	base_icon = "peacemaker"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -235,7 +235,7 @@
 	desc = "Officialy the M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_ivory"
 	base_icon = "peacemaker"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -251,7 +251,7 @@
 	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver."
 	icon_state = "coltsaa_storekeeper"
 	base_icon = "peacemaker"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -267,7 +267,7 @@
 	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_bankerspecial"
 	base_icon = "peacemaker"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -283,7 +283,7 @@
 	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_artillery"
 	base_icon = "peacemaker"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -299,7 +299,7 @@
 	desc = "Officialy the M1892 Colt Single Action Army Revolver."
 	icon_state = "colt1892"
 	base_icon = "colt1892"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a38"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -315,7 +315,7 @@
 	desc = "A cheap makeshift revolver."
 	icon_state = "makeshiftrevolver"
 	base_icon = "makeshiftrevolver"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -331,7 +331,7 @@
 	name = "Colt Police Positive"
 	desc = "Common revolver used by police."
 	icon_state = "coltnewpolice"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	handle_casings = CYCLE_CASINGS
@@ -359,7 +359,7 @@
 	name = "Enfield No. 2"
 	desc = "British revolver made with love."
 	icon_state = "enfield02"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a41"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -373,7 +373,7 @@
 	name = "Webley Mk IV"
 	desc = "British revolver chambered in (.455)."
 	icon_state = "webley4"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a455"
 	fire_sound = 'sound/weapons/guns/fire/45ACP.ogg'
 	handle_casings = CYCLE_CASINGS
@@ -390,7 +390,7 @@
 	desc = "Officialy the M1873 Colt Single Action Army Revolver. This one uses .44 Winchester ammuniton."
 	icon_state = "peacemaker2"
 	base_icon = "peacemaker2"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a44"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -406,7 +406,7 @@
 	desc = "A expensive revolver made by Mckellen."
 	icon_state = "graysonfito"
 	base_icon = "graysonfito"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a44magnum"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -421,7 +421,7 @@
 	desc = "The Taurus Judge is a five shot revolver designed and produced by Taurus International, chambered for (.45 Colt)."
 	icon_state = "judge"
 	base_icon = "judge"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a45"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -436,7 +436,7 @@
 	desc = "A heavy revolver chambered in (magnum .44)."
 	icon_state = "magnum58"
 	base_icon = "magnum58"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a44magnum"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -459,7 +459,7 @@
 	desc = "A smith 'n Wesson revolver, chambered in .32 S&W."
 	icon_state = "smithwesson32"
 	base_icon = "smithwesson32"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	handle_casings = CYCLE_CASINGS
@@ -479,7 +479,7 @@
 	desc = "A smith 'n Wesson revolver, chambered in .32 S&W. This being the spanish copy cat."
 	icon_state = "snw3"
 	base_icon = "snw3"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	caliber = "a32"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	handle_casings = CYCLE_CASINGS
@@ -498,7 +498,7 @@
 	desc = "A Smith 'n Wesson revolver model 10, chambered in .38 S&W."
 	icon_state = "snw10"
 	base_icon = "snw10"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	caliber = "a38"
 	fire_sound = 'sound/weapons/guns/fire/32ACP.ogg'
 	handle_casings = CYCLE_CASINGS
@@ -517,7 +517,7 @@
 	name = "Type 26 revolver"
 	desc = "Japanese officer's revolver."
 	icon_state = "t26revolver"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "c9mm_jap_revolver"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
@@ -535,7 +535,7 @@
 	desc = "a .44 caliber revolver."
 	icon_state = "panther"
 	item_state = "panther"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	caliber = "a44p"
 	handle_casings = CYCLE_CASINGS
@@ -552,7 +552,7 @@
 	desc = "Officialy the Remington Model 95, this small pistol has two barrels."
 	icon_state = "derringer"
 	item_state = "pistol"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	caliber = "a41"
 	fire_sound = 'sound/weapons/guns/fire/44Mag.ogg'
 	magazine_type = /obj/item/ammo_magazine/c41
@@ -842,7 +842,7 @@
 	desc = "Officialy the M1855 Colt Single Action Revolving Carbine."
 	icon_state = "revolving"
 	item_state = "revolving"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "a44"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1028,7 +1028,7 @@
 	desc = "Officialy the M1848 Colt Percussion Cap Revolver."
 	icon_state = "colt_dragoon1848"
 	base_icon = "dragoon"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1045,7 +1045,7 @@
 	desc = "Officialy the Baby M1848 Colt Percussion Cap Revolver."
 	icon_state = "dragoon"
 	base_icon = "colt_babydragoon1848"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1062,7 +1062,7 @@
 	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol."
 	icon_state = "dragoon"
 	base_icon = "colt_pocketmodel1849"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1079,7 +1079,7 @@
 	desc = "Officialy the M1846 Colt Percussion Cap Walker."
 	icon_state = "peacemaker2"
 	base_icon = "colt_walker1846"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1096,7 +1096,7 @@
 	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol used by police."
 	icon_state = "peacemaker2"
 	base_icon = "colt_pocketpolice1849"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1113,7 +1113,7 @@
 	desc = "Officialy the M1851 Colt Navy Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_navy1851"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1130,7 +1130,7 @@
 	desc = "Officialy the M1861 Colt Navy Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_navy1861"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
@@ -1147,7 +1147,7 @@
 	desc = "Officialy the M1860 Colt Army Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_army1860"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "musketball_pistol"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS

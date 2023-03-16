@@ -5,7 +5,7 @@
 	item_state = "DC-15A"
 	base_icon = "DC-15A"
 	fire_sound = 'sound/weapons/guns/fire/blasterdc2.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 200
 	caliber = "laserb"
@@ -62,7 +62,7 @@
 	item_state = "DC-15"
 	base_icon = "DC-15"
 	fire_sound = 'sound/weapons/guns/fire/blasterdc2.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 200
 	caliber = "laserb"
@@ -90,7 +90,7 @@
 	item_state = "DC-15A"
 	base_icon = "DC-15A"
 	fire_sound = 'sound/weapons/guns/fire/blasterdc1.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 500
 	caliber = "laserb"
@@ -118,7 +118,7 @@
 	item_state = "E-5"
 	base_icon = "E-5"
 	fire_sound = 'sound/weapons/guns/fire/blasterimperial.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 100
 	caliber = "laser"
@@ -146,7 +146,7 @@
 	item_state = "E-11"
 	base_icon = "E-11"
 	fire_sound = 'sound/weapons/guns/fire/blasterimperial2.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 100
 	caliber = "laser"
@@ -174,7 +174,7 @@
 	item_state = "A280"
 	base_icon = "A280"
 	fire_sound = 'sound/weapons/guns/fire/blasterrebel.ogg'
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	load_method = MAGAZINE
 	max_shells = 100
 	caliber = "laser"
@@ -200,7 +200,7 @@
 	name = "Laser pistol"
 	desc = "A generic laser shooter"
 	icon_state = "DC-17"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laserb"
 	fire_sound = 'sound/weapons/guns/fire/blasterdc2.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/dc17
@@ -226,7 +226,7 @@
 	name = "DL-44 blaster"
 	desc = "A DL-44 blaster pistol used by various organizations throughout the galaxy."
 	icon_state = "DL-44"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laser"
 	fire_sound = 'sound/weapons/guns/fire/blasterdl44.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/dl44
@@ -239,7 +239,7 @@
 	name = "DH-17 blaster"
 	desc = "A DH-17 blaster pistol used as a service pistol by the Empire and also common within the Rebel Alliance."
 	icon_state = "DH-17"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laser"
 	fire_sound = 'sound/weapons/guns/fire/blasterrebel.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/dh17
@@ -252,7 +252,7 @@
 	name = "Westar-34 blaster"
 	desc = "A Westar-34 blaster pistol, mostly used by those who can afford such a fancy lethal sidearm."
 	icon_state = "Westar-34"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laser"
 	fire_sound = 'sound/weapons/guns/fire/blasterrebel.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/westar34
@@ -394,7 +394,7 @@
 	name = "Dcb-2 Plasma pistol"
 	desc = "A plasma pistol used by the Chinese."
 	icon_state = "dcb2"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laserb"
 	fire_sound = 'sound/weapons/guns/fire/dcb2.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/dcb2
@@ -438,7 +438,7 @@
 	name = "Laspistol"
 	desc = "A laspistol used by the imperial gaurd."
 	icon_state = "laspistol"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	caliber = "laser"
 	fire_sound = 'sound/weapons/guns/fire/lasgun.ogg'
 	magazine_type = /obj/item/ammo_magazine/tibannagas/laspistol

@@ -14,7 +14,7 @@
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = null
 	volume = 15
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_EARS
 	sharp = TRUE
 	var/mode = SYRINGE_DRAW
@@ -321,7 +321,7 @@
 	name = "Morphine injector"
 	desc = "Injector containing 5 units of morphine. Administer two of these to make someone sleep."
 	icon_state = "single_use0"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	volume = 5
 	amount_per_transfer_from_this = 5
 	single_use = TRUE
@@ -342,7 +342,7 @@
 	name = "sulfanomide injector"
 	desc = "Injector containing a single dose of IV sulfanomides. Used to prevent and treat systemic microbial infections."
 	icon_state = "single_use2"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	volume = 9
 	amount_per_transfer_from_this = 9
 	single_use = TRUE
@@ -362,7 +362,7 @@
 	name = "adrenaline injector"
 	desc = "Injector containing a single dose of adrenalin. Good to stabilize patients and help moderate shock."
 	icon_state = "single_use3"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	volume = 30
 	amount_per_transfer_from_this = 30
 	single_use = TRUE
@@ -382,7 +382,7 @@
 	name = "THC syringe"
 	desc = "Injector containing THC from cannabis."
 	icon_state = "single_use1"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	volume = 20
 	amount_per_transfer_from_this = 20
 	single_use = TRUE

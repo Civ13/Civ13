@@ -10,7 +10,7 @@
 	nutriment_amt = 3
 	satisfaction = 4
 	decay = 25*600
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	var/decorated_icon = "donut_homer"
 	var/is_decorated = FALSE
 	var/decorated_adjective = "sprinkled"

@@ -90,7 +90,7 @@
 	worn_state = "slippers"
 	force = FALSE
 	species_restricted = null
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_parts_covered = FEET
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
@@ -102,7 +102,7 @@
 	item_state = "slippers_worn"
 	worn_state = "slippers_worn"
 	force = FALSE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	body_parts_covered = FEET
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE

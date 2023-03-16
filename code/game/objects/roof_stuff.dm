@@ -269,7 +269,7 @@
 	desc = "Use this to build roofs."
 	icon = 'icons/turf/roofs.dmi'
 	icon_state = "roof_builder"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	var/done = FALSE
 	var/target_type = /obj/roof/wood

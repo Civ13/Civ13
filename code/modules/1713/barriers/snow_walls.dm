@@ -59,7 +59,7 @@
 	name = "snow pile"
 	icon_state = "snow_pile"
 	icon = 'icons/obj/items.dmi'
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	var/sand_amount = FALSE
 	flammable = FALSE
 	flags = FALSE

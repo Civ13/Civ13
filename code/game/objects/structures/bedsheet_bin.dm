@@ -14,7 +14,7 @@ LINEN BINS
 	throwforce = WEAPON_FORCE_HARMLESS
 	throw_speed = TRUE
 	throw_range = 2
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 	flags = FALSE
 

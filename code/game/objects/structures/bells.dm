@@ -48,7 +48,7 @@ obj/structure/bell_stand/attackby(var/obj/item/I, var/mob/living/human/H)
 	flags = CONDUCT
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("attacked", "whacked")
 	var/cooldown_handbell = FALSE

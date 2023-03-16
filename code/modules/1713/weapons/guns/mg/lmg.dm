@@ -60,7 +60,7 @@
 	accuracy_decrease_mod = 2.00
 	KD_chance = KD_CHANCE_MEDIUM
 	stat = "machinegun"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	heavy = TRUE
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER
@@ -163,7 +163,7 @@
 	icon_state = "mg34"
 	item_state = "mg34"
 	base_icon = "mg34"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	heavy = TRUE
 	max_shells = 50
 	caliber = "a792x57_weak"
@@ -385,7 +385,7 @@
 	icon_state = "c6"
 	item_state = "c6"
 	base_icon = "c6"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	heavy = TRUE
 	max_shells = 200
 	caliber = "a762x51"

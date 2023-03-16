@@ -23,7 +23,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
@@ -36,7 +36,7 @@
 	slot_flags = SLOT_POCKET
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("bapped", "bonked", "slapped", "whacked")
 
@@ -52,7 +52,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL+5
 	throwforce = WEAPON_FORCE_NORMAL+5
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	var/cap = 25
@@ -99,7 +99,7 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 4
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
@@ -116,7 +116,7 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 4
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
@@ -133,7 +133,7 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_NORMAL + 6
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 6
 	throw_range = 5
@@ -150,7 +150,7 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL + 1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
@@ -173,7 +173,7 @@
 	force = WEAPON_FORCE_WEAK
 	throw_speed = 2
 	throw_range = 9
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("pinched", "nipped")
 	sharp = TRUE
 	edge = TRUE
@@ -202,7 +202,7 @@
 	force = WEAPON_FORCE_PAINFUL
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "crowbar"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 
@@ -216,7 +216,7 @@
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	item_state = "zippo"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flags = FALSE
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
@@ -241,7 +241,7 @@
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	item_state = "zippo"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("attacked", "whacked")
 	var/cooldown = FALSE
@@ -265,7 +265,7 @@
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	item_state = "zippo"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("attacked", "whacked")
 	var/cooldown = FALSE
@@ -287,7 +287,7 @@
 	flags = CONDUCT
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flags = FALSE
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
@@ -305,7 +305,7 @@
 	flags = CONDUCT
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	deployed = FALSE
@@ -359,7 +359,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flags = FALSE
 
 	attack_verb = list("bashed", "whacked")
@@ -368,7 +368,7 @@
 /obj/item/weapon/fishing/net
 	name = "fishing net"
 	desc = "A classic fishing net, made of fiberous rope."
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	icon_state = "fishing_net"
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
@@ -384,7 +384,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 
 	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
@@ -398,7 +398,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL+4
 	throwforce = WEAPON_FORCE_NORMAL-1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
 /*
@@ -414,7 +414,7 @@
 	flags = CONDUCT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
@@ -434,7 +434,7 @@
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = TRUE
 	throw_range = 5
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 /*	var/welding = FALSE
 
@@ -507,7 +507,7 @@
 				T.visible_message("<span class='danger'>\The [src] turns on.</span>")
 			force = WEAPON_FORCE_PAINFUL
 			damtype = "fire"
-			w_class = 4
+			w_class = ITEM_SIZE_LARGE
 			welding = TRUE
 			update_icon()
 			set_light(l_range = 1.4, l_power = TRUE, l_color = COLOR_ORANGE)
@@ -611,7 +611,7 @@ Shinobi's unfinished welder stuff - siro*/
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_NORMAL + 2
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = 5
 	throw_range = 5
@@ -626,7 +626,7 @@ Shinobi's unfinished welder stuff - siro*/
 	icon_state = "whistle"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT | SLOT_POCKET
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/compass
 	name = "compass"
@@ -634,7 +634,7 @@ Shinobi's unfinished welder stuff - siro*/
 	icon = 'icons/obj/items.dmi'
 	icon_state = "compass"
 	slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	var/time = 100
@@ -704,6 +704,6 @@ Shinobi's unfinished welder stuff - siro*/
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = 5
 	throwforce = WEAPON_FORCE_NORMAL
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 
 	attack_verb = list("shanked", "jabbed", "stabbed","shiv'd")

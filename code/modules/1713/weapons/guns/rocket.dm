@@ -1,7 +1,7 @@
 /obj/item/weapon/gun/launcher
 	name = "launcher"
 	desc = "A device that launches things."
-	w_class = 5.0
+	w_class = ITEM_SIZE_HUGE
 	flags =  CONDUCT
 	slot_flags = SLOT_SHOULDER
 	var/load_delay = 10
@@ -66,7 +66,7 @@
 	desc = "MAGGOT."
 	icon_state = "rocket"
 	item_state = "rocket"
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	throw_speed = 2
 	throw_range = 10
 	force = 5.0
@@ -497,7 +497,7 @@
 	icon_state = "rocketshell"
 	projectile_type = /obj/item/missile
 	caliber = "rocket"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
 
 /obj/item/ammo_casing/rocket/bazooka
@@ -552,7 +552,7 @@
 	icon_state = "nuclear"
 	projectile_type = /obj/item/missile/nuclear
 	caliber = "nuclear"
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 
 /obj/item/ammo_casing/rocket/atgm
 	name = "ATGM rocket"

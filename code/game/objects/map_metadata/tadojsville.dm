@@ -279,7 +279,7 @@
 						new/obj/item/ammo_magazine/shellbox/slug(user.loc)
 						new/obj/item/ammo_magazine/shellbox(user.loc)
 					if (10)
-						new/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper(user.loc)
+						new/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper(user.loc)
 						new/obj/item/ammo_magazine/a50cal(user.loc)
 						new/obj/item/ammo_magazine/a50cal(user.loc)
 						new/obj/item/ammo_magazine/a50cal(user.loc)

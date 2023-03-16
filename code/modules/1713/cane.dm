@@ -7,7 +7,7 @@
 	flags = CONDUCT
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_WEAK
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flags = FALSE
 
 	attack_verb = list("bludgeoned", "whacked", "disciplined")

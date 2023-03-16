@@ -9,7 +9,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	opacity = FALSE
 	density = TRUE
 	layer = 3.5
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	invisibility = 0
 	var/do_once = FALSE
 
@@ -36,7 +36,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	opacity = FALSE
 	density = TRUE
 	layer = 3.5
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	invisibility = 0
 	var/do_once = FALSE
 

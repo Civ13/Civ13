@@ -3,7 +3,7 @@
 	name = "canteen"
 	icon_state = "canteen_german"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_ID|SLOT_BELT
 	desc = "A very large canteen for storing water."
 
@@ -16,7 +16,7 @@
 	name = "canteen"
 	icon_state = "canteen_german"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT|SLOT_ID
 	desc = "A very large canteen for storing water."
 	isGlass = FALSE
@@ -30,7 +30,7 @@
 	name = "German canteen"
 	icon_state = "canteen_german"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	desc = "A very large canteen for storing water."
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap
 	dropsound = 'sound/effects/drop_default.ogg'
@@ -38,7 +38,7 @@
 	icon_state = "canteen_jap"
 	item_state = "canteen_jap"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	desc = "A very large canteen for storing water."
 	icon_override = 'icons/mob/pouch.dmi'
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap/New()
@@ -49,7 +49,7 @@
 	name = "American canteen"
 	icon_state = "canteen_us"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	desc = "A very large canteen for storing water."
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us/New()
 	..()
@@ -60,7 +60,7 @@
 	name = "Russian canteen"
 	icon_state = "canteen_soviet"
 	volume = 200
-	w_class = 3 // fits in webbing unlike w_class = 4
+	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	desc = "A very large canteen for storing water."
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus/New()
 	..()

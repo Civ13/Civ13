@@ -93,7 +93,7 @@
 
 /obj/item/clothing/ears
 	name = "ears"
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	throwforce = 2
 	slot_flags = SLOT_EARS
 
@@ -151,7 +151,7 @@
 
 /obj/item/clothing/ears/offear
 	name = "Other ear"
-	w_class = 5.0
+	w_class = ITEM_SIZE_HUGE
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "block"
 	slot_flags = SLOT_EARS | SLOT_TWOEARS
@@ -184,7 +184,7 @@ BLIND	 // can't see anything
 /obj/item/clothing/glasses
 	name = "glasses"
 	icon = 'icons/obj/clothing/glasses.dmi'
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	body_parts_covered = EYES
 	slot_flags = SLOT_EYES
 	var/vision_flags = FALSE
@@ -204,7 +204,7 @@ BLIND	 // can't see anything
 /obj/item/clothing/gloves
 	name = "gloves"
 	gender = PLURAL //Carn: for grammarically correct text-parsing
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	icon = 'icons/obj/clothing/gloves.dmi'
 	icon_state = "leather"
 	siemens_coefficient = 0.75
@@ -252,7 +252,7 @@ BLIND	 // can't see anything
 	body_parts_covered = HEAD
 	slot_flags = SLOT_HEAD
 	flags_inv = BLOCKHEADHAIR
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	ripable = TRUE
 	var/light_overlay = "helmet_light"
 	var/light_applied
@@ -426,7 +426,7 @@ BLIND	 // can't see anything
 	slot_flags = SLOT_OCLOTHING
 	var/blood_overlay_type = "suit"
 	siemens_coefficient = 0.9
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ripable = TRUE
 	rag_amt = 4
 /obj/item/clothing/suit/update_clothing_icon()
@@ -447,7 +447,7 @@ BLIND	 // can't see anything
 	permeability_coefficient = 0.90
 	slot_flags = SLOT_ICLOTHING
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ripable = TRUE
 	rag_amt = 3
 	//var/has_sensor = TRUE //For the crew computer 2 = unable to change mode

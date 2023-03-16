@@ -7,7 +7,7 @@
 	icon_state = "pill_canister"
 	icon = 'icons/obj/chemical.dmi'
 	item_state = "contsolid"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	can_hold = list(/obj/item/weapon/reagent_containers/pill,/obj/item/weapon/dice,/obj/item/weapon/paper)
 	allow_quick_gather = TRUE
 	use_to_pickup = TRUE

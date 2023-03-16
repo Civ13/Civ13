@@ -19,7 +19,7 @@
 	var/active_breathing = 1
 
 	relative_size = 60
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 /obj/item/organ/lungs/set_dna(var/datum/dna/new_dna)
 	..()
 

@@ -35,7 +35,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_WEAK+2
 	weakens = 1
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 
 /obj/item/weapon/melee/mace/kanabo
@@ -47,7 +47,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_WEAK+3
 	weakens = 1
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flammable = FALSE
 
 /obj/item/weapon/melee/mace/mauler
@@ -59,7 +59,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 	weakens = 1
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flammable = FALSE
 
 /obj/item/weapon/melee/classic_baton
@@ -182,7 +182,7 @@
 	item_state = "woodbat"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flammable = TRUE
 	weakens = 1
 
@@ -241,7 +241,7 @@
 	sharp = TRUE
 	edge = TRUE
 	sharpness = 15
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	flammable = FALSE
 
 ////////////////GARROTE/////////////////////
@@ -256,7 +256,7 @@
 	flammable = TRUE
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = WEAPON_FORCE_WEAK
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = 5
 	throw_range = 8

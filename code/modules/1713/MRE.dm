@@ -41,7 +41,7 @@
 	icon_state = "mre_food_trash"
 	name = "MRE trash"
 	desc = "The remains of some MRE."
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german
 	name = "German MRE: Sauerkraut"

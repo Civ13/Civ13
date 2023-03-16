@@ -2,7 +2,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/var/climbers = list()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_left()
-	set name = "Rotate left"
+	set name = "Rotate Left"
 	set category = null
 	set src in oview(1)
 
@@ -13,7 +13,7 @@
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
-	set name = "Rotate right"
+	set name = "Rotate Right"
 	set category = null
 	set src in oview(1)
 

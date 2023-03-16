@@ -1041,7 +1041,7 @@
 	item_state = "redkerchief"
 	worn_state = "redkerchief"
 	flags_inv = 0
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	var/toggled = FALSE
 
 /obj/item/clothing/mask/shemagh
@@ -1054,7 +1054,7 @@
 	var/unusedstate = "shemagh0"
 	var/partscovered = FACE|HEAD
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/toggled = FALSE
 	restricts_view = 1
 	heat_protection = HEAD|FACE|EYES
@@ -1069,7 +1069,7 @@
 	unusedstate = "redkerchief0"
 	partscovered = FACE
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/mask/shemagh/bluekerchief
 	name = "blue kerchief"
@@ -1081,7 +1081,7 @@
 	unusedstate = "bluekerchief0"
 	partscovered = FACE
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 /obj/item/clothing/mask/shemagh/yellowkerchief
 	name = "yellow kerchief"
 	desc = "A piece of light cloth, worn around the neck."
@@ -1092,7 +1092,7 @@
 	unusedstate = "yellowkerchief0"
 	partscovered = FACE
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/mask/shemagh/greykerchief
 	name = "grey kerchief"
@@ -1104,7 +1104,7 @@
 	unusedstate = "greykerchief0"
 	partscovered = FACE
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/mask/shemagh/update_icon()
 	if (toggled == FALSE)
@@ -1245,7 +1245,7 @@
 	item_state = "anubis"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
 	blocks_scope = TRUE
 	restricts_view = 1
@@ -1275,7 +1275,7 @@
 	flags_inv = HIDEFACE
 	flags = CONDUCT
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 45, bio = FALSE, rad = FALSE)
 	blocks_scope = TRUE
 	restricts_view = 1
@@ -1288,7 +1288,7 @@
 	item_state = "stone_mask"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	armor = list(melee = 5, arrow = 10, gun = FALSE, energy = 12, bomb = 45, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
 	blocks_scope = TRUE
 	restricts_view = 1
@@ -1301,7 +1301,7 @@
 	item_state = "stone_mask_jeweled"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	armor = list(melee = 20, arrow = 20, gun = FALSE, energy = 8, bomb = 67, bio = FALSE, rad = FALSE) //modest, weaker than japanese facemask
 	blocks_scope = TRUE
 	restricts_view = 1

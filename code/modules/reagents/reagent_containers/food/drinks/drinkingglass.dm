@@ -183,7 +183,7 @@
 	icon_state = "waterskin"
 	glass_type = "waterskin"
 	slot_flags = SLOT_ID
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	volume = 70
 	flammable = TRUE
 

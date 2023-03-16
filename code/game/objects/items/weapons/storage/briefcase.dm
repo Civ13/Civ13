@@ -8,7 +8,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	throw_speed = TRUE
 	throw_range = 4
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	max_w_class = 3
 	max_storage_space = 16
 

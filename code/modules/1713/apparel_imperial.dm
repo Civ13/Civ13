@@ -426,7 +426,7 @@
 	item_state = "paper"
 	slot_flags = SLOT_ID | SLOT_POCKET
 	slots = 15
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	var/mob/living/human/owner = null
 	var/faction = ""
 	flammable = TRUE
@@ -450,7 +450,7 @@
 	icon_state = "passport"
 	item_state = "paper"
 	throwforce = FALSE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_ID | SLOT_POCKET
 	throw_range = TRUE
 	throw_speed = TRUE
@@ -523,7 +523,7 @@
 	icon_state = "visa0"
 	item_state = "paper"
 	throwforce = FALSE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	flags = FALSE
 	throw_range = TRUE
 	throw_speed = TRUE

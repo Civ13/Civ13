@@ -5,7 +5,7 @@
 	icon_state = "book2" // temporary someone fix this aa
 	throw_speed = TRUE
 	throw_range = 5
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	attack_verb = list("bashed", "whacked")
 	flammable = TRUE
 	var/written = FALSE // has this book been written in yet?

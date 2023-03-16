@@ -523,7 +523,7 @@
 "Ha" = (/obj/covers/stone_wall/fortress/archway{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "He" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/turf/floor/carpet,/area/caribbean/houses)
 "Hf" = (/obj/structure/multiz/ladder/ww2/stairsup{dir = 8; icon_state = "rampup"},/turf/floor/dirt,/area/caribbean/houses)
-"Hi" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"Hi" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "Hm" = (/obj/structure/closet/cabinet{name = "First aid supplies"},/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/wood,/area/caribbean/houses)
 "Hr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/dust,/area/caribbean)
 "Hz" = (/obj/structure/simple_door/key_door/anyone/singledoor,/obj/effect/decal/cleanable/blood/writing,/obj/effect/decal/cleanable/blood/writing,/turf/floor/carpet/bluecarpet,/area/caribbean/houses)

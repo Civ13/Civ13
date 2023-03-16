@@ -4,7 +4,7 @@
 	icon_state = "muzzle"
 	item_state = "muzzle"
 	body_parts_covered = FACE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	gas_transfer_coefficient = 0.90
 	voicechange = TRUE
 	heat_protection = 0
@@ -15,7 +15,7 @@
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "tape_cross"
 	item_state = null
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/clothing/mask/muzzle/New()
 	..()
@@ -35,7 +35,7 @@
 	item_state = "plaguedoctor"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	blocks_scope = TRUE
 	armor = list(melee = 15, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 45, rad = FALSE)
 	restricts_view = 1
@@ -47,7 +47,7 @@
 	item_state = "sterile"
 	body_parts_covered = FACE
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	var/toggled = FALSE
 /obj/item/clothing/mask/sterile/verb/toggle()
 	set category = null

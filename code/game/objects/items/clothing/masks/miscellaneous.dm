@@ -4,7 +4,7 @@
 	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHEADHAIR
 	icon_state = "sack"
 	item_state = "sack"
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/mask/sack/attack_hand(mob/user as mob)
 	if (user.wear_mask == src && !user.IsAdvancedToolUser())
@@ -17,7 +17,7 @@
 	icon_state = "scarecrow_sack"
 	item_state = "scarecrow_sack"
 	flags_inv = HIDEEARS|HIDEFACE|BLOCKHEADHAIR
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 
 /obj/item/clothing/mask/sack/scarecrow/attack_hand(mob/user as mob)
 	if (user.wear_mask == src && !user.IsAdvancedToolUser())
@@ -31,7 +31,7 @@
 	item_state = "rat"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/raven
@@ -41,7 +41,7 @@
 	item_state = "raven"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/bat
@@ -51,7 +51,7 @@
 	item_state = "bat"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/bear
@@ -61,7 +61,7 @@
 	item_state = "bear"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/owl
@@ -71,7 +71,7 @@
 	item_state = "owl"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /*According to all known laws of aviation, there is no way a bee should be able to fly.
@@ -85,7 +85,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "bee"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/jackal
@@ -95,7 +95,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "jackal"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/fox
@@ -105,7 +105,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "fox"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/frog
@@ -114,7 +114,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "frog"
 	item_state = "frog"
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/cow
@@ -124,7 +124,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "cowmask"
 	flags_inv = HIDEEARS|HIDEFACE|BLOCKHEADHAIR
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/pig
@@ -134,7 +134,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "pig"
 	flags_inv = HIDEEARS|HIDEFACE|BLOCKHEADHAIR
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/joy
@@ -144,7 +144,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "joy"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/gorilla
@@ -154,7 +154,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "gorilla"
 	flags_inv = HIDEEARS|HIDEFACE|BLOCKHEADHAIR
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	blocks_scope = TRUE
 
 /obj/item/clothing/mask/clown
@@ -172,7 +172,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "clownmask"
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday1
@@ -182,7 +182,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "payday1"
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday2
@@ -192,7 +192,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "payday2"
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday3
@@ -202,7 +202,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "payday3"
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday4
@@ -212,5 +212,5 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	item_state = "payday4"
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = FACE|EYES
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)

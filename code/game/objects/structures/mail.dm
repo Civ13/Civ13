@@ -102,7 +102,7 @@
 	icon = 'icons/obj/mail.dmi'
 	icon_state = "envelope_empty"
 	item_state = "envelope_empty"
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
 	storage_slots = 3
 	can_hold = list(/obj/item/weapon/paper,/obj/item/weapon/photo)

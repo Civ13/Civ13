@@ -30,7 +30,7 @@
 	item_state = "pistol"
 	flags =  CONDUCT
 	slot_flags = SLOT_BELT|SLOT_HOLSTER
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	throwforce = 5
 	throw_speed = 4
 	throw_range = 5
@@ -629,7 +629,7 @@
 	return
 /*
 /obj/item/weapon/offhand
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	icon_state = "offhand"
 	name = "offhand"
 

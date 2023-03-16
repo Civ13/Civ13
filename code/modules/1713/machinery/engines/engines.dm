@@ -245,7 +245,7 @@
 	desc = "Use this to craft engines."
 	icon = 'icons/obj/engines32.dmi'
 	icon_state = "tools"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 	var/done = FALSE
 	var/steelamt = 0

@@ -5,7 +5,7 @@
 	icon_state = "paper"
 	item_state = "paper"
 	throwforce = FALSE
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	throw_range = 2
 	throw_speed = TRUE
 	layer = 4

@@ -9,7 +9,7 @@
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	force = TRUE
 	throwforce = TRUE
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	throw_speed = 5
 	throw_range = 10
 	attack_verb = list("slapped", "whacked")

@@ -1044,7 +1044,7 @@
 	desc = "To store your seeds."
 	icon_state = "seed_collector"
 	item_state = "backpack"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	flags = FALSE
 	slot_flags = SLOT_BACK
 	max_storage_space = 50000 //we don't worry that, yes, all calculated by slots
@@ -1123,7 +1123,7 @@
 	desc = "A leather bag, used to collect ores and raw stones."
 	icon_state = "ore_collector"
 	item_state = "backpack"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_storage_space = 50000 //we don't worry that, yes, all calculated by slots
 	storage_slots = 7 //we need stop the mess of ores in one bag
@@ -1221,7 +1221,7 @@
 	desc = "A woven basket, used to collect fruits and vegetables."
 	icon_state = "produce_basket"
 	item_state = "produce_basket"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	flags = FALSE
 	max_w_class = 3
 	max_storage_space = 30
@@ -1823,7 +1823,7 @@
 	icon = 'icons/obj/cans.dmi'
 	icon_state = "can_empty"
 	var/base_icon = "can"
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	flammable = FALSE
 	slot_flags = null
 	var/max_capacity = 5
@@ -1842,7 +1842,7 @@
 	desc = "A tin can that can keep food good for a long time. Can fit 3 units."
 	icon_state = "small_can_empty"
 	base_icon = "small_can"
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_POCKET
 	max_capacity = 3
 	basematerials = list("tin", 0.3)
@@ -1852,7 +1852,7 @@
 	desc = "A tin can that can keep food good for a long time. Can fit 10 units."
 	icon_state = "large_can_empty"
 	base_icon = "large_can"
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	slot_flags = null
 	max_capacity = 10
 	basematerials = list("tin", 0.9)

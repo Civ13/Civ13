@@ -3,7 +3,7 @@
 	desc = "Some seeds."
 	icon = 'icons/farming/seeds.dmi'
 	icon_state = "seeds"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	value = 0.1
 	amount = 1
 	max_amount = 100

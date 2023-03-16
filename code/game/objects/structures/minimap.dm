@@ -118,7 +118,7 @@
 	var/image/playerloc
 	throwforce = WEAPON_FORCE_HARMLESS
 	force = WEAPON_FORCE_HARMLESS
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flags = FALSE
 
 /obj/item/weapon/map/New()
@@ -145,7 +145,7 @@
 	icon_state = "portable_areamap"
 	throwforce = WEAPON_FORCE_HARMLESS
 	force = WEAPON_FORCE_HARMLESS
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	flags = FALSE
 	var/image/img
 

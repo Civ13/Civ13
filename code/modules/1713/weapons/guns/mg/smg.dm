@@ -62,7 +62,7 @@
 	accuracy_decrease_mod = 1.50
 	KD_chance = KD_CHANCE_HIGH+3
 	stat = "machinegun"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -92,7 +92,7 @@
 	base_icon = "stg"
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 	caliber = "a792x33"
 
 	fire_sound = 'sound/weapons/guns/fire/stg.ogg'

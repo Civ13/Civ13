@@ -533,7 +533,7 @@ var/global/FREQM = rand(101,120)
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = FALSE
 	edge = FALSE
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	nothrow = TRUE
 /obj/item/weapon/radio/faction1/New()
@@ -736,7 +736,7 @@ var/global/FREQM = rand(101,120)
 	density = FALSE
 	opacity = FALSE
 	powerneeded = 0
-	w_class = 2.0
+	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_BELT|SLOT_ID
 	nothrow = FALSE
 	icon_override = 'icons/mob/pouch.dmi'

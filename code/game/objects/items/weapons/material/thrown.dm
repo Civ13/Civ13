@@ -12,7 +12,7 @@
 	throw_range = 15
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/star/New()
 	..()
@@ -30,7 +30,7 @@
 	throw_range = 13
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/kunai_normal/New()
 	..()
@@ -48,7 +48,7 @@
 	throw_range = 12
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/throwing_knife/New()
 	..()
@@ -66,7 +66,7 @@
 	throw_range = 8
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/tomahawk/New()
 	..()
@@ -84,7 +84,7 @@
 	throw_range = 9
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/throwing_knife1
 	name = "steel throwing knife"
@@ -97,7 +97,7 @@
 	throw_range = 9
 	sharp = TRUE
 	edge =  TRUE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/material/thrown/throwing_axe/New()
 	..()

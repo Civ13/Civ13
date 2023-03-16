@@ -169,7 +169,7 @@ obj/map_metadata/gulag13/job_enabled_specialcheck(var/datum/job/J)
 	icon_state = "passport"
 	item_state = "paper"
 	throwforce = FALSE
-	w_class = TRUE
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_ID | SLOT_POCKET
 	throw_range = TRUE
 	throw_speed = TRUE

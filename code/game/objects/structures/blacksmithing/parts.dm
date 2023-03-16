@@ -10,7 +10,7 @@
 	force_divisor = 0.10 // 9 when wielded with hardness 60 (steel)
 	attack_verb = list("slashed","sliced")
 	unbreakable = TRUE
-	w_class = 1.0
+	w_class = ITEM_SIZE_TINY
 	slot_flags = SLOT_BELT|SLOT_POCKET
 	var/result = null
 	var/result_name = ""

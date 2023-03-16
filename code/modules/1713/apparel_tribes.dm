@@ -233,7 +233,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	body_parts_covered = FACE
 	flags = CONDUCT
 	flags_inv = 0
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	armor = list(melee = 15, arrow = 5, gun = FALSE, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/shoes/fur/orc
@@ -543,7 +543,7 @@ wip pending sprites
 	item_state = "solitaire"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 20, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE) //equal to japanese face mask.
 
 	/* - 5b. Fantasy Materials*/

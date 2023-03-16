@@ -5,7 +5,7 @@
 	item_state = "bible"
 	throw_speed = TRUE
 	throw_range = 5
-	w_class = 3.0
+	w_class = ITEM_SIZE_NORMAL
 	var/mob/affecting = null
 
 /obj/item/weapon/storage/bible/orthodox

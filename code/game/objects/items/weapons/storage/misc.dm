@@ -4,7 +4,7 @@
 	icon_state = "gerkit"
 	item_state = "gerkit"
 	max_storage_space = 8
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	max_w_class = 1
 	can_hold = new/list(
 	/obj/item/weapon/material/kitchen/utensil,
@@ -117,7 +117,7 @@
 	icon_state = "shaving_kit"
 	item_state = "shaving_kit"
 	max_storage_space = 2
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	can_hold = new/list(
 	/obj/item/weapon/material/kitchen/utensil/knife/razorblade,
 	/obj/item/weapon/haircomb
@@ -139,7 +139,7 @@
 	icon_state = "shaving_kit"
 	item_state = "shaving_kit"
 	max_storage_space = 4
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL
 	slot_flags = SLOT_ID
 	can_hold = new/list(
 	/obj/item/stack/medical/bruise_pack/bint,
@@ -181,7 +181,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "gerkit_lid"
 	item_state = "bucket"
-	w_class = 1
+	w_class = ITEM_SIZE_TINY
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20,30,40)
 	volume = 40
@@ -192,4 +192,4 @@
 	icon_state = "slunch"
 	item_state = "slunch"
 	max_storage_space = 12
-	w_class = 2
+	w_class = ITEM_SIZE_SMALL

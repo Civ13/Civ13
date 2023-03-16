@@ -2294,7 +2294,7 @@
 /obj/structure/truck{
 	dir = 4
 	},
-/obj/item/weapon/gun/projectile/boltaction/singleshot/a50cal/sniper,
+/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper,
 /turf/floor/beach/sand/desert,
 /area/caribbean)
 "LM" = (

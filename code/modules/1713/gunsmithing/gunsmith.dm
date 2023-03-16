@@ -751,7 +751,7 @@
 		if ("Bolt-Action")
 			item_state = "mosin"
 			gtype = "rifle"
-			w_class = 4
+			w_class = ITEM_SIZE_LARGE
 			force = 10
 			throwforce = 20
 			max_shells = 5
@@ -821,7 +821,7 @@
 			item_state = "revolver"
 			gtype = "revolver"
 			stat = "pistol"
-			w_class = 2
+			w_class = ITEM_SIZE_SMALL
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			handle_casings = CYCLE_CASINGS
 			max_shells = 7
@@ -938,7 +938,7 @@
 					VERY_LONG_RANGE_STILL = 45,
 					VERY_LONG_RANGE_MOVING = 30),
 			)
-			w_class = 2
+			w_class = ITEM_SIZE_SMALL
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			accuracy_increase_mod = 1.50
 			accuracy_decrease_mod = 2.00
@@ -948,7 +948,7 @@
 			item_state = "g41"
 			stat = "rifle"
 			gtype = "rifle"
-			w_class = 4
+			w_class = ITEM_SIZE_LARGE
 			slot_flags = SLOT_SHOULDER
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
 			accuracy_list = list(
@@ -1014,7 +1014,7 @@
 			item_state = "pps"
 			stat = "machinegun"
 			gtype = "smg"
-			w_class = 3
+			w_class = ITEM_SIZE_NORMAL
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
 			full_auto = TRUE
@@ -1079,7 +1079,7 @@
 			item_state = "negev"
 			stat = "machinegun"
 			gtype = "mg"
-			w_class = 5
+			w_class = ITEM_SIZE_HUGE
 			heavy = TRUE
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
@@ -1152,7 +1152,7 @@
 			item_state = "ak47"
 			gtype = "rifle"
 			stat = "rifle"
-			w_class = 3
+			w_class = ITEM_SIZE_NORMAL
 			sel_mode = 1
 			full_auto = TRUE
 			fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
@@ -1219,7 +1219,7 @@
 			item_state = "m16"
 			gtype = "rifle"
 			stat = "rifle"
-			w_class = 3
+			w_class = ITEM_SIZE_NORMAL
 			sel_mode = 1
 			full_auto = TRUE
 			fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
@@ -1338,7 +1338,7 @@
 			accuracy_decrease_mod = 1.00
 			KD_chance = KD_CHANCE_HIGH
 			max_shells = 6
-			w_class = 4.0
+			w_class = ITEM_SIZE_LARGE
 			force = 10
 			flags =  CONDUCT
 			slot_flags = SLOT_SHOULDER

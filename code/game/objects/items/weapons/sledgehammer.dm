@@ -28,7 +28,7 @@
 	item_state = "stone_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
@@ -41,7 +41,7 @@
 	item_state = "lead_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 35
 	weight = 80
@@ -55,7 +55,7 @@
 	item_state = "bronze_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
@@ -69,7 +69,7 @@
 	item_state = "Iron_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 32
 	weight = 80
@@ -83,7 +83,7 @@
 	item_state = "steel_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 35
 	weight = 80
@@ -98,7 +98,7 @@
 	item_state = "uranium_sledgehammer"
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_PAINFUL
-	w_class = 4.0
+	w_class = ITEM_SIZE_LARGE
 	flammable = FALSE
 	equiptimer = 30
 	weight = 80

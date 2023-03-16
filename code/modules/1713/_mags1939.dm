@@ -14,7 +14,7 @@
 	icon_state = "arisaka_ammo"
 	mag_type = MAGAZINE
 	caliber = "a77x58"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 
 	ammo_type = /obj/item/ammo_casing/a77x58
 	max_ammo = 50
@@ -57,7 +57,7 @@
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a77x58"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 
 	ammo_type = /obj/item/ammo_casing/a77x58
 	max_ammo = 30
@@ -133,7 +133,7 @@
 	icon_state = "oldbox"
 	mag_type = MAGAZINE
 	caliber = "a45acp"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a45acp
 	max_ammo = 65
 	multiple_sprites = TRUE
@@ -241,7 +241,7 @@ obj/item/ammo_magazine/dp
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
 	caliber = "a45acp"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	max_ammo = 30
 	multiple_sprites = FALSE
 	is_box = TRUE
@@ -299,7 +299,7 @@ obj/item/ammo_magazine/dp
 	icon_state = "ammo"
 	mag_type = MAGAZINE
 	caliber = "a3006"
-	w_class = 3
+	w_class = ITEM_SIZE_NORMAL
 	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 50
 	multiple_sprites = FALSE
@@ -321,7 +321,7 @@ obj/item/ammo_magazine/dp
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
 	caliber = "a3006"
-	w_class = 4
+	w_class = ITEM_SIZE_LARGE
 
 	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 250

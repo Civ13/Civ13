@@ -88,7 +88,7 @@
 
 /obj/structure/cannon/modern/tank/voyage
 	spritemod = TRUE
-	w_class = 5
+	w_class = ITEM_SIZE_HUGE
 	maxrange = 35
 	angle = 20
 	caliber = 75
@@ -384,7 +384,7 @@
 	maxrange = 30
 	maxsway = 10
 	firedelay = 8
-	w_class = 6
+	w_class = ITEM_SIZE_GARGANTUAN
 	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic
@@ -396,7 +396,7 @@
 	maxrange = 30
 	maxsway = 7
 	firedelay = 12
-	w_class = 6
+	w_class = ITEM_SIZE_GARGANTUAN
 	path = /obj/item/weapon/foldable/generic
 
 /obj/structure/cannon/mortar/foldable/verb/Retrieve()
