@@ -374,7 +374,7 @@
 "Eq" = (/obj/structure/closet/crate/sandbags,/obj/structure/lamp/lamp_small/alwayson{pixel_y = -6},/turf/floor/plating/road,/area/caribbean/british/land/inside)
 "Er" = (/obj/structure/closet/crate/freezer,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/road,/area/caribbean)
 "Es" = (/obj/covers/wood_wall/log{dir = 1},/turf/wall/wood,/area/caribbean/british/land/inside)
-"Eu" = (/obj/structure/shelf/palette{anchored = anchored; density = 0},/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/four)
+"Eu" = (/obj/structure/shelf/palette{anchored = 0; density = 0},/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/four)
 "Ev" = (/obj/structure/window/barrier/railing/stone{dir = 8},/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/three/outside)
 "Ex" = (/obj/structure/machinery/forklift{pixel_x = 9},/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/four/outside)
 "EE" = (/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/structure/closet/crate/ww2,/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/road,/area/caribbean/british/land/inside)
