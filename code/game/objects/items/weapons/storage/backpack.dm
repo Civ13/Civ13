@@ -63,6 +63,38 @@
 	base_icon = "satchel_black"
 	worn_state = "satchel_black"
 
+/obj/item/weapon/storage/backpack/satchel/black/germanat
+	name = "German Anti Tank Satchel"
+	desc = "It's a standard issue satchel for German military personel"
+	max_storage_space = 28
+	slowdown = 0.1
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/material/shovel,
+		/obj/item/weapon/key,
+		/obj/item/ammo_casing/rocket,
+		)
+
+/obj/item/weapon/storage/backpack/satchel/black/germanat/pzb
+	max_storage_space = 12
+	New()
+		..()
+		new /obj/item/ammo_magazine/pzb_case_ap(src)
+		new /obj/item/ammo_magazine/pzb_case(src)
+		new /obj/item/ammo_magazine/pzb_case(src)
+
+/obj/item/weapon/storage/backpack/satchel/black/germanat/rpb54
+	New()
+		..()
+		new /obj/item/ammo_casing/rocket/rpb54(src)
+		new /obj/item/ammo_casing/rocket/rpb54(src)
+		new /obj/item/ammo_casing/rocket/rpb54(src)
+
 /obj/item/weapon/storage/backpack/satchel/replicant
 	name = "synthetic backpack"
 	desc = "A very versitile backpack made out of synthetic leather."
@@ -133,13 +165,24 @@
 		new /obj/item/ammo_magazine/type99(src)
 
 /obj/item/weapon/storage/backpack/ww2/german
-	name = "german backpack"
+	name = "Anti Tank Backpack"
 	desc = "It's a standard issue backpack for German military personel"
 	icon_state = "germanpack"
 	item_state = "germanpack"
 	worn_state = "germanpack"
 	base_icon = "germanpack"
 	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/material/shovel,
+		/obj/item/weapon/key,
+		)
+/obj/item/weapon/storage/backpack/ww2/german
 
 /obj/item/weapon/storage/backpack/ww2/german/russianat
 	name = "russian backpack"

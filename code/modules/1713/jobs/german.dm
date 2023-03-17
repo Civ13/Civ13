@@ -1158,6 +1158,130 @@
 
 	return TRUE
 
+/datum/job/german/german_antitank
+	title = "Panzerabwehrschütze"
+	en_meaning = "Anti Tank Rifleman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ww2 = TRUE
+	is_reichstag = FALSE
+	uses_squads = TRUE
+	is_borderger = TRUE
+	is_warsawger = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/german/german_antitank/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//head
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_BARBAROSSA)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/winter(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+//weapons
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	if (map.ID == MAP_STALINGRAD)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+//AT GUN
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SIEGEMOSCOW || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KURSK || map.ID == MAP_BARBAROSSA || map.ID == MAP_VITEBSK)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/pzb_pouch(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/pzb_pouch_ap(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpb54(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_casing/rocket/rpb54(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_l_store)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a Anti tank Solider of the Wermacht,Your job is to Disable and Destroy enemy tanks,Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+
+	return TRUE
+/datum/job/german/german_antitankassitant
+	title = "Anti Panzer Schützen Assistent"
+	en_meaning = "Anti Tank Rifleman Assistant"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ww2 = TRUE
+	is_reichstag = FALSE
+	uses_squads = TRUE
+	is_borderger = TRUE
+	is_warsawger = TRUE
+
+	min_positions = 2
+	max_positions = 4
+
+/datum/job/german/german_antitankassitant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+//head
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_BARBAROSSA)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/winter(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+//glove
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//weapons
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	if (map.ID == MAP_STALINGRAD)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+//AT GUN
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SIEGEMOSCOW || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KURSK || map.ID == MAP_BARBAROSSA || map.ID == MAP_VITEBSK)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/stg24_bundle(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel/black/germanat/pzb(H), slot_back)
+		var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault(null)
+		uniform.attackby(webbing, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/ammo_casing/rocket/rpb54(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/stg(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/stg(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/satchel/black/germanat/rpb54(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
+		var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg(null)
+		uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a Anti tank Assistant of the Wermacht,Your job is to Provide Anti tank Ammo and Cover to the Anti tank Rifleman and take over if he dies,Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+
+	return TRUE
+
 /datum/job/german/sniper_schutze
 	title = "Scharfschutze"
 	en_meaning = "Sniper"
@@ -1209,7 +1333,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	H.setStat("machinegun", STAT_NORMAL)
 
 	return TRUE
 
@@ -1258,7 +1382,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-
+	H.setStat("machinegun", STAT_NORMAL)
 
 	return TRUE
 

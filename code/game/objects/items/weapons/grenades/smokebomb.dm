@@ -245,14 +245,18 @@
 
 /obj/item/weapon/grenade/incendiary/prime()
 	if (active)
-		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		var/turf/LT = get_turf(src)
+
+		playsound(loc, 'sound/effects/smoke.ogg', 50, TRUE, -3)
 		explosion(LT,0,1,1,3)
-		for (var/turf/floor/T in range(spread_range,LT))
-			ignite_turf(T, 12, 35)
-		sleep(50)
-		qdel(src)
-		return
+
+		if (!ismob(loc))
+			for (var/turf/floor/T in circlerangeturfs(LT, spread_range))
+				ignite_turf(T, 12, 35)
+		else
+			ignite_turf(LT, 12, 90)
+		spawn(5)
+			qdel(src)
 
 /obj/item/weapon/grenade/incendiary/fast_activate()
 	spawn(round(det_time/10))
