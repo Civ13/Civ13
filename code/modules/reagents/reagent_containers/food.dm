@@ -76,6 +76,8 @@
 				decaytimer += 75 //much slower
 			else
 				decaytimer += 200 //unpowered fridge still better, than storage container
+		else if (istype(loc, /obj/structure/closet/crate/freezer))
+			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
 		else if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
 			decaytimer += 600
 		else if (!istype(loc, /obj/item/weapon/can)) //if not canned, since canned food doesn't spoil
