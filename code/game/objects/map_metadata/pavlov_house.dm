@@ -29,7 +29,7 @@
 
 /obj/map_metadata/pavlov_house/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew))
+	if (istype(J, /datum/job/german/tank_crew) || istype(J, /datum/job/russian/tank_crew) || istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
 		. = FALSE
 	else if (J.is_ss_panzer == TRUE)
 		. = FALSE
