@@ -86,8 +86,6 @@ var/list/sky_drop_map = list()
 				for (var/turf/T in range(5, sky_drop_map[locstr]))
 					if (locate(/mob/living) in T)
 						continue
-					if (locate_dense_type(contents, /obj/structure/wild/tree) in T)
-						continue
 					mover.forceMove(T)
 		else
 			if (A.allow_area_subtypes)

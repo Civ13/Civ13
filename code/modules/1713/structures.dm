@@ -812,7 +812,12 @@
 /obj/structure/flag/black
 	icon_state = "black"
 	name = "Black Flag"
-	desc = "A black flag. That's it."
+	desc = "A black flag."
+
+/obj/structure/flag/white
+	icon_state = "white"
+	name = "White Flag"
+	desc = "A white flag."
 
 /obj/structure/flag/french
 	icon_state = "french"
@@ -981,10 +986,9 @@
 	name = "Flag"
 	desc = "A flag."
 	var/uncolored = TRUE
-	var/flagcolor = null
-	var/symbol = "Moon"
-	var/symbolcolor = null
-
+	var/flagcolor
+	var/symbol
+	var/symbolcolor 
 
 /obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/weapon))
@@ -992,6 +996,7 @@
 			H << "You tear down the flag!"
 			new/obj/structure/flag/pole(src.loc)
 			qdel(src)
+			
 /obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
 	if (uncolored)
 		var/input = WWinput(H, "Flag Color - Choose a color:", "Flag Color" , "#FFFFFF", "color")
