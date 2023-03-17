@@ -138,6 +138,12 @@
 	health = 999999
 	anchored = TRUE
 
+/obj/structure/closet/crate/freezer
+	name = "freezer"
+	desc = "A freezer."
+	icon_state = "freezer"
+	icon_opened = "freezeropen"
+	icon_closed = "freezer"
 
 	//ROBERT'S CARTS//
 /obj/structure/closet/crate/cart
