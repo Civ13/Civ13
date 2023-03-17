@@ -835,20 +835,29 @@
 	if (found == TRUE)
 		var/obj/item/clothing/accessory/rank/jap_jotohei = new /obj/item/clothing/accessory/rank/jap_jotohei(null)
 		uniform.attackby(jap_jotohei, H)
+		rank_abbreviation = "Jo."
+		H.setStat("strength", STAT_MEDIUM_HIGH)
+		H.setStat("crafting", STAT_MEDIUM_LOW)
+		H.setStat("rifle", STAT_HIGH)
+		H.setStat("dexterity", STAT_HIGH)
+		H.setStat("swords", STAT_NORMAL)
+		H.setStat("pistol", STAT_HIGH)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_MEDIUM_LOW)
 	else
 		var/obj/item/clothing/accessory/rank/jap_ittohei = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
 		uniform.attackby(jap_ittohei, H)
+		H.setStat("strength", STAT_MEDIUM_HIGH)
+		H.setStat("crafting", STAT_MEDIUM_LOW)
+		H.setStat("rifle", STAT_MEDIUM_HIGH)
+		H.setStat("dexterity", STAT_NORMAL)
+		H.setStat("swords", STAT_NORMAL)
+		H.setStat("pistol", STAT_NORMAL)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_MEDIUM_LOW)
+
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
 
 
 	return TRUE
