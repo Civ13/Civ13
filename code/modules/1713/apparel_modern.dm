@@ -1231,9 +1231,31 @@
 	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/police/bank
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/bank/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/weapon/reagent_containers/spray/pepper(src)
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -1246,6 +1268,27 @@
 /obj/item/weapon/storage/belt/police/m16
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/m16/New()
 	..()
 	new /obj/item/flashlight/modern(src)
@@ -1262,6 +1305,27 @@
 /obj/item/weapon/storage/belt/police/mp5
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/mp5/New()
 	..()
 	new /obj/item/flashlight/modern(src)
