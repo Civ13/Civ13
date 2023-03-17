@@ -993,6 +993,36 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/found = FALSE
+	for (var/i in whitelist_list)
+		var/temp_ckey = lowertext(i)
+		temp_ckey = replacetext(temp_ckey," ", "")
+		temp_ckey = replacetext(temp_ckey,"_", "")
+		if (temp_ckey == H.client.ckey)
+			found = TRUE
+	if (found == TRUE)
+		var/obj/item/clothing/accessory/rank/germ_oberschutze = new /obj/item/clothing/accessory/rank/germ_oberschutze(null)
+		uniform.attackby(germ_oberschutze, H)
+		rank_abbreviation = "OSchtz."
+		H.setStat("strength", STAT_MEDIUM_HIGH)
+		H.setStat("crafting", STAT_MEDIUM_LOW)
+		H.setStat("rifle", STAT_HIGH)
+		H.setStat("dexterity", STAT_HIGH)
+		H.setStat("swords", STAT_NORMAL)
+		H.setStat("pistol", STAT_HIGH)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_MEDIUM_LOW)
+	else
+		var/obj/item/clothing/accessory/rank/germ_schutze = new /obj/item/clothing/accessory/rank/germ_schutze(null)
+		uniform.attackby(germ_schutze, H)
+		H.setStat("strength", STAT_MEDIUM_HIGH)
+		H.setStat("crafting", STAT_MEDIUM_LOW)
+		H.setStat("rifle", STAT_NORMAL)
+		H.setStat("dexterity", STAT_NORMAL)
+		H.setStat("swords", STAT_NORMAL)
+		H.setStat("pistol", STAT_NORMAL)
+		H.setStat("bows", STAT_NORMAL)
+		H.setStat("medical", STAT_MEDIUM_LOW)
 	var/randgun = rand(1,4)
 	switch(randgun)
 		if (1)
@@ -1028,14 +1058,6 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Wehrmacht forces. Follow your <b>Sergeant's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
 
 
 	return TRUE
