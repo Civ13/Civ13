@@ -1070,15 +1070,6 @@
 			H.awards["tank"]+=(heavy_armor_penetration/200)
 	else
 		..()
-	
-/mob/living/attackby(var/obj/item/I, var/mob/living/human/H)
-	if (istype(I, /obj/item/weapon/lungemine))
-		visible_message("[H] jabs lunge mine into [src] exploding it!")
-		message_admins("[H] used a lunge mine on [src] at [x], [y], [z].")
-		log_admin("[H] used a lunge mine on a [src] at [x], [y], [z].")
-		explosion(src.loc, 1, 3, 2, 0)
-	else
-		..()
 
 ////////////////////////////////////////SKYRIM//////////////////////////////////////
 /obj/item/weapon/material/tes13/mace
