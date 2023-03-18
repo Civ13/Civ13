@@ -306,7 +306,7 @@
 	if(launcher && user.get_inactive_hand() == src && use_launcher)
 		playsound(src, 'sound/weapons/guns/interact/launcher_openbarrel.ogg', 50, 1)
 		launcher.unload(user)
-	if (!launcher && user.get_inactive_hand() == src)
+	else if (user.get_inactive_hand() == src)
 		unload_ammo(user, allow_dump=0)
 		update_icon()
 	else
