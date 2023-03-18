@@ -88,6 +88,17 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mp40/box
+	name = "magazine box (9x19mm)"
+	icon_state = "9mm"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 80
+	multiple_sprites = TRUE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/mp40/mp5
 	name = "MP5 magazine (9x19mm)"
 	icon_state = "mp5"
@@ -242,7 +253,7 @@ obj/item/ammo_magazine/dp
 	ammo_type = /obj/item/ammo_casing/a45acp
 	caliber = "a45acp"
 	w_class = ITEM_SIZE_NORMAL
-	max_ammo = 30
+	max_ammo = 65
 	multiple_sprites = FALSE
 	is_box = TRUE
 
