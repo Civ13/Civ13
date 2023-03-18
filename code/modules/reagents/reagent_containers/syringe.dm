@@ -398,3 +398,28 @@
 	else
 		icon_state = "single_use2_empty"
 		used = TRUE
+
+/obj/item/weapon/reagent_containers/syringe/combat
+	name = "Combat syringe"
+	desc = "Single Use injector made to pump you full of lifesaving liquids."
+	icon_state = "single_use4"
+	w_class = ITEM_SIZE_TINY
+	volume = 50
+	amount_per_transfer_from_this = 50
+	single_use = TRUE
+
+/obj/item/weapon/reagent_containers/syringe/combat/New()
+	..()
+	reagents.add_reagent("anti_toxin", 10)
+	reagents.add_reagent("sal_acid", 10)
+	reagents.add_reagent("tramadol", 10)
+	reagents.add_reagent("adrenaline", 11)
+	reagents.add_reagent("penicillin", 9)
+	mode = SYRINGE_INJECT
+
+/obj/item/weapon/reagent_containers/syringe/combat/update_icon()
+	if (reagents.total_volume > 0)
+		icon_state = "single_use4"
+	else
+		icon_state = "single_use4_empty"
+		used = TRUE
