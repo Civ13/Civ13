@@ -404,11 +404,7 @@
 	throwforce = 30
 
 /obj/item/weapon/gun/projectile/automatic/c6/update_icon()
-	var/obj/item/ammo_magazine/MAG
-	if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6belt))
-		icon_state = "[base_icon][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
-		item_state = base_icon
-	else if (ammo_magazine && istype(MAG, /obj/item/ammo_magazine/c6can))
+	if (ammo_magazine)
 		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
 		item_state = base_icon
 	else
