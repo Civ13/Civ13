@@ -417,7 +417,7 @@
 	name = "Barrett M82"
 	desc = "The Barrett M82 is a recoil-operated, semi-automatic anti-materiel rifle developed by the American company Barrett Firearms Manufacturing. Chambered in .50 BMG."
 	icon_state = "m82"
-	item_state = "barrett"
+	item_state = "m82"
 	base_icon = "m82"
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	w_class = ITEM_SIZE_HUGE
@@ -434,7 +434,7 @@
 	weight = 14.8
 	recoil = 3
 	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=15)
 		)
 	gun_type = GUN_TYPE_RIFLE
 	effectiveness_mod = 2.0

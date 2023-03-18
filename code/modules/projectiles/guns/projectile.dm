@@ -286,6 +286,9 @@
 
 /obj/item/weapon/gun/projectile/attackby(var/obj/item/A as obj, mob/user)
 	..()
+	if(launcher && (istype(A, /obj/item/weapon/grenade)))//load check it for it's type
+		playsound(src, 'sound/weapons/guns/interact/launcher_insertgrenade.ogg', 50, 1)
+		launcher.load(A, user)
 	if (istype(A, /obj/item/ammo_magazine) || istype(A, /obj/item/ammo_casing))
 		if (istype(A, /obj/item/ammo_magazine) && !magazine_type)
 			return
@@ -300,11 +303,38 @@
 		update_icon()
 
 /obj/item/weapon/gun/projectile/attack_hand(mob/user as mob)
-	if (user.get_inactive_hand() == src)
+	if(launcher && user.get_inactive_hand() == src && use_launcher)
+		playsound(src, 'sound/weapons/guns/interact/launcher_openbarrel.ogg', 50, 1)
+		launcher.unload(user)
+	else if (user.get_inactive_hand() == src)
 		unload_ammo(user, allow_dump=0)
 		update_icon()
 	else
 		return ..()
+
+/obj/item/weapon/gun/projectile/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
+	if(launcher && use_launcher)
+		launcher.Fire(target, user, clickparams, pointblank, reflex)
+		if(!launcher.chambered)
+			switch_firemodes() //switch back automatically
+			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
+	else
+		..()
+
+/obj/item/weapon/gun/projectile/verb/set_gp()
+	set name = "Toggle Grenade Launcher"
+	set category = null
+	set src in usr
+
+	if(launcher)
+		use_launcher = !use_launcher
+		if(do_after(usr, 5, src))
+			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : " take your gun back."]</span>")
+			playsound(src, 'sound/weapons/guns/interact/launcher_select.ogg', 50, 1)
+
+/obj/item/weapon/gun/projectile/AltClick()
+	..()
+	set_gp()
 
 /obj/item/weapon/gun/projectile/afterattack(atom/A, mob/living/user)
 	..()

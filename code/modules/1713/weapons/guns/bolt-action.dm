@@ -307,7 +307,7 @@
 	name = "Barrett M99"
 	desc = "A single-shot anti-material rifle designed by the Barrett Firearms Company."
 	icon_state = "m99"
-	item_state = "barrett"
+	item_state = "m99"
 	base_icon = "m99"
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	w_class = ITEM_SIZE_HUGE
@@ -332,7 +332,7 @@
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	move_delay = 4
-	fire_delay = 4
+	fire_delay = 10
 	equiptimer = 15
 	gun_safety = TRUE
 	load_delay = 20
@@ -371,7 +371,7 @@
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	move_delay = 4
-	fire_delay = 4
+	fire_delay = 10
 	equiptimer = 20
 	gun_safety = FALSE
 	load_delay = 20

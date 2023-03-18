@@ -1231,9 +1231,31 @@
 	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/police/bank
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/bank/New()
 	..()
 	new /obj/item/weapon/melee/nightbaton(src)
+	new /obj/item/weapon/reagent_containers/spray/pepper(src)
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
@@ -1246,6 +1268,27 @@
 /obj/item/weapon/storage/belt/police/m16
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/m16/New()
 	..()
 	new /obj/item/flashlight/modern(src)
@@ -1262,6 +1305,27 @@
 /obj/item/weapon/storage/belt/police/mp5
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/weapon/gun/projectile/revolver,
+		/obj/item/weapon/handcuffs,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/melee/classic_baton,
+		/obj/item/weapon/melee/nightbaton,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/weapon/whistle,
+		/obj/item/weapon/pen,
+		/obj/item/weapon/key,
+		/obj/item/flashlight,
+		/obj/item/weapon/reagent_containers/spray/pepper,
+		/obj/item/clothing/accessory/armband/policebadge,
+		/obj/item/weapon/clipboard,
+		)
 /obj/item/weapon/storage/belt/police/mp5/New()
 	..()
 	new /obj/item/flashlight/modern(src)
@@ -1779,8 +1843,19 @@
 	icon_state = "cad_pat"
 	item_state = "cad_pat"
 	worn_state = "cad_pat"
+	var/base_icon = "cad_pat"
 	var/rolled = FALSE
 	var/stripped = FALSE
+
+/obj/item/clothing/under/caf/arid
+	name = "cadpat uniform"
+	desc = "A canadian pattern uniform"
+	icon_state = "cad_pat_arid"
+	item_state = "cad_pat_arid"
+	worn_state = "cad_pat_arid"
+	rolled = FALSE
+	stripped = FALSE
+	base_icon = "cad_pat_arid"
 
 /obj/item/clothing/under/caf/verb/roll_sleeves()
 	set category = null
@@ -1790,20 +1865,20 @@
 	else
 		if (!stripped)
 			if (rolled)
-				worn_state = "cad_pat"
-				item_state = "cad_pat"
-				icon_state = "cad_pat"
-				item_state_slots["w_uniform"] = "cad_pat"
+				worn_state = "[base_icon]"
+				item_state = "[base_icon]"
+				icon_state = "[base_icon]"
+				item_state_slots["w_uniform"] = "[base_icon]"
 				usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
 				return
 			if (!rolled)
-				worn_state = "cad_pat_rolled"
-				item_state = "cad_pat_rolled"
-				icon_state = "cad_pat_rolled"
-				item_state_slots["w_uniform"] = "cad_pat_rolled"
+				worn_state = "[base_icon]_rolled"
+				item_state = "[base_icon]_rolled"
+				icon_state = "[base_icon]_rolled"
+				item_state_slots["w_uniform"] = "[base_icon]_rolled"
 				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 				rolled = TRUE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -1811,20 +1886,20 @@
 				return
 		else
 			if (rolled)
-				worn_state = "cad_pat_stripped"
-				item_state = "cad_pat_stripped"
-				icon_state = "cad_pat_stripped"
-				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				worn_state = "[base_icon]_stripped"
+				item_state = "[base_icon]_stripped"
+				icon_state = "[base_icon]_stripped"
+				item_state_slots["w_uniform"] = "[base_icon]_stripped"
 				usr << "<span class = 'danger'>You have no sleeves.</span>"
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
 				return
 			else
-				worn_state = "cad_pat_stripped"
-				item_state = "cad_pat_stripped"
-				icon_state = "cad_pat_stripped"
-				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				worn_state = "[base_icon]_stripped"
+				item_state = "[base_icon]_stripped"
+				icon_state = "[base_icon]_stripped"
+				item_state_slots["w_uniform"] = "[base_icon]_stripped"
 				usr << "<span class = 'danger'>You have no sleeves.</span>"
 				rolled = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -1838,20 +1913,20 @@
 	else
 		if (stripped)
 			if (!rolled)
-				worn_state = "cad_pat"
-				item_state = "cad_pat"
-				icon_state = "cad_pat"
-				item_state_slots["w_uniform"] = "cad_pat"
+				worn_state = "[base_icon]"
+				item_state = "[base_icon]"
+				icon_state = "[base_icon]"
+				item_state_slots["w_uniform"] = "[base_icon]"
 				usr << "<span class = 'danger'>You put on your overshirt.</span>"
 				stripped = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 				update_clothing_icon()
 				return
 			else
-				worn_state = "cad_pat_rolled"
-				item_state = "cad_pat_rolled"
-				icon_state = "ww2_japuni_rolled"
-				item_state_slots["cad_pat_rolled"] = "cad_pat_rolled"
+				worn_state = "[base_icon]_rolled"
+				item_state = "[base_icon]_rolled"
+				icon_state = "[base_icon]_rolled"
+				item_state_slots["cad_pat_rolled"] = "[base_icon]_rolled"
 				usr << "<span class = 'danger'>You put on your overshirt.</span>"
 				stripped = FALSE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -1859,10 +1934,10 @@
 				return
 		else
 			if (!rolled)
-				worn_state = "cad_pat_stripped"
-				item_state = "cad_pat_stripped"
-				icon_state = "cad_pat_stripped"
-				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				worn_state = "[base_icon]_stripped"
+				item_state = "[base_icon]_stripped"
+				icon_state = "[base_icon]_stripped"
+				item_state_slots["w_uniform"] = "[base_icon]_stripped"
 				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
 				stripped = TRUE
 				rolled = FALSE
@@ -1871,10 +1946,10 @@
 				update_clothing_icon()
 				return
 			else
-				worn_state = "cad_pat_stripped"
-				item_state = "cad_pat_stripped"
-				icon_state = "cad_pat_stripped"
-				item_state_slots["w_uniform"] = "cad_pat_stripped"
+				worn_state = "[base_icon]_stripped"
+				item_state = "[base_icon]_stripped"
+				icon_state = "[base_icon]_stripped"
+				item_state_slots["w_uniform"] = "[base_icon]_stripped"
 				usr << "<span class = 'danger'>You strip to your under shirt.</span>"
 				stripped = TRUE
 				rolled = FALSE
@@ -1886,7 +1961,7 @@
 /obj/item/clothing/under/caf/New()
 	..()
 	update_clothing_icon()
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet/modern/cg634
 	name = "CG634 helmet"
 	desc = "A typical CAF CADPAT Combat Helmet."
@@ -1895,6 +1970,11 @@
 	worn_state = "cg634"
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/cg634/arid
+	icon_state = "cg634_arid"
+	item_state = "cg634_arid"
+	worn_state = "cg634_arid"
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest
 	name = "CAF Tacvest"
@@ -1905,6 +1985,9 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,/obj/item/stack/medical/bruise_pack,/obj/item/weapon/gun/projectile/pistol)
+
+/obj/item/clothing/accessory/storage/webbing/caf_tacvest/arid
+	icon_state = "caf_tacvest_arid"
 
 /obj/item/clothing/head/helmet/modern/mechanical
 	name = "Mechanical Helmet"

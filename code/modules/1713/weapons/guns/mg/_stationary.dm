@@ -39,7 +39,7 @@
 	var/zoom_amount = 10
 	is_hmg = TRUE
 
-	var/hardness = 10 
+	var/hardness = 10
 
 	gun_type = GUN_TYPE_MG
 
@@ -56,6 +56,11 @@
 	if (!(user.using_MG == src))
 		var/grip_dir = reverse_direction(dir)
 		var/turf/T = get_step(loc, grip_dir)
+		var/obj/structure/bed/chair/drivers/DR
+		for (DR in src.loc.contents)
+			if (DR in src.loc.contents)
+				user << "<span class='notice'>There is a seat in the way.</span>"
+				return
 		if (user.loc == T)
 			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
 				if (!map || !map.check_caribbean_block(user, loc))
