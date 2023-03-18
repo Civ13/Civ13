@@ -306,15 +306,15 @@
 	if(launcher && user.get_inactive_hand() == src && use_launcher)
 		playsound(src, 'sound/weapons/guns/interact/launcher_openbarrel.ogg', 50, 1)
 		launcher.unload(user)
-	else if (user.get_inactive_hand() == src)
+	if (!launcher && user.get_inactive_hand() == src)
 		unload_ammo(user, allow_dump=0)
 		update_icon()
 	else
 		return ..()
 
-/obj/item/weapon/gun/projectile/Fire(atom/target, mob/living/user, params, pointblank=0, reflex=0)
+/obj/item/weapon/gun/projectile/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
 	if(launcher && use_launcher)
-		launcher.Fire(target, user, params, pointblank, reflex)
+		launcher.Fire(target, user, clickparams, pointblank, reflex)
 		if(!launcher.chambered)
 			switch_firemodes() //switch back automatically
 			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
@@ -334,7 +334,8 @@
 
 /obj/item/weapon/gun/projectile/AltClick()
 	..()
-	set_gp()
+	if (launcher)
+		set_gp()
 
 /obj/item/weapon/gun/projectile/afterattack(atom/A, mob/living/user)
 	..()
