@@ -2121,3 +2121,23 @@
 				if ("BRITISH")
 					PV.doorcode = 1990
 					new /obj/item/weapon/key/british(src)
+
+/////TRACKING SYSTEM////////
+
+/datum/program/squadtracker/military
+	name = "Platoon Tracking System"
+	description = "Tracks the location of your platoon."
+	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
+
+/datum/program/squadtracker/military/do_html(mob/living/human/user)
+	mainmenu = "<h2>PLATOON STATUS</h2><br>"
+	mainbody = ""
+	for(var/mob/living/human/H in player_list)
+		if (H.faction_text == user.faction_text)
+			var/tst = ""
+			if (H.stat == UNCONSCIOUS)
+				tst = "(Unresponsive)"
+			else if (H.stat == DEAD)
+				tst = "(Dead)"
+			mainbody += "<b>[H.name]</b> at <b>[H.get_coded_loc()]</b> ([H.x],[H.y]) <b><i>[tst]</i></b><br>"
+	..()
