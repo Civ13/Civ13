@@ -719,6 +719,16 @@
 	desc = "The flag of Albania."
 	icon_state = "flag_albania"
 
+/obj/structure/sign/flag/spain
+	name = "Spanish flag"
+	desc = "The flag of Spain."
+	icon_state = "flag_spain"
+
+/obj/structure/sign/flag/spain/nationalist
+	name = "Spanish Nationalist flag"
+	desc = "The flag of Nationalist Spain."
+	icon_state = "flag_spainn"
+
 /obj/structure/sign/flag/serbia
 	name = "Serbian flag"
 	desc = "The flag of Serbia."
