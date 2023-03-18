@@ -2124,12 +2124,12 @@
 
 /////TRACKING SYSTEM////////
 
-/datum/program/squadtracker/military
+/datum/program/platoontracker
 	name = "Platoon Tracking System"
 	description = "Tracks the location of your platoon."
 	compatible_os = list("unga OS 94","unga OS 94 Law Enforcement Edition")
 
-/datum/program/squadtracker/military/do_html(mob/living/human/user)
+/datum/program/platoontracker/do_html(mob/living/human/user)
 	mainmenu = "<h2>PLATOON STATUS</h2><br>"
 	mainbody = ""
 	for(var/mob/living/human/H in player_list)

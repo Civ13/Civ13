@@ -333,4 +333,4 @@
 	operatingsystem = "unga OS 94"
 	New()
 		..()
-		programs += new/datum/program/squadtracker/military
+		programs += new/datum/program/platoontracker
