@@ -334,8 +334,7 @@
 
 /obj/item/weapon/gun/projectile/AltClick()
 	..()
-	if (launcher)
-		set_gp()
+	set_gp()
 
 /obj/item/weapon/gun/projectile/afterattack(atom/A, mob/living/user)
 	..()
