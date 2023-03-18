@@ -467,6 +467,8 @@
 	return species.default_language ? all_languages[species.default_language] : null
 
 /mob/living/human/show_inv(mob/user as mob)
+	if(user.incapacitated()  || !user.Adjacent(src))
+		return
 	user.set_using_object(src)
 	var/dat = {"
 	<b><HR><FONT size=3>[name]</FONT></b>
