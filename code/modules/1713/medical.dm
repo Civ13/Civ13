@@ -98,3 +98,8 @@
 	name = "paracetamol pill pack"
 	desc = "Also known as acetaminophen. Moderate painkiller."
 	pill_type = /obj/item/weapon/reagent_containers/pill/paracetamol
+
+/obj/item/weapon/pill_pack/sal_acid
+	name = "Salicyclic Acid Pill pack"
+	desc = "Stimulates Healing of bruises, Overdosing will Worser Existing Bruises."
+	pill_type = /obj/item/weapon/reagent_containers/pill/sal_acid

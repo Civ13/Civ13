@@ -458,6 +458,7 @@
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hill_3234.dm"
+#include "code\game\objects\map_metadata\holdmadrid.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hotel.dm"
 #include "code\game\objects\map_metadata\hue.dm"

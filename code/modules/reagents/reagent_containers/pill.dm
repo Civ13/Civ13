@@ -123,6 +123,14 @@
 		..()
 		reagents.add_reagent("aspirin", 10)
 
+/obj/item/weapon/reagent_containers/pill/sal_acid
+	name = "Salicyclic Acid pill"
+	desc = "Stimulates the healing of severe bruises. Extremely rapidly heals severe bruising and slowly heals minor ones. Overdose will worsen existing bruising."
+	icon_state = "pill8"
+	New()
+		..()
+		reagents.add_reagent("sal_acid", 10)
+
 /obj/item/weapon/reagent_containers/pill/tramadol
 	name = "Tramadol pill"
 	desc = "A moderate painkiller."
