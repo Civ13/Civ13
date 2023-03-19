@@ -619,6 +619,29 @@
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
 	)
 
+/obj/effects/premadevehicles/tank/challenger2
+	name = "FV4034 Challenger 2"
+	icon_state = "4x4"
+	custom_color = "#CCC0A6"
+	axis = /obj/structure/vehicleparts/axis/heavy/challenger2
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3),
+	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right,/obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/leopard),
+	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left,/obj/structure/bed/chair/gunner),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 5970}),
+	"2,3" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/bed/chair/loader),
+	"3,3" = list(/obj/structure/vehicleparts/frame/omw22_2/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/omw22_2/rb, /obj/structure/engine/internal/diesel/premade/v12),
+	"2,4" = list(/obj/structure/vehicleparts/frame/omw22_2/back, /obj/structure/shellrack/full100),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	)
+
 ////////////APCS/////////////
 
 /obj/effects/premadevehicles/apc

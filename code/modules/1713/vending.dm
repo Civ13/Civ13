@@ -1418,6 +1418,5 @@ obj/structure/vending/hezammo
 	desc = "A crate full of grenades."
 	icon_state = "grenade_crate"
 	products = list()
-/obj/structure/vending/grenade_crate/alt/New()
-	..()
+/obj/structure/vending/grenade_crate/alt
 	icon_state = "grenade_crate_alt"
