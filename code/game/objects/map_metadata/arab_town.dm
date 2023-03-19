@@ -16,7 +16,7 @@
 		)
 	age = "2006"
 	ordinal_age = 8
-	no_hardcore = TRUE
+
 	faction_distribution_coeffs = list(ARAB = 0.5, AMERICAN = 0.5)
 	battle_name = "battle for the town"
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
@@ -157,7 +157,7 @@ var/no_loop_arab = FALSE
 	lobby_icon = "icons/lobby/modern.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
-	no_hardcore = FALSE
+	
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
