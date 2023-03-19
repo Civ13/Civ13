@@ -172,11 +172,11 @@
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
-/*
+
 /obj/item/mine/ap/armed/New()
 	if (map.ID == MAP_HUNGERGAMES && processes.ticker.playtime_elapsed > 1800)
 		qdel(src)
-*/
+
 /obj/item/mine/ap/trigger(atom/movable/AM)
 	if (world.time < nextCanExplode)
 		return

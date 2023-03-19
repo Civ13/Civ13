@@ -562,6 +562,9 @@
 	if (map.ID == MAP_CAMPAIGN)
 		a = ceil(x/15)
 		b = 10-Floor(y/10)
+	if (map.ID == MAP_OPERATION_FALCON)
+		a = ceil(x/40)
+		b = 10-Floor(y/40)
 
 	switch(a)
 		if (0 to 1)

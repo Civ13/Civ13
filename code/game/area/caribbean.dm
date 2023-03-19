@@ -566,7 +566,7 @@
 	icon_state = "green5"
 /area/caribbean/no_mans_land/invisible_wall/not_dynamic
 	dynamic_lighting = FALSE
-	
+
 /area/caribbean/no_mans_land/invisible_wall/tundra
 	name = "grace wall"
 	climate = "tundra"
@@ -600,6 +600,9 @@
 /area/caribbean/no_mans_land/invisible_wall/desert
 	climate = "desert"
 	base_turf = /turf/floor/beach/sand/desert
+/area/caribbean/no_mans_land/invisible_wall/desert/one
+	name = "grace wall 1"
+
 /area/caribbean/no_mans_land/invisible_wall/semiarid
 	climate = "semiarid"
 	base_turf = /turf/floor/dirt/dust
@@ -1356,7 +1359,7 @@
 
 /area/caribbean/football/nopass
 	icon_state = "green1"
-	
+
 
 /area/caribbean/space
 	has_gravity = FALSE

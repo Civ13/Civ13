@@ -27,6 +27,12 @@
 	icon_state = "spanish"
 	slot = "armband"
 
+/obj/item/clothing/accessory/armband/spanish/republican
+	name = "Spanish Republican armband"
+	desc = "A fancy Spanish Republican Armband!"
+	icon_state = "spanishrep"
+	slot = "armband"
+
 /obj/item/clothing/accessory/armband/french
 	name = "blue armband"
 	desc = "A fancy blue armband!"
