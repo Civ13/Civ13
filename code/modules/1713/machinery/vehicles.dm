@@ -238,6 +238,14 @@
 	color = "#5C5C4C"
 	turret_type = "2a6_turret"
 
+/obj/structure/vehicleparts/axis/heavy/challenger2
+	name = "FV4034 Challenger 2"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#CCC0A6"
+	turret_type = "challenger2_turret"
+
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4
