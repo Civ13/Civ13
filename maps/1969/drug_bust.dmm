@@ -136,7 +136,7 @@
 "tg" = (/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/structure/bed/chair/comfy/black{dir = 8},/obj/structure/vehicleparts/frame/defaultarmored/bdoor{w_right = list("c_armoredwall",1,1,55,90,0,0); w_back = list("c_door",1,1,55,90,0,1); dir = 1},/turf/floor/plating/road,/area/caribbean)
 "th" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "tu" = (/obj/item/tape/police{icon_state = "police_v_0"; dir = 2; pixel_x = -5},/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
-"tG" = (/obj/item/weapon/storage/toolbox/mechanical{pixel_x = -6; pixel_y = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
+"tG" = (/obj/item/weapon/storage/toolbox/blue{pixel_y = 4; pixel_x = -6},/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "tS" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/two)
 "ue" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/obj/item/weapon/pen{pixel_y = 8},/turf/floor/wood,/area/caribbean/british/land/inside)
 "ug" = (/obj/structure/wild/tree/live_tree/pine{maxhealth = 1000000; health = 1000000},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)

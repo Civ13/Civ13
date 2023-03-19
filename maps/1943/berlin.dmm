@@ -1783,7 +1783,7 @@
 "Io" = (/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/tracks,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "Ip" = (/obj/structure/window/barrier/sandbag,/obj/structure/vending/ss_weaponsassaultlatewar,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german/objective)
 "Iq" = (/obj/structure/vending/sovietweaponsassault,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Ir" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/industrial5,/obj/item/clothing/accessory/catears,/turf/floor/wood,/area/caribbean/houses)
+"Ir" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/industrial5,/turf/floor/wood,/area/caribbean/houses)
 "Is" = (/obj/item/weapon/wrench,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "It" = (/obj/structure/cannon/modern/tank/german88/field,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "Iu" = (/obj/structure/barricade/antitank,/obj/structure/grille/ironfence{dir = 4; icon_state = "iron_fence"},/obj/structure/grille/ironfence,/turf/floor/plating/road,/area/caribbean/russian/land)
