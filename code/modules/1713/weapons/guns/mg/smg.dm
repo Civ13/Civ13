@@ -225,6 +225,26 @@
 	sel_mode = 1
 	effectiveness_mod = 0.95
 
+/obj/item/weapon/gun/projectile/submachinegun/ermaemp
+	name = "Erma-Emp"
+	desc = "A very early German submachinegun produced by the ERMA factory with an wooden stock, chambered in 9mm Luger."
+	icon_state = "ermaemp"
+	item_state = "ermaemp"
+	base_icon = "ermaemp"
+	weight = 4.25
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/mp40.ogg'
+	magazine_type = /obj/item/ammo_magazine/mp40/erma
+	good_mags = list(/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40/erma)
+	full_auto = TRUE
+	equiptimer = 14
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 1.01
+
 /obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica
 	name = "Blyskawica"
 	desc = "Polish Underground State submachine gun, chambered in 9mm Luger."

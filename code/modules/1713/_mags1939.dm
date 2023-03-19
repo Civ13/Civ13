@@ -88,6 +88,16 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mp40/erma
+	name = "erma-emp magazine (9x19mm)"
+	icon_state = "mp40"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 32
+	weight = 0.34
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/mp40/box
 	name = "magazine box (9x19mm)"
 	icon_state = "9mm"
