@@ -1732,3 +1732,26 @@
 	item_state = "winter_coat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+//////spanish civil war
+
+/obj/item/clothing/under/spain/republican //recolored russian ww1 uniform cause they look very similiar
+	name = "Spanish Republican Uniform"
+	desc = "A Uniform used by the spanish republican forces."
+	icon_state = "spanishrepublican"
+	item_state = "spanishrepublican"
+	worn_state = "spanishrepublican"
+
+/obj/item/clothing/under/spain/nationalist
+	name = "Spanish Nationalist Uniform"
+	desc = "A Uniform used by the spanish Nationalist forces."
+	icon_state = "spanishnationalist"
+	item_state = "spanishnationalist"
+	worn_state = "spanishnationalist"
+
+/obj/item/clothing/under/spain/brigadist
+	name = "Brigadists Uniform"
+	desc = "A Cheap Blue Uniform."
+	icon_state = "intbrigadist"
+	item_state = "intbrigadist"
+	worn_state = "intbrigadist"

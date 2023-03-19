@@ -3607,5 +3607,280 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_LOW)
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
 
+/datum/job/civilian/spanish/cir
+	faction = "RepSpain"
+	default_language = "Spanish"
+
+/datum/job/civilian/spanish/cir/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_spanish_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/civilian/spanish/cir/cap
+	title = "Capitan republicano"
+	en_meaning = "Republican Captain"
+	rank_abbreviation = "Cap."
+
+
+	spawn_location = "JoinLateSP"
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	is_spainrepublican = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/spanish/cir/cap/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_officercap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rusoff(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_r_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armband/spanish/republican/white = new /obj/item/clothing/accessory/armband/spanish/republican(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	world << "<b><big>[H.real_name] is the Captain of the Republican Forces!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/civilian/spanish/cir/serg
+	title = "Sargento republicano"
+	en_meaning = "Republican Squad Leader"
+	rank_abbreviation = "Sar."
+
+	spawn_location = "JoinLateSP"
+	is_officer = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	is_spainrepublican = TRUE
+
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/civilian/spanish/cir/serg/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/compass(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	webbing.attackby(new/obj/item/ammo_magazine/c762x25_ppsh, H)
+	webbing.attackby(new/obj/item/ammo_magazine/c762x25_ppsh, H)
+	webbing.attackby(new/obj/item/ammo_magazine/c762x25_ppsh, H)
+	var/obj/item/clothing/accessory/armband/spanish/republican/white = new /obj/item/clothing/accessory/armband/spanish/republican(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your squad according to the <b>Capitans's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/civilian/spanish/cir/doc
+	title = "Médico de combate republicano"
+	en_meaning = "Republican Combat Medic"
+	rank_abbreviation = "Med."
+
+	spawn_location = "JoinLateSP"
+
+	is_spainrepublican = TRUE
+	is_medic = TRUE
+	can_be_female = TRUE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/civilian/spanish/cir/doc/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ermaemp(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/erma(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/civilian/spanish/cir/rifle
+	title = "Fusilero Republicano"
+	en_meaning = "Republican Rifleman"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateSP"
+	can_be_female = FALSE
+	is_spainrepublican = TRUE
+	uses_squads = TRUE
+
+	min_positions = 20
+	max_positions = 60
+
+/datum/job/civilian/spanish/cir/rifle/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/republican(H), slot_w_uniform)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+//weapons
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/gauze, H)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		webbing.attackby(new/obj/item/ammo_magazine/mosin, H)
+		webbing.attackby(new/obj/item/ammo_magazine/mosin, H)
+		webbing.attackby(new/obj/item/ammo_magazine/mosin, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/erma(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/erma(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ermaemp(H), slot_shoulder)
+		webbing.attackby(new/obj/item/ammo_magazine/mp40/erma, H)
+		webbing.attackby(new/obj/item/ammo_magazine/mp40/erma, H)
+		webbing.attackby(new/obj/item/ammo_magazine/mp40/erma, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_pps(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
+		webbing.attackby(new/obj/item/ammo_magazine/c762x25_pps, H)
+		webbing.attackby(new/obj/item/ammo_magazine/c762x25_pps, H)
+		webbing.attackby(new/obj/item/ammo_magazine/c762x25_pps, H)
+//armband
+	var/obj/item/clothing/accessory/armband/spanish/republican/white = new /obj/item/clothing/accessory/armband/spanish/republican(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Republican army. Follow your <b>Sergeant's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/civilian/spanish/cir/intvol
+	additional_languages = list("Russian" = 65, "Polish" = 25, "Ukrainian" = 35, "English" = 25, "Latin" = 35,)
+	title = "Voluntario internacional"
+	en_meaning = "International volunteer"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateSP"
+	can_be_female = TRUE
+	is_spainrepublican = TRUE
+	uses_squads = TRUE
+
+
+	min_positions = 10
+	max_positions = 110
+
+/datum/job/civilian/spanish/cir/intvol/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/brigadist(H), slot_w_uniform)
+//hats
+	if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	else if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_pilotka(H), slot_head)
+	else if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+//weapons
+	if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mosin(H), slot_r_store)
+	else if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/enfield(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/enfield(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x50(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x50(H), slot_r_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/spanish/republican/white = new /obj/item/clothing/accessory/armband/spanish/republican(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a simple person who volunteered to fight for the republican spain,listen to your Sergant!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+
+	return TRUE
