@@ -1957,7 +1957,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		user << "You make a cookie!"
 		qdel(W)
 		qdel(src)
-		
+
 // Burger + cheese wedge = cheeseburger
 /obj/item/weapon/reagent_containers/food/snacks/burger/attackby(obj/item/weapon/reagent_containers/food/snacks/cheesewedge/W as obj, mob/user as mob)
 	if (istype(W))// && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/cheesewedge))

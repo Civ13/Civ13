@@ -776,6 +776,15 @@
 	item_state = "swat"
 	worn_state = "swat"
 
+/obj/item/clothing/under/cleansuit
+	name = "Cleansuit"
+	desc = "A White Cleansuit, made to protect against ambient radiation."
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 15, bomb = 10, bio = 20, rad = 20)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	icon_state = "cleansuit"
+	item_state = "cleansuit"
+	worn_state = "cleansuit"
+
 /obj/item/clothing/under/swat_new
 	name = "swat outfit"
 	desc = "A uniform used by police special forces."

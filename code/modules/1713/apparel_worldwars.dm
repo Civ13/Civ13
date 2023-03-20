@@ -1787,6 +1787,47 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	value = 50
 	slowdown = 0.8
 
+///////////////other////////////////
+
+/obj/item/clothing/accessory/armor/modern/lightplate
+	name = "Light breastplate body armor"
+	desc = "Wearable Light armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "modern_armorvest"
+	item_state = "modern_armorvest"
+	worn_state = "modern_armorvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 50, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 20)
+	value = 50
+	slowdown = 0.6
+	health = 50
+
+/obj/item/clothing/accessory/armor/modern/lightplate/lead
+	name = "Green Lead breastplate body armor"
+	desc = "Wearable breastplate armor made out of steel sheets and Lead."
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 60, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 60)
+	value = 50
+	slowdown = 0.8
+	health = 50
+
+/obj/item/clothing/accessory/armor/modern/lightplate/black
+	name = "Light Black breastplate body armor"
+	desc = "Wearable Light armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "modern_blackvest"
+	item_state = "modern_blackvest"
+	worn_state = "modern_blackvest"
+
+/obj/item/clothing/accessory/armor/modern/lightplate/black/lead
+	name = "Lead breastplate body armor"
+	desc = "Wearable breastplate armor made out of steel sheets and Lead."
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 60, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 60)
+	value = 50
+	slowdown = 0.8
+	health = 50
+
 ////////////////////////////////////
 ///////////////WW2//////////////////
 ////////////////////////////////////

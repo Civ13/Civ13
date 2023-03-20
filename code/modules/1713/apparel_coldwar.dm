@@ -1790,7 +1790,7 @@
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
-		
+
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"
 	desc = "A green set of chest and knee-level pouches for storing a pistol, magazines and other gear needed to survive in the wilderness."
