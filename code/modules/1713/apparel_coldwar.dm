@@ -1364,7 +1364,6 @@
 	body_parts_covered = FACE|EYES|HEAD
 	flags_inv = HIDEFACE
 	w_class = ITEM_SIZE_TINY
-	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
 
 /obj/item/clothing/mask/headscarfgrey ////German Toque head scarf Issued to soldiers during WW2 to wear as a neck warmer
@@ -1422,7 +1421,6 @@
 	worn_state = "sovietbala"
 	body_parts_covered = FACE|EYES|HEAD
 	w_class = ITEM_SIZE_TINY
-	restricts_view = 2
 	heat_protection = HEAD|FACE|EYES
 
 /* Cold War Webbing*/

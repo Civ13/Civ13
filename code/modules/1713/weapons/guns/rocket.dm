@@ -408,7 +408,7 @@
 	..()
 	if(rockets.len)
 		icon_state = "[initial(icon_state)]"
-		item_state = "[initial(item_state)]_empty"
+		item_state = "[initial(item_state)]"
 	else
 		icon_state = "[initial(icon_state)]_empty"
 		item_state = "[initial(item_state)]_empty"

@@ -937,7 +937,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 90
 
 /* Motorist*/
@@ -949,7 +949,7 @@
 	item_state = "motorcycle"
 	worn_state = "motorcycle"
 	body_parts_covered = FACE|EYES|HEAD
-	restricts_view = 2
+	restricts_view = 1
 	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
 
@@ -1060,7 +1060,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 90
 
 /obj/item/clothing/head/helmet/swat_new
@@ -1072,7 +1072,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 85, arrow = 95, gun = 85, energy = 27, bomb = 70, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 100
 
 	/* Emergency Services Clothing*/
@@ -1413,7 +1413,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 90
 
 /obj/item/clothing/under/trackpants
@@ -1619,7 +1619,7 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 200
 
 	/* Scrap Armor*/
@@ -1645,7 +1645,7 @@
 	body_parts_covered = HEAD|FACE
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 
 

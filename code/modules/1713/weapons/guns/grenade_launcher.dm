@@ -95,7 +95,7 @@
 
 	var/list/grenade_types = list(
 		/obj/item/weapon/grenade/smokebomb = 2,
-		/obj/item/weapon/grenade/frag/shell = 1 //dont do this ever again retard
+		/obj/item/weapon/grenade/frag/shell = 1 //dont do this ever again
 		)
 
 	var/grenade_type = pickweight(grenade_types)

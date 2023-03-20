@@ -141,6 +141,44 @@
 			if (!setd)
 				uncolored = TRUE
 
+/obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
+		if (input == null || input == "")
+			return
+		else
+			color = input
+			uncolored = FALSE
+			return
+	else
+		..()
+
+/obj/item/clothing/accessory/custom/get_mob_overlay()
+	if (!mob_overlay)
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		if (icon_override)
+			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
+				tmp_icon_state = "[tmp_icon_state]_mob"
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 4.11)
+		else
+			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 4.11)
+
+		var/image/NI =  mob_overlay
+		NI.color = color
+		return NI
+	return mob_overlay
+
+/obj/item/clothing/accessory/custom/get_inv_overlay()
+	if (!inv_overlay)
+		if (!mob_overlay)
+			get_mob_overlay()
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		inv_overlay = image(icon = mob_overlay.icon, icon_state = tmp_icon_state, dir = SOUTH)
+		var/image/NI =  inv_overlay
+		NI.color = color
+		return NI
+	return inv_overlay
+
 /obj/item/clothing/accessory/custom/scarf
 	name = "scarf"
 	desc = "A cloth scarf."
@@ -348,44 +386,6 @@
 	item_state = "pauldron_dy"
 	worn_state = "pauldron_dy"
 	slot = "decor"
-
-/obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
-	if (uncolored)
-		var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
-		if (input == null || input == "")
-			return
-		else
-			color = input
-			uncolored = FALSE
-			return
-	else
-		..()
-
-/obj/item/clothing/accessory/custom/get_mob_overlay()
-	if (!mob_overlay)
-		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
-		if (icon_override)
-			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
-				tmp_icon_state = "[tmp_icon_state]_mob"
-			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 4.11)
-		else
-			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 4.11)
-
-		var/image/NI =  mob_overlay
-		NI.color = color
-		return NI
-	return mob_overlay
-
-/obj/item/clothing/accessory/custom/get_inv_overlay()
-	if (!inv_overlay)
-		if (!mob_overlay)
-			get_mob_overlay()
-		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
-		inv_overlay = image(icon = mob_overlay.icon, icon_state = tmp_icon_state, dir = SOUTH)
-		var/image/NI =  inv_overlay
-		NI.color = color
-		return NI
-	return inv_overlay
 
 /obj/item/clothing/accessory/wearable_sign
 	name = "wearable sign"
