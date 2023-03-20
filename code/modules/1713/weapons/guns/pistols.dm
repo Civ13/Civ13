@@ -335,7 +335,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/iogb7
 	name = "IOQ B-72"
-	desc = "Some retarded fake shit invented by Re1taz."
+	desc = "Some fake shit invented by Re1taz."
 	icon_state = "iogb7"
 	fire_delay = 1.1
 	w_class = ITEM_SIZE_SMALL
