@@ -318,3 +318,19 @@
 
 	spawn(rand(1600,4000))
 		jet_flyby()
+
+////////MAP SPECIFIC OBJECTS////////
+
+/obj/structure/computer/nopower/platoontracker
+	name = "Military Asset Tracking System"
+	desc = "A satellite-based system, allowing realtime tracking of your troops."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "tracking"
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+	density = TRUE
+	operatingsystem = "unga OS 94"
+	New()
+		..()
+		programs += new/datum/program/platoontracker

@@ -184,6 +184,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		stackmaterial = min(max, stackmaterial)
 		if(stackmaterial == null || stackmaterial <= 0)
 			return
+		else if (!user.item_is_in_hands(src) && !user.Adjacent(src))
+			to_chat(user, "<span class='warning'>The stack isn't in your hands or next to you!</span>")
+			return
 		else
 			change_stack(user, stackmaterial)
 			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
