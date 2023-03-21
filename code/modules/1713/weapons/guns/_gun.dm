@@ -15,6 +15,9 @@
 		var/obj/item/weapon/attachment/A = I
 		if (A.attachable)
 			try_attach(A, user)
+	if (istype(I, /obj/item/weapon/gun/launcher/grenade/underslung))
+		var/obj/item/weapon/gun/launcher/grenade/underslung/G = I
+		try_attach(G, user)
 	..()
 
 /obj/item/weapon/gun/projectile

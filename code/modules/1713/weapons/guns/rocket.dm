@@ -139,7 +139,7 @@
 	name = "RPG-7"
 	desc = "Russian multi-use rocket."
 	icon_state = "rpg7_empty"
-	item_state = "rpg"
+	item_state = "rpg7"
 	slot_flags = SLOT_SHOULDER
 	force = 10
 	load_delay = 45
@@ -162,8 +162,8 @@
 	name = "RPG-7"
 	desc = "Multi-use rocket."
 	icon_state = "rpg7_empty"
-	item_state = "rpg"
-	slot_flags = SLOT_SHOULDER
+	item_state = "rpg7"
+	slot_flags = null
 	force = 10
 	recoil = 2
 	load_delay = 50
