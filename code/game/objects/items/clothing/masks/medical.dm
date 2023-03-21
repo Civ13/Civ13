@@ -46,7 +46,7 @@
 	icon_state = "sterile"
 	item_state = "sterile"
 	body_parts_covered = FACE
-	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = 5)
 	w_class = ITEM_SIZE_TINY
 	var/toggled = FALSE
 /obj/item/clothing/mask/sterile/verb/toggle()

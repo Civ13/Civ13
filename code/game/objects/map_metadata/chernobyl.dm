@@ -80,3 +80,16 @@
 		flags &= ~OPENCONTAINER
 		reagents.add_reagent("uranium",5)
 		reagents.add_reagent("plutonium",5)
+
+///////////////not radioactive
+/obj/item/weapon/reagent_containers/nuclear/notnuclear/uraniumref
+	name = "uranium refinery"
+	desc = "A uranium refinery."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "uranium_refinery"
+	flammable = FALSE
+	var/not_movable = TRUE
+	var/not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
