@@ -345,7 +345,6 @@
 	icon_state = "biker"
 	item_state = "biker"
 	worn_state = "biker"
-	restricts_view = 1
 
 /obj/item/clothing/under/ww2/gulag_prisoner
 	name = "GULAG prisoner clothing"

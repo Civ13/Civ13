@@ -555,6 +555,7 @@ steam.start() -- spawns the effect
 	icon_state = ""
 	mouse_opacity = FALSE
 
+// Modern
 /obj/effect/plane_flyby/f16/New()
 	..()
 	spawn(10)
@@ -591,6 +592,27 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
+				M.client << uploaded_sound
+
+// WW2
+/obj/effect/plane_flyby/bf109/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/bf109.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M << SPAN_NOTICE("<font size=3>The air vibrates as a Bf-109 flies overhead.</font>")
+				M.client << uploaded_sound
+
+/obj/effect/plane_flyby/ju87/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/ju87.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M << SPAN_NOTICE("<font size=3>The air vibrates as a Junkers Ju 87 'Stuka' flies overhead.</font>")
 				M.client << uploaded_sound
 
 /obj/effect/flare

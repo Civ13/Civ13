@@ -328,9 +328,7 @@
 	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
 	bolt_open_sound = 'sound/weapons/guns/interact/barrett_bolt_open.ogg'
 	bolt_close_sound = 'sound/weapons/guns/interact/barrett_bolt_close.ogg'
-	accuracy = TRUE
 	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	move_delay = 4
 	fire_delay = 10
 	equiptimer = 15
@@ -367,9 +365,7 @@
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
-	accuracy = TRUE
 	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	move_delay = 4
 	fire_delay = 10
 	equiptimer = 20
@@ -403,9 +399,7 @@
 	magazine_type = /obj/item/ammo_magazine/pzb_case
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
-	accuracy = TRUE
 	accuracy_increase_mod = 2.00
-	accuracy_decrease_mod = 6.00
 	move_delay = 4
 	fire_delay = 4
 	equiptimer = 20
