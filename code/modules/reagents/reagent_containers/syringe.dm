@@ -400,8 +400,8 @@
 		used = TRUE
 
 /obj/item/weapon/reagent_containers/syringe/combat
-	name = "Combat syringe"
-	desc = "Single Use injector made to pump you full of lifesaving liquids."
+	name = "combat syringe"
+	desc = "A single-use injector made to pump you full of lifesaving drugs."
 	icon_state = "single_use4"
 	w_class = ITEM_SIZE_TINY
 	volume = 50
