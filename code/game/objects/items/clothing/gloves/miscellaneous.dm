@@ -141,7 +141,7 @@
 
 /obj/item/clothing/gloves/sterile/nuclear
 	name = "NBC gloves"
-	desc = "Sterile gloves which also protect you from ambient radiation and some other threats."
+	desc = "Sterile gloves which also protect you from ambient radiation."
 	icon_state = "latex"
 	item_state = "latex"
 	germ_level = 0
