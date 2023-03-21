@@ -152,11 +152,11 @@
 /obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
 	..()
 	if(rockets.len)
-		icon_state = "[initial(icon_state)]"
-		item_state = "[initial(item_state)]"
+		icon_state = "rpg7"
+		item_state = "rpg7"
 	else
-		icon_state = "[initial(icon_state)]_empty"
-		item_state = "[initial(item_state)]_empty"
+		icon_state = "rpg7_empty"
+		item_state = "rpg7_empty"
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/makeshift
 	name = "RPG-7"
@@ -408,7 +408,7 @@
 	..()
 	if(rockets.len)
 		icon_state = "[initial(icon_state)]"
-		item_state = "[initial(item_state)]_empty"
+		item_state = "[initial(item_state)]"
 	else
 		icon_state = "[initial(icon_state)]_empty"
 		item_state = "[initial(item_state)]_empty"

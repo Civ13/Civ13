@@ -237,7 +237,6 @@
 "eC" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/caribbean/roofed/desert)
 "eD" = (/turf/floor/wood,/area/caribbean/roofed/desert)
 "eE" = (/obj/structure/window/classic/reinforced,/obj/structure/barricade,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/wood,/area/caribbean/roofed/desert)
-"eF" = (/obj/structure/closet/crate/empty,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/head/helmet/modern/sovietfacehelmet,/obj/structure/wild/rock/basalt,/obj/item/clothing/accessory/catears,/obj/item/clothing/accessory/armor/coldwar/plates/b5,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eG" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eH" = (/obj/structure/wild/tree/dead_tree,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "eI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
@@ -316,7 +315,7 @@
 "gd" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/obj/item/mine/boobytrap,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ge" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gf" = (/obj/structure/toilet,/turf/floor/plating/white,/area/caribbean/roofed/desert)
-"gg" = (/obj/structure/closet/cabinet,/obj/item/clothing/under/civf1{desc = "A dark dress, used by REAL MEN ONLY."; name = "dress"},/obj/item/clothing/suit/storage/jacket/custom/hoodie,/obj/item/clothing/suit/storage/hazard/green,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/under/civ1,/obj/item/clothing/under/insurgent_black,/obj/item/clothing/accessory/catears,/turf/floor/wood,/area/caribbean/roofed/desert)
+"gg" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/jacket/custom/hoodie,/obj/item/clothing/suit/storage/hazard/green,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/suit/woodarmor,/obj/item/clothing/under/civ1,/obj/item/clothing/under/insurgent_black,/turf/floor/wood,/area/caribbean/roofed/desert)
 "gh" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/beret_red,/obj/item/clothing/under/insurgent_sand,/turf/floor/wood,/area/caribbean/roofed/desert)
 "gi" = (/obj/structure/sink,/turf/floor/plating/white,/area/caribbean/roofed/desert)
 "gj" = (/turf/floor/plating/white,/area/caribbean/roofed/desert)
@@ -612,7 +611,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalamaaaaaaaaabcwbFcacaJfcgchchcjcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajTaaaaaaaaaaanaoaaaaaaaaabclbXbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadKdKakaaaaaaaaaaaaaaaaaaaaaaaaaaabclbXchcncncococpcqcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
-eFababepabababababepababababababababababeqababehababbQaKaKaKaKaKaKaKaKaKaKaKaKaKbRabaaaaaaaaaaaaaaaaaaaaiwaaabclbXbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
+ehababepabababababepababababababababababeqababehababbQaKaKaKaKaKaKaKaKaKaKaKaKaKbRabaaaaaaaaaaaaaaaaaaaaiwaaabclbXbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 eoaDaDaDeGabeqabababeqabababababehabababepababeHabbgbTbwbxbybxbybxbybxbybxbybxbUbhababaaiwaaaaaaaaaaaaaaaaaaabcwbFcrcrcxcxcycycAcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aCaCaCaCaCaCaCaCababababehababapabababababababababbgbTbzcFcGcIcJcKcKcLcLcOcOcPbVbhabababaaaaaaaadbdcaaaaaaaabgcDbFbXbXbXbXbXbXbYcHaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE
 aCaCaCaCaCaCaCaCabepababeHabababeqabababababababbgbTbTbWcRUCUCUCUCUCUCUCUCUCUCbBababababaaaaaaailLahaaaaaaaabgcwcTcUcUcUcUcUcUcVcBaCaCaCaCaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaE

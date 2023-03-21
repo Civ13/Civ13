@@ -180,21 +180,6 @@
 	update_icon()
 
 */
-/obj/item/weapon/gun/projectile/leveraction/winchesteryellowboy
-	name = "Winchester M1866 'Yellow Boy'"
-	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
-	force = 7
-	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
-	icon_state = "winchester1866_yellowboy"
-	caliber = "a44"
-	max_shells = 15
-	weight = 6.0
-	effectiveness_mod = 0.97
-	ammo_type = /obj/item/ammo_casing/a44
-	value = 150
-	blackpowder = TRUE
-	load_delay = 4.1
-
 /obj/item/weapon/gun/projectile/leveraction/winchester
 	name = "Winchester M1873"
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."

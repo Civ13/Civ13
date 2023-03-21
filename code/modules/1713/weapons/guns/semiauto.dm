@@ -434,11 +434,13 @@
 	weight = 14.8
 	recoil = 3
 	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=2, fire_delay=15)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=25)
 		)
 	gun_type = GUN_TYPE_RIFLE
 	effectiveness_mod = 2.0
 	equiptimer = 15
+	accuracy_increase_mod = 2.0
+	recoil = 2
 	
 /obj/item/weapon/gun/projectile/semiautomatic/barrett/sniper/New()
 	..()

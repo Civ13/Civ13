@@ -671,7 +671,7 @@
 "amU" = (/obj/covers/wood_wall/adjustable,/turf/wall/wood,/area/caribbean/no_mans_land/temperate/two{ambience = list("sound/ambience/battle1.ogg")})
 "amV" = (/obj/covers/cobblestone,/obj/structure/window/barrier/railing/stone{dir = 4; icon_state = "stone"},/obj/structure/window/barrier/sandbag,/turf/floor/beach/water,/area/caribbean/japanese/land{name = "Bridge"; ambience = list("sound/ambience/battle1.ogg")})
 "amW" = (/obj/structure/lamp/lamppost_small,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/one{ambience = list("sound/ambience/battle1.ogg")})
-"amX" = (/obj/structure/closet/cabinet,/obj/item/clothing/accessory/catears,/turf/floor/plating/tiled/darker,/area/caribbean/roofed/temperate)
+"amX" = (/obj/structure/closet/cabinet,/turf/floor/plating/tiled/darker,/area/caribbean/roofed/temperate)
 "amY" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land/temperate/two{ambience = list("sound/ambience/battle1.ogg")})
 "amZ" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/temperate/two{ambience = list("sound/ambience/battle1.ogg")})
 "ana" = (/obj/covers/cobblestone,/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/water,/area/caribbean/japanese/land{name = "Bridge"; ambience = list("sound/ambience/battle1.ogg")})
