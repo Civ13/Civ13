@@ -1789,8 +1789,8 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 ///////////////other////////////////
 
 /obj/item/clothing/accessory/armor/modern/lightplate
-	name = "Light breastplate body armor"
-	desc = "Wearable Light armor made of steel sheets."
+	name = "light breastplate body armor"
+	desc = "Wearable light armor made of steel sheets."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_armorvest"
 	item_state = "modern_armorvest"
@@ -1802,8 +1802,8 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	health = 50
 
 /obj/item/clothing/accessory/armor/modern/lightplate/lead
-	name = "Green Lead breastplate body armor"
-	desc = "Wearable breastplate armor made out of steel sheets and Lead."
+	name = "green lead breastplate body armor"
+	desc = "Wearable breastplate armor made out of steel sheets and lead."
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 60)
 	value = 50
@@ -1811,8 +1811,8 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	health = 50
 
 /obj/item/clothing/accessory/armor/modern/lightplate/black
-	name = "Light Black breastplate body armor"
-	desc = "Wearable Light armor made of steel sheets."
+	name = "light black breastplate body armor"
+	desc = "Wearable light armor made of steel sheets."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_blackvest"
 	item_state = "modern_blackvest"
@@ -1820,7 +1820,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/accessory/armor/modern/lightplate/black/lead
 	name = "Lead breastplate body armor"
-	desc = "Wearable breastplate armor made out of steel sheets and Lead."
+	desc = "Wearable breastplate armor made out of steel sheets and lead."
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 95, gun = 35, energy = 15, bomb = 45, bio = 20, rad = 60)
 	value = 50
