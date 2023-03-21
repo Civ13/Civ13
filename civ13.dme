@@ -438,6 +438,7 @@
 #include "code\game\objects\map_metadata\campaign.dm"
 #include "code\game\objects\map_metadata\capitol_hill.dm"
 #include "code\game\objects\map_metadata\chad_jungle.dm"
+#include "code\game\objects\map_metadata\chernobyl.dm"
 #include "code\game\objects\map_metadata\civilizations.dm"
 #include "code\game\objects\map_metadata\clash.dm"
 #include "code\game\objects\map_metadata\colony.dm"

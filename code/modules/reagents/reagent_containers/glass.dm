@@ -795,6 +795,16 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		base_name = "steel barrel"
 		reagents.add_reagent("water",350)
 
+//////////yellow barrel/////////////////////////
+/obj/item/weapon/reagent_containers/glass/barrel/modern/yellow
+	name = "yellow steel barrel"
+	desc = "A yellow steel barrel. You can put liquids inside."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "barreln"
+	//item_state = ???? TO DO TODO or check
+	volume = 350
+	density = TRUE
+
 //////////Galactic Battles//////////////////////
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/bmilk
