@@ -1071,7 +1071,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randgun = rand(1,4)
+	var/randgun = rand(1,5)
 	switch(randgun)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g43(H), slot_shoulder)
@@ -1097,6 +1097,14 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
 			uniform.attackby(webbing, H)
+		if (5) //this is here so every 2th german doesnt get a semi auto
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
+			if (prob(30))
+				var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
+				uniform.attackby(webbing, H)
+			else
+				var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/smoke(null)
+				uniform.attackby(webbing, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	if (map.ID == MAP_STALINGRAD)
