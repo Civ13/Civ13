@@ -1,0 +1,494 @@
+"aa" = (/turf/floor/broken_floor,/area/caribbean)
+"ab" = (/turf/floor/grass,/area/caribbean)
+"ac" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"ad" = (/turf/floor/plating/road,/area/caribbean)
+"ae" = (/obj/structure/grille/metalsheetfence,/turf/floor/plating/road,/area/caribbean/roofed)
+"af" = (/obj/structure/grille/metalsheetfence,/obj/structure/sign/flag/red,/turf/floor/plating/road,/area/caribbean/roofed)
+"ag" = (/obj/structure/grille/metalsheetfence,/obj/item/weapon/fire_extinguisher,/turf/floor/plating/road,/area/caribbean/roofed)
+"ah" = (/obj/structure/grille/metalsheetfence/red,/obj/item/weapon/fire_extinguisher,/turf/floor/plating/road,/area/caribbean/roofed)
+"ai" = (/obj/structure/grille/metalsheetfence/red,/turf/floor/plating/road,/area/caribbean/roofed)
+"aj" = (/obj/structure/closet/crate/lead,/turf/floor/plating/road,/area/caribbean)
+"ak" = (/obj/structure/grille/metalsheetfence,/obj/structure/sign/flag/blue,/turf/floor/plating/road,/area/caribbean/roofed)
+"al" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRED"},/turf/floor/plating/road,/area/caribbean/roofed)
+"am" = (/obj/structure/closet/crate/empty,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/turf/floor/plating/road,/area/caribbean/roofed)
+"an" = (/turf/floor/plating/road,/area/caribbean/roofed)
+"ao" = (/obj/item/clothing/head/nbc/olive,/obj/item/clothing/head/nbc/olive,/obj/item/clothing/suit/nbc/olive,/obj/item/clothing/suit/nbc/olive,/obj/item/clothing/suit/nbcponcho,/obj/structure/closet/crate/empty,/turf/floor/plating/road,/area/caribbean/roofed)
+"ap" = (/obj/structure/closet/crate/empty,/obj/item/clothing/accessory/armor/modern/lightplate/black/lead,/obj/item/clothing/accessory/armor/modern/lightplate/black/lead,/obj/item/clothing/accessory/armor/modern/lightplate/black/lead,/obj/item/clothing/accessory/armor/modern/lightplate/black/lead,/obj/item/clothing/accessory/armor/modern/lightplate/black/lead,/turf/floor/plating/road,/area/caribbean/roofed)
+"aq" = (/obj/structure/closet/crate/empty,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/obj/item/clothing/accessory/armor/modern/lightplate/lead,/turf/floor/plating/road,/area/caribbean/roofed)
+"ar" = (/obj/structure/closet/crate/empty,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/obj/item/weapon/radio/faction1,/turf/floor/plating/road,/area/caribbean/roofed)
+"as" = (/obj/item/weapon/reagent_containers/spray/chemsprayer/filled,/turf/floor/plating/road,/area/caribbean)
+"at" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/sterilizine,/turf/floor/plating/road,/area/caribbean)
+"au" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/advsmall,/obj/item/weapon/storage/firstaid/early,/turf/floor/plating/road,/area/caribbean/roofed)
+"av" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/road,/area/caribbean/roofed)
+"aw" = (/obj/structure/bed/roller,/turf/floor/plating/road,/area/caribbean/roofed)
+"ax" = (/obj/effect/landmark{name = "JoinLateBLU"},/turf/floor/plating/road,/area/caribbean/roofed)
+"ay" = (/obj/structure/closet/crate/empty,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/turf/floor/plating/road,/area/caribbean/roofed)
+"az" = (/obj/structure/closet/crate/empty,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/obj/item/clothing/gloves/sterile/nuclear,/turf/floor/plating/road,/area/caribbean/roofed)
+"aA" = (/obj/structure/closet/crate/empty,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/turf/floor/plating/road,/area/caribbean/roofed)
+"aB" = (/obj/structure/closet/crate/empty,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/obj/item/clothing/under/cleansuit,/turf/floor/plating/road,/area/caribbean/roofed)
+"aC" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/turf/floor/plating/road,/area/caribbean)
+"aD" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/turf/floor/plating/road,/area/caribbean)
+"aE" = (/obj/structure/closet/crate/empty,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/pickaxe,/turf/floor/plating/road,/area/caribbean)
+"aF" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean)
+"aG" = (/obj/structure/closet/crate/empty,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/turf/floor/plating/road,/area/caribbean/roofed)
+"aH" = (/obj/structure/closet/crate/empty,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/turf/floor/plating/road,/area/caribbean/roofed)
+"aI" = (/obj/structure/grille/metalsheetfence/yellow,/turf/floor/plating/road,/area/caribbean/roofed)
+"aJ" = (/obj/effect/floor_decal/industrial/hatch/yellow,/turf/floor/plating/road,/area/caribbean)
+"aK" = (/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/road,/area/caribbean)
+"aL" = (/obj/effect/floor_decal/industrial/loading,/turf/floor/plating/road,/area/caribbean)
+"aM" = (/obj/structure/curtain/open/shower,/turf/floor/plating/road,/area/caribbean/roofed)
+"aN" = (/obj/structure/grille/metalsheetfence/yellow,/obj/item/weapon/fire_extinguisher,/turf/floor/plating/road,/area/caribbean/roofed)
+"aO" = (/obj/structure/closet/crate/empty,/obj/item/weapon/pill_pack/potassium_iodide,/obj/item/weapon/pill_pack/potassium_iodide,/obj/item/weapon/pill_pack/potassium_iodide,/obj/item/weapon/storage/pill_bottle/potassium_iodide,/obj/item/weapon/storage/pill_bottle/potassium_iodide,/obj/item/weapon/storage/pill_bottle/potassium_iodide,/turf/floor/plating/road,/area/caribbean/roofed)
+"aP" = (/obj/structure/closet/coffin/generic,/turf/floor/plating/road,/area/caribbean)
+"aQ" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"aR" = (/turf/wall/rockwall,/area/caribbean)
+"aS" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/one)
+"aT" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/two)
+"aU" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/one)
+"aV" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/two)
+"aW" = (/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
+"aX" = (/obj/effect/floor_decal/industrial/outline/yellow,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two)
+"aY" = (/obj/effect/floor_decal/industrial/hatch/yellow,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/one)
+"aZ" = (/obj/effect/floor_decal/industrial/hatch/yellow,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/two)
+"ba" = (/obj/structure/shower,/turf/floor/plating/road,/area/caribbean/roofed)
+"bb" = (/turf/floor/beach/water/deep,/area/caribbean)
+"bc" = (/turf/floor/plating/concrete,/area/caribbean)
+"bd" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"be" = (/obj/structure/grille/metalsheetfence,/obj/structure/sign/flag/red,/turf/floor/plating/road,/area/caribbean)
+"bf" = (/obj/structure/grille/metalsheetfence,/obj/structure/sign/flag/blue,/turf/floor/plating/road,/area/caribbean)
+"bg" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bh" = (/obj/structure/curtain/medical,/turf/floor/plating/road,/area/caribbean/roofed)
+"bi" = (/obj/item/weapon/storage/box/stermask,/obj/item/weapon/storage/box/stermask,/turf/floor/plating/road,/area/caribbean)
+"bj" = (/obj/structure/closet/crate/empty,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs,/obj/item/clothing/under/scrubs/darkgreen,/obj/item/clothing/under/scrubs/darkgreen,/obj/item/clothing/under/scrubs/darkgreen,/obj/item/clothing/under/scrubs/blue,/obj/item/clothing/under/scrubs/blue,/obj/item/clothing/under/scrubs/blue,/obj/item/clothing/under/scrubs/lightgreen,/obj/item/clothing/under/scrubs/lightgreen,/obj/item/clothing/under/scrubs/navy,/obj/item/clothing/under/scrubs/navy,/turf/floor/plating/road,/area/caribbean)
+"bk" = (/obj/structure/closet/crate/empty,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap,/obj/item/clothing/head/surgical_cap/darkgreen,/obj/item/clothing/head/surgical_cap/darkgreen,/obj/item/clothing/head/surgical_cap/darkgreen,/obj/item/clothing/head/surgical_cap/darkgreen,/obj/item/clothing/head/surgical_cap/darkgreen,/obj/item/clothing/head/surgical_cap/blue,/obj/item/clothing/head/surgical_cap/blue,/obj/item/clothing/head/surgical_cap/blue,/obj/item/clothing/head/surgical_cap/blue,/obj/item/clothing/head/surgical_cap/blue,/obj/item/clothing/head/surgical_cap/lightgreen,/obj/item/clothing/head/surgical_cap/lightgreen,/obj/item/clothing/head/surgical_cap/lightgreen,/obj/item/clothing/head/surgical_cap/lightgreen,/obj/item/clothing/head/surgical_cap/navy,/obj/item/clothing/head/surgical_cap/navy,/obj/item/clothing/head/surgical_cap/navy,/obj/item/clothing/head/surgical_cap/navy,/obj/item/clothing/head/surgical_cap/navy,/turf/floor/plating/road,/area/caribbean)
+"bl" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean)
+"bm" = (/obj/structure/closet/crate/empty,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/obj/item/weapon/geiger_counter,/turf/floor/plating/road,/area/caribbean)
+"bn" = (/obj/item/weapon/storage/backpack/duffel,/turf/floor/plating/road,/area/caribbean)
+"bo" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bp" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bq" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"br" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bs" = (/obj/structure/grille/chainlinkfence/door/opened,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bt" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bu" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bv" = (/obj/structure/closet/crate/cart/steel,/turf/floor/plating/road,/area/caribbean)
+"bw" = (/obj/covers/cement_wall,/turf/wall/cement,/area/caribbean/roofed)
+"bx" = (/turf/floor/dirt/burned,/area/caribbean)
+"by" = (/turf/floor/plating/steel,/area/caribbean)
+"bz" = (/turf/floor/plating/steel{icon_state = "damaged1"},/area/caribbean)
+"bA" = (/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bB" = (/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean)
+"bC" = (/obj/structure/window/classic/metal,/obj/covers/jail/steeljail,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bD" = (/obj/structure/props/engineprops/gas,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bE" = (/obj/structure/grille/broken,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bF" = (/obj/structure/grille/broken,/turf/floor/dirt/burned,/area/caribbean)
+"bG" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bH" = (/obj/structure/grille/chainlinkfence/cut/larger/complete,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"bI" = (/obj/item/weapon/reagent_containers/nuclear/controlrod,/turf/floor/dirt/burned,/area/caribbean)
+"bJ" = (/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bK" = (/obj/structure/props/barrel,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bL" = (/obj/covers/jail/steeljail,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bM" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bN" = (/turf/floor/broken_floor/sky,/area/caribbean)
+"bO" = (/obj/item/weapon/reagent_containers/nuclear/fuelrod,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean)
+"bP" = (/obj/item/weapon/reagent_containers/nuclear/fuelrod,/turf/floor/plating/steel,/area/caribbean)
+"bQ" = (/obj/item/weapon/reagent_containers/nuclear/controlrod,/turf/floor/plating/steel,/area/caribbean)
+"bR" = (/obj/item/weapon/reagent_containers/nuclear/meltedsomething,/turf/floor/plating/steel,/area/caribbean)
+"bS" = (/obj/item/weapon/reagent_containers/nuclear/controlrod,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bT" = (/obj/item/weapon/reagent_containers/nuclear/fuelrod,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bU" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bV" = (/obj/item/weapon/reagent_containers/nuclear/controlrod,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean)
+"bW" = (/obj/item/weapon/reagent_containers/nuclear/meltedsomething,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"bX" = (/obj/item/weapon/reagent_containers/nuclear/fuelrod,/turf/floor/dirt/burned,/area/caribbean)
+"bY" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"bZ" = (/obj/structure/props/engineprops/dieselgeni,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"ca" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cb" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cc" = (/obj/structure/props/computerprops/research,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cd" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean)
+"ce" = (/obj/structure/sign/custom/metallic{name = "WELCOME TO THE CHERNOBYL NPP"},/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean)
+"cf" = (/turf/floor/plating/steel,/area/caribbean/roofed)
+"cg" = (/obj/structure/props/fueltank,/turf/floor/grass,/area/caribbean)
+"ch" = (/turf/floor/plating/steel{icon_state = "damaged1"},/area/caribbean/roofed)
+"ci" = (/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cj" = (/obj/structure/props/junk{icon_state = "jerseybarrier2"},/turf/floor/grass,/area/caribbean)
+"ck" = (/obj/structure/props/junk{icon_state = "jerseybarrier1X"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"cl" = (/obj/structure/props/junk{icon_state = "jerseybarrier2X"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"cm" = (/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/roofed)
+"cn" = (/obj/covers/cement_wall,/obj/structure/gatecontrol/blastcontrol,/turf/wall/cement,/area/caribbean/roofed)
+"co" = (/obj/structure/grille/broken,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cp" = (/obj/structure/props/random/container,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"cq" = (/obj/structure/grille/broken,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/roofed)
+"cr" = (/obj/covers/cement_wall,/obj/structure/sign/custom/golden{name = "reactor"},/turf/wall/cement,/area/caribbean/roofed)
+"cs" = (/obj/structure/gate/blast,/turf/floor/plating/steel,/area/caribbean/roofed)
+"ct" = (/obj/covers/cement_wall,/obj/structure/sign/radiation,/turf/wall/cement,/area/caribbean/roofed)
+"cu" = (/obj/covers/cement_wall,/obj/structure/sign/securearea,/turf/wall/cement,/area/caribbean/roofed)
+"cv" = (/obj/structure/simple_door/key_door/anyone/blast,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cw" = (/obj/structure/simple_door/key_door/anyone/doubledoor/lead,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cx" = (/obj/structure/table/rack,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cy" = (/obj/structure/table/modern/retable,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cz" = (/obj/structure/bed/chair/wood,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cA" = (/obj/structure/table/rack,/obj/item/weapon/pill_pack/potassium_iodide,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cB" = (/obj/structure/table/rack,/obj/item/clothing/mask/gas/soviet/gp5,/obj/item/clothing/mask/gas/soviet/gp5,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cC" = (/obj/structure/table/rack,/obj/item/clothing/mask/gas/soviet/gp5,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"cD" = (/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/item/clothing/mask/gas/halfmask,/obj/structure/closet/crate/empty,/turf/floor/plating/road,/area/caribbean)
+"cE" = (/obj/effect/decal/cleanable/greenglow,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cF" = (/obj/effect/decal/cleanable/greenglow,/turf/floor/plating/steel{icon_state = "damaged1"},/area/caribbean/roofed)
+"cG" = (/obj/effect/decal/cleanable/greenglow,/turf/floor/dirt/burned,/area/caribbean)
+"cH" = (/obj/structure/grille/broken,/obj/effect/decal/cleanable/greenglow,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cI" = (/obj/effect/decal/cleanable/greenglow,/obj/effect/decal/cleanable/molten_item,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean)
+"cJ" = (/obj/effect/decal/cleanable/greenglow,/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cK" = (/obj/effect/decal/cleanable/greenglow,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean/roofed)
+"cL" = (/obj/effect/decal/cleanable/molten_item,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cM" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cN" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cO" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cP" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/steel{icon_state = "damaged1"},/area/caribbean/roofed)
+"cQ" = (/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cR" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/plating/steel,/area/caribbean/roofed)
+"cS" = (/obj/effect/decal/cleanable/greenglow,/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel{icon_state = "damaged5"},/area/caribbean/roofed)
+"cT" = (/obj/effect/decal/cleanable/molten_item,/obj/effect/decal/cleanable/generic,/turf/floor/dirt/burned,/area/caribbean)
+"cU" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel{icon_state = "damaged1"},/area/caribbean)
+"cV" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel{icon_state = "damaged2"},/area/caribbean)
+"cW" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/steel,/area/caribbean)
+"cX" = (/obj/effect/decal/cleanable/generic,/turf/floor/dirt/burned,/area/caribbean)
+"cY" = (/obj/item/weapon/reagent_containers/nuclear/meltedsomething,/obj/effect/decal/cleanable/generic,/turf/floor/dirt/burned,/area/caribbean)
+
+(1,1,1) = {"
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRbcbcbcbcbcbcbcbcaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+aRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaR
+"}
+
+(1,1,2) = {"
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac
+acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac
+ababacacbdbobobobobobobobobobobobobobobobobobobobobobobobobobobobobsbsbobobobsbsbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobpacacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbwbwbwbwbwbwbCbwbwbwbwbwbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbwbDbJbJbwbKbKbKbwbJbJbJbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabcgababababcgababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbLbJbJbJbMbJbJbJbMbJbJbJbLbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbwbDbYbKbwbJbJbJbwbKbYbZbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabcgababababcgababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbwbwbwbwbwcabJbKbwbwbwbwbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbCbJcbccbwbJbJbKbwbKcbbZbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabcgababababcgababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbMbJbJbJbMbJbJbJbMbJbJbJbLbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbCbJbJbJbwbJbJbJbwbJbJbJbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabcgababababcgababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgabababbgbgbwbwbCbwbwbwbCbwbwbwbwbwbwbgbgabababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgbgbgbracacabab
+adadadadadadadadadbgadadadadadadadbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgbgbgbracacabab
+adadadadadadadadadbgadadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcQcfcfcfcfchcfcEcfcfcfcfcfcfcEchcfcfbwbwababbgbgbracacabab
+adadadadadadadadadbgadadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcfcfcEchcfcfcfcfcfcfcFcfcfcfcfcfcfbwbwababbgbgbracacabab
+adadadadadadadadadbgadadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcEbwblblblblblblblblblblblblbwchcEbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcfblblblblblblblblblblblblblblcfcfbwbwababbgbgbracacabab
+ababacacbqbgcpacacaccpacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfchblblblblblblbEbFblblblblblblcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcNcfblblblbUbxcGbxaabxcGbAblblblcfcmbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcOblblblcGaaaaaaaaaaaacGblblblcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcJcmblblblcGaaaaaaaaaaaaaabFblblcfcfbwbwababbgbgbracacabab
+ababacacbqbgcpacacaccpacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwchcmbwcnbFaaaaaaaaaaaaaaaabFblbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacbgbgbgbgbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcmcicHcicIcGaaaaaaaaaaaaaabFblbwcfcmbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcicMcocSblbIaaaaaaaaaaaaaablblbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgcpacacaccpacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcEcicqcmblbxaaaaaaaaaaaaaablblbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcPcfbwcLblcTcGaaaaaaaaaacGbwbwbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcMbwcKblcUbAbxaaaaaabxbAbwbwbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgcpacacaccpacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcEcfbwcfbwbwbwbwbwbwbwbwbwbwbwbwcfcfbwbwababbgbgbracacabab
+ababacacbqbgacacacacacacacadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcEbwcOcfcfcfcRbwbwbwbwbwbwbwbwcfcfbwbwababbgbgbracacabab
+adadadadadadadadadadbgadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcmbwbwbwcrcncsctcubwbwbwbwbwcrctcvbwbwababbgbgbracacabab
+adadadadadadadadadadbgadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcOcfcicfcfcfcfcfcfcfcfbwbJbJbJbJbJbJcubwababbgbgbracacabab
+adadadadadadadadadadbgadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwcfcfcfcfcmcfcfcfcfcfcfbwbJbJbJbJbJbJbwbwababbgbgbracacabab
+adadadadadadadadadadbgadadadadadadbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwbwbwbwbwbwbwbwbwbwbwbwbwbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwbwbwbwbwbwbwbwbwbwbwbwbwbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbsbgbgbgbgbgbgbgbgbgbgbgbgbgbgcwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbsbgbgbgbgbgbgbgbgbgbgbgbgbgbgcwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbHacacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwctcwcwcubwbwbwbwbwbwbwbwbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbJcBcAcxcCbJcxcCbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbCbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJcwbJbJbJbJbJbJbJcxbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbCbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJcubJbJbJbJbJbJbJcxbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwbwbwbwcwbwbwbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbwbwbwcwcwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbJbJbJbJbJbJbJbJbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJcybJczbJbJczbJbJbJbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbCbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJcycycycycycycycycybwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbCbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbJbwbwababbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbJbJbwbwbwbwbwbwbwbJbJbwbwbwbwbwbwbJbJbwbwbJbJbJbJbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbwbwbwbCbCbwbwbwbwbwbwbwbCbCbwbwbwbwbwbwbCbCbwbwcwcwcwcwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbgbgbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbracacabab
+ababacacbqbgabababababababababababbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbsacacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbsacacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababcdcecdabbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgababababababababababababababababababababababababababababababababababababcjckbgbgclabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgabababababababababababababababababababababababababababababababababababababbgbgbgbgabababababababababababababababababababababababababababababababababababababbgbracacabab
+ababacacbqbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbgbracacabab
+ababacacbtbububububububububububububububububububububububububububububububububububububububsbsbsbsbububububububububububububububububububububububububububububububububububububububGacacabab
+acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac
+aSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSaSacacacacacacacacacacaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaT
+aSaSaSaUaSaSaSaSaSaUaSaSaSaSaSaUaSaSaSaSaSaSaUaSaSaSaSaSaUaSaSaSaSaSaSaSaUaSaSaSacacacaQacacacacaQacaTaTaTaTaTaTaTaVaTaTaTaTaVaTaTaTaTaTaTaTaVaTaTaTaTaTaTaTaTaTaTaVaTaTaTaTaTaTaVaT
+adadadadadadadadadadajajajajadasasadadadadadadadadadadadadadadadadadadadadadaWaWaKaKaKaKadadaKaKaKaKaXaXadadajajajajadasasadadadadadadadadadadadadadadadadadadadadadadadadadadadadad
+aPaPaPadadadadadaeafaeaeaeaeaeafagbnadadadaCadadadadaDadadadadbvahaiaiaiaiaiaWaYaLaLaJaKadadaKaJaLaLaZaXaeakaeaeaeaeaeakagbnadadadaCadadadadaDadadadadbvahaiaiaiaiaiadadadadadaPaPaP
+aPaPaPadadadadadaealamanaoapaqaraebnadadadaEadadadadaFadadadadbvaiauavanawaiaWaYadadaJaKadadaKaJadadaZaXaeaxayanaoapaqaraebnadadadaEadadadadaFadadadadbvaiauavanawaiadadadadadaPaPaP
+aPaPaPadadadadadaealanananananananadadadadadadadadadadadadadadadbhananananaiaWaYadadaJaKadadaKaJadadaZaXaeaxanananananananadadadadadadadadadadadadadadadbhananananaiadadadadadaPaPaP
+aPaPaPadadadadadaealanazaAaBaGaHaebmadadcDaIaIaMaMaNaIadadadadbvaiaOananawaiaWaYadadaJaKadadaKaJadadaZaXaeaxanazaAaBaGaHaebmadadcDaIaIaMaMaNaIadadadadbvaiaOananawaiadadadadadaPaPaP
+aPaPaPadadadadadaeafaeaeaeaeaeafaebmadadataIbaananbaaIajadbibibvaiaiaiaiaiaiaWaYadadaJaKbebfaKaJadadaZaXaeakaeaeaeaeaeakaebmadadataIbaananbaaIajadbibibvaiaiaiaiaiaiadadadadadaPaPaP
+aPaPaPadadadadadadadadadadadadadadadadadataIaIaIaIaIaIajadbjbkadadadadadadadaWaYaJaJaJaKadadaKaJaJaJaZaXadadadadadadadadadadadadataIaIaIaIaIaIajadbjbkadadadadadadadadadadadadaPaPaP
+"}
+
+(1,1,3) = {"
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbybBbBbybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbBbybybybBbybBbBbBbxbxbBbybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbxbObBbybxbybAbAbAbAbybBbybBbBbBbBbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbzbzbBbybAbxbAbAbAbxbxbxbxbxbybybybybBbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbXbBbybybzbybAbxbybybBbBcVbybQbAbAbPbybybybBbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbybBbxbBbybybBbybybAbUbAbAbxbxbybybRcWbAbBcWbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybybxbBbybxbQcWbAbybybSbxbxaabxbAbAbAbTbBbybxbybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybzbBbybybxbybAbAbybAbxaaaaaabxbxbAbAbAbybxbQbybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbybybybxbybybAbAbybxaaaaaaaaaaaabxbxbAbAbBcVbybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybBcXbzbAbAbybxaaaaaaaaaaaaaaaaaabxbxbBbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbxbxbAcYbxaaaaaaaaaaaaaaaaaaaaaaaabBbBbybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybAbxaaaaaaaaaaaaaaaaaaaaaaaabxbPbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybVbybybAbxaaaaaaaaaaaaaaaaaaaaaabxbAbybxbQbybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbBbzbzbybAbAbxbxbxaaaaaaaaaaaaaabxbWbAcVbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybBbxbxbBbybVbAbUbRbxbxaaaaaaaaaabxbybAbAbybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbzbybybxbxbBbAbAbAbAbxaaaaaaaabxbAbAbAbybBbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybybBbBbybybybybBbybybAbAbUbAbAbxaaaaaabxbWbAbAbQbBbycWbybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybybBbybybybybBbybBbybybybBbAbAbAbxaaaabxbAbAbAcWbBbBbybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbybybybxbxbxbxbxbxbybybybzbybybBbybybBbxaabxbybybTbybBbybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbybybybybBbybybybxbxbxbBbObBbybBbybBbybybycWbybybycWbBbybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybBbBbybybybybybybybybybBbBbBbybybxbxbxbObBbBbBbBbxbBbPbybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybzbybybybxbxbBbybBbBbybzbybxbxbybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbybybybybxbybybybybxbxbybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbybybybybzbybxbybybybybxbxbybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbybybybybybybybxbxbybybybybxbXbybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbxbybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybxbybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybybNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+bNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbN
+"}

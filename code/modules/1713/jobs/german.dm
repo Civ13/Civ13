@@ -740,6 +740,84 @@
 
 
 	return TRUE
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////BERLIN ONLY//////////////////////////////////////////////////////////////////
+
+/datum/job/german/volksturm_berlin
+	title = "Volkssturm"
+	en_meaning = "Militia"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+
+	is_ww2 = FALSE
+	is_reichstag = FALSE
+	uses_squads = TRUE
+	can_be_female = TRUE
+
+	min_positions = 12
+	max_positions = 45
+
+/datum/job/german/volksturm_berlin/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+
+//head
+	var/pickhat = pick(1,2,3)
+	if (pickhat == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	else if (pickhat == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+//back
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_l_hand)
+	else if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/vg5(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/stg24_bundle(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/stg(H), slot_r_store)
+	else if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fg42(H), slot_l_hand)
+		H.equip_to_slot_or_del(new/obj/item/ammo_magazine/fg42(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/fg42/small(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/vg(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/vgclip(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/vgclip(H), slot_r_store)
+//other
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust(H), slot_shoulder)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower/eins(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled(H), slot_back)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(30))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/volkssturm/armband = new /obj/item/clothing/accessory/armband/volkssturm(null)
+	uniform.attackby(armband, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a conscripted civilian hastly organized into a militia. Do your best to defend berlin!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////WW2 NOT REICHSTAG////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

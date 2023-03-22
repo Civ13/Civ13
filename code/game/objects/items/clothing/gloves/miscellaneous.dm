@@ -137,6 +137,16 @@
 	item_state = "latex"
 	germ_level = 0
 	fingerprint_chance = 20
+	armor = list(melee = 2, arrow = 1, gun = FALSE, energy = 25, bomb = 10, bio = 50, rad = FALSE)
+
+/obj/item/clothing/gloves/sterile/nuclear
+	name = "NBC gloves"
+	desc = "Sterile gloves which also protect you from ambient radiation."
+	icon_state = "latex"
+	item_state = "latex"
+	germ_level = 0
+	fingerprint_chance = 10
+	armor = list(melee = 2, arrow = 1, gun = FALSE, energy = 25, bomb = 10, bio = 50, rad = 10)
 
 /obj/item/clothing/gloves/sterile/nitrile
 	name = "nitrile gloves"

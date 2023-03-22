@@ -324,6 +324,33 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.06
 
+/obj/item/weapon/gun/projectile/semiautomatic/vg5
+	name = "Volkssturmkarabiner 98"
+	desc = "A very simple german semi automatic chambered in 7.92x33mm Kurz."
+	icon_state = "vg5"
+	item_state = "vg5"
+	base_icon = "vg5"
+	w_class = ITEM_SIZE_LARGE
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	max_shells = 30
+	load_delay = 10
+	caliber = "a792x33"
+	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
+	reload_sound = 'sound/weapons/guns/interact/stg_reload.ogg'
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a792x33
+	magazine_type = /obj/item/ammo_magazine/stg
+	good_mags = list(/obj/item/ammo_magazine/stg, /obj/item/ammo_magazine/vgclip)
+	weight = 4.6
+	firemodes = list(
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=5)
+		)
+	force = 15
+	throwforce = 20
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	effectiveness_mod = 0.94
+	equiptimer = 16
+
 /obj/item/weapon/gun/projectile/semiautomatic/m1garand
 	name = "M1 Garand"
 	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine."
@@ -441,7 +468,7 @@
 	equiptimer = 15
 	accuracy_increase_mod = 2.0
 	recoil = 2
-	
+
 /obj/item/weapon/gun/projectile/semiautomatic/barrett/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)

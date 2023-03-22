@@ -94,6 +94,16 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/vgclip
+	name = "clip (7.92x33mm)"
+	icon_state = "kclip"
+	caliber = "a792x33"
+	ammo_type = /obj/item/ammo_casing/a792x33
+	max_ammo = 5
+	weight = 0.06
+	multiple_sprites = TRUE
+	clip = TRUE
+
 /obj/item/ammo_magazine/mauser1893
 	name = "clip (7x53mm)"
 	icon_state = "kclip"
