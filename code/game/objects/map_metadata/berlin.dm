@@ -4,7 +4,7 @@
 	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
-	no_winner ="The capitol is under German control."
+	no_winner ="The branderburg gate is under German control."
 	no_hardcore = TRUE
 	faction_organization = list(
 		GERMAN,
@@ -33,6 +33,8 @@ obj/map_metadata/berlin/job_enabled_specialcheck(var/datum/job/J)
 	else if (J.is_ss_panzer == TRUE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
+		. = TRUE
+	else if (istype(J, /datum/job/german/volksturm_berlin))
 		. = TRUE
 	else
 		. = FALSE
