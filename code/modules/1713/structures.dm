@@ -55,7 +55,7 @@
 	health = 30
 
 /obj/structure/grille/fence/steel_picket
-	name = "picket fence"
+	name = "metal fence"
 	desc = "A traditional metal fence."
 	icon_state = "steel_picket"
 	health = 60
