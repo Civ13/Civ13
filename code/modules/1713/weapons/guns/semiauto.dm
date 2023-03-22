@@ -424,7 +424,7 @@
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x33
 	magazine_type = /obj/item/ammo_magazine/m1car15
-	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car30)
+	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car15/m1car30)
 	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
 	weight = 3.9
 	firemodes = list(

@@ -190,6 +190,16 @@ obj/item/ammo_magazine/dp
 	weight = 0.40
 	multiple_sprites = FALSE
 
+/obj/item/ammo_magazine/m1car15/box
+	name = "30.Carbine ammo pouch (7.62x33mm)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a762x33
+	caliber = "a762x33"
+	max_ammo = 60
+	weight = 1.2
+	multiple_sprites = TRUE
+	pouch = TRUE
+
 /obj/item/ammo_magazine/m1car15
 	name = "M1-Carbine Small Magazine (7.62x33mm)"
 	icon_state = "mcar"
@@ -200,7 +210,7 @@ obj/item/ammo_magazine/dp
 	weight = 0.19
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/m1car30
+/obj/item/ammo_magazine/m1car15/m1car30
 	name = "M1-Carbine-Magazine (7.62x33mm)"
 	icon_state = "mcarbig"
 	mag_type = MAGAZINE
