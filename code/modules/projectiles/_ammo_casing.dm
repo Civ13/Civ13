@@ -1054,6 +1054,16 @@
 	caliber = "a762x39"
 	value = 2
 
+/obj/item/ammo_casing/a762x33
+	name = "7.62x33mm cartridge"
+	desc = "A brass casing."
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x33
+	caliber = "a762x33"
+	value = 2
+
 /obj/item/ammo_casing/a9x39
 	name = "9x39mm cartridge"
 	desc = "A brass soviet rifle casing."
