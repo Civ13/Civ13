@@ -602,6 +602,66 @@
 
 	return TRUE
 
+/datum/job/russian/machinegunner_assistant_sov
+	title = "K.A. Pomoshchnik Pulemetchika"
+	en_meaning = "Red Army Machinegunner Assistant"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRU"
+	is_karelia = TRUE
+	is_ww2 = TRUE
+	uses_squads = TRUE
+
+
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/russian/machinegunner_assistant_sov/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+	if (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KARELIA)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/dp(H), slot_belt)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_l_hand)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+//webbing
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+	if (prob(20))
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosin(null)
+		uniform.attackby(webbing, H)
+	else if (prob(40))
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinaltsmoke(null)
+		uniform.attackby(webbing, H)
+	else if (prob(40))
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinalt(null)
+		uniform.attackby(webbing, H)
+	else
+		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
+			uniform.attackby(webbing, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/dp(H), slot_back)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a Machinegunner assistant of the Red Army, Provide ammo and Cover to the Pulemetchik, Take Over if he gets incapacitated!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+	return TRUE
+
 /datum/job/russian/antitank_soldier_soviet
 	title = "K.A. Protivotankovyy Strelok"
 	en_meaning = "Red Army AT Rifleman"
