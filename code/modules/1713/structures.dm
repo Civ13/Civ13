@@ -965,6 +965,17 @@
 	name = "Raven Banner"
 	desc = "A Ravenclan banner."
 
+/obj/structure/flag/objective
+	icon_state = "white"
+	name = "Objective Flag"
+	desc = "An objective flag."
+
+/obj/structure/flag/objective/one
+/obj/structure/flag/objective/two
+/obj/structure/flag/objective/three
+/obj/structure/flag/objective/four
+/obj/structure/flag/objective/five
+
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))
 		if(W.amount >= 5)

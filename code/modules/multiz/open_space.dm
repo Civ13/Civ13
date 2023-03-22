@@ -66,8 +66,6 @@ var/process/open_space/OS_controller = null
 var/list/sky_drop_map = list()
 
 /turf/sky/Entered(var/atom/movable/mover)
-	if (!mover)
-		return
 	if (isobserver(mover))
 		return
 	if (locate_dense_type(contents, /obj/structure))
@@ -85,6 +83,8 @@ var/list/sky_drop_map = list()
 			for (var/locstr in sky_drop_map)
 				for (var/turf/T in range(5, sky_drop_map[locstr]))
 					if (locate(/mob/living) in T)
+						continue
+					if (locate_dense_type(contents, /obj/structure/wild/tree) in T)
 						continue
 					mover.forceMove(T)
 		else
@@ -156,7 +156,6 @@ var/list/sky_drop_map = list()
 			if (ishuman(mover))
 				var/area/H_area = get_area(mover)
 				H_area.play_ambience(mover)
-	return
 
 /turf/floor/broken_floor
 	name = "hole"
