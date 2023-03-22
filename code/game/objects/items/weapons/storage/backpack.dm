@@ -87,6 +87,7 @@
 		new /obj/item/ammo_magazine/pzb_case_ap(src)
 		new /obj/item/ammo_magazine/pzb_case(src)
 		new /obj/item/ammo_magazine/pzb_case(src)
+		new /obj/item/ammo_magazine/pzb_case(src)
 
 /obj/item/weapon/storage/backpack/satchel/black/germanat/rpb54
 	New()
