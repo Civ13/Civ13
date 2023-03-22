@@ -20,6 +20,7 @@
 		/obj/item/weapon/grenade/frag/shell)
 
 	var/blacklisted_grenades = list(
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag)
 
 	matter = list(DEFAULT_WALL_MATERIAL = 2000)
@@ -108,10 +109,17 @@
 /obj/item/weapon/gun/launcher/grenade/underslung
 	name = "underslung grenade launcher"
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
+	icon = 'icons/obj/gun_att.dmi'
+	icon_state = "grenade_launcher"
 	w_class = ITEM_SIZE_NORMAL
 	force = 5
 	throw_distance = 40
 	max_grenades = 0
+	var/A_attached = FALSE
+	var/image/ongun
+	New()
+		..()
+		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
 
 /obj/item/weapon/gun/launcher/grenade/underslung/attack_self()
 	return
@@ -154,6 +162,7 @@
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25,
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)
@@ -170,6 +179,7 @@
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
 		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)
@@ -196,6 +206,7 @@
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25
 		)
 	blacklisted_grenades = list(
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)
@@ -267,6 +278,7 @@
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25,
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)
@@ -283,6 +295,7 @@
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25,
+		/obj/item/weapon/grenade,
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)

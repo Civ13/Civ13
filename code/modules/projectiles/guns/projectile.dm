@@ -329,7 +329,7 @@
 	if(launcher)
 		use_launcher = !use_launcher
 		if(do_after(usr, 5, src))
-			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : " take your gun back."]</span>")
+			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : "switch back to your gun."]</span>")
 			playsound(src, 'sound/weapons/guns/interact/launcher_select.ogg', 50, 1)
 
 /obj/item/weapon/gun/projectile/AltClick()
