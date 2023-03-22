@@ -737,6 +737,31 @@
 	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 	equiptimer = 15
 
+/obj/item/weapon/gun/projectile/boltaction/vg //for balance reasons this gun wont use the STG mags instead it will use just clips also i dont know how to code in mag usage by bolties
+	name = "Volkssturmgewehr"
+	desc = "A very primitive german bolt action rifle chambered in 7.92x33mm Kurz."
+	icon_state = "vg1"
+	item_state = "vg1"
+	base_icon = "vg1"
+	caliber = "a792x33"
+	fire_sound = 'sound/weapons/guns/fire/stg.ogg'
+	weight = 4.2
+	ammo_type = /obj/item/ammo_casing/a792x33
+	magazine_type = /obj/item/ammo_magazine/vgclip
+	good_mags = list(/obj/item/ammo_magazine/vgclip)
+	bolt_safety = FALSE
+	effectiveness_mod = 0.92
+	value = 100
+	slot_flags = SLOT_SHOULDER
+	recoil = 0
+	force = 15
+	throwforce = 29
+	max_shells = 10
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
+	equiptimer = 15
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903
 	name = "Mauser M1903"
 	desc = "The ottoman version of the Mauser M1898, chambered in 7.65x53mm Mauser ammunition."
