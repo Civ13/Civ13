@@ -266,7 +266,7 @@
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "urinal"
 	density = FALSE
-	anchored = TRUE	
+	anchored = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -1118,6 +1118,9 @@
 	bound_height = 64
 	density = TRUE
 	opacity = FALSE
+	anchored = TRUE
+	not_disassemblable = TRUE
+	not_movable = TRUE
 
 /obj/structure/fountain/no_bottom
 	icon_state = "fountain_tb"
