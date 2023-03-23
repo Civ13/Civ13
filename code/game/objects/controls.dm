@@ -524,7 +524,7 @@
 
 /obj/structure/gate/elevator_door/proc/autoclose()
 	if (src.open)
-		spawn(30)
+		spawn(80)
 			src.toggle()
 			return
 	autoclose()
