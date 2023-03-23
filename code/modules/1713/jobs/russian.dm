@@ -2805,7 +2805,6 @@
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
-	whitelisted = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
