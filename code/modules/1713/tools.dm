@@ -79,8 +79,8 @@
 /obj/item/weapon/foldable/pkm
 	name = "Foldable PKM machine gun"
 	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
-	icon_state = "pkm_foldable"
-	item_state = "pkm_foldable"
+	icon_state = "foldable_pkm"
+	item_state = "foldable_pkm"
 	force = 20
 	throwforce = 30
 	weight = 7.5

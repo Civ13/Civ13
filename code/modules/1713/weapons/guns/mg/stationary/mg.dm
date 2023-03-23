@@ -90,11 +90,10 @@
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
 	usr.face_atom(src)
+
 	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
-	if (ammo_magazine)
-		ammo_magazine.loc = get_turf(src)
-		ammo_magazine = null
 	if (do_after(usr, 40, get_turf(usr)))
+		unload_ammo(usr)
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
@@ -445,10 +444,10 @@
 		return
 	usr.face_atom(src)
 	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
-	for (var/obj/item/ammo_casing/rocket/I in rockets)
-		I.loc = get_turf(src)
-		rockets -= I
 	if (do_after(usr, 40, get_turf(usr)))
+		for (var/obj/item/ammo_casing/rocket/I in rockets)
+			I.loc = get_turf(src)
+			rockets -= I
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
