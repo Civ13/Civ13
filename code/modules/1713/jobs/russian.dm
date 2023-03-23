@@ -646,7 +646,7 @@
 		uniform.attackby(webbing, H)
 	else
 		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
-			uniform.attackby(webbing, H)
+		uniform.attackby(webbing, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/dp(H), slot_back)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Machinegunner assistant of the Red Army, Provide ammo and Cover to the Pulemetchik, Take Over if he gets incapacitated!")
