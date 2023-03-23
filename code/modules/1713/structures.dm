@@ -409,11 +409,11 @@
 	opacity = FALSE
 	anchored = TRUE
 
-/////////pipes
+/////////Pipes/////////////////////////////
 
 /obj/structure/props/piping/pipe
-	name = "Pipe"
-	desc = "A Big pipe."
+	name = "pipe"
+	desc = "A big pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "s_pipe"
 	flammable = FALSE
@@ -428,8 +428,8 @@
 	layer = 1
 
 /obj/structure/props/piping/broken_pipe
-	name = "Broken Pipe"
-	desc = "A Big Broken pipe."
+	name = "broken pipe"
+	desc = "A big broken pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "pipe-b"
 	flammable = FALSE
@@ -444,8 +444,8 @@
 	layer = 1
 
 /obj/structure/props/piping/pipe_up
-	name = "Pipe"
-	desc = "A Big pipe."
+	name = "pipe"
+	desc = "A big pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "pipe-t"
 	flammable = FALSE
@@ -460,7 +460,7 @@
 	layer = 1
 
 /obj/structure/props/piping/small/pipe
-	name = "Small Pipe"
+	name = "small pipe"
 	desc = "A pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "s_pipe2_thin"
@@ -476,7 +476,7 @@
 	layer = 1
 
 /obj/structure/props/piping/small/pipex
-	name = "Small Pipe"
+	name = "small pipe"
 	desc = "A pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "s_pipe_connection4_thin"
@@ -492,8 +492,8 @@
 	layer = 1
 
 /obj/structure/props/piping/small/pipel
-	name = "Small L Pipe"
-	desc = "A pipe."
+	name = "small pipe"
+	desc = "A small L-shaped pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "s_pipe_turn"
 	flammable = FALSE
@@ -508,8 +508,8 @@
 	layer = 1
 
 /obj/structure/props/piping/small/pipet
-	name = "Small T Pipe"
-	desc = "A pipe."
+	name = "small pipe"
+	desc = "A small T-shaped pipe."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "s_pipe_connection3_thin"
 	flammable = FALSE
@@ -522,6 +522,8 @@
 
 /obj/structure/props/piping/small/pipet/under
 	layer = 1
+
+/////////////////////////////////////////////////////////
 
 /obj/structure/props/bathtub
 	name = "bathtub"
