@@ -369,7 +369,7 @@
 				qdel(src)
 
 /obj/item/mine/pipe
-	name = "broken pipe"
+	name = "damaged pipe"
 	desc = "Is that safe?"
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "mine"
@@ -379,9 +379,10 @@
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
 	var/origin = null
+	var/explosion_size = 1
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 15  //total number of fragments produced by the grenade
-	var/fragment_damage = 30
+	var/num_fragments = 5  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
 	var/damage_step = 1	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/spread_range = 4
 

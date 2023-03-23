@@ -156,6 +156,26 @@
 	force = 20
 	throwforce = 30
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
+///////////////////////////M1919A6//////////////////////
+/obj/item/weapon/gun/projectile/automatic/browning_lmg
+	name = "M1919A6 Browning LMG"
+	desc = "An American squad support machinegun. Uses 30-06 rounds. Very heavy to carry around."
+	icon_state = "browlmg"
+	item_state = "browlmg"
+	base_icon = "browlmg"
+	heavy = TRUE
+	w_class = ITEM_SIZE_HUGE
+	slot_flags = SLOT_SHOULDER
+	caliber = "a3006"
+	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
+	magazine_type = /obj/item/ammo_magazine/browning
+	good_mags = list(/obj/item/ammo_magazine/browning)
+	weight = 12.50 //heavy piece of shit
+	force = 20
+	throwforce = 30
+/obj/item/weapon/gun/projectile/automatic/browning_lmg/update_icon()
+	icon_state = "browlmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
+
 ////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/mg34
 	name = "MG34"

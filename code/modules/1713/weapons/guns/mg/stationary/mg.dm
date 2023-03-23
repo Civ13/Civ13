@@ -180,7 +180,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a3006
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
-	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
+	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_open"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
 	name = "M2HB browning machine gun"
