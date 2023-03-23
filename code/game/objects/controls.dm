@@ -464,3 +464,131 @@
 			return
 
 //Make it destroyable as it takes basis from the usual gates which can't be broken, using a weapon simply says "You hit the gate uselessly."
+
+/////Pseudo-Elavators///// Currently designed for a 2x2 enclosed space, code needs to be overhauled in case we want bigger, more complex elevators (see about porting Baystation's turbolifts)
+
+/obj/structure/gate/elevator_door
+	name = "elevator door"
+	desc = "An elevator."
+	icon = 'icons/obj/doors/doors_64x32.dmi'
+	icon_state = "elevator_door"
+	anchored = TRUE
+	density = TRUE
+	opacity = TRUE
+	health = 200
+	maxhealth = 200
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	layer = MOB_LAYER + 0.01
+	open = FALSE
+	bound_width = 64
+	var/list/opacity_objects = list()
+
+/obj/structure/gate/elevator_door/New()
+	..()
+	var/atom/movable/S = new (locate(x+1,y,z))
+	S.set_opacity(opacity)
+	S.anchored = 1
+	S.icon = null
+	S.verbs.Cut()
+	opacity_objects += S
+	autoclose()
+
+/obj/structure/gate/elevator_door/Destroy()
+	for(var/atom/movable/S in opacity_objects)
+		qdel(S)
+	..()
+
+/obj/structure/gate/elevator_door/proc/toggle()
+	playsound(src.loc, 'sound/effects/elevatordoor.ogg', 100)
+	if (open)
+		visible_message("The elevator door closes.")
+		open = FALSE
+		flick("elevator_doorclosing",src)
+		spawn(10)
+			icon_state = "elevator_door"
+			density = TRUE
+			opacity = TRUE
+			for(var/atom/movable/S in opacity_objects)
+				S.set_opacity(TRUE)
+	else
+		visible_message("The elevator door opens.")
+		open = TRUE
+		flick("elevator_dooropening",src)
+		spawn(10)
+			icon_state = "elevator_dooropen"
+			density = FALSE
+			opacity = FALSE
+			for(var/atom/movable/S in opacity_objects)
+				S.set_opacity(FALSE)
+
+/obj/structure/gate/elevator_door/proc/autoclose()
+	if (src.open)
+		spawn(30)
+			src.toggle()
+			return
+	autoclose()
+
+/obj/structure/gatecontrol/elevator_door
+	name = "elevator door button"
+	desc = "Calls for an elevator."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "lift_panel2"
+	anchored = TRUE
+	cooldown = 5
+	distance = 5
+	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/gatecontrol/elevator_door/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time)
+		for (var/obj/structure/gate/elevator_door/D in range(distance,src.loc))
+			D.toggle()
+		cooldown = world.time + 6 SECONDS
+
+/obj/structure/elevator_button
+	name = "elevator control button"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "lift_panel"
+	anchored = TRUE
+	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/next_activation = -1
+
+/obj/structure/elevator_button/attack_hand(var/mob/user as mob)
+	if (world.time < next_activation)
+		next_activation = world.time + 5 SECONDS
+	else
+		next_activation = world.time + 15 SECONDS
+		for (var/obj/structure/gate/elevator_door/D in range(4,src.loc))
+			if (D.open)
+				D.toggle()
+		spawn(5)
+			visible_message("The elevator is departing!")
+			spawn(10)
+				for (var/mob/M in range(1, src))
+					if (M.z == 1)
+						M.z = 2
+					else if (M.z == 2)
+						M.z = 1
+					M << "The elevator has arrived!"
+				for (var/obj/O in range(1, src))
+					if (!istype(O, /obj/structure/elevator_button/) && !istype (O, /obj/covers/))
+						if (O.z == 1)
+							O.z = 2
+						else if (O.z == 2)
+							O.z = 1
+				spawn(5)
+					var/destination_upper = locate(src.x, src.y, src.z+1)
+					var/destination_lower = locate(src.x, src.y, src.z-1)
+					if (src.z == 1)
+						for (var/obj/structure/gate/elevator_door/D in range(4,destination_upper))
+							D.toggle()
+							playsound(destination_upper, 'sound/effects/elevatording.ogg', 100)
+					else
+						for (var/obj/structure/gate/elevator_door/D in range(4,destination_lower))
+							D.toggle()
+							playsound(destination_lower, 'sound/effects/elevatording.ogg', 100)
+//////////////////////////////////////////////////////////////////////////////////////////////////
