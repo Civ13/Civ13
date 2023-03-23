@@ -329,7 +329,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/browninglmg(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/browning_lmg(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/browning(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/browning(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
