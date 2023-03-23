@@ -91,7 +91,7 @@
 	return "<span class = 'userdanger'>Both teams may no longer cross the invisible wall!</span>"
 
 /obj/map_metadata/operation_falcon/proc/points_check()
-	if (processes.ticker.playtime_elapsed > 10)
+	if (processes.ticker.playtime_elapsed > 3000)
 		var/c1 = 0
 		var/c2 = 0
 		var/cust_color = "white"
