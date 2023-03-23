@@ -381,6 +381,7 @@
 		/obj/item/flashlight/militarylight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
 	)
 
 /obj/structure/vending/usa_equipment_ww2
@@ -389,6 +390,7 @@
 	icon_state = "equipment_usa"
 	products = list(
 		/obj/item/weapon/gun/projectile/semiautomatic/m1garand = 15,
+		/obj/item/weapon/attachment/bayonet = 20,
 		/obj/item/ammo_magazine/garand = 50,
 		/obj/item/ammo_magazine/springfield = 40,
 		/obj/item/ammo_magazine/bar = 15,
@@ -396,6 +398,7 @@
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
 		/obj/item/ammo_magazine/a45acpbox = 10,
+		/obj/item/ammo_magazine/m1car15/box = 10,
 	)
 
 /obj/structure/vending/japaneseapparel_ww2

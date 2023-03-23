@@ -2001,3 +2001,26 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/m2carbine
+	name = "M2 carbine"
+	desc = "An American Light Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
+	icon = 'icons/obj/guns/rifles.dmi'
+	icon_state = "mcar"
+	item_state = "mcar"
+	base_icon = "mcar"
+	caliber = "a762x33"
+	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x33
+	magazine_type = /obj/item/ammo_magazine/m1car15
+	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car15/m1car30)
+	weight = 3.4
+	equiptimer = 11
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "full auto",	burst=1, burst_delay=2, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL

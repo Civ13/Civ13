@@ -1308,12 +1308,26 @@
 	item_state = "smallpouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
+	storage_slots = 6
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
 	new/obj/item/ammo_magazine/thompson(src)
 	new/obj/item/ammo_magazine/thompson(src)
 	new/obj/item/ammo_magazine/thompson(src)
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/weapon/whistle(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc
+	storage_slots = 6
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/m1car15(src)
+	new/obj/item/ammo_magazine/m1car15(src)
+	new/obj/item/ammo_magazine/m1car15/box(src)
+	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new/obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper
 	max_w_class = 3

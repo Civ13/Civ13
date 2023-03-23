@@ -437,6 +437,30 @@
 	attachment_slots = ATTACH_SCOPE|ATTACH_BARREL
 	effectiveness_mod = 1.07
 
+/obj/item/weapon/gun/projectile/semiautomatic/m1carbine
+	name = "M1 Carbine"
+	desc = "An American Light semi-automatic rifle using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
+	icon_state = "mcar"
+	item_state = "mcar"
+	base_icon = "mcar"
+	w_class = ITEM_SIZE_LARGE
+	load_method = MAGAZINE
+	caliber = "a762x33"
+	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a762x33
+	magazine_type = /obj/item/ammo_magazine/m1car15
+	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car15/m1car30)
+	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
+	weight = 3.9
+	firemodes = list(
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=4)
+		)
+	force = 10
+	throwforce = 20
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	effectiveness_mod = 0.98
+
 /obj/item/weapon/gun/projectile/semiautomatic/vintorez
 	name = "VSS Vintorez"
 	desc = "Marksman rifle featuring an integral supressor originating from the Soviet Union. Feeding from detachable 10-round magazines. Chambered in 9x39mm."
