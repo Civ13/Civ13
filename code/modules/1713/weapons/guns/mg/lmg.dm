@@ -163,8 +163,6 @@
 	icon_state = "mg34"
 	item_state = "mg34"
 	base_icon = "mg34"
-	w_class = ITEM_SIZE_HUGE
-	heavy = TRUE
 	max_shells = 50
 	caliber = "a792x57_weak"
 	weight = 12.1
@@ -385,8 +383,6 @@
 	icon_state = "c6"
 	item_state = "c6"
 	base_icon = "c6"
-	w_class = ITEM_SIZE_HUGE
-	heavy = TRUE
 	max_shells = 200
 	caliber = "a762x51"
 	weight = 8.1
