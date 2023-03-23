@@ -13,8 +13,8 @@
 	force = WEAPON_FORCE_WEAK+2
 	throwforce = WEAPON_FORCE_WEAK
 	flammable = FALSE
-	w_class = ITEM_SIZE_NORMAL
-	slot_flags = SLOT_BELT
+	w_class = ITEM_SIZE_LARGE
+	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	var/active = FALSE
 	var/lastfire = 0
 	var/max_range = 4

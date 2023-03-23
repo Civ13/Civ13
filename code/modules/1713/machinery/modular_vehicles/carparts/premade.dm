@@ -626,8 +626,8 @@
 	axis = /obj/structure/vehicleparts/axis/heavy/challenger2
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/omw22_2/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3),
-	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"2,1" = list(/obj/structure/vehicleparts/frame/omw22_2/front,/obj/structure/bed/chair/drivers/tank),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/leopard),

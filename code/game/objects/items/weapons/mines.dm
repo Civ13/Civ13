@@ -368,3 +368,49 @@
 			if (src)
 				qdel(src)
 
+/obj/item/mine/pipe
+	name = "broken pipe"
+	desc = "Is that safe?"
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "mine"
+	force = 10.0
+	w_class = ITEM_SIZE_LARGE
+	anchored = TRUE
+	layer = TURF_LAYER + 0.01
+	icon_state = "mine_armed"
+	var/origin = null
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 15  //total number of fragments produced by the grenade
+	var/fragment_damage = 30
+	var/damage_step = 1	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/spread_range = 4
+
+/obj/item/mine/pipe/trigger(atom/movable/AM)
+	if (prob(30))
+		if (world.time < nextCanExplode)
+			return
+		if (istype(AM, /mob/living))
+			for (var/mob/O in viewers(7, loc))
+				O << "<font color='red'>[AM] triggered the [src]!</font>"
+			triggered = TRUE
+			visible_message("<span class = 'red'><b>Click!</b></span>")
+			explosion(get_turf(src),1,2,3)
+
+
+		var/turf/T = get_turf(src)
+		if(!T) return
+
+		var/list/target_turfs = getcircle(T, spread_range)
+		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+		for (var/turf/TT in target_turfs)
+			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+			P.damage = fragment_damage
+			P.pellets = fragments_per_projectile
+			P.range_step = damage_step
+			P.shot_from = name
+			P.launch_fragment(TT)
+
+			spawn(9)
+				if (src)
+					qdel(src)

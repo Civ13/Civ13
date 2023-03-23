@@ -645,7 +645,7 @@
 		uniform.attackby(webbing, H)
 	else
 		var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/mosinbay(null)
-			uniform.attackby(webbing, H)
+		uniform.attackby(webbing, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/dp(H), slot_back)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Machinegunner assistant of the Red Army, Provide ammo and Cover to the Pulemetchik, Take Over if he gets incapacitated!")
@@ -2705,7 +2705,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 4
+	max_positions = 6
 
 /datum/job/russian/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2754,7 +2754,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 6
+	max_positions = 10
 
 /datum/job/russian/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2804,7 +2804,6 @@
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
-	whitelisted = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
@@ -2829,7 +2828,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	if(prob(40))
+	if(prob(70))
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 		FP.attached(null,HGUN,TRUE)
 

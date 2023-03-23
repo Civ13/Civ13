@@ -345,6 +345,20 @@ obj/item/ammo_magazine/dp
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/m1carbine
+	name = "M1 Carbine magazine (7.62x51mm)"
+	icon_state = "m14"
+	mag_type = MAGAZINE
+	caliber = "a3006"
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 15
+	weight = 0.4
+	multiple_sprites = TRUE
+	
+/obj/item/ammo_magazine/m1carbine/big
+	max_ammo = 30
+
+
 /obj/item/ammo_magazine/m3006box
 	name = "magazine box (30-06)"
 	icon_state = "ammo"

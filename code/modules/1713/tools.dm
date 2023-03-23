@@ -79,13 +79,15 @@
 /obj/item/weapon/foldable/pkm
 	name = "Foldable PKM machine gun"
 	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
-	icon_state = "pkm_foldable"
-	item_state = "pkm_foldable"
+	icon_state = "foldable_pkm"
+	item_state = "foldable_pkm"
 	force = 20
 	throwforce = 30
-	weight = 7.5
-	slot_flags = SLOT_SHOULDER
-	path = /obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
+	weight = 9.5
+	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.3
+	slot_flags = SLOT_SHOULDER|SLOT_BACK
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
 
 /obj/item/weapon/material/shovel
 	name = "shovel"

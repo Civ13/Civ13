@@ -73,16 +73,17 @@
 	base_icon = "pkm"
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm
-	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm/c100)
+	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
 	firemodes = list(
 		list(name = "full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/foldable
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable
+	anchored = TRUE
 	var/path
 
-/obj/item/weapon/gun/projectile/automatic/stationary/foldable/verb/Retrieve()
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/verb/Retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
@@ -90,27 +91,28 @@
 		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
 		return
 	usr.face_atom(src)
+
 	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
-	if (ammo_magazine)
-		ammo_magazine.loc = get_turf(src)
-		ammo_magazine = null
 	if (do_after(usr, 40, get_turf(usr)))
+		unload_ammo(usr)
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
 
-/obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
 	name = "Foldable PKM machine gun"
 	desc = "Soviet Heavy foldable PKM machinegun. Uses 7.62x54mm rounds."
 	icon_state = "pkm_foldable"
 	base_icon = "pkm_foldable"
 	caliber = "a762x54_weak"
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	magazine_type = /obj/item/ammo_magazine/pkm
-	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm)
+	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
 	firemodes = list(
 		list(name = "full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	
 	path = /obj/item/weapon/foldable/pkm
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
@@ -445,10 +447,10 @@
 		return
 	usr.face_atom(src)
 	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
-	for (var/obj/item/ammo_casing/rocket/I in rockets)
-		I.loc = get_turf(src)
-		rockets -= I
 	if (do_after(usr, 40, get_turf(usr)))
+		for (var/obj/item/ammo_casing/rocket/I in rockets)
+			I.loc = get_turf(src)
+			rockets -= I
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")

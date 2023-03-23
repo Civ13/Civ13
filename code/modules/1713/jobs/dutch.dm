@@ -884,7 +884,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 4
+	max_positions = 6
 
 /datum/job/dutch/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -933,7 +933,7 @@
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
-	max_positions = 6
+	max_positions = 10
 
 /datum/job/dutch/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
