@@ -1919,7 +1919,7 @@
 
 	var/list/dutch_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
 	var/list/rus_choice = list("T-90A Tank (1000)","BMD-2 Infantry Fighting Vehicle (600)", "KamAZ-4350 Truck (300)")
-	var/list/british_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
+	var/list/british_choice = list("FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
 
 /datum/program/carspawn/do_html(mob/living/human/user)
 	var/list/choice
@@ -2108,7 +2108,12 @@
 				PV = new /obj/effects/premadevehicles/apc/bmd2(locate(origin.x+3,origin.y-5,origin.z))
 			if ("KamAZ-4350 Truck (300)")
 				PV = new /obj/effects/premadevehicles/truck/kamaz(locate(origin.x+3,origin.y-5,origin.z))
+			
+			if ("FV4034 Challenger 2 Tank (1000)")
+				PV = new /obj/effects/premadevehicles/tank/challenger2(locate(origin.x+3,origin.y-5,origin.z))
 
+		message_admins("[user.name] ([user.ckey]) ([user.faction_text]) bought a vehicle at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)")
+		log_game("[user.name] ([user.ckey]) ([user.faction_text]) bought a [href_list["vehiclegiver"]] at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)")
 		if (PV)
 			PV.custom_color = basecolor
 			switch (user.faction_text)

@@ -1,5 +1,5 @@
 /obj/item/ammo_magazine/ak47
-	name = "AK Magazine (7.62x39mm)"
+	name = "AK magazine (7.62x39mm)"
 	icon_state = "ak47"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
@@ -9,12 +9,12 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak47/drum
-	name = "AK Drum Magazine (7.62x39mm)"
+	name = "AK Drum magazine (7.62x39mm)"
 	icon_state = "tommydrum"
 	max_ammo = 75
 
 /obj/item/ammo_magazine/sksm
-	name = "SKS-M Magazine (7.62x39mm)"
+	name = "SKS-M magazine (7.62x39mm)"
 	icon_state = "sksm"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
@@ -24,7 +24,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak74
-	name = "AK-74 Magazine (5.45x39mm)"
+	name = "AK-74 magazine (5.45x39mm)"
 	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
@@ -34,7 +34,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak74/rubber
-	name = "AK-74 Magazine (5.45x39mm Rubber)"
+	name = "AK-74 magazine (5.45x39mm Rubber)"
 	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
@@ -44,7 +44,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak74/drum
-	name = "AK-74 Drum Magazine (5.45x39mm)"
+	name = "AK-74 Drum magazine (5.45x39mm)"
 	max_ammo = 75
 	icon_state = "tommydrum"
 
@@ -60,7 +60,7 @@
 	is_box = TRUE
 
 /obj/item/ammo_magazine/ak101
-	name = "AK-101 Magazine (5.46x45mm)"
+	name = "AK-101 magazine (5.46x45mm)"
 	icon_state = "ak47"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
@@ -70,16 +70,16 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/ak101/drum
-	name = "AK-101 Drum Magazine (5.46x45mm)"
+	name = "AK-101 Drum magazine (5.46x45mm)"
 	icon_state = "tommydrum"
 	max_ammo = 75
 
 /obj/item/ammo_magazine/ak74/ak74m
-	name = "AK-74M Magazine (5.45x39mm)"
+	name = "AK-74M magazine (5.45x39mm)"
 	icon_state = "ak74m"
 
 /obj/item/ammo_magazine/ak74/ak74m/drum
-	name = "AK-74M Drum Magazine (5.45x39mm)"
+	name = "AK-74M Drum Mmgazine (5.45x39mm)"
 	icon_state = "tommydrum"
 	max_ammo = 75
 
@@ -135,7 +135,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m14
-	name = "M14 Magazine (7.62x51mm)"
+	name = "M14 magazine (7.62x51mm)"
 	icon_state = "m14"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
@@ -156,7 +156,7 @@
 	is_box = TRUE
 
 /obj/item/ammo_magazine/hk
-	name = "G3 Magazine (7.62x51mm)"
+	name = "G3 magazine (7.62x51mm)"
 	icon_state = "hk"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
@@ -166,7 +166,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/fal
-	name = "FN Fal Magazine (7.62x51mm)"
+	name = "FN Fal magazine (7.62x51mm)"
 	icon_state = "fal"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
@@ -332,7 +332,7 @@
 	clip = TRUE
 
 /obj/item/ammo_magazine/p90
-	name = "P90 Magazine (5.7x28mm)"
+	name = "P90 magazine (5.7x28mm)"
 	icon_state = "p90"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a57x28
@@ -666,7 +666,7 @@
 	belt = TRUE
 
 /obj/item/ammo_magazine/qbz95
-	name = "QBZ-95 Magazine (5.8x42mm)"
+	name = "QBZ-95 magazine (5.8x42mm)"
 	icon_state = "type99"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a58x42

@@ -80,7 +80,7 @@
 
 /obj/item/weapon/gun/launcher/grenade/handle_post_fire(mob/user)
 	message_admins("[key_name_admin(user)] fired a grenade ([chambered.name]) from a grenade launcher ([src.name]).")
-	log_game("[key_name_admin(user)] used a grenade ([chambered.name]).")
+	log_game("[key_name_admin(user)] used a grenade ([chambered.name]) from a grenade launcher ([src.name]).")
 	chambered = null
 	..()
 

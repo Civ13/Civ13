@@ -66,8 +66,6 @@ var/process/open_space/OS_controller = null
 var/list/sky_drop_map = list()
 
 /turf/sky/Entered(var/atom/movable/mover)
-	if (!mover)
-		return
 	if (isobserver(mover))
 		return
 	if (locate_dense_type(contents, /obj/structure))
@@ -86,18 +84,20 @@ var/list/sky_drop_map = list()
 				for (var/turf/T in range(5, sky_drop_map[locstr]))
 					if (locate(/mob/living) in T)
 						continue
+					if (locate_dense_type(contents, /obj/structure/wild/tree) in T)
+						continue
 					mover.forceMove(T)
 		else
 			if (A.allow_area_subtypes)
 				var/area/AA = locate(A.landing_area)
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
-						mover.forceMove(pick(AA.get_turfs()))
+						mover.loc = pick(AA.get_turfs())
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
 				var/area/AA = locate(A.landing_area)
-				mover.forceMove(pick(AA.get_turfs()))
+				mover.loc = pick(AA.get_turfs())
 				sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 
 		if (isliving(mover))
@@ -117,46 +117,46 @@ var/list/sky_drop_map = list()
 						var/dam_zone = pick("l_leg", "r_leg")
 						var/obj/item/organ/external/affecting = H.get_organ(dam_zone)
 						affecting.fracture()
+					H.updatehealth()
 				else
-					#define FALL_STEPS 12
-					try
-						H.client.canmove = FALSE
-						var/image/I = image('icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
-						I.pixel_x = -16
-						I.pixel_y = 16
+					H.pixel_y += 120
+					spawn (1)
+						try
+							H.client.canmove = FALSE
+							var/image/I = image(icon = 'icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
+							I.pixel_x = -16
+							I.pixel_y = 16
 
-						H.overlays += I
-						H.pixel_y += FALL_STEPS*10
+							H.overlays += I
 
-						for (var/v in 1 to FALL_STEPS)
-							spawn (v*5)
-								H.pixel_y -= 10
+							for (var/v in 1 to 12)
+								spawn (5)
+									H.pixel_y -= 10
 
-						// animation is over now: it's supposed to be 7.8 seconds but this works better
-						spawn (FALL_STEPS*5)
-							H.overlays -= I
+							spawn (50)
+								I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "closing", layer = MOB_LAYER + 1.0)
+								spawn (10) // animation is over now
+									H.overlays -= I
+									H.pixel_y = 0
+									qdel(I)
+
+									spawn(10)
+										playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
+										shake_camera(H, 2)
+										H.client.canmove = TRUE
+
+						catch (var/exception/E)
+							pass(E)
+
+							playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
 							H.pixel_y = 0
-							qdel(I)
-
-							spawn(10)
-								playsound(get_turf(H), 'sound/effects/thud.ogg', 100)
-								shake_camera(H, 2)
-								H.client.canmove = TRUE
-
-					catch (var/exception/E)
-						pass(E)
-
-						playsound(get_turf(H), 'sound/effects/thud.ogg', 100)
-						H.pixel_y = 0
-						H.client.canmove = TRUE
-					#undef FALL_STEPS
+							H.client.canmove = TRUE
 
 		// make sure we have the right ambience for our new location
 		spawn (1)
 			if (ishuman(mover))
 				var/area/H_area = get_area(mover)
 				H_area.play_ambience(mover)
-	return
 
 /turf/floor/broken_floor
 	name = "hole"
