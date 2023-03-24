@@ -988,49 +988,59 @@
 		D.soil_nutrition = D.min_soil_nutrition // Cap soil nutrition at mininum possible
 	src.plant_nutrition = D.soil_nutrition
 
+// Helper function to set plant to dead
+/obj/structure/farming/plant/proc/set_dead(type = "dead")
+    stage = 11
+    icon_state = "[plant]-dead"
+    desc = "A " + type + " [plant] plant."
+    name = type + " [plant] plant"
+
 /obj/structure/farming/plant/proc/water_proc()
+	// Exit early if the plant is a mushroom
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
 		return
+
+	// Check for rain or monsoon and increase water level
 	var/area/A = get_area(loc)
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
 		water += 15
 		return
-	else if (findtext(A.icon_state, "snow_storm"))
-		stage = 11
-		icon_state = "[plant]-dead"
-		desc = "A frozen [plant] plant."
-		name = "frozen [plant] plant"
+
+	// Check for snow storm or sandstorm and set plant to dead
+	if (findtext(A.icon_state, "snow_storm"))
+		set_dead("frozen")
 		return
-	else if (findtext(A.icon_state, "sandstorm"))
-		stage = 11
-		icon_state = "[plant]-dead"
-		desc = "A destroyed [plant] plant."
-		name = "destroyed [plant] plant"
+	if (findtext(A.icon_state, "sandstorm"))
+		set_dead("destroyed")
 		return
-	for(var/turf/floor/beach/water/WT in range(2,src))
+
+	// Check for nearby sources of water
+	// Water within 2 tiles means no need to manually water the plants.
+	for (var/turf/floor/beach/water/WT in range(2, src))
 		if (!WT.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
+			water = max_water
 			return
-	for(var/turf/floor/trench/flooded/TR in range(2,src))
+	for (var/turf/floor/trench/flooded/TR in range(2, src))
 		if (TR.flooded && !TR.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
+			water = max_water
 			return
-	for(var/turf/floor/IR in range(2,src))
+	for (var/turf/floor/IR in range(2, src))
 		if (IR.irrigation && IR.flooded && !IR.salty)
-			water = max_water //water within 2 tiles means no need to manually water the plants.
+			water = max_water
 			return
-	var/currcl = get_area(get_turf(src)).climate
-	if (currcl == "desert" || currcl == "savanna" || currcl == "semiarid")
-		water -= 25
-	else
+
+	// Decrease water level based on climate and heat wave
+	var/climate = get_area(get_turf(src)).climate
+	if (!(climate in("desert", "savanna", "semiarid")))
 		water -= 15
+	else
+		water -= 25
 	if (map.heat_wave)
 		water -= 10
+
+	// Set plant to dead if water level is too low
 	if (water <= 0)
-		stage = 11
-		icon_state = "[plant]-dead"
-		desc = "A dry [plant] plant."
-		name = "dry [plant] plant"
+		set_dead("dry")
 
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
