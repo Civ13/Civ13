@@ -749,7 +749,7 @@
         set_dead("dry")
 
 // Helper function to set plant to dead
-/proc/set_dead(type)
+/proc/set_dead(type = "dead")
     stage = 11
     icon_state = "[plant]-dead"
     desc = "A " + type + " [plant] plant."
