@@ -1800,3 +1800,19 @@
 	icon_state = "baf_command"
 	item_state = "baf_command"
 	worn_state = "baf_command"
+
+/////redmenia
+
+/obj/item/clothing/under/redmenia/standard
+	name = "Redmenian army uniform"
+	desc = "a light combat easy to see uniform, for use in non combat jobs such as doctors or support units."
+	icon_state = "rdf_standard"
+	item_state = "rdf_standard"
+	worn_state = "rdf_standard"
+
+/obj/item/clothing/under/redmenia/standard/combat
+	name = "Redmenian camo army uniform"
+	desc = "a combat uniform of Redmenia, slightly camoed."
+	icon_state = "rdf_standardc"
+	item_state = "rdf_standardc"
+	worn_state = "rdf_standardc"
