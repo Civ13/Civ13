@@ -119,38 +119,30 @@ var/list/sky_drop_map = list()
 						affecting.fracture()
 					H.updatehealth()
 				else
-					H.pixel_y += 120
-					spawn (1)
-						try
-							H.client.canmove = FALSE
-							var/image/I = image(icon = 'icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
-							I.pixel_x = -16
-							I.pixel_y = 16
+					H.pixel_y += 60
+					spawn (5)
+						H.client.canmove = FALSE
+						var/image/I = image(icon = 'icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
+						I.pixel_x = -16
+						I.pixel_y = 16
 
-							H.overlays += I
+						H.overlays += I
 
-							for (var/v in 1 to 12)
-								spawn (5)
-									H.pixel_y -= 10
+						for (var/v in 1 to 6)
+							spawn (5)
+								H.pixel_y -= 10
 
-							spawn (50)
-								I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "closing", layer = MOB_LAYER + 1.0)
-								spawn (10) // animation is over now
-									H.overlays -= I
-									H.pixel_y = 0
-									qdel(I)
+						spawn (20)
+							I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "closing", layer = MOB_LAYER + 1.0)
+							spawn (10) // animation is over now
+								H.overlays -= I
+								H.pixel_y = 0
+								qdel(I)
 
-									spawn(10)
-										playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
-										shake_camera(H, 2)
-										H.client.canmove = TRUE
-
-						catch (var/exception/E)
-							pass(E)
-
-							playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
-							H.pixel_y = 0
-							H.client.canmove = TRUE
+								spawn(10)
+									playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
+									shake_camera(H, 2)
+									H.client.canmove = TRUE
 
 		// make sure we have the right ambience for our new location
 		spawn (1)
