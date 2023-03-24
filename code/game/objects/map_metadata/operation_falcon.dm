@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>Both factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, Eastern Suburbs, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, North City, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -29,21 +29,23 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/dutch_points = 0
+	var/win_points = 70 // Amount of points needed to win
+
 	var/faction1_flag = "netherlands"
 	var/faction2_flag = "russian"
-	var/win_points = 70 // Amount of points needed to win
+
 	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
 
 	var/a2_control = "nobody"
-	var/a2_name = "Eastern Suburbs"
+	var/a2_name = "North City"
 
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
 
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
-	grace_wall_timer = 3000
+	grace_wall_timer = 10 MINUTES
 	no_hardcore = TRUE
 
 /obj/map_metadata/operation_falcon/New()
@@ -220,7 +222,7 @@
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
 			for (var/obj/structure/flag/objective/one/F in world)
-				F.icon_state = "[faction1_flag]"
+				F.icon_state = "[faction2_flag]"
 		else
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "white"
@@ -230,7 +232,7 @@
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
 			for (var/obj/structure/flag/objective/two/F in world)
-				F.icon_state = "[faction1_flag]"
+				F.icon_state = "[faction2_flag]"
 		else
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "white"
@@ -240,7 +242,7 @@
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
 			for (var/obj/structure/flag/objective/three/F in world)
-				F.icon_state = "[faction1_flag]"
+				F.icon_state = "[faction2_flag]"
 		else
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "white"
@@ -250,7 +252,7 @@
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
 			for (var/obj/structure/flag/objective/four/F in world)
-				F.icon_state = "[faction1_flag]"
+				F.icon_state = "[faction2_flag]"
 		else
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "white"

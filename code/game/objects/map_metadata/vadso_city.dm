@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(BRITISH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Vadso City"
-	mission_start_message = "<font size=4>Both factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radar Station, Western City, Eastern City and Hydro Dam</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radar Station, Western City, Eastern City and Hydro Dam</b>.<br>First team to reach <b>70</b> points wins!</font>"
 	faction1 = BRITISH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -30,6 +30,10 @@
 	var/rus_points = 0
 	var/british_points = 0
 	var/win_points = 70 // Amount of points needed to win
+
+	var/faction1_flag = "british"
+	var/faction2_flag = "russian"
+
 	var/a1_control = "nobody"
 	var/a1_name = "Radar Station"
 
@@ -40,8 +44,11 @@
 	var/a3_name = "Eastern City"
 
 	var/a4_control = "nobody"
-	var/a4_name = "Hydro Dam"
-	grace_wall_timer = 3000
+	var/a4_name = "Farm"
+
+	var/a5_control = "nobody"
+	var/a5_name = "Hydro Dam"
+	grace_wall_timer = 10 MINUTES
 	no_hardcore = TRUE
 
 /obj/map_metadata/vadso_city/New()
@@ -209,12 +216,93 @@
 			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a4_name]</b>: Nobody</big>"
+		c1 = 0
+		c2 = 0
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/five))
+				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+					c2++
+		if (c1 == c2 && c1 != 0)
+			a4_control = "none"
+			cust_color = "white"
+		else if (c1 > c2)
+			a4_control = "British Armed Forces"
+			cust_color = "blue"
+		else if (c2 > c1)
+			a4_control = "Russian Armed Forces"
+			cust_color = "red"
+		if (a4_control != "none")
+			if (a4_control == "Russian Armed Forces")
+				cust_color = "red"
+				rus_points++
+			else if (a4_control == "British Armed Forces")
+				cust_color = "blue"
+				british_points++
+			else
+				cust_color = "white"
+			world << "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
+		else
+			world << "<big><b>[a5_name]</b>: Nobody</big>"
 	spawn(600)
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"
 			world << "<big>British: [british_points]</big>"
 			world << "<big>Russian: [rus_points]</big>"
+	
+	switch (a1_control)
+		if ("British Armed Forces")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "white"
+	switch (a2_control)
+		if ("British Armed Forces")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "white"
+	switch (a3_control)
+		if ("British Armed Forces")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "white"
+	switch (a4_control)
+		if ("British Armed Forces")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "white"
+	switch (a5_control)
+		if ("British Armed Forces")
+			for (var/obj/structure/flag/objective/five/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/five/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/five/F in world)
+				F.icon_state = "white"
 
 /obj/map_metadata/vadso_city/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 3000)
