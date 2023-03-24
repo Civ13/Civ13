@@ -1030,8 +1030,8 @@
 			return
 
 	// Decrease water level based on climate and heat wave
-	var/climate = get_area(get_turf(src)).climate
-	if (!(climate in("desert", "savanna", "semiarid")))
+	var/climate = get_area(src).climate
+	if (!(climate in list("desert", "savanna", "semiarid")))
 		water -= 15
 	else
 		water -= 25
