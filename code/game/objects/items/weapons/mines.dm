@@ -372,7 +372,7 @@
 	name = "damaged pipe"
 	desc = "Is that safe?"
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "mine"
+	icon_state = "damaged_pipe"
 	force = 10.0
 	w_class = ITEM_SIZE_LARGE
 	anchored = TRUE
@@ -392,9 +392,9 @@
 			return
 		if (istype(AM, /mob/living))
 			for (var/mob/O in viewers(7, loc))
-				O << "<font color='red'>[AM] triggered the [src]!</font>"
+				O << "<font color='red'>[AM] tripped over the [src]!</font>"
 			triggered = TRUE
-			visible_message("<span class = 'red'><b>Click!</b></span>")
+			visible_message("<span class = 'red'><b>SSSShh!</b></span>")
 			explosion(get_turf(src),1,2,3)
 
 
