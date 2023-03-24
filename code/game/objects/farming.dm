@@ -741,7 +741,7 @@
 
     // Decrease water level based on climate and heat wave
     var/climate = get_area(get_turf(src)).climate
-    water -= 15 if climate not in ("desert", "savanna", "semiarid") else 25
+    if climate not in ("desert", "savanna", "semiarid") water -= 15 else 25
     water -= 10 if map.heat_wave
 
     // Set plant to dead if water level is too low
