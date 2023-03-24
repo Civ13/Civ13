@@ -708,6 +708,13 @@
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
 
+// Helper function to set plant to dead
+/obj/structure/farming/plant/proc/set_dead(type = "dead")
+    stage = 11
+    icon_state = "[plant]-dead"
+    desc = "A " + type + " [plant] plant."
+    name = type + " [plant] plant"
+
 /obj/structure/farming/plant/proc/water_proc()
     // Exit early if the plant is a mushroom
     if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
@@ -720,12 +727,15 @@
         return
 
     // Check for snow storm or sandstorm and set plant to dead
-    if (findtext(A.icon_state, "snow_storm") || findtext(A.icon_state, "sandstorm"))
-        set_dead("frozen" if findtext(A.icon_state, "snow_storm") else "destroyed")
+    if (findtext(A.icon_state, "snow_storm"))
+        set_dead("frozen")
+        return
+    if (findtext(A.icon_state, "sandstorm"))
+        set_dead("destroyed")
         return
 
     // Check for nearby sources of water
-	// Water within 2 tiles means no need to manually water the plants.
+    // Water within 2 tiles means no need to manually water the plants.
     for (var/turf/floor/beach/water/WT in range(2, src))
         if (!WT.salty)
             water = max_water
@@ -741,19 +751,16 @@
 
     // Decrease water level based on climate and heat wave
     var/climate = get_area(get_turf(src)).climate
-    if climate not in ("desert", "savanna", "semiarid") water -= 15 else 25
-    water -= 10 if map.heat_wave
+    if (!(climate in("desert", "savanna", "semiarid")))
+        water -= 15
+    else
+        water -= 25
+    if (map.heat_wave)
+        water -= 10
 
     // Set plant to dead if water level is too low
     if (water <= 0)
         set_dead("dry")
-
-// Helper function to set plant to dead
-/proc/set_dead(type = "dead")
-    stage = 11
-    icon_state = "[plant]-dead"
-    desc = "A " + type + " [plant] plant."
-    name = type + " [plant] plant"
 
 /obj/structure/farming/plant/examine(mob/user)
 	..(user)
