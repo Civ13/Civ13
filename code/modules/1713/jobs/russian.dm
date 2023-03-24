@@ -2682,7 +2682,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/compass/modern/tacmap(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.add_note("Role", "You are a <b>[title]</b>. Drop down from the sky and help your fellow soldiers on the ground!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)

@@ -679,15 +679,19 @@ Shinobi's unfinished welder stuff - siro*/
 	slot_flags = SLOT_BELT
 	time = 3
 	max_offset = 2
+	secondary_action = TRUE
 	var/on = FALSE
 
 /obj/item/weapon/compass/modern/attack_self(mob/user as mob)
 	if (!on)
-		usr << "<span class = 'warning'>You need to turn the table on.</span>"
+		usr << "<span class = 'warning'>You need to turn the tablet on.</span>"
 		return
 	else
 		. = ..()
 /obj/item/weapon/compass/modern/secondary_attack_self(mob/living/human/user)
+	turn_on()
+
+/obj/item/weapon/compass/modern/proc/turn_on()
 	if (!on)
 		on = TRUE
 		icon_state = "compass_modern_on"
