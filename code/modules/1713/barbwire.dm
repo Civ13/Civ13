@@ -93,7 +93,7 @@
 			if (!do_after(user,120))
 				user.visible_message("<span class = 'notice'>\The [user] decides to hack through \the [src].</span>")
 				return
-			if (prob(40))
+			if (prob(15))
 				user.visible_message("<span class = 'notice'>\The [user] finishes hacking through \the [src]!</span>")
 				playsound(loc, 'sound/items/Wirecutter.ogg', 50, TRUE)
 				qdel(src)

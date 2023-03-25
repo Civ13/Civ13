@@ -75,16 +75,19 @@
 	. = get_contents():Copy()
 	. -= typesof(/obj)
 	. -= typesof(/mob)
+	return .
 
 /area/proc/get_mobs()
 	. = get_contents():Copy()
 	. -= typesof(/turf)
 	. -= typesof(/obj)
+	return .
 
 /area/proc/get_objs()
 	. = get_contents():Copy()
 	. -= typesof(/turf)
 	. -= typesof(/mob)
+	return .
 
 /area/Entered(A)
 	if (!istype(A,/mob/living))	return

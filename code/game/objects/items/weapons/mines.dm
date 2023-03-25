@@ -17,11 +17,7 @@
 	flags = CONDUCT
 	var/triggered = FALSE
 	var/triggertype = "explosive" //Calls that proc
-	/*
-		"explosive"
-		//"incendiary" //New bay//
-	*/
-
+	
 	// failsafe to stop a horrible mine bug - kachnov
 	var/nextCanExplode = -1
 
@@ -50,12 +46,12 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			if (istype(W, /obj/item/weapon/wirecutters))
-				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with the [W].</span>")
 				if (!do_after(user,60))
-					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
-				if (prob(min(95*H.getStatCoeff("dexterity"),100)))
-					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+				if (prob(min(98*H.getStatCoeff("dexterity"),100)))
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
@@ -63,12 +59,12 @@
 				else
 					Bumped(user)
 			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
-				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
-				if (!do_after(user,80))
-					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with the [W].</span>")
+				if (!do_after(user,120))
+					user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 					return
 				if (prob(min(50*H.getStatCoeff("dexterity"),75)))
-					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!!</span>")
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
@@ -84,12 +80,12 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
+			user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with their bare hands!</span>")
 			if (!do_after(user,100))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 				return
 			if (prob(min(15*H.getStatCoeff("dexterity"),35)))
-				user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
+				user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!</span>")
 				anchored = FALSE
 				icon_state = "mine"
 				layer = initial(layer)
