@@ -92,12 +92,18 @@ var/list/sky_drop_map = list()
 				var/area/AA = locate(A.landing_area)
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
-						mover.loc = pick(AA.get_turfs())
+						var/turf/newloc = pick(AA.get_turfs())
+						mover.x = newloc.x
+						mover.y = newloc.y
+						mover.z = newloc.z
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
 				var/area/AA = locate(A.landing_area)
-				mover.loc = pick(AA.get_turfs())
+				var/turf/newloc = pick(AA.get_turfs())
+				mover.x = newloc.x
+				mover.y = newloc.y
+				mover.z = newloc.z
 				sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 
 		if (isliving(mover))
