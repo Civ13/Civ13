@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>Both factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, Eastern Suburbs, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, North City, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -29,21 +29,23 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/dutch_points = 0
+	var/win_points = 70 // Amount of points needed to win
+
 	var/faction1_flag = "netherlands"
 	var/faction2_flag = "russian"
-	var/win_points = 70 // Amount of points needed to win
+
 	var/a1_control = "nobody"
 	var/a1_name = "Radio Post"
 
 	var/a2_control = "nobody"
-	var/a2_name = "Eastern Suburbs"
+	var/a2_name = "North City"
 
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
 
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
-	grace_wall_timer = 3000
+	grace_wall_timer = 10 MINUTES
 	no_hardcore = TRUE
 
 /obj/map_metadata/operation_falcon/New()
@@ -105,33 +107,21 @@
 		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
 			cust_color = "white"
-			for (var/obj/structure/flag/objective/one/F in world)
-				F.icon_state = "white"
 		else if (c1 > c2)
 			a1_control = "Dutch Royal Army"
 			cust_color = "#FFA500"
-			for (var/obj/structure/flag/objective/one/F in world)
-				F.icon_state = "[faction1_flag]"
 		else if (c2 > c1)
 			a1_control = "Russian Armed Forces"
 			cust_color = "red"
-			for (var/obj/structure/flag/objective/one/F in world)
-				F.icon_state = "[faction2_flag]"
 		if (a1_control != "none")
 			if (a1_control == "Russian Armed Forces")
 				cust_color = "red"
 				rus_points++
-				for (var/obj/structure/flag/objective/one/F in world)
-					F.icon_state = "[faction2_flag]"
 			else if (a1_control == "Dutch Royal Army")
 				cust_color = "#FFA500"
 				dutch_points++
-				for (var/obj/structure/flag/objective/one/F in world)
-					F.icon_state = "[faction1_flag]"
 			else
 				cust_color = "white"
-				for (var/obj/structure/flag/objective/one/F in world)
-					F.icon_state = "white"
 			world << "<big><b>[a1_name]</b>: <font color='[cust_color]'>[a1_control]</font></big>"
 		else
 			world << "<big><b>[a1_name]</b>: Nobody</big>"
@@ -147,33 +137,21 @@
 		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
 			cust_color = "white"
-			for (var/obj/structure/flag/objective/two/F in world)
-				F.icon_state = "white"
 		else if (c1 > c2)
 			a2_control = "Dutch Royal Army"
 			cust_color = "#FFA500"
-			for (var/obj/structure/flag/objective/two/F in world)
-				F.icon_state = "[faction1_flag]"
 		else if (c2 > c1)
 			a2_control = "Russian Armed Forces"
 			cust_color = "red"
-			for (var/obj/structure/flag/objective/two/F in world)
-				F.icon_state = "[faction2_flag]"
 		if (a2_control != "none")
 			if (a2_control == "Russian Armed Forces")
 				cust_color = "red"
 				rus_points++
-				for (var/obj/structure/flag/objective/two/F in world)
-					F.icon_state = "[faction2_flag]"
 			else if (a2_control == "Dutch Royal Army")
 				cust_color = "#FFA500"
 				dutch_points++
-				for (var/obj/structure/flag/objective/two/F in world)
-					F.icon_state = "[faction1_flag]"
 			else
 				cust_color = "white"
-				for (var/obj/structure/flag/objective/two/F in world)
-					F.icon_state = "white"
 			world << "<big><b>[a2_name]</b>: <font color='[cust_color]'>[a2_control]</font></big>"
 		else
 			world << "<big><b>[a2_name]</b>: Nobody</big>"
@@ -189,33 +167,21 @@
 		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
 			cust_color = "white"
-			for (var/obj/structure/flag/objective/three/F in world)
-				F.icon_state = "white"
 		else if (c1 > c2)
 			a3_control = "Dutch Royal Army"
 			cust_color = "#FFA500"
-			for (var/obj/structure/flag/objective/three/F in world)
-				F.icon_state = "[faction1_flag]"
 		else if (c2 > c1)
 			a3_control = "Russian Armed Forces"
 			cust_color = "red"
-			for (var/obj/structure/flag/objective/three/F in world)
-				F.icon_state = "[faction2_flag]"
 		if (a3_control != "none")
 			if (a3_control == "Russian Armed Forces")
 				cust_color = "red"
 				rus_points++
-				for (var/obj/structure/flag/objective/three/F in world)
-					F.icon_state = "[faction2_flag]"
 			else if (a3_control == "Dutch Royal Army")
 				cust_color = "#FFA500"
 				dutch_points++
-				for (var/obj/structure/flag/objective/three/F in world)
-					F.icon_state = "[faction1_flag]"
 			else
 				cust_color = "white"
-				for (var/obj/structure/flag/objective/three/F in world)
-					F.icon_state = "white"
 			world << "<big><b>[a3_name]</b>: <font color='[cust_color]'>[a3_control]</font></big>"
 		else
 			world << "<big><b>[a3_name]</b>: Nobody</big>"
@@ -231,36 +197,66 @@
 		if (c1 == c2 && c1 != 0)
 			a4_control = "none"
 			cust_color = "white"
-			for (var/obj/structure/flag/objective/four/F in world)
-				F.icon_state = "white"
 		else if (c1 > c2)
 			a4_control = "Dutch Royal Army"
 			cust_color = "#FFA500"
-			for (var/obj/structure/flag/objective/four/F in world)
-				F.icon_state = "[faction1_flag]"
 		else if (c2 > c1)
 			a4_control = "Russian Armed Forces"
 			cust_color = "red"
-			for (var/obj/structure/flag/objective/four/F in world)
-				F.icon_state = "[faction2_flag]"
 		if (a4_control != "none")
 			if (a4_control == "Russian Armed Forces")
 				cust_color = "red"
 				rus_points++
-				for (var/obj/structure/flag/objective/four/F in world)
-					F.icon_state = "[faction2_flag]"
 			else if (a4_control == "Dutch Royal Army")
 				cust_color = "#FFA500"
 				dutch_points++
-				for (var/obj/structure/flag/objective/four/F in world)
-					F.icon_state = "[faction1_flag]"
 			else
 				cust_color = "white"
-				for (var/obj/structure/flag/objective/four/F in world)
-					F.icon_state = "white"
 			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a4_name]</b>: Nobody</big>"
+	
+	switch (a1_control)
+		if ("Dutch Royal Army")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "white"
+	switch (a2_control)
+		if ("Dutch Royal Army")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "white"
+	switch (a3_control)
+		if ("Dutch Royal Army")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "white"
+	switch (a4_control)
+		if ("Dutch Royal Army")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "[faction1_flag]"
+		if ("Russian Armed Forces")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "[faction2_flag]"
+		else
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "white"
+
 	spawn(600)
 		points_check()
 		spawn(5)

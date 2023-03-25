@@ -37,10 +37,10 @@
 	switch (user.faction_text)
 		if ("DUTCH")
 			options["Foldable Anti-Tank Guide Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
-			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack)
+			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 		if ("RUSSIAN")
 			options["Foldable Anti-Tank Guide Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
-			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack)
+			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 			options["Foldable PKM"] = list(/obj/item/weapon/foldable/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm)
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
