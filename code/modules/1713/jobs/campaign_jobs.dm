@@ -13,17 +13,18 @@
 	is_commander = TRUE
 	title = "RDF Commander"
 	rank_abbreviation = "CO-Cpt."
-
 	additional_languages = list("Blugoslavian" = 100)
 /datum/job/pirates/redfaction/officer
 	is_commander = TRUE
 	title = "RDF Officer"
 	rank_abbreviation = "XO-Lt."
-	additional_languages = list("Blugoslavian" = 50)
-/datum/job/pirates/redfaction/medic
-	title = "RDF Medic"
+	additional_languages = list("Blugoslavian" = 100)
+
+/datum/job/pirates/redfaction/doctor
+	title = "RDF Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
+
 /datum/job/pirates/redfaction/s1/sl
 	title = "RDF Squad 1 Squadleader"
 	squad = 1
@@ -42,6 +43,7 @@
 	title = "RDF Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+
 /datum/job/pirates/redfaction/s2/sl
 	title = "RDF Squad 2 Squadleader"
 	squad = 2
@@ -60,6 +62,7 @@
 	title = "RDF Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+
 /*
 /datum/job/pirates/redfaction/s3
 	title = "RDF Squad 3 Private"
@@ -76,19 +79,25 @@
 	title = "RDF Squad 3 Machinegunner"
 	squad = 3
 	*/
+
 /datum/job/pirates/redfaction/recon
 	title = "RDF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+
+/*
 /datum/job/pirates/redfaction/at
 	title = "RDF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
+*/
+
 /datum/job/pirates/redfaction/engineer
 	title = "RDF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
-	/*
+
+/*
 /datum/job/pirates/redfaction/armored/sl
 	title = "RDF Armored Squadleader"
 	squad = 5
@@ -98,7 +107,8 @@
 	title = "RDF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
-	*/
+*/
+
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -144,7 +154,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/rpg(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
@@ -166,8 +176,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
-	else if (findtext(title, "Medic"))
-		H.setStat("medical", STAT_VERY_HIGH)
+	else if (findtext(title, "Doctor"))
+		H.setStat("medical", STAT_MAX)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
@@ -239,9 +249,9 @@
 	is_commander = TRUE
 	title = "BAF Officer"
 	rank_abbreviation = "XO-Lt."
-	additional_languages = list("Redmenian" = 50)
-/datum/job/civilian/bluefaction/medic
-	title = "BAF Medic"
+	additional_languages = list("Redmenian" = 100)
+/datum/job/civilian/bluefaction/doctor
+	title = "BAF Doctor"
 	is_medic = TRUE
 	rank_abbreviation = "Dr."
 
@@ -263,10 +273,12 @@
 	title = "BAF Squad 1 Machinegunner"
 	squad = 1
 	rank_abbreviation = "1-MG"
+/*
 /datum/job/civilian/bluefaction/s1/marksman
 	title = "BAF Squad 1 Des. Marksman"
 	squad = 1
 	rank_abbreviation = "1-DM"
+*/
 
 /datum/job/civilian/bluefaction/s2/sl
 	title = "BAF Squad 2 Squadleader"
@@ -286,11 +298,13 @@
 	title = "BAF Squad 2 Machinegunner"
 	squad = 2
 	rank_abbreviation = "2-MG"
+/*
 /datum/job/civilian/bluefaction/s2/marksman
 	title = "BAF Squad 2 Des. Marksman"
 	squad = 2
 	rank_abbreviation = "2-DM"
-
+*/
+/*
 /datum/job/civilian/bluefaction/s3/sl
 	title = "BAF Squad 3 Squadleader"
 	squad = 3
@@ -309,11 +323,13 @@
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
+*/
+/*
 /datum/job/civilian/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"
 	squad = 3
 	rank_abbreviation = "3-DM"
-
+*/
 /datum/job/civilian/bluefaction/recon
 	title = "BAF Recon"
 	squad = 4
@@ -385,7 +401,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/rpg(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
@@ -408,8 +424,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
-	else if (findtext(title, "Medic"))
-		H.setStat("medical", STAT_VERY_HIGH)
+	else if (findtext(title, "Doctor"))
+		H.setStat("medical", STAT_MAX)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
@@ -497,8 +513,8 @@
 	title = "BNF Marine"
 	rank_abbreviation = "Pvt."
 	squad = 3
-/datum/job/civilian/bluefaction/navy/medic
-	title = "BNF Medic"
+/datum/job/civilian/bluefaction/navy/doctor
+	title = "BNF Doctor"
 	rank_abbreviation = "Dr."
 	is_medic = TRUE
 /datum/job/civilian/bluefaction/navy/equip(var/mob/living/human/H)
@@ -550,8 +566,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	if (findtext(title, "Medic"))
-		H.setStat("medical", STAT_VERY_HIGH)
+	if (findtext(title, "Doctor"))
+		H.setStat("medical", STAT_MAX)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
@@ -610,8 +626,8 @@
 	title = "IRN Marine"
 	rank_abbreviation = "Pvt."
 	squad = 3
-/datum/job/pirates/redfaction/navy/medic
-	title = "IRN Medic"
+/datum/job/pirates/redfaction/navy/doctor
+	title = "IRN Doctor"
 	rank_abbreviation = "Dr."
 	is_medic = TRUE
 
@@ -664,8 +680,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	if (findtext(title, "Medic"))
-		H.setStat("medical", STAT_VERY_HIGH)
+	if (findtext(title, "Doctor"))
+		H.setStat("medical", STAT_MAX)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)

@@ -47,7 +47,7 @@
 		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
-		"none" = list("Medic" = 2, "Officer" = 3, "Commander" = 1)
+		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
 	var/list/squad_jobs_red = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
@@ -57,7 +57,7 @@
 		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
-		"none" = list("Medic" = 2, "Officer" = 3, "Commander" = 1)
+		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
 
 /obj/map_metadata/campaign/New()
@@ -175,7 +175,7 @@
 			if (factjob == "BAF")
 				if(!findtext(job.title, "BNF"))
 					continue
-				if(findtext(job.title, "BNF Medic") && MC.squad_jobs_blue["none"]["Medic"]<= 0)
+				if(findtext(job.title, "BNF Doctor") && MC.squad_jobs_blue["none"]["Doctor"]<= 0)
 					continue
 				if(findtext(job.title, "BNF Ensign") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
 					continue
@@ -188,7 +188,7 @@
 			else if (factjob == "RDF")
 				if(!findtext(job.title, "IRN"))
 					continue
-				if(findtext(job.title, "IRN Medic") && MC.squad_jobs_red["none"]["Medic"]<= 0)
+				if(findtext(job.title, "IRN Doctor") && MC.squad_jobs_red["none"]["Doctor"]<= 0)
 					continue
 				if(findtext(job.title, "IRN Ensign") && MC.squad_jobs_red["none"]["Officer"]<= 0)
 					continue
@@ -229,7 +229,7 @@
 			if (factjob == "BAF")
 				if(!findtext(job.title, "BAF"))
 					continue
-				if(findtext(job.title, "BAF Medic") && MC.squad_jobs_blue["none"]["Medic"]<= 0)
+				if(findtext(job.title, "BAF Doctor") && MC.squad_jobs_blue["none"]["Doctor"]<= 0)
 					continue
 				if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
 					continue
@@ -252,7 +252,7 @@
 			else if (factjob == "RDF")
 				if(!findtext(job.title, "RDF"))
 					continue
-				if(findtext(job.title, "RDF Medic") && MC.squad_jobs_red["none"]["Medic"]<= 0)
+				if(findtext(job.title, "RDF Doctor") && MC.squad_jobs_red["none"]["Doctor"]<= 0)
 					continue
 				if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
 					continue
@@ -464,6 +464,7 @@ var/no_loop_cm = FALSE
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+	
 ///////////arty and stuff/////////////
 /obj/map_metadata/campaign/proc/napalm_strike(var/inputx, var/inputy, var/inputz)
 	var/xoffsetmin = inputx-4
@@ -503,10 +504,12 @@ var/no_loop_cm = FALSE
 		var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 		explosion(O,2,3,3,2)
 //40-106,34-77
+
 /obj/map_metadata/campaign/proc/city_mrl_strike()
 	mrl_strike(13,60,97,34,63,2)
 	spawn(100)
 		mrl_strike(5,97,105,34,73,2)
+
 /obj/map_metadata/campaign/proc/mrl_strike(var/strikenum = 18, var/xoffsetmin, var/xoffsetmax, var/yoffsetmin, var/yoffsetmax, var/inputz)
 	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 	uploaded_sound.priority = 250
@@ -519,6 +522,7 @@ var/no_loop_cm = FALSE
 			spawn(i*4)
 				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 				explosion(O,2,3,3,3)
+
 ///////////map specific objs/////////
 /obj/structure/altar/heads
 	name = "Mr. Taislenko's Collection"
@@ -574,6 +578,7 @@ var/no_loop_cm = FALSE
 	anchored = TRUE
 	update_icon()
 		icon_state = "telephone"
+		
 /obj/item/weapon/telephone/mobile/campaign/red
 	name = "Red Command telephone"
 	phonenumber = 1111
