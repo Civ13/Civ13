@@ -1794,6 +1794,15 @@
 	item_state = "baf_standardc"
 	worn_state = "baf_standardc"
 
+/obj/item/clothing/under/blugoslavia/standard/squadlead
+	name = "Blugoslavian camo squad leader uniform"
+	desc = "a combat uniform of blugoslavian squad leaders, camoed and offers very light protection against everything."
+	icon_state = "baf_standardc"
+	item_state = "baf_standardc"
+	worn_state = "baf_standardc"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 5, arrow = 1, gun = 5, energy = 5, bomb = 5, bio = 15, rad = 5)
+
 /obj/item/clothing/under/blugoslavia/standard/command
 	name = "Blugoslavian ceremonial uniform"
 	desc = "a ceremonial uniform of the BAF, used by officers and commanders"
@@ -1802,7 +1811,6 @@
 	worn_state = "baf_command"
 
 /////redmenia
-
 /obj/item/clothing/under/redmenia/standard
 	name = "Redmenian army uniform"
 	desc = "a light combat easy to see uniform, for use in non combat jobs such as doctors or support units."
@@ -1816,3 +1824,19 @@
 	icon_state = "rdf_standardc"
 	item_state = "rdf_standardc"
 	worn_state = "rdf_standardc"
+
+/obj/item/clothing/under/redmenia/standard/squadlead //they get less camo but more protect
+	name = "Redmenian camo army uniform"
+	desc = "a squad leaders combat uniform of Redmenia, slightly camoed and offers some protection."
+	icon_state = "rdf_standardc"
+	item_state = "rdf_standardc"
+	worn_state = "rdf_standardc"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 6, arrow = 3, gun = 6, energy = 5, bomb = 5, bio = 15, rad = 5)
+
+/obj/item/clothing/under/redmenia/standard/command
+	name = "Redmenian camo army uniform"
+	desc = "a ceremonial uniform of redmenia, used by officers and commanders."
+	icon_state = "rdf_command"
+	item_state = "rdf_command"
+	worn_state = "rdf_command"

@@ -2024,3 +2024,67 @@
 	effectiveness_mod = 1.07
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/srm
+	name = "SR-3"
+	desc = "Russian Compact Carbine chambered in 9x39mm,comes with a compact stock."
+	slot_flags = SLOT_SHOULDER
+	icon_state = "srm"
+	item_state = "srm"
+	base_icon = "srm"
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	caliber = "a9x39"
+	ammo_type = /obj/item/ammo_casing/a9x39
+	magazine_type = /obj/item/ammo_magazine/srm
+	good_mags = list(/obj/item/ammo_magazine/srm,/obj/item/ammo_magazine/srm/srms,/obj/item/ammo_magazine/vintorez)
+	equiptimer = 12
+	var/folded = FALSE
+	weight = 2
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=1, recoil=0, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.4)),
+		list(name = "full auto",	burst=1, burst_delay=2, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.4, 1.4)),
+		)
+	effectiveness_mod = 1.09
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/srm/update_icon()
+	if (folded)
+		base_icon = "srm_folded"
+	else
+		base_icon = "srm"
+	if (ammo_magazine)
+		icon_state = base_icon
+		item_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
+
+/obj/item/weapon/gun/projectile/submachinegun/srm/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "srm"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 12
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "srm_folded"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 5
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/submachinegun/srm/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
+		effectiveness_mod = 0.95
+	else
+		slot_flags = SLOT_SHOULDER
+		effectiveness_mod = 1.09

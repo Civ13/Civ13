@@ -423,3 +423,29 @@
 	else
 		icon_state = "single_use4_empty"
 		used = TRUE
+
+/obj/item/weapon/reagent_containers/syringe/speed
+	name = "Speed syringe"
+	desc = "A single-use injector made to pump you full of muscle stimulating drugs, making you more aware and fast."
+	icon_state = "single_use5"
+	w_class = ITEM_SIZE_TINY
+	volume = 37
+	amount_per_transfer_from_this = 37
+	single_use = TRUE
+
+/obj/item/weapon/reagent_containers/syringe/speed/New()
+	..()
+	reagents.add_reagent("coffee", 20)
+	reagents.add_reagent("pervitin", 1)
+	reagents.add_reagent("crack", 1)
+	reagents.add_reagent("dragonpowder", 5)
+	reagents.add_reagent("methylphenidate", 5)
+	reagents.add_reagent("plentiful_stamina", 5)
+	mode = SYRINGE_INJECT
+
+/obj/item/weapon/reagent_containers/syringe/speed/update_icon()
+	if (reagents.total_volume > 0)
+		icon_state = "single_use5"
+	else
+		icon_state = "single_use5_empty"
+		used = TRUE
