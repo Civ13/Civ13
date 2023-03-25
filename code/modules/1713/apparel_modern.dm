@@ -689,6 +689,24 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/a6b47/camo
+	name = "camo 6B47 helmet"
+	icon_state = "a6b47cam"
+	item_state = "a6b47cam"
+	worn_state = "a6b47cam"
+
+/obj/item/clothing/head/helmet/modern/a6b47/camo/blugo
+	name = "blugo 6B47 helmet"
+	icon_state = "a6b47b"
+	item_state = "a6b47b"
+	worn_state = "a6b47b"
+
+/obj/item/clothing/head/helmet/modern/a6b47/camo/blugo/command
+	name = "blugo command 6B47 helmet"
+	icon_state = "a6b47bc"
+	item_state = "a6b47bc"
+	worn_state = "a6b47bc"
+
 /obj/item/clothing/head/helmet/modern/sfera //1990's helmet for reference, specific date unknown.
 	name = "Sfera helmet"
 	desc = "A russian combat armoured helmet, often used by internal troops in the USSR and Russia."

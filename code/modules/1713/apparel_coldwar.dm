@@ -1050,6 +1050,12 @@
 	item_state = "6b3blu"
 	worn_state = "6b3blu"
 
+/obj/item/clothing/accessory/armor/coldwar/plates/b3/camo //uses civ grass tiles, provides alot more camo
+	name = "6B3 green camo body armor"
+	icon_state = "6b3cam"
+	item_state = "6b3cam"
+	worn_state = "6b3cam"
+
 /obj/item/clothing/accessory/armor/coldwar/plates/b2
 	name = "6B2 body armor"
 	desc = "A ballistic vest of Soviet origin, issued in the early 1980s."
