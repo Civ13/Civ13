@@ -511,6 +511,36 @@
 	weight = 0.32
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/srm
+	name = "SR-3 magazine (9x39mm)"
+	icon_state = "srm"
+	caliber = "a9x39"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x39
+	max_ammo = 30
+	weight = 0.45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/srm/box
+	name = "Ammo Box (9x39mm)"
+	icon_state = "srm"
+	ammo_type = /obj/item/ammo_casing/a9x39
+	caliber = "a9x39"
+	max_ammo = 100
+	weight = 0.8
+	multiple_sprites = TRUE
+	is_box = TRUE
+
+/obj/item/ammo_magazine/srm/srms
+	name = "SR-3 small magazine (9x39mm)"
+	icon_state = "srms"
+	caliber = "a9x39"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x39
+	max_ammo = 20
+	weight = 0.39
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/a50cal
 	name = "heavy bullet pouch (.50 BMG)"
 	icon_state = "pouch_closed"
