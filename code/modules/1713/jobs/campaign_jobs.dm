@@ -144,8 +144,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+
 	if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/red, slot_l_store)
+
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
 	else if (findtext(title, "Armored"))
@@ -191,13 +193,13 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/sovietmg(H), slot_belt)
 		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 			H.setStat("rifle", STAT_MEDIUM_HIGH)
-			if(A.climate == "taiga" || A.climate == "tundra")
-				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
 			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 			var/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin(null)
 			if(A.climate == "taiga" || A.climate == "tundra")
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white(H), slot_belt)
 			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 			uniform.attackby(webbing, H)
 		else if (findtext(title, "Engineer"))
@@ -250,6 +252,7 @@
 	title = "BAF Officer"
 	rank_abbreviation = "XO-Lt."
 	additional_languages = list("Redmenian" = 100)
+	
 /datum/job/civilian/bluefaction/doctor
 	title = "BAF Doctor"
 	is_medic = TRUE
@@ -334,16 +337,17 @@
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
+/*
 /datum/job/civilian/bluefaction/at
 	title = "BAF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
-/*
+*/
 /datum/job/civilian/bluefaction/engineer
 	title = "BAF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
-*/
+/*
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
@@ -353,7 +357,7 @@
 	title = "BAF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
-
+*/
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -375,26 +379,26 @@
 //equipment
 	if (findtext(title, "Squadleader"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green/sl(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 	else if (findtext(title, "Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green/com(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_blugoslavia(H), slot_head)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+		
 	if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/blue, slot_l_store)
+
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.setStat("rifle", STAT_MEDIUM_HIGH)
-		if(A.climate == "taiga" || A.climate == "tundra")
-			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
 	else if (findtext(title, "Des. Marksman"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd/acog(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
@@ -440,10 +444,12 @@
 		else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 			H.setStat("rifle", STAT_MEDIUM_HIGH)
 			H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-			var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd(null)
+			var/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin(null)
 			if(A.climate == "taiga" || A.climate == "tundra")
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue/white(H), slot_belt)
 			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
 			uniform.attackby(webbing, H)
 		else if  (findtext(title, "Des. Marksman"))
@@ -546,7 +552,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_blugoslavia(H), slot_head)
 	else if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/nvg(H), slot_eyes)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
