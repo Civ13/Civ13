@@ -287,8 +287,12 @@ var/list/seed_list_jungle
 	icon_state = "tree_1"
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
 	deadicon_state = "tree_1"
+	opacity = TRUE
+	density = TRUE
 	sways = FALSE
 	edible = TRUE
+	bound_height = 64
+	bound_width = 32
 	leaves = 2
 	max_leaves = 2
 	branches = 3
