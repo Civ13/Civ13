@@ -365,19 +365,20 @@
 				qdel(src)
 
 /obj/item/mine/pipe
-	name = "broken pipe"
+	name = "damaged pipe"
 	desc = "Is that safe?"
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "mine"
+	icon_state = "damaged_pipe"
 	force = 10.0
 	w_class = ITEM_SIZE_LARGE
 	anchored = TRUE
 	layer = TURF_LAYER + 0.01
 	icon_state = "mine_armed"
 	var/origin = null
+	var/explosion_size = 1
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 15  //total number of fragments produced by the grenade
-	var/fragment_damage = 30
+	var/num_fragments = 5  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
 	var/damage_step = 1	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/spread_range = 4
 
@@ -387,9 +388,9 @@
 			return
 		if (istype(AM, /mob/living))
 			for (var/mob/O in viewers(7, loc))
-				O << "<font color='red'>[AM] triggered the [src]!</font>"
+				O << "<font color='red'>[AM] tripped over the [src]!</font>"
 			triggered = TRUE
-			visible_message("<span class = 'red'><b>Click!</b></span>")
+			visible_message("<span class = 'red'><b>SSSShh!</b></span>")
 			explosion(get_turf(src),1,2,3)
 
 

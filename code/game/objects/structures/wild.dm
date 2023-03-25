@@ -287,8 +287,12 @@ var/list/seed_list_jungle
 	icon_state = "tree_1"
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
 	deadicon_state = "tree_1"
+	opacity = TRUE
+	density = TRUE
 	sways = FALSE
 	edible = TRUE
+	bound_height = 64
+	bound_width = 32
 	leaves = 2
 	max_leaves = 2
 	branches = 3
@@ -809,6 +813,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
+	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "african_acacia_dead"
 	deadicon_state = "african_acacia_dead"
 	edible = FALSE

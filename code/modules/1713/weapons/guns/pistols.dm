@@ -220,7 +220,7 @@
 	good_mags = list(/obj/item/ammo_magazine/sig250)
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 0.99
 /obj/item/weapon/gun/projectile/pistol/sig250/update_icon()
 	..()
 	if (ammo_magazine)
@@ -269,7 +269,7 @@
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 1.05
 /obj/item/weapon/gun/projectile/pistol/mp443/update_icon()
 	..()
 	if (ammo_magazine)
@@ -293,7 +293,7 @@
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 0.95
 /obj/item/weapon/gun/projectile/pistol/tarus/update_icon()
 	..()
 	if (ammo_magazine)
@@ -372,7 +372,7 @@
 	damage_modifier = 0.98
 	load_method = SINGLE_CASING | SPEEDLOADER
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 0.95
 /obj/item/weapon/gun/projectile/pistol/mauser/update_icon()
 	..()
 	if (ammo_magazine)
@@ -394,7 +394,7 @@
 	ammo_type = /obj/item/ammo_casing/a765x25
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	effectiveness_mod = 0.9
+	effectiveness_mod = 0.93
 /obj/item/weapon/gun/projectile/pistol/borchardt/update_icon()
 	..()
 	if (ammo_magazine)

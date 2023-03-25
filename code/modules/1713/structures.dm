@@ -409,6 +409,122 @@
 	opacity = FALSE
 	anchored = TRUE
 
+/////////Pipes/////////////////////////////
+
+/obj/structure/props/piping/pipe
+	name = "pipe"
+	desc = "A big pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/pipe/under
+	layer = 1
+
+/obj/structure/props/piping/broken_pipe
+	name = "broken pipe"
+	desc = "A big broken pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "pipe-b"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/broken_pipe/under
+	layer = 1
+
+/obj/structure/props/piping/pipe_up
+	name = "pipe"
+	desc = "A big pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "pipe-t"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/pipe_up/under
+	layer = 1
+
+/obj/structure/props/piping/small/pipe
+	name = "small pipe"
+	desc = "A pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe2_thin"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/small/pipe/under
+	layer = 1
+
+/obj/structure/props/piping/small/pipex
+	name = "small pipe"
+	desc = "A pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe_connection4_thin"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/small/pipex/under
+	layer = 1
+
+/obj/structure/props/piping/small/pipel
+	name = "small pipe"
+	desc = "A small L-shaped pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe_turn"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/small/pipel/under
+	layer = 1
+
+/obj/structure/props/piping/small/pipet
+	name = "small pipe"
+	desc = "A small T-shaped pipe."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe_connection3_thin"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/small/pipet/under
+	layer = 1
+
+/////////////////////////////////////////////////////////
+
 /obj/structure/props/bathtub
 	name = "bathtub"
 	desc = "A bathtub."
@@ -999,7 +1115,7 @@
 	var/uncolored = TRUE
 	var/flagcolor
 	var/symbol
-	var/symbolcolor 
+	var/symbolcolor
 
 /obj/structure/flag/pole/custom/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/weapon))
@@ -1007,7 +1123,7 @@
 			H << "You tear down the flag!"
 			new/obj/structure/flag/pole(src.loc)
 			qdel(src)
-			
+
 /obj/structure/flag/pole/custom/attack_hand(var/mob/living/human/H)
 	if (uncolored)
 		var/input = WWinput(H, "Flag Color - Choose a color:", "Flag Color" , "#FFFFFF", "color")
