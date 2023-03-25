@@ -813,6 +813,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
+	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "african_acacia_dead"
 	deadicon_state = "african_acacia_dead"
 	edible = FALSE
