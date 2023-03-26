@@ -1273,14 +1273,6 @@
 		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
 		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
 
-/obj/item/weapon/storage/belt/smallpouches/red
-	New()
-		..()
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet(src)
-		new/obj/item/clothing/mask/gas/military(src)
-		new/obj/item/flashlight/militarylight(src)
-
 /obj/item/weapon/storage/belt/smallpouches/rebel
 	New()
 		..()
@@ -1288,6 +1280,16 @@
 		new/obj/item/weapon/wrench(src)
 		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
 		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red
+	icon_state = "smallpouches_olive"
+	item_state = "smallpouches_olive"
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/weapon/attachment/bayonet(src)
+		new/obj/item/clothing/mask/gas/military(src)
+		new/obj/item/flashlight/militarylight(src)
 
 /obj/item/weapon/storage/belt/smallpouches/red/white
 	icon_state = "smallpouches_white"
