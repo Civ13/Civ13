@@ -236,10 +236,11 @@
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
-		list(name = "full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	is_hmg = TRUE
+	full_auto = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov
 	name = "30mm 2A42 'Shipunov' Autocannon"
@@ -252,7 +253,7 @@
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
-		list(name = "full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 
@@ -270,7 +271,7 @@
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
 	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
 	firemodes = list(
-		list(name = "full auto",	burst=2, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a3ubr6
 	anchored = TRUE
@@ -367,10 +368,11 @@
 	handle_casings = REMOVE_CASINGS
 	magazine_type = /obj/item/ammo_magazine/mosin
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=8, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=20, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/rocket/atgm
 	is_hmg = TRUE
+	full_auto = FALSE
 	anchored = TRUE
 
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
