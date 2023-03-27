@@ -82,6 +82,25 @@
 	icon_state = "bmd2_tracks_end_right"
 	base_icon = "bmd2_tracks_end_right"
 	movement_icon = "bmd2_tracks_end_right_m"
+/obj/structure/vehicleparts/movement/tracks/bmd2/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/bmd2/right/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/m113/left
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "m113_tracks_end_left"
+	base_icon = "m113_tracks_end_left"
+	movement_icon = "m113_tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/m113/right
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "m113_tracks_end_right"
+	base_icon = "m113_tracks_end_right"
+	movement_icon = "m113_tracks_end_right_m"
+/obj/structure/vehicleparts/movement/tracks/m113/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/m113/right/reversed
+	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks/is3/left_front
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
