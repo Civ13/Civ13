@@ -13,8 +13,10 @@
 		if (3.0)
 			if (prob(50))
 				qdel(src)
+				return
 		else
 			qdel(src)
+			return
 
 /obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return TRUE
