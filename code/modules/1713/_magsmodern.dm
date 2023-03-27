@@ -581,6 +581,36 @@
 	max_ammo = 10
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/bam_ap
+	name = "BAM AP magazine (15x115mm)"
+	icon_state = "bamgreen"
+	mag_type = MAGAZINE
+	w_class = ITEM_SIZE_LARGE
+	caliber = "a15115"
+	ammo_type = /obj/item/ammo_casing/a15115_ap
+	max_ammo = 5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/bam_heap
+	name = "BAM HEAP magazine (15x115mm)"
+	icon_state = "bamred"
+	mag_type = MAGAZINE
+	w_class = ITEM_SIZE_LARGE
+	caliber = "a15115"
+	ammo_type = /obj/item/ammo_casing/a15115_heap
+	max_ammo = 5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/bam
+	name = "BAM magazine (15x115mm)"
+	icon_state = "bam"
+	mag_type = MAGAZINE
+	w_class = ITEM_SIZE_LARGE
+	caliber = "a15115"
+	ammo_type = /obj/item/ammo_casing/a15115
+	max_ammo = 5
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/ptrd_pouch
 	name = "heavy bullet pouch (14.5x114mm)"
 	icon_state = "pouch_closed"

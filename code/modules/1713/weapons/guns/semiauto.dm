@@ -523,3 +523,36 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/semiautomatic/bam
+	name = "BAMR"
+	desc = "A old blugoslavian semi auto anti tank rifle chambered in 15x115,due to smart engineering the recoil isnt as bad as it could be."
+	icon_state = "bam"
+	item_state = "bam"
+	base_icon = "bam"
+	attachment_slots = ATTACH_IRONSIGHTS
+	w_class = ITEM_SIZE_HUGE
+	force = 10
+	throwforce = 5
+	KD_chance = KD_CHANCE_HIGH
+	slot_flags = null
+	caliber = "a15115"
+	weight = 9
+	recoil = 2
+	load_method = MAGAZINE
+	ammo_type = list (/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_heap)
+	magazine_type = /obj/item/ammo_magazine/bam
+	good_mags = list(/obj/item/ammo_magazine/bam, /obj/item/ammo_magazine/bam_heap, /obj/item/ammo_magazine/bam_ap)
+	firemodes = list(
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=15)
+		)
+	reload_sound = 'sound/weapons/guns/interact/barrett_magin.ogg'
+	unload_sound = 'sound/weapons/guns/interact/barrett_magout.ogg'
+	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
+	accuracy_increase_mod = 2.00
+	effectiveness_mod = 1.3
+	move_delay = 3
+	fire_delay = 5
+	equiptimer = 12
+	gun_safety = FALSE
+	load_delay = 20
