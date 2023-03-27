@@ -1334,7 +1334,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/russianat(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/russian/at(H), slot_back)
 //weapons
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimrr = rand(1,2)
@@ -2187,7 +2187,7 @@
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x25_ppsh(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/german/sapper/russian(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/sapper/russian(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
