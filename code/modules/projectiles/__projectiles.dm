@@ -591,25 +591,25 @@ obj/item/projectile/bullet/rifle/a556x45
 	armor_penetration = 65
 	heavy_armor_penetration = 45
 
-/obj/item/projectile/bullet/rifle/a15115 //normal
+/obj/item/projectile/bullet/rifle/a15115
 	damage = DAMAGE_OH_GOD + 92
 	penetrating = 20
 	armor_penetration = 70
 	heavy_armor_penetration = 45
 
-/obj/item/projectile/bullet/rifle/a15115_ap //AP
+/obj/item/projectile/bullet/rifle/a15115_ap
 	damage = DAMAGE_OH_GOD + 82
 	penetrating = 35
 	armor_penetration = 75
 	heavy_armor_penetration = 55
 
-/obj/item/projectile/bullet/rifle/a15115_heap //high explosive AP
+/obj/item/projectile/bullet/rifle/a15115_he
 	damage = DAMAGE_OH_GOD + 85
 	penetrating = 30
 	armor_penetration = 65
 	heavy_armor_penetration = 45
 
-/obj/item/projectile/bullet/rifle/a15115_heap/on_impact(var/atom/A)
+/obj/item/projectile/bullet/rifle/a15115_he/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
@@ -625,18 +625,6 @@ obj/item/projectile/bullet/rifle/a556x45
 		explosion(T, 1, 0, 2, 1)
 	if (istype(A, /obj/structure/simple_door))
 		var/obj/structure/simple_door/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	if (istype(A, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/))
-		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	if (istype(A, /obj/item/weapon/gun/projectile/automatic/stationary))
-		var/obj/item/weapon/gun/projectile/automatic/stationary/T = A
 		var/turf/TU
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
