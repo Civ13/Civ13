@@ -157,6 +157,8 @@
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
+	else if (findtext(title, "Engineer"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
@@ -409,6 +411,8 @@
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
+	else if (findtext(title, "Engineer"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
