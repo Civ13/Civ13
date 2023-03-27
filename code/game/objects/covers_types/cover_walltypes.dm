@@ -129,6 +129,12 @@
 	icon_state = "medieval_wall_y2"
 	health = 335
 
+/obj/covers/wood_wall/dark
+	name =  "dark soft wood wall"
+	icon_state = "oldwood0"
+	base_icon_state = "oldwood"
+	adjusts = TRUE
+
 /* Asia-Themed Walls - End*/
 
 /obj/covers/wood_wall/oriental
