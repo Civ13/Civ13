@@ -35,7 +35,7 @@
 
 /obj/item/cannon_ball/shell/incendiary
 	name = "incendiary artillery shell"
-	icon_state = "shell_mortar_incendiary"
+	icon_state = "shell_incendiary"
 	atype = "INCENDIARY"
 
 /obj/item/cannon_ball/shell/tank

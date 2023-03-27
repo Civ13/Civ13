@@ -75,3 +75,17 @@
 	icon_closed = "icecream_cooler"
 	icon_opened = "icecream_cooler_open"
 	powerneeded = 0
+
+/obj/structure/closet/fridge/icecreamcooler/open()
+	if (opened)
+		return FALSE
+
+	if (!can_open())
+		return FALSE
+
+	dump_contents()
+
+	icon_state = icon_opened
+	opened = TRUE
+	playsound(loc, open_sound, 100, TRUE, -3)
+	return TRUE

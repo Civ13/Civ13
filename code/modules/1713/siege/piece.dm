@@ -505,7 +505,7 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									if(!locate(/obj/structure/vehicleparts/frame) in target)
 										explosion(target, 0, 1, 3, 4)
-										for (var/turf/floor/T in circlerangeturfs(target,3))
+										for (var/turf/floor/T in circlerangeturfs(target,2))
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
