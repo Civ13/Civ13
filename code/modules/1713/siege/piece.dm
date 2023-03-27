@@ -509,7 +509,7 @@
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in circlerangeturfs(target,4))
+									for (var/turf/floor/T in circlerangeturfs(target,3))
 										ignite_turf(T, 12, 90)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
