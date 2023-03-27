@@ -368,3 +368,37 @@
 	on = FALSE
 	max_space = 4
 	fuel = 0
+
+//////////////////Following objects are grill or oven subtypes until proper cooking/kitchen mechanics will be implemented
+
+/obj/structure/oven/grill/gas
+	name = "gas grill"
+	desc "A gas-fueled grill."
+	icon_state = "grill2"
+	base_state = "grill2"
+
+/obj/structure/oven/griddle
+	name = "electric griddle"
+	desc = "A heavy, flat iron plate that is heated and used for cooking food."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "griddle"
+	layer = 3
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "griddle"
+	on = FALSE
+	max_space = 12
+	fuel = 4
+
+/obj/structure/oven/fryer
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "fryer"
+	layer = 3
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "fryer"
+	on = FALSE
+	max_space = 4
+	fuel = 0
