@@ -300,7 +300,7 @@
 			else
 				ticon = normal_icon
 
-		roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=9.9)
+		roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=10.1)
 
 		if (override_roof_icon)
 			roof.icon_state = override_roof_icon
