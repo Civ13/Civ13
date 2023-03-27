@@ -670,9 +670,9 @@
 	icon_state = "3x3"
 	axis = /obj/structure/vehicleparts/axis/heavy/m113
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/m113/rf,/obj/structure/engine/internal/diesel/premade/m113,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/m113/right,/obj/structure/vehicleparts/frame/m113/rf,/obj/structure/engine/internal/diesel/premade/m113,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
 	"2,1" = list(/obj/structure/vehicleparts/frame/m113/front,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/m113/lf),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/m113/left,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/m113/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/m113/rfc),
 	"2,2" = list(/obj/structure/vehicleparts/frame/m113/fc,/obj/item/weapon/storage/toolbox/emergency),
@@ -682,9 +682,9 @@
 	"2,3" = list(/obj/structure/vehicleparts/frame/m113/bc),
 	"3,3" = list(/obj/structure/vehicleparts/frame/m113/lfc),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m113/rb),
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/m113/left/reversed,/obj/structure/vehicleparts/frame/m113/rb),
 	"2,4" = list(/obj/structure/vehicleparts/frame/m113/back),
-	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m113/lb),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/m113/right/reversed,/obj/structure/vehicleparts/frame/m113/lb),
 	)
 
 /obj/effects/premadevehicles/apc/bmd2
