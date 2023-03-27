@@ -33,6 +33,11 @@
 	value = 20
 	atype = "HE"
 
+/obj/item/cannon_ball/shell/incendiary
+	name = "incendiary artillery shell"
+	icon_state = "shell_mortar_incendiary"
+	atype = "INCENDIARY"
+
 /obj/item/cannon_ball/shell/tank
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "cannon shell"
@@ -221,21 +226,18 @@
 	value = 20
 
 /obj/item/cannon_ball/mortar_shell/type89
-	icon = 'icons/obj/cannon_ball.dmi'
 	name = "type 89 mortar shell"
 	icon_state = "shell_mortar_89"
 
 /obj/item/cannon_ball/mortar_shell/smoke
-	reagent_payload = "smokescreen"
-	icon = 'icons/obj/cannon_ball.dmi'
 	name = "smoke mortar shell"
 	icon_state = "shell_mortar_smoke"
+	reagent_payload = "smokescreen"
 
 /obj/item/cannon_ball/mortar_shell/incendiary
-	atype = "INCENDIARY"
-	icon = 'icons/obj/cannon_ball.dmi'
 	name = "incendiary mortar shell"
 	icon_state = "shell_mortar_incendiary"
+	atype = "INCENDIARY"
 
 // Chemical
 
