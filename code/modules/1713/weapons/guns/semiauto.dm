@@ -524,9 +524,9 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/semiautomatic/bam
+/obj/item/weapon/gun/projectile/semiautomatic/bamr
 	name = "BAMR"
-	desc = "A old blugoslavian semi auto anti tank rifle chambered in 15x115,due to smart engineering the recoil isnt as bad as it could be."
+	desc = "An old blugoslavian semi-auto, anti-tank rifle chambered in 15x115. Due to smart engineering the recoil isn't as bad as it could be."
 	icon_state = "bam"
 	item_state = "bam"
 	base_icon = "bam"
@@ -540,9 +540,9 @@
 	weight = 9
 	recoil = 2
 	load_method = MAGAZINE
-	ammo_type = list (/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_heap)
-	magazine_type = /obj/item/ammo_magazine/bam
-	good_mags = list(/obj/item/ammo_magazine/bam, /obj/item/ammo_magazine/bam_heap, /obj/item/ammo_magazine/bam_ap)
+	ammo_type = list (/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_he)
+	magazine_type = /obj/item/ammo_magazine/bamr
+	good_mags = list(/obj/item/ammo_magazine/bamr, /obj/item/ammo_magazine/bamr_he, /obj/item/ammo_magazine/bamr_ap)
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=15)
 		)

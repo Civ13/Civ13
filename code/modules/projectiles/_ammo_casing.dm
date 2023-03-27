@@ -618,13 +618,13 @@
 	caliber = "a15115"
 	value = 30
 
-/obj/item/ammo_casing/a15115_heap
-	name = "15x115 HEAP cartridge"
-	desc = "A big heavy brass casing designed to penetrate and explode armor."
+/obj/item/ammo_casing/a15115_he
+	name = "15x115 HE cartridge"
+	desc = "A big heavy brass casing designed to explode on impact."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"
 	weight = 0.12
-	projectile_type = /obj/item/projectile/bullet/rifle/a15115_heap
+	projectile_type = /obj/item/projectile/bullet/rifle/a15115_he
 	caliber = "a15115"
 	value = 35
 
