@@ -13,8 +13,8 @@
 		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/japanese,
-		list(PIRATES) = /area/caribbean/pirates/land/inside/objective
+		list(PIRATES) = /area/caribbean/japanese,
+		list(CIVILIAN) = /area/caribbean/british/land,
 		)
 	age = "2023"
 	ordinal_age = 8
@@ -105,15 +105,15 @@
 
 /obj/map_metadata/campaign/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 2 MINUTES
 	else
-		return 3000 // 5 minutes
+		return 5 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 2 MINUTES
 	else
-		return 4200 // 7 minutes
+		return 7 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
 	var/ctb = 0
