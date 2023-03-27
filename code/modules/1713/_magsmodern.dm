@@ -591,13 +591,13 @@
 	max_ammo = 5
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/bamr_he
+/obj/item/ammo_magazine/bamr_aphe
 	name = "BAM HE magazine (15x115mm)"
 	icon_state = "bamred"
 	mag_type = MAGAZINE
 	w_class = ITEM_SIZE_LARGE
 	caliber = "a15115"
-	ammo_type = /obj/item/ammo_casing/a15115_he
+	ammo_type = /obj/item/ammo_casing/a15115_aphe
 	max_ammo = 5
 	multiple_sprites = TRUE
 

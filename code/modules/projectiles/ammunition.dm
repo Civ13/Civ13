@@ -2,7 +2,7 @@
 	name = "bullet casing"
 	desc = "A bullet casing."
 	icon = 'icons/obj/ammo.dmi'
-	icon_state = "s-casing"
+	icon_state = "rifle-casing"
 	flags = CONDUCT
 	slot_flags = SLOT_EARS
 	throwforce = TRUE

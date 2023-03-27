@@ -540,9 +540,9 @@
 	weight = 9
 	recoil = 2
 	load_method = MAGAZINE
-	ammo_type = list (/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_he)
+	ammo_type = list (/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_aphe)
 	magazine_type = /obj/item/ammo_magazine/bamr
-	good_mags = list(/obj/item/ammo_magazine/bamr, /obj/item/ammo_magazine/bamr_he, /obj/item/ammo_magazine/bamr_ap)
+	good_mags = list(/obj/item/ammo_magazine/bamr, /obj/item/ammo_magazine/bamr_aphe, /obj/item/ammo_magazine/bamr_ap)
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=15)
 		)
