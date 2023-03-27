@@ -373,7 +373,7 @@
 
 /obj/structure/oven/grill/gas
 	name = "gas grill"
-	desc "A gas-fueled grill."
+	desc = "A gas-fueled grill."
 	icon_state = "grill2"
 	base_state = "grill2"
 
@@ -392,6 +392,8 @@
 	fuel = 4
 
 /obj/structure/oven/fryer
+	name = "fryer"
+	desc = "A large, deep container for frying food."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "fryer"
 	layer = 3
