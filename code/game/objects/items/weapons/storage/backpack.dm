@@ -166,8 +166,8 @@
 		new /obj/item/ammo_magazine/type99(src)
 
 /obj/item/weapon/storage/backpack/ww2/german
-	name = "Anti Tank Backpack"
-	desc = "It's a standard issue backpack for German military personel"
+	name = "backpack"
+	desc = "A standard issue backpack for German military personel"
 	icon_state = "germanpack"
 	item_state = "germanpack"
 	worn_state = "germanpack"
@@ -183,61 +183,66 @@
 		/obj/item/weapon/material/shovel,
 		/obj/item/weapon/key,
 		)
-/obj/item/weapon/storage/backpack/ww2/german
+/obj/item/weapon/storage/backpack/ww2/russian
+	name = "backpack"
+	desc = "A standard issue backpack for Soviet military personel."
+	icon_state = "germanpack" //To be replaced with proper, high quality sprites
+	item_state = "germanpack" //To be replaced with proper, high quality sprites
+	worn_state = "germanpack" //To be replaced with proper, high quality sprites
+	base_icon = "germanpack" //To be replaced with proper, high quality sprites
+	max_storage_space = 24
+	can_hold = list(
+		/obj/item/ammo_magazine,
+		/obj/item/weapon/material,
+		/obj/item/weapon/grenade,
+		/obj/item/weapon/attachment,
+		/obj/item/ammo_casing,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,
+		/obj/item/weapon/material/shovel,
+		/obj/item/weapon/key,
+		)
 
-/obj/item/weapon/storage/backpack/ww2/german/russianat
-	name = "russian backpack"
-	desc = "It's a standard issue backpack for Soviet military personel"
+/obj/item/weapon/storage/backpack/ww2/russian/at
 	New()
 		..()
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
-		new /obj/item/weapon/grenade/antitank(src)
-		new /obj/item/weapon/grenade/antitank(src)
+		new /obj/item/weapon/grenade/antitank/rpg40(src)
+		new /obj/item/weapon/grenade/antitank/rpg40(src)
 		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 		new /obj/item/weapon/plastique/russian(src)
 		new /obj/item/weapon/plastique/russian(src)
 
-/obj/item/weapon/storage/backpack/paratrooper
-	name = "Parachute"
-	desc = "A backpack with a built in parachute."
-	icon_state = "parachute"
-	item_state = "parachute"
-	worn_state = "parachute"
-	base_icon = "parachute"
-	w_class = ITEM_SIZE_HUGE
-	max_storage_space = 0
-
-/obj/item/weapon/storage/backpack/ww2/german/sapper
+/obj/item/weapon/storage/backpack/ww2/sapper
+	name = "sapper backpack"
 	New()
 		..()
 		new /obj/item/stack/material/iron/twentyfive(src)
 		new /obj/item/stack/material/steel/twentyfive(src)
 		new /obj/item/stack/material/wood/twentyfive(src)
 		new /obj/item/weapon/material/shovel/spade/small(src)
-		new /obj/item/weapon/grenade/antitank(src)
 		new /obj/item/weapon/plastique/russian(src)
 
-/obj/item/weapon/storage/backpack/ww2/german/sapper/german
+/obj/item/weapon/storage/backpack/ww2/sapper/german
 	New()
 		..()
 		new /obj/item/weapon/grenade/ww2/stg1924(src)
 		new /obj/item/weapon/grenade/ww2/stg1924(src)
 		new /obj/item/weapon/grenade/smokebomb(src)
 		new /obj/item/weapon/grenade/smokebomb(src)
+		new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
 
-/obj/item/weapon/storage/backpack/ww2/german/sapper/russian
-	name = "russian backpack"
-	desc = "It's a standard issue backpack for Soviet military personel"
+/obj/item/weapon/storage/backpack/ww2/sapper/russian
 	New()
 		..()
+		new /obj/item/weapon/grenade/antitank/rpg40
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
 		new /obj/item/weapon/grenade/ww2/rgd33(src)
 		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 		new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 
-obj/item/weapon/storage/backpack/ww2/american
+/obj/item/weapon/storage/backpack/ww2/american
 	name = "american backpack"
 	desc = "It's a standard issue backpack for American military personel"
 	icon_state = "uspack"
@@ -245,6 +250,16 @@ obj/item/weapon/storage/backpack/ww2/american
 	worn_state = "uspack"
 	base_icon = "uspack"
 	max_storage_space = 24
+
+/obj/item/weapon/storage/backpack/paratrooper
+	name = "parachute pack"
+	desc = "A backpack with a built-in parachute."
+	icon_state = "parachute"
+	item_state = "parachute"
+	worn_state = "parachute"
+	base_icon = "parachute"
+	w_class = ITEM_SIZE_HUGE
+	max_storage_space = 0
 
 /obj/item/weapon/storage/backpack/scavpack
 	name = "scavenger pack"

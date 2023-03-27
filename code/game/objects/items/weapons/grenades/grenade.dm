@@ -325,6 +325,13 @@
 	det_time = 50
 	throw_range = 9
 
+/obj/item/weapon/grenade/ww2/rg42
+	name = "RG-42 grenade"
+	desc = "A Soviet fragmentation grenade."
+	icon_state = "rg42"
+	det_time = 50
+	throw_range = 10
+
 /obj/item/weapon/grenade/ww2/mk2
 	name = "Mk2 grenade"
 	desc = "An American grenade introduced in 1918."
@@ -381,7 +388,7 @@
 
 /obj/item/weapon/grenade/coldwar/hg85/l109
 	name = "L109 grenade"
-	desc = "The L109 is the British designation for the HG 85. It differs from the HG 85 in that it has a special safety clip, which is similar to the safety clip on the American M67 grenade.."
+	desc = "The L109 is the British designation for the HG 85. It differs from the HG 85 in that it has a special safety clip, which is similar to the safety clip on the American M67 grenade."
 	icon_state = "l109"
 	det_time = 50
 	throw_range = 10

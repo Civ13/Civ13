@@ -269,9 +269,9 @@
 	desc = "It is set to detonate in 5 seconds."
 	name = "chemical grenade"
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "m18smoke"
+	icon_state = "smoke_generic"
 	det_time = 50
-	item_state = "m18smoke"
+	item_state = "smoke_generic"
 	slot_flags = SLOT_BELT
 	var/datum/effect/effect/system/smoke_spread/bad/smoke
 	var/stype = /datum/effect/effect/system/smoke_spread/bad
@@ -325,10 +325,15 @@
 	name = "white phosphorus gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/white_phosphorus_gas
 
+/obj/item/weapon/grenade/chemical/white_phosphorus/m34
+	name = "M34 WP grenade"
+	desc = "An American white phosphorus smoke grenade"
+	icon_state = "m34wp"
+
 /obj/item/weapon/grenade/chemical/xylyl_bromide
 	name = "xylyl bromide gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/xylyl_bromide
-
+	icon_state = "riot"
 /obj/item/weapon/grenade/chemical/zyklon_b
 	name = "Zyklon B gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/zyklon_b
@@ -337,6 +342,16 @@
 	name = "CS gas grenade"
 	stype = /datum/effect/effect/system/smoke_spread/bad/chem/payload/csgas
 
+/obj/item/weapon/grenade/chemical/cs_gas/m7a2
+	name = "M7A2 CS gas grenade"
+	desc = "An American riot control CS hand grenade used to control counter-insurgencies and for other tactical missions."
+	icon_state = "m7a2"
+
+/obj/item/weapon/grenade/chemical/cs_gas/k51
+	name = "K51 CS gas grenade"
+	desc = "A Soviet riot control CS hand grenade used to control counter-insurgencies and for other tactical missions."
+	icon_state = "k51"
+	
 /obj/item/weapon/grenade/smokebomb/ugl/attack_self(mob/user)
 	return
 
