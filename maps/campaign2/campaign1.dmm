@@ -1,0 +1,386 @@
+"ac" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline,/area/caribbean)
+"ae" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/book/manual/chef_recipes,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"al" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
+"aK" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"aP" = (/obj/structure/closet/crate/ww2{storagecap = 18},/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/turf/floor/dirt/dust,/area/caribbean)
+"aQ" = (/obj/covers/wood,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"bd" = (/obj/structure/railing/steel{dir = 1},/obj/item/weapon/material/shovel,/turf/floor/dirt/dust,/area/caribbean)
+"bh" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/turf/floor/dirt/dust,/area/caribbean)
+"bj" = (/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel{dir = 8; icon_state = "railing0"},/turf/floor/grass,/area/caribbean)
+"bm" = (/obj/structure/vending/sales/vending,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"bo" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"bt" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean)
+"bw" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/drinks/can/monster,/obj/item/weapon/reagent_containers/food/drinks/can/monster,/obj/item/weapon/reagent_containers/food/drinks/can/monster,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"bC" = (/obj/structure/railing/steel,/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
+"ck" = (/obj/structure/mirror{pixel_x = -26},/obj/structure/sink{dir = 4; pixel_x = -14},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"cl" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"cS" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road/yellowline,/area/caribbean)
+"cW" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean)
+"dq" = (/turf/floor/plating/road/whiteline{dir = 9},/area/caribbean)
+"dC" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/dust,/area/caribbean)
+"dD" = (/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean)
+"dM" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt,/area/caribbean)
+"dO" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean)
+"dT" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"dX" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean)
+"dZ" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean)
+"eq" = (/obj/covers/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"ew" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eQ" = (/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"eT" = (/mob/living/simple_animal/civilian,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"eZ" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"fh" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
+"fE" = (/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/weapon/gun/projectile/automatic/dp28,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/item/ammo_magazine/dp,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean)
+"fN" = (/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"ga" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean)
+"ge" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"gq" = (/turf/floor/plating/road/whiteline{dir = 6},/area/caribbean)
+"gs" = (/turf/floor/plating/road/whiteline{dir = 10},/area/caribbean/british/land/outside{name = "Gas Station"})
+"gz" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/railing/steel{dir = 8; icon_state = "railing0"},/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean)
+"gB" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"gK" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"gL" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"gS" = (/turf/floor/plating/road/yellowline{dir = 10},/area/caribbean/british/land/inside{name = "Gas Station"})
+"gW" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean)
+"gZ" = (/obj/structure/table/modern/retable,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"hb" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hg" = (/obj/structure/railing/steel,/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hw" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hA" = (/turf/floor/plating/road/yellowline,/area/caribbean)
+"hU" = (/obj/structure/wild/smallbush,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
+"ib" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"if" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ip" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"iv" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass,/area/caribbean)
+"iz" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"iE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"iH" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Gas Station"})
+"iW" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean)
+"iX" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"jb" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"je" = (/turf/floor/plating/road/yellowline{dir = 9},/area/caribbean/british/land/inside{name = "Gas Station"})
+"jr" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"jW" = (/turf/floor/plating/road/whiteline{dir = 10},/area/caribbean)
+"kc" = (/turf/floor/dirt/underground,/area/caribbean)
+"kd" = (/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean)
+"kg" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"kJ" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean)
+"lb" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road/whiteline,/area/caribbean)
+"lt" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lw" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
+"lL" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/brown,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"lQ" = (/obj/structure/simple_door/key_door/anyone/rustic,/obj/covers/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"lY" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mk" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"mp" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/whiteline,/area/caribbean)
+"ms" = (/turf/floor/dirt,/area/caribbean)
+"mt" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/turf/floor/dirt/dust,/area/caribbean)
+"mA" = (/turf/floor/plating/road/whiteline{dir = 4},/area/caribbean)
+"mE" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mS" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/clothing/head/ghillie,/obj/item/clothing/suit/storage/ghillie,/turf/floor/dirt/dust,/area/caribbean)
+"mX" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean)
+"nd" = (/turf/floor/plating/road,/area/caribbean)
+"ny" = (/obj/structure/bed/roller,/turf/floor/dirt/dust,/area/caribbean)
+"nz" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean)
+"nX" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"nY" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean/british/land/outside{name = "Gas Station"})
+"oh" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass,/area/caribbean)
+"oo" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/whiteline,/area/caribbean)
+"oy" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt/dust,/area/caribbean)
+"pa" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean)
+"qt" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean)
+"qA" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean)
+"qB" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"qE" = (/turf/floor/plating/road/yellowline,/area/caribbean/british/land/inside{name = "Gas Station"})
+"qM" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"qU" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"re" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/dirt,/area/caribbean)
+"rv" = (/obj/structure/railing/steel{dir = 1},/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean)
+"rF" = (/obj/covers/wood,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"rL" = (/turf/floor/plating/road/yellowline{dir = 5},/area/caribbean/british/land/inside{name = "Gas Station"})
+"rN" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean)
+"rS" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"rX" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/railing/steel{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"sc" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sh" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sl" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"ss" = (/obj/structure/wild/bush,/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean)
+"sw" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
+"sV" = (/turf/floor/plating/road/whiteline{dir = 5},/area/caribbean)
+"tf" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean)
+"tg" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean)
+"th" = (/obj/covers/wood_wall/log,/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"tm" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tE" = (/turf/floor/plating/road,/area/caribbean/british/land/inside{name = "Gas Station"})
+"tL" = (/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean)
+"tN" = (/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/whiteline,/area/caribbean)
+"tO" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
+"ua" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"un" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"ur" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
+"uL" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"uV" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"uZ" = (/obj/covers/wood_wall/log/corner,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"vb" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"vd" = (/obj/structure/barbwire{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"vl" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"vH" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt/dust,/area/caribbean)
+"vW" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean)
+"wg" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"wk" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean)
+"ws" = (/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean)
+"wv" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"wB" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean)
+"wD" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
+"wF" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
+"wM" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt,/area/caribbean)
+"wU" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"xk" = (/turf/floor/plating/road/whiteline{dir = 9},/area/caribbean/british/land/outside{name = "Gas Station"})
+"xo" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean)
+"xY" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Gas Station"})
+"yi" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"yu" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean)
+"yA" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"yB" = (/obj/structure/wild/rock,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"yD" = (/obj/structure/wild/bush,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"yG" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
+"ze" = (/obj/structure/wild/bush/big,/turf/floor/dirt,/area/caribbean)
+"zk" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"zm" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"zp" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean)
+"zv" = (/turf/floor/beach/water/deep,/area/caribbean)
+"zK" = (/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/structure/closet/crate/ww2,/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean)
+"zO" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt/dust,/area/caribbean)
+"zU" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"zY" = (/turf/wall/cement,/area/caribbean/british/land/inside{name = "Gas Station"})
+"zZ" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Aa" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/survival,/turf/floor/dirt,/area/caribbean/roofed/temperate)
+"Am" = (/obj/structure/window/classic,/obj/structure/curtain/closed/blue,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Ar" = (/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"AD" = (/obj/structure/sign/gas{pixel_y = 32},/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"By" = (/turf/floor/grass,/area/caribbean)
+"BD" = (/obj/item/stack/material/barbwire/ten,/turf/floor/dirt,/area/caribbean)
+"BH" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"BS" = (/obj/structure/wild/bush/big,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Cg" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"Cl" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Cr" = (/obj/structure/cannon/modern,/turf/floor/dirt/dust,/area/caribbean)
+"Ct" = (/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Cv" = (/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
+"Cy" = (/turf/floor/beach/water/swamp,/area/caribbean)
+"DY" = (/obj/covers/wood_wall/log,/turf/floor/grass,/area/caribbean/roofed/temperate)
+"Eo" = (/obj/structure/iv_drip,/turf/floor/dirt/dust,/area/caribbean)
+"Eq" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean)
+"ED" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/dirt/dust,/area/caribbean)
+"EH" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 1; icon_state = "tube"},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/inside{name = "Gas Station"})
+"EQ" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean)
+"Fe" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"Fg" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Gas Station"})
+"Fl" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
+"Fp" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Fq" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Gc" = (/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/yellowline,/area/caribbean)
+"Gg" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt,/area/caribbean)
+"Go" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Gp" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Gs" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Hh" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
+"Hj" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean)
+"Hv" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/inside{name = "Gas Station"})
+"HC" = (/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean)
+"HG" = (/obj/structure/railing/steel,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"HP" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/drinks/coffee,/obj/item/weapon/reagent_containers/food/drinks/coffee,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"HQ" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean)
+"HS" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4; icon_state = "warning_dust"; layer = 3},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"HT" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean)
+"Ia" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Id" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/drinks/can/lite,/obj/item/weapon/reagent_containers/food/drinks/can/lite,/obj/item/weapon/reagent_containers/food/drinks/can/lite,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Il" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"IQ" = (/turf/floor/dirt/dust,/area/caribbean)
+"IX" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Jw" = (/obj/structure/closet/fridge/icecreamcooler,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"JB" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"JD" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean)
+"JF" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"JK" = (/obj/structure/lamp/lamp_big/alwayson/white{dir = 4},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"JM" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"JV" = (/obj/structure/sign/traffic/parking,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"JW" = (/turf/floor/plating/road/yellowline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Ka" = (/obj/structure/railing/steel,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
+"Kb" = (/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean)
+"Kh" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt/dust,/area/caribbean)
+"KC" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"KQ" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"KR" = (/obj/structure/fuelpump/premade/yamaha/gasoline,/turf/floor/plating/road,/area/caribbean/british/land/inside{name = "Gas Station"})
+"KV" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/yellowline,/area/caribbean)
+"Lf" = (/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/road/yellowline,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Lg" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"Lj" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Lk" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt/dust,/area/caribbean)
+"Ln" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
+"LA" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean)
+"Mb" = (/obj/covers/brick_wall,/turf/floor/plating/road/whiteline,/area/caribbean/british/land/inside{name = "Gas Station"})
+"ME" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean)
+"MM" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"MU" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/turf/floor/dirt/dust,/area/caribbean)
+"MV" = (/obj/structure/bed/roller,/turf/floor/dirt,/area/caribbean)
+"MZ" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Nb" = (/turf/floor/plating/road/whiteline,/area/caribbean)
+"Nx" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean)
+"ND" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean)
+"Oc" = (/obj/structure/railing/steel{dir = 1},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"Od" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean)
+"Oj" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
+"Oy" = (/obj/structure/wild/rock,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean)
+"OC" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"OJ" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"OP" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"Pa" = (/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Pi" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Py" = (/obj/covers/brick_wall,/obj/structure/sign/flag/blue,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Gas Station"})
+"PU" = (/obj/structure/table/modern/retable,/obj/structure/closet/crate/cash_register{dir = 8; icon_state = "cash_register"},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Qh" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean)
+"Qs" = (/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Rk" = (/obj/covers/wood_wall/log{dir = 4},/turf/floor/grass,/area/caribbean/roofed/temperate)
+"Ro" = (/obj/structure/wild/rock,/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean)
+"Rp" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Rt" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/wrench,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"RL" = (/obj/structure/wild/bush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"RP" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean)
+"Sj" = (/obj/structure/railing/steel,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Sl" = (/obj/structure/barbwire{dir = 4},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean)
+"Sp" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/drinks/can/milk,/obj/item/weapon/reagent_containers/food/drinks/can/milk,/obj/structure/lamp/lamp_big/alwayson/white{dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"St" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"SB" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean)
+"SI" = (/obj/structure/toilet{dir = 4; icon_state = "toilet00"},/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/mob/living/simple_animal/civilian,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Gas Station"})
+"SP" = (/obj/structure/railing/steel,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"Tc" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"TK" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp,/area/caribbean)
+"TM" = (/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/turf/floor/grass,/area/caribbean)
+"TP" = (/turf/floor/plating/road/whiteline{dir = 4},/area/caribbean/british/land/outside{name = "Gas Station"})
+"Ua" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dust,/area/caribbean)
+"Uz" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean)
+"UB" = (/turf/floor/plating/road/whiteline{dir = 5},/area/caribbean/british/land/outside{name = "Gas Station"})
+"UU" = (/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/structure/closet/crate/ww2,/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean)
+"Vo" = (/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/dirt/dust,/area/caribbean)
+"Vu" = (/turf/floor/beach/water,/area/caribbean)
+"VT" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/grass,/area/caribbean)
+"Wd" = (/obj/structure/cannon/mortar,/turf/floor/dirt/dust,/area/caribbean)
+"Wo" = (/obj/structure/window/classic,/obj/structure/curtain/open/blue,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Wq" = (/obj/structure/wild/smallbush,/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
+"Xb" = (/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean)
+"Xd" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean)
+"XW" = (/obj/item/stack/material/barbwire/ten,/turf/floor/dirt/dust,/area/caribbean)
+"XX" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Yj" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/dirt/dust,/area/caribbean)
+"Yk" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
+"Yx" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"Yy" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Gas Station"})
+"YK" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean)
+"Zt" = (/obj/structure/table/rack/shelf/store,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
+"ZM" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road,/area/caribbean)
+"ZQ" = (/obj/covers/brick_wall,/turf/floor/plating/road,/area/caribbean/british/land/inside{name = "Gas Station"})
+"ZR" = (/turf/floor/plating/road/yellowline{dir = 6},/area/caribbean/british/land/inside{name = "Gas Station"})
+
+(1,1,1) = {"
+ByByByByByByByByByByByByByByByByKQLjLjFqFqLjLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQhbKQKQltGsGsewKQKQhbKQKQKQKQByJFByByByBymsByByByByByByByBymsByvWnznzkcHTvWByBymsByRPRPByByByByByByByByByByByByByByByByJFBymsByJFmsByByByByByJFByByByByJFJFJFJFByByByByByByBymsvWByByByvWByJFJFByByBymsmsByByByByByByByByByByByByBy
+ByByByByByByByByByByByRPRPByByJFKQLjLjKQFqFqLjLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQtmtmKQKQKQKQKQLjLjLjLjKQByByByByByByByCyCyByByByByByByByCyCyByByBymsmsnzBymsByByByvWmsnzBymsByBymsvWByJFByByXdByJFBymsRPByByIQByByByvWBykcByByByByByByBymsmsVuVuVuVumsByByByRPByByByByByByIQmsByByByByByByByByBymsmsBymsByByBy
+ByByvWByByHTByByByByJFHTHTHTHhByKQKQLjclKQzmFqLjLjKQKQLjKQClArKQhbKQhbKQKQKQKQLjKQClArKQhbKQhbKQKQKQKQGsKQewKQLjArArArLjRpByByByvWByganzByByByByByBymsmsCyByByByvWmsvWnznzByHTByvWByvWnznzByHTBymsmsByJFByByBykcvWJFmsBykJByByByByRPIQByBymsmsrNmsmsmsmsmsmsVuzvVuVumsmsByByvWmsByByByByByByIQByByByByByByByByvWByByByByByByByBy
+ByByByByByByByByByByJFByByBymsByKQKQKQLjLjLjFqFqLjLjKQKQKQKQKQArKQKQLjKQKQLjKQKQKQKQKQArKQKQLjKQKQKQKQKQKQzkLjLjArArArLjKQByBykcByByByIQNxRPByBymsmsNDBymsmsByByByByByByByByRPmsByByRPByByByRPByByByByByByByBykcByJFByByByByByByByByByBymsmskcmsmsVuVuVuVuVuzvzvVumsmsByByByByByBykJByByByByIQRPByByByByByByHTByByByByByvWmsByBy
+BymsmsByRPByCyCyByByStBymsByByByKQKCKQKQLjLjLjFqFqLjLjKCKCKQKQKQKQKQKQKCKQKQKQKQKQKQKQKQKQKQKQKCKQKQArKCKQLjewArKQKQLjLjKQByByByByByByByByByByByByByvWByRPByByHTByByByByBynzByByByByRPBymsByByByByByByByByByByByRPByByBymsmsmsBymszpmsmsmsVuVuVuVuzvVuVuzvVuVuVumsmsByByByHTByByByByByByByByByRPByByByByByByHTByByByByByBymsByBy
+BymsByByByByByCyCyByByBymsByByByhwKQKQKQLjLjLjLjFqFqLjLjKQKQKQKQKQFpKQKQKQKQKQKQKQKQKQKQKQFpKQKQKQLjArKCLjKQltKQKQKQLjhbKQByByByByByByJFByBymsmsByBymsByByByByByByByBymsByByBymsByByBymsByByBymsByByByBymsNDmsmsmsmsmsmsmsVumsmsmsVuVumsVuVuzvzvVuVuVuVuVuVumsmsmsByByByBymsByvWByBymsByByByByBynznzmsByByByByByByByByByBymsHTBy
+msmsByByvWByByByCyByBymsmsByByHTKQKQtmKQKQLjKQLjLjFqFqLjLjLjKQewKQKQKQKQKQKQewKQKCKQKQewKQKQKQKQKQKQLjKCKQKQKQKQKQKQKQKQKQRPmsByssRPByByByBymsmsmsByByByByByBymsBymsNDmsmsmsmsmsVumsNDmsmsmsmsmsmsmsmsMEmsVuVumsVumsmsmsVuVuVuVuVuVuzvVuzvzvVuVuVuVuVuVumsmsmsByByByByByBymsByByByByByByvWBynzByByvWBymsByByByByvWByByBymsHhmsBy
+ByByByByvWvWByByCyHTByByBymsmsByKQKQLjKQKQKQKQKQzkLjFqzmzmLjLjLjewKQKQKQKQKQewKQKQKQKQKQKQKQLjKQKQhbKQKQKQKQKQKQKQewKQKQKQByBykcByByvWByByByByByByByByBymsmsmsmsmsmsmsVuVuVuzvVuVuVumsVuVuVuzvVuVuVuVumsVuVuzvVuVuVuzvzvVuzvVuVuzvVuVumsVuVumsVuVuVumsmsdZBymsByByvWByByByBymsmsByByByByByByByRPByByBymsJFByByByByByBymsByByByBy
+ByByByByByByByByByByJFmsByvWMEByKQKQKQKQLjKQewewKQLjLjFqzmFqLjLjLjKQKQewKQLjLjhbewKQKQKQKQKQKQewKQLjKQKQKQKQKQKQKQKQKQKQKQByByByByByByByByByvWByByBymsmsmsVuVuVuVuzvVuVuzvVuVuVuVuzvVuVuzvVuVuVuVuVuzvVuzvzvVuVumsVuVuVuVuVumsVuVuVuBymsmsmsmsmsmsmsmsmsByBymsByByByByByByByByBymsmsmsmsByByRPRPByByByByJFByByByByByBymsByJFByBy
+BymsmsmsmsmsmsByByByRPByByByByByKQKQKQKQKQhbKQewewKQLjLjFqFqFqLjLjLjKQKQKQKQLjLjKQKQewKQKQLjKQKQKQKQKCKQhbKQKQKCKQKCtmKQKQByByByByByByBymsByByByByzpmsVuVuVuzvzvVuVuVuVumsmsVuVuVuVuVuVumsmsVumsmsVuVuVuVumsVumsmsmsmsmsmsmsmsmsmsmsByBymskcByJFBymsBymsmsmsmsByByByByvWByByBymsmsVuVumsByByByByByHTByByByByByByByBymsByByByByBy
+msmsVumsmsVumsmsmsmsByByByByByByKQKQKQKQKQKQKQKQKQKQKQLjLjFqFqFqFqLjLjLjKQKQKQLjKQKQKQKQKQhbKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQByByByByByByBymsByBykJmsmsVuzvVuVuzvVuVuVuVumsmsmsmsmsVuVuVumsmsmsmsmsmsmsmsCyCymsmsByByByByBymsByByByBymsvWBymsByByByByJFJFBymsBymsByByByBymsByByBymsmsmsVumsByByByByByByByByHTByByByByMEByByByByByBy
+VuVuVuVuVuVuVuVuVumsmsmsBymsByJFKQhbKQKQKQKQKQKQhwKQKQKQLjLjLjFqFqFqFqLjLjKQKQKQKQewKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQhbKQKQvWvWByBykckcByByBymsmsmsVuVuzvVuVuVuVumsmsmsmsByByByBymsmsmsmsByByByBymsganzmsBymsByByBymsmsByByByByvWvWByByJFByByByByByByBymsByBymsmsmsByByByByBymsmsVuVuVumsByByByHhByByByByBymsByByByMEByByByHhByms
+msmsVuVuVuVuVuzvzvVuVumsmsmsBymsKQLjLjLjLjKQKQewKQKQKQKQKQKQLjLjFqzmzmFqFqKQKQKQKQKQLjKQewKQKQLjKCLjKQKQKQKQKQKQKQKQKQKQKQByBymskcmsmsmsmsmsmsVuVuVuVuVumsYkmsmsmsByXdByRPByvWBymsByXdByRPByvWByByByIQNxRPByBymsmsNDBymsmsByByByByvWByByByvWByByBymsByJFByBymsByHTBymsByBymsmsmsVuzvVumsRPHTByByByByByByByByByByBymsByByByByByms
+BymsmsmsmsmsVuVuVuVuVuVuVumsmsmsLjLjFqFqLjKQKCKQKQKQKQIXKQKQKQLjLjLjFqzmzmKQKQIXKQKQKQLjLjLjKQKQewKQKQLjLjLjLjLjLjKQKQKQLjmsmsmsmsmsmsVuVuVuVuVuVumsmsmsmsmsmsByByByByByByByvWByByByByByByByvWByByByByByByByByByByvWByRPByByHTByByByByJFByByByBymsByByByByBymsByByByByByBymsVuVuzvVumsmsByByByByBymsmsBymsvWByByByByBymsByByByBy
+IQIQIQIQIQmsmsmsmsmsVuVuVuVuVuVuFqFqFqFqLjLjLjLjLjLjLjLjzkKQKQKQKQLjLjLjFqLjLjLjzkKQKQKQKQLjLjhbKQKQKQLjLjLjLjLjLjLjFqFqFqmsVuVuVuVuVuVuVumsmsmsmsmsByByByByByRPByJFByByByByByByByJFByByByByByCyByByJFByBymsmsByBymsByByByByByByByByByJFByByByByByJFvWByByBymsByMEByByBymsmsVuzvzvVumsByByByByBymsmsBymsmsByByByByByBymsByByByBy
+ByByByIQIQIQByByBymsmsmsmsmsVuVuFqFqzmzmFqFqFqFqFqwgFqLjLjKQKQKQKQewKQLjLjwgFqLjLjKQKQKQKQewKCKQewLjLjLjLjFqLjLjFqFqFqFqFqVuVuVuzvVuVumsmsmsmsByByvWByByByByRPByByByBymsmsByByRPByByBymsmsByByCyCyByJFByBymsmsByBymsByByByByByByByvWByByByByByByByByByByByBymsBymsByByBymsVuzvVuVumsmsmsByByByvWByByByByByByByByHhBymsmsByBymsBy
+ByByJFBykcmsmsJFByIQmsByBymsmsmsLjLjLjLjLjFqzmzmzmFqLjLjKQhwKQhbKQKQKQKQKQFqLjLjKQhwKQhbKQKQKQKQKQLjFqLjFqFqFqFqFqFqFqzmFqVuVuVuVumsmsmsvWByByByByByByByByByBymsByByByvWByByByBymsByByJFBymsByByCyvWByByByByByJFJFJFJFByByByBymsmsByBySBByByByByByByBymsRPRPmsByNDHTByBymsmsVumsVumsBymsByvWByByByByByByJFByByByByByByvWvWBymsBy
+ByByByBykcByByJFByByIQIQIQIQByByKQKQKQLjLjLjFqFqFqFqFqLjLjLjLjKQKQLjLjLjLjFqFqLjLjLjLjKQKQLjLjLjLjLjFqFqFqFqzmzmzmzmFqFqFqmsVumsmsByByByByByByByByByByByByByByByByJFByByByByByByvWByByByByByJFByByByBykcJFByByByByvWByJFByByBymsByByByRPmsmsmsMEByIQByByByBymsBymsByByByBymsmsmsmsmsBymsByByByByByByByByByByByByByByByByByBymsBy
+msJFByBykckcRPByByByHTByByByIQmszkvlKQLjhbLjLjLjLjFqFqFqFqFqLjLjLjLjLjFqFqFqFqFqFqFqLjLjLjLjLjFqFqzmFqzmFqFqzmFqFqFqFqLjLjmsmsmsByByByByByByByBymsByByByBymsvWByByByByByByByvWByByByByJFByByByByByBykckcJFmsByByByByByJFByJFByByByRPByBymsmsByByByByByBykJkcmsByByByByByByBymsByJFJFJFmsByByByByByByBymsIQByByByJFByByByByBymsBy
+IQmsByByByByByByByByByByByByRPByKQKQvlvlvlKQKQKQLjLjLjLjLjFqFqFqFqFqFqFqFqLjLjLjLjFqFqFqFqFqFqFqFqFqLjLjLjLjFqLjLjLjLjLjKQByByByByBymsvWByByByByByByByvWRPRPByByBymsByByByByByByByByBykJmsmsByBySBByByRPBymsByByByByByByByByrNJFByByByBygamsByByByByByByByByBynzByByRPByByByByBymsByByByBymsByByByBymsmsByByByByByByByByByByByBy
+msmsByByByByByByByByByByByvWByByKQKQKQKQvlKQKQKQKQLjLjLjLjLjFqFqzmzmFqFqLjLjLjLjLjLjFqFqzmzmFqFqLjLjKQLjLjLjLjLjLjLjKQKQKQIQIQByByByByByByvWBymsByByHhByRPByByByBymsCyCyByByByByByByRPBymsByByByRPmsByJFBymsRPByByIQByByHhByByByJFBymsvWByByByByByByByRPmsByByByByByRPByByBymsBymsByByByvWByByByByBymsByByByByByByByBymsmsBymsBy
+msByByByByByByByByByByByByJFByJFKQKQKQKQLjLjLjvlKQKQKQKQKQLjFqFqFqFqLjLjLjKQKQKQKQLjFqFqFqFqLjLjLjKQKQLjLjLjLjArArLjKQKQvlByByByByHTByByByByBymsJFByByByByByByByBymsmsCyCyCyByByByIQByByByByRPByByByvWJFmsBykJmsvWByByRPByCyByByJFByBymsByByByRPRPByByBymsByByHhByByByByByByvWByByByByByByByByByBymsByByIQSBByBymsmsmsByByByByBy
+IQByByByJFByByByByByIQByByJFByByKQKCKQKQKQKQKQLjvlvlvlKQvlLjLjLjLjLjLjKQKQKQArKQKQLjLjLjLjLjLjKQKQKQKQLjLjLjKCArKQKCKQvlvlByByByJFBymsByIQByBymsBymsmsByByByCyCyBymsByJFJFJFJFByByByByByByJFByByBymsmsByByByByByByByByByByByByKbByByvWByByBymsByByRoIQByByByJFByByByByByByByByJFByssBymsByByBySBByByByByByBymsmsmsByByByvWByByBy
+ByByByByBymsmszpByByByvWByJFByByKQKQewKQhwKQKQKQLjKQvlKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKCLjArKQLjKQKQKQByByByByByByByByByByByByvWByByByByByByByByByByByByByByByzYzYzYWoWozYzYzYWoWozYzYzYWoWozYzYzYzYzYzYaKaKaKaKaKaKaKaKByByByByByByByByByByByByByByByByByByByByBymsByByBymsByByByByByBymsByBymsByByByByByBy
+ByByByByByByBymsByByBymsmsByByByKQLjewKQhbKQKCKQKQhwKQKQKQKQKCuZRkaQRkuZKQhwKQKQKQKQKCKQKQhbhbKQKQKQKQLjKQLjArArLjGsGsKQKQByByByByByByByByByByByByByByByByByByByByBymsByByByByByByzYPazZHSPaPaPazZPaPaPaPazZPaPaYxzYQsgLfNzYaKxkYyYyYyYyUBaKKbByByByRPmsmsBymsmsByByByByByByByByByByBymsmsByBymsByByByByByByByByByByByByByJFByBy
+ByByByByByByByBymsByByByByByByByKQLjLjdTKQKQKQKQKCKQKQKQKQvlltDYlLequnthKQKQKQKQKQKQltKQKQKQKQKQKQKQhbKCLjLjArLjGsKCLjKQKQByByByBymsBymsBymsmsmsByByByByByByByByBymsmsByByByByByByAmPaCtCtPaPanXaeZtnXnXnXnXPaPaHPzYzYzYfNzYaKgsFgFgiHiHTPaKByByByByBymsByBymsmsByvWByByByByJFByByByByByBymsmsmsByByByByByByByByvWByByByByByByBy
+ByByByByByByByBymsByByByByByBykcGsKQKQLjifKQKQKQKQKQltKQKQvlvllQeqrFeqaQKQKQltKQKQKQKQKQKQKQKQKQKQKQhbKQKQLjLjLjGsLjKCKQKQByvWByByByByByByByByByByBymsBymsmsmsmsByByvWByHhByByByByAmPaPaCtPaPaPaPaPaPaPaPaPaPaPaHPzYSIgLfNzYaKxkYyYyiHiHTPaKByByByByByByByBymsmsByByByByByByByByByByByByByByByrNByByByByByByByByByByByBymsmsmsBy
+ByByByByByByByHhByByByByByByByByGsGsKQKQKQKQKQKQKQewKQKQRLKQKQDYeqrSeqthArewKQKQRLKQKQKQKQKQArArArKQKQKQKQLjLjGsGsKCLjKQKQByBymsBymsByByByByByBymsByByByByByByByByByByByByByByByByzYslPaCtPaPaMZJMRtnXnXuLqUPaPaSpzYzYzYJKzYaKgsFgFgiHiHTPaKByByByByByByBymsByByByByByJFByByByvWBymsByByByByBymsByByvWByByBymsByByByByHhByByByBy
+ByRPByByvWByHhByByBymsByByByByByKQGsGsewKQhbKCKQdTKQKQKQKQKQKQDYjrgBAaDYArKQKQKQKQKQKQKQKQLjKQKQArKQKQKQKQhbKQKCKQKQKCltKQByByByBymsvWvWByByByBymsByByvWByBykcByByByByByByByByByByzYPaeTPUPaPaPaPaPaPaPaPaPaPaPabwzYckfNfNzYaKxkYyYyiHiHTPaKByByByByvWBymsmsBymsmsByByByByByByByByBymsByByByBymsByByByByByBymsByByByByByByByByBy
+ByByByByByBymsmsByByByByByByvWByvlKQKQKQLjhbKQKCKQKQscGsKQKQhwuZRkaQRkuZKQKQscGsKQKQhwtmKQKQKQKQKQKQKQKCKCKQKQKCKQKQKCKQKQByByHhBymsByByByByJFByByByByByByByByByByByByJFByByByByByzYPaPagZJwJwPaPakgPaPaPakgPaPaIdzYzYzYgLzYaKgsFgFgiHiHTPaKByByByByBymsByByrNmsByByByByByJFByJFmsrNmsBymsmsByByByByByByByByByByByByBymsmsByvWms
+ByBymsmsmsByByzpByByByByByByByByKQKQKQLjLjKQKCKQKQKQGsGsKQKQhbKQKQvlvlKQKQKQGsGsKQKQhbKQKQvlvlKQKQKQKQhbKQewKQKQKQLjLjKQKQByByByBymsByByByByByByByByByBymskckcByHhByByByvWByByByByzYWoWozYzYWoWozYzYmkmkzYzYWoWozYzYwUbmaKaKaKxkYyYyiHiHTPaKByByByBymsByByvWmsmsByByByByByByBymsByBymsByByRPByByByByByByByByByBymsmsByByByByByms
+ByBymsmsByByByByByByByByByByByByKQKQLjKQKQKQKQKQKQKQGsKQKQKQKQKQKQKQKQKQKQKQGsKQKQKQKQKQKQKQKQKQKQKQKQKQKQKCKQKQKQLjKCKQKQByBymsByrNByByByByByByByBymsmsmskcJFByByByByByByByByByByaKaKaKaKaKaKaKaKADaKaKADaKaKaKaKaKaKaKaKaKJVgsFgFgiHiHTPaKByBymsmsByBymsmsByBymsvWByByBymsByByByBymsmsByBymsmsByByByvWByBymsByvWByByBymsByByms
+ByBymsByByByByByByByBymsByBymsmsKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQltKCKQKQKQKQKQKQKQKQKQKQltKCKQvlKQKQKQzkKQKQKQArArArArhwKQByBymsByJFByByByByBymsmsByByByByByByJFByByBymsmsByByByByxkYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyiHiHTPaKByBymsByByBymsByByRPByByByBymsmsByByByByByvWByByByByByByByByByByByByByByByBymsmsByBy
+ByBymsByBymsByByByByByByMEByRPByKQLjLjKQKQKQKQKQhwKQKQKQKQKQKQKQKQKQKQKQKQKQhbKQKQKQKQKQKQKQKQKQKQKQhbKQKCKQArArKQKQKQKQKQByBymsByByByByByBymsmsmsBymsByByByByByByByByByByByByByBynYiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHTPaKByByBymsByByByByByByBymsmsmsmsByByByvWByJFByByByByvWByByByByByByByByByBymsBymsmsByBy
+ByByMEBymsmsByByBymsByByMEByByByKQKQLjKQKQKQhbKQKQKQKQKQKCKQKQhwhwKQKQKQLjKQKQKQKCKQKQhwhwKQKQKQLjLjhwKQKCKQyDKQKQKQKQKQKQBymsmsmsmsmsByByBymsByBymsByvWByByByByByByByHhByByByByKbnYiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHTPaKKbByByByByvWByByByByByByByByByByByByByvWJFmsmsByByByByByByByByByByByByBymsmsmsHhByBy
+ByByByBymsmsBymsmsByByBymsByBymsKQKQKQKQKQKQKQKQKQKQKCKQKQKQArKQKQKQKQKQKQKQKCKQKQKQArKQKQKQKQKQKQKQKQKQRpKQKQKQKQKQKQKQKQByBymsmsmsByByByByBymsmsByBymsByBymsByByByvWByBymsByByBynYiHiHiHiHiHPytEtEZQZQtEtExYxYtEtEZQZQtEtEPyiHiHiHiHiHTPaKByByByByByByByByByByByByRPByByJFByByByByJFByByRPByByByByByByByByByByByByByByByYkmsBy
+ByByByByByBymsmsByByBymsByByByByKQKCKQKQLjKQKQKQLjKQKQKQKQLjKQKQKQhbKQKQhbKQKQKQKQhwKQKQKQKQKQKQKQltKQKQhbLjKQewewKQKQKQKQByBymsByBymsMEByByByByByByByByByByByByByByByByByByByByBynYiHiHiHiHiHEHHvHvHvHvHvHvEHEHHvHvHvHvHvHvEHiHiHiHiHiHTPaKByByByBymsByJFmsByByByByByBymsmsmsmsByByByByByBymsmsByByByByByByByByByByByByByByByBy
+ByByByByBymsmsmsmsmsByByByByByByKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQLjLjLjLjKQLjKQLjLjLjLjLjLjLjLjLjKQKQKQKQKQByHhmsByByBymsmsByByByByByByByByByByvWvWByBymsByByByByBynYiHiHiHiHiHtEjerLtEtEjerLtEtEjerLtEtEjerLtEiHiHiHiHiHTPaKByByByByByByBymsBymsRPmsByByByByByByByByBymsmsmsByByByByByByByByvWByByByByvWmsByByBy
+ByByByByRPByByBymsBymsByByByByByKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQmsBymsByByByBymsBymsmsmsmsmsByByByByByByByBymsByByByByBynYiHiHiHiHiHLfgSZRqELfgSZRqEqEgSZRLfqEgSZRLfiHiHiHiHiHTPaKByByByByByByBymsByByByByByByvWByByByByByBymsByByByByByByByByByByByByByJFBymsByByByBy
+ByByByByByByByByBymsmsvWByBymsmsLjKQKQKQKQKQLjKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQKQByByBymsByByByBymsBymsvWByByByJFByByByByByByByByByByByBynYiHiHiHiHiHPyKRKRxYxYKRKRxYxYKRKRxYxYKRKRPyiHiHiHiHiHTPaKByRPBymsByByBymsmsByByByByByByByByByBymsByBymsByByByByByByByByByByByByByBymsByByByBy
+ByByByByByByByByByByByByByByByByKQLjLjdTLjKQLjLjKQKQLjLjKQKQKQKQKQKQRpKQKQKQKQKQKQKQKQhbKQKQKQyBKQKQKQhbKQKQLjKQKQKQKQKQKQByByByByByBymsMEByByByBymsByByByvWByByByJFByByByvWByByBynYiHiHiHiHiHHvjerLHvEHjerLHvHvjerLEHHvjerLHviHiHiHiHiHTPaKByByByByMEByByByByByByByByByByBymsmsmsByByByByByByByByByByvWByByByByByBymsByByByJFBy
+iWiWiWIQByByByByByByByByBymsByByKQKQKQLjKQKQKQclLjKQLjLjKQKQKQKQKQKQRpKQhbKQKQKQKQKQKQKQKQKQewewKQewKQKQKQKQLjKQKQKQLjLjLjByRPByByByBymsByByByByBymsmsmsmsBymsBymsJFByByByByByByBynYiHiHiHiHiHtEgSZRtEtEgSZRtEtEgSZRtEtEgSZRtEiHiHiHiHiHTPaKByByByByByByByJFmsMEByByBymsrNrNrNmsByByByByByByvWByByByByByByByByByBymsByvWByByByBy
+IQIQmsUaeZkdByByBymsByByByByByByKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQArKQKQKQKQKQKQKQKQewewKQKQKQKQKQKQclLjKQKQByByByByByByByByByByByByvWBymsmsByByByByByByByByByByByBynYiHiHiHiHiHtEjerLtEtEjerLtEtEjerLtEtEjerLtEiHiHiHiHiHTPaKByByByByByByByByBymsmsmsmsmsByByBymsmsByBymsByByByByByByByByByByByBymsByByByIQIQIQIQ
+msNxIQwvwvwFohByByByByByByByByByKQKQLjKQKQKQKQLjKQLjLjLjLjKQLjKQLjifLjLjLjLjLjArArKQKQKQKQRpKQLjKQKQewKQKQKQKQLjLjLjKQKQKQByByByByByByByByByByByByByByByByByByByByByvWByByByByByBynYiHiHiHiHiHLfgSZRqELfgSZRqEqEgSZRLfqEgSZRLfiHiHiHiHiHTPaKipByBymsByByByByByByByByByByRPByByByBymsByByByBymsmsByByByByByByByVTOPiWiWIQIQmXIQms
+IQIQzOIQnyalohByByByHhByByByRPByKQKQKQLjKQKQKQKQKQKQKQKQhbKQKQKQKQewKQKQKQKQArArKQKQKQKQKQKQLjKQKQLjLjKQKQLjKQKQKQKQKQKQewByByByByByJFByByByvWBymsByByByByByByByByByByByByByByKbdqiHiHiHiHiHiHPyKRKRxYxYKRKRxYxYKRKRxYxYKRKRPyiHiHiHiHiHiHUBipKbByBymsmsByByByByByByByByByByByByByByRPByByByByByByByByByByBymsVTiXnyEoGgmsIQIQIQ
+IQIQdMvHnyalohByByByHhByByByByByKQKQKQKQLjLjLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQArArKQKQKQKQKQKQKQKQKQKQKQKQKQLjLjKQKQKQKQKQLjLjByvWByByByByByByByByBymsByByByByByBydqbtbtbtbtbtbtbtbtndiHiHiHiHiHiHHvjerLHvEHjerLHvHvjerLEHHvjerLHviHiHiHiHiHiHiHbtbtbtbtbtbtbtbtsVByByByByByByByByByByByByByByByBymsByByByByByByByVTiXnydCmsIQIQIQIQ
+IQIQdMEonyalohByByByByByByByByByKQhbewKQKQKQKQLjKQLjKQKQKQKQKQLjLjLjKQKQKQifKQKQLjLjLjLjhbKQKQKQhbKQKQKQKQLjLjKQewKQKQLjLjByByByByByByByBydqbtbtbtbtbtbtbtbtbtndndndndndndndndndndiHiHiHiHiHiHtEgSZRtEtEgSZRtEtEgSZRtEtEgSZRtEiHiHiHiHiHiHiHndndndndndndndndndbtbtbtbtbtbtbtbtbtsVByByBymsByBymsByByByByByByBydOiXMVzOzOIQpaIQIQ
+IQmsEDdCnyalohByByByByBymsByByByKQKQKQewKQewewewKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQhbKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQyBKQKQKQLjmsByByByBydqbtbtndndndndndndndndndndndndndndndndndndndndiHiHiHiHiHiHLfqEqEqEqEqEqELfLfqEqEqEqEqEqELfiHiHiHiHiHiHiHndndndndndndndndndndndndndndndndndndndbtbtsVByByByByByByvWByByByByVTiXnyzOEDIQIQIQIQ
+IQIQIQUzUzHQohByByByvWByByByvWByKQKQKQKQKQKQKQKQKQKQhbKQKQKQewhbhbKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQclKQKQKQKQByByByBydqndndndndndndndndndndndndndndndNbNbNbNbNbNbNbNbFgFgFgFgFgFgPyXXXXMbMbXXXXxYxYXXXXMbMbXXXXPyFgFgFgFgFgFgFgNbNbNbNbNbNbNbndndndndndndndndndndndndndndndsVBymsByByByByByByByByVTJDUzUzIQIQmsmsIQ
+IQIQmsiXIQmsByByByByByByByByByByLjLjLjKQKQKQKQKQKQKQKQKQKQLjLjLjLjLjLjKQKQKQKQKQKQKQLjLjLjLjKQKQKQKQKQKQKQKQhbKQKQKQKQKQKQByByBydqndndndndndndndndndndndndndndndgqbjxoxoxoxoxoxoxoxoxowDxoxoxoxoxoxoxoxoxoxowBxoxoxoxoxoxoxoxoxoxoxoxowDxoxoxoxoxoxoxoxowsjWndndndndndndndndndndndndndndndsVByByByByByByByByByByByIQIQIQmsmsIQIQ
+HCIQIQOCHCHCHCLALALALALALALALAyuyAyAyAyAyAyAyAyAyAyAyAIlyAyAyAyAyAyAhgyAyAyAyAIlyAyAyAyAyAyAyAhgyAyAyAIlyAyAyAyAyAyAyAyAyALATMdqndNbNbndndNbNbndNbNbndndNbNbndmAgzLALALALALnreLALALALALALAyuLALALALnLnLALALALALALAyuLnLnLALASPLAtgtgtgLnLAyuLALALALnLALALAtLqANbNbndndNbNbndndNbNbndndNbNbndsVLALALALALALALALALALAHCIQIQIQHCHCLA
+dDIQIQbtndndbtbtbttfSlbtbtbtbtbtyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyibtbtbtbtbtbtbtbtbtndndbtbtndndbtbtndbtbtndndbtbtndndbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtndbtbtndndbtbtndndbtbtndndbtbtndndbtbtbtbtbtbtbtbtgWiXIQIQIQIQbtbtbt
+oyIQIQndndndndndndFevdndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndqBiXIQIQIQndndndZM
+oyIQIQndndhAhAhAndFeGchAhAndndhAJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAOjiXIQIQIQIQndndac
+oyIQIQIQndizizizndFeOdizizndndizmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizibiXIQIQIQIQndndbo
+oyIQIQIQndndndFeiEndndndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndCgiXIQIQIQIQndndZM
+oyIQIQIQndhAhAcSvdndhAhAhAndndhAJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndgeurhAIQIQIQIQhAndndac
+oyIQIQIQndizizLgvdndizizizndndizmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndqBjbizIQIQIQIQizndndbo
+oyIQIQndndndndFevdndndndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndqBEQndIQIQIQIQIQndndZM
+fEIQIQNbNbndndlbtNNbNbNbNbNbNbNbGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNboompNbNbIQIQIQIQNbNbNb
+dXmsmsxoxoxoxoxoxoEqxoxoxoxoxoxovbzUvbvbvbIavbvbvbvbvbMMvbvbvbvbzUqMzUvbvbvbvbvbvbvbvbvbvbIavbvbvbvbvbvbvbvbvbvbvbIavbvbvbxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxowDxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoOJQhLkIQIQmsdXYKrX
+MUmsIQByByByBymsByByByByHhHhByByKQKQKQKQKQKQKQKQGoGoGoGoGoKQGoKQKQKQKQzkBSGoGoGoKQKCKCKCzkKQKQBSLjLjBSKQKQKQKQKQKQKQKQRpRpByByByByyGByByOyByByByJFJFhUByByByByByyGByBymsHhHhHhBymsByYkmsByByzemsByByyGByByByJFJFByByByByByByBymsmsByByByByByYkHhByByByyGyGyGyGByJFJFByByByByHhHhHhByByByByByByYkmsmsJFJFByBymsIQIQIQIQIQIQmsmsfE
+HjIQIQKhLAtgLALALALALALALALALAyuyASjyAyAyAshshshyAyAyAIlyAyAyAHGyAyAyAyAshyAyAIlshshshyAyAyAyAyAyAyAyAuVSjSjyAyAyAyAyAyAyALALAyuLALALAtgtgLALALALALALAyuLALALALALALALASPSPLASPTcLALALALALALALALnLnLnLAyuLALALALALALALAKaLAKaKaswKaLALALALALAtgLALALALAyuLALALALALALALAtgbCtgtgyuLALALALALALALALALALALAyuLALALALAHCHCIQIQIQUUzKzK
+mtIQIQIQndndndtfSlbtbtbtbtbtbtbtyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyiyibtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtgWiXIQIQIQIQbtbtbt
+oyIQIQIQndndndFevdndndndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndqBiXIQIQIQndndndZM
+oyIQIQIQndhAhAcSvdndhAhAhAndndhAJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAOjiXIQIQIQIQhAndZM
+oyIQIQndndizizLgvdndizizizndndizmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizBHiXIQIQIQizizndZM
+oyIQIQndndndndFeJBndndndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndgeEQndIQIQIQIQndndndZM
+oyIQIQndndhAhAhAndFeKVhAhAndndhAJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWJWJWlYlYJWhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndndhAhAhAndqBurhAIQIQIQhAhAhAndZM
+oyIQIQIQndizizizndFeeQizizndndizmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEmEmElYlYmEizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndndizizizndqBjbIQIQIQIQIQizizndZM
+oyIQIQIQndndndndndFevdndndndndndlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndndqBEQIQIQIQIQIQndndndZM
+IQIQIQNbndndndNbNblbtNNbNbNbNbNbGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpGpNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNbNboompIQIQIQIQIQNbNbNbNb
+OJIQIQOJOJOJOJOJOJEqxoxoxoxoxoxovbvbvbvbvbIavbvbvbvbvbvbvbvbvbvbvbIavbvbvbvbvbvbvbvbvbvbvbIavbvbvbvbvbvbvbvbvbvbvbIavbvbvbxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoxoxoxoEqxoxoxoxoxoxoxoxoOJOcOJLkIQIQIQbdrvrv
+VoIQIQIQIQIQmsIQVTBymsByByByByByKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByBymsmsByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByIQiXIQIQIQIQIQIQXbXb
+mSmsXbIQIQqtIQIQalByByByByByByByKQArKQKQKCKQKQLjLjKQKQLjKQKQKQKQKQKQKQLjLjKQLjKQLjKQhbKQKQKQKQLjLjLjLjKQKQKQKQKQLjLjKQhbKQByByByByByBymsmsByByByByByByByBymsBymsByByByByByByByByByByByBymsByByBymsmsByByByvWByByBymsmsmsmsmsmsByByByByByByByByByByByByByvWByByByByByBymsmsmsBymsBymsBymsByByByByByByByBymsmsByiXIQIQIQIQmsIQXbXb
+wMmsXbIQIQaPCrIQalmsByByByBymsByKQArArKQKCKQKQLjLjLjKQLjKQLjKQKQKQKQKQKQKQKQKQKQLjKQLjKQLjKQKQKQKQKQKQKQhbRpKQKQKQKQLjLjLjmsByByBymsMEByByByByByByvWRPBymsmsByBymsmsByByByByByByByByvWByByByByByByByByByByByByByByByByByByByMEmsmsByByByByvWByByByBymsmsmsmsmsmsmsvWBymsByByByByByHhmsmsMEByByByByByByBymsByByiXqtIQIQIQIQIQXWXW
+UzUzUzUzIQIQIQIQalByBymsmsByBymsLjLjLjclKQLjLjKQKQKCKCKCKQKQKQKQKQKQKQKQKQKQKQKQKQKQKCKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQByByByByByByByByByByByBykckcmsmsByvWByByByvWByBymsmsmsmsmsmsmsByByByByByByByByByByByByvWByByByByByByByByByByByByByByByByByByByByByByByBymsmsmsByByByByByByByBymsByBymsByvWByBymsvWByiXbhWdIQmsIQIQXWXW
+CvCvCvtOIQIQmsIQalBymsByByByByByKCKQKQKQKQGsKCKQKQKQKQhbKQKQKQKQKQKQKQhbclLjLjKQKQKCKCKQKQLjKQKQKQhbKQKQKQKQKQKQKQKQKQKQKQBymsYkByByByByByByByBykckcBymsByHhByByByBymsmsmsmsByByByIQByByByByByByByvWByByByByByByByByByHhByByByByByByBymsmsmsmsmsmsByByByBymsByByByByBymsmsmsByByByByByByByByBymsBymsByByBymsByiXIQIQmsIQmsIQYjBD
+ByByBymsUzUzUzUzlwBymsmsByBymsByKQKQKQKQGsGsKCLjKQKQKQKQKQKQLjKQKQKQLjLjKQLjKQKQKQKQKQKQKQLjKQKQKQKQKQLjLjKQKQKQKQKQhbhwKQmsmsHhHhBymsmsmsBymsByBykcByByByByByByByBymsmsmsmsByByByByByByByByByByByByBymsmsmsmsByByByByByByByByByByvWByBymsmsYkByByByByByBymsmsmsmsmsByByByByBymsmsByByByByByByBymsByByByByByByivfhUzUzUzmsIQIQVo
+ByBymsmsFlCvCvwkwkByByByBymsmsmsKQKQgKKQKQewKQLjKQKQKQKQKQKQLjKQKQKQKQKQKQKQKCKQKQKQLjKQKQLjKQKQKQKQLjLjKQKQhbKQKQLjLjLjLjBymsBymsByvWByByBymsByByByByByByByByByByByByByByByByIQByByByByMEByByBymsmsmsmsVuVumsmsByByBymsmsByByByByByByByByByBymsmsByByByBymsByByByByByByByvWmsmsMEByByByByByIQIQmsByJFByByByByBymsByBymsmsByByBy
+ByByByByByByByByByByvWByByBymsByKQKQewLjKQKCKQLjewKQKQvlKQKQKQKQLjLjLjLjKQKQLjLjLjLjLjLjclLjKQKQKQKQKQKQKQKQKQRpKQKQKQKQRpByByBymsmsmsByByBymsByByByByByByMERPByByByByBymsYkBymsmsmsmsmsmsmsByBymsmsVuVuVuVuVumsmsByByByByByByByByByByByByByByBymsByByByByvWByByByByvWByBymsBymsmsByByIQByvWByByBymsvWByByByByvWByByBymsByByByBy
+ByIQIQByByByByByByIQByCyCyByByByewKQKQKQhbKCLjKQltLjhbKQKQLjKQLjLjKQKQKQKQKQKQKQKQArKQKQKQLjKQKQKQLjKQRpKQKQKQKQKQKQKQKQKQByByByBymsmsByByByByByByvWByByBymszpmsByByByBymsmsmsByByByByByBymsmsmsmsVuVuVuVuVuVuVumsByByByByByvWByByByByByCyCyByBymsByByByByByByByByByByBymsByBymsByByByByByByByByBymsByByByBymsmsByHTmsByvWvWByBy
+ByByByByByIQIQIQIQIQByCyCyByByByKQLjKQLjKQKQKQKQKQKQKQKQLjKQKQLjKQKQKQKQhbKQKQKQKQKQKQKQKQLjKQhbKQKQLjKQLjKQKQLjLjLjLjKQKQByByXdHTBymsMEmsByByByByByByByBymsmsmsmsmsBymsmsByByBymsByByByBymsmsmsVuVuVuVuzvVuVuVumsmsByByBymsByByByByByCyCyByByByvWByByByHTByByHTByByBymsmsByByBymsByByByByByByByByByByByByByByByByByByByByByByBy
+ByByByByByByByBymsByIQIQCyByByByKQKQKQKQLjLjKQKQKQKQKQKQLjLjKQKQKQLjKQKQKQKQLjKQvlArArKQKQKQLjKQKQKQKQKQKQLjLjFqFqFqFqLjLjByByByByByByByIQIQByByByByByBymsmsmsByBymsMEmsByByBymsmsByByBymsmsVuVuVuVuVuzvzvVuVuVumsmsByBymsmsIQmsByByByCyByByByByByByBymsmsByByByByBymsmsByByByBymsByByByByByByByByBymsByBymsByByBymsBymsmsByByBy
+ByByByBycWByByBymsByByByCyByByByhwKQKQKQKQKQKQLjKQKQKQLjKQLjKQhbKQKQLjLjLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjLjLjFqFqFqFqFqFqmsByByByByByByIQByByMEmsmsByBymsmsmsByBymsmsByByBymsmsByByByBymsmsVuVuVuVuzvzvzvVuVuVumsmsHhBymsBymsByByByByByCyByByByBymsmsmsByByByBymsmsBymsmsmsByvWByByByByByByByByByBymsByXdmsByBymsByByByByByByBy
+ByByByByIQByByByBymsByByByIQIQIQvlvlvlvlvlKQKQLjLjclKQKQKQKQKQLjLjuZRkaQRkuZKQKQKQKQKQKQKQclLjKQKQLjKQLjFqFqFqFqzmFqFqLjLjByByByByByByByByBymsmsByByByByvWByByByByCymsByBymsmsByByByBymsmsVuVuVuVuzvzvzvzvVuVuVumsmsHhByByBymsByByByByByBymsmsmsByByByByByJFByByByByByByByByByByByByByByByBymsmsByByByByByByByvWByByByByBymsByBy
+ByByByByIQByByByBymsByJFByByByByKQKQKQKQKQvlvlKQKQKQvlvlKQKQKQKQKQthlLequnDYKQKQKQKQKQKQKQLjLjLjKQKQKQLjFqFqFqzmzmFqLjKQKQByByByByByByByByBymsByByByHhByByByByByTKCyBymsByByByByByByBymsmsVuVuVuzvzvzvzvzvVuVuVumsmsByBymsBymsmsHTmsByByByByByByByByBymsBymsByByByByByByHTByBymsmsmsmsmsmsmsVumsNDBymsmsmsmsByByBymsByByBymsByBy
+BymsByByIQByByByBymsvWByByByzpByKQKQKQKQKQPiKQKQKQKQKQvlvlvlvlvlvllQeqrFeqaQKQKQKQKQKQhwhwKCKQKQKQKQLjFqFqzmzmzmFqFqLjKQKQByByByIQvWByByBymsByByByByByByByByzpmsCyByByByByByByByByBymsmsVuVuVuVuzvzvzvzvzvVuVuVumsmsByBymsmsmsByBymsBymsByHhByBymsBymsmsmsByByByvWByByByByBymsmsVuVuVuVuVuVumsmsHTByByByByByByByBymsByHTHTmsByBy
+BymsByByByByByByByBymsByByBymsmsLjKQKQvlKQLjKQKQKQKQKQKQKQKQKQLjKQtheqrSeqDYKQKQKQvlvlKQKQKCKQKQKQKQLjFqFqFqFqFqFqFqLjKQKQByByByIQByByByBymsByByByByByByBymsmsByCyByBymsrNJFByByByBymsmsVuVuVuVuzvzvzvzvVuVuVuVumsmsByByBymsmsByByByByBymsmsmsmsByByByBymsmsmsByXdByByByBymsVuVuVuVuVuzvVumsmsmsByByByByByByByByByByByBymsByByBy
+ByBymsmsByByByByHTByByByByByBymsLjKQKCKQKQKQKQKQKQKQhbKQKQKQKQKQLjDYjrgBuaDYKQKQvlhbKQKQKQKQLjKQKQKQLjFqFqFqLjLjLjLjKQKQKQmsmsHTIQByByByByByByByvWByByvWmsmsByByByBymsYkWqByByByvWBymsVuVuVuVuzvzvzvzvzvVuVuVuVumsmsByByByByByByByByByByByByByvWmsByByByByByByByByByByBymsVuVuVuVuzvzvVuVuVumsmsByByByBymsByByvWByByByByByByByBy
+ByByBymsmsmsByByByByByByByByByByLjLjKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQuZRkaQRkuZKQKQvlKQKQKQKQKQLjKQKQKQLjLjLjLjKQKQKQKQKQKQLjMEByHTIQByByByBymsByByByByByByByByByByByBymsByByByByByByBymsVuVuVuVuzvzvzvzvVuVuVuVuVumsBymsByByByByByByByBymsmsmsmsBymsBymsmsmsByByByByByByBymsmsmsVuVuVuVuVuVumsmsmsByByBymsmsvWByByByByByByByvWByBy
+ByByByBymsByBymsByByByByByByByByhbKQKQLjLjKQKQKQKQLjKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjhbKQKQLjLjLjKQKQKQKQKQKQKQLjByByByByByByvWBymsByByByByByByByByByByBymsByByByByByByByBymsVuVuVuzvzvzvzvzvVuVuVuVumsmsByByBymsByBymsmsHTByIQmsByByByBykcBymsmsmsmsByBymsmsByBymsBymsVuVumsmsmsByByBymsHhBymsByByByByByByBymsmsByByBy
+ByByJFByByByByByByRPByByIQByBymsLjLjLjKQKQKQKQKQLjKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQByByByBymsmsmsBymsmsByByBymsByByByByByvWByByByByByByByBymsmsVuVuVuzvzvzvzvVuVuVuVuVumsByByByByByByByBymsmsmsByByByByByByByByByByByByByByBymsmsmsmsByBymsmsByByByByByByByBymsByByByByByByByByBymsByByBy
+ByByByByByByByByByByByIQmsmsByByKQhwhwKQKQKQKQLjLjKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQewKQLjKQKQKQKQLjLjKQKQKQhbKQKQKQHTByByByByByBymsmsBymsBymsmsByByvWByBymsByXdByByByByBymsmsVuVuVuVuzvzvzvzvVuVuVuVumsmsByByByByByByByByByByvWByByByByByByBykckcByByByByByByByByBymsmsmsByBymsByByByByByByByByByJFBymsmsByByvWByByByByBy
+ByByByByByByByByByByByByByByByByhwhwKQKQKQKQhbLjKQKQKQLjKQKQKQKQhbKQKQKQKQKQKQKQLjhbLjLjLjLjLjLjKQKQKQKQKQKQLjKQKQKQKQKQKQByByByByByByByBymsByByvWByByByByByByBymsByRPByByByByBymsmsVuVuVuVuzvzvzvzvVuVuVumsmsByByvWByByByByByByByJFByByByByByByByByByByByByByByByByByByByByByByByByByByByByJFByBymsByByByvWmsmsByByByBymsByByBy
+ByByBymsBymsByvWByByByByByByByByKQKQKQKQGsKQKQLjKQKQKQKQLjKQLjLjLjKQKQKQKQKQKQKQKQLjKQKQKQKQKQKQLjLjLjKQKQhbLjLjKQKQKQewKQByBymsByByByByByByBymsByByByBymsByByByByByByByByvWByBymsmsVuVuVuVuzvzvzvVuVuVumsmsByByBymsmsmsmsByByByByJFByByByByByByByBykckcByByByByByByByByByByByByBymsByByByByByByBymsmsmsByBymsmsByByByBymsByByBy
+ByBymsmsByByByByByByByByByByByByKQLjKQGsGsKQKQKQKQKQKQzkLjLjKQKQKQKQKQKQKQhbKQKQKQLjLjKQhwKQKQKQKQKQhbKQKQKQKQKQKQKQKQewKQByByvWByByByByByByByByzpByByByByRPRPByByByByByByByByByMEmsmsVuVuVuVuVuVuVuVumsmsmsByByByByByByBymsmsmsByByByByByByByByByBymskckcvWByByByByvWvWByByByByBymsmsmsBymsmsByByCyCyByByBymsBymsByByBymsByByBy
+ByByzpByByByByByByJFByJFByIQmsrNLjLjKQGsGsKQKQKQLjKQKQLjKQKQdTLjKQLjLjKQKQKQKQewKQKQLjLjKQKQKQKQKQKQKQKQKQKQKQKQKQLjLjKQKQByByByByByByByByByvWByBymsmsmsByByBymsByByByByByByByBymsmsmsmsmsVuVuVuVuVumsmsmsByByBymsByByByByByByBymsmsmsByByBymsmsMEmsmsByBykcByByByBymsmsmsHTByByByByByByvWByByByCyCyByByByByByvWBymsmsvWmsByByBy
+ByBymsmsmsByByByByByByByByByByIQvlKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQLjKQKQKQewKQKQKQKQKQKQLjLjLjKQKQKQKQKQKQKQKQKQKQLjLjKQByBymsByByRPByByByByByByByByByByvWByByByByByvWByByByByByBymsmsmsmsmsmsmsmsmsmsByByBymsvWByByByByByBymsmsmsmsmsByByByByByByByByByByHTByByByByBymsmsmsXdmsByByByByByByByByByBymsmsmsByByByByBymsByByByBy
+ByByByByByRPByByByByByByByByByByKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQKQLjKQKQKQLjKQKQLjmsmsByByByByByByByByByByByByByByByByByBymsByBymsBymsmsmsByByBymsmsmsmsmsmsmsByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByByBy
+"}
