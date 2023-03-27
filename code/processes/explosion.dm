@@ -80,55 +80,12 @@
 	var/far_dist = 0
 	far_dist += heavy_impact_range * 5
 	far_dist += devastation_range * 20
-	// Play sounds; we want sounds to be different depending on distance so we will manually do it ourselves.
 
-	// Stereo users will also hear the direction of the explosion!
-
-	// Calculate far explosion sound range. Only allow the sound effect for heavy/devastating explosions.
-
-	// 3/7/14 will calculate to 80 + 35
-	var/volume = 10 + (power * 20)
-
-	var/frequency = get_rand_frequency()
-	var/closedist = round(max_range + 7 - 2, 1)
-
-	//Whether or not this explosion causes enough vibration to send sound or shockwaves through the station
-	var/vibration = TRUE
-
-	if (vibration)
-		for (var/player in player_list)
-			var/mob/M = player
-			// Double check for client
-			var/reception = 2//Whether the person can be shaken or hear sound
-			//2 = BOTH
-			//1 = shockwaves only
-			//0 = no effect
-			if (M && M.client)
-				var/turf/M_turf = get_turf(M)
-
-				if (M_turf && M_turf.z == epicenter.z)
-
-					if (!reception)
-						continue
-
-					var/dist = get_dist(M_turf, epicenter)
-					if (reception == 2 && (M.ear_deaf <= 0 || !M.ear_deaf))//Dont play sounds to deaf people
-						// If inside the blast radius + 7 - 2
-						if (dist <= closedist)
-							M.playsound_local(epicenter, sound, min(100, volume), TRUE, frequency, falloff = 5) // get_sfx() is so that everyone gets the same sound
-							//You hear a far explosion if you're outside the blast radius. Small bombs shouldn't be heard all over the station.
-
-						else
-							volume = M.playsound_local(epicenter, sound, volume, TRUE, frequency, falloff = 1000)
-							//Playsound local will return the final volume the sound is actually played at
-							//It will return FALSE if the sound volume falls to FALSE due to falloff or pressure
-							//Also return zero if sound playing failed for some other reason
-
-					//Deaf people will feel vibrations though
-					if (volume > 0)//Only shake camera if someone was close enough to hear it
-						shake_camera(M, min(60,max(2,(power*18*0.25) / dist)), min(3.5,((power*3*0.25) / dist)),0.05)
-						//Maximum duration is 6 seconds, and max strength is 3.5
-						//Becuse values higher than those just get really silly
+	playsound(epicenter, sound, 100, TRUE, round(power*5,1))
+	for (var/mob/living/human/M in range(10, epicenter))
+		var/dist = get_dist(get_turf(M), epicenter)
+		shake_camera(M, min(60,max(2,(power*18*0.25) / dist)), min(3.5,((power*3*0.25) / dist)),0.05)
+	
 
 	if (adminlog)
 		message_admins("Explosion with size ([devastation_range], [heavy_impact_range], [light_impact_range]) in area [epicenter.loc.name] ([epicenter.x],[epicenter.y],[epicenter.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[epicenter.x];Y=[epicenter.y];Z=[epicenter.z]'>JMP</a>)")

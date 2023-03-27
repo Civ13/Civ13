@@ -172,7 +172,7 @@
 					else
 						can_fire = FALSE
 			if (can_fire)
-				MG.Fire(A, src, force = TRUE)
+				MG.afterattack(A, src, FALSE, params)
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)

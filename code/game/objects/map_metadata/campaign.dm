@@ -6,21 +6,21 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner ="The battle is going on."
-	victory_time = 45000
-	grace_wall_timer = 9000
+	victory_time = 80 MINUTES
+	grace_wall_timer = 20 MINUTES
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/japanese,
-		list(PIRATES) = /area/caribbean/pirates/land/inside/objective
+		list(PIRATES) = /area/caribbean/japanese,
+		list(CIVILIAN) = /area/caribbean/british/land,
 		)
-	age = "2022"
+	age = "2023"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	battle_name = "2nd battle of Rozenia"
-	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
+	battle_name = "battle of the AU29 Highway"
+	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -105,15 +105,15 @@
 
 /obj/map_metadata/campaign/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 2 MINUTES
 	else
-		return 3000 // 5 minutes
+		return 5 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1200
+		return 2 MINUTES
 	else
-		return 4200 // 7 minutes
+		return 7 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
 	var/ctb = 0
@@ -319,9 +319,9 @@
 /obj/item/weapon/key/red
 	code = 668643
 	name = "Redmenian Key"
+
 /*
 /obj/map_metadata/campaign/update_win_condition()
-	victory_time = 45000
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
@@ -337,7 +337,7 @@
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
+			message = "The battle is over! The [current_winner] was victorious [current_loser][battle_name ? "in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		game_log(message)
 		world << "<b><big>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
@@ -400,19 +400,18 @@
 var/no_loop_cm = FALSE
 
 /obj/map_metadata/campaign/update_win_condition()
-
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Redmenians</b> have sucessfuly defended the town! The Blugoslavians halted the attack!"
+		var/message = "The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Redmenians halted the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Blugoslavians</b> have captured the FOB! The 2nd battle of Rozenia is over!"
+		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -422,7 +421,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the FOB! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -431,7 +430,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the FOB! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -440,7 +439,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the FOB! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -449,14 +448,14 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the FOB! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Redmenians</b> have recaptured the FOB!</font>"
+			world << "<font size = 3>The <b>Blugoslavians</b> have recaptured control over the objective!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -464,7 +463,7 @@ var/no_loop_cm = FALSE
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
-	
+
 ///////////arty and stuff/////////////
 /obj/map_metadata/campaign/proc/napalm_strike(var/inputx, var/inputy, var/inputz)
 	var/xoffsetmin = inputx-4

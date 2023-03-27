@@ -334,8 +334,7 @@
 	next_map_title = winner
 	winner = uppertext(winner)
 	if (!maps.Find(winner))
-		winner = maps[0]
-	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
+		winner = maps[rand(0,1)]
 	if (!done)
 		processes.python.execute("mapswap.py", list(winner))
 		done = TRUE

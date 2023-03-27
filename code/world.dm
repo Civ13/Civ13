@@ -188,6 +188,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 		s["map"] = "unknown"
 		s["age"] = "unknown"
+		s["stationname"] = config.server_name
 
 		if (input["status"] == "2")
 			var/list/players = list()

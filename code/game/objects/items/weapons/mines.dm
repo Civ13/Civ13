@@ -125,6 +125,8 @@
 	trigger(AM)
 
 /obj/item/mine/proc/trigger(atom/movable/AM)
+	if (istype(AM, /obj/item/projectile))
+		return
 	if (world.time < nextCanExplode)
 		return
 	if (istype(AM, /mob/living))

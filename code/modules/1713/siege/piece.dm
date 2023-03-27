@@ -419,11 +419,16 @@
 				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/smoke))
 					explosion = FALSE
 					reagent_payload = loaded.reagent_payload
-				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
-					nuclear = TRUE
+
+				if (istype(loaded, /obj/item/cannon_ball/shell/incendiary))
+					explosion = FALSE
+					incendiary = TRUE
 				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/incendiary))
 					explosion = FALSE
 					incendiary = TRUE
+				
+				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
+					nuclear = TRUE
 				qdel(loaded)
 				loaded = null
 
@@ -500,11 +505,11 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									if(!locate(/obj/structure/vehicleparts/frame) in target)
 										explosion(target, 0, 1, 3, 4)
-										for (var/turf/floor/T in circlerangeturfs(target,3))
+										for (var/turf/floor/T in circlerangeturfs(target,2))
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in circlerangeturfs(target,3))
+									for (var/turf/floor/T in circlerangeturfs(target,4))
 										ignite_turf(T, 12, 90)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))

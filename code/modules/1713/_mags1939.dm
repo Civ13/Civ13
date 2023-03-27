@@ -387,6 +387,8 @@ obj/item/ammo_magazine/dp
 	mag_type = MAGAZINE
 	caliber = "a3006"
 	w_class = ITEM_SIZE_LARGE
+	slot_flags = SLOT_BACK|SLOT_BELT|SLOT_SHOULDER
+	belt = TRUE
 
 	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 250

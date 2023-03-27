@@ -92,7 +92,7 @@ var/no_loop_o = FALSE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>AMericans</b> have captured the Airfield! The battle for Omaha Beach is over!"
+		var/message = "The <b>Americans</b> have captured the Airfield! The battle for Omaha Beach is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
