@@ -160,6 +160,8 @@
 	speedlist = list(1=14,2=10,3=8)
 	reg_number = ""
 	turret_type = "none"
+	vehicle_size = "3x4"
+	color = "#3E3D29"
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
