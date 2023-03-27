@@ -21,9 +21,8 @@
 	processes.weather = src
 
 /process/weather/fire()
-
-	var/prob_of_weather_mod = ((((1/mod_weather_interval) * 10) / 2) * 100) * schedule_interval/20
-	var/prob_of_weather_change = ((((1/change_weather_interval) * 10) / 2) * 100) * schedule_interval/20
+	var/prob_of_weather_mod = (25*schedule_interval)/mod_weather_interval
+	var/prob_of_weather_change = (25*schedule_interval)/change_weather_interval
 	if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
 		prob_of_weather_change = (prob_of_weather_change*3)
 	if (prob(prob_of_weather_mod))
