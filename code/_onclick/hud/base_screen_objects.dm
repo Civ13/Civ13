@@ -1087,6 +1087,7 @@ obj/screen/tactic
 
 /obj/screen/drugoverlay/process()
 	update_icon()
+	return
 
 /obj/screen/drugoverlay/update_icon()
 	underlays.Cut()
@@ -1101,6 +1102,7 @@ obj/screen/tactic
 		underlays += global_hud.blurry
 	if (parentmob.druggy)
 		underlays += global_hud.druggy
+	return
 
 /obj/screen/full_1_tile_overlay
 	icon = 'icons/mob/screen/effects.dmi'
