@@ -96,6 +96,7 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#3d5931"
+	turret_type = "t34_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -182,13 +183,131 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/bmd2new
+	name = "BMD-2"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#787859"
+	turret_type = "bmd2_turret"
+	vehicle_size = "2x3"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t3485
+	name = "T-34-85"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	turret_type = "t3485_turret"
+	reg_number = ""
+	color = "#3d5931"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t72
+	name = "T-72"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t72_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t64bm
+	name = "T-64BM"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t64bm_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t64bv
+	name = "T-64BV"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t64bv_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t62a
+	name = "T-62A"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t62a_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t62m
+	name = "T-62M"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t62m_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t62mv
+	name = "T-62MV"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t62mv_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t55
+	name = "T-55"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t55_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
 	speeds = 3
 	speedlist = list(1=12,2=8,3=6)
 	reg_number = ""
 	color = "#585A5C"
-	turret_type = "pzvi_turret"
+	turret_type = "pziv_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_german)
@@ -278,6 +397,19 @@
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m48a1
+	name = "M-48A1 Patton"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	color = "#293822"
+	turret_type = "m48a1_turret"
 	reg_number = ""
 	New()
 		..()
