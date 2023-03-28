@@ -309,19 +309,19 @@ var/world_topic_spam_protect_time = world.timeofday
 
 var/global/nextsave = 0
 /proc/start_persistence_loop()
-	spawn(300)
-		if (map && map.persistence)
-			var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
-			var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
-			var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
-			if (minsleft <= 2 && hr)
-				world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
-			if (nextsave <= world.realtime)
-				nextsave = world.realtime + 216000
-				spawn(0)
-					ticker.savemap()
-
-		start_persistence_loop()
+	if (! config.skip_persistence_saving)
+		spawn(300)
+			if (map && map.persistence)
+				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
+				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
+				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
+				if (minsleft <= 2 && hr)
+					world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
+				if (nextsave <= world.realtime)
+					nextsave = world.realtime + 216000
+					spawn(0)
+						ticker.savemap()
+			start_persistence_loop()
 
 /proc/start_messaging_loop()
 	spawn while (1)
