@@ -57,20 +57,26 @@
 /obj/structure/vehicleparts/movement/tracks/right/reversed
 	reversed = TRUE
 
-/obj/structure/vehicleparts/movement/tracks/mtlb/left
-	icon = 'icons/obj/vehicles/apcparts.dmi'
-	icon_state = "mtlb_tracks_end_left"
-	base_icon = "mtlb_tracks_end_left"
-	movement_icon = "mtlb_tracks_end_left_m"
-/obj/structure/vehicleparts/movement/tracks/mtlb/right
-	icon = 'icons/obj/vehicles/apcparts.dmi'
-	icon_state = "mtlb_tracks_end_right"
-	base_icon = "mtlb_tracks_end_right"
-	movement_icon = "mtlb_tracks_end_right_m"
-/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed
-	reversed = TRUE
-/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed
-	reversed = TRUE
+obj/structure/vehicleparts/movement/tracks/mtlb/left_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "mtlb_tracks_left_front"
+	base_icon = "mtlb_tracks_left_front"
+	movement_icon = "mtlb_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/right_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "mtlb_tracks_right_front"
+	base_icon = "mtlb_tracks_right_front"
+	movement_icon = "mtlb_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/left_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "mtlb_tracks_left_back"
+	base_icon = "mtlb_tracks_left_back"
+	movement_icon = "mtlb_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/right_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "mtlb_tracks_right_back"
+	base_icon = "mtlb_tracks_right_back"
+	movement_icon = "mtlb_tracks_right_back_m"
 
 /obj/structure/vehicleparts/movement/tracks/bmd2/left
 	icon = 'icons/obj/vehicles/apcparts.dmi'
@@ -82,10 +88,27 @@
 	icon_state = "bmd2_tracks_end_right"
 	base_icon = "bmd2_tracks_end_right"
 	movement_icon = "bmd2_tracks_end_right_m"
-/obj/structure/vehicleparts/movement/tracks/bmd2/left/reversed
-	reversed = TRUE
-/obj/structure/vehicleparts/movement/tracks/bmd2/right/reversed
-	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bmd2new_tracks_left_front"
+	base_icon = "bmd2new_tracks_left_front"
+	movement_icon = "bmd2new_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bmd2new_tracks_right_front"
+	base_icon = "bmd2new_tracks_right_front"
+	movement_icon = "bmd2new_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/bmd2new/left_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bmd2new_tracks_left_back"
+	base_icon = "bmd2new_tracks_left_back"
+	movement_icon = "bmd2new_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/bmd2new/right_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bmd2new_tracks_right_back"
+	base_icon = "bmd2new_tracks_right_back"
+	movement_icon = "bmd2new_tracks_right_back_m"
 
 /obj/structure/vehicleparts/movement/tracks/m113/left
 	icon = 'icons/obj/vehicles/apcparts.dmi'
