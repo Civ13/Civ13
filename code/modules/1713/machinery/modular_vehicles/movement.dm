@@ -78,6 +78,24 @@ obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 	base_icon = "mtlb_tracks_right_back"
 	movement_icon = "mtlb_tracks_right_back_m"
 
+/// OLD MT-LB tracks
+
+/obj/structure/vehicleparts/movement/tracks/mtlb/left
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_left"
+	base_icon = "mtlb_tracks_end_left"
+	movement_icon = "mtlb_tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/right
+	icon = 'icons/obj/vehicles/apcparts.dmi'
+	icon_state = "mtlb_tracks_end_right"
+	base_icon = "mtlb_tracks_end_right"
+	movement_icon = "mtlb_tracks_end_right_m"
+/obj/structure/vehicleparts/movement/tracks/mtlb/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/mtlb/right/reversed
+	reversed = TRUE
+
+
 /obj/structure/vehicleparts/movement/tracks/bmd2/left
 	icon = 'icons/obj/vehicles/apcparts.dmi'
 	icon_state = "bmd2_tracks_end_left"
