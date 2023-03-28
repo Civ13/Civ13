@@ -146,6 +146,7 @@ var/list/gamemode_cache = list()
 
 	var/daynight_on = TRUE
 	var/seasons_on = TRUE
+	var/skip_persistence_saving = FALSE
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist
 
 	var/list/Lines = file2list(filename)
@@ -438,6 +439,10 @@ var/list/gamemode_cache = list()
 
 				if ("redirect_all_players")
 					redirect_all_players = value
+				
+				if ("skip_persistence_saving")
+					config.skip_persistence_saving = TRUE
+
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 
