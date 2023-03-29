@@ -40,12 +40,12 @@
 		"Redmenia" = 0,
 	)
 	var/list/squad_jobs_blue = list(
-		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
-		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
-		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1, "Des. Marksman" = 2),
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-		"Armored" = list("Crew" = 8),
-		"AT" = list("Anti-Tank" = 2),
+		// "Armored" = list("Crew" = 8),
+		// "AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -54,8 +54,8 @@
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-		"Armored" = list("Crew" = 8),
-		"AT" = list("Anti-Tank" = 2),
+		// "Armored" = list("Crew" = 8),
+		// "AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -522,136 +522,6 @@ var/no_loop_cm = FALSE
 				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 				explosion(O,2,3,3,3)
 
-///////////map specific objs/////////
-/obj/structure/altar/heads
-	name = "Mr. Taislenko's Collection"
-	desc = "To be filled with his requests."
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "wood_chest"
-	flammable = FALSE
-	health = 1000000
-
-/obj/structure/altar/heads/attackby(obj/item/W, mob/living/human/user)
-	if (istype(map, /obj/map_metadata/campaign/campaign6))
-		var/obj/map_metadata/campaign/campaign6/AW = map
-		if(istype(W, /obj/item/weapon/book/holybook) || istype(W,/obj/item/clothing/suit/armor/royal) || istype(W,/obj/item/weapon/goldsceptre) || istype(W,/obj/item/clothing/head/helmet/gold_crown_diamond))
-			user << "You place the [W] in the chest."
-			qdel(W)
-			AW.scores["Blugoslavia"] += 1
-			user << "Total treasures inside: <b>[AW.scores["Blugoslavia"]]</b>"
-			return
-	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_CAMPAIGN)
-		var/obj/map_metadata/campaign/AW = map
-		if (!AW)
-			return
-		var/obj/item/organ/external/head/HD = W
-		var/head_nationality = HD.nationality
-		qdel(W)
-		if (!head_nationality)
-			return
-		
-		user << "You place the head in the chest."
-		switch(head_nationality)
-			if("Redmenia")
-				AW.scores["Redmenia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
-			if("Blugoslavia")
-				AW.scores["Blugoslavia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
-		return
-
-/obj/structure/altar/heads/examine(mob/user, distance)
-	. = ..()
-	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN && !istype(map, /obj/map_metadata/campaign/campaign6))
-		var/mob/living/human/H = user
-		var/obj/map_metadata/campaign/AW = map
-		switch(H.nationality)
-			if("Redmenia")
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
-			if("Blugoslavia")
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
-
-/obj/item/weapon/telephone/mobile/campaign
-	name = "telephone"
-	icon_state = "telephone"
-	anchored = TRUE
-	update_icon()
-		icon_state = "telephone"
-		
-/obj/item/weapon/telephone/mobile/campaign/red
-	name = "Red Command telephone"
-	phonenumber = 1111
-	desc = "Used to communicate with the opposite faction. Number is 1111."
-	New()
-		..()
-		phone_numbers += phonenumber
-		update_icon()
-		contacts += list(list("Blue Command",9999))
-
-/obj/item/weapon/telephone/mobile/campaign/blue
-	name = "Blue Command telephone"
-	phonenumber = 9999
-	desc = "Used to communicate with the opposite faction. Number is 9999."
-	icon_state = "telephone_blue"
-	update_icon()
-		icon_state = "telephone_blue"
-	New()
-		..()
-		phone_numbers += phonenumber
-		update_icon()
-		contacts += list(list("Red Command",1111))
-
-
-/obj/item/weapon/telephone/mobile/campaign/attack_self(var/mob/user as mob)
-	if (!connected && !ringing)
-		var/tgtnum = 0
-		if (phonenumber == 9999)
-			tgtnum = 1111
-		else if (phonenumber == 1111)
-			tgtnum = 9999
-		else
-			return
-
-		ring_phone(tgtnum,phonenumber, src, user)
-		spawn(200)
-			if (!connected || !origincall)
-				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
-				return
-	else if (connected)
-		connected = FALSE
-		if (origincall)
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
-			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
-			else
-				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
-			origincall.connected = FALSE
-			origincall.origincall = null
-			origincall = null
-	else if (ringing && !ringingnum)
-		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
-		ringing = FALSE
-		if (origincall)
-			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
-			else
-				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
-			origincall.origincall = null
-			origincall.connected = FALSE
-			origincall = null
-	else if (ringing && ringingnum)
-		ringing = FALSE
-		connected = ringingnum
-		if (origincall)
-			origincall.connected = phonenumber
-			origincall.ringing = FALSE
-			origincall.origincall = src
-			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
-			if (ishuman(origincall.loc))
-				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
-			else
-				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
-
 ///////////////////////////////////////////////////////////////////////
 /obj/map_metadata/campaign/campaign5
 	victory_time = 48000
@@ -736,7 +606,7 @@ var/no_loop_cm = FALSE
 		list(CIVILIAN) = /area/caribbean/british,
 		list(PIRATES) = /area/caribbean/japanese/land,
 		)
-obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/civilian))
 		if (J.is_event)
 			. = TRUE
@@ -854,7 +724,7 @@ obj/map_metadata/campaign/campaign6/job_enabled_specialcheck(var/datum/job/J)
 		list(CIVILIAN) = /area/caribbean/japanese/land,
 		list(PIRATES) = /area/caribbean/british/land,
 		)
-obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/campaign/campaign7/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/civilian))
 		if (J.is_event && findtext(J.title, "BNF"))
 			. = TRUE
@@ -1016,3 +886,358 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+
+///////////Map Specific Objects///////////
+/obj/structure/altar/heads
+	name = "Mr. Taislenko's Collection"
+	desc = "To be filled with his requests."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "wood_chest"
+	flammable = FALSE
+	health = 1000000
+
+/obj/structure/altar/heads/attackby(obj/item/W, mob/living/human/user)
+	if (istype(map, /obj/map_metadata/campaign/campaign6))
+		var/obj/map_metadata/campaign/campaign6/AW = map
+		if(istype(W, /obj/item/weapon/book/holybook) || istype(W,/obj/item/clothing/suit/armor/royal) || istype(W,/obj/item/weapon/goldsceptre) || istype(W,/obj/item/clothing/head/helmet/gold_crown_diamond))
+			user << "You place the [W] in the chest."
+			qdel(W)
+			AW.scores["Blugoslavia"] += 1
+			user << "Total treasures inside: <b>[AW.scores["Blugoslavia"]]</b>"
+			return
+	if (istype(W, /obj/item/organ/external/head) && map.ID == MAP_CAMPAIGN)
+		var/obj/map_metadata/campaign/AW = map
+		if (!AW)
+			return
+		var/obj/item/organ/external/head/HD = W
+		var/head_nationality = HD.nationality
+		qdel(W)
+		if (!head_nationality)
+			return
+		
+		user << "You place the head in the chest."
+		switch(head_nationality)
+			if("Redmenia")
+				AW.scores["Redmenia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+			if("Blugoslavia")
+				AW.scores["Blugoslavia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+		return
+
+/obj/structure/altar/heads/examine(mob/user, distance)
+	. = ..()
+	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN && !istype(map, /obj/map_metadata/campaign/campaign6))
+		var/mob/living/human/H = user
+		var/obj/map_metadata/campaign/AW = map
+		switch(H.nationality)
+			if("Redmenia")
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
+			if("Blugoslavia")
+				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+
+/obj/item/weapon/telephone/mobile/campaign
+	name = "telephone"
+	icon_state = "telephone"
+	anchored = TRUE
+	update_icon()
+		icon_state = "telephone"
+		
+/obj/item/weapon/telephone/mobile/campaign/red
+	name = "Red Command telephone"
+	phonenumber = 1111
+	desc = "Used to communicate with the opposite faction. Number is 1111."
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Blue Command",9999))
+
+/obj/item/weapon/telephone/mobile/campaign/blue
+	name = "Blue Command telephone"
+	phonenumber = 9999
+	desc = "Used to communicate with the opposite faction. Number is 9999."
+	icon_state = "telephone_blue"
+	update_icon()
+		icon_state = "telephone_blue"
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Red Command",1111))
+
+
+/obj/item/weapon/telephone/mobile/campaign/attack_self(var/mob/user as mob)
+	if (!connected && !ringing)
+		var/tgtnum = 0
+		if (phonenumber == 9999)
+			tgtnum = 1111
+		else if (phonenumber == 1111)
+			tgtnum = 9999
+		else
+			return
+
+		ring_phone(tgtnum,phonenumber, src, user)
+		spawn(200)
+			if (!connected || !origincall)
+				user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum]."
+				return
+	else if (connected)
+		connected = FALSE
+		if (origincall)
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.connected = FALSE
+			origincall.origincall = null
+			origincall = null
+	else if (ringing && !ringingnum)
+		user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You hang up the phone."
+		ringing = FALSE
+		if (origincall)
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone hangs up the phone.")
+			origincall.origincall = null
+			origincall.connected = FALSE
+			origincall = null
+	else if (ringing && ringingnum)
+		ringing = FALSE
+		connected = ringingnum
+		if (origincall)
+			origincall.connected = phonenumber
+			origincall.ringing = FALSE
+			origincall.origincall = src
+			user << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>You pick up the phone."
+			if (ishuman(origincall.loc))
+				origincall.loc << "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone."
+			else
+				origincall.visible_message("<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Someone picks up the phone.")
+
+
+
+///////////Aircraft Code///////////
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign
+	name = "laser designator"
+	desc = "A laser designator for marking airstrikes. <b>You have some amount of airstrikes left.</b>"
+	icon_state = "laser_designator"
+	max_zoom = ZOOM_CONSTANT*4
+	attachable = FALSE
+	value = 15
+	w_class = ITEM_SIZE_SMALL
+	var/checking = FALSE
+	var/debounce = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/examine(mob/living/human/H)
+	..()
+	switch (H.faction_text)
+		if ("PIRATES") // Redmenia
+			desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining_red] airstrikes left.</b>"
+			return
+		if ("CIVILIAN") // Blugoslavia
+			desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining_blue] airstrikes left.</b>"
+			return
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/rangecheck(var/mob/living/human/H, var/atom/target)
+	switch (H.faction_text)
+		if ("PIRATES") // Redmenia
+			if (!checking && aircraft_red)
+				if (airstrikes_remaining_red > 0)
+					if (debounce <= world.time)
+						checking = TRUE
+						var/dist1 = abs(H.x-target.x)
+						var/dist2 = abs(H.y-target.y)
+						var/distcon = max(dist1,dist2)
+						var/gdir = get_dir(H, target)
+						H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
+						var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
+						if (input != "Cancel")
+							if (do_after(H, 80, src, can_move = FALSE))
+								H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
+								checking = FALSE
+
+								var/turf/T = locate(target.x,target.y,target.z)
+								airstrike(T,H,input)
+								debounce = world.time + aircraft_calltime_red
+							else
+								H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+								checking = FALSE
+						else
+							H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+							return
+					else
+						H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
+						return
+				else
+					H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition and returning to base.</big></b>")
+					return
+		if ("CIVILIAN") // Blugoslavia
+			if (!checking && aircraft_blue)
+				if (airstrikes_remaining_blue > 0)
+					if (debounce <= world.time)
+						checking = TRUE
+						var/dist1 = abs(H.x-target.x)
+						var/dist2 = abs(H.y-target.y)
+						var/distcon = max(dist1,dist2)
+						var/gdir = get_dir(H, target)
+						H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
+						var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
+						if (input != "Cancel")
+							if (do_after(H, 80, src, can_move = FALSE))
+								H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
+								checking = FALSE
+
+								var/turf/T = locate(target.x,target.y,target.z)
+								airstrike(T,H,input)
+								debounce = world.time + aircraft_calltime_blue
+							else
+								H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+								checking = FALSE
+								return
+						else
+							H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+							return
+					else
+						H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
+						return
+				else
+					H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition and returning to base.</big></b>")
+					return
+		else
+			H << SPAN_WARNING("<b>There are no friendly aircraft in the Area of Operations.</b>")
+			return
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
+	message_admins("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)")
+	log_game("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+	
+	switch(user.faction_text)
+		if ("PIRATES") // Redmenia
+			airstrikes_remaining_red--
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			world << SPAN_DANGER("<font size=4>A Redmenian [aircraft_red] cuts through the air and fires off a burst of rockets!</font>")
+		if ("CIVILIAN") // Blugoslavia
+			airstrikes_remaining_blue--
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			world << SPAN_DANGER("<font size=4>A Blugoslavian [aircraft_blue] cuts through the air and fires off a burst of rockets!</font>")
+	spawn(15)
+		switch(user.faction_text)
+			if ("PIRATES") // Redmenia
+				var/xoffset = 0
+				var/yoffset = 0
+
+				var/direction_xoffset = 0
+				var/direction_yoffset = 0
+				for (var/i = 1, i <= airstrike_number_red, i++)
+					switch (direction)
+						if ("NORTH")
+							direction_yoffset += 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("EAST")
+							direction_xoffset += 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+						if ("SOUTH")
+							direction_yoffset -= 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("WEST")
+							direction_xoffset -= 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+					spawn(i*8)
+						explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+				sam_check("PIRATES")
+			if ("CIVILIAN") // Blugoslavia
+				var/xoffset = 0
+				var/yoffset = 0
+
+				var/direction_xoffset = 0
+				var/direction_yoffset = 0
+				for (var/i = 1, i <= airstrike_number_blue, i++)
+					switch (direction)
+						if ("NORTH")
+							direction_yoffset += 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("EAST")
+							direction_xoffset += 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+						if ("SOUTH")
+							direction_yoffset -= 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("WEST")
+							direction_xoffset -= 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+					spawn(i*8)
+						explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+				sam_check("CIVILIAN")
+			
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/sam_check(var/faction)
+	spawn(12 SECONDS)
+		switch(faction)
+			if ("PIRATES") // Redmenia
+				if (prob(0))
+					var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					aircraft_hit_check("PIRATES")
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_DANGER("<b>A SAM site fires at the aircraft!</b>")
+							M.client << uploaded_sound
+			if ("CIVILIAN") // Blugoslavia
+				if (prob(0))
+					var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					aircraft_hit_check("CIVILIAN")
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_DANGER("<b>A SAM site fires at the aircraft!</b>")
+							M.client << uploaded_sound
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/aircraft_hit_check(var/faction)
+	spawn(4 SECONDS)
+		switch(faction)
+			if ("PIRATES") // Redmenia
+				if (prob(40))
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_red] shooting it down!</font>")
+							M.client << uploaded_sound
+					message_admins("A Redmenian aircraft [aircraft_red] has been shot down.")
+					log_game("A Redmenian aircraft [aircraft_red] has been shot down.")
+				else
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_NOTICE("<font size=3>The SAM misses aircraft!</font>")
+							M.client << uploaded_sound
+			if ("CIVILIAN") // Blugoslavia
+				if (prob(40))
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_blue] shooting it down!</font>")
+							M.client << uploaded_sound
+					message_admins("A Blugoslavian aircraft [aircraft_blue] has been shot down.")
+					log_game("A Blugoslavian aircraft [aircraft_blue] has been shot down.")
+				else
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+					uploaded_sound.priority = 250
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							M << SPAN_NOTICE("<font size=3>The SAM misses aircraft!</font>")
+							M.client << uploaded_sound
