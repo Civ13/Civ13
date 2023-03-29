@@ -186,7 +186,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/cigarette
 	name = "cigarette"
-	desc = "A roll of tobacco and nicotine."
+	desc = "A roll of tobacco and nicotine. This one has a filter"
 	icon_state = "cigoff"
 	throw_speed = 0.5
 	item_state = "cigoff"
@@ -226,6 +226,23 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		user.visible_message("<span class='notice'>[user] calmly drops and treads on the lit [src], putting it out instantly.</span>")
 		die(1)
 	return ..()
+
+/obj/item/clothing/mask/smokable/cigarette/unfiltered
+	name = "unfiltered cigarette"
+	desc = "A roll of tobacco and nicotine. This one has no filter."
+	icon_state = "ucigoff"
+	item_state = "ucigoff"
+	icon_on = "ucigon"
+	icon_off ="ucigoff"
+	chem_volume = 20
+	smoketime = 400
+	type_butt = /obj/item/weapon/cigbutt/unfiltered
+
+/obj/item/clothing/mask/smokable/cigarette/unfiltered/New()
+	..()
+	reagents.add_reagent("nicotine",20)
+/obj/item/weapon/cigbutt/unfiltered
+	icon_state = "ucigbutt"
 
 ////////////
 // CIGARS //
