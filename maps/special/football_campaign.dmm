@@ -1,33 +1,33 @@
 "aa" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "ab" = (/turf/wall/indestructable/black,/area/caribbean/football/nopass)
 "ac" = (/turf/floor/dirt,/area/caribbean/football)
-"af" = (/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
-"ag" = (/obj/structure/goalpost{dir = 5},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
-"ai" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"af" = (/obj/structure/goalpost{dir = 10},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"ag" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"ai" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "aj" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/effect/landmark{name = "JoinLateCivB"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "am" = (/obj/structure/submitter,/turf/floor/dirt,/area/caribbean/football/nopass)
-"ao" = (/obj/structure/goalpost{dir = 6},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"ao" = (/obj/structure/goalpost{dir = 5},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "ap" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "aq" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "as" = (/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "au" = (/turf/floor/dirt,/area/caribbean/football/nopass)
 "av" = (/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "aw" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
-"ax" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"ay" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "az" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "aB" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCivA"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
-"aD" = (/obj/structure/goalpost{dir = 9},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"aD" = (/obj/structure/sign/traffic/central,/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "aE" = (/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
-"aG" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
+"aG" = (/obj/structure/goalpost{dir = 9},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "aK" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "aL" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
-"aR" = (/obj/structure/sign/traffic/central,/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
-"aT" = (/obj/structure/goalpost{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"aR" = (/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"aT" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "aU" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/goalpost{dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "aW" = (/obj/structure/sign/traffic/semicircle/largest{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "aX" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "aY" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
-"ba" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"ba" = (/obj/structure/sign/traffic/central,/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "bc" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/semicircle/largest{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "be" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "bf" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/landmark{name = "football"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
@@ -42,7 +42,7 @@
 "eq" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/goalpost,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "gd" = (/obj/structure/sign/traffic/semicircle{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "gi" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
-"hO" = (/obj/structure/goalpost{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"hO" = (/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "id" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "jt" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/goalpost{dir = 1},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "kY" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
@@ -52,19 +52,20 @@
 "oI" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCivA"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 "qs" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "qx" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
-"qB" = (/obj/structure/goalpost{dir = 10},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"qB" = (/obj/structure/goalpost{dir = 8},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "rw" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "rL" = (/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "wu" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
-"yx" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"yx" = (/obj/structure/goalpost{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "yP" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "zk" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/effect/step_trigger/goal/red,/obj/structure/goalpost/inner,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/score)
 "Bq" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
-"Bz" = (/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
+"Bz" = (/obj/structure/goalpost{dir = 6},/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "BN" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "CA" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "Es" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/item/football,/obj/effect/landmark{name = "football"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
 "FH" = (/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/nopass)
+"IU" = (/obj/structure/sign/traffic/central{dir = 4; icon_state = "centralline"},/obj/structure/sign/flag/blugoslavia,/turf/floor/grass{name = "pitch"},/area/caribbean/football)
 "MH" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red/goalkeeper)
 "NI" = (/obj/structure/sign/traffic/central,/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "NW" = (/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
@@ -77,34 +78,33 @@
 "WM" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/sign/traffic/semicircle{dir = 4},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue)
 "Xw" = (/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/blue/goalkeeper)
 "YA" = (/obj/structure/sign/traffic/central,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/turf/floor/grass{name = "pitch"},/area/caribbean/football/midfield)
-"Zz" = (/obj/structure/sign/traffic/central,/obj/structure/sign/flag/redmenia,/turf/floor/grass{name = "pitch"},/area/caribbean/football/red)
 
 (1,1,1) = {"
 abababababababababababababababababababababababababababababababababababababababababababab
 abacacacacacacacacacacacacacacacacacacacacamamacacacacacacacacacacacacacacacacacacacacab
 abacacacacacacacacacacacacacacacacacacacacauauacacacacacacacacacacacacacacacacacacacacab
-abacrLBzSDSDSDSDSDSDSDaRSDSDSDSDSDSDSDSDaRaGaGZzONONONONONONONONZzONONONONONONONafrLacab
+abacrLaRSDSDSDSDSDSDSDaDSDSDSDSDSDSDSDSDaDaiaibaONONONONONONONONbaONONONONONONONhOrLacab
 abacrLwuajazazazazazazazazazazazazazazazazPuapaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqawaBqxrLacab
 abacrLwunoasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
-abacrLaxbmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
-abacaDaUaXaYbebmasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavONONaLyxrLacab
-abacaTzkXwNWidbmasasasasasasasasasasasasosyPbkosavavavavavavavavavavavavbnaabibljtagacab
-abacaTzkXwNWidbmasasasasasasasasasasasasosEsbfosavavavavavavavavavavavavbnbhaEBqTphOacab
-abacaTzkXwNWidWMasasasasasasasasasasaWasosyPbcosavavavavavavavavavavavavbnbhaEBqTphOacab
-abacqBWIqsNICAbmasasasasasasasasasasasasasyPbkavavavavavavavavavavavgdavbnbhaEBqTphOacab
-abacrLaxbmazazasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavbndKMHrweqaoacab
-abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavaqaqawyxrLacab
+abacrLIUbmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
+abacaGaUaXaYbebmasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavONONaLayrLacab
+abacqBzkXwNWidbmasasasasasasasasasasasasosyPbkosavavavavavavavavavavavavbnaabibljtaoacab
+abacqBzkXwNWidbmasasasasasasasasasasasasosEsbfosavavavavavavavavavavavavbnbhaEBqTpyxacab
+abacqBzkXwNWidWMasasasasasasasasasasaWasosyPbcosavavavavavavavavavavavavbnbhaEBqTpyxacab
+abacafWIqsNICAbmasasasasasasasasasasasasasyPbkavavavavavavavavavavavgdavbnbhaEBqTpyxacab
+abacrLIUbmazazasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavbndKMHrweqBzacab
+abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavaqaqawayrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwubmasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavbnqxrLacab
 abacrLwuaKasasasasasasasasasasasasasasasasyPbkavavavavavavavavavavavavavavavavgiqxrLacab
 abacrLwumLkYSDSDSDSDSDSDSDSDSDSDSDSDSDSDSDBNYAONONONONONONONONONONONONONONONaLoIqxrLacab
-abacrLBzUyUyUyUyUyUyUybaUyUyUyUyUyUyUyUyBzFHFHaiUyUyUyUyUyUyUyUyaiUyUyUyUyUyUyUyafrLacab
+abacrLaRUyUyUyUyUyUyUyagUyUyUyUyUyUyUyUyaRFHFHaTUyUyUyUyUyUyUyUyaTUyUyUyUyUyUyUyhOrLacab
 abcTacacacacacacacacacacacacacacacacacacacauauacacacacacacacacacacacacacacacacacacacacab
 abababababababababababababababababababababababababababababababababababababababababababab
 "}
