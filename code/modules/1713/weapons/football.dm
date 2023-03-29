@@ -43,6 +43,37 @@
 	icon_state = "football_blue_gk"
 	item_state = "football_blue_gk"
 	worn_state = "football_blue_gk"
+
+// Campaign
+
+/obj/item/clothing/under/football/red_campaign
+	name = "Redmenia jersey"
+	desc = "A football jersey of the Redmenia United, U.B.U."
+	icon_state = "football_red"
+	item_state = "football_red"
+	worn_state = "football_red"
+
+/obj/item/clothing/under/football/red_campaign/goalkeeper
+	name = "Redmenia goalkeeper jersey"
+	desc = "A football jersey of the goalkeeper of Redmenia United, U.B.U."
+	icon_state = "football_red_gk"
+	item_state = "football_red_gk"
+	worn_state = "football_red_gk"
+
+/obj/item/clothing/under/football/blue_campaign
+	name = "Blugoslavia jersey"
+	desc = "A football jersey of the Blugoslavia Football Club, C.T.F.C."
+	icon_state = "football_blue"
+	item_state = "football_blue"
+	worn_state = "football_blue"
+
+/obj/item/clothing/under/football/blue_campaign/goalkeeper
+	name = "Blugoslavia goalkeeper jersey"
+	desc = "A football jersey of the goalkeeper of Blugoslavia Football Club, C.T.F.C."
+	icon_state = "football_blue_gk"
+	item_state = "football_blue_gk"
+	worn_state = "football_blue_gk"
+
 ///////////CUSTOM JERSEY//////////////
 /obj/item/clothing/under/football/custom
 	name = "football jersey"
@@ -322,6 +353,9 @@
 		if (map && map.ID == MAP_FOOTBALL)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team1][1]
+		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+			var/obj/map_metadata/football/FBM = map
+			team = FBM.teams[FBM.team1][1]
 
 /obj/effect/step_trigger/goal/blue
 	name = "team 2 goalpost"
@@ -329,6 +363,9 @@
 
 	assign()
 		if (map && map.ID == MAP_FOOTBALL)
+			var/obj/map_metadata/football/FBM = map
+			team = FBM.teams[FBM.team2][1]
+		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
 /////////////////TEAM CREATOR/////////////////////
