@@ -306,7 +306,7 @@
 "fU" = (/obj/structure/vending/wehrmachtapparel,/turf/floor/plating/tiled,/area/caribbean/german/inside/objective)
 "fV" = (/obj/structure/window/barrier/sandbag,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/german)
 "fW" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/german)
-"fX" = (/obj/item/weapon/storage/backpack/ww2/sapper/german,/obj/item/weapon/storage/backpack/ww2/german/sapper,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/german/inside)
+"fX" = (/obj/structure/closet,/obj/item/weapon/storage/backpack/ww2/sapper/german,/obj/item/weapon/storage/backpack/ww2/german/sapper,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/german/inside)
 "fY" = (/obj/structure/grille/chainlinkfence{dir = 8; icon_state = "chainlinkfence"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "fZ" = (/obj/structure/wild/rock,/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/german)
 "ga" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/german)
