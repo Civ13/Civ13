@@ -1264,7 +1264,7 @@
 "yp" = (/obj/covers/steelplating,/obj/structure/shelf,/obj/item/stack/material/plastic{amount = 15},/obj/structure/lamp/lamp_big{dir = 4; icon_state = "tube"},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "yq" = (/obj/covers/steelplating,/obj/item/weapon/reagent_containers/glass/rag,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "yr" = (/obj/covers/steelplating,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"ys" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
+"ys" = (/obj/structure/vending/sales/drinks/hot,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
 "yt" = (/obj/covers/cobblestone,/obj/structure/closet/crate/lead,/obj/item/stack/money/silvercoin,/turf/floor/plating/cobblestone/dark,/area/caribbean/void/caves)
 "yu" = (/obj/covers/cobblestone,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/plating/cobblestone/dark,/area/caribbean/void/caves)
 "yv" = (/obj/covers/cobblestone,/obj/structure/simple_door/key_door/civ/hall{health = 4000; initial_health = 4000; material = "steel"; name = "Bank Vault"},/turf/floor/plating/cobblestone/dark,/area/caribbean/void/caves)
