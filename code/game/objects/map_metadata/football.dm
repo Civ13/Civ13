@@ -366,7 +366,6 @@
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
 		..()
-		load_teams()
 		spawn(600)
 			points_check()
 			for (var/obj/structure/banner/faction/team/team1/T1 in world)
