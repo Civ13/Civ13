@@ -33,7 +33,7 @@
 	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
 		. = TRUE
 	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
-			. = FALSE
+		. = FALSE
 	else
 		. = FALSE
 
