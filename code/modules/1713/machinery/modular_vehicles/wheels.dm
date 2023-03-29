@@ -291,6 +291,67 @@
 		periscope.commanderchair = src
 
 
+/obj/structure/bed/chair/commander/nvg
+	name = "commander's seat with night vision"
+	desc = "The vehicle commander's seat, with a perisope and night vision."
+	anchored = FALSE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	flammable = FALSE
+	var/overtype = "nvg"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
+		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/nvg/thermal
+	name = "commander's seat with thermal imaging"
+	desc = "The vehicle commander's seat, with a perisope and thermal imaging."
+	overtype = "thermal"
+
+/obj/structure/bed/chair/commander/nvg/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+		buckled_mob << "Your hands are full!"
+		return
+	if(buckled_mob)
+		buckled_mob << "You activate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = TRUE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = TRUE
+			buckled_mob.handle_vision()
+		buckled_mob.update_action_buttons()
+
+/obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
+	if(buckled_mob)
+		buckled_mob << "You deactivate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = FALSE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = FALSE
+			buckled_mob.handle_vision()
+
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
+			M.remove_from_mob(PS)
+			PS.forceMove(src)
+	return M
+		
+
 /obj/structure/bed/chair/commander/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (M)

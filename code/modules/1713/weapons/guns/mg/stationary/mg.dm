@@ -230,7 +230,7 @@
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
@@ -247,7 +247,7 @@
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a3ubr6
@@ -265,7 +265,7 @@
 	icon_state = "atgm_autocannon"
 	base_icon = "atgm_autocannon"
 	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/BarrettM99.ogg'
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a3ubr6

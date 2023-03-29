@@ -106,6 +106,18 @@ var/global/list/exclude_jobs = list()
 var/global/list/latejoin_turfs = list()
 var/global/list/supplydrop_turfs = list()
 
+//Campaign Aircraft Stuff
+var/global/aircraft_blue = null
+var/global/aircraft_red = "something"
+
+var/global/aircraft_calltime_blue = 3000 //5 Minutes
+var/global/aircraft_calltime_red = 3000 //5 Minutes
+
+var/global/airstrikes_remaining_blue = 3
+var/global/airstrikes_remaining_red = 3
+var/global/airstrike_number_blue = 5
+var/global/airstrike_number_red = 5
+
 // for mass deletion
 var/global/list/bullet_casings = list()
 var/global/list/blood = list()

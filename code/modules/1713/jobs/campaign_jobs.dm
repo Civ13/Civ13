@@ -48,7 +48,7 @@
 	title = "RDF Squad 2 Squadleader"
 	squad = 2
 	is_squad_leader = TRUE
-	rank_abbreviation = "2-SL"
+	rank_abbreviation = "2-Sgt"
 /datum/job/pirates/redfaction/s2/pvt
 	title = "RDF Squad 2 Private"
 	squad = 2
@@ -63,22 +63,24 @@
 	squad = 2
 	rank_abbreviation = "2-MG"
 
-/*
-/datum/job/pirates/redfaction/s3
-	title = "RDF Squad 3 Private"
-	squad = 3
 /datum/job/pirates/redfaction/s3/sl
 	title = "RDF Squad 3 Squadleader"
 	squad = 3
 	is_squad_leader = TRUE
+	rank_abbreviation = "3-Sgt"
+/datum/job/pirates/redfaction/s3/pvt
+	title = "RDF Squad 3 Private"
+	squad = 3
+	rank_abbreviation = "3-Pvt"
 /datum/job/pirates/redfaction/s3/corpsman
 	title = "RDF Squad 3 Corpsman"
 	is_medic = TRUE
 	squad = 3
+	rank_abbreviation = "3-Corpsman"
 /datum/job/pirates/redfaction/s3/machinegunner
 	title = "RDF Squad 3 Machinegunner"
 	squad = 3
-	*/
+	rank_abbreviation = "3-MG"
 
 /datum/job/pirates/redfaction/recon
 	title = "RDF Recon"
@@ -307,7 +309,7 @@
 	squad = 2
 	rank_abbreviation = "2-DM"
 */
-/*
+
 /datum/job/civilian/bluefaction/s3/sl
 	title = "BAF Squad 3 Squadleader"
 	squad = 3
@@ -326,7 +328,7 @@
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
-*/
+
 /*
 /datum/job/civilian/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"

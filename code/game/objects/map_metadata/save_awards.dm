@@ -93,7 +93,7 @@ AWARDS:
 		if (awards[i][1]!="")
 			var/txtexport = list2text(awards[i])
 			text2file(txtexport,F)
-			world << "[awards[i][2]] ([awards[i][1]]) has received a <b>[awards[i][3]]</b>!"
+			world << SPAN_NOTICE("<font size=2>[awards[i][2]] ([awards[i][1]]) has received a <b>[awards[i][3]]</b></font>!")
 	return TRUE
 
 /obj/map_metadata/proc/give_award(var/_ckey, var/charname, var/awardtype, var/faction, var/mob/living/human/L = null)
@@ -108,33 +108,33 @@ AWARDS:
 		if (L.w_uniform && istype(L.w_uniform, /obj/item/clothing))
 			switch(awardtype)
 				if ("wounded badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/wound(get_turf(L))
 
 				if ("wounded silver badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_silver(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/wound_silver(get_turf(L))
 
 				if ("wounded gold badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/wound_gold(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(get_turf(L))
 
 				if ("long service medal")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/long_service(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/long_service(get_turf(L))
 
 				if ("tank destroyer silver badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/tank_destruction(get_turf(L))
 
 				if ("tank destroyer gold badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/tank_destruction_gold(get_turf(L))
 
 				if ("assault badge")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/assault_badge(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/assault_badge(get_turf(L))
 
 				if ("iron cross 2nd class")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_2nd(get_turf(L))
 
 				if ("iron cross 1st class")
-					MEDAL = new/obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(get_turf(L))
 				if ("order of the rising sun")
-					MEDAL = new/obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(L.loc)
+					MEDAL = new /obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(get_turf(L))
 
 			if (MEDAL)
 				var/obj/item/clothing/CL = L.w_uniform

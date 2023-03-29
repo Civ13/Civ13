@@ -100,6 +100,9 @@
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
 			P.rangecheck(H,A)
+		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign))
+			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
+			P.rangecheck(H,A)
 	for (var/obj/structure/noose/N in get_turf(src)) // can't click on anything when we're hanged
 		if (N.hanging == src)
 			return

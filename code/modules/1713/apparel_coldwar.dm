@@ -1779,7 +1779,7 @@
 		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
 		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
 
-/obj/item/clothing/accessory/storage/webbing/grenadier
+/obj/item/clothing/accessory/storage/webbing/shell40mm
 	name = "Grenadier Webbing"
 	desc = "A large webbing with several small pockets."
 	icon_state = "m79_vest"
@@ -1796,6 +1796,24 @@
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/vog25
+	name = "Grenadier Webbing"
+	desc = "A large webbing with several small pockets."
+	icon_state = "m79_vest"
+	item_state = "m79_vest"
+	slots = 8
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"

@@ -817,3 +817,42 @@
 	flammable = TRUE
 	w_class = ITEM_SIZE_LARGE
 
+/obj/item/tank_systems
+	name = "Tank System"
+	desc = "Base parent object, DO NOT USE."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "none"
+	anchored = TRUE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = FALSE
+
+/obj/item/tank_systems/ecms
+	name = "ECMS"
+	desc = "An Electromagnetic Counter-Mine System."
+	New()
+		..()
+		explode_mines()
+
+/obj/item/tank_systems/ecms/proc/explode_mines()
+	..()
+	for (var/obj/item/mine/M in range(6, src))
+		if (!M.anchored) continue
+		if (M.anchored) M.trigger(src)
+	sleep(5 SECONDS)
+	explode_mines()
+
+/obj/item/tank_systems/iars
+	name = "IARS"
+	desc = "An Infrared Anti-Rocket System."
+	New()
+		..()
+		explode_missiles()
+
+/obj/item/tank_systems/iars/proc/explode_missiles()
+	for (var/obj/item/missile/M in range(7, src))
+		if (!M.anchored) continue
+		if (M.anchored) M.throw_impact(get_turf(M))
+	sleep(2 SECONDS)
+	explode_missiles()
