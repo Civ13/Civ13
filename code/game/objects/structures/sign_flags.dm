@@ -801,6 +801,11 @@
 	desc = "The flag of the Republic of Blugoslavia."
 	icon_state = "flag_blugoslavia"
 
+/obj/structure/sign/flag/blugoslavia/old
+	name = "old Blugoslavian flag"
+	desc = "The flag of the old Republic of Blugoslavia."
+	icon_state = "flag_blugoslavia-old"
+
 /obj/structure/sign/flag/arstotzka
 	name = "Arstotzkan flag"
 	desc = "Glory to Arstotzka!"
