@@ -344,6 +344,22 @@
 			else
 				MF.scorers += list("[scorer]" = 1)
 			return
+	if (istype(A, /obj/item/football) && team)
+		if (istype(map, /obj/map_metadata/football_campaign))
+			var/obj/map_metadata/football_campaign/MF = map
+			MF.reset_ball()
+			MF.teams[team][2] += 1
+			var/obj/item/football/FB = A
+			world << "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>"
+			var/scorer = " [FB.last_owner.name] ([FB.last_owner.ckey]) <b>([FB.last_owner.team])</b>"
+			FB.last_owner = null
+			FB.owner = null
+			if (MF.scorers[scorer])
+				MF.scorers[scorer] += 1
+			else
+				MF.scorers += list("[scorer]" = 1)
+			return
+
 
 /obj/effect/step_trigger/goal/red
 	name = "team 1 goalpost"
@@ -354,7 +370,7 @@
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team1][1]
 		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
-			var/obj/map_metadata/football/FBM = map
+			var/obj/map_metadata/football_campaign/FBM = map
 			team = FBM.teams[FBM.team1][1]
 
 /obj/effect/step_trigger/goal/blue
@@ -366,7 +382,7 @@
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
 		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
-			var/obj/map_metadata/football/FBM = map
+			var/obj/map_metadata/football_campaign/FBM = map
 			team = FBM.teams[FBM.team2][1]
 /////////////////TEAM CREATOR/////////////////////
 
