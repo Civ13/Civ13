@@ -1111,7 +1111,7 @@
 /turf/floor/beach/water/shallowsaltwater,
 /area/caribbean)
 "NS" = (
-/obj/structure/vending/sales/food/hot/drinks,
+/obj/structure/vending/sales/drinks/hot,
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
 "OC" = (

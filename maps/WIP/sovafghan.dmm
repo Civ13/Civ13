@@ -1096,7 +1096,7 @@
 "CS" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/beach/sand/dark,/area/caribbean/desert)
 "CT" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/structure/vehicleparts/movement/tracks/right/reversed,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "CU" = (/obj/structure/railing/steel{dir = 4},/turf/floor/dirt/dust,/area/caribbean/russian)
-"CW" = (/obj/structure/table/modern,/obj/structure/vending/sales/food/hot/moneycounter,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
+"CW" = (/obj/structure/table/modern,/obj/structure/vending/sales/moneycounter,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
 "CY" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/omw22_2,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "De" = (/obj/covers/marbletile,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/marble/tile,/area/caribbean/no_mans_land/capturable/three{name = "Palace"})
 "Df" = (/obj/structure/window/barrier/railing/stone,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/plating/tiled/woodh,/area/caribbean/desert/buildings{name = "Buildings"})

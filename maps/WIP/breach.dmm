@@ -23,7 +23,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean)
 "av" = (
-/obj/structure/vending/sales/food/hot/drinks,
+/obj/structure/vending/sales/drinks/hot,
 /turf/floor/wood,
 /area/caribbean/houses)
 "ax" = (
@@ -940,7 +940,7 @@
 /turf/wall/brick,
 /area/caribbean)
 "vc" = (
-/obj/structure/vending/sales/food/hot/drinks,
+/obj/structure/vending/sales/drinks/hot,
 /turf/floor/wood/fancywood,
 /area/caribbean)
 "vk" = (

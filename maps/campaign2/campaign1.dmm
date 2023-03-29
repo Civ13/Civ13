@@ -132,7 +132,7 @@
 "wH" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/food/drinks/can/monster{pixel_x = 8},/obj/item/weapon/reagent_containers/food/drinks/can/monster{pixel_x = -8},/obj/item/weapon/reagent_containers/food/drinks/can/monster,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Gas Station"})
 "wM" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt,/area/caribbean)
 "wR" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
-"wU" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
+"wU" = (/obj/structure/vending/sales/drinks/hot,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Gas Station"})
 "xk" = (/turf/floor/plating/road/whiteline{dir = 9},/area/caribbean/british/land/outside{name = "Gas Station"})
 "xo" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean)
 "xp" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass,/area/caribbean)
