@@ -431,7 +431,7 @@ var/global/datum/controller/occupations/job_master
 		job.assign_faction(H)
 
 		if(map.ID == MAP_CAMPAIGN)
-			if(istype(job,/datum/job/pirates/redfaction))
+			if(istype(job, /datum/job/pirates/redfaction))
 				H.remove_language("English")
 				H.add_language("Redmenian",FALSE)
 				for (var/datum/language/redmenian/A in H.languages)
@@ -442,7 +442,18 @@ var/global/datum/controller/occupations/job_master
 				H.add_language("Blugoslavian",FALSE)
 				for (var/datum/language/blugoslavian/A in H.languages)
 					H.default_language = A
-
+		if(map.ID == MAP_FOOTBALL_CAMPAIGN)
+			if(istype(job, /datum/job/civilian/football_red_campaign) || istype(job, /datum/job/civilian/football_red_campaign/goalkeeper))
+				H.remove_language("English")
+				H.add_language("Redmenian",FALSE)
+				for (var/datum/language/redmenian/A in H.languages)
+					H.default_language = A
+			else if (istype(job, /datum/job/civilian/football_blue_campaign) || istype(job, /datum/job/civilian/football_blue_campaign/goalkeeper))
+				H.remove_language("English")
+				H.add_language("Blugoslavian",FALSE)
+				for (var/datum/language/blugoslavian/A in H.languages)
+					H.default_language = A
+					
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
 		H.original_job_title = H.original_job.title

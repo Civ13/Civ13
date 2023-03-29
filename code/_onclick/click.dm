@@ -485,6 +485,14 @@
 				H.football.last_owner = H
 				H.football = null
 		jump_act(src, M)
+	if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+		if (ishuman(M))
+			var/mob/living/human/H = M
+			if (H.football)
+				H.football.owner = null
+				H.football.last_owner = H
+				H.football = null
+		jump_act(src, M)
 	else
 		if(M.middle_click_intent == "kick")
 			return kick_act(M)
