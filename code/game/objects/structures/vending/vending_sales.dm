@@ -406,19 +406,31 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 10,
 	)
 
-/obj/structure/vending/sales/drinks //To be filled with cold drinks when they are added
+/obj/structure/vending/sales/drinks
 	name = "drinks vending machine"
 	desc = "Basic beverages."
 	icon_state = "soda"
-	products = list()
-	prices = list()
-
-/obj/structure/vending/sales/drinks/cola //To be filled with cold drinks when they are added
+	products = list(
+		/obj/item/weapon/reagent_containers/food/drinks/can/cola = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/tonic = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/ice_tea = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/lemonade = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/water = 10,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/drinks/can/cola = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/tonic = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/ice_tea = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/lemonade = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/water  = 5,
+	)
+/obj/structure/vending/sales/drinks/cola
+	name = "cola vending machine"
 	icon_state = "cola"
-	products = list()
-	prices = list()
+	products = list(/obj/item/weapon/reagent_containers/food/drinks/can/cola = 30)
+	prices = list(/obj/item/weapon/reagent_containers/food/drinks/can/cola = 5)
 
-/obj/structure/vending/sales/drinks/soviet //To be filled with cold drinks when they are added
+/obj/structure/vending/sales/drinks/soviet //To be filled with appropriate drink when its added
 	icon_state = "sovietsoda"
 	products = list()
 	prices = list()
@@ -438,7 +450,29 @@
 		/obj/item/weapon/reagent_containers/food/drinks/tea = 10,
 	)
 
-// MARKET STALLS
+/obj/structure/vending/sales/cigarettes
+	name = "cigarette vending machine"
+	desc = "Have a break, take a smoke."
+	icon_state = "cigs"
+	products = list(
+		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/newport = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/prima = 10,
+		/obj/item/weapon/flame/lighter/random = 15,
+		/obj/item/weapon/flame/lighter/zippo = 2,
+		/obj/item/weapon/matchbox = 20,
+	)
+	prices = list(
+		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/newport = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/prima = 10,
+		/obj/item/weapon/flame/lighter/random = 5,
+		/obj/item/weapon/flame/lighter/zippo = 50,
+		/obj/item/weapon/matchbox = 5,
+	)
+// MARKET STALLS//
 /obj/structure/vending/sales/market_stall/prepared
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
