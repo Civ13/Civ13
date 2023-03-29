@@ -65,22 +65,23 @@
 
 	// todo: dehydration
 
-	var/nutrition_loss = initial(nutrition)/900
-	if (resting)
-		nutrition_loss /= 2
+	if (starves) //possible fix for subtypes that shouldn't be starving
+		var/nutrition_loss = initial(nutrition)/900
+		if (resting)
+			nutrition_loss /= 2
 
-	nutrition -= nutrition_loss
+		nutrition -= nutrition_loss
 
-	if (nutrition <= initial(nutrition)*0.2)
-		//start starving. Will attack animals for food
-		starving = TRUE
-	else
-		starving = FALSE
+		if (nutrition <= initial(nutrition)*0.2)
+			//start starving. Will attack animals for food
+			starving = TRUE
+		else
+			starving = FALSE
 
-	if (nutrition <= 0)
-		adjustBruteLoss(1)
-		nutrition = 5
-		visible_message("\The [src] is starving!")
+		if (nutrition <= 0)
+			adjustBruteLoss(1)
+			nutrition = 5
+			visible_message("\The [src] is starving!")
 
 	if (stat == UNCONSCIOUS)
 		return -1
