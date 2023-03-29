@@ -842,7 +842,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola
 	name = "Cola"
-	dexmjn_state = "cola"
+	icon_state = "cola"
 	item_state = "beer"
 	center_of_mass = list("x"=16, "y"=12)
 	value = 5
