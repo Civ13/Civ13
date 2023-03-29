@@ -683,3 +683,24 @@
 	flammable = TRUE
 	w_class = ITEM_SIZE_LARGE
 
+/obj/item/ecms
+	name = "ECMS"
+	desc = "An Electromagnetic Counter-Mine System."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "none"
+	anchored = TRUE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = FALSE
+	New()
+		..()
+		explode_mines()
+
+/obj/item/ecms/proc/explode_mines()
+	..()
+	for (var/obj/item/mine/M in range(6, src))
+		if (!M.anchored) continue
+		if (M.anchored) M.trigger(src)
+	sleep(3 SECONDS)
+	explode_mines()
