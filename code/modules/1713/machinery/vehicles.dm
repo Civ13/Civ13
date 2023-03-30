@@ -17,6 +17,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	var/vehicle_size = "3x4"
+	var/vehicle_type = "car"
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
@@ -49,6 +50,7 @@
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
+	vehicle_type = "bike"
 
 /obj/structure/vehicleparts/axis/carriage
 	name = "carriage axis"
@@ -58,6 +60,7 @@
 	speedlist = null
 	reg_number = ""
 	turntimer = 5
+	vehicle_type = "carriage"
 
 /obj/structure/vehicleparts/axis/boat
 	name = "boat rudder control"
@@ -66,6 +69,7 @@
 	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
+	vehicle_type = "boat"
 
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
@@ -75,6 +79,7 @@
 	speeds = 3
 	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
+	vehicle_type = "tank"
 
 /obj/structure/vehicleparts/axis/heavy/is3
 	name = "IS-3"
@@ -149,6 +154,7 @@
 	color = "#4a5243"
 	turret_type = "none"
 	vehicle_size = "2x4"
+	vehicle_type = "apc"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -163,6 +169,7 @@
 	turret_type = "none"
 	vehicle_size = "3x4"
 	color = "#939276"
+	vehicle_type = "apc"
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
@@ -177,6 +184,7 @@
 	color = "#787859"
 	turret_type = "bmd2_turret"
 	vehicle_size = "2x4"
+	vehicle_type = "apc"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -191,6 +199,7 @@
 	color = "#787859"
 	turret_type = "bmd2_turret"
 	vehicle_size = "2x3"
+	vehicle_type = "apc"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -426,6 +435,7 @@
 	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
+	vehicle_type = "car"
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
