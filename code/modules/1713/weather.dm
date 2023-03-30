@@ -161,34 +161,35 @@
 									A.weather_intensity = weather_intensity
 
 				if ("desert")
-					if ("Dry Season" || "SUMMER" || "FALL")
-						switch (weather)
-							if (WEATHER_EXTREME)
-								A.icon_state = "sandstorm"
-								A.weather = WEATHER_EXTREME
-								A.weather_intensity = weather_intensity
-							if (WEATHER_WET)
-								A.icon_state = ""
-								A.weather = WEATHER_NONE
-								A.weather_intensity = weather_intensity
-							else
-								A.icon_state = ""
-								A.weather = weather
-								A.weather_intensity = weather_intensity
-						if ("Wet Season" || "WINTER" || "SPRING")
+					switch (season)
+						if ("Dry Season" || "SUMMER" || "FALL")
 							switch (weather)
 								if (WEATHER_EXTREME)
-									A.icon_state = ""
-									A.weather = WEATHER_NONE
+									A.icon_state = "sandstorm"
+									A.weather = WEATHER_EXTREME
 									A.weather_intensity = weather_intensity
 								if (WEATHER_WET)
-									A.icon_state = "rain1"
-									A.weather = WEATHER_WET
+									A.icon_state = ""
+									A.weather = WEATHER_NONE
 									A.weather_intensity = weather_intensity
 								else
 									A.icon_state = ""
 									A.weather = weather
 									A.weather_intensity = weather_intensity
+							if ("Wet Season" || "WINTER" || "SPRING")
+								switch (weather)
+									if (WEATHER_EXTREME)
+										A.icon_state = ""
+										A.weather = WEATHER_NONE
+										A.weather_intensity = weather_intensity
+									if (WEATHER_WET)
+										A.icon_state = "rain1"
+										A.weather = WEATHER_WET
+										A.weather_intensity = weather_intensity
+									else
+										A.icon_state = ""
+										A.weather = weather
+										A.weather_intensity = weather_intensity
 
 				if ("sea")
 					switch (season)
@@ -221,67 +222,69 @@
 									A.weather = weather
 									A.weather_intensity = weather_intensity
 				if ("semiarid")
-					if ("Wet Season" || "WINTER" ||  "FALL")
-						switch (weather)
-							if (WEATHER_EXTREME)
-								A.icon_state = "rain3"
-								A.weather = WEATHER_WET
-								A.weather_intensity = 3
-							if (WEATHER_WET)
-								A.icon_state = "rain1"
-								A.weather = WEATHER_WET
-								A.weather_intensity = weather_intensity
-							else
-								A.icon_state = ""
-								A.weather = weather
-								A.weather_intensity = weather_intensity
-					if ("Dry Season" || "SUMMER" || "SPRING")
-						switch (weather)
-							if (WEATHER_EXTREME)
-								A.icon_state = ""
-								A.weather = WEATHER_NONE
-								A.weather_intensity = weather_intensity
-							if (WEATHER_WET)
-								A.icon_state = "rain1"
-								A.weather = WEATHER_WET
-								A.weather_intensity = 1
-							else
-								A.icon_state = ""
-								A.weather = weather
-								A.weather_intensity = weather_intensity
+					switch (season)
+						if ("Wet Season" || "WINTER" ||  "FALL")
+							switch (weather)
+								if (WEATHER_EXTREME)
+									A.icon_state = "rain3"
+									A.weather = WEATHER_WET
+									A.weather_intensity = 3
+								if (WEATHER_WET)
+									A.icon_state = "rain1"
+									A.weather = WEATHER_WET
+									A.weather_intensity = weather_intensity
+								else
+									A.icon_state = ""
+									A.weather = weather
+									A.weather_intensity = weather_intensity
+						if ("Dry Season" || "SUMMER" || "SPRING")
+							switch (weather)
+								if (WEATHER_EXTREME)
+									A.icon_state = ""
+									A.weather = WEATHER_NONE
+									A.weather_intensity = weather_intensity
+								if (WEATHER_WET)
+									A.icon_state = "rain1"
+									A.weather = WEATHER_WET
+									A.weather_intensity = 1
+								else
+									A.icon_state = ""
+									A.weather = weather
+									A.weather_intensity = weather_intensity
 				if ("temperate")
-					if ("Wet Season" || "WINTER")
-						switch (weather)
-							if (WEATHER_EXTREME)
-								A.icon_state = "snow_storm"
-								A.weather = WEATHER_EXTREME
-								A.weather_intensity = weather_intensity
-							if (WEATHER_WET)
-								A.icon_state = "snow2"
-								A.weather = WEATHER_WET
-								A.weather_intensity = weather_intensity
-							else
-								A.icon_state = ""
-								A.weather = WEATHER_NONE
-								A.weather_intensity = weather_intensity
-					if ("Dry Season"|| "FALL" || "SPRING")
-						switch (weather)
-							if (WEATHER_EXTREME)
-								A.icon_state = "rain2"
-								A.weather = WEATHER_WET
-								A.weather_intensity = weather_intensity
-							if (WEATHER_WET)
-								A.icon_state = "rain2"
-								A.weather = WEATHER_WET
-								A.weather_intensity = weather_intensity
-							else
-								A.icon_state = ""
-								A.weather = WEATHER_NONE
-								A.weather_intensity = weather_intensity
-					if ("SUMMER")
-						A.icon_state = ""
-						A.weather = WEATHER_NONE
-						A.weather_intensity = weather_intensity
+					switch (season)
+						if ("Wet Season" || "WINTER")
+							switch (weather)
+								if (WEATHER_EXTREME)
+									A.icon_state = "snow_storm"
+									A.weather = WEATHER_EXTREME
+									A.weather_intensity = weather_intensity
+								if (WEATHER_WET)
+									A.icon_state = "snow2"
+									A.weather = WEATHER_WET
+									A.weather_intensity = weather_intensity
+								else
+									A.icon_state = ""
+									A.weather = WEATHER_NONE
+									A.weather_intensity = weather_intensity
+						if ("Dry Season"|| "FALL" || "SPRING")
+							switch (weather)
+								if (WEATHER_EXTREME)
+									A.icon_state = "rain2"
+									A.weather = WEATHER_WET
+									A.weather_intensity = weather_intensity
+								if (WEATHER_WET)
+									A.icon_state = "rain2"
+									A.weather = WEATHER_WET
+									A.weather_intensity = weather_intensity
+								else
+									A.icon_state = ""
+									A.weather = WEATHER_NONE
+									A.weather_intensity = weather_intensity
+						if ("SUMMER")
+							A.icon_state = ""
+							A.weather = WEATHER_NONE
+							A.weather_intensity = weather_intensity
 				else
 					A.icon_state = ""
 					A.weather = WEATHER_NONE
