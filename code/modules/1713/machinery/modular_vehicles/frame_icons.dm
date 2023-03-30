@@ -362,8 +362,10 @@
 				ticon = broken_icon
 			else
 				ticon = normal_icon
-
-		roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=10.1)
+		if (axis.vehicle_type == "apc")
+			roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=10.1)// This code parts needs adjustment in case layering issues re-appear
+		else
+			roof = image(icon=icon, loc=src, icon_state=replacetext(src.icon_state,"frame","roof"), layer=9.9)
 
 		if (override_roof_icon)
 			roof.icon_state = override_roof_icon
