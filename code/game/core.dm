@@ -32,6 +32,28 @@
 				GR.assign()
 			for (var/obj/effect/step_trigger/goal/blue/GB in world)
 				GB.assign()	
+		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+			var/obj/map_metadata/football_campaign/FM = map
+			for (var/datum/job/job in job_master.faction_organized_occupations)
+				if (istype(job, /datum/job/civilian/football_red_campaign/goalkeeper))
+					job.title = "[FM.teams[FM.team1][1]] goalkeeper"
+					job.selection_color = FM.teams[FM.team1]["main uniform"]["shirt_color"]
+
+				else if (istype(job, /datum/job/civilian/football_red_campaign))
+					job.title = FM.teams[FM.team1][1]
+					job.selection_color = FM.teams[FM.team1]["main uniform"]["shirt_color"]
+
+				else if (istype(job, /datum/job/civilian/football_blue_campaign/goalkeeper))
+					job.title = "[FM.teams[FM.team2][1]] goalkeeper"
+					job.selection_color = FM.teams[FM.team2]["main uniform"]["shirt_color"]
+
+				else if (istype(job, /datum/job/civilian/football_blue_campaign))
+					job.title = FM.teams[FM.team2][1]
+					job.selection_color = FM.teams[FM.team2]["main uniform"]["shirt_color"]
+			for (var/obj/effect/step_trigger/goal/red/GR in world)
+				GR.assign()
+			for (var/obj/effect/step_trigger/goal/blue/GB in world)
+				GB.assign()	
 		// let new players see the join link
 		for (var/np in new_player_mob_list)
 			if (np:client)

@@ -9,7 +9,7 @@
 	return null
 
 /mob/living/human/attack_hand(mob/living/human/M as mob)
-	if (map && map.ID == MAP_FOOTBALL)
+	if (map && (map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CAMPAIGN))
 		return
 	var/mob/living/human/H = M
 	if (istype(H))
