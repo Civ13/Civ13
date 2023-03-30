@@ -3359,7 +3359,7 @@
 	rank_abbreviation = "UN Pfc."
 	spawn_location = "JoinLateUN"
 	is_un = TRUE
-	is_radioman
+	is_radioman = TRUE
 	can_be_female = TRUE
 	selection_color = "#53ADD0"
 	additional_languages = list("Zulu" = 30)

@@ -1982,25 +1982,21 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
-/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher
-	icon_state = "c7_gl"
-	base_icon = "c7_gl"
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
-	launcher = /obj/item/weapon/gun/launcher/grenade/underslung/m203
-	New()
-		..()
-		launcher = new launcher(src)
+/obj/item/weapon/gun/projectile/submachinegun/c7/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/New()
+	..()
+	var/obj/item/weapon/gun/launcher/grenade/underslung/m203/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/m203(src)
+	GL.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/c8
 	name = "C8"
 	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."
 	equiptimer = 11
 	effectiveness_mod = 1.23
-
-/obj/item/weapon/gun/projectile/submachinegun/c7/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
-	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m2carbine
 	name = "M2 carbine"

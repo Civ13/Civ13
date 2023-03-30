@@ -1159,7 +1159,7 @@
 "RA" = (/obj/covers/fancywood,/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/semiautomatic/m1garand,/turf/floor/dirt,/area/caribbean/roofed)
 "RB" = (/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/plating/road,/area/caribbean)
 "RD" = (/obj/covers/marbletile,/turf/floor/broken_floor,/area/caribbean/roofed)
-"RG" = (/obj/covers/marbletile,/obj/structure/vending/sales/food/hot/drinks{dir = 8; pixel_x = 6},/turf/floor/dirt,/area/caribbean/roofed)
+"RG" = (/obj/covers/marbletile,/obj/structure/vending/sales/drinks/hot{dir = 8; pixel_x = 6},/turf/floor/dirt,/area/caribbean/roofed)
 "RH" = (/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
 "RJ" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/baf1_a/lf,/turf/floor/plating/road,/area/caribbean)
 "RL" = (/obj/covers/fancywood,/obj/structure/sign/flag/usa{pixel_y = -32},/turf/floor/wood/fancywood,/area/caribbean/german/inside/roof/objective)

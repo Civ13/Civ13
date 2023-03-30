@@ -16,6 +16,8 @@ var/GRACE_PERIOD_LENGTH = 7
 				sleep(1)
 			if (map && map.ID == MAP_FOOTBALL)
 				time_of_day = "Midday"
+			if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+				time_of_day = "Midday"
 			if (map && map.ID == MAP_CAMPAIGN)
 				time_of_day = "Morning"
 			if (map && map.ID == MAP_DRUG_BUST)

@@ -1991,7 +1991,7 @@
 "MG" = (/obj/covers/brick_wall,/obj/structure/sign/kiddieplaque{desc = "Since 1713"; name = "Country Bank"},/obj/roof/clay,/turf/floor/grass,/area/caribbean/roofed)
 "MH" = (/obj/covers/brick_wall,/turf/floor/plating/stone_old{name = "ancient road"},/area/caribbean/roofed)
 "MI" = (/obj/covers/steelplating,/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/roofed)
-"ML" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/plating/steel,/area/caribbean/roofed)
+"ML" = (/obj/structure/vending/sales/drinks/hot,/turf/floor/plating/steel,/area/caribbean/roofed)
 "MM" = (/obj/covers/road,/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/simple_door/key_door/anyone,/turf/floor/dirt,/area/caribbean/roofed)
 "MN" = (/obj/covers/road,/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/turf/floor/dirt,/area/caribbean/roofed)
 "MP" = (/obj/covers/road,/obj/structure/sign/traffic/central{dir = 1; icon_state = "centralline"},/obj/structure/closet,/turf/floor/dirt,/area/caribbean/roofed)

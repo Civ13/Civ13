@@ -336,7 +336,7 @@
 		nanomanager.update_uis(src)
 
 
-//STALLS AND MACHINES
+//VENDING MACHINES
 /obj/structure/vending/sales/food
 	name = "food vending machine"
 	desc = "Basic food products."
@@ -348,7 +348,7 @@
 		/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 0.15,
 	)
 
-/obj/structure/vending/sales/food
+/obj/structure/vending/sales/food/fruits
 	name = "fruit vending machine"
 	desc = "Basic food products."
 	icon_state = "nutrimat"
@@ -388,45 +388,91 @@
 		/obj/item/weapon/reagent_containers/food/snacks/bananabreadslice = 16,
 		/obj/item/weapon/reagent_containers/food/snacks/applecakeslice = 16,
 	)
+
 /obj/structure/vending/sales/food/hot
 	name = "hot meal vending machine"
 	desc = "Basic food products."
-	icon_state = "games"
+	icon_state = "hotfood"
 	products = list(
 		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 15,
 		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
 		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 15,
-		/obj/item/weapon/reagent_containers/food/drinks/coffee = 15,
-		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 15,
-		/obj/item/weapon/reagent_containers/food/drinks/tea = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
 	)
 	prices = list(
-		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 24,
-		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 20,
-		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 20,
-		/obj/item/weapon/reagent_containers/food/drinks/coffee = 12,
-		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
-		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/meatballspagetti = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/meatpie = 15,
+		/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 10,
 	)
 
-//ROBERTS VENDING MACHINES//
-/obj/structure/vending/sales/food/hot/drinks
-	name = "Hot drinks vending machine"
-	desc = "Basic food products."
+/obj/structure/vending/sales/drinks
+	name = "drinks vending machine"
+	desc = "Basic beverages."
+	icon_state = "soda"
+	products = list(
+		/obj/item/weapon/reagent_containers/food/drinks/can/cola = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/tonic = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/ice_tea = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/can/lemonade = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/water = 10,
+	)
+	prices = list(
+		/obj/item/weapon/reagent_containers/food/drinks/can/cola = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/tonic = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/ice_tea = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/can/lemonade = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/water  = 5,
+	)
+/obj/structure/vending/sales/drinks/cola
+	name = "cola vending machine"
+	icon_state = "cola"
+	products = list(/obj/item/weapon/reagent_containers/food/drinks/can/cola = 30)
+	prices = list(/obj/item/weapon/reagent_containers/food/drinks/can/cola = 5)
+
+/obj/structure/vending/sales/drinks/soviet //To be filled with appropriate drink when its added
+	icon_state = "sovietsoda"
+	products = list()
+	prices = list()
+
+/obj/structure/vending/sales/drinks/hot
+	name = "hot drinks vending machine"
+	desc = "Basic hot beverages."
 	icon_state = "coffee"
 	products = list(
-		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
 		/obj/item/weapon/reagent_containers/food/drinks/coffee = 20,
 		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 20,
 		/obj/item/weapon/reagent_containers/food/drinks/tea = 20,
 	)
 	prices = list(
-		/obj/item/weapon/reagent_containers/food/snacks/grilledcheese = 20,
-		/obj/item/weapon/reagent_containers/food/drinks/coffee = 12,
-		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 12,
-		/obj/item/weapon/reagent_containers/food/drinks/tea = 8,
+		/obj/item/weapon/reagent_containers/food/drinks/coffee = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/tea = 10,
 	)
 
+/obj/structure/vending/sales/cigarettes
+	name = "cigarette vending machine"
+	desc = "Have a break, take a smoke."
+	icon_state = "cigs"
+	products = list(
+		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/newport = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/prima = 10,
+		/obj/item/weapon/flame/lighter/random = 15,
+		/obj/item/weapon/flame/lighter/zippo = 2,
+		/obj/item/weapon/matchbox = 20,
+	)
+	prices = list(
+		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/newport = 10,
+		/obj/item/weapon/storage/fancy/cigarettes/prima = 10,
+		/obj/item/weapon/flame/lighter/random = 5,
+		/obj/item/weapon/flame/lighter/zippo = 50,
+		/obj/item/weapon/matchbox = 5,
+	)
+// MARKET STALLS//
 /obj/structure/vending/sales/market_stall/prepared
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
@@ -501,14 +547,16 @@
 		/obj/item/clothing/mask/smokable/cigarette/joint = 70
 	)
 
-//moneycounter by robert//
-/obj/structure/vending/sales/food/hot/moneycounter
-	name = "Currency Counter"
-	desc = "A currency counter, it's useful for easily merging piles of money into one clean stack."
+////MONEY COUNTER
+
+/obj/structure/vending/sales/moneycounter
+	name = "currency counter"
+	desc = "Useful for easily merging piles of money into one clean stack."
 	icon_state = "CurrencyCounter"
 	products = list()
 	prices = list()
 
+////MARKET STALL AND VENDORS CUSTOM OBJECTS////
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."

@@ -100,6 +100,9 @@
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
 			P.rangecheck(H,A)
+		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign))
+			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
+			P.rangecheck(H,A)
 	for (var/obj/structure/noose/N in get_turf(src)) // can't click on anything when we're hanged
 		if (N.hanging == src)
 			return
@@ -475,6 +478,14 @@
 
 /atom/proc/middle_click_intent_check(var/mob/M)
 	if (map && map.ID == MAP_FOOTBALL)
+		if (ishuman(M))
+			var/mob/living/human/H = M
+			if (H.football)
+				H.football.owner = null
+				H.football.last_owner = H
+				H.football = null
+		jump_act(src, M)
+	if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
 		if (ishuman(M))
 			var/mob/living/human/H = M
 			if (H.football)

@@ -22,7 +22,7 @@
 "v" = (/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/storage/toolbox,/turf/floor/plating/concrete,/area/caribbean)
 "w" = (/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/turf/floor/plating/concrete,/area/caribbean)
 "x" = (/obj/structure/sign/custom{name = "4th: Make an axis and move it to the TOP LEFT frame. Click on it to finish the vehicle."},/turf/wall/cement,/area/caribbean)
-"y" = (/obj/structure/vending/sales/food/hot/drinks,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"y" = (/obj/structure/vending/sales/drinks/hot,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
 "z" = (/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/plating/concrete,/area/caribbean)
 "A" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 10},/turf/floor/plating/road,/area/caribbean)
 "B" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/road,/area/caribbean)

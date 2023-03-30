@@ -550,9 +550,9 @@ obj/item/projectile/bullet/rifle/a556x45
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5
-	penetrating = 100
-	armor_penetration = 100
-	heavy_armor_penetration = 25
+	penetrating = 40
+	armor_penetration = 80
+	heavy_armor_penetration = 50
 
 /obj/item/projectile/bullet/rifle/a50cal_he
 	damage = DAMAGE_LOW + 20
@@ -592,31 +592,31 @@ obj/item/projectile/bullet/rifle/a556x45
 	heavy_armor_penetration = 45
 
 /obj/item/projectile/bullet/rifle/a15115
-	damage = DAMAGE_OH_GOD + 92
+	damage = DAMAGE_OH_GOD + 90
 	penetrating = 20
 	armor_penetration = 70
 	heavy_armor_penetration = 45
 
 /obj/item/projectile/bullet/rifle/a15115_ap
-	damage = DAMAGE_OH_GOD + 82
-	penetrating = 35
+	damage = DAMAGE_MEDIUM + 64
+	penetrating = 40
 	armor_penetration = 75
 	heavy_armor_penetration = 55
 
-/obj/item/projectile/bullet/rifle/a15115_he
-	damage = DAMAGE_OH_GOD + 85
+/obj/item/projectile/bullet/rifle/a15115_aphe
+	damage = DAMAGE_LOW + 25
 	penetrating = 30
 	armor_penetration = 65
 	heavy_armor_penetration = 45
 
-/obj/item/projectile/bullet/rifle/a15115_he/on_impact(var/atom/A)
+/obj/item/projectile/bullet/rifle/a15115_aphe/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
+		explosion(T, 0, 0, 2, 1)
 	if (istype(A, /obj/structure/vehicleparts/frame))
 		var/obj/structure/vehicleparts/frame/T = A
 		var/turf/TU
@@ -629,11 +629,17 @@ obj/item/projectile/bullet/rifle/a556x45
 		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
 			TU.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 1, 0, 2, 1)
+	if (istype(A, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
+		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/T = A
+		var/turf/TU
+		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
+			TU.ChangeTurf(/turf/floor/dirt/burned)
+		explosion(T, 1, 0, 3, 1)
 	else
 		var/turf/T = A
 		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
+		explosion(T, 0, 0, 2, 1)
 
 /obj/item/projectile/bullet/rifle/a145_ap
 	damage = DAMAGE_OH_GOD + 80

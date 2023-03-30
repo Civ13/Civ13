@@ -338,6 +338,8 @@
 		..()
 
 /obj/item/mine/boobytrap/trigger(atom/movable/AM)
+	if (istype(AM, /obj/item/projectile))
+		return
 	if (world.time < nextCanExplode)
 		return
 	if (istype(AM, /mob/living))
@@ -346,22 +348,6 @@
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")
 		explosion(get_turf(src),1,2,4)
-
-/*
-	var/turf/T = get_turf(src)
-	if(!T) return
-
-	var/list/target_turfs = getcircle(T, spread_range)
-	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-	for (var/turf/TT in target_turfs)
-		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-		P.damage = fragment_damage
-		P.pellets = fragments_per_projectile
-		P.range_step = damage_step
-		P.shot_from = name
-		P.launch_fragment(TT)
-*/
 		spawn(9)
 			if (src)
 				qdel(src)

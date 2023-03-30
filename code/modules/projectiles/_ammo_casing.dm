@@ -603,10 +603,10 @@
 	desc = "A big heavy brass casing designed to penetrate armor."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"
-	weight = 0.08
+	weight = 0.10
 	projectile_type = /obj/item/projectile/bullet/rifle/a15115
 	caliber = "a15115"
-	value = 12
+	value = 25
 
 /obj/item/ammo_casing/a15115_ap
 	name = "15x115 AP cartridge"
@@ -618,13 +618,13 @@
 	caliber = "a15115"
 	value = 30
 
-/obj/item/ammo_casing/a15115_he
-	name = "15x115 HE cartridge"
-	desc = "A big heavy brass casing designed to explode on impact."
+/obj/item/ammo_casing/a15115_aphe
+	name = "15x115 APHE cartridge"
+	desc = "A big heavy brass casing designed to explode after penetrating armor."
 	icon_state = "big-bullet"
 	spent_icon = "big-casing"
 	weight = 0.12
-	projectile_type = /obj/item/projectile/bullet/rifle/a15115_he
+	projectile_type = /obj/item/projectile/bullet/rifle/a15115_aphe
 	caliber = "a15115"
 	value = 35
 

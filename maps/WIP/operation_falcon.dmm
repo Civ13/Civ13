@@ -229,7 +229,7 @@
 "rZ" = (/turf/floor/plating/road/yellowline{dir = 1; icon_state = "road_yellowline"},/area/caribbean/supply/dutch)
 "sa" = (/obj/item/weapon/barstool{anchored = 1},/obj/structure/curtain/open/red{pixel_x = -32},/turf/floor/wood,/area/caribbean)
 "sb" = (/obj/structure/table/rack/coatrack,/turf/floor/wood,/area/caribbean/british/land/inside)
-"sd" = (/obj/structure/vending/sales/food/hot/drinks,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
+"sd" = (/obj/structure/vending/sales/drinks/hot,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "se" = (/obj/covers/cobblestone,/turf/floor/beach/water/deep,/area/caribbean)
 "sk" = (/obj/structure/table/modern/table,/obj/item/flashlight/lamp/littlelamp/desklamp,/turf/floor/plating/road,/area/caribbean/british/land/inside)
 "sp" = (/obj/structure/bed/chair/wheelchair,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
