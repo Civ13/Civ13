@@ -1269,7 +1269,7 @@ var/global/redirect_all_players = null
 					if (temp_name == "Indians")
 						temp_name = "Mercenary Warband"
 					else if (temp_name == "Civilian")
-						temp_name = "United Nations Peacepeeker"
+						temp_name = "United Nations Peacekeepers"
 				else if (map && map.ID == "MISSIONARY_RIDGE")
 					if (temp_name == "American")
 						temp_name = "Union"

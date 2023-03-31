@@ -54,6 +54,23 @@
 	icon_state = "pimpcoat"
 	item_state = "pimpcoat"
 
+/obj/item/clothing/suit/blugojacket
+	name = "Blugoslavian Jacket."
+	desc = "A standard issue combat jacket of the blugo army."
+	icon_state = "bcj"
+	item_state = "bcj"
+	body_parts_covered = UPPER_TORSO|ARMS
+
+/obj/item/clothing/suit/blugojacket/flak //only issued to the commander
+	name = "Blugoslavian Flak Jacket."
+	desc = "A Blugo Jacket, feels pretty heavy and is probably stuffed with a mix of kevlar and canvas"
+	icon_state = "bcj"
+	item_state = "bcj"
+	body_parts_covered = UPPER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 5, arrow = 2, gun = 2, energy = 15, bomb = 5, bio = 30, rad = 20)
+	slowdown = 0.1
+
 /obj/item/clothing/suit/gorillasuit
 	name = "full body gorilla outfit"
 	desc = "A lifelike full body gorilla suit-outfit, ideal for costume parties and pranksters."

@@ -573,7 +573,7 @@
 //Small bottles
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small
 	name = "small bottle"
-	desc = "a small, 35 unit bottle."
+	desc = "A small, 35 unit bottle."
 	volume = 35
 	shatter_duration = TRUE
 	flags = FALSE //starts closed
@@ -589,7 +589,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer
 	name = "beer"
-	desc = "A bottle of bear"
+	desc = "A bottle of beer."
 	icon_state = "oldstyle_beer"
 	item_state = "beer"
 	center_of_mass = list("x"=16, "y"=12)
@@ -608,6 +608,50 @@
 	New()
 		..()
 		reagents.add_reagent("ale", 40)
+
+//////////Plastic bottles (Non-custom ones, see custom_containers for these ones)////////////////////////
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic
+	name = "plastic bottle"
+	desc = "A small plastic bottle."
+	icon_state = "plastic_bottle"
+	item_state = "plastic_bottle"
+	isGlass = FALSE
+	center_of_mass = list("x"=16, "y"=12)
+	volume = 40
+	var/image/fluid_image
+	New()
+		..()
+		fluid_image = image('icons/obj/drinks.dmi', "fluid-[icon_state]")
+		update_icon()
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/update_icon()
+	overlays.Cut()
+	if (reagents.total_volume > 0)
+		if (!fluid_image)
+			fluid_image = image('icons/obj/drinks.dmi', "fluid-[icon_state]")
+		fluid_image.color = reagents.get_color()
+		overlays += fluid_image
+	return
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/on_reagent_change()
+	update_icon()
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/large
+	name = "large plastic bottle"
+	desc = "A large plastic bottle."
+	icon_state = "plastic_bottle_large"
+	item_state = "plastic_bottle_large"
+	volume = 70
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/water
+	name = "plastic water bottle"
+	desc = "A small plastic bottle containing water. Or not."
+	New()
+		..()
+		reagents.add_reagent("water", 40)
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/large/water
+	name = "large plastic water bottle"
+	desc = "A large plastic bottle containing water. Or not."
+	New()
+		..()
+		reagents.add_reagent("water", 70)
 //////////////////////////SKYRIM/////////////////////////////////////////////////////////////////
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/mead
 	name = "mead"
@@ -798,7 +842,6 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/cola
 	name = "Cola"
-	desc = "A bottle of Cola"
 	icon_state = "cola"
 	item_state = "beer"
 	center_of_mass = list("x"=16, "y"=12)
@@ -853,7 +896,48 @@
 		..()
 		reagents.add_reagent("water", 50)
 
-//////////////////Milk//////////////////
+/obj/item/weapon/reagent_containers/food/drinks/can/cola
+	name = "cola can"
+	desc = "A can of cola."
+	icon_state = "cola"
+	base_icon = "cola"
+	volume = 35
+	New()
+		..()
+		reagents.add_reagent("cola", 35)
+
+/obj/item/weapon/reagent_containers/food/drinks/can/tonic
+	name = "tonic water can"
+	desc = "A can of cola."
+	icon_state = "cola"
+	base_icon = "cola"
+	volume = 35
+	New()
+		..()
+		reagents.add_reagent("tonic", 35)
+
+/obj/item/weapon/reagent_containers/food/drinks/can/ice_tea
+	name = "ice tea can"
+	desc = "A can of ice tea."
+	icon_state = "ice_tea_can"
+	base_icon = "ice_tea_can"
+	volume = 35
+	New()
+		..()
+		reagents.add_reagent("tea", 30)
+		reagents.add_reagent("ice", 5)
+
+/obj/item/weapon/reagent_containers/food/drinks/can/lemonade
+	name = "lemonade can"
+	desc = "A can of lemonade."
+	icon_state = "7up"
+	base_icon = "7up"
+	volume = 35
+	New()
+		..()
+		reagents.add_reagent("lemonade", 35)
+
+//////////////////Milk jug//////////////////
 obj/item/weapon/reagent_containers/food/drinks/can/milk
 	name = "milk jug"
 	desc = "A jug of milk."

@@ -6,7 +6,7 @@
  *		TODO: Cigarette boxes should be ported to this standard
  *
  * Contains:
- *		Donut Box <-- removed at some point before this -siro
+ *		Donut Box
  *		Egg Box<-- removed at some point before this -siro
  *		Candle Box
  *		Crayon Box<-- removed at some point before this -siro
@@ -174,7 +174,7 @@
 
 	var/customcolor = "#000000"
 	var/lighter = FALSE //set to TRUE to make it spawn with a lighter inside
-
+	var/randomize = FALSE
 
 /obj/item/weapon/storage/fancy/cigarettes/New()
 	..()
@@ -184,7 +184,7 @@
 	create_reagents(15 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
 
 /obj/item/weapon/storage/fancy/cigarettes/randompack
-	var/randomize = TRUE
+	randomize = TRUE
 
 /obj/item/weapon/storage/fancy/cigarettes/randompack/New()
 	..()
@@ -247,6 +247,23 @@
 	name = "Lucky Strike cigarette packet"
 	desc = "A Lucky Strike cigarette packet."
 	icon_state = "luckystrike"
+
+/obj/item/weapon/storage/fancy/cigarettes/newport
+	name = "Newport cigarette packet"
+	desc = "A Newport cigarette packet."
+	icon_state = "newports"
+
+/obj/item/weapon/storage/fancy/cigarettes/prima
+	name = "Prima cigarette packet"
+	desc = "A Prima cigarette packet."
+	icon_state = "prima"
+	startswith = list(/obj/item/clothing/mask/smokable/cigarette/unfiltered = 6)
+
+/obj/item/weapon/storage/fancy/cigarettes/papirosi
+	name = "papirosi packet"
+	desc = "An unfiltered cigarettes packet."
+	icon_state = "pachka_papiros"
+	startswith = list(/obj/item/clothing/mask/smokable/cigarette/unfiltered = 6)
 
 /obj/item/weapon/storage/fancy/cigar
 	name = "cigar case"

@@ -921,40 +921,44 @@
 	if(!istype(D, /turf/floor/dirt/ploughed))
 		water_proc() // Plant will still consume resources and respond to the climate, but will not be able to develop
 		return // Stops plant growth if the soil is no longer ploughed
-	else if (!vstatic)
-		if (stage < 12)
-			soil_nutrition_proc()
-			water_proc()
-			if (stage < readyStageMin)
-				icon_state = "[plant]-grow[stage]"
-				desc = "A young [plant] plant."
-				name = "young [plant] plant"
-			else if (readyHarvest())
-				icon_state = "[plant]-harvest"
-				desc = "A ready to harvest [plant] plant."
-				name = "ready [plant] plant"
-			else
-				icon_state = "[plant]-dead"
-				desc = "A dead [plant] plant."
-				name = "dead [plant] plant"
-			spawn(600)
-				if (src && get_area(get_turf(src)))
-					if (get_area(get_turf(src)).location == 0)
-						if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
-							stageGrowth()
-					else
-						var/currcl = get_area(get_turf(src)).climate
-						var/count = 0
-						for (var/i in biomes)
-							if (i == currcl)
-								if (currcl == "jungle" || currcl == "desert" || currcl == "savanna")
-									count++
-								for (var/k in seasons)
-									if (season == k)
-										count++
-						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_EUROPE))
-							stageGrowth()
-					growth()
+	else if (!vstatic && stage < 12)
+		soil_nutrition_proc()
+		water_proc()
+		if (stage < readyStageMin)
+			icon_state = "[plant]-grow[stage]"
+			desc = "A young [plant] plant."
+			name = "young [plant] plant"
+		else if (readyHarvest())
+			icon_state = "[plant]-harvest"
+			desc = "A ready to harvest [plant] plant."
+			name = "ready [plant] plant"
+		else
+			icon_state = "[plant]-dead"
+			desc = "A dead [plant] plant."
+			name = "dead [plant] plant"
+		spawn(600)
+			var/turf/t = null
+			var/area/a = null
+			if (src)
+				t = get_turf(src)
+			if (t)
+				a = get_area(t)
+			
+			if (a && a.location == 0 && (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy)))
+				stageGrowth()
+			else if (a)
+				var/currcl = a.climate
+				var/count = 0
+				for (var/i in biomes)
+					if (i == currcl)
+						if (list("jungle", "desert", "savanna").Find(currcl))
+							count++
+						for (var/k in seasons)
+							if (season == k)
+								count++
+				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE).Find(map.ID))
+					stageGrowth()
+			growth()
 
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
 	if(plant_nutrition > 80) // Good soil, keep growing
