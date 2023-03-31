@@ -104,7 +104,7 @@
 
 	return dist
 
-/proc/circlerangeturfs(center=usr,radius=3)
+/proc/circlerangeturfs(radius=3,center=usr)
 
 	var/turf/centerturf = get_turf(center)
 	var/list/turfs = new/list()

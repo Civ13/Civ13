@@ -74,7 +74,8 @@
 
 /obj/item/weapon/gun/launcher/grenade/consume_next_projectile()
 	if(chambered)
-		chambered.det_time = 10
+		chambered.dir = src.loc.dir
+		chambered.det_time = 15
 		chambered.activate(null)
 	return chambered
 
@@ -215,6 +216,7 @@
 	if(!cover_opened)
 		return ..()
 	else if(chambered | cover_opened)
+		chambered.dir = src.loc.dir
 		chambered.det_time = 15
 		chambered.activate(null)
 	return chambered | cover_opened

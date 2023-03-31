@@ -133,13 +133,15 @@
 //equipment
 	if (findtext(title, "Squadleader"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/sl(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	else if (findtext(title, "Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/com(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_r_hand)
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_r_hand)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
@@ -211,7 +213,7 @@
 				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot/webbing = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot(null)
 				uniform.attackby(webbing, H)
 			else
-				if (is_officer || is_squad_leader || is_commander || squad == 6)
+				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 					uniform.attackby(HH, H)
 					var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
@@ -381,8 +383,12 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/blugoslavia/standard(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
-	uniform.attackby(armor, H)
+	if (findtext(title, "Doctor") || findtext(title, "Corpsman"))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/blue(null)
+		uniform.attackby(armor, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
+		uniform.attackby(armor, H)
 //equipment
 	if (findtext(title, "Squadleader"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
@@ -390,9 +396,11 @@
 	else if (findtext(title, "Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_blugoslavia(H), slot_r_hand)
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_blugoslavia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_r_hand)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
@@ -468,7 +476,7 @@
 		else if (findtext(title, "Engineer"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
-			if (is_officer || is_squad_leader || is_commander || squad == 6)
+			if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 				uniform.attackby(HH, H)
 				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
@@ -541,7 +549,7 @@
 	if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni(H), slot_w_uniform)
 		var/obj/item/clothing/under/uniform = H.w_uniform
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/green/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/green(null)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/blue(null)
 		uniform.attackby(armor, H)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/blugoslavian_sailor(H), slot_w_uniform)

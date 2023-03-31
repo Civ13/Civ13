@@ -80,7 +80,12 @@
 		. = FALSE
 
 /obj/map_metadata/campaign/cross_message(faction)
-	return "<font size = 4>All factions may cross the grace wall now!</font>"
+	if (faction == PIRATES)
+		return "<font size = 4>The battle has begun!</font>"
+	else if (faction == CIVILIAN)
+		return ""
+	else
+		return ""
 
 /obj/map_metadata/campaign/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= grace_wall_timer || admin_ended_all_grace_periods)

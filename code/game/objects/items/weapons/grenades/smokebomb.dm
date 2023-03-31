@@ -251,7 +251,7 @@
 		explosion(LT,0,1,1,3)
 
 		if (!ismob(loc))
-			for (var/turf/floor/T in circlerangeturfs(LT, spread_range))
+			for (var/turf/floor/T in circlerangeturfs(spread_range, LT))
 				ignite_turf(T, 12, 35)
 		else
 			ignite_turf(LT, 12, 90)
