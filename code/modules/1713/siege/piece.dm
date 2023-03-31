@@ -123,7 +123,7 @@
 		var/found_loader = FALSE
 		for (var/obj/structure/bed/chair/loader/L in M.loc)
 			found_loader = TRUE
-		if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+		if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
 		var/loadtime = caliber/2
@@ -134,7 +134,7 @@
 				found_loader = FALSE
 				for (var/obj/structure/bed/chair/loader/L in M.loc)
 					found_loader = TRUE
-				if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+				if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 					M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 					return FALSE
 				M.remove_from_mob(W)
@@ -145,9 +145,11 @@
 				//playsound(loc, "loaded_voice", 100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
+		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
+		if (do_after(M, 5 SECONDS, src))
+			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+			anchored = !anchored
 	else if (can_assemble && assembled)
 		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
 			M.remove_from_mob(W)
@@ -183,9 +185,11 @@
 			//playsound(loc, "loaded_voice", 100, TRUE)
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
+		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
+		if (do_after(M, 5 SECONDS, src))
+			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+			anchored = !anchored
 	else if (can_assemble && assembled)
 		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
 			M.remove_from_mob(W)
@@ -238,9 +242,11 @@
 				if (M == user)
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
+		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
+		if (do_after(M, 5 SECONDS, src))
+			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+			anchored = !anchored
 
 
 /obj/structure/cannon/interact(var/mob/m)
@@ -251,16 +257,13 @@
 	var/found_gunner = FALSE
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
-	if (found_gunner == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 		m << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
 		user = null
 		return
 	if (!anchored)
 		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
-	else if (!anchored && istype(src, /obj/structure/cannon/mortar/foldable))
-		user = m
-		do_html(user)
 	if (user && user != m)
 		if (user.client)
 			return
@@ -304,7 +307,7 @@
 		var/found_gunner = FALSE
 		for (var/obj/structure/bed/chair/gunner/G in user.loc)
 			found_gunner = TRUE
-		if (found_gunner == FALSE)
+		if (!found_gunner)
 			user << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
 			return FALSE
 
@@ -326,7 +329,7 @@
 			var/found_loader = FALSE
 			for (var/obj/structure/bed/chair/loader/L in user.loc)
 				found_loader = TRUE
-			if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 				user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 				return FALSE
 			var/loadtime = caliber/2
@@ -337,7 +340,7 @@
 					found_loader = FALSE
 					for (var/obj/structure/bed/chair/loader/L in user.loc)
 						found_loader = TRUE
-					if (found_loader == FALSE && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 						user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 						return FALSE
 					user.remove_from_mob(M)
@@ -505,11 +508,11 @@
 								if (istype(src,/obj/structure/cannon/mortar))
 									if(!locate(/obj/structure/vehicleparts/frame) in target)
 										explosion(target, 0, 1, 3, 4)
-										for (var/turf/floor/T in circlerangeturfs(target,2))
+										for (var/turf/floor/T in circlerangeturfs(2,target))
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in circlerangeturfs(target,3))
+									for (var/turf/floor/T in circlerangeturfs(3,target))
 										ignite_turf(T, 12, 90)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))

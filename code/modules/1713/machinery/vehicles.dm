@@ -833,26 +833,35 @@
 	desc = "An Electromagnetic Counter-Mine System."
 	New()
 		..()
+		spawn(5)
 		explode_mines()
 
 /obj/item/tank_systems/ecms/proc/explode_mines()
-	..()
-	for (var/obj/item/mine/M in range(6, src))
-		if (!M.anchored) continue
-		if (M.anchored) M.trigger(src)
-	sleep(5 SECONDS)
-	explode_mines()
+	if (src)
+		for (var/obj/item/mine/M in range(5, src))
+			if (M.anchored)
+				M.trigger(src)
+				for (var/mob/O in viewers(7, loc))
+					O << "<font color='red'>\The [src] explodes the [M]!</font>"
+		sleep(6 SECONDS)
+		explode_mines()
+	else return
 
 /obj/item/tank_systems/iars
 	name = "IARS"
 	desc = "An Infrared Anti-Rocket System."
 	New()
 		..()
+		spawn(5)
 		explode_missiles()
 
 /obj/item/tank_systems/iars/proc/explode_missiles()
-	for (var/obj/item/missile/M in range(7, src))
-		if (!M.anchored) continue
-		if (M.anchored) M.throw_impact(get_turf(M))
-	sleep(2 SECONDS)
-	explode_missiles()
+	if (src)
+		for (var/obj/item/missile/M in range(6, src))
+			if (M)
+				M.throw_impact(get_turf(M))
+				for (var/mob/O in viewers(7, loc))
+					O << "<font color='red'>\The [src] explodes the rocket!</font>"
+		sleep(1 SECONDS)
+		explode_missiles()
+	else return

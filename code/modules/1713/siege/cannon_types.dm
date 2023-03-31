@@ -26,6 +26,15 @@
 	caliber = 204
 	can_assemble = FALSE
 
+/obj/structure/cannon/modern/naval/attack_hand(var/mob/attacker)
+	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
+		var/mob/living/human/H = attacker
+		if(findtext(H.original_job_title,"Marine"))
+			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+			return
+	else
+		interact(attacker)
+
 /obj/structure/cannon/modern/naval/n380
 	name = "380mm naval cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
@@ -35,15 +44,6 @@
 	caliber = 380
 	density = FALSE
 
-/obj/structure/cannon/naval/n380/attack_hand(var/mob/attacker)
-	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
-		var/mob/living/human/H = attacker
-		if(findtext(H.original_job_title,"Marine"))
-			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
-			return
-	else
-		interact(attacker)
-
 /obj/structure/cannon/modern/naval/n150
 	name = "150mm naval cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
@@ -52,15 +52,6 @@
 	maxrange = 60
 	caliber = 150
 	density = FALSE
-
-/obj/structure/cannon/naval/n150/attack_hand(var/mob/attacker)
-	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
-		var/mob/living/human/H = attacker
-		if(findtext(H.original_job_title,"Marine"))
-			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
-			return
-	else
-		interact(attacker)
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
@@ -393,7 +384,7 @@
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball/mortar_shell
 	explosion = TRUE
-	maxrange = 30
+	maxrange = 35
 	maxsway = 7
 	firedelay = 12
 	w_class = ITEM_SIZE_GARGANTUAN
@@ -428,8 +419,6 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
-				if (M == usr)
-					do_html(M)
 
 /obj/structure/cannon/davycrockett
 	name = "M29 Davy Crockett"
