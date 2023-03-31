@@ -35,7 +35,7 @@
 		user << "You cannot turn the light on while in this [user.loc]." //To prevent some lighting anomalities.
 		return FALSE
 	on = !on
-	playsound(loc, turn_on_sound, 75, TRUE)
+	playsound(src, turn_on_sound, 75, TRUE)
 	update_icon()
 	return TRUE
 
@@ -50,7 +50,7 @@
 			if (prob(5))
 				M.fire_stacks += 1
 			M.IgniteMob()
-			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
+			playsound(src, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
 			cooloff = world.time+10
 			return
 
@@ -195,11 +195,10 @@
 		//TODO: add snuff out sound
 		return
 
-	. = ..()
 	// All good, turn it on.
-	if(.)
+	if(src)
 		user.visible_message(SPAN_NOTICE("[user] activates the flare."), SPAN_NOTICE("You pull the cord on the flare, activating it!"))
-		playsound(src,turn_on_sound, 50, TRUE)
+		playsound(src, turn_on_sound, 75, TRUE)
 		turn_on()
 		var/mob/living/human/H = user
 		if(istype(H) && !H.in_throw_mode)
@@ -211,7 +210,7 @@
 	return
 
 /obj/item/flashlight/flare/on/New()
-	. = ..()
+	..()
 	turn_on()
 /obj/item/flashlight/flare/alwayson/New()
 	..()
