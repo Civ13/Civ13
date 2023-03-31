@@ -355,8 +355,8 @@
 	var/team2_kit = "main uniform"
 	var/list/teams = list(
 						//name, score, shorts color, short stripes color, shirt color, shirt sleeves color, shirt collar color, shirt v stripes, shirt h stripes
-		"Blugoslavia F.C." = list("Blugoslavia F.C.",0,"main uniform" = list("shorts_color" = "#EBEBEA","shirt_color"="#84A2CE","shirt_sides_color"="#CDE4FB"),"secondary uniform" = list("shorts_color"="#84a2ce","shirt_color"="#EBEBEA","shirt_sides_color"="#84a2ce"),"goalkeeper uniform" = list("shorts_color"="#84a2ce","shirt_color"="#333333","shirt_sides_color"="#84a2ce")),
-		"Redmenia Utd." = list("Redmenia Utd.",0,"main uniform" = list("shorts_color" = "#262626","shirt_color"="#AE001A","shirt_sleeves_color"="#BB9634"),"secondary uniform" = list("shorts_color"="#bb9634","shirt_color"="#ffffff","shirt_sleeves_color"="#ae001a","shirt_sides_color"="#bb9634"),"goalkeeper uniform" = list("shorts_color"="#ae001a","shirt_color"="#bb9634","shirt_sides_color"="#ae001a")),
+		"Blugoslavia F.C." = list("Blugoslavia F.C.",0,"main uniform" = list("shorts_color" = "#B79711","shirt_color"="#133B69","shirt_sides_color"="#B49864"),"secondary uniform" = list("shorts_color"="#B79711","shirt_color"="#EBEBEA","shirt_sleeves_color"="#133B69","shirt_sides_color"="#C19306"),"goalkeeper uniform" = list("shorts_color"="#133B69","shirt_color"="#333333","shirt_sides_color"="#133B69")),
+		"Redmenia Utd." = list("Redmenia Utd.",0,"main uniform" = list("shorts_color" = "#262626","shirt_color"="#BB0000","shirt_sleeves_color"="#C19306"),"secondary uniform" = list("shorts_color"="#C19306","shirt_color"="#ffffff","shirt_sleeves_color"="#BB0000","shirt_sides_color"="#C19306"),"goalkeeper uniform" = list("shorts_color"="#BB0000","shirt_color"="#C19306","shirt_sides_color"="#BB0000")),
 	)
 
 	var/list/scorers = list()

@@ -213,7 +213,7 @@
 				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot/webbing = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot(null)
 				uniform.attackby(webbing, H)
 			else
-				if (is_officer || is_squad_leader || is_commander || squad == 6)
+				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 					uniform.attackby(HH, H)
 					var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
@@ -476,7 +476,7 @@
 		else if (findtext(title, "Engineer"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
-			if (is_officer || is_squad_leader || is_commander || squad == 6)
+			if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 				uniform.attackby(HH, H)
 				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
