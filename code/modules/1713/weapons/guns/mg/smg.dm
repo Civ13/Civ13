@@ -1389,6 +1389,10 @@
 	name = "M21 SWS"
 	desc = "An American sniper rifle, chambered in 7.62x51mm."
 	effectiveness_mod = 1.12
+	sel_mode = 0
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		)
 
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
