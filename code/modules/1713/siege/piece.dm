@@ -146,7 +146,7 @@
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
-		if (do_after(M, 5 SECONDS, src))
+		if (do_after(M, 4 SECONDS, src))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 			anchored = !anchored
@@ -186,7 +186,7 @@
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
-		if (do_after(M, 5 SECONDS, src))
+		if (do_after(M, 4 SECONDS, src))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 			anchored = !anchored
@@ -243,7 +243,7 @@
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
-		if (do_after(M, 5 SECONDS, src))
+		if (do_after(M, 4 SECONDS, src))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 			anchored = !anchored
@@ -264,6 +264,7 @@
 	if (!anchored)
 		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
+		return
 	if (user && user != m)
 		if (user.client)
 			return

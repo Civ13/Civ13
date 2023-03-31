@@ -185,7 +185,7 @@
 		to_chat(user, SPAN_NOTICE("It's out of fuel."))
 		return FALSE
 	if(on)
-		if(!do_after(user, 2.5 SECONDS, src))
+		if(!do_after(user, 2 SECONDS, src))
 			return
 		if(!on)
 			return
