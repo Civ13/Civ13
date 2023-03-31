@@ -654,6 +654,7 @@
 /obj/item/ammo_magazine/pzb_case
 	name = "7.92x94mm case"
 	icon_state = "pzb39"
+	ammo_type = /obj/item/ammo_casing/a792x94
 	mag_type = MAGAZINE
 	caliber = "a792x94"
 	max_ammo = 10
@@ -664,6 +665,7 @@
 	name = "7.92x94mm AP case"
 	icon_state = "pzb39"
 	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a792x94_ap
 	caliber = "a792x94_ap"
 	max_ammo = 10
 	weight = 0.8
