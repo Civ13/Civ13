@@ -278,6 +278,27 @@
 	max_ammo = 75
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/rpk47
+	name = "RPK-47 magazine (7.62x39mm)"
+	icon_state = "rpk47mag"
+	mag_type = MAGAZINE
+
+	w_class = ITEM_SIZE_SMALL
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	max_ammo = 45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/rpk47/drum
+	name = "RPK-47 drum (7.62x39mm)"
+	icon_state = "rpk47"
+	mag_type = MAGAZINE
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
+	w_class = ITEM_SIZE_NORMAL
+	max_ammo = 75
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/m9beretta
 	name = "Beretta M9 magazine (9x19mm)"
 	icon_state = "m9beretta"

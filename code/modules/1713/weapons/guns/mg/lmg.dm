@@ -375,6 +375,43 @@
 	update_held_icon()
 	return
 
+/obj/item/weapon/gun/projectile/automatic/rpk47
+	name = "RPK-47 machine gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpk47"
+	item_state = "rpk47"
+	base_icon = "rpk47"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpk47
+	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
+	weight = 5
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 21
+	load_delay = 25
+	slowdown = 0.4
+
+/obj/item/weapon/gun/projectile/automatic/rpk47/update_icon()
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47))
+			item_state = "rpk47"
+			icon_state = "rpk47"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47/drum))
+			icon_state = "rpk47_drum"
+			item_state = "rpk47_drum"
+			base_icon = "rpk47_drum"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak47))
+			icon_state = "rpk47_magak"
+	else
+		icon_state = "rpk47_open"
+		item_state = "rpk47_open"
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
 	desc = "An israeli machinegun chambered in 5.56x45mm NATO rounds."
