@@ -207,6 +207,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c8x27
+	ammo_type = /obj/item/ammo_casing/a8x27
 	weight = 1.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -225,6 +226,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -241,6 +243,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 2.4
 	single_action = TRUE
 	blackpowder = TRUE
@@ -257,6 +260,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE
@@ -273,6 +277,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE
@@ -289,6 +294,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 1.6
 	single_action = TRUE
 	blackpowder = TRUE
@@ -305,6 +311,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c38
+	ammo_type = /obj/item/ammo_casing/a38
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = FALSE
@@ -321,6 +328,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -364,6 +372,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c41
+	ammo_type = /obj/item/ammo_casing/a41
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -396,6 +405,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44
+	ammo_type = /obj/item/ammo_magazine/c44
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -411,6 +421,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
+	ammo_type = /obj/item/ammo_magazine/c44magnum
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
