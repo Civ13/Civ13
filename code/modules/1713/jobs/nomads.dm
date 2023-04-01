@@ -251,13 +251,23 @@
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		else if (map.ordinal_age == 8)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
+			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
+				spawn(5)
+					if (original_job_title == "Civilization A Citizen")
+						equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(src), slot_w_uniform)
+						update_icons(1)
+					else if (original_job_title == "Civilization B Citizen")
+						equip_to_slot_or_del(new /obj/item/clothing/under/blugoslavia/standard(src), slot_w_uniform)
+						update_icons(1)
 			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/modern7(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 	else
 		if (s_tone <= -175)
