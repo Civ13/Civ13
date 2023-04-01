@@ -39,6 +39,7 @@
 	research_active = FALSE
 	is_singlefaction = TRUE
 	grace_wall_timer = 90 MINUTES
+	force_mapgen = TRUE
 
 /obj/map_metadata/nomads_persistence_beta/New()
 	..()

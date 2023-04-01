@@ -123,7 +123,7 @@ var/global/redirect_all_players = null
 		else if (map.nomads == TRUE)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			if(map.ID == MAP_CAMPAIGN)
+			if(map.ID == MAP_CAMPAIGN || MAP_NOMADS_PERSISTENCE_BETA)
 				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 			else
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"

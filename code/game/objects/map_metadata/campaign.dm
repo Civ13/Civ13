@@ -222,7 +222,40 @@
 
 				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
 				++available_jobs_per_side[job.base_type_flag()]
+///////////////////////////////////////////////////////////////////////////////////////////////////
+	else if (istype(map, /obj/map_metadata/nomads_persistence_beta))
+		if (factjob == "BAF")
+			dat +="<b><h1><big>Blugoslavian People</big></h1></b>"
+		else if (factjob == "RDF")
+			dat +="<b><h1><big>Redmenian People</big></h1></b>"
+		for (var/datum/job/job in job_master.faction_organized_occupations)
+			if (!job.is_event)
+				continue
+			if (factjob == "BAF")
+				if(!findtext(job.title, "Blugoslavian Civilian"))
+					continue
+			else if (factjob == "RDF")
+				if(!findtext(job.title, "Redmenian Civilian"))
+					continue
+			if (job)
+				var/active = processes.job_data.get_active_positions(job)
+				var/extra_span = ""
+				var/end_extra_span = "<br>"
+				if (job.is_squad_leader)
+					extra_span = "<b>"
+					end_extra_span = "</b><br>"
+				else if (job.is_commander)
+					extra_span = "<font size=3><b>"
+					end_extra_span = "</b></font><br>"
+				else if (job.is_officer)
+					extra_span = "<font size=3>"
+					end_extra_span = "</font><br>"
+				else if ((job.is_medic && !findtext(job.title, "Corpsman")))
+					extra_span = "<b>"
+					end_extra_span = "</b><br>"
 
+				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
+				++available_jobs_per_side[job.base_type_flag()]
 	else
 		if (factjob == "BAF")
 			dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
@@ -920,7 +953,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 		qdel(W)
 		if (!head_nationality)
 			return
-		
+
 		user << "You place the head in the chest."
 		switch(head_nationality)
 			if("Redmenia")
@@ -948,7 +981,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 	anchored = TRUE
 	update_icon()
 		icon_state = "telephone"
-		
+
 /obj/item/weapon/telephone/mobile/campaign/red
 	name = "Red Command telephone"
 	phonenumber = 1111
@@ -1120,7 +1153,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
 	message_admins("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)")
 	log_game("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
-	
+
 	switch(user.faction_text)
 		if ("PIRATES") // Redmenia
 			airstrikes_remaining_red--
@@ -1186,7 +1219,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 					spawn(i*8)
 						explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
 				sam_check("CIVILIAN")
-			
+
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/sam_check(var/faction)
 	spawn(12 SECONDS)
 		switch(faction)
