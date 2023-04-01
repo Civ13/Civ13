@@ -405,8 +405,6 @@
 			icon_state = "rpk47"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47/drum))
 			icon_state = "rpk47_drum"
-			item_state = "rpk47_drum"
-			base_icon = "rpk47_drum"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak47))
 			icon_state = "rpk47_magak"
 	else
