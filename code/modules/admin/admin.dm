@@ -1196,17 +1196,17 @@ client/proc/debug_variables_map()
 
 	if (map)
 		if (map.orespawners == 1)
-			map.orespawners = 0
-			world.log << "usr] toggled the ore spawners OFF."
+			map.orespawners = FALSE
+			world << "[usr] toggled the ore spawners OFF."
 			for (var/obj/effect/spawner/orespawner/O in world)
-				O.active = 0
+				O.active = FALSE
 				O.do_spawn()
 			return
 		else
-			map.orespawners = 1
-			world.log << "[usr] toggled the ore spawners ON."
+			map.orespawners = TRUE
+			world << "[usr] toggled the ore spawners ON."
 			for (var/obj/effect/spawner/orespawner/O in world)
-				O.active = 1
+				O.active = TRUE
 				O.do_spawn()
 			return
 
