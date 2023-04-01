@@ -9,6 +9,17 @@
 	min_positions = 999
 	max_positions = 999
 
+/datum/job/pirates/redfaction/civilian
+	title = "Redmenian Civilian"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRed"
+	uses_squads = FALSE
+	can_be_female = TRUE
+	is_civilizations = TRUE
+	additional_languages = list("Blugoslavian" = 15)
+	min_positions = 999
+	max_positions = 999
+
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
 	title = "RDF Commander"
@@ -127,8 +138,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
+	if (!findtext(title, "Redmenian Civilian"))
+		var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+		uniform.attackby(armor, H)
 
 //equipment
 	if (findtext(title, "Squadleader"))
@@ -146,7 +158,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
-	else
+	else if (!findtext(title, "Redmenian Civilian"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	if (findtext(title, "Armored"))
@@ -163,11 +175,13 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else
+	else if (!findtext(title, "Redmenian Civilian"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	if (!findtext(title, "Redmenian Civilian"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -187,7 +201,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
-	else
+	else if (!findtext(title, "Redmenian Civilian"))
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/armband/british(null)
 		uniform.attackby(armband, H)
 		if (findtext(title, "Machinegunner"))
@@ -228,7 +242,8 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	H.make_artillery_scout()
+	if (!findtext(title, "Redmenian Civilian"))
+		H.make_artillery_scout()
 	if(A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/schneetarn(H), slot_wear_suit)
 	if(istype(map, /obj/map_metadata/campaign/campaign8))
@@ -246,6 +261,18 @@
 	max_positions = 999
 	additional_languages = list("Redmenian" = 15)
 
+/datum/job/civilian/bluefaction/civilian
+	title = "Blugoslavian Civilian"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateBlue"
+	uses_squads = FALSE
+	squad = 0
+	min_positions = 999
+	max_positions = 999
+	can_be_female = TRUE
+	is_civilizations = TRUE
+	additional_languages = list("Redmenian" = 15)
+
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
 	title = "BAF Commander"
@@ -256,7 +283,7 @@
 	title = "BAF Officer"
 	rank_abbreviation = "XO-Lt."
 	additional_languages = list("Redmenian" = 100)
-	
+
 /datum/job/civilian/bluefaction/doctor
 	title = "BAF Doctor"
 	is_medic = TRUE
@@ -386,7 +413,7 @@
 	if (findtext(title, "Doctor") || findtext(title, "Corpsman"))
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/blue(null)
 		uniform.attackby(armor, H)
-	else
+	else if (!findtext(title, "Blugoslavian Civilian"))
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
 		uniform.attackby(armor, H)
 //equipment
@@ -405,9 +432,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
-	else
+	else if (!findtext(title, "Blugoslavian Civilian"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
-		
+
 	if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/blue, slot_l_store)
 
@@ -423,11 +450,12 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else
+	else if (!findtext(title, "Blugoslavian Civilian"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	if (!findtext(title, "Blugoslavian Civilian"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -447,7 +475,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
-	else
+	else if (!findtext(title, "Blugoslavian Civilian"))
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/armband/french(null)
 		uniform.attackby(armband, H)
 		if (findtext(title, "Machinegunner"))
@@ -491,7 +519,8 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	H.make_artillery_scout()
+	if (!findtext(title, "Blugoslavian Civilian"))
+		H.make_artillery_scout()
 	if(A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
 	return TRUE
