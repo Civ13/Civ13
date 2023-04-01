@@ -21,10 +21,11 @@
 	battle_name = "the nations"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
-	availablefactions = list("Civilization A Citizen", "Civilization B Citizen")
+	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
 	mission_start_message = "<big>Two modern countries govern this land. The grace wall will end in <b>90 minutes</b>. This is an RP focused map; people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	nomads = FALSE
+	availablefactions_run = FALSE
 	songs = list(
 		"Emma:1" = "sound/music/emma.ogg",)
 	default_research = 210
