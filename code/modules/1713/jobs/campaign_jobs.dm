@@ -19,7 +19,6 @@
 	additional_languages = list("Blugoslavian" = 15)
 	min_positions = 999
 	max_positions = 999
-	civilization = civname_a
 
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
@@ -246,6 +245,7 @@
 	if (!findtext(title, "Redmenian Civilian"))
 		H.make_artillery_scout()
 	if (findtext(title, "Redmenian Civilian"))
+		H.civilization = civname_a
 		H.make_nation()
 		H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")
@@ -276,7 +276,6 @@
 	can_be_female = TRUE
 	is_civilizations = TRUE
 	additional_languages = list("Redmenian" = 15)
-	civilization = civname_b
 
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
@@ -527,6 +526,7 @@
 	if (!findtext(title, "Blugoslavian Civilian"))
 		H.make_artillery_scout()
 	if (findtext(title, "Blugoslavian Civilian"))
+		H.civilization = civname_b
 		H.make_nation()
 		H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")
