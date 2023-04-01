@@ -82,6 +82,10 @@
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	default_research = 145
 	ordinal_age = 6
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
 	age5_done = TRUE
 	age6_done = TRUE
 
@@ -106,6 +110,10 @@
 		"War Never Changes:1" = "sound/music/war_never_changes.ogg",)
 	default_research = 175
 	ordinal_age = 7
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
@@ -131,6 +139,10 @@
 		"War Never Changes:1" = "sound/music/war_never_changes.ogg",)
 	default_research = 175
 	ordinal_age = 7
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
@@ -153,6 +165,14 @@
 	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	default_research = 145
 	ordinal_age = 4
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = FALSE
+	age6_done = FALSE
+	age7_done = FALSE
+	age8_done = FALSE
 
 /obj/map_metadata/nationsrp/triple/New()
 	..()
