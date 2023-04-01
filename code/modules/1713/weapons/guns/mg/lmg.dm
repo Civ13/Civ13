@@ -327,7 +327,7 @@
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/rpd
 	good_mags = list(/obj/item/ammo_magazine/rpd)
-	weight = 5
+	weight = 7.4
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
@@ -348,7 +348,7 @@
 	caliber = "a545x39"
 	magazine_type = /obj/item/ammo_magazine/rpk74
 	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74)
-	weight = 5
+	weight = 5.1
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
@@ -386,7 +386,7 @@
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/rpk47
 	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
-	weight = 5
+	weight = 5.7
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
 	slot_flags = SLOT_SHOULDER
@@ -394,7 +394,7 @@
 	nothrow = TRUE
 	throwforce = 30
 	equiptimer = 21
-	load_delay = 25
+	load_delay = 26
 	slowdown = 0.4
 	effectiveness_mod = 1.03
 
