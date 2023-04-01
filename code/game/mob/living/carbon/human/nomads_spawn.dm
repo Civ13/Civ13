@@ -1179,7 +1179,7 @@
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
 
-	else if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+	else if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
 		var/list/possible_h_list = list("Black")

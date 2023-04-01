@@ -498,6 +498,7 @@
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\nomads_new_world.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
+#include "code\game\objects\map_metadata\nomads_persistence_beta.dm"
 #include "code\game\objects\map_metadata\nomads_stranded.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\oasis.dm"
@@ -1090,5 +1091,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign2\campaign1.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE
