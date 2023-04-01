@@ -5,8 +5,8 @@
 /obj/structure/vehicleparts/frame/mtlb
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	/obj/structure/vehicleparts/frame/mtlb.pixel_x = -32
-	/obj/structure/vehicleparts/frame/mtlb.pixel_y = -32
+	pixel_x = -32
+	pixel_y = -32
 
 /obj/structure/vehicleparts/frame/mtlb/lf
 	icon_state = "mtlb_frame_steel_front_left"
@@ -147,8 +147,8 @@
 /obj/structure/vehicleparts/frame/bmd2new
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	/obj/structure/vehicleparts/frame/bmd2new.pixel_x = -32
-	/obj/structure/vehicleparts/frame/bmd2new.pixel_y = -32
+	pixel_x = -32
+	pixel_y = -32
 
 /obj/structure/vehicleparts/frame/bmd2new/lf
 	icon_state = "bmd2new_frame_steel_front_left"

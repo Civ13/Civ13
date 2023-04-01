@@ -270,12 +270,11 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateBlue"
 	uses_squads = FALSE
-	squad = 0
-	min_positions = 999
-	max_positions = 999
 	can_be_female = TRUE
 	is_civilizations = TRUE
 	additional_languages = list("Redmenian" = 15)
+	min_positions = 999
+	max_positions = 999
 
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
