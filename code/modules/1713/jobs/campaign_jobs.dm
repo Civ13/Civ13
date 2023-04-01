@@ -19,6 +19,7 @@
 	additional_languages = list("Blugoslavian" = 15)
 	min_positions = 999
 	max_positions = 999
+	civilization = civname_a
 
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
@@ -244,6 +245,9 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	if (!findtext(title, "Redmenian Civilian"))
 		H.make_artillery_scout()
+	if (findtext(title, "Redmenian Civilian"))
+		H.make_nation()
+		H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/schneetarn(H), slot_wear_suit)
 	if(istype(map, /obj/map_metadata/campaign/campaign8))
@@ -272,6 +276,7 @@
 	can_be_female = TRUE
 	is_civilizations = TRUE
 	additional_languages = list("Redmenian" = 15)
+	civilization = civname_b
 
 /datum/job/civilian/bluefaction/commander
 	is_commander = TRUE
@@ -521,6 +526,9 @@
 	H.setStat("machinegun", STAT_NORMAL)
 	if (!findtext(title, "Blugoslavian Civilian"))
 		H.make_artillery_scout()
+	if (findtext(title, "Blugoslavian Civilian"))
+		H.make_nation()
+		H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
 	return TRUE
