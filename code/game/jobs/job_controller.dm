@@ -135,7 +135,7 @@ var/global/datum/controller/occupations/job_master
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
-		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 			set_factions2(16)
 		else if (map.ID == MAP_NATIONSRP_TRIPLE)
 			set_factions2(24)

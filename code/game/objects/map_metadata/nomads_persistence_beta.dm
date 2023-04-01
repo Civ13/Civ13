@@ -6,23 +6,25 @@
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
 	faction_organization = list(
-		CIVILIAN,)
+		PIRATES,
+		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british
+		list(PIRATES) = /area/caribbean/japanese,
+		list(CIVILIAN) = /area/caribbean/british,
 		)
 	age = "2023"
 	no_winner = "The round is proceeding normally."
 	is_RP = TRUE
 	civilizations = TRUE
-	faction_distribution_coeffs = list(CIVILIAN = 1)
+	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
 	battle_name = "the nations"
-	faction1 = CIVILIAN
+	faction1 = PIRATES
+	faction2 = CIVILIAN
 	availablefactions = list("Civilization A Citizen", "Civilization B Citizen")
 	mission_start_message = "<big>Two modern countries govern this land. The grace wall will end in <b>90 minutes</b>. This is an RP focused map; people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	nomads = FALSE
-	availablefactions_run = FALSE
 	songs = list(
 		"Emma:1" = "sound/music/emma.ogg",)
 	default_research = 210
@@ -37,7 +39,6 @@
 	age7_done = TRUE
 	age8_done = TRUE
 	research_active = FALSE
-	is_singlefaction = TRUE
 	grace_wall_timer = 90 MINUTES
 	force_mapgen = TRUE
 
