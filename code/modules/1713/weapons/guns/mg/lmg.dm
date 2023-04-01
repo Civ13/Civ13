@@ -337,6 +337,7 @@
 	equiptimer = 22
 	load_delay = 40
 	slowdown = 0.6
+	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/automatic/rpk74
 	name = "RPK-74 machine gun"
@@ -357,6 +358,7 @@
 	equiptimer = 20
 	load_delay = 30
 	slowdown = 0.5
+	effectiveness_mod = 1.07
 
 /obj/item/weapon/gun/projectile/automatic/rpk74/update_icon()
 	if (ammo_magazine)
@@ -394,6 +396,7 @@
 	equiptimer = 21
 	load_delay = 25
 	slowdown = 0.4
+	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/automatic/rpk47/update_icon()
 	if (ammo_magazine)
@@ -402,8 +405,6 @@
 			icon_state = "rpk47"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47/drum))
 			icon_state = "rpk47_drum"
-			item_state = "rpk47_drum"
-			base_icon = "rpk47_drum"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak47))
 			icon_state = "rpk47_magak"
 	else
@@ -411,6 +412,15 @@
 		item_state = "rpk47_open"
 	update_held_icon()
 	return
+
+/obj/item/weapon/gun/projectile/automatic/rpk47/modern //too lazy to add in a new icon for now, will do it later
+	effectiveness_mod = 1.07
+	slowdown = 0.3
+	equiptimer = 18
+	load_delay = 19
+	weight = 4.7
+	name = "RPK-47M machine gun"
+	desc = "A modernized soviet machinegun chambered in 7.62x39 rounds."
 
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
