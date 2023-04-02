@@ -1286,28 +1286,48 @@
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet(src)
-		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/ammo_magazine/m16(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/smallpouches/red/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
+
+/obj/item/weapon/storage/belt/largepouches/redmg
+/obj/item/weapon/storage/belt/largepouches/redmg/New()
+	..()
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/belt/largepouches/redmg/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/blue
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/attachment/bayonet(src)
-		new/obj/item/clothing/mask/gas/military(src)
 		new/obj/item/flashlight/militarylight(src)
+		new/obj/item/stack/medical/bruise_pack/gauze(src)
+		new/obj/item/ammo_magazine/ak47(src)
+		new/obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/smallpouches/blue/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
+
+/obj/item/weapon/storage/belt/largepouches/bluemg
+/obj/item/weapon/storage/belt/largepouches/bluemg/New()
+	..()
+	new/obj/item/ammo_magazine/rpk47/drum(src)
+	new/obj/item/ammo_magazine/rpk47/drum(src)
+
+/obj/item/weapon/storage/belt/largepouches/bluemg/white
+	icon_state = "largepouches_white"
+	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 	storage_slots = 6
