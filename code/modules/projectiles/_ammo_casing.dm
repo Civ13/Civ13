@@ -1134,23 +1134,23 @@
 	caliber = "a58x42"
 	value = 2
 
-/obj/item/ammo_casing/a3ubr6
+/obj/item/ammo_casing/a30mm_ap
 	name = "3UBR6 AP"
 	desc = "A VERY big brass casing."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
-	projectile_type = /obj/item/projectile/bullet/autocannon/a3ubr6
+	projectile_type = /obj/item/projectile/bullet/autocannon/a30mm_ap
 	caliber = "a30"
 	value = 2
 
-/obj/item/ammo_casing/frag/a3uor6
+/obj/item/ammo_casing/frag/a30mm_he
 	name = "3UOR6 HE"
 	desc = "A VERY big brass casing."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
-	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a3uor6
+	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a30mm_he
 	caliber = "a30"
 	value = 2
 

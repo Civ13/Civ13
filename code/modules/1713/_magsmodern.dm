@@ -758,7 +758,7 @@
 	weight = 0.045
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/a3ubr6
+/obj/item/ammo_magazine/autocannon_ap
 	name = "3UBR6 AP ammo belt"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
@@ -766,12 +766,12 @@
 	caliber = "a30"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
-	ammo_type = /obj/item/ammo_casing/a3ubr6
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
 
-/obj/item/ammo_magazine/a3uor6
+/obj/item/ammo_magazine/autocannon_he
 	name = "3UOR6 HE ammo belt"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
@@ -779,7 +779,7 @@
 	caliber = "a30"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
-	ammo_type = /obj/item/ammo_casing/frag/a3uor6
+	ammo_type = /obj/item/ammo_casing/frag/a30mm_he
 	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
