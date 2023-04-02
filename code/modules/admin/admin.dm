@@ -1056,6 +1056,8 @@ var/list/atom_types = null
 			if (findtext(i, "="))
 				var/list/current = splittext(i, "=")
 				approved_list += current[1]
+	else
+		message_admins("<span class='danger'>Failed to load approved list!</span>")
 
 	var/F2 = file("SQL/whitelist.txt")
 	if (fexists(F2))
@@ -1064,6 +1066,8 @@ var/list/atom_types = null
 			if (findtext(i, "="))
 				var/list/current = splittext(i, "=")
 				whitelist_list += current[1]
+	else
+		message_admins("<span class='danger'>Failed to load whitelist!</span>")
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))
 		faction_list_blue = list()
@@ -1076,6 +1080,8 @@ var/list/atom_types = null
 					faction_list_red += current[1]
 				else if (current[2] == "blue")
 					faction_list_blue += current[1]
+	else
+		message_admins("<span class='danger'>Failed to load factionlist!</span>")
 
 /client/proc/reload_bans()
 	set name = "Update Bans"
