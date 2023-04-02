@@ -194,25 +194,21 @@
 	else
 		if (bayonet && isliving(A) && !istype(bayonet, /obj/item/weapon/attachment/bayonet/flag))
 			var/mob/living/L = A
-			var/mob/living/human/C = A
-			if (!istype(C) || !C.check_attack_throat(src, user))
-				// bayonets no longer have a miss chance, but have been balanced otherwise - Kachnov
-				var/obj/item/weapon/attachment/bayonet/a = bayonet
-				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) // No more rapid stabbing for you.
-				
-				if (L)
-					if (user != L)
-						if(L.attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
-							return
-						else
-							visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
-							playsound(get_turf(src), a.attack_sound, rand(90,100))
-							L.apply_damage(a.force, BRUTE, def_zone)
+			
+			var/obj/item/weapon/attachment/bayonet/a = bayonet
+			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) 
+			
+			if (L)
+				if (user != L)
+					if(L.attempt_dodge()) //Trying to dodge it before they even have the chance to miss us.
+						return
+					else
+						visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
+						playsound(get_turf(src), a.attack_sound, rand(90,100))
+						L.apply_damage(a.force, BRUTE, def_zone)
+						if (ishuman(L))
 							if (L.stat == CONSCIOUS && prob(50))
 								L.emote("painscream")
-			else
-				var/obj/item/weapon/attachment/bayonet/a = bayonet
-				playsound(get_turf(src), a.attack_sound, rand(90,100))
 		else
 			..() //Pistolwhipping - now help intent only (or when the gun is empty)
 

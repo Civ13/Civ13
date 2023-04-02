@@ -52,6 +52,16 @@
 	weight = 0.40
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/type96
+	name = "Type-96 Magazine"
+	icon_state = "type99"
+	mag_type = MAGAZINE
+	caliber = "a65x50"
+	ammo_type = /obj/item/ammo_casing/a65x50
+	max_ammo = 32
+	weight = 0.40
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/type92
 	name = "Type 92 ammo belt"
 	icon_state = "maximbelt"
@@ -354,7 +364,7 @@ obj/item/ammo_magazine/dp
 	max_ammo = 15
 	weight = 0.4
 	multiple_sprites = TRUE
-	
+
 /obj/item/ammo_magazine/m1carbine/big
 	max_ammo = 30
 

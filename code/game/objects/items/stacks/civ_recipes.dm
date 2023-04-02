@@ -55,6 +55,11 @@
 					current_res = map.cive_research
 				else if (civ == "Civilization F Citizen")
 					current_res = map.civf_research
+					
+				else if (civ == "Redmenian Civilian")
+					current_res = map.civa_research
+				else if (civ == "Blugoslavian Civilian")
+					current_res = map.civb_research
 			if (user.s_tone <= -175 && map.ID == MAP_NOMADS_AFRICA)
 				faction = "pygmy"
 			generate_recipes_civs(current_res,faction)

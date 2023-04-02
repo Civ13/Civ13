@@ -838,6 +838,7 @@
 #include "code\modules\1713\weapons\guns\mg\lmg.dm"
 #include "code\modules\1713\weapons\guns\mg\smg.dm"
 #include "code\modules\1713\weapons\guns\mg\special.dm"
+#include "code\modules\1713\weapons\guns\mg\weird_lmg.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\climbing.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\mg.dm"
 #include "code\modules\admin\admin.dm"
