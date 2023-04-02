@@ -396,7 +396,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			else if (prob(75))
 				pierced_reagent_lost(25)
 	else
-		if (prob(12))
+		if (prob(16))
 			visible_message("<span class = 'warning'>\The [src] explodes!</span>")
 			explosion(loc, 1, 2, 2, 0)
 			qdel(src)
