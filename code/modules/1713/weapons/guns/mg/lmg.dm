@@ -450,7 +450,7 @@
 	icon_state = "c6"
 	item_state = "c6"
 	base_icon = "c6"
-	max_shells = 200
+	max_shells = 220
 	caliber = "a762x51"
 	weight = 8.1
 	slot_flags = SLOT_SHOULDER

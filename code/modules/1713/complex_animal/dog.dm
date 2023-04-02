@@ -137,6 +137,7 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
+	icon_state = "german_shepherd"
 	race = "german_shepherd"
 	tameminimum = 100
 
@@ -145,6 +146,7 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
+	icon_state = "samoyed"
 	race = "samoyed"
 	tameminimum = 125
 
@@ -159,7 +161,8 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
-	race = "wolf"
+	icon_state = "greywolf"
+	race = "greywolf"
 	tameminimum = 200
 	maxHealth = 65
 	health = 65
@@ -169,6 +172,7 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
+	icon_state = "beagle"
 	race = "beagle"
 	tameminimum = 75
 	mob_size = MOB_SMALL
@@ -180,6 +184,7 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
+	icon_state = "pug"
 	race = "pug"
 	tameminimum = 70
 	maxHealth = 45
@@ -191,6 +196,7 @@
 	faction = null
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
+	icon_state = "bullterrier"
 	race = "bullterrier"
 	tameminimum = 100
 	maxHealth = 100

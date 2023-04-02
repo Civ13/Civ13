@@ -119,7 +119,7 @@
 		map.faction1_squad_leaders[squad] = H
 //shoes
 	var/area/A = get_area(H)
-	if(A.climate == "taiga" || A.climate == "tundra")
+	if (A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -370,7 +370,7 @@
 		map.faction2_squad_leaders[squad] = H
 //shoes
 	var/area/A = get_area(H)
-	if(A.climate == "taiga" || A.climate == "tundra")
+	if (A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
