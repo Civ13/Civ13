@@ -414,7 +414,7 @@ var/civmax_research = list(230,230,230)
 
 
 /obj/map_metadata/proc/autoresearch_proc()
-	if (autoresearch == TRUE && default_research < 230)
+	if (autoresearch && default_research < 230)
 		spawn(600) //1 minute = 0.4 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -476,7 +476,7 @@ var/civmax_research = list(230,230,230)
 	update_win_condition()
 	check_events()
 	if (nomads)
-		if (age1_done == FALSE)
+		if (!age1_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -490,7 +490,7 @@ var/civmax_research = list(230,230,230)
 						default_research = 25
 					break
 
-		else if (age2_done == FALSE)
+		else if (!age2_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -504,7 +504,7 @@ var/civmax_research = list(230,230,230)
 						default_research = 50
 					break
 
-		else if (age3_done == FALSE)
+		else if (!age3_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -517,7 +517,7 @@ var/civmax_research = list(230,230,230)
 						default_research = 80
 					break
 
-		else if (age4_done == FALSE)
+		else if (!age4_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -529,7 +529,7 @@ var/civmax_research = list(230,230,230)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 105
 					break
-		else if (age5_done == FALSE)
+		else if (!age5_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -541,7 +541,7 @@ var/civmax_research = list(230,230,230)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 120
 					break
-		else if (age6_done == FALSE)
+		else if (!age6_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -553,7 +553,7 @@ var/civmax_research = list(230,230,230)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 145
 					break
-		else if (age7_done == FALSE)
+		else if (!age7_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -565,7 +565,7 @@ var/civmax_research = list(230,230,230)
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 175
 					break
-		else if (age8_done == FALSE)
+		else if (!age8_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
@@ -609,26 +609,26 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
 	if (age == "1013" && !civilizations)
-		if (J.is_medieval == TRUE)
+		if (J.is_medieval)
 			. = TRUE
 		else
 			. = FALSE
 	else
-		if (J.is_medieval == FALSE)
+		if (!J.is_medieval)
 			. = TRUE
 		else
 			. = FALSE
 	if (civilizations)
-		if (J.is_civilizations == TRUE)
+		if (J.is_civilizations)
 			. = TRUE
 		else
 			. = FALSE
 	else if (!civilizations)
-		if (J.is_civilizations == FALSE)
+		if (!J.is_civilizations)
 			. = TRUE
 		else
 			. = FALSE
-	if (J.is_nomad == TRUE)
+	if (J.is_nomad)
 		. = FALSE
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction,ordinal_age)] may now cross the invisible wall!</font>"

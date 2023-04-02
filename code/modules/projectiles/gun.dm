@@ -207,8 +207,8 @@
 						playsound(get_turf(src), a.attack_sound, rand(90,100))
 						L.apply_damage(a.force, BRUTE, def_zone)
 						if (ishuman(L))
-						if (L.stat == CONSCIOUS && prob(50))
-							L.emote("painscream")
+							if (L.stat == CONSCIOUS && prob(50))
+								L.emote("painscream")
 		else
 			..() //Pistolwhipping - now help intent only (or when the gun is empty)
 
