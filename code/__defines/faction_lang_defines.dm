@@ -82,6 +82,8 @@
 			return "Police Department"
 		else if (map.ID == "LONG_MARCH")
 			return "Red Army"
+		else if (map.ID == "EFT_FACTORY")
+			return "Scavs"
 		else
 			if (age >= 6)
 				return "Civilians"

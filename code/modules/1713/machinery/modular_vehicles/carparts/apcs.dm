@@ -100,7 +100,7 @@
 	icon_state = "m113_frame_steel_back"
 	w_back = list("m113_front_middle_frame",TRUE,TRUE,40,50,TRUE,TRUE)
 
-//BMD-1
+//BMD-2
 
 /obj/structure/vehicleparts/frame/bmd2
 	icon = 'icons/obj/vehicles/apcparts.dmi'
@@ -147,6 +147,7 @@
 /obj/structure/vehicleparts/frame/bmd2new
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts_damaged96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 
@@ -177,3 +178,40 @@
 	icon_state = "bmd2new_frame_steel_back_right"
 	w_back = list("bmd2new_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+//BMD-2 96x96
+
+/obj/structure/vehicleparts/frame/adrian
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts_damaged96x96.dmi'
+	pixel_x = -32
+	pixel_y = -32
+
+/obj/structure/vehicleparts/frame/adrian/lf
+	icon_state = "bmd2new_frame_steel_front_left"
+	w_front = list("bmd2new_front_left_frame",TRUE,TRUE,40,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/adrian/rf
+	icon_state = "bmd2new_frame_steel_front_right"
+	w_front = list("bmd2new_front_right_frame",TRUE,TRUE,40,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/adrian/lc
+	icon_state = "bmd2new_frame_steel_middle_left"
+	w_left = list("bmd2new_middle_left_frame",TRUE,TRUE,30,40,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/adrian/rc
+	icon_state = "bmd2new_frame_steel_middle_right"
+	w_right = list("bmd2new_middle_right_frame",TRUE,TRUE,30,40,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/adrian/lb
+	icon_state = "bmd2new_frame_steel_back_left"
+	w_back = list("bmd2new_back_left_frame",TRUE,TRUE,25,30,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,30,40,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/adrian/rb
+	icon_state = "bmd2new_frame_steel_back_right"
+	w_back = list("bmd2new_back_right_frame",TRUE,TRUE,25,30,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,30,40,FALSE,FALSE)

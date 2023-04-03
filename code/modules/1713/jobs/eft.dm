@@ -7,7 +7,7 @@
 	is_outlaw = TRUE
 
 	min_positions = 1
-	max_positions = 4
+	max_positions = 5
 
 /datum/job/american/eft/usec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -46,14 +46,14 @@
 	is_outlaw = TRUE
 
 	min_positions = 1
-	max_positions = 4
+	max_positions = 5
 
 /datum/job/russian/eft/bear/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bear(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/tactical1(H), slot_w_uniform)
 //jacket
 
 //head
@@ -76,7 +76,7 @@
 
 	return TRUE
 
-/datum/job/russian/eft/scav
+/datum/job/civilian/eft/scav
 	title = "Scavenger"
 	rank_abbreviation = ""
 	spawn_location = "JoinLateScav"
@@ -86,16 +86,60 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/russian/eft/scav/equip(var/mob/living/human/H)
+/datum/job/civilian/eft/scav/give_random_name(var/mob/living/human/H)
+	if (prob(50))
+		H.name = H.species.get_random_russian_name(H.gender)
+	else
+		H.name = H.species.get_random_ukrainian_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/civilian/eft/scav/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	var/randshoes = rand(1,4)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bear(H), slot_w_uniform)
+	var/randuniform = rand(1,7)
+	switch(randuniform)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/detective3(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/boomerwaffen1(H), slot_w_uniform)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/boomerwaffen3(H), slot_w_uniform)
 //jacket
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/bear(H), slot_head)
+	var/randhead = rand(1,3)
+	switch(randhead)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
+		if (2)
+			if (prob(50))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+		if (3)
+			if (prob(10))
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //main weapons
 	if(prob(75))
 		var/randarmM = rand(1,4)
@@ -103,19 +147,26 @@
 			if(1)
 				if(prob(40))
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak105(H), slot_shoulder)
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
 				else
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak74(H), slot_r_store)
 			if(2)
 				if(prob(15))
 					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/saiga12(H), slot_r_store)
 				else
-					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
-					H.equip_to_slot_or_del(new /obj/item/ammo_casing/shotgun/buckshot(H), slot_r_store)
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870/brown(H), slot_shoulder)
+					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
+			if (3)
+				if (prob(20))
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_shoulder)  
+				else
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_shoulder)
+			if (4)
+				if (prob(20))
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)  
+				else
+					H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47(H), slot_shoulder)
 //sidearm
-	if(prob(35))
+	if(prob(15))
 		var/randarmS = rand(1,4)
 		switch(randarmS)
 			if(1)

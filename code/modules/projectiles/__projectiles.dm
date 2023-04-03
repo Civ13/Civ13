@@ -669,13 +669,13 @@ obj/item/projectile/bullet/rifle/a556x45
 	penetrating = 5
 	armor_penetration = 42
 
-/obj/item/projectile/bullet/autocannon/a3ubr6
+/obj/item/projectile/bullet/autocannon/a30mm_ap
 	damage = DAMAGE_VERY_HIGH + 10
 	penetrating = 20
 	armor_penetration = 40
 	heavy_armor_penetration = 20
 
-/obj/item/projectile/bullet/autocannon/frag/a3uor6
+/obj/item/projectile/bullet/autocannon/frag/a30mm_he
 	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = 0

@@ -379,8 +379,8 @@
 	density = TRUE
 	opacity = TRUE
 	anchored = TRUE
-	bound_width = 64
-	bound_height = 32
+	bound_width = 96
+	bound_height = 64
 
 /obj/structure/props/stove
 	name = "stove"

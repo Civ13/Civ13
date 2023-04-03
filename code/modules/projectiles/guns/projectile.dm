@@ -327,8 +327,8 @@
 	set src in usr
 
 	if(launcher)
-		use_launcher = !use_launcher
 		if(do_after(usr, 5, src))
+			use_launcher = !use_launcher
 			to_chat(usr, "<span class='notice'>You [use_launcher ? "prepare the [launcher.name]." : "switch back to your gun."]</span>")
 			playsound(src, 'sound/weapons/guns/interact/launcher_select.ogg', 50, 1)
 

@@ -1036,7 +1036,7 @@
 "zU" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/desert/buildings{name = "Buildings"})
 "zY" = (/obj/structure/window/barrier/railing/stone{dir = 8},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/beach/water,/area/caribbean/desert)
 "Ab" = (/obj/structure/vehicleparts/frame/omw22_2/rb,/obj/structure/engine/internal/diesel/premade/omw22_2{name = "V12 diesel engine"},/obj/structure/vehicleparts/movement/tracks/left/reversed,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
-"Ae" = (/obj/structure/vehicleparts/frame/bmd2/rbc,/obj/structure/lamp/lamp_small/tank/red{dir = 8},/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3uor6,/obj/item/ammo_magazine/a3uor6,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
+"Ae" = (/obj/structure/vehicleparts/frame/bmd2/rbc,/obj/structure/lamp/lamp_small/tank/red{dir = 8},/obj/item/ammo_magazine/autocannon_ap,/obj/item/ammo_magazine/autocannon_ap,/obj/item/ammo_magazine/autocannon_he,/obj/item/ammo_magazine/autocannon_he,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "Af" = (/obj/covers/ornatemarblefloor/black,/obj/structure/potted_plant,/turf/floor/plating/marble/decorative_tile,/area/caribbean/no_mans_land/capturable/three{name = "Palace"})
 "Ag" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
 "Ak" = (/obj/covers/marble_wall/classic,/turf/floor/beach/sand/dark,/area/caribbean/desert)

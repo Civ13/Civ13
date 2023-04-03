@@ -249,6 +249,9 @@
 	update_icon()
 	return
 
+/obj/item/ammo_magazine/AltClick()
+	toggle_open()
+
 /obj/item/ammo_magazine/attack_hand(mob/user as mob)
 //	if (user.get_inactive_hand() == src)
 	if (opened)
