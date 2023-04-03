@@ -149,6 +149,16 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/mg13
+	name = "MG13 magazine (7.92x57mm)"
+	icon_state = "mg13mag"
+	mag_type = MAGAZINE
+	caliber = "a792x57_weak"
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	max_ammo = 25
+	weight = 0.15
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/greasegun
 	name = "M3A1 magazine (.45 ACP)"
 	icon_state = "greasegun"
