@@ -301,3 +301,13 @@
 		/obj/item/weapon/grenade/frag,
 		/obj/item/weapon/grenade/smokebomb
 		)
+
+/obj/item/weapon/gun/launcher/grenade/standalone/admin
+	name = "Grenade Launcher"
+	desc = "By the power of gods you can launch any grenade!"
+	icon_state = "m79"
+	item_state = "m79"
+	whitelisted_grenades = list(
+		/obj/item/weapon/grenade
+		)
+	blacklisted_grenades = null
