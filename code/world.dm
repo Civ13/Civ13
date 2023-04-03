@@ -16,7 +16,6 @@ var/global/list/faction_list_red = list()
 var/global/list/faction_list_blue = list()
 var/global/list/craftlist_lists = list("global" = list())
 var/global/list/dictionary_list = list()
-world/loop_checks=0
 /*
 	Pre-map initialization stuff should go here.
 */
@@ -65,6 +64,8 @@ var/world_is_open = TRUE
 #define RECOMMENDED_VERSION 512
 /world/New()
 
+	if (map && istype(map,/obj/map_metadata/nomads_persistence_beta))
+		loop_checks = FALSE
 	config.post_load()
 
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
