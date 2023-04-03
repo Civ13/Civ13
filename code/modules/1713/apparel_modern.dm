@@ -1482,22 +1482,22 @@
 	worn_state = "tacticool_hawaiian_purple"
 
 /obj/item/clothing/under/boomerwaffen1
-	name = "patriot outfit"
-	desc = "A uniform used by patriotic American militias."
+	name = "camouflage shirt with blue pants"
+	desc = "A camouflage shirt with blue pants."
 	icon_state = "boomerwaffen1"
 	item_state = "boomerwaffen1"
 	worn_state = "boomerwaffen1"
 
 /obj/item/clothing/under/boomerwaffen2
-	name = "patriot outfit"
-	desc = "A uniform used by patriotic American militias."
+	name = "tanktop with camouflage pants"
+	desc = "A tanktop with camouflage pants."
 	icon_state = "boomerwaffen2"
 	item_state = "boomerwaffen2"
 	worn_state = "boomerwaffen2"
 
 /obj/item/clothing/under/boomerwaffen3
-	name = "patriot outfit"
-	desc = "A uniform used by patriotic American militias."
+	name = "black shirt with camouflage pants"
+	desc = "A black shirt with camouflage pants."
 	icon_state = "boomerwaffen3"
 	item_state = "boomerwaffen3"
 	worn_state = "boomerwaffen3"
