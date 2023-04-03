@@ -159,7 +159,7 @@
 				MAP_WACO = 0,
 				MAP_YELTSIN = 6,
 				MAP_GROZNY = 6,
-				//MAP_BANK_ROBBERY = 0,
+				MAP_BANK_ROBBERY = 0,
 				MAP_DRUG_BUST = 0,
 				MAP_ARAB_TOWN = 0,
 				MAP_ARAB_TOWN_2 = 0,
