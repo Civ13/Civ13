@@ -7,7 +7,7 @@
 "aJ" = (/obj/effect/floor_decal/grass_edge{dir = 9},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "aK" = (/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/plating/road/yellowline,/area/caribbean)
 "aL" = (/obj/structure/sign/logo/red{pixel_y = 32},/obj/structure/bed/custsofa,/turf/floor/wood,/area/caribbean/british/land/inside)
-"aP" = (/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/structure/bed/chair/comfy/black{dir = 8},/obj/structure/vehicleparts/frame/defaultarmored/bdoor{w_right = list("c_armoredwall",1,1,55,90,0,0); w_back = list("c_door",1,1,55,90,0,1); dir = 1},/turf/floor/plating/road/yellowline,/area/caribbean)
+"aP" = (/obj/structure/vehicleparts/movement/reversed{dir = 1},/obj/structure/bed/chair/comfy/black{dir = 8},/obj/structure/vehicleparts/frame/defaultarmored/bdoor{w_right = list("c_armoredwall",1,1,55,90,0,0); w_back = list("c_door",1,1,55,90,0,1); dir = 1},/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/road/yellowline,/area/caribbean)
 "aW" = (/obj/structure/curtain/closed/red{pixel_y = -32},/turf/floor/wood,/area/caribbean/british/land/inside)
 "bf" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/british/land/inside)
 "bg" = (/obj/item/weapon/paper/police/searchwarrant/drug,/turf/floor/plating/road,/area/caribbean)
