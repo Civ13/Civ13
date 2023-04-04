@@ -46,7 +46,7 @@ open//totally not basing this off of the language datum system.
 /mob/verb/check_spells()
 	set name = "Spellcast"
 	set desc = "Lists the spells you know for selection."
-	set category = "IC"
+	set category = null
 	set src = usr
 
 	if (isliving(src))
