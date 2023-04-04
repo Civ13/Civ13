@@ -429,39 +429,6 @@
 		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
 		timer()
 
-/obj/structure/money_bag
-	name = "Money Bag"
-	desc = ""
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "duffel"
-	anchored = TRUE
-	opacity = FALSE
-	density = TRUE
-	flammable = FALSE
-	var/storedvalue = 0
-	var/prevent = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-
-/obj/structure/money_bag/New()
-	..()
-	desc = "Stored Value: [storedvalue]."
-	timer()
-/obj/structure/money_bag/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
-		storedvalue += (W.value*W.amount)
-		desc = "Stored Value: [storedvalue]."
-		user << "You place \the [W] inside \the [src]."
-		qdel(W)
-		if (storedvalue >= 1500)
-			map.update_win_condition()
-	else
-		return
-/obj/structure/money_bag/proc/timer()
-	spawn(2100)
-		world << "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>."
-		timer()
-
 /obj/item/stack/money/goldvaluables
 	name = "gold valuables"
 	desc = "A bunch of valuables."

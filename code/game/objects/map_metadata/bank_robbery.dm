@@ -21,7 +21,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 0.65, RUSSIAN = 0.35)
 	battle_name = "Goldstein Bank Heist"
-	mission_start_message = "<font size=4>The Robbers have <b>5 minutes</b> to prepare before the negotiations end!<br> The Police Department will win if they capture the <b>Vault Room</b> inside the bank <b>AFTER evacuating all alive hostages</b>. The Robbers will win if they manage to extract <b>10'000 dollars</b> from the Vault within <b>25 minutes!</b></font>"
+	mission_start_message = "<font size=4>The Robbers have <b>5 minutes</b> to prepare before the negotiations end!<br>The Police Department will win if they capture the <b>Vault Room</b> inside the bank <b>AFTER evacuating all alive hostages</b>.<br>The Robbers will win if they manage to extract <b>10'000 dollars</b> from the Vault within <b>25 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
 	grace_wall_timer = 3000
@@ -43,6 +43,7 @@
 	..()
 	kill_treshold = rand(2,5)
 	spawn(900)
+		civ_counter()
 		civ_collector()
 		civ_status()
 		round_status()
@@ -219,9 +220,13 @@
 	spawn(300)
 		civ_collector()
 
-/obj/map_metadata/bank_robbery/proc/civ_status()
+/obj/map_metadata/bank_robbery/proc/civ_counter()
 	total_killed = civilians_killed["Robbers"]+civilians_killed["Police"]
 	civilians_alive = 12 - total_killed
+	spawn(100)
+		civ_counter()
+
+/obj/map_metadata/bank_robbery/proc/civ_status()
 	spawn(1200)
 		world << "<big>Evacuated hostages: [civilians_evacuated]/[civilians_alive] </big>"
 		world << "<big>Alive hostages: [civilians_alive] </big>"
@@ -326,3 +331,37 @@
 				..()
 	else
 		..()
+
+/obj/structure/money_bag
+	name = "Money Bag"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "duffel"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/money_bag/New()
+	..()
+	desc = "Stored Value: [storedvalue]."
+	spawn(900)
+		timer()
+/obj/structure/money_bag/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		storedvalue += (W.value*W.amount)
+		desc = "Stored Value: [storedvalue]."
+		user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (storedvalue >= 1500)
+			map.update_win_condition()
+	else
+		return
+/obj/structure/money_bag/proc/timer()
+	spawn(1200)
+		world << "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>"
+		timer()
