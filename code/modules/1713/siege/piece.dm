@@ -495,19 +495,18 @@
 						spawn (10)
 							if (explosion)
 								if (istype(src,/obj/structure/cannon/mortar))
-									if(locate(/obj/structure/vehicleparts/frame) in target)
-										for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
-										 	for (var/mob/M in F.axis.transporting)
+									if (locate(/obj/structure/vehicleparts/frame) in target)
+										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+											for (var/mob/M in F.axis.transporting)
 												shake_camera(M, 3, 3)
 											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-											visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar!</big>"))
-											F.w_front[5] -= 40
-											F.w_back[5] -= 40
-											F.w_left[5] -= 40
-											F.w_right[5] -= 40
+											visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
+											F.w_front[5] -= rand(35,45)
+											F.w_back[5] -= rand(35,45)
+											F.w_left[5] -= rand(35,45)
+											F.w_right[5] -= rand(35,45)
 
 											F.try_destroy()
-											F.update_icon()
 									else
 										explosion(target, 1, 2, 2, 3)
 								else if (istype(src,/obj/structure/cannon/modern/naval))
@@ -520,10 +519,22 @@
 									explosion(target, 1, 2, 3, 4)
 							if (incendiary)
 								if (istype(src,/obj/structure/cannon/mortar))
-									if(!locate(/obj/structure/vehicleparts/frame) in target)
+									if (locate(/obj/structure/vehicleparts/frame) in target)
+										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+											for (var/mob/M in F.axis.transporting)
+												shake_camera(M, 3, 3)
+											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+											visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
+											F.w_front[5] -= rand(5,20)
+											F.w_back[5] -= rand(5,20)
+											F.w_left[5] -= rand(5,20)
+											F.w_right[5] -= rand(5,20)
+
+											F.try_destroy()
+									else
 										explosion(target, 0, 1, 2, 3)
 									for (var/turf/floor/T in circlerangeturfs(2,target))
-										if(!locate(/obj/structure/vehicleparts/frame) in T)
+										if (!locate(/obj/structure/vehicleparts/frame) in T)
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
