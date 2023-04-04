@@ -446,20 +446,34 @@
 
 					var/tx = 0
 					var/ty = 0
-
-					switch (odir)
-						if (EAST)
-							tx = x + 1 + max_distance
-							ty = y - sway + pick(0,pick(1,-1))
-						if (WEST)
-							tx = x - 1 - max_distance
-							ty = y + sway + pick(0,pick(1,-1))
-						if (NORTH)
-							tx = x + sway + pick(0,pick(1,-1))
-							ty = y + 1 + max_distance
-						if (SOUTH)
-							tx = x - sway + pick(0,pick(1,-1))
-							ty = y - 1 - max_distance
+					if (istype(src,/obj/structure/cannon/mortar))
+						switch (odir)
+							if (EAST)
+								tx = x + max_distance + pick(0,pick(1,-1))
+								ty = y - sway + pick(0,pick(1,-1))
+							if (WEST)
+								tx = x - max_distance + pick(0,pick(1,-1))
+								ty = y + sway + pick(0,pick(1,-1))
+							if (NORTH)
+								tx = x + sway + pick(0,pick(1,-1))
+								ty = y + max_distance + pick(0,pick(1,-1))
+							if (SOUTH)
+								tx = x - sway + pick(0,pick(1,-1))
+								ty = y - max_distance + pick(0,pick(1,-1))
+					else
+						switch (odir)
+							if (EAST)
+								tx = x + max_distance
+								ty = y - sway + pick(0,pick(1,-1))
+							if (WEST)
+								tx = x - max_distance
+								ty = y + sway + pick(0,pick(1,-1))
+							if (NORTH)
+								tx = x + sway + pick(0,pick(1,-1))
+								ty = y + max_distance
+							if (SOUTH)
+								tx = x - sway + pick(0,pick(1,-1))
+								ty = y - max_distance
 					if (tx < 1)
 						tx = 1
 					if (tx > world.maxx)
@@ -501,10 +515,10 @@
 												shake_camera(M, 3, 3)
 											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 											visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
-											F.w_front[5] -= rand(35,45)
-											F.w_back[5] -= rand(35,45)
-											F.w_left[5] -= rand(35,45)
-											F.w_right[5] -= rand(35,45)
+											F.w_front[5] -= rand(5,14)
+											F.w_back[5] -= rand(5,14)
+											F.w_left[5] -= rand(5,14)
+											F.w_right[5] -= rand(5,14)
 
 											F.try_destroy()
 									else
@@ -603,6 +617,7 @@
 											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
 										if ("smokescreen")
 											new/obj/effect/effect/smoke/bad(target)
+							/*
 							var/target_area_original_integrity = target_area.artillery_integrity
 							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 								for (var/mob/living/L in view(20, target))
@@ -610,6 +625,7 @@
 									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
 							else if (target_area_original_integrity)
 								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
+							*/
 					sleep(0.5)
 
 	do_html(user)
