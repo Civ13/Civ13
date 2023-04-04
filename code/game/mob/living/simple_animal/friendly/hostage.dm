@@ -94,10 +94,16 @@ var/global/civvies_killed = list()
 			killer = "Robbers"
 		else if (harmer_factions["Police"] == harmer_factions["Robbers"] && harmer_factions["Robbers"] > 0)
 			killer = "both sides"
-		if (BR.civilians_killed["Robbers"] == 4)
-			world << "<big><font size=3><span class = 'warning'>At least 4 additional civilians have been killed: the situation is critical!</span></font></big>"
-		if (BR.civilians_killed["Robbers"] == 5)
+		if (BR.civilians_killed["Robbers"] == BR.kill_treshold-1)
+			world << "<big><font size=3><span class = 'warning'>At least [BR.kill_treshold-1] additional civilians have been killed: the situation is critical!</span></font></big>"
+		if (BR.civilians_killed["Robbers"] == BR.kill_treshold)
 			world << "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>"
+		if (BR.civilians_killed["Police"] == BR.kill_treshold-1)
+			for(var/mob/living/human/H in player_list)
+				if (H.faction_text == "CIVILIAN" && H.stat != DEAD)
+					H << "<big><span class = 'danger'>We're making too much civilian casualties: the situation is critical!</span></big>"
+		if (BR.civilians_killed["Police"] == BR.kill_treshold)
+			world << "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>"
 		if (killer != "none")
 			civvies_killed += list(uniquenum)
 			switch(killer)
