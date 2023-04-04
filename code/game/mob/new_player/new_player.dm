@@ -638,6 +638,13 @@ var/global/redirect_all_players = null
 						if (actual_job && actual_job.title == "DRA Soldier")
 							actual_job.spawn_location = "JoinLateDRA"
 
+// BANK ROBBERY - Changes Robber spawns after gracewall
+
+		if (map && map.ID == MAP_BANK_ROBBERY)
+			if (processes.ticker.playtime_elapsed >= 3000 || map.admin_ended_all_grace_periods)
+				if (actual_job && actual_job.title == "Bank Robber")
+					actual_job.spawn_location = "JoinLateRU2"
+
 //prevent boss spawns if there are enemies in the building
 		if (map && map.ID == MAP_CAPITOL_HILL)
 			var/obj/map_metadata/capitol_hill/CP = map
