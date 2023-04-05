@@ -169,7 +169,7 @@
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
-	protection_chance = 80
+	protection_chance = 85
 	layer = 2.98
 
 /obj/structure/barricade/vertical
@@ -177,7 +177,7 @@
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_vertical"
 	flammable = TRUE
-	protection_chance = 80
+	protection_chance = 85
 	layer = 2.98
 
 /obj/structure/barricade/vertical/New()
