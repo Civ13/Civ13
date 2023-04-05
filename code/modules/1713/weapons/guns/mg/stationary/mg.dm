@@ -233,12 +233,12 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a3ubr6
-	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	magazine_type = /obj/item/ammo_magazine/autocannon_ap
+	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
-	ammo_type = /obj/item/ammo_casing/a3ubr6
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	is_hmg = TRUE
 	full_auto = FALSE
 
@@ -250,12 +250,12 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a3ubr6
-	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	magazine_type = /obj/item/ammo_magazine/autocannon_ap
+	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
-	ammo_type = /obj/item/ammo_casing/a3ubr6
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
 // ATGM Autocannons
 
@@ -268,12 +268,12 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a3ubr6
-	good_mags = list(/obj/item/ammo_magazine/a3ubr6, /obj/item/ammo_magazine/a3uor6)
+	magazine_type = /obj/item/ammo_magazine/autocannon_ap
+	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
-	ammo_type = /obj/item/ammo_casing/a3ubr6
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	anchored = TRUE
 	var/mode = "autocannon"
 

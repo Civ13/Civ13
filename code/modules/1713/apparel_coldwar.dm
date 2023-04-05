@@ -2444,11 +2444,3 @@ obj/item/clothing/head/chinaguardcap
 	icon_state = "afr_merc2"
 	item_state = "afr_merc2"
 	worn_state = "arc_merc2"
-
-/obj/item/clothing/under/bear
-	name = "BEAR uniform with rolled sleeves"
-	desc = "A rolled-sleeves version of the US Army OG-107 uniform."
-	icon_state = "bear_lightuni"
-	item_state = "bear_lightuni"
-	worn_state = "bear_lightuni"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS

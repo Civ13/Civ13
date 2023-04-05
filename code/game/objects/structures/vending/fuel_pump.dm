@@ -21,6 +21,18 @@
 	var/customcolor = 0
 	var/owner = "Global"
 
+/obj/structure/fuelpump/bullet_act(var/obj/item/projectile/proj, def_zone)
+	if (!vol)
+		return ..(proj, def_zone)
+	if (vol >= 10)
+		if (prob(20))
+			visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+			explosion(loc, 1, 2, 2, 0)
+			qdel(src)
+		else
+			return FALSE
+	return TRUE
+
 /obj/structure/fuelpump/premade
 	name = "fuel pump"
 	price = 3

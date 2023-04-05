@@ -19,7 +19,7 @@
 "as" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/frame/omw22_2/lb,/obj/structure/vehicleparts/movement/tracks/right/reversed,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "at" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 4975},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "au" = (/obj/item/stack/material/barbwire/ten,/turf/floor/plating/concrete,/area/caribbean/roofed/desert)
-"av" = (/obj/structure/vehicleparts/frame/bmd2new/rc,/obj/item/ammo_magazine/a3uor6,/obj/item/ammo_magazine/a3uor6,/obj/item/ammo_magazine/a3ubr6,/obj/item/ammo_magazine/a3ubr6,/obj/structure/lamp/lamp_small/tank/red{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/desert)
+"av" = (/obj/structure/vehicleparts/frame/bmd2new/rc,/obj/item/ammo_magazine/autocannon_he,/obj/item/ammo_magazine/autocannon_he,/obj/item/ammo_magazine/autocannon_ap,/obj/item/ammo_magazine/autocannon_ap,/obj/structure/lamp/lamp_small/tank/red{dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "aw" = (/obj/structure/bed/chair/commander,/obj/structure/vehicleparts/frame/omw22_2/right,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ax" = (/obj/structure/shellrack/full100,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ay" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/obj/structure/vehicleparts/frame/omw22_2/left,/turf/floor/plating/road,/area/caribbean/nomads/desert)

@@ -7,15 +7,17 @@
 
 	faction_organization = list(
 		AMERICAN,
-		RUSSIAN)
+		RUSSIAN,
+		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(GERMAN) = /area/caribbean/german/,
-		list(RUSSIAN) = /area/caribbean/russian/,
+		list(GERMAN) = /area/caribbean/german,
+		list(RUSSIAN) = /area/caribbean/russian,
+		list(CIVILIAN) = /area/caribbean/roman,
 		)
 	age = "2019"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
+	faction_distribution_coeffs = list(GERMAN = 0.4, RUSSIAN = 0.4, CIVILIAN = 0.2)
 	battle_name = "Firefight of Chemical Plant No. 16"
 	mission_start_message = "<font size=4>PMCs and scavengers alike remain scatter across the industrial estate and facilities of Chemical Plant No. 16. You have <b>2 minutes</b> to prepare.</font>"
 	faction1 = AMERICAN
@@ -40,7 +42,7 @@
 		if (J.is_outlaw == TRUE)
 			. = TRUE
 			if (J.title == "Scavenger")
-				if(processes.ticker.playtime_elapsed >= 4000) // Make scavs playable after 400 seconds
+				if(processes.ticker.playtime_elapsed >= 5 MINUTES)
 					. = TRUE
 				else
 					. = FALSE
@@ -48,10 +50,10 @@
 		. = FALSE
 
 /obj/map_metadata/eft_factory/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 2 MINUTES || admin_ended_all_grace_periods)
 
 /obj/map_metadata/eft_factory/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 2 MINUTES || admin_ended_all_grace_periods)
 
 /obj/map_metadata/eft_factory/roundend_condition_def2name(define)
 	..()
@@ -60,6 +62,8 @@
 			return "USEC"
 		if (RUSSIAN)
 			return "BEAR"
+		if (CIVILIAN)
+			return "Scavs"
 /obj/map_metadata/eft_factory/roundend_condition_def2army(define)
 	..()
 	switch (define)
@@ -67,6 +71,8 @@
 			return "USEC"
 		if (RUSSIAN)
 			return "BEAR"
+		if (CIVILIAN)
+			return "Scavs"
 
 /obj/map_metadata/eft_factory/army2name(army)
 	..()
@@ -75,52 +81,66 @@
 			return "USEC"
 		if ("BEAR")
 			return "BEAR"
+		if ("Scavs")
+			return "Scavs"
 
 /obj/map_metadata/eft_factory/cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<font size = 4>The BEAR may now cross the invisible wall!</font>"
+		return "<font size = 4>The operation has begun!</font>"
 	else if (faction == AMERICAN)
-		return "<font size = 4>The USEC may now cross the invisible wall!</font>"
+		return ""
+	else if (faction == CIVILIAN)
+		return ""
+	else
+		return ""
 
 /obj/map_metadata/eft_factory/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The BEAR may no longer cross the invisible wall!</span>"
+		return "<font size = 4>The has stopped!</font>"
 	else if (faction == AMERICAN)
-		return "<span class = 'userdanger'>The USEC may no longer cross the invisible wall!</span>"
+		return ""
+	else if (faction == CIVILIAN)
+		return ""
+	else
+		return ""
 
 /obj/map_metadata/eft_factory/proc/show_extractees()
-	spawn(3000)
-		world << "<big>Extracted: [extractees] </big>"
-		show_extractees()
+	if (extractees.len)
+		world << "<big><b>Extracted:</b></big>"
+		world << "<big>[jointext(extractees,"\n")]</big>"
+	spawn(1 MINUTE)
+	show_extractees()
 
-
-/*
-/area/caribbean/extract/Entered(A)
-	if(!istype(A,/mob/living/human))	return
+/area/caribbean/extract/Entered(var/atom/movable/A)
+	var/obj/map_metadata/eft_factory/MEFT = map
+	if(!istype(A,/mob/living/human)) return
 
 	var/mob/living/human/H = A
 	if(!H.ckey)	return
 	if(H.stat != DEAD)
-		H << "Extracting, wait 10 seconds." 
-		world << "[H.name] is extracting!"
-		spawn(100)
+		H << SPAN("b","Extracting, wait 10 seconds.")
+		if(do_after(H,10 SECONDS,H,FALSE,can_move = FALSE))
 			if(H.stat != DEAD)
-				//extractees += H.ckey
+				MEFT.extractees += "[H.ckey]"
+				world << "[H.ckey] has extracted!"
+				H.ghostize()
 				qdel(H)
-
+				return
+			return
+		else
+			H << SPAN("b","You have moved, extraction failed.")
+			return
+/*
 /datum/extract/proc/check(var/list/areas, var/list/extractess)
-	for (var/human in human_mob_list)
-		var/mob/living/human/H = human
+	for (var/mob/living/human/H in get_area_turfs(/area/caribbean/supply))
 		if (H && H.original_job && H.client && H.stat == CONSCIOUS && !H.restrained() && !iscloset(H.loc))
 			var/area/H_area = get_area(H)
 			if (H_area && area_check(H_area, areas))
 				spawn(100)
 				if(H.stat != DEAD)
-					extractees += H.ckey
+					extractees += H.ckey += ";"
 					qdel(H)
-	return FALSE
 */
-
 /area/caribbean/extract
 	name = "extract"
 	icon_state = "green1"

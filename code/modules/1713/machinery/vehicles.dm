@@ -352,6 +352,16 @@
 	color = "#8383C2"
 	turret_type = "pt76_turret"
 
+/obj/structure/vehicleparts/axis/heavy/adrian
+	name = "Type-9 Adrian"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#555346"
+	turret_type = "bmd2_turret"
+	vehicle_size = "2x3"
+	vehicle_type = "apc"
+
 /obj/structure/vehicleparts/axis/heavy/t90a
 	name = "T-90A"
 	speeds = 4

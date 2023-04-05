@@ -1509,6 +1509,8 @@
 						holder2.icon_state = "robbers"
 					else if (map.ID == MAP_DRUG_BUST)
 						holder2.icon_state = "rednikov"
+					else if (map.ID == MAP_EFT_FACTORY)
+						holder2.icon_state = "none"
 					else
 						if (map.ordinal_age <= 5)
 							holder2.icon_state = "ru_basic"
@@ -1530,6 +1532,8 @@
 						holder2.icon_state = "imp_basic"
 					else if (map.ID == MAP_EAST_LOS_SANTOS)
 						holder2.icon_state = "civ2"
+					else if (map.ID == MAP_EFT_FACTORY)
+						holder2.icon_state = "none"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1565,6 +1569,8 @@
 						holder2.icon_state = "un"
 					else if (map.ID == MAP_TSARITSYN || map.ID == MAP_YELTSIN || map.ID == MAP_LONG_MARCH)
 						holder2.icon_state = "sov_basic"
+					else if (map.ID == MAP_EFT_FACTORY)
+						holder2.icon_state = "none"
 					else if (map.ID == MAP_GULAG13)
 						if(nationality == "Polish")
 							holder2.icon_state = "pol_basic"
