@@ -35,7 +35,6 @@
 	default_material = "wood"
 	throw_speed = 7
 	throw_range = 7
-	allow_spin = FALSE
 	force_divisor = 0.2 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
 	attack_verb = list("jabbed","hit","bashed")
@@ -53,7 +52,6 @@
 	default_material = "iron"
 	throw_speed = 4
 	throw_range = 4
-	allow_spin = FALSE
 	force_divisor = 0.2 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.2 // 8 with weight 20 (steel)
 	attack_verb = list("jabbed","hit","bashed")
