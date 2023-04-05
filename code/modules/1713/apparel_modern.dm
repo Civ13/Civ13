@@ -1278,10 +1278,34 @@
 	new /obj/item/stack/medical/bruise_pack/bint(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
+
+/obj/item/weapon/storage/belt/police/bank/glock/New()
+	..()
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/glock17(src)
+
+/obj/item/weapon/storage/belt/police/bank/c38/New()
+	..()
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/ammo_magazine/c38(src)
+	new /obj/item/ammo_magazine/c38(src)
+
+/obj/item/weapon/storage/belt/police/bank/p220/New()
+	..()
+	new /obj/item/ammo_magazine/p220(src)
+	new /obj/item/ammo_magazine/p220(src)
+	new /obj/item/ammo_magazine/p220(src)
+	new /obj/item/ammo_magazine/p220(src)
+
+/obj/item/weapon/storage/belt/police/bank/m9/New()
+	..()
+	new /obj/item/ammo_magazine/m9beretta(src)
+	new /obj/item/ammo_magazine/m9beretta(src)
+	new /obj/item/ammo_magazine/m9beretta(src)
+	new /obj/item/ammo_magazine/m9beretta(src)
 
 /obj/item/weapon/storage/belt/police/m16
 	icon_state = "swatbelt"

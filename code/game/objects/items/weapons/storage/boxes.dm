@@ -3,6 +3,10 @@
 	desc = "It's just an ordinary box."
 	icon_state = "box"
 	item_state = "syringe_kit"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
 
 // BubbleWrap - A box can be folded up to make cardboard
 /obj/item/weapon/storage/box/attack_self(mob/user as mob)
