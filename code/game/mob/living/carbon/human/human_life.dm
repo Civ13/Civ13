@@ -161,7 +161,7 @@
 		var/water_m = 1
 		var/food_m = 1
 		if (find_trait("Gigantism"))
-			food_m *= 1.2
+			food_m *= 1.4
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
 		if (orc)
