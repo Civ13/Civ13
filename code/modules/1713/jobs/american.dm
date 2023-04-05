@@ -174,8 +174,8 @@
 	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
 //gun
 	if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1car15(H), slot_r_store)
-		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1car15(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1carbine(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)

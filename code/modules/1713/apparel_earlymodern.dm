@@ -1345,9 +1345,9 @@
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc/New()
 	..()
 	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/m1car15(src)
-	new/obj/item/ammo_magazine/m1car15(src)
-	new/obj/item/ammo_magazine/m1car15/box(src)
+	new/obj/item/ammo_magazine/m1carbine(src)
+	new/obj/item/ammo_magazine/m1carbine(src)
+	new/obj/item/ammo_magazine/m1carbine/box(src)
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/weapon/whistle(src)
 
