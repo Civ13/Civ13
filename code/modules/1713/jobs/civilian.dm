@@ -3624,8 +3624,8 @@
 	H.setStat("medical", STAT_LOW)
 
 /////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
-
-/datum/job/civilian/spanish/cir
+/datum/job/civilian/spanish
+	is_spainciv = TRUE
 	faction = "RepSpain"
 	default_language = "Spanish"
 
@@ -3633,7 +3633,7 @@
 	H.name = H.species.get_random_spanish_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/civilian/spanish/cir/cap
+/datum/job/civilian/spanish/cap
 	title = "Capitan republicano"
 	en_meaning = "Republican Captain"
 	rank_abbreviation = "Cap."
@@ -3643,12 +3643,12 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/spanish/cir/cap/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/cap/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3682,7 +3682,7 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/serg
+/datum/job/civilian/spanish/sz
 	title = "Sargento republicano"
 	en_meaning = "Republican Squad Leader"
 	rank_abbreviation = "Sar."
@@ -3691,12 +3691,12 @@
 	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/spanish/cir/serg/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/sz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3731,20 +3731,20 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/doc
+/datum/job/civilian/spanish/doc
 	title = "Médico de combate republicano"
 	en_meaning = "Republican Combat Medic"
 	rank_abbreviation = "Med."
 
 	spawn_location = "JoinLateSP"
 
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	is_medic = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/civilian/spanish/cir/doc/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/doc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3775,20 +3775,20 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 	return TRUE
 
-/datum/job/civilian/spanish/cir/rifle
+/datum/job/civilian/spanish/rifle
 	title = "Fusilero Republicano"
 	en_meaning = "Republican Rifleman"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateSP"
 	can_be_female = FALSE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	uses_squads = TRUE
 
 	min_positions = 20
 	max_positions = 60
 
-/datum/job/civilian/spanish/cir/rifle/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/rifle/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3841,7 +3841,7 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/intvol
+/datum/job/civilian/spanish/intvol
 	additional_languages = list("Russian" = 65, "Polish" = 25, "Ukrainian" = 35, "English" = 25, "Latin" = 35,)
 	title = "Voluntario internacional"
 	en_meaning = "International volunteer"
@@ -3849,14 +3849,14 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	uses_squads = TRUE
 
 
 	min_positions = 10
 	max_positions = 110
 
-/datum/job/civilian/spanish/cir/intvol/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/intvol/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)

@@ -364,6 +364,7 @@
 		/obj/item/flashlight/militarylight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
 	)
 
 /obj/structure/vending/usa_apparel_korean_war
@@ -398,7 +399,7 @@
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
 		/obj/item/ammo_magazine/a45acpbox = 10,
-		/obj/item/ammo_magazine/m1car15/box = 10,
+		/obj/item/ammo_magazine/m1carbine/box = 10,
 	)
 
 /obj/structure/vending/japaneseapparel_ww2

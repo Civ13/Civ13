@@ -446,7 +446,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/mg13
 	name = "Maschinengewehr 13"
-	desc = "German light machine chambered in 792x57mm rounds."
+	desc = "German light machine chambered in 7.92x57mm rounds."
 	icon_state = "mg13"
 	item_state = "mg13"
 	base_icon = "mg13"

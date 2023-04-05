@@ -210,36 +210,6 @@ obj/item/ammo_magazine/dp
 	weight = 0.40
 	multiple_sprites = FALSE
 
-/obj/item/ammo_magazine/m1car15/box
-	name = "30.Carbine ammo pouch (7.62x33mm)"
-	icon_state = "pouch_closed"
-	ammo_type = /obj/item/ammo_casing/a762x33
-	caliber = "a762x33"
-	max_ammo = 60
-	weight = 1.2
-	multiple_sprites = TRUE
-	pouch = TRUE
-
-/obj/item/ammo_magazine/m1car15
-	name = "M1-Carbine Small Magazine (7.62x33mm)"
-	icon_state = "mcar"
-	mag_type = MAGAZINE
-	caliber = "a762x33"
-	ammo_type = /obj/item/ammo_casing/a762x33
-	max_ammo = 15
-	weight = 0.19
-	multiple_sprites = TRUE
-
-/obj/item/ammo_magazine/m1car15/m1car30
-	name = "M1-Carbine-Magazine (7.62x33mm)"
-	icon_state = "mcarbig"
-	mag_type = MAGAZINE
-	caliber = "a762x33"
-	ammo_type = /obj/item/ammo_casing/a762x33
-	max_ammo = 30
-	weight = 0.32
-	multiple_sprites = TRUE
-
 /obj/item/ammo_magazine/stg
 	name = "StG 44 magazine (7.92x33mm)"
 	icon_state = "stg"
@@ -357,27 +327,39 @@ obj/item/ammo_magazine/dp
 /obj/item/ammo_magazine/garand
 	name = "clip (30-06) 8 rounds"
 	icon_state = "g-clip"
-	caliber = "a3006"
-
-	ammo_type = /obj/item/ammo_casing/a3006
+	caliber = "a762x33"
+	ammo_type = /obj/item/ammo_casing/a762x33
 	max_ammo = 8
 	weight = 0.038
 	multiple_sprites = TRUE
 	clip = TRUE
 
 /obj/item/ammo_magazine/m1carbine
-	name = "M1 Carbine magazine (7.62x51mm)"
-	icon_state = "m14"
+	name = "M1 Carbine Small magazine (7.62x33mm)"
+	icon_state = "mcar"
 	mag_type = MAGAZINE
-	caliber = "a3006"
-	ammo_type = /obj/item/ammo_casing/a3006
+	caliber = "a762x33"
+	ammo_type = /obj/item/ammo_casing/a762x33
 	max_ammo = 15
 	weight = 0.4
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m1carbine/big
+	name = "M1 Carbine magazine (7.62x33mm)"
 	max_ammo = 30
+	icon_state = "mcarbig"
+	weight = 0.6
+	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/m1carbine/box
+	name = "30.Carbine ammo pouch (7.62x33mm)"
+	icon_state = "pouch_closed"
+	ammo_type = /obj/item/ammo_casing/a762x33
+	caliber = "a762x33"
+	max_ammo = 65
+	weight = 1.5
+	multiple_sprites = TRUE
+	pouch = TRUE
 
 /obj/item/ammo_magazine/m3006box
 	name = "magazine box (30-06)"
