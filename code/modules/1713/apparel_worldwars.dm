@@ -2260,19 +2260,16 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
-/*
-/obj/item/clothing/suit/storage/coat/ww2/german/New()
-	..()
-	if (map && (map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD))
-		icon_state = "gerparka_winter"
-		item_state = "gerparka_winter"
-		worn_state = "gerparka_winter"
-		item_state_slots["slot_w_uniform"] = "gerparka_winter"
-		name = "german coat"
-		desc = "A german coat, worn by soldaten in the Wehrmacht."
-		body_parts_covered = UPPER_TORSO||ARMS
-		cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT|LOWER_TORSO
-*/
+
+/obj/item/clothing/suit/storage/coat/ww2/german/winter
+	icon_state = "gerparka_winter"
+	item_state = "gerparka_winter"
+	worn_state = "gerparka_winter"
+	name = "german winter coat"
+	desc = "A german coat, worn by soldaten in the Wehrmacht."
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT|LOWER_TORSO
+
 /obj/item/clothing/suit/storage/coat/ww2/german/civ
 	name = "grey parka"
 	desc = "A grey parka, good for warmth in the winters."
