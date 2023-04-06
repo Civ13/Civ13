@@ -270,7 +270,7 @@
 			new /obj/effect/plane_flyby/p47(target)
 			world << SPAN_DANGER("<font size=4>A P-47 thunderbolt flies above and fires off a burst of rockets!</font>")
 		else
-			new /obj/effect/plane_flyby/p47nomess(target)
+			new /obj/effect/plane_flyby/p47_no_message(target)
 			world << SPAN_DANGER("<font size=4>A Some kind of a plane flies through the clouds and fires off a burst of rockets!</font>")
 	sleep(20)
 	for (var/i = 1, i <= strikenum, i++)

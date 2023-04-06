@@ -625,7 +625,7 @@ steam.start() -- spawns the effect
 				M << SPAN_NOTICE("<font size=3>The air vibrates as a P-47 'Thunderbolt' flies overhead.</font>")
 				M.client << uploaded_sound
 
-/obj/effect/plane_flyby/p47nomess/New()
+/obj/effect/plane_flyby/p47_no_message/New()
 	..()
 	spawn(10)
 		var/sound/uploaded_sound = sound('sound/effects/aircraft/p47.ogg', repeat = FALSE, wait = TRUE, channel = 777)

@@ -78,6 +78,21 @@
 	desc = "A sealed package of everything you need to keep up the fight!."
 	nutriment_desc = list("canned meat" = 2, "canned vegetables" = 2, "tea", 2)
 
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian/officer
+	name = "Blugoslavian Officer MRE: Pizza with Coffee"
+	desc = "A sealed package of the good stuff, reserved only for the best of the best!."
+	nutriment_desc = list("coffee", 5, "baked pastry" = 4, "spices" = 2, "cheese" = 4)
+
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian
+	name = "Redmenian MRE: General Combat Rations"
+	desc = "A sealed package of everything you need to keep up the fight!."
+	nutriment_desc = list("canned meat" = 2, "canned vegetables" = 2, "tea", 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian/officer
+	name = "Redmenian Officer MRE: Sweetroll with Coffee"
+	desc = "A sealed package of the good stuff, reserved only for the best of the best!."
+	nutriment_desc = list("coffee", 5, "baked pastry" = 2, "sweetness" = 3, "icing" = 2, "donut" = 2)
+
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
