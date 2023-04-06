@@ -140,9 +140,8 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
-				M << "You load the [src]."
+				M << SPAN_NOTICE("You load \the [src].")
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-				//playsound(loc, "loaded_voice", 100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
@@ -180,9 +179,8 @@
 			M.remove_from_mob(W)
 			W.loc = src
 			loaded = W
-			M << "You load the [src]."
+			M << SPAN_NOTICE("You load \the [src].")
 			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-			//playsound(loc, "loaded_voice", 100, TRUE)
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
@@ -239,6 +237,7 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
+				user << SPAN_NOTICE("You load \the [src].")
 				if (M == user)
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
@@ -317,54 +316,50 @@
 		return FALSE
 
 	if (href_list["load"])
-		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (istype(M, ammotype))
-			var/obj/item/cannon_ball/shell/tank/TS = M
-			if (caliber != TS.caliber && caliber != null && caliber != 0)
-				user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
-				return
-			if (loaded)
-				user << SPAN_WARNING("There's already a [loaded] loaded.")
-				return
-			// load first and only slot
-			var/found_loader = FALSE
-			for (var/obj/structure/bed/chair/loader/L in user.loc)
-				found_loader = TRUE
-			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-				user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-				return FALSE
-			var/loadtime = caliber/2
-			if (istype(src,/obj/structure/cannon/modern/naval))
-				loadtime = caliber
-			if (do_after(user, loadtime, user, can_move = TRUE))
-				if (user && (locate(user) in range(1,src)))
-					found_loader = FALSE
-					for (var/obj/structure/bed/chair/loader/L in user.loc)
-						found_loader = TRUE
-					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-						user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-						return FALSE
-					user.remove_from_mob(M)
-					M.loc = src
-					loaded = M
-					user << SPAN_NOTICE("You load \the [src].")
-					playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-					return
-	
-	if (href_list["unload"])
-		var/obj/item/cannon_ball/M = loaded
 		if (!loaded)
-			user << SPAN_WARNING("There's nothing loaded.")
-			return
-		var/unloadtime = caliber/4
-		if (do_after(user, unloadtime, user, can_move = TRUE))
-			if (user && (locate(user) in range(1,src)))
-				M.loc = get_turf(user)
-				user.put_in_active_hand(M)
-				loaded = null
-				user << SPAN_NOTICE("You unload \the [src].")
-				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-				return
+			var/obj/item/cannon_ball/M = user.get_active_hand()
+			if (istype(M, ammotype))
+				var/obj/item/cannon_ball/shell/tank/TS = M
+				if (caliber != TS.caliber && caliber != null && caliber != 0)
+					user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
+					return
+				// load first and only slot
+				var/found_loader = FALSE
+				for (var/obj/structure/bed/chair/loader/L in user.loc)
+					found_loader = TRUE
+				if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+					user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+					return FALSE
+				var/loadtime = caliber/2
+				if (istype(src,/obj/structure/cannon/modern/naval))
+					loadtime = caliber
+				if (do_after(user, loadtime, user, can_move = TRUE))
+					if (user && (locate(user) in range(1,src)))
+						found_loader = FALSE
+						for (var/obj/structure/bed/chair/loader/L in user.loc)
+							found_loader = TRUE
+						if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+							user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+							return FALSE
+						user.remove_from_mob(M)
+						M.loc = src
+						loaded = M
+						user << SPAN_NOTICE("You load \the [src].")
+						if (istype(src, /obj/structure/cannon/modern/tank))
+							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+						return
+		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
+			var/obj/item/cannon_ball/M = loaded
+			var/unloadtime = caliber/8
+			if (do_after(user, unloadtime, user, can_move = TRUE))
+				if (user && (locate(user) in range(1,src)))
+					M.loc = get_turf(user)
+					user.put_in_active_hand(M)
+					loaded = null
+					user << SPAN_NOTICE("You unload \the [src].")
+					if (istype(src, /obj/structure/cannon/modern/tank))
+						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+					return
 
 	if (href_list["set_angle"])
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
@@ -687,7 +682,7 @@
 		<center>
 		<big><b>[name]</b></big><br><br>
 		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a> | <a href='?src=\ref[src];unload=1'>Unload</a><br><br>
+		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
 		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
 		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>
