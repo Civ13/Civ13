@@ -2405,9 +2405,8 @@
 	if (!H)	return FALSE
 	H.civilization = "Police Department"
 	give_random_name(H)
+
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
@@ -2417,41 +2416,58 @@
 		pb.name = "[replacetext(H.real_name,"Officer ","")] police badge"
 		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
 	uniform1.attackby(pb, H)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup, slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
-	if (map && map.ID == MAP_BANK_ROBBERY)
-		var/obj/map_metadata/bank_robbery/MP = map
-		if (MP.civilians_evacuated >= 4 && MP.civilians_evacuated < 6)
-			if (prob(20))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
-				if (prob(40))
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/beanbag(H), slot_l_store)
-		if (MP.civilians_evacuated >= 6 && MP.civilians_evacuated < 8)
-			if (prob(40))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
+
+	var/loadout = rand(1,4)
+	var/obj/map_metadata/bank_robbery/MP = map
+	if (MP.civilians_evacuated == MP.civilians_alive)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/ar15(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ar15(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ar15(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/glock(H), slot_belt)
+	else
+		switch(loadout)
+			if(1)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 				if (prob(60))
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/beanbag(H), slot_l_store)
-		if (MP.civilians_evacuated >= 8 && MP.civilians_evacuated < 10)
-			if (prob(60))
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/glock(H), slot_belt)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
-				if (prob(80))
-					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/beanbag(H), slot_l_store)
-		if (MP.civilians_evacuated >= 10)
-			if (prob(80))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/snw10(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/beanbag(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
-	if(prob(60))
-		var/randcloth = rand(1,2)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/c38(H), slot_belt)
+			if(3)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p220(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p220(H), slot_r_store)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/p220(H), slot_l_hand)
+				if (prob(70))
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/p220(H), slot_belt)
+			if(4)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+				if (prob(40))
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
+				else
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
+				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/m9(H), slot_belt)
+
 	H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_NORMAL)
@@ -2561,7 +2577,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/dea(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/glock(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/dea(H), slot_wear_suit)
 
@@ -3608,8 +3624,8 @@
 	H.setStat("medical", STAT_LOW)
 
 /////////////////////////////////////spanish civil war republicans/////////////////////////////////////////
-
-/datum/job/civilian/spanish/cir
+/datum/job/civilian/spanish
+	is_spainciv = TRUE
 	faction = "RepSpain"
 	default_language = "Spanish"
 
@@ -3617,7 +3633,7 @@
 	H.name = H.species.get_random_spanish_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/civilian/spanish/cir/cap
+/datum/job/civilian/spanish/cap
 	title = "Capitan republicano"
 	en_meaning = "Republican Captain"
 	rank_abbreviation = "Cap."
@@ -3627,12 +3643,12 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/spanish/cir/cap/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/cap/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3666,7 +3682,7 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/serg
+/datum/job/civilian/spanish/sz
 	title = "Sargento republicano"
 	en_meaning = "Republican Squad Leader"
 	rank_abbreviation = "Sar."
@@ -3675,12 +3691,12 @@
 	is_officer = TRUE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/civilian/spanish/cir/serg/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/sz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3715,20 +3731,20 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/doc
+/datum/job/civilian/spanish/doc
 	title = "Médico de combate republicano"
 	en_meaning = "Republican Combat Medic"
 	rank_abbreviation = "Med."
 
 	spawn_location = "JoinLateSP"
 
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	is_medic = TRUE
 	can_be_female = TRUE
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/civilian/spanish/cir/doc/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/doc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3759,20 +3775,20 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 	return TRUE
 
-/datum/job/civilian/spanish/cir/rifle
+/datum/job/civilian/spanish/rifle
 	title = "Fusilero Republicano"
 	en_meaning = "Republican Rifleman"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateSP"
 	can_be_female = FALSE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	uses_squads = TRUE
 
 	min_positions = 20
 	max_positions = 60
 
-/datum/job/civilian/spanish/cir/rifle/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/rifle/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -3825,7 +3841,7 @@
 
 	return TRUE
 
-/datum/job/civilian/spanish/cir/intvol
+/datum/job/civilian/spanish/intvol
 	additional_languages = list("Russian" = 65, "Polish" = 25, "Ukrainian" = 35, "English" = 25, "Latin" = 35,)
 	title = "Voluntario internacional"
 	en_meaning = "International volunteer"
@@ -3833,14 +3849,14 @@
 
 	spawn_location = "JoinLateSP"
 	can_be_female = TRUE
-	is_spainrepublican = TRUE
+	is_spainciv = TRUE
 	uses_squads = TRUE
 
 
 	min_positions = 10
 	max_positions = 110
 
-/datum/job/civilian/spanish/cir/intvol/equip(var/mob/living/human/H)
+/datum/job/civilian/spanish/intvol/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)

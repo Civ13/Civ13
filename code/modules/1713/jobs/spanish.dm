@@ -431,7 +431,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	is_spainnationalist = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -481,7 +481,7 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww2 = FALSE
-	is_spainnationalist = TRUE
+	is_spainciv = TRUE
 
 
 	min_positions = 2
@@ -535,7 +535,7 @@
 
 	is_ww2 = FALSE
 	is_medic = TRUE
-	is_spainnationalist = TRUE
+	is_spainciv = TRUE
 	min_positions = 1
 	max_positions = 5
 
@@ -580,7 +580,7 @@
 	spawn_location = "JoinLateFSP"
 	is_ww2 = FALSE
 	uses_squads = TRUE
-	is_spainnationalist = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 10
 	max_positions = 75
@@ -649,7 +649,7 @@
 	spawn_location = "JoinLateFSP"
 	is_ww2 = FALSE
 	uses_squads = FALSE
-	is_spainnationalist = TRUE
+	is_spainciv = TRUE
 
 	min_positions = 2
 	max_positions = 4

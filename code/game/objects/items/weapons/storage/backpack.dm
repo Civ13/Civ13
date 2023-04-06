@@ -95,6 +95,8 @@
 		new /obj/item/ammo_casing/rocket/rpb54(src)
 		new /obj/item/ammo_casing/rocket/rpb54(src)
 		new /obj/item/ammo_casing/rocket/rpb54(src)
+		new /obj/item/ammo_casing/rocket/rpb54(src)
+		new /obj/item/ammo_casing/rocket/rpb54(src)
 
 /obj/item/weapon/storage/backpack/satchel/replicant
 	name = "synthetic backpack"

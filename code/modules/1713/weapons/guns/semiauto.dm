@@ -386,32 +386,6 @@
 	throwforce = 25
 	effectiveness_mod = 1.05
 
-/obj/item/weapon/gun/projectile/semiautomatic/m1carbine
-	name = "M1 Carbine"
-	desc = "An American semi-automatic rifle using .30-06 ammunition in a 15 or 30-round magazine."
-	icon_state = "m1garand"
-	item_state = "m1garand"
-	base_icon = "m1garand"
-	w_class = ITEM_SIZE_LARGE
-	load_method = MAGAZINE
-	max_shells = 8
-	caliber = "a3006"
-	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
-	slot_flags = SLOT_SHOULDER
-	ammo_type = /obj/item/ammo_casing/a3006
-	magazine_type = /obj/item/ammo_magazine/m1carbine
-	good_mags = list(/obj/item/ammo_magazine/m1carbine)
-	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
-	unload_sound = 'sound/weapons/guns/interact/GarandUnload.ogg'
-	weight = 2.5
-	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
-		)
-	force = 10
-	throwforce = 20
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	effectiveness_mod = 0.95
-
 /obj/item/weapon/gun/projectile/semiautomatic/ar15
 	name = "Bushmaster XM-15"
 	desc = "A civilian semi-automatic rifle chambered in 5.56x45mm."
@@ -449,8 +423,8 @@
 	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x33
-	magazine_type = /obj/item/ammo_magazine/m1car15
-	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car15/m1car30)
+	magazine_type = /obj/item/ammo_magazine/m1carbine
+	good_mags = list(/obj/item/ammo_magazine/m1carbine,/obj/item/ammo_magazine/m1carbine/big)
 	reload_sound = 'sound/weapons/guns/interact/GarandLoad.ogg'
 	weight = 3.9
 	firemodes = list(

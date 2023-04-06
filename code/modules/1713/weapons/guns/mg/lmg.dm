@@ -442,6 +442,43 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.9
+////////////////////////MG13////////////////////////////////
+
+/obj/item/weapon/gun/projectile/automatic/mg13
+	name = "Maschinengewehr 13"
+	desc = "German light machine chambered in 7.92x57mm rounds."
+	icon_state = "mg13"
+	item_state = "mg13"
+	base_icon = "mg13"
+	caliber = "a792x57_weak"
+	magazine_type = /obj/item/ammo_magazine/mg13
+	good_mags = list(/obj/item/ammo_magazine/mg13, /obj/item/ammo_magazine/mg08)
+	weight = 9
+	heavy = TRUE
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 21
+	load_delay = 21
+	slowdown = 0.5
+	effectiveness_mod = 0.98
+
+/obj/item/weapon/gun/projectile/automatic/mg13/update_icon()
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/mg08))
+			item_state = "mg13_b"
+			icon_state = "mg13_b"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/mg13))
+			item_state = "mg13"
+			icon_state = "mg13"
+	else
+		icon_state = "mg13_open"
+		item_state = "mg13_open"
+	update_held_icon()
+	return
 
 ////////////////////////C6 GPMG/////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/c6

@@ -73,11 +73,32 @@
 	icon_state = "redcross"
 
 /obj/structure/sign/mcd
-	name = "MC DONALDS"
-	desc = "A sign fat people usually like."
-	icon_state = "mcd"
+	name = "Mc Dondald's"
+	desc = "The fast-food giant that guarantees to supersize your misery with every order."
+	icon_state = "mcd3"
 
-/obj/structure/sign/mcd/tfc
+/obj/structure/sign/mcd/menu
+	name = "Mc Dondald's menu"
+	desc = "Fueling the obesity epidemic, one Big Mac at a time."
+	icon_state = "mcd2"
+
+/obj/structure/sign/mcd/pole
+	name = "Mc Donald's"
+	desc = "A towering tribute to humanity's insatiable appetite for processed food and regret."
+	icon_state = "mcd-pole"
+
+/obj/structure/sign/mcd/pole/New()
+	..()
+	overlays.Cut()
+	var/image/img = image(icon='icons/obj/decals.dmi', icon_state = "mcd")
+	img.pixel_x = 32
+	overlays += img
+
+/obj/structure/sign/mcd/pole/Destroy()
+	..()
+	overlays.Cut()
+
+/obj/structure/sign/tfc
 	name = "Texas Fried Chicken"
 	desc = "A sign Texas people usually like."
 	icon_state = "tfc"

@@ -14,6 +14,10 @@
 	item_state = "firstaid_2"
 	throw_speed = 2
 	throw_range = 8
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
 	var/empty = FALSE
 	slot_flags = SLOT_BELT
 
