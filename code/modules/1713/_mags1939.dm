@@ -327,8 +327,8 @@ obj/item/ammo_magazine/dp
 /obj/item/ammo_magazine/garand
 	name = "clip (30-06) 8 rounds"
 	icon_state = "g-clip"
-	caliber = "a762x33"
-	ammo_type = /obj/item/ammo_casing/a762x33
+	caliber = "a3006"
+	ammo_type = /obj/item/ammo_casing/a3006
 	max_ammo = 8
 	weight = 0.038
 	multiple_sprites = TRUE
