@@ -258,11 +258,11 @@
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
 	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-		m << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
+		m << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
 		user = null
 		return
 	if (!anchored)
-		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		m << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
 		user = null
 		return
 	if (user && user != m)
@@ -291,13 +291,13 @@
 
 	if (!locate(user) in range(1,src))
 		if (icon != 'icons/obj/cannon_v.dmi')
-			user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+			user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
 			return FALSE
 		else
 			if (dir == SOUTH)
 				var/turf/T = get_step(src,NORTH)
 				if (!locate(user) in range(1,T))
-					user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+					user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
 					return FALSE
 
 	if (!user.can_use_hands())
@@ -309,11 +309,11 @@
 		for (var/obj/structure/bed/chair/gunner/G in user.loc)
 			found_gunner = TRUE
 		if (!found_gunner)
-			user << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
+			user << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
 			return FALSE
 
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		user << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
 		return FALSE
 
 	if (href_list["load"])
@@ -321,17 +321,17 @@
 		if (istype(M, ammotype))
 			var/obj/item/cannon_ball/shell/tank/TS = M
 			if (caliber != TS.caliber && caliber != null && caliber != 0)
-				user << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
+				user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
 				return
 			if (loaded)
-				user << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+				user << SPAN_WARNING("There's already a [loaded] loaded.")
 				return
 			// load first and only slot
 			var/found_loader = FALSE
 			for (var/obj/structure/bed/chair/loader/L in user.loc)
 				found_loader = TRUE
 			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-				user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+				user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
 				return FALSE
 			var/loadtime = caliber/2
 			if (istype(src,/obj/structure/cannon/modern/naval))
@@ -342,21 +342,50 @@
 					for (var/obj/structure/bed/chair/loader/L in user.loc)
 						found_loader = TRUE
 					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-						user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
+						user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
 						return FALSE
 					user.remove_from_mob(M)
 					M.loc = src
 					loaded = M
-					user << "You load the [src]."
+					user << SPAN_NOTICE("You load \the [src].")
 					playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 					return
+	
+	if (href_list["unload"])
+		var/obj/item/cannon_ball/M = loaded
+		if (!loaded)
+			user << SPAN_WARNING("There's nothing loaded.")
+			return
+		var/unloadtime = caliber/4
+		if (do_after(user, unloadtime, user, can_move = TRUE))
+			if (user && (locate(user) in range(1,src)))
+				M.loc = get_turf(user)
+				user.put_in_active_hand(M)
+				loaded = null
+				user << SPAN_NOTICE("You unload \the [src].")
+				playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				return
 
 	if (href_list["set_angle"])
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
 		angle = Clamp(angle, 5, maxrange)
+	
+	if (href_list["angle_minus"])
+		angle = angle - 1
+		angle = Clamp(angle, 5, maxrange)
+	if (href_list["angle_plus"])
+		angle = angle + 1
+		angle = Clamp(angle, 5, maxrange)
 
 	if (href_list["set_sway"])
 		sway = input(user, "Set the Left-Right sway to what? (From -[maxsway] to [maxsway] meters - negatives are left, positives are right)") as num
+		sway = Clamp(sway, -maxsway, maxsway)
+
+	if (href_list["sway_minus"])
+		sway = sway - 1
+		sway = Clamp(sway, -maxsway, maxsway)
+	if (href_list["sway_plus"])
+		sway = sway + 1
 		sway = Clamp(sway, -maxsway, maxsway)
 
 	if (href_list["fire"])
@@ -658,9 +687,9 @@
 		<center>
 		<big><b>[name]</b></big><br><br>
 		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
-		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
-		Left-Right sway: <a href='?src=\ref[src];set_sway=1'>[sway] meters</a><br><br>
+		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a> | <a href='?src=\ref[src];unload=1'>Unload</a><br><br>
+		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
+		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>

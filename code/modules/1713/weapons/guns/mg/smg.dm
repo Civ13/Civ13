@@ -2004,7 +2004,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/m2carbine
 	name = "M2 carbine"
-	desc = "An American Light Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
+	desc = "An American Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
 	icon = 'icons/obj/guns/rifles.dmi'
 	icon_state = "mcar"
 	item_state = "mcar"
@@ -2012,8 +2012,8 @@
 	caliber = "a762x33"
 	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
 	ammo_type = /obj/item/ammo_casing/a762x33
-	magazine_type = /obj/item/ammo_magazine/m1car15
-	good_mags = list(/obj/item/ammo_magazine/m1car15,/obj/item/ammo_magazine/m1car15/m1car30)
+	magazine_type = /obj/item/ammo_magazine/m1carbine
+	good_mags = list(/obj/item/ammo_magazine/m1carbine, /obj/item/ammo_magazine/m1carbine/big)
 	weight = 3.4
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
