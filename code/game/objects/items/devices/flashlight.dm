@@ -123,7 +123,7 @@
 /obj/item/flashlight/flare/New()
 	. = ..()
 	fuel = rand(290, 450) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
-	
+
 /obj/item/flashlight/flare/update_icon()
 	overlays?.Cut()
 	. = ..()
@@ -253,6 +253,32 @@
 			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
 	qdel(src)
 
+//ww2 p-47 lighting CAS support, inaccurate and slow but saturates a area with 8 rockets
+/obj/item/flashlight/flare/signal/p47
+	name = "signal flare"
+	desc = "A signal flare for signalling to CAS where to shoot. There are instructions on the side reading 'pull cord, make light'. Lasts for about 2 minutes."
+	icon_state = "flareW"
+	flame_base_tint = "#07d800"
+
+/obj/item/flashlight/flare/signal/p47/activate_signal(mob/living/human/user as mob) ///fires off many rockets but is very inaccurate
+	var/turf/target = get_turf(src)
+	var/strikenum = 8
+	var/xoffset
+	var/yoffset
+	switch(user.faction_text)
+		if ("AMERICAN")
+			new /obj/effect/plane_flyby/p47(target)
+			world << SPAN_DANGER("<font size=4>A P-47 thunderbolt flies above and fires off a burst of rockets!</font>")
+		else
+			new /obj/effect/plane_flyby/p47nomess(target)
+			world << SPAN_DANGER("<font size=4>A Some kind of a plane flies through the clouds and fires off a burst of rockets!</font>")
+	sleep(20)
+	for (var/i = 1, i <= strikenum, i++)
+		spawn(i*8)
+			xoffset = rand(-6,6)
+			yoffset = rand(-6,6)
+			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),1,3,6,8,sound='sound/weapons/Explosives/FragGrenade.ogg')
+	qdel(src)
 // Projectile
 /obj/item/projectile/flare
 	icon_state = "flare"

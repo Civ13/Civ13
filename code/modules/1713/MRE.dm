@@ -73,6 +73,11 @@
 	desc = "A package of canned meat and vegetables."
 	nutriment_desc = list("canned meat" = 1, "canned vegetables" = 1)
 
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian
+	name = "Blugoslavian MRE: General Combat Rations"
+	desc = "A sealed package of everything you need to keep up the fight!."
+	nutriment_desc = list("canned meat" = 2, "canned vegetables" = 2, "tea", 2)
+
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."

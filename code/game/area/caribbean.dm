@@ -579,6 +579,9 @@
 /area/caribbean/no_mans_land/invisible_wall/tundra/two
 	name = "grace wall 2"
 
+/area/caribbean/no_mans_land/invisible_wall/tundra/three
+	name = "grace wall 3"
+
 /area/caribbean/no_mans_land/invisible_wall/taiga
 	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter

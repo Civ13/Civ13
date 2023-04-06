@@ -524,6 +524,24 @@
 	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
 	update_icon()
 
+/obj/structure/shellrack/full76/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+	new /obj/item/cannon_ball/shell/tank/HE76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+	new /obj/item/cannon_ball/shell/tank/AP76(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR76(storage)
+	update_icon()
+
 /obj/structure/shellrack/full204/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE204(storage)

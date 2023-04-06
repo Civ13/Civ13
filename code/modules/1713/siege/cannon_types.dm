@@ -197,6 +197,29 @@
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/russian76/americanfield
+	name = "76.2 mm M5 gun"
+	desc = "a 76.2mm american tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 12
+	maxrange = 25
+	caliber = 76
+
+/obj/structure/cannon/modern/tank/russian76/americanfield
+	name = "76.2 mm M5 gun"
+	desc = "a 76.2mm american Anti-tank cannon."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxsway = 13
+	maxrange = 27
+	caliber = 76
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
 /obj/structure/cannon/modern/tank/japanese57
 	name = "Type 90 Cannon"
 	desc = "a 57 mm japanese tank-based cannon."
