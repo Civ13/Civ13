@@ -501,6 +501,9 @@
 	icon_state = "cvc_helmet"
 	item_state = "cvc_helmet"
 	worn_state = "cvc_helmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1

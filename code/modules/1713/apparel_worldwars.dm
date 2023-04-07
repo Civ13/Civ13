@@ -2368,14 +2368,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "usnco_cap"
 	worn_state = "usnco_cap"
 
-/obj/item/clothing/head/ww2/us_tanker
-	name = "US tanker cap"
-	desc = "A cap worn by american tankers."
-	icon_state = "ustanker"
-	item_state = "ustanker"
-	worn_state = "ustanker"
-	flags = CONDUCT
-
 /obj/item/clothing/head/ww2/us_sailor_hat
 	name = "us sailor hat"
 	desc = "A hat worn by american sailors."
@@ -2383,13 +2375,25 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "sailor_hat"
 	worn_state = "sailor_hat"
 
+/obj/item/clothing/head/ww2/us_tanker
+	name = "US tanker cap"
+	desc = "A cap worn by american tankers."
+	icon_state = "ustanker"
+	item_state = "ustanker"
+	worn_state = "ustanker"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
 	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
-	flags = CONDUCT
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
@@ -2397,6 +2401,10 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/ww2/soviet_tanker/New()
 	..()
 	if (map.ordinal_age >= 8)
