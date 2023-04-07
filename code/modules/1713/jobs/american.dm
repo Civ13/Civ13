@@ -55,6 +55,7 @@
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -102,6 +103,7 @@
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -154,6 +156,7 @@
 	is_medic = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -206,7 +209,7 @@
 	rank_abbreviation = "2lt."
 
 	spawn_location = "JoinLateRNSurgeon"
-
+	is_ardeness = TRUE
 	is_medic = TRUE
 	is_ww2 = TRUE
 	can_be_female = TRUE
@@ -258,6 +261,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -309,6 +313,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -362,6 +367,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -415,6 +421,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 8
 	max_positions = 100
@@ -517,6 +524,7 @@
 	is_officer = TRUE
 	is_ww2 = TRUE
 	whitelisted = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 1
 	max_positions = 4

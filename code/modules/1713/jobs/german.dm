@@ -836,6 +836,7 @@
 	is_reichstag = FALSE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -891,6 +892,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_borderger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -999,6 +1001,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1126,6 +1129,86 @@
 
 	return TRUE
 
+/datum/job/german/ard_volksgrenadier
+	title = "Volksgrenadier"
+	en_meaning = "Solider"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGE"
+	is_ardeness = TRUE
+	is_ss_panzer = FALSE
+	is_reichstag = FALSE
+	is_ww2 = FALSE
+	uses_squads = TRUE
+	is_warsawger = FALSE
+
+	min_positions = 10
+	max_positions = 90
+
+/datum/job/german/ard_volksgrenadier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
+//parka
+	if (prob(35))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german/winter(H), slot_wear_suit)
+	else if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german(H), slot_wear_suit)
+//head
+	if (prob(55))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/winter(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+//hand
+	if (prob(10))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust(H), slot_l_hand)
+//guns
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/randimpw = rand(1,5)
+	switch(randimpw)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault(null)
+			uniform.attackby(webbing, H)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/stg(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/stg(null)
+			uniform.attackby(webbing, H)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a(H), slot_shoulder)
+			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
+			uniform.attackby(webbing, H)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Volksgrenadier. Follow your sergeants's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	if (prob(50))
+		H.setStat("rifle", STAT_MEDIUM_LOW)
+	else
+		H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
 /datum/job/german/machine_gunner
 	title = "MG-Schutze"
 	en_meaning = "Machine Gunner"
@@ -1138,6 +1221,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1199,6 +1283,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1378,6 +1463,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1435,6 +1521,7 @@
 	is_reichstag = FALSE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -1485,6 +1572,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1543,6 +1631,7 @@
 	uses_squads = TRUE
 	uses_squads = TRUE
 	is_tankcom = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1591,6 +1680,7 @@
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	uses_squads = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 4
 	max_positions = 32
@@ -1638,6 +1728,7 @@
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1687,6 +1778,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 6
 	max_positions = 30
@@ -1752,6 +1844,7 @@
 	is_ss_panzer = TRUE
 	is_ww2 = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1805,6 +1898,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_warsawger = TRUE
+	is_ardeness = TRUE
 
 	min_positions = 1
 	max_positions = 1

@@ -428,6 +428,7 @@
 #include "code\game\objects\map_metadata\alleyway.dm"
 #include "code\game\objects\map_metadata\arab_town.dm"
 #include "code\game\objects\map_metadata\arctic_sub.dm"
+#include "code\game\objects\map_metadata\ardennes.dm"
 #include "code\game\objects\map_metadata\bank_robbery.dm"
 #include "code\game\objects\map_metadata\barbarossa.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
