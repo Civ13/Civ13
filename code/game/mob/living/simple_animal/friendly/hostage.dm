@@ -45,6 +45,7 @@
 	var/list/harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
 	var/announce_death = FALSE
 	var/uniquenum = 0
+	
 /mob/living/simple_animal/civilian/New()
 	..()
 	uniquenum = rand(10000,99999)
@@ -65,6 +66,7 @@ var/global/civvies_killed = list()
 	var/obj/map_metadata/campaign/CM = map
 	var/obj/map_metadata/bank_robbery/BR = map
 	var/obj/map_metadata/sovafghan/SA = map
+
 	if (map.ID == MAP_CAMPAIGN && CM)
 		if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
 			killer = "Redmenia"
@@ -73,7 +75,7 @@ var/global/civvies_killed = list()
 		else if (harmer_factions["Redmenia"] == harmer_factions["Blugoslavia"] && harmer_factions["Blugoslavia"] > 0)
 			killer = "both factions"
 		if (killer != "none")
-			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x],[src.y],[src.z])!"
+			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
 			civvies_killed += list(uniquenum)
 			switch(killer)
 				if("Blugoslavia")
@@ -87,6 +89,7 @@ var/global/civvies_killed = list()
 			harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
 			game_log("CIVDEATH: [msg]")
 			message_admins(msg)
+
 	else if (map.ID == MAP_BANK_ROBBERY && BR)
 		if (harmer_factions["Police"] > harmer_factions["Robbers"])
 			killer = "Police"
@@ -113,6 +116,10 @@ var/global/civvies_killed = list()
 				if("Police")
 					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>! This is unacceptable!</font>"
 					BR.civilians_killed["Police"]++
+			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
+			game_log("CIVDEATH: [msg]")
+			message_admins(msg)
+
 	else if (map.ID == MAP_SOVAFGHAN && SA)
 		if (harmer_factions["Soviets"] > (harmer_factions["DRA"]||harmer_factions["Mujahideen"]))
 			killer = "Soviets"
@@ -135,37 +142,42 @@ var/global/civvies_killed = list()
 					world << "A <b>[name]</b> has been killed by the <font color='black'><b>[killer]</b></font>. They are losing local support!"
 					SA.muj_points -= 1
 					SA.sov_points += 1
-			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x],[src.y],[src.z])!"
+			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
 			game_log("CIVDEATH: [msg]")
 			message_admins(msg)
 	else
-		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x],[src.y],[src.z])!"
+		var/msg = "Civilian ([name]-[uniquenum]) killed by UNKNOWN at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
 		game_log("CIVDEATH: [msg]")
 		message_admins(msg)
+
 /mob/living/simple_animal/civilian/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug
 	if (P.firer && ishuman(P.firer))
 		var/mob/living/human/H = P.firer
-		var/obj/map_metadata/bank_robbery/BR = map
+		var/obj/map_metadata/campaign/CM = map
 		var/obj/map_metadata/sovafghan/SA = map
-		if (BR && map.ID == MAP_BANK_ROBBERY)
-			if (H.faction_text == CIVILIAN)
-				harmer_factions["Police"]++
-			else if (H.faction_text == RUSSIAN)
-				harmer_factions["Robbers"]++
-		else if (SA && map.ID == MAP_SOVAFGHAN)
+		var/obj/map_metadata/bank_robbery/BR = map
+
+		if (map.ID == MAP_CAMPAIGN && CM)
+			if (H.faction_text == PIRATES)
+				harmer_factions["Redmenia"]++
+			else if (H.faction_text == CIVILIAN)
+				harmer_factions["Blugoslavia"]++
+
+		else if ( map.ID == MAP_SOVAFGHAN && SA)
 			if (H.faction_text == RUSSIAN)
 				harmer_factions["Soviets"]++
 			else if (H.faction_text == CIVILIAN && H.original_job.is_dra == TRUE)
 				harmer_factions["DRA"]++
 			else if (H.faction_text == ARAB)
 				harmer_factions["Mujahideen"]++
-		else
-			if(H.faction_text == PIRATES)
-				harmer_factions["Redmenia"]++
-			else if(H.faction_text == CIVILIAN)
-				harmer_factions["Blugoslavia"]++
+
+		else if (map.ID == MAP_BANK_ROBBERY && BR)
+			if (H.faction_text == CIVILIAN)
+				harmer_factions["Police"]++
+			else if (H.faction_text == RUSSIAN)
+				harmer_factions["Robbers"]++
 	..()
 
 /mob/living/simple_animal/civilian/attack_hand(mob/living/human/M as mob)
