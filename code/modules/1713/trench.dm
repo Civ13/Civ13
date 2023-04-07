@@ -215,6 +215,8 @@ var/list/global/floor_cache = list()
 			if(..())
 				visible_message("<span class = 'notice'>[L] enters a trench.</span>")
 				L.forceMove(src)
+				if (L.pulling && !isliving(L.pulling))
+					L.pulling.forceMove(src)
 				return 1
 		if(istype(oldloc, /turf/floor/trench) && locate(/obj/covers/repairedfloor, usr.loc))
 			if(!locate(/obj/covers/repairedfloor) in contents)
@@ -290,6 +292,8 @@ var/list/global/floor_cache = list()
 				var/turf/T = newloc
 				if(T.Enter(O, src))
 					L.forceMove(newloc)
+					if (L.pulling && !isliving(L.pulling))
+						L.pulling.forceMove(newloc)
 				return TRUE
 		if(istype(newloc, /turf/floor/trench) && locate(/obj/covers/repairedfloor, newloc) && !locate(/obj/covers/repairedfloor, usr.loc))
 			if(world.time > message_cooldown + 30)
