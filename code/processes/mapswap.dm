@@ -198,6 +198,7 @@
 			maps = list(
 				MAP_HILL_203 = 0,
 				MAP_YPRES = 0,
+				MAP_VERDUN = 0,
 				MAP_SIBERSYN = 6,
 				MAP_TSARITSYN = 6,
 				MAP_PORT_ARTHUR = 10,

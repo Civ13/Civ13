@@ -96,6 +96,7 @@
 	else
 		return ""
 
+var/no_loop_arth = FALSE
 /obj/map_metadata/port_arthur/update_win_condition()
 
 	if (world.time >= 18000)
@@ -107,13 +108,13 @@
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_arth == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Japanese</b> have captured the Artillery Battery! The battle for Port Arthur is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_r = TRUE
+		no_loop_arth = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
