@@ -540,6 +540,7 @@
 #include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\vadso_city.dm"
+#include "code\game\objects\map_metadata\verdun.dm"
 #include "code\game\objects\map_metadata\vitebsk.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\map_metadata\waco.dm"
@@ -1093,5 +1094,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign2\campaign2.dmm"
+#include "maps\1903\verdun.dmm"
 // END_INCLUDE
