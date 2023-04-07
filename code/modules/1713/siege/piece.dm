@@ -140,9 +140,8 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
-				M << "You load the [src]."
+				M << SPAN_NOTICE("You load \the [src].")
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-				//playsound(loc, "loaded_voice", 100, TRUE)
 				return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
@@ -180,9 +179,8 @@
 			M.remove_from_mob(W)
 			W.loc = src
 			loaded = W
-			M << "You load the [src]."
+			M << SPAN_NOTICE("You load \the [src].")
 			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-			//playsound(loc, "loaded_voice", 100, TRUE)
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
 		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
@@ -239,6 +237,7 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded = W
+				user << SPAN_NOTICE("You load \the [src].")
 				if (M == user)
 					do_html(M)
 	else if (istype(W,/obj/item/weapon/wrench))
@@ -258,11 +257,11 @@
 	for (var/obj/structure/bed/chair/gunner/G in m.loc)
 		found_gunner = TRUE
 	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-		m << "<span class = 'warning'>You need to be at the gunner's position to fire.</span>"
+		m << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
 		user = null
 		return
 	if (!anchored)
-		m << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		m << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
 		user = null
 		return
 	if (user && user != m)
@@ -291,13 +290,13 @@
 
 	if (!locate(user) in range(1,src))
 		if (icon != 'icons/obj/cannon_v.dmi')
-			user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+			user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
 			return FALSE
 		else
 			if (dir == SOUTH)
 				var/turf/T = get_step(src,NORTH)
 				if (!locate(user) in range(1,T))
-					user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
+					user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
 					return FALSE
 
 	if (!user.can_use_hands())
@@ -309,54 +308,79 @@
 		for (var/obj/structure/bed/chair/gunner/G in user.loc)
 			found_gunner = TRUE
 		if (!found_gunner)
-			user << "<span class = 'warning'>You need to be at the gunner's position to fire \the [src].</span>"
+			user << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
 			return FALSE
 
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		user << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
 		return FALSE
 
 	if (href_list["load"])
-		var/obj/item/cannon_ball/M = user.get_active_hand()
-		if (istype(M, ammotype))
-			var/obj/item/cannon_ball/shell/tank/TS = M
-			if (caliber != TS.caliber && caliber != null && caliber != 0)
-				user << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
-				return
-			if (loaded)
-				user << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
-				return
-			// load first and only slot
-			var/found_loader = FALSE
-			for (var/obj/structure/bed/chair/loader/L in user.loc)
-				found_loader = TRUE
-			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-				user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
-				return FALSE
-			var/loadtime = caliber/2
-			if (istype(src,/obj/structure/cannon/modern/naval))
-				loadtime = caliber
-			if (do_after(user, loadtime, user, can_move = TRUE))
+		if (!loaded)
+			var/obj/item/cannon_ball/M = user.get_active_hand()
+			if (istype(M, ammotype))
+				var/obj/item/cannon_ball/shell/tank/TS = M
+				if (caliber != TS.caliber && caliber != null && caliber != 0)
+					user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
+					return
+				// load first and only slot
+				var/found_loader = FALSE
+				for (var/obj/structure/bed/chair/loader/L in user.loc)
+					found_loader = TRUE
+				if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+					user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+					return FALSE
+				var/loadtime = caliber/2
+				if (istype(src,/obj/structure/cannon/modern/naval))
+					loadtime = caliber
+				if (do_after(user, loadtime, user, can_move = TRUE))
+					if (user && (locate(user) in range(1,src)))
+						found_loader = FALSE
+						for (var/obj/structure/bed/chair/loader/L in user.loc)
+							found_loader = TRUE
+						if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+							user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+							return FALSE
+						user.remove_from_mob(M)
+						M.loc = src
+						loaded = M
+						user << SPAN_NOTICE("You load \the [src].")
+						if (istype(src, /obj/structure/cannon/modern/tank))
+							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+						return
+		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
+			var/obj/item/cannon_ball/M = loaded
+			var/unloadtime = caliber/8
+			if (do_after(user, unloadtime, user, can_move = TRUE))
 				if (user && (locate(user) in range(1,src)))
-					found_loader = FALSE
-					for (var/obj/structure/bed/chair/loader/L in user.loc)
-						found_loader = TRUE
-					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-						user << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
-						return FALSE
-					user.remove_from_mob(M)
-					M.loc = src
-					loaded = M
-					user << "You load the [src]."
-					playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+					M.loc = get_turf(user)
+					user.put_in_active_hand(M)
+					loaded = null
+					user << SPAN_NOTICE("You unload \the [src].")
+					if (istype(src, /obj/structure/cannon/modern/tank))
+						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 					return
 
 	if (href_list["set_angle"])
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
 		angle = Clamp(angle, 5, maxrange)
+	
+	if (href_list["angle_minus"])
+		angle = angle - 1
+		angle = Clamp(angle, 5, maxrange)
+	if (href_list["angle_plus"])
+		angle = angle + 1
+		angle = Clamp(angle, 5, maxrange)
 
 	if (href_list["set_sway"])
 		sway = input(user, "Set the Left-Right sway to what? (From -[maxsway] to [maxsway] meters - negatives are left, positives are right)") as num
+		sway = Clamp(sway, -maxsway, maxsway)
+
+	if (href_list["sway_minus"])
+		sway = sway - 1
+		sway = Clamp(sway, -maxsway, maxsway)
+	if (href_list["sway_plus"])
+		sway = sway + 1
 		sway = Clamp(sway, -maxsway, maxsway)
 
 	if (href_list["fire"])
@@ -446,20 +470,34 @@
 
 					var/tx = 0
 					var/ty = 0
-
-					switch (odir)
-						if (EAST)
-							tx = x+1+max_distance
-							ty = y + sway + pick(0,pick(1,-1))
-						if (WEST)
-							tx = x-1-max_distance
-							ty = y + sway + pick(0,pick(1,-1))
-						if (NORTH)
-							tx = x + sway + pick(0,pick(1,-1))
-							ty = y+1+max_distance
-						if (SOUTH)
-							tx = x + sway + pick(0,pick(1,-1))
-							ty = y-1-max_distance
+					if (istype(src,/obj/structure/cannon/mortar))
+						switch (odir)
+							if (EAST)
+								tx = x + max_distance + pick(0,pick(1,-1))
+								ty = y - sway + pick(0,pick(1,-1))
+							if (WEST)
+								tx = x - max_distance + pick(0,pick(1,-1))
+								ty = y + sway + pick(0,pick(1,-1))
+							if (NORTH)
+								tx = x + sway + pick(0,pick(1,-1))
+								ty = y + max_distance + pick(0,pick(1,-1))
+							if (SOUTH)
+								tx = x - sway + pick(0,pick(1,-1))
+								ty = y - max_distance + pick(0,pick(1,-1))
+					else
+						switch (odir)
+							if (EAST)
+								tx = x + max_distance
+								ty = y - sway + pick(0,pick(1,-1))
+							if (WEST)
+								tx = x - max_distance
+								ty = y + sway + pick(0,pick(1,-1))
+							if (NORTH)
+								tx = x + sway + pick(0,pick(1,-1))
+								ty = y + max_distance
+							if (SOUTH)
+								tx = x - sway + pick(0,pick(1,-1))
+								ty = y - max_distance
 					if (tx < 1)
 						tx = 1
 					if (tx > world.maxx)
@@ -495,7 +533,19 @@
 						spawn (10)
 							if (explosion)
 								if (istype(src,/obj/structure/cannon/mortar))
-									if(!locate(/obj/structure/vehicleparts/frame) in target)
+									if (locate(/obj/structure/vehicleparts/frame) in target)
+										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+											for (var/mob/M in F.axis.transporting)
+												shake_camera(M, 3, 3)
+											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+											visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
+											F.w_front[5] -= rand(1,7)
+											F.w_back[5] -= rand(1,7)
+											F.w_left[5] -= rand(1,7)
+											F.w_right[5] -= rand(1,7)
+
+											F.try_destroy()
+									else
 										explosion(target, 1, 2, 2, 3)
 								else if (istype(src,/obj/structure/cannon/modern/naval))
 									explosion(target, 2, 3, 3, 4)
@@ -505,16 +555,42 @@
 											explosion(tgtbelow, 2, 3, 3, 3)
 								else
 									explosion(target, 1, 2, 3, 4)
+									if (locate(/obj/structure/vehicleparts/frame) in target)
+										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+											for (var/mob/M in F.axis.transporting)
+												shake_camera(M, 3, 3)
+											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+											visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
+											F.w_front[5] -= rand(8,16)
+											F.w_back[5] -= rand(8,16)
+											F.w_left[5] -= rand(8,16)
+											F.w_right[5] -= rand(8,16)
+
+											F.try_destroy()
 							if (incendiary)
 								if (istype(src,/obj/structure/cannon/mortar))
-									if(!locate(/obj/structure/vehicleparts/frame) in target)
-										explosion(target, 0, 1, 3, 4)
-										for (var/turf/floor/T in circlerangeturfs(2,target))
+									if (locate(/obj/structure/vehicleparts/frame) in target)
+										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+											for (var/mob/M in F.axis.transporting)
+												shake_camera(M, 3, 3)
+											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+											visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
+											F.w_front[5] -= rand(5,20)
+											F.w_back[5] -= rand(5,20)
+											F.w_left[5] -= rand(5,20)
+											F.w_right[5] -= rand(5,20)
+
+											F.try_destroy()
+									else
+										explosion(target, 0, 1, 2, 3)
+									for (var/turf/floor/T in circlerangeturfs(2,target))
+										if (!locate(/obj/structure/vehicleparts/frame) in T)
 											ignite_turf(T, 12, 70)
 								else
 									explosion(target, 0, 1, 3, 4)
 									for (var/turf/floor/T in circlerangeturfs(3,target))
-										ignite_turf(T, 12, 90)
+										if(!locate(/obj/structure/vehicleparts/frame) in T)
+											ignite_turf(T, 12, 70)
 							if (nuclear)
 								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
 									radiation_pulse(target, 10, 60, 1400, TRUE)
@@ -559,18 +635,6 @@
 									change_global_radiation(10)
 									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
 
-								var/target_area_original_integrity = target_area.artillery_integrity
-								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
-									for (var/mob/living/L in view(20, target))
-										shake_camera(L, 5, 5)
-										L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
-									message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-									log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-									return
-								else if (target_area_original_integrity)
-									target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
-								message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
-								log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
 							else
 								message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
 								log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
@@ -589,6 +653,15 @@
 											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
 										if ("smokescreen")
 											new/obj/effect/effect/smoke/bad(target)
+							/*
+							var/target_area_original_integrity = target_area.artillery_integrity
+							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
+								for (var/mob/living/L in view(20, target))
+									shake_camera(L, 5, 5)
+									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+							else if (target_area_original_integrity)
+								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
+							*/
 					sleep(0.5)
 
 	do_html(user)
@@ -622,8 +695,8 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
-		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
-		Left-Right sway: <a href='?src=\ref[src];set_sway=1'>[sway] meters</a><br><br>
+		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
+		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>

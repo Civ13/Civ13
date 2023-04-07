@@ -1,5 +1,5 @@
 /obj/map_metadata/siegemoscow
-	ID = MAP_SIEGEMOSCOW
+	ID = MAP_BIGSIEGEMOSCOW
 	title = "Siege of Moscow"
 	lobby_icon = "icons/lobby/ww2.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)

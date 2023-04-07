@@ -1,0 +1,470 @@
+"aw" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/forest)
+"ax" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"aA" = (/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"aE" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"aH" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"aM" = (/obj/covers/wood,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/dirt,/area/caribbean/forest)
+"aW" = (/obj/covers/wood_wall/log,/turf/floor/dirt,/area/caribbean/forest)
+"bf" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/item/weapon/bedsheet/brown,/turf/floor/dirt,/area/caribbean/forest)
+"bg" = (/obj/structure/closet/crate/ww2,/obj/item/mine/at,/obj/item/mine/at,/obj/item/mine/at,/obj/item/mine/at,/obj/item/mine/at,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"bi" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/dust,/area/caribbean/forest)
+"bD" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"bM" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/forest)
+"bO" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/dirt,/area/caribbean/forest)
+"bS" = (/obj/covers/wood_wall/log/corner,/turf/floor/dirt,/area/caribbean/forest)
+"bV" = (/obj/covers/wood_wall/log,/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt,/area/caribbean/forest)
+"bW" = (/turf/floor/dirt/underground,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"cc" = (/obj/covers/wood_wall/log{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"ce" = (/obj/covers/wood,/obj/structure/oven/grill,/turf/floor/dirt,/area/caribbean/forest)
+"cl" = (/obj/structure/wild/rock,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"cm" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"cn" = (/turf/floor/dirt,/area/caribbean/forest)
+"cz" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"cG" = (/obj/structure/simple_door/key_door/anyone/rustic,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/forest)
+"cH" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"cM" = (/obj/covers/wood,/turf/floor/dirt,/area/caribbean/forest)
+"cP" = (/obj/structure/iv_drip,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cR" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
+"cW" = (/obj/covers/road_yellowline{dir = 1},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"di" = (/obj/structure/railing/steel{dir = 1},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"dp" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/forest)
+"dM" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/dirt,/area/caribbean/forest)
+"eb" = (/obj/covers/wood,/obj/structure/closet/cabinet,/turf/floor/dirt,/area/caribbean/forest)
+"eh" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"ek" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"ep" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/dirt,/area/caribbean/forest)
+"eC" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eF" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/obj/item/weapon/reagent_containers/food/snacks/driedmeat,/turf/floor/dirt,/area/caribbean/forest)
+"eH" = (/obj/structure/wild/bush,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"eK" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
+"eR" = (/obj/structure/wild/flowers,/turf/floor/dirt/dust,/area/caribbean/forest)
+"eU" = (/obj/structure/closet/crate/ww2{storagecap = 18},/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/turf/floor/dirt/dust,/area/caribbean/forest)
+"eY" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eZ" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"fe" = (/obj/structure/bed/chair/office/dark{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"fk" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/grass,/area/caribbean/forest)
+"fl" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt/dust,/area/caribbean/forest)
+"fm" = (/obj/structure/wild/flowers,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"fq" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"fr" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/forest)
+"fu" = (/obj/structure/wild/bush,/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"fy" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/forest)
+"fB" = (/turf/wall/rockwall,/area/caribbean/forest)
+"fC" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"fE" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"fH" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/forest)
+"fP" = (/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt/dust,/area/caribbean/forest)
+"fT" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gc" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
+"gf" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gl" = (/obj/item/stack/material/barbwire/ten,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gr" = (/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gv" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"gF" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gK" = (/obj/effects/premadevehicles/apc/adrian,/turf/floor/dirt,/area/caribbean/forest)
+"gL" = (/obj/structure/wild/tallgrass,/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
+"gN" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"gT" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"gU" = (/obj/structure/barricade/antitank,/obj/structure/barbwire{dir = 8},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/forest)
+"gY" = (/obj/structure/wild/rock/basalt,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hc" = (/obj/covers/wood,/obj/structure/oven/woodstove,/turf/floor/dirt,/area/caribbean/forest)
+"hg" = (/obj/structure/wild/smallbush,/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
+"hn" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt/dust,/area/caribbean/forest)
+"hv" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hI" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"hM" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"hO" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt,/area/caribbean/forest)
+"hT" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/dirt,/area/caribbean/forest)
+"hU" = (/obj/structure/wild/rock,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"hZ" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
+"ih" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ii" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"ip" = (/turf/floor/beach/water,/area/caribbean/forest)
+"ix" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"iN" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/forest)
+"jc" = (/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"jf" = (/obj/covers/wood,/obj/structure/bed/sofa/left,/turf/floor/dirt,/area/caribbean/forest)
+"jo" = (/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"jw" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/forest)
+"jD" = (/obj/item/stack/material/barbwire/ten,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"jQ" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"jV" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/grass,/area/caribbean/forest)
+"ku" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"kC" = (/obj/structure/wild/smallbush,/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"kG" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"kO" = (/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/obj/item/weapon/grenade/antitank/rpg40,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"kZ" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/dust,/area/caribbean/forest)
+"lb" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/forest)
+"ld" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"lf" = (/obj/structure/barricade,/obj/structure/sign/flag/redmenia,/turf/floor/dirt/dust,/area/caribbean/forest)
+"lg" = (/obj/structure/floodlight/on,/turf/floor/dirt,/area/caribbean/forest)
+"lo" = (/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/forest)
+"lu" = (/obj/structure/barricade/antitank,/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"lG" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lR" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/underground,/area/caribbean/forest)
+"mk" = (/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"ml" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mr" = (/obj/item/weapon/storage/toolbox/mechanical,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/dirt,/area/caribbean/forest)
+"my" = (/turf/floor/beach/water/deep,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mH" = (/obj/structure/sign/flag/blugoslavia,/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"ne" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"np" = (/obj/structure/railing/steel,/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"nF" = (/obj/structure/barricade/antitank,/obj/structure/barbwire{dir = 8},/turf/floor/grass,/area/caribbean/forest)
+"oc" = (/obj/structure/wild/flowers,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"od" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt,/area/caribbean/forest)
+"of" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/potted_plant{dir = 5},/turf/floor/dirt,/area/caribbean/forest)
+"oF" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/forest)
+"oP" = (/turf/floor/grass,/area/caribbean/forest)
+"pa" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/forest)
+"pb" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
+"pf" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"pr" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/forest)
+"py" = (/obj/covers/wood,/mob/living/simple_animal/civilian,/turf/floor/dirt,/area/caribbean/forest)
+"pA" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/forest)
+"pD" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"pI" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 5; stage = 7; vstatic = 1},/mob/living/simple_animal/civilian,/turf/floor/dirt/ploughed,/area/caribbean/forest)
+"pL" = (/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"pQ" = (/turf/floor/plating/road,/area/caribbean/forest)
+"pT" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"pU" = (/obj/structure/wild/bush,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"pV" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"qx" = (/obj/structure/closet/crate/ww2,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt/dust,/area/caribbean/forest)
+"qC" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"qG" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"qI" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/forest)
+"qP" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt,/area/caribbean/forest)
+"rD" = (/obj/structure/railing/steel{dir = 1},/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"rE" = (/obj/covers/wood,/obj/structure/potted_plant{dir = 1; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/forest)
+"rP" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"rQ" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/forest)
+"sg" = (/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt/dust,/area/caribbean/forest)
+"sE" = (/obj/structure/wild/bush,/turf/floor/beach/sand/dark,/area/caribbean/forest)
+"sO" = (/obj/covers/repairedfloor,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"sS" = (/obj/structure/wild/smallbush,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"sX" = (/obj/covers/repairedfloor,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tk" = (/turf/floor/plating/road/yellowline,/area/caribbean/forest)
+"to" = (/obj/structure/cannon/modern,/turf/floor/dirt/dust,/area/caribbean/forest)
+"tA" = (/obj/structure/bed/roller,/turf/floor/dirt/dust,/area/caribbean/forest)
+"tB" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"tD" = (/obj/structure/railing/steel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tI" = (/turf/floor/plating/road/yellowline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tJ" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tM" = (/obj/structure/railing/steel,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"tU" = (/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"tV" = (/obj/structure/barricade/hescobastion,/turf/floor/dirt/dust,/area/caribbean/forest)
+"tX" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"uy" = (/obj/covers/road,/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"uB" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"uC" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"uR" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"uW" = (/obj/structure/wild/bush/big,/turf/floor/dirt,/area/caribbean/forest)
+"uZ" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"vi" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass,/area/caribbean/forest)
+"vp" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/blugoslavia,/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"vz" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/turf/floor/dirt,/area/caribbean/forest)
+"vE" = (/obj/covers/road_yellowline,/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"vF" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/dirt,/area/caribbean/forest)
+"vO" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/forest)
+"vR" = (/obj/structure/wild/rock,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/forest)
+"vS" = (/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"wg" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"wl" = (/obj/structure/floodlight/on,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"wq" = (/obj/structure/wild/bush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"wu" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"wK" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"wR" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt/dust,/area/caribbean/forest)
+"wU" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"xp" = (/obj/covers/road,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"xv" = (/obj/structure/table/modern/table,/obj/item/weapon/folder/red,/turf/floor/dirt,/area/caribbean/forest)
+"xx" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/forest)
+"xy" = (/obj/structure/floodlight/on,/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"xS" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/forest)
+"xU" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"yk" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"yl" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"yp" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/forest)
+"yv" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"yw" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/forest)
+"zz" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction1,/turf/floor/dirt,/area/caribbean/forest)
+"zJ" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"zZ" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ac" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ad" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Am" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Ao" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/forest)
+"At" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Av" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"AA" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"AK" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/dirt,/area/caribbean/forest)
+"AN" = (/obj/structure/barricade/antitank,/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"AX" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"AY" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Be" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/dirt,/area/caribbean/forest)
+"Bf" = (/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Bl" = (/obj/covers/wood,/obj/structure/closet/crate/chest,/turf/floor/dirt,/area/caribbean/forest)
+"Bs" = (/obj/structure/wild/smallbush,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"By" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/turf/floor/dirt,/area/caribbean/forest)
+"BD" = (/obj/structure/farming/plant/wheat{icon_state = "wheat-harvest-prop"; layer = 5; stage = 7; vstatic = 1},/turf/floor/dirt/ploughed,/area/caribbean/forest)
+"BH" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"BQ" = (/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"BU" = (/obj/structure/wild/rock,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Ct" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Dd" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 8},/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"Dw" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"DA" = (/obj/structure/bed/chair/office/light{dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"DB" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/mob/living/simple_animal/civilian,/turf/floor/dirt,/area/caribbean/forest)
+"DO" = (/obj/structure/barbwire{dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"DV" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ef" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/item/weapon/bedsheet,/turf/floor/dirt,/area/caribbean/forest)
+"Ej" = (/turf/floor/plating/road/whiteline,/area/caribbean/forest)
+"Eu" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"FN" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/closet/crate/footlocker,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"FR" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"FW" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"Ge" = (/obj/structure/lamp/streetlight/alwayson,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Gq" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt/dust,/area/caribbean/forest)
+"GF" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"GH" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"GO" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/forest)
+"GV" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"GX" = (/obj/map_metadata/campaign,/turf/wall/rockwall,/area/caribbean/forest)
+"Hc" = (/obj/structure/railing/steel,/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Hg" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Hj" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Hp" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Hv" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"HN" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"If" = (/obj/structure/table/modern/table,/obj/item/weapon/folder/blue,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ig" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 8},/turf/floor/grass,/area/caribbean/forest)
+"Ii" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ID" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"IN" = (/obj/structure/sink/well/marble,/obj/structure/mine_support,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/stack/material/rope,/turf/floor/dirt,/area/caribbean/forest)
+"IP" = (/obj/structure/barbwire{dir = 8},/turf/floor/grass,/area/caribbean/forest)
+"IQ" = (/obj/covers/road_yellowline{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"IR" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Jd" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Jh" = (/obj/structure/floodlight/on,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Jq" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"JG" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"JK" = (/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/forest)
+"JN" = (/obj/structure/railing/steel,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"JP" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/mobile/campaign/blue,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"JT" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"JZ" = (/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ko" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ku" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"KO" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/forest)
+"KP" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"KS" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"KT" = (/obj/covers/road_yellowline,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"KU" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/mobile/campaign/red,/turf/floor/dirt,/area/caribbean/forest)
+"KW" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Lm" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/dirt,/area/caribbean/forest)
+"Lp" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Lv" = (/obj/structure/cannon/mortar,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Mn" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/forest)
+"Mw" = (/obj/structure/barbwire{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"Mx" = (/obj/covers/wood,/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/dirt,/area/caribbean/forest)
+"MF" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"MJ" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"MN" = (/obj/covers/wood,/obj/structure/potted_plant{dir = 6},/turf/floor/dirt,/area/caribbean/forest)
+"MY" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Nj" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ns" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Nw" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"NP" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"NV" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"Oc" = (/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"Oh" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"Oo" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Os" = (/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"OJ" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"OM" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"OQ" = (/obj/structure/wild/tree/live_tree,/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"OZ" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Pa" = (/obj/structure/barricade/hescobastion,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Pp" = (/obj/structure/bed/roller,/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"PJ" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"PK" = (/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"PM" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/forest)
+"PQ" = (/obj/covers/wood,/obj/structure/bed/sofa/right,/turf/floor/dirt,/area/caribbean/forest)
+"PV" = (/mob/living/simple_animal/civilian,/turf/floor/grass,/area/caribbean/forest)
+"Qm" = (/obj/structure/closet/crate/sandbags,/turf/floor/dirt,/area/caribbean/forest)
+"QG" = (/obj/structure/barricade/hescobastion,/obj/structure/sign/flag/blugoslavia,/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"QV" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"Ra" = (/obj/structure/railing/steel,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Rf" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt,/area/caribbean/forest)
+"Rv" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Rw" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"RG" = (/mob/living/simple_animal/civilian,/turf/floor/dirt/dust,/area/caribbean/forest)
+"RJ" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
+"RO" = (/obj/structure/iv_drip,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"RQ" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"RR" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/lamp/lamp_small/alwayson/red{dir = 4},/turf/floor/dirt,/area/caribbean/forest)
+"RT" = (/obj/structure/railing/steel{dir = 1},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Sh" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 8},/turf/floor/grass,/area/caribbean/forest)
+"Sj" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Sq" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"St" = (/obj/structure/bed/roller,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Sw" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"SI" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/dirt/dust,/area/caribbean/forest)
+"SJ" = (/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/forest)
+"SK" = (/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"SR" = (/obj/structure/barricade/hescobastion,/turf/floor/grass,/area/caribbean/forest)
+"ST" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"SX" = (/obj/structure/closet/crate/ww2,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ta" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Tn" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Tv" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"TB" = (/obj/item/weapon/material/shovel,/obj/item/weapon/material/shovel,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"TK" = (/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"TP" = (/obj/structure/wild/smallbush,/turf/floor/dirt/underground,/area/caribbean/forest)
+"Ul" = (/obj/structure/railing/steel,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Uo" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ux" = (/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/structure/closet/crate/ww2,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Va" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/forest)
+"Vb" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"VO" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/obj/item/ammo_magazine/sksm,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"VY" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Wf" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Wr" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Ww" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"WN" = (/obj/structure/railing/steel,/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/forest)
+"WO" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"WS" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Xd" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Xl" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/forest)
+"Xv" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/grass,/area/caribbean/forest)
+"XD" = (/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"XK" = (/obj/structure/railing/steel,/turf/floor/beach/water,/area/caribbean/forest)
+"XU" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/forest)
+"Yn" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Yv" = (/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean/forest)
+"YE" = (/obj/item/weapon/plough/iron,/turf/floor/dirt/dust,/area/caribbean/forest)
+"YH" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"YS" = (/obj/structure/barbwire{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Zd" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/forest)
+"Ze" = (/obj/structure/barricade/hescobastion,/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
+"Zh" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Zr" = (/turf/floor/dirt/underground,/area/caribbean/forest)
+"Zy" = (/obj/structure/wild/bush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ZF" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/obj/item/flashlight/militarylight,/turf/floor/dirt,/area/caribbean/forest)
+"ZG" = (/turf/floor/dirt/dust,/area/caribbean/forest)
+"ZI" = (/obj/structure/wild/flowers,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"ZQ" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/forest)
+"ZU" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+
+(1,1,1) = {"
+oPoPoPoPoPcnjocncnoPoPoPoPoPoPoPoPoPoPoPoPoPjojooPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPeZoPQVAocnoPoPoPoPoPZroPeZoPjocnfCSjSjAtAtAtTnTnAtAtaAaEaAaAcncnoPoPjojojoBDBDBDBDBDBDBDBDjobSccaMccbScnoPhMoPoPoPoPoPZGZGZGhMoPcnoPXUoPoPoPoPhMoPeZoPoPoPoPoPoPoPoPoPoPhMoPoPoPXUoPoPoPoPoPlRZroPcnoPeZeZoPoPoPoPoP
+oPoPoPoPoPcnjojocnoPoPoPoPoPoPoPoPoPlboPoPoPjooPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPZrcnoPoPoPoPAooPoPAooPoPoPoPoPoPeZZQfCSjeCSjAtAtTnTnAtAtAtAtaAcncnoPoPjojooPoPBDBDBDBDBDBDBDBDoPaWebcMbfbVcncnoPoPcncnZGZGZGZGoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPAooPoPoPoPoPcnoPoPeZeZoPoPoPoPoPoPoPoPoPAooPoPcnoPoPoPoPoP
+oPoPoPoPoPoPcnoPoPoPpAoPoPlblbAocncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnhMhMZrcnoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPfCfCSjpTAtAtTnTnAtAtAtaAaAcncncnoPpUoPoPoPBDBDBDBDBDBDBDBDZGcGcMcMcMaMZGeZAoZGoPZGZGZGeZeZeZeZoPoPoPoPoPoPoPoPhMoPoPoPXUoPoPoPhMhMoPoPcneZoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPcncnoP
+oPeZoPeZoPoPlboPoPcncnoPoPXUcnoPoPcncnoPoPoPoPoPoPoPAooPeZoPoPoPoPoPoPoPoPoPoPoPoPoPZrcnoPoPoPoPoPeZoPoPoPoPpAcncnoPcnoPIRfCfCSjAtAtTnTnTnAtaAZrczpAcncnoPoPoPoPoPBDBDBDBDBDpIBDBDZGaWcMDBBybVZGhMoPZGZGKuZGZGoPoPAooPeZcncncnoPoPoPoPoPoPeZeZoPoPoPoPoPoPoPoPoPoPeZoPoPcncnoPoPcncnoPcnoPoPoPoPcnoPoPoPoPlb
+oPoPoPoPZQoPoPoPcnoPoPoPoPoPeZoPQVfycncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPXUZrZrhMoPoPAooPoPoPoPoPeZcnoPoPoPcnoPoPMJMJfCSjSjAtTnTnTnAtaAZrsEpAcncncnoPhMproPBDBDBDBDBDBDBDBDZGaWcMawawaWZGeZZGZGZGKuZGZGZGoPoPoPeZoPoPoPoPeZeZeZeZoPoPoPoPoPoPoPcnAooPoPoPoPeZoPoPoPoPoPcnoPoPoPAooPlboPoPeZoPoPoPdpoP
+oPoPOhoPoPoPoPQVQVoPoPoPoPcnoPoPoPoPoPoPoPoPlboPoPoPoPoPoPoPoPoPAoAooPoPOhAooPoPoPoPOhoPoPcncnoPoPZGoPoPeZoPoPoPoPoPeZAoMJMJfCqCeCAtAtTnTnAtAtZraAaAcncnoPoPhMlboPBDBDBDBDBDBDBDBDYEbSccaMccbSZGZGZGZGhMoPcnZGZGZGoPoPoPoPeZoPXUoPoPAooPeZoPoPcncnoPoPcnoPoPoPoPoPoPoPoPoPeZoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPoP
+oPoPoPjooPoPcnoPoPoPoPhMoPcnoPoPoPoPoPeZoPoPoPoPoPoPoPoPeZoPoPoPAooPoPoPoPcnoPhMcnoPoPAooPoPoPoPoPeZoPoPeZoPoPoPoPcncnoPMJMJfCfCSjAtAtTnAtTnAtaAZraEcncncnoPoPoPcnZGZGZGZGZGZGZGZGZGZGcncnAoZGZGZGcnoPeZoPcnZGZGoPcnoPcnoPeZcnoPoPoPoPoPeZoPoPoPoPoPQVQVoPoPoPoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPcnoPoPeZcncnoP
+oPoPoPoPoPoPcnoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPeZoPoPoPoPoPeZoPoPoPoPoPeKoPfCgvgvSjSjSjAtTnTnTnAtAtaAczcncnoPcnoPcncnZGZGZGcnZGZGZGZGZGZGZGZGZGZGBDBDBDBDBDBDBDBDZGZGoPoPhMhMoPcnoPoPoPoPoPoPoPoPoPeZoPywoPhMlboPoPoPhMoPoPoPoPoPoPoPoPoPlboPoPoPcnoPoPeZoPoPoP
+oPoPoPoPoPoPAooPoPoPoPoPoPhMoPoPAooPoPoPoPoPoPoPoPKucnoPoPoPhMeHoPoPoPoPAooPoPoPcnoPAooPoPoPeZcnoPoPoPoPoPcncncnpAoPZGoPMJfCSjSjbDZyAtAtTnTnTnAtczaAcnpAcncncncnZGZGZGZGZGZGeReRZGZGZGZGoPZGZGBDBDBDBDBDBDBDBDZGZGcnoPoPeZoPcnhMoPoPcnoPcnoPoPoPoPoPcnoPhMoPXUoPoPoPeZoPoPlbcncncncnoPoPZGoPoPoPoPoPoPcnoPoP
+oPcnoPoPoPoPoPoPoPoPoPcncnjojoeZoPoPoPoPoPAooPoPoPZGoPcncnoPoPoPoPoPoPoPoPoPlboPhMoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDoPoPMJAYSTpTSjSjAtAtTnTnTnAtAtaAaAcncncncnZGZGZGZGZGZGZGZGZGfHfHoPoPcncnZGBDBDBDBDBDBDBDBDZGbSccaMccbScnoPXUoPoPoPoPhMoPoPoPoPoPcnAohMoPoPoPZroPoPoPoPoPoPcncnoPoPcncnoPoPoPoPoPcnoPoPoP
+cncnoPoPoPoPhMoPoPoPoPoPoPjojooPoPoPoPhMoPoPoPAooPoPoPoPcnoPQVoPoPoPlboPoPoPoPoPoPoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDjojoMJMJfCfCihsOsXsXsXsXsXsXsXsOsOsOZGcnZGZGfHZGZGZGZGZGZGZGoPoPcnoPoPoPZGBDBDBDBDBDBDBDBDZGaWbfcMbObVoPoPoPoPoPZroPoPeZoPoPlbcnoPoPoPoPoPcnoPoPZrprlRZroPoPoPoPoPoPcnoPQVoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPocoPoPoPoPoPoPcncnAooPoPhMoPoPoPoPoPoPoPoPoPoPjoQVoPoPoPoPoPoPoPoPoPoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDjooPtJfCMJihihsOsXsXsXsXsXsXsXsXsOsOZGZGfHZGfHcnoPoPoPZGZGeZoPPVcncnoPZGZGBDBDBDBDBDBDBDBDZGcGcMpycMaMeZeZeZeZoPZrZroPoPoPoPoPoPcnoPoPoPoPcneZoPoPAoZroPeZoPoPoPoPoPoPoPoPAooPoPoPoPoPAo
+oPoPoPoPcncncnfyoPlbcncnoPoPlblbcnoPoPeZoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDoPjoMJfCihihihsOsXsXsXsXsXsXsXsXsXsOZGZGcncncnoPoPoPZGZGZGZGZGZGZGZGZGZGZGBDBDBDBDBDBDBDBDZGaWcMdMepbVoPoPAooPeZoPoPoPZrprlRZroPcnoPeZeZoPcnoPZQoPZrZroPoPhMhMoPoPoPpUjooPoPoPoPoPeZoPoP
+oPoPoPAooPcnoPcnoPoPoPoPoPoPoPoPAooPoPoPoPoPeZAohMhMOhOhcnoPoPoPoPoPoPoPoPhMOhOhcnoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDoPoPMJihihihihsOsOsXsXsXsXsXsXsXsOsOcncnoPoPoPoPOhoPoPZGZGBDBDBDBDBDBDBDBDBDBDpIBDBDBDBDBDZGaWbfeFawaWoPoPoPoPeZoPeZoPoPAoZroPeZoPoPoPcncncnAooPZroPoPoPoPhMoPoPoPoPcnjojooPoPoPoPoPlboP
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPhMoPoPoPoPAooPoPoPoPoPoPhMoPoPoPoPBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDoPoPihDwihfCfCSjSjSjAtAtTnTnAtAtaAczcncnjojooPoPoPoPoPZGZGBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDZGbSccaMccbSoPoPoPoPoPoPoPZQoPZrZroPoPoPoPoPoPcncnoPoPcnNVcnoPoPhMoPoPoPoPcnoPjooPoPoPoPoPoPoP
+oPoPcncncncncnoPoPoPoPhMhMoPoPoPoPoPoPXUcncneZoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPoPZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGihihMJMJfCfCfCSjAtAtTnTnAtAtAtaEcncnjooPoPoPcncnQVZGcnBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDZGRGeZoPcnhMoPoPZGoPoPoPAooPZroPoPoPoPoPoPoPcncnoPoPoPoPcnoPoPoPhMoPoPoPoPoPoPZGcnoPoPoPoPoPoP
+oPcncncncncncncnoPoPeZlblblbOhoPoPoPhMoPcnoPoPoPoPoPhMoPoPoPjooPAooPAooPoPoPoPcnoPsSjooPAooPAooPoPZGoPZroPhMZGZGZGZGZGZGeYMJMJMJEuMJqCfmSjAtAtTnAtAtczaAcncnoPoPAocnAoQVQVZGwqBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDZGZGeZcnoPXUoPoPoPoPoPoPoPoPcnNVcnoPoPjocnoPeZoPQVAocnoPhMcnoPeZoPQVAocnoPoPeZoPcnoPoPoPoPjooP
+cncncncncncncncnoPoPeZoPoPoPcnoPoPoPoPoPeZlblblboPoPhMoPoPoPoPjooPoPcnoPoPcnoPoPoPoPoPjooPoPcnZGZGZGZGZGZGZGZGZGZGZGZGZGihMJMJfqMJMJfCihpTAtAtTnTnAtAtaAaAcncnoPjooPoPoPoPZGZGBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDZGoPeZoPoPoPoPoPoPoPoPoPoPcnoPeZoPoPoPoPoPcnoPoPoPoPAooPoPoPcnoPoPoPoPAooPoPoPoPoPeZeZeZeZoPoP
+pAcncncncncncncnoPOhoPoPcncnoPoPoPeZoPoPeZoPoPcnoPoPeZoPcnoPoPoPAooPoPeZoPoPoPoPoPoPoPZGZGZGZGZGZGZGZGZGZGZGfHjooPoPcnfCMJMJMJfCfCMJfCfCSjAtAtTnTnAtczaAaAoPoPlbjooPoPoPoPZGYEBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDBDZGhMoPoPaxoPoPoPoPcncnpAfrcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPcnoPeKoPoPoPoPoPeZoPoPoPoPAooPeZoP
+cncncngKcncncncnoPoPAooPoPoPoPoPlboPoPOhoPoPcnAooPoPoPoPoPeZhMoPoPoPoPoPoPZGZGoPZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGoPoPoPcnEuMJMJfCfCMJMJfCIieCAtAtTnTnAtAtAtaAaAoPjojojooPcnZGZGZGcnoPoPoPcnPVoPoPcnoPZGbSccaMccbSZGZGoPcnhMcncncnpAcnoPoPoPcnoPoPoPoPcnoPoPcnoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPXUcncnoPoPoPoPeZoP
+cncncncncncncncncnoPoPoPoPeZoPlboPoPQVoPoPcnoPoPoPoPeZoPoPoPhMoPoPoPoPoPoPoPfHZGKuZGoPhMoPoPBDBDBDBDBDBDBDBDZGZGoPoPoPMJMJtJfCMJfugvfCSjSjAtAtTnTnAtaAaAaAcnoPjooPjoeZeZoPZGZGAooPcnZGcncnZGcnZGZGZGaWbfcMcebVZGZGoPcnoPcncnoPoPcnoPoPoPcnoPoPoPcncnoPoPhMoPoPAooPoPoPcnoPhMoPoPAooPoPoPhMoPcnoPoPoPoPoPeZoP
+zZmrcncncncncncncnAooPoPoPeZoPoPOhoPoPcncnoPoPoPoPoPXUcncnoPeZoPcnoPZGZGZGZGZGoPoPoPoPoPoPoPBDBDBDBDBDBDBDBDZGoPoPhMoPfCVbMJMJSTMJMJGVfCSjAtTnTnTnAtaAcncncncncncncnoPOheZZGZGZGZGZGZGZGZGZGZGZGZGZGcGpycMcMaMZGRGAocnoPfycnoPoPoPoPoPoPcnoPoPoPcnoPoPoPqIoPcnoPoPAooPoPoPoPcncnoPoPoPoPoPoPoPhMoPoPoPcneZoP
+kZRfZGcncncncncncnoPoPoPhMoPcnoPoPAooPoPoPoPoPoPoPhMoPcnoPoPoPoPoPZGZGZGoPZGcnAohMoPoPoPoPoPBDBDBDBDBDBDBDBDZGoPoPoPoPVbMJMJMJMJfCfCfCSjpTAtTnTnAtAtaAcnZQeZoPcnoPcnoPAooPZGZGZGZGZGoPoPcncncnZGZGZGaWcMdMofbVZGZGZGAoAooPoPoPoPeZeZeZeZoPcncnoPcnoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPcncncncnoPoPhMhMoPoPoPoPeZoP
+cnloZGGOZGlocnGOZGlocnoPeZoPcnoPoPoPoPoPeZAooPhMhMoPoPoPoPoPZGZGZGZGoPoPoPoPcncnoPoPhMoPoPcnBDBDBDBDBDBDBDBDZGZGoPeZQVMJMJMJMJfCfCSjpTSjAtTnTnTnAtkuaAcncnOheZoPoPoPOheZeKeZZGZGeKPVoPbSccaMccbSZGZGaWBlvFawaWZGoPoPoPoPoPeZoPoPoPoPAooPeZZroPeZoPcnoPcncncncnoPoPoPoPAooPoPoPoPAooPcncnoPoPoPoPoPlboPoPoPoP
+hZpbZGZGZGZGZGZGZGJhKOoPoPoPcnoPAooPoPoPeZAooPoPOhgcoPoPZGZGZGZGcnoPcncnoPoPoPcnoPoPoPoPoPAoBDBDBDBDBDBDBDBDZGoPoPoPoPMJMJMJMJfCSjpTSjAtAtTnTnTnAtAtaEaAcnAooPcnoPoPAooPcnZGZGoPoPcnoPaWEfcMMxbVZGZGbSccaMccbSZGoPoPoPoPoPXUcncnoPoPoPoPeZoPoPoPoPeZeZoPcnoPcnoPoPoPoPcnoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPlboP
+flpbcnrPSwZGZGZGZGZGoPoPoPoPhMoPoPoPoPhMoPoPoPoPoPZGZGZGZGZGoPcnoPoPoPcncnoPoPoPoPhMoPoPoPoPBDBDBDBDBDBDBDBDZGcnoPoPGVMJMJGVGVfCSjSTAtAtTnTnTnAtAtAtaAaAcnOheZoPeZcnZQoPZGZGZGlbcncnZGaMEfcMcMcGZGZGINZGZGZGZGZGAooPoPoPhMoPcnoPoPoPoPoPeZoPoPoPoPoPoPcnoPoPcncncnoPoPoPoPoPcnoPoPoPoPcnoPoPoPOhoPoPoPoPoPcn
+flpbfeLmRRZGZGcnZGoPKOoPoPoPoPoPeZcnoPeZoPoPoPZGZGZGZGjocnoPoPoPoPoPeZoPOhAooPoPoPoPOhoPoPcncncneZcnoPoPoPoPoPoPoPoPMJMJMJfCSjSjSjAtAtAtTnTnTnAtAtAtAtaAaAAooPcneZZGZGZGZGZGZGZGZGZGZGaWcMdMepbVZGZGZGZGZGZGZGcnAooPoPoPhMeKcnoPoPoPoPoPeZAooPoPoPcnoPeZoPoPcnoPlboPcnoPoPoPoPoPlboPoPoPXUoPoPoPoPoPoPoPoPoP
+flpbfezzIDlfZGZGZGZGoPoPoPoPoPoPjoQVoPoPoPZGZGZGZGoPoPoPjojoAooPoPoPeZoPoPcnoPhMcnoPoPAooPoPoPoPhMoPoPcncncncncncnoPMJfCJdfCpTAtSjAtAtTnTnTnTnAtAtaAaAaAcnZGZGZGZGZGZGZGoPoPZGZGZGZGZGaWhceFawaWZGZGRGZGoPoPoPoPoPAooPhMoPoPlboPoPoPoPeZoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPcncnoPcnoP
+flpbfeKUIDZGcnZGZGZGKOoPoPoPoPoPoPoPZGZGZGZGZGZGoPoPlboPhMoPoPoPoPhMoPoPoPoPoPoPcnoPoPoPoPoPeZAooPoPoPcncnoPoPcncnAdMJgvfCSjSjAtAtAtTnTnTnTnAtAtaAaAcncnoPZGZGoPeZeZeZoPoPoPZGZGZGZGZGbSccaMccbSZGZGKuZGoPcncnoPoPcnoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPeZAooPoPoPoPoPcnoPoPAooPoPZroPeZoPoPoPoPoPoPoPcncnoPcncnoP
+flpbLmxvRRZGcnZGcnZGoPhMOhOhcnoPZGZGZGZGoPoPlboPoPoPoPoPXUjojooPoPeZoPoPAooPoPoPcnoPAooPoPoPeZoPhMcncncncnlboPhMoPMJMJfCpTSjAtAtAtAtTnTnTnAtAtaAaApAcncnZGZGoPoPoPoPAoBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGZGcnoPoPcnoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPcnoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPoPoP
+flpbcnXljwZGZGZGcnZGGOZGZGZGZGZGZGZGoPoPoPoPoPoPoPAooPoPoPjojooPoPoPoPoPoPoPlboPhMoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPMJMJfCeCSjAtAtAtTnTnTnTnAtAtczcncncnZGZGoPcncnoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGZGZGeZeZeZeZoPoPoPoPcncnoPoPaxoPoPoPoPoPoPoPcnhMhMcnoPdplboPoPeZoPoPoPoPoPAooPoPeZoPoPoPoPoPoPeZoP
+flpbZGZGZGcnZGZGHgZGZGZGZGZGZGZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMOhoPoPoPoPoPoPoPoPoPeZcnoPeZoPcncnoPoPoPoPcnoPoPoPMJAdfCgvSjAtAtAtTnTnTnAtAtaEaAcncnZGZGZGZGcnoPoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGRGoPoPoPAooPeZoPoPoPcnoPoPoPhMcncncnpAoPZGoPoPoPoPcnoPcnoPoPoPoPcncncncncnoPcnoPoPAooPoPoPoPoPoPoP
+odpbZGpacnZGZGZhHgoPKOZGZGoPcncnZQoPoPcnAooPoPoPoPhMOhoPoPhMOhhMoPAooPoPoPoPoPoPoPoPjoQVoPoPoPoPoPcncnlboPhMoPoPEuMJMJfCSjSjSjAtTnTnTnAtAtAtczcncnoPoPZGZGcncnAooPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGZGZGZGZGoPoPeZoPeZoPoPoPhMoPoPcncnoPoPoPoPoPoPXUZrcnoPoPoPoPoPoPoPcnoPeZeZeZcnoPoPoPoPoPoPoPcnZGoP
+flhZZGeUtoZGJZqxZFoPoPoPXUoPhMoPoPoPoPoPoPoPoPoPoPhMoPoPoPhMoPoPoPoPoPhMOhoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPcncnfCfCfCfCfCSjAtAtTnTnTnAtaAaAaAcncnoPZGZGhMhMlboPoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGbSccaMccbSoPoPoPoPZQeZoPoPoPoPfycnoPoPoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPoPcnoPoPoPoPcnoPOcOcOcZUZUOcOc
+flpbZGZGZGZGvzSJBeoPKOhMoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMoPhMOhOhcnoPoPoPoPoPoPoPoPoPoPoPoPoPAooPfCfCMJfCfCSjAtAtTnTnTnAtAtczcncnoPoPZGZGZGoPoPoPoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGaWjfPQawbVoPoPOhoPoPoPeZoPcnAooPoPoPoPoPoPoPhMcnoPoPoPoPoPoPoPoPoPcnoPcnoPoPoPoPOcOcANuCYHYHYHYHYH
+flpbcncncnZGJhtVSRhMhMoPoPeZoPeZoPoPoPoPcncncncnoPoPoPoPoPoPAohMOhhMOhoPoPhMoPoPoPoPAooPoPoPoPoPoPoPoPAooPcncnjoPKfCMJfCfCeCAtAtTnTnTnAtaAaAcncneZZGZGZGoPoPoPoPoPAooPZGZGZGZGZGZGZGZGZGZGZGZGRGZGZGZGZGZGcGcMpycMaMoPhMoPjooPoPeZoPoPcnoPoPoPhMhMoPoPoPcnoPoPOhoPoPoPoPoPoPAooPoPoPoPOcOcMwuCYHpLpLpLpLpLxy
+flpbcnZGtAtAtAtAtVoPvRoPoPeZoPoPoPeZoPoPoPoPoPcncnoPjooPoPeKeKgLoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncneZjoMJIRMJihfCSjAtTnTnTnAtAtaAcnZQoPcnoPZGZGoPcnoPcncnoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGaWpyrEdMbVoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPcnoPoPOhZGoPoPoPeZoPoPoPoPoPOcANuCYHpLpLpLmkmkTKmkTK
+flpbZGZGbifPsgSItVZGoPcnoPeZoPoPoPoPhMoPlboPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcneZcnPKMJfCMJfCfCSjAtTnTnTnAtAtgTcnoPoPoPoPoPZGZGcnAocnoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDZGZGaWbfeFepaWoPhMoPoPoPZGoPoPoPoPoPoPoPoPoPoPoPoPhMeKoPoPoPoPoPoPoPoPoPoPOcMwuCYHpLpLpLpLmkTKmkmkmkmk
+flpbcnZGcPZGhnZGtVZGKOoPoPoPoPoPoPcnhMoPAooPeZoPoPlboPoPoPoPeZoPoPAoAooPoPlboPoPoPoPeZoPoPAoAooPoPoPoPcnoPcnjoPKfCSTfCfCSjwuAtTnTnTnAtSjaAcnoPoPoPAoZGZGcncnoPoPoPhMoPBDBDBDBDBDBDpIZGBDBDBDBDBDBDBDBDZGcnbSccaMccbSoPoPoPoPoPoPZroPoPoPoPoPoPcncncncnoPoPoPoPAooPoPoPoPoPoPoPOcehuCpLpLpLpLwUmkTKmkmkTKmkmk
+flhZcnJhtAtAtAtVtVoPoPoPoPoPoPoPoPcncnproPoPoPoPeZoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPAoeZcncnjofCSTIRfCSjSjAtAtTnTnTnAtAtaAAKcncnoPoPZGZGZGoPZQeZoPoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDfHhMoPoPeZeZoPoPeZAooPoPoPcnoPZroPhMoPcnjojojocnOhoPoPoPoPoPoPoPoPoPoPOcluuCpLpLxyTKTKmkTKmkmkmkTKmkTK
+flpbZGcnZGZGZGYvQmZGKOoPlboPoPZrZroPoPcnywoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPAooPoPcncnfCSTfCIipTSjAtTnTnTnTnTnAtaAaAaApAoPoPZrZGZGZGoPoPeZoPcnBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDoPhMoPoPoPOheZoPeZoPoPoPAooPoPoPoPZQcncnjojojocnoPoPoPeKoPcnoPoPoPoPOcMwuCpLpLmkmkmkmkWfmkmkmkTKvSWfmk
+flhZZGcnZGZGZGcnZGZGoPoPoPoPoPoPZrZroPoPoPoPoPoPoPhMoPoPeHoPoPoPoPoPjojojohMoPoPeHoPoPoPoPoPjojojooPoPoPoPcncnSTSTIRfCSjAtAtAtTnTnTnAtAtAtaAaAcnoPoPZrZGZGoPoPoPeZoPoPBDBDBDBDBDBDBDZGBDBDBDBDBDBDBDBDAohMoPoPoPAooPcneZoPoPoPoPoPoPeZoPcnhMjooPoPcncnoPoPoPoPcncnQVQVoPoPIPuCpLpLpLmkOMmkmkmkmkTKqGPaBHBHBH
+flhZZGZGZGZGoPcnkZviKOAooPoPoPoPoPZrZrhMoPAoeZoPproPoPoPoPoPoPoPoPcnoPoPjooPoPoPoPoPoPoPoPcnoPoPjooPoPoPoPAooPIRMJMJIigYAtAtAtTnTnTnAtAtaAaAcncncnoPAooPZGZGoPAooPoPoPoPZGZGZGZGZGZGZGZGZGoPAooPeZoPoPoPoPcnoPjooPoPXUcncnoPoPoPoPcneZcnoPXUoPoPoPcnAooPoPoPcnoPoPoPoPeZoPIPGHpLpLmkmkmkmkmkqGvSTKRvPavSmkvS
+cRpbZGZGcnZGoPcnfkmrlgcnoPoPAooPZGoPoPoPcnAooPeZoPoPVaZroPoPlbQVoPoPAooPoPoPVaZroPoPlbQVoPoPoPoPoPoPoPeZeZoPoPIRMJMJIiSjSjAtTnTnTnTnAtAtaAcncncnoPoPZGoPZGZGZGhMoPZGZGZGZGZGZGZGZGZGZGoPoPoPoPoPeZoPeZoPoPoPoPjojooPoPcnoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPhMcnoPoPoPoPoPoPOQANGHpLgNmkmkbWvSvSvSmkvSmkPamkvSFN
+KOcnloZGZGlocnZGKOcnlocncncncncnoPoPoPcncnoPeZoPoPoPZrZroPoPAooPoPZGZGoPoPoPZrZroPoPAooPoPZGZGoPoPoPoPAooPhMoPMJMJfCSjSjSjAtAtTnTnTnTnAtaAaAcncncnZQeZZQeZZGZGZGZGZGZGZGcnZGZGoPhMoPcnoPoPAooPoPoPoPoPZQoPeZoPoPoPcncncnoPoPoPZreKhgoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPcnDOuCpLpLmkmkbWbWmkvSUxbgkOHjHvvSvSMY
+oPZQZGZGfHfHcnoPoPcncncncncncncnoPoPcnoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPoPcnoPeZoPMJMJSjSjSjAtAtTnTnTnTnTnAtAtgTaAjocncnoPcnAooPZGZGZGZGoPoPoPoPcnoPeZoPcnhMoPoPZGoPoPOhoPoPAooPoPeZeZoPcnoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPIgGHpLmkAcmkmkmkAcvSjDjDvSKoKPKWvSMY
+oPeZZGZGZGcnproPoPcncncncncncncncnoPoPAooPoPoPoPoPoPoPcnoPoPoPoPXUeZoPoPoPoPoPoPoPoPoPoPXUeZoPZGoPoPoPZQoPcnoPcnPKPKfCZyAtTnTnTnTnTnAtAtAtaEaAsEcnoPoPoPoPoPZGZGcnoPeZoPoPAooPAoeZcnoPXUoPoPoPoPhMoPjooPoPoPoPoPoPcnoPoPoPeZoPoPoPoPoPAooPoPeZoPeZQVoPoPoPoPoPoPoPoPhMoPIPGHpLmkAcAcmkvStUtUjDglvSKoKPLvvSMY
+oPcncnJhZGhMoPoPoPcncncncncncncncncncnoPoPoPoPoPlboPoPoPoPoPoPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPAooPeZcnjojoMJfCfCSjAtAtTnTnTnTnTnAtAtAtaAgTZQoPjooPoPoPZGZGcncnoPoPoPoPoPoPeZoPAooPoPoPoPoPoPoPoPoPoPoPoPcnoPeZoPoPoPoPoPAooPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPhMoPoPnFGHpLmkmkmkmktUtUtUglwKvSHjNjNsvSMY
+oPoPcnZGZGZGprcnhMoPcncncncncncncnoPcnoPoPoPAooPoPoPoPoPeZoPoPlblboPoPoPcnoPoPoPeZoPoPlblbAooPoPcncnlboPeZoPdpoPMJfCSjSjAtAtAtTnTnTnTnAtAtaAaApAcnhMcnoPoPZGZGZGoPoPcnoPlblboPhMoPoPoPoPXUoPoPoPhMAooPoPcnoPcnoPoPoPoPoPoPeZoPoPoPoPoPoPZroPcnoPoPAooPoPAoAooPoPoPoPoPoPDOGHxyvSvSWfmktUtUTBvSvSvSHjOovSvSMY
+cncncnZGZGoPcncncnprcngKcncncncncnoPoPoPoPoPoPoPoPoPeZoPoPoPjooPoPoPoPoPoPoPeZoPoPoPjooPoPoPoPoPoPoPoPoPOhoPoPoPMJfCfCpTSjAtTnTnTnTnTnAtaAaAcncncneZAooPcneZZGZGoPAooPAooPoPcnoPoPcncncnoPZGeZAooPoPhMhMZroPoPeZAooPoPoPoPeZoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPIPGHpLylvSvSvSvSvSvSvSvSvSPawlvSmkmk
+oPcncncnZGZGoPoPcncncncncncncncnoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPfCfCfCfCfCAtTnTnTnTnTnAtipcncncnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPcncncncnDOGHpLTKTKTKmkmkvSmkvSvSvSmkvSvSvSvS
+bMbMcnZGZGcnxSbMbMcncncncncncncnbMbMxSbMbMbMbMbMbMbMbMbMbMbMxSbMbMbMbMbMbMWNbMbMbMbMxSbMbMbMbMbMbMbMbMbMbMbMxSbMJqJqJqJqJqRatDtDtDtDtDRaXKxSbMbMbMbMbMbMbMbMxSbMbMbMbMbMbMWNbMbMbMbMxSbMbMbMbMbMbMbMbMbMbMbMxSbMbMbMbMbMbMWNbMbMbMbMxSbMbMbMbMbMbMbMbMbMbMbMxSbMbMbMbMbMHcJNnppVpVpVWSSqSqvSmkvSvSvSjcjcjcpV
+RJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJuZuZuZuZxpxpuyuyuyuyuyxpxpRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJvppfpfpfpfpfPpPpPpmkmkvSvSmkyvyvyvyv
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpxpuyuyuyuyuyxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQOZgFfTfTfTuBStneOsvSmkmkmkmkmkfTfTYn
+tktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQmltItItIxpuyvEvEvEuyuyvEKTtkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkOZgFgrgrgruBWOBQvSmkmkvSvSvSfTfTgrUo
+PMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQmlAmAmAmxpxpIQIQIQuyxpcWcWPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMOZgFJGJGJGuBROykmkvSvSvSmkvSfTfTJGAX
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpxpuyuyuyuyxpxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQOZgFfTfTfTfTfTfTfTvSvSmkmkvSmkfTfTYn
+tktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQmltItItIxpxpvEvEvEuyuyKTKTtkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkiigFgfgrgrfTfTgrvSvSvSmkvSvSmkfTgrUo
+PMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQmlAmAmAmxpxpIQIQIQuyuycWcWPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMfTfTZeJGJGfTfTJGmkvSvSvSvSvSfTfTJGAX
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpuyuyuyuyuyuyxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQfTfTuBfTfTfTfTfTmkvSmkvSvSmkfTfTfTYn
+EjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjpDpDpDpDxpuyuyuyuyuyuyxpxpEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjCtCtAvCtCtCtCtCtCtvSmkmkvSmkCtCtCtCt
+xxxUxUxUxUxUJTxUxUxUxUFWqPFWxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUJTxUxUxUxUFWqPFWxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUJTxUlGlGlGFRSKBfBfBfBfBfSKSKSKxUxUxUxxxUxUxUxUxUJTxUxUxUxUFWqPFWxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUJTxUxUxUxUFWqPFWxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUJTxUxUDdvOXvixtBuRuRuRuRcmuRuRvSvSmkGevSuRuRuRuR
+oPoPoPjQjQjQjQjQoPjQoPoPoPoPZQuWjQjQjQoPeZeZeZZQoPoPoPjQjQjQjQjQoPjQoPoPoPoPZQuWjQjQjQoPeZeZeZZQoPoPoPjQjQjQjQjQMJHNMJMJAtTnTnTnTnTnAtAtBseZeZZQoPoPoPjQjQjQjQjQoPjQoPoPoPoPZQuWjQjQjQoPeZeZeZZQoPoPoPjQjQjQjQjQoPjQoPoPoPoPZQuWjQjQjQoPeZeZeZZQoPoPoPjQjQjQjQjQoPShjVoPvSTKmkmkvSvSTKmkqGmkvSvSvSvSmkAAAAAA
+fEfEfEbMbMbMxSbMbMbMtMbMbMbMbMfEbMbMxSfEfEfEbMbMfEfEfEbMbMbMxSbMbMbMtMbMbMbMbMfEbMbMxSfEfEfEbMbMfEfEfEbMbMbMxSbMJqJqUlJqRaRatDtDtDtDtDRahvfEbMbMfEfEfEbMbMbMxSbMbMbMtMbMbMbMbMfEbMbMxSfEfEfEbMbMfEfEfEbMbMbMxSbMbMbMtMbMbMbMbMfEbMbMxSfEfEfEbMbMfEfEfEbMbMbMxSbMbMoFrQZdjcjcpVaHpVpVWSjcjcvSvSvSvSmktXSqpVpV
+RJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJuZuZuZuZxpuyuyuyuyuyuyxpxpRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJyvyvWwVYyvyvyvyvyvyvvSvSvSvSyvyvyvyv
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpuyuyuyuyuyuyxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQfTfTOZgFfTfTfTfTfTvSvSvSmkvSfTfTfTYn
+tktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQmltItItIxpxpvEvEvEuyxpKTKTtkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkfTfTYSzJgrfTfTgrgrgrvSvSvSmkvSfTgrUo
+PMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQmlAmAmAmxpxpcWIQIQuyxpcWcWPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMfTfTPJwgJGfTfTJGJGJGmkmkvSvSvSfTJGAX
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpxpxpuyuyuyxpxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQfTfTOZgFfTuBfTfTfTfTvSvSvSmkvSfTfTYn
+tktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQmltItItIxpxpvEvEvEuyxpKTKTtkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktkpQpQtktktkpQpQtktktkfTfTDVzJgruBfTgrgrvSvSvSvSvSfTfTgrUo
+PMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQmlAmAmAmxpxpIQIQIQuyxpcWcWPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMpQpQPMPMPMpQpQPMPMPMfTfTJGJGJGuBfTJGJGvSvSvSmkmkfTfTJGAX
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlxpxpuyuyuyuyuyxpxppQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQfTfTfTfTfTuBfTfTfTfTmkvSvSvSfTfTfTYn
+EjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjpDpDpDpDxpxpxpuyuyuyuyxpxpEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjQGAvAvAvAvAvCtCtCtCtvSvSvSvSCtCtCtCt
+xxxUxUxUxUxUxUxUGFGFGFGFwRxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUlGlGlGFRSKSKSKBfBfBfSKSKSKxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUrDRTditBtBtBtBtBcmvSvSvSmkvScmcmcmcm
+oPeZoPoPeZoPoPZGcnZGZGZGZGcnoPeZcnoPoPoPcnoPoPeZoPoPoPoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPcncncncnoPoPoPoPoPoPoPNwfCpTSjAtAtAtTnTnTnAtAtaAhIcnproPoPlboPAohMZGZGZGZGZGoPoPoPAooPoPlbAoeZoPoPcnoPcncneZoPeZeZoPoPeZeZoPAoeZoPoPoPoPcnoPoPeZoPoPcnAooPoPoPoPoPoPoPoPoPoPoPIPGHpLmkmkvSvSvSHpBHmkvSvSvSmkvSvSNP
+oPTPZrZroPoPoPcnZGZGZGoPoPoPcnoPoPZroPoPoPcneZoPoPoPoPAooPZroPoPoPoPoPoPoPoPoPAooPZroPoPAoXUeZcnoPoPcnoPoPoPcnXUIRSjIiwuAtAtTnTnTnTnTnAtAtaAcncnoPoPcnoPoPoPcnZGZGZGoPeZoPoPhMoPoPoPoPoPoPoPoPoPcneZoPoPoPoPoPoPoPOheZoPeZoPoPoPQVoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPcnoPoPIPGHpLvSmkTKTKvSkGcHcHvSHjVOTamkvSMY
+lbAocncnoPoPpAcnoPZGZGZroPeZoPoPoPZrZroPhMcnoPcnoPoPZGoPoPZrZreZoPoPoPoPoPoPZGoPoPZrZreZoPcncnoPoPoPoPNVcnoPoPoPMJSjfCSjSjAtAtTnTnTnTnTnAtaAaAcnZGoPcnoPoPhMoPZGZGZGeZoPoPoPoPoPcnoPoPoPcncnNVcnoPoPoPoPoPoPXUoPoPZroPcneZoPoPoPoPoPoPoPoPoPoPoPoPhMoPoPoPoPeZoPoPoPoPoPIPGHxyvSmkTKmkmHNjXdDAvSHjKPvSvSvSOJ
+cnoPoPcncnoPoPoPAooPZGKuoPoPoPoPoPZroPoPZQoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPoPoPoPoPZroPcnoPeZoPoPcnXUeZoPeZeZoPMJIRfCGVwuAtAtTnTnTnTnTnAtAtaEcneZeZeZZQoPoPAooPZGZGZGoPoPoPoPoPcnoPTPZrZroPeZoPeZeZoPoPeZoPoPcnoPAooPXUcncnoPoPoPoPcnoPAooPoPoPoPoPoPoPoPoPeZoPoPoPoPoPnFGHpLmkvSvSmkvSNjJPDAvSHjKPvSmkmkMY
+eZoPQVfycncnoPoPoPZGGqZGcnoPoPAooPhMhMoPoPoPoPhMoPeZoPoPoPoPcnoPoPeZeZoPoPeZoPoPoPoPcnoPoPeZeZoPoPoPoPoPoPoPOheZMJIifCpTRQAtAtTnTnTnTnTnAtAtaAcncncnAooPeZoPoPZGZGZGoPoPoPpAoPoPlblbAocncnoPoPoPoPOheZoPeZoPeKAoQVoPoPoPcnoPoPoPoPoPoPoPoPoPcncneZoPoPoPoPAooPeZoPoPoPoPIPGHpLmkmkmkmkvSkGIfDAvSKoNjmkwlvSKS
+oPoPoPoPoPoPoPjojooPZGZGoPoPoPAooPoPOhAooPoPhMoPoPeZoPoPoPQVoPoPoPoPOheZoPjooPoPoPQVoPoPoPoPOheZoPoPoPoPoPoPAooPfCIiSjpTSjAtTnTnTnTnTnAtAtgTczcncnoPoPoPeZoPeZoPZGZGZGoPcncnoPoPXUcnoPoPcncnoPoPoPAooPcneZoPoPoPoPoPoPcncnoPoPoPZroPeZoPoPcnoPcnoPcncnZrZroPoPoPAoAooPoPDOGHpLmkvSTKvSmkRwMFmkvSHjNjmkekmkKS
+oPoPoPoPoPeZoPoPoPcnZGZGoPoPoPoPoPoPoPcnoPoPhMoPoPeZoPoPoPoPoPoPoPoPAooPcneZoPoPoPoPoPoPoPoPAooPcnoPoPcnoPoPoPcnAYfCSjAtAtAtTnTnTnTnTnAtAtaAaAaAcnfBoPoPoPoPoPZQoPZGZGcnoPoPoPoPoPeZoPQVfycncnoPoPoPoPXUcncnAooPoPoPcncnoPAoeKoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPoPoPoPoPoPIgGHpLmkmkTKmkbWbWmkvSvSHjOomkekmkSX
+oPoPoPoPoPoPoPeZeZoPcnoPAooPoPoPZroPoPoPhMcnoPoPoPcncnoPoPoPoPcnoPoPoPoPXUcncnoPoPoPjocnoPjooPoPXUoPoPoPoPjojooPfCpTSjAtAtAtTnTnTnAtTnAtAthOaAprcnfBZGoPAoOhoPoPoPoPZGZGoPoPoPoPcnoPoPoPoPoPoPoPjojooPoPcnoPoPoPoPoPoPZroPoPeZoPoPoPoPcnoPoPoPAoAooPoPoPoPoPoPoPQVoPoPoPIPWrpLpLmkvSbWbWvSvSvSvSvSmkPavSmkXD
+oPoPAooPoPoPoPoPoPcnoPoPoPeZoPoPoPZroPhMoPcnoPoPoPcnoPoPoPoPoPoPoPjojooPjocnoPoPoPoPoPoPoPjojooPoPoPcneZoPoPoPjoSjfCSjSjAtAtTnTnTnAtTnAtAtaAaAqIcnfBfBcnhMoPjooPoPcnoPZGZGoPhMoPcnoPoPoPoPoPeZoPoPoPcncncnoPoPoPZroPeZZrZroPoPoPAooPoPoPoPoPoPoPoPhMoPoPoPoPoPoPQVQVoPoPJKgUWrpLpLvSbWmkmkvSvSmkmkvSPaPaldld
+oPhMoPoPoPoPoPcnoPeZoPoPoPoPoPZroPoPoPZQoPoPoPoPpAcnoPoPoPZroPeZoPoPjocncncnoPoPoPZrjoeZoPjooPcncncncnoPoPeZeZoPfCfCSjAtAtAtTnTnTnAtAtAtgTaAfBfBcnoPoPcncncnoPoPoPcnoPZGZGoPoPcncnoPoPoPoPoPoPoPeZeZoPcnoPAooPoPoPoPoPoPoPoPeZoPoPoPoPoPAooPcnoPoPoPhMoPeZoPoPoPAooPQVZGZGJKypWrpLpLbWmkvSvSTKmkvSvSvSvSvSvS
+oPoPoPoPoPoPcnoPoPoPoPoPoPhMoPZrZroPhMeZoPhMoPoPcnoPAooPoPoPoPoPoPeZeZoPcnoPAooPoPoPjojooPeZeZoPcnoPcnoPoPoPoPaAfCSjSjAtAtTnTnTnAtAtAtAtczfBfBcnoPoPoPoPhMoPoPoPoPAooPoPZGZGoPoPhMoPoPAooPoPoPoPoPoPcnoPoPoPeZoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPlboPoPoPoPoPoPoPoPAoAoQVoPoPJKypWrpLpLpLpLpLxymkmkmkvSvSvSTK
+cnoPoPhMcnXUcnoPoPcnAooPoPhMoPZroPoPZQhMoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPcnoPoPoPeZoPoPoPjojooPoPcnoPoPoPoPoPcnoPeZSjSjpTSjAtTnTnTnTnAtAtAtaAfBcncnoPoPoPoPcnoPhMoPcncnoPoPZGZGoPoPoPoPhMoPoPoPoPoPcnoPeZoPoPoPoPoPAooPoPoPpAoPeZoPoPoPoPoPoPAooPoPhMoPoPoPoPoPoPoPoPoPoPoPoPcnoPJKgUWrTvTvTvTvpLpLpLpLpLpLpLpL
+cncnoPhMcnoPeZoPQVAocnoPoPeZoPAooPhMhMoPoPcnAooPcnoPoPoPoPAooPoPoPcnoPeZoPoPcnoPoPAooPoPoPcnoPeZoPoPoPoPcnoPoPoPMJSjSjSjAtTnTnTnAtAtAtAtaAaAcncncnoPlbAoeZoPoPcnoPoPcnoPoPZGZGoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPjojocnoPeZcneZoPoPoPoPjocnoPZroPoPoPAooPoPoPoPoPoPeKcnoPoPoPJKJKJKJKgUWrTvTvTvTvTvTvTv
+jocncnoPoPcnoPoPoPoPAooPoPoPoPAooPoPOhAooPoPAooPoPoPoPeZoPoPoPoPcnoPoPoPeKoPcncnoPoPoPoPcnoPoPoPoPeKcnXUcnoPoPcnGVfCSjpTAtAtTnTnTnAtAtaAaAcncnZQcncncncncnoPoPoPoPcncnoPcnZGZGZGoPcnAooPhMcnXUcnoPoPcnAooPoPhMoPoPoPoPjojojocnoPhMoPcncnoPlbjojojoZrhMoPoPoPoPjooPeZoPoPeKcnoPoPAocncnoPoPJKMnJKJKJKJKJKJKJK
+jocnoPoPoPcnoPoPoPoPoPoPoPeZoPoPoPoPoPcnoPoPlbcnoPoPoPcnoPoPoPoPoPeZAooPoPoPoPeZoPoPoPoPoPeZAooPoPoPoPoPeZoPQVAofCpTSjAtAtTnTnTnTnAtAtaAczcncnZQcnfBfBfBcncncnNVcnoPoPjocnZGZGoPQVAocnoPhMcnoPeZoPQVAocnoPoPeZoPcnoPoPoPoPjojooPoPcnoPoPlbcnjojoZrZrhMoPoPjojojooPoPoPoPoPoPhMoPoPoPcnoPoPeZoPcnoPZGoPoPoPoP
+jocnjooPoPcnoPoPoPoPoPoPoPXUcnoPZroPoPoPeZoPoPeZoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPZrcnoPoPoPoPGVfCSjSjAtTnTnTnAtAtaAaAcnZQcncnpAfBfBTPZrZrcneZoPbSccaMccbSZGoPoPoPAooPoPoPcnoPoPoPoPAooPoPoPoPoPeZeZeZeZoPoPXUoPoPoPoPoPcncnjoZrcnoPoPjojooPoPoPoPNVoPoPoPhMoPoPcnoPoPoPoPoPcnoPoPcnoPoPoP
+jojojocnoPhMoPoPAooPoPoPhMoPcnoPZrZroPhMcnoPoPeZoPhMoPeZoPoPoPoPoPoPoPcnhMhMoPeZoPoPoPoPoPoPoPcnhMhMZrcnoPoPoPaALpeCSjAtAtTnTnTnAtAtaAgTaAcnczcnfBfBfBZQZrZrcnoPoPaWbfcMhTbVZGoPoPBDBDBDBDBDBDBDoPoPoPoPoPoPeZoPoPoPoPAooPeZoPoPcnhMcnoPoPcnjojoZroPoPoPjooPoPoPoPoPoPoPeZoPoPoPoPfyeZoPoPoPoPoPoPoPoPoPoPoP
+jojocncnoPoPoPcncnoPoPZGoPoPoPoPZroPoPZQcnoPoPoPoPoPoPoPcncncnpAoPZGoPoPoPoPoPoPcncncnpAoPZGoPoPoPoPZrcnoPoPoPfBLppTfCAtTnTnTnTnAtaAaAfBaAaAaEaAfBfBcncncnZrcnoPoPaMcMpycMcGZGZGoPBDBDBDBDBDBDBDoPoPoPoPoPoPXUcncnoPoPoPoPeZoPeZoPoPoPoPcncnjoZrZrcnoPlboPoPoPcncncnZQoPoPoPoPeZoPZIoPoPoPoPoPoPoPoPoPoPoPoP
+XUcncneZoPoPoPoPoPAooPoPoPoPoPoPoPeZoPQVoPoPoPoPoPcnoPoPcncnoPoPoPoPoPoPXUcnoPoPcncnoPoPoPoPoPoPXUZrZrhMoPoPAofBLpSjRQAtAtTnTnTnAtaAczfBfBaAczaAfBfBcnoPcncncnoPlbaWpydMMNbVZGZGAoBDBDBDBDBDBDBDoPAooPoPoPhMoPcnoPoPoPoPoPeZeZoPZQoPcnjojooPZrZrcnjocnoPoPoPAocneZcnoPoPoPXUoPoPoPQVoPoPoPoPoPoPoPoPoPAooPoP
+oPcnoPoPoPoPoPhMoPoPoPjooPAooPAooPoPoPoPZGoPoPoPoPeZoPQVfycnoPoPoPoPoPoPoPeZoPQVfycnoPoPeKoPoPoPoPoPOhoPoPcnaAcnfCfCSjAtAtTnTnAtAtAtAtfBfBaAaAaAfBfBcnoPoPoPcncnoPaWbOeFepaWZGZGoPBDBDBDpIBDBDBDcncnoPoPZGoPoPoPoPhMoPoPoPAooPeZoPoPeZcnjooPZrZroPoPcnoPoPoPoPoPoPoPoPOhoPoPoPoPoPAooPoPAooPoPAooPoPoPoPoPoP
+oPeZlblblboPoPhMoPoPoPoPjooPoPcnoPoPoPoPZGZGoPAooPoPoPoPoPoPoPoPoPoPoPhMcnoPoPoPoPoPoPoPoPoPoPhMcnoPoPpAoPoPoPaAGVSjSjAtTnTnTnTnAtAtaAfBaAaAaAaAfBfBcnpAcnoPcncnoPbSccaMccbSYEZGZGBDBDBDBDBDBDBDoPoPoPoPeZeZeZeZoPoPoPeZeZoPoPeZoPoPeZhMcnoPZrZroPcnoPeZhMoPQVoPoPoPoPoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoP
+oPeZoPoPcnoPoPeZoPcnoPoPoPAooPoPcnoPoPoPeKZGoPoPoPoPoPoPoPoPoPhMhMoPoPoPcnoPoPoPoPoPoPhMhMoPoPoPcnoPoPoPcnoPeZfBLpSjSjkuAtTnTnTnAtgYczfBfBczaAfBfBaAaAcnQVoPoPZGoPZGZGZGZGZGRGZGZGBDBDBDBDBDBDBDZGeZoPoPoPoPAooPeZoPoPAooPhMoPoPoPcncnoPeZjooPlboPoPoPoPoPoPoPoPoPcnoPoPQVoPoPjooPoPoPcncnoPoPoPoPoPoPoPoPoP
+OhoPoPcnAooPoPoPoPoPeZhMoPoPoPoPcnoPoPAooPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPAooPoPoPcnoPAooPoPaAfBfBSjSjAtBsTnTnTnTnkuSjSTfBfBaAaAaAaAaAcncnoPZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGZGeZcnoPoPoPoPoPeZoPeZoPoPeZoPoPoPcneZhMhMcnoPoPoPoPeZhMoPoPZGoPoPoPoPAoAooPoPjojojooPoPoPcnoPoPjooPoPoPoPoP
+oPoPcnoPoPoPoPeZoPoPoPhMoPoPoPoPoPZroPoPoPoPoPhMcnoPoPAooPoPoPAooPoPoPoPhMoPoPAooPoPoPeKoPZGoPoPhMoPoPoPoPaAfBaASjAtAtAtAtkuTnTnAtAtSTaAfBfyaAaEaAZGZGZGZGZGZGZGoPoPZGZGoPZGZGZGZGZGZGZGZGZGoPoPhMoPcnoPoPoPoPoPoPoPoPZQoPoPoPjojojojooPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPAooPoPeZjooPoPoPcnywcnoPoPjojooPpAoPoP
+cncnoPoPoPoPoPXUcncnoPeZoPcnoPoPoPoPeZoPoPoPoPoPoPZroPoPoPoPoPcncncncnoPoPZroPoPoPoPoPcncncncnoPoPoPeZcnoPeZfBfBSjSjAtAtTnAtAtTnBUAtSjaAfBfBczczaAaAcnZGZGZGoPoPjooPeZoPoPZGZGZGZGZGZGZGZGZGcnoPeZoPcnhMoPoPZGAooPOhoPoPeZoPjojooPoPoPoPoPoPoPOhoPoPoPcneZoPoPoPoPoPoPoPZrZreZjojojocncnoPcnoPoPoPjooPlboPoP
+oPoPoPoPoPoPhMoPcnoPoPoPoPoPeZoPoPhMoPcnpAAooPcnQVZrZroPhMcnoPoPoPoPoPOhoPZrZroPhMoPcnjojojocnOhoPoPoPoPAoaAaAczSjSjSjAtTnSjhUAtkuSjSjczaAfBaAaAczaEcnfBcncnQVZGjooPoPoPoPoPZGhMoPcloPlboPZGoPAoeZcnoPXUoPoPoPoPhMoPjooPeZoPpUoPoPoPoPoPoPoPoPcloPlboPoPoPoPoPAooPoPoPoPoPZrZroPoPjooPlbcncnoPoPoPoPoPoPoPoP
+oPeZAooPhMhMoPoPoPoPoPeZoPoPoPoPoPoPkCcnoPoPoPcnZrZroPcnoPoPoPoPoPoPoPoPoPZroPoPZQcncnjojojocnoPoPoPoPoPaAeZaAaASjeCSjAtkuTnkuTnAtSjwuaAfBfBczaAaAaAfBfBcncnAoQVoPoPoPNVoPPVZGZGbSccaMccbSZGZGoPeZoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMoPZroPoPoPoPprcnoPAoAooPcncncnoPoP
+oPeZAooPoPOhAooPoPoPoPXUcncnoPcnoPoPoPoPoPoPoPoPhMhMoPoPoPoPoPoPoPoPoPoPoPhMeZoPcnhMjojooPcncnoPoPoPoPaAhMfBaAaASjSjAtkuBUAtkuAtkuAtpTczfBfBaAaAczcnfBfBcncncncnoPcnoPoPcncncnZGaWbfpybObVZGZGhMoPoPoPoPoPoPoPoPhMoPoPoPAocnoPhMhMoPoPoPoPeZeZoPcngcoPoPoPoPoPoPeZoPoPoPhMoPoPoPoPoPoPhMAooPoPoPcncncncnoPoP
+hMoPoPoPoPoPcnoPjooPhMoPcnoPoPoPoPoPoPoPoPoPoPoPeZoPcnoPoPhMhMoPoPeKoPoPoPoPeZcnoPXUoPjojocnAooPoPoPcncnaAfBczaASjSjAtkuTnkuSjTnBUAtSjaAfBfBczczaAczaAczcncncnoPoPcncnoPcncnoPZGcGpycMcMcGZGZGoPPVcncncnoPoPoPoPoPoPhMoPoPoPoPhMlboPoPeZoPAooPeZeKpAoPoPoPXUoPoPcnoPoPoPproPoPoPeZoPoPoPoPoPoPoPoPcncnoPoPoP
+eZoPoPoPoPoPoPoPjocnoPoPoPoPoPeZoPAooPoPoPeZoPoPoPoPcnoPoPoPAooPoPZGoPoPhMoPeZoPoPoPjojooPoPoPoPhMcncneZfBfBaAaApTSjAtAtTnTnTnTnkuAtSjaAfBfBfBcnaAaAaAcncnZQoPoPcncnoPoPoPAoeZZGaWcMdMepbVZGZGZGoPoPZGZGoPeZeZeZeZoPoPoPoPAooPoPoPoPoPeZoPoPoPeZoPhMoPoPoPeZoPoPcnoPoPcnoPoPoPoPoPoPoPVaoPoPoPoPoPoPoPoPoPoP
+oPoPoPcncnoPAooPoPQVcnoPoPoPoPoPAoAooPoPoPeZoPoPoPoPcnoPoPoPoPZGoPoPoPoPoPoPoPoPoPoPjojohMjooPoPoPoPcnaAfBcnaAaASjgYSjAtTnTnTnTnAtSjAtczfBfBfBcnczaAfBcncncncnoPoPoPproPoPoPZGZGaWbfeFawaWZGZGZGZGZGZGZGZGZGoPAooPeZoPoPoPoPcnoPcnoPoPeZoPcnoPoPoPhMAoeZoPoPoPcncnoPoPoPoPQVoPoPeZoPoPoPoPoPoPoPoPoPAooPcnoP
+oPAocnoPoPoPeZoPoPoPoPOhoPoPoPoPoPoPQVoPoPoPAooPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPoPoPoPlbeZfBaAaAaALpSjAtAtTnTnTnTnAtSjSjaAczfBaAaAaAfBfBfBcncniNoPoPoPhMoPoPcnZGZGbSccaMccbSZGBDBDBDBDBDBDBDoPoPoPoPeZoPeZoPcncnoPoPoPoPeZoPcnZrZroPhMeZoPoPoPoPcncnoPoPlbAooPQVQVeZoPoPoPoPoPoPoPoPoPoPcncncn
+oPcneZZGoPoPoPoPeZoPoPoPoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPAooPoPeZoPeZQVoPoPoPoPoPAooPoPeZoPeZQVoPoPoPoPcnoPaAoPprfBLpSjAtAtAtTnTnTnAtAtAtaAaAaAczaAaAfBfBfBcncnoPoPcnoPoPoPoPoPZGZGoPZroPoPoPZGBDBDpIBDBDBDBDoPoPoPoPoPoPoPZQoPoPoPoPeZoPoPoPoPoPZroPoPoPoPhMoPcncncnoPOhoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPeZoPoPZGcnoPoPhMoPhMoPoPoPoPoPhMaxoPoPoPoPhMoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPcnoPeZfBSjRQAtAtTnTnTnAtAtaAaAczaEczcncnczfBfBprprprZQcnoPoPoPoPZGZGZGoPoPZroPoPeZoPBDBDBDBDBDBDBDoPoPcnoPcnOhoPoPoPoPoPoPeZoPeZoPoPoPZroPoPeZoPoPoPoPjojooPoPeZoPoPoPoPoPoPoPAooPoPoPoPAoeZoPoPoPoP
+cnZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPAooPoPoPoPoPcnoPoPAooPoPAoAooPoPoPAoZQfBSjgYSjAtTnTnTnTnAtAtczaAczaAcnczaAfBfBdpcneZoPoPeZoPoPcnoPZGZGoPoPeZoPoPeZAoBDBDBDBDBDBDBDoPoPoPoPhMoPjooPcnoPoPoPoPoPAooPoPoPeZoPoPeZoPXUoPoPjojojooPoPoPoPcnoPoPoPpUoPoPoPoPoPcnoPoPoPAooP
+oPoPoPoPoPAooPoPoPZQcnoPoPoPAooPoPcncncneZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPaAZQfBLpSjpTAtTnTnTnTnTnAtczhOaAczaAczfBfBfBZQZQoPoPAoAooPoPoPoPZGZGoPhMhMoPoPoPoPBDBDBDBDBDBDBDoPoPcnoPoPoPoPoPcnoPcncncnoPoPAooPhMhMoPoPoPoPoPoPoPoPoPeZoPoPoPcnhMoPoPoPcncncncncnoPoPoPoPoPoPoP
+fBfBoPoPoPoPoPhMhMcnoPoPoPhMoPoPoPcnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPcnoPoPcncncncncncnoPoPoPcnoPoPoPAooPaAfBfBSjSjSjAtAtTnTnTnTnAtAtaAaAaAaAaAaAfBfBcncncncnoPoPoPoPoPoPZGZGAocnproPeZoPAoBDBDBDBDBDBDBDoPoPcnoPAooPoPcncnoPoPoPoPoPOhoPoPcnproPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPeZ
+GXfBoPoPoPoPhMoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPoPhMoPoPoPAooPcncnoPoPoPoPoPoPoPoPAooPcncnoPoPoPoPoPoPoPoPoPcnoPaAfBpTSjAtAtmymymymymymyAtaAaAczczczaAfBfBcncncnoPcncncnoPAoZGZGoPoPoPcncncnoPeZoPcnoPoPcncncnAooPoPoPcnoPhMoPcnoPoPoPoPoPoPoPoPoPcncncnoPoPoPAooPoPoPoPoPoPhMoPoPoPoPoPoPAooPoPoPcncnoPXUoPoPcn
+"}
