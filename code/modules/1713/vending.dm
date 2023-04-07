@@ -1292,6 +1292,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/under/ww2/soviet_amoeba/winter = 5,
 		/obj/item/clothing/under/ww2/soviet_berezka = 5,
 		/obj/item/clothing/accessory/armor/modern/plate = 2,
+		/obj/item/clothing/accessory/armor/coldwar/flakjacket/b1 = 2,
 		/obj/item/clothing/suit/storage/coat/ww2/soviet = 5,
 		/obj/item/clothing/mask/gas/soviet/gp5 = 15,
 		/obj/item/clothing/head/helmet/modern/ssh_68/winter = 10,
@@ -1323,6 +1324,9 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/sks = 25,
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
 		/obj/item/ammo_magazine/svd = 15,
+		/obj/item/weapon/gun/projectile/automatic/rpk47 = 1,
+		/obj/item/ammo_magazine/rpk47/drum = 2,
+		/obj/item/ammo_magazine/rpk47 = 2,
 	)
 
 ///////////Star Wars stuff//////////////////////
