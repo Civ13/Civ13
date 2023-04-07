@@ -164,8 +164,6 @@
 
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
-	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
