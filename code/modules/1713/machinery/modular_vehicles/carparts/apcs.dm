@@ -147,7 +147,7 @@
 /obj/structure/vehicleparts/frame/bmd2new
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	broken_icon = 'icons/obj/vehicles/apcparts_damaged96x96.dmi'
+	// broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 
@@ -179,12 +179,12 @@
 	w_back = list("bmd2new_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
 
-//BMD-2 96x96
+//Campaign 96x96
 
 /obj/structure/vehicleparts/frame/adrian
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	broken_icon = 'icons/obj/vehicles/apcparts_damaged96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 

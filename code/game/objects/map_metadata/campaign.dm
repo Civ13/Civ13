@@ -5,9 +5,9 @@
 	lobby_icon = "icons/lobby/campaign.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
-	no_winner ="The battle is going on."
-	victory_time = 80 MINUTES
-	grace_wall_timer = 20 MINUTES
+	no_winner = "The battle is going on."
+	victory_time = 60 MINUTES
+	grace_wall_timer = 15 MINUTES
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
@@ -19,7 +19,7 @@
 	age = "2023"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	battle_name = "battle of the AU29 Highway"
+	battle_name = "battle of the Ators river"
 	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
@@ -54,7 +54,7 @@
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-		// "Armored" = list("Crew" = 8),
+		"Armored" = list("Crew" = 8),
 		// "AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
@@ -81,7 +81,7 @@
 
 /obj/map_metadata/campaign/cross_message(faction)
 	if (faction == PIRATES)
-		return "<font size = 4>The battle has begun!</font>"
+		return "<font size = 4><font color='red'>The battle has begun!</font>"
 	else if (faction == CIVILIAN)
 		return ""
 	else
@@ -112,13 +112,13 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 2 MINUTES
 	else
-		return 5 MINUTES
+		return 2 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 2 MINUTES
 	else
-		return 7 MINUTES
+		return 5 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
 	var/ctb = 0
@@ -275,7 +275,9 @@
 					continue
 				if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
 					continue
-				if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[4])
+				if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[job.squad])
+					continue
+				if(findtext(job.title, "BAF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
 					continue
 				if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 					continue
@@ -284,8 +286,6 @@
 				if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
 					continue
 				if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Squad [job.squad] Des. Marksman") && MC.squad_jobs_blue["Squad [job.squad]"]["Des. Marksman"]<= 0)
 					continue
 			else if (factjob == "RDF")
 				if(!findtext(job.title, "RDF"))
@@ -298,7 +298,9 @@
 					continue
 				if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
 					continue
-				if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[4])
+				if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[job.squad])
+					continue
+				if(findtext(job.title, "RDF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
 					continue
 				if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
 					continue
@@ -451,6 +453,7 @@ var/no_loop_cm = FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_cm = TRUE
@@ -459,7 +462,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -468,7 +471,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -477,7 +480,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -486,7 +489,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the gas station! They will win in {time} minutes."
+				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])

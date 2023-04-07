@@ -1093,5 +1093,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\campaign2\campaign2.dmm"
 // END_INCLUDE

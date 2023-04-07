@@ -734,7 +734,7 @@
 
 /obj/item/missile/explosive/atgm
 	icon_state = "atgm_missile"
-	heavy_armor_penetration = 700
+	heavy_armor_penetration = 200
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 0, 2, 2)
@@ -758,5 +758,5 @@
 
 /obj/item/missile/explosive/atgm/apcr
 	icon_state = "atgm_missile"
-	heavy_armor_penetration = 600
+	heavy_armor_penetration = 300
 

@@ -17,11 +17,9 @@
 	response_harm   = "stomps"
 	stop_automated_movement = TRUE
 	friendly = "pinches"
-	mob_size = 5
 	var/obj/item/inventory_head
 	var/obj/item/inventory_mask
 	possession_candidate = TRUE
-	mob_size = MOB_SMALL
 
 /mob/living/simple_animal/crab/small
 	name = "small crab"

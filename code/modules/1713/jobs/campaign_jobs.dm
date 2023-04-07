@@ -98,6 +98,16 @@
 	squad = 4
 	rank_abbreviation = "4-Recon"
 
+/datum/job/pirates/redfaction/armored/sl
+	title = "RDF Armored Squadleader"
+	squad = 5
+	is_squad_leader = TRUE
+	rank_abbreviation = "5-Tank Sgt"
+/datum/job/pirates/redfaction/armored/crew
+	title = "RDF Armored Crew"
+	squad = 5
+	rank_abbreviation = "5-Tank"
+
 /*
 /datum/job/pirates/redfaction/at
 	title = "RDF Anti-Tank"
@@ -109,18 +119,6 @@
 	title = "RDF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
-
-/*
-/datum/job/pirates/redfaction/armored/sl
-	title = "RDF Armored Squadleader"
-	squad = 5
-	is_squad_leader = TRUE
-	rank_abbreviation = "5-Tank Sgt"
-/datum/job/pirates/redfaction/armored/crew
-	title = "RDF Armored Crew"
-	squad = 5
-	rank_abbreviation = "5-Tank"
-*/
 
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -143,7 +141,7 @@
 		uniform.attackby(armor, H)
 
 //equipment
-	if (findtext(title, "Squadleader"))
+	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	else if (findtext(title, "Officer"))
@@ -155,7 +153,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_r_hand)
 	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 	else if (!findtext(title, "Redmenian Civilian"))
@@ -166,8 +164,6 @@
 
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
-	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else if (findtext(title, "Machinegunner"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
@@ -175,7 +171,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Redmenian Civilian"))
+	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -224,8 +220,11 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
 			if (findtext(title, "Armored"))
-				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot/webbing = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot(null)
-				uniform.attackby(webbing, H)
+				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
+				uniform.attackby(HH, H)
+				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
+				uniform.attackby(PISTOL, H)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
 			else
 				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
@@ -360,27 +359,17 @@
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
-
 /*
 /datum/job/civilian/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"
 	squad = 3
 	rank_abbreviation = "3-DM"
 */
+
 /datum/job/civilian/bluefaction/recon
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
-/*
-/datum/job/civilian/bluefaction/at
-	title = "BAF Anti-Tank"
-	squad = 6
-	rank_abbreviation = "6-AT"
-*/
-/datum/job/civilian/bluefaction/engineer
-	title = "BAF Engineer"
-	squad = 7
-	rank_abbreviation = "7-Engineer"
 /*
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
@@ -392,6 +381,19 @@
 	squad = 5
 	rank_abbreviation = "5-Tank"
 */
+
+/*
+/datum/job/civilian/bluefaction/at
+	title = "BAF Anti-Tank"
+	squad = 6
+	rank_abbreviation = "6-AT"
+*/
+
+/datum/job/civilian/bluefaction/engineer
+	title = "BAF Engineer"
+	squad = 7
+	rank_abbreviation = "7-Engineer"
+
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -420,7 +422,7 @@
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
 		uniform.attackby(armor, H)
 //equipment
-	if (findtext(title, "Squadleader"))
+	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 	else if (findtext(title, "Officer"))
@@ -453,7 +455,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Blugoslavian Civilian"))
+	else if (!findtext(title, "Blugoslavian Civilian") || !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -507,15 +509,22 @@
 		else if (findtext(title, "Engineer"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
-			if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
+			if (findtext(title, "Armored"))
 				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 				uniform.attackby(HH, H)
 				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
 				uniform.attackby(PISTOL, H)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
 			else
-				var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
-				uniform.attackby(webbing, H)
+				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
+					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
+					uniform.attackby(HH, H)
+					var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
+					uniform.attackby(PISTOL, H)
+					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+				else
+					var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
+					uniform.attackby(webbing, H)
 			if(A.climate == "taiga" || A.climate == "tundra")
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue/white(H), slot_belt)
 			else

@@ -257,6 +257,24 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/red
+	name = "30mm Autocannon"
+	desc = "An autocannon capable of firing 20 rounds per minute."
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/autocannon_ap
+	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_ap/small, /obj/item/ammo_magazine/autocannon_he, /obj/item/ammo_magazine/autocannon_he/small)
+	firemodes = list(
+		list(name = "single shot", burst=1, fire_delay=35, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
+	is_hmg = TRUE
+	full_auto = FALSE
+
 // ATGM Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm

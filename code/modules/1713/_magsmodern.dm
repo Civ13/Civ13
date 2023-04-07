@@ -771,6 +771,9 @@
 	multiple_sprites = TRUE
 	belt = TRUE
 
+/obj/item/ammo_magazine/autocannon_ap/small
+	max_ammo = 10
+
 /obj/item/ammo_magazine/autocannon_he
 	name = "3UOR6 HE ammo belt"
 	icon_state = "maximbelt"
@@ -783,6 +786,9 @@
 	max_ammo = 16
 	multiple_sprites = TRUE
 	belt = TRUE
+
+/obj/item/ammo_magazine/autocannon_he/small
+	max_ammo = 10
 
 /obj/item/ammo_magazine/flare
 	name = "flare casing pouch (.50 BMG)"
