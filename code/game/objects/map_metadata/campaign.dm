@@ -6,8 +6,8 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is going on."
-	victory_time = 60 MINUTES
-	grace_wall_timer = 15 MINUTES
+	victory_time = 70 MINUTES
+	grace_wall_timer = 20 MINUTES
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
