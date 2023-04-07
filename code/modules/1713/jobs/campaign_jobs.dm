@@ -110,7 +110,6 @@
 	squad = 7
 	rank_abbreviation = "7-Engineer"
 
-/*
 /datum/job/pirates/redfaction/armored/sl
 	title = "RDF Armored Squadleader"
 	squad = 5
@@ -120,7 +119,6 @@
 	title = "RDF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
-*/
 
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -155,7 +153,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_r_hand)
 	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 	else if (!findtext(title, "Redmenian Civilian"))
@@ -224,8 +222,11 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
 			if (findtext(title, "Armored"))
-				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot/webbing = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot(null)
-				uniform.attackby(webbing, H)
+				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
+				uniform.attackby(HH, H)
+				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
+				uniform.attackby(PISTOL, H)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
 			else
 				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
 					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
@@ -507,15 +508,22 @@
 		else if (findtext(title, "Engineer"))
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 		else
-			if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
+			if (findtext(title, "Armored"))
 				var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 				uniform.attackby(HH, H)
 				var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
 				uniform.attackby(PISTOL, H)
-				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
 			else
-				var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
-				uniform.attackby(webbing, H)
+				if (is_officer || is_squad_leader || is_commander || is_medic || squad == 6)
+					var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
+					uniform.attackby(HH, H)
+					var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
+					uniform.attackby(PISTOL, H)
+					H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+				else
+					var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak(null)
+					uniform.attackby(webbing, H)
 			if(A.climate == "taiga" || A.climate == "tundra")
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/blue/white(H), slot_belt)
 			else

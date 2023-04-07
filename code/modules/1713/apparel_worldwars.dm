@@ -549,7 +549,7 @@
 	worn_state = "japtanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww2/japhelm/bandana
 	has_headband = TRUE
@@ -2383,7 +2383,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	worn_state = "ustanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
@@ -2393,7 +2393,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	worn_state = "gertanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 0, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
@@ -2403,7 +2403,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	worn_state = "sovtanker"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 20, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/ww2/soviet_tanker/New()
 	..()
