@@ -1106,6 +1106,17 @@
 	value = 60
 	slowdown = 0.2
 
+/obj/item/clothing/accessory/armor/coldwar/flakjacket/b1 //used by spetznaz vdv and soviets in afgan
+	name = "6B1 vest"
+	desc = "Wearable Armor meant to protect against shrapnel and light caliber weaponry. Won't do much against large caliber weapons."
+	icon_state = "6b1"
+	item_state = "6b1"
+	worn_state = "6b1"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 80, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 60
+	slowdown = 0.1
+
 /* Cold War Belts*/
 
 /obj/item/weapon/storage/belt/largepouches/olive/m60
