@@ -9,7 +9,7 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	set_dir(turn(dir, -90))
+	set_dir(turn(dir, 90))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
@@ -20,7 +20,7 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	set_dir(turn(dir, 90))
+	set_dir(turn(dir, -90))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)

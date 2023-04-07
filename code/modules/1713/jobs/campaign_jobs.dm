@@ -98,6 +98,16 @@
 	squad = 4
 	rank_abbreviation = "4-Recon"
 
+/datum/job/pirates/redfaction/armored/sl
+	title = "RDF Armored Squadleader"
+	squad = 5
+	is_squad_leader = TRUE
+	rank_abbreviation = "5-Tank Sgt"
+/datum/job/pirates/redfaction/armored/crew
+	title = "RDF Armored Crew"
+	squad = 5
+	rank_abbreviation = "5-Tank"
+
 /*
 /datum/job/pirates/redfaction/at
 	title = "RDF Anti-Tank"
@@ -109,16 +119,6 @@
 	title = "RDF Engineer"
 	squad = 7
 	rank_abbreviation = "7-Engineer"
-
-/datum/job/pirates/redfaction/armored/sl
-	title = "RDF Armored Squadleader"
-	squad = 5
-	is_squad_leader = TRUE
-	rank_abbreviation = "5-Tank Sgt"
-/datum/job/pirates/redfaction/armored/crew
-	title = "RDF Armored Crew"
-	squad = 5
-	rank_abbreviation = "5-Tank"
 
 /datum/job/pirates/redfaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -141,7 +141,7 @@
 		uniform.attackby(armor, H)
 
 //equipment
-	if (findtext(title, "Squadleader"))
+	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	else if (findtext(title, "Officer"))
@@ -171,7 +171,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Redmenian Civilian"))
+	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -359,27 +359,17 @@
 	title = "BAF Squad 3 Machinegunner"
 	squad = 3
 	rank_abbreviation = "3-MG"
-
 /*
 /datum/job/civilian/bluefaction/s3/marksman
 	title = "BAF Squad 3 Des. Marksman"
 	squad = 3
 	rank_abbreviation = "3-DM"
 */
+
 /datum/job/civilian/bluefaction/recon
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
-/*
-/datum/job/civilian/bluefaction/at
-	title = "BAF Anti-Tank"
-	squad = 6
-	rank_abbreviation = "6-AT"
-*/
-/datum/job/civilian/bluefaction/engineer
-	title = "BAF Engineer"
-	squad = 7
-	rank_abbreviation = "7-Engineer"
 /*
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
@@ -391,6 +381,19 @@
 	squad = 5
 	rank_abbreviation = "5-Tank"
 */
+
+/*
+/datum/job/civilian/bluefaction/at
+	title = "BAF Anti-Tank"
+	squad = 6
+	rank_abbreviation = "6-AT"
+*/
+
+/datum/job/civilian/bluefaction/engineer
+	title = "BAF Engineer"
+	squad = 7
+	rank_abbreviation = "7-Engineer"
+
 /datum/job/civilian/bluefaction/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -419,7 +422,7 @@
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
 		uniform.attackby(armor, H)
 //equipment
-	if (findtext(title, "Squadleader"))
+	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 	else if (findtext(title, "Officer"))
@@ -452,7 +455,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Blugoslavian Civilian"))
+	else if (!findtext(title, "Blugoslavian Civilian") || !findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)

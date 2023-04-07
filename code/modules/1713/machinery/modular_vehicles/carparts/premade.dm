@@ -96,13 +96,6 @@
 		var/turf/autoassembler_loc = get_turf(locate(tpt.x-2,tpt.y+2,tpt.z))
 		new/obj/effect/autoassembler(autoassembler_loc)
 		spawn(5)
-			if (map.ID == MAP_CAMPAIGN && !istype(src, /obj/effects/premadevehicles/tank))
-				var/rangeto = range(2,autoassembler_loc)
-				for (var/obj/structure/vehicleparts/frame/A in rangeto)
-					A.w_front[7] = TRUE
-					A.w_back[7] = TRUE
-					A.w_left[7] = TRUE
-					A.w_right[7] = TRUE
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL && istype(src, /obj/effects/premadevehicles/yamasaki/shinobu/police))
 				var/rangeto = range(2,autoassembler_loc)
 				for (var/obj/structure/vehicleparts/frame/car/shinobu/rcf/A in rangeto)
@@ -728,12 +721,12 @@
 	custom_color = "#555346"
 	axis = /obj/structure/vehicleparts/axis/heavy/adrian
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/adrian/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov),
-	"2,1" = list(/obj/structure/vehicleparts/frame/adrian/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/bed/chair/drivers/tank),
+	"1,1" = list(/obj/structure/vehicleparts/frame/adrian/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/red),
+	"2,1" = list(/obj/structure/vehicleparts/frame/adrian/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/engine/internal/diesel/premade/adrian,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/adrian/rc,/obj/structure/lamp/lamp_small/tank/red),
-	"2,2" = list(/obj/structure/vehicleparts/frame/adrian/lc),
+	"1,2" = list(/obj/structure/vehicleparts/frame/adrian/rc,/obj/structure/bed/chair/drivers/tank,/obj/item/ammo_magazine/autocannon_he/small,/obj/item/ammo_magazine/autocannon_he/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/structure/lamp/lamp_small/tank/red),
+	"2,2" = list(/obj/structure/vehicleparts/frame/adrian/lc,/obj/structure/bed/chair/office/dark{anchored = 1}),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/adrian/rb,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_back,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0}),
-	"2,3" = list(/obj/structure/vehicleparts/frame/adrian/lb,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_back),
+	"1,3" = list(/obj/structure/vehicleparts/frame/adrian/rb,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/structure/vehicleparts/movement/tracks/bmd2new/left_back),
+	"2,3" = list(/obj/structure/vehicleparts/frame/adrian/lb,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/structure/vehicleparts/movement/tracks/bmd2new/right_back),
 	)
