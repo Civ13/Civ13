@@ -395,6 +395,7 @@
 		/obj/item/ammo_magazine/garand = 50,
 		/obj/item/ammo_magazine/springfield = 40,
 		/obj/item/ammo_magazine/bar = 15,
+		/obj/item/ammo_magazine/browning = 2,
 		/obj/item/ammo_magazine/m3006box = 10,
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
