@@ -610,7 +610,11 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/frenchcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
+
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -659,7 +663,10 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -707,7 +714,10 @@
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -756,6 +766,8 @@
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -798,7 +810,8 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
@@ -842,6 +855,8 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/modern/plate/newplate = new /obj/item/clothing/accessory/armor/modern/plate(null)
 	uniform.attackby(newplate, H)
@@ -885,6 +900,8 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
+	if (map.ID == MAP_VERDUN)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/french(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/french/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french(null)
 	uniform.attackby(fullwebbing, H)
