@@ -1741,7 +1741,7 @@
 						if (stat == DEAD)
 							visible_message("[src]'s body is visibly rotten!")
 							rotting_stage = 2
-							if(map.ID != "TANTIVEIV")
+							if(map.ID != "TANTIVEIV" && map.ID != MAP_VERDUN)
 								if (isturf(loc))
 									new/mob/living/simple_animal/crow(loc)
 							spawn(20000)
