@@ -6,7 +6,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is going on."
-	victory_time = 70 MINUTES
+	victory_time = 60 MINUTES
 	grace_wall_timer = 20 MINUTES
 	faction_organization = list(
 		PIRATES,
@@ -463,7 +463,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
-				next_win = world.time + short_win_time(AMERICAN)
+				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -472,7 +472,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
-				next_win = world.time + short_win_time(AMERICAN)
+				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -481,7 +481,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
-				next_win = world.time + short_win_time(AMERICAN)
+				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -490,7 +490,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
-				next_win = world.time + short_win_time(AMERICAN)
+				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
