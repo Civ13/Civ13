@@ -80,3 +80,39 @@ obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+
+/obj/structure/carriage_tdm
+	name = "Stagecoach Load"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/carriage_tdm/New()
+	..()
+	desc = "Stored Value: [storedvalue]."
+	timer()
+
+/obj/structure/carriage_tdm/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		storedvalue += (W.value*W.amount)
+		desc = "Stored Value: [storedvalue]."
+		user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (storedvalue >= 1500)
+			map.update_win_condition()
+	else
+		return
+
+/obj/structure/carriage_tdm/proc/timer()
+	spawn(4000)
+		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
+		timer()

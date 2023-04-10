@@ -76,3 +76,48 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return TRUE
+
+
+/obj/structure/carriage
+	name = "Stagecoach Load"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+	var/faction1val = 0
+	var/faction2val = 0
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/carriage/New()
+	..()
+	desc = "West Side: [faction1val]. East Side: [faction2val]."
+	timer()
+
+/obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			if (H.original_job_title == "West Side Gang")
+				faction1val += (W.value*W.amount)
+			else if (H.original_job_title == "East Side Gang")
+				faction2val += (W.value*W.amount)
+			desc = "West Side: [faction1val]. East Side: [faction2val]."
+			user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (faction1val >= 750)
+			map.update_win_condition()
+		else if (faction2val >= 750)
+			map.update_win_condition()
+	else
+		return
+
+/obj/structure/carriage/proc/timer()
+	spawn(4000)
+		world << "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>."
+		timer()
