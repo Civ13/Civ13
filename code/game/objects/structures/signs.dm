@@ -91,7 +91,7 @@
 	..()
 	overlays.Cut()
 	var/image/img = image(icon='icons/obj/decals.dmi', icon_state = "mcd")
-	img.pixel_x = 32
+	img.pixel_y = 32
 	overlays += img
 
 /obj/structure/sign/mcd/pole/Destroy()
