@@ -128,7 +128,6 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1carbine(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_r_hand)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
@@ -821,9 +820,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/korean/us_2lt(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+//gun
+	if (prob(45))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m2carbine(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine/big(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -867,6 +873,15 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	if (prob(95))
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine(H), slot_l_store)
+		if (prob(45))
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1carbine(H), slot_shoulder)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m2carbine(H), slot_shoulder)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
@@ -1002,9 +1017,16 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/korean/usm1(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/bar(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+	if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/bar(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/browning_lmg(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/browning(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/browning(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_r_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 

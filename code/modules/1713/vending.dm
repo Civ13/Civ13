@@ -395,6 +395,7 @@
 		/obj/item/ammo_magazine/garand = 50,
 		/obj/item/ammo_magazine/springfield = 40,
 		/obj/item/ammo_magazine/bar = 15,
+		/obj/item/ammo_magazine/browning = 2,
 		/obj/item/ammo_magazine/m3006box = 10,
 		/obj/item/ammo_magazine/thompson = 15,
 		/obj/item/ammo_magazine/m1911 = 10,
@@ -1014,6 +1015,12 @@ obj/structure/vending/hezammo
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/musketoon/B = new/obj/item/weapon/gun/projectile/flintlock/musketoon(src.loc)
+		src.stock_auto(B)
+
+/obj/structure/vending/craftable/rifles/wood/filled_lebel/New()
+	..()
+	for(var/i=1, i<=5, i++)
+		var/obj/item/weapon/gun/projectile/boltaction/lebel/B = new/obj/item/weapon/gun/projectile/boltaction/lebel(src.loc)
 		src.stock_auto(B)
 /obj/structure/vending/yeltsinapparel
 	name = "Russian Army apparel rack"

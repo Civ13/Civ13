@@ -212,3 +212,21 @@
 	new /obj/item/weapon/material/thrown/kunai_normal(src)
 	new /obj/item/weapon/material/thrown/kunai_normal(src)
 	new /obj/item/weapon/material/thrown/kunai_normal(src)
+
+/obj/item/weapon/storage/belt/tacpouches
+	name = "Tactical Pouches"
+	desc = "A belt with 6 small pouches, that can fit items like magazines, knives, and other small things."
+	icon_state = "pouches"
+	item_state = "pouches"
+	storage_slots = 6
+	max_w_class = 3
+
+/obj/item/weapon/storage/belt/tacpouches/olive
+	icon_state = "pouches_olive"
+	item_state = "pouches_olive"
+/obj/item/weapon/storage/belt/tacpouches/white
+	icon_state = "pouches_white"
+	item_state = "pouches_white"
+/obj/item/weapon/storage/belt/tacpouches/green
+	icon_state = "pouches_green"
+	item_state = "pouches_green"

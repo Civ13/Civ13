@@ -377,6 +377,8 @@
 			use(1)
 		return
 
+/obj/item/stack/medical/splint/small
+	amount = 1
 /obj/item/stack/medical/bruise_pack/bint
 	name = "cloth bandages"
 	singular_name = "cloth bandage"

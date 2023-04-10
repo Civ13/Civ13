@@ -43,17 +43,17 @@
 
 		// large body parts: chest, groin
 		"large" = list(
-			SHORT_RANGE_STILL = 70,
-			SHORT_RANGE_MOVING = 61,
+			SHORT_RANGE_STILL = 78,
+			SHORT_RANGE_MOVING = 66,
 
-			MEDIUM_RANGE_STILL = 51,
-			MEDIUM_RANGE_MOVING = 42,
+			MEDIUM_RANGE_STILL = 55,
+			MEDIUM_RANGE_MOVING = 45,
 
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 27,
+			LONG_RANGE_STILL = 33,
+			LONG_RANGE_MOVING = 30,
 
-			VERY_LONG_RANGE_STILL = 15,
-			VERY_LONG_RANGE_MOVING = 14),
+			VERY_LONG_RANGE_STILL = 19,
+			VERY_LONG_RANGE_MOVING = 15),
 	)
 
 	accuracy_increase_mod = 1.00
@@ -68,7 +68,7 @@
 	full_auto = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 0),)
+		list(name = "full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.2), recoil = 0),)
 
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -104,7 +104,7 @@
 	magazine_type = /obj/item/ammo_magazine/madsen
 	good_mags = list(/obj/item/ammo_magazine/madsen)
 	weight = 9.12
-
+	effectiveness_mod = 1.01
 	force = 20
 	throwforce = 30
 	slot_flags = SLOT_SHOULDER
@@ -123,6 +123,7 @@
 	throwforce = 30
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
+	effectiveness_mod = 1.00
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
 
@@ -140,6 +141,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
+	effectiveness_mod = 1.05
 	bad_magazine_types = list(/obj/item/ammo_magazine/maxim)
 /obj/item/weapon/gun/projectile/automatic/bar
 	name = "M1918A2 BAR"
@@ -155,6 +157,7 @@
 	weight = 9.12
 	force = 20
 	throwforce = 30
+	effectiveness_mod = 1.02
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 ///////////////////////////M1919A6//////////////////////
 /obj/item/weapon/gun/projectile/automatic/browning_lmg
@@ -173,6 +176,7 @@
 	weight = 12.50 //heavy piece of shit
 	force = 20
 	throwforce = 30
+	effectiveness_mod = 1.01
 /obj/item/weapon/gun/projectile/automatic/browning_lmg/update_icon()
 	icon_state = "browlmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
@@ -197,6 +201,7 @@
 	fire_sound = 	'sound/weapons/guns/fire/mg34.ogg'
 	force = 20
 	throwforce = 30
+	effectiveness_mod = 1.01
 	var/cover_open = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/mg34/special_check(mob/user)
@@ -261,6 +266,7 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 1
+	effectiveness_mod = 1.04
 
 /obj/item/weapon/gun/projectile/automatic/m249
 	name = "M249 SAW"
@@ -283,6 +289,7 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 1
+	effectiveness_mod = 1.07
 
 /obj/item/weapon/gun/projectile/automatic/handle_post_fire()
 	..()
@@ -317,6 +324,7 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.8
+	effectiveness_mod = 1.07
 
 /obj/item/weapon/gun/projectile/automatic/rpd
 	name = "RPD machine gun"
@@ -442,6 +450,7 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.9
+	effectiveness_mod = 1.01
 ////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13
@@ -464,7 +473,7 @@
 	equiptimer = 21
 	load_delay = 21
 	slowdown = 0.5
-	effectiveness_mod = 0.98
+	effectiveness_mod = 1.01
 
 /obj/item/weapon/gun/projectile/automatic/mg13/update_icon()
 	if (ammo_magazine)
@@ -502,7 +511,7 @@
 	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
 	force = 20
 	throwforce = 30
-
+	effectiveness_mod = 1.07
 /obj/item/weapon/gun/projectile/automatic/c6/update_icon()
 	if (ammo_magazine)
 		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"

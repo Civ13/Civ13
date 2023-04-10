@@ -1528,6 +1528,13 @@
 	new /obj/item/flashlight/torch/on(src.storage)
 	update_icon()
 
+/obj/structure/torch_stand/lantern
+
+/obj/structure/torch_stand/lantern/New()
+	..()
+	new /obj/item/flashlight/lantern/on(src.storage)
+	update_icon()
+
 //////////////////////////CAMONET/////////////////////////////////
 
 /obj/structure/camonet

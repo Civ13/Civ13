@@ -325,10 +325,9 @@
 	item_state = "advfirstaid2"
 	w_class = ITEM_SIZE_SMALL
 	can_hold = list(
-		/obj/item/stack/medical/advanced/bruise_pack,
-		/obj/item/stack/medical/advanced/ointment,
-		/obj/item/stack/medical/splint,
-		/obj/item/weapon/pill_pack/tramadol
+		/obj/item/stack/medical,
+		/obj/item/weapon/pill_pack,
+		/obj/item/weapon/reagent_containers/syringe
 		)
 /obj/item/weapon/storage/box/firstaid/advsmall/New()
 	..()
@@ -336,6 +335,25 @@
 	new /obj/item/stack/medical/advanced/ointment(src)
 	new /obj/item/stack/medical/splint(src)
 	new /obj/item/weapon/pill_pack/tramadol(src)
+	return
+
+/obj/item/weapon/storage/box/firstaid/advsmall/small
+	name = "Small Pocket medkit"
+	desc = "Contains basic first-aid medicine."
+	icon_state = "ifirstaid"
+	item_state = "ifirstaid"
+	w_class = ITEM_SIZE_SMALL
+	can_hold = list(
+		/obj/item/stack/medical,
+		/obj/item/weapon/pill_pack,
+		/obj/item/weapon/reagent_containers/syringe
+		)
+/obj/item/weapon/storage/box/firstaid/advsmall/small/New()
+	..()
+	new /obj/item/stack/medical/splint/small(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
+	new /obj/item/weapon/pill_pack/paracetamol(src)
 	return
 
 /obj/item/weapon/storage/box/nbcbox
