@@ -781,12 +781,3 @@
 		icon_state = "fossil_[rand(1, 10)]"
 		value = rand(10, 18)
 		..()
-/*
-/obj/item/stack/material/steelrods
-	name = "steel rods"
-	icon_state = "rods"
-	default_type = "steelrods"
-	w_class = ITEM_SIZE_SMALL
-	value = 6
-	max_amount = 500
-	singular_name = "steel rod"*/
