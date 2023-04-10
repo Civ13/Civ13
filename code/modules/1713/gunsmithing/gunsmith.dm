@@ -13,6 +13,10 @@
 	not_disassemblable = TRUE
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 
+/obj/structure/gunbench/examine(mob/user)
+	..()
+	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
+
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 	if (istype(P, /obj/item/stack/material/wood))
@@ -203,7 +207,7 @@
 		if (M.value*M.amount >= 20)
 			found = TRUE
 	if (!found)
-		user << "You don't have enough money to make a new blueprint! You need 50 gold or equivalent in one of your hands."
+		user << "You don't have enough money to make a new blueprint! You need 50 gold coins or equivalent in one of your hands."
 		return FALSE
 		
 ////////////////STOCK///////////////////////////////
