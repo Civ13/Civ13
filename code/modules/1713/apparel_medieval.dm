@@ -1690,6 +1690,7 @@
 	icon_state = "steppe_shaman_wool_hat"
 	item_state = "steppe_shaman_wool_hat"
 	worn_state = "steppe_shaman_wool_hat"
+	cold_protection = HEAD
 
 /obj/item/clothing/suit/storage/jacket/steppe_shaman
 	name = "steppe shaman wool coat"
