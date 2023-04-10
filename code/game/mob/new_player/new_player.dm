@@ -103,6 +103,13 @@ var/global/redirect_all_players = null
 	<html>
 	<head>
 	[common_browser_style]
+	<script>
+		document.attachEvent('onclick', function(event) {
+			if (event.shiftKey) {
+				event.returnValue = false;
+			}
+		});
+	</script>
 	</head>
 	<body><center>
 	PLACEHOLDER
