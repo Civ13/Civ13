@@ -1,17 +1,29 @@
 /////////////////Roulette//////////////////
 
 /obj/item/weapon/roulette/chip
-	name = "black roulette chip"
+	name = "blue roulette chip"
 	icon = 'icons/obj/items.dmi'
-	icon_state = "chip_black"
-	var/chip_color = "black"
-	var/chip_worth = 100
+	icon_state = "chip_blue"
+	var/chip_color = "blue"
+	var/chip_worth = 1
 
 /obj/item/weapon/roulette/chip/red
 	name = "red roulette chip"
 	icon_state = "chip_red"
 	chip_color = "red"
 	chip_worth = 5
+
+/obj/item/weapon/roulette/chip/green
+	name = "green roulette chip"
+	icon_state = "chip_green"
+	chip_color = "green"
+	chip_worth = 25
+
+/obj/item/weapon/roulette/chip/black
+	name = "black roulette chip"
+	icon_state = "chip_black"
+	chip_color = "black"
+	chip_worth = 100
 
 /obj/item/weapon/roulette/chip/examine(mob/user, distance)
 	. = ..()
