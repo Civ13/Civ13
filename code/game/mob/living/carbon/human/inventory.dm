@@ -578,43 +578,47 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!mob)
 		return
 	if (ishuman(mob))
-		if (mob.m_intent == "run")
-			mob.m_intent = "proning"
-		else if (mob.m_intent == "proning")
-			if (mob.facing_dir)
-				mob.set_face_dir()
-			mob.m_intent = "stealth"
-		else if (mob.m_intent == "stealth")
-			mob.m_intent = "walk"
-		else if (mob.m_intent == "walk")
-			mob.m_intent = "run"
-		else
-			mob.m_intent = "walk"
-
-		if (mob.m_intent == "proning")
-			mob.prone = TRUE
-			mob.facing_dir = dir
-			if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-				mob.dir = WEST
-			else
-				mob.dir = EAST
-			var/matrix/M = matrix()
-			M.Turn(90)
-			var/mob/living/human/H = mob
-			M.Scale(H.size_multiplier)
-			M.Translate(1,-6)
-			mob.transform = M
-		else
-			mob.prone = FALSE
-			var/matrix/M = matrix()
-			var/mob/living/human/H = mob
-			M.Scale(H.size_multiplier)
-			M.Translate(0, 16*(H.size_multiplier-1))
-			mob.transform = M
-		if (mob.HUDneed.Find("m_intent"))
-			var/obj/screen/intent/I = mob.HUDneed["m_intent"]
-			I.update_icon()
+		if (mob.stat == DEAD || mob.stat == UNCONSCIOUS)
 			return
+		else
+			if (mob.m_intent == "run")
+				mob.m_intent = "proning"
+			else if (mob.m_intent == "proning")
+				if (mob.facing_dir)
+					mob.set_face_dir()
+				mob.m_intent = "stealth"
+			else if (mob.m_intent == "stealth")
+				mob.m_intent = "walk"
+			else if (mob.m_intent == "walk")
+				mob.m_intent = "run"
+			else
+				mob.m_intent = "walk"
+
+			if (mob.m_intent == "proning")
+				mob.prone = TRUE
+				mob.facing_dir = dir
+				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+					mob.dir = WEST
+				else
+					mob.dir = EAST
+				var/matrix/M = matrix()
+				M.Turn(90)
+				var/mob/living/human/H = mob
+				M.Scale(H.size_multiplier)
+				M.Translate(1,-6)
+				mob.transform = M
+			else
+				mob.prone = FALSE
+				var/matrix/M = matrix()
+				var/mob/living/human/H = mob
+				M.Scale(H.size_multiplier)
+				M.Translate(0, 16*(H.size_multiplier-1))
+				mob.transform = M
+
+			if (mob.HUDneed.Find("m_intent"))
+				var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+				I.update_icon()
+				return
 
 /client/verb/secondary_intent_change()
 	set name = "secondary-intent-change"
@@ -679,14 +683,67 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else if (mob.m_intent == "proning")
 		if (mob.facing_dir)
 			mob.set_face_dir()
-			mob.m_intent = "walk"
+		mob.m_intent = "run"
+		mob.prone = FALSE
+		var/matrix/M = matrix()
+		M.Scale(H.size_multiplier)
+		M.Translate(0, 16*(H.size_multiplier-1))
+		mob.transform = M
 	else
 		mob.m_intent = "walk"
 
 	if (mob.HUDneed.Find("m_intent"))
 		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
 		I.update_icon()
+		return
 
+/client/verb/m_intent_prone()
+	set name = "m-intent-prone"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/human))
+		return
+	var/mob/living/human/H = mob
+	if (H.stat == DEAD || H.stat == UNCONSCIOUS)
+		return
+
+	if (H.m_intent == "walk")
+		mob.m_intent = "proning"
+	else if (H.m_intent == "run")
+		mob.m_intent = "proning"
+	else if (mob.m_intent == "stealth")
+		mob.m_intent = "proning"
+	else
+		if (mob.facing_dir)
+			mob.set_face_dir()
+		mob.m_intent = "walk"
+
+	if (mob.m_intent == "proning")
+		mob.prone = TRUE
+		mob.facing_dir = dir
+		if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+			mob.dir = WEST
+		else
+			mob.dir = EAST
+		var/matrix/M = matrix()
+		M.Turn(90)
+		M.Scale(H.size_multiplier)
+		M.Translate(1,-6)
+		mob.transform = M
+	else
+		mob.prone = FALSE
+		var/matrix/M = matrix()
+		M.Scale(H.size_multiplier)
+		M.Translate(0, 16*(H.size_multiplier-1))
+		mob.transform = M
+
+	if (mob.HUDneed.Find("m_intent"))
+		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+		I.update_icon()
+		return
 
 /client/verb/tactic_intent()
 	set name = "tactic-intent"

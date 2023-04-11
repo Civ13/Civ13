@@ -626,6 +626,7 @@
 	rots = FALSE
 	satisfaction = 3
 	non_vegetarian = TRUE
+	w_class = ITEM_SIZE_TINY
 	New()
 		..()
 		reagents.add_reagent("protein", 1)

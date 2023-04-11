@@ -292,6 +292,9 @@ macro "hotkeymode"
 	elem 
 		name = "U"
 		command = "secondary-intent-change"
+	elem 
+		name = "V"
+		command = "defense-intent-change"
 	elem "w_key"
 		name = "W"
 		command = ".startmovingup"
@@ -306,13 +309,19 @@ macro "hotkeymode"
 		command = ".northeast"
 	elem 
 		name = "Y"
-		command = "defense-intent-change"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+Y"
+		command = "Activate-Held-Object"
 	elem 
 		name = "Z"
 		command = "Activate-Held-Object"
 	elem 
 		name = "CTRL+Z"
 		command = "Activate-Held-Object"
+	elem
+		name = ","
+		command = "m-intent-prone"
 	elem 
 		name = "Numpad1"
 		command = "zone_sel_right_lower"

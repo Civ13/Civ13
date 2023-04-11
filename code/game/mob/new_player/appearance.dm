@@ -218,11 +218,12 @@
 		name = "Buzzcut"
 		icon_state = "hair_buzzcut"
 		gender = MALE
-		growth = 1
+		growth = 0
 
 	buzz2
 		name = "Buzzcut Alt"
 		icon_state = "hair_buzzcut2"
+		growth = 0
 
 	crew
 		name = "Crewcut"
@@ -367,7 +368,7 @@
 		growth = 2
 
 	sweptshort
-		name = "Shor-Swept"
+		name = "Short-Swept"
 		icon_state = "hair_swept_short"
 		growth = 2
 
@@ -455,7 +456,7 @@
 	skinhead
 		name = "Skinhead"
 		icon_state = "hair_skinhead"
-		growth = 1
+		growth = 0
 
 	trimmed
 		name = "Trimmed"
@@ -465,7 +466,7 @@
 	hightight
 		name = "High Tight"
 		icon_state = "hair_hightight"
-		growth = 1
+		growth = 0
 
 	balding
 		name = "Balding Hair"
@@ -572,6 +573,7 @@
 	volaju
 		name = "Volaju"
 		icon_state = "hair_volaju"
+		growth = 2
 
 //	longeralt2
 //		name = "Long Hair Alt 2"
@@ -653,7 +655,7 @@
 		name = "High Fade"
 		icon_state = "hair_highfade"
 		gender = MALE
-		growth = 1
+		growth = 0
 
 	nofade
 		name = "Regulation Cut"
