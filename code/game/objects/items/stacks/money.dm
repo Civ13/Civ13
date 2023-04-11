@@ -366,85 +366,6 @@
 	else
 		..()
 
-/obj/structure/carriage
-	name = "Stagecoach Load"
-	desc = ""
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "miningcaropen"
-	anchored = TRUE
-	opacity = FALSE
-	density = TRUE
-	flammable = FALSE
-	var/storedvalue = 0
-	var/prevent = FALSE
-	var/faction1val = 0
-	var/faction2val = 0
-	not_movable = TRUE
-	not_disassemblable = TRUE
-
-/obj/structure/carriage/New()
-	..()
-	desc = "West Side: [faction1val]. East Side: [faction2val]."
-	timer()
-
-/obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
-		if (ishuman(user))
-			var/mob/living/human/H = user
-			if (H.original_job_title == "West Side Gang")
-				faction1val += (W.value*W.amount)
-			else if (H.original_job_title == "East Side Gang")
-				faction2val += (W.value*W.amount)
-			desc = "West Side: [faction1val]. East Side: [faction2val]."
-			user << "You place \the [W] inside \the [src]."
-		qdel(W)
-		if (faction1val >= 750)
-			map.update_win_condition()
-		else if (faction2val >= 750)
-			map.update_win_condition()
-	else
-		return
-
-/obj/structure/carriage/proc/timer()
-	spawn(4000)
-		world << "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>."
-		timer()
-
-/obj/structure/carriage_tdm
-	name = "Stagecoach Load"
-	desc = ""
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "miningcaropen"
-	anchored = TRUE
-	opacity = FALSE
-	density = TRUE
-	flammable = FALSE
-	var/storedvalue = 0
-	var/prevent = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-
-/obj/structure/carriage_tdm/New()
-	..()
-	desc = "Stored Value: [storedvalue]."
-	timer()
-
-/obj/structure/carriage_tdm/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
-		storedvalue += (W.value*W.amount)
-		desc = "Stored Value: [storedvalue]."
-		user << "You place \the [W] inside \the [src]."
-		qdel(W)
-		if (storedvalue >= 1500)
-			map.update_win_condition()
-	else
-		return
-
-/obj/structure/carriage_tdm/proc/timer()
-	spawn(4000)
-		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
-		timer()
-
 /obj/item/stack/money/goldvaluables
 	name = "gold valuables"
 	desc = "A bunch of valuables."
@@ -499,7 +420,7 @@
 
 /obj/item/stack/money/coppercoin
 	name = "copper coins"
-	desc = "A small copper coin. Worth 1/10th of a silver coin."
+	desc = "A small copper coin. Worth 1/10th of a silver coin or 1/40th of a gold coin."
 	singular_name = "copper coin"
 	icon_state = "coppercoin_pile"
 	amount = 1
@@ -511,7 +432,7 @@
 
 /obj/item/stack/money/silvercoin
 	name = "silver coins"
-	desc = "A small silver coin. Worth 1/4th of a gold coin."
+	desc = "A small silver coin. Worth 1/4th of a gold coin or 10 copper coins."
 	singular_name = "silver coin"
 	icon_state = "silvercoin_pile"
 	amount = 1
@@ -599,7 +520,7 @@
 		icon_state = "septim_500+"
 	update_icon()
 	return ..()
-	
+
 /obj/item/stack/money/septim/update_icon()
 	if(amount == 2)
 		icon_state = "septim_2"

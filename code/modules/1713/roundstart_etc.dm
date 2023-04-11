@@ -29,8 +29,6 @@ var/GRACE_PERIOD_LENGTH = 7
 						sleep(1)
 					world << "<br><font size=3><span class = 'notice'>It's <b>[lowertext(processes.time_of_day_change.changeto)]</b>, and the season is <b>[get_season()]</b>.</span></font>"
 
-	// spawn mice so pirates have something to eat after they start starving
-
 	// open squad preparation doors
 	for (var/obj/structure/simple_door/key_door/keydoor in door_list)
 		if (findtext(keydoor.name, "Squad"))
@@ -40,11 +38,11 @@ var/GRACE_PERIOD_LENGTH = 7
 
 // this is roundstart because we need to wait for objs to be created
 /hook/roundstart/proc/nature()
-
+	spawn(1)
 	if (map && (map.nomads && !map.override_mapgen) || map.force_mapgen)
 		spawn(10)
 			map.seed_the_map()
-	return
+	return TRUE
 
 /obj/map_metadata/proc/seed_the_map()
 	var/list/jungleriverturfs = list()

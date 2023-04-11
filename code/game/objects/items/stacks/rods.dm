@@ -1,17 +1,18 @@
 /obj/item/stack/rods
 	name = "metal rod"
-	desc = "Some rods. Can be used for building, or something."
+	desc = "Some metal rods. Can be used for building."
+	icon = 'icons/obj/materials.dmi'
 	singular_name = "metal rod"
 	icon_state = "rods"
-	flags = CONDUCT
 	w_class = ITEM_SIZE_NORMAL
 	force = WEAPON_FORCE_PAINFUL
-	throwforce = WEAPON_FORCE_PAINFUL
-	throw_speed = 5
-	throw_range = 20
-	max_amount = 60
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 3
+	throw_range = 3
+	max_amount = 50
 	attack_verb = list("hit", "bludgeoned", "whacked")
 	flags = CONDUCT
+
 /obj/item/stack/rods/attack_self(mob/user as mob)
 	add_fingerprint(user)
 

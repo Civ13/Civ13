@@ -13,15 +13,17 @@
 	not_disassemblable = TRUE
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 
-/obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
+/obj/structure/gunbench/examine(mob/user)
+	..()
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
+
+/obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
 			user << "<span class='notice'>You cut the wood.</span>"
 			wood_amt += P.amount
-			desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 			qdel(P)
 		return
 
@@ -31,7 +33,6 @@
 		if (do_after(user,15*P.amount,src))
 			user << "<span class='notice'>You smite the steel.</span>"
 			steel_amt += P.amount
-			desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 			qdel(P)
 		return
 
@@ -203,7 +204,7 @@
 		if (M.value*M.amount >= 20)
 			found = TRUE
 	if (!found)
-		user << "You don't have enough money to make a new blueprint! You need 50 gold or equivalent in one of your hands."
+		user << "You don't have enough money to make a new blueprint! You need 50 gold coins or equivalent in one of your hands."
 		return FALSE
 		
 ////////////////STOCK///////////////////////////////

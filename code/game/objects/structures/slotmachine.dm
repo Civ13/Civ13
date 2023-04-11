@@ -122,7 +122,7 @@
 /obj/machinery/slotmachine/proc/pull_lever(mob/living/user)
 	sleep(5)
 	if(!check_win(user))// if we have not won anything - jackpot or regular bet
-		//playsound(src.loc, 'sound/machines/buzz-sigh.ogg', 50, 1)
+		playsound(src.loc, 'sound/machines/buzz-sigh.ogg', 50, 1)
 		src.visible_message("<b>[name]</b> states, \"Sorry, maybe, next time..\"")
 		jackpot += bet
 

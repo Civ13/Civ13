@@ -294,9 +294,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
 	var/obj/item/weapon/key/civ/build_override_key = null
-	var/obj/item/stack/money/coppercoin/build_override_coins_copper = null
-	var/obj/item/stack/money/silvercoin/build_override_coins_silver = null
-	var/obj/item/stack/money/goldcoin/build_override_coins_gold = null
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = null
 	var/obj/structure/vending/sales/build_override_vending = null
 	var/obj/structure/supplier/build_override_supply = null
@@ -833,51 +830,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				targetskull = "impaled [targetskull] skull"
 				customname = targetskull
 				qdelHandReturn(H.r_hand, H)
-
-	else if (findtext(recipe.title, "copper coins"))
-		build_override_coins_copper = new /obj/item/stack/money/coppercoin
-		customname = input(user, "Choose a name for these coins:") as text|null
-		if (H.civilization != "none")
-			if (customname == null)
-				customname = "[H.civilization]'s copper coins"
-			else
-				customname = "[H.civilization]'s copper [customname]"
-			customdesc = "copper coins, minted by the [H.civilization]."
-			build_override_coins_copper.name = customname
-			build_override_coins_copper.desc = customdesc
-		else
-			build_override_coins_copper.name = "copper [customname]"
-			build_override_coins_copper.desc = "copper coins, minted by [H]."
-
-	else if (findtext(recipe.title, "silver coins"))
-		build_override_coins_silver = new /obj/item/stack/money/silvercoin
-		customname = input(user, "Choose a name for these coins:") as text|null
-		if (H.civilization != "none")
-			if (customname == null)
-				customname = "[H.civilization]'s silver coins"
-			else
-				customname = "[H.civilization]'s silver [customname]"
-			customdesc = "silver coins, minted by the [H.civilization]."
-			build_override_coins_silver.name = customname
-			build_override_coins_silver.desc = customdesc
-		else
-			build_override_coins_silver.name = "silver [customname]"
-			build_override_coins_silver.desc = "silver coins, minted by [H]."
-
-	else if (findtext(recipe.title, "gold coins"))
-		build_override_coins_gold = new /obj/item/stack/money/goldcoin
-		customname = input(user, "Choose a name for these coins:") as text|null
-		if (H.civilization != "none")
-			if (customname == null)
-				customname = "[H.civilization]'s gold coins"
-			else
-				customname = "[H.civilization]'s gold [customname]"
-			customdesc = "gold coins, minted by the [H.civilization]."
-			build_override_coins_gold.name = customname
-			build_override_coins_gold.desc = customdesc
-		else
-			build_override_coins_gold.name = "gold [customname]"
-			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
 	if (findtext(recipe.title, "gravestone"))
 		customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
@@ -1888,6 +1840,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (inpt > 150)
 			inpt = 150
 		required = 2*(inpt/75)
+
 	if (use(required,H))
 		var/atom/O
 		if (recipe && recipe.use_material && recipe.result_type)
@@ -1900,11 +1853,13 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.caliber = inpt
 			T.name = "[T.caliber]mm tank cannon"
 			T.w_class = T.caliber/2
+			return
 
 		if(istype(O, /obj/item/stack/ammopart/casing/tank))
 			var/obj/item/stack/ammopart/casing/tank/T = O
 			T.caliber = inpt
 			T.name = "[T.caliber]mm cannon casing"
+			return
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
@@ -1913,6 +1868,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			else
 				O.color = input
 				return
+				
 		if (istype(O, /obj/structure/closet/crate/wall_mailbox) && !istype(O, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")
@@ -1925,6 +1881,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 				M.overlays += mailbox_color_overlay
 				M.loc = get_step(user, user.dir)
 				return
+
 		if (istype(O, /obj/structure/sign) && !istype(O, /obj/structure/sign/signpost))
 			if (customname != "")
 				O.name = customname
@@ -1933,51 +1890,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			var/obj/structure/sign/S = O
 			S.loc = get_step(user, user.dir)
 			return
+
 		if (istype(O, /obj/structure/noticeboard) || istype(O, /obj/structure/mirror))
 			var/obj/structure/noticeboard/N = O
 			N.loc = get_step(user, user.dir)
 			return
+
 		if (istype(O, /obj/item/clothing/accessory/medal))
 			if (customdesc != "")
 				O.desc = customdesc
 			var/obj/item/clothing/accessory/medal/M = O
 			M.loc = get_turf(user)
 			return
+
 		if (build_override_firelance)
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
 			build_override_firelance.add_fingerprint(user)
 			qdel(O)
 			return
+
 		if (build_override_key)
 			build_override_key.loc = get_turf(O)
 			build_override_key.set_dir(user.dir)
 			build_override_key.add_fingerprint(user)
-			qdel(O)
-			return
-
-
-		if (build_override_coins_copper)
-			build_override_coins_copper.loc = get_turf(O)
-			build_override_coins_copper.set_dir(user.dir)
-			build_override_coins_copper.add_fingerprint(user)
-			build_override_coins_copper.amount = produced
-			qdel(O)
-			return
-
-		if (build_override_coins_silver)
-			build_override_coins_silver.loc = get_turf(O)
-			build_override_coins_silver.set_dir(user.dir)
-			build_override_coins_silver.add_fingerprint(user)
-			build_override_coins_silver.amount = produced
-			qdel(O)
-			return
-
-		if (build_override_coins_gold)
-			build_override_coins_gold.loc = get_turf(O)
-			build_override_coins_gold.set_dir(user.dir)
-			build_override_coins_gold.add_fingerprint(user)
-			build_override_coins_gold.amount = produced
 			qdel(O)
 			return
 
