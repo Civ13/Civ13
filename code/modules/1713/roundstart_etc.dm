@@ -39,9 +39,9 @@ var/GRACE_PERIOD_LENGTH = 7
 // this is roundstart because we need to wait for objs to be created
 /hook/roundstart/proc/nature()
 	spawn(1)
-		if (map && (map.nomads && !map.override_mapgen) || map.force_mapgen)
-			spawn(10)
-				map.seed_the_map()
+	if (map && (map.nomads && !map.override_mapgen) || map.force_mapgen)
+		spawn(10)
+			map.seed_the_map()
 	return TRUE
 
 /obj/map_metadata/proc/seed_the_map()
