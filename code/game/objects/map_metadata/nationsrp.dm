@@ -107,7 +107,7 @@
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
-		"War Never Changes:1" = "sound/music/war_never_changes.ogg",)
+		"Emma:1" = "sound/music/emma.ogg",)
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -136,7 +136,7 @@
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
-		"War Never Changes:1" = "sound/music/war_never_changes.ogg",)
+		"Emma:1" = "sound/music/emma.ogg",)
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
