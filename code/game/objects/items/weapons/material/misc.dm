@@ -670,12 +670,10 @@
 	var/ownerdir_z = 1
 	var/ownerdir = NORTH
 	var/deployed = FALSE
-	var/cooldown = FALSE
 	block_chance = 5
-	cooldownw = 12
 
 /obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
-	if (!cooldown)
+	if (do_after(user, 15, src, can_move = FALSE))
 		if (deployed)
 			deployed = FALSE
 			user << "<span class='notice'>You lift your [name] up, falling out of formation.</span>"
@@ -686,8 +684,6 @@
 			update_icon()
 			check_dmg()
 			return
-		spawn(10 SECONDS)
-			cooldown = FALSE
 
 /obj/item/weapon/material/spear/sarissa/proc/check_dmg()
 	if (deployed)

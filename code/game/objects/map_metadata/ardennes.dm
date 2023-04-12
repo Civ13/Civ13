@@ -4,8 +4,8 @@
 	lobby_icon = "icons/lobby/ardennes.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/three,/area/caribbean/no_mans_land/invisible_wall/tundra/two,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 	respawn_delay = 1200
-	no_winner ="The HQ stays under american control, stalling the germans."
-	no_hardcore = FALSE //only cowards dislike hardcore
+	no_winner ="The HQ stays under American control, stalling the German offence."
+	no_hardcore = TRUE
 	faction_organization = list(
 		AMERICAN,
 		GERMAN)
@@ -24,7 +24,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Woody Guthrine - Tear the fascists down:1" = "sound/music/tearthefascists.ogg",)
+		"Woody Guthrine - Tear the Fascists Down:1" = "sound/music/tearthefascists.ogg",)
 	gamemode = "Siege"
 
 /obj/map_metadata/ardennes/job_enabled_specialcheck(var/datum/job/J)
@@ -82,7 +82,6 @@
 		return ""
 
 /obj/map_metadata/ardennes/update_win_condition()
-
 	if (world.time >= 27000)
 		if (win_condition_spam_check)
 			return FALSE

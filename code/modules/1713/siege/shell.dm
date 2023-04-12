@@ -361,7 +361,7 @@
 	storage.storage_slots = 16
 	storage.max_w_class = 10
 	storage.max_storage_space = 600
-	storage.can_hold = list(/obj/item/cannon_ball/shell)
+	storage.can_hold = list(/obj/item/cannon_ball/shell,/obj/item/cannon_ball/rocket)
 	update_icon()
 
 /obj/structure/shellrack/Destroy()
@@ -553,4 +553,26 @@
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	update_icon()
+
+/obj/structure/shellrack/fullrocket/New()
+	..()
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
 	update_icon()
