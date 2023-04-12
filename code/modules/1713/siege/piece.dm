@@ -10,7 +10,8 @@
 	var/high_distance = 0
 	var/high = TRUE
 	var/mob/user = null
-	var/obj/item/cannon_ball/loaded = null
+	var/list/obj/item/cannon_ball/loaded = new/list()
+	var/max_loaded = 1
 	bound_height = 64
 	bound_width = 32
 	anchored = TRUE
@@ -116,8 +117,8 @@
 		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		var/found_loader = FALSE
@@ -139,7 +140,7 @@
 					return FALSE
 				M.remove_from_mob(W)
 				W.loc = src
-				loaded = W
+				loaded += W
 				M << SPAN_NOTICE("You load \the [src].")
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 				return
@@ -171,14 +172,14 @@
 		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		if (M && (locate(M) in range(1,src)))
 			M.remove_from_mob(W)
 			W.loc = src
-			loaded = W
+			loaded += W
 			M << SPAN_NOTICE("You load \the [src].")
 			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 			return
@@ -225,8 +226,8 @@
 
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		var/loadtime = caliber/2
@@ -236,7 +237,7 @@
 			if (M && (locate(M) in range(1,src)))
 				M.remove_from_mob(W)
 				W.loc = src
-				loaded = W
+				loaded += W
 				user << SPAN_NOTICE("You load \the [src].")
 				if (M == user)
 					do_html(M)
@@ -282,7 +283,9 @@
 		return
 
 	user.face_atom(src)
-	var/istank = istype(src, /obj/structure/cannon/modern/tank)
+	var/istank = FALSE
+	if (istype(src, /obj/structure/cannon/modern/tank))
+		istank = TRUE
 	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
@@ -316,7 +319,7 @@
 		return FALSE
 
 	if (href_list["load"])
-		if (!loaded)
+		if (!loaded.len)
 			var/obj/item/cannon_ball/M = user.get_active_hand()
 			if (istype(M, ammotype))
 				var/obj/item/cannon_ball/shell/tank/TS = M
@@ -343,19 +346,19 @@
 							return FALSE
 						user.remove_from_mob(M)
 						M.loc = src
-						loaded = M
+						loaded += M
 						user << SPAN_NOTICE("You load \the [src].")
 						if (istype(src, /obj/structure/cannon/modern/tank))
 							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 						return
 		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
-			var/obj/item/cannon_ball/M = loaded
+			var/obj/item/cannon_ball/M = loaded[1]
 			var/unloadtime = caliber/8
 			if (do_after(user, unloadtime, user, can_move = TRUE))
 				if (user && (locate(user) in range(1,src)))
+					loaded -= M
 					M.loc = get_turf(user)
 					user.put_in_active_hand(M)
-					loaded = null
 					user << SPAN_NOTICE("You unload \the [src].")
 					if (istype(src, /obj/structure/cannon/modern/tank))
 						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -389,7 +392,7 @@
 			user << "<span class = 'danger'>You can't fire yet.</span>"
 			return
 
-		if (!loaded)
+		if (!loaded.len)
 			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
@@ -404,265 +407,407 @@
 				if (BS1.opacity)
 					user << "You have no opening to fire through!"
 					return
-		if (do_after(user, firedelay, src, can_move = istank))
+		
+		
+		if (istype(src, /obj/structure/cannon/rocket))
+			for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
+				if (do_after(user, firedelay, src, can_move = istank))
+					// firing code
 
-			// firing code
+					// screen shake
+					for (var/mob/m in player_list)
+						if (m.client)
+							var/abs_dist = abs(m.x - x) + abs(m.y - y)
+							if (abs_dist <= 37)
+								shake_camera(m, 3, (5 - (abs_dist/10)))
 
-			// screen shake
-			for (var/mob/m in player_list)
-				if (m.client)
-					var/abs_dist = abs(m.x - x) + abs(m.y - y)
-					if (abs_dist <= 37)
-						shake_camera(m, 3, (5 - (abs_dist/10)))
+					// smoke
+					spawn (rand(3,4))
+						new/obj/effect/effect/smoke/chem(get_step(src, dir))
+					spawn (rand(5,6))
+						new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
-			// smoke
-			spawn (rand(3,4))
-				new/obj/effect/effect/smoke/chem(get_step(src, dir))
-			spawn (rand(5,6))
-				new/obj/effect/effect/smoke/chem(get_step(src, dir))
+					// sound
+					spawn (rand(1,2))
+						var/turf/t1 = get_turf(src)
+						playsound(t1, 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
+						playsound(t1, pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg'), 40, TRUE)
 
-			// sound
-			spawn (rand(1,2))
-				var/turf/t1 = get_turf(src)
-				playsound(t1, "artillery_out", 100, TRUE)
-				playsound(t1, "artillery_out_distant", 100, TRUE)
+					// actual hit somewhere (or not)
+					var/turf/target = get_turf(src)
+					var/odir = dir
 
-			// actual hit somewhere (or not)
-			if (istype(src, /obj/structure/cannon/modern/tank))
-				var/obj/structure/cannon/modern/tank/T = src
-				T.do_tank_fire(user)
-			else
-				var/turf/target = get_turf(src)
-				var/odir = dir
+					max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
 
-				max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
+					high_distance = max_distance * 0.80
 
-				high_distance = max_distance * 0.80
+					travelled = 0
+					high = TRUE
+					
+					if (fired_shell.atype == "INCENDIARY")
+						explosion = FALSE
+						incendiary = TRUE
 
-				travelled = 0
-				high = TRUE
-				if (istype(loaded, /obj/item/cannon_ball/shell/gas))
-					explosion = FALSE
-					reagent_payload = loaded.reagent_payload
-				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/smoke))
-					explosion = FALSE
-					reagent_payload = loaded.reagent_payload
+					loaded -= fired_shell
+					qdel(fired_shell)
 
-				if (istype(loaded, /obj/item/cannon_ball/shell/incendiary))
-					explosion = FALSE
-					incendiary = TRUE
-				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/incendiary))
-					explosion = FALSE
-					incendiary = TRUE
-				
-				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
-					nuclear = TRUE
-				qdel(loaded)
-				loaded = null
+					spawn (0)
+						var/v = max_distance
 
-				spawn (0)
-					var/v = max_distance
+						if (v > high_distance)
+							high = FALSE
 
-					if (v > high_distance)
-						high = FALSE
+						var/hit = FALSE
 
-					var/hit = FALSE
-
-					var/tx = 0
-					var/ty = 0
-					if (istype(src,/obj/structure/cannon/mortar))
+						var/tx = 0
+						var/ty = 0
 						switch (odir)
 							if (EAST)
-								tx = x + max_distance + pick(0,pick(1,-1))
-								ty = y - sway + pick(0,pick(1,-1))
+								tx = x + max_distance + rand(-2,2)
+								ty = y - sway + rand(-2,2)
 							if (WEST)
-								tx = x - max_distance + pick(0,pick(1,-1))
-								ty = y + sway + pick(0,pick(1,-1))
+								tx = x - max_distance + rand(-2,2)
+								ty = y + sway + rand(-2,2)
 							if (NORTH)
-								tx = x + sway + pick(0,pick(1,-1))
-								ty = y + max_distance + pick(0,pick(1,-1))
+								tx = x + sway + rand(-2,2)
+								ty = y + max_distance + rand(-2,2)
 							if (SOUTH)
-								tx = x - sway + pick(0,pick(1,-1))
-								ty = y - max_distance + pick(0,pick(1,-1))
+								tx = x - sway + rand(-2,2)
+								ty = y - max_distance + rand(-2,2)
+						if (tx < 1)
+							tx = 1
+						if (tx > world.maxx)
+							tx = world.maxx
+						if (ty < 1)
+							ty = 1
+						if (ty > world.maxy)
+							ty = world.maxy
+						target = locate(tx, ty, z)
+						var/highcheck = high
+						var/area/target_area = get_area(target)
+						if (target_area.location == AREA_INSIDE)
+							highcheck = FALSE
+
+						if (v >= max_distance)
+							hit = TRUE
+						else if (target.density && !highcheck)
+							hit = TRUE
+						else if (target && !(target in range(1, get_turf(src))))
+							if (!highcheck)
+								for (var/atom/movable/AM in target)
+									// go over sandbags
+									if (AM.density && !(AM.flags & ON_BORDER))
+										var/obj/structure/S = AM
+										// go over some structures
+										if (istype(S) && S.low)
+											continue
+										hit = TRUE
+										break
+
+						if (hit)
+							spawn (60)
+								playsound(target, "artillery_in", 60, TRUE)
+								spawn (10)
+									if (explosion)
+										explosion(target, 1, 2, 3, 4)
+										if (locate(/obj/structure/vehicleparts/frame) in target)
+											for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+												for (var/mob/M in F.axis.transporting)
+													shake_camera(M, 3, 3)
+												playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+												visible_message(SPAN_DANGER("<big>The hull gets hit by a rocket!</big>"))
+												F.w_front[5] -= rand(8,16)
+												F.w_back[5] -= rand(8,16)
+												F.w_left[5] -= rand(8,16)
+												F.w_right[5] -= rand(8,16)
+
+												F.try_destroy()
+									if (incendiary)
+										explosion(target, 0, 1, 3, 4)
+										for (var/turf/floor/T in circlerangeturfs(3,target))
+											if(!locate(/obj/structure/vehicleparts/frame) in T)
+												ignite_turf(T, 12, 70)
+									else
+										message_admins("Gas rocket shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+										log_admin("Gas rocket shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+										var/how_many = 24 // half of 49, the radius we spread over (7x7)
+										for (var/k in 1 to how_many)
+											switch (reagent_payload)
+												if ("chlorine_gas")
+													new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
+												if ("mustard_gas")
+													new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
+												if ("white_phosphorus_gas")
+													new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
+												if ("xylyl_bromide")
+													new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
+												if ("phosgene_gas")
+													new/obj/effect/effect/smoke/chem/payload/phosgene(target)
+												if ("smokescreen")
+													new/obj/effect/effect/smoke/bad(target)
+						sleep(0.5)
+				else
+					return
+		else
+			if (do_after(user, firedelay, src, can_move = istank))
+				if (loaded.len)
+					// firing code
+
+					// screen shake
+					for (var/mob/m in player_list)
+						if (m.client)
+							var/abs_dist = abs(m.x - x) + abs(m.y - y)
+							if (abs_dist <= 37)
+								shake_camera(m, 3, (5 - (abs_dist/10)))
+
+					// smoke
+					spawn (rand(3,4))
+						new/obj/effect/effect/smoke/chem(get_step(src, dir))
+					spawn (rand(5,6))
+						new/obj/effect/effect/smoke/chem(get_step(src, dir))
+
+					// sound
+					spawn (rand(1,2))
+						var/turf/t1 = get_turf(src)
+						playsound(t1, "artillery_out", 100, TRUE)
+						playsound(t1, "artillery_out_distant", 100, TRUE)
+
+					// actual hit somewhere (or not)
+					if (istype(src, /obj/structure/cannon/modern/tank))
+						var/obj/structure/cannon/modern/tank/T = src
+						T.do_tank_fire(user)
 					else
-						switch (odir)
-							if (EAST)
-								tx = x + max_distance
-								ty = y - sway + pick(0,pick(1,-1))
-							if (WEST)
-								tx = x - max_distance
-								ty = y + sway + pick(0,pick(1,-1))
-							if (NORTH)
-								tx = x + sway + pick(0,pick(1,-1))
-								ty = y + max_distance
-							if (SOUTH)
-								tx = x - sway + pick(0,pick(1,-1))
-								ty = y - max_distance
-					if (tx < 1)
-						tx = 1
-					if (tx > world.maxx)
-						tx = world.maxx
-					if (ty < 1)
-						ty = 1
-					if (ty > world.maxy)
-						ty = world.maxy
-					target = locate(tx, ty, z)
-					var/highcheck = high
-					var/area/target_area = get_area(target)
-					if (target_area.location == AREA_INSIDE)
-						highcheck = FALSE
+						var/turf/target = get_turf(src)
+						var/odir = dir
 
-					if (v >= max_distance)
-						hit = TRUE
-					else if (target.density && !highcheck)
-						hit = TRUE
-					else if (target && !(target in range(1, get_turf(src))))
-						if (!highcheck)
-							for (var/atom/movable/AM in target)
-								// go over sandbags
-								if (AM.density && !(AM.flags & ON_BORDER))
-									var/obj/structure/S = AM
-									// go over some structures
-									if (istype(S) && S.low)
-										continue
-									hit = TRUE
-									break
+						max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
 
-					if (hit)
-						playsound(target, "artillery_in", 70, TRUE)
-						spawn (10)
-							if (explosion)
-								if (istype(src,/obj/structure/cannon/mortar))
-									if (locate(/obj/structure/vehicleparts/frame) in target)
-										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
-											for (var/mob/M in F.axis.transporting)
-												shake_camera(M, 3, 3)
-											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-											visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
-											F.w_front[5] -= rand(1,7)
-											F.w_back[5] -= rand(1,7)
-											F.w_left[5] -= rand(1,7)
-											F.w_right[5] -= rand(1,7)
+						high_distance = max_distance * 0.80
 
-											F.try_destroy()
-									else
-										explosion(target, 1, 2, 2, 3)
-								else if (istype(src,/obj/structure/cannon/modern/naval))
-									explosion(target, 2, 3, 3, 4)
-									if(target.z > 1)
-										var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
-										if (tgtbelow)
-											explosion(tgtbelow, 2, 3, 3, 3)
-								else
-									explosion(target, 1, 2, 3, 4)
-									if (locate(/obj/structure/vehicleparts/frame) in target)
-										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
-											for (var/mob/M in F.axis.transporting)
-												shake_camera(M, 3, 3)
-											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-											visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
-											F.w_front[5] -= rand(8,16)
-											F.w_back[5] -= rand(8,16)
-											F.w_left[5] -= rand(8,16)
-											F.w_right[5] -= rand(8,16)
+						travelled = 0
+						high = TRUE
+						var/obj/item/cannon_ball/fired_shell = loaded[1]
 
-											F.try_destroy()
-							if (incendiary)
-								if (istype(src,/obj/structure/cannon/mortar))
-									if (locate(/obj/structure/vehicleparts/frame) in target)
-										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
-											for (var/mob/M in F.axis.transporting)
-												shake_camera(M, 3, 3)
-											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-											visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
-											F.w_front[5] -= rand(5,20)
-											F.w_back[5] -= rand(5,20)
-											F.w_left[5] -= rand(5,20)
-											F.w_right[5] -= rand(5,20)
+						if (istype(loaded[1], /obj/item/cannon_ball/shell/gas))
+							explosion = FALSE
+							reagent_payload = loaded.reagent_payload
+						if (istype(loaded[1], /obj/item/cannon_ball/mortar_shell/smoke))
+							explosion = FALSE
+							reagent_payload = loaded.reagent_payload
 
-											F.try_destroy()
-									else
-										explosion(target, 0, 1, 2, 3)
-									for (var/turf/floor/T in circlerangeturfs(2,target))
-										if (!locate(/obj/structure/vehicleparts/frame) in T)
-											ignite_turf(T, 12, 70)
-								else
-									explosion(target, 0, 1, 3, 4)
-									for (var/turf/floor/T in circlerangeturfs(3,target))
-										if(!locate(/obj/structure/vehicleparts/frame) in T)
-											ignite_turf(T, 12, 70)
-							if (nuclear)
-								if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
-									radiation_pulse(target, 10, 60, 1400, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
-									radiation_pulse(target, 8, 70, 1400, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
-									radiation_pulse(target, 10, 45, 1000, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
-									radiation_pulse(target, 10, 50, 1400, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
-									radiation_pulse(target, 10, 65, 1400, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
-									radiation_pulse(target, 12, 80, 1400, TRUE)
-									explosion(target, 2, 2, 2, 30)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-								else
-									radiation_pulse(target, 4, 50, 800, TRUE)
-									explosion(target, 2, 2, 2, 100)
-									change_global_pollution(150)
-									change_global_radiation(10)
-									world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+						if (fired_shell.atype == "INCENDIARY")
+							explosion = FALSE
+							incendiary = TRUE
+						
+						if (istype(loaded[1], /obj/item/cannon_ball/shell/nuclear))
+							nuclear = TRUE
+						
+						loaded -= fired_shell
+						qdel(fired_shell)
 
+						spawn (0)
+							var/v = max_distance
+
+							if (v > high_distance)
+								high = FALSE
+
+							var/hit = FALSE
+
+							var/tx = 0
+							var/ty = 0
+							if (istype(src,/obj/structure/cannon/mortar))
+								switch (odir)
+									if (EAST)
+										tx = x + max_distance + rand(-1,1)
+										ty = y - sway + rand(-1,1)
+									if (WEST)
+										tx = x - max_distance + rand(-1,1)
+										ty = y + sway + rand(-1,1)
+									if (NORTH)
+										tx = x + sway + rand(-1,1)
+										ty = y + max_distance + rand(-1,1)
+									if (SOUTH)
+										tx = x - sway + rand(-1,1)
+										ty = y - max_distance + rand(-1,1)
 							else
-								message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-								log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-								var/how_many = 24 // half of 49, the radius we spread over (7x7)
-								for (var/k in 1 to how_many)
-									switch (reagent_payload)
-										if ("chlorine_gas")
-											new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
-										if ("mustard_gas")
-											new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
-										if ("white_phosphorus_gas")
-											new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
-										if ("xylyl_bromide")
-											new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
-										if ("phosgene_gas")
-											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
-										if ("smokescreen")
-											new/obj/effect/effect/smoke/bad(target)
-							/*
-							var/target_area_original_integrity = target_area.artillery_integrity
-							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
-								for (var/mob/living/L in view(20, target))
-									shake_camera(L, 5, 5)
-									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
-							else if (target_area_original_integrity)
-								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
-							*/
-					sleep(0.5)
+								switch (odir)
+									if (EAST)
+										tx = x + max_distance
+										ty = y - sway + rand(-1,1)
+									if (WEST)
+										tx = x - max_distance
+										ty = y + sway + rand(-1,1)
+									if (NORTH)
+										tx = x + sway + rand(-1,1)
+										ty = y + max_distance
+									if (SOUTH)
+										tx = x - sway + pick(0,pick(1,-1))
+										ty = y - max_distance
+							if (tx < 1)
+								tx = 1
+							if (tx > world.maxx)
+								tx = world.maxx
+							if (ty < 1)
+								ty = 1
+							if (ty > world.maxy)
+								ty = world.maxy
+							target = locate(tx, ty, z)
+							var/highcheck = high
+							var/area/target_area = get_area(target)
+							if (target_area.location == AREA_INSIDE)
+								highcheck = FALSE
+
+							if (v >= max_distance)
+								hit = TRUE
+							else if (target.density && !highcheck)
+								hit = TRUE
+							else if (target && !(target in range(1, get_turf(src))))
+								if (!highcheck)
+									for (var/atom/movable/AM in target)
+										// go over sandbags
+										if (AM.density && !(AM.flags & ON_BORDER))
+											var/obj/structure/S = AM
+											// go over some structures
+											if (istype(S) && S.low)
+												continue
+											hit = TRUE
+											break
+
+							if (hit)
+								playsound(target, "artillery_in", 70, TRUE)
+								spawn (10)
+									if (explosion)
+										if (istype(src,/obj/structure/cannon/mortar))
+											if (locate(/obj/structure/vehicleparts/frame) in target)
+												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+													for (var/mob/M in F.axis.transporting)
+														shake_camera(M, 3, 3)
+													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
+													F.w_front[5] -= rand(1,7)
+													F.w_back[5] -= rand(1,7)
+													F.w_left[5] -= rand(1,7)
+													F.w_right[5] -= rand(1,7)
+
+													F.try_destroy()
+											else
+												explosion(target, 1, 2, 2, 3)
+										else if (istype(src,/obj/structure/cannon/modern/naval))
+											explosion(target, 2, 3, 3, 4)
+											if(target.z > 1)
+												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+												if (tgtbelow)
+													explosion(tgtbelow, 2, 3, 3, 3)
+										else
+											explosion(target, 1, 2, 3, 4)
+											if (locate(/obj/structure/vehicleparts/frame) in target)
+												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+													for (var/mob/M in F.axis.transporting)
+														shake_camera(M, 3, 3)
+													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
+													F.w_front[5] -= rand(8,16)
+													F.w_back[5] -= rand(8,16)
+													F.w_left[5] -= rand(8,16)
+													F.w_right[5] -= rand(8,16)
+
+													F.try_destroy()
+									if (incendiary)
+										if (istype(src,/obj/structure/cannon/mortar))
+											if (locate(/obj/structure/vehicleparts/frame) in target)
+												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
+													for (var/mob/M in F.axis.transporting)
+														shake_camera(M, 3, 3)
+													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
+													F.w_front[5] -= rand(5,20)
+													F.w_back[5] -= rand(5,20)
+													F.w_left[5] -= rand(5,20)
+													F.w_right[5] -= rand(5,20)
+
+													F.try_destroy()
+											else
+												explosion(target, 0, 1, 2, 3)
+											for (var/turf/floor/T in circlerangeturfs(2,target))
+												if (!locate(/obj/structure/vehicleparts/frame) in T)
+													ignite_turf(T, 12, 70)
+										else
+											explosion(target, 0, 1, 3, 4)
+											for (var/turf/floor/T in circlerangeturfs(3,target))
+												if(!locate(/obj/structure/vehicleparts/frame) in T)
+													ignite_turf(T, 12, 70)
+									if (nuclear)
+										if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
+											radiation_pulse(target, 10, 60, 1400, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
+											radiation_pulse(target, 8, 70, 1400, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
+											radiation_pulse(target, 10, 45, 1000, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
+											radiation_pulse(target, 10, 50, 1400, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
+											radiation_pulse(target, 10, 65, 1400, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
+											radiation_pulse(target, 12, 80, 1400, TRUE)
+											explosion(target, 2, 2, 2, 30)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+										else
+											radiation_pulse(target, 4, 50, 800, TRUE)
+											explosion(target, 2, 2, 2, 100)
+											change_global_pollution(150)
+											change_global_radiation(10)
+											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+
+									else
+										message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+										log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+										var/how_many = 24 // half of 49, the radius we spread over (7x7)
+										for (var/k in 1 to how_many)
+											switch (reagent_payload)
+												if ("chlorine_gas")
+													new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
+												if ("mustard_gas")
+													new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
+												if ("white_phosphorus_gas")
+													new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
+												if ("xylyl_bromide")
+													new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
+												if ("phosgene_gas")
+													new/obj/effect/effect/smoke/chem/payload/phosgene(target)
+												if ("smokescreen")
+													new/obj/effect/effect/smoke/bad(target)
+									/*
+									var/target_area_original_integrity = target_area.artillery_integrity
+									if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
+										for (var/mob/living/L in view(20, target))
+											shake_camera(L, 5, 5)
+											L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+									else if (target_area_original_integrity)
+										target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
+									*/
+							sleep(0.5)
 
 	do_html(user)
 
@@ -694,7 +839,7 @@
 		<center>
 		<big><b>[name]</b></big><br><br>
 		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
+		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : "No shell loaded"]</a><br><br>
 		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
 		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>
@@ -900,7 +1045,7 @@
 				icon_state = "cannon"
 
 /obj/structure/cannon/modern/tank/proc/do_tank_fire(var/mob/user)
-	if (!loaded)
+	if (!loaded.len)
 		return FALSE
 
 	var/turf/TF
@@ -915,16 +1060,16 @@
 			TF = locate(src.x-angle,src.y+sway,z)
 	if (!TF)
 		return FALSE
-
-	var/obj/item/projectile/shell/S = new loaded.subtype(loc)
-	S.damage = loaded.damage
-	S.atype = loaded.atype
-	S.caliber = loaded.caliber
-	S.heavy_armor_penetration = loaded.heavy_armor_penetration
-	S.name = loaded.name
+	var/sub = loaded[1].subtype
+	var/obj/item/projectile/shell/S = new sub(loc)
+	S.damage = loaded[1].damage
+	S.atype = loaded[1].atype
+	S.caliber = loaded[1].caliber
+	S.heavy_armor_penetration = loaded[1].heavy_armor_penetration
+	S.name = loaded[1].name
 	S.starting = get_turf(src)
 
-	loaded = null
+	loaded -= loaded[1]
 	if (S.atype == "grapeshot")
 		var/tot = pick(3,4)
 		for(var/i = 1, i<= tot,i++)

@@ -14,8 +14,6 @@
 	light_color = "#ff0000"
 	light_range = 3
 	var/mob_passthrough_check = FALSE
-	var/move_tiles = -1
-	var/moved_tiles = FALSE
 
 	muzzle_type = /obj/effect/projectile/laser/muzzle
 
