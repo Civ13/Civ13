@@ -673,7 +673,7 @@
 	block_chance = 5
 
 /obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
-	if (do_after(user, 12, src, can_move = FALSE))
+	if (do_after(user, 15, src, can_move = FALSE))
 		if (deployed)
 			deployed = FALSE
 			user << "<span class='notice'>You lift your [name] up, falling out of formation.</span>"
