@@ -2460,7 +2460,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/m9(H), slot_belt)
 	
 	var/obj/map_metadata/bank_robbery/MP = map
-	if (map.ID = BANK_ROBBERY)
+	if (map.ID == MAP_BANK_ROBBERY)
 		if (MP.civilians_evacuated == MP.civilians_alive)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/ar15(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ar15(H), slot_l_store)
