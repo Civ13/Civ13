@@ -45,7 +45,6 @@
 	damage_type = STUN
 	nodamage = FALSE
 	agony = 40
-	fire_sound = 'sound/weapons/taser.ogg'
 	check_armor = "energy"
 	embed = FALSE
 	sharp = FALSE
