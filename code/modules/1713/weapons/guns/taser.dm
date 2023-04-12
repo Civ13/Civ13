@@ -5,7 +5,7 @@
 	icon_state = "taser"
 	item_state = "taser"
 	var/base_icon = "taser"
-	fire_sound = 'sound/weapons/guns/fire/blasterdc2.ogg' //To be changed to taser.ogg when imported
+	fire_sound = 'sound/weapons/taser.ogg' //To be changed to taser.ogg when imported
 	w_class = ITEM_SIZE_NORMAL
 	load_method = MAGAZINE
 	max_shells = 5
@@ -45,7 +45,7 @@
 	damage_type = STUN
 	nodamage = FALSE
 	agony = 40
-	//fire_sound = 'sound/weapons/Taser.ogg'
+	fire_sound = 'sound/weapons/taser.ogg'
 	check_armor = "energy"
 	embed = FALSE
 	sharp = FALSE
