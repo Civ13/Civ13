@@ -468,11 +468,22 @@
 	icon_state = "modern_rocket"
 	ammotype = /obj/item/cannon_ball/rocket
 	spritemod = FALSE
-	bound_height = 64
-	bound_width = 64
+	bound_height = 32
+	bound_width = 32
 	maxsway = 10
 	firedelay = 12
 	maxrange = 60
 	max_loaded = 9
 	w_class = ITEM_SIZE_GARGANTUAN
-	
+
+/obj/structure/cannon/rocket/loaded/New()
+	..()
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
