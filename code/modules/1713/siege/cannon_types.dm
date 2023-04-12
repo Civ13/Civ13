@@ -475,4 +475,15 @@
 	maxrange = 60
 	max_loaded = 9
 	w_class = ITEM_SIZE_GARGANTUAN
-	
+
+/obj/structure/cannon/rocket/loaded/New()
+	..()
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
+	loaded += new /obj/item/cannon_ball/rocket(src)
