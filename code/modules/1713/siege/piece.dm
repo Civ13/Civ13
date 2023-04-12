@@ -431,7 +431,7 @@
 					spawn (rand(1,2))
 						var/turf/t1 = get_turf(src)
 						playsound(t1, 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
-						playsound(target, pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg'), 40, TRUE)
+						playsound(t1, pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg'), 40, TRUE)
 
 					// actual hit somewhere (or not)
 					var/turf/target = get_turf(src)
