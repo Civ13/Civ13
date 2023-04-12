@@ -34,13 +34,13 @@
 	var/damage = 10
 	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
 	var/nodamage = FALSE //Determines if the projectile will skip any damage inflictions
-	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage using stun_effect_act() to mobs it hits, and other damage will be ignored
+	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage and stun damage using stun_effect_act() to mobs it hits, and other damage will be ignored
 	var/check_armor = "gun" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
 	var/projectile_type = /obj/item/projectile
 	var/penetrating = 0 //If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
 	var/gibs = FALSE
 	var/crushes = FALSE
-	var/kill_count = 30 //This will de-increment every process(). When == 0, it will delete the projectile.
+	var/kill_count = 35 //This will de-increment every process(). When == 0, it will delete the projectile.
 		//Effects
 	var/stun = FALSE
 	var/weaken = FALSE
@@ -87,6 +87,7 @@
 /obj/item/projectile/New()
 	..()
 	damage *=global_damage_modifier
+
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -134,7 +135,7 @@
 /obj/item/projectile/proc/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
 		return damage
-	return 0
+	return FALSE
 
 //return TRUE if the projectile should be allowed to pass through after all, FALSE if not.
 /obj/item/projectile/proc/check_penetrate(var/atom/A)

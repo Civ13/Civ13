@@ -835,6 +835,7 @@
 #include "code\modules\1713\weapons\guns\rocket.dm"
 #include "code\modules\1713\weapons\guns\semiauto.dm"
 #include "code\modules\1713\weapons\guns\shotguns.dm"
+#include "code\modules\1713\weapons\guns\taser.dm"
 #include "code\modules\1713\weapons\guns\mg\_stationary.dm"
 #include "code\modules\1713\weapons\guns\mg\aks.dm"
 #include "code\modules\1713\weapons\guns\mg\lmg.dm"
