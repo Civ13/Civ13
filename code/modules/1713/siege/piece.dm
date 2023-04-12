@@ -10,7 +10,8 @@
 	var/high_distance = 0
 	var/high = TRUE
 	var/mob/user = null
-	var/obj/item/cannon_ball/loaded = null
+	var/list/obj/item/cannon_ball/loaded = new/list()
+	var/max_loaded = 1
 	bound_height = 64
 	bound_width = 32
 	anchored = TRUE
@@ -116,8 +117,8 @@
 		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		var/found_loader = FALSE
@@ -139,7 +140,7 @@
 					return FALSE
 				M.remove_from_mob(W)
 				W.loc = src
-				loaded = W
+				loaded += W
 				M << SPAN_NOTICE("You load \the [src].")
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 				return
@@ -171,14 +172,14 @@
 		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		if (M && (locate(M) in range(1,src)))
 			M.remove_from_mob(W)
 			W.loc = src
-			loaded = W
+			loaded += W
 			M << SPAN_NOTICE("You load \the [src].")
 			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 			return
@@ -225,8 +226,8 @@
 
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len >= max_loaded)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		var/loadtime = caliber/2
@@ -236,7 +237,7 @@
 			if (M && (locate(M) in range(1,src)))
 				M.remove_from_mob(W)
 				W.loc = src
-				loaded = W
+				loaded += W
 				user << SPAN_NOTICE("You load \the [src].")
 				if (M == user)
 					do_html(M)
@@ -316,7 +317,7 @@
 		return FALSE
 
 	if (href_list["load"])
-		if (!loaded)
+		if (!loaded.len)
 			var/obj/item/cannon_ball/M = user.get_active_hand()
 			if (istype(M, ammotype))
 				var/obj/item/cannon_ball/shell/tank/TS = M
@@ -343,19 +344,19 @@
 							return FALSE
 						user.remove_from_mob(M)
 						M.loc = src
-						loaded = M
+						loaded += M
 						user << SPAN_NOTICE("You load \the [src].")
 						if (istype(src, /obj/structure/cannon/modern/tank))
 							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 						return
 		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
-			var/obj/item/cannon_ball/M = loaded
+			var/obj/item/cannon_ball/M = loaded[1]
 			var/unloadtime = caliber/8
 			if (do_after(user, unloadtime, user, can_move = TRUE))
 				if (user && (locate(user) in range(1,src)))
+					loaded -= M
 					M.loc = get_turf(user)
 					user.put_in_active_hand(M)
-					loaded = null
 					user << SPAN_NOTICE("You unload \the [src].")
 					if (istype(src, /obj/structure/cannon/modern/tank))
 						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -389,7 +390,7 @@
 			user << "<span class = 'danger'>You can't fire yet.</span>"
 			return
 
-		if (!loaded)
+		if (!loaded.len)
 			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
@@ -441,24 +442,25 @@
 
 				travelled = 0
 				high = TRUE
-				if (istype(loaded, /obj/item/cannon_ball/shell/gas))
+				if (istype(loaded[1], /obj/item/cannon_ball/shell/gas))
 					explosion = FALSE
 					reagent_payload = loaded.reagent_payload
-				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/smoke))
+				if (istype(loaded[1], /obj/item/cannon_ball/mortar_shell/smoke))
 					explosion = FALSE
 					reagent_payload = loaded.reagent_payload
 
-				if (istype(loaded, /obj/item/cannon_ball/shell/incendiary))
+				if (istype(loaded[1], /obj/item/cannon_ball/shell/incendiary))
 					explosion = FALSE
 					incendiary = TRUE
-				if (istype(loaded, /obj/item/cannon_ball/mortar_shell/incendiary))
+				if (istype(loaded[1], /obj/item/cannon_ball/mortar_shell/incendiary))
 					explosion = FALSE
 					incendiary = TRUE
 				
-				if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
+				if (istype(loaded[1], /obj/item/cannon_ball/shell/nuclear))
 					nuclear = TRUE
-				qdel(loaded)
-				loaded = null
+				var/fired_shell = loaded[1]
+				loaded -= loaded[1]
+				qdel(fired_shell)
 
 				spawn (0)
 					var/v = max_distance
@@ -694,7 +696,7 @@
 		<center>
 		<big><b>[name]</b></big><br><br>
 		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
+		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : "No shell loaded"]</a><br><br>
 		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
 		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>
@@ -900,7 +902,7 @@
 				icon_state = "cannon"
 
 /obj/structure/cannon/modern/tank/proc/do_tank_fire(var/mob/user)
-	if (!loaded)
+	if (!loaded.len)
 		return FALSE
 
 	var/turf/TF
@@ -915,16 +917,16 @@
 			TF = locate(src.x-angle,src.y+sway,z)
 	if (!TF)
 		return FALSE
-
-	var/obj/item/projectile/shell/S = new loaded.subtype(loc)
-	S.damage = loaded.damage
-	S.atype = loaded.atype
-	S.caliber = loaded.caliber
-	S.heavy_armor_penetration = loaded.heavy_armor_penetration
-	S.name = loaded.name
+	var/sub = loaded[1].subtype
+	var/obj/item/projectile/shell/S = new sub(loc)
+	S.damage = loaded[1].damage
+	S.atype = loaded[1].atype
+	S.caliber = loaded[1].caliber
+	S.heavy_armor_penetration = loaded[1].heavy_armor_penetration
+	S.name = loaded[1].name
 	S.starting = get_turf(src)
 
-	loaded = null
+	loaded -= loaded[1]
 	if (S.atype == "grapeshot")
 		var/tot = pick(3,4)
 		for(var/i = 1, i<= tot,i++)

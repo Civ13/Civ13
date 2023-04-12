@@ -9,8 +9,6 @@
 	sharp = TRUE
 	hitsound_wall = "ric_sound"
 	var/mob_passthrough_check = FALSE
-	var/move_tiles = -1
-	var/moved_tiles = FALSE
 	penetrating = 10
 	armor_penetration = 80
 	heavy_armor_penetration = 25
