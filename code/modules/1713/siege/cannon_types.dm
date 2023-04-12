@@ -7,7 +7,7 @@
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80
-	w_class = 35
+	w_class = ITEM_SIZE_GARGANTUAN
 
 /obj/structure/cannon/modern/naval
 	name = "naval cannon"
@@ -374,7 +374,7 @@
 	maxrange = 40
 	maxsway = 7
 	firedelay = 12
-	w_class = 8
+	w_class = ITEM_SIZE_HUGE
 
 /obj/structure/cannon/mortar/foldable
 	anchored = TRUE
@@ -389,7 +389,6 @@
 	maxrange = 30
 	maxsway = 10
 	firedelay = 8
-	w_class = ITEM_SIZE_GARGANTUAN
 	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic
@@ -401,7 +400,6 @@
 	maxrange = 35
 	maxsway = 7
 	firedelay = 12
-	w_class = ITEM_SIZE_GARGANTUAN
 	path = /obj/item/weapon/foldable/generic
 
 /obj/structure/cannon/mortar/foldable/verb/Retrieve()
@@ -455,10 +453,26 @@
 	maxrange = 40
 	maxsway = 8
 	firedelay = 24
-	w_class = 8
+	w_class = ITEM_SIZE_GARGANTUAN
 
 /obj/structure/cannon/davycrockett/attackby(obj/item/W as obj, mob/M as mob)
 	if (loaded)
 		icon_state = "m29_davy_crockett_loaded"
 	else
 		icon_state = "m29_davy_crockett_empty"
+
+/obj/structure/cannon/rocket
+	name = "rocket artillery"
+	desc = "An artillery piece that fires dumb rockets, very inaccurate but deadly in numbers."
+	icon = 'icons/obj/cannon.dmi'
+	icon_state = "modern_rocket"
+	ammotype = /obj/item/cannon_ball/rocket
+	spritemod = FALSE
+	bound_height = 64
+	bound_width = 64
+	maxsway = 10
+	firedelay = 12
+	maxrange = 60
+	max_loaded = 9
+	w_class = ITEM_SIZE_GARGANTUAN
+	
