@@ -5,29 +5,28 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chip_blue"
 	var/chip_color = "blue"
-	var/chip_worth = 1
 
 /obj/item/weapon/roulette/chip/red
 	name = "red roulette chip"
 	icon_state = "chip_red"
 	chip_color = "red"
-	chip_worth = 5
+	value = 5
 
 /obj/item/weapon/roulette/chip/green
 	name = "green roulette chip"
 	icon_state = "chip_green"
 	chip_color = "green"
-	chip_worth = 25
+	value = 25
 
 /obj/item/weapon/roulette/chip/black
 	name = "black roulette chip"
 	icon_state = "chip_black"
 	chip_color = "black"
-	chip_worth = 100
+	value = 100
 
 /obj/item/weapon/roulette/chip/examine(mob/user, distance)
 	. = ..()
-	user << "Has a value of <b>[chip_worth]</b>."
+	user << "Has a value of <b>[value]</b>."
 
 /obj/structure/roulette
 	name = "roulette table"
@@ -65,23 +64,18 @@
 
 /obj/structure/roulette/proc/process_wins()
 	can_bet = FALSE
-	var/list/newlist = list()
 	for(var/list/L in current_bets)
 		if(win_color == L[2] || win_half == L[2] || win_3rd == L[2] || win_odd_even == L[2] || win_color == L[2])
 			L[3] = L[3]*2
 			L[2] = "won"
-			newlist.Add(L)
 		else if(win_3rd == L[2])
 			L[3] = L[3]*3
 			L[2] = "won"
-			newlist.Add(L)
 		else if(num2text(win_number) == L[2])
 			L[3] = L[3]*36
 			L[2] = "won"
-			newlist.Add(L)
 		else
 			L[2] = "lost"
-	current_bets = newlist
 	if (!current_bets.len)
 		can_bet = TRUE
 
@@ -177,8 +171,8 @@
 				betchoice = "3rd 12"
 		if (betchoice)
 			if (I)
-				visible_message("<big>[user] has placed a bet of <b>[CHIP.chip_worth]</b> on <b>[betchoice]</b>!</big>")
-				current_bets += list(list(user,betchoice,CHIP.chip_worth))
+				visible_message("<big>[user] has placed a bet of <b>[CHIP.value]</b> on <b>[betchoice]</b>!</big>")
+				current_bets += list(list(user,betchoice,CHIP.value))
 				qdel(I)
 
 /obj/structure/roulette/verb/spin(mob/user as mob)
@@ -194,6 +188,7 @@
 		return
 	else
 		playsound(src, 'sound/effects/roulettespin.ogg', 50, 1)
+		src.visible_message("<big><b>Roulette spinning! No more bets!</b></big>")
 		spinning = 1
 		can_bet = FALSE
 		update_icon()
