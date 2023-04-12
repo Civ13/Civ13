@@ -45,6 +45,7 @@
 	damage_type = STUN
 	nodamage = FALSE
 	agony = 40
+	stun = 40
 	check_armor = "energy"
 	embed = FALSE
 	sharp = FALSE
