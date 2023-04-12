@@ -17,7 +17,7 @@
 	good_mags = list(/obj/item/ammo_magazine/taser)
 	weight = 3.85
 	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=0, fire_delay=5)
+		list(name = "single shot",burst=1, move_delay=0, fire_delay=20)
 		)
 	gun_type = GUN_TYPE_PISTOL
 	force = 10
@@ -30,13 +30,12 @@
 	if (!ammo_magazine)
 		icon_state = "[base_icon]_empty"
 	else
-		if (loaded.len >= max_shells)
-			icon_state = "[base_icon][loaded.len]"
+		if (ammo_magazine.contents.len > 0)
+			icon_state = "[base_icon][ammo_magazine.contents.len]"
 		else
 			icon_state = "[base_icon]0"
 	update_held_icon()
 	return
-
 
 /obj/item/projectile/taser
 	name = "taser dart"
