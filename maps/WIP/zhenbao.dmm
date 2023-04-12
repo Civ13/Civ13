@@ -33,8 +33,8 @@
 "aG" = (/obj/covers/brick_wall,/obj/structure/sign/clock,/turf/wall/brick,/area/caribbean/roofed/taiga)
 "aH" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "aI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
-"aJ" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/winter,/area/caribbean/nomads/taiga)
-"aK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/closet/crate/empty,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/compass,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aJ" = (/obj/structure/shellrack/fullrocket,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"aK" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/winter,/area/caribbean/nomads/taiga)
 "aL" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/nomads/taiga)
 "aM" = (/obj/structure/table/modern/table,/obj/item/weapon/compass,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "aN" = (/obj/structure/window/barrier/railing/brick{dir = 1},/turf/floor/wood,/area/caribbean/roofed/taiga)
@@ -52,8 +52,8 @@
 "aZ" = (/obj/structure/vending/sixties/soviet/weapons,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "ba" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/winter,/area/caribbean/nomads/taiga)
 "bb" = (/obj/structure/window/barrier/sandbag,/turf/floor/winter,/area/caribbean/nomads/taiga)
-"bc" = (/obj/structure/window/barrier/sandbag,/obj/structure/cannon/modern{maxrange = 80; maxsway = 20},/turf/floor/winter,/area/caribbean/nomads/taiga)
-"bd" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bc" = (/obj/item/weapon/wrench,/turf/floor/winter,/area/caribbean/nomads/taiga)
+"bd" = (/obj/structure/cannon/rocket/loaded,/turf/floor/winter,/area/caribbean/nomads/taiga)
 "be" = (/obj/covers/cobblestone/stairs,/turf/floor/wood,/area/caribbean/nomads/taiga)
 "bf" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 4},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "bg" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "soviet radio"},/turf/floor/wood,/area/caribbean/roofed/taiga)
@@ -377,11 +377,11 @@ aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaecAcAcA
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahaeaeaecAaecAaaaeaeahahahahahaeaeaeaeaeaeaeaefQfRfRfRfRfRfRfQaeaeaeaeaeahaeaeaeaeahahaeaeaeaeaeaeaeaeaeaeaeaeahahahahahaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeabcAabcAaaaaaeaeaaaeaeaaacacacaeaeaeaeacbndjdufRfRfRfSbnaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahaeahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahaoahahahahahahahaeaeaeabcAcAcAaadXaaecaeaeaeaeacacaeaeaeeaecaebnbnfTfQfUfQfTbnaeaeaeaeaeaaaaaaaaaaaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
-aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaaaeabcAcAcAaaaaaaaaaaaedYaeaeaeeaaeaeaeaeaeaeaeaeaeaqaeaeaeaeaeaeaeaeaIaJaaaaaaaKaLaeaeaeeaaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahaoahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
-aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaeaacAcAcAcAaaaaagaadXaaaaaaaaaaaaaaaeaeaeaqaqaqaqaqaqaqaqaeaeaeaeaeaeaIaJaaaaaaaIaLaeaeaeecaeaedZaeaeaeaeaeaeacacaeaeacahahahahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
-aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaaaacAcAcAcAaaaaaaaaaaacaaaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaadXaIaJaaaaaaaIaLacaaaaaaaaaaaeaeaeaeaeaeaeaeaeaeaeacacahahahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
-aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaeaaaacAcAcAabaaaaaaaaaaaaaaaqaqaqaqaqaqaqaqaqaqaaararaaaqaqaqaqaqaqaaaaaIbabbbcbbbdaLaadXaaaaaqaqaqaqaqaqaqaqaeaeaeaeaeacacacacahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
-aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaedXaaaacAcAabaqaqaqaqaqaqaqaqaqaqasasasatauauauasasasasasauauasasaqaqaaaaaabpbpbpbpbpaaaaaaaaaqaqasasavavasasaqaqaeaeaeaeaeacacacahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaaaeabcAcAcAaaaaaaaaaaaedYaeaeaeeaaeaeaeaeaeaeaeaeaeaqaeaeaeaeaeaeaeaeaaaJaaaKbcaeaeaeaeaeeaaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahaoahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaeaacAcAcAcAaaaaagaadXaaaaaaaaaaaaaaaeaeaeaqaqaqaqaqaqaqaqaeaeaeaeaeaeaaaJaaaaaaaaaeaeaeaeecaeaedZaeaeaeaeaeaeacacaeaeacahahahahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaaaacAcAcAcAaaaaaaaaaaacaaaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaadXaaaabdaaaaaaacacaaaaaaaaaaaeaeaeaeaeaeaeaeaeaeaeacacahahahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahahaeaeaeaaaacAcAcAabaaaaaaaaaaaaaaaqaqaqaqaqaqaqaqaqaqaaararaaaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaadXaaaaaqaqaqaqaqaqaqaqaeaeaeaeaeacacacacahahahaoahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
+aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahahaeaeaedXaaaacAcAabaqaqaqaqaqaqaqaqaqaqasasasatauauauasasasasasauauasasaqaqaaaaaaaaaaaaaaaaaaaaaaaaaqaqasasavavasasaqaqaeaeaeaeaeacacacahahahahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaeaeaaaaaaaacAcAabaqaqaqaqaqaqaqaqaqaqawazaAaBaCaEaCaFaHaMaOaPaCaCaZasaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqasasasaNaNatasasaqaeaeaeaeaeaeacacacahaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahaoahahahahahahaeaeaaaaaaaacAcAabaaaaaaaaaadTdSaaaaaqaqdBazbfaBazazazazbhazbibjazazaZasaqaqaaaaaaaafIaaaaaaaaaaaaaqaQasaGaRayayaSasasaqdZaeaeaeaeaeacacacahaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
 aoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoahahahahahahaeaedXaaaaaaaacAcAabaaaaaaaadEdEdEdEaaaqaqaUaYazazazazazazazazbkazazdIblasaqaqaaaaaaaaaaaaaaaaaaaaaaaTaxaVawayayayayaWaXaqaaaeaeacaeaeaeacacahaoahahaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoao
