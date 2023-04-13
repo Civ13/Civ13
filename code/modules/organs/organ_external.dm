@@ -79,7 +79,7 @@
 	var/atom/movable/applied_pressure
 	var/burn_ratio = 0
 	var/brute_ratio = 0
-	var/encased = ""
+	var/encased
 	var/cavity_name = ""
 
 /obj/item/organ/external/New()
@@ -1385,7 +1385,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if(brute_dam + force < min_broken_damage/5)	//no papercuts moving bones
 		return
 	if(internal_organs.len && prob(brute_dam + force))
-		owner.custom_pain("A piece of bone in your [name] moves painfully!", 50)
+		owner.custom_pain("A piece of bone in your [encased ? encased : name] moves painfully!", 50)
 		var/obj/item/organ/I = pick(internal_organs)
 		I.take_damage(rand(3,5))
 

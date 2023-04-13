@@ -75,7 +75,7 @@
 
 	//"Stun-like" beams (used in tasers)
 	if(P.taser_effect)
-		stun_effect_act(0, P.agony, def_zone, P)
+		stun_effect_act(P.stun, P.agony, def_zone, P)
 
 	//Armor
 	var/absorb = run_armor_check(def_zone, P.check_armor, P.armor_penetration, damage_source = P)

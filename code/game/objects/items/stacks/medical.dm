@@ -52,52 +52,56 @@
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting && affecting.open == FALSE)
-			if (affecting.is_bandaged())
-				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been bandaged.</span>"
-				return TRUE
-			else
-				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
-				var/used = FALSE
-				for (var/datum/wound/W in affecting.wounds)
-					if (W.internal)
-						continue
-					if (W.bandaged)
-						continue
-					if (used == amount)
-						break
-					if (!do_mob(user, M, W.damage/5))
-						user << "<span class='notice'>You must stand still to bandage wounds.</span>"
-						break
-
-					if (W.current_stage <= W.max_bleeding_stage)
-						user.visible_message("<span class='notice'>\The [user] bandages \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You bandage \a [W.desc] on [M]'s [affecting.name].</span>" )
-						//H.add_side_effect("Itch")
-					else if (W.damage_type == BRUISE)
-						user.visible_message("<span class='notice'>\The [user] places a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You place a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
-					else
-						user.visible_message("<span class='notice'>\The [user] places a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You place a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>" )
-					W.bandage()
-					used++
-				affecting.update_damages()
-				if (used == amount)
-					if (affecting.is_bandaged())
-						user << "<span class='warning'>\The [src] is used up.</span>"
-					else
-						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
-				use(used)
-				H.update_bandaging(0)
+		if(!affecting)
+			return
+		if (affecting.open)
+			to_chat(user, "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>")
+			return
+		if (affecting.is_bandaged())
+			user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been bandaged.</span>"
+			return TRUE
 		else
+			user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
+									"<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+			var/used = FALSE
+			for (var/datum/wound/W in affecting.wounds)
+				if (W.internal)
+					continue
+				if (W.bandaged)
+					continue
+				if (used == amount)
+					break
+				if (!do_mob(user, M, W.damage/5))
+					user << "<span class='notice'>You must stand still to bandage wounds.</span>"
+					break
+
+				if (W.current_stage <= W.max_bleeding_stage)
+					user.visible_message("<span class='notice'>\The [user] bandages \a [W.desc] on [M]'s [affecting.name].</span>", \
+													"<span class='notice'>You bandage \a [W.desc] on [M]'s [affecting.name].</span>" )
+					//H.add_side_effect("Itch")
+				else if (W.damage_type == BRUISE)
+					user.visible_message("<span class='notice'>\The [user] places a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
+													"<span class='notice'>You place a bruise patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
+				else
+					user.visible_message("<span class='notice'>\The [user] places a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>", \
+													"<span class='notice'>You place a bandaid over \a [W.desc] on [M]'s [affecting.name].</span>" )
+				W.bandage()
+				used++
+			affecting.update_damages()
+			if (used == amount)
+				if (affecting.is_bandaged())
+					user << "<span class='warning'>\The [src] is used up.</span>"
+				else
+					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
+			use(used)
+			H.update_bandaging(1)
+		/*else
 			if (can_operate(H))		//Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
 				if (affecting)
-					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
+					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"*/
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "trauma kit"
@@ -117,51 +121,55 @@
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting && (affecting.open == FALSE || (affecting.open && !affecting.is_disinfected())))
-			if (affecting.is_bandaged() && affecting.is_disinfected())
-				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been treated.</span>"
-				return TRUE
-			else
-				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
-				var/used = 0
-				for (var/datum/wound/W in affecting.wounds)
-					if (W.internal)
-						continue
-					if (W.bandaged && W.disinfected)
-						continue
-					if (used == amount)
-						break
-					if (!do_mob(user, M, W.damage/5))
-						user << "<span class='notice'>You must stand still to bandage wounds.</span>"
-						break
-					if (W.current_stage <= W.max_bleeding_stage)
-						user.visible_message("<span class='notice'>\The [user] cleans \a [W.desc] on [M]'s [affecting.name] and covers it with a bandage.</span>", \
-											 "<span class='notice'>You clean and cover \a [W.desc] on [M]'s [affecting.name].</span>" )
-					else if (W.damage_type == BRUISE)
-						user.visible_message("<span class='notice'>\The [user] places a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You place a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
-					else
-						user.visible_message("<span class='notice'>\The [user] smears some ointment over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You smear some ointment over \a [W.desc] on [M]'s [affecting.name].</span>" )
-					W.bandage()
-					W.disinfect()
-					W.heal_damage(heal_brute)
-					used++
-				affecting.update_damages()
-				if (used == amount)
-					if (affecting.is_bandaged())
-						user << "<span class='warning'>\The [src] is used up.</span>"
-					else
-						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
-				use(used)
+		if(!affecting)
+			return
+		if (affecting.open)
+			to_chat(user, "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>")
+			return
+		if (affecting.is_bandaged() && affecting.is_disinfected())
+			user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been treated.</span>"
+			return TRUE
 		else
-			if (can_operate(H))		//Checks if mob is lying down on table for surgery
-				if (do_surgery(H,user,src))
-					return
-			else
-				if (affecting)
-					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
+			user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
+								"<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+			var/used = 0
+			for (var/datum/wound/W in affecting.wounds)
+				if (W.internal)
+					continue
+				if (W.bandaged && W.disinfected)
+					continue
+				if (used == amount)
+					break
+				if (!do_mob(user, M, W.damage/5))
+					user << "<span class='notice'>You must stand still to bandage wounds.</span>"
+					break
+				if(affecting.is_bandaged() && affecting.is_disinfected()) // We do a second check after the delay, in case it was bandaged after the first check.
+					to_chat(user, "<span class='warning'>The wounds on [M]'s [affecting.name] have already been bandaged.</span>")
+					return TRUE
+				if(used >= src.amount)
+					to_chat(user, "<span class='warning'>You run out of [src]!</span>")
+					break
+				if (W.current_stage <= W.max_bleeding_stage)
+					user.visible_message("<span class='notice'>\The [user] cleans \a [W.desc] on [M]'s [affecting.name] and covers it with a bandage.</span>", \
+										"<span class='notice'>You clean and cover \a [W.desc] on [M]'s [affecting.name].</span>" )
+				else if (W.damage_type == BRUISE)
+					user.visible_message("<span class='notice'>\The [user] places a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
+												"<span class='notice'>You place a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
+				else
+					user.visible_message("<span class='notice'>\The [user] smears some ointment over \a [W.desc] on [M]'s [affecting.name].</span>", \
+												"<span class='notice'>You smear some ointment over \a [W.desc] on [M]'s [affecting.name].</span>" )
+				W.bandage()
+				W.disinfect()
+				W.heal_damage(heal_brute)
+				used++
+			affecting.update_damages()
+			if (used == amount)
+				if (affecting.is_bandaged())
+					user << "<span class='warning'>\The [src] is used up.</span>"
+				else
+					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
+			use(used)
+			H.update_bandaging(1)
 
 		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
@@ -190,46 +198,44 @@
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting)
-			if (affecting.is_salved() && affecting.is_disinfected())
-				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been treated.</span>"
-				return TRUE
+		if(!affecting)
+			return
+			
+		if (affecting.open)
+			user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than some healing herbs!</span>"
 
-			if (!affecting.is_disinfected() || !affecting.is_salved())
-				user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
-									 "<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
-				var/used = 0
-				for (var/datum/wound/W in affecting.wounds)
-					if (W.internal)
-						continue
-					if (W.salved && W.disinfected)
-						continue
-					if (used == amount)
-						break
-					if (!do_mob(user, M, W.damage/5))
-						user << "<span class='notice'>You must stand still to bandage wounds.</span>"
-						break
+		if (affecting.is_salved() && affecting.is_disinfected())
+			user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been treated.</span>"
+			return TRUE
 
-					user.visible_message("<span class='notice'>\The [user] rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>", \
-													  "<span class='notice'>You rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
-					W.disinfect()
-					W.salve()
-					W.heal_damage(heal_brute)
-					used++
-				affecting.update_damages()
+		if (!affecting.is_disinfected() || !affecting.is_salved())
+			user.visible_message("<span class='notice'>\The [user] starts treating [M]'s [affecting.name].</span>", \
+								"<span class='notice'>You start treating [M]'s [affecting.name].</span>" )
+			var/used = 0
+			for (var/datum/wound/W in affecting.wounds)
+				if (W.internal)
+					continue
+				if (W.salved && W.disinfected)
+					continue
 				if (used == amount)
-					if (affecting.is_bandaged())
-						user << "<span class='warning'>\The [src] is used up.</span>"
-					else
-						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
-				use(used)
-		else
-			if (can_operate(H))		//Checks if mob is lying down on table for surgery
-				if (do_surgery(H,user,src))
-					return
-			else
-				if (affecting)
-					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than some healing herbs!</span>"
+					break
+				if (!do_mob(user, M, W.damage/5))
+					user << "<span class='notice'>You must stand still to bandage wounds.</span>"
+					break
+
+				user.visible_message("<span class='notice'>\The [user] rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>", \
+												"<span class='notice'>You rub some healing herbs over \a [W.desc] on [M]'s [affecting.name].</span>" )
+				W.disinfect()
+				W.salve()
+				W.heal_damage(heal_brute)
+				used++
+			affecting.update_damages()
+			if (used == amount)
+				if (affecting.is_bandaged())
+					user << "<span class='warning'>\The [src] is used up.</span>"
+				else
+					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
+			use(used)
 
 		var/mob/living/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))

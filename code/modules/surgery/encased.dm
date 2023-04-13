@@ -12,7 +12,7 @@
 			return FALSE
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.encased && affected.open >= 1
+		return affected && affected.encased && affected.open >= 2
 
 
 /datum/surgery_step/open_encased/saw
@@ -31,7 +31,7 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 1
+		return ..() && affected && affected.open == 2
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 
@@ -52,7 +52,7 @@
 
 		user.visible_message("<span class = 'notice'>[user] has cut [target]'s [affected.encased] open with \the [tool].</span>",		\
 		"<span class = 'notice'>You have cut [target]'s [affected.encased] open with \the [tool].</span>")
-		affected.open = 1.5
+		affected.open = 2.5
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
@@ -78,13 +78,13 @@
 	min_duration = 30
 	max_duration = 40
 
-	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+	can_use(mob/living/human/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 1.5
+		return ..() && affected && affected.open == 2.5
 
-	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
+	begin_step(mob/living/human/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -96,7 +96,7 @@
 		target.custom_pain("Something hurts horribly in your [affected.name]!",120)
 		..()
 
-	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+	end_step(mob/living/human/user, mob/living/human/target, target_zone, obj/item/tool)
 
 		if (!hasorgans(target))
 			return
@@ -106,11 +106,12 @@
 		var/self_msg = "<span class = 'notice'>You force open [target]'s [affected.encased] with \the [tool].</span>"
 		user.visible_message(msg, self_msg)
 
-		affected.open = 2
+		affected.open = 3
 
-		// Whoops!
-		if (prob(10))
-			affected.fracture()
+		// Now it's based on the medical skill
+		if (user.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+			if (prob(15))
+				affected.fracture()
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 
@@ -141,7 +142,7 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 2.5
+		return ..() && affected && affected.open == 3
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 
@@ -165,7 +166,7 @@
 		var/self_msg = "<span class = 'notice'>You bend [target]'s [affected.encased] back into place with \the [tool].</span>"
 		user.visible_message(msg, self_msg)
 
-		affected.open = 1
+		affected.open = 2
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 

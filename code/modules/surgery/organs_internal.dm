@@ -10,7 +10,7 @@
 		return FALSE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return affected && affected.open == 1
+	return affected && affected.open == (affected.encased ? 3 : 2)
 
 //////////////////////////////////////////////////////////////////
 //				CHEST INTERNAL ORGAN SURGERY					//
@@ -49,7 +49,8 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-
+		if(!affected || affected.open < 2)
+			return
 		for (var/obj/item/organ/I in affected.internal_organs)
 			if (I && I.damage > 0)
 				user.visible_message("[user] starts treating damage to [target]'s [I.name] with [tool_name].", \
@@ -68,7 +69,8 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-
+		if(!affected || affected.open < 2)
+			return
 		for (var/obj/item/organ/I in affected.internal_organs)
 			if (I && I.damage > 0)
 				user.visible_message("<span class='notice'>[user] treats damage to [target]'s [I.name] with [tool_name].</span>", \
@@ -167,6 +169,7 @@
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/fork",20),
 		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",70),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/knife/",50),
 	)
 
 	min_duration = 60

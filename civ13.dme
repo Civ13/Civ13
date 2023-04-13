@@ -1048,6 +1048,7 @@
 #include "code\modules\reagents\reagent_containers\glass\bottle.dm"
 #include "code\modules\surgery\_defines.dm"
 #include "code\modules\surgery\bones.dm"
+#include "code\modules\surgery\encased.dm"
 #include "code\modules\surgery\face.dm"
 #include "code\modules\surgery\generic.dm"
 #include "code\modules\surgery\implant.dm"

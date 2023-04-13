@@ -62,7 +62,10 @@ avoid code duplication. This includes items that may sometimes act as a standard
 	if (!ismob(user))
 		return FALSE
 	if (can_operate(src) && do_surgery(src,user,I)) //Surgery
-		return TRUE
+		if (I.can_do_surgery(src,user))
+			return TRUE
+		else 
+			return FALSE
 	var/tgt = user.targeted_organ
 	if (user.targeted_organ == "random")
 		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
