@@ -1286,7 +1286,7 @@
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/flashlight/militarylight(src)
+		new/obj/item/clothing/mask/gas/swat_new(src)
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
 		new/obj/item/ammo_magazine/m16(src)
 		new/obj/item/weapon/attachment/bayonet(src)
@@ -1310,7 +1310,7 @@
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/flashlight/militarylight(src)
+		new/obj/item/clothing/mask/gas/swat_new(src)
 		new/obj/item/stack/medical/bruise_pack/gauze(src)
 		new/obj/item/ammo_magazine/ak47(src)
 		new/obj/item/weapon/attachment/bayonet(src)
