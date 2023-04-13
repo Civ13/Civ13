@@ -10,7 +10,8 @@
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
-		3 = list("/obj/item/stack/material/rope",50),
+		3 = list("/obj/item/stack/cable_coil",75),
+		4 = list("/obj/item/stack/material/rope",50),
 	)
 	can_infect = TRUE
 	blood_level = TRUE
@@ -29,7 +30,7 @@
 			internal_bleeding = TRUE
 			break
 
-		return affected.open == 2 && internal_bleeding
+		return affected.open == (affected.encased ? 3 : 2) && internal_bleeding
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -95,6 +96,7 @@
 		user.visible_message("<span class = 'notice'>[user] has cut away necrotic tissue in [target]'s [affected.name] with \the [tool].</span>", \
 			"<span class = 'notice'>You have cut away necrotic tissue in [target]'s [affected.name] with \the [tool].</span>")
 		affected.status &= ~ORGAN_DEAD
+		affected.open = 3
 		playsound(target.loc, 'sound/effects/squelch1.ogg', 50, TRUE)
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
@@ -179,12 +181,17 @@
 	priority = 2
 	allowed_tools = list(
 		1 = list("/obj/item/stack/medical/advanced/sulfa",100),
-		2 = list("/obj/item/stack/medical/advanced/bruise_pack",75),
-		3 = list("/obj/item/stack/medical/advanced/ointment",55),
-		4 = list("/obj/item/weapon/reagent_containers/glass/bucket",30),
+		2 = list("/obj/item/weapon/reagent_containers/spray", 100),
+		3 = list("/obj/item/stack/medical/advanced/bruise_pack",50),
+		4 = list("/obj/item/stack/medical/advanced/ointment",60),
+		5 = list("/obj/item/weapon/reagent_containers/glass/bucket",30),
+		6 = list("/obj/item/weapon/reagent_containers/food/drinks/bottle",75),
+		7 = list("/obj/item/weapon/reagent_containers/food/drinks/flask/", 80),
+		8 = list("/obj/item/weapon/reagent_containers/glass/beaker",75),
+		9 = list("/obj/item/weapon/reagent_containers/glass/bottle", 90),
 	)
 
-	can_infect = 0
+	can_infect = FALSE
 	blood_level = 0
 
 	min_duration = 50
@@ -192,24 +199,24 @@
 
 /datum/surgery_step/sterilize/can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 	if(!hasorgans(target))
-		return 0
+		return FALSE
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	if(!istype(affected))
-		return 0
+		return FALSE
 	if(affected.is_disinfected())
-		return 0
+		return FALSE
 	var/obj/item/weapon/reagent_containers/container = tool
 	if(!istype(container))
-		return 0
+		return FALSE
 	if(!container.is_open_container())
-		return 0
+		return FALSE
 	var/datum/reagent/ethanol/booze = locate() in container.reagents.reagent_list
 	if(istype(booze) && booze.strength >= 40)
 		to_chat(user, "<span class='warning'>[booze] is too weak, you need something of higher proof for this...</span>")
-		return 0
+		return FALSE
 	if(!istype(booze) && !container.reagents.has_reagent("sterilizine"))
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 
 /datum/surgery_step/sterilize/begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)

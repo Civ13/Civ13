@@ -5,22 +5,22 @@
 //////////////////////////////////////////////////////////////////
 
 /datum/surgery_step/cavity
-	priority = TRUE
+	priority = 1
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.open == 2 && !(affected.status & ORGAN_BLEEDING)
+		return affected && affected.open == (affected.encased ? 3 : 2) && !(affected.status & ORGAN_BLEEDING)
 
 	proc/get_max_wclass(var/obj/item/organ/external/affected)
 		switch (affected.name)
 			if ("head")
-				return TRUE
+				return 1
 			if ("upper body")
 				return 3
 			if ("lower body")
 				return 2
-		return FALSE
+		return 0
 
 	proc/get_cavity(var/obj/item/organ/external/affected)
 		switch (affected.name)
@@ -59,13 +59,13 @@
 		user.visible_message("[user] starts making some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].", \
 		"You start making some space inside [target]'s [get_cavity(affected)] cavity with \the [tool]." )
 		target.custom_pain("The pain in your chest is living hell!",1)
-		affected.cavity = TRUE
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] makes some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>", \
 		"<span class = 'notice'>You make some space inside [target]'s [get_cavity(affected)] cavity with \the [tool].</span>" )
+		affected.cavity = 1
 
 /datum/surgery_step/cavity/close_space
 	priority = TRUE
@@ -89,16 +89,16 @@
 		user.visible_message("[user] starts mending [target]'s [get_cavity(affected)] cavity wall with \the [tool].", \
 		"You start mending [target]'s [get_cavity(affected)] cavity wall with \the [tool]." )
 		target.custom_pain("The pain in your chest is living hell!",1)
-		affected.cavity = FALSE
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] mends [target]'s [get_cavity(affected)] cavity walls with \the [tool].</span>", \
 		"<span class = 'notice'>You mend [target]'s [get_cavity(affected)] cavity walls with \the [tool].</span>" )
+		affected.cavity = FALSE
 
 /datum/surgery_step/cavity/place_item
-	priority = FALSE
+	priority = 0
 	allowed_tools = list(
 		1 = list("/obj/item",100),
 	)
@@ -168,7 +168,7 @@
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/chest/affected = target.get_organ(target_zone)
 
-		var/find_prob = FALSE
+		var/find_prob = 0
 
 		if (affected.implants.len)
 

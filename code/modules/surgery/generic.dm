@@ -17,8 +17,6 @@
 			return FALSE
 		if (affected.is_stump())
 			return FALSE
-		if (affected.is_stump())
-			return FALSE
 		return TRUE
 
 /datum/surgery_step/generic/cut_open
@@ -33,10 +31,12 @@
 	min_duration = 90
 	max_duration = 110
 
+	req_open = FALSE
+
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && affected.open == FALSE && target_zone != "mouth"
+			return affected && affected.open == 0 && target_zone != "mouth"
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -49,7 +49,7 @@
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] has made an incision on [target]'s [affected.name] with \the [tool].</span>", \
 		"<span class = 'notice'>You have made an incision on [target]'s [affected.name] with \the [tool].</span>",)
-		affected.open = TRUE
+		affected.open = 1
 
 		if (istype(target) && !(target.species.flags & NO_BLOOD))
 			affected.status |= ORGAN_BLEEDING
@@ -114,7 +114,7 @@
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && affected.open == TRUE //&& !(affected.status & ORGAN_BLEEDING)
+			return affected && affected.open == 1 //&& !(affected.status & ORGAN_BLEEDING)
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -205,6 +205,8 @@
 	min_duration = 110
 	max_duration = 160
 
+	req_open = FALSE
+
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (target_zone == "eyes")	//there are specific steps for eye surgery
 			return FALSE
@@ -229,11 +231,11 @@
 		user.visible_message("<span class = 'notice'>[user] amputates [target]'s [affected.name] at the [affected.amputation_point] with \the [tool].</span>", \
 		"<span class = 'notice'>You amputate [target]'s [affected.name] with \the [tool].</span>")
 		affected.droplimb(1,DROPLIMB_EDGE)
-		affected.nationality = target.nationality
+		affected.nationality = target.nationality // For Warlords and Tadojsville head-collecting mechanic
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'red'>[user]'s hand slips, sawing through the bone in [target]'s [affected.name] with \the [tool]!</span>", \
-		"<span class = 'red'>Your hand slips, sawwing through the bone in [target]'s [affected.name] with \the [tool]!</span>")
+		"<span class = 'red'>Your hand slips, sawing through the bone in [target]'s [affected.name] with \the [tool]!</span>")
 		affected.createwound(CUT, 30)
 		affected.fracture()

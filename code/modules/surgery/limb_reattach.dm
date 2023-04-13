@@ -5,6 +5,7 @@
 
 /datum/surgery_step/limb
 	priority = 3 // Must be higher than /datum/surgery_step/internal
+	req_open = FALSE
 	can_infect = FALSE
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if (!hasorgans(target))
