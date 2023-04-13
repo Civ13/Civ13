@@ -73,6 +73,7 @@
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",70),
 		4 = list("/obj/item/weapon/material/handle",60),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/fork",50)
 	)
 
 	min_duration = 30
@@ -131,7 +132,8 @@
 		1 = list("/obj/item/weapon/surgery/retractor",100),
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",70),
-		4 = list("/obj/item/weapon/material/handle",60)
+		4 = list("/obj/item/weapon/material/handle",60),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/fork",50)
 	)
 
 	min_duration = 20

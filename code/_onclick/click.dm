@@ -34,6 +34,9 @@
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
 		CtrlShiftClickOn(A)
+		return
+	if (modifiers["shift"] && modifiers["middle"])
+		ShiftMiddleClickOn(A)
 		return 
 	if (modifiers["middle"])
 		MiddleClickOn(A)
@@ -340,6 +343,7 @@
 /atom/proc/ShiftMiddleClick(var/mob/living/user)
 	if (istype(user, /mob/living))
 		user.pointed(src)
+	return
 
 
 // In case of use break glass
