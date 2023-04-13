@@ -185,23 +185,6 @@
 	..()
 	reagents.add_reagent("gasoline",5)
 
-/obj/item/weapon/flamethrower/lpo
-	name = "LPO50 Flamethrower hose"
-	icon_state = "lpo_flamethrower"
-	item_state = "lpo_flamethrower"
-	base_icon = "lpo_flamethrower"
-	max_range = 5 //effective maximum range is 50m
-
-/obj/item/weapon/reagent_containers/glass/flamethrower/lpo
-	name = "LPO50 Flamethrower Canister"
-	icon_state = "lpo_flamethrower_back"
-	item_state = "lpo_flamethrower_back"
-	volume = 150
-
-/obj/item/weapon/reagent_containers/glass/flamethrower/lpo/filled/New()
-	..()
-	reagents.add_reagent("gasoline",150)
-
 /obj/item/weapon/flamethrower/roks2
 	name = "ROKS2 Flamethrower hose"
 	icon_state = "roks2_flamethrower"
@@ -216,6 +199,7 @@
 /obj/item/weapon/reagent_containers/glass/flamethrower/roks2/filled/New()
 	..()
 	reagents.add_reagent("gasoline",100)
+
 
 /obj/item/weapon/reagent_containers/glass/flamethrower_mg
 	name = "Stationary Flamethrower Tank"
