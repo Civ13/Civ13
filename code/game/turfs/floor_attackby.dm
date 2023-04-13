@@ -171,7 +171,7 @@
 		if (H.a_intent != I_DISARM)
 
 			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
-				if (T.available_snow >= 1)
+				if (T.available_snow > 0)
 					H.shoveling_snow = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -193,7 +193,7 @@
 					user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
 
 			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
-				if (T.available_dirt >= 1)
+				if (T.available_dirt > 0)
 					H.shoveling_dirt = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -208,7 +208,7 @@
 				else
 					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
 			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
-				if (T.available_sand >= 1)
+				if (T.available_sand > 0)
 					H.shoveling_sand = TRUE
 					visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -224,7 +224,7 @@
 			else
 				return ..(C, user)
 		else
-			if (radiation >= 1 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
+			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
 				visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
 				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
@@ -843,7 +843,7 @@
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
-				if (T.available_snow >= 1)
+				if (T.available_snow > 0)
 					H.shoveling_snow = TRUE
 					visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -865,7 +865,7 @@
 					user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
 
 			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
-				if (T.available_dirt >= 1)
+				if (T.available_dirt > 0)
 					H.shoveling_dirt = TRUE
 					visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -880,7 +880,7 @@
 				else
 					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
 			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
-				if (T.available_sand >= 1)
+				if (T.available_sand > 0)
 					H.shoveling_sand = TRUE
 					visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
