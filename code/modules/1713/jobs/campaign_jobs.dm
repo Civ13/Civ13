@@ -108,12 +108,10 @@
 	squad = 5
 	rank_abbreviation = "5-Tank"
 
-/*
 /datum/job/pirates/redfaction/at
 	title = "RDF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
-*/
 
 /datum/job/pirates/redfaction/engineer
 	title = "RDF Engineer"
@@ -168,7 +166,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/dp28(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack/filled/at(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
 	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored"))
@@ -382,12 +380,10 @@
 	rank_abbreviation = "5-Tank"
 */
 
-/*
 /datum/job/civilian/bluefaction/at
 	title = "BAF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
-*/
 
 /datum/job/civilian/bluefaction/engineer
 	title = "BAF Engineer"
@@ -452,7 +448,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpk47(H), slot_shoulder)
 	else if (findtext(title, "Anti-Tank"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/rpg7(H), slot_shoulder)
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rpg_pack/filled/at(H), slot_back)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
 	else if (!findtext(title, "Blugoslavian Civilian") || !findtext(title, "Armored"))

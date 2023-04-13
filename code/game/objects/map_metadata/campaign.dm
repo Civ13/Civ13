@@ -13,13 +13,13 @@
 		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/japanese,
-		list(CIVILIAN) = /area/caribbean/british/land,
+		list(PIRATES) = /area/caribbean/british/land,
+		list(CIVILIAN) = /area/caribbean/japanese,
 		)
 	age = "2023"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	battle_name = "battle of the Ators river"
+	battle_name = "battle of Dewsbury Village"
 	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
@@ -45,7 +45,7 @@
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
 		// "Armored" = list("Crew" = 8),
-		// "AT" = list("Anti-Tank" = 2),
+		"AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -55,7 +55,7 @@
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
-		// "AT" = list("Anti-Tank" = 2),
+		"AT" = list("Anti-Tank" = 2),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -444,14 +444,14 @@ var/no_loop_cm = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Redmenians halted the attack!"
+		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Blugoslavians halted the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
+		var/message = "The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
@@ -462,7 +462,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
 				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -471,7 +471,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
 				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -480,7 +480,7 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
 				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -489,14 +489,14 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the command post! They will win in {time} minutes."
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
 				next_win = world.time + short_win_time(PIRATES)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Blugoslavians</b> have recaptured control over the objective!</font>"
+			world << "<font size = 3>The <b>Redmenians</b> have recaptured control over the objective!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
