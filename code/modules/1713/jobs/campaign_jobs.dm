@@ -137,7 +137,7 @@
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (!findtext(title, "Redmenian Civilian"))
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+		var/obj/item/clothing/accessory/armor/coldwar/rb23/armor = new /obj/item/clothing/accessory/armor/coldwar/rb23(null)
 		uniform.attackby(armor, H)
 
 //equipment
@@ -708,7 +708,7 @@
 	if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 		var/obj/item/clothing/under/uniform = H.w_uniform
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+		var/obj/item/clothing/accessory/armor/coldwar/rb23/armor = new /obj/item/clothing/accessory/armor/coldwar/rb23(null)
 		uniform.attackby(armor, H)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenian_sailor(H), slot_w_uniform)

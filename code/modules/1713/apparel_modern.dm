@@ -453,6 +453,17 @@
 	item_state = "pasgt_blizzard"
 	worn_state = "pasgt_blizzard"
 
+/obj/item/clothing/accessory/armor/coldwar/rb23
+	name = "RB-23 body armor"
+	desc = "A modern ballistic vest of Redmenian origin."
+	icon_state = "rb23"
+	item_state = "rb23"
+	worn_state = "rb23"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	weight = 4.8
+
 		/* US Lightwieght Helmets*/
 
 /obj/item/clothing/head/helmet/modern/lwh
