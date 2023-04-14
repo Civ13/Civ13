@@ -1,0 +1,424 @@
+"aw" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"ax" = (/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"aE" = (/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/dust,/area/caribbean/forest)
+"aM" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"aW" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/lamp/lamp_small/alwayson/red{dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"bf" = (/obj/structure/reagent_dispensers/largebarrel/beer,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"bg" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"bi" = (/obj/structure/iv_drip,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"bM" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/forest)
+"bS" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/chef,/obj/item/clothing/head/chefhat,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"bV" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"cc" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/forest)
+"ce" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"cl" = (/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"cn" = (/turf/floor/dirt,/area/caribbean/forest)
+"cz" = (/obj/covers/wood_wall/log{dir = 4},/obj/structure/poster/faction/red/lead,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"cH" = (/obj/structure/closet/crate/ww2,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"cM" = (/turf/floor/beach/water/deep,/area/caribbean/forest)
+"cP" = (/obj/structure/iv_drip,/turf/floor/dirt/dust,/area/caribbean/forest)
+"cR" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"cW" = (/obj/covers/wood_wall/log{dir = 8},/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"dp" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/forest)
+"eh" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"ek" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/beach/water,/area/caribbean/forest)
+"ep" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"eC" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"eF" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather,/obj/structure/grille/ironfence,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"eH" = (/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"eK" = (/obj/covers/wood,/obj/structure/bed/chair/sofa/right,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"eR" = (/obj/structure/table/modern/table,/obj/item/camera_film,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"eU" = (/obj/covers/wood,/obj/structure/closet/fridge,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"eY" = (/obj/structure/bed/chair/office/light{dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"eZ" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
+"fe" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"fk" = (/obj/item/stack/material/barbwire/ten,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"fl" = (/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"fm" = (/obj/covers/wood,/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"fq" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt/dust,/area/caribbean/forest)
+"fu" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"fy" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/forest)
+"fB" = (/obj/structure/table/rack/shelf,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"fC" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"fE" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"fH" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"fP" = (/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt/dust,/area/caribbean/forest)
+"fT" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"gc" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"gf" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"gl" = (/obj/structure/table/modern/table,/obj/item/camera,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"gr" = (/obj/structure/railing/steel{dir = 1},/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"gF" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt/dust,/area/caribbean/forest)
+"gK" = (/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"gL" = (/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/item/weapon/grenade/smokebomb/m18smoke,/obj/structure/closet/crate/ww2,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"gT" = (/obj/covers/wood,/obj/structure/table/modern/table,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"gU" = (/obj/structure/railing/steel,/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/forest)
+"gY" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hc" = (/obj/covers/wood_wall/log{dir = 8},/obj/structure/poster/faction/red/work,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hg" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/driedmeat{pixel_y = 11},/turf/floor/wood,/area/caribbean/forest)
+"hn" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt/dust,/area/caribbean/forest)
+"hv" = (/obj/structure/closet/fridge,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hI" = (/obj/structure/window/classic/brickfull,/obj/structure/curtain/leather/open,/obj/structure/grille/ironfence,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hM" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
+"hO" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road,/area/caribbean/forest)
+"hT" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hU" = (/obj/covers/wood,/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"hZ" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/forest)
+"ih" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ii" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"ip" = (/turf/floor/beach/water,/area/caribbean/forest)
+"ix" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"iN" = (/obj/item/weapon/bedsheet,/obj/structure/bed,/obj/structure/props/radiator{pixel_y = 32; layer = 3.01},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"jf" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/turf/floor/dirt/dust,/area/caribbean/forest)
+"jo" = (/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"jw" = (/obj/covers/wood_wall/log,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"jD" = (/turf/floor/plating/road/whiteline{dir = 4},/area/caribbean/british/land/outside{name = "Dewsbury"})
+"jQ" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/forest)
+"jV" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil2,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"ku" = (/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/item/mine/ap,/obj/structure/closet/crate/ww2,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"kG" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"kO" = (/obj/covers/brick_wall,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"kZ" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lb" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/forest)
+"ld" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/british/land/outside{name = "Dewsbury"})
+"lg" = (/obj/structure/pot,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"lo" = (/obj/structure/window/classic/brickfull,/obj/structure/curtain/open/black,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"lu" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"lG" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"lR" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mk" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ml" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"mr" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"my" = (/obj/structure/wild/bush/big,/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"mH" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"ne" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/item/weapon/folder/red,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"np" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"nF" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"oc" = (/obj/structure/table/modern/retable,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"od" = (/obj/covers/wood,/mob/living/simple_animal/civilian{faction = "PIRATES"; name = "redmenian civilian"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"of" = (/obj/structure/bed/chair/wood{dir = 1},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"oF" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"oP" = (/turf/floor/grass,/area/caribbean/forest)
+"pa" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/forest)
+"pb" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"pf" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"pr" = (/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"py" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,/obj/item/weapon/reagent_containers/food/snacks/cheeseburger,/obj/item/weapon/reagent_containers/food/snacks/cheeseburger,/obj/item/weapon/reagent_containers/food/snacks/cheeseburger,/obj/item/weapon/reagent_containers/food/snacks/burger,/obj/item/weapon/reagent_containers/food/snacks/burger,/obj/item/weapon/reagent_containers/food/snacks/burger,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"pA" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"pD" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"pI" = (/obj/structure/table/modern/table/flipped{dir = 8},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"pL" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"pQ" = (/turf/floor/plating/road,/area/caribbean/forest)
+"pT" = (/obj/covers/wood_wall/log{dir = 8},/turf/wall/wood,/area/caribbean/forest)
+"pU" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"pV" = (/obj/covers/wood_wall/log{dir = 1},/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"qx" = (/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"qC" = (/obj/structure/wild/flowers,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"qG" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/work,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"qI" = (/obj/structure/chemical_dispenser/drinks,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"qP" = (/obj/structure/pot,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"rD" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/forest)
+"rE" = (/obj/structure/closet/fridge,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami,/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"rP" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+"rQ" = (/obj/structure/wild/smallbush,/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/forest)
+"sg" = (/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/dirt/dust,/area/caribbean/forest)
+"sE" = (/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"sO" = (/obj/structure/table/modern/table,/obj/structure/curtain/open/red{pixel_x = -32},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"sS" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/work,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"sX" = (/obj/structure/closet/crate/ww2,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt/dust,/area/caribbean/forest)
+"tk" = (/turf/floor/plating/road/yellowline,/area/caribbean/forest)
+"to" = (/obj/covers/wood_wall/log,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"tA" = (/obj/structure/bed/roller,/turf/floor/dirt/dust,/area/caribbean/forest)
+"tB" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/beach/water/swamp,/area/caribbean/forest)
+"tI" = (/turf/floor/plating/road/yellowline,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tJ" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"tM" = (/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"tU" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/forest)
+"tV" = (/obj/covers/brick_wall,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"tX" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"uy" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"uB" = (/obj/structure/bed/roller,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"uC" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/forest)
+"uR" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"uW" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/plating/road/yellowline,/area/caribbean/forest)
+"uZ" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"vp" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil1,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"vE" = (/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/forest)
+"vO" = (/obj/structure/toilet,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"vR" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"vS" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"wg" = (/obj/covers/wood,/obj/structure/TV/television/active,/obj/structure/table/glass,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"wl" = (/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"wq" = (/obj/covers/wood_wall/log{dir = 1},/turf/wall/wood,/area/caribbean/forest)
+"wu" = (/obj/structure/sink/kitchen,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"wR" = (/obj/structure/props/slot_machine{pixel_y = -3},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"wU" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"xp" = (/obj/structure/sink/kitchen{dir = 8; icon_state = "sink_alt"; pixel_x = 12},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"xv" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"xx" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/forest)
+"xy" = (/obj/covers/wood,/obj/structure/bed/chair/sofa,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"xS" = (/obj/structure/railing/steel,/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/forest)
+"xU" = (/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"yk" = (/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/item/weapon/reagent_containers/food/snacks/cookie,/obj/structure/closet/fridge,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"yl" = (/obj/structure/cannon/mortar,/turf/floor/dirt/dust,/area/caribbean/forest)
+"yp" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"yw" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/forest)
+"zz" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
+"zJ" = (/obj/structure/table/rack/coatrack,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"zZ" = (/obj/structure/railing/steel,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ac" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Ad" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/forest)
+"Am" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Ao" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"At" = (/obj/structure/wild/tree/live_tree/pine,/turf/floor/dirt,/area/caribbean/forest)
+"Av" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"AA" = (/obj/item/weapon/barstool{anchored = 1},/obj/structure/curtain/open/red{pixel_x = -32},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"AK" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/dirt,/area/caribbean/forest)
+"AX" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/forest)
+"AY" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Be" = (/obj/structure/window/classic,/obj/structure/grille/ironfence,/turf/floor/wood/fancywood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Bf" = (/obj/structure/table/modern/table,/obj/item/weapon/folder/blue,/turf/floor/dirt,/area/caribbean/forest)
+"Bl" = (/obj/structure/railing/steel,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"Bs" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"By" = (/obj/structure/simple_door/key_door/anyone/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"BD" = (/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/forest)
+"BH" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/mobile/campaign/red,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"BQ" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"BU" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Ct" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"Dd" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Dw" = (/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/forest)
+"DB" = (/obj/item/weapon/bedsheet,/obj/structure/bed,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/props/radiator{pixel_y = 32; layer = 3.01},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"DO" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/structure/table/rack/shelf/wooden,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"DV" = (/obj/structure/window/classic/brickfull,/obj/covers/wood,/obj/structure/curtain/open/blue,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ef" = (/obj/structure/shower/bathtub/steel,/obj/structure/curtain/open/shower,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ej" = (/turf/floor/plating/road/whiteline,/area/caribbean/forest)
+"Eu" = (/obj/item/weapon/reagent_containers/food/snacks/chocolatebar,/obj/item/weapon/reagent_containers/food/snacks/chocolatebar,/obj/structure/closet/fridge,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"FN" = (/obj/structure/wild/bush/big,/obj/structure/railing/steel{dir = 1},/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"FR" = (/obj/structure/railing/steel{dir = 1},/obj/structure/lamp/streetlight/alwayson,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Gq" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"GF" = (/obj/structure/railing/steel{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"GH" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"GO" = (/obj/structure/table/modern/table/flipped{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"GV" = (/turf/floor/wood,/area/caribbean/forest)
+"GX" = (/obj/map_metadata/campaign,/turf/floor/grass,/area/caribbean/forest)
+"Hc" = (/obj/structure/table/modern/retable,/obj/structure/cutting_board,/obj/item/weapon/material/kitchen/utensil/knife/butcher,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Hg" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Hj" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Hp" = (/obj/structure/oven/stove,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Hv" = (/obj/structure/sink/kitchen{dir = 4; pixel_x = -12},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"HN" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"If" = (/obj/structure/wild/bush/big,/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Ig" = (/obj/structure/bed/chair/office/dark{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ii" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"ID" = (/obj/structure/railing/steel,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"IN" = (/obj/structure/reagent_dispensers/largebarrel/beer,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"IR" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"Jd" = (/obj/covers/wood_wall/log/corner,/turf/wall/wood,/area/caribbean/forest)
+"Jh" = (/obj/structure/oven/stove,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Jq" = (/obj/structure/railing/steel,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"JG" = (/obj/covers/wood_wall/log/corner,/obj/structure/poster/faction/red/mil2,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"JK" = (/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/forest)
+"JN" = (/obj/covers/wood_wall/log,/obj/structure/poster/faction/red/mil2,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"JP" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/steel,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"JT" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/british/land/outside{name = "Dewsbury"})
+"JZ" = (/obj/structure/sink/kitchen,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ko" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ku" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/forest)
+"KO" = (/obj/covers/wood_wall/log{dir = 4},/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"KP" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"KS" = (/obj/structure/wild/smallbush,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"KT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"KU" = (/obj/covers/wood,/obj/structure/bed/chair/sofa/left,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"KW" = (/obj/structure/railing/steel{dir = 1},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"Lm" = (/turf/floor/grass,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Lp" = (/obj/covers/wood_wall/log{dir = 8},/obj/structure/poster/faction/red/mil1,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Lv" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire,/turf/floor/grass,/area/caribbean/forest)
+"Mn" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/forest)
+"Mw" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Mx" = (/obj/covers/wood,/obj/structure/oven/stove,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"MF" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"MJ" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"MN" = (/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"MY" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Ns" = (/obj/structure/bed/chair/wood,/obj/structure/curtain/open/red{pixel_x = -32},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Nw" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"NP" = (/obj/effects/premadevehicles/apc/adrian,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"NV" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/forest)
+"Oc" = (/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"Oh" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"Os" = (/obj/structure/toilet{dir = 1},/turf/floor/plating/white,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"OM" = (/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"OZ" = (/obj/item/weapon/storage/toolbox/mechanical,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Pa" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"Pp" = (/obj/item/weapon/barstool{anchored = 1},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"PJ" = (/obj/item/weapon/bedsheet,/obj/structure/bed,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"PK" = (/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"PM" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/forest)
+"PQ" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/structure/sign/deer_trophy{pixel_x = 32},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Qm" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"QG" = (/obj/structure/table/modern/table,/obj/item/weapon/telephone/mobile/campaign/blue,/turf/floor/dirt,/area/caribbean/forest)
+"QV" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/forest)
+"Ra" = (/obj/structure/table/modern/table,/obj/item/flashlight/lamp/littlelamp,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Rv" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"Rw" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/ammo_magazine/mosinbox,/turf/floor/dirt/dust,/area/caribbean/forest)
+"RJ" = (/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
+"RQ" = (/obj/structure/window/classic/reinforced,/obj/structure/curtain/leather/open,/obj/structure/barricade/vertical,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"RR" = (/obj/structure/wild/smallbush,/obj/structure/wild/tree/live_tree/pine,/turf/floor/grass,/area/caribbean/forest)
+"RT" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/item/weapon/reagent_containers/food/drinks/bottle/tequilla,/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine,/obj/item/weapon/reagent_containers/food/drinks/bottle/vermouth,/obj/item/weapon/reagent_containers/food/drinks/bottle/cognac,/obj/item/weapon/reagent_containers/food/drinks/bottle/gin,/obj/structure/sign/flag/redmenia{pixel_x = 32},/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood/ship,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Sj" = (/mob/living/simple_animal/civilian{faction = "PIRATES"; name = "redmenian civilian"},/turf/floor/wood,/area/caribbean/forest)
+"Sq" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"St" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction2,/turf/floor/dirt,/area/caribbean/forest)
+"Sw" = (/obj/covers/wood,/obj/structure/lamp/lamp_small/alwayson{dir = 4; icon_state = "bulb"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"SI" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/dirt/dust,/area/caribbean/forest)
+"SJ" = (/mob/living/simple_animal/civilian{faction = "PIRATES"; name = "redmenian civilian"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"SK" = (/obj/structure/table/modern/table/flipped{dir = 1},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"SR" = (/obj/structure/bed/chair/wood{dir = 4; icon_state = "wooden_chair"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"ST" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
+"SX" = (/obj/covers/wood,/obj/structure/table/rack/coatrack,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ta" = (/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Tn" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Tv" = (/obj/structure/table/modern/table,/obj/structure/radio/transmitter_receiver/nopower/faction1,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"TB" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/lead,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"TP" = (/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ul" = (/obj/structure/bed/wood,/obj/item/weapon/bedsheet,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ux" = (/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Va" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/grass,/area/caribbean/forest)
+"Vb" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt/dust,/area/caribbean/forest)
+"VY" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean/british/land/outside{name = "Dewsbury"})
+"Wf" = (/obj/structure/wild/tree/live_tree/pine,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)
+"Wr" = (/obj/structure/window/classic/brickfull,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Ww" = (/obj/item/weapon/bedsheet,/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"WN" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/dust,/area/caribbean/forest)
+"Xd" = (/obj/structure/brazier/potbellystove,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Xl" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/forest)
+"Xv" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"XD" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/grass,/area/caribbean/forest)
+"XK" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"XU" = (/obj/structure/wild/rock/basalt,/turf/floor/grass,/area/caribbean/forest)
+"YH" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
+"YS" = (/obj/structure/brazier/potbellystove,/turf/floor/wood,/area/caribbean/forest)
+"Zd" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/forest)
+"Zh" = (/obj/covers/wood_wall/log/corner,/turf/wall/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"Zr" = (/turf/floor/dirt/underground,/area/caribbean/forest)
+"Zy" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"ZF" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"ZG" = (/turf/floor/dirt/dust,/area/caribbean/forest)
+"ZI" = (/obj/covers/brick_wall,/obj/structure/poster/faction/red/mil2,/turf/wall/brick,/area/caribbean/british/land/inside{name = "Dewsbury"})
+"ZQ" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/forest)
+"ZU" = (/obj/structure/barbwire{dir = 1},/turf/floor/dirt,/area/caribbean/forest)
+
+(1,1,1) = {"
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZGoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPMJMJMJMJMJMJMJIRMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZGZGoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPhMoPMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJfCMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcncnccoPoPoPoPoPoPoPZGZGZGoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPoPoPoPMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJfCAcfCMJMJMJMJMJAcMJMJMJMJMJAcMJMJMJMJAcMJpLoPoPoPoPoPoPoPoPoPoPeZeZoP
+oPoPoPoPoPeZoPoPoPoPoPoPoPoPccoPoPoPoPoPccoPoPoPoPoPeZoPoPoPoPccoPoPoPoPoPoPcnoPoPoPoPoPcncncnoPoPoPoPoPoPeZZGZGZGgFoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPcnoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJfCMJMJlRMJMJMJMJMJfCMJMJfCMJMJMJIRMJMJfCMJMJMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPoPoPccoPoPoPoPoPcnoPoPoPoPoPZroPoPoPeZoPZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZeZoPoPoPoPoPcnoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJAcMJMJfCMJMJMJMJMJfCMJMJMJMJfCMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJpLccoPoPoPoPoPhMoPoPoPoPcncn
+oPoPoPcncnoPcncnoPoPoPoPZGoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPAtoPoPoPoPZrZroPgFZGZGoPoPoPoPoPoPoPoPoPoPOhoPoPoPccoPoPXUcncncncncncncnoPoPcccnoPoPoPccoPoPoPoPcncncnoPoPoPoPoPoPoPoPoPZGoPoPoPMJMJMJMJMJfCMJMJMJMJMJMJfCMJMJMJMJMJfCAcMJMJMJMJMJMJMJMJMJAcIRMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPcncnoPoPoP
+oPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPZQoPoPoPcnoPAtoPoPoPoPoPoPoPoPoPoPoPcncneZcnywcnoPoPoPcncnoPoPoPoPZrZGZGoPoPoPoPoPoPoPcnoPoPcnoPoPoPoPoPZroPoPoPoPoPoPoPoPccoPoPcncnoPhMoPoPcnoPoPoPoPcncnoPoPoPOhoPccoPoPZGZGoPoPoPccMJMJMJMJfClRMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCfCfCAcMJfCfCMJMJPKMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPccoPoPoP
+oPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPcncnoPoPOhoPoPoPoPoPoPcnoPZGZGoPoPoPoPoPoPoPeZWfoPoPoPoPoPjojojooPoPoPoPoPccoPoPoPoPoPoPcnoPoPoPoPoPoPcnZroPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJfCMJlRMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCfCMJMJMJMJMJfCMJMJMJMJMJMJMJfCYHoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPcncnoPeZoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPcnoPjooPcncnoPoPXUoPoPoPoPcnoPoPoPcnoPoPoPZGoPoPoPoPoPoPXUoPoPoPywoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPXUoPcnoPoPoPoPoPoPoPoPoPoPoPoPVaoPMJSTMJMJMJMJMJMJMJMJMJfCGHfCMJAcfCMJMJMJMJPKfCfCfCIRMJMJMJMJMJMJMJMJAcMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPcnoPoPoPeZeZoPoPoPoPcccnoPoPcnoPoPcnoPcnoPoPoPoPoPcnQVoPoPoPoPccoPoPoPoPoPoPoPoPoPcncncnoPZGZGoPcnoPoPcnoPoPoPoPoPoPOhoPcnoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPcnywoPoPoPoPoPoPjooPoPZrZroPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPMJSTMJMJMJMJfCfCfCfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJfCMJMJMJMJMJMJMJfCpLoPoPoPcnoPoPoPoPoPoPoPoPoP
+oPoPccoPoPoPoPeZoPcnoPcncncnoPcncncnoPoPcccncnoPcncnoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZGZGZGcnoPoPoPcncnoPoPoPoPcncnoPoPcnoPoPoPoPcccncnoPoPoPoPoPoPoPcnoPoPoPoPoPccoPoPoPoPoPoPcnoPoPoPoPcnOhoPoPoPjooPoPoPoPoPoPoPoPSTMJMJMJMJMJfCAcMJMJMJMJMJMJMJMJMJMJMJAcMJMJMJfClRMJMJMJAcfCMJMJMJfCfCMJfCfCpLoPeZoPoPcncnoPeZoPoPoPoPoP
+oPoPoPoPoPoPoPcnoPoPoPoPoPoPcnoPoPoPoPoPcncnoPcnoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPZGZGZGoPoPcnAtoPoPcncnoPVaoPcnoPoPoPoPcnoPoPoPoPoPcnoPoPoPoPoPoPoPcnAtoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJfCfCMJMJMJMJIRMJMJMJMJMJMJMJMJMJMJfCMJfClRMJfCMJMJMJMJMJMJMJfCfCMJMJpLoPoPccoPoPoPoPeZoPoPoPoPoP
+oPoPoPoPoPoPcncnoPoPoPoPoPoPAtoPcncncncnoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPoPoPoPZGoPZGZGoPoPoPoPoPoPcncncnoPoPcnoPoPoPoPoPoPccoPoPoPoPoPcnoPoPoPccoPoPoPoPoPoPoPoPXUoPoPoPoPoPcnoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPccoPoPeZoPMJMJMJMJfCMJMJMJMJMJIRMJMJMJMJMJMJMJMJMJfCMJIRMJMJMJMJfCMJfCMJMJpUMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPccoPoPoPoPoPoPoPcnoPcnoPoPoPoPcncnoPeZoPoPoPoPoPoPcnoPoPoPZroPZGZGoPoPZGoPoPoPoPoPoPoPcncnoPcnoPoPcnoPoPoPccoPoPoPoPoPcnoPcnoPoPoPoPoPoPcnoPoPoPoPcnoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJAcfCfCfCMJMJMJMJMJMJMJMJAcMJMJMJMJMJMJfCMJMJMJMJMJMJPKMJMJMJfCMJfCfCMJMJMJpLoPoPoPhMoPoPoPOhoPccoPcnoP
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncneZoPoPoPoPoPoPoPcnoPZGZGoPoPgFZGoPoPoPoPZGZGoPoPcncneZeZoPcncnoPoPoPoPcncncnoPoPoPoPcnoPoPOhoPoPoPoPcnoPoPoPoPcnoPjooPoPoPoPccoPoPZQoPoPoPOhoPoPoPoPeZcccnoPoPoPoPoPoPeZjoMJMJMJfCMJMJMJlRMJMJMJIRMJAcMJMJMJMJMJMJfCMJlRMJMJMJMJMJMJfCfCfCfCMJMJMJMJMJpLoPoPoPoPoPoPoPOhoPoPoPcncn
+oPoPQVoPoPoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPoPoPoPjooPoPoPoPccoPcnZGZQoPoPZGoPoPoPoPoPoPoPoPZGoPcncnoPoPoPoPcnjooPoPoPoPoPoPoPcncncnoPoPcnoPoPoPoPoPoPAtoPoPoPeZcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPeZoPoPoPcnoPoPoPoPoPoPMJPKMJfCMJMJMJMJMJMJMJIRMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJfCfCfCfCMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPccoPoPoPoPcncnoPoPgFZGcncnoPcncncnoPoPoPoPccoPoPoPZGoPoPoPoPoPcncnoPoPccoPcnoPoPoPoPoPoPccoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPXUoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJihMJMJMJAcMJMJfCMJMJMJMJMJMJMJfCMJIRfCfCMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPcnoPoPoPoPoPoPoPcccnoPoPoPoPoPoPoPcncnoPoPoPoPoPoPccZGZGoPZGoPoPoPoPoPoPoPoPoPoPoPoPoPjooPZGoPoPoPoPcnoPoPoPoPcnoPoPoPoPoPeZoPoPoPcnoPoPoPoPoPoPoPcnOhoPoPcnoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPcnoPoPMJMJfCMJMJMJMJMJMJMJMJMJMJfCfCfCfCMJMJMJfCMJMJMJMJfCMJfCMJMJMJAcfCfCfCfCMJMJpLywoPcncncnoPoPcnoPoPoPoPoP
+oPcncnoPoPccoPoPoPoPoPoPoPoPoPccoPoPoPcncncnoPoPoPoPZGZGZGoPoPoPoPXUoPoPoPoPQVoPoPoPoPoPjooPccZGoPoPoPoPoPoPXUoPoPoPoPccoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPoPcnoPMJMJMJMJMJMJfCMJfCfCfCMJMJMJMJMJMJMJMJMJMJMJMJpUfCfCfCMJMJfCMJMJMJMJMJfCMJMJpLOhoPoPccoPoPoPoPoPoPoPoPoP
+oPoPoPcncncnoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPoPoPoPoPoPZGoPZGQVoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPXUoPoPcncnccoPoPoPoPoPcnoPoPcncnoPoPoPoPcnoPoPoPoPoPccoPoPoPccoPoPoPoPccoPoPZroPoPoPoPoPMJMJMJMJMJMJMJMJMJMJGHfCMJSTSTMJMJMJMJMJMJfCfCfCMJIRMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPcnoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZGZGoPoPoPoPoPoPoPoPccoPcnoPoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPZrZroPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPZroPoPoPoPoPMJMJMJAcfCMJMJMJMJpUfCMJSTSTSTfCfCMJMJMJMJMJMJMJMJfCMJlRMJMJfCMJMJMJMJMJfCfCpLoPoPoPoPoPoPoPoPoPoPccoPoP
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzZGZGZGoPoPoPoPoPoPoPoPcnoPoPoPcnoPoPoPcnoPoPoPoPoPoPoPZGZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncncncncncnoPoPoPoPoPoPoPoPjooPoPcnoPcnoPoPcncncnoPcnMJMJMJfCfCMJMJfCMJMJMJMJMJSTSTMJMJAcMJMJIRfCfCMJMJMJMJMJMJAcfCMJoFMJMJMJMJAcpLoPoPoPeZoPoPoPoPoPoPoPoPoP
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzZGZGoPoPoPoPoPAtoPoPoPoPoPcncncncnoPoPcnoPoPcnoPoPoPoPoPZGKuoPoPccoPoPoPoPoPoPcnoPoPoPcncnoPoPoPoPoPoPccoPoPoPoPoPcncncncncncncncncncncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncnoPAtfCfCMJfCfCfCMJfCMJMJfCMJfCMJfCMJfCMJMJMJlRMJfCMJfCMJMJMJMJMJMJfCMJMJMJMJMJMJYHcnoPcnoPcncncncnoPoPcncncn
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzZGoPoPoPoPoPoPcncnoPoPoPoPoPoPoPcnoPccoPoPoPoPoPoPywoPoPoPoPZGoPoPoPoPoPoPcccnJdpTDwpTJdcnoPoPoPoPoPoPoPoPoPoPoPcncncncnipipipipipipcncncnoPoPoPoPoPoPoPoPoPoPcncncncnoPoPoPoPMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJlRMJfCMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJpLoPoPoPoPccoPoPoPoPoPoPoPcn
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzZGoPoPoPXUoPoPoPoPoPoPoPeZeZQVoPoPoPoPoPcnoPoPjooPcncnoPoPoPoPoPZGoPoPeZoPoPcnwqYSGVvEwqcnoPoPoPoPoPoPoPoPoPcncncncnipipipipcMcMcMipipcncnoPoPoPoPoPoPoPoPoPZrZroPoPoPoPoPoPoPMJMJfCMJMJMJMJMJMJMJMJMJAcMJMJMJMJMJMJMJMJMJfCAcMJMJPKMJMJMJMJMJfCMJMJMJMJMJPacnoPoPoPoPoPoPoPOhoPoPoPoP
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzoPoPoPoPeZoPoPoPoPoPoPeZoPoPoPoPoPoPcnoPOhoPoPOhoPoPAtcncncncncnZGZGZGoPZGZGcnwqhgGVGVDwcnoPcnoPoPoPoPoPoPoPcncncnipipipcMcMcMcMcMipipipcncnoPoPoPoPjocnoPccoPoPoPoPoPoPOhoPoPMJMJfCMJMJMJMJMJMJMJMJfCMJMJlRMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJfCMJfCMJMJMJMJpLoPoPoPoPoPoPoPoPOhoPoPoPcn
+pQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzoPoPoPoPoPoPoPccoPoPccoPoPoPoPoPoPoPcnoPoPoPoPcncnoPcnoPoPoPoPoPoPoPZGoPoPcncnAXGVGVSjDwcncnAtoPoPoPoPoPcccncncnipipipipcMcMcMcMcMcMipipcncnoPoPoPoPjooPoPoPoPoPoPoPoPoPOhoPoPMJMJMJMJMJMJMJMJMJMJMJfCMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJAcfCMJMJMJMJpLoPoPoPoPoPoPoPoPOhoPoPoPoP
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzpQpQpQpQpQzzoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPcncnoPoPcnoPoPcnoPoPoPoPcncnoPoPcncnoPoPJdpTpTpTJdcncncnoPoPoPoPoPcncncncnipipcMcMcMcMcMcMcMipipipcncncnoPoPoPjooPoPoPoPoPoPoPoPoPoPjooPMJfCMJMJMJMJMJfCIiPKMJMJMJfCfCMJMJMJMJAcMJMJMJMJMJMJMJMJMJIRMJMJAcMJfCfCMJMJawoPoPoPoPoPoPoPccoPoPoPoPoP
+LmLmLmLmZhKOczKOKOvRKOZhoPoPzzpQpQpQpQpQzzoPoPccoPoPoPcnoPcnoPcncncncnoPoPoPoPoPoPcncnoPoPoPoPcncnoPoPccoPcncncncnoPoPoPoPoPoPoPcncncnoPcnXUoPoPoPcncncnipipipcMcMcMcMcMcMcMcMipipcncncnoPoPoPoPoPoPoPoPoPoPccoPoPjooPoPMJAcMJMJMJMJMJMJfCfCfCfCMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJAcMJMJfCfCMJMJpLoPjooPoPoPoPoPoPoPoPoPoPAt
+LmLmLmLmjwvOfBtogKSKUltooPoPzzpQpQpQpQpQzzoPoPoPoPoPoPeZoPoPoPoPoPcncnoPoPoPOhoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcnoPoPcncncnoPZGcnoPoPoPcncnoPoPcncncnipipipcMcMcMcMcMcMcMcMcMipipcncnoPoPccoPoPoPoPoPoPoPeZoPoPoPoPoPoPMJMJMJMJMJfCMJAcMJMJMJfCfCMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJAcMJMJMJpLcnoPoPoPccoPoPoPoPoPoPoPcn
+LmLmLmLmjwKTxptoQmSJGORQoPoPzzpQpQpQpQpQzzoPoPoPcnoPoPoPoPoPoPoPoPoPccoPoPoPoPeZoPoPoPccoPoPeZoPoPoPoPoPoPoPoPcncncnoPoPoPcnoPoPoPoPZQcnoPcncnoPcncnipipipipcMcMcMcMcMcMcMcMipipipcncnoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJlRMJMJMJMJMJMJMJMJMJMJtJMJMJMJfCfCfCfCMJfCfCfCAcMJGHlRfCfCMJMJMJMJMJMJMJYHoPoPoPoPoPeZeZoPoPoPoPoPoP
+LmpbLmLmHgpIEftoqxqxXdtooPoPzzpQpQpQpQpQzzoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncnoPcccncncncnoPoPoPoPoPeZcnoPoPoPcncncncnipcMcMcMcMcMcMcMcMcMipipcncncncnoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJIRMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJfCpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+LmpbLmLmtoMFKOZhKOAoKOZhKOZhAvGqGqGqGqGqAvoPoPeZoPoPoPoPjooPcnoPoPoPoPoPoPoPoPOhoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPcncncnipipipipcMcMcMcMcMipipipcncncncncnoPcnoPoPoPoPoPoPoPoPoPcnoPoPoPoPMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJAcMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJpLoPoPoPhMoPoPoPoPoPoPoPoPoP
+LmLmcRLmtoqxJZqxZFqxqxqxzJtoAvGqGqGqGqGqAvoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPeZoPoPoPoPOhoPoPoPoPoPoPoPoPoPoPoPoPoPoPZQoPoPoPccoPoPoPoPoPoPoPcncncnoPcncncncnipipipipipipipipipcncncnoPoPoPoPcncncncncncncnoPoPoPoPoPeZoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJfCMJMJMJMJfCMJfCfCMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPcn
+LmLmLmLmtoQmqxSJqxprprqxqxAoAvGqGqGqGqGqAvoPoPoPoPQVoPoPoPoPoPccoPoPoPoPoPoPoPoPoPWfOhoPcnoPoPoPcnoPeZoPZrZrcncnoPoPoPoPoPcnoPoPccoPoPoPoPoPoPoPcncncncncncncncncncncncncncncncnoPoPoPoPoPoPcncncnoPoPoPcnywoPoPoPXUoPcnMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCfCMJMJMJMJfCfCMJMJfCfCIRMJMJMJMJMJYHcnoPoPoPoPoPoPoPccoPoPoPoP
+flLmLmLmtohvJhqxSRXvXvKoSJtoAvGqGqGqGqGqAvoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPcnoPOhoPoPoPccoPoPoPywcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPccoPoPoPcncncncncncncncncncncncncncncnoPoPoPoPoPoPoPoPywAtoPoPoPoPoPoPoPXUZrZrMJMJMJAcMJMJMJMJfCfCMJMJlRIRIRMJMJMJpUfCfCMJMJpUfCMJfCMJAcMJMJMJMJMJMJMJMJMJpLoPoPcnoPcncnoPoPoPoPoPcnoP
+flflLmLmZhKOKOvRKOKOvRKOKOJGAvGqGqGqGqGqAvoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPOhOhcnoPoPoPoPoPoPoPoPccoPoPoPZGoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPcncnoPoPoPoPcnoPoPcncnoPoPoPoPcnoPoPoPoPoPcnoPoPoPoPoPoPoPoPZrMJMJMJMJIRfCfCfCfCfCSTSTMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPoPoPcnoPoPoPoPcnoPoP
+LmflLmpbLmLmLmLmLmLmLmLmLmLmAvGqGqGqGqGqAvZhcWcWcWcWZhoPZQcnoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPcnoPjooPoPoPoPoPcncnoPoPoPeZoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPccoPoPoPoPoPMJMJMJMJMJfCPKfCPKpUSTfCMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJpLcnoPeZcnRRoPoPoPoPcnywoPoP
+LmflLmLmtVtVtVtVtVtVtVtVAotVAvGqGqGqGqGqAvBeNsqxprprpVoPoPcnoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPXUoPoPoPcncnoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJtJMJMJfCPKfCfCPKSTfCMJfCMJihMJMJMJMJAcMJMJMJMJMJMJMJlRMJfCMJfCAcMJMJMJfCYHcncncnoPoPoPcnoPoPoPcnoPoP
+LmLmLmLmtVvOfBtVgKXvfHJZSKtVAvGqGqGqGqGqAvBesOqxXvXvZhcWcWcWcWZhoPoPccoPoPoPoPeZoPoPoPoPoPoPccoPcnoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPcnoPoPoPoPoPoPoPoPoPoPcnXUoPoPoPccoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPeZcnoPoPoPMJMJMJMJMJMJfCPKfCfCfCMJMJMJMJMJMJMJMJMJMJMJMJPKPKMJMJMJMJMJMJMJfCMJMJMJMJMJawoPoPoPoPoPoPcnoPoPoPoPoPcn
+LmcRLmLmeFpAcltVQmSRqxqxqxZIAvGqGqGqGqGqAvtopfqxpfofpVrEpyocwupVoPoPoPoPoPoPQVoPoPoPoPoPoPoPcncncncnoPoPcnoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPccoPoPjooPcncnoPoPoPoPoPoPoPcnoPoPoPccoPoPOhhMoPoPoPoPoPoPoPcnoPMJMJMJMJIRMJfCfCIRMJMJoFMJMJMJMJMJMJMJMJMJlRMJMJMJMJMJMJMJIRMJMJfCMJMJfCMJMJpLoPoPoPoPoPoPoPoPeZRvZUOcOc
+LmLmLmLmtViixptVJhqxqxqxEutVAvGqGqGqGqGqAvtoQmqxqxqxpVeHeHeHgYpVoPoPoPoPoPoPoPoPoPoPccoPcnoPoPoPZroPoPoPoPcnoPoPeZoPoPoPoPoPccoPoPoPoPoPoPcnoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPeZoPcnoPoPoPeZoPoPoPoPoPoPoPccoPoPoPoPcnMJfCMJMJMJMJMJMJMJMJMJMJMJMJAcMJMJMJMJMJMJMJfCMJMJMJMJAcMJMJMJMJfCMJfCfCMJMJpLoPoPoPcnoPjooPoPoPXDrPXDXD
+tVtVtVtVtVtVAotVqxqxtVtVtVtVAvGqGqGqGqGqAvBeNsqxprprpVixeHeHeHpVoPccoPoPoPoPoPoPoPoPoPjocnoPoPoPZroPoPoPcccnoPoPeZoPoPVaoPoPeZoPoPoPoPoPoPcnoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJAcMJfCMJMJMJPaoPoPoPoPOcOcOcluZyZGZGZGZG
+tVXviNtVQmqxqxqxqxmrtVgKPJtVAvGqGqGqGqGqAvBesOqxXvXvpVHpbSHceHpVoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPOhoPoPoPoPoPoPccoPcnoPoPoPoPoPoPcnoPoPXUoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPoPAcMJMJMJMJMJAcMJMJMJMJMJMJMJMJMJMJMJMJMJAcfCMJlRMJMJMJMJMJMJMJMJfCfCMJMJMJKSpLoPoPoPZGmHepepepepZGZGZGZG
+WrHjqxAoqxqxqxqxqxqxAoqxxvhIAvGqGqGqGqGqAvJNpfqxpfofZhcWcWcWJPZhcWcWZhoPoPoPoPAtoPoPcnoPoPoPoPoPoPoPcncnoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPcnoPeZoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPccMJMJMJMJIRMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJfCfCMJMJlRMJfCMJMJMJMJfCMJMJMJMJMJMJpLoPoPccZGWNZGZGZGZGZGZGZGZG
+tVnFgKtVqxqxqxqxIgnetVTnRatVAvGqGqGqGqGqAvAoqxqxqxqxqxPpXvqxqxAoqxbfpVoPoPoPoPcnoPcnoPcncnoPoPXUoPoPoPoPoPoPcnOhoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPAtcnoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPMJMJMJMJMJMJMJlRMJMJMJAcfCpUMJMJMJMJMJMJfCfCfCfCMJMJMJMJAcMJfCfCMJMJMJMJMJMJpLoPoPoPZGWNZGZGZGZGaMrPcnZG
+tVtVtVtVqxqxqxqxIgTvtVtVtVtVAvGqGqGqGqGqAvAoqxqxqxqxqxPpXvqxRTpVqxINpVoPoPoPoPoPoPoPcncnoPAtoPoPoPcnoPoPoPcnoPoPoPoPoPoPoPcncnoPoPjooPoPoPcnoPeZoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPoPoPoPOhoPoPoPccoPcncnoPoPoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJIRMJMJMJMJfCfCMJMJfCfCfCMJMJMJMJMJMJIRMJMJMJpLoPoPoPZGWNtAtAtAZGAdSteYVb
+tVXvDBtVqxqxqxqxIgBHtVXvDBtVAvGqGqGqGqGqAvtoqxqxprprqxPpXvqxqIpVSJbfpVoPcnoPoPoPoPoPoPcncnoPoPoPoPcnoPoPoPoPcnoPoPoPccoPoPoPcncnoPoPoPoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZQoPoPoPoPeZoPoPoPeZoPoPMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLeZoPOhZGWNtAaEfPZGAdQGeYVb
+WrHjqxAoqxqxqxqxqxqxAoqxxvhIAvGqGqGqGqGqAvBeAAqxXvXvqxPpXvqxDOpVcWcWZhoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPccoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPcnoPoPoPoPcnoPoPoPoPoPoPoPOhoPcnAtcncnoPoPoPoPoPoPoPoPoPoPOhoPoPcncnoPccoPMJtJMJAcMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpUfCMJMJMJMJfCfCMJMJMJMJIRMJMJMJAcMJMJpLccoPoPZGWNSIsgZGZGaWBfeYVb
+tVqxgKtVQmMNqxqxMNmrtVgKqxtVAvGqGqGqGqGqAvtowRnFpfpfqxqxqxnFPQpVLmLmoPoPcnoPQVoPoPoPccoPoPoPoPcncnoPoPoPoPoPoPeZoPoPoPoPoPccoPoPcnoPccoPoPoPoPjooPoPoPoPoPoPccoPoPeZoPoPoPoPoPoPoPoPcncnccoPoPoPoPoPcnoPcnoPcncnoPoPoPoPMJMJMJMJMJMJlRIRMJMJMJMJIRMJMJMJlRMJMJMJMJMJfCfCfCGHMJAcMJMJMJMJMJMJMJMJMJMJpLoPoPoPZGWNcPhnZGZGtUXlcnVb
+tVtVtVTBtVhIfufuhItVtVtVqGtVAvGqGqGqGqGqAvZhLpcWcWcWZhhccWcWcWZhLmLmoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnZQoPoPoPoPoPoPhMoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJpUfCMJMJPKMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJPKMJMJMJMJMJpLoPoPoPZGWNZGZGZGZGZGZGZGVb
+AvAvAvAvAvAvAvAvAvAvAvAvAvAvAvGqGqGqGqGqAvAvAvAvAvAvAvAvAvAvAvAvAvAvzzzzxSbMbMrDrDbMbMbMbMbMbMbMxSbMbMbMbMbMbMgUbMbMbMbMxSbMbMbMbMbMbMbMbMrDbMbMxSbMbMbMbMbMbMbMbMbMbMbMxSbMbMbMbMbMbMbMbMrQbMxSbMbMbMbMbMbMbMbMbMbMbMxSJqJqJqJqJqJqJqJqJqIDIDmkJqJqJqJqJqJqJqJqJqIDIDmkJqJqJqJqJqJqJqJqJqIDIDmkJqJqCtbMbMbMbMBlzZZGZGZGZGbMbMbM
+JTJTJTJTJTJTJTJTJTJTJTJTJTJTJTGqGqGqGqGqJTJTJTJTJTJTJTJTJTJTJTJTJTJTRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuRRJRJRJRJRJRJZGZGZGZGZGRJRJ
+GqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmltXpQpQpQpQpQpQpQZGZGZGZGpQhO
+tMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItItXpQtktktkpQpQtkZGZGZGpQtkuW
+ldGqGqldldldfefeldldldGqGqldldldGqGqldldldGqGqldldldGqGqldldldGqGqldPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmtXpQPMPMPMpQpQPMZGZGZGpQPMhZ
+GqGqGqGqGqGqSqOZGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmltXpQpQpQpQpQpQpQZGZGZGZGpQhO
+axaxaxaxaxaxGqGqGqGqGqaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDfTEjEjEjEjEjEjEjEjZGZGZGEjEj
+wUFNwUwUwUbgVYGqGqGqjDbgwUwUwUwUwUwUwUFNwUFNFNwUwUFNwUwUwUwUwUwUwUwUxUmyxUxUxUgrxUxUxxxUxUxUxUxUxUgrgrxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUgrehxUxUxUxUxUxUxUxUxUxUgrxxxUxUgrgrxUxUxUxUxUxUxUxxgrgrxUxUxUlGlGlGlGlGFRlGlGlGlGeClGlGlGlGlGlGFRlGlGlGlGeClGlGlGlGlGlGFRlGlGlGlGeClGlGlGvSxUxUxxxUxUxUxUGFZGZGZGxUxU
+kGLmLmkGLmkGVYGqGqGqjDkGkGLmLmkGkGLmLmkGkGkGLmLmLmkGkGkGkGkGLmkGLmkGoPjQoPoPoPoPjQoPjQjQoPoPoPoPoPjQoPoPjQjQoPoPjQjQoPoPoPoPjQjQoPoPoPoPoPoPoPjQoPoPoPoPoPoPoPoPoPjQjQoPoPoPoPoPoPoPjQjQoPoPoPoPoPoPjQjQoPoPoPoPjQjQoPoPHNMJMJHNMJHNHNMJMJHNHNMJHNMJMJHNMJHNHNMJMJHNHNMJHNMJMJHNMJHNHNMJMJHNHNMJHNMJpLjQoPjQjQoPoPjQZGZGZGoPoPjQ
+BUIfIfIfBUBUVYNPGqGqjDBUBUBUBUIfBUBUBUBUBUBUIfBUBUIfBUBUBUBUBUBUBUuyfEbMxSbMbMbMbMbMbMfEbMfEfEbMxSbMbMbMbMbMbMbMbMfEbMbMxSbMbMbMfEfEfEbMbMbMbMfEgffEbMbMbMbMbMbMbMbMbMfExSbMbMbMbMbMbMfEbMbMbMbMxSfEbMbMbMbMbMbMbMbMbMxSJqJqJqBQJqJqJqJqJqJqJqmkJqJqJqBQJqJqJqJqJqJqJqmkJqJqJqBQJqJqJqJqJqJqJqmkJqJqCtfEbMbMbMbMbMZGZGZGZGbMbMfE
+JTJTJTJTJTJTGqGqGqGqGqJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTJTRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuZuRRJRJRJRJRJRJZGZGZGZGRJRJRJ
+GqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmltXpQpQpQpQpQpQZGZGZGZGZGpQhO
+tMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtMtMGqGqtMtktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtktktkpQpQtItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItImlmltItItItXpQtktktkpQpQZGZGZGZGZGtkuW
+ldGqGqldldldGqGqldldldGqGqldldldGqGqldldldGqGqldldldGqGqldldldGqGqldPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQPMPMPMpQpQAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmmlmlAmAmAmtXpQPMPMPMpQpQZGZGZGZGpQPMhZ
+GqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmlmltXpQpQpQpQpQpQpQZGZGZGZGpQhO
+axaxaxaxaxaxGqGqGqGqGqaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxaxEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjEjpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDpDfTEjEjEjEjEjEjZGZGZGZGZGEjEj
+AvAvAvAvAvAvGqGqGqGqGqAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvAvzzzzxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUxUxUxUxUxUxxxUxUxUxUxUxUlGlGlGlGlGFRlGlGlGlGlGlGlGlGlGlGlGFRlGlGlGlGlGlGlGlGlGlGlGFRlGlGlGlGlGlGlGlGvSxUxUxxxUKWGFZGZGZGZGxUxUxU
+kODVkOkOsSAvGqXKXKXKGqAvLmLmLmLmLmLmLmLmLmLmLmLmLmtVlotVlolotVAotVtVoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPZGRwBDZGZGZGZGZGZGVb
+KUxyeKTPDVAvGqXKXKXKGqAvLmLmLmLmLmLmLmLmLmLmLmLmLmtVqxqxXvXvtVqxXvtVoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPccoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcnoPoPoPMJMJMJMJIRMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPZGMYfqZGpaZGZGZGZGVb
+TPTPTPTPDVAvGqXKXKXKGqAvLmLmLmflLmLmLmLmLmLmLmcRLmtVqxqxqxnptVSJqxlooPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPcnoPoPoPeZoPoPoPoPoPAtcnoPoPoPccZQoPoPoPcncnoPoPoPoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPMJPKMJMJMJMJMJMJMJMJfCfCMJIRfCfCMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJIRMJMJAcMJYHcncncnZGMYfqZGylZGZGZGZGVb
+TPTPTPTPgcAvGqXKXKXKGqAvLmLmLmcRLmLmLmLmLmflLmLmLmtVqxqxqxqxAoqxqxlooPoPoPoPoPoPoPoPcnoPoPoPoPoPcnoPoPoPfyoPoPoPoPoPoPoPoPoPoPoPcncncncnoPoPoPoPoPccoPoPoPoPoPccoPoPoPoPeZoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPcnoPoPoPoPMJfCfCfCMJMJMJfCfCfCfCMJMJMJAcMJMJMJMJMJMJMJfCfCfCMJAcMJMJfCMJMJMJMJMJfCMJMJpLoPeZoPZGgLsXZGjfZGZGZGZGVb
+TPwgSXSwkOAvGqXKXKXKGqAvLmLmLmLmLmLmLmLmLmLmLmLmLmtVqxqxSJqxtVqxnptVoPOhoPoPoPoPoPcnoPoPoPoPlboPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPjooPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncncncnAtoPoPoPoPcncnoPoPoPoPoPoPoPoPoPccoPoPMJfCIRMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJAcMJMJMJfCIRMJMJMJMJMJMJMJMJMJMJMJfCMJMJpLoPoPccZGWNZGZGZGZGZGZGZGVb
+BykOkOkOkOAvGqXKXKXKGqAvLmLmLmLmLmLmLmcRLmLmLmLmLmtVlgJhhvgKtVXvXvtVoPoPoPoPcnccoPcnoPQVoPoPoPoPcnoPoPoPoPlboPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPfycncnoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPeZoPcnoPoPoPoPMJMJMJMJMJMJIRMJMJMJkZMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpUfCfCfCMJMJMJpLoPoPoPoPbVNVNVNVNVNVZGZGVb
+TPTPTPeUjVAvGqXKXKXKGqAvLmLmLmLmLmLmLmLmLmLmLmLmLmtVtVtVtVtVtVtVtVtVoPoPoPcncnoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPeZoPoPoPoPoPoPoPOhoPoPeZoPoPoPoPeZoPoPoPfyoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnAtoPoPoPoPoPcnoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJIRMJlRMJMJMJMJAcMJMJpLoPoPoPoPJKJKJKJKJKLvZGZGZG
+TPTPodMxhUAvGqXKXKXKGqAvvptVtVtVtVtVtVtVvpLmLmLmLmoPoPoPOhoPoPXUoPoPoPoPoPcnoPoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPcnoPoPoPccoPoPoPoPoPoPcnoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPeZoPoPMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJfCMJMJIRMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPcncnoPoPoPoPoPoPZdZdNV
+TPTPTPfmDVAvGqXKXKXKGqAvtVWwgKtVJhykJZgltVLmLmLmLmoPoPoPoPoPeZoPoPoPoPoPccoPoPoPoPcnlboPoPoPoPoPoPcnAtoPeZoPywcnoPoPoPoPoPoPoPQVoPoPoPcncncnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPcnoPoPoPoPeZcnoPoPoPoPoPoPoPoPcnoPoPoPoPoPMJMJMJAcMJfCMJMJMJMJMJMJMJMJMJIRMJMJMJMJMJMJMJMJAcMJfCMJMJMJMJMJMJMJMJMJMJMJpLcnoPoPoPeZoPcncncnoPuCMnJK
+odTPgTgTDVAvGqXKXKXKGqAvWrqxnptVqxqxSJeRWrLmLmLmLmoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPeZoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPRReZoPoPcnoPoPoPcnoPoPoPoPjooPoPoPcnoPoPoPoPoPoPfCMJMJMJMJfCfCMJMJMJMJAcMJMJSTSTfCMJMJMJMJfCMJMJMJMJfCMJMJMJfCfCMJAcMJMJMJMJpLcnoPoPoPoPoPoPQVoPoPoPoPoP
+kOkOkOkOkOAvGqXKXKXKGqAvWrqxSJtVqxqxqxqxWrLmLmLmLmccoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPjooPoPoPccoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPccoPoPoPoPeZQVoPoPccoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnMJMJMJMJMJMJMJMJMJfCMJMJfCMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJfCfCIRMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+cececeDdcHAvGqGqGqGqGqAvtVWwqxAoqxqxqxqPtVLmLmLmLmcnoPoPoPoPoPoPoPoPcncncncncnoPoPjooPoPoPoPQVoPoPoPoPlboPoPlbZrZroPoPoPccoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPcncnoPoPoPoPVaoPoPoPoPoPcncnoPoPoPccoPcnMJMJMJMJfCfCfCMJMJMJMJMJMJfCfCMJfCMJAcMJfCMJMJMJMJfCfCMJAcMJfCMJMJMJMJfCMJMJpLoPcncnoPoPoPoPoPcncnoPeZeZ
+cececeDdNwAvGqGqGqGqGqAvtVtVtVtVqxqxSJqxWrLmLmLmLmoPcncncncnoPcncncccncncncncnoPoPjooPoPoPoPoPoPoPoPoPoPoPoPZrZroPeZoPoPoPoPXUoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPccoPcnoPoPoPoPoPoPoPMJMJfCMJMJMJMJMJfCfCkZMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJfCMJMJMJKPoPoPoPoPoPoPoPcnoPoPoPeZoP
+fkBsAvsEsEAvGqGqGqGqGqkutVHvhTtVqxqxqxqxWrLmLmLmLmcnoPoPcccncncnoPcncncncnoPoPcnjooPoPoPoPoPoPoPoPoPoPoPoPoPZrcnoPoPoPcnoPoPoPoPoPoPccoPoPoPoPoPoPoPZroPoPoPXUoPoPoPoPcnoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPfyoPoPoPoPoPXUoPMJfCAcMJMJMJMJMJMJfCfCfCfCfCfCfCMJMJMJypMJMJfCAcMJMJMJMJMJlRfCMJMJMJfCAcMJMJpLoPoPoPoPoPoPoPoPoPoPoPcnoP
+fkfkAvAvAvAvGqGqGqGqGqkutVOsclMFqxqxXvXvtVLmLmLmLmoPoPoPoPoPoPoPoPcncnoPoPoPoPoPjooPoPoPoPoPeZoPoPoPoPoPoPZrZroPoPoPoPZGcnoPoPcnoPoPoPoPoPoPoPQVoPoPZrcncnoPoPoPoPoPoPcnfyoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPQVoPMJMJMJMJfCMJMJMJMJfCfCfCfCfCfCfCfCMJMJkZMJMJMJMJMJfCMJMJMJlRGHMJMJIRMJMJMJMJpLoPoPoPAtoPoPoPoPccoPQVcnoP
+fkfkAvAvAvAvGqGqGqGqGqAvZItVtVtVAotVtVtVqGLmLmLmLmoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPjooPoPoPoPcncnoPoPccoPoPoPoPcnoPoPoPoPoPoPcnoPcncnoPjooPoPoPoPoPoPoPoPoPoPcnoPoPjojocnoPQVoPoPoPoPcnoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPMJMJMJMJMJfCfCfCfCfCfCPKPKfCPKfCfCMJMJMJMJMJMJMJMJMJfCMJMJMJMJfCMJfCMJMJMJMJpLeZoPoPcnoPoPeZoPoPoPoPoPoP
+AvAvAvAvAvAvGqGqGqGqGqAvAvAvAvAvAvAvAvAvAvAvAvAvAvzzzzzzzzzzzzzzoPoPoPoPoPoPoPjooPccoPoPoPoPoPoPoPoPoPoPoPoPcnoPcnoPoPoPoPoPoPcncncnoPcncnoPoPoPoPoPoPoPoPcncncnjooPoPoPQVcnoPoPoPoPoPoPoPcncnQVoPQVoPoPoPoPoPoPoPoPoPoPMJfCMJMJSTMJMJfCAcIifCfCPKfCPKfCfCMJMJMJMJMJfCMJMJSTIRMJMJMJMJfCfCMJMJMJMJMJpLoPoPcnAKoPoPeZoPoPoPoPoPoP
+uBuBuBuBAvAvGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQzzoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPOheZoPcncncnoPcncnoPoPoPoPoPoPoPQVoPcnoPoPoPcncnoPoPoPoPoPoPoPcnoPoPoPoPoPeZoPoPMJfCSTSTMJMJfCMJMJIRfCPKPKPKPKfCfCMJIRMJMJMJfCSTSTMJMJMJMJAcMJMJfCMJMJMJMJfCpLoPcncnoPoPoPoPoPoPoPoPoPoP
+wlTaMwAvAvAvGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQzzoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPOhoPoPoPoPccoPoPoPoPcnoPoPoPoPoPoPQVoPoPlboPoPoPcccnoPoPoPcnoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPcncncnoPccoPoPoPoPMJSTSTMJMJfCfCfCfCfCPKPKfCfCMJMJMJMJMJMJMJMJSTSTMJMJfCMJMJMJMJMJfClRlRMJMJfCpLcnZGoPoPoPoPoPoPcncnoPccoP
+biUxOMAvAvAvGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqGqpQpQpQpQpQpQzzoPoPoPoPoPoPoPoPoPcnoPoPQVoPoPoPoPoPoPoPoPcnoPoPoPoPoPjooPcnccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZcnoPoPoPcnoPOhcneZoPoPcnoPoPoPoPoPeZoPoPMJMJfCfCfCMJMJMJfCMJIRMJMJMJMJAcMJMJIRMJMJMJMJfCfCfCMJMJMJMJMJMJfCMJMJMJMJfCYHoPoPoPoPoPoPoPcnoPcnoPoPoP
+oPoPoPoPoPzzpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzoPoPoPoPoPoPoPXUoPoPoPoPoPoPoPOhoPoPoPoPoPoPoPOhoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPeZoPoPoPoPoPoPoPoPcnoPoPcnoPoPoPoPcncnoPZQcnoPcnoPoPoPoPoPoPoPoPfCfCpUfCMJMJMJfCMJMJIRMJMJMJMJMJfCMJMJMJMJfCfCpUfCMJMJMJMJMJMJfCPKMJMJMJMJfCpLoPoPoPoPoPoPoPcnoPcnoPoPoP
+oPoPoPoPoPzzpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQpQzzoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPcccnoPoPoPoPoPoPlboPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPoPOhoPoPoPcnccoPoPcnoPoPoPoPcnoPoPoPcnoPoPoPcncnccoPoPoPoPoPoPoPfCfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJfCfCMJMJMJMJMJMJMJfCfCfCMJAcMJMJMJYHoPoPoPoPccoPcncnoPeZoPoPoP
+oPoPoPoPoPzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzoPoPoPcncnccoPoPcncnoPoPlboPoPoPoPcnoPoPcncncncnQVoPcncncnZQcnoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPcnoPoPoPcncnoPcnoPoPccoPoPoPcnoPcnfCfCMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJfCMJfCfCfCMJMJMJMJMJAcMJMJfCIRMJMJMJMJMJpLoPoPoPoPoPoPywoPoPoPoPoPcn
+oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPcncncnoPZroPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPXUoPoPoPoPoPoPoPoPoPcnoPoPoPoPcncncnoPMJMJAcMJMJMJMJfCAcMJMJMJMJMJMJMJMJfCfCfCMJMJMJAcMJMJMJPKMJMJfCfCMJMJMJMJMJMJpLcnoPoPoPoPQVoPoPoPoPccoPoP
+oPccoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPeZoPcnQVcncncnZrZroPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPQVoPoPoPccoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPcncnoPoPfCMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJfCfCMJMJfCMJMJMJMJMJPKMJfCMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPcnoPoPoPcnoPQVcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPQVcncnZroPoPoPoPcnoPoPoPoPoPoPoPoPoPoPXUoPoPoPccoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPccoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPAYMJMJkZMJMJMJMJMJMJMJMJMJfCMJMJlRMJMJMJMJAYMJMJkZMJMJPKMJfCMJfCMJMJMJMJMJfCpLcnoPoPoPoPoPoPoPoPcnoPoPoP
+oPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPcncnfyoPoPoPoPoPcnoPZQoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPZroPoPcnoPoPlboPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnccoPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPcncncncncncncncncnoPoPoPoPoPfCMJMJMJMJMJfCMJMJMJMJMJfCMJMJMJlRMJMJMJMJfCMJMJMJMJIRMJMJMJAcfCfCMJMJAcMJMJYHcnoPRRoPoPoPoPoPcnoPoPoPcn
+oPoPoPOhoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPccoPoPcnoPoPoPoPXUoPoPoPoPoPoPccoPoPoPoPoPcnoPcnOhoPeZoPccoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPjocncnoPoPoPoPoPoPcnoPoPoPoPcncncncncncncncncncnipipekipipipcncnoPoPoPoPoPMJMJMJMJMJfCMJMJMJMJAcMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJfCMJMJMJMJMJYHoPoPoPoPoPoPoPcnoPoPoPcnoP
+oPcnoPoPoPQVoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPOhoPoPoPoPcnoPoPoPcnoPcnoPcnoPoPoPjocnoPoPoPcncncnoPoPcnoPAtoPcnoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPcnZQcncncncncncncncncnipipipipipipipipipcncnoPOhoPcnMJMJMJMJMJfCMJkZMJMJMJMJMJMJMJMJMJMJlRMJfCMJMJMJMJMJfCMJMJMJMJMJlRMJPKMJMJSTpLcnoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPoPoPoPoPoPOheZcnoPoPoPoPccoPoPcnoPoPoPoPoPoPoPoPoPoPoPcncncnoPoPoPoPoPoPoPoPoPoPcccnoPcnoPoPcnoPoPcnoPoPoPoPoPoPoPccoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcncncncncnipipipipipipipipipcMcMcMipipcMipipipcncnoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJGHlRMJfCMJMJSTpLoPoPoPXUoPQVoPoPcncnccoPoP
+oPcnoPoPoPoPoPoPoPoPoPQVoPoPoPoPoPcnoPOhoPoPoPoPoPoPoPoPoPcccnoPoPoPcncncncncnoPoPcnoPcncnoPoPcncncnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncncncnAtcnipipipipcMcMcMcMcMcMipipipipipipipcncncnoPoPoPoPcnMJMJMJMJMJMJMJMJfCMJMJMJMJfCMJMJSTMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJIifCMJMJSTpLoPcnoPoPoPcncnoPoPoPoPoPoP
+oPcnoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPQVoPoPoPcncnoPoPoPoPoPoPOhoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPfyoPoPoPoPcccncncncncncncnipipipcMcMcMcMcMcMcMipipipipcncncncncncncncncnccoPQVoPZrMJMJMJAcfCMJMJMJfCMJMJMJMJfCfCMJSTMJkZMJSTMJMJMJAcfCMJMJMJMJMJMJMJfCMJMJMJMJpLoPcncnoPcncncncnoPoPQVoPoP
+oPoPoPoPcncnccoPoPoPcnoPoPoPoPoPcnoPoPoPoPoPcnoPccoPeZoPoPoPcnoPoPoPoPoPcnoPoPoPoPdpoPoPcncnoPoPoPoPoPoPoPoPoPoPoPoPoPcnjooPOhoPZGZGcnoPoPoPoPoPcncncncnipipipipipipipcMipipipcMcMipipipcncncncnAtcncncncnoPoPoPcnoPoPZrMJMJMJMJfCMJMJIRfCMJMJMJMJfCMJkZMJfCMJMJSTMJMJMJMJfCMJMJMJAcMJMJfCfCMJMJMJMJawoPoPcnoPoPcnoPoPoPoPoPoPoP
+oPAtoPoPoPoPoPoPoPoPcncnoPoPoPoPcnoPoPoPoPcncncncnoPoPoPoPoPoPoPoPoPoPZGoPoPoPoPcncnoPoPoPcnoPoPoPoPoPccoPoPOhoPoPoPcnjojooPoPoPoPoPcnoPoPoPoPoPcncnipipipipipcMcMipipipipcnipipcMcMipipipcncncnoPoPoPoPoPoPoPoPoPoPoPcnSTSTMJMJMJihMJMJMJMJMJAcMJfCMJMJfCMJMJMJfCSTSTMJMJMJihMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPcnoPoPoPoPcnoPoPoPcn
+oPoPoPoPoPOhcncnoPoPoPccoPoPoPoPcnAtcnoPcncnoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPeZZQcnoPoPoPoPoPoPoPQVoPoPoPoPoPoPoPoPcnoPoPoPoPlboPoPoPcnccoPoPcncncnipipipipcMcMipipipipcncncncnipipipcMcMipipcncnoPoPoPoPeZoPoPoPoPoPoPoPMJSTSTMJMJkZMJMJMJfCfCMJfCMJMJMJMJMJMJMJMJMJSTSTMJMJkZMJMJMJMJMJfCMJMJMJMJMJpLoPoPcnoPoPoPoPoPcnoPoPoPoP
+oPoPoPoPoPoPoPoPZGZGoPoPoPoPOhcnoPcnoPcnoPXUoPoPoPoPcnoPoPoPccoPoPoPcnoPoPoPZQcnoPoPjooPoPcnoPoPoPoPoPoPcncncncncnccoPoPoPoPoPoPoPeZcnoPcncncncnipipipipipipipipcncncncncnoPcncnipipipcMcMipipcncnoPoPoPoPeZoPoPoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJIRMJMJPKfCfCMJMJMJMJYHoPoPcncneZeZoPoPoPoPoPoPoP
+oPcnoPoPoPoPoPoPZGoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPcnoPcncnoPoPoPcnoPoPoPXUoPeZoPoPoPtBoPoPcncnoPoPoPoPoPoPoPlboPoPoPoPoPoPoPoPoPoPeZcncncncnipipipcMcMipipipcncncncnoPoPoPoPcncncncnipipcMipipipcncncnoPoPoPeZoPoPoPoPoPMJfCfCfCMJMJMJMJMJMJMJMJMJoFMJMJMJMJMJMJMJMJfCfCfCMJMJMJMJMJMJMJfCIiMJAcMJMJpLoPcnoPoPcncnoPcncnAtcncncn
+oPoPQVoPoPoPoPZGcnoPoPoPoPoPcnoPoPcncncncnoPoPcncnoPoPcncncnoPjooPoPoPoPoPoPoPoPoPoPoPoPcncnoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncncnipipipipcMcMipipipipcncnoPoPoPoPoPoPoPoPoPcncncnipipcMipipcncncnoPoPoPZQcnoPoPcnMJfCMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJfCMJMJfCMJfCMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJYHoPoPccoPoPoPoPoPoPoPcnoPoP
+oPcnoPoPoPoPeZoPAtoPoPoPoPoPcnoPcncncncncncncnoPcncnZQcnoPoPoPoPjooPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcncnoPcncncncnipipipipcMipipipipcncncnoPoPoPeZoPoPQVoPoPoPoPoPcncnipcMcMipipcncncnoPoPeZoPoPoPoPMJfCAcMJMJMJMJMJAcMJMJMJMJMJMJMJMJMJMJMJMJMJfCAcMJMJMJMJMJfCMJMJMJfCMJMJoFMJYHoPoPoPoPoPoPoPoPoPoPoPcnoP
+oPcnoPoPoPoPoPoPcnoPoPoPoPoPoPcncnoPcncndpcnoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPeZoPoPoPQVoPoPoPoPoPcnoPoPcccncncnipipipcMipipipipcncncncnoPoPoPoPccoPoPoPoPoPoPoPoPoPoPcnipipipipipcncncnoPoPoPoPoPoPMJMJMJfCMJMJMJMJMJMJMJMJfCfCMJMJMJMJMJMJMJMJMJMJfCMJMJMJfCMJMJAcMJfCfCMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPcnoP
+oPoPoPccoPoPoPcnoPjooPoPoPoPcnccoPoPoPoPoPoPoPoPoPoPQVoPOhoPoPoPoPoPcncnoPoPoPoPoPoPoPcnoPccoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPcncnipipipcMcMcMipcncncncnoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPccoPoPcncncnipipcMipcncncnoPoPccoPoPlRMJMJMJMJMJMJMJMJMJkZMJIRIiMJMJMJMJAcMJMJlRMJMJMJMJfCfCMJMJMJMJMJMJfCMJMJMJawoPoPoPoPoPZGOhoPoPoPoPoPoP
+oPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPjooPoPoPoPoPccoPoPoPoPoPoPoPoPoPoPoPoPoPccoPywcnoPoPVaoPcnoPoPoPoPoPoPoPcnoPccoPoPcncnoPcncncnipipipipcMipipipcnoPcncnAtcncncncncncnoPcncnoPoPoPoPoPoPoPcnoPcncncnipcMipipipcncnoPoPoPoPMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJMJpLoPoPoPoPoPoPoPoPoPoPoPQVoP
+oPQVoPoPOhoPoPcncnoPOhoPoPoPQVoPoPoPoPoPoPoPoPOhoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPcnoPoPoPoPcnoPoPoPoPoPcncncnipipipcMipipipipcncnoPoPoPoPoPoPcnoPQVcncnoPoPoPAtcncncncnfycnoPoPcncncnipipcMipipcncnoPoPcnfCqCMJMJMJAcMJMJfCfCMJMJMJMJMJkZMJfCMJMJfCfCqCMJMJMJAcMJMJMJMJMJMJfCpUfCPKMJpLoPeZeZeZoPoPoPoPccoPoPoPoP
+GXoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPccoPoPcnoPcncnoPcncncncnoPoPoPoPoPoPoPoPoPoPccoPoPoPoPoPoPoPoPcncnipipipcMipipipcncncnoPoPoPoPoPoPcncnoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPcncncnipcMcMipcncnoPcnoPMJMJMJMJMJMJMJMJMJMJfCMJMJMJMJMJMJfCMJfCMJMJMJMJMJMJMJMJMJMJIRMJMJMJMJMJMJMJYHoPoPoPoPoPoPoPoPoPoPoPoPoP
+"}

@@ -475,6 +475,7 @@
 	maxrange = 60
 	max_loaded = 9
 	w_class = ITEM_SIZE_GARGANTUAN
+	see_amount_loaded = TRUE
 
 /obj/structure/cannon/rocket/loaded/New()
 	..()

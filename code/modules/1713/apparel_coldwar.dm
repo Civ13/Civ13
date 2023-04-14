@@ -1033,6 +1033,7 @@
 	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
+	weight = 5
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b3 //Accessory version
 	name = "6B3 body armor"
@@ -1046,6 +1047,7 @@
 	flags = CONDUCT
 	slots = 2
 	slowdown = 0.1
+	weight = 5
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b3/blue
 	name = "6B3 Blue body armor"
@@ -1070,6 +1072,7 @@
 	ripable = FALSE
 	flags = CONDUCT
 	slowdown = 0.2
+	weight = 5.1
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b5
 	name = "6B5 body armor"
