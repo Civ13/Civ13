@@ -2,7 +2,7 @@
 
 /datum/surgery_step
 	var/priority = FALSE	//steps with higher priority would be attempted first
-
+	var/req_open = TRUE		// TRUE means the part must be cut open, FALSE means it doesn't
 	// type path referencing tools that can be used for this step, and how well are they suited for it
 	var/list/allowed_tools = list(1 = list("/obj/item/cursedtreasure",100)) //so its not used
 	// type paths referencing races that this step applies to.
@@ -10,13 +10,13 @@
 	var/list/disallowed_species = null
 
 	// duration of the step
-	var/min_duration = FALSE
-	var/max_duration = FALSE
+	var/min_duration = 0
+	var/max_duration = 0
 
 	// evil infection stuff that will make everyone hate me
 	var/can_infect = FALSE
-	//How much blood this step can get on surgeon. TRUE - hands, 2 - full body.
-	var/blood_level = FALSE
+	//How much blood this step can get on surgeon. 1 - hands, 2 - full body.
+	var/blood_level = 0
 
 	//returns how well the tool is suited for this step. from 1 to 100 (to be used as a prob of suceeding)
 	proc/tool_quality(obj/item/TT, var/mob/living/human/user)
@@ -76,6 +76,18 @@
 	// stuff that happens when the step fails
 	proc/fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		return null
+
+/obj/item/proc/can_do_surgery(mob/living/M, mob/living/user)
+	if(!ishuman(M))
+		return TRUE
+		
+	var/mob/living/human/H = M
+	var/obj/item/organ/external/affected = H.get_organ(user.targeted_organ)
+	if(affected)
+		for(var/datum/surgery_step/S in surgery_steps)
+			if(!affected.open && S.req_open)
+				return FALSE
+	return FALSE
 
 proc/spread_germs_to_organ(var/obj/item/organ/external/E, var/mob/living/human/user)
 	if (!istype(user) || !istype(E)) return
