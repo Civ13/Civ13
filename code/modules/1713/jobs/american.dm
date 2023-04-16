@@ -27,6 +27,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -74,6 +76,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -128,7 +132,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1carbine(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc(H), slot_belt)
-
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -181,6 +186,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1carbine(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 //lamp
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
@@ -276,6 +283,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/springfield/sniper, slot_shoulder)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 //pocket
@@ -339,6 +348,8 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun_cleaning_kit(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/gauze(H), slot_r_store)
 //more shit
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 
@@ -385,7 +396,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_bar(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -438,6 +450,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m1garand(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -494,7 +508,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2(H), slot_belt)
-
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown(H), slot_wear_suit)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -538,6 +553,9 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1mpblack(H), slot_head)
 //back
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
+
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
@@ -575,6 +593,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_shirtless(H), slot_w_uniform)
+	if (map.ID == MAP_ARDENNES)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)
+
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_l_hand)
 	give_random_name(H)
