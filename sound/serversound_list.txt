@@ -1,1 +1,6 @@
 sound/music/nassau_shores.ogg
+sound/music/bosanska_artiljerija.ogg
+sound/music/katyusha.ogg
+sound/music/fortunate_son.ogg
+sound/music/de_bom.ogg
+sound/music/murderer.ogg

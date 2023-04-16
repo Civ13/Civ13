@@ -387,7 +387,7 @@
 		new/obj/item/ammo_casing/rocket/og7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 
-/obj/item/weapon/storage/backpack/rpg_pack/filled/at
+/obj/item/weapon/storage/backpack/rpg_pack/filled_at
 	New()
 		..()
 		new/obj/item/ammo_casing/rocket/pg7v(src)
@@ -401,7 +401,7 @@
 		new/obj/item/ammo_casing/rocket/og7v(src)
 		new/obj/item/ammo_casing/rocket/pg7v(src)
 
-/obj/item/weapon/storage/backpack/rpg_pack/olive/filled/at
+/obj/item/weapon/storage/backpack/rpg_pack/olive/filled_at
 	New()
 		..()
 		new/obj/item/ammo_casing/rocket/pg7v(src)

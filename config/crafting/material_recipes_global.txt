@@ -1511,6 +1511,7 @@ RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 RECIPE: /material/glass/,fermentation jar,/obj/item/weapon/starterjar,3,50,0,1,none,0,0,0,8,null
 RECIPE: /material/glass/,vial arrowhead (x4),/obj/item/stack/arrowhead/vial,1,10,0,1,none,0,26,26,8,null
 RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12,180,1,1,none,90,0,0,8,null
+RECIPE: /material/glass/,glass roof builder,/obj/item/weapon/roofbuilder/glass,1,20,0,1,none,103,0,0,8,null
 
 //*************| GLASS DRINKS |***************
 

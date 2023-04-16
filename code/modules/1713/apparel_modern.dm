@@ -453,6 +453,45 @@
 	item_state = "pasgt_blizzard"
 	worn_state = "pasgt_blizzard"
 
+/obj/item/clothing/accessory/armor/coldwar/rb23
+	name = "RB-23 body armor"
+	desc = "A modern ballistic vest of Redmenian origin."
+	icon_state = "rb23"
+	item_state = "rb23"
+	worn_state = "rb23"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	weight = 4.8
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b5/blugo
+	name = "6B5 BM body armor"
+	desc = "A blugoslavian modification of a 6B5"
+	icon_state = "6b5bm"
+	item_state = "6b5bm"
+	worn_state = "6b5bm"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = 5)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
+	weight = 5.0
+	slowdown = 0.1
+
+/obj/item/clothing/accessory/armor/coldwar/plates/b5/blugo/medical
+	name = "6B5 BM B body armor"
+	desc = "A blugoslavian armor used by medics, comes with a white medical cross on the back."
+	icon_state = "6b5bmed"
+	item_state = "6b5bmed"
+	worn_state = "6b5bmed"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 71, energy = 30, bomb = 70, bio = 20, rad = 5)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 2
+	weight = 4.9
+	slowdown = 0.1
+
 		/* US Lightwieght Helmets*/
 
 /obj/item/clothing/head/helmet/modern/lwh

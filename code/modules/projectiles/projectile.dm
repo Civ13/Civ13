@@ -40,7 +40,7 @@
 	var/penetrating = 0 //If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
 	var/gibs = FALSE
 	var/crushes = FALSE
-	var/kill_count = 30 //This will de-increment every process(). When == 0, it will delete the projectile.
+	var/kill_count = 35 //This will de-increment every process(). When == 0, it will delete the projectile.
 		//Effects
 	var/stun = FALSE
 	var/weaken = FALSE
@@ -87,6 +87,7 @@
 /obj/item/projectile/New()
 	..()
 	damage *=global_damage_modifier
+
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -134,7 +135,7 @@
 /obj/item/projectile/proc/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
 		return damage
-	return 0
+	return FALSE
 
 //return TRUE if the projectile should be allowed to pass through after all, FALSE if not.
 /obj/item/projectile/proc/check_penetrate(var/atom/A)

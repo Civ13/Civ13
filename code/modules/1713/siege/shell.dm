@@ -25,6 +25,19 @@
 	subtype = /obj/item/projectile/shell/cannonball/grapeshot
 	atype = "grapeshot"
 
+/obj/item/cannon_ball/rocket
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "rocket"
+	icon_state = "rocket"
+	w_class = ITEM_SIZE_LARGE
+	value = 30
+	atype = "HE"
+
+/obj/item/cannon_ball/rocket/incendiary
+	name = "incendiary rocket"
+	icon_state = "rocket_incendiary"
+	atype = "INCENDIARY"
+
 /obj/item/cannon_ball/shell
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "artillery shell"
@@ -281,60 +294,55 @@
 		icon_state = "shell_nuclear"
 
 /obj/item/cannon_ball/rocket/nuclear
-	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Rocket"
 	desc = "You might want to step back a bit..."
 	icon_state = "shell_nuclear_rocket"
-	w_class = ITEM_SIZE_LARGE
 	value = 80
+	atype = "NUCLEAR"
 
 /obj/item/cannon_ball/shell/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Shell"
 	desc = "A nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = ITEM_SIZE_LARGE
-	value = 25
+	value = 80
+	atype = "NUCLEAR"
 
 /obj/item/cannon_ball/shell/nuclear/makeshift
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Makeshift Nuclear Shell"
 	desc = "A makeshift nuclear shell, once the genie is out of the bottle you can't put it back in..."
 	icon_state = "shell_nuclear"
-	w_class = ITEM_SIZE_LARGE
-	value = 20
+	value = 60
 
 /obj/item/cannon_ball/shell/nuclear/W9
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W9 Atomic Demolition Munition"
 	desc = "A W9 nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = ITEM_SIZE_LARGE
-	value = 40
+	value = 80
 
 /obj/item/cannon_ball/shell/nuclear/W19
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W19 Katie Nuclear Shell"
 	desc = "A W19 Katie nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = ITEM_SIZE_LARGE
-	value = 30
+	atype = "NUCLEAR"
+	value = 80
 
 /obj/item/cannon_ball/shell/nuclear/W33
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W33 Nuclear Shell"
 	desc = "A W33 nuclear shell"
 	icon_state = "shell_nuclear"
-	w_class = ITEM_SIZE_LARGE
-	value = 20
+	value = 80
 
 /obj/item/cannon_ball/shell/nuclear/W33Boosted
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Boosted W33 Nuclear Shell"
 	desc = "A boosted nuclear shell for extra destruction"
 	icon_state = "shell_nuclear_boosted"
-	w_class = ITEM_SIZE_LARGE
-	value = 50
+	value = 80
 
 
 ////////////////////////////////////////////////////////
@@ -353,7 +361,7 @@
 	storage.storage_slots = 16
 	storage.max_w_class = 10
 	storage.max_storage_space = 600
-	storage.can_hold = list(/obj/item/cannon_ball/shell)
+	storage.can_hold = list(/obj/item/cannon_ball/shell,/obj/item/cannon_ball/rocket)
 	update_icon()
 
 /obj/structure/shellrack/Destroy()
@@ -545,4 +553,26 @@
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR204(storage)
+	update_icon()
+
+/obj/structure/shellrack/fullrocket/New()
+	..()
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
+	new /obj/item/cannon_ball/rocket(storage)
 	update_icon()

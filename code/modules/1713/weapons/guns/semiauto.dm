@@ -530,3 +530,12 @@
 	equiptimer = 12
 	gun_safety = FALSE
 	load_delay = 20
+
+/obj/item/weapon/gun/projectile/semiautomatic/bamr/telescope
+	name = "BAMR-T"
+	desc = "An old blugoslavian semi-auto, anti-tank rifle chambered in 15x115. This one comes with a integrated Scope."
+	icon_state = "bamt"
+	has_telescopic = TRUE
+	move_delay = 4
+	equiptimer = 14
+	weight = 10
