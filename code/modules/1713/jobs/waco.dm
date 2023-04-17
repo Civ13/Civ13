@@ -31,6 +31,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole operation. Organize your troops accordingly!")
@@ -81,8 +83,8 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	//armor
-	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
-	uniform.attackby(armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
 
 	give_random_name(H)
 	H.civilization = "ATF"
@@ -121,8 +123,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/atf(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
-	uniform.attackby(armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
 
 //head
 	if (prob(30))
@@ -235,8 +237,8 @@
 	uniform.attackby(medicalarm, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp/ocp_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp(null)
-	uniform.attackby(ocp_armor, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(pasgt_armor, H)
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow ATF healthy!")
@@ -343,16 +345,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/randarm = rand(1,2)
-	if (randarm == 1)
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
-		uniform.attackby(pasgt_armor, H)
-	else if (randarm == 2)
-		var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrierblack(null)
-		uniform.attackby(plate_armor, H)
-	else if (randarm == 3)
-		var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/plate_armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
-		uniform.attackby(plate_armor, H)
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
+	uniform.attackby(armor, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 //head
@@ -406,6 +400,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_belt)
 //head
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
@@ -419,7 +414,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_l_store)
 
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the goverment scum!")
