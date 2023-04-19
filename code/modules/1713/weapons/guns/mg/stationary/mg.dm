@@ -79,6 +79,32 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/dshk
+	name = "DShK machine gun"
+	desc = "Soviet Heavy DShK machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
+	icon_state = "dshk"
+	base_icon = "dshk"
+	caliber = "a127"
+	magazine_type = /obj/item/ammo_magazine/ammo127
+	good_mags = list(/obj/item/ammo_magazine/ammo127)
+	firemodes = list(
+		list(name = "full auto", burst=3, burst_delay=1.2, fire_delay=1.2, dispersion=list(0.8, 0.9, 1.0, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a127
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/nsvt
+	name = "NSVT machine gun"
+	desc = "Modern Soviet Heavy NSVT machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
+	icon_state = "nsvt"
+	base_icon = "nsvt"
+	caliber = "a127"
+	magazine_type = /obj/item/ammo_magazine/ammo127
+	good_mags = list(/obj/item/ammo_magazine/ammo127)
+	firemodes = list(
+		list(name = "full auto", burst=4, burst_delay=1.1, fire_delay=1.1, dispersion=list(0.3, 0.4, 0.7, 0.9, 1.2), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a127
+
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable
 	anchored = TRUE
 	var/path
@@ -112,7 +138,7 @@
 		list(name = "full auto", burst=4, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
-	
+
 	path = /obj/item/weapon/foldable/pkm
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
