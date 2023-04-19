@@ -454,12 +454,6 @@
 	penetrating = 1
 	armor_penetration = 3
 
-/obj/item/projectile/bullet/mg/a127x108
-	damage = DAMAGE_OH_GOD + 110
-	penetrating = 7
-	armor_penetration = 75
-
-
 /obj/item/projectile/bullet/pistol/c8mmnambu
 	damage = DAMAGE_LOW + 1
 	penetrating = 1
@@ -584,6 +578,12 @@ obj/item/projectile/bullet/rifle/a556x45
 		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
 			T.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 1, 0, 2, 1)
+
+/obj/item/projectile/bullet/rifle/a127
+	damage = DAMAGE_OH_GOD + 65
+	penetrating = 20
+	armor_penetration = 55
+	heavy_armor_penetration = 25
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = DAMAGE_OH_GOD + 90
