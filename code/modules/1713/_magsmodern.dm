@@ -264,7 +264,6 @@
 	ammo_type = /obj/item/ammo_casing/a127
 	max_ammo = 100
 	multiple_sprites = TRUE
-	pouch = TRUE
 
 /obj/item/ammo_magazine/rpd
 	name = "RPD drum (7.62x39)"
