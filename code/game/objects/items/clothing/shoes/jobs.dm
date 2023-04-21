@@ -1,7 +1,7 @@
 
 /obj/item/clothing/shoes/jackboots
 	name = "jackboots"
-	desc = "Standard-issue Security combat boots for combat scenarios or combat situations. All combat, all the time."
+	desc = "Military-style boots designed for combat or rugged environments."
 	icon_state = "jackboots"
 	item_state = "jackboots"
 	force = 0
@@ -15,6 +15,11 @@
 	icon_state = "jackboots2"
 	item_state = "jackboots2"
 	worn_state = "jackboots2"
+
+/obj/item/clothing/shoes/jackboots/brown
+	icon_state = "brownboots"
+	item_state = "brownboots"
+	worn_state = "brownboots"
 
 /obj/item/clothing/shoes/workboots
 	name = "workboots"

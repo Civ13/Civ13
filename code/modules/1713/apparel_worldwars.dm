@@ -2218,6 +2218,35 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "us_shirtless"
 	worn_state = "us_shirtless"
 
+/obj/item/clothing/suit/storage/coat/ww2/us_coat
+	name = "american coat"
+	desc = "A US army coat."
+	icon_state = "us_coat"
+	item_state = "us_coat"
+	worn_state = "us_coat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+
+/obj/item/clothing/shoes/us_ww2_boots
+	name = "brown boots"
+	desc = "Combat boots made of brown leather with a toe cap and rubber sole."
+	icon_state = "brownboots"
+	item_state = "brownboots_us_ww2"
+	worn_state = "brownboots_us_ww2"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 10, arrow = 20, gun = 0, energy = 25, bomb = 50, bio = 10, rad = 0)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/shoes/us_ww2_boots/leggings
+	name = "brown boots with leggings"
+	desc = "Combat boots made of brown leather with a toe cap and rubber sole wrapped in protective leggings."
+	icon_state = "brownboots_leggings"
+	item_state = "brownboots_us_ww2_leggings"
+	worn_state = "brownboots_us_ww2_leggings"
+
 /obj/item/clothing/accessory/storage/webbing/us_ww2
 	name = "US webbing"
 	desc = "A khaki canvas pouch rig with 10 pouches total for ammo and other various items"
