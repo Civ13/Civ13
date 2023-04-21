@@ -413,10 +413,10 @@
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (findtext(title, "Doctor") || findtext(title, "Corpsman"))
-		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/blue(null)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b5/n34/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34/medical(null)
 		uniform.attackby(armor, H)
 	else if (!findtext(title, "Blugoslavian Civilian"))
-		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3/camo(null)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b5/n34/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34(null)
 		uniform.attackby(armor, H)
 //equipment
 	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
