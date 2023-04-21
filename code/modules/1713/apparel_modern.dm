@@ -465,32 +465,25 @@
 	weight = 4.8
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34
-	name = "N34-BM body armor"
-	desc = "Blugoslavian combat armor, made fully out of kevlar while also having some space left for plate inserts"
+	name = "N34-B body armor"
+	desc = "A modern piece of Blugoslavian armor introduced in 2023, made fully out of kevlar while also having some space left for plate inserts"
 	icon_state = "n34bm"
 	item_state = "n34bm"
 	worn_state = "n34bm"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = 5)
+	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
-	weight = 5.0
 	slowdown = 0.1
+	weight = 5.5
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34/medical
-	name = "N34-BM Medical body armor"
+	name = "N34-BM body armor"
 	desc = "A blugoslavian armor used by medics and doctors alike, comes with a white medical cross on the back."
 	icon_state = "n34bmm"
 	item_state = "n34bmm"
 	worn_state = "n34bmm"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 70, arrow = 95, gun = 72, energy = 30, bomb = 70, bio = 20, rad = 5)
-	ripable = FALSE
-	flags = CONDUCT
-	slots = 1
-	weight = 4.9
-	slowdown = 0.1
 
 		/* US Lightwieght Helmets*/
 

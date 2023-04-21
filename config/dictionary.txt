@@ -3,7 +3,6 @@
 :(,ugh
 :),haha
 :b,haha
-1984,the oppression!
 admin pm,pray to the gods
 ahelp,pray to the gods
 mhelp,ask an angel
@@ -40,6 +39,7 @@ Minecraft,game
 noob,newbie
 omg,oh my god
 OwO,hmm
+UwU,hmm
 pm the admins,pray to the gods
 redpill,smart
 roblox,game
@@ -49,8 +49,7 @@ soyboy,weakling
 SS13,game
 unbased,that's stupid
 unga,barbarian
-UwU,hmm
 we live in a society,we reside in a human community
 wdym,what do you mean
 wtf,what the fuck
-yeet,yeah
+yeet,throw
