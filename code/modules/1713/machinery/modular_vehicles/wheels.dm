@@ -84,9 +84,10 @@
 			if (control.axis.engine && control.axis.engine.on)
 				control.axis.engine.running_sound()
 		return
-	else if (control.axis && control.axis.engine && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume <= 0)
-		H << "There is not enough fuel!"
-		return
+	else if (control.axis.engine && control.axis.engine.fueltank)
+		if (control.axis && control.axis.engine && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume <= 0)
+			H << "There is not enough fuel!"
+			return
 	if (control.axis.currentspeed < 0)
 		control.axis.currentspeed = 0
 	control.axis.currentspeed++
