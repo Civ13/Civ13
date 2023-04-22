@@ -1131,7 +1131,7 @@
 
 /datum/job/german/ard_volksgrenadier
 	title = "Volksgrenadier"
-	en_meaning = "Solider"
+	en_meaning = "Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
@@ -1376,7 +1376,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_r_store)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_l_store)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a Anti tank Solider of the Wermacht,Your job is to Disable and Destroy enemy tanks,Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, an Anti-Tank soldier of the Wermacht. Your job is to disable and/or destroy enemy tanks. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
