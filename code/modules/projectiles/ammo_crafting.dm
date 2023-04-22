@@ -26,29 +26,38 @@
 			return
 		else if (W.amount < amount)
 			user << "<span class = 'notice'>Not enough iron. Add more iron to the stack.</span>"
+			return
 		else if (W.amount >= amount)
+			var/spam_check = 0
 			var/list/listing = list("Cancel")
 			listing = list(/*"Explosive"*/, "Anti-Tank", "Shrapnel", "Cancel")
-			var/input = WWinput(user, "What grenade do you want to make?", "Grenade Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				/*
-				if ("Explosive")
-					resultpath = /obj/item/weapon/grenade/coldwar/nonfrag/custom
-				*/
-				if ("Anti-Tank")
-					resultpath = /obj/item/weapon/grenade/antitank/custom
-				if ("Shrapnel")
-					resultpath = /obj/item/weapon/grenade/modern/custom
+			if (spam_check <= 1)	
+				var/input = WWinput(user, "What grenade do you want to make?", "Grenade Making", "Cancel", listing)
+				switch (input)
+					if ("Cancel")
+						spam_check--
+						return
+					/*
+					if ("Explosive")
+						resultpath = /obj/item/weapon/grenade/coldwar/nonfrag/custom
+					*/
+					if ("Anti-Tank")
+						resultpath = /obj/item/weapon/grenade/antitank/custom
+						spam_check++
+					if ("Shrapnel")
+						resultpath = /obj/item/weapon/grenade/modern/custom
+						spam_check++
 
-			if (resultpath != null && gunpowder >= gunpowder_max)
-				W.amount -= amount
-				if (W.amount <= 0)
-					qdel(W)
-				new resultpath(user.loc)
-				qdel(src)
-				return
+				if (resultpath != null && gunpowder >= gunpowder_max && W.amount >= amount && spam_check <= 1)
+					W.amount -= amount
+					if (W.amount <= 0)
+						qdel(W)
+					new resultpath(user.loc)
+					qdel(src)
+					spam_check--
+					return
+				else
+					return
 			else
 				return
 	
