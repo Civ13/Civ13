@@ -145,6 +145,29 @@
 	layer = 1.99
 	material = "Wood"
 
+/obj/covers/wood/alt
+	icon_state = "woodalt"
+/obj/covers/wood/alt/two
+	icon_state = "woodalt2"
+/obj/covers/wood/alt/three
+	icon_state = "woodalt3"
+/obj/covers/wood/alt/four
+	icon_state = "woodalt4"
+/obj/covers/wood/alt/five
+	icon_state = "woodalt5"
+/obj/covers/wood/alt/six
+	icon_state = "woodalt6"
+/obj/covers/wood/alt/seven
+	icon_state = "woodalt7"
+/obj/covers/wood/alt/eight
+	icon_state = "woodalt8"
+/obj/covers/wood/alt/nine
+	icon_state = "woodalt9"
+/obj/covers/wood/alt/ten
+	icon_state = "woodalt10"
+/obj/covers/wood/alt/eleven
+	icon_state = "woodalt11"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
