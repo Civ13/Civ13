@@ -81,6 +81,18 @@
 	else
 		return ""
 
+/obj/map_metadata/ardennes/short_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 1200 // 2 minutes
+
+/obj/map_metadata/ardennes/long_win_time(faction)
+	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
+		return 600
+	else
+		return 3000 // 5 minutes
+
 /obj/map_metadata/ardennes/update_win_condition()
 	if (world.time >= 27000)
 		if (win_condition_spam_check)
