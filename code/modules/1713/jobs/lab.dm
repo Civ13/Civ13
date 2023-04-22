@@ -216,7 +216,7 @@
 	uniform.attackby(redcross, H)
 	give_random_name(H)
 	H.civilization = "Facility personnel"
-	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soliders healthy and battleready!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy and battleready!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_HIGH)
@@ -340,7 +340,7 @@
 	H.setStat("machinegun", STAT_VERY_HIGH)
 	return TRUE
 
-/datum/job/american/pmcs/solider
+/datum/job/american/pmcs/soldier
 	title = "PMC Rifleman"
 	rank_abbreviation = "Pvt."
 
@@ -353,7 +353,7 @@
 	min_positions = 2
 	max_positions = 100
 
-/datum/job/american/pmcs/solider/equip(var/mob/living/human/H)
+/datum/job/american/pmcs/soldier/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
