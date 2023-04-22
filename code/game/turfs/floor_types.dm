@@ -14,27 +14,38 @@
 /turf/floor/wood/fancywood
 	icon_state = "fancywood"
 
-/turf/floor/wood/alt
+/turf/floor/wood/alt/New()
+	..()
 	icon_state = "woodalt"
-/turf/floor/wood/alt/two
+/turf/floor/wood/alt/two/New()
+	..()
 	icon_state = "woodalt2"
-/turf/floor/wood/alt/three
+/turf/floor/wood/alt/three/New()
+	..()
 	icon_state = "woodalt3"
-/turf/floor/wood/alt/four
+/turf/floor/wood/alt/four/New()
+	..()
 	icon_state = "woodalt4"
-/turf/floor/wood/alt/five
+/turf/floor/wood/alt/five/New()
+	..()
 	icon_state = "woodalt5"
-/turf/floor/wood/alt/six
+/turf/floor/wood/alt/six/New()
+	..()
 	icon_state = "woodalt6"
-/turf/floor/wood/alt/seven
+/turf/floor/wood/alt/seven/New()
+	..()
 	icon_state = "woodalt7"
-/turf/floor/wood/alt/eight
+/turf/floor/wood/alt/eight/New()
+	..()
 	icon_state = "woodalt8"
-/turf/floor/wood/alt/nine
+/turf/floor/wood/alt/nine/New()
+	..()
 	icon_state = "woodalt9"
-/turf/floor/wood/alt/ten
+/turf/floor/wood/alt/ten/New()
+	..()
 	icon_state = "woodalt10"
-/turf/floor/wood/alt/eleven
+/turf/floor/wood/alt/eleven/New()
+	..()
 	icon_state = "woodalt11"
 
 
