@@ -56,6 +56,23 @@ Parts of code courtesy of Super3222
 	max_zoom = ZOOM_CONSTANT*3
 	attachable = FALSE
 	value = 15
+	var/checking = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/proc/rangecheck(var/mob/living/human/H, var/atom/target)
+	if (checking)
+		return
+
+	checking = TRUE
+	var/dist1 = abs(H.x-target.x)
+	var/dist2 = abs(H.y-target.y)
+	var/distcon = max(dist1,dist2)
+	var/gdir = get_dir(H, target)
+	H << "You start checking the range..."
+	if (do_after(H, 25, src, can_move = TRUE))
+		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,distcon+rand(-1,1))] meters [dir2text(gdir)]</font></b></big>"
+		checking = FALSE
+	else
+		checking = FALSE
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope
 	name = "periscope"
