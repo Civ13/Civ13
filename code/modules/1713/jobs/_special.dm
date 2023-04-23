@@ -119,6 +119,7 @@
 /datum/job/var/is_sinosovbor = FALSE
 /datum/job/var/is_spainciv = FALSE
 /datum/job/var/is_ardeness = FALSE
+/datum/job/var/is_syria = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

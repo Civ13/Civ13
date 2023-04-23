@@ -998,6 +998,27 @@
 			mob_overlay = image("icon" = 'icons/mob/ties.dmi', "icon_state" = "[tmp_icon_state]")
 	return mob_overlay
 
+/obj/item/clothing/accessory/armor/coldwar/plates/tatba //cant find any info on it, looks like a pasgt copy
+	name = "TATBA-7 vest"
+	desc = "Chinese Light Plate carrier,Comes with a single plate insert."
+	icon_state = "tatba"
+	item_state = "tatba"
+	worn_state = "tatba"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 55, arrow = 95, gun = 50, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	ripable = FALSE
+	flags = CONDUCT
+	slots = 1
+	slowdown = 0.1
+	weight = 3
+	value = 100
+
+/obj/item/clothing/accessory/armor/coldwar/plates/tatba/green
+	name = "TATBA-7 green vest"
+	icon_state = "tatbagreen"
+	item_state = "tatbagreen"
+	worn_state = "tatbagreen"
+
 /obj/item/clothing/head/helmet/modern/ssh_68 //1960 precursor to the 6B47 helmet on apparel_modern.dm
 	name = "SSh-68 helmet"
 	desc = "A mass produced metal helmet often used by USSR infantry forces in the mid 20th century."
