@@ -1072,6 +1072,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Policemen and Federal Agents "
 		else if (map && istype(map, /obj/map_metadata/long_march))
 			dat += "[alive_civilians.len] Chinese Red Army "
+		else if (map && istype(map, /obj/map_metadata/holdmadrid))
+			dat += "[alive_civilians.len] Republican "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1362,6 +1364,11 @@ var/global/redirect_all_players = null
 						temp_name = "Red"
 					if (temp_name == "Pirates")
 						temp_name = "Blue"
+				else if (map && map.ID == "MAP_HOLDMADRID")
+					if (temp_name == "Civilian")
+						temp_name = "Republican"
+					if (temp_name == "Spanish")
+						temp_name = "Spanish"
 				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]"
