@@ -337,7 +337,7 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	return
 
-/obj/item/weapon/storage/box/firstaid/advsmall/small
+/obj/item/weapon/storage/box/firstaid/basicsmall
 	name = "Small Pocket medkit"
 	desc = "Contains basic first-aid medicine."
 	icon_state = "ifirstaid"
@@ -348,7 +348,7 @@
 		/obj/item/weapon/pill_pack,
 		/obj/item/weapon/reagent_containers/syringe
 		)
-/obj/item/weapon/storage/box/firstaid/advsmall/small/New()
+/obj/item/weapon/storage/box/firstaid/basicsmall/New()
 	..()
 	new /obj/item/stack/medical/splint/small(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)

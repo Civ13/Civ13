@@ -68,6 +68,13 @@
 	icon_state = "polisharmband"
 	slot = "armband"
 
+
+/obj/item/clothing/accessory/armband/wagner
+	name = "red wagner armband"
+	desc = "A PMC group armband"
+	icon_state = "wagred"
+	slot = "armband"
+
 //jewelry
 
 /obj/item/clothing/accessory/armband/armbangle

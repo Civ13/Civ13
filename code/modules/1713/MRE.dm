@@ -108,6 +108,11 @@
 	desc = "A package of unidentified kosher whitefish."
 	nutriment_desc = list("fish" = 1,)
 
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern
+	name = "Russian MRE: Combat rations"
+	desc = "A package of potatoes, canned meat, canned veggies and some tea."
+	nutriment_desc = list("potatoes" = 1, "canned meat" = 2, "canned vegetables" = 2,"tea" = 2)
+
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/space
 	name = "Ration pack"
 	desc = "A package of polystarch portion bread and veg-meat."
