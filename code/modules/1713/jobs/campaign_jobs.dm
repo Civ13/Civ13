@@ -27,6 +27,7 @@
 	uses_squads = FALSE
 	can_be_female = TRUE
 	is_rotstadt = TRUE
+	is_event = FALSE
 	additional_languages = list("Blugoslavian" = 89)
 	min_positions = 999
 	max_positions = 999
