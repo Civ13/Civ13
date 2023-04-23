@@ -19,7 +19,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 0.3, AMERICAN = 0.7)
 	battle_name = "Siege of Mount Carmel"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>Davidian leader's rooms inside the compound</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>north third story tower</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
 	grace_wall_timer = 3000

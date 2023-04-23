@@ -520,6 +520,7 @@
 #include "code\game\objects\map_metadata\rizal_stadium.dm"
 #include "code\game\objects\map_metadata\road_to_dak_to.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
+#include "code\game\objects\map_metadata\rotstadt.dm"
 #include "code\game\objects\map_metadata\ruhr_uprising.dm"
 #include "code\game\objects\map_metadata\sammirhayeed.dm"
 #include "code\game\objects\map_metadata\santo_tomas.dm"
@@ -1096,5 +1097,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign2\campaign3.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE

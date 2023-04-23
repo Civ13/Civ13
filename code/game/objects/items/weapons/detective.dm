@@ -225,3 +225,7 @@
 //	reagents.remove_reagent("fuel", reagents.maximum_volume/BURNING_RAG_LIFE_TICKS)
 	update_name()
 	burn_time--
+
+/obj/item/weapon/reagent_containers/glass/rag/soaked/New()
+	..()
+	reagents.add_reagent("vodka", 10)

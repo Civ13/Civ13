@@ -245,6 +245,27 @@
 	max_ammo = 100
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ammo127
+	name = "Ammo can (12.7x108mm)"
+	icon_state = "b127"
+	mag_type = MAGAZINE
+	caliber = "a127"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a127
+	max_ammo = 50
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/ammo127/box
+	name = "Ammo Box (12.7x108mm)"
+	icon_state = "ab127"
+	mag_type = MAGAZINE
+	caliber = "a127"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a127
+	max_ammo = 100
+	multiple_sprites = TRUE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/rpd
 	name = "RPD drum (7.62x39)"
 	icon_state = "rpd"

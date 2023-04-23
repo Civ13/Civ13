@@ -1469,16 +1469,6 @@
 	new/obj/item/ammo_magazine/m16(src)
 	new/obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/olive/m16/sf
-	storage_slots = 5
-/obj/item/weapon/storage/belt/smallpouches/olive/m16/sf/New()
-	..()
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/weapon/grenade/coldwar/m67(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
-
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke/New()

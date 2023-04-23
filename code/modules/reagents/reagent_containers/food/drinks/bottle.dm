@@ -27,12 +27,30 @@
 		icon_state_empty = icon_state
 	else
 		icon_state_empty = "[icon_state]_empty"
-	reagents.add_reagent("vodka", 100)
-	var/obj/item/weapon/reagent_containers/glass/rag/R = new /obj/item/weapon/reagent_containers/glass/rag(null)
+	var/obj/item/weapon/reagent_containers/glass/rag/R = new /obj/item/weapon/reagent_containers/glass/rag/soaked(null)
 	rag = R
-	rag.forceMove(src)
+	rag.loc = src
 	flags &= ~OPENCONTAINER
 	update_icon()
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka
+	icon_state = "vodkabottle"
+	New()
+		..()
+		reagents.add_reagent("vodka", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/whiskey
+	icon_state = "whiskeybottle"
+	New()
+		..()
+		reagents.add_reagent("whiskey", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/beer
+	icon_state = "oldstyle_beer"
+	volume = 35
+	New()
+		..()
+		reagents.add_reagent("beer", 35)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/on_reagent_change()
 	update_icon()
@@ -47,7 +65,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/Destroy()
 	if (rag)
-		rag.forceMove(loc)
+		rag.loc = loc
 	rag = null
 	return ..()
 
@@ -194,7 +212,7 @@
 	if (user.unEquip(R))
 		user << "<span class='notice'>You stuff [R] into [src].</span>"
 		rag = R
-		rag.forceMove(src)
+		rag.loc = src
 		flags &= ~OPENCONTAINER
 		update_icon()
 
@@ -820,7 +838,7 @@
 	New()
 		..()
 		reagents.add_reagent("sake", 50)
-		if (flags == FALSE)
+		if (!flags)
 			icon_state = "sake_closed"
 		else
 			icon_state = "sake"

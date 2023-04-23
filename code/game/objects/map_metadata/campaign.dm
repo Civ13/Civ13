@@ -45,7 +45,7 @@
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
 		// "Armored" = list("Crew" = 8),
-		"AT" = list("Anti-Tank" = 2),
+		"AT" = list("Anti-Tank" = 3),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -55,7 +55,7 @@
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
 		"Armored" = list("Crew" = 8),
-		"AT" = list("Anti-Tank" = 2),
+		"AT" = list("Anti-Tank" = 3),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
@@ -446,6 +446,7 @@ var/no_loop_cm = FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Blugoslavians halted the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE

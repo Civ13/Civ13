@@ -1029,7 +1029,7 @@
 	icon_state = "6b3"
 	item_state = "6b3"
 	worn_state = "6b3"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
@@ -1086,6 +1086,7 @@
 	flags = CONDUCT
 	slots = 2
 	slowdown = 0.1
+	weight = 5.9
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.
 	name = "M-1952 Flak Jacket"

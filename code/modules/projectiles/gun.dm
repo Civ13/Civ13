@@ -194,10 +194,10 @@
 	else
 		if (bayonet && isliving(A) && !istype(bayonet, /obj/item/weapon/attachment/bayonet/flag))
 			var/mob/living/L = A
-			
+
 			var/obj/item/weapon/attachment/bayonet/a = bayonet
-			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) 
-			
+			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+
 			if (L)
 				if (user != L)
 					if(L.attempt_dodge()) //Trying to dodge it before they even have the chance to miss us.
@@ -205,7 +205,7 @@
 					else
 						visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
 						playsound(get_turf(src), a.attack_sound, rand(90,100))
-						L.apply_damage(a.force, BRUTE, def_zone)
+						L.apply_damage(a.mounted_dmg, BRUTE, def_zone)
 						if (ishuman(L))
 							if (L.stat == CONSCIOUS && prob(50))
 								L.emote("painscream")

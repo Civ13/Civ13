@@ -11,7 +11,7 @@
 "ak" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "al" = (/turf/floor/plating/white,/area/caribbean)
 "am" = (/obj/structure/closet/crate/empty,/turf/floor/plating/steel,/area/caribbean)
-"an" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/rpk47,/obj/item/ammo_magazine/rpk47,/obj/item/ammo_magazine/rpk47,/obj/item/ammo_magazine/rpk47,/obj/item/weapon/gun/projectile/automatic/rpk47,/obj/item/ammo_magazine/rpk47/drum,/obj/item/ammo_magazine/rpk47/drum,/obj/item/weapon/gun/projectile/automatic/rpk47,/turf/floor/plating/steel,/area/caribbean)
+"an" = (/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/structure/closet/crate/ww2/svt,/turf/floor/plating/steel,/area/caribbean/roofed)
 "ao" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "ap" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full85,/turf/floor/plating/road,/area/caribbean)
 "aq" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean)
@@ -303,7 +303,6 @@
 "fQ" = (/obj/structure/barricade/steel,/obj/structure/window/barrier/rock{dir = 1},/turf/floor/plating/steel,/area/caribbean)
 "fR" = (/obj/structure/window/barrier/rock{dir = 8},/obj/structure/window/barrier/rock,/turf/floor/plating/steel,/area/caribbean)
 "fS" = (/obj/structure/window/barrier/rock{dir = 4},/obj/structure/window/barrier/rock,/turf/floor/plating/steel,/area/caribbean)
-"fT" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/turf/floor/plating/steel,/area/caribbean)
 "fU" = (/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/structure/closet/crate/ww2/svt,/turf/floor/plating/steel,/area/caribbean)
 "fV" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/automatic/browning_lmg,/obj/item/weapon/gun/projectile/automatic/browning_lmg,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/plating/steel,/area/caribbean)
 "fW" = (/obj/item/stack/material/barbwire/twnt,/obj/item/stack/material/barbwire/twnt,/turf/floor/plating/steel,/area/caribbean)
@@ -366,8 +365,8 @@ djaMdjaUahdjahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahbu
 djaMdjdjdjdjahahahahahahahahahahahahahahahahahahahahahahahahahahahahgzgAahahahahahdjaIaIaIaIaIaBaBaBaBayazaAaBaBaBaBaBaB
 djaMdjfVbudjahahahahahaGahahbvahcgcggvgwahahbvamamahahdjgegigeahbvahgzgAahahahahahbOaIaIaIaIaIaBaBaBaBaCaDaEaBaBaBaBaBaB
 djaMdjbTahdjdjdjbNdjdjdjdjbNdjdjdjdjdjdjbPdjdjdjdjdjdjdjdjdjdjbNdjdjdjdjbNdjahahahdjaIaIaIaIaIaBaBaBaBaBaBaBaBaBaBaBaBaB
-djaMdjbKahahahahahahandjbMahbMdjfxfyfyfyahfyfAdjdjdjdjfxfyfyfyahfyfAdjbMahdjahbvaNdjakakaIaIaIaBaBaBaBaBaBaBaBaBaBaBaBaB
-djaMdjfUahchbvahahbvfTdjbMbvbMdjfBahahahahahfHdjdjdjdjfBahahahahahfHdjbMbvdjepdjaNdjaxakakaIaIaBaBaBaBaBaBaBaBaBaBaBaBaB
+djaMdjbKahahahahahahfUdjbMahbMdjfxfyfyfyahfyfAdjdjdjdjfxfyfyfyahfyfAdjbMahdjahbvaNdjakakaIaIaIaBaBaBaBaBaBaBaBaBaBaBaBaB
+djaMdjfUahchbvahahbvfUdjbMbvbMdjfBahahahahahfHdjdjdjdjfBahahahahahfHdjbMbvdjepdjaNdjaxakakaIaIaBaBaBaBaBaBaBaBaBaBaBaBaB
 djaMdjdjdjdjdjdjdjdjdjdjdjdjdjdjfRbvahahahbvfSdjdjdjdjfRbvahahahbvfSdjdjdjdjdjdjaNdjaxaxakbwaIaBaBaBaBaBaBaBaBaBaBaBaBaB
 djaOaRaRaRaRaRaRaRaRaRaRaRaRaRaRaRaPfLfOfLaPaRaRaRaRaRaRaPfLfOfLaRaRaRaRaRaRaRaRbxdjaxaxaxakaIaBaBaBaBaBaBaBaBaBaBaBaBaB
 djdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjfPfQfPfQfPdjdjdjdjdjdjfPfQfPfQfPdjdjdjdjdjdjdjdjdjaxaxaxakaIaBaBaBaBaBaBaBaBaBaBaBaBaB
@@ -550,15 +549,15 @@ avavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavav
 
 (1,1,2) = {"
 dedededededededededededededededededededededededededededededededededededededededededeabababababababababababababababababab
-dededededededeaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTdfaTaTaTaTaTdfaTaTaTdededeabababababababababababababababababab
-dedededededeaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdedeabababababababababababababababababab
-dededeaTdfdgaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdeabababababababababababababababababab
-dedededmaTdeaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdeabababababababababababababababababab
+dededededededeaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTdfdeaTdeaTaTdfananandededeabababababababababababababababababab
+dedededededeaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdeaTaTaTaTaTaTaTaTaTdedeabababababababababababababababababab
+dededeaTdfdgaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdeaTdeaTaTaTaTaTaTaTaTdeabababababababababababababababababab
+dedededmaTdeaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTaTdeaTaTaTaTaTaTaTaTdeabababababababababababababababababab
 dedededededeaTaTaTaTaTdededgdededededededededgdededededededgdedededgdedededededgdedeabababababababababababababababababab
-dedededndqdeaTaTaTaTaTdedfaTdrdGdHaTdJdeaTaTaTaTaTdfaTdeaTaTdfdKdeaTaTdfaTdedMaTdNdeabababababababababababababababababab
+dedededndqdededeaTdedededfaTdrdGdHaTdJdeaTaTaTaTaTdfaTdeaTaTdfdKdeaTaTdfaTdedMaTdNdeabababababababababababababababababab
 dededOaTaTdgaTaTaTaTaTdeaTaTaTaTaTaTdPdeaTdRdRdRdRdRaTdeaTaTaTaTdeaTaTaTaTdedSaTaTdeabababababababababababababababababab
 dededTaTdTdedUaTaTaTdVdeaTaTaTaTaTaTdPdeaTdWdWdWdXdYdZdeaTecaTaTdeaTaTaTaTdeefaTaTdeabababababababababababababababababab
-dedeaTaTaTdeaTaTaTaTaTdeaTaTaTaTaTaTdRdeaTdXdWdWdWdWdZdeeqereraTdeaTaTaTaTdeaTaTetdeabababababababababababababababababab
+dedeaTaTaTdeaTaTdKaTaTdeaTaTaTaTaTaTdRdeaTdXdWdWdWdWdZdeeqereraTdeaTaTaTaTdeaTaTetdeabababababababababababababababababab
 dededTaTdTdeaTaTaTaTaTdedXdZaTaTaTeudKdeaTeCeCeCeCeCaTdeaTeCeDaTdeaTaTaTaTdeaTeFdedeabababababababababababababababababab
 dedeeOaTeOdeaTaTcuaTaTdedKdZaTaTaTeuePdeaTaTaTaTaTaTaTdeaTaTaTaTdeaTaTaTaTdeeQdededeabababababababababababababababababab
 dededeeRdededededeeReRdedeeRdeeRdeeRdedeeReRdedeeReRdedeeRdedeeRdedeeReRdedededededeabababababababababababababababababab
