@@ -55,7 +55,7 @@
 		else
 			. = FALSE
 	else if (istype(J, /datum/job/pirates))
-		if (J.is_event)
+		if (J.is_rotstadt)
 			. = TRUE
 		else
 			. = FALSE
