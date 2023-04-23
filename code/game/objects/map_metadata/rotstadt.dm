@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is going on."
-	victory_time = 60 MINUTES
+	victory_time = 60
 	grace_wall_timer = 20 MINUTES
 	faction_organization = list(
 		PIRATES,
@@ -103,92 +103,7 @@
 	else
 		return 5 MINUTES
 
-//role selector
-/mob/new_player/proc/LateChoicesCampaignNonCanon(factjob)
-	var/list/available_jobs_per_side = list(
-		CIVILIAN = FALSE,
-		PIRATES = FALSE,
-	)
-	var/obj/map_metadata/campaign_noncanon/MC = map
-	src << browse(null, "window=latechoices")
-
-	var/list/dat = list("<center>")
-	dat += "<b><big>Welcome, [key].</big></b>"
-	dat += "<br>"
-	dat += "Round Duration: [roundduration2text_days()]"
-	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: "
-	if (PIRATES in map.faction_organization)
-		dat += "[alive_pirates.len] Redmenians "
-	if (CIVILIAN in map.faction_organization)
-		dat += "[alive_civilians.len] Blugoslavians "
-
-	dat += "<br>"
-
 var/no_loop_cm2 = FALSE
-
-/obj/map_metadata/campaign_noncanon/update_win_condition()
-	if (world.time >= victory_time)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Blugoslavians halted the attack!"
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm2 == FALSE)
-		ticker.finished = TRUE
-		var/message = "The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		no_loop_cm2 = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(PIRATES)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(PIRATES)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(PIRATES)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(PIRATES)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Redmenians</b> have recaptured control over the objective!</font>"
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
-	return TRUE
 
 ///////////arty and stuff/////////////
 /obj/map_metadata/campaign_noncanon/proc/napalm_strike(var/inputx, var/inputy, var/inputz)
@@ -287,7 +202,7 @@ obj/map_metadata/campaign_noncanon/rotstadt/job_enabled_specialcheck(var/datum/j
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_cm2 = TRUE
+		no_loop_cm = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
