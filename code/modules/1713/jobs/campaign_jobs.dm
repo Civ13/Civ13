@@ -20,6 +20,18 @@
 	min_positions = 999
 	max_positions = 999
 
+/datum/job/pirates/redfaction/rotstadt_fighter
+	title = "RPR Fighter"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRed"
+	uses_squads = FALSE
+	can_be_female = TRUE
+	is_rotstadt = TRUE
+	is_event = FALSE
+	additional_languages = list("Blugoslavian" = 89)
+	min_positions = 999
+	max_positions = 999
+
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
 	title = "RDF Commander"
@@ -128,13 +140,18 @@
 	var/area/A = get_area(H)
 	if (A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
-	else
+	else if (!findtext(title, "RPR Fighter"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/brown(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
+	if (!findtext(title, "RPR Fighter"))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (!findtext(title, "Redmenian Civilian"))
+	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
 		var/obj/item/clothing/accessory/armor/coldwar/rb23/armor = new /obj/item/clothing/accessory/armor/coldwar/rb23(null)
 		uniform.attackby(armor, H)
 
@@ -154,7 +171,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
-	else if (!findtext(title, "Redmenian Civilian"))
+	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	if (findtext(title, "Armored"))
@@ -170,13 +187,12 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored"))
+	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored") || !findtext(title, "RPR Fighter"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	if (!findtext(title, "Redmenian Civilian"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -199,6 +215,7 @@
 	else if (!findtext(title, "Redmenian Civilian"))
 		var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/armband/british(null)
 		uniform.attackby(armband, H)
+	else
 		if (findtext(title, "Machinegunner"))
 			if(A.climate == "taiga" || A.climate == "tundra")
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/redmg/white(H), slot_belt)
@@ -240,7 +257,7 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	if (!findtext(title, "Redmenian Civilian"))
+	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "Redmenian Civilian"))
 		H.make_artillery_scout()
 	if (findtext(title, "Redmenian Civilian"))
 		//H.civilization = civname_a
