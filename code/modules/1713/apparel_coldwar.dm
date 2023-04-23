@@ -1000,7 +1000,7 @@
 
 /obj/item/clothing/accessory/armor/coldwar/plates/tatba //cant find any info on it, looks like a pasgt copy
 	name = "TATBA-7 vest"
-	desc = "Chinese Light Plate carrier,Comes with a single plate insert."
+	desc = "Chinese light plate carrier, comes with a single plate inserted."
 	icon_state = "tatba"
 	item_state = "tatba"
 	worn_state = "tatba"
