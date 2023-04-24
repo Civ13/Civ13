@@ -158,22 +158,47 @@
 				var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
 				CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
 				CU.pantscolor = pick ("#313345", "#777777", "#555555", "#333333", "#111111", "#494960", "#94989a", "#141627", "#373429", "#25231c", "#5c5745")
+				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_pants")
+				pants.color = CU.pantscolor
+				var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_shirt")
+				shirt.color = CU.shirtcolor
+				var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custom_belt")
+				CU.overlays += pants
+				CU.overlays += shirt
+				CU.overlays += belt
 				CU.update_icon()
 				H.equip_to_slot_or_del (CU, slot_w_uniform)
+				H.update_icons(1)
 				spawn(6)
 					CU.uncolored = FALSE
 			if (4)
 				var/obj/item/clothing/under/customtrackpants/TP = new /obj/item/clothing/under/customtrackpants(null)
-				TP.pantscolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A")
+				TP.pantscolor = pick ("#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A")
 				TP.sidescolor = "#EFEFEF"
 				TP.shirtcolor = pick ("#EFEFEF", "#b8ad8a", "#d9dddc", "#3c3b3c")
+				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
+				pants.color = TP.pantscolor
+				var/image/sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_sides")
+				sides.color = TP.sidescolor
+				var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_shirt")
+				shirt.color = TP.shirtcolor
+				TP.overlays += pants
+				TP.overlays += sides
+				TP.overlays += shirt
 				TP.update_icon()
 				var/obj/item/clothing/suit/storage/jacket/customtracksuit/TS = new /obj/item/clothing/suit/storage/jacket/customtracksuit(null)
 				TS.basecolor = TP.pantscolor
 				TS.linescolor = "#EFEFEF"
+				var/image/base = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_base")
+				base.color = TS.basecolor
+				var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_lines")
+				lines.color = TS.linescolor
+				TS.overlays += base
+				TS:overlays += lines
 				TS.update_icon()
 				H.equip_to_slot_or_del (TP, slot_w_uniform)
 				H.equip_to_slot_or_del (TS, slot_wear_suit)
+				H.update_icons(1)
 				spawn(6)
 					TP.uncolored = FALSE
 					TS.uncolored = FALSE
