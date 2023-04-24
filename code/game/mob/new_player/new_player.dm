@@ -191,7 +191,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if (map.ID == MAP_CAMPAIGN || map.ID = MAP_ROTSTADT && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
