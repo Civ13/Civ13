@@ -48,7 +48,7 @@ obj/map_metadata/holdmadrid/job_enabled_specialcheck(var/datum/job/J)
 		if (SPANISH)
 			return "Spanish"
 		if (CIVILIAN)
-			return "Republicans"
+			return "Republican"
 
 /obj/map_metadata/holdmadrid/army2name(army)
 	..()

@@ -42,6 +42,11 @@
 	desc = "An Imperial Flag for the Extra-Galactic Empire."
 	icon_state = "flag_galacticempire"
 
+/obj/structure/sign/flag/russia/wagner
+	name = "Wagner group Flag"
+	desc = "A PMC group flag."
+	icon_state = "flag_wag"
+
 /obj/structure/sign/flag/gb/rebel
 	name = "Alliance to Restore the Democracy Flag"
 	desc = "A Rebellious flag for the Alliance."
@@ -638,6 +643,11 @@
 	name = "Syrian flag"
 	desc = "The flag of Syria."
 	icon_state = "flag_syria"
+
+/obj/structure/sign/flag/syria/ssg
+	name = "Syrian salvation goverment flag"
+	desc = "The flag of the SSG."
+	icon_state = "flag_syriansal"
 
 /obj/structure/sign/flag/fsa
 	name = "FSA flag"

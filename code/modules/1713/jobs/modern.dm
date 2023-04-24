@@ -897,3 +897,706 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
+
+///syria
+
+/datum/job/arab/syrian_commander
+	title = "J.A. Alqayid"
+	en_meaning = "Syrian Goverment Army Commander"
+	rank_abbreviation = "Alq."
+
+	spawn_location = "JoinLateSYR"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	is_officer = TRUE
+	is_commander = FALSE
+	uses_squads = TRUE
+	is_radioman = FALSE
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/arab/syrian_commander/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_red(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+	uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak101/ak105(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/command(H), slot_belt)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74/box, H)
+	var/obj/item/clothing/accessory/armband/british/white = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(white, H)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22(H), slot_back)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, You are in Charge of the Whole Operation, Plan carefully and lead your Forces towards victory!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+	return TRUE
+
+/datum/job/arab/syrian_sl
+	title = "J.A. Qayid Firqa"
+	en_meaning = "Syrian Goverment Army Squadleader"
+	rank_abbreviation = "Q.F."
+
+	spawn_location = "JoinLateSYR"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+	is_radioman = FALSE
+	can_get_coordinates = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/arab/syrian_sl/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+//head
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+	uniform.attackby(armor, H)
+
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/command(H), slot_belt)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74/box, H)
+	var/obj/item/clothing/accessory/armband/british/white = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(white, H)
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22(H), slot_back)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. Order your men around!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/arab/syrian_soldier
+	title = "J.A. Sulydir"
+	en_meaning = "Syrian Goverment Army Soldier"
+	rank_abbreviation = "S."
+
+	spawn_location = "JoinLateSYR"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 12
+	max_positions = 120
+
+/datum/job/arab/syrian_soldier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+//head
+	var/randhead2 = rand(1,7)
+	switch(randhead2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/olivebandana(H), slot_head)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(50))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/tatba/green/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/tatba/green(null)
+		uniform.attackby(armor, H)
+	else if (prob(40))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+		uniform.attackby(armor, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b2/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b2(null)
+		uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/ak74, H)
+		web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/ak74, H)
+		web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/pkm(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
+		web.attackby(new/obj/item/ammo_magazine/pkm/c100, H)
+		web.attackby(new/obj/item/ammo_magazine/pkm/c100, H)
+	var/obj/item/clothing/accessory/armband/british/white = new /obj/item/clothing/accessory/armband/british(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. Follow your squad leader's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/arab/syrian_medic
+	title = "J.A. Museif Qitaliun"
+	en_meaning = "Syrian Goverment Army Combat Medic"
+	rank_abbreviation = "Med."
+
+	spawn_location = "JoinLateSYR"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+	is_medic = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/arab/syrian_medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/med(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+	uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	web.attackby(new/obj/item/ammo_magazine/ak74, H)
+	var/obj/item/clothing/accessory/armband/redcross/white = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Maintain The Health of your Squadmates. Follow your squad leader's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/arab/wagner_pmc
+	title = "CHVK. Vagnera"
+	en_meaning = "Wagner PMC"
+	rank_abbreviation = "Wg."
+	additional_languages = list("English" = 55, "Russian" = 100)
+	spawn_location = "JoinLateSYR"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 10
+	max_positions = 20
+
+/datum/job/arab/syrianwag/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//under
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/russiandesert(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+//head
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(armor, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
+		uniform.attackby(armor, H)
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/modern(H), slot_eyes)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	var/obj/item/clothing/accessory/storage/webbing/russian/web = new /obj/item/clothing/accessory/storage/webbing/russian(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/srm(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/srm(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/srm, H)
+		web.attackby(new/obj/item/ammo_magazine/srm, H)
+		web.attackby(new/obj/item/ammo_magazine/srm, H)
+		web.attackby(new/obj/item/ammo_magazine/srm, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/svd(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/svd, H)
+		web.attackby(new/obj/item/ammo_magazine/svd, H)
+		web.attackby(new/obj/item/ammo_magazine/svd, H)
+		web.attackby(new/obj/item/ammo_magazine/svd, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/nsvtutes(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/utes(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
+		web.attackby(new/obj/item/ammo_magazine/ammo127, H)
+	var/obj/item/clothing/accessory/armband/wagner/white = new /obj/item/clothing/accessory/armband/wagner(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. As a PMC you can act on your own, but try to follow orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+///// SYRIAN NATIONAL ARMY/FREE SYRIAN ARMY/REBELS /////
+
+/datum/job/american/syrian_national_army
+	default_language = "Arabic"
+	additional_languages = list("English" = 25, "Russian" = 5)
+
+/datum/job/american/syrian_national_army/commander
+	title = "C.C. Qayid Almutamaridin"
+	en_meaning = "Syrian Salvation Army Commander"
+	rank_abbreviation = "Q.A."
+
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	is_officer = TRUE
+	is_commander = FALSE
+	uses_squads = TRUE
+	is_radioman = FALSE
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/syrian_national_army/commander/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_green(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/m18_red(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/nomads/thickcarrier/armor = new /obj/item/clothing/accessory/armor/nomads/thickcarrier(null)
+	uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/command(H), slot_belt)
+	web.attackby(new/obj/item/ammo_magazine/fal, H)
+	web.attackby(new/obj/item/ammo_magazine/fal, H)
+	web.attackby(new/obj/item/ammo_magazine/m14box, H)
+	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(white, H)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, You are in Charge of the Whole Operation, Plan carefully and lead your Forces towards victory!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+	return TRUE
+
+/datum/job/american/syrian_national_army/sl
+	title = "C.C. Qayid Firqa"
+	en_meaning = "Syrian Salvation Army Squadleader"
+	rank_abbreviation = "Q.F."
+
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+	is_squad_leader = TRUE
+	is_radioman = FALSE
+	can_get_coordinates = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/american/syrian_national_army/sl/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+//head
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarrier(null)
+	uniform.attackby(armor, H)
+
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/command(H), slot_belt)
+	web.attackby(new/obj/item/ammo_magazine/m16, H)
+	web.attackby(new/obj/item/ammo_magazine/m16, H)
+	web.attackby(new/obj/item/ammo_magazine/m16/box, H)
+	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(white, H)
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian goverment forces. Order your men around!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+	return TRUE
+
+/datum/job/american/syrian_national_army/soldier
+	title = "C.C. Sulydir"
+	en_meaning = "Syrian Salvation Army Soldier"
+
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 16
+	max_positions = 165
+
+/datum/job/american/syrian_national_army/soldier/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+//head
+	var/randhead2 = rand(1,7)
+	switch(randhead2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/custom/custom_beanie/black(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(50))
+		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
+		uniform.attackby(armor, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp(null)
+		uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/m16, H)
+		web.attackby(new/obj/item/ammo_magazine/m16, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/m16, H)
+		web.attackby(new/obj/item/ammo_magazine/m16, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
+		web.attackby(new/obj/item/ammo_magazine/m249, H)
+		web.attackby(new/obj/item/ammo_magazine/m249, H)
+	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
+
+/datum/job/american/syrian_national_army/medic
+	title = "C.C. Museif Qitaliun"
+	en_meaning = "Syrian Salvation Army Combat Medic"
+	rank_abbreviation = "Med."
+
+	spawn_location = "JoinLateREB"
+
+	is_medic = TRUE
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 4
+	max_positions = 8
+
+/datum/job/american/syrian_national_army/medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+//mask
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
+	uniform.attackby(armor, H)
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	web.attackby(new/obj/item/ammo_magazine/m16, H)
+	web.attackby(new/obj/item/ammo_magazine/m16, H)
+	web.attackby(new/obj/item/ammo_magazine/m16, H)
+	var/obj/item/clothing/accessory/armband/redcross/white = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Maintain The Health of your Squadmates, Follow your squad leader's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_HIGH)
+	H.setStat("machinegun", STAT_LOW)
+
+	return TRUE
+
+/datum/job/american/syrian_national_army/insurgent
+	title = "Milishya Suria"
+	en_meaning = "Syrian Insurgent Militia"
+
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 16
+	max_positions = 100
+
+/datum/job/american/syrian_national_army/insurgent/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+//head
+	var/randhead2 = rand(1,5)
+	switch(randhead2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(50))
+		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
+		uniform.attackby(armor, H)
+
+	var/obj/item/clothing/accessory/storage/webbing/light/web = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/sten(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/sten(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/sten2, H)
+		web.attackby(new/obj/item/ammo_magazine/sten2, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/greasegun(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/greasegun, H)
+		web.attackby(new/obj/item/ammo_magazine/greasegun, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/ar15(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ar15(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
+		web.attackby(new/obj/item/ammo_magazine/ar15, H)
+		web.attackby(new/obj/item/ammo_magazine/ar15, H)
+	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_LOW)
+
+	return TRUE
