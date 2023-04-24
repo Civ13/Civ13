@@ -170,6 +170,7 @@ var/no_loop_ar = FALSE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/three))
 			if (H.faction_text == faction2)
 				return TRUE
-		return !faction1_can_cross_blocks()
-		return !faction2_can_cross_blocks()
+		else
+			return !faction1_can_cross_blocks()
+			return !faction2_can_cross_blocks()
 	return FALSE
