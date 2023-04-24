@@ -27,7 +27,7 @@
 	uses_squads = FALSE
 	can_be_female = TRUE
 	is_rotstadt = TRUE
-	is_event = FALSE
+	is_event = TRUE
 	additional_languages = list("Blugoslavian" = 89)
 	min_positions = 999
 	max_positions = 999
@@ -187,7 +187,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Redmenian Civilian") || !findtext(title, "Armored") || !findtext(title, "RPR Fighter"))
+	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "Armored") && !findtext(title, "RPR Fighter"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -257,7 +257,7 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "Redmenian Civilian"))
+	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
 		H.make_artillery_scout()
 	if (findtext(title, "Redmenian Civilian"))
 		//H.civilization = civname_a
@@ -386,7 +386,7 @@
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
-/*
+
 /datum/job/civilian/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
@@ -396,7 +396,6 @@
 	title = "BAF Armored Crew"
 	squad = 5
 	rank_abbreviation = "5-Tank"
-*/
 
 /datum/job/civilian/bluefaction/at
 	title = "BAF Anti-Tank"
