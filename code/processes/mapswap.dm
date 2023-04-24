@@ -12,7 +12,7 @@
 		//"Imperial Age (1650-1780)" = 0,
 		//"Industrial Age (1850-1895)" = 0,
 		//"Early Modern Era (1896-1930)" = 0,
-		"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
+		"PvE (Voyage & Cursed Island))" = 0,
 		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
 		//"Cold War Era (1949-1984)" = 0,
@@ -62,7 +62,7 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-						"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
+						"PvE (Voyage & Cursed Island))" = 0,
 					)
 				else
 					epochs = list(
@@ -83,7 +83,7 @@
 					"Fiction" = 0,
 					"Battle Royale" = 6,
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-					"PvE (Voyage, Hunt, Colony, Wasteland, etc)" = 0,
+					"PvE (Voyage & Cursed Island))" = 0,
 //					"Chad Mode" = 0,
 				)
 		else if (config.allowedgamemodes == "RP")
@@ -241,7 +241,8 @@
 			)
 		else if (epoch == "HRP TDM (Gulag, Occupation, AOTD, etc)")
 			maps = list(
-				MAP_FOOTBALL = 8,
+				MAP_HUNT = 6,
+				MAP_FOOTBALL = 6,
 				MAP_GULAG13 = 6,
 //				MAP_ABASHIRI = 6,
 //				MAP_RIVER_KWAI = 0,
@@ -249,19 +250,10 @@
 				MAP_OCCUPATION = 10,
 				MAP_THE_ART_OF_THE_DEAL = 18,
 			)
-		else if (epoch == "PvE (Voyage, Hunt, Colony, Wasteland, etc)")
+		else if (epoch == "PvE (Voyage & Cursed Island)")
 			maps = list(
-				MAP_HUNT = 0,
 				MAP_CURSED_ISLAND = 0,
-				MAP_COLONY = 0,
-				MAP_JUNGLE_COLONY = 0,
-				MAP_PIONEERS = 0,
-				MAP_PIONEERS_WASTELAND_2 = 0,
-				MAP_NOMADS_WASTELAND = 0,
-				MAP_NOMADS_WASTELAND_2 = 0,
 				MAP_VOYAGE = 6,
-				MAP_BOHEMIA = 10,
-//				MAP_FOUR_COLONIES = 20,
 			)
 		else if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
