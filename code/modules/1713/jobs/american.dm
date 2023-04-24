@@ -1457,11 +1457,12 @@
 	return TRUE
 
 ///syria
-/datum/job/american/syr
+
+/datum/job/american/syrian_national_army
 	default_language = "Arabic"
 	additional_languages = list("English" = 25, "Russian" = 5)
 
-/datum/job/american/syr/syrianlead
+/datum/job/american/syrian_national_army/commander
 	title = "C.C. Qayid Almutamaridin"
 	en_meaning = "Syrian Salvation Army Commander"
 	rank_abbreviation = "Q.A."
@@ -1480,7 +1481,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/syr/syrianlead/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1522,9 +1523,9 @@
 
 	return TRUE
 
-/datum/job/american/syr/syriancom
+/datum/job/american/syrian_national_army/sl
 	title = "C.C. Qayid Firqa"
-	en_meaning = "Syrian Salvation Army Squad leader"
+	en_meaning = "Syrian Salvation Army Squadleader"
 	rank_abbreviation = "Q.F."
 
 	spawn_location = "JoinLateREB"
@@ -1540,7 +1541,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/american/syr/syriancom/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1586,10 +1587,9 @@
 
 	return TRUE
 
-/datum/job/american/syr/syrianarmy
+/datum/job/american/syrian_national_army/soldier
 	title = "C.C. Sulydir"
-	en_meaning = "Syrian Salvation Army Solider"
-	rank_abbreviation = "Sul."
+	en_meaning = "Syrian Salvation Army Soldier"
 
 	spawn_location = "JoinLateREB"
 
@@ -1601,7 +1601,7 @@
 	min_positions = 16
 	max_positions = 165
 
-/datum/job/american/syr/syrianarmy/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1669,7 +1669,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
-/datum/job/american/syr/syrianmed
+/datum/job/american/syrian_national_army/medic
 	title = "C.C. Museif Qitaliun"
 	en_meaning = "Syrian Salvation Army Combat Medic"
 	rank_abbreviation = "Med."
@@ -1685,7 +1685,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/american/syr/syrianmed/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1727,10 +1727,9 @@
 
 	return TRUE
 
-/datum/job/american/syr/syrianmil
+/datum/job/american/syrian_national_army/insurgent
 	title = "Milishya Suria"
-	en_meaning = "Syrian Anti goverment Milita"
-	rank_abbreviation = "M."
+	en_meaning = "Syrian Insurgent Militia"
 
 	spawn_location = "JoinLateREB"
 
@@ -1742,7 +1741,7 @@
 	min_positions = 16
 	max_positions = 100
 
-/datum/job/american/syr/syrianmil/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/insurgent/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
