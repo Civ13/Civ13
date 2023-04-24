@@ -1440,6 +1440,12 @@
 /obj/structure/barricade,
 /turf/floor/dirt,
 /area/caribbean)
+"hv" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "hC" = (
 /obj/effect/decal/warning_stripes{
 	icon_state = "S-corner"
@@ -1812,6 +1818,12 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed)
+"kc" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/floor/plating/road,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "kf" = (
 /obj/structure/pot,
 /turf/floor/dirt/burned,
@@ -2252,6 +2264,14 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"mC" = (
+/obj/item/weapon/material/shard{
+	material = "glass"
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "mD" = (
 /turf/floor/plating/tiled/darker,
 /area/caribbean/roofed)
@@ -6708,6 +6728,12 @@
 	},
 /turf/floor/dirt,
 /area/caribbean)
+"Ji" = (
+/obj/effect/decal/cleanable/generic,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "Jj" = (
 /obj/structure/window/barrier/jersey{
 	dir = 4
@@ -9237,6 +9263,12 @@
 /obj/structure/curtain/open/shower,
 /turf/floor/plating/steel,
 /area/caribbean/roofed)
+"Wq" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "Wr" = (
 /obj/structure/window/barrier/sandbag{
 	icon_state = "sandbag";
@@ -9346,7 +9378,9 @@
 /area/caribbean/roofed)
 "WW" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effects/premadevehicles/tank/baf1_a,
+/obj/effects/premadevehicles/tank/baf1_a{
+	dir = 1
+	},
 /turf/floor/dirt,
 /area/caribbean)
 "WX" = (
@@ -9447,6 +9481,12 @@
 /obj/structure/table/modern/table,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"Xu" = (
+/obj/structure/wild/tallgrass2,
+/turf/floor/dirt,
+/area/caribbean/no_mans_land/invisible_wall/temperate{
+	icon_state = "green1"
+	})
 "Xv" = (
 /mob/living/simple_animal/mouse/white,
 /turf/floor/plating/steel,
@@ -22567,9 +22607,9 @@ ym
 ym
 zq
 QI
-vA
-vA
-vA
+Hw
+Hw
+Hw
 FP
 cI
 Ei
@@ -22647,18 +22687,18 @@ sT
 fl
 yP
 yP
-CF
-vA
-CF
+Th
+Hw
+Th
 Wa
 BP
 ym
 RH
 ZN
 Wa
-vA
-vA
-vA
+Hw
+Hw
+Hw
 FP
 RH
 zq
@@ -22736,18 +22776,18 @@ CF
 dw
 CF
 CF
-CF
-vA
-cL
+Th
+Hw
+mC
 BC
 Wa
 QN
 Wa
 sc
 Wa
-vA
-vA
-vA
+Hw
+Hw
+Hw
 FP
 FP
 FP
@@ -22825,9 +22865,9 @@ yP
 yB
 pu
 yP
-CF
-vA
-CF
+Th
+Hw
+Th
 Th
 Th
 Hw
@@ -22914,11 +22954,11 @@ fl
 yP
 yP
 CF
-vA
-vA
-CF
 Hw
-vA
+Hw
+Th
+Hw
+GI
 vA
 vA
 vA
@@ -23003,9 +23043,9 @@ CF
 CF
 CF
 CF
-vA
-CF
-pu
+Hw
+Th
+WR
 Hw
 GI
 fl
@@ -23092,9 +23132,9 @@ yP
 yP
 yP
 CF
-CF
-mM
-fl
+Th
+Xu
+Wq
 zG
 CF
 pu
@@ -23181,9 +23221,9 @@ yB
 dw
 dw
 dw
-dw
-yP
-dw
+gA
+zG
+gA
 gA
 JP
 yB
@@ -23270,9 +23310,9 @@ fl
 yP
 dw
 CF
-dw
-dw
-dw
+gA
+gA
+gA
 zG
 yP
 dw
@@ -23359,9 +23399,9 @@ CF
 yP
 dw
 yP
-yP
-CF
-dw
+zG
+Th
+gA
 WR
 dw
 yP
@@ -23448,9 +23488,9 @@ yP
 yP
 CF
 CF
-CF
-CF
-CF
+Th
+Th
+Th
 Th
 dw
 CF
@@ -23537,9 +23577,9 @@ CF
 yP
 CF
 yP
-CF
-fl
-yB
+Th
+Wq
+kc
 Th
 dw
 yP
@@ -23626,9 +23666,9 @@ yP
 dw
 CF
 yP
-vA
-vA
-vA
+Hw
+Hw
+Hw
 Hw
 vA
 vA
@@ -23715,9 +23755,9 @@ CF
 yP
 yP
 dw
-pu
-vA
-GI
+WR
+Hw
+hv
 Hw
 vA
 vA
@@ -23804,9 +23844,9 @@ CF
 CF
 yP
 dw
-vA
-GI
-GI
+Hw
+hv
+hv
 Hw
 vA
 vA
@@ -23893,9 +23933,9 @@ CF
 Wc
 CF
 yP
-vA
-vA
-vA
+Hw
+Hw
+Hw
 Ja
 jl
 SV
@@ -23982,9 +24022,9 @@ mM
 yP
 dw
 yB
-GI
-vA
-vA
+hv
+Hw
+Hw
 tx
 qa
 qa
@@ -24071,9 +24111,9 @@ yP
 CF
 dw
 yB
-vA
-vA
-Xm
+Hw
+Hw
+Ji
 tx
 cz
 jl
@@ -24160,9 +24200,9 @@ dw
 yP
 pu
 yB
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 jl
 jl
@@ -24249,9 +24289,9 @@ dw
 of
 yP
 yP
-vA
-Xm
-vA
+Hw
+Ji
+Hw
 tx
 jl
 jl
@@ -24338,9 +24378,9 @@ dw
 pu
 yB
 yP
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 cz
 cz
@@ -24427,9 +24467,9 @@ yB
 dw
 dw
 dw
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
@@ -24516,9 +24556,9 @@ yB
 yP
 yP
 dw
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
@@ -24605,9 +24645,9 @@ yP
 yP
 yP
 dw
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
@@ -24694,9 +24734,9 @@ yP
 yP
 yP
 dw
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
@@ -24783,9 +24823,9 @@ dw
 dw
 dw
 dw
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
@@ -24872,9 +24912,9 @@ yB
 yP
 pu
 pu
-pu
-vA
-vA
+WR
+Hw
+Hw
 tx
 mx
 mx
@@ -24961,9 +25001,9 @@ dw
 dw
 yP
 yP
-vA
-vA
-vA
+Hw
+Hw
+Hw
 tx
 mx
 mx
