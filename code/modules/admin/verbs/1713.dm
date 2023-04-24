@@ -703,7 +703,7 @@ var/polish_forceEnabled = FALSE
 		fact3 = "Blugoslavia"
 	else if (map.ID == MAP_ROTSTADT)
 		fact2 = "Rotstadt People's Republic"
-		fact3 = "Blugoslavian Armed Forces"
+		fact3 = "Blugoslavia"
 	else if (map.ID == MAP_WHITERUN)
 		fact3 = "Stormcloaks"
 		fact9 = "Imperials"
