@@ -1,7 +1,7 @@
 /obj/map_metadata/syria
 	ID = MAP_SYRIA
 	title = "Syrian War"
-	lobby_icon = "icons/lobby/modern.png"
+	lobby_icon = "icons/lobby/syria.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -22,7 +22,7 @@
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
-		"Napalm sticks to kids:1" = "sound/music/napalmsticsktokidsbycortex.ogg")
+		"God, Syria and Bashar!:1" = "sound/music/godsyriabashar.ogg")
 	gamemode = "King of the Hill"
 /obj/map_metadata/syria/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
