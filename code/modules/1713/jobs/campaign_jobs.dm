@@ -148,7 +148,36 @@
 	if (!findtext(title, "RPR Fighter"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+		var/rand_uni = rand(1,4)
+		switch (rand_uni)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+			if (3)
+				var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
+				CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
+				CU.pantscolor = pick ("#313345", "#777777", "#555555", "#333333", "#111111", "#494960", "#94989a", "#141627", "#373429", "#25231c", "#5c5745")
+				CU.update_icon()
+				H.equip_to_slot_or_del (CU, slot_w_uniform)
+				spawn(6)
+					CU.uncolored = FALSE
+			if (4)
+				var/obj/item/clothing/under/customtrackpants/TP = new /obj/item/clothing/under/customtrackpants(null)
+				TP.pantscolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A")
+				TP.sidescolor = "#EFEFEF"
+				TP.shirtcolor = pick ("#EFEFEF", "#b8ad8a", "#d9dddc", "#3c3b3c")
+				TP.update_icon()
+				var/obj/item/clothing/suit/storage/jacket/customtracksuit/TS = new /obj/item/clothing/suit/storage/jacket/customtracksuit(null)
+				TS.basecolor = TP.pantscolor
+				TS.linescolor = "#EFEFEF"
+				TS.update_icon()
+				H.equip_to_slot_or_del (TP, slot_w_uniform)
+				H.equip_to_slot_or_del (TS, slot_wear_suit)
+				spawn(6)
+					TP.uncolored = FALSE
+					TS.uncolored = FALSE
+
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))

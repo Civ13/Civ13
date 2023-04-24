@@ -37,7 +37,7 @@
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-		"Armored" = list("Crew" = 8),
+		"Armored" = list("Crew" = 4),
 		"AT" = list("Anti-Tank" = 3),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
@@ -269,7 +269,7 @@ var/no_loop_cm2 = FALSE
 				continue
 			if(findtext(job.title, "BAF Armored Squadleader") && MR.faction2_squad_leaders[job.squad])
 				continue
-			if(findtext(job.title, "BAF Armored Crew") && MR.squad_jobs_red["Armored"]["Crew"]<= 0)
+			if(findtext(job.title, "BAF Armored Crew") && MR.squad_jobs_blue["Armored"]["Crew"]<= 0)
 				continue
 			if(findtext(job.title, "BAF Recon") && MR.squad_jobs_blue["Recon"]["Sniper"]<= 0)
 				continue
