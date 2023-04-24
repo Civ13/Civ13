@@ -900,7 +900,7 @@
 
 ///syria
 
-/datum/job/arab/syrianlead
+/datum/job/arab/syrian_commander
 	title = "J.A. Alqayid"
 	en_meaning = "Syrian Goverment Army Commander"
 	rank_abbreviation = "Alq."
@@ -919,7 +919,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/arab/syrianlead/equip(var/mob/living/human/H)
+/datum/job/arab/syrian_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -961,9 +961,9 @@
 
 	return TRUE
 
-/datum/job/arab/syriancom
+/datum/job/arab/syrian_sl
 	title = "J.A. Qayid Firqa"
-	en_meaning = "Syrian Goverment Army Squad leader"
+	en_meaning = "Syrian Goverment Army Squadleader"
 	rank_abbreviation = "Q.F."
 
 	spawn_location = "JoinLateSYR"
@@ -979,7 +979,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/arab/syriancom/equip(var/mob/living/human/H)
+/datum/job/arab/syrian_sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1025,9 +1025,9 @@
 
 	return TRUE
 
-/datum/job/arab/syriangovarmy
+/datum/job/arab/syrian_soldier
 	title = "J.A. Sulydir"
-	en_meaning = "Syrian Goverment Army solider"
+	en_meaning = "Syrian Goverment Army Soldier"
 	rank_abbreviation = "S."
 
 	spawn_location = "JoinLateSYR"
@@ -1040,7 +1040,7 @@
 	min_positions = 12
 	max_positions = 120
 
-/datum/job/arab/syriangovarmy/equip(var/mob/living/human/H)
+/datum/job/arab/syrian_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1113,7 +1113,7 @@
 
 	return TRUE
 
-/datum/job/arab/syriangovmed
+/datum/job/arab/syrian_medic
 	title = "J.A. Museif Qitaliun"
 	en_meaning = "Syrian Goverment Army Combat Medic"
 	rank_abbreviation = "Med."
@@ -1129,7 +1129,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/arab/syriangovmed/equip(var/mob/living/human/H)
+/datum/job/arab/syrian_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1172,7 +1172,7 @@
 
 	return TRUE
 
-/datum/job/arab/syrianwag
+/datum/job/arab/wagner_pmc
 	title = "CHVK. Vagnera"
 	en_meaning = "Wagner PMC"
 	rank_abbreviation = "Wg."
