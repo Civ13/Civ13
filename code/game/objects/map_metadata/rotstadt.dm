@@ -163,6 +163,7 @@ var/no_loop_cm2 = FALSE
 				explosion(O,2,3,3,3)
 
 ///////////////////////////////////////////////////////////////////////
+var/no_loop_rot = FALSE
 /obj/map_metadata/rotstadt/update_win_condition()
 	if (world.time >= victory_time || round_finished)
 		if (win_condition_spam_check)
@@ -173,13 +174,13 @@ var/no_loop_cm2 = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm2 == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_rot == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Blugoslavs</b> have succeeded in their latest counter-terrorist operation in Rotstadt! The battle is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_cm = TRUE
+		no_loop_rot = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
