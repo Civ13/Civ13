@@ -156,7 +156,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
 			if (3)
 				var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
-				CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
+				CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
 				CU.pantscolor = pick ("#313345", "#777777", "#555555", "#333333", "#111111", "#494960", "#94989a", "#141627", "#373429", "#25231c", "#5c5745")
 				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_pants")
 				pants.color = CU.pantscolor
@@ -173,7 +173,7 @@
 					CU.uncolored = FALSE
 			if (4)
 				var/obj/item/clothing/under/customtrackpants/TP = new /obj/item/clothing/under/customtrackpants(null)
-				TP.pantscolor = pick ("#ff5252", "#ff0000", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A")
+				TP.pantscolor = pick ("#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A", "#141627",)
 				TP.sidescolor = "#EFEFEF"
 				TP.shirtcolor = pick ("#EFEFEF", "#b8ad8a", "#d9dddc", "#3c3b3c")
 				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
