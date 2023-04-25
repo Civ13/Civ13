@@ -164,6 +164,55 @@
 /obj/item/weapon/gun/projectile/submachinegun/spas/secondary_attack_self(mob/living/human/user)
 	switch_firemodes(user)
 
+/obj/item/weapon/gun/projectile/submachinegun/usas12
+	name = "USAS-12"
+	icon_state = "usas12"
+	item_state = "usas12"
+	base_icon = "usas12"
+	desc = "A South Korean selective fire gas-operated shotgun designed by John Trevor, Jr. that uses mags."
+	caliber = "12gauge"
+	slot_flags = SLOT_SHOULDER
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/usas12
+	load_method = MAGAZINE
+	good_mags = list(/obj/item/ammo_magazine/usas12, /obj/item/ammo_magazine/usas12/slug, /obj/item/ammo_magazine/usas12drum, /obj/item/ammo_magazine/usas12drum/slug)
+	recoil = 1
+	force = 15
+	throwforce = 30
+	weight = 3.5
+	equiptimer = 15
+	effectiveness_mod = 1.46
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	firemodes = list(
+		list(name = "semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "full auto",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.2, 1.4, 1.4, 1.4, 1.7)),
+		)
+
+/obj/item/weapon/gun/projectile/submachinegun/usas12/secondary_attack_self(mob/living/human/user)
+	switch_firemodes(user)
+
+/obj/item/weapon/gun/projectile/submachinegun/usas12/update_icon()
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12))
+			item_state = "usas12"
+			icon_state = "usas12"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12/slug))
+			item_state = "usas12"
+			icon_state = "usas12"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum))
+			icon_state = "usas12_drum"
+			item_state = "usas12drum"
+			base_icon = "usas12_drum"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum/slug))
+			icon_state = "usas12_drum"
+			item_state = "usas12drum"
+			base_icon = "usas12_drum"
+	else
+		icon_state = "usas12_open"
+		item_state = "usas12_open"
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/submachinegun/saiga12
 	name = "Saiga-12K"
 	icon_state = "saiga12"
