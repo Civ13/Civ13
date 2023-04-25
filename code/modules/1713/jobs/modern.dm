@@ -1260,7 +1260,7 @@
 	additional_languages = list("English" = 25, "Russian" = 5)
 
 /datum/job/american/syrian_national_army/give_random_name(var/mob/living/human/H)
-	H.name = H.species.get_random_arabic_name(H.gender)
+	H.name = H.species.get_random_arab_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
 	var/hex_hair = hair_colors[new_hair]

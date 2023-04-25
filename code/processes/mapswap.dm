@@ -12,7 +12,7 @@
 		//"Imperial Age (1650-1780)" = 0,
 		//"Industrial Age (1850-1895)" = 0,
 		//"Early Modern Era (1896-1930)" = 0,
-		"PvE (Voyage & Cursed Island))" = 0,
+		"PvE (Voyage & Cursed Island)" = 0,
 		"Early Fire Arms (1650-1930)" = 0,
 		"World War II (1931-1948)" = 0,
 		//"Cold War Era (1949-1984)" = 0,
@@ -62,7 +62,7 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-						"PvE (Voyage & Cursed Island))" = 0,
+						"PvE (Voyage & Cursed Island)" = 0,
 					)
 				else
 					epochs = list(
@@ -83,7 +83,7 @@
 					"Fiction" = 0,
 					"Battle Royale" = 6,
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-					"PvE (Voyage & Cursed Island))" = 0,
+					"PvE (Voyage & Cursed Island)" = 0,
 //					"Chad Mode" = 0,
 				)
 		else if (config.allowedgamemodes == "RP")
