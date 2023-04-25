@@ -1393,6 +1393,7 @@
 
 /obj/item/weapon/storage/belt/smallpouches/p90
 /obj/item/weapon/storage/belt/smallpouches/p90/New()
+	..()
 	new /obj/item/ammo_magazine/p90(src)
 	new /obj/item/ammo_magazine/p90(src)
 	new /obj/item/weapon/grenade/smokebomb(src)
@@ -1400,6 +1401,7 @@
 
 /obj/item/weapon/storage/belt/smallpouches/sten
 /obj/item/weapon/storage/belt/smallpouches/sten/New()
+	..()
 	new /obj/item/ammo_magazine/sten2(src)
 	new /obj/item/ammo_magazine/sten2(src)
 	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
