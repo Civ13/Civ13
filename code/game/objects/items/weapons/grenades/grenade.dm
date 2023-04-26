@@ -782,6 +782,15 @@
 	icon_state = "rpg40"
 	det_time = 50
 	throw_range = 5
+	heavy_armor_penetration = 23 //about 20–25 millimetres (0.79–0.98 in) of armour can be penetrated
+
+/obj/item/weapon/grenade/antitank/rpg43
+	name = "RPG-43"
+	desc = "A Powerful soviet anti-tank grenade, useful against armored vehicles."
+	icon_state = "rpg43"
+	det_time = 50
+	throw_range = 6
+	heavy_armor_penetration = 30 //The RPG-43 had a penetration of around 75 millimetres, to not make it too op im giving it only 30
 
 /obj/item/weapon/grenade/antitank/stg24_bundle
 	name = "M1924 Stielhandgranate bundle"
