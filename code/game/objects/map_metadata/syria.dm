@@ -148,7 +148,7 @@
 
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] has lost control of the Hill!</font>"
+			world << "<font size = 3>The [current_winner] has lost control of the Government Building!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
