@@ -1101,10 +1101,9 @@
 	caliber = "a545x39"
 	weight = 3.05
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 
@@ -1117,11 +1116,10 @@
 	caliber = "a762x39"
 	weight = 3.07
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 
