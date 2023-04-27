@@ -1324,6 +1324,11 @@ var/global/redirect_all_players = null
 						temp_name = "Imperials"
 					else if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
+				else if (map && map.ID == "SYRIA")
+					if (temp_name == "American")
+						temp_name = "Free Syrian Army"
+					else if (temp_name == "Arab")
+						temp_name = "Syrian Arab Republic"
 				else if (map && map.ID == "CAPITOL_HILL")
 					if (temp_name == "American")
 						temp_name = "American Government"
