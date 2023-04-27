@@ -779,6 +779,7 @@
 
 /obj/item/weapon/grenade/antitank/rpg40
 	name = "RPG-40"
+	desc = "A powerful Soviet AT grenade, useful against armored vehicles."
 	icon_state = "rpg40"
 	det_time = 50
 	throw_range = 5
@@ -786,7 +787,7 @@
 
 /obj/item/weapon/grenade/antitank/rpg43
 	name = "RPG-43"
-	desc = "A Powerful soviet anti-tank grenade, useful against armored vehicles."
+	desc = "A powerful Soviet AT grenade, useful against armored vehicles."
 	icon_state = "rpg43"
 	det_time = 50
 	throw_range = 6
