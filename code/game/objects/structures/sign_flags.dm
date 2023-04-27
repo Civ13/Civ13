@@ -449,6 +449,11 @@
 	desc = "The red, white and blue flag flying above ranks of blue-clad troops."
 	icon_state = "flag_union"
 
+/obj/structure/sign/flag/usa_confed
+	name = "Confederate flag"
+	desc = "The flag of the Confederate States."
+	icon_state = "flag_texas"
+
 /obj/structure/sign/flag/texas
 	name = "Texan flag"
 	desc = "The flag of the state of Texas."
