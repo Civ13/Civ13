@@ -1177,6 +1177,7 @@
 	en_meaning = "Wagner PMC"
 	rank_abbreviation = "Wg."
 	additional_languages = list("English" = 55, "Russian" = 100)
+	default_language = "Russian"
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
@@ -1187,7 +1188,7 @@
 	min_positions = 10
 	max_positions = 20
 
-/datum/job/arab/syrianwag/equip(var/mob/living/human/H)
+/datum/job/arab/wagner_pmc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
 	if (prob(60))
@@ -1258,6 +1259,18 @@
 	default_language = "Arabic"
 	additional_languages = list("English" = 25, "Russian" = 5)
 
+/datum/job/american/syrian_national_army/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_arab_name(H.gender)
+	H.real_name = H.name
+	var/new_hair = "Black"
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
 /datum/job/american/syrian_national_army/commander
 	title = "C.C. Qayid Almutamaridin"
 	en_meaning = "Syrian Salvation Army Commander"
@@ -1301,7 +1314,7 @@
 	web.attackby(new/obj/item/ammo_magazine/fal, H)
 	web.attackby(new/obj/item/ammo_magazine/fal, H)
 	web.attackby(new/obj/item/ammo_magazine/m14box, H)
-	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
@@ -1365,7 +1378,7 @@
 	web.attackby(new/obj/item/ammo_magazine/m16, H)
 	web.attackby(new/obj/item/ammo_magazine/m16, H)
 	web.attackby(new/obj/item/ammo_magazine/m16/box, H)
-	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
@@ -1451,7 +1464,7 @@
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/m249, H)
 		web.attackby(new/obj/item/ammo_magazine/m249, H)
-	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
@@ -1585,7 +1598,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
 		web.attackby(new/obj/item/ammo_magazine/ar15, H)
 		web.attackby(new/obj/item/ammo_magazine/ar15, H)
-	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
