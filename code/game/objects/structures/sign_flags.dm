@@ -452,7 +452,7 @@
 /obj/structure/sign/flag/usa_confed
 	name = "Confederate flag"
 	desc = "The flag of the Confederate States."
-	icon_state = "flag_texas"
+	icon_state = "flag_confederate"
 
 /obj/structure/sign/flag/texas
 	name = "Texan flag"
@@ -645,14 +645,19 @@
 	icon_state = "flag_iraq"
 
 /obj/structure/sign/flag/syria
-	name = "Syrian flag"
-	desc = "The flag of Syria."
+	name = "Syrian Arab Republic flag"
+	desc = "The flag of the Syrian Arab Republic."
 	icon_state = "flag_syria"
 
+/obj/structure/sign/flag/syria/fsa
+	name = "Free Syrian Army flag"
+	desc = "The flag of the Free Syrian Army."
+	icon_state = "flag_syria_fsa"
+
 /obj/structure/sign/flag/syria/ssg
-	name = "Syrian salvation goverment flag"
-	desc = "The flag of the SSG."
-	icon_state = "flag_syriansal"
+	name = "Syrian Salvation Goverment flag"
+	desc = "The flag of the Syrian Salvation Goverment."
+	icon_state = "flag_syria_sal"
 
 /obj/structure/sign/flag/fsa
 	name = "FSA flag"
