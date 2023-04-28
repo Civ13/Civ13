@@ -898,7 +898,7 @@
 
 	return TRUE
 
-///syria
+//// SYRIAN CIVIL WAR ////
 
 /datum/job/arab/syrian_commander
 	title = "J.A. Alqayid"
@@ -1173,11 +1173,11 @@
 	return TRUE
 
 /datum/job/arab/wagner_pmc
-	title = "CHVK. Vagnera"
-	en_meaning = "Wagner PMC"
-	rank_abbreviation = "Wg."
-	additional_languages = list("English" = 55, "Russian" = 100)
+	title = "Naemnik CHVK Vagnera"
+	en_meaning = "Wagner Group PMC"
+	rank_abbreviation = "PMC"
 	default_language = "Russian"
+	additional_languages = list("English" = 25, "Ukrainian" = 50)
 	spawn_location = "JoinLateSYR"
 
 	is_coldwar = FALSE
@@ -1185,9 +1185,14 @@
 	is_syria = TRUE
 	uses_squads = TRUE
 
-	min_positions = 10
-	max_positions = 20
+	min_positions = 1
+	max_positions = 5
 
+/datum/job/arab/wagner_pmc/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_russian_name(H.gender)
+	H.real_name = H.name
+	H.s_tone = rand(-35,-25)
+	
 /datum/job/arab/wagner_pmc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
