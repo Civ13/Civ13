@@ -542,6 +542,17 @@
 	sel_mode = 1
 	effectiveness_mod = 0.85
 
+/obj/item/weapon/gun/projectile/submachinegun/sten/stv
+	name = "Sten MK V"
+	desc = "A British submachinegun, chambered in 9x19 Parabellum."
+	icon_state = "sten2"
+	item_state = "sten2"
+	base_icon = "sten2"
+	weight = 3.1
+	attachment_slots = ATTACH_SILENCER|ATTACH_BARREL|ATTACH_UNDER
+	equiptimer = 6
+	effectiveness_mod = 0.98
+
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
 	desc = "Soviet submachinegun typically equipped with drum magazines. Chambered in 7.62x25mm Tokarev."

@@ -488,6 +488,28 @@
 	else
 		icon_state = "fatman_empty"
 
+/obj/item/weapon/gun/launcher/rocket/piat
+	name = "PIAT MK1"
+	desc = "A reusable 83mm anti-tank weapon developed by Britain during World War II."
+	icon_state = "piat_empty"
+	item_state = "piat_empty"
+	slot_flags = SLOT_SHOULDER
+	force = 10
+	recoil = 4
+	caliber = "piat"
+	fire_sound = 'sound/weapons/guns/fire/piatfire.ogg'
+
+/obj/item/weapon/gun/launcher/rocket/piat/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "piat"
+		item_state = "piat"
+	else
+		icon_state = "piat_empty"
+		item_state = "piat_empty"
+	update_held_icon()
+	return
+
 ////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Rocket items
@@ -544,6 +566,20 @@
 	desc = "A fragmentation warhead and propeller designed to be fired from a RPG-7 launcher."
 	icon_state = "og7v"
 	projectile_type = /obj/item/missile/fragmentation
+
+/obj/item/ammo_casing/rocket/piat
+	name = "SrB. HE/AT MK1"
+	desc = "A High-explosive Anti-tank warhead designed to disable enemy vehicles and destroy fortifications."
+	icon_state = "piat"
+	projectile_type = /obj/item/missile/explosive/piat
+	caliber = "piat"
+
+/obj/item/ammo_casing/rocket/piathe
+	name = "SrB. HE/AT MK3"
+	desc = "A Modernized High-explosive Anti-tank warhead designed to disable enemy vehicles and destroy fortifications."
+	icon_state = "piathe"
+	projectile_type = /obj/item/missile/explosive/piat44
+	caliber = "piat"
 
 /obj/item/ammo_casing/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -677,6 +713,30 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
+/obj/item/missile/explosive/piat
+	heavy_armor_penetration = 75
+	icon_state = "missile"
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 3)
+			handle_vehicle_hit(hit_atom,firer)
+			qdel(src)
+		else
+			..()
+		return
+
+/obj/item/missile/explosive/piat44
+	heavy_armor_penetration = 100
+	icon_state = "missile"
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 1, 2, 3, 4)
 			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
