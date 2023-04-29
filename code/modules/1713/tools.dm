@@ -91,7 +91,7 @@
 
 /obj/item/weapon/foldable/hescokit
 	name = "HESCO Bastion Kit"
-	desc = "A collapsible wire mesh container filled with locally sourced materials. Very sturdy, also cant be undeployed after being deployed."
+	desc = "A collapsible wire mesh container filled with locally sourced materials. Very sturdy, also can't be removed after being deployed."
 	icon_state = "bastionkit"
 	item_state = "ammo_can"
 	force = 20
