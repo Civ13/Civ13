@@ -90,7 +90,7 @@
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
 
 /obj/item/weapon/foldable/hescokit
-	name = "HESCO Bastion Kit"
+	name = "HESCO bastion kit"
 	desc = "A collapsible wire mesh container filled with locally sourced materials. Very sturdy, also can't be removed after being deployed."
 	icon_state = "bastionkit"
 	item_state = "ammo_can"
