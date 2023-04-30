@@ -568,18 +568,17 @@
 	projectile_type = /obj/item/missile/fragmentation
 
 /obj/item/ammo_casing/rocket/piat
-	name = "SrB. HE/AT MK1"
-	desc = "A High-explosive Anti-tank warhead designed to disable enemy vehicles and destroy fortifications."
+	name = "SrB. HEAT MK I"
+	desc = "A High-Explosive Anti-Tank warhead designed to disable enemy vehicles and destroy fortifications."
 	icon_state = "piat"
 	projectile_type = /obj/item/missile/explosive/piat
 	caliber = "piat"
 
-/obj/item/ammo_casing/rocket/piathe
-	name = "SrB. HE/AT MK3"
-	desc = "A Modernized High-explosive Anti-tank warhead designed to disable enemy vehicles and destroy fortifications."
+/obj/item/ammo_casing/rocket/piat/mk3
+	name = "SrB. HEAT MK III"
+	desc = "A modernized High-Explosive Anti-Tank warhead designed to disable enemy vehicles and destroy fortifications."
 	icon_state = "piathe"
 	projectile_type = /obj/item/missile/explosive/piat44
-	caliber = "piat"
 
 /obj/item/ammo_casing/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
