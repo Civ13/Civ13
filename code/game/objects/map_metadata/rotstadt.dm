@@ -17,11 +17,7 @@
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
-
-	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/british/land,
-		list(CIVILIAN) = /area/caribbean/japanese,
-		)
+		
 	age = "2023"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
