@@ -424,13 +424,7 @@ var/list/vocal_emotes = list(
 								if (GREEK)
 									playsound(get_turf(src), "charge_GREEK", 100)
 								if (ARAB)
-									if (!original_job.is_syria)
-										playsound(get_turf(src), "charge_ARAB", 100)
-									else
-										if (original_job_title == "Naemnik CHVK Vagnera")
-											playsound(get_turf(src), "charge_RUROBBERS", 100)
-										else
-											playsound(get_turf(src), "charge_IRANIAN", 100) //temporary
+									playsound(get_turf(src), "charge_ARAB", 100)
 								if (CHECHEN)
 									playsound(get_turf(src), "charge_ARAB", 100)
 								if (JAPANESE)
@@ -449,8 +443,6 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_FILIPINO", 100)
 									else if (original_job.is_gta)
 										playsound(get_turf(src), "charge_GROVE", 100)
-									else if (original_job.is_syria)
-										playsound(get_turf(src), "charge_ARAB", 100) //temporary
 									else
 										playsound(get_turf(src), "charge_AMERICAN", 100)
 								if (VIETNAMESE)

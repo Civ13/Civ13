@@ -1012,7 +1012,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22(H), slot_back)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Free Syrian Army. Order your men around!")
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. Order your men around!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1100,7 +1100,7 @@
 	var/obj/item/clothing/accessory/armband/british/white = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Free Syrian Army. Follow your squad leader's orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. Follow your squad leader's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1245,7 +1245,7 @@
 	var/obj/item/clothing/accessory/armband/wagner/white = new /obj/item/clothing/accessory/armband/wagner(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Free Syrian Army. As a PMC you may act on your own, but try to follow orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Salvation Army. As a PMC you can act on your own, but try to follow orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -1260,11 +1260,11 @@
 
 ///// SYRIAN NATIONAL ARMY/FREE SYRIAN ARMY/REBELS /////
 
-/datum/job/american/free_syrian_army
+/datum/job/american/syrian_national_army
 	default_language = "Arabic"
 	additional_languages = list("English" = 25, "Russian" = 5)
 
-/datum/job/american/free_syrian_army/give_random_name(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_arab_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
@@ -1275,11 +1275,10 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
-	H.s_tone = rand(-95,-60)
 
-/datum/job/american/free_syrian_army/commander
+/datum/job/american/syrian_national_army/commander
 	title = "C.C. Qayid Almutamaridin"
-	en_meaning = "Free Syrian Army Commander"
+	en_meaning = "Syrian Salvation Army Commander"
 	rank_abbreviation = "Q.A."
 
 	spawn_location = "JoinLateREB"
@@ -1287,14 +1286,16 @@
 	is_coldwar = FALSE
 	is_modernday = FALSE
 	is_syria = TRUE
-	is_commander = TRUE
+	is_officer = TRUE
+	is_commander = FALSE
+	uses_squads = TRUE
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/american/free_syrian_army/commander/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1323,7 +1324,7 @@
 	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, you are in charge of the whole operation. Plan carefully and lead your forces towards victory!")
+	H.add_note("Role", "You are an <b>[title]</b>, You are in Charge of the Whole Operation, Plan carefully and lead your Forces towards victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
@@ -1336,9 +1337,9 @@
 
 	return TRUE
 
-/datum/job/american/free_syrian_army/sl
+/datum/job/american/syrian_national_army/sl
 	title = "C.C. Qayid Firqa"
-	en_meaning = "Free Syrian Army Squadleader"
+	en_meaning = "Syrian Salvation Army Squadleader"
 	rank_abbreviation = "Q.F."
 
 	spawn_location = "JoinLateREB"
@@ -1354,7 +1355,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/american/free_syrian_army/sl/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1387,7 +1388,7 @@
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/launcher/rocket/single_shot/m72law(H), slot_back)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Arab Republic forces. Order your men around!")
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian goverment forces. Order your men around!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1400,9 +1401,9 @@
 
 	return TRUE
 
-/datum/job/american/free_syrian_army/soldier
+/datum/job/american/syrian_national_army/soldier
 	title = "C.C. Sulydir"
-	en_meaning = "Free Syrian Army Soldier"
+	en_meaning = "Syrian Salvation Army Soldier"
 
 	spawn_location = "JoinLateREB"
 
@@ -1414,7 +1415,7 @@
 	min_positions = 16
 	max_positions = 165
 
-/datum/job/american/free_syrian_army/soldier/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1482,9 +1483,9 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
-/datum/job/american/free_syrian_army/medic
+/datum/job/american/syrian_national_army/medic
 	title = "C.C. Museif Qitaliun"
-	en_meaning = "Free Syrian Army Combat Medic"
+	en_meaning = "Syrian Salvation Army Combat Medic"
 	rank_abbreviation = "Med."
 
 	spawn_location = "JoinLateREB"
@@ -1498,7 +1499,7 @@
 	min_positions = 4
 	max_positions = 8
 
-/datum/job/american/free_syrian_army/medic/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
@@ -1540,7 +1541,7 @@
 
 	return TRUE
 
-/datum/job/american/free_syrian_army/insurgent
+/datum/job/american/syrian_national_army/insurgent
 	title = "Milishya Suria"
 	en_meaning = "Syrian Insurgent Militia"
 
@@ -1554,7 +1555,7 @@
 	min_positions = 16
 	max_positions = 100
 
-/datum/job/american/free_syrian_army/insurgent/equip(var/mob/living/human/H)
+/datum/job/american/syrian_national_army/insurgent/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)

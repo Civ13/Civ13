@@ -18,7 +18,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(ARAB = 0.5, AMERICAN = 0.5)
 	battle_name = "Battle of Tadmur"
-	mission_start_message = "<font size=4>The <b>Free Syrian Army</b> and the <b>Syrian Goverment forces</b> are battling against each other for the control of the Tadmur town!<br>Both sides have to capture and hold the Goverment Building for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Free Syrian Army</b> and the <b>Syrian Goverment forces</b> are battling against each other for the control of the Tadmur town!<br>Both sides have to capture and hold the Goverment Building for <b>10 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
@@ -50,13 +50,13 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		return 6000 // 10 minutes
 
 /obj/map_metadata/syria/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		return 6000 // 10 minutes
 
 /obj/map_metadata/syria/roundend_condition_def2name(define)
 	..()
