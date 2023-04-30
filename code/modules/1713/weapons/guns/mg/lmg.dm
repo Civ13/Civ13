@@ -428,7 +428,7 @@
 	load_delay = 19
 	weight = 4.7
 	name = "RPK-47M machine gun"
-	desc = "A modernized soviet machinegun chambered in 7.62x39 rounds."
+	desc = "A modernized Soviet machinegun chambered in 7.62x39 rounds."
 
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
@@ -453,9 +453,9 @@
 	effectiveness_mod = 1.01
 ///NSVT//////////////
 
-/obj/item/weapon/gun/projectile/automatic/nsvtutes
-	name = "NSVT UTES"
-	desc = "A soviet infantry support machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
+/obj/item/weapon/gun/projectile/automatic/nsv_utes
+	name = "NSV Utes"
+	desc = "A Soviet heavy machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "nsvth"
 	item_state = "nsvth"
 	base_icon = "nsvth"
@@ -464,8 +464,8 @@
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	weight = 12.5
 	firemodes = list(
-		list(name = "Controlled Burst",	burst=5, burst_delay=1.0, recoil=0, move_delay=4, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 1),
+		list(name = "controlled burst",	burst=5, burst_delay=1.0, move_delay=4, recoil = 0, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, recoil = 1,  dispersion = list(0.6, 1, 1.2, 1.3, 1.3)),
 		)
 	slot_flags = SLOT_SHOULDER
 	force = 20
