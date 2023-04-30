@@ -416,7 +416,7 @@
 	desc = "A small sized machete used by wood cutters."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "machete1"
-	force_divisor = 0.6 // 30 with hardness 60 (steel)
+	force_divisor = 0.7 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE

@@ -173,3 +173,13 @@ var/no_loop_o = FALSE
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>25 minutes</b>. The Americans will win if they manage to capture the <b>rear bunkers</b>.</font>"
 	grace_wall_timer = 2400
 
+/obj/map_metadata/omaha/micromaha/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (J.is_tanker == TRUE || J.is_occupation == TRUE || J.is_reichstag == TRUE || J.is_ss_panzer == TRUE || J.is_navy == TRUE || istype(J, /datum/job/american/soldier_ww2_filipino))
+		. = FALSE
+	else if (J.is_ww2 == TRUE && J.is_reichstag == FALSE)
+		. = TRUE
+	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
+		. = FALSE
+	else
+		. = FALSE

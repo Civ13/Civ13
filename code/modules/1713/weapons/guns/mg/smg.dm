@@ -185,7 +185,7 @@
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
 		list(name = "semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name = "full auto",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.2, 1.4, 1.4, 1.4, 1.7)),
+		list(name = "full auto",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
 		)
 
 /obj/item/weapon/gun/projectile/submachinegun/usas12/secondary_attack_self(mob/living/human/user)
@@ -541,6 +541,17 @@
 
 	sel_mode = 1
 	effectiveness_mod = 0.85
+
+/obj/item/weapon/gun/projectile/submachinegun/sten/stv
+	name = "Sten MK V"
+	desc = "A British submachinegun, chambered in 9x19 Parabellum."
+	icon_state = "sten2"
+	item_state = "sten2"
+	base_icon = "sten2"
+	weight = 3.1
+	attachment_slots = ATTACH_SILENCER|ATTACH_BARREL|ATTACH_UNDER
+	equiptimer = 6
+	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -1101,10 +1112,9 @@
 	caliber = "a545x39"
 	weight = 3.05
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 
@@ -1117,11 +1127,10 @@
 	caliber = "a762x39"
 	weight = 3.07
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 

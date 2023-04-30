@@ -343,6 +343,18 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
 	else if (randjack == 4)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/modern3(H), slot_w_uniform)
+
+//suit
+	var/randsuits = rand(1,4)
+	if (randsuits == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+	else if (randsuits == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/texan(H), slot_wear_suit)
+	else if (randsuits == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
+	else if (randsuits == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
@@ -399,8 +411,18 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
 
+//suit
+	var/randsuits = rand(1,4)
+	if (randsuits == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+	else if (randsuits == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/coveralls(H), slot_wear_suit)
+	else if (randsuits == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
+	else if (randsuits == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_belt)
 //head
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
@@ -414,7 +436,23 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_l_store)
+
+	var/randsword2 = rand(1,6)
+	switch(randsword2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete(H), slot_belt)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/machete1(H), slot_belt)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_belt)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_belt)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_l_store)
 
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the goverment scum!")

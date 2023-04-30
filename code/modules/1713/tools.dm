@@ -89,6 +89,20 @@
 	slot_flags = SLOT_SHOULDER|SLOT_BACK
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
 
+/obj/item/weapon/foldable/hescokit
+	name = "HESCO bastion kit"
+	desc = "A collapsible wire mesh container filled with locally sourced materials. Very sturdy, also can't be removed after being deployed."
+	icon_state = "bastionkit"
+	item_state = "ammo_can"
+	force = 20
+	throwforce = 30
+	weight = 9.5
+	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.1
+	slot_flags = SLOT_BACK
+	path = /obj/structure/barricade/hescobastion
+	value = 55
+
 /obj/item/weapon/material/shovel
 	name = "shovel"
 	desc = "A long tool for digging and moving dirt."

@@ -236,7 +236,7 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.75
+	force_divisor = 0.76
 
 /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron
 	default_material = "iron"
@@ -440,7 +440,7 @@
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
+	force_divisor = 0.4
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "tribal bone knife"
