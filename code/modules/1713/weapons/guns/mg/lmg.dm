@@ -464,15 +464,17 @@
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	weight = 12.5
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, dispersion = list(0.6, 1.0, 1.2, 1.3, 1.5), recoil = 0),)
+		list(name = "Controlled Burst",	burst=5, burst_delay=1.0, recoil=0, move_delay=4, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 1),
+		)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
-	throwforce = 30
+	throwforce = 25
 	equiptimer = 25
-	load_delay = 50
+	load_delay = 55
 	slowdown = 0.8
-	effectiveness_mod = 1.10
+	effectiveness_mod = 1.01
 ////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13
