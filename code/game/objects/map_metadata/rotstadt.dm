@@ -30,7 +30,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"All is Lost:1" = "sound/music/allislost.ogg",)
 	artillery_count = 0
 	var/list/squad_jobs_blue = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
