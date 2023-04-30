@@ -32,6 +32,32 @@
 	min_positions = 999
 	max_positions = 999
 
+/datum/job/pirates/redfaction/rotstadt_medic
+	title = "RPR Doctor"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRed"
+	uses_squads = FALSE
+	can_be_female = TRUE
+	is_rotstadt = TRUE
+	is_event = TRUE
+	is_medic = TRUE
+	additional_languages = list("Blugoslavian" = 89)
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/pirates/redfaction/rotstadt_commander
+	title = "RPR Commander"
+	rank_abbreviation = ""
+	spawn_location = "JoinLateRed"
+	uses_squads = FALSE
+	can_be_female = TRUE
+	is_rotstadt = TRUE
+	is_event = TRUE
+	is_commander = TRUE
+	additional_languages = list("Blugoslavian" = 89)
+	min_positions = 1
+	max_positions = 1
+
 /datum/job/pirates/redfaction/commander
 	is_commander = TRUE
 	title = "RDF Commander"
@@ -145,67 +171,69 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/brown(H), slot_shoes)
 //clothes
-	if (!findtext(title, "RPR Fighter"))
+	if (!findtext(title, "RPR"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
 	else
-		var/rand_uni = rand(1,4)
-		switch (rand_uni)
-			if (1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
-			if (2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-			if (3)
-				var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
-				CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
-				CU.pantscolor = pick ("#313345", "#777777", "#555555", "#333333", "#111111", "#494960", "#94989a", "#141627", "#373429", "#25231c", "#5c5745")
-				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_pants")
-				pants.color = CU.pantscolor
-				var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_shirt")
-				shirt.color = CU.shirtcolor
-				var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custom_belt")
-				CU.overlays += pants
-				CU.overlays += shirt
-				CU.overlays += belt
-				CU.update_icon()
-				H.equip_to_slot_or_del (CU, slot_w_uniform)
-				H.update_icons(1)
-				spawn(6)
-					CU.uncolored = FALSE
-			if (4)
-				var/obj/item/clothing/under/customtrackpants/TP = new /obj/item/clothing/under/customtrackpants(null)
-				TP.pantscolor = pick ("#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A", "#141627",)
-				TP.sidescolor = "#EFEFEF"
-				TP.shirtcolor = pick ("#EFEFEF", "#b8ad8a", "#d9dddc", "#3c3b3c")
-				var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
-				pants.color = TP.pantscolor
-				var/image/sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_sides")
-				sides.color = TP.sidescolor
-				var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_shirt")
-				shirt.color = TP.shirtcolor
-				TP.overlays += pants
-				TP.overlays += sides
-				TP.overlays += shirt
-				TP.update_icon()
-				var/obj/item/clothing/suit/storage/jacket/customtracksuit/TS = new /obj/item/clothing/suit/storage/jacket/customtracksuit(null)
-				TS.basecolor = TP.pantscolor
-				TS.linescolor = "#EFEFEF"
-				var/image/base = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_base")
-				base.color = TS.basecolor
-				var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_lines")
-				lines.color = TS.linescolor
-				TS.overlays += base
-				TS:overlays += lines
-				TS.update_icon()
-				H.equip_to_slot_or_del (TP, slot_w_uniform)
-				H.equip_to_slot_or_del (TS, slot_wear_suit)
-				H.update_icons(1)
-				spawn(6)
-					TP.uncolored = FALSE
-					TS.uncolored = FALSE
-
+		if (findtext(title, "RPR Commander"))
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
+		else
+			var/rand_uni = rand(1,4)
+			switch (rand_uni)
+				if (1)
+					H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+				if (2)
+					H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+				if (3)
+					var/obj/item/clothing/under/customuniform/CU = new /obj/item/clothing/under/customuniform(null)
+					CU.shirtcolor = pick ("#ffbaba", "#ff7b7b", "#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#EFEFEF", "#4A403A")
+					CU.pantscolor = pick ("#313345", "#777777", "#555555", "#333333", "#111111", "#494960", "#94989a", "#141627", "#373429", "#25231c", "#5c5745")
+					var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_pants")
+					pants.color = CU.pantscolor
+					var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "[CU.base_icon]_shirt")
+					shirt.color = CU.shirtcolor
+					var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custom_belt")
+					CU.overlays += pants
+					CU.overlays += shirt
+					CU.overlays += belt
+					CU.update_icon()
+					H.equip_to_slot_or_del (CU, slot_w_uniform)
+					H.update_icons(1)
+					spawn(6)
+						CU.uncolored = FALSE
+				if (4)
+					var/obj/item/clothing/under/customtrackpants/TP = new /obj/item/clothing/under/customtrackpants(null)
+					TP.pantscolor = pick ("#ff5252", "#ab1f1f", "#a70000", "#800020", "#361414", "#a32525", "#c25d5d", "#4A403A", "#141627",)
+					TP.sidescolor = "#EFEFEF"
+					TP.shirtcolor = pick ("#EFEFEF", "#b8ad8a", "#d9dddc", "#3c3b3c")
+					var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_pants")
+					pants.color = TP.pantscolor
+					var/image/sides = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_sides")
+					sides.color = TP.sidescolor
+					var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "trackpants_custom_shirt")
+					shirt.color = TP.shirtcolor
+					TP.overlays += pants
+					TP.overlays += sides
+					TP.overlays += shirt
+					TP.update_icon()
+					var/obj/item/clothing/suit/storage/jacket/customtracksuit/TS = new /obj/item/clothing/suit/storage/jacket/customtracksuit(null)
+					TS.basecolor = TP.pantscolor
+					TS.linescolor = "#EFEFEF"
+					var/image/base = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_base")
+					base.color = TS.basecolor
+					var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customtracksuit_lines")
+					lines.color = TS.linescolor
+					TS.overlays += base
+					TS:overlays += lines
+					TS.update_icon()
+					H.equip_to_slot_or_del (TP, slot_w_uniform)
+					H.equip_to_slot_or_del (TS, slot_wear_suit)
+					H.update_icons(1)
+					spawn(6)
+						TP.uncolored = FALSE
+						TS.uncolored = FALSE
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
+	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter") && !findtext(title, "RPR Doctor"))
 		var/obj/item/clothing/accessory/armor/coldwar/rb23/armor = new /obj/item/clothing/accessory/armor/coldwar/rb23(null)
 		uniform.attackby(armor, H)
 
@@ -217,15 +245,20 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_r_hand)
-	else if (findtext(title, "Commander"))
+	else if (findtext(title, "Commander") && !findtext(title, "RPR"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_r_hand)
+	else if (findtext(title, "RPR Commander"))
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette/cigar(H), slot_wear_mask)
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
-	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
+	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	if (findtext(title, "Armored"))
@@ -241,7 +274,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel, slot_l_store)
-	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "Armored") && !findtext(title, "RPR Fighter"))
+	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "Armored") && !findtext(title, "RPR"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -311,7 +344,7 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.setStat("machinegun", STAT_NORMAL)
-	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter"))
+	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter") && !findtext(title, "RPR Doctor"))
 		H.make_artillery_scout()
 	if (findtext(title, "Redmenian Civilian"))
 		//H.civilization = civname_a

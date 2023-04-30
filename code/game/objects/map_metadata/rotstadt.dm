@@ -1,7 +1,7 @@
 /obj/map_metadata/rotstadt
 	ID = MAP_ROTSTADT
-	title = "Campaign"
-	lobby_icon = "icons/lobby/campaign.png"
+	title = "Rotstadt Counter Insurgency"
+	lobby_icon = "icons/lobby/rotstadt.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is still going on."
@@ -30,7 +30,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"All is Lost:1" = "sound/music/allislost.ogg",)
 	artillery_count = 0
 	var/list/squad_jobs_blue = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
@@ -43,6 +43,7 @@
 		"none" = list("Doctor" = 2, "Officer" = 3, "Commander" = 1)
 	)
 	var/list/squad_jobs_red = list(
+		"none" = list("Doctor" = 2, "Commander" = 1)
 	)
 
 /obj/map_metadata/rotstadt/job_enabled_specialcheck(var/datum/job/J)
@@ -282,6 +283,10 @@ var/no_loop_rot = FALSE
 				continue
 		else if (factjob == "RDF")
 			if (!job.is_rotstadt)
+				continue
+			if(findtext(job.title, "RPR Commander") && MR.squad_jobs_red["none"]["Commander"]<= 0)
+				continue
+			if(findtext(job.title, "RPR Doctor") && MR.squad_jobs_red["none"]["Doctor"]<= 0)
 				continue
 			
 		if (job)
