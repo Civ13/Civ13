@@ -600,7 +600,6 @@
 
 /datum/reagent/procrit/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_BLOODRESTORE, 2 * removed)
-	M << "<span class='notice'>You Feel Alive again.</span>"
 	M.SetParalysis(0)
 	M.SetWeakened(0)
 
