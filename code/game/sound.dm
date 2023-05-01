@@ -201,6 +201,8 @@ var/list/charge_sounds_ar = list(
 	'sound/effects/emotes/charge_ar4.ogg',
 	'sound/effects/emotes/charge_ar5.ogg',
 	'sound/effects/emotes/charge_ar6.ogg',
+	'sound/effects/emotes/charge_ar7.ogg',
+	'sound/effects/emotes/charge_ar8.ogg',
 	)
 var/list/charge_sounds_ge = list(
 	'sound/effects/emotes/charge_ger.ogg',

@@ -187,6 +187,8 @@
 				return "Hezbollah"
 			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
 				return "Mujahideen"
+			else if (map.ID == "SYRIA")
+				return "Syrian Armed Forces"
 			else
 				return "Insurgents"
 		else
@@ -205,6 +207,8 @@
 			return "Grove Street Families"
 		else if (map.ID == "EFT_FACTORY")
 			return "USEC"
+		else if (map.ID == "SYRIA")
+			return "Free Syrian Army"
 		else
 			return "United States"
 

@@ -756,6 +756,9 @@ var/polish_forceEnabled = FALSE
 	else if (map.ID == MAP_SYRIA)
 		fact11 = "Syrian Arab Republic"
 		fact15 = "Free Syrian Army"
+	else if (map.ID == MAP_EAST_LOS_SANTOS)
+		fact7 = "Ballas"
+		fact17 = "Grove Street"
 	else if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 		fact13 = "Soviets"
 
