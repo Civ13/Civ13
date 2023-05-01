@@ -1192,7 +1192,7 @@
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
 	H.s_tone = rand(-35,-25)
-	
+
 /datum/job/arab/wagner_pmc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
@@ -1615,5 +1615,88 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
+
+	return TRUE
+
+/datum/job/american/free_syrian_army/deltaforce
+	title = "Mushaghali Quat Dilta"
+	en_meaning = "Delta Force Operators"
+	rank_abbreviation = "DF."
+	default_language = "English"
+	additional_languages = list("Arabic" = 35)
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/american/free_syrian_army/deltaforce/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_english_name(H.gender)
+	H.real_name = H.name
+	H.s_tone = rand(-35,-25)
+
+/datum/job/american/free_syrian_army/deltaforce/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//under
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
+//head
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
+		var/obj/item/clothing/accessory/armor/nomads/pcarriertan/armor = new /obj/item/clothing/accessory/armor/nomads/pcarriertan(null)
+		uniform.attackby(armor, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+		var/obj/item/clothing/accessory/armor/nomads/thickcarrier/armor = new /obj/item/clothing/accessory/armor/nomads/thickcarrier(null)
+		uniform.attackby(armor, H)
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/modern(H), slot_eyes)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	var/obj/item/clothing/accessory/storage/webbing/us_vest/web = new /obj/item/clothing/accessory/storage/webbing/us_vest(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/hk(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m14(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14box, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_r_store)
+		web.attackby(new/obj/item/ammo_magazine/m249, H)
+	var/obj/item/clothing/accessory/armband/french/white = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Goverment Forces. As a Operator you may act on your own, but try to follow orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
