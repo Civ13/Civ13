@@ -299,13 +299,13 @@ quinine
 		..()
 		reagents.add_reagent("dragon_powder", 10)
 
-/obj/item/weapon/reagent_containers/pill/disodium
-	name = "Diclofenac Sodium"
-	desc = "Diclofenac is a medicine that reduces swelling,pain and helps with recorvery, overdosing will cause heavy brute damage."
+/obj/item/weapon/reagent_containers/pill/diclofenac
+	name = "diclofenac pill"
+	desc = "Diclofenac is a medicine that reduces swelling, pain and helps with recovery. Overdosing will cause heavy brute damage."
 	icon_state = "pill18"
 	New()
 		..()
-		reagents.add_reagent("disodium", 30)
+		reagents.add_reagent("diclofenac", 15)
 
 /obj/item/weapon/reagent_containers/pill/procrit
 	name = "Procrit"
