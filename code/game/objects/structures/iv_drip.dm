@@ -248,4 +248,5 @@
 /obj/item/weapon/reagent_containers/blood/saline
 	New()
 		..()
+		name = "saline glucose pack"
 		reagents.add_reagent("saline_glucose", 200)
