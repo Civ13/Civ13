@@ -559,16 +559,16 @@
 	..()
 	return
 
-/datum/reagent/disodium
-	name = "Diclofenac Sodium"
-	id = "disodium"
+/datum/reagent/diclofenac
+	name = "Diclofenac"
+	id = "diclofenac"
 	description = "Diclofenac is a medicine that reduces swelling,pain and helps with recorvery, overdosing will cause heavy brute damage."
 	reagent_state = LIQUID
 	color = "#EEDC82"
 	metabolism = 1
 	overdose = 65
 
-/datum/reagent/disodium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+/datum/reagent/diclofenac/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 40)
 	M.AdjustWeakened(-3)
 	if(M.getBruteLoss() > 10)
@@ -582,7 +582,7 @@
 		M.adjustFireLoss(-0.5*REM)
 	..()
 	return
-/datum/reagent/disodium/overdose(mob/living/M)
+/datum/reagent/diclofenac/overdose(mob/living/M)
 	if(M.getBruteLoss()) //It only makes existing bruises worse
 		M.adjustBruteLoss(5.5*REM) // it's going to be damaging either 5 or 0.5
 	M.AdjustWeakened(5)
@@ -592,7 +592,7 @@
 /datum/reagent/procrit
 	name = "Procrit"
 	id = "procrit"
-	description = "Procrit is a man-made medicine that helps your body produce red blood cells, overdosing will Weaken a person and cause hallucinations."
+	description = "Procrit is a man-made medicine that helps your body produce red blood cells, overdosing will weaken a person and cause hallucinations."
 	reagent_state = LIQUID
 	color = "#3D2022"
 	metabolism = REM * 0.55
