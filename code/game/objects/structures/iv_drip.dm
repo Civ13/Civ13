@@ -244,3 +244,8 @@
 	name = "empty blood pack"
 	desc = "Seems pretty useless... Maybe if there were a way to fill it?"
 	icon_state = "bp_empty"
+
+/obj/item/weapon/reagent_containers/blood/saline
+	New()
+		..()
+		reagents.add_reagent("saline_glucose", 200)
