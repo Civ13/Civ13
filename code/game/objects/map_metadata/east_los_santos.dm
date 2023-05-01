@@ -30,6 +30,8 @@
 	var/a2_control = "None"
 	var/a3_control = "None"
 	var/a4_control = "None"
+	var/spam_check_g = 0
+	var/spam_check_b = 0
 
 /obj/map_metadata/east_los_santos/New()
 	..()
@@ -253,8 +255,6 @@
 	return FALSE
 
 /obj/map_metadata/east_los_santos/proc/rewards()
-	var/spam_check_g = 0
-	var/spam_check_b = 0
 	for (var/mob/living/human/H in player_list)
 		if (!H || H.stat == DEAD)
 			return
@@ -339,8 +339,8 @@
 						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mac10(H), slot_l_hand)
 						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_l_store)
 						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_r_store)
-				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>SMGs</b>!"
 				spam_check_b = 2
+				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>SMGs</b>!"
 			else if (ballas_points >= 30 && spam_check_b == 2)
 				var/rand_rifle = pick(1,2)
 				switch(rand_rifle)
@@ -352,11 +352,10 @@
 						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
 						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
 						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
-				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>assault rifles</b>!"
 				spam_check_b = 3
+				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>assault rifles</b>!"
 	spawn(300)
 		rewards()
-		world << "Test."
 
 //////////////MAP SPECIFIC OBJECTS///////////////////
 
