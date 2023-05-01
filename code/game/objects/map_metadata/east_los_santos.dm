@@ -29,12 +29,13 @@
 	var/a1_control = "None"
 	var/a2_control = "None"
 	var/a3_control = "None"
-	//var/a4_control = "None"
+	var/a4_control = "None"
 
 /obj/map_metadata/east_los_santos/New()
 	..()
 	spawn(1200)
 		points_check()
+		rewards()
 
 /obj/map_metadata/east_los_santos/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 1200)
@@ -66,9 +67,9 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Basketball Court</b>: [a1_control]</font></big>"
+			world << "<big><font color='[cust_color]'><b>Basketball Court (South-West)</b>: [a1_control]</font></big>"
 		else
-			world << "<big><b>Basketball Court</b>: Nobody</big>"
+			world << "<big><b>Basketball Court (South-West)</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -96,9 +97,9 @@
 				ballas_points++
 			else
 				cust_color = "white"
-			world << "<big><font color='[cust_color]'><b>Abandoned Lot</b>: [a2_control]</font></big>"
+			world << "<big><font color='[cust_color]'><b>Abandoned Lot (South-East)</b>: [a2_control]</font></big>"
 		else
-			world << "<big><b>Abandoned Lot</b>: Nobody</big>"
+			world << "<big><b>Abandoned Lot (South-East)</b>: Nobody</big>"
 		c1 = 0
 		c2 = 0
 		for (var/mob/living/human/H in player_list)
@@ -129,6 +130,36 @@
 			world << "<big><font color='[cust_color]'><b>Rodriguez Steelworks</b>: [a3_control]</font></big>"
 		else
 			world << "<big><b>Rodriguez Steelworks</b>: Nobody</big>"
+		c1 = 0
+		c2 = 0
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
+				if (H.faction_text == "AMERICAN" && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == "INDIANS" && H.stat == CONSCIOUS)
+					c2++
+		if ((c1 == c2) && c1 != 0)
+			a4_control = "none"
+			cust_color= "white"
+		else if (c1 > c2)
+			a4_control = "Grove Street"
+			cust_color= "green"
+		else if (c2 > c1)
+			a4_control = "Ballas"
+			cust_color= "purple"
+		if (a4_control != "none")
+			if (a4_control == "Grove Street")
+				cust_color = "green"
+				grove_points++
+			else if (a4_control == "Ballas")
+				cust_color = "purple"
+				ballas_points++
+			else
+				cust_color = "white"
+			world << "<big><font color='[cust_color]'><b>Pig Pen Parking Lot (North-East)</b>: [a4_control]</font></big>"
+		else
+			world << "<big><b>Pig Pen Parking Lot (North-East)</b>: Nobody</big>"
 	spawn(300)
 		points_check()
 		world << "Ballas Influence: [ballas_points]/40"
@@ -220,6 +251,112 @@
 			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
+
+/obj/map_metadata/east_los_santos/proc/rewards()
+	var/spam_check_g = 0
+	var/spam_check_b = 0
+	for (var/mob/living/human/H in player_list)
+		if (!H || H.stat == DEAD)
+			return
+		if (H.faction_text == "AMERICAN")
+			if ((grove_points >= 10 && grove_points < 20) && spam_check_g == 0)
+				var/rand_pistol = rand(1,3)
+				switch(rand_pistol)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+					if (3)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
+				spam_check_g = 1
+				world << "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>pistols</b>!"
+			else if ((grove_points >= 20 && grove_points < 30) && spam_check_g == 1)
+				var/rand_smg = rand(1,3)
+				switch(rand_smg)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tec9(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/uzi(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_r_store)
+					if (3)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mac10(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_r_store)
+				spam_check_g = 2
+				world << "The <b><font color = 'green'> Grove Street Families</font></b> are now strapped with <b>SMGs</b>!"
+			else if (grove_points >= 30 && spam_check_g == 2)
+				var/rand_rifle = pick(1,2)
+				switch(rand_rifle)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak47(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak47(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
+				spam_check_g = 3
+				world << "The <b><font color = 'green'>Grove Street Families</font></b> are now strapped with <b>assault rifles</b>!"
+		else
+			if ((ballas_points >= 10 && ballas_points < 20) && spam_check_b == 0)
+				var/rand_pistol = rand(1,3)
+				switch(rand_pistol)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_r_store)
+					if (3)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
+				spam_check_b = 1
+				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>pistols</b>!"
+			else if ((ballas_points >= 20 && ballas_points < 30) && spam_check_b == 1)
+				var/rand_smg = rand(1,3)
+				switch(rand_smg)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tec9(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tec9(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/uzi(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/uzi(H), slot_r_store)
+					if (3)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mac10(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mac10(H), slot_r_store)
+				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>SMGs</b>!"
+				spam_check_b = 2
+			else if (ballas_points >= 30 && spam_check_b == 2)
+				var/rand_rifle = pick(1,2)
+				switch(rand_rifle)
+					if (1)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak47(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/ak47(H), slot_r_store)
+					if (2)
+						H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
+						H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
+				world << "The <b><font color ='purple'>Ballas</font></b> are now strapped with <b>assault rifles</b>!"
+				spam_check_b = 3
+	spawn(300)
+		rewards()
+		world << "Test."
 
 //////////////MAP SPECIFIC OBJECTS///////////////////
 
