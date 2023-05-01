@@ -219,7 +219,7 @@
 	icon_state = "pouches"
 	item_state = "pouches"
 	storage_slots = 6
-	max_w_class = 3
+	max_w_class = 2
 
 /obj/item/weapon/storage/belt/tacpouches/olive
 	icon_state = "pouches_olive"
@@ -268,3 +268,30 @@
 	new /obj/item/ammo_magazine/ammo127(src)
 	new /obj/item/ammo_magazine/ammo127(src)
 	new /obj/item/ammo_magazine/ammo127(src)
+
+/obj/item/weapon/storage/belt/tacpouches/m249/New()
+	..()
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/ammo_magazine/m249(src)
+
+/obj/item/weapon/storage/belt/tacpouches/hk/New()
+	..()
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
+
+/obj/item/weapon/storage/belt/tacpouches/m14/New()
+	..()
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
