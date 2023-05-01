@@ -309,7 +309,7 @@ quinine
 
 /obj/item/weapon/reagent_containers/pill/procrit
 	name = "Procrit"
-	desc = "Procrit is a man-made medicine that helps your body produce red blood cells, overdosing will Weaken a person and cause hallucinations."
+	desc = "Procrit is a man-made medicine that helps your body produce red blood cells. Overdosing will weaken a person and cause hallucinations."
 	icon_state = "pill18"
 	New()
 		..()
