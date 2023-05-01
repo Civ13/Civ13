@@ -100,16 +100,16 @@
 	pill_type = /obj/item/weapon/reagent_containers/pill/paracetamol
 
 /obj/item/weapon/pill_pack/sal_acid
-	name = "Salicyclic Acid Pill pack"
-	desc = "Stimulates Healing of bruises, Overdosing will Worser Existing Bruises."
-	pill_type = /obj/item/weapon/reagent_containers/pill/sal_acid
+	name = "salicyclic acid pill pack"
+	desc = "Stimulates the healing of bruises, overdosing will worsen existing bruises."
+	pill_type = /obj/item/weapon/reagent_containers/pill/sal_acid // TO-DO: Merge aspirin and salicyclic acid together. Salicyclic acid is more of a dermatological treatment in real life.
 
-/obj/item/weapon/pill_pack/disodium
-	name = "Diclofenac Sodium Pill pack"
-	desc = "Diclofenac is a medicine that reduces swelling,pain and helps with recorvery, overdosing will cause heavy brute damage."
-	pill_type = /obj/item/weapon/reagent_containers/pill/disodium
+/obj/item/weapon/pill_pack/diclofenac
+	name = "diclofenac pill pack"
+	desc = "Diclofenac is a medicine that reduces swelling, pain and helps with recorvery. Overdosing will cause heavy brute damage."
+	pill_type = /obj/item/weapon/reagent_containers/pill/diclofenac
 
 /obj/item/weapon/pill_pack/procrit
 	name = "Procrit Pill pack"
-	desc = "Procrit is a man-made medicine that helps your body produce red blood cells and thus restore your blood, overdosing will Weaken a person and cause hallucinations."
+	desc = "Procrit is a man-made medicine that helps your body produce red blood cells and thus restore your blood, overdosing will weaken a person and cause hallucinations."
 	pill_type = /obj/item/weapon/reagent_containers/pill/procrit
