@@ -111,6 +111,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/capturable/one/outside)
 "dD" = (
+/obj/covers/carpet/arcade,
 /turf/floor/plating/road,
 /area/caribbean/roofed/temperate)
 "dJ" = (
@@ -131,6 +132,14 @@
 /obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed/temperate)
+"eU" = (
+/obj/covers/sidewalk,
+/obj/structure/sign/kiddieplaque{
+	name = "Rodriguez Steelworks";
+	pixel_y = 32
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "fb" = (
 /obj/structure/bed/chair/office/dark{
 	dir = 1
@@ -141,6 +150,13 @@
 /obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed/temperate)
+"fF" = (
+/obj/structure/lamp/lamp_big/alwayson{
+	dir = 1;
+	icon_state = "tube"
+	},
+/turf/floor/plating/road,
+/area/caribbean/no_mans_land/capturable/four/outside)
 "fI" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 8
@@ -164,6 +180,17 @@
 /obj/effect/decal/cleanable/blood/oil,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"gj" = (
+/obj/covers/carpet/arcade,
+/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door{
+	locked = 1;
+	health = 9000;
+	initial_health = 9000;
+	name = "Pig Pen";
+	unique_door_name = "Pig Pen"
+	},
+/turf/floor/plating/road,
+/area/caribbean/roofed/temperate)
 "go" = (
 /turf/floor/plating/road,
 /area/caribbean/no_mans_land/capturable/three/outside)
@@ -230,6 +257,11 @@
 	dir = 4
 	},
 /area/caribbean)
+"iN" = (
+/turf/wall/tiles{
+	color = "#f595d3"
+	},
+/area/caribbean/roofed/temperate)
 "jb" = (
 /obj/structure/table/rack/shelf/wooden,
 /turf/floor/plating/cobblestone/vertical,
@@ -338,7 +370,7 @@
 /area/caribbean)
 "mq" = (
 /turf/wall/cement{
-	color = "#a6d3f5"
+	color = "#cc87b8"
 	},
 /area/caribbean/roofed/temperate)
 "mK" = (
@@ -347,6 +379,12 @@
 	icon_state = "tube"
 	},
 /turf/floor/plating/marble/tile,
+/area/caribbean/roofed/temperate)
+"mL" = (
+/obj/covers/carpet/arcade,
+/obj/structure/table/wood,
+/obj/structure/chemical_dispenser/soda,
+/turf/floor/plating/road,
 /area/caribbean/roofed/temperate)
 "nb" = (
 /obj/structure/window/barrier/railing/stone{
@@ -383,6 +421,17 @@
 /obj/item/weapon/basketball,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/capturable/one/outside)
+"nN" = (
+/obj/structure/sign/armory{
+	pixel_y = 32;
+	name = "Pig Pen"
+	},
+/obj/structure/lamp/lamp_big/alwayson{
+	dir = 1;
+	icon_state = "tube"
+	},
+/turf/floor/plating/road,
+/area/caribbean/no_mans_land/capturable/four/outside)
 "ot" = (
 /obj/structure/table/modern/table,
 /obj/structure/closet/crate/cash_register{
@@ -444,6 +493,11 @@
 /obj/structure/wild/palm,
 /turf/floor/grass,
 /area/caribbean)
+"ro" = (
+/obj/covers/carpet/arcade,
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/plating/road,
+/area/caribbean/roofed/temperate)
 "rN" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 4
@@ -1134,6 +1188,9 @@
 "LI" = (
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/capturable/three)
+"LQ" = (
+/turf/wall/tiles,
+/area/caribbean/roofed/temperate)
 "Ma" = (
 /obj/structure/window/barrier/railing/stone,
 /obj/structure/window/barrier/railing/stone{
@@ -1144,6 +1201,12 @@
 "Mq" = (
 /turf/floor/grass,
 /area/caribbean/no_mans_land/invisible_wall/one)
+"MF" = (
+/obj/covers/carpet/arcade,
+/obj/structure/table/wood,
+/obj/structure/chemical_dispenser/alcohol,
+/turf/floor/plating/road,
+/area/caribbean/roofed/temperate)
 "MT" = (
 /obj/structure/table/rack/shelf/store,
 /obj/item/weapon/reagent_containers/food/drinks/can/milk,
@@ -1222,7 +1285,9 @@
 /turf/floor/dirt/dust,
 /area/caribbean/no_mans_land/capturable/two/outside)
 "Pa" = (
-/obj/structure/gate/blast/garage,
+/obj/structure/gate/blast/garage{
+	dir = 4
+	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/capturable/three)
 "Pm" = (
@@ -1237,6 +1302,11 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/capturable/one/outside)
+"Pn" = (
+/obj/covers/carpet/arcade,
+/obj/structure/table/wood,
+/turf/floor/plating/road,
+/area/caribbean/roofed/temperate)
 "Ps" = (
 /obj/structure/table/rack/shelf/store,
 /obj/item/weapon/reagent_containers/food/snacks/chocolatebar,
@@ -1345,6 +1415,12 @@
 /obj/covers/sidewalk,
 /turf/floor/plating/road,
 /area/caribbean/no_mans_land/invisible_wall/one)
+"UW" = (
+/obj/structure/gate/blast/garage{
+	dir = 8
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/capturable/three)
 "Vh" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 1
@@ -9438,21 +9514,21 @@ kH
 (50,1,1) = {"
 ht
 ht
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
 dK
 dK
 dK
@@ -9614,7 +9690,7 @@ dD
 dD
 dD
 dD
-mb
+LQ
 dK
 dK
 dK
@@ -9776,7 +9852,7 @@ dD
 dD
 dD
 dD
-mb
+iN
 dK
 dK
 dK
@@ -9938,7 +10014,7 @@ dD
 dD
 dD
 dD
-mb
+LQ
 dK
 dK
 dK
@@ -10099,9 +10175,9 @@ dD
 dD
 dD
 dD
-dD
-mb
-dK
+kH
+iN
+fF
 dK
 dK
 dK
@@ -10261,8 +10337,8 @@ dD
 dD
 dD
 dD
-dD
-mb
+kH
+gj
 dK
 dK
 dK
@@ -10423,8 +10499,8 @@ dD
 dD
 dD
 dD
-dD
-mb
+kH
+gj
 dK
 dK
 dK
@@ -10572,10 +10648,10 @@ kH
 (57,1,1) = {"
 ht
 ht
-mb
-mb
-mb
-mb
+LQ
+LQ
+LQ
+LQ
 dD
 dD
 dD
@@ -10585,9 +10661,9 @@ dD
 dD
 dD
 dD
-dD
-mb
-dK
+kH
+LQ
+nN
 dK
 dK
 dK
@@ -10748,7 +10824,7 @@ dD
 dD
 dD
 dD
-mb
+iN
 dK
 dK
 dK
@@ -10910,7 +10986,7 @@ dD
 dD
 dD
 dD
-mb
+LQ
 dK
 dK
 dK
@@ -10992,10 +11068,10 @@ ql
 ql
 zz
 zz
-Pa
-Pa
-Pa
-Pa
+UW
+UW
+UW
+UW
 zz
 zz
 RY
@@ -11069,10 +11145,10 @@ dD
 dD
 dD
 dD
+Pn
 dD
-dD
-dD
-mb
+ro
+iN
 dK
 dK
 dK
@@ -11231,10 +11307,10 @@ dD
 dD
 dD
 dD
+MF
 dD
-dD
-dD
-mb
+ro
+LQ
 dK
 dK
 dK
@@ -11393,10 +11469,10 @@ dD
 dD
 dD
 dD
+mL
 dD
-dD
-dD
-mb
+ro
+iN
 ya
 ya
 ya
@@ -11555,10 +11631,10 @@ dD
 dD
 dD
 dD
+Pn
 dD
-dD
-dD
-mb
+ro
+LQ
 cl
 cl
 cl
@@ -11717,10 +11793,10 @@ dD
 dD
 dD
 dD
+Pn
 dD
-dD
-dD
-mb
+ro
+iN
 dK
 dK
 dK
@@ -11879,10 +11955,10 @@ dD
 dD
 dD
 dD
+Pn
 dD
-dD
-dD
-mb
+ro
+LQ
 dK
 dK
 dK
@@ -12041,10 +12117,10 @@ dD
 dD
 dD
 dD
-mb
-mb
-mb
-mb
+LQ
+LQ
+LQ
+iN
 ya
 ya
 ya
@@ -12132,7 +12208,7 @@ LI
 LI
 LI
 zz
-RY
+eU
 RY
 Zh
 Zh
@@ -12206,7 +12282,7 @@ dD
 dD
 dD
 dD
-mb
+LQ
 cl
 cl
 cl
@@ -12368,7 +12444,7 @@ dD
 dD
 dD
 dD
-mb
+iN
 dK
 dK
 dK
@@ -12530,7 +12606,7 @@ dD
 dD
 dD
 dD
-mb
+LQ
 dK
 dK
 dK
@@ -12678,21 +12754,21 @@ vn
 (70,1,1) = {"
 ht
 ht
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
-mb
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
+LQ
+iN
 ZO
 ZO
 ZO
@@ -12762,12 +12838,12 @@ CQ
 CQ
 mb
 mb
+Gm
 mb
+AH
+AH
 mb
-mb
-mb
-mb
-mb
+Gm
 mb
 mb
 CQ
@@ -12841,14 +12917,14 @@ vn
 ht
 ht
 RY
-vo
+vn
+vn
 RY
 RY
+vn
+vn
 RY
 RY
-RY
-RY
-vo
 vn
 vn
 RY
@@ -13003,15 +13079,15 @@ mb
 ht
 ht
 RY
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
 vo
+RY
+RY
+RY
+RY
+RY
+RY
+vo
+RY
 RY
 RY
 RY
@@ -13327,14 +13403,14 @@ mb
 ht
 ht
 Zh
-iK
-iK
-iK
-iK
-iK
-iK
-iK
-iK
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
 Zh
 Zh
 Zh
@@ -13489,14 +13565,14 @@ mb
 ht
 ht
 iK
-Cr
-Cr
-Cr
-Cr
-Cr
-Cr
-Cr
-Cr
+iK
+iK
+iK
+iK
+iK
+iK
+iK
+iK
 iK
 iK
 iK
@@ -13651,14 +13727,14 @@ mb
 ht
 ht
 Cr
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
-Zh
+Cr
+Cr
+Cr
+Cr
+Cr
+Cr
+Cr
+Cr
 Cr
 Cr
 Cr
@@ -13975,14 +14051,14 @@ mb
 ht
 ht
 Zh
-AF
-RY
-RY
-RY
-RY
-RY
-RY
-AF
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
+Zh
 Zh
 Zh
 Zh
@@ -14137,15 +14213,15 @@ mb
 ht
 ht
 RY
-vn
-vn
+AF
 RY
 RY
-vn
-vn
+RY
+RY
 RY
 RY
 AF
+RY
 RY
 RY
 RY
