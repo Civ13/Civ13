@@ -800,6 +800,18 @@
 	layer = 1.99
 	flammable = TRUE
 
+/obj/covers/carpet/arcade
+	name = "arcade mat"
+	desc = "For those 80s vibes!"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "arcadefloor1"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
 /obj/covers/catwalk
 	name = "catwalk"
 	desc = "A cat wouldn't like this"
