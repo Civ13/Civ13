@@ -1633,12 +1633,7 @@
 	min_positions = 1
 	max_positions = 5
 
-/datum/job/american/free_syrian_army/deltaforce/give_random_name(var/mob/living/human/H)
-	H.name = H.species.get_random_english_name(H.gender)
-	H.real_name = H.name
-	H.s_tone = rand(-35,-25)
-
-/datum/job/american/free_syrian_army/deltaforce/equip(var/mob/living/human/H)
+/datum/job/american/delta_force/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/multicam(H), slot_w_uniform)
