@@ -1173,8 +1173,7 @@
 	return TRUE
 
 /datum/job/arab/wagner_pmc
-	title = "Naemnik CHVK Vagnera"
-	en_meaning = "Wagner Group PMC"
+	title = "Wagner Group PMC"
 	rank_abbreviation = "PMC"
 	default_language = "Russian"
 	additional_languages = list("English" = 25, "Ukrainian" = 50)
@@ -1220,7 +1219,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-	var/obj/item/clothing/accessory/storage/webbing/russian/web = new /obj/item/clothing/accessory/storage/webbing/russian(null)
+	var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/web = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
 	uniform.attackby(web, H)
 //back
 	if (prob(40))
