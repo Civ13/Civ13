@@ -722,7 +722,7 @@
 
 /obj/item/clothing/head/helmet/modern/a6b47 //Post 2000 helmet more modern.
 	name = "6B47 helmet"
-	desc = "A russian heavy armoured helmet often used by russian infantry forces in the 21st century."
+	desc = "A Russian heavy armoured helmet often used by Russian infantry forces in the 21st century."
 	icon_state = "a6b47"
 	item_state = "a6b47"
 	worn_state = "a6b47"
@@ -731,10 +731,9 @@
 	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/a6b47/desert
-	name = "6B47 desert helmet"
-	icon_state = "64b7D"
-	item_state = "64b7D"
-	worn_state = "64b7D"
+	icon_state = "6b47D"
+	item_state = "6b47D"
+	worn_state = "6b47D"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
