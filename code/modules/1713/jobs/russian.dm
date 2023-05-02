@@ -2450,7 +2450,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -2509,7 +2509,7 @@
 	var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 	uniform.attackby(medicalarm, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -2567,7 +2567,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -2621,7 +2621,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -2721,7 +2721,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/gunbox/emplacement(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
@@ -2770,7 +2770,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/russian_b7(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
