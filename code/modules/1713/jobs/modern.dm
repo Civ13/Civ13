@@ -987,7 +987,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 
@@ -1050,7 +1050,7 @@
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 		if (3)
@@ -1203,7 +1203,7 @@
 //head
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
 		uniform.attackby(armor, H)
 	else

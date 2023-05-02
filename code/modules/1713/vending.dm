@@ -1496,7 +1496,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/head/olivebandana = 5,
 		/obj/item/clothing/gloves/fingerless/army = 5,
 		/obj/item/clothing/head/helmet/modern/a6b47 = 15,
-		/obj/item/clothing/head/helmet/modern/a6b47/desert = 15,
+		/obj/item/clothing/head/helmet/modern/a6b47/emr/desert = 15,
 		/obj/item/clothing/accessory/storage/webbing/russian = 10,
 		/obj/item/weapon/storage/belt/tacpouches = 10,
 		/obj/item/weapon/storage/belt/tacpouches/green = 10,
