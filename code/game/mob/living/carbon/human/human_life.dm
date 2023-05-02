@@ -1465,7 +1465,10 @@
 						if (map.ID == MAP_ARAB_TOWN)
 							holder2.icon_state = "hez_basic"
 						else if (map.ID == MAP_SYRIA)
-							holder2.icon_state = "syria_basic"
+							if (original_job.title == "Wagner Group PMC")
+								holder2.icon_state = "wagner"
+							else
+								holder2.icon_state = "syria_basic"
 						else
 							holder2.icon_state = "isis_basic"
 					else

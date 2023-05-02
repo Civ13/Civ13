@@ -1277,7 +1277,7 @@
 		change_eye_color(r_eyes, g_eyes, b_eyes)
 	else
 		if (faction_text == ARAB)
-			if (original_job.title == "Naemnik CHVK Vagnera")
+			if (original_job.title == "Wagner Group PMC")
 				s_tone = rand(-35,-28)
 			else
 				s_tone = -90

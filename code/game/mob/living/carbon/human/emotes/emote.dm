@@ -427,7 +427,7 @@ var/list/vocal_emotes = list(
 									if (!original_job.is_syria)
 										playsound(get_turf(src), "charge_ARAB", 100)
 									else
-										if (original_job_title == "Naemnik CHVK Vagnera")
+										if (original_job_title == "Wagner Group PMC")
 											playsound(get_turf(src), "charge_RUROBBERS", 100)
 										else
 											playsound(get_turf(src), "charge_IRANIAN", 100) //temporary
