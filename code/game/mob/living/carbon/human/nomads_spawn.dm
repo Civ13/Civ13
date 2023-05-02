@@ -1298,7 +1298,7 @@
 				s_tone = rand(-150,-120)
 			else if (map.ID == MAP_EAST_LOS_SANTOS)
 				s_tone = rand(-150,-120)
-			else if (map.ID == MAP_SYRIA)
+			else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
 				s_tone = rand(-100,-60)
 			else
 				s_tone = rand(-40,-25)

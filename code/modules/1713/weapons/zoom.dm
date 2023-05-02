@@ -127,38 +127,42 @@ Parts of code courtesy of Super3222
 	desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining] airstrikes left.</b>"
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
-	if (!checking)
-		if (airstrikes_remaining > 0)
-			if (debounce <= world.time)
-				
-				
-				checking = TRUE
-				var/dist1 = abs(H.x-target.x)
-				var/dist2 = abs(H.y-target.y)
-				var/distcon = max(dist1,dist2)
-				var/gdir = get_dir(H, target)
-				H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
-				var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
-				if (input != "Cancel")
-					if (do_after(H, 80, src, can_move = FALSE))
-						H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
-						checking = FALSE
+	if (map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
+		H << "You don't know how to use this."
+		return
+	else
+		if (!checking)
+			if (airstrikes_remaining > 0)
+				if (debounce <= world.time)
+					
+					
+					checking = TRUE
+					var/dist1 = abs(H.x-target.x)
+					var/dist2 = abs(H.y-target.y)
+					var/distcon = max(dist1,dist2)
+					var/gdir = get_dir(H, target)
+					H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
+					var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
+					if (input != "Cancel")
+						if (do_after(H, 80, src, can_move = FALSE))
+							H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
+							checking = FALSE
 
-						var/turf/T = locate(target.x,target.y,target.z)
-						airstrike(T,H,input)
-						debounce = world.time + delay
+							var/turf/T = locate(target.x,target.y,target.z)
+							airstrike(T,H,input)
+							debounce = world.time + delay
+						else
+							H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+							checking = FALSE
 					else
 						H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
-						checking = FALSE
+						return
 				else
-					H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+					H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
 					return
 			else
-				H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
+				H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition.</big></b>")
 				return
-		else
-			H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition.</big></b>")
-			return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
 	message_admins("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)")
@@ -178,6 +182,9 @@ Parts of code courtesy of Super3222
 		if ("RUSSIAN")
 			new /obj/effect/plane_flyby/su25_no_message(T)
 			world << SPAN_DANGER("<font size=4>The clouds open up as a Su-25 cuts through and fires off a burst of rockets!</font>")
+		if ("AMERICAN")
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
 	spawn(15)
 		for (var/i = 1, i <= strikenum, i++)
 			switch (direction)

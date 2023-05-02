@@ -1536,7 +1536,7 @@
 						holder2.icon_state = "civ2"
 					else if (map.ID == MAP_EFT_FACTORY)
 						holder2.icon_state = "none"
-					else if (map.ID == MAP_SYRIA)
+					else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
 						holder2.icon_state = "syria_fsa"
 					else
 						holder2.icon_state = "us_basic"

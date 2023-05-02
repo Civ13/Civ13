@@ -568,6 +568,39 @@
 	worn_state = "us_camo_ocp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/us_uni/multicam
+	name = "MultiCam camo uniform"
+	desc = "A uniform in a camouflage pattern designed for use in a wide range of environments and conditions. Usually given to special operations units."
+	icon_state = "multicam"
+	item_state = "multicam"
+	worn_state = "multicam"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/us_uni/multicam/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/us_uni/multicam)
+		return
+	else
+		if (rolled)
+			item_state = "multicam"
+			worn_state = "multicam"
+			item_state_slots["w_uniform"] = "multicam"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "multicam_rolled"
+			worn_state = "multicam_rolled"
+			item_state_slots["w_uniform"] = "multicam_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
