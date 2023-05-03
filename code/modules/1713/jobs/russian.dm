@@ -2880,7 +2880,7 @@
 //gun
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12(H), slot_shoulder)
 //belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
 //helmet
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/winter(H), slot_head)
 //glove
