@@ -1241,15 +1241,15 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/New()
 	..()
-	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
-/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt/New()
 	..()
-	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
