@@ -617,7 +617,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 

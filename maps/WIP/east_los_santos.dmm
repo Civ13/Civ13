@@ -370,7 +370,7 @@
 /area/caribbean)
 "mq" = (
 /turf/wall/cement{
-	color = "#cc87b8"
+	color = "#7cabc4"
 	},
 /area/caribbean/roofed/temperate)
 "mK" = (
@@ -1257,6 +1257,11 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/no_mans_land/invisible_wall/two)
+"Oe" = (
+/obj/structure/window/barrier/railing/stone,
+/obj/structure/billboard,
+/turf/floor/plating/road,
+/area/caribbean/no_mans_land/capturable/four/outside)
 "OC" = (
 /obj/structure/sign/open{
 	pixel_x = -32
@@ -4679,7 +4684,7 @@ kH
 kH
 kH
 kH
-mq
+ek
 NI
 EE
 se
@@ -4692,7 +4697,7 @@ kH
 kH
 kH
 kH
-mq
+ek
 NI
 NI
 NI
@@ -5489,7 +5494,7 @@ kH
 kH
 kH
 kH
-mq
+ek
 NI
 EE
 se
@@ -5502,7 +5507,7 @@ kH
 kH
 kH
 kH
-mq
+ek
 NI
 EE
 LC
@@ -11505,17 +11510,17 @@ mb
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -11523,11 +11528,11 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -11535,7 +11540,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 CQ
@@ -11656,14 +11661,14 @@ RY
 RY
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
@@ -11677,7 +11682,7 @@ mb
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -11685,11 +11690,11 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -11697,7 +11702,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 CQ
@@ -11864,7 +11869,7 @@ EE
 Ke
 CQ
 CQ
-mb
+Gm
 kH
 kH
 kH
@@ -11873,7 +11878,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 CQ
 CQ
 zz
@@ -12026,7 +12031,7 @@ EE
 Ke
 CQ
 CQ
-mb
+Gm
 kH
 kH
 kH
@@ -12035,7 +12040,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 CQ
 CQ
 zz
@@ -12142,28 +12147,28 @@ RY
 RY
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -12171,11 +12176,11 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -12183,7 +12188,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 CQ
@@ -12325,7 +12330,7 @@ mb
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -12333,11 +12338,11 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 EE
-mb
+Gm
 kH
 kH
 kH
@@ -12345,12 +12350,12 @@ kH
 kH
 kH
 kH
-mb
+Gm
 EE
 Ke
 CQ
 CQ
-mb
+Gm
 kH
 kH
 kH
@@ -12359,7 +12364,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 CQ
 CQ
 zz
@@ -12471,7 +12476,7 @@ mb
 mb
 LD
 mb
-mb
+Gm
 mb
 mb
 EE
@@ -12512,7 +12517,7 @@ EE
 Ke
 CQ
 CQ
-mb
+Gm
 kH
 kH
 kH
@@ -12521,7 +12526,7 @@ kH
 kH
 kH
 kH
-mb
+Gm
 CQ
 CQ
 zz
@@ -12615,7 +12620,7 @@ dK
 dK
 dK
 dK
-yj
+Oe
 RY
 RY
 Zh

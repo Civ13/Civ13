@@ -432,7 +432,7 @@ var/list/vocal_emotes = list(
 										else
 											playsound(get_turf(src), "charge_IRANIAN", 100) //temporary
 								if (CHECHEN)
-									playsound(get_turf(src), "charge_ARAB", 100)
+									playsound(get_turf(src), "charge_CHECHEN", 100)
 								if (JAPANESE)
 									playsound(get_turf(src), "charge_JAPANESE", 100)
 								if (RUSSIAN)
