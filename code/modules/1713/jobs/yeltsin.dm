@@ -1,6 +1,8 @@
-/datum/job/russian/sa_lieutenant
+/datum/job/russian/ra
+	title = "Russian Army (DO NOT USE)"
+/datum/job/russian/ra/lieutenant
 	title = "Russian Army Lieutenant"
-	rank_abbreviation = "Lt."
+	rank_abbreviation = "Leyt."
 
 	spawn_location = "JoinLateRUCap"
 
@@ -11,9 +13,9 @@
 	whitelisted = TRUE
 
 	min_positions = 1
-	max_positions = 3
+	max_positions = 2
 
-/datum/job/russian/sa_lieutenant/equip(var/mob/living/human/H)
+/datum/job/russian/ra/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -59,9 +61,9 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sa_sergeant
+/datum/job/russian/ra/sergeant
 	title = "Russian Army Sergeant"
-	rank_abbreviation = "Sgt."
+	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUCap"
 
@@ -72,10 +74,10 @@
 
 	can_get_coordinates = TRUE
 
-	min_positions = 2
+	min_positions = 1
 	max_positions = 8
 
-/datum/job/russian/sa_sergeant/equip(var/mob/living/human/H)
+/datum/job/russian/ra/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -125,9 +127,9 @@
 	return TRUE
 
 
-/datum/job/russian/sa_medic
-	title = "Russian Army Field Medic"
-	rank_abbreviation = "Cpl."
+/datum/job/russian/ra/medic
+	title = "Russian Army Corpsman"
+	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
 
@@ -138,7 +140,7 @@
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/russian/sa_medic/equip(var/mob/living/human/H)
+/datum/job/russian/ra/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
@@ -185,9 +187,9 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/sa_swat
-	title = "Russian OMON Unit"
-	en_meaning = "SWAT"
+/datum/job/russian/ra/omon
+	title = "OMON Officer"
+	en_meaning = "Riot Police"
 	rank_abbreviation = "OMON ofc."
 
 	spawn_location = "JoinLateRUswat"
@@ -199,7 +201,7 @@
 	min_positions = 10
 	max_positions = 50
 
-/datum/job/russian/sa_swat/equip(var/mob/living/human/H)
+/datum/job/russian/ra/omon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/iogboots/black(H), slot_shoes)
@@ -236,9 +238,9 @@
 	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
-/datum/job/russian/sa_soldier
-	title = "Russian Army Rifleman"
-	rank_abbreviation = "Pvt."
+/datum/job/russian/ra/soldier
+	title = "Russian Army Private"
+	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
 
@@ -250,7 +252,7 @@
 	min_positions = 10
 	max_positions = 200
 
-/datum/job/russian/sa_soldier/equip(var/mob/living/human/H)
+/datum/job/russian/ra/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,3)
@@ -285,7 +287,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt(H), slot_belt)
 
 	H.civilization = "Russian Army"
 	give_random_name(H)
@@ -301,9 +303,9 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/russian/spetznaz
-	title = "Spetznaz"
-	rank_abbreviation = "Spz.Op"
+/datum/job/russian/ra/spetsnaz
+	title = "Spetsnaz"
+	rank_abbreviation = "Jr. Srj."
 
 	spawn_location = "JoinLateRUsptz"
 	whitelisted = TRUE
@@ -315,7 +317,7 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/russian/spetznaz/equip(var/mob/living/human/H)
+/datum/job/russian/ra/spetsnaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
