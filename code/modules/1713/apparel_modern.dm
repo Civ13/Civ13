@@ -639,19 +639,19 @@
 
 /* Russian Army Clothing*/
 
-/obj/item/clothing/under/milrus_vsr93
+/obj/item/clothing/under/rus_vsr93
 	name = "russian military outfit VSR 93" //Uniform used mostly in the 90's
 	desc = "An outfit composed of the VSR93 camo pants and shirt, along with a high waistbelt."
-	icon_state = "milrus_vsr93"
-	item_state = "milrus_vsr93"
-	worn_state = "milrus_vsr93"
+	icon_state = "rus_vsr93"
+	item_state = "rus_vsr93"
+	worn_state = "rus_vsr93"
 
-/obj/item/clothing/under/milrus_omon
+/obj/item/clothing/under/omon
 	name = "russian OMON uniform" //Uniform used mostly in the 90's
 	desc = "An outfit designed and issued for the OMON forces of the Russian Federation."
-	icon_state = "milrus_omon"
-	item_state = "milrus_omon"
-	worn_state = "milrus_omon"
+	icon_state = "omon"
+	item_state = "omon"
+	worn_state = "omon"
 
 /* USSR Helmets*/
 

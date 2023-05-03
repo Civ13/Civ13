@@ -1028,9 +1028,9 @@ obj/structure/vending/hezammo
 	icon_state = "apparel_russia"
 	products = list(
 		/obj/item/clothing/shoes/soldiershoes = 15,
-		/obj/item/clothing/under/milrus_vsr93 = 5,
+		/obj/item/clothing/under/rus_vsr93 = 5,
 		/obj/item/clothing/under/afghanka = 15,
-		/obj/item/clothing/under/milrus_omon = 10,
+		/obj/item/clothing/under/omon = 10,
 		/obj/item/clothing/suit/storage/jacket/rus_winter_vsr93 = 5,
 		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
 		/obj/item/clothing/head/ww2/sov_ushanka = 10,
