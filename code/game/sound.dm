@@ -205,11 +205,11 @@ var/list/charge_sounds_ar = list(
 	'sound/effects/emotes/charge_ar8.ogg',
 	)
 var/list/charge_sounds_chechen = list(
-	'sound/effects/emotes/charge_chechen1.ogg',
-	'sound/effects/emotes/charge_chechen2.ogg',
-	'sound/effects/emotes/charge_chechen3.ogg',
-	'sound/effects/emotes/charge_chechen4.ogg',
-	'sound/effects/emotes/charge_chechen5.ogg',
+	'sound/effects/emotes/chechen1.ogg',
+	'sound/effects/emotes/chechen2.ogg',
+	'sound/effects/emotes/chechen3.ogg',
+	'sound/effects/emotes/chechen4.ogg',
+	'sound/effects/emotes/chechen5.ogg',
 	)
 var/list/charge_sounds_ge = list(
 	'sound/effects/emotes/charge_ger.ogg',
