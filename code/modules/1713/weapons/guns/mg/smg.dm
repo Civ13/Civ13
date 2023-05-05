@@ -1850,7 +1850,7 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
-	
+
 /obj/item/weapon/gun/projectile/submachinegun/hk417/att/New()
 	..()
 	if (prob(50))
@@ -1860,7 +1860,7 @@
 		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/AC = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
 		AC.attached(null,src,TRUE)
 	if (prob(50))
-		var/obj/item/weapon/attachment/under/laser/LS = new var/obj/item/weapon/attachment/under/laser(src)
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
 		LS.attached(null,src,TRUE)
 	else
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
