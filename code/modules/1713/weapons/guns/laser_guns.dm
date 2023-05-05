@@ -373,6 +373,7 @@
 /obj/item/weapon/gun/projectile/automatic/laser/qblz1
 	name = "Qblz1 Plasma gun"
 	desc = "An advanced plasma rifle used by the Chinese."
+	icon = 'icons/obj/guns/wip.dmi'
 	icon_state = "qblz1"
 	item_state = "m16"
 	base_icon = "qblz1"
@@ -414,6 +415,7 @@
 /obj/item/weapon/gun/projectile/automatic/laser/lasgun
 	name = "Lasgun"
 	desc = "The standard lasgun used by the imperial gaurd."
+	icon = 'icons/obj/guns/wip.dmi'
 	icon_state = "lasgunm36"
 	item_state = "lasgunm36"
 	base_icon = "lasgunm36"
