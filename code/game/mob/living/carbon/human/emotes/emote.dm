@@ -449,7 +449,7 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_FILIPINO", 100)
 									else if (original_job.is_gta)
 										playsound(get_turf(src), "charge_GROVE", 100)
-									else if (original_job.is_syria)
+									else if (original_job.is_syria && original_job_title != "Delta Force Operator")
 										playsound(get_turf(src), "charge_ARAB", 100) //temporary
 									else
 										playsound(get_turf(src), "charge_AMERICAN", 100)
