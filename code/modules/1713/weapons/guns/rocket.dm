@@ -719,7 +719,7 @@
 		return
 
 /obj/item/missile/explosive/piat
-	heavy_armor_penetration = 75
+	heavy_armor_penetration = 35
 	icon_state = "missile"
 	throw_impact(atom/hit_atom)
 		if(primed)
@@ -731,7 +731,7 @@
 		return
 
 /obj/item/missile/explosive/piat44
-	heavy_armor_penetration = 100
+	heavy_armor_penetration = 50
 	icon_state = "missile"
 	throw_impact(atom/hit_atom)
 		if(primed)
