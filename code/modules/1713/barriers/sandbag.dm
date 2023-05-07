@@ -357,6 +357,7 @@
 	anchored = TRUE
 	climbable = TRUE
 	maxhealth = 1500
+	var/extra_chance = 50 //worser than fully built sandbag
 
 /obj/structure/window/barrier/railing/stone
 	name = "railing"
