@@ -413,9 +413,6 @@
 
 /* US Army Armor & Helmets*/
 
-/obj/item/clothing/head //why is this HERE? @fantasticfwoosh
-	var/list/attachments = list()
-
 /obj/item/clothing/head/helmet/modern/ushelmet
 	name = "M1 helmet"
 	desc = "A typical us army helmet."

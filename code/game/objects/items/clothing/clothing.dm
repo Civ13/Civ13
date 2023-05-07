@@ -81,8 +81,6 @@
 	if (fleas)
 		user << "<b>\The [src] is infested with fleas!</b>"
 ///////////////////////////////////////////////////////////////////////
-/obj/item/clothing/head
-	heat_protection = HEAD
 
 /obj/item/clothing/head/helmet
 	restricts_view = 1
@@ -250,6 +248,7 @@ BLIND	 // can't see anything
 		slot_r_hand_str = 'icons/mob/items/righthand_hats.dmi',
 		)
 	body_parts_covered = HEAD
+	heat_protection = HEAD
 	slot_flags = SLOT_HEAD
 	flags_inv = BLOCKHEADHAIR
 	w_class = ITEM_SIZE_SMALL
@@ -258,6 +257,7 @@ BLIND	 // can't see anything
 	var/light_applied
 	var/brightness_on
 	var/on = FALSE
+	var/list/attachments = list()
 
 /obj/item/clothing/head/attack_self(mob/user)
 	if (brightness_on)
