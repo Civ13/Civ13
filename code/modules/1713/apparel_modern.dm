@@ -568,6 +568,39 @@
 	worn_state = "us_camo_ocp"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/us_uni/multicam
+	name = "MultiCam camo uniform"
+	desc = "A uniform in a camouflage pattern designed for use in a wide range of environments and conditions. Usually given to special operations units."
+	icon_state = "multicam"
+	item_state = "multicam"
+	worn_state = "multicam"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/us_uni/multicam/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/us_uni/multicam)
+		return
+	else
+		if (rolled)
+			item_state = "multicam"
+			worn_state = "multicam"
+			item_state_slots["w_uniform"] = "multicam"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "multicam_rolled"
+			worn_state = "multicam_rolled"
+			item_state_slots["w_uniform"] = "multicam_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
@@ -584,6 +617,15 @@
 	slot_flags = SLOT_GLOVES
 	fingerprint_chance = 100
 
+/obj/item/clothing/gloves/fingerless/army
+	name = "fingerless combat gloves"
+	icon_state = "fingerless"
+	item_state = "fingerless"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+	fingerprint_chance = 100
+	armor = list(melee = 25, arrow = 25, gun = 5, energy = 22, bomb = 45, bio = 20, rad = 5)
+
 /* US belts*/
 
 /obj/item/weapon/storage/belt/smallpouches/us/modern/m14
@@ -597,19 +639,19 @@
 
 /* Russian Army Clothing*/
 
-/obj/item/clothing/under/milrus_vsr93
+/obj/item/clothing/under/rus_vsr93
 	name = "russian military outfit VSR 93" //Uniform used mostly in the 90's
 	desc = "An outfit composed of the VSR93 camo pants and shirt, along with a high waistbelt."
-	icon_state = "milrus_vsr93"
-	item_state = "milrus_vsr93"
-	worn_state = "milrus_vsr93"
+	icon_state = "rus_vsr93"
+	item_state = "rus_vsr93"
+	worn_state = "rus_vsr93"
 
-/obj/item/clothing/under/milrus_omon
+/obj/item/clothing/under/omon
 	name = "russian OMON uniform" //Uniform used mostly in the 90's
 	desc = "An outfit designed and issued for the OMON forces of the Russian Federation."
-	icon_state = "milrus_omon"
-	item_state = "milrus_omon"
-	worn_state = "milrus_omon"
+	icon_state = "omon"
+	item_state = "omon"
+	worn_state = "omon"
 
 /* USSR Helmets*/
 
@@ -713,13 +755,23 @@
 
 /obj/item/clothing/head/helmet/modern/a6b47 //Post 2000 helmet more modern.
 	name = "6B47 helmet"
-	desc = "A russian heavy armoured helmet often used by russian infantry forces in the 21st century."
+	desc = "A Russian heavy armoured helmet often used by Russian infantry forces in the 21st century."
 	icon_state = "a6b47"
 	item_state = "a6b47"
 	worn_state = "a6b47"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/a6b47/emr
+	icon_state = "6b47_emr"
+	item_state = "6b47_emr"
+	worn_state = "6b47_emr"
+
+/obj/item/clothing/head/helmet/modern/a6b47/emr/desert
+	icon_state = "6b47_emr_desert"
+	item_state = "6b47_emr_desert"
+	worn_state = "6b47_emr_desert"
 
 /obj/item/clothing/head/helmet/modern/a6b47/camo
 	name = "camo 6B47 helmet"
@@ -1755,17 +1807,6 @@
 			adjusted = TRUE
 	update_clothing_icon()
 
-
-/obj/item/clothing/head/helmet/modern/russian_b7
-	name = "64b7 helmet"
-	desc = "A russian developed kevlar ballistics helmet."
-	icon_state = "64b7"
-	item_state = "64b7"
-	worn_state = "64b7"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
-
 /obj/item/clothing/under/ukraine
 	name = "ACU pattern uniform"
 	desc = "The standard Ukrainian Ground Forces camo uniform."
@@ -1834,6 +1875,107 @@
 			item_state = "russian_emr_rolled"
 			worn_state = "russian_emr_rolled"
 			item_state_slots["w_uniform"] = "russian_emr_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/russiandesert
+	name = "EMR desert pattern uniform"
+	desc = "The standard Russian Federation Army camo uniform."
+	icon_state = "russian_emr_desert"
+	item_state = "russian_emr_desert"
+	worn_state = "russian_emr_desert"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/russiandesert/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/russiandesert)
+		return
+	else
+		if (rolled)
+			item_state = "russian_emr_desert"
+			worn_state = "russian_emr_desert"
+			item_state_slots["w_uniform"] = "russian_emr_desert"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "russian_emr_desert_rolled"
+			worn_state = "russian_emr_desert_rolled"
+			item_state_slots["w_uniform"] = "russian_emr_desert_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+//syria
+
+/obj/item/clothing/under/syrian_gov
+	name = "Syrian Army uniform"
+	desc = "Standard Uniform of the syrian army."
+	icon_state = "syr_army"
+	item_state = "syr_army"
+	worn_state = "syr_army"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/syrian_gov/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/syrian_gov)
+		return
+	else
+		if (rolled)
+			item_state = "syr_army"
+			worn_state = "syr_army"
+			item_state_slots["w_uniform"] = "syr_army"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "syr_army_rolled"
+			worn_state = "syr_army_rolled"
+			item_state_slots["w_uniform"] = "syr_army_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/syrian_salv //cant find any source on what they use so im just gonna use this
+	name = "Syrian Salvation goverment uniform"
+	desc = "Standard Uniform Used by the syrian salvation goverment army forces."
+	icon_state = "salv_army"
+	item_state = "salv_army"
+	worn_state = "salv_army"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	var/rolled = FALSE
+
+/obj/item/clothing/under/syrian_salv/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/syrian_salv)
+		return
+	else
+		if (rolled)
+			item_state = "salv_army"
+			worn_state = "salv_army"
+			item_state_slots["w_uniform"] = "salv_army"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			item_state = "salv_army_rolled"
+			worn_state = "salv_army_rolled"
+			item_state_slots["w_uniform"] = "salv_army_rolled"
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
 			heat_protection = ARMS

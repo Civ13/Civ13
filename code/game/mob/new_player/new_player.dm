@@ -132,13 +132,13 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			if(map.ID == MAP_CAMPAIGN)
+			if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
 				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 			else
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN || map.ID != MAP_ROTSTADT || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -191,7 +191,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if (map.ID == MAP_CAMPAIGN && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -437,7 +437,10 @@ var/global/redirect_all_players = null
 					factjob = "BAF"
 
 		if (factjob)
-			LateChoicesCampaign(factjob)
+			if (map.ID == MAP_CAMPAIGN)
+				LateChoicesCampaign(factjob)
+			else // To be changed according to new non-canon maps or Nomads Persistence
+				LateChoicesRotstadt(factjob) // To be changed according to new non-canon maps or Nomads Persistence
 		else
 			if (config.discordurl)
 				WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Visit the discord for more information: [config.discordurl]")
@@ -491,51 +494,68 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
-		if (map.ID == MAP_CAMPAIGN)
-			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
+		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman") && !findtext(href_list["SelectedJob"], "RPR Fighter"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
 				var/obj/map_metadata/campaign/MC = map
+				var/obj/map_metadata/rotstadt/MR = map
 				if(findtext(href_list["SelectedJob"],"Squad 1"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 1"]["Sniper"]--
+						MR.squad_jobs_blue["Squad 1"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
+						MR.squad_jobs_blue["Squad 1"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
+						MR.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 2"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 2"]["Sniper"]--
+						MR.squad_jobs_blue["Squad 2"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+						MR.squad_jobs_blue["Squad 2"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
+						MR.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 3"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 3"]["Sniper"]--
+						MR.squad_jobs_blue["Squad 3"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+						MR.squad_jobs_blue["Squad 3"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
+						MR.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"BAF Doctor"))
 					MC.squad_jobs_blue["none"]["Doctor"]--
+					MR.squad_jobs_blue["none"]["Doctor"]--
 
 				else if(findtext(href_list["SelectedJob"],"BAF Officer"))
 					MC.squad_jobs_blue["none"]["Officer"]--
+					MR.squad_jobs_blue["none"]["Officer"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Commander"))
 					MC.squad_jobs_blue["none"]["Commander"]--
+					MR.squad_jobs_blue["none"]["Commander"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Recon"))
 					MC.squad_jobs_blue["Recon"]["Sniper"]--
+					MR.squad_jobs_blue["Recon"]["Sniper"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
 					MC.squad_jobs_blue["AT"]["Anti-Tank"]--
+					MR.squad_jobs_blue["AT"]["Anti-Tank"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Armored Crew"))
 					MC.squad_jobs_blue["Armored"]["Crew"]--
+					MR.squad_jobs_blue["Armored"]["Crew"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Engineer"))
 					MC.squad_jobs_blue["Engineer"]["Engineer"]--
+					MR.squad_jobs_blue["Engineer"]["Engineer"]--
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
 
@@ -597,7 +617,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -1072,6 +1092,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_civilians.len] Policemen and Federal Agents "
 		else if (map && istype(map, /obj/map_metadata/long_march))
 			dat += "[alive_civilians.len] Chinese Red Army "
+		else if (map && istype(map, /obj/map_metadata/holdmadrid))
+			dat += "[alive_civilians.len] Republican "
 		else
 			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
@@ -1081,6 +1103,8 @@ var/global/redirect_all_players = null
 	if (ARAB in map.faction_organization)
 		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
 			dat += "[alive_arab.len] Mujahideen "
+		else if (map && istype(map, /obj/map_metadata/syria))
+			dat += "[alive_arab.len] Syrian Government Soldiers "
 		else
 			dat += "[alive_arab.len] Arabs "
 	if (JAPANESE in map.faction_organization)
@@ -1133,6 +1157,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Grove Street "
 		else if (map && istype(map, /obj/map_metadata/eft_factory))
 			dat += "[alive_american.len] USEC PMCs "
+		else if (map && istype(map, /obj/map_metadata/syria))
+			dat += "[alive_american.len] Syrian Rebels "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1145,7 +1171,7 @@ var/global/redirect_all_players = null
 	if (FILIPINO in map.faction_organization)
 		dat += "[alive_filipino.len] Filipino "
 	if (POLISH in map.faction_organization)
-		dat += "[alive_swedish.len] Poles "
+		dat += "[alive_polish.len] Poles "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1302,6 +1328,11 @@ var/global/redirect_all_players = null
 						temp_name = "Imperials"
 					else if (temp_name == "Civilian")
 						temp_name = "Stormcloaks"
+				else if (map && map.ID == "SYRIA")
+					if (temp_name == "American")
+						temp_name = "Free Syrian Army"
+					else if (temp_name == "Arab")
+						temp_name = "Syrian Arab Republic"
 				else if (map && map.ID == "CAPITOL_HILL")
 					if (temp_name == "American")
 						temp_name = "American Government"
@@ -1357,11 +1388,16 @@ var/global/redirect_all_players = null
 						temp_name = "Chinese Red Army"
 					if (temp_name == "Chinese")
 						temp_name = "Chinese National Army"
-				else if (map && map.ID == MAP_CAMPAIGN)
+				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
 					if (temp_name == "Civilian")
 						temp_name = "Red"
 					if (temp_name == "Pirates")
 						temp_name = "Blue"
+				else if (map && map.ID == "MAP_HOLDMADRID")
+					if (temp_name == "Civilian")
+						temp_name = "Republican"
+					if (temp_name == "Spanish")
+						temp_name = "Spanish"
 				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]"

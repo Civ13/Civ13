@@ -1028,9 +1028,9 @@ obj/structure/vending/hezammo
 	icon_state = "apparel_russia"
 	products = list(
 		/obj/item/clothing/shoes/soldiershoes = 15,
-		/obj/item/clothing/under/milrus_vsr93 = 5,
+		/obj/item/clothing/under/rus_vsr93 = 5,
 		/obj/item/clothing/under/afghanka = 15,
-		/obj/item/clothing/under/milrus_omon = 10,
+		/obj/item/clothing/under/omon = 10,
 		/obj/item/clothing/suit/storage/jacket/rus_winter_vsr93 = 5,
 		/obj/item/clothing/suit/storage/jacket/afghanka = 15,
 		/obj/item/clothing/head/ww2/sov_ushanka = 10,
@@ -1435,3 +1435,154 @@ obj/structure/vending/hezammo
 	products = list()
 /obj/structure/vending/grenade_crate/alt
 	icon_state = "grenade_crate_alt"
+
+/obj/structure/vending/syria/gungov
+	name = "Syrian Army weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74m = 4,
+		/obj/item/weapon/gun/projectile/automatic/pkm = 2,
+		/obj/item/weapon/gun/projectile/automatic/nsv_utes = 1,
+		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
+		/obj/item/weapon/gun/projectile/pistol/makarov = 15,
+		/obj/item/weapon/gun/projectile/pistol/mp443 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/srm = 2,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/grenade/smokebomb = 15,
+		/obj/item/weapon/grenade/coldwar/rgd5 = 15,
+		/obj/item/weapon/grenade/antitank/custom = 5,
+		/obj/item/weapon/plastique/c4 = 3,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 2,
+		/obj/item/weapon/gun/projectile/semiautomatic/vintorez = 2,
+	)
+
+/obj/structure/vending/syria/ammogov
+	name = "Syrian Army ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak74 = 10,
+		/obj/item/ammo_magazine/ak74/box = 10,
+		/obj/item/ammo_magazine/ammo127 = 5,
+		/obj/item/ammo_magazine/ammo127/box = 5,
+		/obj/item/ammo_magazine/pkm/c100 = 25,
+		/obj/item/ammo_magazine/rpk74 = 12,
+		/obj/item/ammo_magazine/rpk74/drum = 8,
+		/obj/item/ammo_magazine/svd = 16,
+		/obj/item/ammo_magazine/makarov = 25,
+		/obj/item/ammo_magazine/mp443 = 25,
+		/obj/item/ammo_magazine/mp40/box = 25,
+		/obj/item/ammo_magazine/pkm = 8,
+		/obj/item/ammo_magazine/srm = 8,
+		/obj/item/ammo_magazine/srm/box = 8,
+		/obj/item/ammo_magazine/vintorez = 8,
+	)
+
+/obj/structure/vending/syria/armorgov
+	name = "Syrian Equipment Crate"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/combat = 15,
+		/obj/item/clothing/shoes/soldiershoes = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b45 = 20,
+		/obj/item/clothing/accessory/armor/coldwar/plates/b5 = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/tatba/green = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/ssh_68 = 5,
+		/obj/item/clothing/head/olivebandana = 5,
+		/obj/item/clothing/gloves/fingerless/army = 5,
+		/obj/item/clothing/head/helmet/modern/a6b47 = 15,
+		/obj/item/clothing/head/helmet/modern/a6b47/emr/desert = 15,
+		/obj/item/clothing/accessory/storage/webbing/russian = 10,
+		/obj/item/weapon/storage/belt/tacpouches = 10,
+		/obj/item/weapon/storage/belt/tacpouches/green = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/sovpack = 10,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/foldable_shovel/trench/etool = 10,
+		/obj/item/weapon/attachment/bayonet = 25,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern = 50,
+	)
+
+////syrian salvation goverment
+/obj/structure/vending/syria/salv/gunreb
+	name = "Syrian Salvation Goverment weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att = 4,
+		/obj/item/weapon/gun/projectile/submachinegun/m14 = 2,
+		/obj/item/weapon/gun/projectile/semiautomatic/barrett = 1,
+		/obj/item/weapon/gun/projectile/submachinegun/fal = 4,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 7,
+		/obj/item/weapon/gun/projectile/submachinegun/greasegun  = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/sten  = 5,
+		/obj/item/weapon/gun/projectile/automatic/m249  = 3,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/grenade/smokebomb = 15,
+		/obj/item/weapon/grenade/coldwar/m67 = 15,
+		/obj/item/weapon/grenade/antitank/n73 = 5,
+		/obj/item/weapon/plastique/c4 = 3,
+		/obj/item/weapon/attachment/bayonet = 15,
+		/obj/item/weapon/gun/launcher/rocket/single_shot/m72law = 2,
+	)
+
+/obj/structure/vending/syria/salv/ammoreb
+	name = "Syrian Salvation Goverment ammo crate"
+	desc = "A large crate of ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/m16 = 20,
+		/obj/item/ammo_magazine/m16/box = 10,
+		/obj/item/ammo_magazine/m14 = 5,
+		/obj/item/ammo_magazine/m14box = 5,
+		/obj/item/ammo_magazine/barrett = 4,
+		/obj/item/ammo_magazine/fal = 12,
+		/obj/item/ammo_magazine/m1911 = 25,
+		/obj/item/ammo_magazine/greasegun = 25,
+		/obj/item/ammo_magazine/mp40/box = 25,
+		/obj/item/ammo_magazine/greasegun/box = 8,
+		/obj/item/ammo_magazine/m249 = 12,
+		/obj/item/ammo_magazine/sten2 = 15,
+	)
+
+/obj/structure/vending/syria/salv/armorreb
+	name = "Syrian Salvation Goverment Equipment Crate"
+	desc = "A rack of clothing and gear."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/combat = 15,
+		/obj/item/clothing/shoes/soldiershoes = 10,
+		/obj/item/clothing/under/syrian_salv = 5,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki = 20,
+		/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969 = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier = 15,
+		/obj/item/clothing/mask/gas/russia = 15,
+		/obj/item/clothing/head/helmet/modern/lwh = 5,
+		/obj/item/clothing/head/commando_bandana = 5,
+		/obj/item/clothing/gloves/fingerless/army = 5,
+		/obj/item/clothing/head/helmet/modern/pasgt = 15,
+		/obj/item/clothing/head/helmet/modern/pasgt/desert = 15,
+		/obj/item/clothing/accessory/storage/webbing/us_vest = 10,
+		/obj/item/weapon/storage/belt/tacpouches = 10,
+		/obj/item/weapon/storage/belt/tacpouches/green = 10,
+		/obj/item/weapon/storage/belt/largepouches = 10,
+		/obj/item/weapon/storage/belt/largepouches/green = 10,
+		/obj/item/weapon/storage/backpack/buttpack = 10,
+		/obj/item/clothing/accessory/holster/armpit = 5,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/foldable_shovel/trench/etool = 10,
+		/obj/item/weapon/attachment/bayonet = 25,
+		/obj/item/flashlight/militarylight = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)

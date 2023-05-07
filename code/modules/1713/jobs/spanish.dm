@@ -574,7 +574,7 @@
 
 /datum/job/spanish/cnat/rifle
 	title = "Soldado nacionalista"
-	en_meaning = "Nationalist Solider"
+	en_meaning = "Nationalist Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateFSP"

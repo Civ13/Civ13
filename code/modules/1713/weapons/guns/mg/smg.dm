@@ -164,6 +164,55 @@
 /obj/item/weapon/gun/projectile/submachinegun/spas/secondary_attack_self(mob/living/human/user)
 	switch_firemodes(user)
 
+/obj/item/weapon/gun/projectile/submachinegun/usas12
+	name = "USAS-12"
+	icon_state = "usas12"
+	item_state = "usas12"
+	base_icon = "usas12"
+	desc = "A South Korean selective fire gas-operated shotgun designed by John Trevor, Jr. that uses mags."
+	caliber = "12gauge"
+	slot_flags = SLOT_SHOULDER
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/usas12
+	load_method = MAGAZINE
+	good_mags = list(/obj/item/ammo_magazine/usas12, /obj/item/ammo_magazine/usas12/slug, /obj/item/ammo_magazine/usas12drum, /obj/item/ammo_magazine/usas12drum/slug)
+	recoil = 1
+	force = 15
+	throwforce = 30
+	weight = 3.5
+	equiptimer = 15
+	effectiveness_mod = 1.46
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
+	firemodes = list(
+		list(name = "semi auto",    burst=1, burst_delay=0.7, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "full auto",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		)
+
+/obj/item/weapon/gun/projectile/submachinegun/usas12/secondary_attack_self(mob/living/human/user)
+	switch_firemodes(user)
+
+/obj/item/weapon/gun/projectile/submachinegun/usas12/update_icon()
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12))
+			item_state = "usas12"
+			icon_state = "usas12"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12/slug))
+			item_state = "usas12"
+			icon_state = "usas12"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum))
+			icon_state = "usas12_drum"
+			item_state = "usas12drum"
+			base_icon = "usas12_drum"
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum/slug))
+			icon_state = "usas12_drum"
+			item_state = "usas12drum"
+			base_icon = "usas12_drum"
+	else
+		icon_state = "usas12_open"
+		item_state = "usas12_open"
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/submachinegun/saiga12
 	name = "Saiga-12K"
 	icon_state = "saiga12"
@@ -492,6 +541,17 @@
 
 	sel_mode = 1
 	effectiveness_mod = 0.85
+
+/obj/item/weapon/gun/projectile/submachinegun/sten/stv
+	name = "Sten MK V"
+	desc = "A British submachinegun, chambered in 9x19 Parabellum."
+	icon_state = "sten2"
+	item_state = "sten2"
+	base_icon = "sten2"
+	weight = 3.1
+	attachment_slots = ATTACH_SILENCER|ATTACH_BARREL|ATTACH_UNDER
+	equiptimer = 6
+	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -1052,10 +1112,9 @@
 	caliber = "a545x39"
 	weight = 3.05
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 
@@ -1068,11 +1127,10 @@
 	caliber = "a762x39"
 	weight = 3.07
 	effectiveness_mod = 1.13
-	equiptimer = 12
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
 
@@ -1792,6 +1850,22 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+
+/obj/item/weapon/gun/projectile/submachinegun/hk417/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/HL = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		HL.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/AC = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		AC.attached(null,src,TRUE)
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/p90
 	name = "P90"
 	desc = "A compact, rapid-fire defensive weapon, chambered in 5.7x28mm."

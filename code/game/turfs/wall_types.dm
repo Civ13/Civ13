@@ -21,6 +21,12 @@
 /turf/wall/brick/New(var/newloc)
 	..(newloc,"brick")
 
+/turf/wall/tiles
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "tiles0"
+/turf/wall/tiles/New(var/newloc)
+	..(newloc,"concrete")
+
 /turf/wall/generic_wall
 	icon_state = "generic0"
 turf/wall/generic_wall/New(var/newloc)
@@ -28,6 +34,17 @@ turf/wall/generic_wall/New(var/newloc)
 
 /turf/wall/cement
 	icon_state = "cement_wall0"
+/turf/wall/cement/New(var/newloc)
+	..(newloc,"concrete")
+
+/turf/wall/concrete_blocks
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "horizontal_concrete_blocks0"
+/turf/wall/cement/New(var/newloc)
+	..(newloc,"concrete")
+/turf/wall/concrete_blocks/vertical
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "vertical_concrete_blocks0"
 /turf/wall/cement/New(var/newloc)
 	..(newloc,"concrete")
 

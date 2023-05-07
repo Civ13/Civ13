@@ -42,6 +42,16 @@
 	desc = "An Imperial Flag for the Extra-Galactic Empire."
 	icon_state = "flag_galacticempire"
 
+/obj/structure/sign/flag/russia/wagner
+	name = "Wagner group insignia"
+	desc = "The infamous PMC group insignia."
+	icon_state = "flag_wag"
+
+/obj/structure/sign/flag/usa/delta_force
+	name = "Delta Force insignia"
+	desc = "Insignia of the 1st Special Forces Operational Detachment-Delta."
+	icon_state = "flag_wag"
+
 /obj/structure/sign/flag/gb/rebel
 	name = "Alliance to Restore the Democracy Flag"
 	desc = "A Rebellious flag for the Alliance."
@@ -444,6 +454,11 @@
 	desc = "The red, white and blue flag flying above ranks of blue-clad troops."
 	icon_state = "flag_union"
 
+/obj/structure/sign/flag/usa_confed
+	name = "Confederate flag"
+	desc = "The flag of the Confederate States."
+	icon_state = "flag_confederate"
+
 /obj/structure/sign/flag/texas
 	name = "Texan flag"
 	desc = "The flag of the state of Texas."
@@ -635,9 +650,19 @@
 	icon_state = "flag_iraq"
 
 /obj/structure/sign/flag/syria
-	name = "Syrian flag"
-	desc = "The flag of Syria."
+	name = "Syrian Arab Republic flag"
+	desc = "The flag of the Syrian Arab Republic."
 	icon_state = "flag_syria"
+
+/obj/structure/sign/flag/syria/fsa
+	name = "Free Syrian Army flag"
+	desc = "The flag of the Free Syrian Army."
+	icon_state = "flag_syria_fsa"
+
+/obj/structure/sign/flag/syria/ssg
+	name = "Syrian Salvation Goverment flag"
+	desc = "The flag of the Syrian Salvation Goverment."
+	icon_state = "flag_syria_sal"
 
 /obj/structure/sign/flag/fsa
 	name = "FSA flag"

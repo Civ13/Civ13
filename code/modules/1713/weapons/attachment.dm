@@ -172,12 +172,13 @@ Current Defines (_defines/attachment.dm)
 	edge = TRUE
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	attachment_type = ATTACH_BARREL
-	force = 65
+	force = 35
 	weight = 0.450
 	value = 12
 	var/attack_sound = 'sound/weapons/slice.ogg'
 //	var/datum/action/bayonet/amelee
 	var/atk_mode = SLASH
+	var/mounted_dmg = 65
 
 /obj/item/weapon/attachment/bayonet/attack_self(mob/user)
 	..()

@@ -209,10 +209,17 @@
 	update_icon()
 		if (reagents)
 			var/percent = round((reagents.total_volume / volume) * 100)
-			switch(percent)
-				if (0 to 9)			icon_state = "bp_empty"
-				if (10 to 50) 		icon_state = "bp_half"
-				if (51 to INFINITY)	icon_state = "bp_full"
+			if (reagents.has_reagent("blood"))
+				switch(percent)
+					if (0 to 9)			icon_state = "bp_empty"
+					if (10 to 50) 		icon_state = "bp_half"
+					if (51 to INFINITY)	icon_state = "bp_full"
+			else if (reagents.has_reagent("saline_glucose"))
+				switch(percent)
+					if (0 to 9)			icon_state = "bp_empty"
+					if (10 to 50) 		icon_state = "bp_half_saline"
+					if (51 to INFINITY)	icon_state = "bp_full_saline"
+			
 		else
 			icon_state = "bp_empty"
 
@@ -244,3 +251,12 @@
 	name = "empty blood pack"
 	desc = "Seems pretty useless... Maybe if there were a way to fill it?"
 	icon_state = "bp_empty"
+
+/obj/item/weapon/reagent_containers/blood/saline
+	name = "saline glucose pack"
+	desc = "Contains a saline glucose solution used for transfusion."
+	blood_type = null
+	New()
+		..()
+		name = "saline glucose pack"
+		reagents.add_reagent("saline_glucose", 200)

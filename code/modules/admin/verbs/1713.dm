@@ -701,6 +701,9 @@ var/polish_forceEnabled = FALSE
 	if (map.ID == MAP_CAMPAIGN)
 		fact2 = "Redmenia"
 		fact3 = "Blugoslavia"
+	else if (map.ID == MAP_ROTSTADT)
+		fact2 = "Rotstadt People's Republic"
+		fact3 = "Blugoslavian Armed Forces"
 	else if (map.ID == MAP_WHITERUN)
 		fact3 = "Stormcloaks"
 		fact9 = "Imperials"
@@ -750,6 +753,12 @@ var/polish_forceEnabled = FALSE
 		fact3 = "Scavs"
 		fact13 = "BEAR"
 		fact15 = "USEC"
+	else if (map.ID == MAP_SYRIA)
+		fact11 = "Syrian Arab Republic"
+		fact15 = "Free Syrian Army"
+	else if (map.ID == MAP_EAST_LOS_SANTOS)
+		fact7 = "Ballas"
+		fact17 = "Grove Street"
 	else if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 		fact13 = "Soviets"
 

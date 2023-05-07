@@ -1417,7 +1417,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT)
 						holder2.icon_state = "redmenia"
 					else if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
@@ -1464,6 +1464,11 @@
 					if (map.ordinal_age >= 6)
 						if (map.ID == MAP_ARAB_TOWN)
 							holder2.icon_state = "hez_basic"
+						else if (map.ID == MAP_SYRIA)
+							if (original_job.title == "Wagner Group PMC")
+								holder2.icon_state = "wagner"
+							else
+								holder2.icon_state = "syria_basic"
 						else
 							holder2.icon_state = "isis_basic"
 					else
@@ -1534,6 +1539,8 @@
 						holder2.icon_state = "civ2"
 					else if (map.ID == MAP_EFT_FACTORY)
 						holder2.icon_state = "none"
+					else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
+						holder2.icon_state = "syria_fsa"
 					else
 						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
@@ -1553,7 +1560,7 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT)
 						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
@@ -1611,7 +1618,7 @@
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
-					if(map.ID == MAP_CAMPAIGN)
+					if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
 						if(squad == 4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
 							holder2.overlays += icon(holder2.icon,"i_cpl")

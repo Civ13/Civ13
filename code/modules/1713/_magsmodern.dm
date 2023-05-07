@@ -216,8 +216,40 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/saiga12/slug
-	name = "Saiga-12K magazine (12gauge slug)"
+	name = "Saiga-12K magazine (slug)"
 	icon_state = "type99"
+	ammo_type = /obj/item/ammo_casing/shotgun/slug
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/usas12
+	name = "USAS-12 magazine (buckshot)"
+	icon_state = "usas12"
+	mag_type = MAGAZINE
+	caliber = "12gauge"
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	max_ammo = 10
+	weight = 0.75
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/usas12/slug
+	name = "USAS-12 magazine (slug)"
+	icon_state = "usas12slug"
+	ammo_type = /obj/item/ammo_casing/shotgun/slug
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/usas12drum
+	name = "USAS-12 magazine (buckshot)"
+	icon_state = "usas12drum"
+	mag_type = MAGAZINE
+	caliber = "12gauge"
+	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
+	max_ammo = 20
+	weight = 1.50
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/usas12drum/slug
+	name = "USAS-12 magazine (slug)"
+	icon_state = "usas12drumslug"
 	ammo_type = /obj/item/ammo_casing/shotgun/slug
 	multiple_sprites = TRUE
 
@@ -382,6 +414,30 @@
 	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/makarov
+	name = "PM Makarov magazine (9x18mm)"
+	icon_state = "m1911"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x18
+	caliber = "a9x18"
+	max_ammo = 8
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/makarov/empty/New()
+	..()
+	stored_ammo.Cut()
+
+/obj/item/ammo_magazine/aps
+	name = "Stechkin APS magazine (9x18mm)"
+	icon_state = "m1911" //temporary, to be changed
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a9x18
+	caliber = "a9x18"
+	max_ammo = 20
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/aps/empty/New()
+	..()
+	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"

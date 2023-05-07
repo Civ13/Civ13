@@ -622,6 +622,7 @@ window "mainwindow"
 		title = "Civilization 13"
 		titlebar = false
 		is-maximized = true
+		icon = 'icons\\taskbar.png'
 		keep-aspect = true
 		macro = "macro"
 	elem "mainvsplit"

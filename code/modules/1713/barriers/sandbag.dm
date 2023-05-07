@@ -34,7 +34,7 @@
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	maxhealth = 500
+	maxhealth = 900
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
@@ -355,8 +355,8 @@
 	icon_state = "sandstone"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
-	climbable = FALSE
-	maxhealth = 10000000
+	climbable = TRUE
+	maxhealth = 1500
 
 /obj/structure/window/barrier/railing/stone
 	name = "railing"
@@ -365,8 +365,8 @@
 	icon_state = "stone"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
-	climbable = FALSE
-	maxhealth = 10000000
+	climbable = TRUE
+	maxhealth = 2500
 
 /obj/structure/window/barrier/railing/brick
 	name = "Brick Wall"
@@ -375,8 +375,8 @@
 	icon_state = "brick"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
-	climbable = FALSE
-	maxhealth = 10000000
+	climbable = TRUE
+	maxhealth = 3500
 
 /obj/structure/window/barrier/railing/New()
 	..()

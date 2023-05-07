@@ -586,7 +586,7 @@
 	var/obj/item/clothing/accessory/armband/poland/white = new /obj/item/clothing/accessory/armband/poland(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a simple solider from the people's army of poland,you were sent here to assist, Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier from the People's Army of Poland. You were sent here to assist the troops. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)

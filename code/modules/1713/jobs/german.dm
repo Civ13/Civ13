@@ -836,7 +836,7 @@
 	is_reichstag = FALSE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -892,7 +892,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	is_borderger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -1001,7 +1001,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1131,11 +1131,11 @@
 
 /datum/job/german/ard_volksgrenadier
 	title = "Volksgrenadier"
-	en_meaning = "Solider"
+	en_meaning = "Soldier"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGE"
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 	is_ss_panzer = FALSE
 	is_reichstag = FALSE
 	is_ww2 = FALSE
@@ -1221,7 +1221,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1283,7 +1283,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 5
@@ -1376,7 +1376,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_r_store)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/walther(H), slot_l_store)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, a Anti tank Solider of the Wermacht,Your job is to Disable and Destroy enemy tanks,Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[title]</b>, an Anti-Tank soldier of the Wermacht. Your job is to disable and/or destroy enemy tanks. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1463,7 +1463,7 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1521,7 +1521,7 @@
 	is_reichstag = FALSE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -1572,7 +1572,7 @@
 	uses_squads = TRUE
 	is_borderger = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1631,7 +1631,7 @@
 	uses_squads = TRUE
 	uses_squads = TRUE
 	is_tankcom = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1680,7 +1680,7 @@
 	is_reichstag = FALSE
 	is_tanker = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 4
 	max_positions = 32
@@ -1728,7 +1728,7 @@
 	uses_squads = TRUE
 	is_ss_panzer = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 6
@@ -1778,7 +1778,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 6
 	max_positions = 30
@@ -1844,7 +1844,7 @@
 	is_ss_panzer = TRUE
 	is_ww2 = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -1898,7 +1898,7 @@
 	is_ww2 = TRUE
 	uses_squads = TRUE
 	is_warsawger = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 1
 	max_positions = 1

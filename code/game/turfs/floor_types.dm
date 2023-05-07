@@ -9,13 +9,34 @@
 	stepsound = "wood"
 
 /turf/floor/wood/ship
-	name = "floor"
 	icon_state = "wood_ship"
-	stepsound = "wood"
 
 /turf/floor/wood/fancywood
-	name = "floor"
 	icon_state = "fancywood"
+
+/turf/floor/wood/alt
+	icon_state = "woodalt"
+/turf/floor/wood/alt/two
+	icon_state = "woodalt2"
+/turf/floor/wood/alt/three
+	icon_state = "woodalt3"
+/turf/floor/wood/alt/four
+	icon_state = "woodalt4"
+/turf/floor/wood/alt/five
+	icon_state = "woodalt5"
+/turf/floor/wood/alt/six
+	icon_state = "woodalt6"
+/turf/floor/wood/alt/seven
+	icon_state = "woodalt7"
+/turf/floor/wood/alt/eight
+	icon_state = "woodalt8"
+/turf/floor/wood/alt/nine
+	icon_state = "woodalt9"
+/turf/floor/wood/alt/ten
+	icon_state = "woodalt10"
+/turf/floor/wood/alt/eleven
+	icon_state = "woodalt11"
+
 
 /turf/floor/blackslateroof
 	name = "roof"

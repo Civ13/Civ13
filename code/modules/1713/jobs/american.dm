@@ -16,8 +16,7 @@
 /datum/job/american/captain_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -57,7 +56,7 @@
 	whitelisted = TRUE
 	is_radioman = FALSE
 	is_ww2 = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 1
 	max_positions = 2
@@ -65,8 +64,7 @@
 /datum/job/american/lieutenant_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -107,7 +105,7 @@
 	is_radioman = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -115,8 +113,7 @@
 /datum/job/american/sergeant_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -160,7 +157,7 @@
 	is_medic = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -168,8 +165,10 @@
 /datum/job/american/medic_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -215,7 +214,7 @@
 	rank_abbreviation = "2lt."
 
 	spawn_location = "JoinLateRNSurgeon"
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 	is_medic = TRUE
 	is_ww2 = TRUE
 	can_be_female = TRUE
@@ -225,8 +224,7 @@
 /datum/job/american/doctor_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
@@ -267,7 +265,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -275,8 +273,10 @@
 /datum/job/american/sniper_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -321,7 +321,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -329,8 +329,10 @@
 /datum/job/american/machine_gunner_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -377,7 +379,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 2
 	max_positions = 4
@@ -385,8 +387,10 @@
 /datum/job/american/ammo_bearer_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
@@ -432,7 +436,7 @@
 
 	is_ww2 = TRUE
 	uses_squads = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 8
 	max_positions = 100
@@ -440,7 +444,10 @@
 /datum/job/american/soldier_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
@@ -496,7 +503,7 @@
 /datum/job/american/tanker_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_tanker(H), slot_w_uniform)
@@ -538,7 +545,7 @@
 	is_officer = TRUE
 	is_ww2 = TRUE
 	whitelisted = TRUE
-	is_ardeness = TRUE
+	is_ardennes = TRUE
 
 	min_positions = 1
 	max_positions = 4
@@ -546,7 +553,7 @@
 /datum/job/american/mp_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_mp(H), slot_w_uniform)
@@ -748,9 +755,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/american(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/korean/us_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/thompson(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m2carbine(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1carbine/big(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1038,6 +1048,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/korean/usm1(H), slot_head)
 //back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	if (prob(65))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/bar(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner(H), slot_belt)

@@ -1277,8 +1277,10 @@
 		change_eye_color(r_eyes, g_eyes, b_eyes)
 	else
 		if (faction_text == ARAB)
-			s_tone = -90
-
+			if (original_job.title == "Wagner Group PMC")
+				s_tone = rand(-35,-28)
+			else
+				s_tone = -90
 		else if (faction_text == INDIANS)
 			if ((map.ID == MAP_AFRICAN_WARLORDS)||(map.ID == MAP_TADOJSVILLE))
 				s_tone = rand(-155,-185)
@@ -1296,6 +1298,8 @@
 				s_tone = rand(-150,-120)
 			else if (map.ID == MAP_EAST_LOS_SANTOS)
 				s_tone = rand(-150,-120)
+			else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
+				s_tone = rand(-100,-60)
 			else
 				s_tone = rand(-40,-25)
 		else

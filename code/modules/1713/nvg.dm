@@ -60,3 +60,20 @@
 /obj/item/clothing/glasses/thermal/New()
 	..()
 	overlay = global_hud.thermal
+
+/obj/item/clothing/glasses/thermal/modern
+	name = "Modern Thermal Vision Goggles"
+	desc = "Modern Set of thermal vision goggles which also allow you to see in the dark."
+	icon_state = "thermal_off"
+	item_state = "thermal_off"
+	darkness_view = 7
+	toggleable = 1
+	see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
+	off_state = "thermal_off"
+	on_state = "thermal"
+	vision_flags = SEE_MOBS
+	flash_protection = FLASH_PROTECTION_REDUCED
+	active = 0
+	overtype = ""
+	blocks_scope = FALSE
+	restricts_view = 0

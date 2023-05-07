@@ -219,7 +219,7 @@
 	icon_state = "pouches"
 	item_state = "pouches"
 	storage_slots = 6
-	max_w_class = 3
+	max_w_class = 2
 
 /obj/item/weapon/storage/belt/tacpouches/olive
 	icon_state = "pouches_olive"
@@ -230,3 +230,68 @@
 /obj/item/weapon/storage/belt/tacpouches/green
 	icon_state = "pouches_green"
 	item_state = "pouches_green"
+
+//full
+
+/obj/item/weapon/storage/belt/tacpouches/command/New()
+	..()
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/compass(src)
+	new /obj/item/weapon/whistle(src)
+
+/obj/item/weapon/storage/belt/tacpouches/srm/New()
+	..()
+	new /obj/item/ammo_magazine/srm(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/srm(src)
+	new /obj/item/weapon/compass(src)
+	new /obj/item/ammo_magazine/srm(src)
+
+/obj/item/weapon/storage/belt/tacpouches/svd/New()
+	..()
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/svd(src)
+	new /obj/item/weapon/compass(src)
+	new /obj/item/ammo_magazine/svd(src)
+
+/obj/item/weapon/storage/belt/tacpouches/utes/New()
+	..()
+	new /obj/item/ammo_magazine/ammo127(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/ammo127(src)
+	new /obj/item/ammo_magazine/ammo127(src)
+	new /obj/item/ammo_magazine/ammo127(src)
+
+/obj/item/weapon/storage/belt/tacpouches/m249/New()
+	..()
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/ammo_magazine/m249(src)
+	new /obj/item/ammo_magazine/m249(src)
+
+/obj/item/weapon/storage/belt/tacpouches/hk/New()
+	..()
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
+
+/obj/item/weapon/storage/belt/tacpouches/m14/New()
+	..()
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
+	new /obj/item/weapon/gun_cleaning_kit(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
