@@ -43,8 +43,13 @@
 	icon_state = "flag_galacticempire"
 
 /obj/structure/sign/flag/russia/wagner
-	name = "Wagner group Flag"
-	desc = "A PMC group flag."
+	name = "Wagner group insignia"
+	desc = "The infamous PMC group insignia."
+	icon_state = "flag_wag"
+
+/obj/structure/sign/flag/usa/delta_force
+	name = "Delta Force insignia"
+	desc = "Insignia of the 1st Special Forces Operational Detachment-Delta."
 	icon_state = "flag_wag"
 
 /obj/structure/sign/flag/gb/rebel

@@ -1006,6 +1006,8 @@
 
 	// Check for rain or monsoon and increase water level
 	var/area/A = get_area(loc)
+	if (!A)
+		return
 	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
 		water += 15
 		return

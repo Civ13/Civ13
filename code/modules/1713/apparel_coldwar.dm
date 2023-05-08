@@ -77,9 +77,9 @@
 /obj/item/clothing/suit/storage/jacket/afghanka
 	name = "afghanka coat"
 	desc = "A soviet winter jacket issued and developped in the early 80's."
-	icon_state = "rus_winter_afghanka"
-	item_state = "rus_winter_afghanka"
-	worn_state = "rus_winter_afghanka"
+	icon_state = "winter_afghanka"
+	item_state = "winter_afghanka"
+	worn_state = "winter_afghanka"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
@@ -1241,15 +1241,15 @@
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/New()
 	..()
-	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
+	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt
-/obj/item/weapon/storage/belt/smallpouches/green/sov_74_alt/New()
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt
+/obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt/New()
 	..()
-	new /obj/item/weapon/grenade/coldwar/rgd5(src)
+	new /obj/item/weapon/grenade/chemical/xylyl_bromide(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -2056,9 +2056,9 @@ obj/item/clothing/head/chinaguardcap
 /obj/item/clothing/under/afghanka
 	name = "afghanka uniform"
 	desc = "A standard soviet uniform developped and issued in the early 80's, still in use after the collapse of the Soviet Union."
-	icon_state = "milrus_afghanka_open"
-	item_state = "milrus_afghanka_open"
-	worn_state = "milrus_afghanka_open"
+	icon_state = "afghanka_open"
+	item_state = "afghanka_open"
+	worn_state = "afghanka_open"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/adjusted = FALSE
 /obj/item/clothing/under/afghanka/verb/toggle()
@@ -2069,18 +2069,18 @@ obj/item/clothing/head/chinaguardcap
 		return
 	else
 		if(adjusted)
-			worn_state = "milrus_afghanka_open"
-			item_state = "milrus_afghanka_open"
-			icon_state = "milrus_afghanka_open"
-			item_state_slots["w_uniform"] = "milrus_afghanka_open"
+			worn_state = "afghanka_open"
+			item_state = "afghanka_open"
+			icon_state = "afghanka_open"
+			item_state_slots["w_uniform"] = "afghanka_open"
 			usr << "You <b>open up</b> the collar of your uniform."
 			adjusted = FALSE
 			update_clothing_icon()
 		else if (!adjusted)
-			worn_state = "milrus_afghanka_closed"
-			item_state = "milrus_afghanka_closed"
-			icon_state = "milrus_afghanka_closed"
-			item_state_slots["w_uniform"] = "milrus_afghanka_closed"
+			worn_state = "afghanka_closed"
+			item_state = "afghanka_closed"
+			icon_state = "afghanka_closed"
+			item_state_slots["w_uniform"] = "afghanka_closed"
 			usr << "You <b>close up</b> the collar of your uniform."
 			adjusted = TRUE
 			update_clothing_icon()

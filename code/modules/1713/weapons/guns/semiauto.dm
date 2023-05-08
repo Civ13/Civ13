@@ -432,7 +432,7 @@
 		)
 	force = 10
 	throwforce = 20
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE
 	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/semiautomatic/vintorez

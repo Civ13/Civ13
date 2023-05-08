@@ -94,6 +94,20 @@
 		return FALSE
 	return TRUE
 
+/obj/item/weapon/gun/projectile/automatic/handle_post_fire()
+	..()
+	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
+	if (world.time - last_fire > 50)
+		jamcheck = 0
+	else
+		jamcheck += 0.1
+
+	if (prob(jamcheck*reverse_health_percentage))
+		jammed_until = max(world.time + (jamcheck * 5), 50)
+		jamcheck = 0
+
+	last_fire = world.time
+
 /obj/item/weapon/gun/projectile/automatic/madsen
 	name = "Madsen light machine gun"
 	desc = "The Madsen Machine Gun, is a light machine gun (LMG) designed in Denmark in the 1896. Many countries ordered models of it in different calibers. This one is 7.62x54mmR, mosin rounds."
@@ -259,7 +273,6 @@
 	weight = 10.5
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
-	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
 	throwforce = 30
@@ -271,9 +284,9 @@
 /obj/item/weapon/gun/projectile/automatic/m249
 	name = "M249 SAW"
 	desc = "An american machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
-	icon_state = "m60"
-	item_state = "m60"
-	base_icon = "m60"
+	icon_state = "m249"
+	item_state = "m249"
+	base_icon = "m249"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/Minimi.ogg'
 	magazine_type = /obj/item/ammo_magazine/m249
@@ -282,7 +295,7 @@
 	weight = 10
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
-	slot_flags = SLOT_SHOULDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	force = 20
 	nothrow = TRUE
 	throwforce = 30
@@ -291,19 +304,10 @@
 	slowdown = 1
 	effectiveness_mod = 1.07
 
-/obj/item/weapon/gun/projectile/automatic/handle_post_fire()
+/obj/item/weapon/gun/projectile/automatic/m249/acog/New()
 	..()
-	var/reverse_health_percentage = (1-(health/maxhealth)+0.25)*100
-	if (world.time - last_fire > 50)
-		jamcheck = 0
-	else
-		jamcheck += 0.1
-
-	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 5), 50)
-		jamcheck = 0
-
-	last_fire = world.time
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/pkm
 	name = "PKM machine gun"
@@ -428,7 +432,7 @@
 	load_delay = 19
 	weight = 4.7
 	name = "RPK-47M machine gun"
-	desc = "A modernized soviet machinegun chambered in 7.62x39 rounds."
+	desc = "A modernized Soviet machinegun chambered in 7.62x39 rounds."
 
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
@@ -453,9 +457,9 @@
 	effectiveness_mod = 1.01
 ///NSVT//////////////
 
-/obj/item/weapon/gun/projectile/automatic/nsvtutes
-	name = "NSVT UTES"
-	desc = "A soviet infantry support machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
+/obj/item/weapon/gun/projectile/automatic/nsv_utes
+	name = "NSV Utes"
+	desc = "A Soviet heavy machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "nsvth"
 	item_state = "nsvth"
 	base_icon = "nsvth"
@@ -464,15 +468,17 @@
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	weight = 12.5
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, dispersion = list(0.6, 1.0, 1.2, 1.3, 1.5), recoil = 0),)
+		list(name = "controlled burst",	burst=5, burst_delay=1.0, move_delay=4, recoil = 0, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, recoil = 1,  dispersion = list(0.6, 1, 1.2, 1.3, 1.3)),
+		)
 	slot_flags = SLOT_SHOULDER
 	force = 20
 	nothrow = TRUE
-	throwforce = 30
+	throwforce = 25
 	equiptimer = 25
-	load_delay = 50
+	load_delay = 55
 	slowdown = 0.8
-	effectiveness_mod = 1.10
+	effectiveness_mod = 1.01
 ////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13

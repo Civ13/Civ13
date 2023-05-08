@@ -607,3 +607,32 @@
 		new /obj/item/ammo_magazine/p90(src)
 		new /obj/item/ammo_magazine/p90(src)
 		new /obj/item/weapon/grenade/coldwar/nonfrag/m26(src)
+
+/obj/item/weapon/storage/backpack/piatpack
+	name = "Tube Rocket Satchel"
+	desc = "An ammunition carrier made out of cardboard and canvas. This one is able to carry up to 3 rockets."
+	icon_state = "piatbackpack"
+	item_state = "piatbackpack"
+	base_icon = "piatbackpack"
+	w_class = ITEM_SIZE_LARGE
+	slot_flags = SLOT_BACK
+	can_hold = list(
+		/obj/item/ammo_casing/rocket,
+		/obj/item/cannon_ball/mortar_shell,
+		/obj/item/ammo_casing/rocket/atgm)
+	max_w_class = 4
+	max_storage_space = 24
+
+/obj/item/weapon/storage/backpack/piatpack/filledearly
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/piat(src)
+		new/obj/item/ammo_casing/rocket/piat(src)
+		new/obj/item/ammo_casing/rocket/piat(src)
+
+/obj/item/weapon/storage/backpack/piatpack/filledlate
+	New()
+		..()
+		new/obj/item/ammo_casing/rocket/piat/mk3(src)
+		new/obj/item/ammo_casing/rocket/piat/mk3(src)
+		new/obj/item/ammo_casing/rocket/piat/mk3(src)

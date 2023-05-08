@@ -987,7 +987,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
 
@@ -1050,7 +1050,7 @@
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 		if (3)
@@ -1173,8 +1173,7 @@
 	return TRUE
 
 /datum/job/arab/wagner_pmc
-	title = "Naemnik CHVK Vagnera"
-	en_meaning = "Wagner Group PMC"
+	title = "Wagner Group PMC"
 	rank_abbreviation = "PMC"
 	default_language = "Russian"
 	additional_languages = list("English" = 25, "Ukrainian" = 50)
@@ -1192,7 +1191,7 @@
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
 	H.s_tone = rand(-35,-25)
-	
+
 /datum/job/arab/wagner_pmc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
@@ -1203,7 +1202,7 @@
 //head
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(60))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/desert(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
 		uniform.attackby(armor, H)
 	else
@@ -1220,7 +1219,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-	var/obj/item/clothing/accessory/storage/webbing/russian/web = new /obj/item/clothing/accessory/storage/webbing/russian(null)
+	var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/web = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
 	uniform.attackby(web, H)
 //back
 	if (prob(40))
@@ -1238,7 +1237,7 @@
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/nsvtutes(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/nsv_utes(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/utes(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/ammo127, H)
@@ -1615,5 +1614,82 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_LOW)
+
+	return TRUE
+
+/datum/job/american/delta_force
+	title = "Delta Force Operator"
+	rank_abbreviation = "Spc."
+	default_language = "English"
+	additional_languages = list("Arabic" = 60)
+	spawn_location = "JoinLateREB"
+
+	is_coldwar = FALSE
+	is_modernday = FALSE
+	is_syria = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/american/delta_force/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//under
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/multicam(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh(H), slot_head)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(60))
+		var/obj/item/clothing/accessory/armor/nomads/pcarriertan/armor = new /obj/item/clothing/accessory/armor/nomads/pcarriertan(null)
+		uniform.attackby(armor, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+		var/obj/item/clothing/accessory/armor/nomads/thickcarrier/armor = new /obj/item/clothing/accessory/armor/nomads/thickcarrier(null)
+		uniform.attackby(armor, H)
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/modern(H), slot_eyes)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless/army(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	var/obj/item/clothing/accessory/storage/webbing/us_vest/web = new /obj/item/clothing/accessory/storage/webbing/us_vest(null)
+	uniform.attackby(web, H)
+//back
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/hk(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+		web.attackby(new/obj/item/ammo_magazine/scarh, H)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m14(H), slot_belt)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14, H)
+		web.attackby(new/obj/item/ammo_magazine/m14box, H)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249/acog(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_r_store)
+		web.attackby(new/obj/item/ammo_magazine/m249, H)
+	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
+	uniform.attackby(white, H)
+	give_random_name(H)
+	H.add_note("Role", "You are an <b>[title]</b>, assisting the Free Syrian Army in its operations. As an operator you may act on your own, but try to follow given orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
