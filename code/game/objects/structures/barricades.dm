@@ -449,16 +449,12 @@
 		..()
 		icon_state = "debris[rand(1,4)]"
 
-/obj/structure/barricade/brickdebris
+/obj/structure/barricade/debris/brick
 	name = "brick debris"
-	desc = "A wall of rubble and debris."
-	icon = 'icons/obj/structures.dmi'
 	icon_state = "brick1"
-	material = "stone"
 	health = 450
 	maxhealth = 450
-	material_name = "stone"
-	protection_chance = 90
+	applies_material_colour = FALSE
 	New()
 		..()
 		icon_state = "brick[rand(1,2)]"
