@@ -441,13 +441,23 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "debris1"
 	material = "stone"
-	health = 300
-	maxhealth = 300
+	health = 500
+	maxhealth = 500
 	material_name = "stone"
 	protection_chance = 90
 	New()
 		..()
 		icon_state = "debris[rand(1,4)]"
+
+/obj/structure/barricade/debris/brick
+	name = "brick debris"
+	icon_state = "brick1"
+	health = 450
+	maxhealth = 450
+	applies_material_colour = FALSE
+	New()
+		..()
+		icon_state = "brick[rand(1,2)]"
 
 /obj/structure/barricade/stone_h
 	name = "stone wall"
