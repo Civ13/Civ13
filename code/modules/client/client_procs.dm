@@ -312,6 +312,8 @@
     //Check for IP or CID changes
     if (!(sql_ip in ips) || !(computer_id in cids))
         text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
+		message_admins("[ckey] has logged in with a different IP or CID than their last time.")
+		log_admin("[ckey] has logged in with a different IP or CID than their last time.")
 
 /client/verb/fixdbhost()
 	set hidden = TRUE
