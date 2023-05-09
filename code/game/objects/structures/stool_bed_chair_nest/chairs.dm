@@ -2,7 +2,6 @@
 	name = "chair"
 	desc = "You sit in this. Either by will or force."
 	icon_state = "chair"
-	color = "#666666"
 	base_icon = "chair"
 	buckle_dir = FALSE
 	buckle_lying = FALSE //force people to sit up in chairs when buckled
@@ -155,7 +154,6 @@
 	icon_state = "diner_booth_right"
 	applies_material_colour = FALSE
 	material = "leather"
-	color = "#FFFFFF"
 /obj/structure/bed/chair/comfy/diner_booth/l
 	base_icon = "diner_booth_left"
 	icon_state = "diner_booth_left"
@@ -275,6 +273,55 @@
 	material = "steel"
 	applies_material_colour = FALSE
 
+/obj/structure/bed/chair/steel/alt
+	desc = "A cheap, foldable metal chair."
+	icon_state = "metalchair"
+	base_icon = "metalchair"
+
+/obj/structure/bed/chair/steel/alt/green
+	icon_state = "metalchair_green"
+	base_icon = "metalchair_green"
+/obj/structure/bed/chair/steel/alt/blue
+	icon_state = "metalchair_blue"
+	base_icon = "metalchair_blue"
+/obj/structure/bed/chair/steel/alt/yellow
+	icon_state = "metalchair_yellow"
+	base_icon = "metalchair_yellow"
+/obj/structure/bed/chair/steel/alt/red
+	icon_state = "metalchair_red"
+	base_icon = "metalchair_red"
+
+/obj/structure/bed/chair/throne
+	name = "throne"
+	desc = "A lavish seat of royal authority."
+	icon_state = "throne"
+	base_icon = "throne"
+	material = "gold"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/throne
+	name = "throne"
+	desc = "A lavish seat of royal authority."
+	icon_state = "throne"
+	base_icon = "throne"
+	material = "gold"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/luxury
+	name = "luxurious chair"
+	desc = "Great comfort, elegance, and extravagance, all in one chair."
+	icon_state = "regalchair"
+	base_icon = "regalchair"
+	material = "gold"
+	applies_material_colour = FALSE
+
+/obj/structure/bed/chair/executive
+	name = "executive chair"
+	desc = "High-back, adjustable, ergonomic chair for office use."
+	icon_state = "bosschair"
+	base_icon = "bosschair"
+	material = "steel"
+	applies_material_colour = FALSE
 
 /obj/structure/bed/chair/wood/update_icon()
 	return
