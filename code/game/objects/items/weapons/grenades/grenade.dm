@@ -89,7 +89,7 @@
 /obj/item/weapon/grenade/old_grenade
 	name = "grenade"
 	desc = "A hand held grenade, with a 5 second fuse."
-	var/heavy_armor_penetration = 5
+	heavy_armor_penetration = 5
 	var/explosion_size = 2
 
 /obj/item/weapon/grenade/old_grenade/prime()
@@ -292,7 +292,7 @@
 	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	var/big_bomb = FALSE
 	var/spread_range = 7
-	var/heavy_armor_penetration = 3
+	heavy_armor_penetration = 3
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 /obj/item/weapon/grenade/modern/prime()
 	set waitfor = 0
@@ -697,7 +697,7 @@
 		qdel(src)
 
 /obj/item/weapon/grenade/ww2
-	var/heavy_armor_penetration = 5
+	heavy_armor_penetration = 5
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 37  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
@@ -711,7 +711,7 @@
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/coldwar
-	var/heavy_armor_penetration = 6
+	heavy_armor_penetration = 6
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 37  //total number of fragments produced by the grenade
 	var/fragment_damage = 15
