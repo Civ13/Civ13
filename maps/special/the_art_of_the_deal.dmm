@@ -271,7 +271,7 @@
 "ams" = (/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/item/clothing/under/coldwar/bowling_blue,/obj/structure/closet/cabinet,/turf/floor/plating/tiled/dark,/area/caribbean/roofed)
 "apS" = (/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "aqi" = (/obj/structure/props/junk,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
-"aqs" = (/obj/structure/bed/chair/steel{dir = 8; icon_state = "steelchair"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"aqs" = (/obj/structure/bed/chair/steel{dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "aqC" = (/obj/structure/railing{dir = 1; icon_state = "railing0"},/turf/floor/broken_floor,/area/caribbean/roofed/temperate)
 "asn" = (/obj/structure/sign/exit,/turf/wall/wood,/area/caribbean/roofed)
 "asB" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8; icon_state = "warning_dust"},/turf/floor/plating/metro{dir = 10},/area/caribbean/roofed/temperate)
