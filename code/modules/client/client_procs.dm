@@ -283,35 +283,38 @@
 	return md5(ckey)
 
 /client/proc/log_to_db()
-    if (IsGuestKey(ckey))
-        return
-    var/sql_ip = sql_sanitize_text(address)
-    if (sql_ip == null)
-        sql_ip = "HOST"
-    var/F = file("SQL/playerlogs.txt")
-    var/full_logs = file2text(F)
-    var/list/full_logs_split = splittext(full_logs, "|\n")
-    var/currentage = -1
-    var/realtime = -1
-    var/ips[]
-    var/cids[]
-    for(var/i=1;i<full_logs_split.len;i++)
-        var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
-        if ("[full_logs_split_two[1]]" == ckey)
-            ips += full_logs_split_two[2]
-            cids += full_logs_split_two[3]
-            currentage = full_logs_split_two[4]
-            realtime = full_logs_split_two[5]
-    //Logging player access
-    if (currentage == -1)
-        //adding to player logs (ckey;ip;computerid;datetime;realtime|)
-        text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
-        player_age = 0
-        return
-    player_age = (text2num(num2text(world.realtime,20)) - text2num(currentage))
-    //Check for IP or CID changes
-    if (!(sql_ip in ips) || !(computer_id in cids))
-        text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
+	if (IsGuestKey(ckey))
+		return
+	var/sql_ip = sql_sanitize_text(address)
+	if (sql_ip == null)
+		sql_ip = "HOST"
+	var/F = file("SQL/playerlogs.txt")
+	var/full_logs = file2text(F)
+	var/list/full_logs_split = splittext(full_logs, "|\n")
+	var/currentage = -1
+	var/realtime = -1
+	var/ips[]
+	var/cids[]
+	for(var/i=1;i<full_logs_split.len;i++)
+		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
+		if ("[full_logs_split_two[1]]" == ckey)
+			ips += full_logs_split_two[2]
+			cids += full_logs_split_two[3]
+			currentage = full_logs_split_two[4]
+			realtime = full_logs_split_two[5]
+
+	//Logging player access
+	if (currentage == -1)
+    //Adding to player logs (ckey;ip;computerid;datetime;realtime|)
+		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		player_age = 0
+		return
+	player_age = (text2num(num2text(world.realtime,20)) - text2num(currentage))
+	//Check for IP or CID changes
+	if (!(sql_ip in ips) || !(computer_id in cids))
+		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
+		message_admins("[ckey] has logged in with a different IP or CID than their last time.")
+		log_admin("[ckey] has logged in with a different IP or CID than their last time.")
 
 /client/verb/fixdbhost()
 	set hidden = TRUE
