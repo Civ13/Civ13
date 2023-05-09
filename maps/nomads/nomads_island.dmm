@@ -39,7 +39,7 @@
 "aM" = (/mob/living/simple_animal/hostile/bear/sow/black{harm_intent_damage = 20; health = 600; name = "Dango"},/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "aO" = (/obj/structure/table/modern,/obj/item/flashlight/lamp/littlelamp,/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "aP" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
-"aQ" = (/obj/structure/bed/modern/steel{icon_state = "steelchair"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/void/caves)
+"aQ" = (/obj/structure/bed/chair/steel{icon_state = "steelchair"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/void/caves)
 "aR" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "aS" = (/obj/structure/wild/jungle,/turf/floor/beach/water/flooded,/area/caribbean/nomads/forest/Jungle)
 "aT" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
