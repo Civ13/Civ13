@@ -297,7 +297,7 @@
 	var/cids[]
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
-			if ("[full_logs_split_two[1]]" == ckey)
+		if ("[full_logs_split_two[1]]" == ckey)
 			ips += full_logs_split_two[2]
 			cids += full_logs_split_two[3]
 			currentage = full_logs_split_two[4]
