@@ -196,7 +196,7 @@
 "JJ" = (/obj/covers/generic_wall,/turf/floor/plating,/area/caribbean)
 "JT" = (/obj/structure/props/server/controller,/turf/floor/plating/dark,/area/caribbean)
 "Kd" = (/obj/structure/props/computerprops/lunar2,/turf/floor/plating/dark,/area/caribbean)
-"Kg" = (/obj/structure/bed/chair/steel{icon = 'icons/obj/surgery.dmi'; icon_state = "operating_table"; base_icon = "operating_table"; name = "operating bed"},/turf/floor/plating/road,/area/caribbean)
+"Kg" = (/obj/structure/optable,/turf/floor/plating/road,/area/caribbean)
 "Kp" = (/obj/structure/largecrate{anchored = 1},/obj/random/magazine/ak74,/obj/random/gun/ak_modern,/turf/floor/plating/dark,/area/caribbean)
 "Lk" = (/obj/covers/catwalk/dark,/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean)
 "LU" = (/obj/covers/tent,/turf/floor/plating/road,/area/caribbean)
