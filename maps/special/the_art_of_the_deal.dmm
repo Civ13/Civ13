@@ -71,7 +71,7 @@
 "abD" = (/obj/covers/steelplating,/obj/structure/shelf,/turf/floor/plating/tiled,/area/caribbean/roofed/temperate)
 "abE" = (/obj/structure/closet/chemical,/obj/item/clothing/suit/hazmat,/obj/item/clothing/suit/hazmat,/obj/item/clothing/mask/gas/modern,/obj/item/clothing/gloves/thick,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "abF" = (/obj/structure/table/rack,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"abG" = (/obj/structure/bed/chair/steel{dir = 1; icon_state = "steelchair"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"abG" = (/obj/structure/bed/chair/steel{dir = 1},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "abH" = (/obj/structure/table/modern,/obj/structure/computer/nopower/aotd/civilian,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "abI" = (/obj/covers/brick_wall,/obj/structure/sign/painting3,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "abJ" = (/obj/covers/wood_wall/adjustable,/obj/covers/wood_wall/adjustable,/obj/structure/sign/flag/ireland,/turf/floor/dirt,/area/caribbean/roofed/temperate)
