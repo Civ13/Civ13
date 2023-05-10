@@ -217,7 +217,6 @@
 		if (3.0)
 			return
 
-
 /obj/structure/cannon/attack_hand(var/mob/attacker)
 	if (can_assemble && !assembled)
 		attacker << "<span class = 'warning'>Assemble the cannon first.</span>"
@@ -248,7 +247,6 @@
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 			anchored = !anchored
-
 
 /obj/structure/cannon/interact(var/mob/m)
 	if (user)
@@ -408,7 +406,6 @@
 				if (BS1.opacity)
 					user << "You have no opening to fire through!"
 					return
-
 
 		if (istype(src, /obj/structure/cannon/rocket))
 			for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
