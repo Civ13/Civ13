@@ -368,7 +368,7 @@
 	if (href_list["set_angle"])
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
 		angle = Clamp(angle, 5, maxrange)
-	
+
 	if (href_list["angle_minus"])
 		angle = angle - 1
 		angle = Clamp(angle, 5, maxrange)
@@ -408,8 +408,8 @@
 				if (BS1.opacity)
 					user << "You have no opening to fire through!"
 					return
-		
-		
+
+
 		if (istype(src, /obj/structure/cannon/rocket))
 			for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
 				if (do_after(user, firedelay, src, can_move = istank))
@@ -444,7 +444,7 @@
 
 					travelled = 0
 					high = TRUE
-					
+
 					if (fired_shell.atype == "INCENDIARY")
 						explosion = FALSE
 						incendiary = TRUE
@@ -598,10 +598,10 @@
 						if (fired_shell.atype == "INCENDIARY")
 							explosion = FALSE
 							incendiary = TRUE
-						
+
 						if (istype(loaded[1], /obj/item/cannon_ball/shell/nuclear))
 							nuclear = TRUE
-						
+
 						loaded -= fired_shell
 						qdel(fired_shell)
 
@@ -699,7 +699,7 @@
 												if (tgtbelow)
 													explosion(tgtbelow, 2, 3, 3, 3)
 										else
-											explosion(target, 1, 2, 3, 4)
+											explosion(target, 2, 3, 4, 6)
 											if (locate(/obj/structure/vehicleparts/frame) in target)
 												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
 													for (var/mob/M in F.axis.transporting)
