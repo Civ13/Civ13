@@ -46,8 +46,6 @@
 		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
-	else
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile but deflects it!</span>")
 
 /obj/item/cannon_ball/rocket/fire_act(temperature)
 	var/turf/t = get_turf(src)
@@ -83,8 +81,6 @@
 		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
-	else
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile but deflects it!</span>")
 
 /obj/item/cannon_ball/shell/fire_act(temperature)
 	var/turf/t = get_turf(src)
@@ -300,8 +296,6 @@
 		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
-	else
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile but deflects it!</span>")
 
 /obj/item/cannon_ball/mortar_shell/fire_act(temperature)
 	var/turf/t = get_turf(src)
