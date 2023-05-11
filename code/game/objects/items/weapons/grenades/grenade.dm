@@ -996,8 +996,8 @@
 	desc = "A powerful grenade, useful against armored vehicles."
 	icon_state = "rpg40"
 	det_time = 50
-	throw_range = 4
-	heavy_armor_penetration = 24
+	throw_range = 5
+	heavy_armor_penetration = 22
 
 /obj/item/weapon/grenade/antitank/rpg40
 	name = "RPG-40"

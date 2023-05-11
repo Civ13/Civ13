@@ -29,7 +29,6 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "rocket"
 	icon_state = "rocket"
-	desc = "A Rocket, Very Explosive."
 	w_class = ITEM_SIZE_LARGE
 	value = 30
 	atype = "HE"
@@ -44,7 +43,7 @@
 	if (prob(10))
 		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
 		explosion(t,0,1,1,2)
-		visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
 	else
@@ -81,7 +80,7 @@
 	if (prob(20))
 		playsound(t, 'sound/effects/smoke.ogg', 20, TRUE, -3)
 		explosion(t,1,1,2,5)
-		visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
 	else
@@ -105,7 +104,6 @@
 	name = "cannon shell"
 	icon_state = "shellHE"
 	w_class = ITEM_SIZE_HUGE
-	desc = "A big Tank shell."
 	value = 20
 	caliber = 75
 	heavy_armor_penetration = 15
@@ -299,7 +297,7 @@
 	if (prob(5))
 		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
 		explosion(t,0,1,1,1)
-		visible_message("<span class = 'warning'>\The [src] explodes!</span>")
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
 		spawn(5)
 			qdel(src)
 	else
