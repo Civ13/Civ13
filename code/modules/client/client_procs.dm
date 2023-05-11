@@ -145,11 +145,15 @@
 
 	//preferences datum - also holds some persistant data for the client (because we may as well keep these datums to a minimum)
 	prefs = preferences_datums[ckey]
+	if (prefs)
+		if (prefs.last_ip != address || prefs.last_id != computer_id)
+			log_admin("[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
 
 	if (!prefs)
 		prefs = new /datum/preferences(src)
 		preferences_datums[ckey] = prefs
 
+	//these are gonna be used for banning
 	prefs.last_ip = address				//these are gonna be used for banning
 	prefs.last_id = computer_id			//these are gonna be used for banning
 
