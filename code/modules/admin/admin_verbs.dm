@@ -521,11 +521,11 @@ var/list/admin_verbs_host = list(
 		return
 
 	var/turf/epicenter = mob.loc
-	var/list/choices = list("Small Bomb", "Medium Bomb", "Big Bomb", "Custom Bomb")
+	var/list/choices = list("Cancel", "Small Bomb", "Medium Bomb", "Big Bomb", "Custom Bomb")
 	var/choice = WWinput(src, "What size explosion would you like to produce?", "Drop Bomb", choices[1], choices)
 	switch(choice)
-		if (null)
-			return FALSE
+		if ("Cancel")
+			return
 		if ("Small Bomb")
 			explosion(epicenter, 1, 2, 3, 3)
 		if ("Medium Bomb")
