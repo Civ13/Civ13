@@ -30,10 +30,7 @@
 	if (!ammo_magazine)
 		icon_state = "[base_icon]_empty"
 	else
-		if (ammo_magazine.contents.len > 0)
-			icon_state = "[base_icon][ammo_magazine.contents.len]"
-		else
-			icon_state = "[base_icon]0"
+		icon_state = "[base_icon]"
 	update_held_icon()
 	return
 
