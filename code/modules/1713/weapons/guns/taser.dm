@@ -2,8 +2,8 @@
 	name = "taser pistol"
 	desc = "A type of electroshock weapon that uses electrical current to disrupt muscle control and temporarily incapacitate a person."
 	icon = 'icons/obj/guns/wip.dmi'
-	icon_state = "taser"
-	item_state = "taser"
+	icon_state = "taser_new"
+	item_state = "taser_new"
 	var/base_icon = "taser"
 	fire_sound = 'sound/weapons/taser.ogg' //To be changed to taser.ogg when imported
 	w_class = ITEM_SIZE_NORMAL
@@ -65,7 +65,7 @@
 
 /obj/item/ammo_magazine/taser
 	name = "taser cartridge"
-	icon_state = "tibanna"
+	icon_state = "taser"
 	caliber = "taser"
 	ammo_type = /obj/item/ammo_casing/taser
 	max_ammo = 5

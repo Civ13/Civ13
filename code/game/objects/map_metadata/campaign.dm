@@ -1195,7 +1195,9 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 							yoffset = rand(-2,2)
 					spawn(i*8)
 						explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
-				sam_check("PIRATES")
+				spawn (12 SECONDS)
+					sam_check("PIRATES")
+
 			if ("CIVILIAN") // Blugoslavia
 				var/xoffset = 0
 				var/yoffset = 0
@@ -1222,64 +1224,86 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 							yoffset = rand(-2,2)
 					spawn(i*8)
 						explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
-				sam_check("CIVILIAN")
+				spawn (12 SECONDS)
+					sam_check("CIVILIAN")
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/sam_check(var/faction)
-	spawn(12 SECONDS)
-		switch(faction)
-			if ("PIRATES") // Redmenia
-				if (prob(0))
-					var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
-					uploaded_sound.priority = 250
-					aircraft_hit_check("PIRATES")
-					for (var/mob/M in player_list)
-						if (!new_player_mob_list.Find(M))
-							M << SPAN_DANGER("<b>A SAM site fires at the aircraft!</b>")
-							M.client << uploaded_sound
-			if ("CIVILIAN") // Blugoslavia
-				if (prob(0))
-					var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
-					uploaded_sound.priority = 250
-					aircraft_hit_check("CIVILIAN")
-					for (var/mob/M in player_list)
-						if (!new_player_mob_list.Find(M))
-							M << SPAN_DANGER("<b>A SAM site fires at the aircraft!</b>")
-							M.client << uploaded_sound
+	switch(faction)
+		if ("PIRATES") // Redmenia
+			if (prob(0))
+				var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				aircraft_hit_check("PIRATES")
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						M << SPAN_DANGER("<b>A Blugoslavian SAM site fires at the [aircraft_red]!</b>")
+						M.client << uploaded_sound
+
+		if ("CIVILIAN") // Blugoslavia
+			if (prob(0))
+				var/sound/uploaded_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				aircraft_hit_check("CIVILIAN")
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						M << SPAN_DANGER("<b>A Redmenian SAM site fires at the [aircraft_blue]!</b>")
+						M.client << uploaded_sound
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/aircraft_hit_check(var/faction)
 	spawn(4 SECONDS)
 		switch(faction)
 			if ("PIRATES") // Redmenia
-				if (prob(40))
+				if (aircraft_red_countermeasures) // Check if the aircraft has countermeasures
+					world << SPAN_NOTICE("<font size=2>The [aircraft_red] deploys it's countermeasures!</font>")
+					aircraft_red_countermeasures = null
+					if (prob(95)) // Evade the SAM
+						world << SPAN_NOTICE("<font size=3>The countermeasures have succesfully tricked the SAM!</font>")
+						return
+					else
+						world << SPAN_NOTICE("<font size=3>The countermeasures were ineffective!</font>")
+
+				if (prob(90)) // Shoot down the jet
 					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
 					uploaded_sound.priority = 250
 					for (var/mob/M in player_list)
 						if (!new_player_mob_list.Find(M))
-							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_red] shooting it down!</font>")
+							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_red], shooting it down!</font>")
 							M.client << uploaded_sound
-					message_admins("A Redmenian aircraft [aircraft_red] has been shot down.")
-					log_game("A Redmenian aircraft [aircraft_red] has been shot down.")
-				else
+					aircraft_red = null
+					message_admins("Redmenian aircraft [aircraft_red] has been shot down.")
+					log_game("Redmenian aircraft [aircraft_red] has been shot down.")
+				else // Evade the SAM
 					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
 					uploaded_sound.priority = 250
 					for (var/mob/M in player_list)
 						if (!new_player_mob_list.Find(M))
-							M << SPAN_NOTICE("<font size=3>The SAM misses aircraft!</font>")
+							M << SPAN_NOTICE("<font size=3>The SAM misses the [aircraft_red]!</font>")
 							M.client << uploaded_sound
+
 			if ("CIVILIAN") // Blugoslavia
-				if (prob(40))
+				if (aircraft_blue_countermeasures) // Check if the aircraft has countermeasures
+					world << SPAN_NOTICE("<font size=3>The [aircraft_blue] deploys it's countermeasures!</font>")
+					aircraft_blue_countermeasures = null
+					if (prob(95)) // Evade the SAM
+						world << SPAN_NOTICE("<font size=3>The countermeasures have succesfully tricked the SAM!</font>")
+						return
+					else
+						world << SPAN_NOTICE("<font size=3>The countermeasures were ineffective!</font>")
+
+				if (prob(90)) // Shoot down the jet
 					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
 					uploaded_sound.priority = 250
 					for (var/mob/M in player_list)
 						if (!new_player_mob_list.Find(M))
-							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_blue] shooting it down!</font>")
+							M << SPAN_DANGER("<font size=3>The SAM directly hits the [aircraft_blue], shooting it down!</font>")
 							M.client << uploaded_sound
+					aircraft_blue = null
 					message_admins("A Blugoslavian aircraft [aircraft_blue] has been shot down.")
 					log_game("A Blugoslavian aircraft [aircraft_blue] has been shot down.")
-				else
+				else // Evade the SAM
 					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
 					uploaded_sound.priority = 250
 					for (var/mob/M in player_list)
 						if (!new_player_mob_list.Find(M))
-							M << SPAN_NOTICE("<font size=3>The SAM misses aircraft!</font>")
+							M << SPAN_NOTICE("<font size=3>The SAM misses the [aircraft_blue]!</font>")
 							M.client << uploaded_sound
