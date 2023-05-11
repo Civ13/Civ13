@@ -150,6 +150,10 @@
 		prefs = new /datum/preferences(src)
 		preferences_datums[ckey] = prefs
 
+	//these are gonna be used for banning
+	if (prefs.last_ip != address || prefs.last_id = computer_id)
+		log_admin("[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
+
 	prefs.last_ip = address				//these are gonna be used for banning
 	prefs.last_id = computer_id			//these are gonna be used for banning
 
