@@ -1676,7 +1676,7 @@
 /turf/floor/dirt,
 /area/caribbean)
 "Cp" = (
-/obj/structure/bed/modern/chair{
+/obj/structure/bed/chair/steel{
 	dir = 1
 	},
 /obj/roof/wood,

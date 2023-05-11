@@ -1325,7 +1325,7 @@
 "WO" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean)
 "WP" = (/obj/covers/fancywood,/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/broken_floor,/area/caribbean/roofed)
 "WQ" = (/obj/covers/fancywood,/obj/structure/table/modern/table,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/under/ww2/us_mp,/obj/item/clothing/head/helmet/ww2/usm1mpblack,/obj/item/clothing/head/helmet/ww2/usm1mpblack,/obj/item/clothing/head/helmet/ww2/usm1mpblack,/obj/item/clothing/head/helmet/ww2/usm1mpblack,/turf/floor/wood/fancywood,/area/caribbean/roofed)
-"WR" = (/obj/structure/bed/modern,/obj/item/weapon/bedsheet/medical,/turf/floor/trench,/area/caribbean)
+"WR" = (/obj/structure/bed/chair/steel,/obj/item/weapon/bedsheet/medical,/turf/floor/trench,/area/caribbean)
 "WS" = (/obj/covers/sidewalk,/obj/structure/railing/steel{dir = 8},/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/flag/us,/turf/floor/beach/water/deep,/area/caribbean)
 "WT" = (/obj/covers/marbletile,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/white,/area/caribbean/roofed)
 "WV" = (/obj/structure/bed/chair/gunner{dir = 8; icon_state = "officechair_white"},/obj/structure/vehicleparts/frame/baf1_a/left,/turf/floor/plating/road,/area/caribbean)
