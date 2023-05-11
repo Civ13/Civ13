@@ -559,8 +559,8 @@
 		return
 	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
 		return
-	for (var/obj/O in get_turf(user))
-		if (istype(get_turf(user),/obj/structure/vehicleparts/frame))
+	for (var/obj/O in range(1,user))
+		if (istype(O, /obj/structure/vehicleparts/frame))
 			return
 	for (var/obj/O in get_turf(target))
 		if (O.density)
