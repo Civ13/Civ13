@@ -338,6 +338,12 @@
 	desc = "A communication server to communicate with other servers and people, do I really need to explain this?"
 	icon_state = "comm_server"
 
+/obj/structure/transformer
+	name = "power transformer"
+	desc = "A big, heavy duty, power transformer turning high voltage electricity into low voltage electricity to be used by the consumer or else."
+	icon = 'icons/obj/machines/servers.dmi'
+	icon_state = "controller"
+
 /obj/structure/props/junk
 	name = "junk"
 	desc = "A pile of junk."

@@ -145,11 +145,16 @@
 
 	//preferences datum - also holds some persistant data for the client (because we may as well keep these datums to a minimum)
 	prefs = preferences_datums[ckey]
+	if (prefs)
+		if (prefs.last_ip != address || prefs.last_id != computer_id)
+			log_admin("[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
+			webhook_send_garbage(ckey, "[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
 
 	if (!prefs)
 		prefs = new /datum/preferences(src)
 		preferences_datums[ckey] = prefs
 
+	//these are gonna be used for banning
 	prefs.last_ip = address				//these are gonna be used for banning
 	prefs.last_id = computer_id			//these are gonna be used for banning
 
@@ -315,6 +320,7 @@
 		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
 		message_admins("[ckey] has logged in with a different IP or CID than their last time.")
 		log_admin("[ckey] has logged in with a different IP or CID than their last time.")
+		webhook_send_garbage(ckey, "[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
 
 /client/verb/fixdbhost()
 	set hidden = TRUE
