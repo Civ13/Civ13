@@ -740,7 +740,7 @@
 			if (prob(50))
 				src << "<span class = 'warning'><big>You are very uncomfortable. Remove the coat.</big></span>"
 			heatDamageFromClothingTimer = 6
-			adjustFireLoss(2)
+			adjustBurnLoss(2)
 
 
 	else if (heatDamageFromClothingTimer > 0)

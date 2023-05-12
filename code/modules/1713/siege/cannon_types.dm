@@ -422,8 +422,8 @@
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
-		if (loaded)
-			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
+		if (loaded.len)
+			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
 		// load first and only slot
 		if (do_after(M, 45, src, can_move = TRUE))

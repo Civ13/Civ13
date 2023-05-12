@@ -711,7 +711,7 @@
 		return
 	if (user.original_job_title != "Gladiator")
 		return
-	if ((user.getOxyLoss() + user.getToxLoss() + user.getFireLoss() + user.getBruteLoss() > 35))
+	if ((user.getOxyLoss() + user.getToxLoss() + user.getBurnLoss() + user.getBruteLoss() > 35))
 		user << "You are too damaged to save your character. Get surgery first."
 		return
 	var/choice = WWinput(user, "Do you want to save this character named [user.name]?", "Character Saving", "Yes", list("Yes","No"))

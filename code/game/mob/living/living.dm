@@ -250,6 +250,17 @@ default behaviour is:
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
 	return TRUE
 
+/mob/living/proc/getBurnLoss()
+	return burnloss
+
+/mob/living/proc/adjustBurnLoss(var/amount)
+	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.takes_less_damage)
+			amount /= H.getStatCoeff("strength")
+	burnloss = min(max(burnloss + amount, FALSE),(maxHealth*2))
+
 /mob/living/proc/getOxyLoss()
 	return oxyloss
 
@@ -287,17 +298,6 @@ default behaviour is:
 		if (H.takes_less_damage)
 			amount /= H.getStatCoeff("strength")
 	toxloss = amount
-
-/mob/living/proc/getFireLoss()
-	return fireloss
-
-/mob/living/proc/adjustFireLoss(var/amount)
-	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (ishuman(src))
-		var/mob/living/human/H = src
-		if (H.takes_less_damage)
-			amount /= H.getStatCoeff("strength")
-	fireloss = min(max(fireloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/getCloneLoss()
 	return cloneloss
@@ -337,13 +337,13 @@ default behaviour is:
 	halloss = amount
 
 /mob/living/proc/getTotalLoss()
-	return getBruteLoss() + getOxyLoss() + getToxLoss() + getFireLoss() + getCloneLoss() + getBrainLoss() + getHalLoss()
+	return getBruteLoss() + getOxyLoss() + getToxLoss() + getBurnLoss() + getCloneLoss() + getBrainLoss() + getHalLoss()
 
 /mob/living/proc/getMaxHealth()
 	return maxHealth
 //since gettotalloss() counts halloss it broke the check_instadeath() proc
 /mob/living/proc/getTotalDmg()
-	return getBruteLoss() + getToxLoss() + getFireLoss() + getBrainLoss()
+	return getBruteLoss() + getToxLoss() + getBurnLoss() + getBrainLoss()
 
 /mob/living/proc/setMaxHealth(var/newMaxHealth)
 	maxHealth = newMaxHealth
@@ -395,27 +395,27 @@ default behaviour is:
 // heal ONE external organ, organ gets randomly selected from damaged ones.
 /mob/living/proc/heal_organ_damage(var/brute, var/burn)
 	adjustBruteLoss(-brute)
-	adjustFireLoss(-burn)
+	adjustBurnLoss(-burn)
 	updatehealth()
 
 // damage ONE external organ, organ gets randomly selected from damaged ones.
 /mob/living/proc/take_organ_damage(var/brute, var/burn, var/emp=0)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	adjustBruteLoss(brute)
-	adjustFireLoss(burn)
+	adjustBurnLoss(burn)
 	updatehealth()
 
 // heal MANY external organs, in random order
 /mob/living/proc/heal_overall_damage(var/brute, var/burn)
 	adjustBruteLoss(-brute)
-	adjustFireLoss(-burn)
+	adjustBurnLoss(-burn)
 	updatehealth()
 
 // damage MANY external organs, in random order
 /mob/living/proc/take_overall_damage(var/brute, var/burn, var/used_weapon = null)
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	adjustBruteLoss(brute)
-	adjustFireLoss(burn)
+	adjustBurnLoss(burn)
 	updatehealth()
 
 /mob/living/proc/restore_all_organs()
@@ -473,7 +473,7 @@ default behaviour is:
 	eye_blurry = FALSE
 	ear_deaf = FALSE
 	ear_damage = FALSE
-	heal_overall_damage(getBruteLoss(), getFireLoss())
+	heal_overall_damage(getBruteLoss(), getBurnLoss())
 
 	// fix all of our organs
 	restore_all_organs()

@@ -207,7 +207,7 @@
 			H.AdjustStunned(10)
 			H.AdjustWeakened(10)
 			H.burn_skin(25)
-			H.adjustFireLoss(25)
+			H.adjustBurnLoss(25)
 			H.drop_item()
 			H.adjustOxyLoss(80)
 			H.adjustBodyTemp(-100)
@@ -217,14 +217,14 @@
 			mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
 			spawn(100)
 				H.burn_skin(25)
-				H.adjustFireLoss(30)
+				H.adjustBurnLoss(30)
 				H.emote("gasp")
 				H.emote("choke")
 				H.adjustBodyTemp(-200)
 				mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"
 				spawn(100)
 					H.burn_skin(25)
-					H.adjustFireLoss(20)
+					H.adjustBurnLoss(20)
 					H.emote("gasp")
 					H.emote("choke")
 					mob << "<span class='notice'>You gasp and shudder as the void boils you alive!!</span>"

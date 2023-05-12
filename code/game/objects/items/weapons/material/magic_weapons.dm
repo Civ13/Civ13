@@ -49,14 +49,14 @@
 		M.Weaken(weakenpower)
 	if(prob(flames))
 		if (world.time > cooloff)
-			//M.adjustFireLoss(rand(2,10))
+			//M.adjustBurnLoss(rand(2,10))
 			if (prob(flamepower))
 				M.fire_stacks += 1
 			M.IgniteMob()
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
 			cooloff = world.time+flamepower
 	if(prob(ices))
-		M.adjustFireLoss(icepower)
+		M.adjustBurnLoss(icepower)
 		playsound(loc, 'sound/effects/bubbles.ogg', 75, TRUE)
 		M.bodytemperature -= (icepower)
 	if(prob(toxics))

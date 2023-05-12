@@ -1188,7 +1188,7 @@ obj/screen/tactic
 			overlays += I
 
 		//Fire and Brute damage overlay (BSSR)
-		var/hurtdamage = H.getBruteLoss() + H.getFireLoss() + H.damageoverlaytemp
+		var/hurtdamage = H.getBruteLoss() + H.getBurnLoss() + H.damageoverlaytemp
 		H.damageoverlaytemp = FALSE // We do this so we can detect if someone hits us or not.
 		if (hurtdamage)
 			var/image/I

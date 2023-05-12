@@ -72,7 +72,7 @@
 		amount += O.brute_dam
 	return amount
 
-/mob/living/human/getFireLoss()
+/mob/living/human/getBurnLoss()
 	var/amount = FALSE
 	for (var/obj/item/organ/external/O in organs)
 		amount += O.burn_dam
@@ -90,7 +90,7 @@
 	else
 		heal_overall_damage(-amount, FALSE)
 
-/mob/living/human/adjustFireLoss(var/amount)
+/mob/living/human/adjustBurnLoss(var/amount)
 	amount = amount*species.burn_mod
 	if (ishuman(src))
 		var/mob/living/human/H = src
@@ -111,7 +111,7 @@
 		else
 			O.heal_damage(-amount, 0, internal=0,)
 
-/mob/living/human/proc/adjustFireLossByPart(var/amount, var/organ_name, var/obj/damage_source = null)
+/mob/living/human/proc/adjustBurnLossByPart(var/amount, var/organ_name, var/obj/damage_source = null)
 	amount = amount*species.burn_mod
 	if (organ_name in organs_by_name)
 		var/obj/item/organ/external/O = get_organ(organ_name)

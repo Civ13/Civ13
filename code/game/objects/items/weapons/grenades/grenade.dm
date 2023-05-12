@@ -72,6 +72,60 @@
 	..()
 	return
 
+/obj/item/weapon/grenade/proc/damage_hull(var/turf/T)
+	for(var/obj/structure/vehicleparts/frame/F in range(1,T))
+		for (var/mob/M in F.axis.transporting)
+			shake_camera(M, 1, 1)
+		var/penloc = F.CheckPenLoc(src)
+		switch(penloc)
+			if ("left")
+				if (F.w_left[5] > 0)
+					F.w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+			if ("right")
+				if (F.w_right[5] > 0)
+					F.w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+			if ("front")
+				if (F.w_front[5] > 0)
+					F.w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("back")
+				if (F.w_back[5] > 0)
+					F.w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("frontleft")
+				if (F.w_left[5] > 0 && F.w_front[5] > 0)
+					if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
+						F.w_left[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					else
+						F.w_front[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("frontright")
+				if (F.w_right[5] > 0 && F.w_front[5] > 0)
+					if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
+						F.w_right[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					else
+						F.w_front[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("backleft")
+				if (F.w_left[5] > 0 && F.w_back[5] > 0)
+					if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
+						F.w_left[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					else
+						F.w_back[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("backright")
+				if (F.w_right[5] > 0 && F.w_back[5] > 0)
+					if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
+						F.w_right[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					else
+						F.w_back[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
 
 // grenades set off other grenades, but only ones on the same turf
 /obj/item/weapon/grenade/ex_act(severity)
@@ -96,66 +150,13 @@
 	set waitfor = 0
 	..()
 
-	var/turf/O = get_turf(src)
-	if(!O) return
+	var/turf/T = get_turf(src)
+	if(!T) return
 
 	if(explosion_size)
-		explosion(O,1,1,3,1,sound=explosion_sound)
-		for(var/obj/structure/vehicleparts/frame/F in range(2,O))
-			for (var/mob/M in F.axis.transporting)
-				shake_camera(M, 1, 1)
-			var/penloc = F.CheckPenLoc(src)
-			switch(penloc)
-				if ("left")
-					if (F.w_left[5] > 0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-				if ("right")
-					if (F.w_right[5] > 0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-				if ("front")
-					if (F.w_front[5] > 0)
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("back")
-					if (F.w_back[5] > 0)
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("frontleft")
-					if (F.w_left[5] > 0 && F.w_front[5] > 0)
-						if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("frontright")
-					if (F.w_right[5] > 0 && F.w_front[5] > 0)
-						if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("backleft")
-					if (F.w_left[5] > 0 && F.w_back[5] > 0)
-						if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("backright")
-					if (F.w_right[5] > 0 && F.w_back[5] > 0)
-						if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+		explosion(T,1,1,3,1,sound=explosion_sound)
+		damage_hull(T)
 		qdel(src)
-
 
 /obj/item/weapon/grenade/bomb
 	name = "gunpowder barrel bomb"
@@ -303,59 +304,7 @@
 
 	if(explosion_size)
 		explosion(T,1,1,3,1,sound=explosion_sound)
-		for(var/obj/structure/vehicleparts/frame/F in range(2,T))
-			for (var/mob/M in F.axis.transporting)
-				shake_camera(M, 1, 1)
-			var/penloc = F.CheckPenLoc(src)
-			switch(penloc)
-				if ("left")
-					if (F.w_left[5] > 0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-				if ("right")
-					if (F.w_right[5] > 0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-				if ("front")
-					if (F.w_front[5] > 0)
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("back")
-					if (F.w_back[5] > 0)
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("frontleft")
-					if (F.w_left[5] > 0 && F.w_front[5] > 0)
-						if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("frontright")
-					if (F.w_right[5] > 0 && F.w_front[5] > 0)
-						if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("backleft")
-					if (F.w_left[5] > 0 && F.w_back[5] > 0)
-						if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("backright")
-					if (F.w_right[5] > 0 && F.w_back[5] > 0)
-						if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+		damage_hull(T)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)
@@ -523,59 +472,7 @@
 
 	if(explosion_size)
 		explosion(T,1,1,3,1,sound=explosion_sound)
-		for(var/obj/structure/vehicleparts/frame/F in range(2,T))
-			for (var/mob/M in F.axis.transporting)
-				shake_camera(M, 1, 1)
-			var/penloc = F.CheckPenLoc(src)
-			switch(penloc)
-				if ("left")
-					if (F.w_left[5] > 0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-				if ("right")
-					if (F.w_right[5] > 0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-				if ("front")
-					if (F.w_front[5] > 0)
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("back")
-					if (F.w_back[5] > 0)
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("frontleft")
-					if (F.w_left[5] > 0 && F.w_front[5] > 0)
-						if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("frontright")
-					if (F.w_right[5] > 0 && F.w_front[5] > 0)
-						if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("backleft")
-					if (F.w_left[5] > 0 && F.w_back[5] > 0)
-						if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("backright")
-					if (F.w_right[5] > 0 && F.w_back[5] > 0)
-						if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+		damage_hull(T)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)
@@ -605,59 +502,7 @@
 
 	if(explosion_size)
 		explosion(T,1,1,4,1,sound=explosion_sound)
-		for(var/obj/structure/vehicleparts/frame/F in range(2,T))
-			for (var/mob/M in F.axis.transporting)
-				shake_camera(M, 1, 1)
-			var/penloc = F.CheckPenLoc(src)
-			switch(penloc)
-				if ("left")
-					if (F.w_left[5] > 0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-				if ("right")
-					if (F.w_right[5] > 0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-				if ("front")
-					if (F.w_front[5] > 0)
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("back")
-					if (F.w_back[5] > 0)
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("frontleft")
-					if (F.w_left[5] > 0 && F.w_front[5] > 0)
-						if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("frontright")
-					if (F.w_right[5] > 0 && F.w_front[5] > 0)
-						if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_front[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
-				if ("backleft")
-					if (F.w_left[5] > 0 && F.w_back[5] > 0)
-						if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
-							F.w_left[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
-				if ("backright")
-					if (F.w_right[5] > 0 && F.w_back[5] > 0)
-						if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
-							F.w_right[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
-						else
-							F.w_back[5] -= heavy_armor_penetration
-							visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+		damage_hull(T)
 	if (!ismob(loc))
 
 		var/list/target_turfs = getcircle(T, spread_range)

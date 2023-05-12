@@ -307,7 +307,7 @@
 				var/mob/living/L = M
 				for(var/I, I < 60, I++)
 					L.bodytemperature += 50
-					L.adjustFireLoss(20)
+					L.adjustBurnLoss(20)
 					L.adjustBrainLoss(5)
 					if(L.stat == DEAD || !(L in contents)) //In case we die or are removed at any point.
 						cremating = 0
