@@ -14,7 +14,7 @@
 		if (BRUTE)
 			adjustBruteLoss(damage/(blocked+1))
 		if (BURN)
-			adjustFireLoss(damage/(blocked+1))
+			adjustBurnLoss(damage/(blocked+1))
 		if (TOX)
 			adjustToxLoss(damage/(blocked+1))
 		if (OXY)
@@ -82,6 +82,6 @@
 		health = 100
 		stat = CONSCIOUS
 	else
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - halloss
+		health = maxHealth - getOxyLoss() - getToxLoss() - getBurnLoss() - getBruteLoss() - getCloneLoss() - halloss
 	if (health <= 0) // experimental block
 		death()

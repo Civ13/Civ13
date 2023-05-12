@@ -197,7 +197,7 @@
 			if (!H.shoes)
 				if (prob(25))
 					H << "<span class='danger'>The hot ground burns your feet!</span>"
-					H.adjustFireLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
+					H.adjustBurnLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -226,7 +226,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.2*dmod, i)
+			H.adjustBurnLossByPart(0.2*dmod, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
@@ -235,7 +235,7 @@
 			if (prob(15))
 				H << "<span class='danger'>The dust abrades your exposed flesh!</span>"
 			for (var/i in exposed_bp)
-				H.adjustFireLossByPart(1*dmod, i)
+				H.adjustBurnLossByPart(1*dmod, i)
 
 	if (H.bodytemperature < cold_level_1 && !H.wolfman)
 		var/dmod = 1
@@ -258,7 +258,7 @@
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
 					H << "<span class='danger'>Your feet are freezing!</span>"
-					H.adjustFireLossByPart(1*dmod, pick("l_foot", "r_foot"))
+					H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
@@ -287,7 +287,7 @@
 				exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
-			H.adjustFireLossByPart(0.5*dmod, i)
+			H.adjustBurnLossByPart(0.5*dmod, i)
 
 		if (prob(12))
 			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
@@ -295,17 +295,17 @@
 		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
 			if (prob(12))
 				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
-			H.adjustFireLoss(0.8*dmod)
+			H.adjustBurnLoss(0.8*dmod)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))
 			if (prob(15))
 				H << "<span class='danger'>The cold rain chills you to the bone.</span>"
-			H.adjustFireLoss(3) // wet is bad
+			H.adjustBurnLoss(3) // wet is bad
 		else if (A.weather == WEATHER_WET && findtext(A,"snow"))
 			if (prob(15))
 				H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
-			H.adjustFireLoss(2)
+			H.adjustBurnLoss(2)
 */
 /datum/species/proc/sanitize_name(var/name)
 	return sanitizeName(name)

@@ -226,7 +226,7 @@ bullet_act
 			if (FM.reagents.get_reagent_amount("gasoline")>10)
 				explosion(loc, 1, 2, 2, 3)
 				qdel(FM)
-				adjustFireLoss(100)
+				adjustBurnLoss(100)
 				for(var/turf/T in range(1,src))
 					new/obj/effect/fire(T)
 					ignite_turf(T,15,30)

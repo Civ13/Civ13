@@ -576,10 +576,10 @@
 	else
 		M.adjustBruteLoss(-0.3*REM) //heal brute damage
 	..()
-	if(M.adjustFireLoss() > 10)
-		M.adjustFireLoss(-2*REM)
+	if(M.adjustBurnLoss() > 10)
+		M.adjustBurnLoss(-2*REM)
 	else
-		M.adjustFireLoss(-0.5*REM)
+		M.adjustBurnLoss(-0.5*REM)
 	..()
 	return
 /datum/reagent/diclofenac/overdose(mob/living/M)

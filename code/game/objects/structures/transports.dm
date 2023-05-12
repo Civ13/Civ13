@@ -1950,7 +1950,7 @@
 /obj/structure/vehicle/carriage/movementloop() //Makes the pulling animals hungry
 	if(pulling1 || pulling2 || pulling3 || pulling4)
 		if(pulling1)
-			if(pulling1.fireloss + pulling1.oxyloss + pulling1.toxloss + pulling1.bruteloss >= pulling1.health) //Is it dead?
+			if(pulling1.burnloss + pulling1.oxyloss + pulling1.toxloss + pulling1.bruteloss >= pulling1.health) //Is it dead?
 				axis.currentspeed = 0
 				stopmovementloop()
 				visible_message("<span class='warning'>The dead [pulling1.name] stops the [src] from moving!</span>")
@@ -1958,7 +1958,7 @@
 			else
 				pulling1.simplehunger -= 1 //Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage
 		if(pulling2)
-			if(pulling2.fireloss + pulling2.oxyloss + pulling2.toxloss + pulling2.bruteloss >= pulling2.health) //Is it dead?
+			if(pulling2.burnloss + pulling2.oxyloss + pulling2.toxloss + pulling2.bruteloss >= pulling2.health) //Is it dead?
 				axis.currentspeed = 0
 				stopmovementloop()
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
@@ -1966,7 +1966,7 @@
 			else
 				pulling2.simplehunger -= 1
 		if(pulling3)
-			if(pulling3.fireloss + pulling3.oxyloss + pulling3.toxloss + pulling3.bruteloss >= pulling3.health) //Is it dead?
+			if(pulling3.burnloss + pulling3.oxyloss + pulling3.toxloss + pulling3.bruteloss >= pulling3.health) //Is it dead?
 				axis.currentspeed = 0
 				stopmovementloop()
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
@@ -1974,7 +1974,7 @@
 			else
 				pulling3.simplehunger -= 1
 		if(pulling4)
-			if(pulling4.fireloss + pulling4.oxyloss + pulling4.toxloss + pulling4.bruteloss >= pulling4.health) //Is it dead?
+			if(pulling4.burnloss + pulling4.oxyloss + pulling4.toxloss + pulling4.bruteloss >= pulling4.health) //Is it dead?
 				axis.currentspeed = 0
 				stopmovementloop()
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")

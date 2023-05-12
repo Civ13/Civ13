@@ -74,7 +74,7 @@
 	var/range_step = 2		//projectile will lose a fragment each time it travels this distance. Can be a non-integer.
 	var/base_spread = 90	//lower means the pellets spread more across body parts. If zero then this is considered a shrapnel explosion instead of a shrapnel cone
 	var/spread_step = 10	//higher means the pellets spread more across body parts with distance
-	kill_count = 7 // Range of 7 tiles
+	kill_count = 6 // Range of 6 tiles
 
 /obj/item/projectile/bullet/pellet/Bumped()
 	. = ..()

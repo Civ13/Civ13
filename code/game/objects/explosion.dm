@@ -30,7 +30,7 @@
 
 /proc/ignite_turf(turf/target, duration, damage)
 	for (var/mob/living/HM in target)
-		HM.adjustFireLoss(damage)
+		HM.adjustBurnLoss(damage)
 		HM.fire_stacks += rand(1,3)
 		HM.IgniteMob()
 	var/obj/effect/fire/F = new /obj/effect/fire(target)
@@ -39,7 +39,7 @@
 
 /proc/ignite_turf_lowchance(turf/target, duration, damage)
 	for (var/mob/living/HM in target)
-		HM.adjustFireLoss(damage)
+		HM.adjustBurnLoss(damage)
 		if (prob(30))
 			HM.fire_stacks += rand(1)
 		HM.IgniteMob()

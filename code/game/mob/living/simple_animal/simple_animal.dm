@@ -1138,17 +1138,17 @@
 			if(prob(1))
 				mutate()
 		else if(radiation >= 100 && radiation <= 150) //Unsafe levels of radiation, Higher chance.
-			adjustFireLoss(radiation*0.002)
+			adjustBurnLoss(radiation*0.002)
 			updatehealth()
 			if(prob(5))
 				mutate()
 		else if(radiation >= 150 && radiation <= 200) //Very unsafe levels of radiation.
-			adjustFireLoss(radiation*0.004)
+			adjustBurnLoss(radiation*0.004)
 			updatehealth()
 			if(prob(15))
 				mutate()
 		else if(radiation >= 200) //How is it still even alive!?!?
-			adjustFireLoss(radiation*0.006)
+			adjustBurnLoss(radiation*0.006)
 			updatehealth()
 			if(prob(25))
 				mutate()
