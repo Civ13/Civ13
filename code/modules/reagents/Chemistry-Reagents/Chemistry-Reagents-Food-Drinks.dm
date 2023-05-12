@@ -849,7 +849,7 @@
 	adj_dizzy = -20
 /datum/reagent/drink/health/minor/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 		M.adjustBruteLoss(-4 * removed)
-		M.adjustFireLoss(-4 * removed)
+		M.adjustBurnLoss(-4 * removed)
 		M.adjustBrainLoss(-4 * removed)
 		M.adjustToxLoss(-4 * removed)
 		M.adjustOxyLoss(-4 * removed)
@@ -870,7 +870,7 @@
 	adj_dizzy = -50
 /datum/reagent/drink/health/healing/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 		M.adjustBruteLoss(-6 * removed)
-		M.adjustFireLoss(-6 * removed)
+		M.adjustBurnLoss(-6 * removed)
 		M.adjustBrainLoss(-6 * removed)
 		M.adjustToxLoss(-6 * removed)
 		M.adjustOxyLoss(-6 * removed)
@@ -891,7 +891,7 @@
 	adj_dizzy = -100
 /datum/reagent/drink/health/plentiful/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 		M.adjustBruteLoss(-10 * removed)
-		M.adjustFireLoss(-10 * removed)
+		M.adjustBurnLoss(-10 * removed)
 		M.adjustBrainLoss(-10 * removed)
 		M.adjustToxLoss(-10 * removed)
 		M.adjustOxyLoss(-10 * removed)
@@ -912,7 +912,7 @@
 	adj_dizzy = -200
 /datum/reagent/drink/health/vigorous/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 		M.adjustBruteLoss(-25 * removed)
-		M.adjustFireLoss(-25 * removed)
+		M.adjustBurnLoss(-25 * removed)
 		M.adjustBrainLoss(-25 * removed)
 		M.adjustToxLoss(-25 * removed)
 		M.adjustOxyLoss(-25 * removed)

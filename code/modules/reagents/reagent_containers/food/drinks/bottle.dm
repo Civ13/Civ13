@@ -163,7 +163,7 @@
 							continue
 						L.fire_stacks += ceil(alcohol_power/1000)
 						L.IgniteMob()
-						L.adjustFireLoss(rand(alcohol_power*0.004,alcohol_power*0.008))
+						L.adjustBurnLoss(rand(alcohol_power*0.004,alcohol_power*0.008))
 						if (ishuman(L))
 							L.emote("painscream")
 
