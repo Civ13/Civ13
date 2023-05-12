@@ -51,7 +51,6 @@
 		return !density
 	else
 		return TRUE
-//32 e 4 - a ��e �� e���e�
 
 /obj/structure/railing/examine(mob/user)
 	. = ..()
@@ -83,37 +82,37 @@
 	var/Rturn = turn(dir, -90)
 	var/Lturn = turn(dir, 90)
 
-	for (var/obj/structure/railing/R in loc)// a�a�ec e���ee, aa� �ao�ae��� �a� �a��e�
-		if ((R.dir == Lturn) && R.anchored)//���a��ea ��a�e �������
+	for (var/obj/structure/railing/R in loc)
+		if ((R.dir == Lturn) && R.anchored)
 			//LeftSide[1] = TRUE
 			check |= 32
 			if (UpdateNeighbors)
 				R.update_icon(0)
-		if ((R.dir == Rturn) && R.anchored)//���a��ea ��aa�e �������
+		if ((R.dir == Rturn) && R.anchored)
 			//RightSide[1] = TRUE
 			check |= 2
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, Lturn))//a�a�ec ��a�e e���ee �� �a��aa���e� �a��e�a
+	for (var/obj/structure/railing/R in get_step(src, Lturn))
 		if ((R.dir == dir) && R.anchored)
 			//LeftSide[2] = TRUE
 			check |= 16
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, Rturn))//a�a�ec ��aa�e e���ee �� �a��aa���e� �a��e�a
+	for (var/obj/structure/railing/R in get_step(src, Rturn))
 		if ((R.dir == dir) && R.anchored)
 			//RightSide[2] = TRUE
 			check |= TRUE
 			if (UpdateNeighbors)
 				R.update_icon(0)
 
-	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))//a�a�ec ����a��e-��a�e aeaa��a�e �����e���u�� �a��aa���e� �a��e�a.
+	for (var/obj/structure/railing/R in get_step(src, (Lturn + dir)))
 		if ((R.dir == Rturn) && R.anchored)
 			check |= 64
 			if (UpdateNeighbors)
 				R.update_icon(0)
-	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))//a�a�ec ����a��e-��aa�e aeaa��a�e �����e���u�� �a��aa���e� �a��e�a.
+	for (var/obj/structure/railing/R in get_step(src, (Rturn + dir)))
 		if ((R.dir == Lturn) && R.anchored)
 			check |= 4
 			if (UpdateNeighbors)
@@ -121,9 +120,9 @@
 
 
 /*	for (var/obj/structure/railing/R in get_step(src, dir))
-		if ((R.dir == Lturn) && R.anchored)//���a��ea ��a�e �������
+		if ((R.dir == Lturn) && R.anchored)
 			LeftSide[3] = TRUE
-		if ((R.dir == Rturn) && R.anchored)//���a��ea ��aa�e �������
+		if ((R.dir == Rturn) && R.anchored)
 			RightSide[3] = TRUE*/
 	//check <<"check: [check]"
 	//world << "dir = [dir]"
@@ -137,7 +136,6 @@
 		icon_state = "railing0"
 	else
 		icon_state = "railing1"
-		//��aa� ������a
 		if (check & 32)
 			overlays += image (src.icon, src, "corneroverlay")
 			//world << "32 check"

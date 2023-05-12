@@ -1770,7 +1770,7 @@ RECIPE: /material/steel/,shelf,/obj/structure/table/rack/shelf,6,80,1,1,furnitur
 RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,1,none,95,0,98,8,null
 RECIPE: /material/steel/,clock,/obj/structure/sign/clock,9,200,1,1,none,98,0,0,8,null
 RECIPE: /material/steel/,ashtray,/obj/item/weapon/material/ashtray,3,120,0,1,none,100,0,0,8,null
-RECIPE: /material/steel/,steel chair,/obj/structure/bed/modern/steel,6,150,1,1,furniture,110,0,0,8,null
+RECIPE: /material/steel/,steel chair,/obj/structure/bed/chair/steel,6,150,1,1,furniture,110,0,0,8,null
 RECIPE: /material/steel/,reinforced table,/obj/structure/table/modern/retable,6,80,1,1,furniture,110,0,0,8,steel
 RECIPE: /material/steel/,dark rollerchair,/obj/structure/bed/chair/office/dark,8,150,1,1,furniture,123,0,0,8,null
 RECIPE: /material/steel/,rollerchair,/obj/structure/bed/chair/office/light,8,150,1,1,furniture,123,0,0,8,null

@@ -1103,6 +1103,8 @@ var/global/redirect_all_players = null
 	if (ARAB in map.faction_organization)
 		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
 			dat += "[alive_arab.len] Mujahideen "
+		else if (map && istype(map, /obj/map_metadata/syria))
+			dat += "[alive_arab.len] Syrian Government Soldiers "
 		else
 			dat += "[alive_arab.len] Arabs "
 	if (JAPANESE in map.faction_organization)
@@ -1155,6 +1157,8 @@ var/global/redirect_all_players = null
 			dat += "[alive_american.len] Grove Street "
 		else if (map && istype(map, /obj/map_metadata/eft_factory))
 			dat += "[alive_american.len] USEC PMCs "
+		else if (map && istype(map, /obj/map_metadata/syria))
+			dat += "[alive_american.len] Syrian Rebels "
 		else
 			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
@@ -1167,7 +1171,7 @@ var/global/redirect_all_players = null
 	if (FILIPINO in map.faction_organization)
 		dat += "[alive_filipino.len] Filipino "
 	if (POLISH in map.faction_organization)
-		dat += "[alive_swedish.len] Poles "
+		dat += "[alive_polish.len] Poles "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"

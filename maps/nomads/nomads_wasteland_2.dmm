@@ -1544,7 +1544,7 @@
 "DN" = (/obj/covers/steelplating,/obj/structure/shelf,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/item/weapon/reagent_containers/food/snacks/driedfish,/obj/roof/concrete,/turf/floor/grass,/area/caribbean/nomads/forest)
 "DO" = (/obj/covers/steelplating,/obj/structure/vending/sales/vending,/obj/roof/concrete,/turf/floor/grass,/area/caribbean/roofed)
 "DP" = (/obj/covers/steelplating,/obj/structure/shelf,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/roofed)
-"DQ" = (/obj/covers/steelplating,/obj/structure/bed/modern/steel{dir = 8; icon_state = "steelchair"},/obj/roof/concrete,/turf/floor/grass,/area/caribbean/roofed)
+"DQ" = (/obj/covers/steelplating,/obj/structure/bed/chair/steel{dir = 8},/obj/roof/concrete,/turf/floor/grass,/area/caribbean/roofed)
 "DR" = (/obj/covers/cement_wall,/obj/structure/sign/armory{desc = "The MOST American ham!"; name = "Grandma Red White and Blue's All American Ham Company"},/obj/roof/concrete,/turf/floor/grass,/area/caribbean/roofed)
 "DS" = (/obj/covers/road,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "DT" = (/obj/covers/road,/obj/structure/sign/traffic/side{dir = 8; icon_state = "sideline"},/obj/structure/fuelpump/premade,/obj/roof/concrete,/turf/floor/dirt,/area/caribbean/nomads/forest)
