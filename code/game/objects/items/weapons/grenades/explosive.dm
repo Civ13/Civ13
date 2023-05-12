@@ -1,6 +1,7 @@
 /obj/item/projectile/bullet/pellet/fragment
 	damage = 18
 	range_step = 2 //controls damage falloff with distance. projectiles lose a "pellet" each time they travel this distance. Can be a non-integer.
+	kill_count = 6
 
 	base_spread = FALSE //causes it to be treated as a shrapnel explosion instead of cone
 	spread_step = 12
