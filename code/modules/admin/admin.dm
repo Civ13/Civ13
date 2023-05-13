@@ -5,12 +5,15 @@ var/global/floorIsLava = FALSE
 
 ////////////////////////////////
 /proc/message_admins(var/msg)
+	webhook_send_alog("ADMIN LOG: [msg]")
 	msg = "<span class=\"log_message\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message\">[msg]</span></span>"
 	log_adminwarn(msg)
+	
 	for (var/client/C in admins)
 		C << msg
 
 /proc/msg_admin_attack(var/text) //Toggleable Attack Messages
+	webhook_send_attacklog("ATTACK LOG: [text]")
 	log_attack(text)
 	var/rendered = "<span class=\"log_message\"><span class=\"prefix\">ATTACK:</span> <span class=\"message\">[text]</span></span>"
 	for (var/client/C in admins)
@@ -20,6 +23,7 @@ var/global/floorIsLava = FALSE
 				C << msg
 
 proc/admin_notice(var/message, var/rights)
+	webhook_send_runtime("ADMIN NOTICE: [message]")
 	for (var/mob/M in mob_list)
 		if (check_rights(rights, FALSE, M))
 			M << message

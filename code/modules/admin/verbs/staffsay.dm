@@ -11,8 +11,8 @@
 		return
 
 	log_admin("ASAY: [key_name(src)] : [msg]")
-
-	discord_admin_log(key_name(src),msg)
+	webhook_send_asay(ckey, "ASAY: [key_name(src)] : [msg]")
+	discord_admin_log(key_name(src), msg)
 
 	if (check_rights(R_MENTOR|R_MOD,0))
 		for (var/client/C in admins)
