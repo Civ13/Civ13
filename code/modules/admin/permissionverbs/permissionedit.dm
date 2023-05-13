@@ -106,12 +106,12 @@
 
 		if (!foundnew)
 			text2file("[adm_ckey];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||",F)
-			message_admins("[key_name_admin(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
+			message_admins("[key_name_admin(usr)] made '[adm_ckey]' an admin with the rank [new_rank].", key_name_admin(usr))
 			log_admin("[key_name(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
 			usr << "<span class = 'good'>New admin successfully added.</span>"
 			return
 		else
-			message_admins("[key_name_admin(usr)] changed '[adm_ckey]''s admin rank to [new_rank].")
+			message_admins("[key_name_admin(usr)] changed '[adm_ckey]''s admin rank to [new_rank].", key_name_admin(usr))
 			log_admin("[key_name(usr)] changed '[adm_ckey]''s  admin rank to [new_rank].")
 			usr << "<span class = 'good'>Admin rank successfully changed.</span>"
 			return
@@ -173,7 +173,7 @@
 		for(var/list/nc in admincheck2)
 			text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
 
-		message_admins("[key_name_admin(usr)] removed the [nominal] permission of [key_name_admin(adm_ckey)].")
+		message_admins("[key_name_admin(usr)] removed the [nominal] permission of [key_name_admin(adm_ckey)].", key_name_admin(usr))
 		log_admin("[key_name(usr)] removed the [nominal] permission of [key_name(adm_ckey)].")
 		usr << "<span class = 'notice'>Permission removed.</span>"
 	else //This admin doesn't have this permission, so we are adding it.
@@ -195,7 +195,7 @@
 		for(var/list/nc in admincheck2)
 			text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
 
-		message_admins("[key_name_admin(usr)] added the [nominal] permission of [key_name_admin(adm_ckey)].")
+		message_admins("[key_name_admin(usr)] added the [nominal] permission of [key_name_admin(adm_ckey)].", key_name_admin(usr))
 		log_admin("[key_name(usr)] added the [nominal] permission of [key_name(adm_ckey)].")
 		usr << "<span class = 'notice'>Permission added.</span>"
 	return

@@ -27,7 +27,7 @@
 		if ( findtext(memo,"<script",1,0) )
 			return
 		F[ckey] << "Admin Memo from <b>[capitalize(key)]</b> on [time2text(world.realtime,"(DDD) DD MMM hh:mm")]<br><i>[memo]</i>"
-		message_admins("[key] has set an admin memo:<br>[memo]")
+		message_admins("[key] has set an admin memo:<br>[memo]", key)
 
 //show all memos
 /client/proc/admin_memo_show()

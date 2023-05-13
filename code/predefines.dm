@@ -9,7 +9,7 @@
 #define MAX_CHARS_TOTAL 20000
 
 // These are for when a mob breathes poisonous air.
-#define MIN_TOXIN_DAMAGE TRUE
+#define MIN_TOXIN_DAMAGE 1
 #define MAX_TOXIN_DAMAGE 10
 
 #define SOUND_MINIMUM_PRESSURE 10
@@ -68,7 +68,7 @@
 #define MINIMUM_TEMPERATURE_FOR_SUPERCONDUCTION   (T20C + 10)
 #define MINIMUM_TEMPERATURE_START_SUPERCONDUCTION (T20C + 200)
 
-// Must be between FALSE and 1. Values closer to TRUE equalize temperature faster. Should not exceed 0.4, else strange heat flow occurs.
+// Must be between 0 and 1. Values closer to 1 equalize temperature faster. Should not exceed 0.4, else strange heat flow occurs.
 #define  FLOOR_HEAT_TRANSFER_COEFFICIENT 0.4
 #define   WALL_HEAT_TRANSFER_COEFFICIENT 0.0
 #define   DOOR_HEAT_TRANSFER_COEFFICIENT 0.0
@@ -94,16 +94,16 @@
 #define SHOES_SLOWDOWN		  -0.2  // How much shoes slow you down by default. Negative values speed you up.
 
 // Flags bitmasks.
-#define STOPPRESSUREDAMAGE TRUE // This flag is used on the flags variable for SUIT and HEAD items which stop pressure damage. Note that the flag TRUE was previous used as ONBACK, so it is possible for some code to use (flags & TRUE) when checking if something can be put on your back. Replace this code with (inv_flags & SLOT_BACK) if you see it anywhere
+#define STOPPRESSUREDAMAGE 1 // This flag is used on the flags variable for SUIT and HEAD items which stop pressure damage. Note that the flag 1 was previous used as ONBACK, so it is possible for some code to use (flags & 1) when checking if something can be put on your back. Replace this code with (inv_flags & SLOT_BACK) if you see it anywhere
 							 // To successfully stop you taking all pressure damage you must have both a suit and head item with this flag.
 #define NOBLUDGEON		 2	// When an item has this it produces no "X has been hit by Y with Z" message with the default handler.
 #define AIRTIGHT		   4	// Functions with internals.
-#define USEDELAY		   8	// TRUE second extra delay on use. (Can be used once every 2s)
+#define USEDELAY		   8	// 1 second extra delay on use. (Can be used once every 2s)
 #define NOSHIELD		   16   // Weapon not affected by shield.
 #define CONDUCT			32   // Conducts electricity. (metal etc.)
 #define ON_BORDER		  64   // Item has priority to check when entering or leaving.
 #define NOBLOODY		   512  // Used for items if they don't want to get a blood overlay.
-#define NODELAY			8192 // TRUE second attack-by delay skipped (Can be used once every 0.2s). Most objects have a TRUEs attack-by delay, which doesn't require a flag.
+#define NODELAY			8192 // 1 second attack-by delay skipped (Can be used once every 0.2s). Most objects have a 1s attack-by delay, which doesn't require a flag.
 
 //Use these flags to indicate if an item obscures the specified slots from view, whereas body_parts_covered seems to be used to indicate what body parts the item protects.
 #define GLASSESCOVERSEYES 256
@@ -123,17 +123,17 @@
 #define BLOCKHAIR			  8192 // Temporarily removes the user's hair, facial and otherwise.
 
 // Flags for pass_flags.
-#define PASSTABLE  TRUE
+#define PASSTABLE  1
 #define PASSGLASS  2
 #define PASSGRILLE 4
 #define PASSBLOB   8
 
 // Turf-only flags.
-#define NOJAUNT TRUE // This is used in literally one place, turf.dm, to block ethereal jaunt.
+#define NOJAUNT 1 // This is used in literally one place, turf.dm, to block ethereal jaunt.
 
 // Bitmasks for the flags_inv variable. These determine when a piece of clothing hides another, i.e. a helmet hiding glasses.
 // WARNING: The following flags apply only to the external suit!
-#define HIDEGLOVES	  TRUE
+#define HIDEGLOVES	  1
 #define HIDESUITSTORAGE 2
 #define HIDEJUMPSUIT	4
 #define HIDESHOES	   8
@@ -146,7 +146,7 @@
 #define HIDEFACE 8 // Dictates whether we appear as "Unknown".
 
 // Slots.
-#define slot_back		TRUE
+#define slot_back		1
 #define slot_wear_mask   2
 #define slot_handcuffed  3
 #define slot_l_hand	  4
@@ -189,7 +189,7 @@
 #define slot_wear_suit_str	"slot_suit"
 
 // Bitflags for clothing parts.
-#define HEAD		TRUE
+#define HEAD		1
 #define FACE		2
 #define EYES		4
 #define UPPER_TORSO 8
@@ -210,7 +210,7 @@
 
 // Bitflags for the percentual amount of protection a piece of clothing which covers the body part offers.
 // Used with human/proc/get_heat_protection() and human/proc/get_cold_protection().
-// The values here should add up to TRUE, e.g., the head has 30% protection.
+// The values here should add up to 1, e.g., the head has 30% protection.
 #define THERMAL_PROTECTION_HEAD		0.3
 #define THERMAL_PROTECTION_UPPER_TORSO 0.15
 #define THERMAL_PROTECTION_LOWER_TORSO 0.15
@@ -224,8 +224,8 @@
 #define THERMAL_PROTECTION_HAND_RIGHT  0.025
 
 // sdisabilities
-#define BLIND TRUE
-#define NEARSIGHTED TRUE
+#define BLIND 1
+#define NEARSIGHTED 1
 #define MUTE  2
 #define DEAF  4
 
@@ -271,13 +271,13 @@
 #define POISONOUS	"poisonous"
 
 // I hate adding defines like this but I'd much rather deal with bitflags than lists and string searches.
-#define BRUTELOSS TRUE
-#define FIRELOSS  2
+#define BRUTELOSS 1
+#define BURNLOSS  2
 #define TOXLOSS   4
 #define OXYLOSS   8
 
 // Bitflags defining which status effects could be or are inflicted on a mob.
-#define CANSTUN	 TRUE
+#define CANSTUN	 1
 #define CANWEAKEN   2
 #define CANPARALYSE 4
 #define CANPUSH	 8
@@ -288,15 +288,15 @@
 #define DISFIGURED  16384 // I'll probably move this elsewhere if I ever get wround to writing a bitflag mob-damage system.
 
 // Grab levels.
-#define GRAB_PASSIVE	TRUE
+#define GRAB_PASSIVE	1
 #define GRAB_AGGRESSIVE 2
 #define GRAB_NECK	   3
 #define GRAB_UPGRADING  4
 #define GRAB_KILL	   5
 
 // Security levels.
-#define SEC_LEVEL_GREEN FALSE
-#define SEC_LEVEL_BLUE  TRUE
+#define SEC_LEVEL_GREEN 0
+#define SEC_LEVEL_BLUE  1
 #define SEC_LEVEL_RED   2
 #define SEC_LEVEL_DELTA 3
 
@@ -327,7 +327,7 @@
 // Some arbitrary defines to be used by self-pruning global lists. (see master_controller)
 #define PROCESS_KILL 26 // Used to trigger removal from a processing list.
 
-#define HOSTILE_STANCE_IDLE	  TRUE
+#define HOSTILE_STANCE_IDLE	  1
 #define HOSTILE_STANCE_ALERT	 2
 #define HOSTILE_STANCE_ATTACK	3
 #define HOSTILE_STANCE_TIRED	 4
@@ -335,7 +335,7 @@
 #define ROUNDSTART_LOGOUT_REPORT_TIME 6000 // Amount of time (in deciseconds) after the rounds starts, that the player disconnect report is issued.
 
 // Organ defines.
-#define ORGAN_CUT_AWAY   TRUE
+#define ORGAN_CUT_AWAY   1
 #define ORGAN_GAUZED	 2
 #define ORGAN_ATTACHABLE 4
 #define ORGAN_BLEEDING   8
@@ -349,7 +349,7 @@
 #define ORGAN_ARTERY_CUT 8192
 
 // Preference toggles: these are no longer bitflags, but list items
-#define SOUND_ADMINHELP TRUE
+#define SOUND_ADMINHELP 1
 #define SOUND_MIDI	  2
 #define SOUND_AMBIENCE  4
 #define SOUND_LOBBY	 8
@@ -374,7 +374,7 @@
 #define AGE_MAX 75
 
 // Languages.
-#define LANGUAGE_HUMAN  TRUE
+#define LANGUAGE_HUMAN  1
 #define LANGUAGE_DOG	2
 #define LANGUAGE_CAT	4
 #define LANGUAGE_BINARY 8
@@ -382,21 +382,21 @@
 
 #define LANGUAGE_UNIVERSAL 65535
 
-#define LEFT  TRUE
+#define LEFT  1
 #define RIGHT 2
 
 // Pulse levels, very simplified.
-#define PULSE_NONE	FALSE // So !M.pulse checks would be possible.
-#define PULSE_SLOW	TRUE // <60	 bpm
+#define PULSE_NONE	0 // So !M.pulse checks would be possible.
+#define PULSE_SLOW	1 // <60	 bpm
 #define PULSE_NORM	2 //  60-90  bpm
 #define PULSE_FAST	3 //  90-120 bpm
 #define PULSE_2FAST   4 // >120	bpm
 #define PULSE_THREADY 5 // Occurs during hypovolemic shock
-#define GETPULSE_HAND FALSE // Less accurate. (hand)
-#define GETPULSE_TOOL TRUE // More accurate. (med scanner, sleeper, etc.)
+#define GETPULSE_HAND 0 // Less accurate. (hand)
+#define GETPULSE_TOOL 1 // More accurate. (med scanner, sleeper, etc.)
 
 // Species flags.
-#define NO_BLOOD		  TRUE	 // Vessel var is not filled with blood, cannot bleed out.
+#define NO_BLOOD		  1	 // Vessel var is not filled with blood, cannot bleed out.
 #define NO_BREATHE		2	 // Cannot suffocate or take oxygen loss.
 #define NO_SCAN		   4	 // Cannot be scanned in a DNA machine/genome-stolen.
 #define NO_PAIN		   8	 // Cannot suffer halloss/recieves deceptive health indicator.
@@ -415,8 +415,8 @@
 #define REGENERATES_LIMBS 65536 // Attempts to regenerate unamputated limbs.
 
 //Flags for zone sleeping
-#define ZONE_ACTIVE   TRUE
-#define ZONE_SLEEPING FALSE
+#define ZONE_ACTIVE   1
+#define ZONE_SLEEPING 0
 
 
 /*
@@ -452,21 +452,21 @@
 #define MAX_NAME_LEN		  45 // long german names and stuff
 
 // Event defines.
-#define EVENT_LEVEL_MUNDANE  TRUE
+#define EVENT_LEVEL_MUNDANE  1
 #define EVENT_LEVEL_MODERATE 2
 #define EVENT_LEVEL_MAJOR	3
 
 // NanoUI flags
 #define STATUS_INTERACTIVE 2 // GREEN Visability
-#define STATUS_UPDATE TRUE // ORANGE Visability
-#define STATUS_DISABLED FALSE // RED Visability
+#define STATUS_UPDATE 1 // ORANGE Visability
+#define STATUS_DISABLED 0 // RED Visability
 #define STATUS_CLOSE -1 // Close the interface
 
 //General-purpose life speed define for plants.
-#define HYDRO_SPEED_MULTIPLIER TRUE
+#define HYDRO_SPEED_MULTIPLIER 1
 
 // Appearance change flags
-#define APPEARANCE_UPDATE_DNA TRUE
+#define APPEARANCE_UPDATE_DNA 1
 #define APPEARANCE_RACE	(2|APPEARANCE_UPDATE_DNA)
 #define APPEARANCE_GENDER (4|APPEARANCE_UPDATE_DNA)
 #define APPEARANCE_SKIN 8
@@ -483,7 +483,7 @@
 #define MAX_SUPPLIED_LAW_NUMBER 50
 
 //Area flags, possibly more to come
-#define RAD_SHIELDED TRUE //shielded from radiation, clearly
+#define RAD_SHIELDED 1 //shielded from radiation, clearly
 
 //intent flags, why wasn't this done the first time?
 #define I_HELP		"help"
@@ -497,7 +497,7 @@
 	These are used Bump() code for living mobs, in the mob_bump_flag, mob_swap_flags, and mob_push_flags vars to determine whom can bump/swap with whom.
 */
 
-#define HUMAN TRUE
+#define HUMAN 1
 #define MONKEY 2
 #define SIMPLE_ANIMAL 4
 #define HEAVY 8
@@ -510,7 +510,7 @@
 #define DROPLIMB_BURN 2
 
 
-#define WALL_CAN_OPEN TRUE
+#define WALL_CAN_OPEN 1
 #define WALL_OPENING 2
 
 //#define Clamp(x, y, z) 	(x <= y ? y : (x >= z ? z : x))
@@ -535,7 +535,7 @@
 #define SHARD_SPLINTER "splinters"
 #define SHARD_NONE ""
 
-#define MATERIAL_UNMELTABLE TRUE
+#define MATERIAL_UNMELTABLE 1
 #define MATERIAL_BRITTLE 2
 #define MATERIAL_PADDING 4
 

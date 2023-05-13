@@ -92,6 +92,10 @@
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
 			var/cdir = get_dir(H,A)
 			FL.fire(H,cdir,A)
+		if (istype(H.get_active_hand(), /obj/item/weapon/fire_extinguisher)) //TO DO TODO: move it to tools.dm
+			var/obj/item/weapon/fire_extinguisher/FE = H.get_active_hand()
+			var/cdir = get_dir(H,A)
+			FE.fire(H,cdir,A)
 		if (istype(H.buckled, /obj/structure/bed/chair/commander)) //TO DO TODO: move it to wheels.dm
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P
 			if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))

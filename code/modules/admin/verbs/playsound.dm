@@ -14,7 +14,7 @@ var/list/sounds_cache = list()
 		return
 
 	log_admin("[key_name(src)] played sound [S]")
-	message_admins("[key_name_admin(src)] played sound [S]", TRUE)
+	message_admins("[key_name_admin(src)] played sound [S]", key_name_admin(src))
 	world << "<span class = 'notice'><b>[key]</b> played a global sound.</span>"
 
 	for (var/mob/M in player_list)
@@ -28,7 +28,7 @@ var/list/sounds_cache = list()
 	if (!check_rights(R_SOUNDS))	return
 
 	log_admin("[key_name(src)] played a local sound [S]")
-	message_admins("[key_name_admin(src)] played a local sound [S]", TRUE)
+	message_admins("[key_name_admin(src)] played a local sound [S]", key_name_admin(src))
 	playsound(get_turf(mob), S, volume, FALSE, FALSE)
 
 

@@ -24,7 +24,7 @@
 		src << "<font color='red'>Only Admins may use this command.</font>"
 		return
 	var/path = "civ13.log"
-	message_admins("[key_name_admin(src)] accessed file: [path]")
+	message_admins("[key_name_admin(src)] accessed file: [path]", key_name_admin(src))
 	src << run( file(path) )
 	src << "Attempting to send file, this may take a fair few minutes if the file is very large."
 	return
@@ -44,7 +44,7 @@
 	if (file_spam_check())
 		return
 
-	message_admins("[key_name_admin(src)] accessed file: [path]")
+	message_admins("[key_name_admin(src)] accessed file: [path]", key_name_admin(src))
 	src << run( file(path) )
 	src << "Attempting to send file, this may take a fair few minutes if the file is very large."
 	return

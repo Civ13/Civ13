@@ -13,7 +13,7 @@
 /mob/living/human/proc/handle_organs()
 
 	var/force_process = FALSE
-	var/damage_this_tick = getBruteLoss() + getFireLoss() + getToxLoss()
+	var/damage_this_tick = getBruteLoss() + getBurnLoss() + getToxLoss()
 	if (damage_this_tick > last_dam)
 		force_process = TRUE
 	last_dam = damage_this_tick

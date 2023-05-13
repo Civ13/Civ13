@@ -44,7 +44,7 @@
 	add_fingerprint(user)
 	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HARM)
 		if (on && world.time > cooloff)
-			M.adjustFireLoss(rand(7,10))
+			M.adjustBurnLoss(rand(7,10))
 			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
 			user.do_attack_animation(M)
 			if (prob(5))
@@ -190,7 +190,7 @@
 		if(!on)
 			return
 		user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
-		user.adjustFireLoss(7)
+		user.adjustBurnLoss(7)
 		burn_out()
 		//TODO: add snuff out sound
 		return

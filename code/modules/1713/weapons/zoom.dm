@@ -142,7 +142,7 @@ Parts of code courtesy of Super3222
 					var/distcon = max(dist1,dist2)
 					var/gdir = get_dir(H, target)
 					H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
-					var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancle", "NORTH", "EAST", "SOUTH", "WEST"))
+					var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancel", "NORTH", "EAST", "SOUTH", "WEST"))
 					if (input != "Cancel")
 						if (do_after(H, 80, src, can_move = FALSE))
 							H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
@@ -165,7 +165,7 @@ Parts of code courtesy of Super3222
 				return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
-	message_admins("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)")
+	message_admins("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
 	log_game("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 	airstrikes_remaining--
 	var/strikenum = 5

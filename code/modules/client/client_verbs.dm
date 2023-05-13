@@ -272,7 +272,7 @@
 		if (findtext(msg, "byond://"))
 			src << "<b>Advertising other servers is not allowed.</b>"
 			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
-			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]")
+			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]", key_name_admin(src))
 			return
 
 	/* mentioning clients with @key or @ckey */
@@ -317,6 +317,7 @@
 				C << sound('sound/machines/ping.ogg')
 
 	log_ooc("[mob.name]/[key] : [msg]")
+	webhook_send_ooc(key, "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[mob.name]/[key]:** [msg]")
 	discord_log("[mob.name]/[key]:","[msg]")
 
 	var/ooc_style = "everyone"
@@ -388,7 +389,7 @@
 		if (findtext(msg, "byond://"))
 			src << "<b>Advertising other servers is not allowed.</b>"
 			log_admin("[key_name(src)] has attempted to advertise in OOC: [msg]")
-			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]")
+			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]", key_name_admin(src))
 			return
 
 	log_ooc("(LOCAL) [mob.name]/[key] : [msg]")

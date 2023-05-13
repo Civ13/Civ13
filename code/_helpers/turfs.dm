@@ -55,7 +55,7 @@
 	return turf_map
 
 
-/proc/translate_turfs(var/list/translation, var/area/base_area = null, var/turf/base_turf)
+/proc/translate_turfs(var/list/translation, var/area/base_area = null, var/turf/base_turf = null)
 	for(var/turf/source in translation)
 
 		var/turf/target = translation[source]

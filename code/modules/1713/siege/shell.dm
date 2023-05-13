@@ -33,6 +33,28 @@
 	value = 30
 	atype = "HE"
 
+/obj/item/cannon_ball/rocket/ex_act()
+	var/turf/t = get_turf(src)
+	explosion(t,0,1,1,3)
+	qdel(src)
+
+/obj/item/cannon_ball/rocket/bullet_act(var/obj/item/projectile/proj, def_zone)
+	var/turf/t = get_turf(src)
+	if (prob(10))
+		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
+		explosion(t,0,1,1,2)
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
+		spawn(5)
+			qdel(src)
+
+/obj/item/cannon_ball/rocket/fire_act(temperature)
+	var/turf/t = get_turf(src)
+	if (temperature > T0C+500)
+		explosion(t,1,1,1,2)
+		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
+		qdel(src)
+	return ..()
+
 /obj/item/cannon_ball/rocket/incendiary
 	name = "incendiary rocket"
 	icon_state = "rocket_incendiary"
@@ -43,8 +65,30 @@
 	name = "artillery shell"
 	icon_state = "shell"
 	w_class = ITEM_SIZE_LARGE
-	value = 20
+	value = 55
 	atype = "HE"
+
+/obj/item/cannon_ball/shell/ex_act()
+	var/turf/t = get_turf(src)
+	explosion(t,2,1,2,5)
+	qdel(src)
+
+/obj/item/cannon_ball/shell/bullet_act(var/obj/item/projectile/proj, def_zone)
+	var/turf/t = get_turf(src)
+	if (prob(20))
+		playsound(t, 'sound/effects/smoke.ogg', 20, TRUE, -3)
+		explosion(t,1,1,2,5)
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
+		spawn(5)
+			qdel(src)
+
+/obj/item/cannon_ball/shell/fire_act(temperature)
+	var/turf/t = get_turf(src)
+	if (temperature > T0C+500)
+		explosion(t,1,1,2,5) //cook off makes it explode less
+		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
+		qdel(src)
+	return ..()
 
 /obj/item/cannon_ball/shell/incendiary
 	name = "incendiary artillery shell"
@@ -235,8 +279,32 @@
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "mortar shell"
 	icon_state = "shell_mortar"
-	w_class = ITEM_SIZE_LARGE
+	desc = "A small mortar shell, keep it safe and sound otherwise it might explode."
+	w_class = ITEM_SIZE_NORMAL //simplified logistics, 60mm shell is smaller than a 160mm artillery shell
 	value = 20
+
+/obj/item/cannon_ball/mortar_shell/ex_act()
+	var/turf/t = get_turf(src)
+	explosion(t,1,1,1,1)
+	qdel(src)
+
+/obj/item/cannon_ball/mortar_shell/bullet_act(var/obj/item/projectile/proj, def_zone)
+	var/turf/t = get_turf(src)
+	if (prob(5))
+		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
+		explosion(t,0,1,1,1)
+		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
+		spawn(5)
+			qdel(src)
+
+/obj/item/cannon_ball/mortar_shell/fire_act(temperature)
+	var/turf/t = get_turf(src)
+	if (temperature > T0C+500)
+		explosion(t,0,1,1,1)
+		qdel(src)
+		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
+	return ..()
+
 
 /obj/item/cannon_ball/mortar_shell/type89
 	name = "type 89 mortar shell"

@@ -11,7 +11,7 @@
 	chemical_reaction_logs += "\[[time_stamp()]\] [logstr]"
 
 	if (R.log_is_important)
-		message_admins(logstr)
+		message_admins(logstr, usr ? key_name(usr) : "")
 	log_admin(logstr)
 
 /client/proc/view_chemical_reaction_logs()

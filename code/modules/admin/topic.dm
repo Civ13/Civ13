@@ -3,12 +3,12 @@
 
 	if (usr.client != owner || !check_rights(0))
 		log_admin("[key_name(usr)] tried to use the admin panel without authorization.")
-		message_admins("[usr.key] has attempted to override the admin panel!")
+		message_admins("[usr.key] has attempted to override the admin panel!", usr.key)
 		return
 
 	else if (href_list["editrights"])
 		if (!check_rights(R_PERMISSIONS))
-			message_admins("[key_name_admin(usr)] attempted to edit the admin permissions without sufficient rights.")
+			message_admins("[key_name_admin(usr)] attempted to edit the admin permissions without sufficient rights.", key_name_admin(usr))
 			log_admin("[key_name(usr)] attempted to edit the admin permissions without sufficient rights.")
 			return
 
@@ -37,7 +37,7 @@
 				admin_datums -= adm_ckey
 				D.disassociate()
 
-				message_admins("[key_name_admin(usr)] removed [adm_ckey] from the admins list.")
+				message_admins("[key_name_admin(usr)] removed [adm_ckey] from the admins list.", key_name_admin(usr))
 				log_admin("[key_name(usr)] removed [adm_ckey] from the admins list.")
 				log_admin_rank_modification(adm_ckey, "Removed")
 
@@ -79,7 +79,7 @@
 
 				C << "<b>[key_name_admin(usr)] has set your admin rank to: [new_rank].</b>"
 
-			message_admins("[key_name_admin(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
+			message_admins("[key_name_admin(usr)] edited the admin rank of [adm_ckey] to [new_rank].", key_name_admin(usr))
 			log_admin("[key_name(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
 			log_admin_rank_modification(adm_ckey, "Removed")
 			log_admin_rank_modification(adm_ckey, new_rank)
@@ -96,7 +96,7 @@
 
 			var/client/C = directory[adm_ckey]
 			C << "[key_name_admin(usr)] has toggled your permission: [new_permission]."
-			message_admins("[key_name_admin(usr)] toggled the [new_permission] permission of [adm_ckey]")
+			message_admins("[key_name_admin(usr)] toggled the [new_permission] permission of [adm_ckey]", key_name_admin(usr))
 			log_admin("[key_name(usr)] toggled the [new_permission] permission of [adm_ckey]")
 			log_admin_permission_modification(adm_ckey, permissionlist[new_permission])
 
@@ -107,7 +107,7 @@
 
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
-		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", key_name(usr))
 		href_list["secretsadmin"] = "check_antagonist"
 	else if (href_list["simplemake"])
 
@@ -127,7 +127,7 @@
 				if ("Yes")		delmob = TRUE
 
 		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", key_name_admin(usr))
 
 		var/usr_client = usr.client
 
@@ -280,7 +280,7 @@
 						H_jobloc = H.loc
 						H.loc = null
 						var/msg = "[key_name(usr)] assigned the new mob [H] the job '[J]'."
-						message_admins(msg)
+						message_admins(msg, key_name(usr))
 						log_admin(msg)
 						spawn (0.1)
 							H.loc = null // fixes a bug where H is relocated even after we set H.loc = null
@@ -365,7 +365,7 @@
 			else
 				M << "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>"
 			log_admin("[key_name(usr)] booted [key_name(M)].")
-			message_admins("<span class = 'notice'>[key_name_admin(usr)] booted [key_name_admin(M)].</span>", TRUE)
+			message_admins("<span class = 'notice'>[key_name_admin(usr)] booted [key_name_admin(M)].</span>", key_name_admin(usr))
 			//M.client = null
 			qdel(M.client)
 
@@ -396,7 +396,7 @@
 			M.say(speech)
 			speech = sanitize(speech) // Nah, we don't trust them
 			log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
-			message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>")
+			message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>", key_name_admin(usr))
 
 	else if (href_list["revive"])
 		if (!check_rights(R_REJUVINATE))	return
@@ -408,7 +408,7 @@
 
 		if (config.allow_admin_rev)
 			L.revive()
-			message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(L)]!</span>", TRUE)
+			message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(L)]!</span>", key_name_admin(usr))
 			log_admin("[key_name(usr)] healed / revived [key_name(L)]")
 		else
 			usr << "Admin Rejuvinates have been disabled"
@@ -479,7 +479,7 @@
 				if (1) status = "<font color='orange'><b>Unconscious</b></font>"
 				if (2) status = "<font color='red'><b>Dead</b></font>"
 			health_description = "Status = [status]"
-			health_description += "<BR>Oxy: [L.getOxyLoss()] - Tox: [L.getToxLoss()] - Fire: [L.getFireLoss()] - Brute: [L.getBruteLoss()] - Clone: [L.getCloneLoss()] - Brain: [L.getBrainLoss()]"
+			health_description += "<BR>Oxy: [L.getOxyLoss()] - Tox: [L.getToxLoss()] - Fire: [L.getBurnLoss()] - Brute: [L.getBruteLoss()] - Clone: [L.getCloneLoss()] - Brain: [L.getBrainLoss()]"
 		else
 			health_description = "This mob type has no health to speak of."
 
@@ -508,14 +508,14 @@
 			H.equip_to_slot_or_del( new /obj/item/weapon/reagent_containers/food/snacks/cookie(H), slot_r_hand )
 			if (!(istype(H.r_hand,/obj/item/weapon/reagent_containers/food/snacks/cookie)))
 				log_admin("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(owner)].")
-				message_admins("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(owner)].")
+				message_admins("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(owner)].", key_name(owner))
 				return
 			else
 				H.update_inv_r_hand()//To ensure the icon appears in the HUD
 		else
 			H.update_inv_l_hand()
 		log_admin("[key_name(H)] got their cookie, spawned by [key_name(owner)]")
-		message_admins("[key_name(H)] got their cookie, spawned by [key_name(owner)]")
+		message_admins("[key_name(H)] got their cookie, spawned by [key_name(owner)]", key_name(owner))
 
 		H << "<span class = 'notice'>Your prayers have been answered!! You received the <b>best cookie</b>!</span>"
 

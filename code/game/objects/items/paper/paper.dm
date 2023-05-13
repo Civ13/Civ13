@@ -399,7 +399,7 @@
 			if (findtext(t,bad))
 				usr << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
 				log_admin("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].")
-				message_admins("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].")
+				message_admins("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
 				return
 */
 

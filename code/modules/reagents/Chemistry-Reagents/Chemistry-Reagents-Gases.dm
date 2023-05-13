@@ -24,7 +24,7 @@ var/mob/living/human/next_gas_flesh_message = -1
 			next_gas_eye_message = world.time + 10
 			if (m.stat != DEAD)
 				m.emote("scream")
-			m.adjustFireLossByPart(base, "eyes")
+			m.adjustBurnLossByPart(base, "eyes")
 			m.Weaken(rand(2,3))
 			m.eye_blurry = max(m.eye_blurry+2, FALSE)
 
@@ -60,23 +60,23 @@ var/mob/living/human/next_gas_flesh_message = -1
 //		world.log << "[burnparts]"
 		for (var/pts in burnparts)
 			if (pts == "head")
-				m.adjustFireLossByPart(base, "eyes")
+				m.adjustBurnLossByPart(base, "eyes")
 			else if (pts == "chest")
-				m.adjustFireLossByPart(base, "chest")
+				m.adjustBurnLossByPart(base, "chest")
 			else if (pts == "groin")
-				m.adjustFireLossByPart(base, "groin")
+				m.adjustBurnLossByPart(base, "groin")
 			else if (pts == "legs")
-				m.adjustFireLossByPart(base, "l_leg")
-				m.adjustFireLossByPart(base, "r_leg")
+				m.adjustBurnLossByPart(base, "l_leg")
+				m.adjustBurnLossByPart(base, "r_leg")
 			else if (pts == "arms")
-				m.adjustFireLossByPart(base, "l_arm")
-				m.adjustFireLossByPart(base, "r_arm")
+				m.adjustBurnLossByPart(base, "l_arm")
+				m.adjustBurnLossByPart(base, "r_arm")
 			else if (pts == "hands")
-				m.adjustFireLossByPart(base, "l_hand")
-				m.adjustFireLossByPart(base, "r_hand")
+				m.adjustBurnLossByPart(base, "l_hand")
+				m.adjustBurnLossByPart(base, "r_hand")
 			else if (pts == "feet")
-				m.adjustFireLossByPart(base, "l_foot")
-				m.adjustFireLossByPart(base, "r_foot")
+				m.adjustBurnLossByPart(base, "l_foot")
+				m.adjustBurnLossByPart(base, "r_foot")
 /datum/reagent/proc/internal_damage(var/mob/living/human/m, var/severity = TRUE) // damage things like lungs
 	if (mask_check(m)) return
 	if (m && istype(m) && severity)
@@ -87,7 +87,7 @@ var/mob/living/human/next_gas_flesh_message = -1
 			next_gas_lung_message = world.time + 10
 			if (m.stat != DEAD)
 				m.emote("scream")
-			m.adjustFireLossByPart(base, "chest")
+			m.adjustBurnLossByPart(base, "chest")
 			if (prob(70))
 				m.Weaken(rand(3,4))
 
@@ -106,7 +106,7 @@ var/mob/living/human/next_gas_flesh_message = -1
 
 /datum/reagent/proc/open_wound_damage(var/mob/living/human/m, var/severity = TRUE) // damage wounded skin
 	if (m && istype(m) && severity)
-		var/base = ((m.getBruteLoss() + m.getFireLoss())/10) * severity
+		var/base = ((m.getBruteLoss() + m.getBurnLoss())/10) * severity
 		base += rand(1,2)
 		base /= CHEMNERF
 		if (base >= 1)
@@ -116,7 +116,7 @@ var/mob/living/human/next_gas_flesh_message = -1
 			if (prob(50))
 				if (m.stat != DEAD)
 					m.emote("scream")
-			m.adjustFireLoss(base)
+			m.adjustBurnLoss(base)
 
 /proc/get_severity(var/amount)
 	switch (amount)

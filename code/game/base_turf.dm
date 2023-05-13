@@ -28,5 +28,5 @@ proc/get_base_turf_by_area(var/turf/T)
 	if (!ispath(new_base_path))
 		new_base_path = /turf/floor/dirt
 	base_turf_by_z["[choice]"] = new_base_path
-	message_admins("[key_name_admin(usr)] has set the base turf for z-level [choice] to [get_base_turf(choice)].")
+	message_admins("[key_name_admin(usr)] has set the base turf for z-level [choice] to [get_base_turf(choice)].", key_name_admin(usr))
 	log_admin("[key_name(usr)] has set the base turf for z-level [choice] to [get_base_turf(choice)].")
