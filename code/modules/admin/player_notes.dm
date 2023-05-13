@@ -62,7 +62,7 @@
 	infos.Remove(item)
 	info << infos
 
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] deleted one of [key]'s notes.</span>", key_name_admin(user))
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] deleted one of [key]'s notes.</span>", key_name_admin(usr))
 	log_admin("[key_name(usr)] deleted one of [key]'s notes.")
 
 	qdel(info)
