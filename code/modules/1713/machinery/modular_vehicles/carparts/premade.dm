@@ -309,7 +309,7 @@
 /obj/effects/premadevehicles/jeep
 
 //Dutch Jeep
-/obj/effects/premadevehicles/truck/mercedes
+/obj/effects/premadevehicles/jeep/mercedes
 	name = "Mercedes-Benz G280"
 	icon_state = "3x3"
 	custom_color = "#45453b"
@@ -318,21 +318,49 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered/front),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
-	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/rf,/obj/structure/bed/chair/office/dark),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/lf,/obj/structure/bed/chair/drivers),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered),
 	)
-/obj/effects/premadevehicles/truck/mercedes/mg
+/obj/effects/premadevehicles/jeep/mercedes/mg
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered/front),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning),
-	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/lf,/obj/structure/bed/chair/drivers),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered),
+	)
+
+//Russian Jeep
+/obj/effects/premadevehicles/jeep/tigr
+	name = "AMN-233114 Tigr-M"
+	icon_state = "3x3"
+	custom_color = "#45453b"
+	axis = /obj/structure/vehicleparts/axis/car/mercedes
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered/front),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/tigr/lf,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered),
+	)
+/obj/effects/premadevehicles/jeep/tigr/mg
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled{density = 0},/obj/structure/vehicleparts/movement/armored),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered/front),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/tigr/lf,/obj/structure/bed/chair/drivers),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered),
 	)
 

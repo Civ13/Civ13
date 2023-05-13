@@ -2096,11 +2096,11 @@
 			if ("2A6 Leopard Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-5,origin.z))
 			if ("Mercedes-Benz G280 Jeep with MG (500)")
-				PV = new /obj/effects/premadevehicles/truck/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
+				PV = new /obj/effects/premadevehicles/jeep/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("DAF YA-4442 Supply Truck (400)")
 				PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-5,origin.z))
 			if ("Mercedes-Benz G280 Jeep without MG (200)")
-				PV = new /obj/effects/premadevehicles/truck/mercedes(locate(origin.x+3,origin.y-5,origin.z))
+				PV = new /obj/effects/premadevehicles/jeep/mercedes(locate(origin.x+3,origin.y-5,origin.z))
 			
 			if ("T-90A Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-5,origin.z))
