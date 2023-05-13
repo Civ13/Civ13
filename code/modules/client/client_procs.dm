@@ -318,9 +318,9 @@
 	//Check for IP or CID changes
 	if ((!(sql_ip in ips)) || (!(computer_id in cids)))
 		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
-		message_admins("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].)
-		log_admin("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].)
-		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].
+		message_admins("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
+		log_admin("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
+		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
 
 /client/verb/fixdbhost()
 	set hidden = TRUE
