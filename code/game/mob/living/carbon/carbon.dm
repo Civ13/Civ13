@@ -28,6 +28,10 @@
 	ingested.clear_reagents()
 	touching.clear_reagents()
 	nutrition = 400
+	
+	restore_blood()
+	shock_stage = 0
+	traumatic_shock = 0
 	..()
 
 
