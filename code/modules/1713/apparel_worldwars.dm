@@ -2243,9 +2243,9 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/shoes/us_ww2_boots/leggings
 	name = "brown boots with leggings"
 	desc = "Combat boots made of brown leather with a toe cap and rubber sole wrapped in protective leggings."
-	icon_state = "brownboots_leggings"
-	item_state = "brownboots_us_ww2_2"
-	worn_state = "brownboots_us_ww2_2"
+	icon_state = "brownboots_us_ww2_alt"
+	item_state = "brownboots_us_ww2_alt"
+	worn_state = "brownboots_us_ww2_alt"
 
 /obj/item/clothing/accessory/storage/webbing/us_ww2
 	name = "US webbing"
