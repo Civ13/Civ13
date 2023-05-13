@@ -316,11 +316,11 @@
 		return
 	player_age = (text2num(num2text(world.realtime,20)) - text2num(currentage))
 	//Check for IP or CID changes
-	if (!(sql_ip in ips) || !(computer_id in cids))
+	if ((!(sql_ip in ips)) || (!(computer_id in cids)))
 		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
-		message_admins("[ckey] has logged in with a different IP or CID than their last time.")
-		log_admin("[ckey] has logged in with a different IP or CID than their last time.")
-		webhook_send_garbage(ckey, "[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
+		message_admins("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].)
+		log_admin("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].)
+		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].
 
 /client/verb/fixdbhost()
 	set hidden = TRUE
