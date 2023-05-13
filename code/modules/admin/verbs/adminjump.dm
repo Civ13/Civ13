@@ -28,7 +28,7 @@
 		if (new_location)
 			usr.loc = new_location
 			log_admin("[key_name(usr)] jumped to [A]")
-			message_admins("[key_name_admin(usr)] jumped to [A]", TRUE)
+			message_admins("[key_name_admin(usr)] jumped to [A]", key_name_admin(usr))
 		else
 
 
@@ -42,7 +42,7 @@
 		return
 	if (config.allow_admin_jump)
 		log_admin("[key_name(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]")
-		message_admins("[key_name_admin(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]", TRUE)
+		message_admins("[key_name_admin(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]", key_name_admin(usr))
 		usr.on_mob_jump()
 		usr.loc = T
 
@@ -58,7 +58,7 @@
 
 	if (config.allow_admin_jump)
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
-		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", TRUE)
+		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", key_name_admin(usr))
 		if (mob)
 			var/mob/A = mob
 			var/turf/T = get_turf(M)
@@ -86,7 +86,7 @@
 			A.y = ty
 			A.z = tz
 
-		message_admins("[key_name_admin(usr)] jumped to coordinates [tx], [ty], [tz]")
+		message_admins("[key_name_admin(usr)] jumped to coordinates [tx], [ty], [tz]", key_name_admin(usr))
 
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
@@ -108,7 +108,7 @@
 			return
 		var/mob/M = selection:mob
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
-		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", TRUE)
+		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", key_name_admin(usr))
 		usr.on_mob_jump()
 		usr.loc = M.loc
 
@@ -123,7 +123,7 @@
 		return
 	if (config.allow_admin_jump)
 		log_admin("[key_name(usr)] teleported [key_name(M)]")
-		message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)]", TRUE)
+		message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)]", key_name_admin(usr))
 		M.on_mob_jump()
 		M.loc = get_turf(usr)
 
@@ -147,7 +147,7 @@ var/turf/default_adminzone_turf = null
 			return
 
 	log_admin("[key_name(usr)] went to the admin zone")
-	message_admins("[key_name_admin(usr)] went to the admin zone", TRUE)
+	message_admins("[key_name_admin(usr)] went to the admin zone", key_name_admin(usr))
 
 	if (!default_adminzone_turf)
 		default_adminzone_turf = locate(90, 92, 3)
@@ -189,7 +189,7 @@ var/turf/default_adminzone_turf = null
 		if (!M)
 			return
 		log_admin("[key_name(usr)] teleported [key_name(M)]")
-		message_admins("[key_name_admin(usr)] teleported [key_name(M)]", TRUE)
+		message_admins("[key_name_admin(usr)] teleported [key_name(M)]", key_name_admin(usr))
 		if (M)
 			M.on_mob_jump()
 			M.loc = get_turf(usr)
@@ -210,6 +210,6 @@ var/turf/default_adminzone_turf = null
 
 
 			log_admin("[key_name(usr)] teleported [key_name(M)] to [A]")
-			message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)] to [A]", TRUE)
+			message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)] to [A]", key_name_admin(usr))
 		else
 			WWalert(src, "Admin jumping is disabled", "Admin Jump")

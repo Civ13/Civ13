@@ -4,8 +4,8 @@ var/global/floorIsLava = FALSE
 
 
 ////////////////////////////////
-/proc/message_admins(var/msg)
-	webhook_send_alog("ADMIN LOG: [msg]")
+/proc/message_admins(var/msg, var/ckey = "")
+	webhook_send_alog(ckey, "ADMIN LOG: [msg]")
 	msg = "<span class=\"log_message\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message\">[msg]</span></span>"
 	log_adminwarn(msg)
 	
@@ -400,7 +400,6 @@ proc/admin_notice(var/message, var/rights)
 	log_and_message_admins("toggled LOOC.")
 
 
-
 /datum/admins/proc/toggledsay()
 	set category = "Server"
 	set desc = "Globally Toggles DSAY"
@@ -415,7 +414,7 @@ proc/admin_notice(var/message, var/rights)
 	else
 		world << "<b>Deadchat has been globally disabled!</b>"
 	log_admin("[key_name(usr)] toggled deadchat.")
-	message_admins("[key_name_admin(usr)] toggled deadchat.", TRUE)
+	message_admins("[key_name_admin(usr)] toggled deadchat.", key_name_admin(usr))
 
 
 /datum/admins/proc/toggleoocdead()
@@ -428,7 +427,7 @@ proc/admin_notice(var/message, var/rights)
 
 	config.dooc_allowed = !( config.dooc_allowed )
 	log_admin("[key_name(usr)] toggled Dead OOC.")
-	message_admins("[key_name_admin(usr)] toggled Dead OOC.", TRUE)
+	message_admins("[key_name_admin(usr)] toggled Dead OOC.", key_name_admin(usr))
 
 /datum/admins/proc/startnow()
 	set category = "Server"
@@ -443,7 +442,7 @@ proc/admin_notice(var/message, var/rights)
 		ticker.pregame_timeleft = 1
 		ticker.admin_started = TRUE
 		log_admin("[usr.key] has started the game.")
-		message_admins("[usr.key] has started the game.")
+		message_admins("[usr.key] has started the game.", usr.key)
 		return TRUE
 	else
 		usr << "<font color='red'>Error: Start Now: Game has already started</font>"
@@ -459,7 +458,7 @@ proc/admin_notice(var/message, var/rights)
 	else
 		world << "<b>New players may now enter the game.</b>"
 	log_admin("[key_name(usr)] toggled new player game entering.")
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled new player game entering.</span>", TRUE)
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled new player game entering.</span>", key_name_admin(usr))
 	world.update_status()
 
 
@@ -472,7 +471,7 @@ proc/admin_notice(var/message, var/rights)
 		world << "<b>You may now respawn.</b>"
 	else
 		world << "<b>You may no longer respawn :(</b>"
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].</span>", TRUE)
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].</span>", key_name_admin(usr))
 	log_admin("[key_name(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].")
 	world.update_status()
 
@@ -485,7 +484,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!ticker || ticker.current_state != GAME_STATE_PREGAME)
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
-		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", key_name(usr))
 		return
 	round_progressing = !round_progressing
 	if (!round_progressing)
@@ -507,7 +506,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Toggle admin jumping"
 	set name = "Toggle Jump"
 	config.allow_admin_jump = !(config.allow_admin_jump)
-	message_admins("<span class = 'notice'>[key_name(usr)] toggled admin jumping to [config.allow_admin_jump].</span>")
+	message_admins("<span class = 'notice'>[key_name(usr)] toggled admin jumping to [config.allow_admin_jump].</span>", key_name(usr))
 
 
 /datum/admins/proc/adspawn()
@@ -515,7 +514,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Toggle admin spawning"
 	set name = "Toggle Spawn"
 	config.allow_admin_spawning = !(config.allow_admin_spawning)
-	message_admins("<span class = 'notice'>[key_name(usr)] toggled admin item spawning to [config.allow_admin_spawning].</span>")
+	message_admins("<span class = 'notice'>[key_name(usr)] toggled admin item spawning to [config.allow_admin_spawning].</span>", key_name(usr))
 
 
 /datum/admins/proc/adrev()
@@ -523,7 +522,7 @@ proc/admin_notice(var/message, var/rights)
 	set desc = "Toggle admin revives"
 	set name = "Toggle Revive"
 	config.allow_admin_rev = !(config.allow_admin_rev)
-	message_admins("<span class = 'notice'>Toggled reviving to [config.allow_admin_rev].</span>")
+	message_admins("<span class = 'notice'>Toggled reviving to [config.allow_admin_rev].</span>", key_name(usr))
 
 
 /datum/admins/proc/immreboot()
@@ -848,7 +847,7 @@ var/list/atom_types = null
 		job_master.EquipRank(H, J)
 		H.original_job = job_master_occupation_names[J]
 		var/msg = "[key_name(usr)] assigned the new mob [H] the job '[J]'."
-		message_admins(msg)
+		message_admins(msg, key_name(usr))
 		log_admin(msg)
 
 /*
@@ -862,7 +861,7 @@ var/list/atom_types = null
 	else
 		world << "<b>Reduced welder vision has been disabled!</b>"
 	log_admin("[key_name(usr)] toggled welder vision.")
-	message_admins("[key_name_admin(usr)] toggled welder vision.", TRUE)
+	message_admins("[key_name_admin(usr)] toggled welder vision.", key_name_admin(usr))
 
 */
 
@@ -876,7 +875,7 @@ var/list/atom_types = null
 	else
 		world << "<b>Guests may now enter the game.</b>"
 	log_admin("[key_name(usr)] toggled guests game entering [config.guests_allowed?"":"dis"]allowed.")
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled guests game entering [config.guests_allowed?"":"dis"]allowed.</span>", TRUE)
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled guests game entering [config.guests_allowed?"":"dis"]allowed.</span>", key_name_admin(usr))
 
 
 /datum/admins/proc/output_ai_laws()
@@ -984,7 +983,7 @@ var/list/atom_types = null
 		return TRUE
 	if (tomob.client) //No need to ghostize if there is no client
 		tomob.ghostize(0)
-	message_admins("<span class='adminnotice'>[key_name_admin(usr)] has put [frommob.ckey] in control of [tomob.name].</span>")
+	message_admins("<span class='adminnotice'>[key_name_admin(usr)] has put [frommob.ckey] in control of [tomob.name].</span>", key_name_admin(usr))
 	log_admin("[key_name(usr)] stuffed [frommob.ckey] into [tomob.name].")
 
 	tomob.ckey = frommob.ckey
@@ -1049,7 +1048,7 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.")
+	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.", key_name(usr))
 
 	load_admins(1)
 
@@ -1061,7 +1060,7 @@ var/list/atom_types = null
 				var/list/current = splittext(i, "=")
 				approved_list += current[1]
 	else
-		message_admins("<span class='danger'>Failed to load approved list!</span>")
+		message_admins("<span class='danger'>Failed to load approved list!</span>", key_name(usr))
 
 	var/F2 = file("SQL/whitelist.txt")
 	if (fexists(F2))
@@ -1071,7 +1070,7 @@ var/list/atom_types = null
 				var/list/current = splittext(i, "=")
 				whitelist_list += current[1]
 	else
-		message_admins("<span class='danger'>Failed to load whitelist!</span>")
+		message_admins("<span class='danger'>Failed to load whitelist!</span>", key_name(usr))
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))
 		faction_list_blue = list()
@@ -1085,7 +1084,7 @@ var/list/atom_types = null
 				else if (current[2] == "blue")
 					faction_list_blue += current[1]
 	else
-		message_admins("<span class='danger'>Failed to load factionlist!</span>")
+		message_admins("<span class='danger'>Failed to load factionlist!</span>", key_name(usr))
 
 /client/proc/reload_bans()
 	set name = "Update Bans"
@@ -1093,7 +1092,7 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded bans.")
+	message_admins("[key_name(usr)] manually reloaded bans.", key_name(usr))
 	load_bans()
 
 /client/proc/start_forcelife()
@@ -1102,7 +1101,7 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually set the Life() proc of living mobs.")
+	message_admins("[key_name(usr)] manually set the Life() proc of living mobs.", key_name(usr))
 	for(var/mob/living/L in world)
 		if (!L.life_forced)
 			L.forcelife()
@@ -1113,7 +1112,7 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded crafting recipes.")
+	message_admins("[key_name(usr)] manually reloaded crafting recipes.", key_name(usr))
 	load_recipes()
 
 /client/proc/load_voyage_event()
@@ -1139,7 +1138,7 @@ var/list/atom_types = null
 			do_clear = TRUE
 			do_load = FALSE
 			nmap.clear_map()
-			message_admins("[key_name(usr)] manually cleared the map.")
+			message_admins("[key_name(usr)] manually cleared the map.", key_name(usr))
 			return
 		if("Cancel")
 			return
@@ -1164,10 +1163,10 @@ var/list/atom_types = null
 		world << "<font size=4 color='yellow'>The ship arrives at the destination.</font>"
 		if (do_clear)
 			nmap.clear_map()
-			message_admins("[key_name(usr)] manually cleared the map.")
+			message_admins("[key_name(usr)] manually cleared the map.", key_name(usr))
 		if (do_load)
 			nmap.load_map(nam,loct)
-			message_admins("[key_name(usr)] manually loaded an event.")
+			message_admins("[key_name(usr)] manually loaded an event.", key_name(usr))
 
 client/proc/debug_variables_map()
 	set name = "Debug Map Variables"

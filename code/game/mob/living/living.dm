@@ -690,7 +690,7 @@ default behaviour is:
 		possessor << "<span class='warning'>\The [src] already has a player.</span>"
 		return FALSE
 
-	message_admins("<span class='adminnotice'>[key_name_admin(possessor)] has taken control of \the [src].</span>")
+	message_admins("<span class='adminnotice'>[key_name_admin(possessor)] has taken control of \the [src].</span>", key_name_admin(possessor))
 	log_admin("[key_name(possessor)] took control of \the [src].")
 	ckey = possessor.ckey
 	qdel(possessor)

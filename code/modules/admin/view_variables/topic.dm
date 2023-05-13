@@ -18,7 +18,7 @@
 		var/new_name = sanitize(input(usr,"What would you like to name this mob?","Input a name",M.real_name) as text|null, MAX_NAME_LEN)
 		if ( !new_name || !M )	return
 
-		message_admins("Admin [key_name_admin(usr)] renamed [key_name_admin(M)] to [new_name].")
+		message_admins("Admin [key_name_admin(usr)] renamed [key_name_admin(M)] to [new_name].", key_name_admin(usr))
 		M.fully_replace_character_name(M.real_name,new_name)
 		href_list["datumrefresh"] = href_list["rename"]
 
@@ -160,7 +160,7 @@
 					usr << "No objects of this type exist"
 					return
 				log_admin("[key_name(usr)] deleted all objects of type [AM_type] ([i] objects deleted)")
-				message_admins("<span class='notice'>[key_name(usr)] deleted all objects of type [AM_type] ([i] objects deleted)</span>")
+				message_admins("<span class='notice'>[key_name(usr)] deleted all objects of type [AM_type] ([i] objects deleted)</span>", key_name(usr))
 			if ("Type and subtypes")
 				var/i = FALSE
 				for (var/atom/movable/AM2 in world)
@@ -171,7 +171,7 @@
 					usr << "No objects of this type exist"
 					return
 				log_admin("[key_name(usr)] deleted all objects of type or subtype of [AM_type] ([i] objects deleted)")
-				message_admins("<span class='notice'>[key_name(usr)] deleted all objects of type or subtype of [AM_type] ([i] objects deleted)</span>")
+				message_admins("<span class='notice'>[key_name(usr)] deleted all objects of type or subtype of [AM_type] ([i] objects deleted)</span>", key_name(usr))
 
 	else if (href_list["explode"])
 		if (!check_rights(R_SPAWN))	return
@@ -422,7 +422,7 @@
 
 		if (amount != FALSE)
 			log_admin("[key_name(usr)] dealt [amount] amount of [Text] damage to [L]")
-			message_admins("<span class='notice'>[key_name(usr)] dealt [amount] amount of [Text] damage to [L]</span>")
+			message_admins("<span class='notice'>[key_name(usr)] dealt [amount] amount of [Text] damage to [L]</span>", key_name(usr))
 			href_list["datumrefresh"] = href_list["mobToDamage"]
 
 	else if (href_list["call_proc"])

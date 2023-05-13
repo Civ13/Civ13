@@ -3,7 +3,7 @@
 	set name = "Randomly Change the Weather"
 	change_weather_somehow()
 	src << "<span class = 'good'>Sucessfully changed the weather!</span>"
-	message_admins("[key_name(src)] randomly changed the weather.")
+	message_admins("[key_name(src)] randomly changed the weather.", key_name(src))
 	log_admin("[key_name(src)] randomly changed the weather.")
 
 /client/proc/randomly_modify_weather()
@@ -12,7 +12,7 @@
 	var/old_intensity = weather_intensity
 	modify_weather_somehow()
 	src << "<span class = 'good'>Sucessfully modified the weather from [old_intensity] to [weather_intensity]!</span>"
-	message_admins("[key_name(src)] randomly modified the weather.")
+	message_admins("[key_name(src)] randomly modified the weather.", key_name(src))
 	log_admin("[key_name(src)] randomly modified the weather.")
 
 /client/proc/change_season()
@@ -21,5 +21,5 @@
 
 	map.seasons(FALSE,TRUE)
 	src << "<span class = 'good'>Sucessfully changed the season.</span>"
-	message_admins("[key_name(src)] changed the season.")
+	message_admins("[key_name(src)] changed the season.", key_name(src))
 	log_admin("[key_name(src)] randomly changed the season.")

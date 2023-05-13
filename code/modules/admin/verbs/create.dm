@@ -48,5 +48,5 @@
 	var/obj/structure/closet/crate/empty/C = new/obj/structure/closet/crate/empty(mob.loc)
 	C.contents = objects
 
-	message_admins("[key_name(src)] created a custom crate at [mob.loc] ([mob.loc.x], [mob.loc.y], [mob.loc.z])")
+	message_admins("[key_name(src)] created a custom crate at [mob.loc] ([mob.loc.x], [mob.loc.y], [mob.loc.z])", key_name(src))
 	log_admin("[key_name(src)] created a custom crate at [mob.loc] ([mob.loc.x], [mob.loc.y], [mob.loc.z])")

@@ -38,4 +38,4 @@
 	if (j)
 		j.enabled = !j.enabled
 		world << "<span class = 'warning'>[j.title] is now <b>[j.enabled ? "ENABLED" : "DISABLED"]</b>.</span>"
-		message_admins("[key_name(src)] [j.enabled ? "enabled" : "disabled"] the [j.title] job.")
+		message_admins("[key_name(src)] [j.enabled ? "enabled" : "disabled"] the [j.title] job.", key_name(usr))

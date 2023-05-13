@@ -7,7 +7,7 @@
 
 	if (admin_datums[ckey])
 		if (ticker && ticker.current_state == GAME_STATE_PLAYING) //Only report this stuff if we are currently playing.
-			message_admins("Staff logout: [key_name(src)]")
+			message_admins("Staff logout: [key_name(src)]", key_name(src))
 
 	..()
 	return TRUE

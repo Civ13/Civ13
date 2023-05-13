@@ -503,7 +503,7 @@ var/list/admin_verbs_host = list(
 				new_key = copytext(new_key, 1, 26)
 			holder.fakekey = new_key
 		log_admin("[key_name(usr)] has turned stealth mode [holder.fakekey ? "ON" : "OFF"]")
-		message_admins("[key_name_admin(usr)] has turned stealth mode [holder.fakekey ? "ON" : "OFF"]", 1)
+		message_admins("[key_name_admin(usr)] has turned stealth mode [holder.fakekey ? "ON" : "OFF"]", key_name_admin(usr))
 
 
 /client/proc/drop_bomb() // Some admin dickery that can probably be done better -- TLE
@@ -542,7 +542,7 @@ var/list/admin_verbs_host = list(
 					src << "<span class = 'danger'>You need Manager+ permissions to drop a custom bomb this big.</span>"
 					return
 			explosion(epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range)
-	message_admins("[key] creating an admin explosion at [epicenter.loc].")
+	message_admins("[key] creating an admin explosion at [epicenter.loc].", key)
 
 /client/proc/make_sound(var/obj/O in range(7)) // -- TLE
 	set category = "Special"
@@ -555,7 +555,7 @@ var/list/admin_verbs_host = list(
 		for (var/mob/V in hearers(O))
 			V.show_message(message, 2)
 		log_admin("[key_name(usr)] made [O] at [O.x], [O.y], [O.z]. make a sound")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] made [O] at [O.x], [O.y], [O.z]. make a sound.</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name_admin(usr)] made [O] at [O.x], [O.y], [O.z]. make a sound.</span>", key_name_admin(usr))
 
 
 /client/proc/object_talk(var/msg as text) // -- TLE
@@ -575,7 +575,7 @@ var/list/admin_verbs_host = list(
 	if (deadmin_holder)
 		deadmin_holder.reassociate()
 		log_admin("[src] re-admined themself.")
-		message_admins("[src] re-admined themself.", TRUE)
+		message_admins("[src] re-admined themself.", src)
 		verbs -= /client/proc/readmin_self
 
 /client/proc/deadmin_self()
@@ -585,7 +585,7 @@ var/list/admin_verbs_host = list(
 	if (holder)
 		if (WWinput(src, "Confirm self-deadmin for the round? You can re-admin yourself at any time.", "Deadmin Self", "Yes", list("Yes","No")) == "Yes")
 			log_admin("[src] deadmined themself.")
-			message_admins("[src] deadmined themself.", TRUE)
+			message_admins("[src] deadmined themself.")
 			deadmin()
 			verbs |= /client/proc/readmin_self
 
@@ -728,7 +728,7 @@ var/list/admin_verbs_host = list(
 		var/job = input("Please select job slot to free", "Free job slot")  as null|anything in jobs
 		if (job)
 			job_master.FreeRole(job)
-			message_admins("A job slot for [job] has been opened by [key_name_admin(usr)]")
+			message_admins("A job slot for [job] has been opened by [key_name_admin(usr)]", key_name_admin(usr))
 			return
 
 var/global/list/global_colour_matrix = null
@@ -894,7 +894,7 @@ var/global/list/global_colour_matrix = null
 			qdel(H)
 			count++
 
-	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).")
+	message_admins("[key_name_admin(usr)] removed all the dead bodies ([count] total).", key_name_admin(usr))
 	return
 
 /client/proc/radiation_emission()
@@ -917,7 +917,7 @@ var/global/list/global_colour_matrix = null
 	var/duration = WWinput(src, "Duration (in seconds):", "Radiation Emission", 1, "num")
 
 	radiation_pulse(epicenter, range, severity, duration, 0)
-	message_admins("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
+	message_admins("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].", key)
 	log_game("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
 
 /client/proc/nuke()
@@ -954,7 +954,7 @@ var/global/list/global_colour_matrix = null
 	spawn(warningtimer)
 		world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
 		nuke_map(epicenter, 200, 180, 0)
-		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].", key)
 		log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 
 
@@ -1008,7 +1008,7 @@ var/global/gc_helper_on = FALSE
 	set name = "Toggle GC Helper"
 	if (!check_rights(R_DEBUG))	return
 
-	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
+	message_admins("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].", key_name(src))
 	log_admin("[key_name(src)] toggled the GC helper [gc_helper_on ? "OFF" : "ON"].")
 	gc_helper_on = !gc_helper_on
 	if (gc_helper_on)
