@@ -82,7 +82,7 @@ var/global/redirect_all_players = null
 			if (findtext(message, "byond://"))
 				src << "<b>Advertising other servers is not allowed.</b>"
 				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
-				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]", [key_name_admin(client))
+				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]", key_name_admin(client))
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
