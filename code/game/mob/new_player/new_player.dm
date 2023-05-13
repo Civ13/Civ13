@@ -82,7 +82,7 @@ var/global/redirect_all_players = null
 			if (findtext(message, "byond://"))
 				src << "<b>Advertising other servers is not allowed.</b>"
 				log_admin("[key_name(client)] has attempted to advertise in OOC: [message]")
-				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]")
+				message_admins("[key_name_admin(client)] has attempted to advertise in OOC: [message]", [key_name_admin(client))
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
@@ -258,7 +258,7 @@ var/global/redirect_all_players = null
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more seconds to respawn. Do you want to bypass this?", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] second wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					LateChoices()
 					return TRUE
 			WWalert(src, "Because you died in combat, you must wait [wait] more seconds to respawn.", "Error")
@@ -290,7 +290,7 @@ var/global/redirect_all_players = null
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					if (map && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES)
 						LateChoices()
 					else
@@ -332,14 +332,14 @@ var/global/redirect_all_players = null
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes" && map.ID != MAP_PIONEERS_WASTELAND_2)
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					close_spawn_windows()
 					AttemptLateSpawn(pick(map.availablefactions))
 					return TRUE
 				else if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					LateChoices()
 					return TRUE
 			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn.", "Error")
@@ -379,7 +379,7 @@ var/global/redirect_all_players = null
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					close_spawn_windows()
 					AttemptLateSpawn("Nomad")
 					return TRUE
@@ -485,7 +485,7 @@ var/global/redirect_all_players = null
 				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
-					message_admins(msg)
+					message_admins(msg, client.ckey)
 					LateChoices()
 					return TRUE
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")

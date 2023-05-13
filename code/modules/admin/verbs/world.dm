@@ -12,4 +12,4 @@
 		world.visibility = !world.visibility
 		var/M = "[key_name(src)] set the world's hub visibility to [world.visibility]."
 		log_admin(M)
-		message_admins(M)
+		message_admins(M, key_name(src))

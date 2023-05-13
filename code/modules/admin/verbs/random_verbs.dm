@@ -13,7 +13,7 @@
 		M.drop_from_inventory(W)
 
 	log_admin("[key_name(usr)] made [key_name(M)] drop everything!")
-	message_admins("[key_name_admin(usr)] made [key_name_admin(M)] drop everything!", TRUE)
+	message_admins("[key_name_admin(usr)] made [key_name_admin(M)] drop everything!", key_name_admin(usr))
 
 
 /client/proc/cmd_admin_subtle_message(mob/M as mob in mob_list)
@@ -35,7 +35,7 @@
 				M << "\bold You hear a voice in your head... \italic [msg]"
 
 	log_admin("SubtlePM: [key_name(usr)] -> [key_name(M)] : [msg]")
-	message_admins("<span class = 'notice'>\bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [msg]</span>", TRUE)
+	message_admins("<span class = 'notice'>\bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [msg]</span>", key_name_admin(usr))
 
 
 /client/proc/cmd_mentor_check_new_players()	//Allows mentors / admins to determine who the newer players are.
@@ -85,7 +85,7 @@
 		return
 	world << "[msg]"
 	log_admin("GlobalNarrate: [key_name(usr)] : [msg]")
-	message_admins("<span class = 'notice'>\bold GlobalNarrate: [key_name_admin(usr)] : [msg]</span><br>", TRUE)
+	message_admins("<span class = 'notice'>\bold GlobalNarrate: [key_name_admin(usr)] : [msg]</span><br>", key_name_admin(usr))
 
 
 /client/proc/cmd_admin_direct_narrate(var/mob/M)	// Targetted narrate -- TLE
@@ -109,7 +109,7 @@
 
 	M << msg
 	log_admin("DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]")
-	message_admins("<span class = 'notice'>\bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]</span><BR>", TRUE)
+	message_admins("<span class = 'notice'>\bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]</span><BR>", key_name(usr))
 
 
 /client/proc/cmd_admin_godmode(mob/M as mob in mob_list)
@@ -122,7 +122,7 @@
 	usr << "<span class = 'notice'>Toggled [(M.status_flags & GODMODE) ? "ON" : "OFF"]</span>"
 
 	log_admin("[key_name(usr)] has toggled [key_name(M)]'s nodamage to [(M.status_flags & GODMODE) ? "On" : "Off"]")
-	message_admins("[key_name_admin(usr)] has toggled [key_name_admin(M)]'s nodamage to [(M.status_flags & GODMODE) ? "On" : "Off"]", TRUE)
+	message_admins("[key_name_admin(usr)] has toggled [key_name_admin(M)]'s nodamage to [(M.status_flags & GODMODE) ? "On" : "Off"]", key_name_admin(usr))
 
 
 proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
@@ -157,7 +157,7 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
 		muteunmute = "auto-muted"
 		M.client.prefs.muted |= mute_type
 		log_admin("SPAM AUTOMUTE: [muteunmute] [key_name(M)] from [mute_string]")
-		message_admins("SPAM AUTOMUTE: [muteunmute] [key_name_admin(M)] from [mute_string].", TRUE)
+		message_admins("SPAM AUTOMUTE: [muteunmute] [key_name_admin(M)] from [mute_string].", key_name_admin(M))
 		M << "<span class='alert'>You have been [muteunmute] from [mute_string] by the SPAM AUTOMUTE system. Contact an admin.</span>"
 
 		return
@@ -170,7 +170,7 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = FALSE)
 		M.client.prefs.muted |= mute_type
 
 	log_admin("[key_name(usr)] has [muteunmute] [key_name(M)] from [mute_string]")
-	message_admins("[key_name_admin(usr)] has [muteunmute] [key_name_admin(M)] from [mute_string].", TRUE)
+	message_admins("[key_name_admin(usr)] has [muteunmute] [key_name_admin(M)] from [mute_string].", key_name_admin(usr))
 	M << "<span class = 'alert'>You have been [muteunmute] from [mute_string].</span>"
 
 /*
@@ -224,7 +224,7 @@ Ccomp's first proc.
 
 	G:show_message(text("<span class = 'notice'><b>You may now respawn.  You should roleplay as if you learned nothing about the round during your time with the dead.</b></span>"), TRUE)
 	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the respawn limit")
-	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the respawn limit", TRUE)
+	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the respawn limit", key_name_admin(usr))
 
 /*
 If a guy was gibbed and you want to revive him, this is a good way to do so.
@@ -291,7 +291,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 	job_master.EquipRank(new_character, new_character.mind.assigned_role, TRUE)
 
-	message_admins("<span class = 'notice'>[admin] has respawned [player_key] as [new_character.real_name].</span>", TRUE)
+	message_admins("<span class = 'notice'>[admin] has respawned [player_key] as [new_character.real_name].</span>", admin)
 
 	new_character << "You have been fully respawned. Enjoy the game."
 
@@ -312,7 +312,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if (config.allow_admin_rev)
 		M.revive()
 		log_admin("[key_name(usr)] healed / revived [key_name(M)]")
-		message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(M)]!</span>", TRUE)
+		message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(M)]!</span>", key_name_admin(usr))
 	else
 		WWalert(src, "Admin rejuvenation is disabled.", "Admin Rejuvenation")
 
@@ -332,7 +332,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 	if (WWinput(src, "Are you sure you want to delete:\n[O]\nat ([O.x], [O.y], [O.z])?", "Deletion Confirmation", "Yes", list("Yes", "No")) == "Yes")
 		log_admin("[key_name(usr)] deleted [O] at ([O.x],[O.y],[O.z])")
-		message_admins("[key_name_admin(usr)] deleted [O] at ([O.x],[O.y],[O.z])", TRUE)
+		message_admins("[key_name_admin(usr)] deleted [O] at ([O.x],[O.y],[O.z])", key_name_admin(usr))
 
 		qdel(O)
 
@@ -385,7 +385,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 		explosion(O, devastation, heavy, light, flash)
 		log_admin("[key_name(usr)] created an explosion ([devastation],[heavy],[light],[flash]) at ([O.x],[O.y],[O.z])")
-		message_admins("[key_name_admin(usr)] created an explosion ([devastation],[heavy],[light],[flash]) at ([O.x],[O.y],[O.z])", TRUE)
+		message_admins("[key_name_admin(usr)] created an explosion ([devastation],[heavy],[light],[flash]) at ([O.x],[O.y],[O.z])", key_name_admin(usr))
 
 		return
 	else
@@ -403,7 +403,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if (!M)	return
 
 	log_admin("[key_name(usr)] has gibbed [key_name(M)]")
-	message_admins("[key_name_admin(usr)] has gibbed [key_name_admin(M)]", TRUE)
+	message_admins("[key_name_admin(usr)] has gibbed [key_name_admin(M)]", key_name_admin(usr))
 
 	if (isobserver(M))
 		gibs(M.loc)
@@ -423,7 +423,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if (!M)	return
 
 	log_admin("[key_name(usr)] has crushed [key_name(M)]")
-	message_admins("[key_name_admin(usr)] has crushed [key_name_admin(M)]", TRUE)
+	message_admins("[key_name_admin(usr)] has crushed [key_name_admin(M)]", key_name_admin(usr))
 
 	if (isobserver(M))
 		gibs(M.loc)
@@ -443,7 +443,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 			mob.gib()
 
 		log_admin("[key_name(usr)] used gibself.")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] used gibself.</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name_admin(usr)] used gibself.</span>", key_name_admin(usr))
 
 /client/proc/cmd_admin_crush_self()
 	set name = "Crushself"
@@ -457,7 +457,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 			mob.crush()
 
 		log_admin("[key_name(usr)] used crushself.")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] used crushself.</span>", TRUE)
+		message_admins("<span class = 'notice'>[key_name_admin(usr)] used crushself.</span>", key_name_admin(usr))
 
 
 /client/proc/update_world()
@@ -485,7 +485,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		view = world.view
 
 	log_admin("[key_name(usr)] changed their view range to [view].")
-	//message_admins("\blue [key_name_admin(usr)] changed their view range to [view].", TRUE)	//why? removed by order of XSI
+	//message_admins("\blue [key_name_admin(usr)] changed their view range to [view].", key_name_admin(usr))	//why? removed by order of XSI
 
 
 /client/proc/cmd_admin_attack_log(mob/M as mob in mob_list)

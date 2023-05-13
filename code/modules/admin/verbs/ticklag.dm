@@ -11,7 +11,7 @@
 	//I've used ticks of 2 before to help with serious singulo lags
 	if (newtick && newtick <= 2 && newtick > 0)
 		log_admin("[key_name(src)] has modified world.tick_lag to [newtick]", FALSE)
-		message_admins("[key_name(src)] has modified world.tick_lag to [newtick]", FALSE)
+		message_admins("[key_name(src)] has modified world.tick_lag to [newtick]", key_name(usr))
 		world.tick_lag = newtick
 
 

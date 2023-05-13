@@ -36,7 +36,7 @@
 	infos += P
 	info << infos
 
-	message_admins("<span class = 'notice'>[key_name_admin(user)] has edited [key]'s notes.</span>")
+	message_admins("<span class = 'notice'>[key_name_admin(user)] has edited [key]'s notes.</span>", key_name_admin(user))
 	log_admin("[key_name(user)] has edited [key]'s notes.")
 
 	del(info) // savefile, so NOT qdel
@@ -62,7 +62,7 @@
 	infos.Remove(item)
 	info << infos
 
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] deleted one of [key]'s notes.</span>")
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] deleted one of [key]'s notes.</span>", key_name_admin(user))
 	log_admin("[key_name(usr)] deleted one of [key]'s notes.")
 
 	qdel(info)

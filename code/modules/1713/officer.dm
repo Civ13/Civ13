@@ -251,7 +251,7 @@ var/global/list/valid_coordinates = list()
 				map.artillery_last = world.time
 				spawn(rand(15,25)*10)
 					airstrike(input1,inputx,inputy,src.z)
-				message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
+				message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).", key_name_admin(src))
 				log_game("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
 				return
 		else
@@ -291,7 +291,7 @@ var/global/list/valid_coordinates = list()
 				map.artillery_last = world.time
 				spawn(rand(15,25)*10)
 					airstrike(input1,inputx,inputy,src.z)
-				message_admins("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).")
+				message_admins("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).", key_name_admin(src))
 				log_game("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).")
 				return
 	else if (map.artillery_count <= 0)
