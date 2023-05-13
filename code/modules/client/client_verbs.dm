@@ -317,6 +317,7 @@
 				C << sound('sound/machines/ping.ogg')
 
 	log_ooc("[mob.name]/[key] : [msg]")
+	webhook_send_ooc(key, "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[mob.name]/[key]:** [msg]")
 	discord_log("[mob.name]/[key]:","[msg]")
 
 	var/ooc_style = "everyone"
