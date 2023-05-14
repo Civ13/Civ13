@@ -154,8 +154,10 @@ Parts of code courtesy of Super3222
 						else
 							H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
 							checking = FALSE
+							return
 					else
 						H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+						checking = FALSE
 						return
 				else
 					H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"

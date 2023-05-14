@@ -1705,12 +1705,6 @@
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
 
-/mob/living/human/rejuvenate()
-	restore_blood()
-	shock_stage = 0
-	traumatic_shock = 0
-	..()
-
 /mob/living/human/handle_vision()
 
 	if (client)

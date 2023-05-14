@@ -217,7 +217,8 @@
 	if (!cover_opened)
 		return ..()
 	else if (chambered | cover_opened)
-		chambered.dir = src.loc.dir
+		if (ishuman(src.loc))
+			chambered.dir = src.loc.dir
 		chambered.det_time = 15
 		chambered.activate(null)
 	return chambered | cover_opened
