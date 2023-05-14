@@ -61,6 +61,8 @@ Parts of code courtesy of Super3222
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
 		return
+	if (!H.looking)
+		return
 
 	checking = TRUE
 	var/dist1 = abs(H.x-target.x)
