@@ -306,7 +306,7 @@
 		list(name = "full auto",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.95
+	effectiveness_mod = 0.90
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
 	name = "H&K MP5"
@@ -784,7 +784,7 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -829,6 +829,12 @@
 			VERY_LONG_RANGE_STILL = 36,
 			VERY_LONG_RANGE_MOVING = 23),
 	)
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/grenade_launcher/New()
+	..()
+	var/obj/item/weapon/gun/launcher/grenade/underslung/gp25/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/gp25/(src)
+	GL.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)

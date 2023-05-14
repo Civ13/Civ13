@@ -10,6 +10,14 @@
 	var/list/query = list("message" = message)
 	webhook_send("runtimemessage", query)
 
+/proc/webhook_send_attacklog(message)
+	var/list/query = list("message" = message)
+	webhook_send("attacklogmessage", query)
+
+/proc/webhook_send_alog(ckey = "", message)
+	var/list/query = list("ckey" = ckey, "message" = message)
+	webhook_send("alogmessage", query)
+
 /proc/webhook_send_asay(ckey, message)
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("asaymessage", query)

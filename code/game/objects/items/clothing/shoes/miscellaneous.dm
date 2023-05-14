@@ -67,19 +67,19 @@
 	desc = "A pair of rather plain, wooden sandals."
 	name = "sandals"
 	icon_state = "sandals"
+	item_state = "wizard"
+	worn_state = "wizard"
 	species_restricted = null
 	body_parts_covered = FALSE
 
 /obj/item/clothing/shoes/sandal/leather
 	name = "sandals"
 	desc = "A pair of simple, thin leather strap sandals. Covers up to the lower foot."
-	icon_state = "sandals"
 
 /obj/item/clothing/shoes/sandal/marisa
 	desc = "A pair of magic, black shoes."
 	name = "magic shoes"
 	icon_state = "black"
-	worn_state = "black"
 	worn_state = "black"
 
 /obj/item/clothing/shoes/slippers

@@ -24,7 +24,7 @@
 	else
 		ticker.finished = TRUE
 
-	message_admins("[key_name(src)] ended the round!")
+	message_admins("[key_name(src)] ended the round!", key_name(usr))
 	log_admin("[key_name(src)] ended the round!")
 
 /client/proc/toggle_round_ending()
@@ -39,10 +39,10 @@
 		map.admins_triggered_noroundend = !map.admins_triggered_noroundend
 		switch (map.admins_triggered_noroundend)
 			if (1)
-				message_admins("[key_name(src)] prevented the round from ending.")
+				message_admins("[key_name(src)] prevented the round from ending.", key_name(usr))
 				log_admin("[key_name(src)] prevented the round from ending.")
 			if (0)
-				message_admins("[key_name(src)] undid the administrative lock on the round ending.")
+				message_admins("[key_name(src)] undid the administrative lock on the round ending.", key_name(usr))
 				log_admin("[key_name(src)] undid the administrative lock on the round ending.")
 	else
 		src << "<span class = 'danger'>Something went wrong.</span>"

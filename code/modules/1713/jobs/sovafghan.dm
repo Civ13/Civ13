@@ -29,7 +29,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/coldwar/soviet_officer(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/waist/holsterw = new /obj/item/clothing/accessory/holster/waist(null)
@@ -61,7 +61,7 @@
 
 /datum/job/russian/sovafghan/lieutenant
 	title = "Soviet Army Lieutenant"
-	rank_abbreviation = "Lt."
+	rank_abbreviation = "Leyt."
 
 	spawn_location = "JoinLateRULt"
 
@@ -91,7 +91,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -132,7 +132,7 @@
 
 /datum/job/russian/sovafghan/sergeant
 	title = "Soviet Army Sergeant"
-	rank_abbreviation = "Sgt."
+	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUSL"
 
@@ -682,7 +682,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
 //back
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_spz(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/svd(H), slot_shoulder)

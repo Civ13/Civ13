@@ -78,12 +78,12 @@
 		var/message = ""
 		message = "The round has ended!"
 		if (scores["Yellowagwana"] > scores["Blugisi"])
-			message = "The battle is over! The <font color='yellow'><b>Yellowagwana</b></font> were victorious over the <b>Blugisi</b>!"
+			message = "The battle is over! The <font color='yellow'><b>Yellowagwana</b></font> were victorious over the <b>Blugisi</b> tribe!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
 		else if (scores["Blugisi"] > scores["Yellowagwana"])
-			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the <b>Blugisi</b>!"
+			message = "The battle is over! The <font color='blue'><b>Blugisi</b></font> were victorious over the <b>Yellowagwana</b> tribe!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE

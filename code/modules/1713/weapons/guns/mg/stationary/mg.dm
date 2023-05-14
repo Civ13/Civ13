@@ -380,7 +380,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
 	if (mode == "atgm")
-		message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+		message_admins("[key_name_admin(user)] fired an ATGM at [target].", key_name_admin(user))
 		log_game("[key_name_admin(user)] used an ATGM at [target].")
 		update_icon()
 		..()
@@ -457,7 +457,7 @@
 	return null
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_post_fire(mob/user, atom/target)
-	message_admins("[key_name_admin(user)] fired an ATGM at [target].")
+	message_admins("[key_name_admin(user)] fired an ATGM at [target].", key_name_admin(user))
 	log_game("[key_name_admin(user)] used an ATGM at [target].")
 	update_icon()
 	..()

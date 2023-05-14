@@ -443,4 +443,4 @@
 								A.vars[variable] = result
 
 	log_admin("[key_name(src)] mass modified [original_name]'s [variable] to [O.vars[variable]]")
-	message_admins("[key_name_admin(src)] mass modified [original_name]'s [variable] to [O.vars[variable]]", TRUE)
+	message_admins("[key_name_admin(src)] mass modified [original_name]'s [variable] to [O.vars[variable]]", key_name_admin(src))

@@ -34,7 +34,7 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 								text2file("[L]|||", bans_file)
 
 			log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-			message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+			message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.", key_name(caller))
 			for (var/client/C in clients)
 				if (C.ckey == ckey)
 					C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
@@ -350,7 +350,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 		banner << "<span class = 'notice'>You have successfully banned [banckey]/[bancID]/[banip]. This ban [lowertext(expire_info)]."
 	var/M = "[key_name(banner)] banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
 	log_admin(M)
-	message_admins(M)
+	message_admins(M, key_name(banner))
 	// kick whoever got banned if they're on
 	if (lowertext(fields["type"]) == "server")
 		for (var/client/C in clients)

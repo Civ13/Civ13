@@ -70,7 +70,7 @@
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") >= 5)
 		FM.reagents.remove_reagent("gasoline",5)
 		lastfire = world.time+20
-		//message_admins("[user.name] ([user.ckey]) fired a flamethrower from: X=[user.x];Y=[user.y];Z[user.z]")
+		//message_admins("[user.name] ([user.ckey]) fired a flamethrower from: X=[user.x];Y=[user.y];Z[user.z]", user.ckey)
 		var/turf/source_turf = get_turf(user)
 
 		var/list/turfs = getline2(source_turf, target)

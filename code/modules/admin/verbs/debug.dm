@@ -5,7 +5,7 @@
 
 	spawn(2)
 		winset(src, null, "command=.command") //spawn so a window doesn't overlap it
-		message_admins("[key_name(src)] started debugging a command.")
+		message_admins("[key_name(src)] started debugging a command.", key_name(src))
 		log_admin("[key_name(src)] started debugging a command.")
 
 // callproc moved to code/modules/admin/callproc
@@ -24,7 +24,7 @@
 			if (istype(O, hsbitem))
 				qdel(O)
 		log_admin("[key_name(src)] has deleted all instances of [hsbitem].")
-		message_admins("[key_name_admin(src)] has deleted all instances of [hsbitem].", FALSE)
+		message_admins("[key_name_admin(src)] has deleted all instances of [hsbitem].", key_name_admin(src))
 
 /client/proc/cmd_assume_direct_control(var/mob/M in mob_list)
 	set category = "Admin"
@@ -38,7 +38,7 @@
 		else
 			var/mob/observer/ghost/ghost = new/mob/observer/ghost(M,1)
 			ghost.ckey = M.ckey
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] assumed direct control of [M].</span>", TRUE)
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] assumed direct control of [M].</span>", key_name_admin(src))
 	log_admin("[key_name(usr)] assumed direct control of [M].")
 	var/mob/adminmob = mob
 	M.ckey = ckey

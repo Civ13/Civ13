@@ -2122,7 +2122,7 @@
 			if ("FV4034 Challenger 2 Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/challenger2(locate(origin.x+3,origin.y-5,origin.z))
 
-		message_admins("[user.name] ([user.ckey]) ([user.faction_text]) bought a vehicle at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)")
+		message_admins("[user.name] ([user.ckey]) ([user.faction_text]) bought a vehicle at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)", user.ckey)
 		log_game("[user.name] ([user.ckey]) ([user.faction_text]) bought a [href_list["vehiclegiver"]] at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)")
 		if (PV)
 			PV.custom_color = basecolor

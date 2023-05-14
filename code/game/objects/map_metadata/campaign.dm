@@ -1155,7 +1155,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 			return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
-	message_admins("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)")
+	message_admins("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
 	log_game("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 
 	switch(user.faction_text)
