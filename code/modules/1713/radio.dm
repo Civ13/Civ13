@@ -22,54 +22,6 @@
 	var/list/multifreqlist = list(150)
 	var/list/multifreqlist_selectable = list(150)
 	anchored = TRUE
-/obj/structure/radio/transmitter
-	name = "radio transmitter"
-	icon_state = "radio_transmitter"
-	transmitter = TRUE
-	receiver = FALSE
-	receiver_on = FALSE
-	transmitter_on = TRUE
-	powerneeded = 20
-
-/obj/structure/radio/transmitter_receiver
-	name = "two-way radio"
-	icon_state = "radio"
-	transmitter = TRUE
-	receiver = TRUE
-	receiver_on = TRUE
-	transmitter_on = TRUE
-	powerneeded = 20
-
-/obj/structure/radio/transmitter_receiver/nopower/tank
-	name = "tank radio"
-	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances."
-	icon_state = "tankradio"
-	transmitter = TRUE
-	receiver = TRUE
-	receiver_on = TRUE
-	transmitter_on = TRUE
-
-/obj/structure/radio/transmitter_receiver/nopower/tank/New()
-	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
-
-/obj/structure/radio/transmitter_receiver/nopower/tank/faction1/New()
-	..()
-	freq = FREQ1
-	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
-
-/obj/structure/radio/transmitter_receiver/nopower/tank/faction2/New()
-	..()
-	freq = FREQ2
-	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
-
-/obj/structure/radio/transmitter_receiver/nopower
-	name = "two-way radio"
-	icon_state = "radio"
-	transmitter = TRUE
-	receiver = TRUE
-	receiver_on = TRUE
-	transmitter_on = TRUE
-	powerneeded = 0
 
 var/global/FREQ1 = rand(150,200)
 var/global/FREQ2 = rand(201,250)
@@ -80,82 +32,59 @@ var/global/FREQY = rand(41,60)
 var/global/FREQG = rand(61,80)
 var/global/FREQP = rand(81,100)
 var/global/FREQM = rand(101,120)
-/obj/structure/radio/transmitter_receiver/nopower/faction1/New()
-	..()
-	freq = FREQ1
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
-/obj/structure/radio/transmitter_receiver/nopower/faction2/New()
-	..()
-	freq = FREQ2
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
 
-/obj/structure/radio/receiver/loudspeaker
-	name = "loudspeaker"
-	icon_state = "loudspeaker"
-	transmitter = FALSE
-	receiver = TRUE
-	receiver_on = TRUE
-	transmitter_on = FALSE
-	powerneeded = 0
-
-/obj/structure/radio/receiver/loudspeaker/faction1/New()
-	..()
-	freq = FREQ1
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
-
-/obj/structure/radio/faction1/New()
-	freq = FREQ1
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
-	powerneeded = 0
-/obj/structure/radio/faction2/New()
-	freq = FREQ2
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
-	powerneeded = 0
-/obj/structure/radio/receiver/loudspeaker/faction2/New()
-	..()
-	freq = FREQ2
-	desc = "Used to communicate with distant places. Set to [freq]kHz."
-/obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
-	if (!anchored && !istype(W, /obj/item/weapon/wrench))
-		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
+/obj/item/weapon/radio/proc/check_freq(var/obj/original)
+	if (!original)
 		return
-	if (istype(W, /obj/item/stack/cable_coil))
-		if (powersource)
-			user << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
-		if (!powersource)
-			return
-		powersource.connections += src
-		var/opdir1 = 0
-		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
-			opdir1 = 4
-			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
-			opdir1 = 1
-			opdir2 = 2
-		powersource.update_icon()
-
-		if (opdir1 != 0 && opdir2 != 0)
-			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						NCOO.connections += powersource
-					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						powersource.connections += NCOO
-					user << "You connect the two cables."
-
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						NCOC.connections += powersource
-					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						powersource.connections += NCOC
-		user << "You connect the cable to the [src]."
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/structure/radio))
+		SR = original
 	else
-		..()
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
+	return FALSE
+/obj/structure/radio/proc/check_freq(var/obj/original)
+	if (!original)
+		return
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/structure/radio))
+		SR = original
+	else
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
+	return FALSE
 
 /obj/structure/radio/proc/check_power()
 	if (!powersource || powerneeded == 0)
@@ -506,13 +435,136 @@ var/global/FREQM = rand(101,120)
 			full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]>\"[message]\"</font>"
 		on_hear_obj(destination, full_message)
 
+/obj/structure/radio/transmitter
+	name = "radio transmitter"
+	icon_state = "radio_transmitter"
+	transmitter = TRUE
+	receiver = FALSE
+	receiver_on = FALSE
+	transmitter_on = TRUE
+	powerneeded = 20
+
+/obj/structure/radio/transmitter/nopower
+	powerneeded = 0
+
+/obj/structure/radio/transmitter_receiver
+	name = "two-way radio"
+	icon_state = "radio"
+	transmitter = TRUE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = TRUE
+	powerneeded = 20
+
+/obj/structure/radio/transmitter_receiver/nopower
+	powerneeded = 0
+
+/obj/structure/radio/transmitter_receiver/nopower/tank
+	name = "tank radio"
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances."
+	icon_state = "tankradio"
+	transmitter = TRUE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = TRUE
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/New()
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/tank/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "A small and robust tank radio, allowing you to communicate with your fellows over long distances. Set to [freq]kHz."
+
+/obj/structure/radio/transmitter_receiver/nopower/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/structure/radio/transmitter_receiver/nopower/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/structure/radio/receiver/loudspeaker
+	name = "loudspeaker"
+	icon_state = "loudspeaker"
+	transmitter = FALSE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = FALSE
+	powerneeded = 0
+
+/obj/structure/radio/receiver/loudspeaker/faction1/New()
+	..()
+	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+
+/obj/structure/radio/faction1/New()
+	freq = FREQ1
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+	powerneeded = 0
+/obj/structure/radio/faction2/New()
+	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+	powerneeded = 0
+/obj/structure/radio/receiver/loudspeaker/faction2/New()
+	..()
+	freq = FREQ2
+	desc = "Used to communicate with distant places. Set to [freq]kHz."
+/obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
+	if (!anchored && !istype(W, /obj/item/weapon/wrench))
+		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
+		return
+	if (istype(W, /obj/item/stack/cable_coil))
+		if (powersource)
+			user << "There's already a cable connected here! Split it further from the [src]."
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!powersource)
+			return
+		powersource.connections += src
+		var/opdir1 = 0
+		var/opdir2 = 0
+		if (powersource.tiledir == "horizontal")
+			opdir1 = 4
+			opdir2 = 8
+		else if  (powersource.tiledir == "vertical")
+			opdir1 = 1
+			opdir2 = 2
+		powersource.update_icon()
+
+		if (opdir1 != 0 && opdir2 != 0)
+			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
+				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
+					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						NCOO.connections += powersource
+					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						powersource.connections += NCOO
+					user << "You connect the two cables."
+
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
+					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						NCOC.connections += powersource
+					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						powersource.connections += NCOC
+		user << "You connect the cable to the [src]."
+	else
+		..()
+
 ////////////////PORTABLE RADIOS//////////////////
 /obj/item/weapon/radio
 	name = "portable radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
 	icon = 'icons/obj/device.dmi'
-	icon_state = "portable_radio3"
-	item_state = "portable_radio3"
+	icon_state = "portable_radio"
+	item_state = "portable_radio"
 	flammable = FALSE
 	density = FALSE
 	opacity = FALSE
@@ -541,16 +593,16 @@ var/global/FREQM = rand(101,120)
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/item/weapon/radio/faction1/spaceradio
-	icon_state = "portable_radio5"
-	item_state = "portable_radio5"
+	icon_state = "portable_radio_space"
+	item_state = "portable_radio_space"
 /obj/item/weapon/radio/faction2/New()
 	..()
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
-
 /obj/item/weapon/radio/faction2/spaceradio
-	icon_state = "portable_radio5"
-	item_state = "portable_radio5"
+	icon_state = "portable_radio_space"
+	item_state = "portable_radio_space"
+
 /obj/item/weapon/radio/attack_self(mob/user)
 	interact(user)
 
@@ -617,9 +669,7 @@ var/global/FREQM = rand(101,120)
 			do_html(user)
 			return
 
-
 	do_html(user)
-
 
 /obj/item/weapon/radio/verb/name_radio()
 	set category = null
@@ -715,8 +765,8 @@ var/global/FREQM = rand(101,120)
 	name = "portable communications backpack"
 	desc = "Used to communicate with others from a far. Set to 150kHz."
 	icon = 'icons/obj/device.dmi'
-	icon_state = "portable_radio5"
-	item_state = "portable_radio5"
+	icon_state = "portable_radio_space"
+	item_state = "portable_radio_space"
 	flammable = FALSE
 	density = FALSE
 	opacity = FALSE
@@ -730,8 +780,8 @@ var/global/FREQM = rand(101,120)
 	name = "walkie-talkie radio"
 	desc = "Used to communicate with distant places. Set to 150kHz."
 	icon = 'icons/obj/device.dmi'
-	icon_state = "portable_radio4"
-	item_state = "portable_radio4"
+	icon_state = "walkietalkie"
+	item_state = "walkietalkie"
 	flammable = FALSE
 	density = FALSE
 	opacity = FALSE
@@ -741,13 +791,14 @@ var/global/FREQM = rand(101,120)
 	nothrow = FALSE
 	icon_override = 'icons/mob/pouch.dmi'
 
+/obj/item/weapon/radio/walkietalkie/yellow
+	icon_state = "walkietalkie2"
+	item_state = "walkietalkie2"
+
 /obj/item/weapon/radio/walkietalkie/faction1/New()
 	..()
 	freq = FREQ1
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
-
-
-
 
 /obj/item/weapon/radio/walkietalkie/faction2/New()
 	..()
@@ -835,58 +886,7 @@ var/global/FREQM = rand(101,120)
 	multifreqlist_selectable = list("Yellow (private)","Yellow to Blue","Yellow to Green","Yellow to Red")
 	desc = "Used to communicate with distant places."
 
-/obj/item/weapon/radio/proc/check_freq(var/obj/original)
-	if (!original)
-		return
-	var/obj/item/weapon/radio/R = null
-	var/obj/structure/radio/SR = null
-	if (istype(original, /obj/item/weapon/radio))
-		R = original
-	else if (istype(original, /obj/structure/radio))
-		SR = original
-	else
-		return FALSE
-	if (SR)
-		if (multifreq)
-			if (SR.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (SR.freq == src.freq)
-				return TRUE
-	else if (R)
-		if (multifreq)
-			if (R.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (R.freq == src.freq)
-				return TRUE
-	return FALSE
-/obj/structure/radio/proc/check_freq(var/obj/original)
-	if (!original)
-		return
-	var/obj/item/weapon/radio/R = null
-	var/obj/structure/radio/SR = null
-	if (istype(original, /obj/item/weapon/radio))
-		R = original
-	else if (istype(original, /obj/structure/radio))
-		SR = original
-	else
-		return FALSE
-	if (SR)
-		if (multifreq)
-			if (SR.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (SR.freq == src.freq)
-				return TRUE
-	else if (R)
-		if (multifreq)
-			if (R.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (R.freq == src.freq)
-				return TRUE
-	return FALSE
+
 
 /proc/reploc(message,mob/living/human/speaker)
 	if (map.ID == MAP_CAMPAIGN)
@@ -935,3 +935,18 @@ var/global/FREQM = rand(101,120)
 		return dmessage
 	else
 		return message
+
+/obj/structure/radio/transmitter/nopower/microphone
+	name = "microphone"
+	desc = "Used to communicate to distant places. Set to 150kHz."
+	icon_state = "mic"
+	w_class = ITEM_SIZE_SMALL
+	density = FALSE
+	opacity = FALSE
+	anchored = FALSE
+	nothrow = FALSE
+
+/obj/structure/radio/transmitter/nopower/microphone/wired
+	name = "wired microphone"
+	desc = "Used to communicate to distant places. Set to 150kHz."
+	icon_state = "mic2"

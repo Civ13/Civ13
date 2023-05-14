@@ -1907,19 +1907,25 @@
 	do_html(user)
 
 
-//////////////////////////////////////////////////////////////////////
-/////////////////////OPERATION FALCON CAR SPAWNER/////////////////////
+///////////////////////////////////////////////////////////////////////
+//////////////////////////MIL SIM CAR SPAWNER//////////////////////////
 
 /datum/program/carspawn
 	name = "CARTRADER Platform"
 	description = "The number 1 online car dealership."
 	compatible_os = list("unga OS 94","unga OS")
-	var/faction1_loadout_points = 1600
-	var/faction2_loadout_points = 1400
+	var/global/faction1_loadout_points = 1600
+	var/global/faction2_loadout_points = 1400
 
-	var/list/dutch_choice = list("2A6 Leopard Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
-	var/list/rus_choice = list("T-90A Tank (1000)","BMD-2 Infantry Fighting Vehicle (600)", "KamAZ-4350 Truck (300)")
-	var/list/british_choice = list("FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep without MG (200)")
+	var/list/dutch_choice = list(
+		"2A6 Leopard Tank (1000)", "Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
+		)
+	var/list/rus_choice = list(
+		"T-90A Tank (1000)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
+		)
+	var/list/british_choice = list(
+		"FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
+		)
 
 /datum/program/carspawn/do_html(mob/living/human/user)
 	var/list/choice
@@ -2096,19 +2102,23 @@
 			if ("2A6 Leopard Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-5,origin.z))
 			if ("Mercedes-Benz G280 Jeep with MG (500)")
-				PV = new /obj/effects/premadevehicles/truck/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
+				PV = new /obj/effects/premadevehicles/car/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("DAF YA-4442 Supply Truck (400)")
 				PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-5,origin.z))
-			if ("Mercedes-Benz G280 Jeep without MG (200)")
-				PV = new /obj/effects/premadevehicles/truck/mercedes(locate(origin.x+3,origin.y-5,origin.z))
+			if ("Mercedes-Benz G280 Jeep (200)")
+				PV = new /obj/effects/premadevehicles/car/mercedes(locate(origin.x+3,origin.y-5,origin.z))
 			
 			if ("T-90A Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-5,origin.z))
 			if ("BMD-2 Infantry Fighting Vehicle (600)")
 				PV = new /obj/effects/premadevehicles/apc/bmd2(locate(origin.x+3,origin.y-5,origin.z))
+			if ("AMN-233114 Tigr-M Humvee with MG (500)")
+				PV = new /obj/effects/premadevehicles/car/tigr/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("KamAZ-4350 Truck (300)")
 				PV = new /obj/effects/premadevehicles/truck/kamaz(locate(origin.x+3,origin.y-5,origin.z))
-			
+			if ("AMN-233114 Tigr-M Humvee (200)")
+				PV = new /obj/effects/premadevehicles/car/tigr(locate(origin.x+3,origin.y-5,origin.z))
+
 			if ("FV4034 Challenger 2 Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/challenger2(locate(origin.x+3,origin.y-5,origin.z))
 
