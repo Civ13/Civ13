@@ -235,7 +235,7 @@
 
 /obj/map_metadata/bank_robbery/proc/round_status()
 	var/spamcheck = FALSE
-	if (civilians_evacuated == civilians_alive && civilians_alive != 0 && spamcheck == FALSE)
+	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && spamcheck == FALSE)
 		world << "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>"
 		spamcheck = TRUE
 	else if (civilians_alive == 0 && spamcheck == FALSE)
