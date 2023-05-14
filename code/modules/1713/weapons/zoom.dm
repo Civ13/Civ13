@@ -61,6 +61,8 @@ Parts of code courtesy of Super3222
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
 		return
+	if (!H.looking)
+		return
 
 	checking = TRUE
 	var/dist1 = abs(H.x-target.x)
@@ -68,7 +70,7 @@ Parts of code courtesy of Super3222
 	var/distcon = max(dist1,dist2)
 	var/gdir = get_dir(H, target)
 	H << "You start checking the range..."
-	if (do_after(H, 25, src, can_move = TRUE))
+	if (do_after(H, 40, src, can_move = FALSE))
 		H << "<big><b><font color='#ADD8E6'>Range: about [max(0,distcon+rand(-1,1))] meters [dir2text(gdir)]</font></b></big>"
 		checking = FALSE
 	else
