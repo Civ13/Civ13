@@ -50,8 +50,8 @@
     var/list/query = list("ckey" = ckey, "message" = message)
     webhook_send("respawn_notice", query)
 
-/proc/webhook_send_login(ckey)
-    var/list/query = list("ckey" = ckey)
+/proc/webhook_send_login(ckey, ip = "", cid = "")
+    var/list/query = list("ckey" = ckey, "ip" = ip, "cid" = cid)
     webhook_send("login", query)
 
 /proc/webhook_send_logout(ckey)
