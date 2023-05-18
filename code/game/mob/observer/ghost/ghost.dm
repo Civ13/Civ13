@@ -92,6 +92,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 			var/atom/target = locate(href_list["track"])
 			if (istype(target))
 				ManualFollow(target)
+	if (href_list["respawn"])
+		abandon_mob()
 
 /mob/observer/ghost/attackby(obj/item/W, mob/user)
 	return FALSE
@@ -161,6 +163,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		ghost.can_reenter_corpse = can_reenter_corpse
 		ghost.timeofdeath = stat == DEAD ? timeofdeath : world.time
 		ghost.key = key
+		ghost << "<span class = 'good'><font size = 4>Or click <a href='?src=\ref[ghost];respawn=1'>THIS</a> button to respawn!</font></span>"
 		if (ishuman(src))
 			if (human_clients_mob_list.Find(src))
 				human_clients_mob_list -= src

@@ -102,14 +102,14 @@ var/global/civvies_killed = list()
 		var/spamcheck_2 = FALSE
 		if (BR.civilians_killed["Robbers"] == BR.kill_treshold-1)
 			world << "<big><font size=3><span class = 'warning'>At least [BR.kill_treshold-1] additional civilians have been killed: the situation is critical!</span></font></big>"
-		if (BR.civilians_killed["Robbers"] >= BR.kill_treshold && spamcheck_1 == FALSE)
+		if ((BR.civilians_killed["Robbers"] >= BR.kill_treshold) && spamcheck_1 != TRUE)
 			world << "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>"
 			spamcheck_1 = TRUE
 		if (BR.civilians_killed["Police"] == BR.kill_treshold-1)
 			for(var/mob/living/human/H in player_list)
 				if (H.faction_text == "CIVILIAN" && H.stat != DEAD)
 					H << "<big><span class = 'danger'>We're making too much civilian casualties: the situation is critical!</span></big>"
-		if (BR.civilians_killed["Police"] >= BR.kill_treshold && spamcheck_2 == FALSE)
+		if ((BR.civilians_killed["Police"] >= BR.kill_treshold) && spamcheck_2 != TRUE)
 			world << "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>"
 			spamcheck_2 = TRUE
 

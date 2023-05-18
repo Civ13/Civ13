@@ -84,6 +84,25 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
 	w_front = list("c_armoredfront",FALSE,TRUE,15,30,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/car/mercedes/lf
+	w_left = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,5,20,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/mercedes/rf
+	w_right = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_front = list("c_windshield",FALSE,TRUE,5,20,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/car/tigr/lf
+	w_left = list("c_windoweddoor",TRUE,TRUE,10,30,TRUE,TRUE)
+	w_front = list("c_windshield2",FALSE,TRUE,10,25,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/tigr/rf
+	w_right = list("c_windoweddoor",TRUE,TRUE,10,30,TRUE,TRUE)
+	w_front = list("c_windshield2",FALSE,TRUE,10,25,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/tigr/rb
+	w_right = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/tigr/lb
+	w_left = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/front
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
