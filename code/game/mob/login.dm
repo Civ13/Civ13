@@ -39,7 +39,6 @@
 	player_list |= src
 	update_Login_details()
 	world.update_status()
-	webhook_send_login(client.ckey)
 
 	update_client_colour(0)
 	if (src && client)
