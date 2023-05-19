@@ -303,8 +303,8 @@
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if ("[full_logs_split_two[1]]" == ckey)
-			ips.add(full_logs_split_two[2])
-			cids.add(full_logs_split_two[3])
+			ips.Add(full_logs_split_two[2])
+			cids.Add(full_logs_split_two[3])
 			currentage = full_logs_split_two[4]
 			realtime = full_logs_split_two[5]
 
