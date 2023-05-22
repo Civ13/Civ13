@@ -297,7 +297,7 @@
 	var/full_logs = file2text(F)
 	var/list/full_logs_split = splittext(full_logs, "|\n")
 	var/currentage = -1
-	var/realtime = -1
+	var/realtime = time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")
 	var/list/ips = new/list()
 	var/list/cids = new/list()
 	for(var/i=1;i<full_logs_split.len;i++)
@@ -311,13 +311,13 @@
 	//Logging player access
 	if (currentage == -1)
     //Adding to player logs (ckey;ip;computerid;datetime;realtime|)
-		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[realtime]|","SQL/playerlogs.txt")
 		player_age = 0
 		return
 	player_age = (text2num(num2text(world.realtime,20)) - text2num(currentage))
 	//Check for IP or CID changes
 	if ( (!(ips.Find(address))) || (!(cids.Find(computer_id))) )
-		text2file("[ckey];[sql_ip];[computer_id];[currentage];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
 		message_admins("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].", ckey)
 		log_admin("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
 		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
