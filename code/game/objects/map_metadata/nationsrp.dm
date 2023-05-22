@@ -132,7 +132,7 @@
 /obj/map_metadata/nationsrp/coldwar_campaign
 	ID = MAP_NATIONSRP_COLDWAR_CAMPAIGN
 	title = "Nations RP Cold War"
-	lobby_icon = "icons/lobby/coldwar.png"
+	lobby_icon = "icons/lobby/campaign.png"
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
