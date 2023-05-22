@@ -306,7 +306,6 @@
 			ips.Add(full_logs_split_two[2])
 			cids.Add(full_logs_split_two[3])
 			currentage = full_logs_split_two[4]
-			realtime = full_logs_split_two[5]
 
 	//Logging player access
 	if (currentage == -1)
