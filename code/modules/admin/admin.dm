@@ -12,8 +12,8 @@ var/global/floorIsLava = FALSE
 	for (var/client/C in admins)
 		C << msg
 
-/proc/msg_admin_attack(var/text) //Toggleable Attack Messages
-	webhook_send_attacklog("ATTACK LOG: [text]")
+/proc/msg_admin_attack(var/text, var/ckey = "", var/ckey2 = "") //Toggleable Attack Messages
+	webhook_send_attacklog("ATTACK LOG: [text]", ckey, ckey2)
 	log_attack(text)
 	var/rendered = "<span class=\"log_message\"><span class=\"prefix\">ATTACK:</span> <span class=\"message\">[text]</span></span>"
 	for (var/client/C in admins)
