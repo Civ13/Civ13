@@ -1316,7 +1316,7 @@
 		list(name = "burst fire",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
 		)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
-/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/grenade_launcher
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/grenade_launcher/New()
 	..()
 	var/obj/item/weapon/gun/launcher/grenade/underslung/m203/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/m203(src)
 	GL.attached(null,src,TRUE)
@@ -1333,7 +1333,7 @@
 		)
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
-/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/grenade_launcher
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/grenade_launcher/New()
 	..()
 	var/obj/item/weapon/gun/launcher/grenade/underslung/m203/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/m203(src)
 	GL.attached(null,src,TRUE)
