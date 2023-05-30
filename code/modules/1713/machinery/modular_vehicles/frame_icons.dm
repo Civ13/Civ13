@@ -143,6 +143,7 @@
 					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
+					roof.overlays.Cut()
 				if (roof_turret && axis && axis.color)
 					roof_turret.color = axis.color
 				roof_turret.pixel_x = -112
@@ -231,6 +232,7 @@
 					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
+					roof.overlays.Cut()
 				if (roof_turret && axis && axis.color)
 					roof_turret.color = axis.color
 				if (C.dir == NORTH)
@@ -293,6 +295,7 @@
 					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
+					roof.overlays.Cut()
 				if (roof_turret && axis && axis.color)
 					roof_turret.color = axis.color
 				if (C.dir == NORTH)
@@ -300,7 +303,7 @@
 						roof_turret.pixel_x = -32
 						roof_turret.pixel_y = 0
 					else if (dir == SOUTH)
-						roof_turret.pixel_x = -32
+						roof_turret.pixel_x = -32 //here
 						roof_turret.pixel_y = -16
 					else if (dir == EAST)
 						roof_turret.pixel_x = -32
