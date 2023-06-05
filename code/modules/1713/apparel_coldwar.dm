@@ -1141,6 +1141,27 @@
 
 /* Cold War Belts*/
 
+/obj/item/weapon/storage/belt/ugl
+	name = "grenade satchel"
+	desc = "Generic grenade satchel. Has enough space to hold six underbarrel grenades."
+	icon_state = "soviet_ugl"
+	item_state = "soviet_ugl"
+	storage_slots = 6
+	can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
+
+/obj/item/weapon/storage/belt/ugl/soviet
+	desc = "Generic grenade satchel used by the Warsaw pact. Has enough space to hold six underbarrel grenades."
+	can_hold = list(/obj/item/weapon/grenade/frag/ugl/vog25, /obj/item/weapon/grenade/smokebomb/ugl/vog25,/obj/item/weapon/key)
+
+/obj/item/weapon/storage/belt/ugl/soviet/filled/New()
+	..()
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
+	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
+
 /obj/item/weapon/storage/belt/largepouches/olive/m60
 /obj/item/weapon/storage/belt/largepouches/olive/m60/New()
 	..()
