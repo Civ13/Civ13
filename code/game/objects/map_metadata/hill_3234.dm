@@ -29,6 +29,44 @@
 	artillery_count = 3
 	grace_wall_timer = 3000
 
+
+/obj/map_metadata/hill_3234/New()
+	..()
+	spawn(3000)
+		supplydrop_proc()
+
+/obj/map_metadata/hill_3234/proc/supplydrop_proc()
+	var/droptype = pick("supplies","pkm","defense","med","explo")
+	var/turf/locationt = pick(supplydrop_turfs)
+	switch(droptype)
+		if("supplies")
+			world << "<font size=3 color='red'><center>SOVIET LOGISTICAL CENTER BROADCAST<br>Ammo has been dropped in the area!</center></font>"
+			new/obj/structure/closet/crate/airdrops/soviet/ammo(locationt)
+			new/obj/item/flashlight/flare/white/on(locationt)
+
+		if("pkm")
+			world << "<font size=3 color='red'><center>SOVIET LOGISTICAL CENTER BROADCAST<br>A PKM crate has been dropped in the area!</center></font>"
+			new/obj/structure/closet/crate/airdrops/soviet/pkm(locationt)
+			new/obj/item/flashlight/flare/white/on(locationt)
+
+		if("defense")
+			world << "<font size=3 color='red'><center>SOVIET LOGISTICAL CENTER BROADCAST<br>Defensive Supplies have been dropped in the area!</center></font>"
+			new/obj/structure/closet/crate/airdrops/soviet/defense(locationt)
+			new/obj/item/flashlight/flare/white/on(locationt)
+
+		if("med")
+			world << "<font size=3 color='red'><center>SOVIET LOGISTICAL CENTER BROADCAST<br>Medical Equipment has been dropped in the area!</center></font>"
+			new/obj/structure/closet/crate/airdrops/soviet/medical(locationt)
+			new/obj/item/flashlight/flare/white/on(locationt)
+
+		if("explo")
+			world << "<font size=3 color='red'><center>SOVIET LOGISTICAL CENTER BROADCAST<br>Defensive Explosives have been dropped in the area!</center></font>"
+			new/obj/structure/closet/crate/airdrops/soviet/explo(locationt)
+			new/obj/item/flashlight/flare/white/on(locationt)
+
+	spawn(rand(3000, 6000))
+		supplydrop_proc()
+
 /obj/map_metadata/hill_3234/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_afghan)
