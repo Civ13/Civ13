@@ -896,6 +896,43 @@ obj/structure/closet/crate/airdrops/weapons
 				/obj/item/clothing/mask/gas/modern = 1,
 				/obj/item/weapon/pill_pack/potassium_iodide = 1)
 
+/////soviet resupplies
+
+/obj/structure/closet/crate/airdrops/soviet/ammo
+	name = "ammunition crate"
+	paths = list(/obj/item/ammo_magazine/ak74 = 8,
+				/obj/item/ammo_magazine/vintorez = 2,
+				/obj/item/ammo_magazine/svd = 2,
+				/obj/item/ammo_magazine/pkm/c100 = 2)
+
+/obj/structure/closet/crate/airdrops/soviet/pkm
+	name = "pkm crate"
+	paths = list(/obj/item/weapon/gun/projectile/automatic/pkm = 1,
+				/obj/item/ammo_magazine/pkm/c100 = 5,
+				/obj/item/weapon/gun_cleaning_kit = 1)
+
+/obj/structure/closet/crate/airdrops/soviet/defense
+	name = "defensive supplies crate"
+	paths = list(/obj/item/mine/ap = 5,
+				/obj/item/weapon/wirecutters/boltcutters = 2,
+				/obj/item/weapon/storage/box/sandbags = 2,
+				/obj/item/weapon/material/shovel/trench = 1,
+				/obj/item/weapon/material/shovel/steel = 1)
+
+/obj/structure/closet/crate/airdrops/soviet/medical
+	name = "medical supplies crate"
+	paths = list(/obj/item/stack/medical/bruise_pack/gauze = 5,
+				/obj/item/weapon/pill_pack/tramadol = 1,
+				/obj/item/weapon/pill_pack/adrenaline = 1,
+				/obj/item/roller = 1,
+				/obj/item/stack/medical/advanced/sulfa = 1)
+
+/obj/structure/closet/crate/airdrops/soviet/explo
+	name = "Defensive Explosive crate"
+	paths = list(/obj/item/weapon/grenade/coldwar/rgd5 = 5,
+				/obj/item/weapon/grenade/incendiary = 5,
+				/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 1)
+
 /obj/structure/closet/crate/arrows
 	name = "arrow crate"
 	icon_state = "wood_crate"
