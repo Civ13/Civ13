@@ -1193,7 +1193,7 @@ var/list/coefflist = list()
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets
-		animate(user.client, pixel_x = 0, pixel_y = 0, time = 1, easing = SINE_EASING)
+		animate(user.client, pixel_x = 0, pixel_y = 0, time = 2, easing = SINE_EASING)
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
 		user.client.view = world.view
