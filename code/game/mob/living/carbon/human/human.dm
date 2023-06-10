@@ -1182,19 +1182,18 @@ var/list/coefflist = list()
 						_y += view_offset
 					if (WEST)
 						_x += view_offset
-				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
-				animate(user.client, pixel_x = 0, pixel_y = 0)
+				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
 			else // Otherwise just slide the camera
-				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
-				animate(user.client, pixel_x = 0, pixel_y = 0)
+				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
 			user.visible_message("[user] looks into the distance.")
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets
+		animate(user.client, pixel_x = 0, pixel_y = 0, time = 1, easing = SINE_EASING)
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
 		user.client.view = world.view
@@ -1289,7 +1288,7 @@ var/list/coefflist = list()
 	if (client && actions.len)
 		if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons
 			if(src.looking && m_intent=="run")
-				shake_camera(src, 2, rand(2,3))
+				shake_camera(src, 2, rand(1,3))
 
 	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
 		if (M.last_user == src && loc != get_turf(M))
