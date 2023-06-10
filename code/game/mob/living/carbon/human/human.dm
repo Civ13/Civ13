@@ -1212,7 +1212,7 @@ var/list/coefflist = list()
 			var/mob/living/human/H = user
 			if (H.using_look())
 				for (var/obj/screen/movable/action_button/AB in user.client.screen)
-					if (AB.name == "Toggle Sights" && AB != W.azoom.button && W.azoom.button.screen_loc)
+					if (AB.name == "Look into Distance" && AB != W.azoom.button && W.azoom.button.screen_loc)
 						AB.invisibility = 101
 						if (W.azoom && W.azoom.button && findtext(W.azoom.button.screen_loc,":") && splittext(W.azoom.button.screen_loc, ":").len>=1 && splittext(splittext(W.azoom.button.screen_loc, ":")[1], "+").len>=2)
 							var/azoom_button_screenX = text2num(splittext(splittext(W.azoom.button.screen_loc, ":")[1], "+")[2])
@@ -1231,7 +1231,7 @@ var/list/coefflist = list()
 			else
 				if (user && user.client)
 					for (var/obj/screen/movable/action_button/AB in user.client.screen)
-						if (AB.name == "Toggle Sights")
+						if (AB.name == "Look into Distance")
 							AB.invisibility = FALSE
 
 		// actually shift the button
