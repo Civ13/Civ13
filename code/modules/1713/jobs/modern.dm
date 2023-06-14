@@ -1060,7 +1060,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
 
@@ -1433,7 +1433,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/keffiyeh(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/custom/custom_beanie/black(H), slot_head)
 
@@ -1571,7 +1571,7 @@
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
 		if (5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/keffiyeh(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
