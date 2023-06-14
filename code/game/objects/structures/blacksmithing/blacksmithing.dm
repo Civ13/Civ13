@@ -145,7 +145,7 @@
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
-							valid_recipes = TRUE // At least one valid recipe foun
+							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes
 					user << "There is nothing that you can craft of this type."
 					return 
@@ -185,7 +185,7 @@
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
-							valid_recipes = TRUE // At least one valid recipe foun
+							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
 					user << "There is nothing that you can craft of this type."
 					return 
@@ -236,7 +236,7 @@
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
-							valid_recipes = TRUE // At least one valid recipe foun
+							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
 					user << "There is nothing that you can craft of this type."
 					return
@@ -278,7 +278,7 @@
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][8] > 0)
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar"
-						valid_recipes = TRUE // At least one valid recipe foun
+						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
 				user << "There is nothing that you can craft of this type."
 				return 
@@ -322,7 +322,7 @@
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][7] > 0)
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze"
-						valid_recipes = TRUE // At least one valid recipe foun
+						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
 				user << "There is nothing that you can craft of this type."
 				return 
