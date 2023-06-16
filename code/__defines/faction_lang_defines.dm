@@ -23,6 +23,8 @@
 #define OLDNNORSE "OLDNORSE"
 #define EGYPTIAN "EGYPTIAN"
 #define IROQUOIS "IROQUOIS"
+#define PASHTO "PASHTO"
+#define DARI "DARI"
 
 //used for languages & factions
 #define SPANISH "SPANISH"
