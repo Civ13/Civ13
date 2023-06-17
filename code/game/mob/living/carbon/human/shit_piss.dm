@@ -15,8 +15,8 @@
 /obj/effect/decal/cleanable/poo
 	name = "poo stain"
 	desc = "Well that stinks."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "floor1"
@@ -42,8 +42,8 @@
 /obj/effect/decal/cleanable/poo/drip
 	name = "drips of poo"
 	desc = "It's brown."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "drip1"
@@ -60,8 +60,8 @@
 /obj/effect/decal/cleanable/urine
 	name = "urine stain"
 	desc = "Someone couldn't hold it..."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "pee1"
