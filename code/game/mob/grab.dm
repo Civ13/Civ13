@@ -251,7 +251,7 @@
 		assailant.set_dir(get_dir(assailant, affecting))
 		affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has had their neck grabbed by [assailant.name] ([assailant.ckey])</font>"
 		assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Grabbed the neck of [affecting.name] ([affecting.ckey])([affecting.stat])</font>"
-		msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]", key_name(assailant, key_name(affecting))
+		msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]", key_name(assailant), key_name(affecting))
 		hud.icon_state = "kill"
 		hud.name = "kill"
 		affecting.Stun(7) //7 ticks of ensured grab
