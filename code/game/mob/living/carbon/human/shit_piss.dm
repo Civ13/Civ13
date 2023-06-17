@@ -25,6 +25,7 @@
 	decay_timer = 18000
 
 /obj/effect/decal/cleanable/poo/New()
+	..()
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = pick(src.random_icon_states)
 	for(var/obj/effect/decal/cleanable/poo/shit in src.loc)
@@ -34,6 +35,9 @@
 		dried = 1
 		name = "dried poo stain"
 		desc = "It's a dried poo stain..."
+
+/obj/effect/decal/cleanable/poo/Destroy()
+	..()
 
 /obj/effect/decal/cleanable/poo/tracks
 	icon_state = "tracks"
@@ -88,6 +92,9 @@
 		dried = 1
 		name = "dried urine stain"
 		desc = "That's a dried crusty urine stain. Fucking janitors."
+
+/obj/effect/decal/cleanable/urine/Destroy()
+	..()
 
 //#####REAGENTS#####
 //SHIT
