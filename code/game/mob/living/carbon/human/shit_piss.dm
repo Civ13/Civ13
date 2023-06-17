@@ -15,8 +15,8 @@
 /obj/effect/decal/cleanable/poo
 	name = "poo stain"
 	desc = "Well that stinks."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "floor1"
@@ -25,6 +25,7 @@
 	decay_timer = 18000
 
 /obj/effect/decal/cleanable/poo/New()
+	..()
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = pick(src.random_icon_states)
 	for(var/obj/effect/decal/cleanable/poo/shit in src.loc)
@@ -35,6 +36,9 @@
 		name = "dried poo stain"
 		desc = "It's a dried poo stain..."
 
+/obj/effect/decal/cleanable/poo/Destroy()
+	..()
+
 /obj/effect/decal/cleanable/poo/tracks
 	icon_state = "tracks"
 	random_icon_states = null
@@ -42,8 +46,8 @@
 /obj/effect/decal/cleanable/poo/drip
 	name = "drips of poo"
 	desc = "It's brown."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "drip1"
@@ -60,8 +64,8 @@
 /obj/effect/decal/cleanable/urine
 	name = "urine stain"
 	desc = "Someone couldn't hold it..."
-	density = 0
-	anchored = 1
+	density = FALSE
+	anchored = TRUE
 	layer = 2
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "pee1"
@@ -88,6 +92,9 @@
 		dried = 1
 		name = "dried urine stain"
 		desc = "That's a dried crusty urine stain. Fucking janitors."
+
+/obj/effect/decal/cleanable/urine/Destroy()
+	..()
 
 //#####REAGENTS#####
 //SHIT
