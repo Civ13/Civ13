@@ -249,7 +249,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 				return FALSE
 			M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]) Reagents: [reagentlist(src)]</font>")
 			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>")
-			msg_admin_attack("[key_name(user)] fed [key_name(M)] with [name] Reagents: [reagentlist(src)] (INTENT: [uppertext(user.a_intent)])")
+			msg_admin_attack("[key_name(user)] fed [key_name(M)] with [name] Reagents: [reagentlist(src)] (INTENT: [uppertext(user.a_intent)])", key_name(user), key_name(M))
 			user.visible_message("<span class='danger'>[user] feeds [M] [src].</span>")
 		//A spoon for mom, a spoon for dad. If we are here, then food is go to mouth to human type species, not others!
 		playsound(M.loc,'sound/items/eatfood.ogg', rand(10,50), TRUE)

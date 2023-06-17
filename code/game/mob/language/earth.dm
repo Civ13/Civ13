@@ -31,9 +31,11 @@
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 #define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
 #define CHECHEN_SYLLABLES list("la", "ma", "nakh", "dukh", "duy", "lu", "sal", "shi", "shov", "dansh", "en", "be", "kha", "ja", "bal", "tsa", "mol", "ush", "jin", "khor", "gie", "buylsh", "or", "ga", "tha", "zan", "dakh", "gash", "det", "mekh", "sa", "salam", "al", "kum", "ha", "at", "qo", "di", "ste", "aid")
-#define FINNISH_SYLLABLES list ("a", "an", "del", "des", "er", "gas", "go", "he", "ik", "il", "ja", "jar", "jes", "jat", "ka", "kai", "ku", "la", "las", "lat", "lem", "let", "li", "lis", "ma", "mal", "mas", "mat", "me", "mel", "mer", "mi", "min", "mis", "moit", "myy", "nen", "ni", "nin", "nit", "no", "nos", "o", "on", "pe", "pet", "pis", "pu", "ra", "ri", "sa", "ses", "struk", "syy", "ta", "tau", "te", "tel", "ti", "to", "tu", "jar", "tan", "to", "ton", "vin", "voi")
+#define FINNISH_SYLLABLES list("a", "an", "del", "des", "er", "gas", "go", "he", "ik", "il", "ja", "jar", "jes", "jat", "ka", "kai", "ku", "la", "las", "lat", "lem", "let", "li", "lis", "ma", "mal", "mas", "mat", "me", "mel", "mer", "mi", "min", "mis", "moit", "myy", "nen", "ni", "nin", "nit", "no", "nos", "o", "on", "pe", "pet", "pis", "pu", "ra", "ri", "sa", "ses", "struk", "syy", "ta", "tau", "te", "tel", "ti", "to", "tu", "jar", "tan", "to", "ton", "vin", "voi")
 #define SWEDISH_SYLLABLES list("ja","ga","et","de","ka","vi","ik","bli","ve","ke","ste","der","dej","mi","eg","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","ike","sto","ren","sch","sei","jep")
 #define NORWEGIAN_SYLLABLES list("ja","ga","et","de","ka","vi","ik","bli","ve","ke","ste","der","dej","mi","eg","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","ike","sto","ren","sch","sei","jep")
+#define PASHTO_SYLLABLES list("aa", "bal", "bara", "be", "bi", "bo", "bu", "ce", "ci", "co", "cu", "che", "chi", "cho", "chu", "da", "dar", "de", "di", "do", "du", "ee", "fa", "far", "fe", "fi", "fo", "fu", "ga", "gar", "ge", "gi", "go", "gu", "ja", "jar", "je", "ji", "jo", "ju", "khe", "khi", "kho", "khu", "la", "le", "li", "lo", "lu", "ma", "mi", "mo", "mu", "na", "nar", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "qa", "qe", "qi", "qo", "qu", "re", "ri", "ro", "ru", "se", "she", "shi", "sho", "shu", "ta", "te", "ti", "to", "tu", "ve", "vi", "vo", "vu", "ya", "yar", "ye", "yi", "yo", "yu", "zan", "ze", "zi", "zo", "zu", "baal", "bala", "bar", "bara", "che", "dar", "dara", "fa", "far", "kala", "kho", "khor", "ma", "mar", "na", "nar", "pa", "para", "qa", "ra", "ro", "se", "sho", "shu", "ta", "to", "ve", "vi", "za", "zara")
+#define DARI_SYLLABLES list("aa", "and", "ba", "bal", "bar", "be", "bi", "bo", "bu", "da", "dar", "de", "di", "do", "du", "fa", "far", "fe", "fi", "fo", "fu", "ga", "gar", "ge", "gi", "go", "gu", "ha", "har", "he", "hi", "ho", "hu", "ja", "jar", "je", "ji", "jo", "ju", "ka", "kar", "ke", "ki", "ko", "ku", "la", "le", "li", "lo", "lu", "ma", "mar", "me", "mi", "mo", "mu", "na", "nar", "ne", "ni", "no", "nu", "pa", "par", "pe", "pi", "po", "pu", "qa", "qe", "qi", "qo", "qu", "ra", "ran", "re", "ri", "ro", "ru", "sa", "sar", "se", "si", "so", "su", "ta", "tar", "te", "ti", "to", "tu", "va", "var", "ve", "vi", "vo", "vu", "ya", "yar", "ye", "yi", "yo", "yu", "za", "zar", "ze", "zi", "zo", "zu", "baa", "bari", "dari", "gar", "gari", "kan", "kar", "mand", "mar", "nand", "par", "sart", "tard", "var", "zand", "zar")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -121,6 +123,24 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
 	mutual_intelligibility = list(/datum/language/hebrew = 35, /datum/language/egyptian= 30, /datum/language/chechen= 30)
+
+/datum/language/dari
+	name = "Dari"
+	desc = "Salaam, dost-e man!"
+	key = "da"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = DARI_SYLLABLES
+	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/pashto = 30)
+
+/datum/language/pashto
+	name = "Pashto"
+	desc = "Salam, khairaan-e man!"
+	key = "pa"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = PASHTO_SYLLABLES
+	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/dari = 30)
 
 /datum/language/chechen
 	name = "Chechen"

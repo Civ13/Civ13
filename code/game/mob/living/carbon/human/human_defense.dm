@@ -469,7 +469,7 @@ bullet_act
 				c_hand = r_hand
 
 			if (c_hand && (stun_amount || agony_amount > 10))
-				msg_admin_attack("[name] ([ckey]) was disarmed by a stun effect")
+				msg_admin_attack("[name] ([ckey]) was disarmed by a stun effect", "", ckey)
 
 				drop_from_inventory(c_hand)
 			else
@@ -908,7 +908,7 @@ bullet_act
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")
 				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey]) with a thrown [O]</font>")
 				if (!istype(src,/mob/living/simple_animal/mouse))
-					msg_admin_attack("[name] ([ckey]) was hit by a [O], thrown by [M.name] ([assailant.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)")
+					msg_admin_attack("[name] ([ckey]) was hit by a [O], thrown by [M.name] ([assailant.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)", assailant.ckey, ckey)
 
 		//thrown weapon embedded object code.
 		if (dtype == BRUTE && istype(O,/obj/item))
