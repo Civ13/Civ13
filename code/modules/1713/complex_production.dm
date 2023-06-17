@@ -320,7 +320,7 @@
 /obj/item/weapon/chicken_carcass/New()
 	..()
 	spawn(3000) //5 minutes
-		icon_state = "rotten_[icon]"
+		icon_state = "rotten_[icon_state]"
 		name = "rotten [name]"
 		rotten = TRUE
 		spawn(1000)
