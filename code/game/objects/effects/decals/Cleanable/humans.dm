@@ -241,5 +241,6 @@ var/global/list/image/splatter_cache=list()
 	var/dry=0 // Keeps the lag down
 
 /obj/effect/decal/cleanable/mucus/New()
+	..()
 	spawn(DRYING_TIME * 2)
 		dry=1

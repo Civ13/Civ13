@@ -6,7 +6,7 @@
 /var/const/MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK = 0 //setting it to 0, because have no normal mood restoration
 //TO DO TODO: Make some normalization of mood to normal state (not 100, but 50 for full water and food lvl) with time depending on the state: rest, sleep, awake
 /var/const/STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK = 0 //(summ of used strength, dexterity and stamina itself in deciseconds)
-/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items. 
+/var/const/TIME_TO_DRY = 1200 //TO DO: Add dry_transform() procedure, which will replace the old mechanics of items with the mechanics of changing reagents in dried items.
 //TO DO TODO: Make this proc global using
 /mob/living/human/var/tmp/last_mood_check = 0
 
@@ -1639,12 +1639,22 @@
 		if (input == "Cancel")
 			return
 		else if (input == "Original")
+			if (istype(W, /obj/item/weapon/book/language_book))
+				var/obj/item/weapon/book/language_book/LB = W
+				if (!LB.written)
+					user << "<span class = 'warning'>You can't copy a language book with nothing in it!</span>"
+					return
 			base += W
 			user.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
 			return
 
 		else if (input == "Copy")
+			if (istype(W, /obj/item/weapon/book/language_book))
+				var/obj/item/weapon/book/language_book/LB = W
+				if (LB.written)
+					user << "<span class = 'warning'>You can't copy over a written language book!</span>"
+					return
 			copy += W
 			user.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
@@ -1716,7 +1726,7 @@
 					for(var/obj/item/weapon/B in base)
 						B.loc = get_turf(src)
 						base -= B
-						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook) && !istype(B, /obj/item/weapon/book/research))
+						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook) && !istype(B, /obj/item/weapon/book/research) && !istype(B, /obj/item/weapon/book/language_book))
 							var/obj/item/weapon/book/NC = B
 							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
 							NB.dat = NC.dat
@@ -1736,6 +1746,7 @@
 						else if (istype(B, /obj/item/weapon/paper))
 							var/obj/item/weapon/paper/NC = B
 							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
+							NP.name = NC.name
 							NP.info = NC.info
 							NP.info_links = NC.info_links
 							NP.fields = NC.fields
@@ -1753,6 +1764,14 @@
 							NB.k_class = NC.k_class = "none"
 							NB.k_level = NC.k_level = 0
 							NB.styleb = NC.styleb = "scroll"
+						else if (istype(B, /obj/item/weapon/book/language_book))
+							var/obj/item/weapon/book/language_book/NC = B
+							var/obj/item/weapon/book/language_book/NB = new/obj/item/weapon/book/language_book(src.loc)
+							NB.written = TRUE
+							NB.lang1 = NC.lang1
+							NB.lang2 = NC.lang2
+							NB.name = NC.name
+							NB.desc = NC.desc
 							/*
  							//Theese have no sense for research or not used anywhere in code
 							NB.sum_a = NC.sum_a = 0
