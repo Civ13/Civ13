@@ -1736,6 +1736,7 @@
 						else if (istype(B, /obj/item/weapon/paper))
 							var/obj/item/weapon/paper/NC = B
 							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
+							NP.name = NC.name
 							NP.info = NC.info
 							NP.info_links = NC.info_links
 							NP.fields = NC.fields
