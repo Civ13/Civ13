@@ -583,10 +583,9 @@
 			user << "You stuff the casing with the mince."
 			new /obj/item/weapon/reagent_containers/food/snacks/sausage(user.loc)
 			qdel(W)
-			if(src.amount < 1)
+			src.amount -= 1
+			if (src.amount < 1)
 				qdel(src)
-			else
-				src.amount -=1
 	else
 		..()
 
@@ -723,21 +722,21 @@
 			input = W
 			output_amount = 4
 			icon_state = full_state
-			user << "You insert the [W] into the [src]"
+			user << "You insert the [W] into the [src]."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
 			input = W
 			output_amount = 2
 			icon_state = full_state
-			user << "You insert the [W] into the [src]"
+			user << "You insert the [W] into the [src]."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
 			input = W
 			output_amount = 1
 			icon_state = full_state
-			user << "You insert the [W] into the [src]"
+			user << "You insert the [W] into the [src]."
 			qdel(W)
 			return
 		else
@@ -791,7 +790,7 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					return
 				else
-					user << "You stop mincing"
+					user << "You stop mincing."
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 				user << "You begin to mince the [input]."
@@ -804,7 +803,7 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
 					return
 				else
-					user << "You stop mincing"
+					user << "You stop mincing."
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/mince))
 				playsound(loc, 'sound/effects/squishy.ogg', 10, TRUE)
@@ -816,7 +815,7 @@
 					new /obj/item/weapon/reagent_containers/food/snacks/meatball(src.loc)
 					return
 				else
-					user << "You stop forming the [input]"
+					user << "You stop forming the [input]."
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meatball))
 				user << "You smash the [input] into a patty!"
