@@ -251,7 +251,7 @@
 		assailant.set_dir(get_dir(assailant, affecting))
 		affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has had their neck grabbed by [assailant.name] ([assailant.ckey])</font>"
 		assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Grabbed the neck of [affecting.name] ([affecting.ckey])([affecting.stat])</font>"
-		msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]")
+		msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]", key_name(assailant), key_name(affecting))
 		hud.icon_state = "kill"
 		hud.name = "kill"
 		affecting.Stun(7) //7 ticks of ensured grab
@@ -263,7 +263,7 @@
 		assailant.visible_message("<span class='danger'>[assailant] has tightened \his grip on [affecting]'s neck!</span>")
 		affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has been strangled (kill intent) by [assailant.name] ([assailant.ckey])</font>"
 		assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Strangled (kill intent) [affecting.name] ([affecting.ckey])([affecting.stat])</font>"
-		msg_admin_attack("[key_name(assailant)] strangled (kill intent) [key_name(affecting)]")
+		msg_admin_attack("[key_name(assailant)] strangled (kill intent) [key_name(affecting)]", key_name(assailant), key_name(affecting))
 
 		affecting.setClickCooldown(10)
 		affecting.set_dir(WEST)

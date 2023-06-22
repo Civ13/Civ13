@@ -80,5 +80,5 @@
 
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> slit [name]'s throat ([ckey],[stat]) with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])</font>"
 	attack_log += "\[[time_stamp()]\]<font color='orange'> got throatslit by [user.name] ([user.ckey]) with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])</font>"
-	msg_admin_attack("[key_name(user)] slit [key_name(src)]'s throat with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])" )
+	msg_admin_attack("[key_name(user)] slit [key_name(src)]'s throat with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])", key_name(user), key_name(src))
 	return TRUE
