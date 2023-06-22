@@ -2081,7 +2081,7 @@
 	var/obj/item/clothing/head/custom/kippa/kippa = new /obj/item/clothing/head/custom/kippa(null)
 	kippa.color = pick("#fac331","#fbcd52","#fcd673","#fef3d6","#191400","#4d3d00","#e6b800")
 	kippa.uncolored1 = FALSE
-	H.equip_to_slot_or_del(kip, slot_head)
+	H.equip_to_slot_or_del(kippa, slot_head)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform1.attackby(armband, H)
@@ -2101,7 +2101,7 @@
 	var/obj/item/clothing/head/custom/kippa/kippa = new /obj/item/clothing/head/custom/kippa(null)
 	kippa.color = "#fac331"
 	kippa.uncolored1 = FALSE
-	H.equip_to_slot_or_del(kip, slot_head)
+	H.equip_to_slot_or_del(kippa, slot_head)
 	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#fac331"
 	blazer.uncolored = FALSE
