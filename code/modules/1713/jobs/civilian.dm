@@ -2078,6 +2078,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
+	var/obj/item/clothing/head/custom/kippa/kip = new obj/item/clothing/head/custom/kippa(null)
+	kip.color = pick("#fac331","#fbcd52","#fcd673","#fef3d6","#191400","#4d3d00","#e6b800")
+	kip.uncolored1 = FALSE
+	H.equip_to_slot_or_del(kip, slot_head)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform1.attackby(armband, H)
@@ -2093,11 +2097,16 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/circumcision(H), slot_l_hand)
+	var/obj/item/clothing/head/custom/kippa/kip = new obj/item/clothing/head/custom/kippa(null)
+	kip.color = "#fac331"
+	kip.uncolored1 = FALSE
+	H.equip_to_slot_or_del(kip, slot_head)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
+	blazer.color = "#fac331"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/storage/sheath/longer = new /obj/item/clothing/accessory/storage/sheath/longer(null)
-	uniform1.attackby(longer, H)
-	longer.attackby(new/obj/item/weapon/material/sword/urukhaiscimitar, H)
-	uniform1.attackby(longer, H)
 	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
 	uniform1.attackby(armband, H)
 	..()
@@ -2142,11 +2151,11 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factiongreen(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
-	uniform1.attackby(daishoh, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/katana, H)
-	daishoh.attackby(new/obj/item/weapon/material/sword/wakazashi, H)
-	uniform1.attackby(daishoh, H)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
+	blazer.color = "#1f4e1c"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
 	var/obj/item/clothing/accessory/armband/portuguese/armband = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform1.attackby(armband, H)
 	..()
@@ -2192,10 +2201,12 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionblue(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/butcher(H), slot_l_hand)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
+	blazer.color = pick("#ADD8E6","#274472","#41729F")
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/storage/sheath/longsword = new /obj/item/clothing/accessory/storage/sheath/longsword(null)
-	uniform1.attackby(longsword, H)
-	longsword.attackby(new/obj/item/weapon/material/sword/longsword, H)
 	var/obj/item/clothing/accessory/armband/french/armband = new /obj/item/clothing/accessory/armband/french(null)
 	uniform1.attackby(armband, H)
 	..()
@@ -2241,11 +2252,11 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionred(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_hand)
+	blazer.color = "#970C10"
+	blazer.uncolored = FALSE
+	blazer.update_icon()
+	H.equip_to_slot_or_del(blazer, slot_wear_suit)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
-	var/obj/item/clothing/accessory/storage/sheath/longer = new /obj/item/clothing/accessory/storage/sheath/longer(null)
-	uniform1.attackby(longer, H)
-	longer.attackby(new/obj/item/weapon/material/sword/shashka, H)
-	uniform1.attackby(longer, H)
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	uniform1.attackby(armband, H)
 	..()
