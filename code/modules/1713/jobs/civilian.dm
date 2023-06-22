@@ -2078,9 +2078,9 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/businessyellow(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	var/obj/item/clothing/head/custom/kippa/kip = new obj/item/clothing/head/custom/kippa(null)
-	kip.color = pick("#fac331","#fbcd52","#fcd673","#fef3d6","#191400","#4d3d00","#e6b800")
-	kip.uncolored1 = FALSE
+	var/obj/item/clothing/head/custom/kippa/kippa = new /obj/item/clothing/head/custom/kippa(null)
+	kippa.color = pick("#fac331","#fbcd52","#fcd673","#fef3d6","#191400","#4d3d00","#e6b800")
+	kippa.uncolored1 = FALSE
 	H.equip_to_slot_or_del(kip, slot_head)
 	var/obj/item/clothing/under/uniform1 = H.w_uniform
 	var/obj/item/clothing/accessory/armband/spanish/armband = new /obj/item/clothing/accessory/armband/spanish(null)
@@ -2097,9 +2097,10 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/circumcision(H), slot_l_hand)
-	var/obj/item/clothing/head/custom/kippa/kip = new obj/item/clothing/head/custom/kippa(null)
-	kip.color = "#fac331"
-	kip.uncolored1 = FALSE
+
+	var/obj/item/clothing/head/custom/kippa/kippa = new /obj/item/clothing/head/custom/kippa(null)
+	kippa.color = "#fac331"
+	kippa.uncolored1 = FALSE
 	H.equip_to_slot_or_del(kip, slot_head)
 	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#fac331"
@@ -2252,6 +2253,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionred(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_hand)
+	var/obj/item/clothing/suit/storage/jacket/custom/blazer/blazer = new /obj/item/clothing/suit/storage/jacket/custom/blazer(null)
 	blazer.color = "#970C10"
 	blazer.uncolored = FALSE
 	blazer.update_icon()
@@ -2469,7 +2471,7 @@
 			else
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/m9(H), slot_belt)
-	
+
 	var/obj/map_metadata/bank_robbery/MP = map
 	if (map.ID == MAP_BANK_ROBBERY)
 		if (MP.civilians_evacuated == MP.civilians_alive)
