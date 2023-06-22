@@ -27,7 +27,7 @@
 	parentmob = _parentmob
 	name = _name
 	screen_loc = _screen_loc
-	if (parentmob)
+	if (parentmob && parentmob.client)
 		icon = parentmob.client.prefs.UI_file
 	if (_icon)
 		icon = _icon
