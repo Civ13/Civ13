@@ -125,10 +125,10 @@ var/list/sky_drop_map = list()
 						affecting.fracture()
 					H.updatehealth()
 				else
-					H.pixel_y += 60
+					H.pixel_y = 60
 					spawn (5)
 						H.client.canmove = FALSE
-						var/image/I = image(icon = 'icons/misc/parachute.dmi', H, layer = MOB_LAYER + 1.0)
+						var/image/I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "norm", layer = MOB_LAYER + 1.0)
 						I.pixel_x = -16
 						I.pixel_y = 16
 
@@ -139,8 +139,8 @@ var/list/sky_drop_map = list()
 								H.pixel_y -= 10
 
 						spawn (20)
-							I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "closing", layer = MOB_LAYER + 1.0)
-							spawn (10) // animation is over now
+							flick("closing", I)
+							spawn (20) // animation is over now
 								H.overlays -= I
 								H.pixel_y = 0
 								qdel(I)
@@ -155,6 +155,7 @@ var/list/sky_drop_map = list()
 			if (ishuman(mover))
 				var/area/H_area = get_area(mover)
 				H_area.play_ambience(mover)
+	return
 
 /turf/floor/broken_floor
 	name = "hole"
