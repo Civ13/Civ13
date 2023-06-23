@@ -64,7 +64,7 @@
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
 						"PvE (Voyage & Cursed Island)" = 0,
 						"Chad Mode" = 30,
-						"Milsim (BETA TESTING)" = 20,
+						"MilSim (BETA TESTING)" = 20,
 					)
 				else
 					epochs = list(
@@ -75,7 +75,7 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"Chad Mode" = 30,
-						"Milsim (BETA TESTING)" = 20,
+						"MilSim (BETA TESTING)" = 20,
 					)
 			else
 				epochs = list(
@@ -88,7 +88,7 @@
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
 					"PvE (Voyage & Cursed Island)" = 0,
 //					"Chad Mode" = 0,
-					"Milsim (BETA TESTING)" = 20,
+					"MilSim (BETA TESTING)" = 20,
 				)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
