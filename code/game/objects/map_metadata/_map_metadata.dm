@@ -155,7 +155,7 @@ var/civmax_research = list(230,230,230)
 	var/is_fantrace = FALSE
 	var/perschadplus = FALSE
 	var/is_wasteland = FALSE
-	var/nonukes = FALSE
+	var/hasnukes = FALSE
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active

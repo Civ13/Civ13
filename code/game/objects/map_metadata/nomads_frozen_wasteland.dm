@@ -41,7 +41,7 @@
 	age8_done = TRUE
 
 
-	nonukes = TRUE
+	hasnukes = FALSE
 	is_zombie = FALSE
 
 /obj/map_metadata/nomads_frozen_wasteland/New()
@@ -52,7 +52,7 @@
 	spawn(10)
 		seasons()
 		var/randtimer = rand(10,20)
-		if (!nonukes)
+		if (hasnukes)
 			nuke_proc(randtimer)
 			supplydrop_proc()
 		else
@@ -62,7 +62,7 @@
 	return ""
 
 /obj/map_metadata/nomads_frozen_wasteland/proc/nuke_proc(var/timer=15)
-	if (processes.ticker.playtime_elapsed > timer && !nonukes )
+	if (processes.ticker.playtime_elapsed > timer && hasnukes )
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
 		var/turf/epicenter = get_turf(locate(vx,vy,2))
@@ -82,7 +82,7 @@
 	return
 
 /obj/map_metadata/nomads_frozen_wasteland/proc/supplydrop_proc()
-	if ((global_radiation >= 280 && !nonukes)||(is_zombie == TRUE))
+	if ((global_radiation >= 280 && hasnukes)||(is_zombie == TRUE))
 		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
