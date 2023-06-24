@@ -147,7 +147,7 @@
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-		if (clients.len <= 25)
+		if (clients.len <= 22)
 			if (J.title == "Legitimate Business")
 				. = FALSE
 		if (clients.len <= 30)
@@ -559,20 +559,37 @@
 	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 1,
 	)
 	prices = list(
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 10,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 15,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 30,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 4000,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 120,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 12000,
 	)
 /obj/structure/vending/sales/menu/ramen
 	products = list(
 	/obj/item/weapon/reagent_containers/food/snacks/ramen = 30,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 10,
 	)
 	prices = list(
-	/obj/item/weapon/reagent_containers/food/snacks/ramen = 20,
+	/obj/item/weapon/reagent_containers/food/snacks/ramen = 100,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 120,
+	)
+/obj/structure/vending/sales/menu/mcd
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "mcd2"
+	products = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 80,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
+	)
+	prices = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
 	)
 
 //////////////////SCREEN HELPERS////////////////////////////
