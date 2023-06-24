@@ -147,7 +147,7 @@
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-		if (clients.len <= 24)
+		if (clients.len <= 22)
 			if (J.title == "Legitimate Business")
 				. = FALSE
 		if (clients.len <= 30)
