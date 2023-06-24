@@ -172,6 +172,8 @@
 	force = 20
 	throwforce = 30
 	effectiveness_mod = 1.02
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 ///////////////////////////M1919A6//////////////////////
 /obj/item/weapon/gun/projectile/automatic/browning_lmg
