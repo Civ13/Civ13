@@ -210,7 +210,7 @@ var/global/list/valid_coordinates = list()
 	if (currfreq == 0)
 		src << SPAN_NOTICE("There is no radio nearby! You need one to order an airstrike.")
 		return
-	if (H.stat == DEAD)	
+	if (src.stat == DEAD)	
 		src << SPAN_WARNING("You're dead!")
 		return
 	if (map.artillery_count > 0 && world.time >= map.artillery_last+map.artillery_timer)
