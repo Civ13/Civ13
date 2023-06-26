@@ -251,6 +251,14 @@
 	maxrange = 35
 	caliber = 100
 
+/obj/structure/cannon/modern/tank/t90a
+	name = "125 mm 2A46"
+	desc = "a 125 mm Russian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 100
+
 /obj/structure/cannon/modern/tank/leopard
 	name = "Rheinmetall 120 mm"
 	desc = "a 20 mm German tank-based cannon."
