@@ -880,8 +880,6 @@
 
 	is_operation_falcon = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6

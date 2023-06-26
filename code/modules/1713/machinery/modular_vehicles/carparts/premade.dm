@@ -605,7 +605,7 @@
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/omw22_2/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/omw22_2/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/autoloader/t90a),
+	"2,2" = list(/obj/structure/vehicleparts/frame/omw22_2,/obj/structure/cannon/modern/tank/t90a),
 	"3,2" = list(/obj/structure/vehicleparts/frame/omw22_2/left, /obj/structure/bed/chair/gunner),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/omw22_2/right/door{doorcode = 4975}),

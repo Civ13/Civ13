@@ -39,14 +39,14 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
-	nonukes = FALSE
+	hasnukes = TRUE
 
 /obj/map_metadata/nomads_wasteland/New()
 	..()
 	spawn(18000)
 		seasons()
 		var/randtimer = rand(72000,108000)
-		if (!nonukes)
+		if (hasnukes)
 			nuke_proc(randtimer)
 			supplydrop_proc()
 		else
@@ -56,7 +56,7 @@
 	return ""
 
 /obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=72000)
-	if (processes.ticker.playtime_elapsed > timer && !nonukes)
+	if (processes.ticker.playtime_elapsed > timer && hasnukes)
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
 		var/turf/epicenter = get_turf(locate(vx,vy,2))
@@ -75,7 +75,7 @@
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
-	if ((global_radiation >= 280 && !nonukes)||is_zombie == TRUE)
+	if ((global_radiation >= 280 && hasnukes)||is_zombie == TRUE)
 		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
 		switch(droptype)
@@ -125,7 +125,7 @@
 	ID = MAP_NOMADS_WASTELAND_2
 	title = "Wasteland II"
 	gamemode = "Wasteland"
-	nonukes = TRUE
+	hasnukes = FALSE
 	is_zombie = TRUE
 	lobby_icon = "icons/lobby/wasteland2.png"
 	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

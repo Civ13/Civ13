@@ -19,19 +19,21 @@
 	ordinal_age = 8
 	var/fac_nr = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the deal"
+	battle_name = "The Deal"
 	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.<br>Please read the manual: https://civ13.github.io/civ13-wiki/The_Art_of_the_Deal</font>"
 	var/winner_name = "Unknown"
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN
 	faction2 = PIRATES
 	gamemode = "Negotiations"
+
 	scores = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,
 		"Sheriff Office" = 0,)
+
 	required_players = 6
 	var/list/delivery_locations = list()
 	var/list/delivery_orders = list()
@@ -139,13 +141,16 @@
 		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate) && !istype(J, /datum/job/civilian/businessman/mckellen))
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
-		if (clients.len <= 15)
-			if (J.title == "Paramedic" || J.title == "Legitimate Business" || J.title == "Nurse")
+		if (clients.len <= 12)
+			if (J.title == "County Deputy" || J.title == "County Sheriff")
 				. = FALSE
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-		if (clients.len <= 25)
+		if (clients.len <= 22)
+			if (J.title == "Legitimate Business")
+				. = FALSE
+		if (clients.len <= 30)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
 		if (clients.len <= 35)
@@ -158,7 +163,7 @@
 	if (faction == CIVILIAN)
 		return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 
-/*/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/art_of_the_deal/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -167,7 +172,7 @@
 			if (H.original_job_title == "Nurse")
 				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
 				return TRUE
-	return FALSE*/ //Commented out, to be re-implemented if players go unga.
+	return FALSE
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
 	for(var/obj/structure/closet/safe/SF in world)
@@ -301,8 +306,6 @@
 		/obj/item/clothing/glasses/sunglasses = 10,
 		/obj/item/clothing/gloves/fingerless = 10,
 		/obj/item/clothing/mask/balaclava = 10,
-		/obj/item/clothing/head/ghillie = 1,
-		/obj/item/clothing/suit/storage/ghillie = 1,
 		/obj/item/flashlight/flashlight = 10,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
 		/obj/item/weapon/handcuffs/rope = 50,
@@ -354,10 +357,15 @@
 		/obj/item/ammo_magazine/colthammerless/a380acp = 20,
 		/obj/item/ammo_magazine/m1911 = 20,
 		/obj/item/ammo_magazine/c32 = 10,
+
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 5,
+		/obj/item/clothing/head/ghillie = 2,
+		/obj/item/clothing/suit/storage/ghillie = 2,
 	)
 	prices = list(
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 1000,
+		/obj/item/clothing/head/ghillie = 500,
+		/obj/item/clothing/suit/storage/ghillie = 1000,
 
 		/obj/item/weapon/gun/projectile/pistol/colthammerless = 300,
 		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = 300,
@@ -534,6 +542,56 @@
 		icon_state = "police_warrant"
 		spawn(10)
 			info = "<center>DEPARTMENT OF JUSTICE<hr><large><b>Search Warrant No. [arn]</b></large><hr><br>Law Enforcement Agencies are hereby authorized and directed to search all and every property owned by <b>[cmp]</b>. They will disregard any claims of immunity or privilege by the Suspect or agents acting on the Suspect's behalf.<br><br><small><center><i>Form Model 13-C1</i></center></small><hr>"
+
+/obj/structure/vending/sales/menu
+	name = "menu"
+	desc = "Place your order here!"
+	sound_type = 'sound/effects/deskbell.ogg'
+	icon_state = "menu"
+/obj/structure/vending/sales/menu/pizza
+	products = list(
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 1,
+	)
+	prices = list(
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 120,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 12000,
+	)
+/obj/structure/vending/sales/menu/ramen
+	products = list(
+	/obj/item/weapon/reagent_containers/food/snacks/ramen = 30,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 10,
+	)
+	prices = list(
+	/obj/item/weapon/reagent_containers/food/snacks/ramen = 100,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 120,
+	)
+/obj/structure/vending/sales/menu/mcd
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "mcd2"
+	products = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 80,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
+	)
+	prices = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
+	)
+
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
@@ -650,6 +708,7 @@
 	showoff(user)
 
 /mob/living/human/var/gun_permit = FALSE
+/mob/living/human/var/bail_price = 0
 /////////////////////////delivery points//////////////////////
 /turf/floor/delivery
 	name = "delivery area"
