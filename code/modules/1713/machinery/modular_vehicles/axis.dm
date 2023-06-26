@@ -611,6 +611,10 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 	for(var/obj/structure/vehicleparts/VP in components)
 		VP.dir = dir
 		VP.update_icon()
+
+	for(var/mob/living/MB in transporting)
+		MB.dir = dir
+	
 	return TRUE
 
 /obj/effect/pseudovehicle

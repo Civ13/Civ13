@@ -1928,6 +1928,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	New()
 		..()
 		reagents.add_reagent("protein", 8)
+		if (prob(33))
+			icon_state = "cheeseburgeralt"
 
 /obj/item/weapon/reagent_containers/food/snacks/bun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	// Bun + meatpatty = burger
