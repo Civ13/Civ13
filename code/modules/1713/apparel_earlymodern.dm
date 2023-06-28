@@ -616,6 +616,18 @@
 	new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
+/obj/item/weapon/storage/belt/jap/ww2soldier96
+/obj/item/weapon/storage/belt/jap/ww2soldier96/New()
+	..()
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/ammo_magazine/type96(src)
+	new /obj/item/weapon/attachment/bayonet(src)
+
 /obj/item/weapon/storage/belt/jap/camp_guard
 /obj/item/weapon/storage/belt/jap/camp_guard/New()
 	..()

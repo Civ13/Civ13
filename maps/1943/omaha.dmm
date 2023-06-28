@@ -518,6 +518,7 @@
 "jX" = (/obj/structure/bed/chair/wood,/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "jY" = (/obj/structure/table/wood,/obj/item/violin,/turf/floor/wood,/area/caribbean/houses)
 "jZ" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
+"ka" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag,/turf/wall/cement,/area/caribbean/german/inside)
 "kb" = (/obj/structure/vehicleparts/frame/car/right,/turf/floor/plating/road,/area/caribbean/forest)
 "kc" = (/obj/structure/radio/transmitter_receiver/nopower/faction2,/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/german/inside)
 "kd" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/german/inside)
@@ -525,6 +526,9 @@
 "kf" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/doctor_handbook,/turf/floor/wood,/area/caribbean/houses)
 "kg" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/medical,/turf/floor/wood,/area/caribbean/houses)
 "kh" = (/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/houses)
+"ki" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/german/inside)
+"kj" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/german/inside)
+"kk" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/german/inside)
 "kl" = (/obj/structure/closet/wardrobe,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/under/modern2,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "km" = (/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/houses)
 "kn" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/wood,/area/caribbean/houses)
@@ -678,7 +682,6 @@
 "nk" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/german/inside)
 "nl" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/barricade,/turf/floor/plating/road,/area/caribbean/forest)
 "nm" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/barricade/tires,/obj/structure/barricade,/turf/floor/plating/road,/area/caribbean/forest)
-"nn" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/german/inside)
 "no" = (/obj/structure/barricade/horizontal,/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/barricade/horizontal,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "np" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/barricade/horizontal,/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/barricade/horizontal,/obj/structure/barbwire,/turf/floor/plating/road,/area/caribbean/forest)
 "nq" = (/obj/structure/sign/traffic/zebracrossing,/obj/structure/barricade/horizontal,/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/obj/structure/barbwire,/turf/floor/plating/road,/area/caribbean/forest)
@@ -715,7 +718,6 @@
 "nV" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/german/inside)
 "nW" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/antitank,/turf/floor/dirt,/area/caribbean/forest)
 "nX" = (/obj/structure/closet/cabinet,/obj/item/ammo_magazine/walther,/obj/item/weapon/gun/projectile/pistol/waltherp38,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
-"nY" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/beach/sand/dark,/area/caribbean/german/inside)
 "nZ" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/forest)
 "oa" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/pistol/mauser,/obj/item/ammo_magazine/mauser,/turf/floor/wood,/area/caribbean/houses)
 "ob" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/forest)
@@ -731,7 +733,6 @@
 "ol" = (/obj/structure/wild/tree/live_tree,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/forest)
 "om" = (/obj/structure/bed/chair/comfy/brown{dir = 8; icon_state = "chair_padding"},/turf/floor/wood,/area/caribbean/houses)
 "on" = (/obj/structure/table/wood,/obj/structure/sink/kitchen{dir = 4; icon_state = "sink_alt"},/turf/floor/wood,/area/caribbean/houses)
-"oo" = (/obj/covers/cement_wall,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/wall/cement,/area/caribbean/german/inside)
 "op" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "oq" = (/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "or" = (/obj/structure/table/wood,/obj/structure/radio{powered = 1; powerneeded = 0},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
@@ -981,13 +982,13 @@ fQfSlbhnhnhnhnkOhnhnkVfQfShnkOhnpWgsgspWhnhnkOfQfSlbhnhnhohnhnhnhnhnhnhnkVfQfSmz
 fQfSlbhnhohnhnhnkShnkVfQfSpWpWpWpWgsgspWgqgqgqfQfSlbhnhnhnkShnhnhnkOhohnkVfQfShnkOhnpWgsgspWhnhnhnfQfShnhnkShnkVfQfSaHkO
 fQfSlbhnkOhnhnhnhnhnkVfQfSpWgwgugsgsgsgvgsgsgqfQfSlbkShnhnhnhohnhnhnhnhnmZfQfSpWpWpWpWgsgspWgqgqgqfQfShnhnhnhnkVfQfSaHaH
 fQfSlbhnhnhnhnhnhnhnkVfQfSpWgCgsgsgsgsgsgsgsgqfQfSlbhnhnhnhnkOhnhnkShnhnkVfQfSpWgwgugsgsgsgvgsgsgqfQfSkOhnhohnkVfQfSaHaH
-fQfSlbhnhnhnhnhnkOhnkVfQfSpWpWpWpWpWiapWpWgrgqfQfSlbhnhnhnhnhnhnkOhnhnhokVfQfSpWgCgsgsgsgsgsgsgsgqfQfShnhnhnhnkVfQfSaHaH
-fQfSlbhnkShnhnhohnhnkVfQfSpWkcgxgymwkdgsgsgsgqfQfSlbkOhnkOhnhnhnhnhnhnhnkVfQfSpWpWpWpWpWiapWpWgrgqfQfSlMhnhnhnkVfQfSaHaH
+fQfSlbhnhnhnhnhnkOhnkVfQfSpWkakakakaiakakagrgqfQfSlbhnhnhnhnhnhnkOhnhnhokVfQfSpWgCgsgsgsgsgsgsgsgqfQfShnhnhnhnkVfQfSaHaH
+fQfSlbhnkShnhnhohnhnkVfQfSpWkcgxgymwkdgsgsgsgqfQfSlbkOhnkOhnhnhnhnhnhnhnkVfQfSpWkakakakaiakakagrgqfQfSlMhnhnhnkVfQfSaHaH
 fQfSowlqlqlqlqlqlqlqlVfQfSpWgzgsgsgsgsgsgsgAgqfQfSowlqlqlqlqlqlqlqlqlqlqlVfQfSpWkcgxgymwkdgsgsgsgqfQfShnhnjyhnkVfQfSaHaH
-fQfRgfgfgfgfgfgfgfgfgffRfSpWmokFmogxgxmokFmogqfQfRgfgfgfgfgfgfgtgfgfgfgfgffRfSpWgzgsgsgsgsgsgsgAgqfQfSlqlqlqlqlVfQfSaHaH
-fUfVfVfVfVfVfVfVfVfVfVfVfWngnnnVnYoongnnnVnYoofUfVfVfVfVfVfVfVfVfVfVfVfVfVfVqgpWmokFmogxgxmokFmogqfQfRgfgfgtgfgffRfSaHaH
-mVmVmVmVmVmVmVmVmVmVmOmOmOgGgGgGgGgGgGgGgGgGgGmOmOmOmVmVmVmVmVgGgGgGgGgGmOmOmOngnnnVnYoongnnnVnYoofUfVfVfVfVfVfVfVfWaHaH
-oEoEoEoEoEoEmxmNmNmNoEoEkUoEoEmNmNmNmNmNoEkUoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEmYgGgGgGmVmVmVmVmVmVmVmOmOmOmVmVmVmVmVmVgGgG
+fQfRgfgfgfgfgfgfgfgfgffRfSngkikFmogxgxmokFkjkkfQfRgfgfgfgfgfgfgtgfgfgfgfgffRfSpWgzgsgsgsgsgsgsgAgqfQfSlqlqlqlqlVfQfSaHaH
+fUfVfVfVfVfVfVfVfVfVfVfVfWgqnVnVnVgqgqnVnVnVgqfUfVfVfVfVfVfVfVfVfVfVfVfVfVfVqgngkikFmogxgxmokFkjkkfQfRgfgfgtgfgffRfSaHaH
+mVmVmVmVmVmVmVmVmVmVmOmOmOgGgGgGgGgGgGgGgGgGgGmOmOmOmVmVmVmVmVgGgGgGgGgGmOmOmOgqnVnVnVgqgqnVnVnVgqfUfVfVfVfVfVfVfVfWaHaH
+oEoEoEoEoEoEmxmNmNmNoEoEkUoEoEmNmNmNmNmNoEkUoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEmYgGgGgGgGgGgGgGgGgGgGmOmOmOmVmVmVmVmVmVgGgG
 oGoEoEoEkXoEoEoEoEoEoEkXoEoEoEoEoEoEoEoEkXoEoEoEoEmNmNmNmNkXoEoEoEoEoEoEoEoEoEoEoEkXoEkUkToEoEoEmNmNmPmNmQkUoEoEoEoEoEoE
 oEoEoEoEmNnsmNmNoEoIoIoIoIoIoIoEoEmNmNmNmNoEkXoEoEoEoEkToEoEkUoEoEkXoEmNmNntntmNoEoEoEoEoEoEoIoIoIoIoIoIoIoIoIoIoIoEoEkU
 oIoIoIoIoIoIoIoIoIoIoIoIoIoIoIoIoIoIoEoEoEoEoEkUkUoEoEkUoEoEoEoEoEoEoIoEoIoIoIoIoIoIoIoIoMoIoIoIoIoIoIoIoIoIlcoIoIoIoIoI
@@ -1030,6 +1031,7 @@ apapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapap
 apapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapap
 apapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapap
 "}
+
 (1,1,2) = {"
 hnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhn
 hnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhnhn
