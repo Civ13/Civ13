@@ -932,8 +932,12 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type96(H), slot_shoulder)
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier96(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
