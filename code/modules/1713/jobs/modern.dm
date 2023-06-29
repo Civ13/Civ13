@@ -1470,7 +1470,7 @@
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1676,7 +1676,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249/acog(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/m249, H)
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
