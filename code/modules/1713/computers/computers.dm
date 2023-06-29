@@ -106,7 +106,7 @@
 	name = "Parent Computer"
 	desc = "A simplistic computer. This is the parent object."
 	icon = 'icons/obj/computers.dmi'
-	icon_state = "1980_computer_off"
+	icon_state = "ibm_off"
 	var/peripherals = list()
 	var/internals = list()
 	var/operatingsystem = "unga OS"
@@ -131,7 +131,7 @@
 /obj/structure/computer/nopower
 	name = "desktop computer"
 	desc = "A desktop computer running the latest version of Unga OS."
-	icon_state = "1980_computer_on"
+	icon_state = "ibm_on"
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
@@ -258,9 +258,9 @@
 
 /obj/structure/computer/update_icon()
 	if (active)
-		icon_state = "1980_computer_on"
+		icon_state = "ibm_on"
 	else
-		icon_state = "1980_computer_off"
+		icon_state = "ibm_off"
 
 /obj/structure/computer/proc/program_checker()
 	for(var/datum/program/P in programs)
