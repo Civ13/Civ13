@@ -223,6 +223,7 @@
 									reason = "Theft of a Government Vehicle"
 								map.warrants += H.real_name
 								H.gun_permit = 0
+								H.bail_price += 500
 								var/obj/item/weapon/paper_bin/police/PAR = null
 								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 									PAR = PAR2

@@ -427,6 +427,17 @@
 	..()
 	stored_ammo.Cut()
 
+/obj/item/ammo_magazine/makarov/box
+	name = "magazine box (9x18mm)"
+	icon_state = "9mm"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a9x18
+	max_ammo = 60
+	multiple_sprites = TRUE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/aps
 	name = "Stechkin APS magazine (9x18mm)"
 	icon_state = "m1911" //temporary, to be changed

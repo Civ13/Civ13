@@ -69,7 +69,7 @@
 	var/newnameb = list("Giovanni Blu Stocks" = list(0,0,0,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Kogama Kraftsmen" = list(0,0,0,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(0,0,0,null,0,"sun","#E5E500","#7F7F7F",0,0))
-	var/newnamee = list("Sheriff Office" = list(0,0,0,null,0,"star","#E5E500","#00007F",0,0))
+	var/newnamee = list("Sheriff Office" = list(0,0,0,null,0,"star","#51513f","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(0,0,0,null,0,"cross","#7F0000","#FFFFFF",0,0))
 	var/newnameg = list("Government" = list(0,0,0,null,0,"star","#E3E3E3", "#3e57a8",0,0))
 	custom_civs += newnamea
@@ -141,15 +141,25 @@
 		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate) && !istype(J, /datum/job/civilian/businessman/mckellen))
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
+		if (world.time >= 3000)
+			if (istype(J, /datum/job/civilian/businessman))
+				if(findtext(J.title, "CEO"))
+					J.whitelisted = FALSE
 		if (clients.len <= 12)
 			if (J.title == "County Deputy" || J.title == "County Sheriff")
 				. = FALSE
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
+			if (J.title == "Paramedic")
+				J.max_positions = 2
+				J.total_positions = 2
 		if (clients.len <= 22)
 			if (J.title == "Legitimate Business")
 				. = FALSE
+			if (J.title == "Paramedic")
+				J.max_positions = 3
+				J.total_positions = 3
 		if (clients.len <= 30)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
@@ -589,7 +599,7 @@
 	/obj/item/weapon/reagent_containers/food/snacks/burger = 40,
 	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 60,
 	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
-	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 20,
 	)
 
 //////////////////SCREEN HELPERS////////////////////////////
@@ -767,3 +777,228 @@
 
 	else
 		..()
+
+
+/////DOOR SPAWNERS/////
+
+/obj/effect/spawner/objspawner/door
+	name = "door spawner"
+	max_range = 0
+	max_number = 1
+	timer = 10
+	activated = FALSE
+
+/obj/effect/spawner/objspawner/door/getEmptyTurf()
+	var/list/turf/emptyTurfs = new
+	for(var/turf/T in range(max_range,src))
+		var/invalid = FALSE
+		for (var/obj/structure/simple_door/SD in T)
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
+
+/obj/effect/spawner/objspawner/door/blue
+	create_path = /obj/structure/simple_door/key_door/civ/businessblue
+/obj/effect/spawner/objspawner/door/yellow
+	create_path = /obj/structure/simple_door/key_door/civ/businessyellow
+/obj/effect/spawner/objspawner/door/red
+	create_path = /obj/structure/simple_door/key_door/civ/businessred
+/obj/effect/spawner/objspawner/door/green
+	create_path = /obj/structure/simple_door/key_door/civ/businessgreen
+/obj/effect/spawner/objspawner/door/police
+	create_path = /obj/structure/simple_door/key_door/civ/police
+	activated = TRUE
+	timer = 1800
+
+
+
+//// SMUGGLING SYSTEM//////
+
+/obj/structure/largecrate/smuggler
+	name = "suspicious large crate"
+
+/obj/structure/largecrate/smuggler/crystals/New()
+	..()
+	for (var/i = 1; i<=8;i++)
+		new /obj/item/stack/precursor/yellow(src)
+		new /obj/item/stack/precursor/green(src)
+		new	/obj/item/stack/precursor/red(src)
+		new /obj/item/stack/precursor/blue(src)
+
+/obj/structure/largecrate/smuggler/cocaine/New()
+	..()
+	var/blocks_amount = rand(1,3)
+	switch(blocks_amount)
+		if (1)
+			new /obj/item/weapon/reagent_containers/cocaineblock(src)
+		if (2)
+			new /obj/item/weapon/reagent_containers/cocaineblocks(src)
+		if (3)
+			new /obj/item/weapon/reagent_containers/cocaineblocks/three(src)
+
+/obj/structure/largecrate/smuggler/disks/New()
+	..()
+	var/disks_amount = rand(2,4)
+	var/disks_type = rand(1,4)
+	switch (disks_type)
+		if (1)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/green (src)
+		if (2)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/blue (src)
+		if (3)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/red (src)
+		if (4)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/yellow (src)
+
+/obj/structure/largecrate/smuggler/fake_disks/New()
+	..()
+	var/disks_amount = rand(2,4)
+	var/disks_type = rand(1,4)
+	switch (disks_type)
+		if (1)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/green/fake (src)
+		if (2)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/blue/fake (src)
+		if (3)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/red/fake (src)
+		if (4)
+			for (var/i = 1; i<=disks_amount;i++)
+				new /obj/item/weapon/disk/yellow/fake (src)
+
+/obj/structure/largecrate/smuggler/makarov/New()
+	..()
+	var/guns_amount = rand(1,3)
+	var/ammo_amount = rand (3,9)
+	var/ammobox_amount = rand (0,1)
+	for (var/i = 1; i<=guns_amount;i++)
+		new /obj/item/weapon/gun/projectile/pistol/makarov(src)
+	for (var/i = 1; i<=ammo_amount;i++)
+		new /obj/item/ammo_magazine/makarov(src)
+	for (var/i = 1; i<=ammobox_amount;i++)
+		new /obj/item/ammo_magazine/makarov/box(src)
+/obj/structure/largecrate/smuggler/magnum44/New()
+	..()
+	new /obj/item/weapon/gun/projectile/revolver/magnum44(src)
+	new /obj/item/ammo_magazine/c44magnum(src)
+	new /obj/item/ammo_magazine/emptyspeedloader(src)
+	new /obj/item/ammo_magazine/emptyspeedloader(src)
+/obj/structure/largecrate/smuggler/m1911/New()
+	..()
+	var/guns_amount = rand(1,3)
+	var/ammo_amount = rand (3,9)
+	var/ammobox_amount = rand (0,1)
+	for (var/i = 1; i<=guns_amount;i++)
+		new /obj/item/weapon/gun/projectile/pistol/m1911(src)
+	for (var/i = 1; i<=ammo_amount;i++)
+		new /obj/item/ammo_magazine/m1911(src)
+	for (var/i = 1; i<=ammobox_amount;i++)
+		new /obj/item/ammo_magazine/a45acpbox(src)
+
+/obj/structure/largecrate/smuggler/uzi/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/uzi(src)
+	new /obj/item/ammo_magazine/uzi(src)
+	new /obj/item/ammo_magazine/uzi(src)
+/obj/structure/largecrate/smuggler/skorpion/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/skorpion(src)
+	new /obj/item/ammo_magazine/skorpion(src)
+	new /obj/item/ammo_magazine/skorpion(src)
+/obj/structure/largecrate/smuggler/mac10/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/mac10(src)
+	new /obj/item/ammo_magazine/mac10(src)
+	new /obj/item/ammo_magazine/mac10(src)
+/obj/structure/largecrate/smuggler/tec9/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/tec9(src)
+	new /obj/item/ammo_magazine/tec9(src)
+	new /obj/item/ammo_magazine/tec9(src)
+/obj/structure/largecrate/smuggler/ak47/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+
+/obj/structure/props/smuggler
+	name = "Omar the Smuggler"
+	desc = "You've got money? I've got goods."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghdrug"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (user.civilization == "Sheriff Office")
+		user << "Good day, officer."
+		return
+	else
+		var/smuggler_cooldown = 0
+		if (world.time > smuggler_cooldown)
+			if (istype(W, /obj/item/stack/money))
+				var/obj/item/stack/money/M = W
+				if (M && M.value*M.amount >= 500*4)
+					M.amount-=500/5
+					if (M.amount <= 0)
+						qdel(M)
+					user << "A shipment will arrive soon at the Docks. Better be ready."
+					if (prob(50))
+						for (var/mob/living/human/H in player_list)
+							if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
+								if (H.civilization != user.civilization)
+									H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
+							if (prob(50))
+								global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
+					smuggler_cooldown = world.time + 1800
+					sleep(rand(900,1800))
+					var/crate_type = rand(1,3)
+					if (prob(70))
+						switch(crate_type)
+							if (1)
+								new /obj/structure/largecrate/smuggler/crystals(get_turf(locate(84,6,1)))
+							if (2)
+								new /obj/structure/largecrate/smuggler/disks(get_turf(locate(84,6,1)))
+							if (3)
+								new /obj/structure/largecrate/smuggler/fake_disks(get_turf(locate(84,6,1)))
+					else
+						if (prob(60))
+							if (prob(60))
+								switch(crate_type)
+									if (1)
+										new /obj/structure/largecrate/smuggler/makarov(get_turf(locate(84,6,1)))
+									if (2)
+										new /obj/structure/largecrate/smuggler/magnum44(get_turf(locate(84,6,1)))
+									if (3)
+										new /obj/structure/largecrate/smuggler/m1911(get_turf(locate(84,6,1)))
+							else
+								switch(crate_type)
+									if (1)
+										new /obj/structure/largecrate/smuggler/skorpion(get_turf(locate(84,6,1)))
+									if (2)
+										new /obj/structure/largecrate/smuggler/uzi(get_turf(locate(84,6,1)))
+									if (3)
+										new /obj/structure/largecrate/smuggler/mac10(get_turf(locate(84,6,1)))
+						else
+							if (prob(70))
+								new /obj/structure/largecrate/smuggler/cocaine(get_turf(locate(84,6,1)))
+							else
+								new /obj/structure/largecrate/smuggler/ak47(get_turf(locate(84,6,1)))
+				else
+					user << "<span class='warning'>Not enough money! You need to give at least 500 dollars.</span>"
+					return
+		else
+			user << "No shipments available, come back later."
+			return

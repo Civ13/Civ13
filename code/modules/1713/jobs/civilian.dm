@@ -2053,7 +2053,8 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	spawn(50)
-		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
+		if (H.client)
+			H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
 /datum/job/civilian/businessman/yellow
 	title = "Goldstein Solutions"
 	selection_color = "#7e7e06"
