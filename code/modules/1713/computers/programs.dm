@@ -1374,34 +1374,37 @@
 					else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 						M = user.get_inactive_hand()
 					if (M && M.value*M.amount >= 100*4)
-						M.amount-=100/5
-						if (M.amount <= 0)
-							qdel(M)
-						switch(user.civilization)
-							if ("Goldstein Solutions")
-								for (var/obj/effect/spawner/objspawner/door/yellow/YD in world)
-									YD.activated = TRUE
-									sleep(100)
-									YD.activated = FALSE
-							if ("Kogama Kraftsmen")
-								for (var/obj/effect/spawner/objspawner/door/green/GD in world)
-									GD.activated = TRUE
-									sleep(100)
-									GD.activated = FALSE
-							if ("Rednikov Industries")
-								for (var/obj/effect/spawner/objspawner/door/red/RD in world)
-									RD.activated = TRUE
-									sleep(100)
-									RD.activated = FALSE
-							if ("Giovanni Blu Stocks")
-								for (var/obj/effect/spawner/objspawner/door/blue/BD in world)
-									BD.activated = TRUE
-									sleep(100)
-									BD.activated = FALSE
-						mainbody += "<font color='green'><b>Your HQ doors have been repaired</b>.</span>"
-						sleep(0.5)
-						do_html(user)
-						return
+						if(WWinput(user, "This will attempt to repair any missing doors for 100 dollars. Are you sure?", "Door Repair", "Yes", list("Yes", "No")) == "No")
+							return
+						else	
+							M.amount-=100/5
+							if (M.amount <= 0)
+								qdel(M)
+							switch(user.civilization)
+								if ("Goldstein Solutions")
+									for (var/obj/effect/spawner/objspawner/door/yellow/YD in world)
+										YD.activated = TRUE
+										spawn(100)
+										YD.activated = FALSE
+								if ("Kogama Kraftsmen")
+									for (var/obj/effect/spawner/objspawner/door/green/GD in world)
+										GD.activated = TRUE
+										spawn(100)
+										GD.activated = FALSE
+								if ("Rednikov Industries")
+									for (var/obj/effect/spawner/objspawner/door/red/RD in world)
+										RD.activated = TRUE
+										spawn(100)
+										RD.activated = FALSE
+								if ("Giovanni Blu Stocks")
+									for (var/obj/effect/spawner/objspawner/door/blue/BD in world)
+										BD.activated = TRUE
+										spawn(100)
+										BD.activated = FALSE
+							mainbody += "<font color='green'><b>Your HQ doors have been repaired</b>.</span>"
+							sleep(0.5)
+							do_html(user)
+							return
 					else
 						mainbody += "<font color='red'>Not enough money! You need to have 100 dollars in your hands to pay for the repairs.</font>"
 						sleep(0.5)
