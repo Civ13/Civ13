@@ -242,57 +242,103 @@
 	..()
 	code = REDCODE
 
+/datum/keyslot/civ/businessred/ceo/New()
+	..()
+	code = REDCODE+9
+
 /obj/item/weapon/key/civ/businessred/New()
 	..()
 	code = REDCODE
 	name = "Headquarters key"
+/obj/item/weapon/key/civ/businessred/ceo/New()
+	..()
+	code = REDCODE+9
+	name = "CEO key"
 
 /obj/structure/simple_door/key_door/civ/businessred
 	keyslot_type = /datum/keyslot/civ/businessred
 	unique_door_name = "Headquarters"
 	health = 45000
+/obj/structure/simple_door/key_door/civ/businessred/ceo
+	keyslot_type = /datum/keyslot/civ/businessred/ceo
+	unique_door_name = "CEO"
+	health = 50000
 
 /datum/keyslot/civ/businessblue/New()
 	..()
 	code = BLUECODE
+/datum/keyslot/civ/businessblue/ceo/New()
+	..()
+	code = BLUECODE+9
 
 /obj/item/weapon/key/civ/businessblue/New()
 	..()
 	code = BLUECODE
 	name = "Headquarters key"
+/obj/item/weapon/key/civ/businessblue/ceo/New()
+	..()
+	code = BLUECODE+9
+	name = "CEO key"
 
 /obj/structure/simple_door/key_door/civ/businessblue
 	keyslot_type = /datum/keyslot/civ/businessblue
 	unique_door_name = "Headquarters"
 	health = 45000
+/obj/structure/simple_door/key_door/civ/businessblue/ceo
+	keyslot_type = /datum/keyslot/civ/businessblue/ceo
+	unique_door_name = "CEO"
+	health = 50000
 
 /datum/keyslot/civ/businessgreen/New()
 	..()
 	code = GREENCODE
+/datum/keyslot/civ/businessgreen/ceo/New()
+	..()
+	code = GREENCODE+9
 
 /obj/item/weapon/key/civ/businessgreen/New()
 	..()
 	code = GREENCODE
 	name = "Headquarters key"
+/obj/item/weapon/key/civ/businessgreen/ceo/New()
+	..()
+	code = GREENCODE+9
+	name = "CEO key"
 
 /obj/structure/simple_door/key_door/civ/businessgreen
 	keyslot_type = /datum/keyslot/civ/businessgreen
 	unique_door_name = "Headquarters"
 	health = 45000
+/obj/structure/simple_door/key_door/civ/businessgreen/ceo
+	keyslot_type = /datum/keyslot/civ/businessgreen/ceo
+	unique_door_name = "CEO"
+	health = 50000
 
 /datum/keyslot/civ/businessyellow/New()
 	..()
 	code = YELLOWCODE
+/datum/keyslot/civ/businessyellow/ceo/New()
+	..()
+	code = YELLOWCODE+9
 
 /obj/item/weapon/key/civ/businessyellow/New()
 	..()
 	code = YELLOWCODE
 	name = "Headquarters key"
+/obj/item/weapon/key/civ/businessyellow/ceo/New()
+	..()
+	code = YELLOWCODE+9
+	name = "CEO key"
 
 /obj/structure/simple_door/key_door/civ/businessyellow
 	keyslot_type = /datum/keyslot/civ/businessyellow
 	unique_door_name = "Headquarters"
 	health = 45000
+/obj/structure/simple_door/key_door/civ/businessyellow/ceo
+	keyslot_type = /datum/keyslot/civ/businessyellow/ceo
+	unique_door_name = "CEO"
+	health = 50000
+
 #define CV_BANK 82111
 /datum/keyslot/civ/bank
 	code = CV_BANK
