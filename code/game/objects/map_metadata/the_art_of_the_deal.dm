@@ -180,8 +180,11 @@
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.original_job_title == "Nurse")
-				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+				if (world.time >= H.next_gracewall_message)
+					H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+					H.next_gracewall_message = world.time + 10
 				return TRUE
+		return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
@@ -487,7 +490,10 @@
 
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
+	/obj/item/ammo_magazine/tt30ll/rubber = 50,
+
+	/obj/item/weapon/gun/projectile/pistol/taser = 10,
+	/obj/item/ammo_casing/taser = 20,
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.civilization == "Sheriff Office")
@@ -960,8 +966,8 @@
 							if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
 								if (H.civilization != user.civilization)
 									H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
-							if (prob(50))
-								global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
+						if (prob(50))
+							global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
 					smuggler_cooldown = world.time + 1800
 					sleep(rand(900,1800))
 					var/crate_type = rand(1,3)

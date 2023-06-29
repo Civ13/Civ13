@@ -1298,7 +1298,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_green(H), slot_head)
 
@@ -1358,7 +1358,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
@@ -1418,7 +1418,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -1470,7 +1470,7 @@
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1502,7 +1502,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //mask
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 //head
@@ -1558,7 +1558,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	var/randhead2 = rand(1,5)
 	switch(randhead2)
@@ -1676,7 +1676,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249/acog(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
-		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/m249, H)
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)

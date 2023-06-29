@@ -218,6 +218,7 @@
 					MAP_RETREAT = 6,
 					MAP_ROAD_TO_DAK_TO = 0,
 					MAP_COMPOUND = 6,
+					MAP_ONG_THAHN = 12,
 					MAP_HUE = 15,
 					MAP_AFRICAN_WARLORDS = 6,
 					MAP_TADOJSVILLE = 12,
@@ -226,12 +227,13 @@
 					MAP_ALLEYWAY = 0,
 					MAP_WACO = 0,
 					MAP_YELTSIN = 6,
-					MAP_GROZNY = 6,
+					MAP_GROZNY = 10,
 					MAP_BANK_ROBBERY = 0,
 					MAP_DRUG_BUST = 0,
 					MAP_ARAB_TOWN = 0,
 					MAP_ARAB_TOWN_2 = 0,
 					MAP_HOSTAGES = 0,
+					MAP_SYRIA = 6,
 					MAP_CAPITOL_HILL = 6,
 				)
 			if ("Fiction")
