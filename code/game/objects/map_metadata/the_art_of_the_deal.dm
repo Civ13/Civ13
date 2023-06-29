@@ -492,8 +492,8 @@
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
 	/obj/item/ammo_magazine/tt30ll/rubber = 50,
 
-	/obj/item/weapon/gun/projectile/pistol/taser = 10,
-	/obj/item/ammo_casing/taser = 20,
+	/obj/item/weapon/gun/projectile/pistol/taser = 5,
+	/obj/item/ammo_magazine/taser = 10,
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.civilization == "Sheriff Office")
