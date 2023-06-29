@@ -182,7 +182,7 @@
 			if (H.original_job_title == "Nurse")
 				if (world.time >= H.next_gracewall_message)
 					H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
-					next_gracewall_message = world.time + 10
+					H.next_gracewall_message = world.time + 10
 				return TRUE
 		return !faction1_can_cross_blocks()
 	return FALSE
