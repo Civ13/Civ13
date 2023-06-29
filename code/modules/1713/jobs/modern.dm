@@ -1298,7 +1298,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_green(H), slot_head)
 
@@ -1358,7 +1358,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
@@ -1418,7 +1418,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -1502,7 +1502,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //mask
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 //head
@@ -1558,7 +1558,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_salv(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
 //head
 	var/randhead2 = rand(1,5)
 	switch(randhead2)
