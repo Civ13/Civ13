@@ -237,8 +237,8 @@
 	..()
 	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new /obj/item/weapon/storage/box/firstaid/basicsmall(src)
-	new /obj/item/weapon/gun_cleaning_kit(src)
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/weapon/foldable_shovel/trench/etool(src)
 	new /obj/item/weapon/compass(src)
 	new /obj/item/weapon/whistle(src)
 
