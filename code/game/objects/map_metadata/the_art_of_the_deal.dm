@@ -941,7 +941,7 @@
 	opacity = FALSE
 	anchored = TRUE
 
-/obj/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
+/obj/structure/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (user.civilization == "Sheriff Office")
 		user << "Good day, officer."
 		return
