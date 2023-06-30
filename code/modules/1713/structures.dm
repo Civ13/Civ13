@@ -630,6 +630,19 @@
 	density = FALSE
 	opacity = FALSE
 
+
+/obj/structure/props/bike
+	name = "motorbike"
+	desc = "A motorbike."
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
+	icon_state = "bike"
+	flammable = FALSE
+	not_movable = TRUE
+	anchored = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	bound_width = 64
+	
 /obj/structure/props/car_wreck
 	name = "car wreck"
 	desc = "Looks like it has been here for a while."
