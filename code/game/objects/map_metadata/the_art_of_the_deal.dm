@@ -846,39 +846,15 @@
 
 /obj/structure/largecrate/smuggler/disks/New()
 	..()
-	var/disks_amount = rand(2,4)
-	var/disks_type = rand(1,4)
-	switch (disks_type)
-		if (1)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/green (src)
-		if (2)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/blue (src)
-		if (3)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/red (src)
-		if (4)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/yellow (src)
+	var/disks_amount = rand(2,5)
+	for (var/i = 1; i<=disks_amount;i++)
+		new /obj/random/disk(src)
 
 /obj/structure/largecrate/smuggler/fake_disks/New()
 	..()
-	var/disks_amount = rand(2,4)
-	var/disks_type = rand(1,4)
-	switch (disks_type)
-		if (1)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/green/fake (src)
-		if (2)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/blue/fake (src)
-		if (3)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/red/fake (src)
-		if (4)
-			for (var/i = 1; i<=disks_amount;i++)
-				new /obj/item/weapon/disk/yellow/fake (src)
+	var/disks_amount = rand(2,5)
+	for (var/i = 1; i<=disks_amount;i++)
+		new /obj/random/disk/fake(src)
 
 /obj/structure/largecrate/smuggler/makarov/New()
 	..()
@@ -980,7 +956,7 @@
 							if (3)
 								new /obj/structure/largecrate/smuggler/fake_disks(get_turf(locate(84,6,1)))
 					else
-						if (prob(60))
+						if (prob(70))
 							if (prob(60))
 								switch(crate_type)
 									if (1)
@@ -1007,4 +983,99 @@
 					return
 		else
 			user << "No shipments available, come back later."
+			return
+
+/obj/random/disk
+	name = "random disk"
+
+/obj/random/disk/spawn_choices()
+	return list(/obj/item/weapon/disk/blue,
+				/obj/item/weapon/disk/red,
+				/obj/item/weapon/disk/blue,
+				/obj/item/weapon/disk/green)
+
+/obj/random/disk/fake
+	name = "fake random disk"
+
+/obj/random/disk/fake/spawn_choices()
+	return list(/obj/item/weapon/disk/blue/fake,
+				/obj/item/weapon/disk/red/fake,
+				/obj/item/weapon/disk/blue/fake,
+				/obj/item/weapon/disk/green/fake)
+
+
+/obj/structure/props/biker
+	name = "Bruce the Biker"
+	desc = "You've got drugs? I've got money."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "bruce"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+	var/biker_cooldown = 0
+	var/buying_price1 = 50
+	var/buying_price2 = 80
+	var/list/reputation = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
+
+/obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (user.civilization != "Rednikov Industries" || user.civilization != "Giovanni Blu Stocks" || user.civilization != "Kogama Kraftsmen" || user.civilization != "Goldstein Solutions")
+		if (user.civilization == "Sheriff Office")
+			user << "Get off my property, pig."
+		else
+			user << "Sorry, who the fuck are you? Get outta here!"
+		return
+	else
+		if (reputation[user.civilization] >= 0)
+			if (world.time >= biker_cooldown)
+				if (istype(W, /obj/item/weapon/reagent_containers/pill/))
+					var/obj/item/weapon/reagent_containers/pill/P = W
+					if (P && P.reagents.has_reagent("methamphetamine") && !P.reagents.has_reagent("cocaine"))
+						if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
+							qdel(P)
+							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+							D.amount = (buying_price1+src.reputation[user.civilization])/D.value
+							if (D.amount == 0)
+								qdel(D)
+							user.put_in_hands(D)
+							user << "Here, there's more where it came from."
+							src.reputation[user.civilization] += 2
+							return
+						else
+							user << pick("You've got some nerve trying to pass off this cut crap as meth! Piss off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!")
+							return
+					else if (P && P.reagents.has_reagent("cocaine") && !P.reagents.has_reagent("methamphetamine"))
+						if (P.reagents.get_reagent_amount("cocaine")>= 25)
+							qdel(P)
+							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+							D.amount = (buying_price2+src.reputation[user.civilization])/D.value
+							if (D.amount == 0)
+								qdel(D)
+							user.put_in_hands(D)
+							user << "Here, there's more where it came from."
+							src.reputation[user.civilization] += 2
+							return
+						else
+							user << "What's that? Babypowder? Fuck off!"
+							return
+				else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
+					qdel(W)
+					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+					D.amount = ((buying_price2+src.reputation[user.civilization])*20)/D.value
+					if (D.amount == 0)
+						qdel(D)
+					user.put_in_hands(D)
+					user << "Holy shit, now that's some product. I'll need some time to distribute it."
+					biker_cooldown = world.time + 6000
+			else
+				user << "I still haven't finished moving the previous product. Come back later."
+				return
+		else
+			user << "I'm not dealing with you punks anymore, get the fuck out of here."
 			return
