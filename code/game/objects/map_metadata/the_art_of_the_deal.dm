@@ -1025,7 +1025,7 @@
 		"Goldstein Solutions" = 0,)
 
 /obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
-	if (user.civilization != "Rednikov Industries" || user.civilization != "Giovanni Blu Stocks" || user.civilization != "Kogama Kraftsmen" || user.civilization != "Goldstein Solutions")
+	if (user.civilization != "Rednikov Industries" && user.civilization != "Giovanni Blu Stocks" && user.civilization != "Kogama Kraftsmen" && user.civilization != "Goldstein Solutions")
 		if (user.civilization == "Sheriff Office")
 			user << "Get off my property, pig."
 		else
@@ -1040,7 +1040,7 @@
 						if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
 							qdel(P)
 							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-							D.amount = (buying_price1+src.reputation[user.civilization])/D.value
+							D.amount = buying_price1+src.reputation[user.civilization]
 							if (D.amount == 0)
 								qdel(D)
 							user.put_in_hands(D)
@@ -1054,7 +1054,7 @@
 						if (P.reagents.get_reagent_amount("cocaine")>= 25)
 							qdel(P)
 							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-							D.amount = (buying_price2+src.reputation[user.civilization])/D.value
+							D.amount = buying_price2+src.reputation[user.civilization]
 							if (D.amount == 0)
 								qdel(D)
 							user.put_in_hands(D)
@@ -1067,14 +1067,14 @@
 				else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
 					qdel(W)
 					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = ((buying_price2+src.reputation[user.civilization])*20)/D.value
+					D.amount = (buying_price2+src.reputation[user.civilization])*20
 					if (D.amount == 0)
 						qdel(D)
 					user.put_in_hands(D)
 					user << "Holy shit, now that's some product. I'll need some time to distribute it."
 					biker_cooldown = world.time + 6000
 			else
-				user << "I still haven't finished moving the previous product. Come back later."
+				user << "My boys haven't finished moving the previous products. Come back later."
 				return
 		else
 			user << "I'm not dealing with you punks anymore, get the fuck out of here."
