@@ -7,6 +7,7 @@
 	anchored = TRUE
 	display = "<b>unga OS</b>"
 	operatingsystem = "unga OS 94"
+	var/faction = "none"
 
 /obj/structure/computer/nopower/aotd/civilian/New()
 	..()
@@ -21,6 +22,8 @@
 	programs += new/datum/program/deepnet
 	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
+	programs += new/datum/program/swiftfix
+	faction = "Kogama Kraftsmen"
 
 /obj/structure/computer/nopower/aotd/red/New()
 	..()
@@ -28,6 +31,8 @@
 	programs += new/datum/program/deepnet
 	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
+	programs += new/datum/program/swiftfix
+	faction = "Rednikov Industries"
 
 /obj/structure/computer/nopower/aotd/yellow/New()
 	..()
@@ -35,6 +40,8 @@
 	programs += new/datum/program/deepnet
 	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
+	programs += new/datum/program/swiftfix
+	faction = "Goldstein Solutions"
 
 /obj/structure/computer/nopower/aotd/blue/New()
 	..()
@@ -42,6 +49,8 @@
 	programs += new/datum/program/deepnet
 	programs += new/datum/program/elektra
 	programs += new/datum/program/orion_trail
+	programs += new/datum/program/swiftfix
+	faction = "Giovanni Blu Stocks"
 
 /obj/structure/computer/nopower/aotd/attack_hand(var/mob/living/human/H)
 	..()
@@ -76,6 +85,9 @@
 		var/obj/item/weapon/disk/D = W
 		if (D.faction == H.civilization)
 			H << "<span class='notice'>You can't read a disk belonging to your company.</span>"
+			return
+		else if (src.faction != H.civilization)
+			H << "<span class='notice'>You can't read a disk on another's company computer.</span>"
 			return
 		else if (H.civilization == "Sheriff Office")
 			H << "<span class='notice'>You do not know how to decrypt this... You should put it in the evidence room instead.</span>"
@@ -188,6 +200,7 @@
 		..()
 		programs += new/datum/program/permits
 		programs += new/datum/program/warrants
+		programs += new/datum/program/bail
 
 /obj/structure/computer/nopower/police/inside
 	New()

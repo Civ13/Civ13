@@ -300,7 +300,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_l_hand)
 	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/sword/tes13(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a whiterun guard. Defend the city from those rebel storm cloaks! Organize the defense!")
@@ -351,7 +351,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/whiterun(H), slot_l_hand)
 	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/sword/tes13(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)
@@ -494,7 +494,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_l_hand)
 	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/sword/tes13(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>. Organize your <b>men</b> and lead your soldiers to victory!</b>.")
@@ -542,7 +542,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/steel(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/tes13/stormcloak(H), slot_l_hand)
 	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/tes13/twohanded(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/sword/tes13(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/healing/minor(H), slot_r_store)

@@ -69,7 +69,7 @@
 	var/newnameb = list("Giovanni Blu Stocks" = list(0,0,0,null,0,"sun","#00007F","#7F7F7F",0,0))
 	var/newnamec = list("Kogama Kraftsmen" = list(0,0,0,null,0,"sun","#007F00","#7F7F7F",0,0))
 	var/newnamed = list("Goldstein Solutions" = list(0,0,0,null,0,"sun","#E5E500","#7F7F7F",0,0))
-	var/newnamee = list("Sheriff Office" = list(0,0,0,null,0,"star","#E5E500","#00007F",0,0))
+	var/newnamee = list("Sheriff Office" = list(0,0,0,null,0,"star","#51513f","#00007F",0,0))
 	var/newnamef = list("Paramedics" = list(0,0,0,null,0,"cross","#7F0000","#FFFFFF",0,0))
 	var/newnameg = list("Government" = list(0,0,0,null,0,"star","#E3E3E3", "#3e57a8",0,0))
 	custom_civs += newnamea
@@ -141,15 +141,25 @@
 		if (istype(J, /datum/job/civilian/businessman) && !istype(J, /datum/job/civilian/businessman/legitimate) && !istype(J, /datum/job/civilian/businessman/mckellen))
 			if(!findtext(J.title, "CEO"))
 				. = FALSE
+		if (world.time >= 3000)
+			if (istype(J, /datum/job/civilian/businessman))
+				if(findtext(J.title, "CEO"))
+					J.whitelisted = FALSE
 		if (clients.len <= 12)
 			if (J.title == "County Deputy" || J.title == "County Sheriff")
 				. = FALSE
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-		if (clients.len <= 25)
+			if (J.title == "Paramedic")
+				J.max_positions = 2
+				J.total_positions = 2
+		if (clients.len <= 22)
 			if (J.title == "Legitimate Business")
 				. = FALSE
+			if (J.title == "Paramedic")
+				J.max_positions = 3
+				J.total_positions = 3
 		if (clients.len <= 30)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
@@ -170,8 +180,11 @@
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.original_job_title == "Nurse")
-				H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+				if (world.time >= H.next_gracewall_message)
+					H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+					H.next_gracewall_message = world.time + 10
 				return TRUE
+		return !faction1_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/art_of_the_deal/proc/spawn_disks(repeat = FALSE)
@@ -477,7 +490,10 @@
 
 	/obj/item/ammo_magazine/chemdart/mag = 20,
 	/obj/item/weapon/reagent_containers/glass/bottle/chloralhydrate = 10,
-	/obj/item/weapon/gun/projectile/pistol/tt30 = 50,
+	/obj/item/ammo_magazine/tt30ll/rubber = 50,
+
+	/obj/item/weapon/gun/projectile/pistol/taser = 5,
+	/obj/item/ammo_magazine/taser = 10,
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (user.civilization == "Sheriff Office")
@@ -559,20 +575,37 @@
 	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 1,
 	)
 	prices = list(
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 10,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 15,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 20,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 30,
-	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 4000,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzacheesed = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzamushroom = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzapepperoni = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/vegetablepizza = 80,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 120,
+	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 12000,
 	)
 /obj/structure/vending/sales/menu/ramen
 	products = list(
 	/obj/item/weapon/reagent_containers/food/snacks/ramen = 30,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 10,
 	)
 	prices = list(
-	/obj/item/weapon/reagent_containers/food/snacks/ramen = 20,
+	/obj/item/weapon/reagent_containers/food/snacks/ramen = 100,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 120,
+	)
+/obj/structure/vending/sales/menu/mcd
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "mcd2"
+	products = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 50,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 80,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 50,
+	)
+	prices = list(
+	/obj/item/weapon/reagent_containers/food/snacks/burger = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
+	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 20,
 	)
 
 //////////////////SCREEN HELPERS////////////////////////////
@@ -750,3 +783,299 @@
 
 	else
 		..()
+
+
+/////DOOR SPAWNERS/////
+
+/obj/effect/spawner/objspawner/door
+	name = "door spawner"
+	max_range = 0
+	max_number = 1
+	timer = 10
+	activated = FALSE
+
+/obj/effect/spawner/objspawner/door/getEmptyTurf()
+	var/list/turf/emptyTurfs = new
+	for(var/turf/T in range(max_range,src))
+		var/invalid = FALSE
+		for (var/obj/structure/simple_door/SD in T)
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
+
+/obj/effect/spawner/objspawner/door/blue
+	create_path = /obj/structure/simple_door/key_door/civ/businessblue
+/obj/effect/spawner/objspawner/door/yellow
+	create_path = /obj/structure/simple_door/key_door/civ/businessyellow
+/obj/effect/spawner/objspawner/door/red
+	create_path = /obj/structure/simple_door/key_door/civ/businessred
+/obj/effect/spawner/objspawner/door/green
+	create_path = /obj/structure/simple_door/key_door/civ/businessgreen
+/obj/effect/spawner/objspawner/door/police
+	create_path = /obj/structure/simple_door/key_door/civ/police
+	activated = TRUE
+	timer = 1800
+
+
+
+//// SMUGGLING SYSTEM//////
+
+/obj/structure/largecrate/smuggler
+	name = "suspicious large crate"
+
+/obj/structure/largecrate/smuggler/crystals/New()
+	..()
+	for (var/i = 1; i<=8;i++)
+		new /obj/item/stack/precursor/yellow(src)
+		new /obj/item/stack/precursor/green(src)
+		new	/obj/item/stack/precursor/red(src)
+		new /obj/item/stack/precursor/blue(src)
+
+/obj/structure/largecrate/smuggler/cocaine/New()
+	..()
+	var/blocks_amount = rand(1,3)
+	switch(blocks_amount)
+		if (1)
+			new /obj/item/weapon/reagent_containers/cocaineblock(src)
+		if (2)
+			new /obj/item/weapon/reagent_containers/cocaineblocks(src)
+		if (3)
+			new /obj/item/weapon/reagent_containers/cocaineblocks/three(src)
+
+/obj/structure/largecrate/smuggler/disks/New()
+	..()
+	var/disks_amount = rand(2,5)
+	for (var/i = 1; i<=disks_amount;i++)
+		new /obj/random/disk(src)
+
+/obj/structure/largecrate/smuggler/fake_disks/New()
+	..()
+	var/disks_amount = rand(2,5)
+	for (var/i = 1; i<=disks_amount;i++)
+		new /obj/random/disk/fake(src)
+
+/obj/structure/largecrate/smuggler/makarov/New()
+	..()
+	var/guns_amount = rand(1,3)
+	var/ammo_amount = rand (3,9)
+	var/ammobox_amount = rand (0,1)
+	for (var/i = 1; i<=guns_amount;i++)
+		new /obj/item/weapon/gun/projectile/pistol/makarov(src)
+	for (var/i = 1; i<=ammo_amount;i++)
+		new /obj/item/ammo_magazine/makarov(src)
+	for (var/i = 1; i<=ammobox_amount;i++)
+		new /obj/item/ammo_magazine/makarov/box(src)
+/obj/structure/largecrate/smuggler/magnum44/New()
+	..()
+	new /obj/item/weapon/gun/projectile/revolver/magnum44(src)
+	new /obj/item/ammo_magazine/c44magnum(src)
+	new /obj/item/ammo_magazine/emptyspeedloader(src)
+	new /obj/item/ammo_magazine/emptyspeedloader(src)
+/obj/structure/largecrate/smuggler/m1911/New()
+	..()
+	var/guns_amount = rand(1,3)
+	var/ammo_amount = rand (3,9)
+	var/ammobox_amount = rand (0,1)
+	for (var/i = 1; i<=guns_amount;i++)
+		new /obj/item/weapon/gun/projectile/pistol/m1911(src)
+	for (var/i = 1; i<=ammo_amount;i++)
+		new /obj/item/ammo_magazine/m1911(src)
+	for (var/i = 1; i<=ammobox_amount;i++)
+		new /obj/item/ammo_magazine/a45acpbox(src)
+
+/obj/structure/largecrate/smuggler/uzi/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/uzi(src)
+	new /obj/item/ammo_magazine/uzi(src)
+	new /obj/item/ammo_magazine/uzi(src)
+/obj/structure/largecrate/smuggler/skorpion/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/skorpion(src)
+	new /obj/item/ammo_magazine/skorpion(src)
+	new /obj/item/ammo_magazine/skorpion(src)
+/obj/structure/largecrate/smuggler/mac10/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/mac10(src)
+	new /obj/item/ammo_magazine/mac10(src)
+	new /obj/item/ammo_magazine/mac10(src)
+/obj/structure/largecrate/smuggler/tec9/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/tec9(src)
+	new /obj/item/ammo_magazine/tec9(src)
+	new /obj/item/ammo_magazine/tec9(src)
+/obj/structure/largecrate/smuggler/ak47/New()
+	..()
+	new /obj/item/weapon/gun/projectile/submachinegun/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+	new /obj/item/ammo_magazine/ak47(src)
+
+/obj/structure/props/smuggler
+	name = "Omar the Smuggler"
+	desc = "You've got money? I've got goods."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghdrug"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (user.civilization == "Sheriff Office")
+		user << "Good day, officer."
+		return
+	else
+		var/smuggler_cooldown = 0
+		if (world.time > smuggler_cooldown)
+			if (istype(W, /obj/item/stack/money))
+				var/obj/item/stack/money/M = W
+				if (M && M.value*M.amount >= 500*4)
+					M.amount-=500/5
+					if (M.amount <= 0)
+						qdel(M)
+					user << "A shipment will arrive soon at the Docks. Better be ready."
+					if (prob(50))
+						for (var/mob/living/human/H in player_list)
+							if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
+								if (H.civilization != user.civilization)
+									H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
+						if (prob(50))
+							global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
+					smuggler_cooldown = world.time + 1800
+					sleep(rand(900,1800))
+					var/crate_type = rand(1,3)
+					if (prob(70))
+						switch(crate_type)
+							if (1)
+								new /obj/structure/largecrate/smuggler/crystals(get_turf(locate(84,6,1)))
+							if (2)
+								new /obj/structure/largecrate/smuggler/disks(get_turf(locate(84,6,1)))
+							if (3)
+								new /obj/structure/largecrate/smuggler/fake_disks(get_turf(locate(84,6,1)))
+					else
+						if (prob(70))
+							if (prob(60))
+								switch(crate_type)
+									if (1)
+										new /obj/structure/largecrate/smuggler/makarov(get_turf(locate(84,6,1)))
+									if (2)
+										new /obj/structure/largecrate/smuggler/magnum44(get_turf(locate(84,6,1)))
+									if (3)
+										new /obj/structure/largecrate/smuggler/m1911(get_turf(locate(84,6,1)))
+							else
+								switch(crate_type)
+									if (1)
+										new /obj/structure/largecrate/smuggler/skorpion(get_turf(locate(84,6,1)))
+									if (2)
+										new /obj/structure/largecrate/smuggler/uzi(get_turf(locate(84,6,1)))
+									if (3)
+										new /obj/structure/largecrate/smuggler/mac10(get_turf(locate(84,6,1)))
+						else
+							if (prob(70))
+								new /obj/structure/largecrate/smuggler/cocaine(get_turf(locate(84,6,1)))
+							else
+								new /obj/structure/largecrate/smuggler/ak47(get_turf(locate(84,6,1)))
+				else
+					user << "<span class='warning'>Not enough money! You need to give at least 500 dollars.</span>"
+					return
+		else
+			user << "No shipments available, come back later."
+			return
+
+/obj/random/disk
+	name = "random disk"
+
+/obj/random/disk/spawn_choices()
+	return list(/obj/item/weapon/disk/blue,
+				/obj/item/weapon/disk/red,
+				/obj/item/weapon/disk/blue,
+				/obj/item/weapon/disk/green)
+
+/obj/random/disk/fake
+	name = "fake random disk"
+
+/obj/random/disk/fake/spawn_choices()
+	return list(/obj/item/weapon/disk/blue/fake,
+				/obj/item/weapon/disk/red/fake,
+				/obj/item/weapon/disk/blue/fake,
+				/obj/item/weapon/disk/green/fake)
+
+
+/obj/structure/props/biker
+	name = "Bruce the Biker"
+	desc = "You've got drugs? I've got money."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "bruce"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+	var/biker_cooldown = 0
+	var/buying_price1 = 50
+	var/buying_price2 = 80
+	var/list/reputation = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
+
+/obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (user.civilization != "Rednikov Industries" && user.civilization != "Giovanni Blu Stocks" && user.civilization != "Kogama Kraftsmen" && user.civilization != "Goldstein Solutions")
+		if (user.civilization == "Sheriff Office")
+			user << "Get off my property, pig."
+		else
+			user << "Sorry, who the fuck are you? Get outta here!"
+		return
+	else
+		if (reputation[user.civilization] >= 0)
+			if (world.time >= biker_cooldown)
+				if (istype(W, /obj/item/weapon/reagent_containers/pill/))
+					var/obj/item/weapon/reagent_containers/pill/P = W
+					if (P && P.reagents.has_reagent("methamphetamine") && !P.reagents.has_reagent("cocaine"))
+						if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
+							qdel(P)
+							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+							D.amount = buying_price1+src.reputation[user.civilization]
+							if (D.amount == 0)
+								qdel(D)
+							user.put_in_hands(D)
+							user << "Here, there's more where it came from."
+							src.reputation[user.civilization] += 2
+							return
+						else
+							user << pick("You've got some nerve trying to pass off this cut crap as meth! Piss off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!")
+							return
+					else if (P && P.reagents.has_reagent("cocaine") && !P.reagents.has_reagent("methamphetamine"))
+						if (P.reagents.get_reagent_amount("cocaine")>= 25)
+							qdel(P)
+							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+							D.amount = buying_price2+src.reputation[user.civilization]
+							if (D.amount == 0)
+								qdel(D)
+							user.put_in_hands(D)
+							user << "Here, there's more where it came from."
+							src.reputation[user.civilization] += 2
+							return
+						else
+							user << "What's that? Babypowder? Fuck off!"
+							return
+				else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
+					qdel(W)
+					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+					D.amount = (buying_price2+src.reputation[user.civilization])*20
+					if (D.amount == 0)
+						qdel(D)
+					user.put_in_hands(D)
+					user << "Holy shit, now that's some product. I'll need some time to distribute it."
+					biker_cooldown = world.time + 6000
+			else
+				user << "My boys haven't finished moving the previous products. Come back later."
+				return
+		else
+			user << "I'm not dealing with you punks anymore, get the fuck out of here."
+			return

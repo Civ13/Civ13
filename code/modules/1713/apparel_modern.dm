@@ -1949,19 +1949,19 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
-/obj/item/clothing/under/syrian_salv //cant find any source on what they use so im just gonna use this
-	name = "Syrian Salvation goverment uniform"
-	desc = "Standard Uniform Used by the syrian salvation goverment army forces."
+/obj/item/clothing/under/syria_fsa //cant find any source on what they use so im just gonna use this
+	name = "Free Syrian Army uniform"
+	desc = "Standard uniform used by the FSA forces."
 	icon_state = "salv_army"
 	item_state = "salv_army"
 	worn_state = "salv_army"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	var/rolled = FALSE
 
-/obj/item/clothing/under/syrian_salv/verb/roll_sleeves()
+/obj/item/clothing/under/syria_fsa/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/syrian_salv)
+	if (type != /obj/item/clothing/under/syria_fsa)
 		return
 	else
 		if (rolled)

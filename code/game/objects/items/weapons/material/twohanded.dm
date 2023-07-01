@@ -123,3 +123,21 @@
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	attack_verb = list("attacked", "poked", "jabbed", "torn", "gored")
 	default_material = "glass"
+
+
+/obj/item/weapon/material/twohanded/sword/tes13
+	name = "twohanded steel sword"
+	desc = "A sword with a long blade and handle meant to be used with 2 hands."
+	icon_state = "twohanded"
+	base_icon = "twohanded"
+	throw_speed = 2
+	throw_range = 2
+	force_wielded = 45
+	force_divisor = 1.1 // 60 when wielded with hardness 60 (steel)
+	unwielded_force_divisor = 0.25
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BACK
+	block_chance = 50
+	cooldownw = 15
+	value = 60
+	applies_material_colour = 0

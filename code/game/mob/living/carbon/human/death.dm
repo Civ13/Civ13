@@ -227,6 +227,7 @@
 							map.warrants += comp_to_warrant
 							map.warrants += Huser.real_name
 							Huser.gun_permit = 0
+							Huser.bail_price += 1000
 							global_broadcast(FREQP,"<big>Attention, search warrant issued for <b>[comp_to_warrant] HQ</b>, please search the premises as soon as possible.</big>")
 							spawn(300)
 								if (Huser.original_job_title != "Legal Business")
@@ -252,6 +253,7 @@
 									reason = "Murder of [src.real_name]"
 								map.warrants += Huser.real_name
 								Huser.gun_permit = 0
+								Huser.bail_price += 500
 								var/obj/item/weapon/paper_bin/police/PAR = null
 								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
 									PAR = PAR2

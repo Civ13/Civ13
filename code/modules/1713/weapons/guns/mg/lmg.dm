@@ -141,6 +141,24 @@
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
 
+/obj/item/weapon/gun/projectile/automatic/type96
+	name = "Type 96 Light Machinegun"
+	desc = "The Type 96 Light Machine Gun, is a light machine gun (LMG) refitted to fit the new 7.7x58mm cartridge rather than the old 6.50x50mm rounds."
+	icon_state = "type96lmg"
+	item_state = "type96lmg"
+	base_icon = "type96lmg"
+	caliber = "a65x50"
+	magazine_type = /obj/item/ammo_magazine/type96
+	good_mags = list(/obj/item/ammo_magazine/type96)
+	weight = 9.12
+	force = 20
+	throwforce = 30
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	slowdown = 0.2
+	effectiveness_mod = 1.13
+	has_telescopic = TRUE
+	slot_flags = SLOT_SHOULDER
+
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"
 	desc = "The DP-28 light machinegun. This one is in 7.62x54mmR."
@@ -172,6 +190,8 @@
 	force = 20
 	throwforce = 30
 	effectiveness_mod = 1.02
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 ///////////////////////////M1919A6//////////////////////
 /obj/item/weapon/gun/projectile/automatic/browning_lmg
