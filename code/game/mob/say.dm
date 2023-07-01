@@ -19,6 +19,7 @@
 		return
 
 	usr.say(message)
+	if (usr.key) webhook_send_ic(usr.key, message)
 
 /mob/living/human/verb/howl_verb(message as text)
 	set name = "Howl"
