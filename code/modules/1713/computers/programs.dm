@@ -2100,7 +2100,7 @@
 
 		switch (href_list["vehiclegiver"])
 			if ("2A6 Leopard Tank (1000)")
-				PV = new /obj/effects/premadevehicles/tank/leopard(locate(origin.x+3,origin.y-5,origin.z))
+				PV = new /obj/effects/premadevehicles/tank/leopard2a6(locate(origin.x+3,origin.y-5,origin.z))
 			if ("Mercedes-Benz G280 Jeep with MG (500)")
 				PV = new /obj/effects/premadevehicles/car/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("DAF YA-4442 Supply Truck (400)")

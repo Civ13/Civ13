@@ -76,6 +76,7 @@
 /obj/structure/cannon/modern/tank/autoloader
 	name = "tank cannon with autoloader"
 	desc = "a barebones cannon made to be carried by vehicles."
+	autoloader = TRUE
 
 /obj/structure/cannon/modern/tank/voyage
 	spritemod = TRUE
@@ -249,23 +250,23 @@
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
-	caliber = 100
-
-/obj/structure/cannon/modern/tank/t90a
-	name = "125 mm 2A46"
-	desc = "a 125 mm Russian tank-based cannon."
-	icon_state = "tank_cannon"
-	maxsway = 14
-	maxrange = 35
-	caliber = 100
+	caliber = 125
 
 /obj/structure/cannon/modern/tank/leopard
-	name = "Rheinmetall 120 mm"
-	desc = "a 20 mm German tank-based cannon."
+	name = "Rheinmetall 120 mm L/55"
+	desc = "a 120 mm German tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
-	caliber = 100
+	caliber = 120
+
+/obj/structure/cannon/modern/tank/challenger2
+	name = "L30A1 120mm"
+	desc = "The L30A1, officially designated Gun 120 mm Tk L30, is a British-designed 120 mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 35
+	caliber = 120
 
 /obj/structure/cannon/modern/tank/baftkn75
 	name = "BAF TKN 75mm"
