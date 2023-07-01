@@ -80,9 +80,9 @@
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wirecutters))
 		if (anchored)
-			user.visible_message("<span class = 'notice'>\The [user] starts to cut through \the [src] with [W].</span>")
+			user.visible_message("<span class = 'notice'>\The [user] starts to cut through \the [src] with \the [W].</span>")
 			if (!do_after(user,60))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to cut through the \the [src].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] decides not to cut through \the [src].</span>")
 				return
 			user.visible_message("<span class = 'notice'>\The [user] finishes cutting through \the [src]!</span>")
 			playsound(loc, 'sound/items/Wirecutter.ogg', 50, TRUE)
@@ -91,7 +91,7 @@
 
 	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet))
 		if (anchored)
-			user.visible_message("<span class = 'notice'>\The [user] starts to hack through \the [src] with [W].</span>")
+			user.visible_message("<span class = 'notice'>\The [user] starts to hack through \the [src] with \the [W].</span>")
 			if (!do_after(user,120))
 				user.visible_message("<span class = 'notice'>\The [user] decides to hack through \the [src].</span>")
 				return

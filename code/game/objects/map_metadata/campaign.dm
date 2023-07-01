@@ -1064,7 +1064,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 
 ///////////Aircraft Code///////////
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator
 	name = "laser designator"
 	desc = "A laser designator for marking airstrikes. <b>You have some amount of airstrikes left.</b>"
 	icon_state = "laser_designator"
@@ -1075,7 +1075,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 	var/checking = FALSE
 	var/debounce = FALSE
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/examine(mob/living/human/H)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/examine(mob/living/human/H)
 	..()
 	switch (H.faction_text)
 		if ("PIRATES") // Redmenia
@@ -1085,7 +1085,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 			desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining_blue] airstrikes left.</b>"
 			return
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/rangecheck(var/mob/living/human/H, var/atom/target)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	switch (H.faction_text)
 		if ("PIRATES") // Redmenia
 			if (!checking && aircraft_red)
@@ -1154,7 +1154,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 			H << SPAN_WARNING("<b>There are no friendly aircraft in the Area of Operations.</b>")
 			return
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
 	message_admins("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
 	log_game("[user.name] ([user.ckey]) ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 
@@ -1227,7 +1227,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 				spawn (12 SECONDS)
 					sam_check("CIVILIAN")
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/sam_check(var/faction)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/proc/sam_check(var/faction)
 	switch(faction)
 		if ("PIRATES") // Redmenia
 			if (prob(0))
@@ -1249,7 +1249,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 						M << SPAN_DANGER("<b>A Redmenian SAM site fires at the [aircraft_blue]!</b>")
 						M.client << uploaded_sound
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign/proc/aircraft_hit_check(var/faction)
+/obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/proc/aircraft_hit_check(var/faction)
 	spawn(4 SECONDS)
 		switch(faction)
 			if ("PIRATES") // Redmenia
