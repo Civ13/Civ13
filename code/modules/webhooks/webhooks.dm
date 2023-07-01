@@ -52,7 +52,7 @@
 
 /proc/webhook_send_round_start(round = "")
     var/list/query = list("round" = round)
-    webhook_send("round_start", round)
+    webhook_send("round_start", query)
 
 /proc/webhook_send_respawn_notice(ckey, message)
     var/list/query = list("ckey" = ckey, "message" = message)
