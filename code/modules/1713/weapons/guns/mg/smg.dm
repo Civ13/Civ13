@@ -194,22 +194,20 @@
 /obj/item/weapon/gun/projectile/submachinegun/usas12/update_icon()
 	if (ammo_magazine)
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12))
-			item_state = "usas12"
-			icon_state = "usas12"
+			item_state = "[initial(icon_state)]"
+			icon_state = "[initial(icon_state)]"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12/slug))
-			item_state = "usas12"
-			icon_state = "usas12"
+			item_state = "[initial(icon_state)]"
+			icon_state = "[initial(icon_state)]"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum))
-			icon_state = "usas12_drum"
-			item_state = "usas12drum"
-			base_icon = "usas12_drum"
+			icon_state = "[initial(icon_state)]_drum"
+			item_state = "[initial(icon_state)]_drum"
 		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum/slug))
-			icon_state = "usas12_drum"
-			item_state = "usas12drum"
-			base_icon = "usas12_drum"
+			icon_state = "[initial(icon_state)]_drum"
+			item_state = "[initial(icon_state)]_drum"
 	else
-		icon_state = "usas12_open"
-		item_state = "usas12_open"
+		icon_state = "[initial(icon_state)]_open"
+		item_state = "[initial(icon_state)]_open"
 	update_held_icon()
 	return
 
@@ -618,22 +616,23 @@
 		)
 
 	sel_mode = 1
-///obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon() //doesnt work, loading in a mag/drum makes the gun inhand sprite have no mag/drum, keeping it here though.
-//	if (ammo_magazine)
-//		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
-//			icon_state = "[base_icon]"
-//			item_state = "ppd"
-//			return
-//		else
-//			icon_state = "[base_icon]_mag"
-//			item_state = "ppd"
-//			return
-//	else
-//		icon_state = "[base_icon]_open"
-//		item_state = "ppd_open"
-//	update_held_icon()
-//	return
-
+/*
+/obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon() //doesnt work, loading in a mag/drum makes the gun inhand sprite have no mag/drum, keeping it here though.
+	if (ammo_magazine)
+		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
+			icon_state = "[initial(icon_state)]"
+			item_state = "[initial(icon_state)]"
+			return
+		else
+			icon_state = "[initial(icon_state)]_mag"
+			item_state = "ppd"
+			return
+	else
+		icon_state = "[initial(icon_state)]_open"
+		item_state = "ppd_open"
+	update_held_icon()
+	return
+*/
 /obj/item/weapon/gun/projectile/submachinegun/ak47
 	name = "AKM"
 	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm."
@@ -1059,7 +1058,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.15, 0.2, 0.1)),
-		list(name = "full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.15, 1.2, 1.15, 1.1)),
+		list(name = "full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.0, 1.15, 1.2, 1.3, 1.2)),
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
@@ -1384,6 +1383,7 @@
 
 	var/obj/item/weapon/attachment/silencer/SL = new/obj/item/weapon/attachment/silencer(src)
 	SL.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
 	desc = "An American battle rifle, chambered in 7.62x51mm."
@@ -2062,14 +2062,15 @@
 	base_icon = "c7"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	stat = "rifle"
 	magazine_type = /obj/item/ammo_magazine/m16
 	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 2.98
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.1, 0, 0.1, 0.2, 0)),
-		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1, 1, 0.9)),
+		list(name = "semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0, 0.1, 0.2, 0)),
+		list(name = "full auto",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.2, 1.2, 1.7)),
 		)
 	effectiveness_mod = 1.20
 	sel_mode = 1
@@ -2177,3 +2178,49 @@
 	else
 		slot_flags = SLOT_SHOULDER
 		effectiveness_mod = 1.09
+
+/obj/item/weapon/gun/projectile/submachinegun/l85a2
+	name = "L85A2"
+	desc = "The L85A2 (also known as the SA80) rifle is a service rifle used by the British since 1987. A bullpup rifle by design, it is a very compact rifle while still having a relatively long barrel. It's chambered in 5.56x45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "l85a2"
+	item_state = "m16"
+	base_icon = "l85a2"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	stat = "rifle"
+	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
+	weight = 4.98
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.1, 0.1, 0.2, 0.3, 0.4)),
+		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.2, 1.4, 1.6)),
+		)
+	effectiveness_mod = 1.12
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/aug
+	name = "Steyr AUG"
+	desc = "The Steyr AUG is an Austrian bullpup assault rifle designed in the 1960s by Steyr-Daimler-Puch. It's chambered in 5.56×45mm."
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	icon_state = "aug"
+	item_state = "m16"
+	base_icon = "aug"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
+	stat = "rifle"
+	magazine_type = /obj/item/ammo_magazine/m16
+	good_mags = list(/obj/item/ammo_magazine/m16)
+	weight = 3.6
+	equiptimer = 14
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.1, 0.1, 0.3, 0.3, 0.5)),
+		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.3, 1.4, 1.7)),
+		)
+	effectiveness_mod = 1.20
+	sel_mode = 1
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL

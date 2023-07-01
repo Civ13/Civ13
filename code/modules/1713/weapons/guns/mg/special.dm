@@ -1,9 +1,11 @@
 /obj/item/weapon/gun/projectile/special
+	icon = 'icons/obj/guns/assault_rifles.dmi'
+	var/base_icon = "ak74mtactical"
+	icon_state = "ak74mtactical"
+	item_state = "ak74mtactical"
 	force = 10
 	throwforce = 20
 	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
-	var/base_icon = "tactical"
-	icon = 'icons/obj/guns/assault_rifles.dmi'
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
