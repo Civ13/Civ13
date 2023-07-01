@@ -38,6 +38,10 @@
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("ahelpmessage", query)
 
+/proc/webhook_send_ic(ckey, message)
+    var/list/query = list("ckey" = ckey, "message" = message)
+    webhook_send("icmessage", query)
+
 /proc/webhook_send_garbage(ckey, message)
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("garbage", query)
@@ -45,6 +49,10 @@
 /proc/webhook_send_token(ckey, token)
 	var/list/query = list("ckey" = ckey, "token" = token)
 	webhook_send("token", query)
+
+/proc/webhook_send_round_start(round = "")
+    var/list/query = list("round" = round)
+    webhook_send("round_start", round)
 
 /proc/webhook_send_respawn_notice(ckey, message)
     var/list/query = list("ckey" = ckey, "message" = message)
