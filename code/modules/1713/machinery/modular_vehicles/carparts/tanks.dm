@@ -408,6 +408,60 @@
 	w_left = list("c_wall",TRUE,TRUE,30,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,30,50,FALSE,FALSE)
 
+
+/obj/structure/vehicleparts/frame/t90a
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
+
+/obj/structure/vehicleparts/frame/t90a/front
+	w_front = list("mt_front_frame",TRUE,TRUE,145,145,FALSE,FALSE)
+	override_roof_icon = "mt_front_roof"
+	override_frame_icon = "mt_front_frame"
+/obj/structure/vehicleparts/frame/t90a/back
+	w_back = list("mt_back_frame",TRUE,TRUE,60,60,FALSE,FALSE)
+	override_roof_icon = "mt_back_roof"
+	override_frame_icon = "mt_back_frame"
+/obj/structure/vehicleparts/frame/t90a/left
+	w_left = list("mt_left_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+	override_roof_icon = "mt_left_roof"
+	override_frame_icon = "mt_left_frame"
+/obj/structure/vehicleparts/frame/t90a/left/door
+	w_left = list("mt_left_door_frame",TRUE,TRUE,120,30,TRUE,TRUE)
+	// doorcode = 668643
+	override_roof_icon = "mt_left_door_roof"
+	override_frame_icon = "mt_left_door_frame"
+/obj/structure/vehicleparts/frame/t90a/right
+	w_right = list("mt_right_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+	override_roof_icon = "mt_right_roof"
+	override_frame_icon = "mt_right_frame"
+/obj/structure/vehicleparts/frame/t90a/right/door
+	w_right = list("mt_right_door_frame",TRUE,TRUE,120,30,TRUE,TRUE)
+	// doorcode = 668643
+	override_roof_icon = "mt_right_door_roof"
+	override_frame_icon = "mt_right_door_frame"
+
+/obj/structure/vehicleparts/frame/t90a/rb
+	w_right = list("c_wall",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_back = list("mt_right_back_frame",TRUE,TRUE,60,60,FALSE,FALSE)
+	override_roof_icon = "mt_back_right_roof"
+	override_frame_icon = "mt_back_right_frame"
+/obj/structure/vehicleparts/frame/t90a/lb
+	w_left = list("c_wall",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_back = list("mt_back_left_frame",TRUE,TRUE,60,60,FALSE,FALSE)
+	override_roof_icon = "mt_back_left_roof"
+	override_frame_icon = "mt_back_left_frame"
+
+/obj/structure/vehicleparts/frame/t90a/rf
+	w_right = list("c_wall",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_front = list("mt_front_right_frame",TRUE,TRUE,145,145,FALSE,FALSE)
+	override_roof_icon = "mt_front_right_roof"
+	override_frame_icon = "mt_front_right_frame"
+/obj/structure/vehicleparts/frame/t90a/lf
+	w_left = list("c_wall",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_front = list("mt_front_left_frame",TRUE,TRUE,145,145,FALSE,FALSE)
+	override_roof_icon = "mt_front_left_roof"
+	override_frame_icon = "mt_front_left_frame"
+
 //Campaign
 
 
@@ -431,6 +485,7 @@
 	w_right = list("mt_right_frame",TRUE,TRUE,50,40,FALSE,FALSE)
 	override_roof_icon = "mt_right_roof"
 	override_frame_icon = "mt_right_frame"
+	
 /obj/structure/vehicleparts/frame/omw22_2/left/door
 	w_left = list("mt_left_door_frame",TRUE,TRUE,50,28,TRUE,TRUE)
 	doorcode = 668643
@@ -446,9 +501,7 @@
 	w_back = list("mt_right_back_frame",TRUE,TRUE,50,40,FALSE,FALSE)
 	override_roof_icon = "mt_back_right_roof"
 	override_frame_icon = "mt_back_right_frame"
-/obj/structure/vehicleparts/frame/omw22_2/rb/door
-	w_right = list("c_door",TRUE,TRUE,50,28,TRUE,TRUE)
-	w_back = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
+
 /obj/structure/vehicleparts/frame/omw22_2/lb
 	w_left = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
 	w_back = list("mt_back_left_frame",TRUE,TRUE,50,40,FALSE,FALSE)

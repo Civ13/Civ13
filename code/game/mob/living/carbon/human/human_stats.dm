@@ -5,30 +5,41 @@
 	return stats[lowertext(statname)][2]
 
 /mob/living/human/proc/getStatCoeff(statname)
-	var/smod = 1
-	var/dmod = 1
-	if (find_trait("Dwarfism"))
-		smod = 0.7
-		dmod = 1.6
-	else if (find_trait("Short"))
-		smod = 0.85
-		dmod = 1.2
-	else if (find_trait("Tall"))
-		smod = 1.15
-		dmod = 0.85
-	if (find_trait("Gigantism"))
-		smod = 1.5
-		dmod = 0.7
-	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
-		if (statname == "strength")
-			return (stats[lowertext(statname)][1]/100)*mood_modifier*smod
-		if (statname == "dexterity")
-			return (stats[lowertext(statname)][1]/100)*mood_modifier*dmod
-		else
-			return (stats[lowertext(statname)][1]/100)*mood_modifier
-	else
-		return 0
+	var/str_mod = 1
+	var/dex_mod = 1
+	var/craft_mod = 1
+	var/found_trait = FALSE // Failsafe for if someone has multiple traits
 
+	if (find_trait("Dwarfism") && !found_trait)
+		found_trait = TRUE
+		str_mod = 0.7
+		craft_mod = 1.5
+	if (find_trait("Short") && !found_trait)
+		found_trait = TRUE
+		str_mod = 0.85
+		craft_mod = 1.15
+	if (find_trait("Tall") && !found_trait)
+		found_trait = TRUE
+		str_mod = 1.15
+		dex_mod = 0.85
+	if (find_trait("Gigantism") && !found_trait)
+		found_trait = TRUE
+		str_mod = 1.5
+		dex_mod = 0.7
+	
+	// Apply modifiers
+	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
+		switch (statname)
+			if ("strength")
+				return (stats[lowertext(statname)][1]/100)*mood_modifier*str_mod
+			if ("dexterity")
+				return (stats[lowertext(statname)][1]/100)*mood_modifier*dex_mod
+			if ("crafting")
+				return (stats[lowertext(statname)][1]/100)*mood_modifier*craft_mod
+			else
+				return (stats[lowertext(statname)][1]/100)*mood_modifier
+	else
+		return FALSE
 
 /mob/living/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())
 	. = 1 - (statnames.len/10)
@@ -88,11 +99,11 @@
 			if (25 to 29)
 				statval += rand(4,5)
 			if (30 to 35)
-				statval -= rand(2,3)
+				statval += rand(2,3)
 			if (36 to 39)
-				statval -= rand(4,5)
-			if (40 to 45) // dadbod
-				statval -= rand(6,7)
+				statval -= rand(3,4)
+			if (40 to 45)
+				statval -= rand(5,6)
 			if (46 to 55)
 				statval -= rand(8,10)
 			if (56 to INFINITY)

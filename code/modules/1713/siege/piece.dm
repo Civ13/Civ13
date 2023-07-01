@@ -34,6 +34,7 @@
 	var/obj/structure/bed/chair/loader/loader_chair = null
 	var/obj/structure/bed/chair/gunner/gunner_chair = null
 	var/see_amount_loaded = FALSE
+	var/autoloader = FALSE
 
 /obj/structure/cannon/verb/assemble()
 	set category = null
@@ -161,41 +162,6 @@
 			loader_chair = W
 			W.anchored = TRUE
 
-/obj/structure/cannon/modern/tank/autoloader/attackby(obj/item/W as obj, mob/M as mob)
-	if (broken && istype(W, /obj/item/weapon/weldingtool))
-		visible_message("[M] starts repairing the [src]...")
-		if (do_after(M, 200, src))
-			visible_message("[M] sucessfully repairs the [src].")
-			broken = FALSE
-			return
-	if (istype(W, ammotype))
-		var/obj/item/cannon_ball/shell/tank/TS = W
-		if (caliber != TS.caliber && caliber != null && caliber != 0)
-			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
-			return
-		if (loaded.len >= max_loaded)
-			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
-			return
-		// load first and only slot
-		if (M && (locate(M) in range(1,src)))
-			M.remove_from_mob(W)
-			W.loc = src
-			loaded += W
-			M << SPAN_NOTICE("You load \the [src].")
-			playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-			return
-	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
-		if (do_after(M, 3 SECONDS, src))
-			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-			anchored = !anchored
-	else if (can_assemble && assembled)
-		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
-			M.remove_from_mob(W)
-			gunner_chair = W
-			W.anchored = TRUE
-
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -319,37 +285,68 @@
 
 	if (href_list["load"])
 		if (!loaded.len)
-			var/obj/item/cannon_ball/M = user.get_active_hand()
-			if (istype(M, ammotype))
-				var/obj/item/cannon_ball/shell/tank/TS = M
-				if (caliber != TS.caliber && caliber != null && caliber != 0)
-					user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
-					return
-				// load first and only slot
-				var/found_loader = FALSE
-				for (var/obj/structure/bed/chair/loader/L in user.loc)
-					found_loader = TRUE
-				if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-					user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-					return FALSE
-				var/loadtime = caliber/2
-				if (istype(src,/obj/structure/cannon/modern/naval))
-					loadtime = caliber
-				if (do_after(user, loadtime, user, can_move = TRUE))
-					if (user && (locate(user) in range(1,src)))
-						found_loader = FALSE
-						for (var/obj/structure/bed/chair/loader/L in user.loc)
-							found_loader = TRUE
-						if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-							user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-							return FALSE
-						user.remove_from_mob(M)
-						M.loc = src
-						loaded += M
-						user << SPAN_NOTICE("You load \the [src].")
-						if (istype(src, /obj/structure/cannon/modern/tank))
-							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+			if (!autoloader)
+				var/obj/item/cannon_ball/M = user.get_active_hand()
+				if (istype(M, ammotype))
+					var/obj/item/cannon_ball/shell/tank/TS = M
+					if (caliber != TS.caliber && caliber != null && caliber != 0)
+						user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
 						return
+					// load first and only slot
+					var/found_loader = FALSE
+					for (var/obj/structure/bed/chair/loader/L in user.loc)
+						found_loader = TRUE
+					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+						user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+						return FALSE
+					var/loadtime = caliber/2
+					if (istype(src,/obj/structure/cannon/modern/naval))
+						loadtime = caliber
+					if (do_after(user, loadtime, user, can_move = TRUE))
+						if (user && (locate(user) in range(1,src)))
+							found_loader = FALSE
+							for (var/obj/structure/bed/chair/loader/L in user.loc)
+								found_loader = TRUE
+							if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+								user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+								return FALSE
+							user.remove_from_mob(M)
+							M.loc = src
+							loaded += M
+							user << SPAN_NOTICE("You load \the [src].")
+							if (istype(src, /obj/structure/cannon/modern/tank))
+								playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+							return
+			else
+				var/list/loadable = list()
+				for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
+					if (AL.storage.contents)
+						for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+							if (istype(TS, ammotype))
+								if (caliber != TS.caliber && caliber != null && caliber != 0)
+									user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
+									continue
+								loadable += TS
+				if (!(/obj/structure/shellrack/autoloader in range(1,src)))
+					user << SPAN_WARNING("There are no shell racks to load from nearby.")
+					return
+
+				playsound(loc, 'sound/machines/autoloader.ogg',100, TRUE)
+				var/obj/item/cannon_ball/shell/tank/chosen
+
+				user << SPAN_NOTICE("The autoloader begins loading a shell.")
+				spawn (6 SECONDS)
+					if (!loadable.len)
+						user << SPAN_WARNING("There are no shells to load.")
+						return
+					chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
+					if (!chosen || chosen == "")
+						return
+					chosen.loc = src
+					loaded += chosen
+					user << SPAN_NOTICE("The autoloader loads \the [src].")
+					return
+
 		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
 			var/obj/item/cannon_ball/M = loaded[1]
 			var/unloadtime = caliber/8

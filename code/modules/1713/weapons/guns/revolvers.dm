@@ -405,7 +405,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44
-	ammo_type = /obj/item/ammo_magazine/c44
+	ammo_type = /obj/item/ammo_casing/a44
 	weight = 2.3
 	single_action = TRUE
 	blackpowder = TRUE
@@ -421,7 +421,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
-	ammo_type = /obj/item/ammo_magazine/c44magnum
+	ammo_type = /obj/item/ammo_casing/a44magnum
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -437,6 +437,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45
+	ammo_type = /obj/item/ammo_casing/a45
 	weight = 2.3
 	single_action = FALSE
 	blackpowder = FALSE
@@ -452,7 +453,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44magnum
-
+	ammo_type = /obj/item/ammo_casing/a44magnum
 	good_mags = list(/obj/item/ammo_magazine/m44speedloader, /obj/item/ammo_magazine/emptyspeedloader)
 	weight = 2.3
 	single_action = FALSE
@@ -859,6 +860,7 @@
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c44
+	ammo_type = /obj/item/ammo_casing/a44
 	weight = 5.0
 	single_action = TRUE
 	blackpowder = TRUE

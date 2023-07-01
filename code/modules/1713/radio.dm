@@ -433,7 +433,7 @@ var/global/FREQM = rand(101,120)
 					full_message = "<font size = [fontsize] color=#FFAE19><b>[origin.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>Dispatch</b>: \"[message]\"</font>"
 		else
 			full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]>\"[message]\"</font>"
-		on_hear_obj(destination, full_message)
+		on_hear_radio(destination, full_message)
 
 /obj/structure/radio/transmitter
 	name = "radio transmitter"

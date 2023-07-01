@@ -1860,7 +1860,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			var/obj/structure/cannon/modern/tank/T = O
 			T.caliber = inpt
 			T.name = "[T.caliber]mm tank cannon"
-			T.w_class = T.caliber/2
+			T.w_class = ITEM_SIZE_GARGANTUAN
 			return
 
 		if(istype(O, /obj/item/stack/ammopart/casing/tank))
