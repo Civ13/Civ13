@@ -327,9 +327,9 @@
 									user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
 									continue
 								loadable += TS
-				// if (!(/obj/structure/shellrack/autoloader in range(1,src)))
+				/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
 					user << SPAN_WARNING("There are no shell racks to load from nearby.")
-					return
+					return */
 
 				playsound(loc, 'sound/machines/autoloader.ogg',100, TRUE)
 				var/obj/item/cannon_ball/shell/tank/chosen
