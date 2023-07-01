@@ -202,10 +202,9 @@
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
 	var/cover_opened = FALSE
 	whitelisted_grenades = list(
-		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
-		/obj/item/weapon/grenade/frag/ugl/vog25,
-		/obj/item/weapon/grenade/smokebomb/ugl/vog25
+		/obj/item/weapon/grenade/frag/ugl,
+		/obj/item/weapon/grenade/smokebomb/ugl,
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade,
@@ -277,7 +276,8 @@
 	item_state = "hk69"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/chemical/ugl,
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
@@ -294,7 +294,8 @@
 	item_state = "m79"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/chemical/ugl,
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
