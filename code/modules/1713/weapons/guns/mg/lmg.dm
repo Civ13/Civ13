@@ -158,6 +158,8 @@
 	effectiveness_mod = 1.13
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0),)
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"

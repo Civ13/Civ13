@@ -244,7 +244,7 @@
 					var/mob/living/human/Huser = last_harmed
 					var/mob/living/human/Witness
 					var/probtogetcaught = rand(50,70)
-					if (Witness in range(7, Huser) && Witness.stat != 1 && Witness.stat != 2 && Witness.civilization != "Sheriff Office" && Witness.civilization != "Paramedics" && Witness.civilization != "Government")
+					for (Witness in range(7, Huser) && Witness.stat != 1 && Witness.stat != 2 && Witness.civilization != "Sheriff Office" && Witness.civilization != "Paramedics" && Witness.civilization != "Government")
 						if (WWinput(Witness, "Report this murder?","Witness Report", "Yes", list("Yes", "No")) == "Yes")
 							if (Huser.wear_mask)
 								probtogetcaught = rand(0,40)
