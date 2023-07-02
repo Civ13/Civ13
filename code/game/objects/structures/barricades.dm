@@ -1114,10 +1114,10 @@
 	icon_state = "velvet_rope"
 	health = 20
 	maxhealth = 20
-	material = "steel"
-	material_name = "velvet"
 	protection_chance = 0
 	opacity = FALSE
+	density = TRUE
+	anchored = TRUE
 	applies_material_colour = FALSE
 
 /obj/structure/barricade/velvet_rope/New()
