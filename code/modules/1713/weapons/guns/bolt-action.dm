@@ -513,6 +513,7 @@
 	base_icon = "arisaka38"
 	caliber = "a65x50"
 	weight = 3.8
+	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	good_mags = list(/obj/item/ammo_magazine/arisaka)
 	bolt_safety = FALSE
