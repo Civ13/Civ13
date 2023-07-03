@@ -2270,7 +2270,7 @@
 	selection_color = "#ff883e"
 	spawn_location = "JoinLateCivJ"
 	min_positions = 1
-	max_positions = 5
+	max_positions = 4
 	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
@@ -2308,15 +2308,15 @@
 		suit.attackby(mag, H)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/tommy(H), slot_l_hand)
 		H.add_note("Specialization", "You are a part of McKellen's Entreprises. You're the enforcer, the one who does what needs gettin done.")
-		H.setStat("strength", STAT_VERY_HIGH)
+		H.setStat("strength", STAT_HIGH)
 		H.setStat("crafting", STAT_NORMAL)
-		H.setStat("rifle", STAT_VERY_HIGH)
-		H.setStat("dexterity", STAT_VERY_HIGH)
-		H.setStat("swords", STAT_VERY_HIGH)
-		H.setStat("pistol", STAT_VERY_VERY_HIGH)
-		H.setStat("bows", STAT_NORMAL)
-		H.setStat("medical", STAT_NORMAL)
-		H.setStat("machinegun", STAT_MAX)
+		H.setStat("rifle", STAT_MEDIUM_HIGH)
+		H.setStat("dexterity", STAT_MEDIUM_HIGH)
+		H.setStat("swords", STAT_NORMAL)
+		H.setStat("pistol", STAT_HIGH)
+		H.setStat("bows", STAT_LOW)
+		H.setStat("medical", STAT_LOW)
+		H.setStat("machinegun", STAT_LOW)
 	else
 		var/randclothes = rand(1,3)
 		switch(randclothes)
