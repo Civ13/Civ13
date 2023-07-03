@@ -1066,7 +1066,7 @@
 				else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
 					qdel(W)
 					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = (buying_price2+src.reputation[user.civilization])*20
+					D.amount = ((buying_price2+src.reputation[user.civilization])*20)/(D.value/5)
 					if (D.amount == 0)
 						qdel(D)
 					user.put_in_hands(D)
