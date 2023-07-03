@@ -88,10 +88,16 @@
 
 
 /obj/map_metadata/vadso_city/cross_message(faction)
-	return "<font size = 4>The battle of Vadso City has begun!</font>"
+	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	for (var/mob/M in player_list)
+		M.client << warning_sound
 
-/obj/map_metadata/vadso_city/reverse_cross_message(faction)
-	return "<span class = 'userdanger'>Both teams may no longer cross the invisible wall!</span>"
+	if (faction == BRITISH)
+		return "<font size = 4>The battle of Vadso City has begun!</font>"
+	else if (faction == RUSSIAN)
+		return "<font size = 4>The battle of Vadso City has begun!</font>"
+	else
+		return ""
 
 /obj/map_metadata/vadso_city/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
@@ -255,9 +261,11 @@
 	
 	switch (a1_control)
 		if ("British Armed Forces")
+			faction1_loadout_points += 20
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
+			faction2_loadout_points += 20
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -265,9 +273,11 @@
 				F.icon_state = "white"
 	switch (a2_control)
 		if ("British Armed Forces")
+			faction1_loadout_points += 20
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
+			faction2_loadout_points += 20
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -275,9 +285,11 @@
 				F.icon_state = "white"
 	switch (a3_control)
 		if ("British Armed Forces")
+			faction1_loadout_points += 20
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
+			faction2_loadout_points += 20
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -285,9 +297,11 @@
 				F.icon_state = "white"
 	switch (a4_control)
 		if ("British Armed Forces")
+			faction1_loadout_points += 20
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
+			faction2_loadout_points += 20
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -295,9 +309,11 @@
 				F.icon_state = "white"
 	switch (a5_control)
 		if ("British Armed Forces")
+			faction1_loadout_points += 20
 			for (var/obj/structure/flag/objective/five/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
+			faction2_loadout_points += 20
 			for (var/obj/structure/flag/objective/five/F in world)
 				F.icon_state = "[faction2_flag]"
 		else

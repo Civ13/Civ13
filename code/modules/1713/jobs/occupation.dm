@@ -747,24 +747,6 @@
 /mob/living/human/proc/give_nationality_occupation(var/mob/living/human)
 	if (istype(original_job, /datum/job/civilian/occupation))
 		var/datum/job/civilian/occupation/PJ = original_job
-		if (src.client.ckey == "kanohashinobi")
-			src.add_note("Known Languages", "Ukrainian")
-			src.remove_language("English")
-			src.name = "Haji Petrovich"
-			src.real_name = name
-			src.add_note("Group", "You are a Ukrainian civilian.")
-			src.nationality = "Ukrainian"
-			src.add_language("German",FALSE)
-			src.h_style = "Short Hair"
-			src.f_style = "Short Facial Hair"
-			src.r_hair = 22
-			src.g_hair = 22
-			src.b_hair = 22
-			src.r_facial = 22
-			src.g_facial = 22
-			src.b_facial = 22
-			update_body()
-			return
 		var/randpick = rand(1,3)
 		switch(randpick)
 			if (1)

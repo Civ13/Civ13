@@ -2056,13 +2056,13 @@
 	description = "The number 1 online car dealership."
 	compatible_os = list("unga OS 94","unga OS")
 	var/global/faction1_loadout_points = 1600
-	var/global/faction2_loadout_points = 1400
+	var/global/faction2_loadout_points = 1600
 
 	var/list/dutch_choice = list(
 		"2A6 Leopard Tank (1000)", "Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
 		)
 	var/list/rus_choice = list(
-		"T-90A Tank (1000)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
+		"T-90A Tank (1200)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
 		)
 	var/list/british_choice = list(
 		"FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"

@@ -565,7 +565,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 			//head
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhaty(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhat/yellow(H), slot_head)
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
 				H.equip_to_slot_or_del(new /obj/item/weapon/material/shovel/steel(H), slot_back)

@@ -477,42 +477,42 @@
 		if ("front")
 			if (w_front[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4])
 				return TRUE
 		if ("back")
 			if (w_back[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4])
 				return TRUE
 		if ("left")
 			if (w_left[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("right")
 			if (w_right[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 		if ("frontleft")
 			if ((w_front[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("backleft")
 			if ((w_back[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("frontright")
 			if ((w_front[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 		if ("backright")
 			if ((w_back[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 	if (istype(proj, /obj/item/projectile/shell))
 		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)

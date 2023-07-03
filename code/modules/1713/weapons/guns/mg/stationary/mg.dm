@@ -127,7 +127,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
 	name = "Foldable PKM machine gun"
-	desc = "Soviet Heavy foldable PKM machinegun. Uses 7.62x54mm rounds."
+	desc = "Soviet Heavy foldable PKM machinegun. Chambered in 7.62x54mm rounds."
 	icon_state = "pkm_foldable"
 	base_icon = "pkm_foldable"
 	caliber = "a762x54_weak"
@@ -143,7 +143,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
 	name = "Vickers machine gun"
-	desc = "A water-cooled heavy machinegun, using .303 british rounds."
+	desc = "A water-cooled heavy machinegun. Chambered in .303 british rounds."
 	icon_state = "vickers"
 	base_icon = "vickers"
 	caliber = "a303_weak"
@@ -157,7 +157,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/hotchkiss1914
 	name = "Hotchkiss M1914 machine gun"
-	desc = "A french heavy machinegun, using 8x50mm Lebel rounds."
+	desc = "A french heavy machinegun. Chambered in 8x50mm Lebel."
 	icon_state = "hotchkiss1914"
 	base_icon = "hotchkiss1914"
 	caliber = "a8x50_weak"
@@ -167,7 +167,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type3
 	name = "Type 3 machine gun"
-	desc = "A japanese heavy machinegun based on the French Hotchkiss. Uses 6.5x50mm Arisaka rounds."
+	desc = "A japanese heavy machinegun based on the French Hotchkiss. Chambered in 6.5x50mm Arisaka."
 	icon_state = "type3"
 	base_icon = "type3"
 	caliber = "a65x50_weak"
@@ -177,7 +177,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
 	name = "Type 92 machine gun"
-	desc = "A japanese heavy machinegun. Uses 7.7x58mm Arisaka rounds."
+	desc = "A japanese heavy machinegun. Chambered in 7.7x58mm Arisaka."
 	icon_state = "type92hmg"
 	base_icon = "type92hmg"
 	caliber = "a77x58"
@@ -194,7 +194,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/browning
 	name = "M1919A1 browning machine gun"
-	desc = "An american heavy machinegun. Uses 30-06. rounds."
+	desc = "An american heavy machinegun. Chambered in 30-06. rounds."
 	icon_state = "browning"
 	base_icon = "browning"
 	caliber = "a3006"
@@ -210,7 +210,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
 	name = "M2HB browning machine gun"
-	desc = "An american heavy machinegun. Uses .50 cal rounds."
+	desc = "An american heavy machinegun. Chambered in .50 cal rounds."
 	icon_state = "m2"
 	base_icon = "m2"
 	caliber = "a50cal"
@@ -224,7 +224,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
 	name = "MG 34 machine gun"
-	desc = "A german heavy machinegun, using 7.92x57 Mauser rounds."
+	desc = "A german heavy machinegun. Chambered in 7.92x57 Mauser."
 	icon_state = "mg34hmg"
 	base_icon = "mg34hmg"
 	caliber = "a792x57_weak"
@@ -237,7 +237,20 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3
 	name = "MG 3 machine gun"
-	desc = "A german heavy machinegun, using 7.62x51 NATO rounds."
+	desc = "A german heavy machinegun. Chambered in 7.62x51mm rounds."
+	icon_state = "mg3"
+	base_icon = "mg3"
+	caliber = "a792x57_weak"
+	magazine_type = /obj/item/ammo_magazine/mg3belt
+	good_mags = list(/obj/item/ammo_magazine/mg3belt)
+	firemodes = list(
+		list(name = "full auto", burst=4, burst_delay=1, fire_delay=1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/fnmag
+	name = "FN MAG machine gun"
+	desc = "A Belgian general-purpose machine gun, designed in the early 1950s by Ernest Vervier. It has been used by more than 80 countries and it has been made under licence in several countries."
 	icon_state = "mg3"
 	base_icon = "mg3"
 	caliber = "a792x57_weak"
@@ -279,7 +292,7 @@
 	magazine_type = /obj/item/ammo_magazine/autocannon_ap
 	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
@@ -315,7 +328,7 @@
 	magazine_type = /obj/item/ammo_magazine/autocannon_ap
 	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	anchored = TRUE
@@ -332,19 +345,26 @@
 	set name = "Toggle ATGM Mode"
 	set category = null
 	set src in range(1, usr)
-	if (mode == "atgm")
-		usr << "You switch the gun to fire the autocannon"
-		mode = "autocannon"
-		caliber = "a30"
-		load_method = MAGAZINE
-		handle_casings = EJECT_CASINGS
+	switch (mode)
+		if ("atgm")
+			playsound(src, 'sound/machines/click.ogg', 60)
+			usr << "You switch the gun to fire the autocannon"
+			mode = "autocannon"
+			caliber = "a30"
+			load_method = MAGAZINE
+			handle_casings = EJECT_CASINGS
 
-	else if (mode == "autocannon")
-		usr << "You switch the gun to fire the ATGM"
-		mode = "atgm"
-		caliber = "rocket"
-		load_method = SINGLE_CASING
-		handle_casings = REMOVE_CASINGS
+		if ("autocannon")
+			playsound(src, 'sound/machines/click.ogg', 60)
+			usr << "You switch the gun to fire the ATGM"
+			mode = "atgm"
+			caliber = "rocket"
+			load_method = SINGLE_CASING
+			handle_casings = REMOVE_CASINGS
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/AltClick()
+	..()
+	switch_firingmode()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
