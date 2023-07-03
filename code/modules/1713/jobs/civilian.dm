@@ -2269,8 +2269,8 @@
 	title = "McKellen Staff"
 	selection_color = "#ff883e"
 	spawn_location = "JoinLateCivJ"
-	min_positions = 3
-	max_positions = 8
+	min_positions = 1
+	max_positions = 5
 	additional_languages = list("Gaelic" = 100)
 	can_be_female = TRUE
 	is_deal = TRUE
@@ -2317,7 +2317,7 @@
 		H.setStat("bows", STAT_NORMAL)
 		H.setStat("medical", STAT_NORMAL)
 		H.setStat("machinegun", STAT_MAX)
-//clothes
+	else
 		var/randclothes = rand(1,3)
 		switch(randclothes)
 			if (1)
