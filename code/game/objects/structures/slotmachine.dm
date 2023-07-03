@@ -109,7 +109,10 @@
 		else//regular small win, jackpot increased
 			src.visible_message("<b>[name]</b> states, \"Congratulations! You have won [prize] dollars!\"")
 		var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(user)
-		D.amount = prize/D.value
+		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			D.amount = prize/5
+		else
+			D.amount = prize
 		user.put_in_active_hand(D)
 		return TRUE
 	else
