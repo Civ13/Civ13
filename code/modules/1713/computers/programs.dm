@@ -2068,23 +2068,19 @@
 
 /datum/program/carspawn/do_html(mob/living/human/user)
 	var/list/choice
-	switch (user.faction_text)
-		if ("DUTCH")
-			choice = dutch_choice
-		if ("RUSSIAN")
-			choice = rus_choice
-		if ("BRITISH")
-			choice = british_choice
 	mainmenu = "<h2>SUPPLY NETWORK</h2><br>"
 	if(mainbody == "---")
+		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
-			mainbody = "Supply Points Available: "
 			if ("DUTCH")
 				mainbody += "[faction1_supply_points]<br>"
+				choice = dutch_choice
 			if ("RUSSIAN")
 				mainbody += "[faction2_supply_points]<br>"
+				choice = rus_choice
 			if ("BRITISH")
 				mainbody += "[faction1_supply_points]<br>"
+				choice = british_choice
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
 	..()
@@ -2093,8 +2089,8 @@
 	..()
 	if (href_list["vehiclelist"])
 		var/list/choice
+		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
-			mainbody = "Supply Points Available: "
 			if ("DUTCH")
 				mainbody += "[faction1_supply_points]<br>"
 				choice = dutch_choice
