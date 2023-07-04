@@ -59,7 +59,7 @@
 			HG.give_award(client.ckey, real_name, alive_n_of_side(PIRATES))
 
 		switch (map.ID)
-			if (MAP_GLADIATOR)
+			if (MAP_GLADIATORS)
 				var/obj/map_metadata/gladiators/GD = map
 				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
 					if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == name)
