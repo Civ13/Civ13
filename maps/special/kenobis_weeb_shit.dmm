@@ -147,7 +147,7 @@
 "cQ" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/japanese,/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "cR" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/anyone,/turf/floor/grass,/area/caribbean/japanese/land/inside)
 "cS" = (/obj/covers/steelplating,/obj/structure/radio/receiver/loudspeaker/faction2{icon_state = "loudspeaker"; dir = 8},/turf/floor/grass,/area/caribbean/japanese/land/inside)
-"cT" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/plating/road,/area/caribbean/japanese/land/inside)
+"cT" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/turf/floor/plating/road,/area/caribbean/japanese/land/inside)
 "cU" = (/obj/structure/vehicleparts/frame/i_go/back,/obj/structure/lamp/lamp_small/tank/red,/obj/structure/shellrack/full57,/turf/floor/plating/road,/area/caribbean/japanese/land/inside)
 "cV" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/plating/road,/area/caribbean/japanese/land/inside)
 "cW" = (/obj/covers/steelplating,/obj/covers/steelplating,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/grass,/area/caribbean/japanese/land/inside)

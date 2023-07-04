@@ -2055,14 +2055,12 @@
 	name = "CARTRADER Platform"
 	description = "The number 1 online car dealership."
 	compatible_os = list("unga OS 94","unga OS")
-	var/global/faction1_loadout_points = 1600
-	var/global/faction2_loadout_points = 1400
 
 	var/list/dutch_choice = list(
 		"2A6 Leopard Tank (1000)", "Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
 		)
 	var/list/rus_choice = list(
-		"T-90A Tank (1000)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
+		"T-90A Tank (1200)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
 		)
 	var/list/british_choice = list(
 		"FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
@@ -2070,22 +2068,19 @@
 
 /datum/program/carspawn/do_html(mob/living/human/user)
 	var/list/choice
-	switch (user.faction_text)
-		if ("DUTCH")
-			choice = dutch_choice
-		if ("RUSSIAN")
-			choice = rus_choice
-		if ("BRITISH")
-			choice = british_choice
 	mainmenu = "<h2>SUPPLY NETWORK</h2><br>"
 	if(mainbody == "---")
+		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
 			if ("DUTCH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
+				choice = dutch_choice
 			if ("RUSSIAN")
-				mainbody = "Current Loadout Points: [faction2_loadout_points]<br>"
+				mainbody += "[faction2_supply_points]<br>"
+				choice = rus_choice
 			if ("BRITISH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
+				choice = british_choice
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
 	..()
@@ -2094,15 +2089,16 @@
 	..()
 	if (href_list["vehiclelist"])
 		var/list/choice
+		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
 			if ("DUTCH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 				choice = dutch_choice
 			if ("RUSSIAN")
-				mainbody = "Current Loadout Points: [faction2_loadout_points]<br>"
+				mainbody += "[faction2_supply_points]<br>"
 				choice = rus_choice
 			if ("BRITISH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 				choice = british_choice
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
@@ -2195,9 +2191,9 @@
 			return
 		switch (user.faction_text)
 			if ("DUTCH")
-				if (faction1_loadout_points)
-					if (faction1_loadout_points >= cost)
-						faction1_loadout_points -= cost
+				if (faction1_supply_points)
+					if (faction1_supply_points >= cost)
+						faction1_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)
@@ -2209,9 +2205,9 @@
 					do_html(user)
 					return
 			if ("RUSSIAN")
-				if (faction2_loadout_points)
-					if (faction2_loadout_points >= cost)
-						faction2_loadout_points -= cost
+				if (faction2_supply_points)
+					if (faction2_supply_points >= cost)
+						faction2_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)
@@ -2223,9 +2219,9 @@
 					do_html(user)
 					return
 			if ("BRITISH")
-				if (faction1_loadout_points)
-					if (faction1_loadout_points >= cost)
-						faction1_loadout_points -= cost
+				if (faction1_supply_points)
+					if (faction1_supply_points >= cost)
+						faction1_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)

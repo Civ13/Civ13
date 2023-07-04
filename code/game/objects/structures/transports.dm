@@ -344,11 +344,43 @@
 	icon_state = "outrigger_frame3"
 	health = 130
 
+/obj/structure/vehicle/boat/b400/New()
+	..()
+	engine = new/obj/structure/engine/internal/diesel
+	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	spawn(1)
+		engine.enginesize = 400
+		engine.weight = 20*(engine.enginesize/1000)
+		engine.name = "400cc diesel engine"
+		engine.maxpower *= (engine.enginesize/1000)
+		engine.fuelefficiency *= (engine.enginesize/1000)
+		spawn(1)
+			engine.fueltank = fueltank
+			engine.connections += axis
+			dwheel.forceMove(src)
+
 /obj/structure/vehicle/boat/rib
-	name = "rigidbody inflatable motor boat"
-	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
+	name = "rigid inflatable boat"
+	desc = "A 400cc, gasoline-powered RHIB. Has a 180u fueltank."
 	icon_state = "rib"
-	health = 200
+	health = 300
+	maxcapacity = 2
+
+/obj/structure/vehicle/boat/rib/New()
+	..()
+	engine = new/obj/structure/engine/internal/gasoline
+	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
+	spawn(1)
+		engine.enginesize = 400
+		engine.weight = 20*(engine.enginesize/1000)
+		engine.name = "400cc gasoline engine"
+		engine.maxpower *= (engine.enginesize/1000)
+		engine.fuelefficiency *= (engine.enginesize/1000)
+		fueltank.reagents.add_reagent("gasoline",180)
+		spawn(1)
+			engine.fueltank = fueltank
+			engine.connections += axis
+			dwheel.forceMove(src)
 
 /obj/structure/vehicle/boat/sailboat
 	name = "sailing outrigger"
@@ -525,20 +557,7 @@
 	else
 		..()
 
-/obj/structure/vehicle/boat/b400/New()
-	..()
-	engine = new/obj/structure/engine/internal/diesel
-	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
-	spawn(1)
-		engine.enginesize = 400
-		engine.weight = 20*(engine.enginesize/1000)
-		engine.name = "400cc diesel engine"
-		engine.maxpower *= (engine.enginesize/1000)
-		engine.fuelefficiency *= (engine.enginesize/1000)
-		spawn(1)
-			engine.fueltank = fueltank
-			engine.connections += axis
-			dwheel.forceMove(src)
+
 
 /obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
 	if (istype(A, /mob/living/human))
@@ -724,6 +743,7 @@
 			driver = null
 	else
 		return FALSE
+
 /obj/structure/vehicle/boat/New()
 	..()
 	spawn(3)

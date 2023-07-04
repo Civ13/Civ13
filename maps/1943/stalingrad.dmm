@@ -947,7 +947,7 @@
 "sN" = (/turf/floor/dirt/winter{icon_state = "grass3X"},/area/caribbean/houses)
 "sO" = (/obj/structure/shelf,/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "sP" = (/obj/structure/shelf,/obj/item/weapon/storage/ww2/shaving_kit,/turf/floor/wood,/area/caribbean/houses)
-"sQ" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
+"sQ" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sR" = (/obj/structure/shelf,/obj/item/weapon/storage/bible/orthodox,/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "sS" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sT" = (/obj/structure/filingcabinet{icon_state = "tallcabinet"},/turf/floor/wood,/area/caribbean/houses)

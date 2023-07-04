@@ -64,7 +64,7 @@
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
 						"PvE (Voyage & Cursed Island)" = 0,
 						"Chad Mode" = 30,
-						"MilSim (BETA TESTING)" = 20,
+//						"MilSim (BETA TESTING)" = 20,
 					)
 				else
 					epochs = list(
@@ -75,7 +75,7 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"Chad Mode" = 30,
-						"MilSim (BETA TESTING)" = 20,
+//						"MilSim (BETA TESTING)" = 20,
 					)
 			else
 				epochs = list(
@@ -87,19 +87,21 @@
 					"Battle Royale" = 6,
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
 					"PvE (Voyage & Cursed Island)" = 0,
-//					"Chad Mode" = 0,
-					"MilSim (BETA TESTING)" = 20,
+//					"MilSim (BETA TESTING)" = 20,
 				)
+
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
-				//"The Art of the Deal" = 10,
+//				"The Art of the Deal" = 10,
 				"Civilization 13 (Nomads)" = 0,
 				"Civilization 13 (Colony & Pioneers)" = 0,
-				//"Civilization 13 (Prison Camps)" = 15,
+//				"Civilization 13 (Prison Camps)" = 15,
 				"Civilization 13 (Others)" = 0,)
+
 		else if (config.allowedgamemodes == "PERSISTENCE")
 			epochs = list(
 				"Civilization 13 (Nomads)" = 0,)
+
 		else if (config.allowedgamemodes == "BR")
 			epochs = list(
 				"Battle Royale" = 6,)
@@ -150,6 +152,11 @@
 		ready = FALSE
 		epoch = vote.voted_epoch
 		switch(epoch)
+			if ("Stone Age (?-3000 B.C.)")
+				maps = list(
+					MAP_FOUR_KINGDOMS = 0,
+					MAP_TRIBES = 0,
+				)
 			if ("Pre-Firearms (3000 B.C-1650 A.D.)")
 //			1013 - TDM
 				maps = list(
@@ -273,13 +280,6 @@
 					MAP_VOYAGE = 6,
 				)
 
-
-
-			if ("Stone Age (?-3000 B.C.)")
-				maps = list(
-					MAP_FOUR_KINGDOMS = 0,
-					MAP_TRIBES = 0,
-				)
 			if ("Civilization 13 (Nomads)")
 				maps = list(
 //					MAP_CIVILIZATIONS = 0,

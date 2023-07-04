@@ -1106,10 +1106,15 @@
 	desc = "An objective flag."
 
 /obj/structure/flag/objective/one
+	name = "Objective Flag one"
 /obj/structure/flag/objective/two
+	name = "Objective Flag two"
 /obj/structure/flag/objective/three
+	name = "Objective Flag three"
 /obj/structure/flag/objective/four
+	name = "Objective Flag four"
 /obj/structure/flag/objective/five
+	name = "Objective Flag five"
 
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))

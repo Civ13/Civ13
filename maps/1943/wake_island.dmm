@@ -171,7 +171,7 @@
 "do" = (/obj/structure/transport_lever,/turf/floor/plating/road,/area/caribbean/transport/two)
 "dp" = (/obj/structure/transport_lever,/turf/floor/plating/road,/area/caribbean/transport/one)
 "dq" = (/obj/structure/vehicleparts/frame/chi_ha/back,/obj/structure/shellrack/full57,/obj/structure/lamp/lamp_small/tank{icon_state = "bulb"; dir = 1},/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
-"dr" = (/obj/structure/vehicleparts/frame/chi_ha/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
+"dr" = (/obj/structure/vehicleparts/frame/chi_ha/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "ds" = (/obj/structure/vehicleparts/frame/chi_ha/right/door,/obj/effect/autoassembler,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "dt" = (/obj/structure/bed/chair/wood,/turf/floor/plating/road,/area/caribbean/sea/sea)
 "du" = (/obj/structure/vehicleparts/frame/chi_ha,/obj/structure/bed/chair/loader{anchored = 1},/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)

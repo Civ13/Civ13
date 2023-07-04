@@ -2367,6 +2367,7 @@
 	title = "Komandir"
 	en_meaning = "Commander"
 	rank_abbreviation = "Kom."
+	spawn_location = "JoinLateRUCap"
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE

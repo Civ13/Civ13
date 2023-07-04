@@ -121,7 +121,7 @@
 "cq" = (/obj/covers/tent,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/roof_support,/turf/floor/winter,/area/caribbean/roofed/taiga)
 "cr" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCH"},/turf/floor/winter,/area/caribbean/roofed/taiga)
 "cs" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateCH"},/turf/floor/dirt/winter,/area/caribbean/roofed/taiga)
-"ct" = (/obj/structure/vehicleparts/frame/car/rf,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/armored,/turf/floor/dirt,/area/caribbean/nomads/taiga)
+"ct" = (/obj/structure/vehicleparts/frame/car/rf,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/armored,/turf/floor/dirt,/area/caribbean/nomads/taiga)
 "cu" = (/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/engine/internal/diesel/premade/v6,/turf/floor/dirt,/area/caribbean/nomads/taiga)
 "cv" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/winter,/area/caribbean/nomads/taiga)
 "cw" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 8; icon_state = "sandbag_33%"},/turf/floor/dirt,/area/caribbean/nomads/taiga)

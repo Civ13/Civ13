@@ -420,7 +420,7 @@
 "id" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass,/area/caribbean)
 "ie" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{icon_state = "type98hmg"; dir = 1},/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/grass,/area/caribbean)
 "if" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"ig" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/turf/floor/grass,/area/caribbean)
+"ig" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/turf/floor/grass,/area/caribbean)
 "ih" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "ii" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean)
 "ij" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/road,/area/caribbean)

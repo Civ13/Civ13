@@ -1843,7 +1843,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 	if (recipe.result_type == /obj/structure/barbwire)
 		var/barbwire_amount = 0
-		for (var/obj/structure/barbwire/B in range(1, user.loc))
+		for (var/obj/structure/barbwire/B in user.loc)
 			barbwire_amount++
 		if (barbwire_amount >= 4)
 			H << "You cannot build more barbwire here."
