@@ -106,8 +106,8 @@ var/global/list/exclude_jobs = list()
 var/global/list/latejoin_turfs = list()
 var/global/list/supplydrop_turfs = list()
 
-var/global/faction1_loadout_points = 1600
-var/global/faction2_loadout_points = 1600
+var/global/faction1_supply_points = 1600
+var/global/faction2_supply_points = 1600
 
 //Campaign Aircraft Stuff
 var/global/aircraft_blue = "MWA-20"

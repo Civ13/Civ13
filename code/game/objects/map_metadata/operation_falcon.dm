@@ -224,11 +224,11 @@
 	
 	switch (a1_control)
 		if ("Dutch Royal Army")
-			faction1_loadout_points += 20
+			faction1_supply_points += 20
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
-			faction2_loadout_points += 20
+			faction2_supply_points += 20
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -236,11 +236,11 @@
 				F.icon_state = "white"
 	switch (a2_control)
 		if ("Dutch Royal Army")
-			faction1_loadout_points += 20
+			faction1_supply_points += 20
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
-			faction2_loadout_points += 20
+			faction2_supply_points += 20
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -248,11 +248,11 @@
 				F.icon_state = "white"
 	switch (a3_control)
 		if ("Dutch Royal Army")
-			faction1_loadout_points += 20
+			faction1_supply_points += 20
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
-			faction2_loadout_points += 20
+			faction2_supply_points += 20
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "[faction2_flag]"
 		else
@@ -260,11 +260,11 @@
 				F.icon_state = "white"
 	switch (a4_control)
 		if ("Dutch Royal Army")
-			faction1_loadout_points += 20
+			faction1_supply_points += 20
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "[faction1_flag]"
 		if ("Russian Armed Forces")
-			faction2_loadout_points += 20
+			faction2_supply_points += 20
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "[faction2_flag]"
 		else

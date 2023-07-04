@@ -2078,12 +2078,13 @@
 	mainmenu = "<h2>SUPPLY NETWORK</h2><br>"
 	if(mainbody == "---")
 		switch (user.faction_text)
+			mainbody = "Supply Points Available: "
 			if ("DUTCH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 			if ("RUSSIAN")
-				mainbody = "Current Loadout Points: [faction2_loadout_points]<br>"
+				mainbody += "[faction2_supply_points]<br>"
 			if ("BRITISH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
 	..()
@@ -2093,14 +2094,15 @@
 	if (href_list["vehiclelist"])
 		var/list/choice
 		switch (user.faction_text)
+			mainbody = "Supply Points Available: "
 			if ("DUTCH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 				choice = dutch_choice
 			if ("RUSSIAN")
-				mainbody = "Current Loadout Points: [faction2_loadout_points]<br>"
+				mainbody += "[faction2_supply_points]<br>"
 				choice = rus_choice
 			if ("BRITISH")
-				mainbody = "Current Loadout Points: [faction1_loadout_points]<br>"
+				mainbody += "[faction1_supply_points]<br>"
 				choice = british_choice
 		for (var/i in choice)
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
@@ -2193,9 +2195,9 @@
 			return
 		switch (user.faction_text)
 			if ("DUTCH")
-				if (faction1_loadout_points)
-					if (faction1_loadout_points >= cost)
-						faction1_loadout_points -= cost
+				if (faction1_supply_points)
+					if (faction1_supply_points >= cost)
+						faction1_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)
@@ -2207,9 +2209,9 @@
 					do_html(user)
 					return
 			if ("RUSSIAN")
-				if (faction2_loadout_points)
-					if (faction2_loadout_points >= cost)
-						faction2_loadout_points -= cost
+				if (faction2_supply_points)
+					if (faction2_supply_points >= cost)
+						faction2_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)
@@ -2221,9 +2223,9 @@
 					do_html(user)
 					return
 			if ("BRITISH")
-				if (faction1_loadout_points)
-					if (faction1_loadout_points >= cost)
-						faction1_loadout_points -= cost
+				if (faction1_supply_points)
+					if (faction1_supply_points >= cost)
+						faction1_supply_points -= cost
 					else
 						mainbody = "<h2>SUPPLY NETWORK</h2><br><font color='yellow'>Not enough points!</font><br><a href='?src=\ref[src];vehiclelist=1'>Return to List</a><br>"
 						sleep(0.5)
