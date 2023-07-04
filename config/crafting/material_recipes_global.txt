@@ -979,6 +979,9 @@ RECIPE: /material/plastic/,gallon jug,/obj/item/weapon/reagent_containers/food/d
 RECIPE: /material/plastic/,constable helmet,/obj/item/clothing/head/helmet/constable,6,165,0,1,none,0,0,138,8,null
 RECIPE: /material/plastic/,surgical apron,/obj/item/clothing/suit/storage/jacket/surgeon,8,140,0,1,jackets & vests,0,0,138,8,null
 RECIPE: /material/plastic/,surgical mask,/obj/item/clothing/mask/sterile,1,140,0,1,none,0,0,108,8,null
+RECIPE: /material/plastic/,white hardhat,/obj/item/clothing/head/helmet/modern/hardhat,3,100,0,1,none,108,0,0,8,null
+RECIPE: /material/plastic/,yellow hardhat,/obj/item/clothing/head/helmet/modern/hardhat/yellow,3,100,0,1,none,108,0,0,8,null
+RECIPE: /material/plastic/,orange hardhat,/obj/item/clothing/head/helmet/modern/hardhat/orange,3,100,0,1,none,108,0,0,8,null
 
 //**************************************************************
 //**********************| KEVLAR |******************************

@@ -141,6 +141,26 @@
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
 
+/obj/item/weapon/gun/projectile/automatic/type96
+	name = "Type 96 Light Machinegun"
+	desc = "The Type 96 Light Machine Gun, is a light machine gun (LMG) refitted to fit the new 7.7x58mm cartridge rather than the old 6.50x50mm rounds."
+	icon_state = "type96lmg"
+	item_state = "type96lmg"
+	base_icon = "type96lmg"
+	caliber = "a65x50"
+	magazine_type = /obj/item/ammo_magazine/type96
+	good_mags = list(/obj/item/ammo_magazine/type96)
+	weight = 9.12
+	force = 20
+	throwforce = 30
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	slowdown = 0.2
+	effectiveness_mod = 1.13
+	has_telescopic = TRUE
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name = "full auto",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0),)
+
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"
 	desc = "The DP-28 light machinegun. This one is in 7.62x54mmR."
@@ -459,8 +479,8 @@
 	effectiveness_mod = 1.01
 ///NSVT//////////////
 
-/obj/item/weapon/gun/projectile/automatic/nsv_utes
-	name = "NSV Utes"
+/obj/item/weapon/gun/projectile/automatic/kord
+	name = "Kord 6P50"
 	desc = "A Soviet heavy machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "nsvth"
 	item_state = "nsvth"
@@ -470,8 +490,8 @@
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	weight = 12.5
 	firemodes = list(
-		list(name = "controlled burst",	burst=5, burst_delay=1.0, move_delay=4, recoil = 0, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		list(name = "full auto",	burst=1, burst_delay=1.5, move_delay=7, recoil = 1,  dispersion = list(0.6, 1, 1.2, 1.3, 1.3)),
+		list(name = "controlled burst",	burst=5, burst_delay=1.0, move_delay=4, recoil = 1, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name = "semi",	burst=1, burst_delay=1.5, move_delay=3, recoil = 1,  dispersion = list(0.4, 1.1, 1.2, 1.3, 1.1)),
 		)
 	slot_flags = SLOT_SHOULDER
 	force = 20
@@ -480,7 +500,7 @@
 	equiptimer = 25
 	load_delay = 55
 	slowdown = 0.8
-	effectiveness_mod = 1.01
+	effectiveness_mod = 0.85
 ////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13

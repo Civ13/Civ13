@@ -146,7 +146,7 @@ Parts of code courtesy of Super3222
 					H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
 					var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancel", "NORTH", "EAST", "SOUTH", "WEST"))
 					if (input != "Cancel")
-						if (do_after(H, 80, src, can_move = FALSE))
+						if (do_after(H, 1.5 SECONDS, src, can_move = FALSE))
 							H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
 							checking = FALSE
 

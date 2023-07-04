@@ -2363,10 +2363,11 @@
 	return TRUE
 
 // Modern
-/datum/job/russian/modern_lieutenant
-	title = "Starshiy Leitenant"
-	en_meaning = "1st Lieutenant"
-	rank_abbreviation = "St. Lt."
+/datum/job/russian/modern_commander
+	title = "Komandir"
+	en_meaning = "Commander"
+	rank_abbreviation = "Kom."
+	spawn_location = "JoinLateRUCap"
 
 	is_operation_falcon = TRUE
 	is_commander = TRUE
@@ -2378,7 +2379,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/russian/modern_lieutenant/equip(var/mob/living/human/H)
+/datum/job/russian/modern_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)

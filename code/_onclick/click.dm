@@ -107,7 +107,7 @@
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
 			P.rangecheck(H,A)
-		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator_campaign))
+		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator))
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
 			P.rangecheck(H,A)
 		if (istype(H.get_active_hand(), /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars))

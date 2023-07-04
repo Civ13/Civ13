@@ -2264,18 +2264,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "viet_pith3"
 	worn_state = "viet_pith3"
 
-/obj/item/clothing/head/helmet/modern/hardhaty
-	name = "yellow hard hat"
-	desc = "A yellow hard hat used by the workers."
-	icon_state = "hardhat_yellow"
-	item_state = "hardhat_yellow"
-	worn_state = "hardhat_yellow"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
-	health = 30
-
-/obj/item/clothing/head/helmet/modern/hardhatw
+/obj/item/clothing/head/helmet/modern/hardhat
 	name = "white hard hat"
 	desc = "A white hard hat used by the workers."
 	icon_state = "hardhat_white"
@@ -2286,16 +2275,19 @@ obj/item/clothing/head/chinaguardcap
 	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
 	health = 30
 
-/obj/item/clothing/head/helmet/modern/hardhato
+/obj/item/clothing/head/helmet/modern/hardhat/yellow
+	name = "yellow hard hat"
+	desc = "A yellow hard hat used by the workers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+
+/obj/item/clothing/head/helmet/modern/hardhat/orange
 	name = "orange hard hat"
-	desc = "A orange hard hat used by the workers."
+	desc = "An orange hard hat used by the workers."
 	icon_state = "hardhat_orange"
 	item_state = "hardhat_orange"
 	worn_state = "hardhat_orange"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
-	health = 30
 
 //yare yare daze.
 

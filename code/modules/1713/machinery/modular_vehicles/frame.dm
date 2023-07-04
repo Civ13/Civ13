@@ -378,18 +378,18 @@
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
 	var/turf/startingturf = null
 
-	switch (istype(proj))
-		if (/obj/item/projectile)
-			var/obj/item/projectile/pj = proj
-			pj.throw_source = pj.starting
-			startingturf = pj.starting
-		if (/obj/item/missile)
-			var/obj/item/missile/miss = proj
-			startingturf = miss.startingturf
-		if (/obj/item/weapon/grenade/suicide_vest)
-			startingturf = get_turf(proj.loc)
-		if (/obj/item/weapon/grenade)
-			startingturf = get_turf(proj)
+	if (istype(proj, /obj/item/projectile))
+		var/obj/item/projectile/pj = proj
+		pj.throw_source = pj.starting
+		startingturf = pj.starting
+	else if (istype(proj, /obj/item/missile))
+		var/obj/item/missile/miss = proj
+		startingturf = miss.startingturf
+	else if (istype(proj, /obj/item/weapon/grenade/suicide_vest))
+		startingturf = get_turf(proj.loc)
+	else if (istype(proj, /obj/item/weapon/grenade))
+		startingturf = get_turf(proj)
+		
 	if (!startingturf)
 		return "front"
 	var/incdir = get_dir(startingturf, get_turf(src))
@@ -477,42 +477,42 @@
 		if ("front")
 			if (w_front[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4])
 				return TRUE
 		if ("back")
 			if (w_back[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4])
 				return TRUE
 		if ("left")
 			if (w_left[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("right")
 			if (w_right[5] <= 0 && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 		if ("frontleft")
 			if ((w_front[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("backleft")
 			if ((w_back[5] <= 0 && w_left[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_left[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_left[4])
 				return TRUE
 		if ("frontright")
 			if ((w_front[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_front[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_front[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 		if ("backright")
 			if ((w_back[5] <= 0 && w_right[5] <= 0) && prob(75))
 				return TRUE
-			if (max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_back[4] && max(0,proj.heavy_armor_penetration-get_dist(src.loc,proj.starting)) >= w_right[4])
+			if (max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_back[4] && max(0,(proj.heavy_armor_penetration-get_dist(src.loc,proj.starting))) >= w_right[4])
 				return TRUE
 	if (istype(proj, /obj/item/projectile/shell))
 		playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)

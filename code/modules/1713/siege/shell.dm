@@ -109,36 +109,32 @@
 		name = "[caliber]mm [atype] shell"
 		icon_state = "shell[atype]"
 
-/obj/item/cannon_ball/shell/tank/HE57
+/obj/item/cannon_ball/shell/tank/HE45
 	atype = "HE"
-	caliber = 57
-	heavy_armor_penetration = 15
-	damage = 225
-
+	caliber = 45
+	heavy_armor_penetration = 8
+	damage = 290
 /obj/item/cannon_ball/shell/tank/AP45
 	atype = "AP"
 	caliber = 45
 	heavy_armor_penetration = 40
 	damage = 75
-
 /obj/item/cannon_ball/shell/tank/APCR45
 	atype = "APCR"
 	caliber = 45
 	heavy_armor_penetration = 60
 	damage = 90
 
-/obj/item/cannon_ball/shell/tank/HE45
+/obj/item/cannon_ball/shell/tank/HE57
 	atype = "HE"
-	caliber = 45
-	heavy_armor_penetration = 8
-	damage = 290
-
+	caliber = 57
+	heavy_armor_penetration = 15
+	damage = 225
 /obj/item/cannon_ball/shell/tank/AP57
 	atype = "AP"
 	caliber = 57
 	heavy_armor_penetration = 52
 	damage = 95
-
 /obj/item/cannon_ball/shell/tank/APCR57
 	atype = "APCR"
 	caliber = 57
@@ -150,13 +146,11 @@
 	caliber = 75
 	heavy_armor_penetration = 15
 	damage = 250
-
 /obj/item/cannon_ball/shell/tank/AP75
 	atype = "AP"
 	caliber = 75
 	heavy_armor_penetration = 52
 	damage = 100
-
 /obj/item/cannon_ball/shell/tank/APCR75
 	atype = "APCR"
 	caliber = 75
@@ -168,31 +162,59 @@
 	caliber = 100
 	heavy_armor_penetration = 20
 	damage = 333
-
 /obj/item/cannon_ball/shell/tank/AP100
 	atype = "AP"
 	caliber = 100
 	heavy_armor_penetration = 70
 	damage = 133
-
 /obj/item/cannon_ball/shell/tank/APCR100
 	atype = "APCR"
 	caliber = 100
 	heavy_armor_penetration = 100
 	damage = 100
 
+/obj/item/cannon_ball/shell/tank/HE120
+	atype = "HE"
+	caliber = 120
+	heavy_armor_penetration = 20
+	damage = 333
+/obj/item/cannon_ball/shell/tank/AP120
+	atype = "AP"
+	caliber = 120
+	heavy_armor_penetration = 110
+	damage = 140
+/obj/item/cannon_ball/shell/tank/APCR120
+	atype = "APCR"
+	caliber = 120
+	heavy_armor_penetration = 130
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/HE125
+	atype = "HE"
+	caliber = 125
+	heavy_armor_penetration = 20
+	damage = 333
+/obj/item/cannon_ball/shell/tank/AP125
+	atype = "AP"
+	caliber = 125
+	heavy_armor_penetration = 115
+	damage = 140
+/obj/item/cannon_ball/shell/tank/APCR125
+	atype = "APCR"
+	caliber = 125
+	heavy_armor_penetration = 135
+	damage = 100
+
 /obj/item/cannon_ball/shell/tank/HE88
 	atype = "HE"
 	caliber = 88
-	heavy_armor_penetration = 22
+	heavy_armor_penetration = 20
 	damage = 350
-
 /obj/item/cannon_ball/shell/tank/AP88
 	atype = "AP"
 	caliber = 88
 	heavy_armor_penetration = 110
 	damage = 145
-
 /obj/item/cannon_ball/shell/tank/APCR88
 	atype = "APCR"
 	caliber = 88
@@ -204,13 +226,11 @@
 	caliber = 85
 	heavy_armor_penetration = 20
 	damage = 330
-
 /obj/item/cannon_ball/shell/tank/AP85
 	atype = "AP"
 	caliber = 85
 	heavy_armor_penetration = 110
 	damage = 140
-
 /obj/item/cannon_ball/shell/tank/APCR85
 	atype = "APCR"
 	caliber = 85
@@ -222,13 +242,11 @@
 	caliber = 76.2
 	heavy_armor_penetration = 16
 	damage = 250
-
 /obj/item/cannon_ball/shell/tank/AP76
 	atype = "AP"
 	caliber = 76.2
 	heavy_armor_penetration = 55
 	damage = 100
-
 /obj/item/cannon_ball/shell/tank/APCR76
 	atype = "APCR"
 	caliber = 76.2
@@ -240,13 +258,11 @@
 	caliber = 204
 	heavy_armor_penetration = 100
 	damage = 500
-
 /obj/item/cannon_ball/shell/tank/AP204
 	atype = "AP"
 	caliber = 204
 	heavy_armor_penetration = 150
 	damage = 400
-
 /obj/item/cannon_ball/shell/tank/APCR204
 	atype = "APCR"
 	caliber = 204
@@ -417,6 +433,7 @@
 /obj/structure/shellrack
 	icon = 'icons/obj/structures.dmi'
 	name = "shell rack"
+	desc = "A rack for storage your explosive goods."
 	icon_state = "shellrack0"
 	w_class = 10.0
 	var/obj/item/weapon/storage/internal/storage
@@ -458,6 +475,31 @@
 	..()
 	if (storage)
 		icon_state = "shellrack[storage.contents.len]"
+
+/obj/structure/shellrack/autoloader
+	name = "shell rack"
+	desc = "A rack for storage your explosive goods. This one designed to feed into an autoloader, neat!"
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/shellrack/autoloader/full125/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE125(storage)
+	new /obj/item/cannon_ball/shell/tank/HE125(storage)
+	new /obj/item/cannon_ball/shell/tank/HE125(storage)
+	new /obj/item/cannon_ball/shell/tank/HE125(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP125(storage)
+	new /obj/item/cannon_ball/shell/tank/AP125(storage)
+	new /obj/item/cannon_ball/shell/tank/AP125(storage)
+	new /obj/item/cannon_ball/shell/tank/AP125(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR125(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR125(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR125(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR125(storage)
+	update_icon()
 
 /obj/structure/shellrack/full57/New()
 	..()
@@ -537,6 +579,25 @@
 	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
 	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	update_icon()
+
+
+/obj/structure/shellrack/full120/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE120(storage)
+	new /obj/item/cannon_ball/shell/tank/HE120(storage)
+	new /obj/item/cannon_ball/shell/tank/HE120(storage)
+	new /obj/item/cannon_ball/shell/tank/HE120(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP120(storage)
+	new /obj/item/cannon_ball/shell/tank/AP120(storage)
+	new /obj/item/cannon_ball/shell/tank/AP120(storage)
+	new /obj/item/cannon_ball/shell/tank/AP120(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR120(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR120(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR120(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR120(storage)
 	update_icon()
 
 /obj/structure/shellrack/full75/american/New()

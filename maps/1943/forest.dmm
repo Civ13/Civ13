@@ -614,7 +614,7 @@
 "lV" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean)
 "lX" = (/obj/structure/barricade,/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean)
 "lY" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/trench,/area/caribbean/forest)
-"lZ" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/plating/road,/area/caribbean)
+"lZ" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "ma" = (/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/t34/back{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "mb" = (/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/t34/rb{dir = 1; icon_state = "frame_steel"},/turf/floor/plating/road,/area/caribbean)
 "mc" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)

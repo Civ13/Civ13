@@ -380,6 +380,7 @@ var/list/seed_list_jungle
 	..()
 	icon_state = "pine_[rand(1,3)]"
 	deadicon = 'icons/obj/flora/pinetrees_dead.dmi'
+	deadicon_state = icon_state
 	if (map.ID == MAP_HUNGERGAMES)
 		spawn(6000)
 			if(prob(75))
@@ -394,7 +395,6 @@ var/list/seed_list_jungle
 		return
 	else
 		icon = current_icon
-
 
 /obj/structure/wild/tree/live_tree/pine/change_season()
 	..()

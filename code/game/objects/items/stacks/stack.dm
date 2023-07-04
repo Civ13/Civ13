@@ -1843,7 +1843,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 
 	if (recipe.result_type == /obj/structure/barbwire)
 		var/barbwire_amount = 0
-		for (var/obj/structure/barbwire/B in range(1, user.loc))
+		for (var/obj/structure/barbwire/B in user.loc)
 			barbwire_amount++
 		if (barbwire_amount >= 4)
 			H << "You cannot build more barbwire here."
@@ -1860,7 +1860,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			var/obj/structure/cannon/modern/tank/T = O
 			T.caliber = inpt
 			T.name = "[T.caliber]mm tank cannon"
-			T.w_class = T.caliber/2
+			T.w_class = ITEM_SIZE_GARGANTUAN
 			return
 
 		if(istype(O, /obj/item/stack/ammopart/casing/tank))

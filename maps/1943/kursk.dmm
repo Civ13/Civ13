@@ -258,7 +258,7 @@
 "eX" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/russian{name = "Russian Base"})
 "eY" = (/obj/structure/closet/crate/ww2/rgd33,/turf/floor/dirt/dust,/area/caribbean/russian{name = "Russian Base"})
 "eZ" = (/obj/structure/closet/crate/ww2/rpg40,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})
-"fa" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
+"fa" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean/forest)
 "fb" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/burned,/area/caribbean/russian{name = "Russian Base"})
 "fc" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/dirt,/area/caribbean/russian{name = "Russian Base"})
 "fd" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/russian{name = "Russian Base"})

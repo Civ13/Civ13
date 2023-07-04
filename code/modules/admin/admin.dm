@@ -810,7 +810,7 @@ var/list/atom_types = null
 		chosen = matches[1]
 	else
 		chosen = WWinput(usr, "Select an atom type", "Spawn Atom", matches[1], WWinput_list_or_null(matches))
-		if (!chosen)
+		if (!chosen || chosen == "")
 			return
 
 	if (ispath(chosen,/turf))

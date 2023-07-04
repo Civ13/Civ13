@@ -570,7 +570,7 @@
 "kX" = (/obj/structure/table/modern/flipped{dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/plating/road,/area/caribbean)
 "kY" = (/obj/structure/shelf,/obj/item/stack/material/cloth{amount = 100},/obj/item/stack/material/steel{amount = 400},/turf/floor/plating/steel,/area/caribbean/roofed)
 "kZ" = (/obj/structure/shelf,/obj/item/stack/material/iron/twentyfive,/turf/floor/plating/steel,/area/caribbean/roofed)
-"la" = (/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/unattr/backl,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/engine/internal/diesel/premade/v12,/turf/floor/plating/road,/area/caribbean)
+"la" = (/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/unattr/backl,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/engine/internal/diesel/premade/v12,/turf/floor/plating/road,/area/caribbean)
 "lb" = (/obj/effect/autoassembler,/turf/floor/plating/road,/area/caribbean)
 "lc" = (/obj/structure/vehicleparts/frame/unattr/frontrback,/turf/floor/plating/road,/area/caribbean)
 "ld" = (/obj/structure/table/wood,/obj/item/weapon/melee/classic_baton,/obj/item/weapon/key/russian{name = "Police key"},/turf/floor/plating/road,/area/caribbean)

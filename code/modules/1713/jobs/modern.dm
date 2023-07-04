@@ -1237,7 +1237,7 @@
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/nsv_utes(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/kord(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/utes(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/ammo127, H)

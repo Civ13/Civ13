@@ -100,7 +100,7 @@
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
-	src << message
+	to_chat(src, message)
 	if (speaker && message2 != "")
 		if (client && speaker.client && (speaker in view(7,src) || speaker == src))
 
@@ -123,7 +123,7 @@
 	message = capitalize(message)
 	message = replacetext(message, "&#39", "'")
 
-	if (sleeping || stat==1) //If unconscious or sleeping
+	if (sleeping || stat== UNCONSCIOUS) //If unconscious or sleeping
 		hear_sleep(message)
 		return
 
@@ -131,7 +131,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
+		if (!speaker || (src.sdisabilities & BLIND) || src.blinded || src.find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -186,7 +186,7 @@
 				full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
 
-		on_hear_obj(destination, full_message)
+		on_hear_radio(destination, full_message)
 
 /mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/origin, var/obj/item/weapon/telephone/destination)
 
@@ -246,7 +246,7 @@
 		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
-		on_hear_obj(destination, full_message)
+		on_hear_radio(destination, full_message)
 
 /mob/proc/hear_voicepipe(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/voyage/voicepipe/destination=null, var/obj/structure/voyage/voicepipe/origin=null)
 
@@ -311,29 +311,38 @@
 				full_message = "<font size = [fontsize] color=#FFAE19><b>Voicepipe:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 
 
-		on_hear_obj(destination, full_message)
+		on_hear_radio(destination, full_message)
 
 /proc/say_timestamp()
 	return "<span class='say_quote'>\[[stationtime2text()]\]</span>"
 
-/mob/proc/on_hear_obj(var/obj/destination = null, var/fullmessage)
+/mob/proc/on_hear_radio(var/obj/destination = null, var/fullmessage)
 	if (destination)
 		src << "\icon[getFlatIcon(destination)] [fullmessage]"
 	else
 		src << fullmessage
+
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)
 		return
 
-	if (say_understands(speaker, language))
-		message = "<b>[src]</b> [verb], \"[message]\""
+	if(say_understands(speaker, language))
+		message = "<B>[speaker]</B> [verb], \"[message]\""
 	else
-		message = "<b>[src]</b> [verb]."
+		var/adverb
+		var/length = length(message) * pick(0.8, 0.9, 1.0, 1.1, 1.2)	//Inserts a little fuzziness.
+		switch(length)
+			if(0 to 12) 	adverb = " briefly"
+			if(12 to 30)	adverb = " a short message"
+			if(30 to 48)	adverb = " a message"
+			if(48 to 90)	adverb = " a lengthy message"
+			else        	adverb = " a very lengthy message"
+		message = "<B>[speaker]</B> [verb][adverb]."
 
-	if (status_flags & PASSEMOTES)
-		for (var/mob/living/M in contents)
+	if(src.status_flags & PASSEMOTES)
+		for(var/mob/living/M in src.contents)
 			M.show_message(message)
-	show_message(message)
+	src.show_message(message)
 
 /mob/proc/hear_sleep(var/message)
 	var/heard = ""
@@ -351,7 +360,7 @@
 	else
 		heard = "<span class = 'game_say'>...<i>You almost hear someone talking</i>...</span>"
 
-	src << heard
+	to_chat(src, heard)
 
 /* How this works:
  * just like in real life, some languages have mutual intelligibility

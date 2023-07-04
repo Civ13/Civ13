@@ -28,12 +28,12 @@
 		return
 
 	if (!anchored)
-		user.visible_message("<span class = 'notice'>\The [user] starts to deploy the \the [src].</span>")
+		user.visible_message("<span class = 'notice'>\The [user] starts to deploy \the [src].</span>")
 		if (!do_after(user,rand(30,40)))
-			user.visible_message("<span class = 'notice'>\The [user] decides not to deploy the \the [src].</span>")
+			user.visible_message("<span class = 'notice'>\The [user] decides not to deploy \the [src].</span>")
 			return
 		nextCanExplode = world.time + 5
-		user.visible_message("<span class = 'notice'>\The [user] finishes deploying the \the [src].</span>")
+		user.visible_message("<span class = 'notice'>\The [user] finishes deploying \the [src].</span>")
 		anchored = TRUE
 		layer = TURF_LAYER + 0.01
 		icon_state = "mine_armed"
@@ -46,7 +46,7 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			if (istype(W, /obj/item/weapon/wirecutters))
-				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with the [W].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
@@ -286,12 +286,12 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			if (istype(W, /obj/item/weapon/wirecutters))
-				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
-					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
 				if (prob(min(95*H.getStatCoeff("dexterity"),100)))
-					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
 					if (origin)
 						new origin(get_turf(user))
 					qdel(src)
@@ -299,12 +299,12 @@
 				else
 					Bumped(user)
 			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
-				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,80))
-					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
 				if (prob(min(85*H.getStatCoeff("dexterity"),90)))
-					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
 					if (origin)
 						new origin(get_turf(user))
 					qdel(src)
@@ -320,12 +320,12 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
+			user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with their bare hands!</span>")
 			if (!do_after(user,100))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
+				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 				return
 			if (prob(min(60*H.getStatCoeff("dexterity"),85)))
-				user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
+				user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!</span>")
 				if (origin)
 					new origin(get_turf(user))
 				qdel(src)

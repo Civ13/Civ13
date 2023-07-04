@@ -1176,7 +1176,7 @@
 	else if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
 	else if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhatw(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhat/yellow(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/mechanic(H), slot_l_store)
 	if (prob(50))
@@ -1272,7 +1272,7 @@
 	else if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
 	else if (prob(65))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhato(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhat/orange(H), slot_head)
 //back
 	/obj/item/clothing/suit/storage/hazard
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
