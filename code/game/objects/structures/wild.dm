@@ -868,6 +868,40 @@ var/list/seed_list_jungle
 	icon_state = "med_pine_dead"
 	deadicon_state = "med_pine_dead"
 
+/obj/structure/wild/jungle/cherry
+	name = "cherry blossom tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "cherry_blossom_1"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "tree_1"
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
+	branches = 2
+	max_branches = 2
+
+/obj/structure/wild/jungle/cherry/dead
+	name = "dead cherry blossom tree"
+	icon = 'icons/obj/flora/deadtrees.dmi'
+	icon_state = "tree_1"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "tree_1"
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
+	branches = 2
+	max_branches = 2
+
+/obj/structure/wild/jungle/cherry/New()
+	..()
+	icon_state = "cherry_blossom_[rand(1,4)]"
+	deadicon_state = "tree_[rand(1,5)]"
+
+/obj/structure/wild/jungle/cherry/dead/New()
+	..()
+	icon_state = "cherry_blossom_[rand(1,4)]"
+	deadicon_state = "tree_[rand(1,5)]"
+
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
 		if (stored_unit)
