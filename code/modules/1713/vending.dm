@@ -1444,7 +1444,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74m = 4,
 		/obj/item/weapon/gun/projectile/automatic/pkm = 2,
-		/obj/item/weapon/gun/projectile/automatic/nsv_utes = 1,
+		/obj/item/weapon/gun/projectile/automatic/kord = 1,
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 15,
 		/obj/item/weapon/gun/projectile/pistol/mp443 = 15,
