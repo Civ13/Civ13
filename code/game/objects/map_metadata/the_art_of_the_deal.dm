@@ -911,7 +911,7 @@
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
 
-/obj/structure/props/smuggler
+/obj/structure/props/smuggler // To be converted to a proper NPC
 	name = "Omar the Smuggler"
 	desc = "You've got money? I've got goods."
 	icon = 'icons/mob/npcs.dmi'
@@ -1003,8 +1003,7 @@
 				/obj/item/weapon/disk/blue/fake,
 				/obj/item/weapon/disk/green/fake)
 
-
-/obj/structure/props/biker
+/obj/structure/props/biker // To be converted to a proper NPC
 	name = "Bruce the Biker"
 	desc = "You've got drugs? I've got money."
 	icon = 'icons/mob/npcs.dmi'
@@ -1040,7 +1039,7 @@
 						if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
 							qdel(P)
 							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-							D.amount = buying_price1+src.reputation[user.civilization]
+							D.amount = (buying_price1+src.reputation[user.civilization])/(D.value/5)
 							if (D.amount == 0)
 								qdel(D)
 							user.put_in_hands(D)
@@ -1054,7 +1053,7 @@
 						if (P.reagents.get_reagent_amount("cocaine")>= 25)
 							qdel(P)
 							var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-							D.amount = buying_price2+src.reputation[user.civilization]
+							D.amount = (buying_price1+src.reputation[user.civilization])/(D.value/5)
 							if (D.amount == 0)
 								qdel(D)
 							user.put_in_hands(D)
@@ -1067,7 +1066,7 @@
 				else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
 					qdel(W)
 					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = (buying_price2+src.reputation[user.civilization])*20
+					D.amount = ((buying_price2+src.reputation[user.civilization])*20)/(D.value/5)
 					if (D.amount == 0)
 						qdel(D)
 					user.put_in_hands(D)
@@ -1079,3 +1078,84 @@
 		else
 			user << "I'm not dealing with you punks anymore, get the fuck out of here."
 			return
+
+/obj/structure/props/cartel
+	name = "Diego 'El Diablo' Morales"
+	desc = "Plata or plomo? I've got the product."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "cartel"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+	var/cartel_cooldown = 0
+	var/list/reputation = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
+	var/list/heat = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
+	var/list/buy_list = list("Cancel","1 gram","10 grams","a block")
+
+/obj/structure/props/cartel/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (istype(W, /obj/item/stack/money))
+		var/obj/item/stack/money/M = W
+		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
+			user << "I have nothing to tell you."
+			return
+		else
+			if (reputation[user.civilization] < 0)
+				user << "Don't waste my time, find another hole to climb into, sapo."
+				return
+			else
+				if (reputation[user.civilization] <= 10)
+					buy_list = list("Cancel","1 gram")
+				else if (reputation[user.civilization] <= 30)
+					buy_list = list("Cancel","1 gram","10 grams")
+				else
+					buy_list = list("Cancel","1 gram","10 grams","a block")
+				var/choice = WWinput(user, "What do you want to buy?", "Cartel Member", "Cancel", buy_list)
+				if (choice == "Cancel" || !choice)
+					return
+				else if (choice == "1 gram")
+					if (M && M.value*M.amount >= 70*4)
+						M.amount-=70/5
+						if (M.amount <= 0)
+							qdel(M)
+						var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+						user.put_in_hands(one_g)
+						reputation[user.civilization] += 1
+					else
+						user << "Not enough money, maricon."
+				else if (choice == "10 grams")
+					if (M && M.value*M.amount >= 600*4)
+						M.amount-=600/5
+						if (M.amount <= 0)
+							qdel(M)
+						var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+						var/obj/item/weapon/storage/briefcase/briefcase = new /obj/item/weapon/storage/briefcase(null)
+						for (var/i = 1; i<=10;i++)
+							new one_g(briefcase)
+						user.put_in_hands(briefcase)
+						reputation[user.civilization] += 2
+					else
+						user << "Not enough money, maricon."
+				else if (choice == "a block")
+					if (M && M.value*M.amount >= 1200*4)
+						M.amount-=1200/5
+						if (M.amount <= 0)
+							qdel(M)
+						var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
+						user.put_in_hands(block)
+					else
+						user << "Not enough money, maricon."
+				return
+	else
+		return
+

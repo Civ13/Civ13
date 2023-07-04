@@ -119,7 +119,7 @@
 							world << "<font color='red' size=4>The <b>Russian Army</b> Commander played by <b>[ckey]</b> has been killed!</font>"
 						if ("DUTCH")
 							world << "<font color='red' size=4>The <b>Dutch Army</b> Commander played by <b>[ckey]</b> has been killed!</font>"
-
+			
 			if (MAP_CAPITOL_HILL)
 				if (civilization && civilization in map.scores)
 					if (civilization == "National Guard")
