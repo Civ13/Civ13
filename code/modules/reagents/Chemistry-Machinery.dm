@@ -18,6 +18,7 @@
 	var/atom/beaker = null
 	var/list/dispensable_reagents = list()
 	var/stat = 0
+	var/is_medical = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = TRUE
@@ -54,6 +55,7 @@
 			dispensable_reagents += list(list(i,1000))
 
 /obj/structure/chemical_dispenser/drinks
+	is_medical = FALSE
 	New()
 		..()
 		var/list/elements = list("honey", "cola", "mint", "banana", "grapejuice", "grapejuice", "milk", "coffee", "tonic", "milkshake", "cognac", "gin", "kahlua", "watermelonliquor", "rum", "tequilla", "vodka", "whiskey")
@@ -65,6 +67,7 @@
 	icon_state = "soda_dispenser"
 	ui_title = "Soda Dispenser"
 	accept_glass = TRUE
+	is_medical = FALSE
 	New()
 		..()
 		var/list/elements = list("ice","water","cola","lemonade","lemonjuice","limejuice","orangejuice","applejuice","tomatojuice","tonic")
@@ -76,6 +79,7 @@
 	icon_state = "soda_dispenser"
 	ui_title = "Juice Dispenser"
 	accept_glass = TRUE
+	is_medical = FALSE
 	New()
 		..()
 		var/list/elements = list("banana", "grapejuice", "berryjuice","carrotjuice","lemonjuice","limejuice","orangejuice","applejuice","tomatojuice","watermelonjuice")
@@ -87,6 +91,7 @@
 	icon_state = "booze_dispenser"
 	ui_title = "Alcoholic Beverages Dispenser"
 	accept_glass = TRUE
+	is_medical = FALSE
 	New()
 		..()
 		var/list/elements = list("ice","ale","beer","wheatbeer","cider","cognac", "gin", "kahlua", "watermelonliquor", "rum", "tequilla", "vodka", "whiskey","mezcal","vermouth")
@@ -98,6 +103,7 @@
 	icon_state = "coffee_dispenser"
 	ui_title = "Coffee Dispenser"
 	accept_glass = TRUE
+	is_medical = FALSE
 	New()
 		..()
 		var/list/elements = list("ice","coffee","tea","hot_coco","milkshake","milk","cream")
@@ -116,9 +122,10 @@
 /obj/structure/chemical_dispenser/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (user.stat || user.restrained()) return
 	var/mob/living/human/H = user
-	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
-		return
+	if (src.is_medical)
+		if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+			H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+			return
 	// this is the data which will be sent to the ui
 	var/data[0]
 	data["amount"] = amount

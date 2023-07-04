@@ -6,7 +6,7 @@
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	has_hunger = TRUE
-	no_winner ="The fighting is still going."
+	no_winner = "The fighting is still going."
 	songs = list(
 		"Woke Up This Morning:1" = "sound/music/woke_up_this_morning.ogg",)
 	faction_organization = list(
@@ -151,18 +151,18 @@
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-			if (J.title == "Paramedic")
-				J.max_positions = 2
-				J.total_positions = 2
 		if (clients.len <= 22)
 			if (J.title == "Legitimate Business")
 				. = FALSE
-			if (J.title == "Paramedic")
-				J.max_positions = 3
-				J.total_positions = 3
+			else if (J.title == "Paramedic")
+				J.max_positions = 2
+				J.total_positions = 2
 		if (clients.len <= 30)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
+			else if (J.title == "Paramedic")
+				J.max_positions = 3
+				J.total_positions = 3
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
 				. = FALSE

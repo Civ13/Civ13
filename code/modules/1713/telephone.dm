@@ -403,14 +403,20 @@ var/list/global/phone_numbers = list()
 	name = "Blue phone"
 	phonenumber = 2222
 	desc = "Used to communicate with other telephones. Number is 2222."
+	update_icon()
+		icon_state = "telephone_blue"
 /obj/item/weapon/telephone/mobile/faction/green
 	name = "Green phone"
 	phonenumber = 3333
 	desc = "Used to communicate with other telephones. Number is 3333."
+	update_icon()
+		icon_state = "telephone_green"
 /obj/item/weapon/telephone/mobile/faction/yellow
 	name = "Yellow phone"
 	phonenumber = 4444
 	desc = "Used to communicate with other telephones. Number is 4444."
+	update_icon()
+		icon_state = "telephone_yellow"
 /obj/item/weapon/telephone/mobile/faction/mckellen
 	name = "McKellen Entreprises phone"
 	phonenumber = 5555
