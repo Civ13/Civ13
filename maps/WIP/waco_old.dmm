@@ -214,7 +214,7 @@
 "hh" = (/obj/structure/roof_support,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/camonet,/turf/floor/dirt/dust,/area/caribbean)
 "hi" = (/obj/structure/mine_support,/turf/floor/dirt,/area/caribbean/void/caves)
 "hm" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/bed/chair/wood,/turf/floor/grass,/area/caribbean)
-"ho" = (/obj/item/clothing/head/helmet/modern/hardhaty,/turf/floor/dirt,/area/caribbean/void/caves)
+"ho" = (/obj/item/clothing/head/helmet/modern/hardhat/yellow,/turf/floor/dirt,/area/caribbean/void/caves)
 "hx" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/closet/crate/bin,/turf/floor/plating/marble/grid,/area/caribbean/houses)
 "hz" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/effect/decal/cleanable/blood,/turf/floor/carpet,/area/caribbean/houses)
 "hA" = (/obj/structure/practice_dummy,/turf/floor/dirt/dust,/area/caribbean)

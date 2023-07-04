@@ -306,7 +306,7 @@
 "fU" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/t34/left/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
 "fV" = (/obj/structure/bed/chair/loader{icon_state = "officechair_white"; dir = 1},/obj/structure/vehicleparts/frame/t34{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
 "fW" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/t34/right/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fX" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
+"fX" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
 "fY" = (/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/t34/back{dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
 "fZ" = (/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/t34/rb{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
 "ga" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land)
