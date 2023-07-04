@@ -19,7 +19,7 @@
 		return
 
 	usr.say(message)
-	if (usr.key) webhook_send_ic(usr.key, "__**\[[time_stamp()]] ([map.ID]) IC:**__ **[src.name]/[usr.key]:** [msg]")
+	if (usr.key) webhook_send_ic(usr.key, "__**\[[time_stamp()]] ([map.ID]) IC:**__ **[src.name]/[usr.key]:** [message]")
 
 /mob/living/human/verb/howl_verb(message as text)
 	set name = "Howl"
