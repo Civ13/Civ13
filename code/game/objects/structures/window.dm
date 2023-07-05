@@ -775,6 +775,13 @@
 	not_disassemblable = TRUE
 /obj/structure/window/clean/reinforced/metal
 	icon_state = "windowmetal"
+/obj/structure/window/clean/reinforced/bank_glass
+	name = "reinforced glass"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "bank_glass"
+	maxhealth = 1000
+	density = TRUE
+	flammable = FALSE
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"
