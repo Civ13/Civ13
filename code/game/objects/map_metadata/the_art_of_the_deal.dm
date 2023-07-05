@@ -26,6 +26,7 @@
 	faction1 = CIVILIAN
 	faction2 = PIRATES
 	gamemode = "Negotiations"
+	respawn_delay = 3000
 
 	scores = list(
 		"Rednikov Industries" = 0,
