@@ -2064,7 +2064,7 @@
 
 /datum/job/civilian/businessman/yellow/CEO
 	title = "Goldstein Solutions CEO"
-	//spawn_location = "JoinLateCivACEO"
+	spawn_location = "JoinLateCivACEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2132,7 +2132,7 @@
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
-	//spawn_location = "JoinLateCivBCEO"
+	spawn_location = "JoinLateCivBCEO"
 	whitelisted = TRUE
 	is_vip = TRUE
 
@@ -2184,7 +2184,7 @@
 
 /datum/job/civilian/businessman/blue/CEO
 	title = "Giovanni Blu Stocks CEO"
-	//spawn_location = "JoinLateCivCCEO"
+	spawn_location = "JoinLateCivCCEO"
 	is_officer = TRUE
 	min_positions = 1
 	max_positions = 1
@@ -2242,7 +2242,7 @@
 /datum/job/civilian/businessman/red/CEO
 	title = "Rednikov Industries CEO"
 	is_officer = TRUE
-	//spawn_location = "JoinLateCivDCEO"
+	spawn_location = "JoinLateCivDCEO"
 	min_positions = 1
 	max_positions = 1
 	rank_abbreviation = "CEO"
