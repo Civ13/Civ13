@@ -446,6 +446,10 @@
 	icon_state = "duffel"
 	item_state = "duffel"
 	base_icon = "duffel"
+	item_state_slots = list(
+		slot_l_hand_str = "duffel",
+		slot_r_hand_str = "duffel",
+		)
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK
 	max_w_class = 3
