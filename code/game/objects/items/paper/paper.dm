@@ -94,13 +94,16 @@
 			desc = "A blank paper sheet."
 
 /obj/item/weapon/paper/verb/airplane()
-	set name = "Make Paper Airplane"
-	set category = null
-	set src in usr
-	src.icon_state = "paper_plane"
-	src.throw_range = 14
-	src.name = "airplane- \"[src.name]\""
-	add_fingerprint(usr)
+	var/done = FALSE
+	if (!done)
+		set name = "Make Paper Airplane"
+		set category = null
+		set src in usr
+		src.icon_state = "paper_plane"
+		src.throw_range = 14
+		src.name = "paper airplane - \"[src.name]\""
+		done = TRUE
+		add_fingerprint(usr)
 
 /obj/item/weapon/paper/update_icon()
 	if (base_icon == "paper")
