@@ -48,7 +48,7 @@
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;chambered;ammo_magazine"
 
 /obj/item/weapon/gun/projectile/New()
-	if (serial != 0)
+	if (serial != "0")
 		serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	else
 		serial = ""
