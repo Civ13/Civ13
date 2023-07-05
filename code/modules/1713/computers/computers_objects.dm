@@ -107,6 +107,7 @@
 				if (-1)
 					if (D.fake)
 						map.scores[H.civilization] -= 100
+						map.give_stock_points(H.civilization,-100)
 						D.used = TRUE
 						qdel(D)
 						spawn(1)
@@ -125,6 +126,7 @@
 				if (0)
 					if (D.fake)
 						map.scores[H.civilization] -= 400
+						map.give_stock_points(H.civilization,-400)
 						D.used = TRUE
 						qdel(D)
 						spawn(1)
@@ -136,9 +138,21 @@
 						D.used = TRUE
 						qdel(D)
 						spawn(1)
-							WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 200 dollars and 200 points.", "Fake Disk")
+							WWalert(H,"This is a fake disk! Since you exchanged it with a real disk, you gain nothing and the other faction gains 500 dollars and 500 points.", "Fake Disk")
 
 					else
+						map.scores[H.civilization] += 500
+						map.give_stock_points(H.civilization,500)
+						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
+						DLR.amount = 100
+						DLR.update_icon()
+						D.used = TRUE
+						qdel(D)
+						spawn(1)
+							WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 500 dollars, 500 points and the other faction gains nothing.", "Real Disk")
+
+				if (2)
+					if (!D.fake)
 						map.scores[H.civilization] += 200
 						map.give_stock_points(H.civilization,200)
 						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
@@ -147,19 +161,7 @@
 						D.used = TRUE
 						qdel(D)
 						spawn(1)
-							WWalert(H,"This is a real disk! Since you exchanged it with a fake disk, you gain 200 dollars, 200 points and the other faction gains nothing.", "Real Disk")
-
-				if (2)
-					if (!D.fake)
-						map.scores[H.civilization] += 400
-						map.give_stock_points(H.civilization,400)
-						var/obj/item/stack/money/dollar/DLR = new/obj/item/stack/money/dollar(loc)
-						DLR.amount = 80
-						DLR.update_icon()
-						D.used = TRUE
-						qdel(D)
-						spawn(1)
-							WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 400 dollars and 400 points.", "Real Disk")
+							WWalert(H,"This is a real disk! Since you exchanged it with a real disk too, both factions gain 200 dollars and 200 points.", "Real Disk")
 
 
 //////////////////////////////////////////////////////////////
@@ -232,7 +234,7 @@
 	var/fake = FALSE
 	var/used = FALSE
 	var/faction = null
-	var/exchange_state = -1 //0-both fake, 1-one is real, 2-both real
+	var/exchange_state = -1 //-1 inavtive, 1-both fake, 2-one is real, 3-both real
 	var/datum/program/program
 /obj/item/weapon/disk/examine(mob/user)
 	..()
