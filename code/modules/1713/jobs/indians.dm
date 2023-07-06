@@ -386,7 +386,7 @@ datum/job/indians/tribes/black
 	title = "warlord (do not use)"
 	en_meaning = FALSE
 	rank_abbreviation = ""
-	can_be_female = TRUE
+	can_be_female = FALSE
 	is_coldwar = TRUE
 	uses_squads = FALSE
 	spawn_location = "JoinLateIND1"

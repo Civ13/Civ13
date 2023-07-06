@@ -722,13 +722,13 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 
 /obj/structure/closet/crate/ww2/un/falammoboxes
 	name = "Bulk 7.62x51mm ammunition"
-	paths = list(/obj/item/ammo_magazine/m14box = 10)
+	paths = list(/obj/item/ammo_magazine/box_762x51 = 10)
 
 /obj/structure/closet/crate/ww2/un/ammoboxes
 	name = "Bulk specialty ammunition"
 	paths = list(/obj/item/ammo_magazine/a45acpbox = 4,
 				/obj/item/ammo_magazine/madsen/box = 3,
-				/obj/item/ammo_magazine/m14box = 3,
+				/obj/item/ammo_magazine/box_762x51 = 3,
 				/obj/item/ammo_magazine/greasegun/box = 2,
 				/obj/item/ammo_magazine/c455 = 2,
 				)
