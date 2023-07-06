@@ -144,8 +144,8 @@
 	weight = 0.45
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/m14box
-	name = "magazine box (7.62x51mm)"
+/obj/item/ammo_magazine/box_762x51
+	name = "ammo box (7.62x51mm)"
 	icon_state = "762x51"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
