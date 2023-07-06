@@ -169,7 +169,7 @@
 			if (H.faction_text == faction1)
 				return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/three))
-			if (H.original_job.title != "Delta Force Operator")
+			if (H.original_job.title == "Delta Force Operator")
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
