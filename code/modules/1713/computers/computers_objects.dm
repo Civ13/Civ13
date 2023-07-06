@@ -234,7 +234,7 @@
 	var/fake = FALSE
 	var/used = FALSE
 	var/faction = null
-	var/exchange_state = -1 //-1 inavtive, 1-both fake, 2-one is real, 3-both real
+	var/exchange_state = -1 //-1 inactive, 1-both fake, 2-one is real, 3-both real
 	var/datum/program/program
 /obj/item/weapon/disk/examine(mob/user)
 	..()
