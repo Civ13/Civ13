@@ -1512,9 +1512,9 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern = 50,
 	)
 
-////syrian salvation goverment
-/obj/structure/vending/syria/salv/gunreb
-	name = "Syrian Salvation Goverment weapon rack"
+////Free Syrian Army
+/obj/structure/vending/syria/fsa/gunreb
+	name = "Free Syrian Army weapon rack"
 	desc = "A rack of war equipment."
 	icon_state = "modern_british"
 	products = list(
@@ -1536,15 +1536,15 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/launcher/rocket/single_shot/m72law = 2,
 	)
 
-/obj/structure/vending/syria/salv/ammoreb
-	name = "Syrian Salvation Goverment ammo crate"
+/obj/structure/vending/syria/fsa/ammoreb
+	name = "Free Syrian Army ammo crate"
 	desc = "A large crate of ammunition."
 	icon_state = "ammo_crates"
 	products = list(
 		/obj/item/ammo_magazine/m16 = 20,
 		/obj/item/ammo_magazine/m16/box = 10,
 		/obj/item/ammo_magazine/m14 = 5,
-		/obj/item/ammo_magazine/m14box = 5,
+		/obj/item/ammo_magazine/box_762x51 = 5,
 		/obj/item/ammo_magazine/barrett = 4,
 		/obj/item/ammo_magazine/fal = 12,
 		/obj/item/ammo_magazine/m1911 = 25,
@@ -1555,8 +1555,8 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/sten2 = 15,
 	)
 
-/obj/structure/vending/syria/salv/armorreb
-	name = "Syrian Salvation Goverment Equipment Crate"
+/obj/structure/vending/syria/fsa/armorreb
+	name = "Free Syrian Army Equipment Crate"
 	desc = "A rack of clothing and gear."
 	icon_state = "apparel_russia"
 	products = list(

@@ -1316,7 +1316,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/command(H), slot_belt)
 	web.attackby(new/obj/item/ammo_magazine/fal, H)
 	web.attackby(new/obj/item/ammo_magazine/fal, H)
-	web.attackby(new/obj/item/ammo_magazine/m14box, H)
+	web.attackby(new/obj/item/ammo_magazine/box_762x51, H)
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	if (prob(60))
