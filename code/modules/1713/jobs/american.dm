@@ -495,6 +495,7 @@
 
 	is_ww2 = TRUE
 	is_tanker = TRUE
+	is_ardennes = TRUE
 	uses_squads = FALSE
 
 	min_positions = 4
