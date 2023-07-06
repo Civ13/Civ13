@@ -369,6 +369,11 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	turret_type = "t90a_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/leopard
 	name = "Leopard 2A6"
@@ -411,6 +416,7 @@
 		var/pickedname = pick(tank_names_japanese)
 		tank_names_japanese -= pickedname
 		name = "[name] \'[pickedname]\'"
+		
 /obj/structure/vehicleparts/axis/heavy/m4
 	name = "M-4 Sherman"
 	speeds = 4
