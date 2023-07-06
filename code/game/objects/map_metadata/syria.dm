@@ -2,7 +2,7 @@
 	ID = MAP_SYRIA
 	title = "Syrian Civil War"
 	lobby_icon = "icons/lobby/syria.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
 
@@ -167,6 +167,9 @@
 				return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
 			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/three))
+			if (H.original_job.title == "Delta Force Operator")
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
