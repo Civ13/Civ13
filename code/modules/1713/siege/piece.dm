@@ -522,8 +522,8 @@
 										if(!locate(/obj/structure/vehicleparts/frame) in T)
 											ignite_turf(T, 12, 70)
 								else
-									message_admins("Gas rocket shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-									log_admin("Gas rocket shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+									message_admins("Gas rocket shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>).")
+									log_admin("Gas rocket shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]).")
 									var/how_many = 24 // half of 49, the radius we spread over (7x7)
 									for (var/k in 1 to how_many)
 										switch (reagent_payload)
@@ -582,18 +582,18 @@
 						high = TRUE
 						var/obj/item/cannon_ball/fired_shell = loaded[1]
 
-						if (istype(loaded[1], /obj/item/cannon_ball/shell/gas))
+						if (istype(fired_shell, /obj/item/cannon_ball/shell/gas))
 							explosion = FALSE
-							reagent_payload = loaded.reagent_payload
-						if (istype(loaded[1], /obj/item/cannon_ball/mortar_shell/smoke))
+							reagent_payload = fired_shell.reagent_payload
+						if (istype(fired_shell, /obj/item/cannon_ball/mortar_shell/smoke))
 							explosion = FALSE
-							reagent_payload = loaded.reagent_payload
+							reagent_payload = fired_shell.reagent_payload
 
 						if (fired_shell.atype == "INCENDIARY")
 							explosion = FALSE
 							incendiary = TRUE
 
-						if (istype(loaded[1], /obj/item/cannon_ball/shell/nuclear))
+						if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear))
 							nuclear = TRUE
 
 						loaded -= fired_shell
@@ -731,37 +731,37 @@
 												if(!locate(/obj/structure/vehicleparts/frame) in T)
 													ignite_turf(T, 12, 70)
 									if (nuclear)
-										if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
+										if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W9))
 											radiation_pulse(target, 10, 60, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
+										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W19))
 											radiation_pulse(target, 8, 70, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
+										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33))
 											radiation_pulse(target, 10, 45, 1000, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
+										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 											radiation_pulse(target, 10, 50, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
+										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/makeshift))
 											radiation_pulse(target, 10, 65, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
+										else if (istype(fired_shell,/obj/item/cannon_ball/rocket/nuclear))
 											radiation_pulse(target, 12, 80, 1400, TRUE)
 											explosion(target, 2, 2, 2, 30)
 											change_global_pollution(150)
@@ -775,8 +775,8 @@
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
 
 									else
-										message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-										log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+										message_admins("Gas artillery shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>)..")
+										log_admin("Gas artillery shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]).")
 										var/how_many = 24 // half of 49, the radius we spread over (7x7)
 										for (var/k in 1 to how_many)
 											switch (reagent_payload)
