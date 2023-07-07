@@ -19,7 +19,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(CIVILIAN = 0.3, AMERICAN = 0.7)
 	battle_name = "Siege of Mount Carmel"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>north third story tower</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The ATF will win if they capture the <b>North Third Story Tower</b>. The Davidians will win if they manage to defend their home for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = AMERICAN
 	grace_wall_timer = 3000
@@ -94,7 +94,7 @@ var/no_loop_waco = FALSE
 				current_win_condition = no_winner
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
-				message = "20 minutes have passed! The Koresh is now safe!"
+				message = "20 minutes have passed! David Koresh is now safe!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				win_condition_spam_check = TRUE
 				return FALSE
@@ -105,7 +105,7 @@ var/no_loop_waco = FALSE
 						if (H.original_job_title == "Messiah" && H.stat != DEAD)
 							count++
 					if (count == 0)
-						message = "The battle is over! <b>David Koresh</b> is dead!"
+						message = "The battle is over! <b>David Koresh is dead</b>!"
 						world << "<font size = 4 color='yellow'><span class = 'notice'>[message]</span></font>"
 						win_condition_spam_check = TRUE
 						ticker.finished = TRUE
@@ -136,7 +136,7 @@ var/no_loop_waco = FALSE
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The ATF control the Mount Carmel! They will win in {time} minutes."
+						current_win_condition = "The ATF control Mount Carmel! They will win in {time} minutes."
 						next_win = world.time + short_win_time(CIVILIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -145,7 +145,7 @@ var/no_loop_waco = FALSE
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The ATF control the Mount Carmel! They will win in {time} minutes."
+						current_win_condition = "The ATF control Mount Carmel! They will win in {time} minutes."
 						next_win = world.time + short_win_time(CIVILIAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -154,7 +154,7 @@ var/no_loop_waco = FALSE
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The ATF control the Mount Carmel! They will win in {time} minutes."
+						current_win_condition = "The ATF control Mount Carmel! They will win in {time} minutes."
 						next_win = world.time + short_win_time(AMERICAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -163,14 +163,14 @@ var/no_loop_waco = FALSE
 			else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 				if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 					if (last_win_condition != win_condition.hash)
-						current_win_condition = "The ATF control the Mount Carmel! They will win in {time} minutes."
+						current_win_condition = "The ATF control Mount Carmel! They will win in {time} minutes."
 						next_win = world.time + short_win_time(AMERICAN)
 						announce_current_win_condition()
 						current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 						current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 			else
 				if (current_win_condition != no_winner && current_winner && current_loser)
-					world << "<font size = 3>The Davidians has recaptured the Mount Carmel!</font>"
+					world << "<font size = 3>The Davidians have recaptured Mount Carmel!</font>"
 					current_winner = null
 					current_loser = null
 				next_win = -1
