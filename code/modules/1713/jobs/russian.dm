@@ -3074,7 +3074,7 @@
 
 /datum/job/russian/siberiad/infantry
 	title = "Soviet Army Rifleman"
-	rank_abbreviation = "Ryad
+	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
 
 	is_siberiad = TRUE
