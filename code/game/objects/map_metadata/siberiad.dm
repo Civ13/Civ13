@@ -1,10 +1,11 @@
 /obj/map_metadata/siberiad
 	ID = MAP_SIBERIAD
-	title = "Secret war Siberia"
+	title = "Operation Siberiad"
 	lobby_icon = "icons/lobby/siberiad.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	no_hardcore = FALSE
+	ambience = list('sound/ambience/winter.ogg')
 
 	faction_organization = list(
 		AMERICAN,
@@ -20,10 +21,11 @@
 	mission_start_message = "<font size=4>The remnants of the <b><font color = blue>Coalition</b></font> and the <font color = red><b>Soviet Army</b></font> are fighting for the control of an <b>Industrial Complex</b> in the <b>North-Eastern sector</b> of the area.<br>Each side will win if they manage to hold the radio station for <b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
-	ordinal_age = 5
+	ordinal_age = 7
 	songs = list(
 		"Audio - Emissions:1" = "sound/music/emissions.ogg")
 	gamemode = "King of the Hill"
+
 /obj/map_metadata/siberiad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
@@ -64,6 +66,7 @@
 			return "American"
 		if (RUSSIAN)
 			return "Soviet"
+			
 /obj/map_metadata/siberiad/roundend_condition_def2army(define)
 	..()
 	switch (define)
