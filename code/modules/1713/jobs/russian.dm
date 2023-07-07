@@ -2850,9 +2850,8 @@
 /////////////////////SIBERIAD//////////////////////////////////
 
 /datum/job/russian/siberiad/lt
-	title = "Operatsionnyy rukovoditel"
-	en_meaning = "Operation lead"
-	rank_abbreviation = "Opr."
+	title = "Soviet Army Commander"
+	rank_abbreviation = "Kapt."
 	spawn_location = "JoinLateRU"
 
 	is_siberiad = TRUE
@@ -2865,6 +2864,8 @@
 	additional_languages = list("English" = 70)
 	min_positions = 1
 	max_positions = 1
+
+	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/lt/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2917,20 +2918,19 @@
 	return TRUE
 
 /datum/job/russian/siberiad/squadlead
-	title = "Komandir pekhotnogo vzvoda"
-	en_meaning = "Infantry Squad leader"
-	rank_abbreviation = "Kpv."
+	title = "Soviet Army Squad Leader"
+	rank_abbreviation = "Snr Srj."
 	spawn_location = "JoinLateRU"
 
 	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("English" = 20)
 	min_positions = 2
 	max_positions = 8
+	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/squadlead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -2993,19 +2993,18 @@
 	return TRUE
 
 /datum/job/russian/siberiad/heavy
-	title = "Tyazhelaya pekhota"
-	en_meaning = "Heavy infantry"
-	rank_abbreviation = "H."
+	title = "Soviet Army Heavy Weapons Specialist"
+	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
 
 	is_siberiad = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("English" = 10)
 	min_positions = 4
 	max_positions = 8
+	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -3074,19 +3073,18 @@
 	return TRUE
 
 /datum/job/russian/siberiad/infantry
-	title = "Legkaya pekhota"
-	en_meaning = "Light Infantry"
-	rank_abbreviation = " "
+	title = "Soviet Army Rifleman"
+	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
 
 	is_siberiad = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("English" = 5)
 	min_positions = 9
 	max_positions = 90
+	selection_color = "#CC0000"
 
 /datum/job/russian/siberiad/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
