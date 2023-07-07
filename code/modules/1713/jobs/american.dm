@@ -1166,9 +1166,8 @@
 /////////////////////SIBERIAD//////////////////////////////////
 
 /datum/job/american/siberiad/lt
-	title = "Operation lead"
-	en_meaning = "Operation lead"
-	rank_abbreviation = "Opl."
+	title = "Coalition Commander"
+	rank_abbreviation = "Capt."
 	spawn_location = "JoinLateFAR"
 
 	is_siberiad = TRUE
@@ -1181,6 +1180,7 @@
 	additional_languages = list("Russian" = 70)
 	min_positions = 1
 	max_positions = 1
+	selection_color = "#153043"
 
 /datum/job/american/siberiad/lt/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1228,20 +1228,19 @@
 	return TRUE
 
 /datum/job/american/siberiad/squadlead
-	title = "Infantry Squad leader"
-	en_meaning = "Infantry Squad leader"
-	rank_abbreviation = "Sl."
+	title = "Coalition Squad Leader"
+	rank_abbreviation = "Sgt."
 	spawn_location = "JoinLateFAR"
 
 	is_siberiad = TRUE
 	is_squad_leader = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("Russian" = 20)
 	min_positions = 2
 	max_positions = 8
+	selection_color = "#153043"
 
 /datum/job/american/siberiad/squadlead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1304,19 +1303,18 @@
 	return TRUE
 
 /datum/job/american/siberiad/heavy
-	title = "Heavy infantry"
-	en_meaning = "Heavy infantry"
-	rank_abbreviation = "Mg."
+	title = "Coalition Heavy Weapons Specialist"
+	rank_abbreviation = "Cpl."
 	spawn_location = "JoinLateFAR"
 
 	is_siberiad = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("Russian" = 10)
 	min_positions = 4
 	max_positions = 8
+	selection_color = "#153043"
 
 /datum/job/american/siberiad/heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -1380,19 +1378,18 @@
 	return TRUE
 
 /datum/job/american/siberiad/infantry
-	title = "Light Infantry"
-	en_meaning = "Light Infantry"
-	rank_abbreviation = " ."
+	title = "Coalition Rifleman"
+	rank_abbreviation = "Pfc."
 	spawn_location = "JoinLateFAR"
 
 	is_siberiad = TRUE
 
 	uses_squads = TRUE
-	whitelisted = FALSE
 
 	additional_languages = list("Russian" = 10)
 	min_positions = 9
 	max_positions = 90
+	selection_color = "#153043"
 
 /datum/job/american/siberiad/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
