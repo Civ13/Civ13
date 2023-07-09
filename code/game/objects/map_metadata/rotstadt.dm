@@ -247,11 +247,10 @@ var/no_loop_rot = FALSE
 		dat += "[alive_civilians.len] Blugoslavians "
 
 	dat += "<br>"
-
+	
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 		if (!job.is_event)
 			continue
-		dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
 		if (istype(job, /datum/job/civilian))
 			if(!findtext(job.title, "BAF"))
 				continue
@@ -275,7 +274,6 @@ var/no_loop_rot = FALSE
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MR.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
-		dat +="<b><h1><big>Rotstadt's People's Republic</big></h1></b>"
 		if (istype(job, /datum/job/pirates))
 			if (!job.is_rotstadt)
 				continue
