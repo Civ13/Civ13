@@ -221,7 +221,8 @@ datum/admins/proc/print_chemical_reactions()
 //this is called just before reactants are removed.
 /datum/chemical_reaction/proc/send_data(var/datum/reagents/holder, var/reaction_limit)
 	return null
-
+/* aLL new chemicals will be added from the top going down starting from */
+// https://discord.com/channels/468979034571931648/1127619013447520266/1127644788502564864
 /* Common reactions */
 
 /datum/chemical_reaction/
@@ -230,6 +231,110 @@ datum/admins/proc/print_chemical_reactions()
 	result = ""
 	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
 	result_amount = 3
+
+// 	Mostly used for chromatography, foam productionn & fuel
+/datum/chemical_reaction/pentane
+	name = "Pentane"
+	id = "pentane"
+	result = "pentane"
+	required_reagents = list("carbon" = 15, "hydrogen" = 12)
+	result_amount = 25
+
+// 	Mostly used for vegtable oil extraction, paints, adhesives, induestial cleaing agents & fuel
+/datum/chemical_reaction/hexane
+	name = "Hexane"
+	id = "hexane"
+	result = "hexane"
+	required_reagents = list("carbon" = 6, "hydrogen" = 14)
+	result_amount = 20
+
+// 	Mostly used for essiental oil extraction, paints, adhesives, cleaing agents & fuel
+/datum/chemical_reaction/heptane
+	name = "Heptane"
+	id = "heptane"
+	result = "heptane"
+	required_reagents = list("carbon" = 7, "hydrogen" = 16)
+	result_amount = 20
+
+// 	Primarily used for fuel 
+/datum/chemical_reaction/octane
+	name = "Octane"
+	id = "octane"
+	result = "octane"
+	required_reagents = list("carbon" = 8, "hydrogen" = 18)
+	result_amount = 20
+
+// Mostly used for essiental oil extractant, refridgeration, propellant, chemical synthesis
+/datum/chemical_reaction/cyclopentane
+	name = "Cyclopentane"
+	id = "cyclopentane"
+	result = "cyclopentane"
+	required_reagents = list("carbon" = 5, "hydrogen" = 10)
+	result_amount = 10
+
+// mostly used for chromatogrpahy, degreasing, paints, orgnic synthesis, chemical synthsis
+/datum/chemical_reaction/cyclohexane
+	name = "Cyclohexane"
+	id = "cyclohexane"
+	result = "cyclohexane"
+	required_reagents = list("carbon" = 6, "hydrogen" = 12)
+	result_amount = 10
+
+// Mostly used for degreasing, paint stripping, fuel additive, chemical synthesis
+/datum/chemical_reaction/benzene
+	name = "Benzene"
+	id = "benzene"
+	result = "benzene"
+	required_reagents = list("carbon" = 6, "hydrogen" = 6)
+	result_amount = 5
+
+// Mostly used for paint thinning, explossives, fuel additive, chemical synthesis
+/datum/chemical_reaction/toluene
+	name = "Toluene"
+	id = "toluene"
+	result = "toluene"
+	required_reagents = list("carbon" = 7, "hydrogen" = 8)
+	result_amount = 5
+
+//Mostly used for chromotgraphy, tissue prossessing, degreasing, inks, chemical synthesis, 
+/datum/chemical_reaction/xylene
+	name = "Xylene"
+	id = "xylene"
+	result = "xylene"
+	required_reagents = list("carbon" = 8, "hydrogen" = 10)
+	result_amount = 10
+
+// mostly used polymerization, agriculture,  welding fuel & fuel 
+/datum/chemical_reaction/ethylene
+	name = "Ethylene"
+	id = "ethylene"
+	result = "ethylene"
+	required_reagents = list("carbon" = 2, "hydrogen" = 4)
+	result_amount = 3
+
+// mostly used for polymerization, refridgeration, propellents, fuel, chemical synthesis
+/datum/chemical_reaction/propylene
+	name = "Propylene"
+	id = "propylene"
+	result = "propylene"
+	required_reagents = list("carbon" = 3, "hydrogen" = 6)
+	result_amount = 5
+
+// mostly used for polymerization, rubber production, adhesives, lubricate, antioxydent, fuel and fuel additive,  
+/datum/chemical_reaction/butene
+	name = "Butene"
+	id = "butene"
+	result = "butene"
+	required_reagents = list("carbon" = 4, "hydrogen" = 8)
+	result_amount = 5
+
+// There is so many ways to make gasoline we just picked one ~valithor
+/datum/chemical_reaction/gasoline
+	name = "Gasoline"
+	id = "gasoline"
+	result = "gasoline"
+	required_reagents = list("octane" = 10, "cyclopentane" = 4 "toluene" = 5 "butene" = 1)
+	result_amount = 20
 
 /datum/chemical_reaction/penicillin
 	name = "Penicillin"
