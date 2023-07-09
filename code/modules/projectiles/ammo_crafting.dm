@@ -30,7 +30,8 @@
 		else if (W.amount >= amount)
 			var/spam_check = 0
 			var/list/listing = list("Cancel")
-			listing = list(/*"Explosive"*/, "Anti-Tank", "Shrapnel", "Cancel")
+			listing += list(/*"Explosive"*/, "Anti-Tank", "Shrapnel")
+
 			if (spam_check <= 1)	
 				var/input = WWinput(user, "What grenade do you want to make?", "Grenade Making", "Cancel", listing)
 				switch (input)
@@ -125,7 +126,7 @@
 			user << "<span class = 'notice'>Not enough warheads. Add more warheads to the stack.</span>"
 		else if (W.amount >= amount)
 			var/list/listing = list("Cancel")
-			listing = list("HEAT", "Fragmentation", "Cancel")
+			listing += list("HEAT", "Fragmentation")
 
 			var/input = WWinput(user, "What warhead do you want to make?", "Rocket Propeled Grenade Making", "Cancel", listing)
 			switch (input)
@@ -362,131 +363,132 @@
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
-	if (map.ID == MAP_OCCUPATION)
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age == 4)
-				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
-			else if (map.ordinal_age == 5)
-				listing = list("9x19 Parabellum",".45 Colt", "Cancel")
-			else if (map.ordinal_age == 6)
-				listing = list("9x19 Parabellum", "7.62x25mm", "7.62x38mmR", "Cancel")
-			else if (map.ordinal_age >= 7)
-				listing = list("9x19 Parabellum", "9x18 Makarov", "7.62x25mm", "7.62x38mmR", "Cancel")
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				if (".41 Short")
-					resultpath = /obj/item/ammo_casing/a41
-				if (".45 Colt")
-					resultpath = /obj/item/ammo_casing/a45
-				if (".44-40 Winchester")
-					resultpath = /obj/item/ammo_casing/a44
-				if ("9x19 Parabellum")
-					resultpath = /obj/item/ammo_casing/a9x19
-				if ("9x18 Makarov")
-					resultpath = /obj/item/ammo_casing/a9x18
-				if ("7.62x25mm")
-					resultpath = /obj/item/ammo_casing/a762x25
-				if ("7.62x38mmR")
-					resultpath = /obj/item/ammo_casing/a762x38
+	switch (map.ID)
+		if (MAP_OCCUPATION)
+			if (gunpowder >= gunpowder_max && bulletn >= amount)
+				var/list/listing = list("Cancel")
+				if (map.ordinal_age == 4)
+					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
+				else if (map.ordinal_age == 5)
+					listing += list("9x19 Parabellum",".45 Colt")
+				else if (map.ordinal_age == 6)
+					listing += list("9x19 Parabellum", "7.62x25mm", "7.62x38mmR")
+				else if (map.ordinal_age >= 7)
+					listing += list("9x19 Parabellum", "9x18 Makarov", "7.62x25mm", "7.62x38mmR")
+				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+				switch (input)
+					if ("Cancel")
+						return
+					if (".41 Short")
+						resultpath = /obj/item/ammo_casing/a41
+					if (".45 Colt")
+						resultpath = /obj/item/ammo_casing/a45
+					if (".44-40 Winchester")
+						resultpath = /obj/item/ammo_casing/a44
+					if ("9x19 Parabellum")
+						resultpath = /obj/item/ammo_casing/a9x19
+					if ("9x18 Makarov")
+						resultpath = /obj/item/ammo_casing/a9x18
+					if ("7.62x25mm")
+						resultpath = /obj/item/ammo_casing/a762x25
+					if ("7.62x38mmR")
+						resultpath = /obj/item/ammo_casing/a762x38
 
-			if (resultpath != null)
-				for(var/i=1;i<=amount;i++)
-					new resultpath(user.loc)
-				qdel(src)
-				return
+				if (resultpath != null)
+					for(var/i=1;i<=amount;i++)
+						new resultpath(user.loc)
+					qdel(src)
+					return
+				else
+					return
 			else
+				user << "<span class = 'notice'>The casing is not complete yet.</span>"
+				return
+		if (MAP_NOMADS_KARAFUTO)
+			if (gunpowder >= gunpowder_max && bulletn >= amount)
+				var/list/listing = list("Cancel")
+				if (map.ordinal_age == 4)
+					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
+				else if (map.ordinal_age == 5)
+					listing += list("9x19 Parabellum", ".45 Colt")
+				else if (map.ordinal_age == 6)
+					listing += list("9x19 Parabellum", "9x18 Makarov", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR", ".45 Colt")
+				else if (map.ordinal_age >= 7)
+					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR")
+				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+				switch (input)
+					if ("Cancel")
+						return
+					if (".41 Short")
+						resultpath = /obj/item/ammo_casing/a41
+					if (".45 Colt")
+						resultpath = /obj/item/ammo_casing/a45
+					if (".44-40 Winchester")
+						resultpath = /obj/item/ammo_casing/a44
+					if ("9x19 Parabellum")
+						resultpath = /obj/item/ammo_casing/a9x19
+					if ("9x18 Makarov")
+						resultpath = /obj/item/ammo_casing/a9x18
+					if ("8x22mmB nambu")
+						resultpath = /obj/item/ammo_casing/c8mmnambu
+					if ("9x22mm nambu")
+						resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
+					if ("7.62x38mmR")
+						resultpath = /obj/item/ammo_casing/a762x38
+
+				if (resultpath != null)
+					for(var/i=1;i<=amount;i++)
+						new resultpath(user.loc)
+					qdel(src)
+					return
+				else
+					return
+			else
+				user << "<span class = 'notice'>The casing is not complete yet.</span>"
 				return
 		else
-			user << "<span class = 'notice'>The casing is not complete yet.</span>"
-			return
-	else if (map.ID == MAP_NOMADS_KARAFUTO)
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age == 4)
-				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
-			else if (map.ordinal_age == 5)
-				listing = list("9x19 Parabellum", ".45 Colt", "Cancel")
-			else if (map.ordinal_age == 6)
-				listing = list("9x19 Parabellum", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR", ".45 Colt", "Cancel")
-			else if (map.ordinal_age >= 7)
-				listing = list("9x19 Parabellum", "9x18 Makarov", ".45 Colt", "8x22mmB nambu", "9x22mm nambu", "7.62x38mmR", "Cancel")
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
-					return
-				if (".41 Short")
-					resultpath = /obj/item/ammo_casing/a41
-				if (".45 Colt")
-					resultpath = /obj/item/ammo_casing/a45
-				if (".44-40 Winchester")
-					resultpath = /obj/item/ammo_casing/a44
-				if ("9x19 Parabellum")
-					resultpath = /obj/item/ammo_casing/a9x19
-				if ("9x18 Makarov")
-					resultpath = /obj/item/ammo_casing/a9x18
-				if ("8x22mmB nambu")
-					resultpath = /obj/item/ammo_casing/c8mmnambu
-				if ("7.62x38mmR")
-					resultpath = /obj/item/ammo_casing/a762x38
-				if ("9x22mm nambu")
-					resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
+			if (gunpowder >= gunpowder_max && bulletn >= amount)
+				var/list/listing = list("Cancel")
+				if (map.ordinal_age == 4)
+					listing += list(".45 Colt", ".44-40 Winchester", ".41 Short")
+				else if (map.ordinal_age == 5)
+					listing += list("9x19 Parabellum", ".45 Colt")
+				else if (map.ordinal_age == 6)
+					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
+				else if (map.ordinal_age >= 7)
+					listing += list("9x19 Parabellum", "9x18 Makarov"," .45 Colt")
+				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+				switch (input)
+					if ("Cancel")
+						return
+					if (".41 Short")
+						resultpath = /obj/item/ammo_casing/a41
+					if (".45 Colt")
+						resultpath = /obj/item/ammo_casing/a45
+					if (".44-40 Winchester")
+						resultpath = /obj/item/ammo_casing/a44
+					if ("9x19 Parabellum")
+						resultpath = /obj/item/ammo_casing/a9x19
+					if ("9x18 Makarov")
+						resultpath = /obj/item/ammo_casing/a9x18
 
-			if (resultpath != null)
-				for(var/i=1;i<=amount;i++)
-					new resultpath(user.loc)
-				qdel(src)
-				return
-			else
-				return
-		else
-			user << "<span class = 'notice'>The casing is not complete yet.</span>"
-			return
-	else
-		if (gunpowder >= gunpowder_max && bulletn >= amount)
-			var/list/listing = list("Cancel")
-			if (map.ordinal_age == 4)
-				listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
-			else if (map.ordinal_age == 5)
-				listing = list("9x19 Parabellum",".45 Colt", "Cancel")
-			else if (map.ordinal_age == 6)
-				listing = list("9x19 Parabellum",".45 Colt", "Cancel")
-			else if (map.ordinal_age >= 7)
-				listing = list("9x19 Parabellum","9x18 Makarov",".45 Colt", "Cancel")
-			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-			switch (input)
-				if ("Cancel")
+				if (resultpath != null)
+					for(var/i=1;i<=amount;i++)
+						new resultpath(user.loc)
+					qdel(src)
 					return
-				if (".41 Short")
-					resultpath = /obj/item/ammo_casing/a41
-				if (".45 Colt")
-					resultpath = /obj/item/ammo_casing/a45
-				if (".44-40 Winchester")
-					resultpath = /obj/item/ammo_casing/a44
-				if ("9x19 Parabellum")
-					resultpath = /obj/item/ammo_casing/a9x19
-				if ("9x18 Makarov")
-					resultpath = /obj/item/ammo_casing/a9x18
-
-			if (resultpath != null)
-				for(var/i=1;i<=amount;i++)
-					new resultpath(user.loc)
-				qdel(src)
-				return
+				else
+					return
 			else
+				user << "<span class = 'notice'>The casing is not complete yet.</span>"
 				return
-		else
-			user << "<span class = 'notice'>The casing is not complete yet.</span>"
-			return
 
 /obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
 	if (map.ID == MAP_OCCUPATION)
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
 			if (map.ordinal_age >= 6)
-				listing = list("7.92x57mm Mauser","7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
+				listing += list("7.92x57mm Mauser", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -521,11 +523,11 @@
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
 			if (map.ordinal_age == 4)
-				listing = list("8x53mm murata", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","Cancel")
+				listing += list("8x53mm murata", "7.62x54mmR", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)")
 			if (map.ordinal_age == 5)
-				listing = list("8x53mm murata", "7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
+				listing += list("8x53mm murata", "7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
 			if (map.ordinal_age >= 6)
-				listing = list("7.7x58mm arisaka","7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)","12 Gauge (Rubbershot)","Cancel")
+				listing += list("7.7x58mm arisaka","7.62x54mmR","6.5x50mm arisaka", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -564,11 +566,11 @@
 		if (gunpowder >= gunpowder_max && bulletn >= amount)
 			var/list/listing = list("Cancel")
 			if (map.ordinal_age == 4)
-				listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)",".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
+				listing += list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)",".577/450 Martini-Henry","7.65x53 Mauser")
 			else if (map.ordinal_age == 5)
-				listing = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)", "Cancel")
+				listing += list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
 			else if (map.ordinal_age >= 6)
-				listing = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)", "Cancel")
+				listing += list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "12 Gauge (Rubbershot)")
 
 			var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 			switch (input)
@@ -614,6 +616,7 @@
 		else
 			user << "<span class = 'notice'>The casing is not complete yet.</span>"
 			return
+
 /obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
 		return
