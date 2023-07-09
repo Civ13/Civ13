@@ -44,7 +44,7 @@
 "cJ" = (/obj/structure/window/barrier/railing/stone{dir = 4},/obj/structure/railing/steel{dir = 1},/turf/floor/plating/marble/decorative_tile,/area/caribbean/forest)
 "cN" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/one)
 "cS" = (/obj/structure/table/modern/table,/obj/item/weapon/pen/fancy,/turf/floor/carpet/redcarpet,/area/caribbean/british/land/inside)
-"cX" = (/obj/item/weapon/fire_extinguisher,/turf/wall/stone/marble,/area/caribbean/british/land/inside)
+"cX" = (/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/turf/wall/stone/marble,/area/caribbean/british/land/inside)
 "dg" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8},/obj/structure/potted_plant{dir = 1},/turf/floor/wood,/area/caribbean/british/land/inside)
 "dj" = (/obj/structure/bed/chair/comfy/red,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/carpet/purplecarpet,/area/caribbean/british/land/inside)
 "dm" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/british/land/inside)

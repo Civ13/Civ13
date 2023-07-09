@@ -33,7 +33,7 @@
 		if (masts.len)
 			check_sails()
 		if (do_vehicle_check() && currentspeed > 0)
-			for (var/obj/structure/vehicleparts/movement/sails/S in masts)
+			for (var/obj/structure/vehicleparts/movement/sail/S in masts)
 				if (!S.sails || S.broken)
 					moving = FALSE
 					stopmovementloop()
@@ -55,7 +55,7 @@
 /obj/structure/vehicleparts/axis/ship/stopmovementloop()
 	moving = FALSE
 	currentspeed = 0
-	for (var/obj/structure/vehicleparts/movement/sails/S in masts)
+	for (var/obj/structure/vehicleparts/movement/sail/S in masts)
 		S.update_icon()
 	return
 
@@ -69,7 +69,7 @@
 	var/enginestate = check_engine()
 	if (enginestate)
 		if (enginestate == 1) //sails
-			for(var/obj/structure/vehicleparts/movement/sails/MV in masts)
+			for(var/obj/structure/vehicleparts/movement/sail/MV in masts)
 				if (!engine || (engine && !engine.on))
 					if (MV.broken)
 						visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
@@ -336,7 +336,7 @@
 			stopmovementloop()
 			return
 	var/found = FALSE
-	for(var/obj/structure/vehicleparts/movement/sails/SL in masts)
+	for(var/obj/structure/vehicleparts/movement/sail/SL in masts)
 		found = TRUE
 		break
 	if (found)

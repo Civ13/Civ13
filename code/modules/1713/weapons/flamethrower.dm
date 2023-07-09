@@ -126,6 +126,7 @@
 	amount_per_transfer_from_this = 25
 	volume = 100
 	density = FALSE
+	dropsound = 'sound/effects/drop_default.ogg'
 
 /obj/item/weapon/reagent_containers/glass/flamethrower/filled/New()
 	..()
@@ -243,6 +244,8 @@
 	amount_per_transfer_from_this = 25
 	volume = 200
 	density = FALSE
+	dropsound = 'sound/effects/drop_default.ogg'
+	
 /obj/item/weapon/reagent_containers/glass/flamethrower_mg/filled/New()
 	..()
 	reagents.add_reagent("gasoline",200)

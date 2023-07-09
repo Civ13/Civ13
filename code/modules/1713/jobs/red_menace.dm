@@ -634,7 +634,7 @@
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/fireaxe(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/firefighter(H), slot_gloves)
-				H.equip_to_slot_or_del(new /obj/item/weapon/fire_extinguisher(H), slot_r_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/fire_extinguisher(H), slot_r_hand)
 				H.add_note("Role", "You are a Firefighter. Assist your fellow citizens against the invasion.")
 				H.setStat("strength", STAT_MEDIUM_HIGH)
 				H.setStat("crafting", STAT_NORMAL)

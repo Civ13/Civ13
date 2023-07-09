@@ -548,7 +548,7 @@
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood is no longer useful as raw.
+			user << "<span class='notice'>You dismantle \the [src].</span>" //We lose some materials in the process. Some wood is no longer useful as raw.
 			new /obj/item/sail(get_turf(src))
 			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
 			W.amount += 9 //adds 9 boards to the stack, making it 10

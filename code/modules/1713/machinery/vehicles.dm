@@ -835,13 +835,17 @@
 ///////////////////////EXTRA STUFF//////////////////////
 
 /obj/item/sail
-	name = "small sail"
-	desc = "a small sail. Will fit a minor boat."
+	name = "small cloth sail"
+	desc = "A small cloth sail. Will fit a minor boat."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE
 	w_class = ITEM_SIZE_LARGE
+
+/obj/item/sail/wool
+	name = "small wool sail"
+	desc = "A small cloth sail. Will fit a minor boat."
 
 /obj/item/tank_systems
 	name = "Tank System"

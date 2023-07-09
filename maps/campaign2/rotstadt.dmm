@@ -712,7 +712,7 @@
 /area/caribbean)
 "dG" = (
 /obj/structure/table/wood,
-/obj/item/weapon/fire_extinguisher,
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "dH" = (

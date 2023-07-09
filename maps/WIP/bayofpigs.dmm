@@ -341,7 +341,7 @@
 "gD" = (/obj/covers/cement_wall,/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gE" = (/obj/structure/closet/anchored,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gF" = (/obj/structure/closet/anchored,/obj/item/weapon/grenade/ww2/mk2,/obj/item/weapon/grenade/ww2/mk2,/turf/floor/plating/concrete,/area/caribbean/roofed)
-"gG" = (/obj/covers/cement_wall,/obj/item/weapon/fire_extinguisher,/turf/wall/cement,/area/caribbean/roofed)
+"gG" = (/obj/covers/cement_wall,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/turf/wall/cement,/area/caribbean/roofed)
 "gH" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/turf/floor/wood,/area/caribbean/roofed)
 "gI" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gJ" = (/obj/structure/bed/wood,/turf/floor/wood,/area/caribbean/roofed)
