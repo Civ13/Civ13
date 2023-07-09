@@ -246,9 +246,8 @@ datum/admins/proc/print_chemical_reactions()
 	id = "hexane"
 	result = "hexane"
 	required_reagents = list("carbon" = 6, "hydrogen" = 14)
-	result_amount = 20
+	result_amount = 1
 
-// 	Mostly used for essiental oil extraction, paints, adhesives, cleaing agents & fuel
 /datum/chemical_reaction/heptane
 	name = "Heptane"
 	id = "heptane"
