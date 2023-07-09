@@ -5,9 +5,9 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is still going on."
-	victory_time = 36000
-	grace_wall_timer = 9000
-	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
+	victory_time = 24000
+	grace_wall_timer = 4800
+	mission_start_message = "<font size=4>The Blugoslavian Armed Forces are launching an counter-insurgency operation in the occupied city of Rotstadt.<br>Their objective is to capture the RPR militia's <b>Commanding Bunker</b> in the <b>North-West corner</b> of the map.<br>The operation will begin in <b>8 minutes</b>.</font>"
 
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british,
