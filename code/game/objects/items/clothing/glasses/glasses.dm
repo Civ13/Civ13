@@ -122,6 +122,30 @@
 	darkness_view = -1
 	body_parts_covered = FALSE
 
+/obj/item/clothing/glasses/blueglasses
+	desc = "A pair of glasses that look like they're from the 60's, Groovy BAY'BE."
+	name = "blue vintage glasses"
+	icon_state = "bluelense"
+	item_state = "bluelense"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/greenglasses
+	desc = "A pair of glasses that look like they're from the 60's, Groovy BAY'BE."
+	name = "green vintage glasses"
+	icon_state = "greenlense"
+	item_state = "greenlense"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
+/obj/item/clothing/glasses/yellowglasses
+	desc = "A pair of glasses that look like they're from the 60's, Groovy BAY'BE."
+	name = "yellow vintage glasses"
+	icon_state = "yellowlense"
+	item_state = "yellowlense"
+	darkness_view = -1
+	body_parts_covered = FALSE
+
 /obj/item/clothing/glasses/univisorred
 	desc = "A uni lense visor that look like they're from the 80's, Looks a bit futuristic."
 	name = "univisor red"

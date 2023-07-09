@@ -642,7 +642,7 @@
 	not_disassemblable = TRUE
 	density = TRUE
 	bound_width = 64
-	
+
 /obj/structure/props/car_wreck
 	name = "car wreck"
 	desc = "Looks like it has been here for a while."
@@ -908,6 +908,18 @@
 	desc = "A mic stand."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "microphone_stand"
+	flammable = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = TRUE
+	anchored = TRUE
+
+/obj/structure/props/power_transformer
+	name = "power transformer"
+	desc = "A static device transforming electrical voltage from one level or phase to another. "
+	icon = 'icons/obj/powertransformer.dmi'
+	icon_state = "powertransformer"
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE

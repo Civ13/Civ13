@@ -18,7 +18,7 @@
 	age = "2049"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siberian Conflict"
-	mission_start_message = "<font size=4>The remnants of the <b><font color = blue>Coalition</b></font> and the <font color = red><b>Soviet Army</b></font> are fighting for the control of an <b>Industrial Complex</b> in the <b>North-Eastern sector</b> of the area.<br>Each side will win if they manage to hold the radio station for <b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The remnants of the <font color = 'blue'>Coalition</font color> and the <font color = red><b>Soviet Army</b></font> are fighting for the control of an <b>Military Industrial Complex</b> in the <b>MIDDLE</b> of the area of operations.<br>In order to win, a side has to hold the <b>Control Room</b> for<b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	ordinal_age = 7
@@ -66,7 +66,7 @@
 			return "American"
 		if (RUSSIAN)
 			return "Soviet"
-			
+
 /obj/map_metadata/siberiad/roundend_condition_def2army(define)
 	..()
 	switch (define)
@@ -109,6 +109,9 @@
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] were victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		if (current_winner == "Americans")
+			for (var/obj/structure/nuclear_missile/nuke in world)
+				nuke.activate()
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
@@ -173,3 +176,37 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+// MAP SPECIFIC OBJECTS
+
+/obj/structure/nuclear_missile
+	name = "nuclear missile"
+	desc = "A short range tactical nuclear missile."
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "rocket"
+	density = TRUE
+	opacity = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	flammable = FALSE
+	anchored = TRUE
+	var/active = FALSE
+	pixel_x = -32
+	layer = 6.01
+
+/obj/structure/nuclear_missile/update_icon()
+	if (active)
+		icon_state = "rocket_fly"
+	else
+		icon_state = "rocket"
+/obj/structure/nuclear_missile/proc/activate()
+	if (!active)
+		active = TRUE
+		update_icon()
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/effects/missile_big.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M << SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>")
+				M.client << uploaded_sound
+		qdel(src)
