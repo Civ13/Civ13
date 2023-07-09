@@ -246,7 +246,9 @@
 			if ("Fiction")
 				maps = list(
 					MAP_TANTIVEIV = 0,
-					MAP_WHITERUN = 10,)
+					MAP_WHITERUN = 10,
+					//MAP_ROTSTADT = 12,
+				)
 			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
 				maps = list(
 					MAP_HUNT = 6,

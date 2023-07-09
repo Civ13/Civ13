@@ -132,13 +132,13 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+			if(map.ID == MAP_CAMPAIGN)
 				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 			else
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN || map.ID != MAP_ROTSTADT || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -191,7 +191,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT) && !client.holder)
+		if (map.ID == MAP_CAMPAIGN && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -439,8 +439,6 @@ var/global/redirect_all_players = null
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
-			else // To be changed according to new non-canon maps or Nomads Persistence
-				LateChoicesRotstadt(factjob) // To be changed according to new non-canon maps or Nomads Persistence
 		else
 			if (config.discordurl)
 				WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Visit the discord for more information: [config.discordurl]")
@@ -494,8 +492,8 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
-		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman") && !findtext(href_list["SelectedJob"], "RPR Fighter"))
+		if (map.ID == MAP_CAMPAIGN)
+			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
@@ -1390,9 +1388,9 @@ var/global/redirect_all_players = null
 						temp_name = "Chinese National Army"
 				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
 					if (temp_name == "Civilian")
-						temp_name = "Red"
+						temp_name = "Blugoslavia"
 					if (temp_name == "Pirates")
-						temp_name = "Blue"
+						temp_name = "Redmenia"
 				else if (map && map.ID == "MAP_HOLDMADRID")
 					if (temp_name == "Civilian")
 						temp_name = "Republican"

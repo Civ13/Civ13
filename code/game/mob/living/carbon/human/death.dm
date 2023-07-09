@@ -422,7 +422,7 @@
 		if (map.gamemode == "Hardcore")
 			client.next_normal_respawn = world.realtime+999999
 		else
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+			if (map.ID == MAP_CAMPAIGN)
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)
 				client.respawn_count++
 			else

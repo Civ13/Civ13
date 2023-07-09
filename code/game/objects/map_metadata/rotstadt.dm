@@ -26,8 +26,9 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"All is Lost:1" = "sound/music/shellshock.ogg",)
+		"Noisia - Shellshock:1" = "sound/music/shellshock.ogg",)
 	artillery_count = 0
+	no_hardcore = TRUE
 	var/list/squad_jobs_blue = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
@@ -46,7 +47,7 @@
 	..()
 	if (istype(J, /datum/job/civilian))
 		if (J.is_event)
-			if (!istype(J, /datum/job/civilian/bluefaction/navy))
+			if(findtext(J.title, "BAF"))
 				. = TRUE
 			else
 				. = FALSE
@@ -226,7 +227,7 @@ var/no_loop_rot = FALSE
 	last_win_condition = win_condition.hash
 	return TRUE
 
-/mob/new_player/proc/LateChoicesRotstadt(factjob)
+/*/mob/new_player/proc/LateChoicesRotstadt(factjob)
 	var/list/available_jobs_per_side = list(
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
@@ -325,5 +326,5 @@ var/no_loop_rot = FALSE
 	"}
 
 	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+		src << browse(data, "window=latechoices;size=600x640;can_close=1")*/
 
