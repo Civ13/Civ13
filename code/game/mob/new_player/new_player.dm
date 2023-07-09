@@ -484,16 +484,22 @@ var/global/redirect_all_players = null
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
-					LateChoices()
+					if (map.ID == MAP_ROTSTADT)
+						LateChoicesRotstadt()
+					else
+						LateChoices()
 					return TRUE
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
-		LateChoices()
+		if (map.ID == MAP_ROTSTADT)
+			LateChoicesRotstadt()
+		else
+			LateChoices()
 		return TRUE
 
 	if (href_list["SelectedJob"])
-		if (map.ID == MAP_CAMPAIGN)
-			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
+		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+			if (map.ID == MAP_CAMPAIGN && !findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
@@ -1386,11 +1392,16 @@ var/global/redirect_all_players = null
 						temp_name = "Chinese Red Army"
 					if (temp_name == "Chinese")
 						temp_name = "Chinese National Army"
-				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
 						temp_name = "Blugoslavia"
 					if (temp_name == "Pirates")
 						temp_name = "Redmenia"
+				else if (map && map.ID == MAP_ROTSTADT)
+					if (temp_name == "Civilian")
+						temp_name = "Blugoslavian Armed Forces"
+					if (temp_name == "Pirates")
+						temp_name = "Rotstadt People's Republic"
 				else if (map && map.ID == "MAP_HOLDMADRID")
 					if (temp_name == "Civilian")
 						temp_name = "Republican"

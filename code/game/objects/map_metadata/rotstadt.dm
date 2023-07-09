@@ -8,7 +8,7 @@
 	victory_time = 36000
 	grace_wall_timer = 9000
 	mission_start_message = "<font size=4><b>15 minutes</b> until the battle begins.</font>"
-	
+
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british,
 		list(PIRATES) = /area/caribbean/japanese/land/inside,
@@ -17,7 +17,7 @@
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
-		
+
 	age = "2023"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
@@ -227,7 +227,7 @@ var/no_loop_rot = FALSE
 	last_win_condition = win_condition.hash
 	return TRUE
 
-/*/mob/new_player/proc/LateChoicesRotstadt(factjob)
+/mob/new_player/proc/LateChoicesRotstadt()
 	var/list/available_jobs_per_side = list(
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
@@ -248,14 +248,11 @@ var/no_loop_rot = FALSE
 
 	dat += "<br>"
 
-	if (factjob == "BAF")
-		dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
-	else if (factjob == "RDF")
-		dat +="<b><h1><big>Rotstadt's People's Republic</big></h1></b>"
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 		if (!job.is_event)
 			continue
-		if (factjob == "BAF")
+		dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
+		if (istype(job, /datum/job/civilian))
 			if(!findtext(job.title, "BAF"))
 				continue
 			if(findtext(job.title, "BAF Doctor") && MR.squad_jobs_blue["none"]["Doctor"]<= 0)
@@ -278,14 +275,15 @@ var/no_loop_rot = FALSE
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MR.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
-		else if (factjob == "RDF")
+		dat +="<b><h1><big>Rotstadt's People's Republic</big></h1></b>"
+		if (istype(job, /datum/job/pirates))
 			if (!job.is_rotstadt)
 				continue
 			if(findtext(job.title, "RPR Commander") && MR.squad_jobs_red["none"]["Commander"]<= 0)
 				continue
 			if(findtext(job.title, "RPR Doctor") && MR.squad_jobs_red["none"]["Doctor"]<= 0)
 				continue
-			
+
 		if (job)
 			var/active = processes.job_data.get_active_positions(job)
 			var/extra_span = "<b>"
@@ -326,5 +324,5 @@ var/no_loop_rot = FALSE
 	"}
 
 	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")*/
+		src << browse(data, "window=latechoices;size=600x640;can_close=1")
 
