@@ -219,9 +219,9 @@
 /obj/item/stack/ammopart/casing/artillery/wired/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/electronics))
-		if(W.amount < 8)
-			user << "<span class='notice'>You need more electronics to do this.</span>"
-		else if(W.amount == 8)
+		if(W.amount < 20)
+			user << "<span class='notice'>You need at least 20 electronics to do this.</span>"
+		else if(W.amount == 20)
 			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 			user << "<span class='notice'>You attach electronics to the wires.</span>"
 			qdel(src)
@@ -235,9 +235,9 @@
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/ore/uranium))
-		if(W.amount < 5)
-			user << "<span class='notice'>You need more uranium to do this.</span>"
-		else if(W.amount == 5)
+		if(W.amount < 10)
+			user << "<span class='notice'>You need at least 10 uranium to do this.</span>"
+		else if(W.amount == 10)
 			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 			user << "<span class='notice'>You attach uranium to the electronics and stuff it in the casing.</span>"
 			qdel(src)
