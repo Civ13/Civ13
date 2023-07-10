@@ -71,7 +71,7 @@
 		var/turf/floor/beach/water/WT = src
 		if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
 			var/obj/item/weapon/reagent_containers/RG = C
-			if (istype(RG) && RG.is_open_container())
+			if (istype(RG) && RG.is_open_container() && !(istype(RG,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
 				if (do_after(user, 15, src, check_for_repeats = FALSE))
 					var/sumex = 0
 					if (WT.sickness > 0)

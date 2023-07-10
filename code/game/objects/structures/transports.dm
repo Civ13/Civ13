@@ -134,9 +134,9 @@
 	if (istype(A, /mob/living/human))
 		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
-			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
 			if (do_after(M, 40, src))
-				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
 				M.plane = GAME_PLANE
 				M.forceMove(get_turf(src))
 				if (!driver)
@@ -155,21 +155,22 @@
 				update_overlay()
 				update_icon()
 				return
-	else if (istype(A, /obj) && storagecapacity >= 1)
+	else if (istype(A, /obj/structure) && storagecapacity >= 1)
 		if (src == A)
 			return
 		var/obj/structure/O = A
-		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity && O != src)
-			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
+		if (O != src && ontop_o.len < storagecapacity && !(O.anchored) && !(O in ontop_o))
+			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
-				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
-				O.pixel_x = pixel_x+16
-				O.pixel_y = pixel_y+16
+				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
+				O.loc = get_turf(src)
+				O.pixel_x = pixel_x + 16
+				O.pixel_y = pixel_y + 16
 				ontop_o += O
 				O.anchored = TRUE
+				O.density = FALSE
 				O.dir = dir
 				if (istype(O, /obj/structure/cannon))
-					O.icon = 'icons/obj/cannon.dmi'
 					O.x = x
 					O.y = y
 					O.pixel_x = pixel_x
@@ -180,9 +181,9 @@
 
 /obj/structure/vehicle/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
-		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		user.visible_message(SPAN_NOTICE("[user] start leaving \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
 		if (do_after(user, 30, src))
-			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+			user.visible_message(SPAN_NOTICE("[user] sucessfully leaves \the [src]."), SPAN_NOTICE("You leave \the [src]."))
 			ontop -= user
 			user.pixel_x = 0
 			user.pixel_y = 0
@@ -206,11 +207,15 @@
 			return
 	else if (ontop_o.len > 0)
 		for (var/obj/structure/O in ontop_o)
-			O.anchored = FALSE
-			ontop_o -= O
-			O.pixel_x = 0
-			O.pixel_y = 0
-			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
+			if (do_after(user, 15, src))
+				O.anchored = FALSE
+				if (initial(O.density))
+					O.density = TRUE
+				ontop_o -= O
+				O.pixel_x = 0
+				O.pixel_y = 0
+				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
+				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
@@ -227,9 +232,9 @@
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
-			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 			if (do_after(user, 30, src))
-				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
 				user.pixel_x = 0
 				user.pixel_y = 0
@@ -292,9 +297,9 @@
 /obj/structure/vehicle/raft/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		user << SPAN_NOTICE("You begin dismantling \the [src].")
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood and rope is no longer useful as raw.
+			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood and rope is no longer useful as raw.
 			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
 			new /obj/item/stack/material/rope(get_turf(src))
 			W.amount += 4 //adds 4 boards to the stack, making it 5
@@ -464,17 +469,17 @@
 		driver.pixel_y = pixel_y
 		switch (dir)
 			if (SOUTH)
-				driver.pixel_x += 23
-				driver.pixel_y += 33
+				driver.pixel_x += 24
+				driver.pixel_y += 32
 			if (NORTH)
-				driver.pixel_x += 10
-				driver.pixel_y += 11
+				driver.pixel_x += 8
+				driver.pixel_y += 0
 			if (EAST)
-				driver.pixel_x += 5
-				driver.pixel_y += 31
+				driver.pixel_x += 0
+				driver.pixel_y += 24
 			if (WEST)
-				driver.pixel_x += 31
-				driver.pixel_y += 10
+				driver.pixel_x += 32
+				driver.pixel_y += 8
 		if (!(driver in range(1,src)))
 			ontop -= driver
 			driver.anchored = FALSE
@@ -497,58 +502,46 @@
 		currentcap.pixel_y = pixel_y
 		switch (dir)
 			if (SOUTH)
-				currentcap.pixel_x += 10
-				currentcap.pixel_y += 33
+				currentcap.pixel_x += 8
+				currentcap.pixel_y += 32
 			if (NORTH)
-				currentcap.pixel_x += 25
-				currentcap.pixel_y += 11
+				currentcap.pixel_x += 24
+				currentcap.pixel_y += 0
 			if (EAST)
-				currentcap.pixel_x += 5
-				currentcap.pixel_y += 19
+				currentcap.pixel_x += 0
+				currentcap.pixel_y += 8
 			if (WEST)
-				currentcap.pixel_x += 31
-				currentcap.pixel_y += 19
+				currentcap.pixel_x += 32
+				currentcap.pixel_y += 24
 		if (!(currentcap in range(1,src)))
 			ontop -= currentcap
 			currentcap.anchored = FALSE
 			currentcap = null
 	if (ontop_o.len > 0)
-		if(storagecapacity >= 1)
-			for(var/obj/structure/OB in ontop_o)
-				switch (dir)
-					if (SOUTH, NORTH)
-						if (istype(OB, /obj/structure/cannon))
-							OB.pixel_x = pixel_x
-							if (dir == SOUTH)
-								OB.pixel_y = pixel_y-32
-								OB.dir = dir
-							else
-								OB.pixel_y = pixel_y+32
-								OB.dir = dir
-						else
-							OB.pixel_x = pixel_x+16
-							OB.pixel_y = pixel_y+20
-							OB.dir = dir
-					if (EAST, WEST)
-						if (istype(OB, /obj/structure/cannon))
-							OB.pixel_y = pixel_y
-							if (dir == WEST)
-								OB.pixel_x = pixel_x-32
-								OB.dir = dir
-							else
-								OB.pixel_x = pixel_x+32
-								OB.dir = dir
-						else
-							OB.pixel_x = pixel_x+32
-							OB.pixel_y = pixel_y+10
-							OB.dir = dir
+		for(var/obj/structure/OB in ontop_o)
+			OB.pixel_x = pixel_x
+			OB.pixel_y = pixel_y
+			OB.dir = dir
+			switch (dir)
+				if (NORTH)
+					OB.pixel_x += 16
+					OB.pixel_y += 38
+				if (SOUTH)
+					OB.pixel_x += 16
+					OB.pixel_y += 10
+				if (EAST)
+					OB.pixel_x += 32
+					OB.pixel_y += 24	
+				if (WEST)
+					OB.pixel_x += 0
+					OB.pixel_y += 24
 
 /obj/structure/vehicle/boat/sailboat/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		user << SPAN_NOTICE("You begin dismantling \the [src].")
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood is no longer useful as raw.
+			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood is no longer useful as raw.
 			new /obj/item/sail(get_turf(src))
 			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
 			W.amount += 9 //adds 9 boards to the stack, making it 10
@@ -563,9 +556,9 @@
 	if (istype(A, /mob/living/human))
 		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start going on \the [src]..."))
 			if (do_after(M, 40, src))
-				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs into \the [src]."), SPAN_NOTICE("You sucessfully climb into \the [src]."))
 				M.plane = GAME_PLANE
 				M.forceMove(get_turf(src))
 				if (!driver)
@@ -588,34 +581,35 @@
 				update_overlay()
 				update_icon()
 				return
-	else if (istype(A, /obj))
+	else if (istype(A, /obj/structure))
 		if (src == A)
 			return
 		var/obj/structure/O = A
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
-			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
+			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
-				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
-				O.pixel_x = pixel_x+16
-				O.pixel_y = pixel_y+16
+				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
+				O.loc = get_turf(src)
+				O.pixel_x = pixel_x + 16
+				O.pixel_y = pixel_y + 16
 				ontop_o += O
-				O.dir = dir
 				O.anchored = TRUE
+				O.density = FALSE
+				O.dir = dir
 				if (istype(O, /obj/structure/cannon))
 					O.x = x
 					O.y = y
 					O.pixel_x = pixel_x
 					O.pixel_y = pixel_y
-					O.icon = 'icons/obj/cannon.dmi'
 				update_overlay()
 				update_icon()
 				return
 
 /obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
-		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(user, 30, src))
-			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+			user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
 			user.pixel_x = 0
 			user.pixel_y = 0
@@ -645,12 +639,16 @@
 			return
 	else if (ontop_o.len > 0)
 		for (var/obj/structure/O in ontop_o)
-			O.anchored = FALSE
-			ontop_o -= O
-			O.pixel_x = 0
-			O.pixel_y = 0
-			O.dir = dir
-			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
+			if (do_after(user, 15, src))
+				O.anchored = FALSE
+				if (initial(O.density))
+					O.density = TRUE
+				ontop_o -= O
+				O.pixel_x = 0
+				O.pixel_y = 0
+				O.dir = dir
+				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
+				O.loc = get_turf(user)
 		return
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
@@ -696,9 +694,9 @@
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
-			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 			if (do_after(user, 30, src))
-				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
 				user.pixel_x = 0
 				user.pixel_y = 0

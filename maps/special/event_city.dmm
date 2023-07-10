@@ -708,7 +708,7 @@
 "ov" = (/obj/structure/table/rack/shelf,/obj/item/weapon/globe,/obj/item/weapon/globe,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "ow" = (/obj/structure/table/rack/shelf,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/flame/lighter/zippo,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "ox" = (/obj/structure/table/rack/shelf,/obj/item/weapon/flame/lighter/bullet,/obj/item/weapon/flame/lighter/bullet,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
-"oy" = (/obj/structure/table/rack/shelf,/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
+"oy" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "oz" = (/obj/structure/table/rack/shelf,/obj/item/weapon/clipboard,/obj/item/weapon/clipboard,/obj/item/weapon/clipboard,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/steel,/area/caribbean/roofed)
 "oA" = (/obj/structure/table/modern/retable,/obj/covers/jail/steeljail,/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "oB" = (/obj/structure/window/classic/reinforced,/obj/covers/jail/steeljail,/obj/structure/curtain/leather/open,/turf/floor/plating/tiled,/area/caribbean/german/inside)

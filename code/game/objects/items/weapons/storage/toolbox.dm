@@ -28,7 +28,7 @@
 	New()
 		..()
 		new /obj/item/weapon/wrench(src)
-		new /obj/item/weapon/fire_extinguisher(src)
+		new /obj/item/weapon/reagent_containers/glass/fire_extinguisher(src)
 		new /obj/item/flashlight/flashlight(src)
 		new /obj/item/weapon/weldingtool(src)
 		new /obj/item/weapon/wirecutters/boltcutters(src)

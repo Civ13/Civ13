@@ -2473,7 +2473,7 @@
 "xEg" = (/obj/structure/bed/custsofa/left{color = "#00A300"; uncolored = 0; dir = 4},/obj/effect/floor_decal/corner_kafel/green/diagonal,/obj/effect/landmark{name = "JoinLateCivB"},/turf/floor/plating/marble/tile,/area/caribbean/roofed)
 "xEL" = (/obj/item/weapon/trafficcone,/turf/floor/plating/road/whiteline{dir = 8; icon_state = "road_line"},/area/caribbean/nomads/forest)
 "xES" = (/obj/structure/floodlight/on,/obj/effect/floor_decal/industrial/hatch/yellow,/turf/floor/plating/road,/area/caribbean/nomads/forest)
-"xFp" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/fire_extinguisher,/obj/item/weapon/fire_extinguisher,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"xFp" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "xFu" = (/obj/structure/props/sofa/p2,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "xGb" = (/turf/floor/broken_floor,/area/caribbean)
 "xGT" = (/obj/effect/floor_decal/corner_kafel/white/diagonal{color = "#D2C273"},/obj/structure/bed/custsofa{color = "#E7B90B"; uncolored = 0},/obj/effect/landmark{name = "JoinLateCivA"},/turf/floor/plating/marble/tile,/area/caribbean/roofed)

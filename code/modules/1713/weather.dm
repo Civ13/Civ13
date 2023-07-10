@@ -432,17 +432,17 @@
 
 	switch (time_of_day)
 		if ("Midday")
-			loc_temp *= 1.03
+			loc_temp *= 1.05
 		if ("Afternoon")
-			loc_temp *= 1.02
+			loc_temp *= 1.03
 		if ("Morning")
 			loc_temp *= 1.01
 		if ("Evening")
 			loc_temp *= 1.00 // default
 		if ("Early Morning")
-			loc_temp *= 0.99
+			loc_temp *= 0.96
 		if ("Night")
-			loc_temp *= 0.97
+			loc_temp *= 0.92
 
 	switch (mob_area.weather)
 		if (WEATHER_NONE)
@@ -472,17 +472,22 @@
 			loc_temp = -10
 
 	for (var/obj/structure/brazier/BR in range(3, src))
-		if (BR.on == TRUE)
+		if (BR.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
 	for (var/obj/structure/heatsource/HS in range(3, src))
-		if (HS.on == TRUE)
+		if (HS.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
 	for (var/obj/structure/oven/fireplace/FP in range(1, src))
-		if (FP.on == TRUE)
+		if (FP.on)
+			if (loc_temp < 22)
+				loc_temp = 22
+				break
+	for (var/obj/structure/engine/EN in range(1, src))
+		if (EN.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break

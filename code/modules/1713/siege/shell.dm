@@ -483,6 +483,24 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+/obj/structure/shellrack/autoloader/full100/New()
+	..()
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	new /obj/item/cannon_ball/shell/tank/HE100(storage)
+
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	new /obj/item/cannon_ball/shell/tank/AP100(storage)
+
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+	update_icon()
+
 /obj/structure/shellrack/autoloader/full125/New()
 	..()
 	new /obj/item/cannon_ball/shell/tank/HE125(storage)

@@ -496,7 +496,7 @@
 				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
 				if (map.ordinal_age >= 6)
-					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
+					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfield_ww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
 			if("Semi-Auto (large)")
 				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
@@ -528,6 +528,7 @@
 			if ("Triple Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
+				
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
 			current_gun.override_sprite = dst
