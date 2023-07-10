@@ -207,14 +207,15 @@
 			return
 	else if (ontop_o.len > 0)
 		for (var/obj/structure/O in ontop_o)
-			O.anchored = FALSE
-			if (initial(O.density))
-				O.density = TRUE
-			ontop_o -= O
-			O.pixel_x = 0
-			O.pixel_y = 0
-			user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-			O.loc = get_turf(user)
+			if (do_after(user, 15, src))
+				O.anchored = FALSE
+				if (initial(O.density))
+					O.density = TRUE
+				ontop_o -= O
+				O.pixel_x = 0
+				O.pixel_y = 0
+				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
+				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
@@ -638,15 +639,16 @@
 			return
 	else if (ontop_o.len > 0)
 		for (var/obj/structure/O in ontop_o)
-			O.anchored = FALSE
-			if (initial(O.density))
-				O.density = TRUE
-			ontop_o -= O
-			O.pixel_x = 0
-			O.pixel_y = 0
-			O.dir = dir
-			user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-			O.loc = get_turf(user)
+			if (do_after(user, 15, src))
+				O.anchored = FALSE
+				if (initial(O.density))
+					O.density = TRUE
+				ontop_o -= O
+				O.pixel_x = 0
+				O.pixel_y = 0
+				O.dir = dir
+				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
+				O.loc = get_turf(user)
 		return
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
