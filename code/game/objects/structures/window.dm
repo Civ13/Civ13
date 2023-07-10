@@ -779,6 +779,7 @@
 	name = "reinforced glass"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "bank_glass"
+	basestate = "bank_glass"
 	maxhealth = 1000
 	density = TRUE
 	flammable = FALSE
