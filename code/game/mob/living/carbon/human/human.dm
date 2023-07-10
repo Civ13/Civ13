@@ -8,6 +8,7 @@
 	var/can_mutate = FALSE //from high rads, into ant etc
 	var/looking = FALSE
 	var/look_amount = 3
+	var/can_defib = TRUE //Horrible damage (like beheadings) will prevent defibbing organics.
 /mob/living/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)
@@ -140,7 +141,7 @@ var/list/coefflist = list()
 				stat("Industrial Research:","[map.civf_research[1]]/[civmax_research[1]]")
 				stat("Military Research:","[map.civf_research[2]]/[civmax_research[2]]")
 				stat("Health Research:","[map.civf_research[3]]/[civmax_research[3]]")
-			
+
 			if (original_job_title == "Redmenian Civilian")
 				stat("Industrial Research:","[map.civa_research[1]]/[civmax_research[1]]")
 				stat("Military Research:","[map.civa_research[2]]/[civmax_research[2]]")

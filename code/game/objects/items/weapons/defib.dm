@@ -256,15 +256,35 @@
 		return "buzzes, \"Patient's chest is obstructed. Operation aborted.\""
 
 /obj/item/weapon/shockpaddles/proc/can_revive(mob/living/human/H) //This is checked right before attempting to revive
-	if(H.stat == DEAD)
-		return "buzzes, \"Resuscitation failed - Severe neurological decay makes recovery of patient impossible. Further attempts futile.\""
-
+	var/obj/item/organ/brain/brain = H.internal_organs_by_name["brain"]
+	if(H.species.has_organ["brain"] && (!brain || brain.damage >= 100))
+		return "buzzes, \"Resuscitation failed - Excessive neural degeneration. Further attempts futile.\""
+	H.updatehealth()
+	if(H.health + H.getOxyLoss() <= config.health_threshold_dead || !H.can_defib)
+		return "buzzes, \"Resuscitation failed - Severe tissue damage makes recovery of patient impossible via defibrillator. Further attempts futile.\""
+	//this needs to be last since if any of the 'other conditions are met their messages take precedence
+	/*if(!H.client && !H.teleop)
+		return "buzzes, \"Resuscitation failed - Mental interface error. Further attempts may be successful.\""*/ // For now, SSD players or those without a client can also be revived
+	return null
 /obj/item/weapon/shockpaddles/proc/check_contact(mob/living/human/H)
 	if(!combat)
 		for(var/obj/item/clothing/cloth in list(H.wear_suit, H.w_uniform))
 			if((cloth.body_parts_covered & UPPER_TORSO) && (cloth.item_flags & THICKMATERIAL))
 				return FALSE
 	return TRUE
+
+/obj/item/weapon/shockpaddles/proc/check_vital_organs(mob/living/human/H)
+	for(var/organ_tag in H.species.has_organ)
+		var/obj/item/organ/O = H.species.has_organ[organ_tag]
+		var/name = initial(O.name)
+		var/vital = initial(O.vital) //check for vital organs
+		if(vital)
+			O = H.internal_organs_by_name[organ_tag]
+			if(!O)
+				return "buzzes, \"Resuscitation failed - Patient is missing vital organ ([name]). Further attempts futile.\""
+			if(O.damage > O.max_damage)
+				return "buzzes, \"Resuscitation failed - Excessive damage to vital organ ([name]). Further attempts futile.\""
+	return null
 
 /obj/item/weapon/shockpaddles/proc/check_blood_level(mob/living/human/H)
 	if(!H.species.has_organ["heart"])
@@ -356,9 +376,14 @@
 	H.apply_damage(burn_damage_amt, BURN, "chest")
 
 	//set oxyloss so that the patient is just barely in crit, if possible
+	
+	var/barely_in_crit = config.health_threshold_crit - 1
+	var/adjust_health = barely_in_crit - H.health //need to increase health by this much
+	H.adjustOxyLoss(-adjust_health)
+
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
-	H.resuscitate()
+	make_alive(H)
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
 
 

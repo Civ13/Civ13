@@ -106,6 +106,7 @@
 #include "code\datums\observation\helpers.dm"
 #include "code\datums\observation\moved.dm"
 #include "code\datums\observation\observation.dm"
+#include "code\datums\observation\stat_set.dm"
 #include "code\datums\observation\task_triggered.dm"
 #include "code\datums\observation\~cleanup.dm"
 #include "code\game\atoms.dm"
