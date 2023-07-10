@@ -58,10 +58,9 @@
 	volume = 30
 	var/lastfire = 0
 	var/max_range = 1
-
-/obj/item/weapon/reagent_containers/glass/fire_extinguisher/New()
-	..()
-	reagents.add_reagent("water",30)
+	New()
+		..()
+		reagents.add_reagent("water",30)
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
 	..()
@@ -129,6 +128,9 @@
 	name = "fire extinguisher"
 	desc = "A fire extinguisher used to put out fires. You can fill it with water."
 	icon_state = "german_fire_extinguisher"
+	New()
+		..()
+		reagents.add_reagent("water",30)
 
 /*
  * Screwdriver
