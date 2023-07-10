@@ -127,8 +127,7 @@
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2
 	name = "fire extinguisher"
-	desc = "A fire extinguisher filled with foam."
-	icon = 'icons/obj/items.dmi'
+	desc = "A fire extinguisher used to put out fires. You can fill it with water."
 	icon_state = "german_fire_extinguisher"
 
 /*
