@@ -920,7 +920,7 @@
 	if (status_flags & GODMODE)	return FALSE
 
 	//SSD check, if a logged player is awake put them back to sleep!
-	if (species.show_ssd && !client && !teleop)
+	if (species.show_ssd && ssd_check())
 		Sleeping(2)
 	if (stat == DEAD)	//DEAD. BROWN BREAD. SWIMMING WITH THE SPESS CARP
 		blinded = TRUE

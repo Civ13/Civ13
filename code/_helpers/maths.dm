@@ -1,3 +1,5 @@
+#define CEILING(x, y) ( -round(-(x) / (y)) * (y) )
+
 // random decimals
 /proc/random_decimal(var/low, var/high)
 	return (rand(smart_round(low*100), smart_round(high*100)))/100
@@ -256,3 +258,6 @@ proc/n_inrange(var/num, var/min=-1, var/max=1)
 			log_misc("[buf]")
 		buf+=copytext(haystack,lastReadPos, FALSE)
 		return buf
+
+/proc/Ceiling(x)
+	return -round(-x)

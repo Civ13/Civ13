@@ -411,6 +411,9 @@ proc/is_blind(A)
 /mob/proc/is_client_active(var/active = TRUE)
 	return client && client.inactivity < active MINUTES
 
+/mob/proc/ssd_check()
+	return !client && !teleop
+
 /mob/proc/can_eat()
 	return TRUE
 
