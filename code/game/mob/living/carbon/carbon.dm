@@ -28,7 +28,7 @@
 	ingested.clear_reagents()
 	touching.clear_reagents()
 	nutrition = 400
-	
+
 	restore_blood()
 	shock_stage = 0
 	traumatic_shock = 0
@@ -491,3 +491,6 @@
 
 /mob/living/human/proc/get_fullness()
 	return (nutrition + (reagents.get_reagent_amount("nutriment") * 25)) + 160
+
+/mob/living/human/proc/can_feel_pain(var/check_organ)
+	return !(species && species.flags & NO_PAIN)

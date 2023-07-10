@@ -314,6 +314,9 @@ var/list/slot_equipment_priority = list( \
 /mob/living/proc/item_is_in_hands(var/obj/item/I)
 	return (I == r_hand || I == l_hand)
 
+/mob/living/proc/hands_are_full()
+	return (r_hand && l_hand)
+
 /mob/proc/isEquipped(obj/item/I)
 	if (!I)
 		return FALSE
