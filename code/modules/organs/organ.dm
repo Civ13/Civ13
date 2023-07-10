@@ -114,6 +114,7 @@ var/list/organ_cache = list()
 		icon_state = dead_icon
 	if (owner && vital)
 		owner.death()
+		owner.can_defib = FALSE
 
 /obj/item/organ/process()
 
@@ -270,6 +271,7 @@ var/list/organ_cache = list()
 			owner.attack_log += "\[[time_stamp()]\]<font color='orange'> had a vital organ ([src]) removed by [user.name] ([user.ckey]) (INTENT: [uppertext(user.a_intent)])</font>"
 			msg_admin_attack("[user.name] ([user.ckey]) removed a vital organ ([src]) from [owner.name] ([owner.ckey]) (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, owner.ckey)
 		owner.death()
+		owner.can_defib = FALSE
 
 	owner = null
 
