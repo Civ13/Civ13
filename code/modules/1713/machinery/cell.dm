@@ -88,4 +88,4 @@
 /obj/item/weapon/cell/standard
 	name = "standard power cell"
 	desc = "A standard and relatively cheap power cell, commonly used."
-	maxcharge = 250
+	maxcharge = 300
