@@ -1652,7 +1652,7 @@
 							holder2.overlays += icon(holder2.icon,"i_cpl")
 					else
 						holder2.overlays += icon(holder2.icon,"squad_[squad]")
-			if (map.ID != MAP_CAMPAIGN)
+			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT)
 				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer) || original_job.is_vip)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""

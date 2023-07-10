@@ -1401,11 +1401,11 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/mk18
-/obj/item/weapon/storage/belt/smallpouches/mk18/New()
+/obj/item/weapon/storage/belt/smallpouches/hk417
+/obj/item/weapon/storage/belt/smallpouches/hk417/New()
 	..()
-	new /obj/item/ammo_magazine/mk18(src)
-	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1436,6 +1436,26 @@
 	flags_inv = HIDEFACE
 	w_class = ITEM_SIZE_TINY
 	heat_protection = HEAD|FACE|EYES
+	cold_protection = HEAD|FACE|EYES
+
+/obj/item/clothing/mask/balaclava/snow
+	name = "snow balaclava"
+	desc = "A white balaclava, covering the face."
+	icon_state = "snowclava"
+	item_state = "snowclava"
+	worn_state = "snowclava"
+/obj/item/clothing/mask/balaclava/green
+	name = "snow balaclava"
+	desc = "A green balaclava, covering the face."
+	icon_state = "swatclava"
+	item_state = "swatclava"
+	worn_state = "swatclava"
+/obj/item/clothing/mask/balaclava/skull
+	name = "skull face balaclava"
+	desc = "A balaclava with a skull imprint, covering the face."
+	icon_state = "skullclava"
+	item_state = "skullclava"
+	worn_state = "skullclava"
 
 /obj/item/clothing/mask/headscarfgrey ////German Toque head scarf Issued to soldiers during WW2 to wear as a neck warmer
 	name = "grey headscarf"

@@ -331,24 +331,23 @@
 /obj/item/weapon/storage/backpack/rucksack/small/command
 	New()
 		..()
-		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-		new/obj/item/weapon/storage/box/flare(src)
-		new/obj/item/weapon/grenade/coldwar/rgd5(src)
 		new/obj/item/weapon/compass(src)
-		new/obj/item/weapon/grenade/smokebomb(src)
-		new/obj/item/weapon/storage/box/sandbags(src)
+		new/obj/item/weapon/material/shovel/trench/foldable/etool(src)
 		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/storage/box/sandbags(src)
 
-/obj/item/weapon/storage/backpack/rucksack/small/commandami
+/obj/item/weapon/storage/backpack/rucksack/small/command/soviet
 	New()
 		..()
-		new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-		new/obj/item/weapon/storage/box/flare(src)
+		new/obj/item/weapon/grenade/coldwar/rgd5(src)
+		new/obj/item/weapon/grenade/smokebomb/rdg2(src)
+
+/obj/item/weapon/storage/backpack/rucksack/small/command/nato
+	New()
+		..()
 		new/obj/item/weapon/grenade/coldwar/m67(src)
-		new/obj/item/weapon/compass(src)
-		new/obj/item/weapon/grenade/smokebomb(src)
-		new/obj/item/weapon/storage/box/sandbags(src)
-		new/obj/item/weapon/material/kitchen/utensil/knife/military(src)
+		new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
 
 /obj/item/weapon/storage/backpack/rucksack/rpg
 	New()

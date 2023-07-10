@@ -132,13 +132,13 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+			if(map.ID == MAP_CAMPAIGN)
 				output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 			else
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN || map.ID != MAP_ROTSTADT || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -191,7 +191,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT) && !client.holder)
+		if (map.ID == MAP_CAMPAIGN && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -439,8 +439,6 @@ var/global/redirect_all_players = null
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
-			else // To be changed according to new non-canon maps or Nomads Persistence
-				LateChoicesRotstadt(factjob) // To be changed according to new non-canon maps or Nomads Persistence
 		else
 			if (config.discordurl)
 				WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Visit the discord for more information: [config.discordurl]")
@@ -486,16 +484,22 @@ var/global/redirect_all_players = null
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
-					LateChoices()
+					if (map.ID == MAP_ROTSTADT)
+						LateChoicesRotstadt()
+					else
+						LateChoices()
 					return TRUE
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
-		LateChoices()
+		if (map.ID == MAP_ROTSTADT)
+			LateChoicesRotstadt()
+		else
+			LateChoices()
 		return TRUE
 
 	if (href_list["SelectedJob"])
 		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman") && !findtext(href_list["SelectedJob"], "RPR Fighter"))
+			if (map.ID == MAP_CAMPAIGN && !findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
@@ -617,7 +621,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -955,7 +959,7 @@ var/global/redirect_all_players = null
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 
 	//squads
-	if (ishuman(character) && map.ID != MAP_CAMPAIGN)
+	if (ishuman(character) && map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT)
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
@@ -1388,11 +1392,16 @@ var/global/redirect_all_players = null
 						temp_name = "Chinese Red Army"
 					if (temp_name == "Chinese")
 						temp_name = "Chinese National Army"
-				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+				else if (map && map.ID == MAP_CAMPAIGN)
 					if (temp_name == "Civilian")
-						temp_name = "Red"
+						temp_name = "Blugoslavia"
 					if (temp_name == "Pirates")
-						temp_name = "Blue"
+						temp_name = "Redmenia"
+				else if (map && map.ID == MAP_ROTSTADT)
+					if (temp_name == "Civilian")
+						temp_name = "Blugoslavian Armed Forces"
+					if (temp_name == "Pirates")
+						temp_name = "Rotstadt People's Republic"
 				else if (map && map.ID == "MAP_HOLDMADRID")
 					if (temp_name == "Civilian")
 						temp_name = "Republican"

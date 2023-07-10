@@ -246,7 +246,9 @@
 			if ("Fiction")
 				maps = list(
 					MAP_TANTIVEIV = 0,
-					MAP_WHITERUN = 10,)
+					MAP_WHITERUN = 10,
+					MAP_ROTSTADT = 12,
+				)
 			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
 				maps = list(
 					MAP_HUNT = 6,
@@ -663,7 +665,7 @@
 			else if (map && map.ID == MAP_YELTSIN)
 				world << "<font color='yellow'><big>Siege</big><br>The <b>Militia</b> must defend the <b>Parliamental Hall</b></big> until <b>40 minutes</b>!<br><font size=4>All factions have <b>10 minutes</b> to prepare before the battle.</font>"
 			else if (map && map.ID == MAP_WACO)
-				world << "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>"
+				world << "<font color='yellow'><big>Siege</big><br>The <b>Branch Davidians</b> must defend the <b>Mount Carmel Compound</b></big> until <b>20 minutes</b> have elapsed!<br><font size=4>All factions have <b>3 minutes</b> to prepare before the battle.</font>"
 			config.disable_fov = TRUE
 			config.no_respawn_delays = TRUE
 			map.gamemode = "Siege"
