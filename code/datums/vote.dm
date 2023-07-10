@@ -146,7 +146,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						map.next_win = world.time - 100
 						processes.epochswap.admin_triggered = FALSE
 						processes.epochswap.ready = TRUE
-						map.round_finished = TRUE
 						processes.epochswap.fire()
 						log_admin("Restart Vote triggered an epoch vote.")
 						message_admins("Restart Vote triggered an epoch vote.")
