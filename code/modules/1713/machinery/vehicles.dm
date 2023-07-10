@@ -734,8 +734,9 @@
 /obj/item/vehicleparts/frame/boat/update_icon()
 	..()
 	icon_state = "[base_icon][step]"
+
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/sail) && step == 1 && istype(src, /obj/item/vehicleparts/frame/boat))
+	if (istype(W, /obj/item/sail) && step == 1)
 		if (do_after(user,130,src) && src && W)
 			user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
 			user.drop_from_inventory(W)
@@ -762,6 +763,7 @@
 			return
 	else
 		..()
+
 /obj/item/vehicleparts/frame/MouseDrop_T(obj/structure/O as obj, mob/user as mob)
 	if (istype(O, /obj/structure/engine/internal) && step == 1)
 		var/obj/structure/engine/internal/NE = O
@@ -835,13 +837,17 @@
 ///////////////////////EXTRA STUFF//////////////////////
 
 /obj/item/sail
-	name = "small sail"
-	desc = "a small sail. Will fit a minor boat."
+	name = "small cloth sail"
+	desc = "A small cloth sail. Will fit a minor boat."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE
 	w_class = ITEM_SIZE_LARGE
+
+/obj/item/sail/wool
+	name = "small wool sail"
+	desc = "A small cloth sail. Will fit a minor boat."
 
 /obj/item/tank_systems
 	name = "Tank System"
@@ -868,7 +874,7 @@
 			if (M.anchored)
 				M.trigger(src)
 				for (var/mob/O in viewers(7, loc))
-					O << "<font color='red'>\The [src] explodes the [M]!</font>"
+					O << SPAN_DANGER("\The [src] explodes the [M]!")
 		sleep(6 SECONDS)
 		explode_mines()
 	else return
@@ -887,7 +893,7 @@
 			if (M)
 				M.throw_impact(get_turf(M))
 				for (var/mob/O in viewers(7, loc))
-					O << "<font color='red'>\The [src] explodes the rocket!</font>"
+					O << SPAN_DANGER("\The [src] explodes the rocket!")
 		sleep(1 SECONDS)
 		explode_missiles()
 	else return

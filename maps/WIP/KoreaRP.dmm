@@ -576,7 +576,7 @@
 "ld" = (/obj/covers/jail/steeljail,/obj/structure/grille/ironfence{icon_state = "iron_fence"; dir = 8},/obj/structure/grille/chainlinkfence{dir = 4},/turf/floor/plating/concrete,/area/caribbean)
 "le" = (/obj/structure/toilet,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "lf" = (/obj/structure/bed/chair/wood{dir = 8; icon_state = "wooden_chair"},/turf/floor/plating/concrete,/area/caribbean)
-"lg" = (/obj/structure/simple_door/key_door/chinese{health = "1000"; name = "prisoner cell"; unique_door_name = "prisoner cell"},/turf/floor/plating/concrete,/area/caribbean)
+"lg" = (/obj/structure/simple_door/key_door/chinese{health = 1000; name = "prisoner cell"; unique_door_name = "prisoner cell"},/turf/floor/plating/concrete,/area/caribbean)
 "lh" = (/obj/structure/bed/bedroll,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "li" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean)
 "lj" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/concrete,/area/caribbean)

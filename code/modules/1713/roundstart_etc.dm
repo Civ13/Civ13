@@ -14,16 +14,18 @@ var/GRACE_PERIOD_LENGTH = 7
 		spawn (0)
 			while (ticker.current_state != GAME_STATE_PLAYING)
 				sleep(1)
-			if (map && map.ID == MAP_FOOTBALL)
-				time_of_day = "Midday"
-			if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
-				time_of_day = "Midday"
-			if (map && map.ID == MAP_CAMPAIGN)
-				time_of_day = "Morning"
-			if (map && map.ID == MAP_DRUG_BUST)
-				time_of_day = "Night"
+			if (map)
+				switch (map.ID)
+					if (MAP_FOOTBALL)
+						time_of_day = "Midday"
+					if (MAP_FOOTBALL_CAMPAIGN)
+						time_of_day = "Midday"
+					if (MAP_CAMPAIGN)
+						time_of_day = "Morning"
+					if ( MAP_DRUG_BUST)
+						time_of_day = "Night"
 			update_lighting(time_of_day, null, FALSE)
-			if (!map || !map.meme)
+			if (!map || !map.no_time_of_day_cycle)
 				spawn (0)
 					while (!processes.time_of_day_change || !processes.time_of_day_change.setup_lighting)
 						sleep(1)

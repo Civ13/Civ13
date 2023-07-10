@@ -41,7 +41,7 @@
 "Q" = (/obj/structure/vehicleparts/frame/ship/bl,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "S" = (/obj/structure/vehicleparts/frame/ship,/obj/structure/vehicleparts/shipwheel,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "U" = (/obj/structure/vehicleparts/frame/ship/fl,/obj/structure/vehicleparts/axis/ship/heavy{dir = 1; name = "Test Ship"},/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
-"W" = (/obj/structure/vehicleparts/frame/ship,/obj/structure/vehicleparts/movement/sails/premade,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
+"W" = (/obj/structure/vehicleparts/frame/ship,/obj/structure/vehicleparts/movement/sail/premade,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "X" = (/obj/structure/vehicleparts/frame/ship/fr,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "Y" = (/obj/structure/vehicleparts/frame/ship/back,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)
 "Z" = (/obj/structure/vehicleparts/frame/ship,/obj/effect/autoassembler{dir = 1},/turf/floor/beach/water/shallowsaltwater,/area/caribbean)

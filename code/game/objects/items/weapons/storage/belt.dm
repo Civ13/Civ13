@@ -102,7 +102,7 @@
 		/obj/item/weapon/material/thrown/throwing_knife,
 		/obj/item/weapon/material/thrown/tomahawk,
 		/obj/item/weapon/material/thrown/throwing_axe,
-		/obj/item/weapon/fire_extinguisher,
+		/obj/item/weapon/reagent_containers/glass/fire_extinguisher,
 		/obj/item/flashlight/flashlight,
 		/obj/item/weapon/weldingtool,
 		/obj/item/weapon/material/shovel/trench)

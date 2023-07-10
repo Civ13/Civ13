@@ -401,7 +401,7 @@
 		return TRUE
 	for (var/obj/structure/vehicleparts/shipwheel/SW in src.contents)
 		return TRUE
-	for (var/obj/structure/vehicleparts/movement/sails/SM in src.contents)
+	for (var/obj/structure/vehicleparts/movement/sail/SM in src.contents)
 		return TRUE
 	for (var/obj/structure/vehicle/boat/B in src.contents)
 		return TRUE

@@ -586,7 +586,7 @@
 									attack_mob(L)
 									passthrough = FALSE
 								else if (L.lying || L.prone)
-									if (prob(50))
+									if (prob(80))
 										L.pre_bullet_act(src)
 										attack_mob(L)
 										passthrough = FALSE

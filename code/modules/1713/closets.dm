@@ -39,16 +39,16 @@
 	wall_mounted = TRUE
 	store_mobs = FALSE
 	storage_capacity = 2
-	var/obj/item/weapon/fire_extinguisher/has_extinguisher
+	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/has_extinguisher
 
 /obj/structure/closet/cabinet/extinguisher_cabinet/New()
 	..()
-	has_extinguisher = new/obj/item/weapon/fire_extinguisher(src)
+	has_extinguisher = new/obj/item/weapon/reagent_containers/glass/fire_extinguisher(src)
 
 /obj/structure/closet/cabinet/extinguisher_cabinet/attackby(obj/item/O, mob/user)
 	if(!ishuman(user))
 		return
-	if(istype(O, /obj/item/weapon/fire_extinguisher))
+	if(istype(O, /obj/item/weapon/reagent_containers/glass/fire_extinguisher))
 		if(!has_extinguisher && opened && user.unEquip(O, src))
 			has_extinguisher = O
 			to_chat(user, "<span class='notice'>You place [O] in [src].</span>")

@@ -23,7 +23,7 @@
 	//songs = list()
 	faction1 = PIRATES
 	faction2 = BRITISH
-	meme = TRUE
+	no_time_of_day_cycle = TRUE
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts. Each team must capture the other's command post to win.</font>"
 	var/done = FALSE
