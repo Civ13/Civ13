@@ -760,8 +760,8 @@
 											explosion(target, 5, 8, 20, 200)
 											for (var/turf/floor/T in circlerangeturfs(4, target))
 												ignite_turf(T, 12, 70)
-											change_global_pollution(150)
-											change_global_radiation(10)
+											change_global_pollution(200)
+											change_global_radiation(18)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/rocket/nuclear))
 											radiation_pulse(target, 12, 80, 1400, TRUE)
