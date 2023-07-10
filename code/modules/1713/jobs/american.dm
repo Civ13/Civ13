@@ -1191,11 +1191,11 @@
 //thermal
 	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal(H), slot_eyes)
 //mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/white(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
 //gun
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/mk18(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
 //belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/mk18(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/hk417(H), slot_belt)
 //helmet
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 //glove
@@ -1206,23 +1206,23 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
-	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armband/french/blue = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(blue, H)
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
 	uniform.attackby(armour2, H)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/commandami(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/command/nato(H), slot_back)
 
 	H.civilization = "Coalition"
-	H.add_note("Role", "You are a <b>[title]</b>. Command your men and lead them well, Your men count on you!")
+	H.add_note("Role", "You are a <b>[title]</b>. Coordinate your men during the operation in order to complete the objective!")
 	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
 	give_random_name(H)
 
 	return TRUE
@@ -1249,9 +1249,10 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ucp(H), slot_w_uniform)
 //thermal
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
 //mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/headscarfgrey/asbestos(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
@@ -1262,7 +1263,7 @@
 	var/randimpw = rand(1,2)
 	switch(randimpw)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/scarl(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_grenade(H), slot_belt)
 			var/obj/item/clothing/accessory/storage/webbing/us_vest/m16/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m16(null)
 			uniform.attackby(webbing, H)
@@ -1437,7 +1438,7 @@
 	else if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_tanker(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
 //glove
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //suit

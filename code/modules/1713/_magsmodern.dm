@@ -50,7 +50,7 @@
 
 /obj/item/ammo_magazine/ak74/box
 	name = "magazine box (5.45x39mm)"
-	icon_state = "ak74"
+	icon_state = "545x39"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 	w_class = ITEM_SIZE_NORMAL
