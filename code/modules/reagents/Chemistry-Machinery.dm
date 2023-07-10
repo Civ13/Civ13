@@ -333,20 +333,228 @@
 	if (!on)
 		return
 	else
-		spawn(150)
+		spawn(15 SECONDS)
 			var/largest = reagents.get_master_reagent_id()
 			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
-			if (largest == "water")
-				var/topick = pick("hydrogen","oxygen")
-				collector.reagents.add_reagent(topick,voltotransf/10)
-			else
-				collector.reagents.add_reagent(largest,voltotransf)
+			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
+			var/topick // What chems you got back
+
+			switch (largest)
+				if ("water")
+					topick = pick("hydrogen","oxygen")
+					chems_got_back_div = 10
+
+			collector.reagents.add_reagent(topick,voltotransf / chems_got_back_div)
 			reagents.remove_reagent(largest,voltotransf)
 			on = FALSE
 			update_icon()
 			visible_message("\The [src] finishes distilling.")
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/obj/structure/centrifuge
+	name = "laboratory centrifuge"
+	desc = "A professional laboratory centrifuge, used to separate chemicals in a solution."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "centrifuge"
+	density = TRUE
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/on = FALSE
+	powerneeded = 5
+	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
+
+/obj/structure/centrifuge/New()
+	..()
+	reagents = new /datum/reagents(80)
+
+/obj/structure/centrifuge/proc/check_power()
+	if (!powersource || !powerneeded)
+		powered = FALSE
+		return FALSE
+	else
+		powered = TRUE
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!on)
+				powersource.update_power(powerneeded,1)
+				on = TRUE
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+			return TRUE
+		else
+			if (on)
+				powersource.update_power(powerneeded,1)
+				on = FALSE
+				powersource.currentflow -= powerneeded
+				powersource.lastupdate2 = world.time
+			return FALSE
+
+/obj/structure/centrifuge/update_icon()
+	..()
+	if (powered)
+		icon_state = "centrifuge_powered"
+	else
+		icon_state = "centrifuge"
+	if (on)
+		icon_state = "centrifuge_on"
+
+/obj/structure/centrifuge/attack_hand(var/mob/living/human/H)
+	if (!anchored)
+		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+		H << SPAN_DANGER("These chemicals are too complex for you to understand.")
+		return
+	if (!check_power())
+		H << SPAN_WARNING("\The [src] doesn't have any power!")
+	if (reagents.total_volume <= 0)
+		H << SPAN_NOTICE("\The [src] is empty.")
+		return
+	if (!collector && !on)
+		H << SPAN_NOTICE("You cannot turn \the [src] on without a collector.")
+		return
+	if (collector && !on)
+		H << SPAN_NOTICE("You turn \the [src] on.")
+		on = TRUE
+		update_icon()
+		process_centrifuge()
+	..()
+
+/obj/structure/centrifuge/attackby(obj/item/W as obj, var/mob/living/human/user as mob)
+	if (istype(W,/obj/item/weapon/wrench))
+		if (powersource)
+			user << SPAN_NOTICE("Remove the cables first.")
+			return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor."))
+		anchored = !anchored
+		return
+
+	if (istype(W,/obj/item/weapon/hammer))
+		if (powersource)
+			user << SPAN_NOTICE("Remove the cables first.")
+			return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user, 5 SECONDS, src))
+			user.visible_message( SPAN_NOTICE("\The [user] dismantles \the [src]."),  SPAN_NOTICE("You dismantle \the [src]."))
+			new /obj/item/stack/rods(get_turf(usr))
+			new /obj/item/stack/rods(get_turf(usr))
+			qdel(src)
+			return
+
+	if (!anchored)
+		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+
+	if (istype(W,/obj/item/weapon/reagent_containers))
+		if (istype(user) && user.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+			user << SPAN_DANGER("These chemicals are too complex for you to understand")
+			return
+		var/obj/item/weapon/reagent_containers/B = W
+		if (B.reagents)
+			if (B.reagents.total_volume > 0)
+				var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
+				user << "You pour [tamt] units from \the [B] into \the [src]."
+				update_icon()
+				return
+		if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker/vial) && !collector)
+			if (B.reagents.total_volume > 0)
+				user << "The collector must be empty!"
+				return
+			else
+				user << "You place [B] as the collector for \the [src]."
+				collector =  B
+				user.drop_item()
+				B.loc = src
+				update_icon()
+				return
+	
+	if (istype(W, /obj/item/stack/cable_coil))
+		if (powersource)
+			user << "There's already a cable connected here! Split it further from \the [src]."
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!powersource)
+			return
+		powersource.connections += src
+		var/opdir1 = 0
+		var/opdir2 = 0
+		if (powersource.tiledir == "horizontal")
+			opdir1 = 4
+			opdir2 = 8
+		else if  (powersource.tiledir == "vertical")
+			opdir1 = 1
+			opdir2 = 2
+		powersource.update_icon()
+
+		if (opdir1 != 0 && opdir2 != 0)
+			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
+				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
+					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						NCOO.connections += powersource
+					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						powersource.connections += NCOO
+					user << "You connect the two cables."
+
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
+					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						NCOC.connections += powersource
+					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						powersource.connections += NCOC
+		user << "You connect the cable to \the [src]."
+
+/obj/structure/centrifuge/verb/empty()
+	set category = null
+	set name = "Remove Vial"
+	set src in range(1, usr)
+
+	if (!collector)
+		usr << "There is no vial to remove from \the [src]."
+		return
+
+	if (on)
+		usr << "<span class = 'danger'>You cannot remove the vial while \the [src] is running!</span>"
+		return
+
+	if (collector && !on)
+		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
+		collector.loc = get_turf(src)
+		collector = null
+		return
+	return
+
+/obj/structure/centrifuge/proc/process_centrifuge()
+	if (!check_power())
+		visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
+		return
+	else
+		spawn(15 SECONDS)
+			if (!check_power())
+				visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
+				return
+			var/largest = reagents.get_master_reagent_id()
+			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
+			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
+			var/topick // What chems you got back
+
+			switch (largest)
+				if ("blood")
+					topick = pick("plasma","redbloodcells","whitebloodcells")
+					chems_got_back_div = 5
+
+			collector.reagents.add_reagent(topick,voltotransf / chems_got_back_div)
+			reagents.remove_reagent(largest,voltotransf)
+			on = FALSE
+			update_icon()
+			visible_message("\The [src] stops it's cycle.")
+			playsound(loc, 'sound/machines/ping.ogg', 100, TRUE)
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /obj/structure/chem_master
 	name = "pill maker"
 	desc = "Makes pills out of reagents."
@@ -362,7 +570,7 @@
 	var/condi = FALSE
 	var/useramount = 30 // Last used amount
 	var/pillamount = 10
-	var/bottlesprite = "bottle" //yes, strings
+	var/bottlesprite = "bottle"
 	var/pillsprite = "1"
 	var/client/has_sprites = list()
 	var/max_pill_count = 20
