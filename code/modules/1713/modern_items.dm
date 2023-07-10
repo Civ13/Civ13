@@ -59,7 +59,7 @@
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from the [src]."
+			user << "There's already a cable connected here! Split it further from \the [src]."
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -91,7 +91,7 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		user << "You connect the cable to the [src]."
+		user << "You connect the cable to \the [src]."
 	else
 		..()
 
@@ -107,7 +107,7 @@
 		icon_state = "[base_icon]_broken"
 /obj/structure/lamp/proc/do_light()
 	if (!lamp_broken && lamp_inside)
-		if (check_power() || powerneeded == 0)
+		if (check_power() || !powerneeded)
 			if (brightness_color)
 				set_light(light_amt, 1, brightness_color)
 			else
@@ -130,7 +130,7 @@
 		do_light()
 
 /obj/structure/lamp/proc/check_power()
-	if (!powersource || powerneeded == 0)
+	if (!powersource || !powerneeded)
 		return FALSE
 	else
 		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -269,7 +269,7 @@
 	on = FALSE
 
 /obj/structure/lamp/lamp_small/tank/check_power()
-	if (!connection || powerneeded == 0)
+	if (!connection || !powerneeded)
 		return FALSE
 	else
 		if (connection.on)
@@ -1041,7 +1041,7 @@
 	..()
 
 /obj/structure/floodlight/attack_hand(var/mob/living/human/H)
-	if (floodlighton == 0)
+	if (!floodlighton)
 		floodlighton = 1
 		set_light (8)
 		icon_state ="floodlight_on"

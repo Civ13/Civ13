@@ -693,7 +693,7 @@
 					if (H)
 						H.adaptStat("strength", 1)
 					return
-				else if (prob(10) && map.ordinal_age >= 7)
+				else if (prob(10) && map.ordinal_age >= 6)
 					var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
 					mineral.amount = rand(4,12)
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
