@@ -188,7 +188,7 @@
 "dG" = (/obj/structure/table/modern/table,/obj/item/weapon/material/kitchen/rollingpin,/obj/item/weapon/reagent_containers/food/snacks/appletart,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "dH" = (/obj/structure/table/modern/table,/obj/item/weapon/material/kitchen/utensil/knife/bread,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "dI" = (/obj/structure/table/modern/table,/obj/item/weapon/reagent_containers/food/snacks/bun,/obj/item/weapon/reagent_containers/food/snacks/bun,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled,/area/caribbean/roofed)
-"dJ" = (/obj/structure/shelf,/obj/item/weapon/fire_extinguisher,/turf/floor/plating/tiled,/area/caribbean/roofed)
+"dJ" = (/obj/structure/shelf,/obj/item/weapon/reagent_containers/glass/fire_extinguisher,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "dK" = (/obj/structure/closet/cabinet,/obj/item/camera/earlymodern,/obj/item/camera_film,/obj/item/camera_film,/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
 "dL" = (/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/roofed)
 "dM" = (/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/turf/floor/plating/tiled,/area/caribbean/roofed)

@@ -200,7 +200,7 @@
 			spamtimer = world.time + 20
 	if (href_list["set_sails"])
 		if (ship)
-			for (var/obj/structure/vehicleparts/movement/sails/M in ship.masts)
+			for (var/obj/structure/vehicleparts/movement/sail/M in ship.masts)
 				if (world.time > spamtimer)
 					if (!sails_on)
 						M.sails_on = TRUE

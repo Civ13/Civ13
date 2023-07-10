@@ -60,29 +60,31 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 
 /obj/item/weapon/reagent_containers/glass/attack_self()
 	..()
-	if (is_open_container())
-		playsound(src,'sound/effects/Lid_Removal_Bottle_mono.ogg',50,1)
-		usr << "<span class = 'notice'>You put the lid on \the [src].</span>"
-		flags &= ~OPENCONTAINER
-	else
-		usr << "<span class = 'notice'>You take the lid off \the [src].</span>"
-		flags |= OPENCONTAINER
+	if (!(istype(src,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
+		if (is_open_container())
+			playsound(src,'sound/effects/Lid_Removal_Bottle_mono.ogg',50,1)
+			usr << "<span class = 'notice'>You put the lid on \the [src].</span>"
+			flags &= ~OPENCONTAINER
+		else
+			usr << "<span class = 'notice'>You take the lid off \the [src].</span>"
+			flags |= OPENCONTAINER
 	update_icon()
 
 /obj/item/weapon/reagent_containers/glass/attack_turf(turf/attacked, mob/user, icon_x, icon_y)
-	if (is_open_container())
-		if (reagents.total_volume)
-			if (user.a_intent == I_HARM)
-				user.visible_message("<span class='danger'>[user] splashes the contents of [src] onto [attacked]!</span>", \
-									"<span class='notice'>You splash the contents of [src] onto [attacked].</span>")
-				proper_spill(attacked, reagents.total_volume)
-				return TRUE
-			else if (istype(attacked, /turf/floor/dirt))
-				if (locate(/obj/structure/farming/plant) in attacked)
-					user.visible_message("<span class='notice'>[user] pours the contents of [src] onto [attacked]!</span>", \
-										"<span class='notice'>You pour the contents of [src] onto [attacked].</span>")
-					proper_spill(attacked, amount_per_transfer_from_this)
-				return TRUE
+	if (!(istype(src,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
+		if (is_open_container())
+			if (reagents.total_volume)
+				if (user.a_intent == I_HARM)
+					user.visible_message("<span class='danger'>[user] splashes the contents of [src] onto [attacked]!</span>", \
+										"<span class='notice'>You splash the contents of [src] onto [attacked].</span>")
+					proper_spill(attacked, reagents.total_volume)
+					return TRUE
+				else if (istype(attacked, /turf/floor/dirt))
+					if (locate(/obj/structure/farming/plant) in attacked)
+						user.visible_message("<span class='notice'>[user] pours the contents of [src] onto [attacked]!</span>", \
+											"<span class='notice'>You pour the contents of [src] onto [attacked].</span>")
+						proper_spill(attacked, amount_per_transfer_from_this)
+					return TRUE
 	return FALSE
 
 /obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)

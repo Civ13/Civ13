@@ -449,6 +449,8 @@ RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,
 //*********************| WOOLCLOTH |****************************
 //**************************************************************
 
+RECIPE: /material/woolcloth/,small wool sail,/obj/item/sail/wool,15,125,0,1,none,0,0,22,8,null
+
 RECIPE: /material/woolcloth/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,gloves,0,0,0,8,null
 RECIPE: /material/woolcloth/,wool coat,/obj/item/clothing/suit/storage/coat/fur/white,6,150,0,1,jackets & vests,0,0,102,8,null
 RECIPE: /material/woolcloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,1,gloves,45,0,8,8,null
@@ -1788,6 +1790,7 @@ RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,102,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,102,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 
 //*********************| STEEL SIEGE WEAPONS |**************************
 
@@ -1959,7 +1962,7 @@ RECIPE: /material/wood/,wood ship frame,/obj/structure/vehicleparts/frame/ship,4
 RECIPE: /material/wood/,ship rudder axis (2500 weight),/obj/structure/vehicleparts/axis/ship/heavy,45,300,0,1,vehicle parts,55,0,0,8,null
 RECIPE: /material/wood/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
-RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sails,15,140,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/,ship mast,/obj/structure/vehicleparts/movement/sail,15,140,0,1,vehicle parts,41,0,0,8,null
 
 //*********************| WOOD PRODUCTION & ECONOMY |**************************
 

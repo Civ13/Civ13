@@ -1,5 +1,3 @@
-// 2017-07-06: Defeated the curtain man meme (they were unanchored) -- Irra
-
 /obj/structure/curtain
 	name = "curtain"
 	icon = 'icons/obj/curtain.dmi'

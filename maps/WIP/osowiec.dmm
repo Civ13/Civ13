@@ -318,7 +318,7 @@
 "gf" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt/burned,/area/caribbean)
 "gg" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "gh" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
-"gi" = (/obj/covers/cement_wall,/obj/item/weapon/fire_extinguisher/ww2,/turf/wall/cement,/area/caribbean/roofed)
+"gi" = (/obj/covers/cement_wall,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2,/turf/wall/cement,/area/caribbean/roofed)
 "gj" = (/turf/floor/beach/water/swamp,/area/caribbean)
 "gk" = (/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall)
 "gl" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/dust,/area/caribbean)

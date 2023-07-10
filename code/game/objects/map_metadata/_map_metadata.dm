@@ -108,7 +108,7 @@ var/civmax_research = list(230,230,230)
 	var/round_finished = FALSE
 
 	// fluff
-	var/meme = FALSE
+	var/no_time_of_day_cycle = FALSE
 	var/battle_name = null
 
 	//age (313 B.C., 1013, 1713, etc)

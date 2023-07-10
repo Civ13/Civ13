@@ -43,9 +43,9 @@
 /*
  * Fire Extinguisher
  */
-/obj/item/weapon/fire_extinguisher
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher
 	name = "fire extinguisher"
-	desc = "A fire extinguisher filled with foam."
+	desc = "A fire extinguisher used to put out fires. You can fill it with water."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "fire_extinguisher"
 	flags = CONDUCT
@@ -55,14 +55,18 @@
 	w_class = ITEM_SIZE_NORMAL
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
-	var/uses = 25
+	volume = 30
 	var/lastfire = 0
 	var/max_range = 1
 	New()
 		..()
-		desc = "A fire extinguisher filled with foam. Has [uses] uses left."
+		reagents.add_reagent("water",30)
 
-/obj/item/weapon/fire_extinguisher/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
+	..()
+	return
+
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
 	if (!H)
 		return
 	if (world.time<=lastfire)
@@ -76,13 +80,12 @@
 		process_foam(H,cdir,target)
 		return
 
-/obj/item/weapon/fire_extinguisher/proc/process_foam(var/mob/living/human/user, var/cdir = null, atom/target)
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher/proc/process_foam(var/mob/living/human/user, var/cdir = null, atom/target)
 	if (!cdir || !(cdir in list(NORTH,SOUTH,EAST,WEST)))
 		cdir = user.dir
-	if (uses > 0)
-		uses--
-		desc = "A fire extinguisher filled with foam. Has [uses] uses left."
-		lastfire = world.time+15
+	if (src.reagents && src.reagents.get_reagent_amount("water") >= 5)
+		src.reagents.remove_reagent("water",5)
+		lastfire = world.time+12
 		var/turf/source_turf = get_turf(user)
 
 		var/list/turfs = getline2(source_turf, target)
@@ -121,11 +124,13 @@
 		user << "<span class='warning'>\The [src] is empty.</span>"
 		return
 
-/obj/item/weapon/fire_extinguisher/ww2
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2
 	name = "fire extinguisher"
-	desc = "A fire extinguisher filled with foam."
-	icon = 'icons/obj/items.dmi'
+	desc = "A fire extinguisher used to put out fires. You can fill it with water."
 	icon_state = "german_fire_extinguisher"
+	New()
+		..()
+		reagents.add_reagent("water",30)
 
 /*
  * Screwdriver

@@ -78,7 +78,7 @@
 								E.engineclass = "engine"
 								E.update_icon()
 						done2 = TRUE
-		for (var/obj/structure/vehicleparts/movement/sails/S in rangeto)
+		for (var/obj/structure/vehicleparts/movement/sail/S in rangeto)
 			for (var/obj/structure/vehicleparts/frame/ship/F in S.loc)
 				central.axis.masts += S
 				S.anchored = TRUE
@@ -140,7 +140,7 @@
 			central.axis.check_matrix()
 		//and the tracks
 		for (var/obj/structure/vehicleparts/movement/M in rangeto)
-			if (!istype(M, /obj/structure/vehicleparts/movement/sails))
+			if (!istype(M, /obj/structure/vehicleparts/movement/sail))
 				for (var/obj/structure/vehicleparts/frame/F in M.loc)
 					M.MouseDrop(F)
 		for (var/obj/structure/lamp/lamp_small/tank/TL in rangeto)

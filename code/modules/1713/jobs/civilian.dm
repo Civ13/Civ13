@@ -3155,7 +3155,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/fireaxe(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/fire_extinguisher(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/fire_extinguisher(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/nbc/olive/fire(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/nbc/olive/fire(H), slot_head)
 	H.add_note("Role", "You are a fireperson. Put out fires, fix broken roads, coordinate with other emergency services, and try to keep everyone safe.")

@@ -263,7 +263,7 @@ H.civilization = "Crew"
 
 					H.equip_to_slot_or_del(new /obj/item/weapon/storage/toolbox/mechanical(H), slot_l_hand)
 					H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/steel(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/fire_extinguisher(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/fire_extinguisher(H), slot_belt)
 
 H.civilization = "Crew"
 	give_random_name(H)
