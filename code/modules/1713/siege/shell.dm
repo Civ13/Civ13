@@ -392,7 +392,7 @@
 	value = 80
 	atype = "NUCLEAR"
 
-/obj/item/cannon_ball/shell/nuclear/makeshift
+/obj/item/cannon_ball/shell/nuclear/nomads
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Makeshift Nuclear Shell"
 	desc = "A makeshift nuclear shell, once the genie is out of the bottle you can't put it back in..."

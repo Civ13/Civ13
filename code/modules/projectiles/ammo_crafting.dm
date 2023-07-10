@@ -296,7 +296,7 @@
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
-			new/obj/item/cannon_ball/shell/nuclear/makeshift(user.loc)
+			new/obj/item/cannon_ball/shell/nuclear/nomads(user.loc)
 		qdel(src)
 		return
 	else

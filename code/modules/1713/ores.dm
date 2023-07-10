@@ -284,6 +284,9 @@
 
 		else
 			..()
+/obj/item/stack/ore/coal/twentyfive
+	amount = 25
+
 /obj/item/stack/ore/charcoal
 	name = "charcoal"
 	desc = "Refried Wood."
