@@ -634,7 +634,7 @@
 	if (ishuman(AM))
 		var/mob/living/human/H = AM
 		if (H.pull_damage())
-			src << "\red <b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"
+			src << SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>")
 */
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))

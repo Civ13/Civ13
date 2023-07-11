@@ -55,28 +55,13 @@
 		return
 
 /mob/living/simple_animal/fly/attackby(var/obj/item/O, var/mob/user)
-	if (istype(O, /obj/item/weapon/swatter/modern))
-		if (prob(75))
-			visible_message("[user] swats \the [src] with \the [O]!")
-			if (origin)
-				var/obj/structure/sink/S = origin
-				S.mosquito_count--
-			qdel(src)
-			return
-		else
-			visible_message("[user] misses \the [src]!")
-			return
-	else if (istype(O, /obj/item/weapon/swatter))
-		if (prob(30))
-			visible_message("[user] swats \the [src] with \the [O]!")
-			if (origin)
-				var/obj/structure/sink/S = origin
-				S.mosquito_count--
-			qdel(src)
-			return
-		else
-			visible_message("[user] misses \the [src]!")
-			return
+	if (istype(O, /obj/item/weapon/swatter))
+		visible_message("[user] swats \the [src] with \the [O]!")
+		if (origin)
+			var/obj/structure/sink/S = origin
+			S.mosquito_count--
+		qdel(src)
+		return
 	else
 		return
 
