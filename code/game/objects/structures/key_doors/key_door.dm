@@ -193,7 +193,7 @@ var/list/nonbreaking_types = list(
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
 						user << "<span class='notice'>You pick the lock.</span>"
-						keyslot.locked = 0
+						keyslot.locked = FALSE
 						return
 					else if (prob(60))
 						qdel(W)
@@ -205,8 +205,8 @@ var/list/nonbreaking_types = list(
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
 		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
-		if   (breachable && istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && keyslot.locked && pump.consume_next_projectile())
-			keyslot.locked = FALSE
+		if   (breachable && istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && locked && pump.consume_next_projectile())
+			locked = FALSE
 			update_icon()
 			visible_message("<span class='warning'>[user] breaks the lock on the [src]!</span>")
 			pump.Fire(src, user)
