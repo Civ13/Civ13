@@ -75,20 +75,21 @@
 		if (CH.reagents.has_reagent(reg, 10))
 			CH.reagents.remove_reagent(reg, 10)
 			var/turf/T = get_turf(user)
-			user << "You craft a chemical warhead."
+			user << "You craft a chemical grenade."
 			reg = replacetext(reg,"_gas","")
-			if (reg == "hexachloroetane")
-				var/resultp = text2path("/obj/item/weapon/grenade/smokebomb")
-				new resultp(T)
-			else if (reg == "napalm")
-				var/resultp = text2path("/obj/item/weapon/grenade/incendiary")
-				new resultp(T)
-			else if (reg == "magnesium")
-				var/resultp = text2path("/obj/item/weapon/grenade/flashbang")
-				new resultp(T)
-			else
-				var/resultp = text2path("/obj/item/weapon/grenade/chemical/[reg]")
-				new resultp(T)
+			switch (reg)
+				if ("hexachloroetane")
+					var/resultp = text2path("/obj/item/weapon/grenade/smokebomb")
+					new resultp(T)
+				if ("napalm")
+					var/resultp = text2path("/obj/item/weapon/grenade/incendiary")
+					new resultp(T)
+				if ("magnesium")
+					var/resultp = text2path("/obj/item/weapon/grenade/flashbang")
+					new resultp(T)
+				else
+					var/resultp = text2path("/obj/item/weapon/grenade/chemical/[reg]")
+					new resultp(T)
 			if (amount <= 1)
 				qdel(src)
 			else
@@ -201,14 +202,19 @@
 		return
 
 /obj/item/stack/ammopart/casing/artillery/proc/make_chemical(var/obj/item/weapon/reagent_containers/CH, var/mob/living/user)
-	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine_gas","phosgene_gas","zyklon_b"))
+	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine_gas","phosgene_gas","zyklon_b","napalm"))
 		if (CH.reagents.has_reagent(reg, 20))
 			CH.reagents.remove_reagent(reg, 20)
 			var/turf/T = get_turf(user)
 			user << "You craft a chemical warhead."
 			reg = replacetext(reg,"_gas","")
-			var/resultp = text2path("/obj/item/cannon_ball/shell/gas/[reg]")
-			new resultp(T)
+			switch (reg)
+				if ("napalm")
+					var/resultp = text2path("/obj/item/cannon_ball/shell/incendiary")
+					new resultp(T)
+				else
+					var/resultp = text2path("/obj/item/cannon_ball/shell/gas/[reg]")
+					new resultp(T)
 			if (amount <= 1)
 				qdel(src)
 			else
