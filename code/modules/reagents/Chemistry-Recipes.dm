@@ -420,7 +420,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Gasoline"
 	id = "gasoline"
 	result = "gasoline"
-	required_reagents = list("octane" = 10, "cyclopentane" = 4 "toluene" = 5 "butene" = 1)
+	required_reagents = list("octane" = 10, "cyclopentane" = 4, "toluene" = 5, "butene" = 1)
 	result_amount = 20
 
 /datum/chemical_reaction/penicillin
