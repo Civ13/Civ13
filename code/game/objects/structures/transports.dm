@@ -232,7 +232,7 @@
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
-			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 			if (do_after(user, 30, src))
 				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
@@ -386,6 +386,55 @@
 			engine.fueltank = fueltank
 			engine.connections += axis
 			dwheel.forceMove(src)
+
+/obj/structure/vehicle/boat/rib/arrival/proc/faststart(var/mob/living/human/H)
+	H << SPAN_DANGER("<font size = 3><big>You have 90 seconds to get to shore before your boat sinks. <b>DO NOT TURN, YOU ARE HEADING STRAIGHT TO THE ISLAND.</B></font>")
+	H.plane = GAME_PLANE
+	H.forceMove(get_turf(src))
+	
+	if (!driver)
+		if (wheeled)
+			H.put_in_active_hand(dwheel)
+
+	H.driver = TRUE
+	H.driver_vehicle = src
+	driver = H
+	buckle_mob(H)
+	ontop += H
+	updatepassdir()
+
+	update_overlay()
+	update_icon()
+
+	engine.turn_on(H)
+	set_light(3)
+	
+	running_sound()
+
+	axis.currentspeed = 1
+	var/spd = axis.get_speed()
+	if (spd <= 0)
+		return
+	else
+		vehicle_m_delay = spd
+	spawn(1)
+		updatepassdir()
+		if (axis.currentspeed == 1)
+			moving = TRUE
+			startmovementloop()
+	updatepassdir()
+
+	delete_self(H)
+	return
+
+/obj/structure/vehicle/boat/rib/arrival/proc/delete_self(var/mob/living/human/H)
+	spawn (90 SECONDS)
+		unbuckle_mob()
+		H.driver = FALSE
+		H.driver_vehicle = null
+		H.pixel_x = 0
+		H.pixel_y = 0
+		qdel(src)
 
 /obj/structure/vehicle/boat/sailboat
 	name = "sailing outrigger"
@@ -556,9 +605,9 @@
 	if (istype(A, /mob/living/human))
 		var/mob/living/human/M = A
 		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start going on \the [src]..."))
+			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
 			if (do_after(M, 40, src))
-				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs into \the [src]."), SPAN_NOTICE("You sucessfully climb into \the [src]."))
+				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
 				M.plane = GAME_PLANE
 				M.forceMove(get_turf(src))
 				if (!driver)
@@ -607,7 +656,7 @@
 
 /obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
-		user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 		if (do_after(user, 30, src))
 			user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
@@ -694,7 +743,7 @@
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
 					return
 
-			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 			if (do_after(user, 30, src))
 				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
@@ -1773,7 +1822,7 @@
 
 /obj/structure/vehicle/carriage/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
-		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		visible_message("<div class='notice'>[user] starts leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 		if (do_after(user, 30, src))
 			if(bucklepoint1 == user)
 				bucklepoint1 = null
