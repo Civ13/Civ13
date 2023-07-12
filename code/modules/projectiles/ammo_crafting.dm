@@ -53,7 +53,7 @@
 					W.amount -= amount
 					if (W.amount <= 0)
 						qdel(W)
-					new resultpath(user.loc)
+					new resultpath(src.loc)
 					qdel(src)
 					spam_check--
 					return
@@ -74,22 +74,21 @@
 	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine","phosgene_gas","zyklon_b", "hexachloroetane", "napalm", "magnesium"))
 		if (CH.reagents.has_reagent(reg, 10))
 			CH.reagents.remove_reagent(reg, 10)
-			var/turf/T = get_turf(user)
 			user << "You craft a chemical grenade."
 			reg = replacetext(reg,"_gas","")
 			switch (reg)
 				if ("hexachloroetane")
 					var/resultp = text2path("/obj/item/weapon/grenade/smokebomb")
-					new resultp(T)
+					new resultp(src.loc)
 				if ("napalm")
 					var/resultp = text2path("/obj/item/weapon/grenade/incendiary")
-					new resultp(T)
+					new resultp(src.loc)
 				if ("magnesium")
 					var/resultp = text2path("/obj/item/weapon/grenade/flashbang")
-					new resultp(T)
+					new resultp(src.loc)
 				else
 					var/resultp = text2path("/obj/item/weapon/grenade/chemical/[reg]")
-					new resultp(T)
+					new resultp(src.loc)
 			if (amount <= 1)
 				qdel(src)
 			else
@@ -142,7 +141,7 @@
 				W.amount -= amount
 				if (W.amount <= 0)
 					qdel(W)
-				new resultpath(user.loc)
+				new resultpath(src.loc)
 				qdel(src)
 				return
 			else
@@ -192,11 +191,11 @@
 			user << "<span class='notice'>You attach wires into the shell.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired(src.loc)
 		else
 			qdel(src)
 			W.amount = W.amount - 1
-			new/obj/item/stack/ammopart/casing/artillery/wired(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired(src.loc)
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder >= gunpowder_max)
 		make_chemical(W,user)
 		return
@@ -205,16 +204,15 @@
 	for (var/reg in list("xylyl_bromide","mustard_gas","white_phosphorus_gas","chlorine","phosgene_gas","zyklon_b","napalm"))
 		if (CH.reagents.has_reagent(reg, 20))
 			CH.reagents.remove_reagent(reg, 20)
-			var/turf/T = get_turf(user)
 			user << "You craft a chemical warhead."
 			reg = replacetext(reg,"_gas","")
 			switch (reg)
 				if ("napalm")
 					var/resultp = text2path("/obj/item/cannon_ball/shell/incendiary")
-					new resultp(T)
+					new resultp(src.loc)
 				else
 					var/resultp = text2path("/obj/item/cannon_ball/shell/gas/[reg]")
-					new resultp(T)
+					new resultp(src.loc)
 			if (amount <= 1)
 				qdel(src)
 			else
@@ -232,11 +230,11 @@
 			user << "<span class='notice'>You attach electronics to the wires.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(src.loc)
 		else
 			qdel(src)
 			W.amount = W.amount - 8
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(src.loc)
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
@@ -248,11 +246,11 @@
 			user << "<span class='notice'>You attach uranium to the electronics and stuff it in the casing.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(src.loc)
 		else
 			qdel(src)
 			W.amount = W.amount - 5
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(user.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(src.loc)
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
@@ -302,7 +300,7 @@
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
-			new/obj/item/cannon_ball/shell/nuclear/nomads(user.loc)
+			new/obj/item/cannon_ball/shell/nuclear/nomads(src.loc)
 		qdel(src)
 		return
 	else
@@ -361,7 +359,7 @@
 /obj/item/stack/ammopart/casing/artillery/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
-			new/obj/item/cannon_ball/shell(user.loc)
+			new/obj/item/cannon_ball/shell(src.loc)
 		user << "You produce HE artillery shells."
 		qdel(src)
 		return
@@ -402,7 +400,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(user.loc)
+						new resultpath(src.loc)
 					qdel(src)
 					return
 				else
@@ -444,7 +442,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(user.loc)
+						new resultpath(src.loc)
 					qdel(src)
 					return
 				else
@@ -480,7 +478,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(user.loc)
+						new resultpath(src.loc)
 					qdel(src)
 					return
 				else
@@ -515,7 +513,7 @@
 
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -558,7 +556,7 @@
 				
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -612,7 +610,7 @@
 
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -637,7 +635,7 @@
 				user.r_hand.amount -= 1
 			else
 				qdel(user.r_hand)
-			new resultpath(user.loc)
+			new resultpath(src.loc)
 			return
 
 	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
@@ -651,7 +649,7 @@
 				user.l_hand.amount -= 1
 			else
 				qdel(user.l_hand)
-			new resultpath(user.loc)
+			new resultpath(src.loc)
 			return
 
 	else
