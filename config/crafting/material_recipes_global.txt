@@ -405,6 +405,7 @@ RECIPE: /material/leather/,double hip holster,/obj/item/clothing/accessory/holst
 RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,120,0,1,none,110,0,0,8,null
 RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,100,0,1,none,218,0,0,8,null
+RECIPE: /material/electronics/,laboratory centrifuge,/obj/structure/centrifuge,24,100,0,1,none,100,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
@@ -771,7 +772,6 @@ RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
-RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
 RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
 RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
 RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null

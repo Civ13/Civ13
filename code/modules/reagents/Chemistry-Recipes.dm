@@ -549,7 +549,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Hydrogen Chloride"
 	id = "hydrogen_chloride"
 	result = "hydrogen_chloride"
-	required_reagents = list("hydrogen" = 1, "chlorine" = 1)
+	required_reagents = list("hydrogen" = 2, "chlorine" = 2)
 	result_amount = 1
 
 /datum/chemical_reaction/hydrogen_peroxide
@@ -631,26 +631,12 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("sodiumchloride" = 1, "water" = 1, "sugar" = 1 )
 	result_amount = 2
 
-/datum/chemical_reaction/aqua_regia
-	name = "Aqua regia"
-	id = "aqua_regia"
-	result = "aqua_regia"
-	required_reagents = list("nitric_acid" = 1, "clorhydric_acid" = 3, )
-	result_amount = 2
-
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
 	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
 	result_amount = 4
-
-/datum/chemical_reaction/clorhydric_acid
-	name = "Clorhydric acid"
-	id = "clorhydric_acid"
-	result = "clorhydric_acid"
-	required_reagents = list("hydrogen" =1, "chlorine" = 1 )
-	result_amount = 1
 
 /datum/chemical_reaction/baking_soda
 	name = "Baking soda"
@@ -852,13 +838,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = "hexachloroetane"
 	required_reagents = list("chlorine" = 6, "carbon" = 2)
 	result_amount = 10
-
-/datum/chemical_reaction/chlorine_gas
-	name = "Chlorine Gas"
-	id = "chlorine_gas"
-	result = "chlorine_gas"
-	required_reagents = list("chlorine" = 5, "hydrogen" = 5)
-	result_amount = 5
 
 /datum/chemical_reaction/mustard_gas
 	name = "Mustard Gas"

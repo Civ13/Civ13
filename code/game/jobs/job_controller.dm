@@ -304,12 +304,25 @@ var/global/datum/controller/occupations/job_master
 		H.loc = spawnpoint
 		if (map.battleroyale) // if its the DM map, remove the "used" spawnpoint from the list
 			latejoin_turfs[spawn_location] -= spawnpoint
-
+				
 	// make sure we have the right ambience for our new location
 	spawn (1)
 		var/area/H_area = get_area(H)
 		if (H_area)
 			H_area.play_ambience(H)
+	if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+		new /obj/structure/vehicle/boat/rib/arrival(H.loc)
+		var/spawned = 0
+		for (var/obj/structure/vehicle/boat/rib/arrival/rib in range(1,H))
+			if (spawned < 1)
+				if (H.faction_text == "PIRATES")
+					rib.dir = EAST
+				else if (H.faction_text == "CIVILIAN")
+					rib.dir = WEST
+				rib.faststart(H)
+				spawned++
+			else
+				qdel(rib)
 
 /datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
 	occupations = list()

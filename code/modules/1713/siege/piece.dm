@@ -527,7 +527,7 @@
 									var/how_many = 24 // half of 49, the radius we spread over (7x7)
 									for (var/k in 1 to how_many)
 										switch (reagent_payload)
-											if ("chlorine_gas")
+											if ("chlorine")
 												new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
 											if ("mustard_gas")
 												new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
@@ -757,9 +757,14 @@
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/nomads))
 											radiation_pulse(target, 25, 150, 1800, TRUE)
-											explosion(target, 5, 8, 20, 200)
+											explosion(target, 5, 8, 20, 80)
 											for (var/turf/floor/T in circlerangeturfs(4, target))
 												ignite_turf(T, 12, 70)
+											
+											for(var/mob/living/human/L in circlerangeturfs(80, target))
+												L.Weaken(3)
+												if (L.HUDtech.Find("flash"))
+													flick("e_flash", L.HUDtech["flash"])
 											change_global_pollution(200)
 											change_global_radiation(18)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
@@ -782,7 +787,7 @@
 										var/how_many = 24 // half of 49, the radius we spread over (7x7)
 										for (var/k in 1 to how_many)
 											switch (reagent_payload)
-												if ("chlorine_gas")
+												if ("chlorine")
 													new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
 												if ("mustard_gas")
 													new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)

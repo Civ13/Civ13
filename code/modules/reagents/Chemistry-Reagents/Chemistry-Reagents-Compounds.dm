@@ -269,15 +269,38 @@
 	reagent_state = SOLID
 	color = "#FFFFFF"
 
+/datum/reagent/sugar/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	M.nutrition += removed * 2
+	M.bowels += removed/12
+
 /datum/reagent/cocaine
 	name = "Cocaine"
 	id = "cocaine"
-	description = "A recreational drug made from coca leaves,tastes great ."
+	description = "A recreational drug made from coca leaves,tastes great."
 	taste_description = "very powdery and sweet"
 	reagent_state = SOLID
 	color = "#FFFFFF"
 
+/datum/reagent/bloodplasma
+	name = "Blood Plasma"
+	id = "blood_plasma"
+	description = "Plasma is the largest part of your blood. The main role of plasma is to take nutrients, hormones, and proteins to the parts of the body that need it."
+	taste_description = "like water but with an iron after taste"
+	reagent_state = LIQUID
+	color = "#FCEA94"
 
-/datum/reagent/sugar/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.nutrition += removed * 2
-	M.bowels += removed/12
+/datum/reagent/red_blood_cells
+	name = "Red Blood Cells"
+	id = "red_blood_cells"
+	description = "Red blood cells, also known as erythrocytes, deliver oxygen to the tissues in the body."
+	taste_description = "like iron"
+	reagent_state = LIQUID
+	color = "#C80000"
+
+/datum/reagent/white_blood_cells
+	name = "White Blood Cells"
+	id = "white_blood_cells"
+	description = "White blood cells are also called leukocytes, protect the body against illness and disease."
+	taste_description = "like iron"
+	reagent_state = LIQUID
+	color = "#C80000"

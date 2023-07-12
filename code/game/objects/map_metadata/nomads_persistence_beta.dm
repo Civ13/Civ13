@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads_persistence_beta
 	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nations RP (Persistence BETA)"
-	lobby_icon = "icons/lobby/campaign.gif"
+	lobby_icon = "icons/lobby/campaign.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
