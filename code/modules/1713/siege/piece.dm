@@ -761,10 +761,10 @@
 											for (var/turf/floor/T in circlerangeturfs(4, target))
 												ignite_turf(T, 12, 70)
 											
-											for(var/mob/living/H in circlerangeturfs(80, target))
-												H.Weaken(3)
-												if (H.HUDtech.Find("flash"))
-													flick("e_flash", H.HUDtech["flash"])
+											for(var/mob/living/human/L in circlerangeturfs(80, target))
+												L.Weaken(3)
+												if (L.HUDtech.Find("flash"))
+													flick("e_flash", L.HUDtech["flash"])
 											change_global_pollution(200)
 											change_global_radiation(18)
 											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
