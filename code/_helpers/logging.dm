@@ -52,7 +52,8 @@
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
-	webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]")
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]")
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) ADMINPM TO **[aname]**:**__ **[name]** [text]")
 
 /proc/discord_admin_ban(banner,banned,duration,reason)
 	var/admindiary = file("admin.log")
