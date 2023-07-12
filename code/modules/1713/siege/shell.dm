@@ -339,7 +339,7 @@
 // Chemical
 
 /obj/item/cannon_ball/shell/gas/chlorine
-	reagent_payload = "chlorine_gas"
+	reagent_payload = "chlorine"
 	name = "Chlorine Shell"
 	icon_state = "shell_chlorine"
 
@@ -394,8 +394,8 @@
 
 /obj/item/cannon_ball/shell/nuclear/nomads
 	icon = 'icons/obj/cannon_ball.dmi'
-	name = "Makeshift Nuclear Shell"
-	desc = "A makeshift nuclear shell, once the genie is out of the bottle you can't put it back in..."
+	name = "Nuclear Shell"
+	desc = "A nuclear shell, once the genie is out of the bottle you can't put it back in..."
 	icon_state = "shell_nuclear"
 	value = 60
 

@@ -181,22 +181,6 @@ var/mob/living/human/next_gas_flesh_message = -1
 		eye_damage(L, get_severity(amount)*3)
 		external_damage(L, get_severity(amount)*3)
 		open_wound_damage(L, get_severity(amount)*3)
-//green cross
-/datum/reagent/toxin/chlorine_gas
-	name = "Chlorine Gas"
-	id = "chlorine_gas"
-	description = "A deadly gas that destroys your lungs."
-	reagent_state = GAS
-	color = "#ffd700"
-	strength = 30
-	touch_met = 5
-	alpha = 128
-//	meltdose = 4
-
-/datum/reagent/toxin/chlorine_gas/touch_mob(var/mob/living/L, var/amount)
-	if (istype(L))
-		eye_damage(L, get_severity(amount/2))
-		internal_damage(L, get_severity(amount)*2)
 
 /datum/reagent/toxin/phosgene_gas
 	name = "Phosgene Gas"

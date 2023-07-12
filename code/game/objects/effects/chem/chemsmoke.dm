@@ -111,7 +111,7 @@
 
 		for (var/turf/T in view(1, src) - oldlocs)
 			for (var/atom/movable/AM in T)
-				if (!istype(AM, /obj/effect/effect/smoke/chem))
+				if (!istype(AM, /obj/effect/effect/smoke/chem) || !istype(AM, /obj/item/weapon/reagent_containers))
 					reagents.splash(AM, splash_amount, copy = TRUE)
 		if (loc == destination)
 			bound_width = 96
@@ -119,13 +119,13 @@
 
 /obj/effect/effect/smoke/chem/Crossed(atom/movable/AM)
 	..()
-	if (!istype(AM, /obj/effect/effect/smoke/chem))
+	if (!istype(AM, /obj/effect/effect/smoke/chem) || !istype(AM, /obj/item/weapon/reagent_containers))
 		reagents.splash(AM, splash_amount, copy = TRUE)
 
 /obj/effect/effect/smoke/chem/proc/initial_splash()
 	for (var/turf/T in view(1, src))
 		for (var/atom/movable/AM in T)
-			if (!istype(AM, /obj/effect/effect/smoke/chem))
+			if (!istype(AM, /obj/effect/effect/smoke/chem) || !istype(AM, /obj/item/weapon/reagent_containers))
 				reagents.splash(AM, splash_amount, copy = TRUE)
 
 // Fades out the smoke smoothly using it's alpha variable.

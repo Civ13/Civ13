@@ -10,7 +10,7 @@
 			alpha = r.alpha
 
 /obj/effect/effect/smoke/chem/payload/chlorine_gas
-	reagent_id = "chlorine_gas"
+	reagent_id = "chlorine"
 
 /obj/effect/effect/smoke/chem/payload/mustard_gas
 	reagent_id = "mustard_gas"
@@ -35,7 +35,7 @@
 	. = ..()
 	if (.)
 		for (var/atom/movable/AM in get_turf(src))
-			if (!istype(AM, /obj/effect/effect/smoke/chem))
+			if (!istype(AM, /obj/effect/effect/smoke/chem) || !istype(AM, /obj/item/weapon/reagent_containers))
 				reagents.splash(AM, splash_amount, copy = TRUE)
 		if (loc == destination)
 			bound_width = 96

@@ -171,15 +171,23 @@
 	atomic_nr = 16
 	chemical_symbol = "S"
 
-/datum/reagent/chlorine
+/datum/reagent/toxin/chlorine
 	name = "Chlorine"
 	id = "chlorine"
-	description = "The most common compound of chlorine, sodium chloride (common salt), has been known since ancient times."
+	description = "The most common compound of chlorine, sodium chloride (common salt), has been known since ancient times. "
 	taste_description = "chlorine"
 	reagent_state = GAS
 	color = "#FFD700"
 	atomic_nr = 17
 	chemical_symbol = "Cl"
+	strength = 30
+	touch_met = 5
+	alpha = 128
+
+/datum/reagent/toxin/chlorine/touch_mob(var/mob/living/L, var/amount)
+	if (istype(L))
+		eye_damage(L, get_severity(amount/2))
+		internal_damage(L, get_severity(amount)*2)
 
 /datum/reagent/argon
 	name = "Argon"
@@ -224,7 +232,7 @@
 /datum/reagent/titanium
 	name = "Titanium"
 	id = "titanium"
-	description = "Titanium is a lustrous transition metal with a silver color, low density, and high strength. Titanium is resistant to corrosion in sea water, aqua regia, and chlorine."
+	description = "Titanium is a lustrous transition metal with a silver color, low density, and high strength. Titanium is resistant to corrosion of most types."
 	taste_description = "metal"
 	reagent_state = SOLID
 	color = "#CDCDCD"
