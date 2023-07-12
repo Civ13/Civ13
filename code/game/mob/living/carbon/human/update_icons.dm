@@ -263,30 +263,8 @@ var/global/list/damage_icon_parts = list()
 	if (human_icon_cache[icon_key] && !forced)
 		base_icon = human_icon_cache[icon_key]
 	else
-		//BEGIN CACHED ICON GENERATION.
-		base_icon = new('icons/mob/human.dmi',"blank")
-
-		for (var/obj/item/organ/external/part in organs)
-			var/icon/temp = part.get_icon()
-			//That part makes left and right legs drawn topmost and lowermost when human looks WEST or EAST
-			//And no change in rendering for other parts (they icon_position is FALSE, so goes to 'else' part)
-			if (part.icon_position&(LEFT|RIGHT))
-				var/icon/temp2 = new('icons/mob/human.dmi',"blank")
-				temp2.Insert(new/icon(temp,dir=NORTH),dir=NORTH)
-				temp2.Insert(new/icon(temp,dir=SOUTH),dir=SOUTH)
-				if (!(part.icon_position & LEFT))
-					temp2.Insert(new/icon(temp,dir=EAST),dir=EAST)
-				if (!(part.icon_position & RIGHT))
-					temp2.Insert(new/icon(temp,dir=WEST),dir=WEST)
-				base_icon.Blend(temp2, ICON_OVERLAY)
-				if (part.icon_position & LEFT)
-					temp2.Insert(new/icon(temp,dir=EAST),dir=EAST)
-				if (part.icon_position & RIGHT)
-					temp2.Insert(new/icon(temp,dir=WEST),dir=WEST)
-				base_icon.Blend(temp2, ICON_UNDERLAY)
-			else
-				base_icon.Blend(temp, ICON_OVERLAY)
-
+		reload_cached_icons()
+		
 		human_icon_cache[icon_key] = base_icon
 
 	//END CACHED ICON GENERATION.
@@ -295,6 +273,30 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)
 		update_icons()
 
+/mob/living/human/proc/reload_cached_icons()
+	//BEGIN CACHED ICON GENERATION.
+	base_icon = new('icons/mob/human.dmi',"blank")
+
+	for (var/obj/item/organ/external/part in organs)
+		var/icon/temp = part.get_icon()
+		//That part makes left and right legs drawn topmost and lowermost when human looks WEST or EAST
+		//And no change in rendering for other parts (they icon_position is FALSE, so goes to 'else' part)
+		if (part.icon_position&(LEFT|RIGHT))
+			var/icon/temp2 = new('icons/mob/human.dmi',"blank")
+			temp2.Insert(new/icon(temp,dir=NORTH),dir=NORTH)
+			temp2.Insert(new/icon(temp,dir=SOUTH),dir=SOUTH)
+			if (!(part.icon_position & LEFT))
+				temp2.Insert(new/icon(temp,dir=EAST),dir=EAST)
+			if (!(part.icon_position & RIGHT))
+				temp2.Insert(new/icon(temp,dir=WEST),dir=WEST)
+			base_icon.Blend(temp2, ICON_OVERLAY)
+			if (part.icon_position & LEFT)
+				temp2.Insert(new/icon(temp,dir=EAST),dir=EAST)
+			if (part.icon_position & RIGHT)
+				temp2.Insert(new/icon(temp,dir=WEST),dir=WEST)
+			base_icon.Blend(temp2, ICON_UNDERLAY)
+		else
+			base_icon.Blend(temp, ICON_OVERLAY)
 
 //HAIR OVERLAY
 /mob/living/human/proc/update_hair(var/update_icons=1)
