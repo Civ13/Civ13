@@ -244,3 +244,38 @@
 				attempt_move(start_location) //try to go back to where we started. If that fails, I guess we're stuck in the interim location
 
 		moving_status = SHUTTLE_IDLE
+
+
+/obj/structure/boat_spawn_lever // same icon as the train lever for now
+	name = "boat spawner"
+	icon = 'icons/obj/vehicles/train_lever.dmi'
+	icon_state = "lever_none"
+	
+	anchored = TRUE
+	density = TRUE
+	
+	var/none_state = "lever_none" // Icon for when the transport object is not being used
+	var/pushed_state = "lever_pulled" // Icon for when the transport object is used
+	var/next_activation = -1; // Used for cooldown
+	var/cooldown = 60 SECONDS
+	var/facing_dir = NORTH
+
+/obj/structure/boat_spawn_lever/attack_hand(var/mob/user as mob)
+	if (world.time < next_activation)
+		next_activation = world.time + 5 SECONDS
+		visible_message("This boat spawner is cooling down.</span>")
+		return
+	else
+		next_activation = world.time + cooldown
+		var/obj/structure/vehicle/boat/rib/premade/arrival = new /obj/structure/vehicle/boat/rib/premade/arrival(locate(src.x,src.y-2,src.z))
+		arrival.dir = facing_dir
+		icon_state = pushed_state
+		user << SPAN_DANGER("<font size = 3><big>You have <b>2 minutes</b> to get to shore before your boat sinks.</font>")
+		spawn (5)
+			icon_state = none_state
+		return
+
+/obj/structure/boat_spawn_lever/east
+	facing_dir = EAST
+/obj/structure/boat_spawn_lever/west
+	facing_dir = WEST
