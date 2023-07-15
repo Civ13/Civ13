@@ -38,7 +38,7 @@
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = ITEM_SIZE_SMALL
-	slot_flags = SLOT_BACK | SLOT_ACCESSORY
+	slot_flags = SLOT_BACK
 	var/material = "wood"
 	health = 20 // hardness of wood
 	var/cooldown = 0
@@ -209,7 +209,7 @@
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
-	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
+	slot_flags = SLOT_BACK | SLOT_BELT
 
 /obj/item/weapon/shield/chimalli
 	name = "chimalli"
@@ -308,14 +308,14 @@
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
-	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
+	slot_flags = SLOT_BACK | SLOT_BELT
 
 obj/item/weapon/shield/blue_buckler
 	name = "blue buckler shield"
 	icon_state = "blue_buckler"
 	item_state = "blue_buckler"
 	base_block_chance = 25
-	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY
+	slot_flags = SLOT_BACK | SLOT_BELT
 	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
@@ -332,7 +332,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	icon_state = "arabic_shield"
 	item_state = "arabic_shield"
 	base_block_chance = 30
-	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_ACCESSORY | SLOT_ACCESSORY
+	slot_flags = SLOT_BACK | SLOT_BELT
 	w_class = ITEM_SIZE_SMALL
 	material = "wood"
 	health = 20 // hardness of wood
