@@ -1830,6 +1830,8 @@ RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,2
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
 
+RECIPE: /material/wood/,ridgid inflatable boat frame,/obj/item/vehicleparts/frame/boat/rib,22,200,0,1,vehicle parts,175,0,0,8,null
+
 RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (N),/obj/structure/fuelpump/n,15,120,1,1,none,120,0,0,8,null
