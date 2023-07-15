@@ -59,7 +59,7 @@
 /obj/structure/vehicle/proc/do_move(var/m_dir = null)
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, m_dir))
-	for (var/obj/structure/O in ontop_o)
+	for (var/obj/O in ontop_o)
 		O.forceMove(get_step(src, m_dir))
 		O.dir = dir
 	forceMove(get_step(src, m_dir))
@@ -206,7 +206,7 @@
 			update_icon()
 			return
 	else if (ontop_o.len > 0)
-		for (var/obj/structure/O in ontop_o)
+		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
 				O.anchored = FALSE
 				if (initial(O.density))
@@ -339,6 +339,7 @@
 	bound_height = 64
 	mobcapacity = 2
 	storagecapacity = 1
+	plane = GAME_PLANE
 	New()
 		..()
 		dwheel.origin = src
@@ -366,12 +367,12 @@
 
 /obj/structure/vehicle/boat/rib
 	name = "rigid inflatable boat"
-	desc = "A 400cc, gasoline-powered RHIB. Has a 180u fueltank."
-	icon_state = "rib"
+	desc = "A 400cc, gasoline-powered Ridgid Inflatable Boat. Has a 180u fueltank."
+	icon_state = "rib_frame3"
 	health = 300
 	maxcapacity = 2
 
-/obj/structure/vehicle/boat/rib/New()
+/obj/structure/vehicle/boat/rib/premade/New()
 	..()
 	engine = new/obj/structure/engine/internal/gasoline
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
@@ -387,48 +388,8 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
-/obj/structure/vehicle/boat/rib/arrival/proc/faststart(var/mob/living/human/H)
-	H << SPAN_DANGER("<font size = 3><big>You have 90 seconds to get to shore before your boat sinks. <b>DO NOT TURN, YOU ARE HEADING STRAIGHT TO THE ISLAND.</B></font>")
-	H.plane = GAME_PLANE
-	H.forceMove(get_turf(src))
-	
-	if (!driver)
-		if (wheeled)
-			H.put_in_active_hand(dwheel)
-
-	H.driver = TRUE
-	H.driver_vehicle = src
-	driver = H
-	buckle_mob(H)
-	ontop += H
-	updatepassdir()
-
-	update_overlay()
-	update_icon()
-
-	engine.turn_on(H)
-	set_light(3)
-	
-	running_sound()
-
-	axis.currentspeed = 1
-	var/spd = axis.get_speed()
-	if (spd <= 0)
-		return
-	else
-		vehicle_m_delay = spd
-	spawn(1)
-		updatepassdir()
-		if (axis.currentspeed == 1)
-			moving = TRUE
-			startmovementloop()
-	updatepassdir()
-
-	delete_self(H)
-	return
-
-/obj/structure/vehicle/boat/rib/arrival/proc/delete_self(var/mob/living/human/H)
-	spawn (90 SECONDS)
+/obj/structure/vehicle/boat/rib/premade/arrival/proc/delete_self(var/mob/living/human/H)
+	spawn (120 SECONDS)
 		unbuckle_mob()
 		H.driver = FALSE
 		H.driver_vehicle = null
@@ -506,7 +467,7 @@
 	spawn(timer)
 		for (var/mob/living/ML in ontop)
 			ML.forceMove(get_step(src, dir))
-		for (var/obj/structure/O in ontop_o)
+		for (var/obj/O in ontop_o)
 			O.forceMove(get_step(src, dir))
 		forceMove(get_step(src, dir))
 		updatepassdir()
@@ -567,7 +528,7 @@
 			currentcap.anchored = FALSE
 			currentcap = null
 	if (ontop_o.len > 0)
-		for(var/obj/structure/OB in ontop_o)
+		for (var/obj/OB in ontop_o)
 			OB.pixel_x = pixel_x
 			OB.pixel_y = pixel_y
 			OB.dir = dir
@@ -630,7 +591,7 @@
 				update_overlay()
 				update_icon()
 				return
-	else if (istype(A, /obj/structure))
+	else if (istype(A, /obj/structure) || istype(A, /obj/item/weapon/gun/projectile/automatic/stationary) && storagecapacity >= 1)
 		if (src == A)
 			return
 		var/obj/structure/O = A
@@ -687,7 +648,7 @@
 			update_icon()
 			return
 	else if (ontop_o.len > 0)
-		for (var/obj/structure/O in ontop_o)
+		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
 				O.anchored = FALSE
 				if (initial(O.density))
@@ -899,18 +860,18 @@
 			stopmovementloop()
 			return FALSE
 		var/blocked = 0
-		for(var/obj/structure/O in get_turf(get_step(src,driver.dir)))
+		for (var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 			if (O.density == TRUE)
 				blocked = 1
 				visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 		if (get_turf(get_step(src,driver.dir)).density == TRUE)
 			blocked = 1
 			visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
-		for(var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
+		for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
 			if (CV.density == TRUE)
 				blocked = 1
 				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-		for(var/mob/living/L in get_turf(get_step(src,driver.dir)))
+		for (var/mob/living/L in get_turf(get_step(src,driver.dir)))
 			if (ishuman(L))
 				var/mob/living/human/HH = L
 				HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
@@ -969,7 +930,7 @@
 			stopmovementloop()
 			return FALSE
 		var/canpass = FALSE
-		for(var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
+		for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 			if (CVV.density == FALSE)
 				canpass = TRUE
 		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
@@ -1883,12 +1844,12 @@
 		stopmovementloop()
 		return FALSE
 	var/blocked = 0
-	for(var/obj/structure/O in t1)
+	for (var/obj/structure/O in t1)
 		if (O.density == TRUE && O != src)
 			blocked = 1
 			visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 			break
-	for(var/obj/structure/O in t2)
+	for (var/obj/structure/O in t2)
 		if (O.density == TRUE && O != src)
 			blocked = 1
 			visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
@@ -1901,12 +1862,12 @@
 		else
 			blocking = t2
 		visible_message("<span class='warning'>\the [src] hits \the [blocking]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
-	for(var/obj/covers/CV in t1)
+	for (var/obj/covers/CV in t1)
 		if (CV.density == TRUE)
 			blocked = 1
 			visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 			break
-	for(var/obj/covers/CV in t2)
+	for (var/obj/covers/CV in t2)
 		if (CV.density == TRUE)
 			blocked = 1
 			visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
@@ -1983,7 +1944,7 @@
 		stopmovementloop()
 		return FALSE
 	var/canpass = FALSE
-	for(var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
+	for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 		if (CVV.density == FALSE)
 			canpass = TRUE
 	if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))

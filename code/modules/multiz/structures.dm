@@ -201,7 +201,7 @@
 	if (find_target() && istop)
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
 			var/obj/item/I = AM
-			if (I.w_class <= 2.0) // fixes maxim bug and probably some others - Kachnov
+			if (I.w_class <= ITEM_SIZE_SMALL) // fixes maxim bug and probably some others - Kachnov
 				I.z = I.z-1
 				visible_message("\The [I] falls down the ladder.")
 		else if (!AM.pulledby && istype(AM, /obj/structure/closet))

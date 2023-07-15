@@ -128,3 +128,4 @@
 #define SPAN_NOTICE(X) SPAN("notice", X)
 #define SPAN_WARNING(X) SPAN("warning", X)
 #define SPAN_DANGER(X) SPAN("danger", X)
+#define SPAN_RED(X) SPAN("red", X)
