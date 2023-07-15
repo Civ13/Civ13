@@ -881,6 +881,10 @@
 	name = "pinetree spawner"
 	create_path = /obj/structure/wild/tree/live_tree/pine
 
+/obj/effect/spawner/objspawner/pine/snow
+	name = "pinetree spawner"
+	create_path = /obj/structure/wild/tree/live_tree/pine/snow
+
 /obj/effect/spawner/objspawner/palm
 	name = "palm spawner"
 	max_number = 13

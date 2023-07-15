@@ -310,10 +310,11 @@ var/global/datum/controller/occupations/job_master
 		var/area/H_area = get_area(H)
 		if (H_area)
 			H_area.play_ambience(H)
+	/*
 	if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
-		new /obj/structure/vehicle/boat/rib/arrival(H.loc)
+		new /obj/structure/vehicle/boat/rib/premade/arrival(H.loc)
 		var/spawned = 0
-		for (var/obj/structure/vehicle/boat/rib/arrival/rib in range(1,H))
+		for (var/obj/structure/vehicle/boat/rib/premade/arrival/rib in range(1,H))
 			if (spawned < 1)
 				if (H.faction_text == "PIRATES")
 					rib.dir = EAST
@@ -323,6 +324,7 @@ var/global/datum/controller/occupations/job_master
 				spawned++
 			else
 				qdel(rib)
+	*/
 
 /datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
 	occupations = list()
