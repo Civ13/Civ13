@@ -263,6 +263,7 @@
 				if (w_front[6])
 					if (w_front[7])
 						visible_message("[H] locks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_front[7] = FALSE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -273,6 +274,7 @@
 							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_front[7] = TRUE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -285,6 +287,7 @@
 				if (w_back[6])
 					if (w_back[7])
 						visible_message("[H] locks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_back[7] = FALSE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -295,6 +298,7 @@
 							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_back[7] = TRUE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -307,6 +311,7 @@
 				if (w_left[6])
 					if (w_left[7])
 						visible_message("[H] locks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_left[7] = FALSE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -317,6 +322,7 @@
 							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_left[7] = TRUE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -329,6 +335,7 @@
 				if (w_right[6])
 					if (w_right[7])
 						visible_message("[H] locks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_right[7] = FALSE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -339,6 +346,7 @@
 							noroof = FALSE
 					else
 						visible_message("[H] unlocks the door.")
+						playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 						w_right[7] = TRUE
 						if (removesroof)
 							for(var/obj/structure/vehicleparts/frame/VP in range(1,loc))
@@ -348,7 +356,6 @@
 									VP.update_icon()
 							noroof = TRUE
 					H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-				playsound(src.loc, 'sound/effects/door_lock_unlock.ogg', 100)
 				update_icon()
 			else
 				H << "This key does not match this lock!"
