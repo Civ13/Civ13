@@ -1197,6 +1197,13 @@
 	item_state = "sealvest_yellow"
 	worn_state = "sealvest_yellow"
 
+/obj/item/clothing/suit/lifejacket/blue
+	name = "lifejacket"
+	desc = "A blue lifejacket, to improve survival on sea."
+	icon_state = "sealvest_blue"
+	item_state = "sealvest_blue"
+	worn_state = "sealvest_blue"
+
 /obj/item/clothing/suit/storage/jacket/highvis
 	name = "high visibility jacket"
 	desc = "A yellow high visibility jacket."
