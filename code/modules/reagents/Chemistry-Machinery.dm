@@ -267,7 +267,7 @@
 		else
 			icon_state = "distill_empty_nocol"
 	if (active)
-		icon_state = "distill_on"
+		icon_state = "distill_active"
 
 /obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
@@ -398,7 +398,7 @@
 	else
 		icon_state = "centrifuge"
 	if (active)
-		icon_state = "centrifuge_on"
+		icon_state = "centrifuge_active"
 
 /obj/structure/centrifuge/attack_hand(var/mob/living/human/H)
 	if (!anchored)
@@ -548,7 +548,7 @@
 	else
 		icon_state = "grinder"
 	if (active)
-		icon_state = "grinder_on"
+		icon_state = "grinder_active"
 
 /obj/structure/grinder/attack_hand(var/mob/living/human/H)
 	if (!anchored)
