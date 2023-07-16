@@ -1068,7 +1068,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 	name = "laser designator"
 	desc = "A laser designator for marking airstrikes. <b>You have some amount of airstrikes left.</b>"
 	icon_state = "laser_designator"
-	max_zoom = ZOOM_CONSTANT*4
+	max_zoom = ZOOM_CONSTANT*3
 	attachable = FALSE
 	value = 15
 	w_class = ITEM_SIZE_SMALL
@@ -1151,7 +1151,7 @@ obj/map_metadata/campaign/campaign8/job_enabled_specialcheck(var/datum/job/J)
 					H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition and returning to base.</big></b>")
 					return
 		else
-			H << SPAN_WARNING("<b>There are no friendly aircraft in the Area of Operations.</b>")
+			H << SPAN_WARNING("<b>There are no friendly aircraft in your AO.</b>")
 			return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/campaign_laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)

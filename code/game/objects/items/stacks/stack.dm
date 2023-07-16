@@ -1860,6 +1860,15 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.caliber = inpt
 			T.name = "[T.caliber]mm cannon casing"
 			return
+		
+		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
+			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
+			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+				if (H.faction_text == "PIRATES")
+					T.icon_state = "m16"
+				else if (H.faction_text == "CIVILIAN")
+					T.icon_state = "ak74"
+			return
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
