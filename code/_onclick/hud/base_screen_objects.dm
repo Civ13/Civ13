@@ -1289,6 +1289,7 @@ obj/screen/tactic
 	name = "Allow Movement"
 	icon_state = "no_walk0"
 	screen_loc = "15,3"
+	invisibility = 101
 
 /obj/screen/gun/move/Click(location, control, params)
 	if (..())
@@ -1312,6 +1313,7 @@ obj/screen/tactic
 	name = "Allow Item Use"
 	icon_state = "no_items0"
 	screen_loc = "14,2"
+	invisibility = 101
 
 /obj/screen/gun/item/Click(location, control, params)
 	if (..())
