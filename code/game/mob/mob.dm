@@ -1071,9 +1071,6 @@ mob/proc/yank_out_object()
 			I.update_icon()
 
 /mob/proc/set_face_dir(var/newdir)
-	var/mob/living/human/H = null
-	
-
 	if (!isnull(facing_dir) && newdir == facing_dir)
 		facing_dir = null
 	else if (newdir)
