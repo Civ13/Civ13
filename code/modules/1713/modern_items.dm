@@ -1137,7 +1137,7 @@
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
 		active = FALSE
 		update_icon()
-		visible_message(SPAN_WARNING("\The [src] cannot drill here, find some softer ground."))
+		visible_message(SPAN_WARNING("\The [src] cannot drill here, the drill cannot reach the soil."))
 		return
 	if (!(src.z == 1))
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
