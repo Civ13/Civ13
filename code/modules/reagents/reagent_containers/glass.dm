@@ -421,14 +421,6 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/beaker/on_reagent_change()
 	update_icon()
 
-/obj/item/weapon/reagent_containers/glass/beaker/pickup(mob/user)
-	..()
-	playsound(src,'sound/effects/glassknock.ogg',50,1)
-
-/obj/item/weapon/reagent_containers/glass/beaker/dropped(mob/user)
-	..()
-	playsound(src,'sound/effects/Glasshit.ogg',50,1)
-
 /obj/item/weapon/reagent_containers/glass/beaker/update_icon()
 	overlays.Cut()
 	if (reagents.total_volume)

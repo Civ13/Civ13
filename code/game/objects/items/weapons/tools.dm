@@ -747,6 +747,9 @@ Shinobi's unfinished welder stuff - siro*/
 		icon_state = "compass_modern"
 		update_icon()
 		return
+/obj/item/weapon/compass/modern/AltClick()
+	..()
+	turn_on()
 
 /obj/item/weapon/compass/modern/tacmap
 	name = "tactical map"
