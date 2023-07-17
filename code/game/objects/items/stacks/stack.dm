@@ -667,7 +667,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (H.getStatCoeff("crafting") < 1.25)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	else if (findtext(recipe.title, "hand cannon") || findtext(recipe.title, "dragoon helmet"))
+	else if (findtext(recipe.title, "handcannon") || findtext(recipe.title, "dragoon helmet"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
