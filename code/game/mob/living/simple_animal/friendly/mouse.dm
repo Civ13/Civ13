@@ -90,6 +90,8 @@
 			var/dmod = 1
 			if (find_trait("Weak Immune System"))
 				dmod = 2
+			if (find_trait("Strong Immune System"))
+				dmod = 0.2
 			M << "<span class = 'notice'>\icon[src] Squeek!</span>"
 			M << 'sound/effects/mousesqueek.ogg'
 			target_mob = M

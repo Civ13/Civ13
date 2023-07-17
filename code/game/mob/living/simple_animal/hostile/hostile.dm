@@ -100,6 +100,8 @@
 			var/dmod = 1
 			if (H.find_trait("Weak Immune System"))
 				dmod = 2
+			if (H.find_trait("Strong Immune System"))
+				dmod = 0.2
 			if (prob(3*dmod))
 				H.disease = TRUE
 				H.disease_type = "plague"
