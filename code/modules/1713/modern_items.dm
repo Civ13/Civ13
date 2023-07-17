@@ -1100,34 +1100,38 @@
 		return
 
 /obj/structure/drill/attack_hand(var/mob/living/human/H)
-	update_icon()
 	if (!anchored)
 		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
 		return
 	else if (!check_power())
 		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		update_icon()
 		return
-	else if (!active)
+	else if (!active && check_power())
 		next_spawn = 30
 		active = TRUE
 		process_machine()
+		update_icon()
 		H << "You power up \the [src]."
 		return
 	else if (active)
 		next_spawn = -1
 		active = FALSE
 		powered = FALSE
+		update_icon()
 		H << "You power off \the [src]."
 		return
 
 /obj/structure/drill/proc/process_machine()
 	if (!active)
 		return
-	if (!check_power())
+	else if (!check_power())
+		active = FALSE
+		update_icon()
 		visible_message(SPAN_WARNING("\The [src] stops drilling and powers down."))
 		return
 
-	if (!istype(get_turf(src), /turf/floor/dirt))
+	else if (!istype(get_turf(src), /turf/floor/dirt))
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
 		active = FALSE
 		update_icon()
@@ -1150,8 +1154,17 @@
 		playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
 		if (next_spawn == 0)
 			var/picked = pick(ore_types)
-			var/obj/item/stack/tospawn = new picked(get_turf(src))
+			
+			var/obj/item/stack/tospawn = new picked(null)
 			tospawn.amount = rand(1,10)
+			for (var/obj/item/stack/S in get_turf(src))
+				if (S.type == tospawn.type)
+					S.amount += tospawn.amount
+					S.update_icon()
+					qdel(tospawn)
+					break
+			if (tospawn)
+				tospawn.loc = get_turf(src)
 			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
 			next_spawn = 30
 		
@@ -1159,5 +1172,3 @@
 		spawn (2 SECONDS)
 			next_spawn--
 			process_machine()
-	return
-
