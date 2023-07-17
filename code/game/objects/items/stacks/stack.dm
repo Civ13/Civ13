@@ -765,10 +765,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 	else if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
-			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			H << SPAN_DANGER("This is too complex for your skill level.")
 			return
 		if (!istype(H.l_hand, /obj/item/stack/material/iron) && !istype(H.r_hand, /obj/item/stack/material/iron))
-			user << "<span class = 'warning'>You need to have iron in the other hand to craft electronic circuits.</span>"
+			user << SPAN_WARNING("You need to have iron in the other hand to craft electronic circuits.")
 			return
 		if (istype(H.l_hand, /obj/item/stack/material/electronics))
 			var/obj/item/stack/material/electronics/NR = H.l_hand
@@ -1611,6 +1611,30 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 						qdelHandReturn(H.r_hand, H)
 				else
 					user << "<span class = 'warning'>You need a stack of at least 4 iron in one your hands in order to make this.</span>"
+					return
+
+	else if (findtext(recipe.title, "industrial drill"))
+		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
+			user << SPAN_WARNING("You need a stack of at least 20 electronics in one of your hands in order to make this.")
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/steel))
+				var/obj/item/stack/material/steel/NB = H.l_hand
+				if (NB.amount >= 20)
+					NB.amount -= 20
+					if (NB.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << SPAN_WARNING("You need a stack of at least 20 steel in one your hands in order to make this.")
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/steel))
+				var/obj/item/stack/material/steel/NB = H.r_hand
+				if (NB.amount >= 20)
+					NB.amount -= 20
+					if (NB.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << SPAN_WARNING("You need a stack of at least 20 steel in one your hands in order to make this.")
 					return
 
 	else if (findtext(recipe.title, "brown napoleonic bearskin hat"))
