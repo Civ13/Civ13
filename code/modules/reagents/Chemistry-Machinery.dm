@@ -267,7 +267,7 @@
 		else
 			icon_state = "distill_empty_nocol"
 	if (active)
-		icon_state = "distill_on"
+		icon_state = "distill_active"
 
 /obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
@@ -364,7 +364,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/active = FALSE
-	powerneeded = 5
+	powerneeded = 30
 	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
 
 /obj/structure/centrifuge/New()
@@ -398,7 +398,7 @@
 	else
 		icon_state = "centrifuge"
 	if (active)
-		icon_state = "centrifuge_on"
+		icon_state = "centrifuge_active"
 
 /obj/structure/centrifuge/attack_hand(var/mob/living/human/H)
 	if (!anchored)
@@ -518,7 +518,7 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/active = FALSE
-	powerneeded = 5
+	powerneeded = 30
 	var/obj/item/stack/inserted = null
 
 /obj/structure/grinder/proc/check_power()
@@ -548,7 +548,7 @@
 	else
 		icon_state = "grinder"
 	if (active)
-		icon_state = "grinder_on"
+		icon_state = "grinder_active"
 
 /obj/structure/grinder/attack_hand(var/mob/living/human/H)
 	if (!anchored)
@@ -575,11 +575,11 @@
 		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
 		return
 
-	else if (istype(W, /obj/item/stack/cable_coil))
+	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(user,W)
 		return
 
-	if (istype(W, /obj/item/stack) && !inserted)
+	else if (istype(W, /obj/item/stack) && !inserted)
 		user << "You place \the [W] in \the [src] for grinding."
 		inserted =  W
 		user.drop_item()
@@ -621,7 +621,7 @@
 				var/obj/item/stack/tospawn
 
 				if (istype(inserted, /obj/item/stack/material/wood))
-					tospawn = /obj/item/stack/material/wood
+					tospawn = new /obj/item/stack/material/wood(get_turf(src))
 					tospawn.amount = inserted.amount/5
 				else
 					active = FALSE
@@ -632,7 +632,6 @@
 					inserted = null
 					return
 
-				new tospawn(src)
 				active = FALSE
 				qdel (inserted)
 				inserted = null
@@ -805,7 +804,7 @@
 			if (reagents.total_volume/count < 1) //Sanity checking.
 				return
 			while (count--)
-				var/obj/item/weapon/reagent_containers/pill/P = new/obj/item/weapon/reagent_containers/pill(loc)
+				var/obj/item/weapon/reagent_containers/pill/P = new/obj/item/weapon/reagent_containers/pill(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] pill"
 				P.pixel_x = rand(-7, 7) //random position
@@ -820,7 +819,7 @@
 		else if (href_list["createbottle"])
 			if (!condi)
 				var/name = sanitizeSafe(input(usr,"Name:","Name your bottle!",reagents.get_master_reagent_name()), MAX_NAME_LEN)
-				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(loc)
+				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] bottle"
 				P.pixel_x = rand(-7, 7) //random position
@@ -829,7 +828,7 @@
 				reagents.trans_to_obj(P,60)
 				P.update_icon()
 			else
-				var/obj/item/weapon/reagent_containers/food/condiment/P = new/obj/item/weapon/reagent_containers/food/condiment(loc)
+				var/obj/item/weapon/reagent_containers/food/condiment/P = new/obj/item/weapon/reagent_containers/food/condiment(get_turf(src))
 				reagents.trans_to_obj(P,50)
 		else if (href_list["change_pill"])
 			#define MAX_PILL_SPRITE 20 //max icon state of the pill sprites

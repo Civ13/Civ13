@@ -388,6 +388,10 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
+/obj/structure/vehicle/boat/rib/premade/arrival
+	name = "rigid inflatable boat with a big hole in it"
+	desc = "Uh oh."
+
 /obj/structure/vehicle/boat/rib/premade/arrival/proc/delete_self(var/mob/living/human/H)
 	spawn (120 SECONDS)
 		unbuckle_mob()

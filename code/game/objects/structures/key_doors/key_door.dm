@@ -54,9 +54,10 @@ var/list/nonbreaking_types = list(
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user
 		if(H.civilization == faction)
-			if(state)
+			if(state && !isSwitchingStates)
 				spawn(10)
-					Close()
+					if (!isSwitchingStates)
+						Close()
 
 /obj/structure/simple_door/key_door/New(_loc, _material = null)
 

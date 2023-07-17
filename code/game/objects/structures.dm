@@ -49,8 +49,6 @@
 				b.loc = (get_turf(src))
 			qdel(src)
 			return
-	else
-		..()
 
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)

@@ -634,6 +634,10 @@ steam.start() -- spawns the effect
 			if (!new_player_mob_list.Find(M))
 				M.client << uploaded_sound
 
+/obj/effect/hallelujah/New()
+	..()
+	playsound(get_turf(src), 'sound/hallelujah!.ogg', 120, FALSE)
+
 /obj/effect/flare
 	name = "flare"
 	icon_state = ""
