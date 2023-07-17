@@ -1034,7 +1034,7 @@
 
 /obj/structure/drill
 	name = "industrial drill"
-	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. This thing will likely need a LOT of power to run."
+	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. It needs to be powered, underground and on dirt in order to operate."
 	icon = 'icons/obj/machines/mining_drill.dmi'
 	icon_state = "mining_drill"
 	flammable = FALSE
