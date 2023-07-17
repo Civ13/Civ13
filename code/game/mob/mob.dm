@@ -1071,6 +1071,9 @@ mob/proc/yank_out_object()
 			I.update_icon()
 
 /mob/proc/set_face_dir(var/newdir)
+	var/mob/living/human/H = null
+	
+
 	if (!isnull(facing_dir) && newdir == facing_dir)
 		facing_dir = null
 	else if (newdir)
@@ -1081,6 +1084,11 @@ mob/proc/yank_out_object()
 	else
 		set_dir(dir)
 		facing_dir = dir
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.HUDneed.Find("fixeye"))
+			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
+			I.update_icon()
 
 /mob/set_dir()
 	if (facing_dir)
