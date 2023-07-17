@@ -733,10 +733,14 @@ Shinobi's unfinished welder stuff - siro*/
 		return
 	else
 		. = ..()
-/obj/item/weapon/compass/modern/secondary_attack_self(mob/living/human/user)
+
+/obj/item/weapon/compass/modern/AltClick()
+	..()
 	turn_on()
 
-/obj/item/weapon/compass/modern/proc/turn_on()
+/obj/item/weapon/compass/modern/verb/turn_on()
+	set name = "Toggle Power"
+	set category = null
 	if (!on)
 		on = TRUE
 		icon_state = "compass_modern_on"
@@ -747,9 +751,6 @@ Shinobi's unfinished welder stuff - siro*/
 		icon_state = "compass_modern"
 		update_icon()
 		return
-/obj/item/weapon/compass/modern/AltClick()
-	..()
-	turn_on()
 
 /obj/item/weapon/compass/modern/tacmap
 	name = "tactical map"
