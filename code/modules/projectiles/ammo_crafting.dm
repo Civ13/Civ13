@@ -51,9 +51,9 @@
 
 				if (resultpath != null && gunpowder >= gunpowder_max && W.amount >= amount && spam_check <= 1)
 					W.amount -= amount
+					new resultpath(get_turf(src))
 					if (W.amount <= 0)
 						qdel(W)
-					new resultpath(src.loc)
 					qdel(src)
 					spam_check--
 					return
@@ -79,16 +79,16 @@
 			switch (reg)
 				if ("hexachloroetane")
 					var/resultp = text2path("/obj/item/weapon/grenade/smokebomb")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 				if ("napalm")
 					var/resultp = text2path("/obj/item/weapon/grenade/incendiary")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 				if ("magnesium")
 					var/resultp = text2path("/obj/item/weapon/grenade/flashbang")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 				else
 					var/resultp = text2path("/obj/item/weapon/grenade/chemical/[reg]")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 			if (amount <= 1)
 				qdel(src)
 			else
@@ -139,9 +139,9 @@
 
 			if (resultpath != null && gunpowder >= gunpowder_max)
 				W.amount -= amount
+				new resultpath(get_turf(src))
 				if (W.amount <= 0)
 					qdel(W)
-				new resultpath(src.loc)
 				qdel(src)
 				return
 			else
@@ -191,11 +191,11 @@
 			user << "<span class='notice'>You attach wires into the shell.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired(get_turf(src))
 		else
 			qdel(src)
 			W.amount = W.amount - 1
-			new/obj/item/stack/ammopart/casing/artillery/wired(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired(get_turf(src))
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder >= gunpowder_max)
 		make_chemical(W,user)
 		return
@@ -209,10 +209,10 @@
 			switch (reg)
 				if ("napalm")
 					var/resultp = text2path("/obj/item/cannon_ball/shell/incendiary")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 				else
 					var/resultp = text2path("/obj/item/cannon_ball/shell/gas/[reg]")
-					new resultp(src.loc)
+					new resultp(get_turf(src))
 			if (amount <= 1)
 				qdel(src)
 			else
@@ -230,11 +230,11 @@
 			user << "<span class='notice'>You attach electronics to the wires.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(get_turf(src))
 		else
 			qdel(src)
 			W.amount = W.amount - 8
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(get_turf(src))
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
@@ -246,11 +246,11 @@
 			user << "<span class='notice'>You attach uranium to the electronics and stuff it in the casing.</span>"
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(get_turf(src))
 		else
 			qdel(src)
 			W.amount = W.amount - 5
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(src.loc)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(get_turf(src))
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
@@ -300,7 +300,7 @@
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
-			new/obj/item/cannon_ball/shell/nuclear/nomads(src.loc)
+			new/obj/item/cannon_ball/shell/nuclear/nomads(get_turf(src))
 		qdel(src)
 		return
 	else
@@ -359,7 +359,7 @@
 /obj/item/stack/ammopart/casing/artillery/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		for(var/i=1;i<=amount;i++)
-			new/obj/item/cannon_ball/shell(src.loc)
+			new/obj/item/cannon_ball/shell(get_turf(src))
 		user << "You produce HE artillery shells."
 		qdel(src)
 		return
@@ -400,7 +400,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(src.loc)
+						new resultpath(get_turf(src))
 					qdel(src)
 					return
 				else
@@ -442,7 +442,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(src.loc)
+						new resultpath(get_turf(src))
 					qdel(src)
 					return
 				else
@@ -478,7 +478,7 @@
 
 				if (resultpath != null)
 					for(var/i=1;i<=amount;i++)
-						new resultpath(src.loc)
+						new resultpath(get_turf(src))
 					qdel(src)
 					return
 				else
@@ -513,7 +513,7 @@
 
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -556,7 +556,7 @@
 				
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -610,7 +610,7 @@
 
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
-					var/obj/item/ammo_casing/NC = new resultpath(src.loc)
+					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
 					NC.btype = inputbtype
 					NC.checktype()
 				qdel(src)
@@ -631,11 +631,11 @@
 		else if (user.l_hand.reagents.has_reagent("gunpowder",1))
 			user.l_hand.reagents.remove_reagent("gunpowder",1)
 			user << "You make a cartridge with the gunpowder and projectile."
+			new resultpath(get_turf(src))
 			if (user.r_hand.amount>1)
 				user.r_hand.amount -= 1
 			else
 				qdel(user.r_hand)
-			new resultpath(src.loc)
 			return
 
 	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
@@ -645,11 +645,11 @@
 		else if (user.r_hand.reagents.has_reagent("gunpowder",1))
 			user.r_hand.reagents.remove_reagent("gunpowder",1)
 			user << "You make a cartridge with the gunpowder and projectile."
+			new resultpath(get_turf(src))
 			if (user.l_hand.amount>1)
 				user.l_hand.amount -= 1
 			else
 				qdel(user.l_hand)
-			new resultpath(src.loc)
 			return
 
 	else
