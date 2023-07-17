@@ -141,6 +141,19 @@
 	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum)
 	equiptimer = 15
 
+/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/campaign
+	name = "AK-103"
+	desc = "A modern Russian AK variant, chambered in 7.62x39mm."
+	icon_state = "ak101"
+	item_state = "ak101"
+	base_icon = "ak101"
+	weight = 3.6
+	effectiveness_mod = 1.08
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled
+	good_mags = list(/obj/item/ammo_magazine/emptymagazine, /obj/item/ammo_magazine/emptymagazine/rifle, /obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled)
+	equiptimer = 15
+
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104
 	name = "AK-104"
 	desc = "A modern Russian AK variant, chambered in 7.62x39mm. This is a carbine version of the AK-103."
