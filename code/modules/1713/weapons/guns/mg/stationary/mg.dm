@@ -261,6 +261,32 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/blugoslavia
+	name = "BHMG-21 machine gun"
+	desc = "A Blugoslavian heavy machinegun. Uses 7.62x54mm rounds."
+	icon_state = "pkm"
+	base_icon = "pkm"
+	caliber = "a762x54"
+	magazine_type = /obj/item/ammo_magazine/emptybelt/filled_762x54
+	good_mags = list(/obj/item/ammo_magazine/emptybelt,/obj/item/ammo_magazine/emptybelt/filled_762x54)
+	firemodes = list(
+		list(name = "full auto", burst=4, burst_delay=1.3, fire_delay=2.5, dispersion=list(0.8, 1.0, 1.2, 1.4, 1.5), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a762x54
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/redmenia
+	name = "RK-42 stationary machine gun"
+	desc = "A Redmenian heavy machinegun. Uses 5.56x45mm rounds."
+	icon_state = "nsvt"
+	base_icon = "nsvt"
+	caliber = "a556x45"
+	magazine_type = /obj/item/ammo_magazine/emptybelt/filled_556x45
+	good_mags = list(/obj/item/ammo_magazine/emptybelt,/obj/item/ammo_magazine/emptybelt/filled_556x45)
+	firemodes = list(
+		list(name = "full auto", burst=4, burst_delay=1.3, fire_delay=2.3, dispersion=list(0.8, 0.9, 1.0, 1.2, 1.5), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a762x54
+
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon

@@ -164,7 +164,7 @@
 	if(is_squad_leader)
 		map.faction1_squad_leaders[squad] = H
 //shoes
-	var/area/A = get_area(H)
+	var/area/A = get_area(get_turf(H))
 	if (A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
 	else if (!findtext(title, "RPR Fighter"))
@@ -257,7 +257,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
-	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
+	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) /*&& A.climate == "taiga" || A.climate == "tundra"*/)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 	else if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
@@ -280,7 +280,7 @@
 		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	if (findtext(title, "Redmenian Civilian") && world.time <= 6000 && prob(60)) // Under 10 minutes
-		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H)
+		var/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/campaign/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/campaign(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
@@ -505,7 +505,7 @@
 	if(is_squad_leader)
 		map.faction2_squad_leaders[squad] = H
 //shoes
-	var/area/A = get_area(H)
+	var/area/A = get_area(get_turf(H))
 	if (A.climate == "taiga" || A.climate == "tundra")
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/grey(H), slot_shoes)
 	else
@@ -565,7 +565,7 @@
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	if (findtext(title, "Blugoslavian Civilian") && world.time <= 6000 && prob(60)) // Under 10 minutes
-		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
+		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/campaign/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/campaign(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)

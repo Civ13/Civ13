@@ -1387,6 +1387,13 @@
 			else
 				magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle
 				good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
+				if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+					if (caliber == "a556x45")
+						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle,/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled)
+					else if (caliber == "a762x39")
+						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle,/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled)
+					else 
+						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
 		if ("Large External Magazine")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine

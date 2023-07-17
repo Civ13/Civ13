@@ -1352,6 +1352,10 @@
 	name = "M4 Carbine"
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/campaign
+	magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled
+	good_mags = list(/obj/item/ammo_magazine/emptymagazine, /obj/item/ammo_magazine/emptymagazine/rifle, /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled)
+	
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
 	base_icon = "m4mws"
