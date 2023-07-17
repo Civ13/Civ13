@@ -1133,7 +1133,7 @@
 		update_icon()
 		visible_message(SPAN_WARNING("\The [src] cannot drill here, find some softer ground."))
 		return
-	for (var/obj/covers/C in range(1, src))
+	for (var/obj/covers/C in get_turf(src))
 		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
 		active = FALSE
 		update_icon()
