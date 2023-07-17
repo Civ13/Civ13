@@ -43,8 +43,8 @@
 			affected.createwound(BRUISE, -25)
 			target.shock_stage *= 0.5
 		else
-			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name]<span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
-				"<span class = 'notice'>You set the bone in [target]'s [affected.name]<span class = 'red'> in the WRONG place with \the [tool].</span></span>")
+			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name] <span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
+				"<span class = 'notice'>You set the bone in [target]'s [affected.name] <span class = 'red'>in the WRONG place with \the [tool].</span></span>")
 			affected.fracture()
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
