@@ -1811,6 +1811,7 @@ RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,con
 
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 
+RECIPE: /material/steel/,tank trap,/obj/structure/barricade/antitank,25,400,1,1,construction,140,132,0,8,null
 //*********************| STEEL VEHICLE PARTS |**************************
 
 RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,weapons,115,125,0,8,null
@@ -2354,6 +2355,7 @@ RECIPE: /material/iron/,planting trowel,/obj/item/weapon/material/trowel,3,35,0,
 RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,tools,30,0,0,8,null
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
+RECIPE: /material/iron/,compass,/obj/item/weapon/compass,8,140,0,1,tools,46,0,0,8,null
 RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
 RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null

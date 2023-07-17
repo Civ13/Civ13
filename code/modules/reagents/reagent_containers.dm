@@ -229,6 +229,8 @@
 		var/prob_disease
 		if (HH.find_trait("Weak Immune System"))
 			dmod = 2
+		if (HH.find_trait("Strong Immune System"))
+			dmod = 0.2
 		if (reagents.has_reagent("cholera"))
 			prob_disease = reagents.get_reagent_amount("cholera")
 			if (prob(min(prob_disease*25*dmod,100)))
