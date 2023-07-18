@@ -389,7 +389,7 @@
 			dwheel.forceMove(src)
 
 /obj/structure/vehicle/boat/rib/premade/arrival
-	name = "rigid inflatable boat with a big hole in it"
+	name = "rigid inflatable boat THAT IS SINKING"
 	desc = "Uh oh."
 
 /obj/structure/vehicle/boat/rib/premade/arrival/proc/delete_self(var/mob/living/human/H)
