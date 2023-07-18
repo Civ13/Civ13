@@ -111,10 +111,10 @@ macro "macro"
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
 	elem "ooc"
-		name = "F4"
+		name = "O"
 		command = "ooc"
 	elem 
-		name = "F5"
+		name = "ALT+L"
 		command = "looc"
 	elem 
 		name = "F12"
@@ -347,19 +347,22 @@ macro "hotkeymode"
 		name = "F1"
 		command = "adminhelp"
 	elem 
+		name = "F2"
+		command = "mentorhelp"
+	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
 	elem 
-		name = "F3"
+		name = "CTRL+T"
 		command = "asay"
 	elem "ooc"
-		name = "F4"
+		name = "O"
 		command = "ooc"
 	elem 
-		name = "F5"
+		name = "ALT+L"
 		command = "looc"
 	elem 
-		name = "F6"
+		name = "F3"
 		command = ".me"
 	elem 
 		name = "F12"
@@ -479,6 +482,11 @@ menu "menu"
 	elem 
 		name = "&Admin help\tF1"
 		command = "adminhelp"
+		category = "&Help"
+		saved-params = "is-checked"
+	elem 
+		name = "&Admin help\tF2"
+		command = "mentorhelp"
 		category = "&Help"
 		saved-params = "is-checked"
 	elem 
