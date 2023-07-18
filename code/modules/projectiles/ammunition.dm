@@ -242,7 +242,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 
 /obj/item/ammo_magazine/emptybelt/filled_556x45
-	name = "belt (7.62x54mm)"
+	name = "belt (5.56x45mm)"
 	icon_state = "b762x54"
 	caliber = "a556x45"
 	ammo_type = /obj/item/ammo_casing/a556x45
