@@ -371,7 +371,6 @@
 	desc = "A 400cc, gasoline-powered Ridgid Inflatable Boat. Has a 180u fueltank."
 	icon_state = "rib_frame3"
 	health = 300
-	maxcapacity = 2
 
 /obj/structure/vehicle/boat/rib/premade/New()
 	..()
@@ -567,33 +566,38 @@
 
 /obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
 	if (istype(A, /mob/living/human))
-		var/mob/living/human/M = A
-		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
-			if (do_after(M, 40, src))
-				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
-				M.plane = GAME_PLANE
-				M.forceMove(get_turf(src))
-				if (!driver)
-					if (wheeled)
-						if (M.put_in_active_hand(dwheel) == FALSE)
-							M << "Your hands are full!"
-							return
+		if (!driver || !currentcap)
+			var/mob/living/human/M = A
+			if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
+				user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
+				if (do_after(M, 40, src))
+					user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
+					M.plane = GAME_PLANE
+					M.forceMove(get_turf(src))
+					if (!driver)
+						if (wheeled)
+							if (M.put_in_active_hand(dwheel) == FALSE)
+								M << SPAN_WARNING("Your hands are full!")
+								return
 
-					M.driver = TRUE
-					M.driver_vehicle = src
-					driver = M
-					buckle_mob(driver)
-					ontop += M
-					updatepassdir()
-				else if (!currentcap)
-					currentcap = M
-					ontop += M
-					M.anchored = TRUE
-					updatepassdir()
-				update_overlay()
-				update_icon()
-				return
+						M.driver = TRUE
+						M.driver_vehicle = src
+						driver = M
+						ontop += M
+						buckle_mob(driver)
+						updatepassdir()
+					else if (!currentcap)
+						currentcap = M
+						ontop += M
+						buckle_mob(currentcap)
+						updatepassdir()
+					update_overlay()
+					update_icon()
+					return
+		else
+			user << SPAN_WARNING("\The [src] is full!")
+			return
+
 	else if (istype(A, /obj/structure) || istype(A, /obj/item/weapon/gun/projectile/automatic/stationary) && storagecapacity >= 1)
 		if (src == A)
 			return
@@ -643,6 +647,7 @@
 						user.r_hand = null
 					user.update_icons()
 			else if (currentcap)
+				unbuckle_mob()
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
