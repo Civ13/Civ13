@@ -128,7 +128,7 @@ var/list/sky_drop_map = list()
 					H.pixel_y = 60
 					spawn (5)
 						H.client.canmove = FALSE
-						var/image/I = image(icon = 'icons/misc/parachute.dmi', H, icon_state = "norm", layer = MOB_LAYER + 1.0)
+						var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
 						I.pixel_x = -16
 						I.pixel_y = 16
 
@@ -140,15 +140,14 @@ var/list/sky_drop_map = list()
 
 						spawn (20)
 							flick("closing", I)
-							spawn (20) // animation is over now
+							spawn (10) // animation is over now
 								H.overlays -= I
 								H.pixel_y = 0
 								qdel(I)
-
-								spawn(10)
-									playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
-									shake_camera(H, 2)
-									H.client.canmove = TRUE
+								
+								playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
+								shake_camera(H, 2)
+								H.client.canmove = TRUE
 
 		// make sure we have the right ambience for our new location
 		spawn (1)
