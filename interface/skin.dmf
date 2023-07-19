@@ -485,7 +485,7 @@ menu "menu"
 		category = "&Help"
 		saved-params = "is-checked"
 	elem 
-		name = "&Admin help\tF2"
+		name = "&Mentor help\tF2"
 		command = "mentorhelp"
 		category = "&Help"
 		saved-params = "is-checked"
