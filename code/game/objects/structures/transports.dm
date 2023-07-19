@@ -128,6 +128,7 @@
 
 /obj/structure/vehicle/proc/stopmovementloop()
 	moving = FALSE
+	axis.currentspeed = 0
 	return
 
 /obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/human/user)
@@ -370,7 +371,6 @@
 	desc = "A 400cc, gasoline-powered Ridgid Inflatable Boat. Has a 180u fueltank."
 	icon_state = "rib_frame3"
 	health = 300
-	maxcapacity = 2
 
 /obj/structure/vehicle/boat/rib/premade/New()
 	..()
@@ -389,7 +389,7 @@
 			dwheel.forceMove(src)
 
 /obj/structure/vehicle/boat/rib/premade/arrival
-	name = "rigid inflatable boat with a big hole in it"
+	name = "rigid inflatable boat THAT IS SINKING"
 	desc = "Uh oh."
 
 /obj/structure/vehicle/boat/rib/premade/arrival/proc/delete_self(var/mob/living/human/H)
@@ -564,37 +564,40 @@
 	else
 		..()
 
-
-
 /obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
 	if (istype(A, /mob/living/human))
-		var/mob/living/human/M = A
-		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-			user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
-			if (do_after(M, 40, src))
-				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
-				M.plane = GAME_PLANE
-				M.forceMove(get_turf(src))
-				if (!driver)
-					if (wheeled)
-						if (M.put_in_active_hand(dwheel) == FALSE)
-							M << "Your hands are full!"
-							return
+		if (!driver || !currentcap)
+			var/mob/living/human/M = A
+			if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
+				user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
+				if (do_after(M, 40, src))
+					user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
+					M.plane = GAME_PLANE
+					M.forceMove(get_turf(src))
+					if (!driver)
+						if (wheeled)
+							if (M.put_in_active_hand(dwheel) == FALSE)
+								M << SPAN_WARNING("Your hands are full!")
+								return
 
-					M.driver = TRUE
-					M.driver_vehicle = src
-					driver = M
-					buckle_mob(driver)
-					ontop += M
-					updatepassdir()
-				else if (!currentcap)
-					currentcap = M
-					ontop += M
-					M.anchored = TRUE
-					updatepassdir()
-				update_overlay()
-				update_icon()
-				return
+						M.driver = TRUE
+						M.driver_vehicle = src
+						driver = M
+						ontop += M
+						buckle_mob(driver)
+						updatepassdir()
+					else if (!currentcap)
+						currentcap = M
+						ontop += M
+						buckle_mob(currentcap)
+						updatepassdir()
+					update_overlay()
+					update_icon()
+					return
+		else
+			user << SPAN_WARNING("\The [src] is full!")
+			return
+
 	else if (istype(A, /obj/structure) || istype(A, /obj/item/weapon/gun/projectile/automatic/stationary) && storagecapacity >= 1)
 		if (src == A)
 			return
@@ -644,6 +647,7 @@
 						user.r_hand = null
 					user.update_icons()
 			else if (currentcap)
+				unbuckle_mob()
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
@@ -664,6 +668,7 @@
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
 				O.loc = get_turf(user)
 		return
+
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
@@ -704,8 +709,10 @@
 					engine.currentspeed = 0
 					engine.currentpower = 0
 					user << "You turn off the engine."
+					moving = FALSE
 					set_light(0)
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
+					stopmovementloop()
 					return
 
 			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
@@ -739,6 +746,7 @@
 				return
 	else
 		..()
+
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
@@ -754,6 +762,9 @@
 			ontop -= driver
 			driver = null
 	else
+		moving = FALSE
+		axis.currentspeed = 0
+		stopmovementloop()
 		return FALSE
 
 /obj/structure/vehicle/boat/New()

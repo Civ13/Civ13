@@ -1561,12 +1561,27 @@
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 		new/obj/item/ammo_magazine/ak47/drum(hold)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/nomads
+	New()
+		..()
+		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
+		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
+		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
 	New()
 		..()
 		new/obj/item/ammo_magazine/m16(hold)
 		new/obj/item/ammo_magazine/m16(hold)
 		new/obj/item/ammo_magazine/m16(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
+	New()
+		..()
+		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
+		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
+		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
+
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
 	New()
