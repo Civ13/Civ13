@@ -128,6 +128,7 @@
 
 /obj/structure/vehicle/proc/stopmovementloop()
 	moving = FALSE
+	axis.currentspeed = 0
 	return
 
 /obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/human/user)
@@ -564,8 +565,6 @@
 	else
 		..()
 
-
-
 /obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/human/user)
 	if (istype(A, /mob/living/human))
 		var/mob/living/human/M = A
@@ -664,6 +663,7 @@
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
 				O.loc = get_turf(user)
 		return
+
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
@@ -704,8 +704,10 @@
 					engine.currentspeed = 0
 					engine.currentpower = 0
 					user << "You turn off the engine."
+					moving = FALSE
 					set_light(0)
 					playsound(loc, engine.ending_snd, 65, FALSE, 2)
+					stopmovementloop()
 					return
 
 			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
@@ -739,6 +741,7 @@
 				return
 	else
 		..()
+
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
@@ -754,6 +757,9 @@
 			ontop -= driver
 			driver = null
 	else
+		moving = FALSE
+		axis.currentspeed = 0
+		stopmovementloop()
 		return FALSE
 
 /obj/structure/vehicle/boat/New()
