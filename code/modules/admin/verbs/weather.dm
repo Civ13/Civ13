@@ -22,4 +22,17 @@
 	map.seasons(FALSE,TRUE)
 	src << "<span class = 'good'>Sucessfully changed the season.</span>"
 	message_admins("[key_name(src)] changed the season.", key_name(src))
-	log_admin("[key_name(src)] randomly changed the season.")
+	log_admin("[key_name(src)] changed the season.")
+
+/client/proc/toggle_season()
+	set category = "Debug"
+	set name = "Toggle Season Change"
+
+	if (config.seasons_on)
+		config.seasons_on = FALSE
+		src << "<span class = 'good'>Seasons are now <b>disabled.</span>"
+		
+	else
+		config.seasons_on = TRUE
+	message_admins("[key_name(src)] toggled season change.", key_name(src))
+	log_admin("[key_name(src)]toggled season change.")
