@@ -314,16 +314,16 @@ var/global/datum/controller/occupations/job_master
 	if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 		new /obj/structure/vehicle/boat/rhib/premade/arrival(H.loc)
 		var/spawned = 0
-		for (var/obj/structure/vehicle/boat/rhib/premade/arrival/rib in range(1,H))
+		for (var/obj/structure/vehicle/boat/rhib/premade/arrival/rhib in range(1,H))
 			if (spawned < 1)
 				if (H.faction_text == "PIRATES")
-					rib.dir = EAST
+					rhib.dir = EAST
 				else if (H.faction_text == "CIVILIAN")
-					rib.dir = WEST
-				rib.faststart(H)
+					rhib.dir = WEST
+				rhib.faststart(H)
 				spawned++
 			else
-				qdel(rib)
+				qdel(rhib)
 	*/
 
 /datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
