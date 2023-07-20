@@ -447,7 +447,7 @@
 "Mb" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{layer = 6},/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "Mf" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "MW" = (/obj/item/clothing/head/ghillie,/obj/structure/table/rack{layer = 3},/obj/item/clothing/head/ghillie,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
-"Ng" = (/obj/structure/vehicle/boat/rib/premade,/turf/floor/beach/water/jungle,/area/caribbean/colonies/jungle)
+"Ng" = (/obj/structure/vehicle/boat/rhib/premade,/turf/floor/beach/water/jungle,/area/caribbean/colonies/jungle)
 "NJ" = (/obj/structure/camonet{alpha = 150},/obj/structure/closet/crate/ww2/ppsh,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "NO" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/two)
 "Px" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)

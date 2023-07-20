@@ -312,9 +312,9 @@ var/global/datum/controller/occupations/job_master
 			H_area.play_ambience(H)
 	/*
 	if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
-		new /obj/structure/vehicle/boat/rib/premade/arrival(H.loc)
+		new /obj/structure/vehicle/boat/rhib/premade/arrival(H.loc)
 		var/spawned = 0
-		for (var/obj/structure/vehicle/boat/rib/premade/arrival/rib in range(1,H))
+		for (var/obj/structure/vehicle/boat/rhib/premade/arrival/rib in range(1,H))
 			if (spawned < 1)
 				if (H.faction_text == "PIRATES")
 					rib.dir = EAST
