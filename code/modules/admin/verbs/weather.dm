@@ -31,8 +31,10 @@
 	if (config.seasons_on)
 		config.seasons_on = FALSE
 		src << "<span class = 'good'>Seasons are now <b>disabled.</span>"
+		log_admin("[key_name(src)] disabled season change.")
 		
 	else
 		config.seasons_on = TRUE
-	message_admins("[key_name(src)] toggled season change.", key_name(src))
-	log_admin("[key_name(src)]toggled season change.")
+		src << "<span class = 'good'>Seasons are now <b>enabled.</span>"
+		message_admins("[key_name(src)] enabled season change.", key_name(src))
+	

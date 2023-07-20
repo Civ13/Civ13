@@ -366,13 +366,14 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
-/obj/structure/vehicle/boat/rib
-	name = "rigid inflatable boat"
+/obj/structure/vehicle/boat/rhib
+	name = "rigid hull inflatable boat"
 	desc = "A 400cc, gasoline-powered Ridgid Inflatable Boat. Has a 180u fueltank."
 	icon_state = "rib_frame3"
 	health = 300
+	axis = new/obj/structure/vehicleparts/axis/boat/fast
 
-/obj/structure/vehicle/boat/rib/premade/New()
+/obj/structure/vehicle/boat/rhib/premade/New()
 	..()
 	engine = new/obj/structure/engine/internal/gasoline
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank
@@ -388,11 +389,11 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
-/obj/structure/vehicle/boat/rib/premade/arrival
-	name = "rigid inflatable boat THAT IS SINKING"
+/obj/structure/vehicle/boat/rhib/premade/arrival
+	name = "SINKING rigid hull inflatable boat"
 	desc = "Uh oh."
 
-/obj/structure/vehicle/boat/rib/premade/arrival/proc/delete_self(var/mob/living/human/H)
+/obj/structure/vehicle/boat/rhib/premade/arrival/proc/delete_self(var/mob/living/human/H)
 	spawn (120 SECONDS)
 		unbuckle_mob()
 		H.driver = FALSE

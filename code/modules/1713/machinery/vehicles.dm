@@ -71,6 +71,15 @@
 	reg_number = ""
 	vehicle_type = "boat"
 
+/obj/structure/vehicleparts/axis/boat/fast
+	name = "boat rudder control"
+	currentspeed = 0
+	speeds = 4
+	maxpower = 40
+	speedlist = list(1=6,2=5,3=3,4=2)
+	reg_number = ""
+	vehicle_type = "boat"
+
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
 	desc = "A heavy and slow vehicle axis."
@@ -733,7 +742,7 @@
 	weight = 60
 	step = 1
 	maxstep = 3
-	targettype = /obj/structure/vehicle/boat/rib
+	targettype = /obj/structure/vehicle/boat/rhib
 
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
