@@ -731,9 +731,9 @@
 	maxstep = 3
 	targettype = /obj/structure/vehicle/boat
 
-/obj/item/vehicleparts/frame/boat/rib
-	name = "rib boat frame"
-	desc = "a rib boat frame, with no engine or propulsion mode. Supports engines up to 600cc and fueltanks up to 200u"
+/obj/item/vehicleparts/frame/boat/rhib
+	name = "rhib boat frame"
+	desc = "a rhib boat frame, with no engine or propulsion mode. Supports engines up to 600cc and fueltanks up to 200u"
 	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "rib_frame1"
 	base_icon = "rib_frame"
