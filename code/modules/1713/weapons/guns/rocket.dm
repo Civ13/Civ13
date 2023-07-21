@@ -20,7 +20,7 @@
 
 //Override this to avoid a runtime with suicide handling.
 /obj/item/weapon/gun/launcher/handle_suicide(mob/living/user)
-	user << "\red Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it."
+	user << SPAN_WARNING("Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it.")
 	return
 
 /obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/human/user)
@@ -83,12 +83,14 @@
 	load_delay = 18
 
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
-	if(!..(user, 2))
-		return
-	if (rockets)
-		user << SPAN_NOTICE("<b>LOADED</B>")
+	..()
+	if (max_rockets > 1)
+		user << SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>")
 	else
-		user << SPAN_NOTICE("<b>UNLOADED</B>")
+		if (rockets.len)
+			user << SPAN_NOTICE("<b>LOADED</B>")
+		else
+			user << SPAN_NOTICE("<b>UNLOADED</B>")
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -99,7 +101,7 @@
 			user << "You put the rocket in \the [src]."
 			update_icon()
 		else
-			usr << "\The [src] cannot hold more rockets."
+			user << "\The [src] cannot hold more rockets."
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)

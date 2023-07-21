@@ -65,6 +65,8 @@
 					var/dmod = 1
 					if (TG.find_trait("Weak Immune System"))
 						dmod = 2
+					if (TG.find_trait("Strong Immune System"))
+						dmod = 0.2
 					TG.adjustBruteLoss(1,2)
 					if (prob(20*dmod) && TG.disease == 0)
 						TG.disease_progression = 0

@@ -449,6 +449,8 @@ var/list/global/floor_cache = list()
 				var/dmod = 1
 				if (H.find_trait("Weak Immune System"))
 					dmod = 2
+				if (H.find_trait("Strong Immune System"))
+					dmod = 0.2
 				if (prob(25*dmod) && !H.orc && !H.crab)
 					if (H.disease == 0)
 						H.disease_progression = 0
@@ -529,6 +531,8 @@ var/list/global/floor_cache = list()
 					var/dmod = 1
 					if (H.find_trait("Weak Immune System"))
 						dmod = 2
+					if (H.find_trait("Strong Immune System"))
+						dmod = 0.2
 					if (prob(25*dmod) && !H.orc && !H.crab)
 						if (H.disease == 0)
 							H.disease_progression = 0

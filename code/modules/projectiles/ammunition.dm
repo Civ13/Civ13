@@ -161,8 +161,8 @@
 	name = "drum magazine (65)"
 	mag_type = MAGAZINE
 	icon_state = "ppsh"
-	ammo_type = null
 	caliber = null
+	ammo_type = null
 	max_ammo = 65
 	weight = 0.8
 	multiple_sprites = TRUE
@@ -172,18 +172,30 @@
 	name = "magazine (30)"
 	mag_type = MAGAZINE
 	icon_state = "ak47"
-	ammo_type = null
 	caliber = null
+	ammo_type = null
 	max_ammo = 30
 	weight = 0.25
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/emptymagazine/rifle/m16
 	icon_state = "m16"
+/obj/item/ammo_magazine/emptymagazine/rifle/ak47
+	icon_state = "ak47"
 /obj/item/ammo_magazine/emptymagazine/rifle/ak74
 	icon_state = "ak74"
 /obj/item/ammo_magazine/emptymagazine/rifle/mp40
 	icon_state = "mp40"
+
+/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled
+	name = "magazine (5.56x45mm)"
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+
+/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled
+	name = "magazine (7.62x39mm)"
+	caliber = "a762x39"
+	ammo_type = /obj/item/ammo_casing/a762x39
 
 /obj/item/ammo_magazine/emptymagazine/pistol
 	name = "pistol magazine (15)"
@@ -199,15 +211,14 @@
 	name = "pistol magazine (9mm)"
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
-	max_ammo = 17
-	weight = 0.34
+	max_ammo = 15
 
 /obj/item/ammo_magazine/emptymagazine/pistol/a45
 	name = "pistol magazine (8)"
 	mag_type = MAGAZINE
 	icon_state = "waltherp"
-	ammo_type = null
 	caliber = null
+	ammo_type = null
 	max_ammo = 8
 	weight = 0.1
 	multiple_sprites = TRUE
@@ -216,20 +227,32 @@
 	name = "belt (100)"
 	mag_type = MAGAZINE
 	icon_state = "b762x54"
-	ammo_type = null
 	caliber = null
+	ammo_type = null
 	max_ammo = 100
 	weight = 1
 	w_class = ITEM_SIZE_LARGE
 	multiple_sprites = TRUE
 	belt = TRUE
 
+/obj/item/ammo_magazine/emptybelt/filled_762x54
+	name = "belt (7.62x54mm)"
+	icon_state = "b762x54"
+	caliber = "a762x54"
+	ammo_type = /obj/item/ammo_casing/a762x54
+
+/obj/item/ammo_magazine/emptybelt/filled_556x45
+	name = "belt (5.56x45mm)"
+	icon_state = "b762x54"
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+
 /obj/item/ammo_magazine/emptymagazine/p90
 	name = "P90 magazine (50)"
 	mag_type = MAGAZINE
 	icon_state = "p90"
-	ammo_type = null
 	caliber = null
+	ammo_type = null
 	max_ammo = 15
 	weight = 0.2
 	multiple_sprites = TRUE

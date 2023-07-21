@@ -132,7 +132,6 @@ Please contact me on #coderbus IRC. ~Carn x
 #define R_HAND_LAYER			24
 #define FIRE_LAYER				25		//If you're on fire
 #define TARGETED_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
-#define OVEREFFECTS_LAYER		27
 #define TOTAL_LAYERS			27
 //////////////////////////////////
 
@@ -259,6 +258,13 @@ var/global/list/damage_icon_parts = list()
 				icon_key += "[rgb(part.s_col[1],part.s_col[2],part.s_col[3])]"
 			else
 				icon_key += "#000000"
+	
+	reload_cached_icons(icon_key, forced)
+
+	if (update_icons)
+		update_icons()
+
+/mob/living/human/proc/reload_cached_icons(var/icon_key, var/forced)
 	var/icon/base_icon
 	if (human_icon_cache[icon_key] && !forced)
 		base_icon = human_icon_cache[icon_key]
@@ -291,10 +297,6 @@ var/global/list/damage_icon_parts = list()
 
 	//END CACHED ICON GENERATION.
 	stand_icon.Blend(base_icon,ICON_OVERLAY)
-
-	if (update_icons)
-		update_icons()
-
 
 //HAIR OVERLAY
 /mob/living/human/proc/update_hair(var/update_icons=1)
@@ -1371,7 +1373,7 @@ var/global/list/damage_icon_parts = list()
 			M.Scale(size_multiplier)
 			M.Translate(0, 16*(size_multiplier-1))
 			I.transform = M
-		plane = FLOOR_PLANE
+		plane = GAME_PLANE
 		I.plane = FLOOR_PLANE
 		overlays_standing[FIRE_LAYER] = I
 	else
@@ -1448,5 +1450,4 @@ var/global/list/damage_icon_parts = list()
 #undef R_HAND_LAYER
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
-#undef OVEREFFECTS_LAYER
 #undef TOTAL_LAYERS

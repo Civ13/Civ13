@@ -671,11 +671,38 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			list("Feldgrau (WW2)","#4D5D53"),
 			list("light khaki","#F0E68C"),
 			list("dark khaki","#BDB76B"),
-			list("olive drab","#555346"),)
-		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab"))
+			list("olive drab","#555346"),
+
+			list("redmenian red","#774D4C"),
+			list("blugoslavian blue","#8383C2"),)
+
+		var/colors // Colors you can make your vehicle
+		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+			if (H.faction_text == "PIRATES")
+				colors = list("redmenian red")
+			else if (H.faction_text == "CIVILIAN")
+				colors = list("blugoslavian blue")
+		else
+			colors = list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab")
+
+		var/choosecolor1 = WWinput(H, "Choose this vehicle's color:", "Vehicle Color", "medium gray", colors)
 		for (var/i in vehiclecolors)
 			if (i[1] == choosecolor1)
 				color = i[2]
+
+		var/turrets // Turret types you can have for your vehicle
+		if (map.ordinal_age == 6)
+			turrets = list("tank", "round", "pziv", "tiger", "jap", "kv", "t34", "t3485", "is3")
+		else if (map.ordinal_age == 7)
+			turrets = list("tank", "round", "is3", "t3485", "t55", "t62a", "t72", "t72m1", "t72b3", "pt76", "m48a1", "m48a3", "m60a3")
+		else if (map.ordinal_age >= 8)
+			turrets = list("tank", "round", "t62m", "t62mv", "t64bv", "t64bm", "t72m1", "t72b3", "t90a", "challenger2", "2a6")
+
+		if (map.ordinal_age >= 6)
+			var/chooseturret = WWinput(H, "Choose this vehicle's turret type:", "Vehicle Turret", "tank", turrets)
+			if (chooseturret)
+				chooseturret += "_turret"
+				turret_type = chooseturret
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"

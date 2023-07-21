@@ -81,7 +81,7 @@
 						if (ispartial)
 							if (prob(70))
 								return TRUE
-						return prob(100-protection_chance-(B.penetrating*4))
+						return prob(100 - protection_chance + (B.penetrating*4))
 				return FALSE
 		if (!mover.throw_source)
 			if (get_dir(loc, target) & dir)

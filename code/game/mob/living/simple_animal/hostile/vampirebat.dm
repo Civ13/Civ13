@@ -69,6 +69,8 @@
 				var/dmod = 1
 				if (TG.find_trait("Weak Immune System"))
 					dmod = 2
+				if (TG.find_trait("Strong Immune System"))
+					dmod = 0.2
 				if (prob(25*dmod) && TG.disease == 0)
 					TG.disease_progression = 0
 					TG.disease_type ="malaria"

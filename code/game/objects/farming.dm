@@ -1054,10 +1054,11 @@
 		var/mob/living/human/H = user
 		if (H.getStatCoeff("farming")>= 1.6 && H.getStatCoeff("farming") < 2.2)
 			var/water_desc = "healthy"
-			if (water/max_water < 0.66 && water/max_water >= 0.33)
-				water_desc = "dry"
-			if (water/max_water < 0.33)
-				water_desc = "wilted"
+			if (max_water)
+				if (water/max_water < 0.66 && water/max_water >= 0.33)
+					water_desc = "dry"
+				if (water/max_water < 0.33)
+					water_desc = "wilted"
 			user << "\The [src] seems <b>[water_desc]</b>."
 		else if (H.getStatCoeff("farming") >= 2.2)
 			user << "[src]'s water level is at <b>[water]/[max_water]</b>."

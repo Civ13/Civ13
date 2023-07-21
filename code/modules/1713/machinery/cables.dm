@@ -49,7 +49,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/lastupdate2 = 0 //to prevent loops. Can only update once per decisecond. For power calculations.
 	var/cable_color = "red"
 	color = "#ff0000"
-	var/usesound = 'sound/items/deconstruct.ogg'
+	var/usesound = 'sound/items/Wirecutter.ogg'
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
 	var/tilepos = "under"
@@ -129,7 +129,7 @@ By design, d1 is the smallest direction and d2 is the highest
 //   - Multitool : get the power currently passing through the cable
 //
 /obj/structure/cable/attackby(obj/item/W, mob/user, params)
-	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if(istype(W, /obj/item/weapon/wirecutters))
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
 		Destroy()

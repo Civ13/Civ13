@@ -248,7 +248,7 @@
 	icon_state = "distill_empty_nocol"
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/on = FALSE
+	var/active = FALSE
 	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
 /obj/structure/lab_distillery/New()
 	..()
@@ -266,8 +266,8 @@
 			icon_state = "distill_empty"
 		else
 			icon_state = "distill_empty_nocol"
-	if (on)
-		icon_state = "distill_on"
+	if (active)
+		icon_state = "distill_active"
 
 /obj/structure/lab_distillery/attack_hand(var/mob/living/human/H)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
@@ -276,15 +276,16 @@
 	if (reagents.total_volume <= 0)
 		H << "The distiller is empty."
 		return
-	if (!collector && !on)
-		H << "You cannot turn the distiller on without a collector."
+	if (!collector && !active)
+		H << "You cannot turn the distiller active without a collector."
 		return
-	if (collector && !on)
-		H << "You turn the distiller on."
-		on = TRUE
+	if (collector && !active)
+		H << "You turn the distiller active."
+		active = TRUE
 		update_icon()
-		process_distillery()
+		process_machine()
 	..()
+
 /obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
@@ -317,11 +318,11 @@
 		usr << "There is no beaker to remove from \the [src]."
 		return
 
-	if (on)
+	if (active)
 		usr << "<span class = 'danger'>You cannot remove the beaker while the distiller is running!</span>"
 		return
 
-	if (collector && !on)
+	if (collector && !active)
 		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
 		collector.loc = get_turf(src)
 		collector = null
@@ -329,24 +330,316 @@
 
 	return
 
-/obj/structure/lab_distillery/proc/process_distillery()
-	if (!on)
+/obj/structure/lab_distillery/proc/process_machine()
+	if (!active)
 		return
 	else
-		spawn(150)
+		spawn(15 SECONDS)
 			var/largest = reagents.get_master_reagent_id()
 			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
-			if (largest == "water")
-				var/topick = pick("hydrogen","oxygen")
-				collector.reagents.add_reagent(topick,voltotransf/10)
-			else
-				collector.reagents.add_reagent(largest,voltotransf)
+			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
+			var/topick // What chems you got back
+
+			switch (largest)
+				if ("water")
+					topick = pick("hydrogen","oxygen")
+					chems_got_back_div = 10
+
+			collector.reagents.add_reagent(topick,voltotransf / chems_got_back_div)
 			reagents.remove_reagent(largest,voltotransf)
-			on = FALSE
+			active = FALSE
 			update_icon()
 			visible_message("\The [src] finishes distilling.")
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/obj/structure/centrifuge
+	name = "laboratory centrifuge"
+	desc = "A professional laboratory centrifuge, used to separate chemicals in a solution."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "centrifuge"
+	density = TRUE
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/active = FALSE
+	powerneeded = 30
+	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
+
+/obj/structure/centrifuge/New()
+	..()
+	reagents = new /datum/reagents(80)
+
+/obj/structure/centrifuge/proc/check_power()
+	if (!powersource || !powerneeded)
+		powered = FALSE
+		return FALSE
+	else
+		powered = TRUE
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!active)
+				powersource.update_power(powerneeded,1)
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+			return TRUE
+		else
+			if (active)
+				powersource.update_power(powerneeded,1)
+				active = FALSE
+				powersource.currentflow -= powerneeded
+				powersource.lastupdate2 = world.time
+			return FALSE
+
+/obj/structure/centrifuge/update_icon()
+	..()
+	if (powered)
+		icon_state = "centrifuge_powered"
+	else
+		icon_state = "centrifuge"
+	if (active)
+		icon_state = "centrifuge_active"
+
+/obj/structure/centrifuge/attack_hand(var/mob/living/human/H)
+	if (!anchored)
+		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+	else if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+		H << SPAN_DANGER("These chemicals are too complex for you to understand.")
+		return
+	else if (!check_power())
+		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		return
+	else if (reagents.total_volume <= 0)
+		H << SPAN_NOTICE("\The [src] is empty.")
+		return
+	else if (!collector && !active)
+		H << SPAN_NOTICE("You cannot turn \the [src] active without a collector.")
+		return
+	else if (collector && !active)
+		H << SPAN_NOTICE("You turn \the [src] active.")
+		active = TRUE
+		update_icon()
+		process_machine()
+	..()
+
+/obj/structure/centrifuge/attackby(obj/item/W as obj, var/mob/living/human/user as mob)
+	..()
+
+	if (!anchored)
+		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+
+	else if (istype(W,/obj/item/weapon/reagent_containers))
+		if (istype(user) && user.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+			user << SPAN_DANGER("These chemicals are too complex for you to understand")
+			return
+		var/obj/item/weapon/reagent_containers/B = W
+		if (B.reagents)
+			if (B.reagents.total_volume > 0)
+				var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
+				user << "You pour [tamt] units from \the [B] into \the [src]."
+				update_icon()
+				return
+		if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker/vial) && !collector)
+			if (B.reagents.total_volume > 0)
+				user << "The collector must be empty!"
+				return
+			else
+				user << "You place [B] as the collector for \the [src]."
+				collector =  B
+				user.drop_item()
+				B.loc = src
+				update_icon()
+				return
+	
+	else if (istype(W, /obj/item/stack/cable_coil))
+		connect_cable(user,W)
+		return
+
+/obj/structure/centrifuge/verb/empty()
+	set category = null
+	set name = "Remove Vial"
+	set src in range(1, usr)
+
+	if (!collector)
+		usr << "There is no vial to remove from \the [src]."
+		return
+
+	if (active)
+		usr << "<span class = 'danger'>You cannot remove the vial while \the [src] is running!</span>"
+		return
+
+	if (collector && !active)
+		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
+		collector.loc = get_turf(src)
+		collector = null
+		return
+	return
+
+/obj/structure/centrifuge/proc/process_machine()
+	if (!check_power())
+		visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
+		return
+	else
+		spawn(15 SECONDS)
+			if (!check_power())
+				visible_message(SPAN_WARNING("\The [src] abruptly stops it's cycle and powers down."))
+				return
+			var/largest = reagents.get_master_reagent_id()
+			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
+			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
+			var/topick // What chems you got back
+
+			switch (largest)
+				if ("blood")
+					topick = pick("blood_plasma", "red_blood_cells", "white_blood_cells")
+					chems_got_back_div = 5
+				if ("sodiumchloride")
+					topick = pick("sodium", "chlorine")
+					chems_got_back_div = 2
+
+			collector.reagents.add_reagent(topick,voltotransf / chems_got_back_div)
+			reagents.remove_reagent(largest,voltotransf)
+			active = FALSE
+			update_icon()
+			visible_message("\The [src] stops it's cycle.")
+			playsound(loc, 'sound/machines/ping.ogg', 100, TRUE)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/obj/structure/grinder
+	name = "grinder"
+	desc = "A professional grinder used to grind certain objects into a pulp."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "grinder"
+	density = TRUE
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/active = FALSE
+	powerneeded = 30
+	var/obj/item/stack/inserted = null
+
+/obj/structure/grinder/proc/check_power()
+	if (!powersource || !powerneeded)
+		powered = FALSE
+		return FALSE
+	else
+		powered = TRUE
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!active)
+				powersource.update_power(powerneeded,1)
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+			return TRUE
+		else
+			if (active)
+				powersource.update_power(powerneeded,1)
+				active = FALSE
+				powersource.currentflow -= powerneeded
+				powersource.lastupdate2 = world.time
+			return FALSE
+
+/obj/structure/grinder/update_icon()
+	..()
+	if (powered)
+		icon_state = "grinder_powered"
+	else
+		icon_state = "grinder"
+	if (active)
+		icon_state = "grinder_active"
+
+/obj/structure/grinder/attack_hand(var/mob/living/human/H)
+	if (!anchored)
+		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+	else if (!check_power())
+		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		return
+	else if (!inserted && !active)
+		H << SPAN_NOTICE("\The [src] is empty.")
+		return
+	else if (inserted && !active)
+		H << SPAN_NOTICE("You turn \the [src] active.")
+		active = TRUE
+		update_icon()
+		process_machine()
+		return
+	..()
+
+/obj/structure/grinder/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
+	..()
+
+	if (!anchored)
+		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+
+	if (istype(W, /obj/item/stack/cable_coil))
+		connect_cable(user,W)
+		return
+
+	else if (istype(W, /obj/item/stack) && !inserted)
+		user << "You place \the [W] in \the [src] for grinding."
+		inserted =  W
+		user.drop_item()
+		W.loc = src
+		update_icon()
+		return
+
+/obj/structure/grinder/verb/empty()
+	set category = null
+	set name = "Remove Inserted"
+	set src in range(1, usr)
+
+	if (!inserted)
+		usr << "There is no object to remove from \the [src]."
+		return
+
+	if (active)
+		usr << SPAN_DANGER(">You cannot remove \the [inserted] while \the [src] is running!</span>")
+		return
+
+	if (inserted && !active)
+		visible_message("You remove \the [inserted].","[usr] removes \the [inserted] from \the [src].")
+		inserted.loc = get_turf(src)
+		inserted = null
+		return
+	return
+
+/obj/structure/grinder/proc/process_machine()
+	if (!check_power())
+		visible_message(SPAN_WARNING("\The [src] abruptly stops grinding and powers down."))
+		return
+	else
+		spawn(10 SECONDS)
+			playsound(loc, 'sound/machines/grinder.ogg', 100, TRUE)
+			spawn (5 SECONDS)
+				if (!check_power())
+					visible_message(SPAN_WARNING("\The [src] abruptly stops grinding and powers down."))
+
+				var/obj/item/stack/tospawn
+
+				if (istype(inserted, /obj/item/stack/material/wood))
+					tospawn = new /obj/item/stack/material/wood(get_turf(src))
+					tospawn.amount = inserted.amount/5
+				else
+					active = FALSE
+					update_icon()
+					visible_message(SPAN_WARNING("\The [src] cannot grind this item."))
+					playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+					inserted.loc = get_turf(src)
+					inserted = null
+					return
+
+				active = FALSE
+				qdel (inserted)
+				inserted = null
+				update_icon()
+				visible_message("\The [src] stops grinding.")
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /obj/structure/chem_master
 	name = "pill maker"
 	desc = "Makes pills out of reagents."
@@ -362,7 +655,7 @@
 	var/condi = FALSE
 	var/useramount = 30 // Last used amount
 	var/pillamount = 10
-	var/bottlesprite = "bottle" //yes, strings
+	var/bottlesprite = "bottle"
 	var/pillsprite = "1"
 	var/client/has_sprites = list()
 	var/max_pill_count = 20
@@ -511,7 +804,7 @@
 			if (reagents.total_volume/count < 1) //Sanity checking.
 				return
 			while (count--)
-				var/obj/item/weapon/reagent_containers/pill/P = new/obj/item/weapon/reagent_containers/pill(loc)
+				var/obj/item/weapon/reagent_containers/pill/P = new/obj/item/weapon/reagent_containers/pill(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] pill"
 				P.pixel_x = rand(-7, 7) //random position
@@ -526,7 +819,7 @@
 		else if (href_list["createbottle"])
 			if (!condi)
 				var/name = sanitizeSafe(input(usr,"Name:","Name your bottle!",reagents.get_master_reagent_name()), MAX_NAME_LEN)
-				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(loc)
+				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] bottle"
 				P.pixel_x = rand(-7, 7) //random position
@@ -535,7 +828,7 @@
 				reagents.trans_to_obj(P,60)
 				P.update_icon()
 			else
-				var/obj/item/weapon/reagent_containers/food/condiment/P = new/obj/item/weapon/reagent_containers/food/condiment(loc)
+				var/obj/item/weapon/reagent_containers/food/condiment/P = new/obj/item/weapon/reagent_containers/food/condiment(get_turf(src))
 				reagents.trans_to_obj(P,50)
 		else if (href_list["change_pill"])
 			#define MAX_PILL_SPRITE 20 //max icon state of the pill sprites
@@ -634,14 +927,14 @@
 	icon_state = "distillery"
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/on = FALSE
+	var/active = FALSE
 	var/obj/item/weapon/reagent_containers/glass/collector = null
 /obj/structure/distillery/New()
 	..()
 	reagents = new /datum/reagents(80)
 /obj/structure/distillery/update_icon()
 	..()
-	if (on)
+	if (active)
 		icon_state = "distillery1"
 	else
 		icon_state = "distillery"
@@ -653,14 +946,14 @@
 	if (reagents.total_volume <= 0)
 		H << "The distiller is empty."
 		return
-	if (!collector && !on)
-		H << "You cannot turn the distiller on without a collector."
+	if (!collector && !active)
+		H << "You cannot turn the distiller active without a collector."
 		return
-	if (collector && !on)
-		H << "You turn the distiller on."
-		on = TRUE
+	if (collector && !active)
+		H << "You turn the distiller active."
+		active = TRUE
 		update_icon()
-		process_distillery()
+		process_machine()
 	..()
 /obj/structure/distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
@@ -695,11 +988,11 @@
 		usr << "There is nothing to remove from \the [src]."
 		return
 
-	if (on)
+	if (active)
 		usr << "<span class = 'danger'>You cannot remove the [collector] while the distiller is running!</span>"
 		return
 
-	if (collector && !on)
+	if (collector && !active)
 		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
 		collector.loc = get_turf(src)
 		collector = null
@@ -707,8 +1000,8 @@
 
 	return
 
-/obj/structure/distillery/proc/process_distillery()
-	if (!on)
+/obj/structure/distillery/proc/process_machine()
+	if (!active)
 		return
 	else
 		spawn(150)
@@ -724,6 +1017,6 @@
 			collector.reagents.add_reagent("ethanol",voltotransf)
 
 
-			on = FALSE
+			active = FALSE
 			update_icon()
 			visible_message("\The [src] finishes distilling.")

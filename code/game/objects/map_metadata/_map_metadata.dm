@@ -369,7 +369,7 @@ var/civmax_research = list(230,230,230)
 
 	if (global_pollution >= 1000)
 		change_weather(WEATHER_SMOG)
-		world << "The air gets smoggy..."
+		world << SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>")
 	if (global_pollution < 0)
 		set_global_pollution(0)
 	else

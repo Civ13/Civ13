@@ -260,7 +260,7 @@
 				var/mob/living/human/H = New
 				var/H_oloc = H.loc
 				var/H_jobloc = null
-				H.loc = null
+				H.loc = H_oloc
 				if (H.client)
 					H.client.eye = H_oloc
 					H.client.perspective = EYE_PERSPECTIVE
@@ -278,7 +278,7 @@
 						job_master.EquipRank(H, J)
 						H.original_job = job_master_occupation_names[J]
 						H_jobloc = H.loc
-						H.loc = null
+						H.loc = H_oloc
 						var/msg = "[key_name(usr)] assigned the new mob [H] the job '[J]'."
 						message_admins(msg, key_name(usr))
 						log_admin(msg)

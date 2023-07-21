@@ -508,7 +508,7 @@
 										for (var/obj/structure/vehicleparts/frame/F in range(1,target))
 											for (var/mob/M in F.axis.transporting)
 												shake_camera(M, 3, 3)
-											playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+											playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 											visible_message(SPAN_DANGER("<big>The hull gets hit by a rocket!</big>"))
 											F.w_front[5] -= rand(8,16)
 											F.w_back[5] -= rand(8,16)
@@ -527,7 +527,7 @@
 									var/how_many = 24 // half of 49, the radius we spread over (7x7)
 									for (var/k in 1 to how_many)
 										switch (reagent_payload)
-											if ("chlorine_gas")
+											if ("chlorine")
 												new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
 											if ("mustard_gas")
 												new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
@@ -676,7 +676,7 @@
 												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
 													for (var/mob/M in F.axis.transporting)
 														shake_camera(M, 3, 3)
-													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 													visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
 													F.w_front[5] -= rand(1,7)
 													F.w_back[5] -= rand(1,7)
@@ -698,7 +698,7 @@
 												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
 													for (var/mob/M in F.axis.transporting)
 														shake_camera(M, 3, 3)
-													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 													visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
 													F.w_front[5] -= rand(8,16)
 													F.w_back[5] -= rand(8,16)
@@ -712,7 +712,7 @@
 												for (var/obj/structure/vehicleparts/frame/F in range(1,target))
 													for (var/mob/M in F.axis.transporting)
 														shake_camera(M, 3, 3)
-													playsound(loc, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
+													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
 													visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
 													F.w_front[5] -= rand(5,20)
 													F.w_back[5] -= rand(5,20)
@@ -736,43 +736,50 @@
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W19))
 											radiation_pulse(target, 8, 70, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33))
 											radiation_pulse(target, 10, 45, 1000, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 											radiation_pulse(target, 10, 50, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
-										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/makeshift))
-											radiation_pulse(target, 10, 65, 1400, TRUE)
-											explosion(target, 2, 2, 2, 100)
-											change_global_pollution(150)
-											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/nomads))
+											radiation_pulse(target, 25, 150, 1800, TRUE)
+											explosion(target, 5, 8, 20, 80)
+											for (var/turf/floor/T in circlerangeturfs(4, target))
+												ignite_turf(T, 12, 70)
+											
+											for(var/mob/living/human/L in circlerangeturfs(80, target))
+												L.Weaken(3)
+												if (L.HUDtech.Find("flash"))
+													flick("e_flash", L.HUDtech["flash"])
+											change_global_pollution(200)
+											change_global_radiation(18)
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 										else if (istype(fired_shell,/obj/item/cannon_ball/rocket/nuclear))
 											radiation_pulse(target, 12, 80, 1400, TRUE)
 											explosion(target, 2, 2, 2, 30)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 										else
 											radiation_pulse(target, 4, 50, 800, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=3 color='red'>A nuclear explosion has happened!</font>"
+											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
 
 									else
 										message_admins("Gas artillery shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>)..")
@@ -780,7 +787,7 @@
 										var/how_many = 24 // half of 49, the radius we spread over (7x7)
 										for (var/k in 1 to how_many)
 											switch (reagent_payload)
-												if ("chlorine_gas")
+												if ("chlorine")
 													new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
 												if ("mustard_gas")
 													new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
@@ -833,7 +840,7 @@
 		<center>
 		<big><b>[name]</b></big><br><br>
 		</center>
-		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : "No shell loaded"]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
+		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
 		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
 		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
 		<br>

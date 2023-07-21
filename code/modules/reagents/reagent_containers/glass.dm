@@ -421,14 +421,6 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/beaker/on_reagent_change()
 	update_icon()
 
-/obj/item/weapon/reagent_containers/glass/beaker/pickup(mob/user)
-	..()
-	playsound(src,'sound/effects/glassknock.ogg',50,1)
-
-/obj/item/weapon/reagent_containers/glass/beaker/dropped(mob/user)
-	..()
-	playsound(src,'sound/effects/Glasshit.ogg',50,1)
-
 /obj/item/weapon/reagent_containers/glass/beaker/update_icon()
 	overlays.Cut()
 	if (reagents.total_volume)
@@ -451,16 +443,16 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/beaker/large
 	name = "large beaker"
 	desc = "A large beaker."
-	icon_state = "beakerlarge" //TODO: draw different item state?
+	icon_state = "beakerlarge"
 	volume = 120
 	possible_transfer_amounts = list(5,10,15,25,30,60,120)
 
 /obj/item/weapon/reagent_containers/glass/beaker/vial
 	name = "vial"
 	desc = "A small glass vial."
-	icon_state = "vial" //TODO: draw different item state?
+	icon_state = "vial"
 	volume = 30
-	possible_transfer_amounts = list(5,10,15,25)
+	possible_transfer_amounts = list(5,10,15,25,30)
 
 /obj/item/weapon/reagent_containers/glass/bucket
 	desc = "It's a bucket."

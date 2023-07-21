@@ -1,6 +1,6 @@
-///for fire lances, hand cannons, arquebuses
+///for fire lances, handcannons, arquebuses
 
-obj/item/weapon/gun/projectile/ancient
+/obj/item/weapon/gun/projectile/ancient
 	name = "ancient handgun"
 	desc = "An ancient handheld blackpowder gun"
 	icon = 'icons/obj/guns/ancient.dmi'
@@ -81,7 +81,7 @@ obj/item/weapon/gun/projectile/ancient
 	load_delay = 200
 	aim_miss_chance_divider = 3.00
 
-obj/item/weapon/gun/projectile/ancient/firelance
+/obj/item/weapon/gun/projectile/ancient/firelance
 	name = "fire lance"
 	desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 	icon_state = "firelance0"
@@ -141,13 +141,13 @@ obj/item/weapon/gun/projectile/ancient/firelance
 
 	load_delay = 150
 	aim_miss_chance_divider = 1.50
-obj/item/weapon/gun/projectile/ancient/handcannon
+/obj/item/weapon/gun/projectile/ancient/handcannon
 	name = "handcannon"
 	desc = "A crude handcannon, consisting on a iron barrel with a wood stock attached."
 	icon_state = "handcannon"
 	item_state = "handcannon"
 
-obj/item/weapon/gun/projectile/ancient/arquebus
+/obj/item/weapon/gun/projectile/ancient/arquebus
 	name = "arquebus"
 	desc = "A iron barrel attached to a wood stock, with a piece of metal in the middle to hold the arquebus still, increasing accuracy."
 	icon_state = "arquebus"
@@ -201,7 +201,7 @@ obj/item/weapon/gun/projectile/ancient/arquebus
 			VERY_LONG_RANGE_MOVING = 12*1.3),
 	)
 
-obj/item/weapon/gun/projectile/ancient/matchlock
+/obj/item/weapon/gun/projectile/ancient/matchlock
 	name = "matchlock musket"
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger."
 	icon_state = "matchlock"
@@ -255,7 +255,7 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 			VERY_LONG_RANGE_MOVING = 32*0.85),
 	)
 
-obj/item/weapon/gun/projectile/ancient/jezailmatchlock
+/obj/item/weapon/gun/projectile/ancient/jezailmatchlock
 	name = "Jezail matchlock musket"
 	desc = "A Arabic musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger."
 	icon_state = "matchlock"
@@ -309,7 +309,7 @@ obj/item/weapon/gun/projectile/ancient/jezailmatchlock
 			VERY_LONG_RANGE_MOVING = 32*0.85),
 	)
 
-obj/item/weapon/gun/projectile/ancient/tanegashima
+/obj/item/weapon/gun/projectile/ancient/tanegashima
 	name = "tanegashima"
 	desc = "A musket using the matchlock system, where lighted match acts as the fuse, activated by a trigger. This one being Japanese, introduced to them via the Portuguese."
 	icon_state = "tanegashima"

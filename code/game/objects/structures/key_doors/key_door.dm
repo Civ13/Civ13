@@ -31,9 +31,9 @@ var/list/nonbreaking_types = list(
 		var/mob/living/human/H = user
 
 		if(H.civilization == faction)
-			if(!state)
+			if(!state && !isSwitchingStates)
 				Open()
-			else
+			else if(state && !isSwitchingStates)
 				Close()
 		else
 			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
@@ -44,7 +44,7 @@ var/list/nonbreaking_types = list(
 		var/mob/living/human/H = user
 
 		if(H.civilization == faction)
-			if(!state)
+			if(!state && !isSwitchingStates)
 				Open()
 		else
 			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
@@ -54,9 +54,10 @@ var/list/nonbreaking_types = list(
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user
 		if(H.civilization == faction)
-			if(state)
+			if(state && !isSwitchingStates)
 				spawn(10)
-					Close()
+					if (!isSwitchingStates)
+						Close()
 
 /obj/structure/simple_door/key_door/New(_loc, _material = null)
 
@@ -193,7 +194,7 @@ var/list/nonbreaking_types = list(
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
 						user << "<span class='notice'>You pick the lock.</span>"
-						keyslot.locked = 0
+						keyslot.locked = FALSE
 						return
 					else if (prob(60))
 						qdel(W)
@@ -205,8 +206,8 @@ var/list/nonbreaking_types = list(
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
 		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
-		if   (breachable && istype(pump) && istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) && keyslot.locked && pump.consume_next_projectile())
-			keyslot.locked = FALSE
+		if   (breachable && istype(pump) && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug)) && locked && pump.consume_next_projectile())
+			locked = FALSE
 			update_icon()
 			visible_message("<span class='warning'>[user] breaks the lock on the [src]!</span>")
 			pump.Fire(src, user)

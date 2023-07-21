@@ -196,7 +196,7 @@
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		var/dmod = 1
-		if (H.find_trait("Weak Immune System"))
+		if (H.find_trait("Weak Immune System")) // Strong Immune System doesn't work for zombies
 			dmod = 2
 		if (prob(3*dmod))
 			H.disease = TRUE

@@ -624,106 +624,84 @@ proc/admin_notice(var/message, var/rights)
 		return
 	else
 		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013", "Cancel"))
-		if (customage == "Cancel")
-			return
-		else if (customage == "5000 B.C.")
-			map.ordinal_age = 0
-			map.age = "5000 B.C."
-			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "313 B.C.")
-			map.ordinal_age = 1
-			map.age = "313 B.C."
-			map.age1_done = TRUE
-			map.default_research = 35
-			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1013")
-			map.ordinal_age = 2
-			map.age = "1013"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.default_research = 50
-			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1713")
-			map.ordinal_age = 3
-			map.age = "1713"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.default_research = 90
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1873")
-			map.ordinal_age = 4
-			map.age = "1873"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.age4_done = TRUE
-			map.default_research = 105
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1903")
-			map.ordinal_age = 5
-			map.age = "1903"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.age4_done = TRUE
-			map.age5_done = TRUE
-			map.default_research = 135
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1943")
-			map.ordinal_age = 6
-			map.age = "1943"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.age4_done = TRUE
-			map.age5_done = TRUE
-			map.age6_done = TRUE
-			map.default_research = 152
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "1969")
-			map.ordinal_age = 7
-			map.age = "1969"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.age4_done = TRUE
-			map.age5_done = TRUE
-			map.age6_done = TRUE
-			map.age7_done = TRUE
-			map.default_research = 185
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
-		else if (customage == "2013")
-			map.ordinal_age = 8
-			map.age = "2013"
-			map.age1_done = TRUE
-			map.age2_done = TRUE
-			map.age3_done = TRUE
-			map.age4_done = TRUE
-			map.age5_done = TRUE
-			map.age6_done = TRUE
-			map.age7_done = TRUE
-			map.age8_done = TRUE
-			map.default_research = 230
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
-			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
-			return
+		switch (customage)
+			if ("Cancel")
+				return
+			if ("5000 B.C.")
+				map.ordinal_age = 0
+				map.age = "5000 B.C."
+			if ("313 B.C.")
+				map.ordinal_age = 1
+				map.age = "313 B.C."
+				map.age1_done = TRUE
+				map.default_research = 25
+			if ("1013")
+				map.ordinal_age = 2
+				map.age = "1013"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.default_research = 50
+			if ("1713")
+				map.ordinal_age = 3
+				map.age = "1713"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.default_research = 80
+			if ("1873")
+				map.ordinal_age = 4
+				map.age = "1873"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.default_research = 105
+			if ("1903")
+				map.ordinal_age = 5
+				map.age = "1903"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.age5_done = TRUE
+				map.default_research = 120
+			if ("1943")
+				map.ordinal_age = 6
+				map.age = "1943"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.age5_done = TRUE
+				map.age6_done = TRUE
+				map.default_research = 145
+			if ("1969")
+				map.ordinal_age = 7
+				map.age = "1969"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.age5_done = TRUE
+				map.age6_done = TRUE
+				map.age7_done = TRUE
+				map.default_research = 175
+			if ("2013")
+				map.ordinal_age = 8
+				map.age = "2013"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.age5_done = TRUE
+				map.age6_done = TRUE
+				map.age7_done = TRUE
+				map.age8_done = TRUE
+				map.default_research = 210
+
+		world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+		log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+		return
 ////////////////////////////////////////////////////////////////////////////////////////////////ADMIN HELPER PROCS
 
 /proc/is_special_character(mob/M as mob) // returns TRUE for specail characters and 2 for heroes of gamemode
@@ -1071,6 +1049,7 @@ var/list/atom_types = null
 				whitelist_list += current[1]
 	else
 		message_admins("<span class='danger'>Failed to load whitelist!</span>", key_name(usr))
+
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))
 		faction_list_blue = list()
@@ -1085,6 +1064,36 @@ var/list/atom_types = null
 					faction_list_blue += current[1]
 	else
 		message_admins("<span class='danger'>Failed to load factionlist!</span>", key_name(usr))
+
+	var/F4 = file("SQL/tdm_factionlist.txt")
+	if (fexists(F4))
+		faction_list_blue = list()
+		faction_list_red = list()
+		var/list/flist_temp = file2list(F4,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
+	else
+		message_admins("<span class='danger'>Failed to load factionlist TDM!</span>", key_name(usr))
+		
+	var/F5 = file("SQL/nomads_factionlist.txt")
+	if (fexists(F5))
+		faction_list_blue = list()
+		faction_list_red = list()
+		var/list/flist_temp = file2list(F5,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
+	else
+		message_admins("<span class='danger'>Failed to load factionlist Nomads!</span>", key_name(usr))
 
 /client/proc/reload_bans()
 	set name = "Update Bans"

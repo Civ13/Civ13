@@ -27,29 +27,28 @@
 /obj/structure/attackby(obj/item/O as obj, mob/user as mob, icon_x, icon_y)
 	if (istype(O,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
-			user << "<span class='notice'>Remove the cables first.</span>"
+			user << SPAN_NOTICE("Remove the cables first.")
 			return
 		if (istype(src, /obj/structure/engine))
 			var/obj/structure/engine/EN = src
 			if (!isemptylist(EN.connections))
-				user << "<span class='notice'>Remove the cables first.</span>"
+				user << SPAN_NOTICE("Remove the cables first.")
 				return
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
-		return
+		if (do_after(user,15,src))
+			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+			user << (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor."))
+			anchored = !anchored
+			return
 	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		user << SPAN_NOTICE("You begin dismantling \the [src].")
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"
+			user << SPAN_NOTICE("You dismantle \the [src].")
 			new /obj/item/stack/material/wood(get_turf(src))
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))
 			qdel(src)
 			return
-	else
-		..()
 
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
@@ -246,3 +245,39 @@
 	attack_animation(user)
 	spawn(1) qdel(src)
 	return TRUE
+
+/obj/structure/proc/connect_cable(var/mob/user, var/obj/item/stack/cable_coil/W)
+	if (powersource)
+		user << "There's already a cable connected here! Split it further from \the [src]."
+		return
+	var/obj/item/stack/cable_coil/CC = W
+	powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+	if (!powersource)
+		return
+	powersource.connections += src
+	var/opdir1 = 0
+	var/opdir2 = 0
+	if (powersource.tiledir == "horizontal")
+		opdir1 = 4
+		opdir2 = 8
+	else if  (powersource.tiledir == "vertical")
+		opdir1 = 1
+		opdir2 = 2
+	powersource.update_icon()
+
+	if (opdir1 != 0 && opdir2 != 0)
+		for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
+			if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
+				if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
+					NCOO.connections += powersource
+				if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
+					powersource.connections += NCOO
+				user << "You connect the two cables."
+
+		for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+			if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
+				if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
+					NCOC.connections += powersource
+				if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
+					powersource.connections += NCOC
+	user << SPAN_NOTICE("You connect the cable to \the [src].")

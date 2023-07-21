@@ -634,7 +634,7 @@
 	if (ishuman(AM))
 		var/mob/living/human/H = AM
 		if (H.pull_damage())
-			src << "\red <b>Pulling \the [H] in their current condition would probably be a bad idea.</b>"
+			src << SPAN_WARNING("<b>Pulling \the [H] in their current condition would probably be a bad idea.</b>")
 */
 	//Attempted fix for people flying away through space when cuffed and dragged.
 	if (ismob(AM))
@@ -1081,6 +1081,11 @@ mob/proc/yank_out_object()
 	else
 		set_dir(dir)
 		facing_dir = dir
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.HUDneed.Find("fixeye"))
+			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
+			I.update_icon()
 
 /mob/set_dir()
 	if (facing_dir)

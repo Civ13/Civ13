@@ -32,7 +32,7 @@
 				qdel(animation)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 					src << browse(null, "window=memory")
 					stop_ambience(src)
 					client.screen.Cut()
@@ -83,7 +83,7 @@
 				qdel(src)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 					src << browse(null, "window=memory")
 					stop_ambience(src)
 					client.screen.Cut()
@@ -144,7 +144,7 @@
 
 	if (client)
 		client.movement_busy = FALSE
-		if (map.ID == MAP_CAMPAIGN)
+		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 			src << browse(null, "window=memory")
 			stop_ambience(src)
 			client.screen.Cut()

@@ -221,7 +221,8 @@ datum/admins/proc/print_chemical_reactions()
 //this is called just before reactants are removed.
 /datum/chemical_reaction/proc/send_data(var/datum/reagents/holder, var/reaction_limit)
 	return null
-
+/* aLL new chemicals will be added from the top going down starting from */
+// https://discord.com/channels/468979034571931648/1127619013447520266/1127644788502564864
 /* Common reactions */
 
 /datum/chemical_reaction/
@@ -230,6 +231,197 @@ datum/admins/proc/print_chemical_reactions()
 	result = ""
 	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
 	result_amount = 3
+
+// Mostly used for chromatography, foam production & fuel
+/datum/chemical_reaction/pentane
+	name = "Pentane"
+	id = "pentane"
+	result = "pentane"
+	required_reagents = list("carbon" = 15, "hydrogen" = 12)
+	result_amount = 25
+
+// Mostly used for vegetable oil extraction, paints, adhesives, industrial cleaning agents & fuel
+/datum/chemical_reaction/hexane
+	name = "Hexane"
+	id = "hexane"
+	result = "hexane"
+	required_reagents = list("carbon" = 6, "hydrogen" = 14)
+	result_amount = 1
+
+// Mostly used for essential oil extraction, degreasers, adhesives, fuel
+/datum/chemical_reaction/heptane
+	name = "Heptane"
+	id = "heptane"
+	result = "heptane"
+	required_reagents = list("carbon" = 7, "hydrogen" = 16)
+	result_amount = 20
+
+// Primarily used for fuel 
+/datum/chemical_reaction/octane
+	name = "Octane"
+	id = "octane"
+	result = "octane"
+	required_reagents = list("carbon" = 8, "hydrogen" = 18)
+	result_amount = 20
+
+// Mostly used for essential oil extraction, refrigeration, propellant, chemical synthesis
+/datum/chemical_reaction/cyclopentane
+	name = "Cyclopentane"
+	id = "cyclopentane"
+	result = "cyclopentane"
+	required_reagents = list("carbon" = 5, "hydrogen" = 10)
+	result_amount = 10
+
+// mostly used for chromatogrpahy, degreasing, paints, organic synthesis, chemical synthesis
+/datum/chemical_reaction/cyclohexane
+	name = "Cyclohexane"
+	id = "cyclohexane"
+	result = "cyclohexane"
+	required_reagents = list("carbon" = 6, "hydrogen" = 12)
+	result_amount = 10
+
+// Mostly used for degreasing, paint stripping, fuel additive, chemical synthesis
+/datum/chemical_reaction/benzene
+	name = "Benzene"
+	id = "benzene"
+	result = "benzene"
+	required_reagents = list("carbon" = 6, "hydrogen" = 6)
+	result_amount = 5
+
+// Mostly used for paint thinning, explosives, fuel additive, chemical synthesis
+/datum/chemical_reaction/toluene
+	name = "Toluene"
+	id = "toluene"
+	result = "toluene"
+	required_reagents = list("carbon" = 7, "hydrogen" = 8)
+	result_amount = 5
+
+// Mostly used for chromatography, tissue prossessing, degreasing, inks, chemical synthesis 
+/datum/chemical_reaction/xylene
+	name = "Xylene"
+	id = "xylene"
+	result = "xylene"
+	required_reagents = list("carbon" = 8, "hydrogen" = 10)
+	result_amount = 10
+
+// Used in the Ziegler-Natta polymerization process as a catalyst
+/datum/chemical_reaction/titaniumchloride
+	name = "Titanium Chloride"
+	id = "titaniumchloride"
+	result = "titaniumchloride"
+	required_reagents = list("titanium" = 1, "chlorine" = 4)
+	result_amount = 5
+
+// Used in the Ziegler-Natta polymerization process as a co-catalyst
+/datum/chemical_reaction/aluminumchloride
+	name = "Aluminum Chloride"
+	id = "aluminumchloride"
+	result = "aluminumchloride"
+	required_reagents = list("aluminum" = 1, "chlorine" = 3)
+	result_amount = 5
+
+// Used in the Ziegler-Natta polymerization process as a co-catalyst
+// Can spontaneously combust when exposed to air or water
+/* TMA is more strongly reactive than Aluminum Chloride but is less safe, so we'll just use Aluminum Chloride for now
+/datum/chemical_reaction/trimethylaluminum
+	name = "Trimethylaluminum"
+	id = "trimethylaluminum"
+	result = "trimethylaluminum"
+	required_reagents = list("aluminum" = 1, "carbon" = 3, "hydrogen" = 9)
+	result_amount = 10
+*/
+
+//Used as a co-catalyst with Aluminum Chloride for making plastics
+/datum/chemical_reaction/borontrifluoride
+	name = "Boron Trifluoride"
+	id = "borontrifluoride"
+	result = "borontrifluoride"
+	required_reagents = list("boron" = 1, "fluorine" = 3)
+	result_amount = 1
+
+// Mostly used polymerization, agriculture, welding fuel & fuel 
+/datum/chemical_reaction/ethylene
+	name = "Ethylene"
+	id = "ethylene"
+	result = "ethylene"
+	required_reagents = list("carbon" = 2, "hydrogen" = 4)
+	result_amount = 3
+
+// Mostly used for polymerization, refrigeration, propellents, fuel, chemical synthesis
+/datum/chemical_reaction/propylene
+	name = "Propylene"
+	id = "propylene"
+	result = "propylene"
+	required_reagents = list("carbon" = 3, "hydrogen" = 6)
+	result_amount = 5
+
+// HZSM-5 catalyst
+/datum/chemical_reaction/zeolite
+	name = "Zeolite"
+	id = "zeolite"
+	result = "zeolite"
+	required_reagents = list("aluminum" = 24, "silicon" = 24, "oxygen" = 48)
+	result_amount = 5
+
+// Used to make Polyethylene plastics
+/datum/chemical_reaction/polyethylene
+	name = "Polyethylene"
+	id = "polyethylene"
+	result = "polyethylene"
+	required_reagents = list("propylene" = 2)
+	catalysts = list("titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
+	result_amount = 25
+
+// Used to make Polypropylene plastics
+/* Requires heat to polymerize, but we don't have a system for that yet
+/datum/chemical_reaction/polypropylene
+	name = "Polypropylene"
+	id = "polypropylene"
+	result = "polypropylene"
+	required_reagents = list("propylene" = 2)
+	catalysts = list("methylpropene" = 2, "titaniumchloride" = 10, "borontrifluoride" = 5, "aluminumchloride" = 5)
+	result_amount = 25
+*/
+
+// Mostly used for polymerization, rubber production, adhesives, lubricate, antioxidents, fuel and fuel additive
+/datum/chemical_reaction/butene
+	name = "Butene"
+	id = "butene"
+	result = "butene"
+	required_reagents = list("carbon" = 4, "hydrogen" = 8)
+	result_amount = 5
+
+/* We can just make isobutylene
+/datum/chemical_reaction/isobutanol
+	name = "Isobutanol"
+	id = "isobutanol"
+	result = "isobutanol"
+	required_reagents = list("carbon" = 4, "hydrogen" = 10, "oxygen" = 1)
+	result_amount = 5
+*/
+
+// Mostly used for butyl rubber production, refrigeration, adhesives, polymers, fuel and fuel additive
+/datum/chemical_reaction/isobutylene
+	name = "Isobutylene"
+	id = "isobutylene"
+	result = "isobutylene"
+	required_reagents = list("carbon" = 4, "hydrogen" = 8)
+	result_amount = 5
+
+/datum/chemical_reaction/butylrubber
+	name = "Butyl Rubber"
+	id = "butylrubber"
+	result = "butylrubber"
+	required_reagents = list("isobutylene" = 10, "aluminumchloride" = 1) // isobutylene:aluminumchloride ratio can be anywhere from 10:0.5 to 10:2
+	result_amount = 5
+
+// There are so many ways to make gasoline we just picked the one that made the most sense based off of other chemical's uses ~valithor
+/datum/chemical_reaction/gasoline
+	name = "Gasoline"
+	id = "gasoline"
+	result = "gasoline"
+	required_reagents = list("octane" = 10, "cyclopentane" = 4, "toluene" = 5, "butene" = 1)
+	result_amount = 20
 
 /datum/chemical_reaction/penicillin
 	name = "Penicillin"
@@ -357,7 +549,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Hydrogen Chloride"
 	id = "hydrogen_chloride"
 	result = "hydrogen_chloride"
-	required_reagents = list("hydrogen" = 1, "chlorine" = 1)
+	required_reagents = list("hydrogen" = 2, "chlorine" = 2)
 	result_amount = 1
 
 /datum/chemical_reaction/hydrogen_peroxide
@@ -439,26 +631,12 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("sodiumchloride" = 1, "water" = 1, "sugar" = 1 )
 	result_amount = 2
 
-/datum/chemical_reaction/aqua_regia
-	name = "Aqua regia"
-	id = "aqua_regia"
-	result = "aqua_regia"
-	required_reagents = list("nitric_acid" = 1, "clorhydric_acid" = 3, )
-	result_amount = 2
-
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
 	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
 	result_amount = 4
-
-/datum/chemical_reaction/clorhydric_acid
-	name = "Clorhydric acid"
-	id = "clorhydric_acid"
-	result = "clorhydric_acid"
-	required_reagents = list("hydrogen" =1, "chlorine" = 1 )
-	result_amount = 1
 
 /datum/chemical_reaction/baking_soda
 	name = "Baking soda"
@@ -660,13 +838,6 @@ datum/admins/proc/print_chemical_reactions()
 	result = "hexachloroetane"
 	required_reagents = list("chlorine" = 6, "carbon" = 2)
 	result_amount = 10
-
-/datum/chemical_reaction/chlorine_gas
-	name = "Chlorine Gas"
-	id = "chlorine_gas"
-	result = "chlorine_gas"
-	required_reagents = list("chlorine" = 5, "hydrogen" = 5)
-	result_amount = 5
 
 /datum/chemical_reaction/mustard_gas
 	name = "Mustard Gas"

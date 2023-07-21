@@ -21,6 +21,12 @@
 		var/obj/map_metadata/football/FM = map
 		FM.assign_teams(triggerer = src)
 
+/client/proc/rearm_jets()
+	set category = "Special"
+	set name = "Rearm Jets"
+	airstrikes_remaining_blue = 5
+	airstrikes_remaining_red = 5
+
 /client/proc/end_all_grace_periods()
 	set category = "Special"
 	set name = "End All Grace Periods"

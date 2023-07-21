@@ -322,6 +322,10 @@
 	if (A)
 		if (!istype(A, /mob) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 			spawn(60)
+				if (isobj(A))
+					var/obj/O = A
+					if (!(O.sinkable))
+						return
 				var/turf/TF = A.loc
 				if (istype(TF,/turf/floor/beach/water/deep) && !TF.iscovered())
 					qdel(A)

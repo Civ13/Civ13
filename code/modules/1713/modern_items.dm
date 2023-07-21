@@ -59,7 +59,7 @@
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from the [src]."
+			user << "There's already a cable connected here! Split it further from \the [src]."
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -91,7 +91,7 @@
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						powersource.connections += NCOC
-		user << "You connect the cable to the [src]."
+		user << "You connect the cable to \the [src]."
 	else
 		..()
 
@@ -107,7 +107,7 @@
 		icon_state = "[base_icon]_broken"
 /obj/structure/lamp/proc/do_light()
 	if (!lamp_broken && lamp_inside)
-		if (check_power() || powerneeded == 0)
+		if (check_power() || !powerneeded)
 			if (brightness_color)
 				set_light(light_amt, 1, brightness_color)
 			else
@@ -130,7 +130,7 @@
 		do_light()
 
 /obj/structure/lamp/proc/check_power()
-	if (!powersource || powerneeded == 0)
+	if (!powersource || !powerneeded)
 		return FALSE
 	else
 		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -269,7 +269,7 @@
 	on = FALSE
 
 /obj/structure/lamp/lamp_small/tank/check_power()
-	if (!connection || powerneeded == 0)
+	if (!connection || !powerneeded)
 		return FALSE
 	else
 		if (connection.on)
@@ -401,44 +401,8 @@
 				H << "<span class = 'notice'>This [W] has no crude petroleum in it!</span>"
 				return
 	else if (istype(W, /obj/item/stack/cable_coil))
-		if (!anchored)
-			H << "<span class='notice'>Fix the refinery in place with a wrench first.</span>"
-			return
-		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
-		if (powersource)
-			powersource.connections += src
-
-			var/opdir1 = 0
-			var/opdir2 = 0
-			if (powersource && powersource.tiledir == "horizontal")
-				opdir1 = 4
-				opdir2 = 8
-			else if  (powersource && powersource.tiledir == "vertical")
-				opdir1 = 1
-				opdir2 = 2
-			powersource.update_icon()
-
-			if (opdir1 != 0 && opdir2 != 0)
-				for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-					if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-						if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-							NCOO.connections += powersource
-						if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-							powersource.connections += NCOO
-						H << "You connect the two cables."
-
-				for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-					if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-						if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-							NCOC.connections += powersource
-						if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-							powersource.connections += NCOC
-						H << "You connect the two cables."
-			H << "You connect the cable to the [src]."
+		connect_cable(H,W)
+		return
 
 	else
 		..()
@@ -646,44 +610,7 @@
 				H << "<span class = 'notice'>This [W] has no biofuel percursors in it!</span>"
 				return
 	else if (istype(W, /obj/item/stack/cable_coil))
-		if (!anchored)
-			H << "<span class='notice'>Fix the refinery in place with a wrench first.</span>"
-			return
-		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
-		powersource.connections += src
-
-		var/opdir1 = 0
-		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
-			opdir1 = 4
-			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
-			opdir1 = 1
-			opdir2 = 2
-		powersource.update_icon()
-
-		if (opdir1 != 0 && opdir2 != 0)
-			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						NCOO.connections += powersource
-					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						powersource.connections += NCOO
-					H << "You connect the two cables."
-
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						NCOC.connections += powersource
-					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
-
+		connect_cable(H,W)
 	else
 		..()
 
@@ -763,7 +690,7 @@
 	var/volume = 0
 	var/active = FALSE
 	var/plastic = 0
-	powerneeded = 1
+	powerneeded = 10
 
 /obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
@@ -779,44 +706,7 @@
 			H << "<span class = 'notice'>This [W] has no crude petroleum in it!</span>"
 			return
 	else if (istype(W, /obj/item/stack/cable_coil))
-		if (!anchored)
-			H << "<span class='notice'>Fix the bakelizer in place with a wrench first.</span>"
-			return
-		if (powersource)
-			H << "There's already a cable connected here! Split it further from the [src]."
-			return
-		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
-		powersource.connections += src
-
-		var/opdir1 = 0
-		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
-			opdir1 = 4
-			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
-			opdir1 = 1
-			opdir2 = 2
-		powersource.update_icon()
-
-		if (opdir1 != 0 && opdir2 != 0)
-			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						NCOO.connections += powersource
-					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-						powersource.connections += NCOO
-					H << "You connect the two cables."
-
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						NCOC.connections += powersource
-					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-						powersource.connections += NCOC
-					H << "You connect the two cables."
-		H << "You connect the cable to the [src]."
-
+		connect_cable(H,W)
 	else
 		..()
 
@@ -1041,7 +931,7 @@
 	..()
 
 /obj/structure/floodlight/attack_hand(var/mob/living/human/H)
-	if (floodlighton == 0)
+	if (!floodlighton)
 		floodlighton = 1
 		set_light (8)
 		icon_state ="floodlight_on"
@@ -1141,3 +1031,143 @@
 				visible_message("<span class='warning'>[mob] turns the metal detector off.</span>","You turn the metal detector off.")
 				on = FALSE
 				set_light(0)
+
+/obj/structure/drill
+	name = "industrial drill"
+	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. It needs to be powered, underground and on dirt in order to operate."
+	icon = 'icons/obj/machines/mining_drill.dmi'
+	icon_state = "mining_drill"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	density = TRUE
+	var/ore_types = list(
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/gold,
+		/obj/item/stack/ore/glass,
+		/obj/item/stack/ore/silver,
+		/obj/item/stack/ore/copper,
+		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/saltpeter,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/sulphur,
+		/obj/item/stack/ore/lead,
+		/obj/item/stack/material/stone,
+		/obj/item/weapon/barrier,
+	)
+	var/active = FALSE
+	var/next_spawn = -1
+	powerneeded = 500
+
+/obj/structure/drill/proc/check_power()
+	if (!powersource || !powerneeded)
+		powered = FALSE
+		return FALSE
+	else
+		powered = TRUE
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!active)
+				powersource.update_power(powerneeded,1)
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+			return TRUE
+		else
+			if (active)
+				powersource.update_power(powerneeded,1)
+				active = FALSE
+				powersource.currentflow -= powerneeded
+				powersource.lastupdate2 = world.time
+			return FALSE
+
+/obj/structure/drill/update_icon()
+	..()
+	if (powered)
+		icon_state = "mining_drill_powered"
+	else
+		icon_state = "mining_drill"
+	if (active)
+		icon_state = "mining_drill_active"
+
+/obj/structure/drill/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	..()
+
+	if (!anchored)
+		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+
+	if (istype(W, /obj/item/stack/cable_coil))
+		connect_cable(H,W)
+		return
+
+/obj/structure/drill/attack_hand(var/mob/living/human/H)
+	if (!anchored)
+		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
+	else if (!check_power())
+		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		update_icon()
+		return
+	else if (!active && powered)
+		next_spawn = 30
+		active = TRUE
+		process_machine()
+		update_icon()
+		H << "You power up \the [src]."
+		return
+	else if (active)
+		next_spawn = -1
+		active = FALSE
+		update_icon()
+		H << "You power off \the [src]."
+		return
+
+/obj/structure/drill/proc/process_machine()
+	if (!active)
+		return
+	else if (!check_power())
+		active = FALSE
+		update_icon()
+		visible_message(SPAN_WARNING("\The [src] stops drilling and powers down."))
+		return
+
+	else if (!istype(get_turf(src), /turf/floor/dirt))
+		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+		active = FALSE
+		update_icon()
+		visible_message(SPAN_WARNING("\The [src] cannot drill here, find some softer ground."))
+		return
+	for (var/obj/covers/C in get_turf(src))
+		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+		active = FALSE
+		update_icon()
+		visible_message(SPAN_WARNING("\The [src] cannot drill here, the drill cannot reach the soil."))
+		return
+	if (!(src.z == 1))
+		playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
+		active = FALSE
+		update_icon()
+		visible_message(SPAN_WARNING("\The [src] needs to be underground to drill."))
+		return
+
+	else
+		playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
+		if (next_spawn == 0)
+			var/picked = pick(ore_types)
+			
+			var/obj/item/stack/tospawn = new picked(null)
+			tospawn.amount = rand(10,30)
+			for (var/obj/item/stack/S in get_turf(src))
+				if (S.type == tospawn.type)
+					S.amount += tospawn.amount
+					S.update_icon()
+					qdel(tospawn)
+					break
+			if (tospawn)
+				tospawn.loc = get_turf(src)
+			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
+			next_spawn = 30
+		
+		update_icon()
+		spawn (2 SECONDS)
+			next_spawn--
+			process_machine()

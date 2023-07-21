@@ -405,6 +405,8 @@ RECIPE: /material/leather/,double hip holster,/obj/item/clothing/accessory/holst
 RECIPE: /material/electronics/,pill maker,/obj/structure/chem_master,20,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,geiger counter,/obj/item/weapon/geiger_counter,5,120,0,1,none,110,0,0,8,null
 RECIPE: /material/electronics/,component analyser,/obj/item/weapon/analyser,18,100,0,1,none,218,0,0,8,null
+RECIPE: /material/electronics/,laboratory centrifuge,/obj/structure/centrifuge,24,100,0,1,none,100,0,0,8,null
+RECIPE: /material/electronics/,industrial drill,/obj/structure/drill,20,300,1,1,none,125,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
@@ -771,7 +773,6 @@ RECIPE: /material/cloth/,sterile mask,/obj/item/clothing/mask/sterile,2,130,0,1,
 
 RECIPE: /material/cloth/,cotton loincloth,/obj/item/clothing/under/loincotton,2,45,0,1,clothing,0,0,0,0,null
 RECIPE: /material/cloth/,mayan loincloth,/obj/item/clothing/under/mayan_loincloth,2,55,0,1,clothing,0,0,6,3,null
-RECIPE: /material/cloth/,towl,/obj/item/clothing/under/towl,1,25,0,1,clothing,0,0,12,8,null
 RECIPE: /material/cloth/,huipil,/obj/item/clothing/under/huipil,3,55,0,1,clothing,0,0,18,4,null
 RECIPE: /material/cloth/,half huipil,/obj/item/clothing/under/halfhuipil,2,45,0,1,clothing,0,0,18,4,null
 RECIPE: /material/cloth/,white kimono,/obj/item/clothing/under/kimono,4,85,0,1,clothing,0,0,18,8,null
@@ -1811,6 +1812,7 @@ RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,con
 
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 
+RECIPE: /material/steel/,tank trap,/obj/structure/barricade/antitank,25,400,1,1,construction,140,132,0,8,null
 //*********************| STEEL VEHICLE PARTS |**************************
 
 RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,weapons,115,125,0,8,null
@@ -1829,6 +1831,8 @@ RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
+
+RECIPE: /material/wood/,ridgid hull inflatable boat frame,/obj/item/vehicleparts/frame/boat/rhib,22,200,0,1,vehicle parts,175,0,0,8,null
 
 RECIPE: /material/steel/,fuel pump (star),/obj/structure/fuelpump/star,15,120,1,1,none,120,0,0,8,null
 RECIPE: /material/steel/,fuel pump (small),/obj/structure/fuelpump/small,15,120,1,1,none,120,0,0,8,null
@@ -2352,6 +2356,7 @@ RECIPE: /material/iron/,planting trowel,/obj/item/weapon/material/trowel,3,35,0,
 RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,tools,30,0,0,8,null
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,14,200,0,1,tools,33,0,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
+RECIPE: /material/iron/,compass,/obj/item/weapon/compass,8,140,0,1,tools,46,0,0,8,null
 RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null
 RECIPE: /material/iron/,fishing rod,/obj/item/weapon/fishing/modern,5,60,0,1,tools,120,0,0,8,null

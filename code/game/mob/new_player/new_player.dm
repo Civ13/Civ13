@@ -138,7 +138,7 @@ var/global/redirect_all_players = null
 				output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -191,7 +191,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if (map.ID == MAP_CAMPAIGN && !client.holder)
+		if (map.ID == MAP_CAMPAIGN && map.ID == MAP_NOMADS_PERSISTENCE_BETA && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -437,7 +437,7 @@ var/global/redirect_all_players = null
 					factjob = "BAF"
 
 		if (factjob)
-			if (map.ID == MAP_CAMPAIGN)
+			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				LateChoicesCampaign(factjob)
 		else
 			if (config.discordurl)

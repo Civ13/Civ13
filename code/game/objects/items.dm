@@ -271,7 +271,7 @@
 	spawn (1)
 		if (dropsound)
 			if (!istype(src, /obj/item/clothing/mask/smokable) && !istype(src, /obj/item/weapon/paper) && !istype(src, /obj/item/weapon/pen))
-				if (istype(loc, /turf) && (w_class > 1 || dropsound != 'sound/effects/drop_default.ogg'))
+				if (istype(loc, /turf) && (w_class > ITEM_SIZE_TINY || dropsound != 'sound/effects/drop_default.ogg'))
 					playsound(loc, dropsound, 100, TRUE)
 		if (istype(src, /obj/item/weapon/leech))
 			new/mob/living/simple_animal/leech(src.loc)
@@ -374,9 +374,9 @@ var/list/global/slot_flags_enumeration = list(
 	switch(slot)
 		if (slot_l_ear, slot_r_ear)
 			var/slot_other_ear = (slot == slot_l_ear)? slot_r_ear : slot_l_ear
-			if ( (w_class > 1) && !(slot_flags & SLOT_EARS) )
+			if ((w_class > ITEM_SIZE_TINY) && !(slot_flags & SLOT_EARS))
 				return FALSE
-			if ( (slot_flags & SLOT_TWOEARS) && H.get_equipped_item(slot_other_ear) )
+			if ((slot_flags & SLOT_TWOEARS) && H.get_equipped_item(slot_other_ear))
 				return FALSE
 		if (slot_wear_id)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
@@ -388,7 +388,7 @@ var/list/global/slot_flags_enumeration = list(
 				if (!disable_warning)
 					H << "<span class='warning'>You need clothes to put things in your pockets.</span>"
 				return FALSE
-			if ( w_class > 2 && (!(slot_flags & SLOT_POCKET) || istype(src,/obj/item/weapon/shield)))
+			if (w_class > ITEM_SIZE_SMALL && (!(slot_flags & SLOT_POCKET)))
 				return FALSE
 			if (istype(src, /obj/item/weapon/gun))
 				var/obj/item/weapon/gun/G = src

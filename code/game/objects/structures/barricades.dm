@@ -152,7 +152,7 @@
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
-		return prob(100-protection_chance-(P.penetrating*4))
+		return prob(100 - protection_chance + (P.penetrating*4))
 	else
 		if (density)
 			return FALSE
@@ -434,6 +434,16 @@
 	maxhealth = 2709
 	material_name = "steel"
 	protection_chance = 50
+
+/obj/structure/barricade/antitank/attackby(obj/item/W, mob/user)
+	..()
+	if (istype(W, /obj/item/weapon/weldingtool))
+		visible_message(SPAN_NOTICE("[user] begins to remove \the [src]."))
+		if (do_after(user,40 SECONDS,src))
+			visible_message(SPAN_NOTICE("[user] removes \the [src]."))
+			qdel(src)
+			return
+		return
 
 /obj/structure/barricade/debris
 	name = "debris"

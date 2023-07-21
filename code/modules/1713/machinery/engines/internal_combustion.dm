@@ -85,7 +85,7 @@
 				update_icon()
 				return
 			else
-				usr << "<span class='warning'>You do not know how to do this.</span>"
+				usr << SPAN_WARNING("You do not know how to do this.")
 				return
 
 		on = FALSE

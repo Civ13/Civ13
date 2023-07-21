@@ -22,7 +22,7 @@
 		if (status[1] == HUMAN_EATING_NO_MOUTH)
 			src << "Where do you intend to put \the [food]? You don't have a mouth!"
 		else if (status[1] == HUMAN_EATING_BLOCKED_MOUTH)
-			src << "<span class='warning'>\The [status[2]] is in the way!</span>"
+			src << SPAN_WARNING("\The [status[2]] is in the way!")
 	return FALSE
 
 /mob/living/human/can_force_feed(var/feeder, var/food, var/feedback = TRUE)
@@ -33,7 +33,7 @@
 		if (status[1] == HUMAN_EATING_NO_MOUTH)
 			feeder << "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!"
 		else if (status[1] == HUMAN_EATING_BLOCKED_MOUTH)
-			feeder << "<span class='warning'>\The [status[2]] is in the way!</span>"
+			feeder << SPAN_WARNING("\The [status[2]] is in the way!")
 	return FALSE
 
 /mob/living/human/proc/can_eat_status()
@@ -86,33 +86,31 @@
 		return
 
 	if (disease)
-		usr << "<span class = 'red'>You toss and turn but you are too unwell to sleep.</span>"
+		usr << SPAN_RED("You toss and turn but you are too unwell to sleep.")
 		return
 
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C.fleas == TRUE)
-			usr << "<span class = 'red'>You toss and turn but your skin is crawling and you can not sleep.</span>"
+			usr << SPAN_RED("You toss and turn but your skin is crawling and you can not sleep.")
 			return
 
 	if (hygiene <= 80)
-		usr << "<span class = 'red'>You toss and turn but you are too filthy to sleep.</span>"
+		usr << SPAN_RED("You toss and turn but you are too filthy to sleep.")
 		return
 
-
-
 	if (usr.sleeping)
-		usr << "<span class = 'red'>You are already sleeping.</span>"
+		usr << SPAN_RED("You are already sleeping.")
 		return
 	var/found = FALSE
 	for (var/obj/structure/bed/B in get_turf(src))
 		if (B)
 			found = TRUE
 	if (!found)
-		usr << "<span class = 'red'>You need to be over a bed.</span>"
+		usr << SPAN_RED("You need to be over a bed.")
 		return
 	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
-		usr << "You will start sleeping in two minutes."
-		spawn(1200)
+		usr << SPAN_NOTICE("You will start sleeping in two minutes.")
+		if (do_after(src, 2 MINUTES, src, FALSE))
 			if (usr.sleeping)
 				return
 			else
@@ -121,7 +119,7 @@
 					if (B)
 						found = TRUE
 				if (!found)
-					usr << "<span class = 'red'>You need to be over a bed.</span>"
+					usr << SPAN_RED("You need to be over a bed.")
 					return
 				else
 					lastx = usr.x
@@ -133,15 +131,18 @@
 					sleep_update()
 					usr.forceMove(locate(1,1,1))
 					return
+		else
+			usr << SPAN_NOTICE("You stop trying to sleep")
+
 /mob/living/human/verb/mob_wakeup()
 	set name = "Wake Up"
 	set category = "IC"
 
 	if (!usr.sleeping && !inducedSSD)
-		usr << "<span class = 'red'>You are already awake.</span>"
+		usr << SPAN_RED("You are already awake.")
 		return
 	if (!inducedSSD)
-		usr << "<span class = 'red'>You aren't asleep that deeply, just wait.</span>"
+		usr << SPAN_RED("You aren't asleep that deeply, just wait.")
 		return
 	if (inducedSSD && WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will wake up in 30 seconds."
@@ -193,7 +194,7 @@
 					if (prob(0.5))
 						emote("twitch")
 					if (prob(0.5))
-						src << "<span class='warning'>You suddently pass out!</span>"
+						src << SPAN_WARNING("You suddently pass out!")
 						paralysis = 6
 						sleeping  = 6
 				if(RAD_LEVEL_HIGH to RAD_LEVEL_VERY_HIGH) //Gives mild radiation poisoning symptoms (vomiting, erytrema)
@@ -202,7 +203,7 @@
 					if (prob(1.5))
 						emote("twitch")
 					if (prob(0.5))
-						src << "<span class='warning'>You suddently pass out!</span>"
+						src << SPAN_WARNING("You suddently pass out!")
 						paralysis = 6
 						sleeping  = 6
 					if (prob(1.5))
@@ -210,7 +211,7 @@
 				if(RAD_LEVEL_VERY_HIGH to RAD_LEVEL_CRITICAL) //Severe radiation poisoning, sometimes fatal
 					adjustBrainLoss(0.05)
 					if (prob(2.5))
-						src << "<span class='warning'>You suddently pass out!</span>"
+						src << SPAN_WARNING("You suddently pass out!")
 						paralysis = 8
 						sleeping  = 8
 					if (prob(2))
@@ -220,7 +221,7 @@
 					if (prob(3))
 						death()
 					if (prob(4))
-						src << "<span class='warning'>You suddently pass out!</span>"
+						src << SPAN_WARNING("You suddently pass out!")
 						paralysis = 8
 						sleeping  = 8
 					if (prob(2))
@@ -330,17 +331,20 @@
 		var/turf/floor/beach/water/deep/D = T
 		if (D.iscovered())
 			drowning = FALSE
+			water_overlay = FALSE
 			return
 		else if (buckled && istype(buckled, /obj/structure/vehicle/boat))
 			drowning = FALSE
+			water_overlay = FALSE
 			return
 		else
 			for(var/obj/structure/vehicle/boat/BT in range(1,src))
 				if(src in BT.ontop)
 					drowning = FALSE
+					water_overlay = FALSE
 					return
 			drowning = TRUE
-			src << "<font size='2'><span class='warning'>You are drowning!</span></font>"
+			src << SPAN_WARNING("<font size='2'>You are drowning!</font>")
 			update_fire(1)
 			adjustOxyLoss(10)
 			return

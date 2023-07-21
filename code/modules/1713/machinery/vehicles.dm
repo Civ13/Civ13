@@ -71,6 +71,15 @@
 	reg_number = ""
 	vehicle_type = "boat"
 
+/obj/structure/vehicleparts/axis/boat/fast
+	name = "boat rudder control"
+	currentspeed = 0
+	speeds = 4
+	maxpower = 40
+	speedlist = list(1=6,2=5,3=3,4=2)
+	reg_number = ""
+	vehicle_type = "boat"
+
 /obj/structure/vehicleparts/axis/heavy
 	name = "heavy vehicle axis"
 	desc = "A heavy and slow vehicle axis."
@@ -327,7 +336,7 @@
 	name = "Panzer VI Tiger"
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
-	turret_type = "tiger_tank"
+	turret_type = "tiger_turret"
 	reg_number = ""
 	color = "#3B3F41"
 	New()
@@ -680,6 +689,7 @@
 	var/customcolor = "#FFFFFF"
 	var/maxengine = 500
 	var/maxfueltank = 100
+	var/base_icon = "motorcycle_frame"
 	density = TRUE
 	weight = 100
 	w_class = 10
@@ -697,7 +707,7 @@
 	name = "motorcycle frame"
 	desc = "a motorcycle frame. Will fit engines up to 125cc and fueltanks up to 75u."
 	icon_state = "motorcycle_frame1"
-	var/base_icon = "motorcycle_frame"
+	base_icon = "motorcycle_frame"
 	customcolor = "#FFFFFF"
 	maxengine = 125
 	maxfueltank = 75
@@ -712,14 +722,27 @@
 	desc = "a simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
 	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame1"
-	var/base_icon = "outrigger_frame"
+	base_icon = "outrigger_frame"
 	maxengine = 400
 	maxfueltank = 150
 	weight = 60
-	w_class = 7
+	w_class = ITEM_SIZE_GARGANTUAN
 	step = 1
 	maxstep = 3
 	targettype = /obj/structure/vehicle/boat
+
+/obj/item/vehicleparts/frame/boat/rhib
+	name = "rhib boat frame"
+	desc = "a rhib boat frame, with no engine or propulsion mode. Supports engines up to 600cc and fueltanks up to 200u"
+	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
+	icon_state = "rib_frame1"
+	base_icon = "rib_frame"
+	maxengine = 600
+	maxfueltank = 200
+	weight = 60
+	step = 1
+	maxstep = 3
+	targettype = /obj/structure/vehicle/boat/rhib
 
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
@@ -727,18 +750,14 @@
 	overlays += colorv
 	update_icon()
 
-/obj/item/vehicleparts/frame/bike/update_icon()
-	..()
-	icon_state = "[base_icon][step]"
-
-/obj/item/vehicleparts/frame/boat/update_icon()
+/obj/item/vehicleparts/frame/update_icon()
 	..()
 	icon_state = "[base_icon][step]"
 
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/sail) && step == 1)
+	if (istype(W, /obj/item/sail) && istype(src, /obj/item/vehicleparts/frame/boat) && step == 1)
 		if (do_after(user,130,src) && src && W)
-			user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
+			user << SPAN_NOTICE("You attach \the [W] to \the [src].")
 			user.drop_from_inventory(W)
 			qdel(W)
 			var/obj/structure/vehicle/boat/sailboat/N = new/obj/structure/vehicle/boat/sailboat(get_turf(user))
@@ -751,7 +770,7 @@
 		if (NF.reagents.maximum_volume <= maxfueltank)
 			if (do_after(user,100,src))
 				if (fueltank == null)
-					user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
+					user << SPAN_NOTICE("You attach \the [W] to \the [src].")
 					user.drop_from_inventory(W)
 					fueltank = W
 					W.forceMove(src)
@@ -759,7 +778,7 @@
 					check_step()
 					return
 		else
-			user << "<span class = 'notice'>This fuel tank is too big for the [src]!</span>"
+			user << SPAN_NOTICE("This fuel tank is too big for \the [src]!")
 			return
 	else
 		..()
@@ -768,10 +787,10 @@
 	if (istype(O, /obj/structure/engine/internal) && step == 1)
 		var/obj/structure/engine/internal/NE = O
 		if (NE.enginesize <= maxengine && NE.enginesize >= maxengine/4)
-			user << "<span class = 'notice'>You start placing the [O].</span>"
+			user << SPAN_NOTICE("You start placing \the [O].")
 			if (do_after(user,130,src))
 				if (engine == null)
-					user << "<span class = 'notice'>You attach the [O] to the [src].</span>"
+					user << SPAN_NOTICE("You attach \the [O] to \the [src].")
 					engine = O
 					O.forceMove(src)
 					step = 2
@@ -779,29 +798,29 @@
 					update_icon()
 					return
 		else if (NE.enginesize > maxengine)
-			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
+			user << SPAN_NOTICE("This engine is too big for \the [src]!")
 			return
 		else if (NE.enginesize <= maxengine && NE.enginesize < maxengine/4)
-			user << "<span class = 'notice'>This engine is too small for the [src]!</span>"
+			user << SPAN_NOTICE("This engine is too small for \the [src]!")
 			return
 
 /obj/item/vehicleparts/frame/proc/check_step()
 	if (step >= maxstep)
-		var/obj/structure/vehicle/NEWBIKE = new/obj/structure/vehicle/motorcycle(get_turf(src))
-		NEWBIKE.dir = dir
-		NEWBIKE.customcolor = customcolor
-		NEWBIKE.do_color()
-		NEWBIKE.engine = engine
-		NEWBIKE.fueltank = fueltank
-		NEWBIKE.name = name
+		var/obj/structure/vehicle/NEWVEHICLE = new targettype(get_turf(src))
+		NEWVEHICLE.dir = dir
+		NEWVEHICLE.customcolor = customcolor
+		NEWVEHICLE.do_color()
+		NEWVEHICLE.engine = engine
+		NEWVEHICLE.fueltank = fueltank
+		NEWVEHICLE.name = name
 		spawn(1)
-			NEWBIKE.engine.fueltank = NEWBIKE.fueltank
-			NEWBIKE.engine.connections += NEWBIKE.axis
-			NEWBIKE.dwheel.forceMove(NEWBIKE)
+			NEWVEHICLE.engine.fueltank = NEWVEHICLE.fueltank
+			NEWVEHICLE.engine.connections += NEWVEHICLE.axis
+			NEWVEHICLE.dwheel.forceMove(NEWVEHICLE)
 			spawn(1)
-				engine.forceMove(NEWBIKE)
-				fueltank.forceMove(NEWBIKE)
-				NEWBIKE.axis.check_enginepower(NEWBIKE.engine.enginesize)
+				engine.forceMove(NEWVEHICLE)
+				fueltank.forceMove(NEWVEHICLE)
+				NEWVEHICLE.axis.check_enginepower(NEWVEHICLE.engine.enginesize)
 				qdel(src)
 				return
 	else
@@ -817,19 +836,19 @@
 
 /obj/item/vehicleparts/frame/boat/check_step()
 	if (step >= maxstep)
-		var/obj/structure/vehicle/NEWBOAT = new/obj/structure/vehicle/boat(get_turf(src))
-		NEWBOAT.dir = dir
-		NEWBOAT.engine = engine
-		NEWBOAT.fueltank = fueltank
-		NEWBOAT.name = name
+		var/obj/structure/vehicle/NEWVEHICLE = new targettype(get_turf(src))
+		NEWVEHICLE.dir = dir
+		NEWVEHICLE.engine = engine
+		NEWVEHICLE.fueltank = fueltank
+		NEWVEHICLE.name = name
 		spawn(1)
-			NEWBOAT.engine.fueltank = NEWBOAT.fueltank
-			NEWBOAT.engine.connections += NEWBOAT.axis
-			NEWBOAT.dwheel.forceMove(NEWBOAT)
+			NEWVEHICLE.engine.fueltank = NEWVEHICLE.fueltank
+			NEWVEHICLE.engine.connections += NEWVEHICLE.axis
+			NEWVEHICLE.dwheel.forceMove(NEWVEHICLE)
 			spawn(1)
-				engine.forceMove(NEWBOAT)
-				fueltank.forceMove(NEWBOAT)
-				NEWBOAT.axis.check_enginepower(NEWBOAT.engine.enginesize)
+				engine.forceMove(NEWVEHICLE)
+				fueltank.forceMove(NEWVEHICLE)
+				NEWVEHICLE.axis.check_enginepower(NEWVEHICLE.engine.enginesize)
 				qdel(src)
 				return
 		return

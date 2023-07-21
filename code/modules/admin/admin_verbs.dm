@@ -127,6 +127,7 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/radiation_emission,
 	/client/proc/nuke,
 	/client/proc/create_crate,
+	/client/proc/rearm_jets,
 	)
 
 var/list/admin_verbs_server = list(
@@ -170,11 +171,13 @@ var/list/admin_verbs_debug = list(
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
+	/client/proc/toggle_time_of_day,
 	/client/proc/change_wind_dir,
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
 	/client/proc/change_season,
+	/client/proc/toggle_season,
 	/client/proc/change_colour_filter,
 	/datum/admins/proc/print_chemical_reactions,
 	/datum/admins/proc/print_crafting_recipes,
@@ -954,7 +957,7 @@ var/global/list/global_colour_matrix = null
 			M.client << warning_sound
 		warningtimer = 330
 	spawn(warningtimer)
-		world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
+		world << "<font size=4 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
 		nuke_map(epicenter, 200, 180, 0)
 		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].", key)
 		log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
