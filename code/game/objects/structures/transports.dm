@@ -402,6 +402,16 @@
 		if (driver)
 			driver.pixel_x = 0
 			driver.pixel_y = 0
+			if (wheeled)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
+				driver.update_icons()
 			driver.buckled = null
 			driver.driver = FALSE
 			driver.driver_vehicle = null
