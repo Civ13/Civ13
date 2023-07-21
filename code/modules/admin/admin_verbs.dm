@@ -127,6 +127,7 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/radiation_emission,
 	/client/proc/nuke,
 	/client/proc/create_crate,
+	/client/proc/rearm_jets,
 	)
 
 var/list/admin_verbs_server = list(
@@ -170,6 +171,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
+	/client/proc/toggle_time_of_day,
 	/client/proc/change_wind_dir,
 	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
