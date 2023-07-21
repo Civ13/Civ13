@@ -623,7 +623,6 @@
 				O.anchored = TRUE
 				O.density = FALSE
 				O.dir = dir
-				O.safe_from_water
 				if (istype(O, /obj/structure/cannon))
 					O.x = x
 					O.y = y
