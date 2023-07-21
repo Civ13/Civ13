@@ -1079,7 +1079,7 @@ var/list/atom_types = null
 		admin_notice("<span class='danger'>Failed to load factionlist TDM!</span>", R_DEBUG)
 	
 	var/F5 = file("SQL/nomads_factionlist.txt")
-	if (fexists(F8))
+	if (fexists(F5))
 		faction_list_blue = list()
 		faction_list_red = list()
 		var/list/flist_temp = file2list(F5,"\n")
