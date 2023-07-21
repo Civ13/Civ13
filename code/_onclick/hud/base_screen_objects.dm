@@ -515,9 +515,9 @@
 			if(icon_num)
 				add_overlay(image(icon, "[BP.limb_name][icon_num]"))
 			if(BP.status & ORGAN_BLEEDING)
-            	is_bleeding = TRUE
-        if(is_bleeding)
-            add_overlay(image(icon, "bleeding"))	
+            			is_bleeding = TRUE
+        	if(is_bleeding)
+            		add_overlay(image(icon, "bleeding"))	
 		var/list/missinglimbs = H.get_missing_limbs()
 		for(var/t in missinglimbs) //Missing limbs
 			add_overlay(image(icon, "[t]6"))
