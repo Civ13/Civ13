@@ -28,7 +28,7 @@
 	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return TRUE
 
-	var/chance = 50 - (P.penetrating * 3)
+	var/chance = 50 + (P.penetrating * 3)
 	if (prob(chance))
 		visible_message("<span class='warning'>[P] hits \the [src]!</span>")
 		return FALSE

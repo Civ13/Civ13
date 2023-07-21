@@ -33,6 +33,16 @@
 	wall = TRUE
 	flammable = FALSE
 
+/obj/covers/dirt_wall/blocks/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		var/obj/item/projectile/P = mover
+		return prob(30 + (P.penetrating*2))
+	else
+		if (density)
+			return FALSE
+		else
+			return TRUE
+
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/barrier))
 		if (stage == 3)
@@ -104,6 +114,16 @@
 	wall = TRUE
 	flammable = FALSE
 	material = "Stone"
+
+/obj/covers/clay_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		var/obj/item/projectile/P = mover
+		return prob(20 + (P.penetrating*2))
+	else
+		if (density)
+			return FALSE
+		else
+			return TRUE
 
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
@@ -181,6 +201,16 @@
 	wall = TRUE
 	flammable = FALSE
 	material = "Stone"
+
+/obj/covers/clay_wall/sumerian/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		var/obj/item/projectile/P = mover
+		return prob(20 + (P.penetrating*2))
+	else
+		if (density)
+			return FALSE
+		else
+			return TRUE
 
 /obj/covers/clay_wall/sumerian/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
@@ -365,6 +395,16 @@
 	material = "Stone"
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
+/obj/covers/cement_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		var/obj/item/projectile/P = mover
+		return prob(20 + (P.penetrating*2))
+	else
+		if (density)
+			return FALSE
+		else
+			return TRUE
+
 /obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
 		user << "You start adding cement to the wall..."
@@ -396,6 +436,16 @@
 	wall = TRUE
 	flammable = FALSE
 	material = "Stone"
+
+/obj/covers/brick_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		var/obj/item/projectile/P = mover
+		return prob(20 + (P.penetrating*2))
+	else
+		if (density)
+			return FALSE
+		else
+			return TRUE
 
 /obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
