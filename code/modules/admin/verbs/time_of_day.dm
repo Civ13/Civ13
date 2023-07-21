@@ -10,6 +10,18 @@
 	src << "<span class = 'warning'>Updating lights, please wait...</span>"
 	progress_time_of_day(caller = src, force = TRUE)
 
+/client/proc/toggle_time_of_day()
+	set category = "Debug"
+	set name = "Toggle Time of Day"
+	if (config.daynight_on)
+		config.daynight_on = FALSE
+		src << "<span class = 'good'>Time of Day is now <b>disabled.</span>"
+		message_admins("[key_name(src)] disabled time of day change.", key_name(src))
+	else
+		config.daynight_on = TRUE
+		src << "<span class = 'good'>Time of Day is now <b>enabled.</span>"
+		message_admins("[key_name(src)] enabled time of day change.", key_name(src))
+		
 /client/proc/change_wind_dir()
 	set category = "Debug"
 	set name = "Change Wind Direction (USE VAR EDIT!)"

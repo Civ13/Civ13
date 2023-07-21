@@ -373,7 +373,7 @@ var/civmax_research = list(230,230,230)
 	if (global_pollution < 0)
 		set_global_pollution(0)
 	else
-		change_global_pollution(-50)
+		change_global_pollution(-80)
 	spawn(9000) //every 15 mins
 		pollution()
 

@@ -22,7 +22,7 @@
 	faction1 = PIRATES
 	faction2 = CIVILIAN
 	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
-	mission_start_message = "<big>Two modern countries govern this land. The grace wall will end in <b>2 DAYS</b>. This is an event round, both factions will go into TOTAL WAR and must capture and hold the most petrolium spring as possible.</b>"
+	mission_start_message = "<big>Two modern countries govern this land. The grace wall will end in <b>2 DAYS</b>. This is an event round, both factions will go into TOTAL WAR and must capture and hold the most petrolium spring as possible.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	nomads = FALSE
 	availablefactions_run = FALSE

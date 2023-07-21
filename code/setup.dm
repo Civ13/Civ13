@@ -62,6 +62,37 @@
 					faction_list_blue += current[1]
 	else
 		admin_notice("<span class='danger'>Failed to load factionlist!</span>", R_DEBUG)
+	
+	admin_notice("<span class='danger'>Initializing factionlist TDM...</span>", R_DEBUG)
+	sleep(-1)
+	var/F7 = file("SQL/tdm_factionlist.txt")
+	if (fexists(F7))
+		var/list/flist_temp = file2list(F7,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
+	else
+		admin_notice("<span class='danger'>Failed to load factionlist TDM!</span>", R_DEBUG)
+	
+	admin_notice("<span class='danger'>Initializing factionlist Nomads...</span>", R_DEBUG)
+	sleep(-1)
+	var/F8 = file("SQL/nomads_factionlist.txt")
+	if (fexists(F8))
+		var/list/flist_temp = file2list(F8,"\n")
+		for (var/i in flist_temp)
+			if (findtext(i, ";"))
+				var/list/current = splittext(i, ";")
+				if (current[2] == "red")
+					faction_list_red += current[1]
+				else if (current[2] == "blue")
+					faction_list_blue += current[1]
+	else
+		admin_notice("<span class='danger'>Failed to load factionlist Nomads!</span>", R_DEBUG)
+
 	admin_notice("<span class='danger'>Initializing ban list...</span>", R_DEBUG)
 	sleep(-1)
 	if (load_bans())

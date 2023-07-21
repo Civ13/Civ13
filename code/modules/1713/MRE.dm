@@ -51,7 +51,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british
 	name = "British MRE: Meat"
 	desc = "A meat MRE."
-	nutriment_desc = list("meat" = 1)
+	nutriment_desc = list("protein" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french
 	name = "French MRE: Cheese"
@@ -71,12 +71,12 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american
 	name = "American MRE: Meat"
 	desc = "A package of meat and vegetables."
-	nutriment_desc = list("meat" = 1, "carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
+	nutriment_desc = list("protein" = 1, "carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian
 	name = "Blugoslavian MRE: General Combat Rations"
 	desc = "A sealed package of everything you need to keep up the fight!."
-	nutriment_desc = list("meat" = 2, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "tea", 2)
+	nutriment_desc = list("protein" = 3, "tomato" = 1, "potato" = 1, "tea" = 2, "horrible food" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian/officer
 	name = "Blugoslavian Officer MRE: Pizza with Coffee"
@@ -86,7 +86,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian
 	name = "Redmenian MRE: General Combat Rations"
 	desc = "A sealed package of everything you need to keep up the fight!."
-	nutriment_desc = list("meat" = 2, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "tea", 2)
+	nutriment_desc = list("protein" = 3, "tomato" = 1, "potato" = 1, "tea" = 2, "horrible food" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian/officer
 	name = "Redmenian Officer MRE: Sweetroll with Coffee"
@@ -111,7 +111,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern
 	name = "Russian MRE: Combat rations"
 	desc = "A package of potatoes, meat, canned veggies and some tea."
-	nutriment_desc = list("potato" = 1, "meat" = 2, "canned vegetables" = 2,"tea" = 2)
+	nutriment_desc = list("potato" = 1, "protein" = 2, "canned vegetables" = 2,"tea" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/space
 	name = "Ration pack"

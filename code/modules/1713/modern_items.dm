@@ -1107,7 +1107,7 @@
 		H << SPAN_WARNING("\The [src] doesn't have any power!")
 		update_icon()
 		return
-	else if (!active && check_power())
+	else if (!active && powered)
 		next_spawn = 30
 		active = TRUE
 		process_machine()
@@ -1117,7 +1117,6 @@
 	else if (active)
 		next_spawn = -1
 		active = FALSE
-		powered = FALSE
 		update_icon()
 		H << "You power off \the [src]."
 		return
@@ -1156,7 +1155,7 @@
 			var/picked = pick(ore_types)
 			
 			var/obj/item/stack/tospawn = new picked(null)
-			tospawn.amount = rand(1,10)
+			tospawn.amount = rand(10,30)
 			for (var/obj/item/stack/S in get_turf(src))
 				if (S.type == tospawn.type)
 					S.amount += tospawn.amount

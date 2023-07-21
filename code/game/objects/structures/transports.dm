@@ -399,12 +399,17 @@
 
 /obj/structure/vehicle/boat/rhib/premade/arrival/proc/delete_self()
 	spawn (120 SECONDS)
-		unbuckle_mob()
-		driver.pixel_x = 0
-		driver.pixel_y = 0
-		driver.buckled = null
-		driver.driver = FALSE
-		driver.driver_vehicle = null
+		if (driver)
+			driver.pixel_x = 0
+			driver.pixel_y = 0
+			driver.buckled = null
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+		if (currentcap)
+			currentcap.pixel_x = 0
+			currentcap.pixel_y = 0
+			currentcap.buckled = null
+			currentcap = null
 		qdel(src)
 
 /obj/structure/vehicle/boat/sailboat
@@ -504,6 +509,8 @@
 			ontop -= driver
 			driver.anchored = FALSE
 			driver.driver = FALSE
+			driver.pixel_x = 0
+			driver.pixel_y = 0
 			unbuckle_mob()
 			driver.buckled = null
 			driver.driver_vehicle = null
@@ -537,6 +544,8 @@
 		if (!(currentcap in range(1,src)))
 			ontop -= currentcap
 			currentcap.anchored = FALSE
+			currentcap.pixel_x = 0
+			currentcap.pixel_y = 0
 			unbuckle_mob()
 			currentcap.buckled = null
 			currentcap = null
@@ -656,11 +665,12 @@
 						dwheel.forceMove(src)
 						user.r_hand = null
 					user.update_icons()
-			else if (currentcap)
+			if (user == currentcap)
 				unbuckle_mob()
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
+				user.buckled = FALSE
 				updatepassdir()
 			update_overlay()
 			update_icon()
@@ -747,11 +757,6 @@
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
 							user.r_hand = null
-				else if (!currentcap)
-					currentcap = null
-					ontop -= user
-					user.anchored = FALSE
-					updatepassdir()
 				update_overlay()
 				update_icon()
 				return
@@ -1500,7 +1505,10 @@
 			ontop -= driver
 			driver.anchored = FALSE
 			driver.driver = FALSE
+			driver.pixel_x = 0
+			driver.pixel_y = 0
 			unbuckle_mob()
+			driver.buckled = null
 			driver.driver_vehicle = null
 			if (wheeled)
 				if (driver.l_hand == dwheel)
