@@ -393,13 +393,18 @@
 	name = "SINKING rigid hull inflatable boat"
 	desc = "Uh oh."
 
-/obj/structure/vehicle/boat/rhib/premade/arrival/proc/delete_self(var/mob/living/human/H)
+/obj/structure/vehicle/boat/rhib/premade/arrival/New()
+	..()
+	delete_self()
+
+/obj/structure/vehicle/boat/rhib/premade/arrival/proc/delete_self()
 	spawn (120 SECONDS)
 		unbuckle_mob()
-		H.driver = FALSE
-		H.driver_vehicle = null
-		H.pixel_x = 0
-		H.pixel_y = 0
+		driver.pixel_x = 0
+		driver.pixel_y = 0
+		driver.buckled = null
+		driver.driver = FALSE
+		driver.driver_vehicle = null
 		qdel(src)
 
 /obj/structure/vehicle/boat/sailboat
@@ -500,6 +505,7 @@
 			driver.anchored = FALSE
 			driver.driver = FALSE
 			unbuckle_mob()
+			driver.buckled = null
 			driver.driver_vehicle = null
 			if (wheeled)
 				if (driver.l_hand == dwheel)
@@ -531,6 +537,8 @@
 		if (!(currentcap in range(1,src)))
 			ontop -= currentcap
 			currentcap.anchored = FALSE
+			unbuckle_mob()
+			currentcap.buckled = null
 			currentcap = null
 	if (ontop_o.len > 0)
 		for (var/obj/OB in ontop_o)
@@ -611,9 +619,11 @@
 				O.pixel_x = pixel_x + 16
 				O.pixel_y = pixel_y + 16
 				ontop_o += O
+				O.sinkable = FALSE
 				O.anchored = TRUE
 				O.density = FALSE
 				O.dir = dir
+				O.safe_from_water
 				if (istype(O, /obj/structure/cannon))
 					O.x = x
 					O.y = y
@@ -663,6 +673,7 @@
 				if (initial(O.density))
 					O.density = TRUE
 				ontop_o -= O
+				O.sinkable = TRUE
 				O.pixel_x = 0
 				O.pixel_y = 0
 				O.dir = dir

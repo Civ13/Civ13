@@ -269,7 +269,6 @@
 		next_activation = world.time + cooldown
 		var/obj/structure/vehicle/boat/rhib/premade/arrival/arrival = new /obj/structure/vehicle/boat/rhib/premade/arrival(locate(src.x,src.y-2,src.z))
 		arrival.dir = facing_dir
-		arrival.delete_self()
 		icon_state = pushed_state
 		user << SPAN_DANGER("<font size = 3><big>You have <b>2 minutes</b> to get to shore before this boat sinks.</font>")
 		spawn (5)
