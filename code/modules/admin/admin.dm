@@ -1049,6 +1049,7 @@ var/list/atom_types = null
 				whitelist_list += current[1]
 	else
 		message_admins("<span class='danger'>Failed to load whitelist!</span>", key_name(usr))
+
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))
 		faction_list_blue = list()
@@ -1063,6 +1064,7 @@ var/list/atom_types = null
 					faction_list_blue += current[1]
 	else
 		message_admins("<span class='danger'>Failed to load factionlist!</span>", key_name(usr))
+
 	var/F4 = file("SQL/tdm_factionlist.txt")
 	if (fexists(F4))
 		faction_list_blue = list()
@@ -1076,8 +1078,8 @@ var/list/atom_types = null
 				else if (current[2] == "blue")
 					faction_list_blue += current[1]
 	else
-		admin_notice("<span class='danger'>Failed to load factionlist TDM!</span>", R_DEBUG)
-	
+		message_admins("<span class='danger'>Failed to load factionlist TDM!</span>", key_name(usr))
+		
 	var/F5 = file("SQL/nomads_factionlist.txt")
 	if (fexists(F5))
 		faction_list_blue = list()
@@ -1091,7 +1093,7 @@ var/list/atom_types = null
 				else if (current[2] == "blue")
 					faction_list_blue += current[1]
 	else
-		admin_notice("<span class='danger'>Failed to load factionlist Nomads!</span>", R_DEBUG)
+		message_admins("<span class='danger'>Failed to load factionlist Nomads!</span>", key_name(usr))
 
 /client/proc/reload_bans()
 	set name = "Update Bans"
