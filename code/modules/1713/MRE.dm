@@ -49,9 +49,9 @@
 	nutriment_desc = list("pickled cabbage" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british
-	name = "British MRE: Canned Meat"
-	desc = "A canned meat MRE."
-	nutriment_desc = list("canned meat" = 1)
+	name = "British MRE: Meat"
+	desc = "A meat MRE."
+	nutriment_desc = list("meat" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french
 	name = "French MRE: Cheese"
@@ -69,14 +69,14 @@
 	nutriment_desc = list("spaghett" = 1, "tomat" = 1, "spicia meatball")
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american
-	name = "American MRE: Canned Meat"
-	desc = "A package of canned meat and vegetables."
-	nutriment_desc = list("canned meat" = 1, "canned vegetables" = 1)
+	name = "American MRE: Meat"
+	desc = "A package of meat and vegetables."
+	nutriment_desc = list("meat" = 1, "carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian
 	name = "Blugoslavian MRE: General Combat Rations"
 	desc = "A sealed package of everything you need to keep up the fight!."
-	nutriment_desc = list("canned meat" = 2, "canned vegetables" = 2, "tea", 2)
+	nutriment_desc = list("meat" = 2, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "tea", 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian/officer
 	name = "Blugoslavian Officer MRE: Pizza with Coffee"
@@ -86,7 +86,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian
 	name = "Redmenian MRE: General Combat Rations"
 	desc = "A sealed package of everything you need to keep up the fight!."
-	nutriment_desc = list("canned meat" = 2, "canned vegetables" = 2, "tea", 2)
+	nutriment_desc = list("meat" = 2, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "tea", 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/redmenian/officer
 	name = "Redmenian Officer MRE: Sweetroll with Coffee"
@@ -96,12 +96,12 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
-	nutriment_desc = list("noodles" = 1, "vegetables" = 1, "dried meat")
+	nutriment_desc = list("noodles" = 1, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "dried meat" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian
 	name = "Russian MRE: Potatoes"
 	desc = "A package of precooked potatoes."
-	nutriment_desc = list("potatoes" = 1,)
+	nutriment_desc = list("potato" = 1,)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf
 	name = "IDF MRE: Whitefish"
@@ -110,8 +110,8 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern
 	name = "Russian MRE: Combat rations"
-	desc = "A package of potatoes, canned meat, canned veggies and some tea."
-	nutriment_desc = list("potatoes" = 1, "canned meat" = 2, "canned vegetables" = 2,"tea" = 2)
+	desc = "A package of potatoes, meat, canned veggies and some tea."
+	nutriment_desc = list("potato" = 1, "meat" = 2, "canned vegetables" = 2,"tea" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/space
 	name = "Ration pack"

@@ -355,7 +355,7 @@
 	if (!findtext(title, "Redmenian Civilian") && !findtext(title, "RPR Fighter") && !findtext(title, "RPR Doctor"))
 		H.make_artillery_scout()
 	if (findtext(title, "Redmenian Civilian"))
-		H.civilization = civname_a
+		//H.civilization = civname_a
 		H.make_nation()
 		H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")
@@ -651,7 +651,7 @@
 	if (!findtext(title, "Blugoslavian Civilian"))
 		H.make_artillery_scout()
 	if (findtext(title, "Blugoslavian Civilian"))
-		H.civilization = civname_b
+		//H.civilization = civname_b
 		H.make_nation()
 		H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
 	if(A.climate == "taiga" || A.climate == "tundra")

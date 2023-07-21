@@ -32,6 +32,7 @@
 	var/buckle_lying = -1 //bed-like behavior, forces mob.lying = buckle_lying if != -1
 	var/buckle_require_restraints = FALSE //require people to be handcuffed before being able to buckle. eg: pipes
 	var/mob/living/buckled_mob = null
+	var/sinkable = TRUE // If the obj can sink in deep water
 
 	var/explosion_resistance
 
