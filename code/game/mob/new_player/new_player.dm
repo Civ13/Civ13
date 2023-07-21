@@ -437,7 +437,7 @@ var/global/redirect_all_players = null
 					factjob = "BAF"
 
 		if (factjob)
-			if (map.ID == MAP_CAMPAIGN)
+			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				LateChoicesCampaign(factjob)
 		else
 			if (config.discordurl)
