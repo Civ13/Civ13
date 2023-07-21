@@ -284,42 +284,15 @@
 
 			if ("Civilization 13 (Nomads)")
 				maps = list(
-//					MAP_CIVILIZATIONS = 0,
-					MAP_NOMADS = 0,
-					MAP_NOMADS_DESERT = 0,
-					MAP_NOMADS_ICE_AGE = 0,
-					MAP_NOMADS_JUNGLE = 0,
-					MAP_NOMADS_DIVIDE = 10,
-					MAP_NOMADS_CONTINENTAL = 10,
-					MAP_NOMADS_PANGEA = 10,
-					MAP_NOMADS_WASTELAND = 0,
-					MAP_NOMADS_WASTELAND_2 = 0,
-					MAP_NOMADS_NEW_WORLD = 5,
-					MAP_NOMADS_MEDITERRANEAN = 0,
-//					MAP_NOMADS_ISLAND = 0,
-					MAP_NOMADS_KARAFUTO = 0,
-					MAP_NOMADS_EUROPE = 10,
+					MAP_NOMADS_PERSISTENCE_BETA = 0,
 				)
 			if ("Civilization 13 (Colony & Pioneers)")
 				maps = list(
-					MAP_COLONY = 0,
-					MAP_JUNGLE_COLONY = 4,
-					MAP_PIONEERS = 5,
-					MAP_PIONEERS_WASTELAND_2 = 0,
-					MAP_BOHEMIA = 10,
-					MAP_FOUR_COLONIES = 20,
+					MAP_NOMADS_PERSISTENCE_BETA = 0,
 				)
 			if ("Civilization 13 (Others)")
 				maps = list(
-					MAP_TRIBES = 12,
-					MAP_HUNT = 0,
-					MAP_LITTLE_CREEK = 10,
-					MAP_THE_ART_OF_THE_DEAL = 10,
-					MAP_FOUR_KINGDOMS = 0,
-					MAP_GULAG13 = 0,
-//					MAP_ABASHIRI = 6,
-//					MAP_RIVER_KWAI = 0,
-					MAP_OCCUPATION = 10,
+					MAP_NOMADS_PERSISTENCE_BETA = 0,
 				)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
