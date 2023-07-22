@@ -56,7 +56,7 @@
 
 	overlays = new_overlays
 
-/obj/item/weapon/defibrillator/ui_action_click()
+/obj/item/weapon/defibrillator/ui_action_click(mob/living/user)
 	toggle_paddles()
 
 /obj/item/weapon/defibrillator/attack_hand(mob/user)
@@ -161,7 +161,7 @@
 	icon_state = "defibcompact"
 	item_state = "defibcompact"
 	w_class = ITEM_SIZE_NORMAL
-	slot_flags = null
+	slot_flags = SLOT_BELT
 
 /obj/item/weapon/defibrillator/compact/loaded
 	bcell = /obj/item/weapon/cell/standard
