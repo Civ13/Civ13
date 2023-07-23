@@ -674,17 +674,18 @@
 						H.adaptStat("strength", 1)
 					return
 				if (4)
-					if (prob(50))
-						var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
-						mineral.amount = 4
-						if (istype(get_area(src), /area/caribbean/void/caves/special))
-							mineral.amount *= 2
-						if (H)
-							H << "<span class='danger'>You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!</span>"
-						change_the_turf()
-						if (H)
-							H.adaptStat("strength", 1)
-						return
+					// if (prob(50))
+					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
+					mineral.amount = 4
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					if (H)
+						H << "<span class='danger'>You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!</span>"
+					change_the_turf()
+					if (H)
+						H.adaptStat("strength", 1)
+					return
+	/*					
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
 						mineral.amount = rand(4,12)
@@ -696,7 +697,7 @@
 						if (H)
 							H.adaptStat("strength", 3)
 						return
-	/*
+	
 					else
 						var/obj/item/stack/ore/mercury/mineral = new/obj/item/stack/ore/mercury(src)
 						mineral.amount = 4

@@ -419,6 +419,8 @@
 
 			if ("Semi-Auto (large)")
 				caliberlist = list("7.92x57mm Mauser", "6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "shotgun")
+				if (map.ordinal_age >= 7)
+					caliberlist += "shotgun"
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 				caliberlist = list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
