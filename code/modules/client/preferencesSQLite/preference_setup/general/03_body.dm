@@ -163,6 +163,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 	else if (href_list["gender"])
 		pref.gender = next_in_list(pref.gender, valid_player_genders)
+		if(pref.gender == FEMALE)
+			pref.f_style = "Shaved"
 		return TOPIC_REFRESH
 
 	else if (href_list["age"])
