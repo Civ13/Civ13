@@ -193,7 +193,7 @@
 					return
 			if (map.age7_done == TRUE && map.age8_done == FALSE)
 				if (world.time < map.age8_timer && ( (map.custom_civs[user.civilization][1] >= map.age7_top) || (map.custom_civs[user.civilization][2] >= map.age7_top) || (map.custom_civs[user.civilization][3] >= map.age7_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age7_timer.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age8_timer-world.time)/600] minutes."
 					return
 		
 		var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
@@ -289,7 +289,7 @@
 					map.civf_research[1] += sum_i
 					map.civf_research[2] += sum_m
 					map.civf_research[3] += sum_h
-					
+
 			user.adaptStat("philosophy", 1*current_research)
 			user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 		sum_i = null
