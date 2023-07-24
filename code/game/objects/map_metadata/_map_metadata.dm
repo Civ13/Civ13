@@ -367,7 +367,7 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/pollution()
 
-	if (global_pollution >= 1000)
+	if (global_pollution >= 2000)
 		change_weather(WEATHER_SMOG)
 		world << SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>")
 	if (global_pollution < 0)
