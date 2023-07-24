@@ -169,31 +169,31 @@
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
 				if (world.time < map.age2_timer && ( (map.custom_civs[user.civilization][1] >= map.age1_top) || (map.custom_civs[user.civilization][2] >= map.age1_top) || (map.custom_civs[user.civilization][3] >= map.age1_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-world.time)/600] minutes."
 					return
 			if (map.age2_done == TRUE && map.age3_done == FALSE)
 				if (world.time < map.age3_timer && ( (map.custom_civs[user.civilization][1] >= map.age2_top) || (map.custom_civs[user.civilization][2] >= map.age2_top) || (map.custom_civs[user.civilization][3] >= map.age2_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-world.time)/600] minutes."
 					return
 			if (map.age3_done == TRUE && map.age4_done == FALSE)
 				if (world.time < map.age4_timer && ( (map.custom_civs[user.civilization][1] >= map.age3_top) || (map.custom_civs[user.civilization][2] >= map.age3_top) || (map.custom_civs[user.civilization][3] >= map.age3_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-world.time)/600] minutes."
 					return
 			if (map.age4_done == TRUE && map.age5_done == FALSE)
 				if (world.time < map.age5_timer && ( (map.custom_civs[user.civilization][1] >= map.age4_top) || (map.custom_civs[user.civilization][2] >= map.age4_top) || (map.custom_civs[user.civilization][3] >= map.age4_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-world.time)/600] minutes."
 					return
 			if (map.age5_done == TRUE && map.age6_done == FALSE)
 				if (world.time < map.age6_timer && ( (map.custom_civs[user.civilization][1] >= map.age5_top) || (map.custom_civs[user.civilization][2] >= map.age5_top) || (map.custom_civs[user.civilization][3] >= map.age5_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age6_timer-world.time)/600] minutes."
 					return
 			if (map.age6_done == TRUE && map.age7_done == FALSE)
 				if (world.time < map.age7_timer && ( (map.custom_civs[user.civilization][1] >= map.age6_top) || (map.custom_civs[user.civilization][2] >= map.age6_top) || (map.custom_civs[user.civilization][3] >= map.age6_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age7_timer-world.time)/600] minutes."
 					return
 			if (map.age7_done == TRUE && map.age8_done == FALSE)
 				if (world.time < map.age8_timer && ( (map.custom_civs[user.civilization][1] >= map.age7_top) || (map.custom_civs[user.civilization][2] >= map.age7_top) || (map.custom_civs[user.civilization][3] >= map.age7_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age8_timer-world.time)/600] minutes."
 					return
 		
 		var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
@@ -205,6 +205,7 @@
 			else
 				current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
 		var/studytime = (300*current_research)/current_tribesmen
+
 		var/displaytime = convert_to_textminute(studytime)
 		var/modif = 1
 		if (user.religion_check() == "Knowledge")
@@ -214,7 +215,20 @@
 		user << SPAN_NOTICE("Studying these documents... This will take [displaytime] to finish.")
 		
 		if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
-			user.adaptStat("philosophy", 1*current_research)
+			if (user.civilization != null && user.civilization != "none")
+				if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
+					sum_i = null  //Throwing the unused sum away
+					sum_m = null
+					sum_h = null
+					return
+				else
+					map.custom_civs[user.civilization][1] += sum_i
+					map.custom_civs[user.civilization][2] += sum_m
+					map.custom_civs[user.civilization][3] += sum_h
+			else
+				user << "You don't belong to any faction."
+				return
+			
 			if (user.civilization == civname_a)
 				if(anti_abuse(user, map.civa_research[1], map.civa_research[2], map.civa_research[3], sum_i, sum_m, sum_h))
 					sum_i = null  //Throwing the unused sum away
@@ -275,18 +289,8 @@
 					map.civf_research[1] += sum_i
 					map.civf_research[2] += sum_m
 					map.civf_research[3] += sum_h
-			else if (user.civilization != "none" && user.civilization != null)
-				if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
-					return
-				else
-					map.custom_civs[user.civilization][1] += sum_i
-					map.custom_civs[user.civilization][2] += sum_m
-					map.custom_civs[user.civilization][3] += sum_h
-			else
-				..()
+
+			user.adaptStat("philosophy", 1*current_research)
 			user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 		sum_i = null
 		sum_m = null

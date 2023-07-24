@@ -160,110 +160,112 @@
 
 /obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/researchkit))
-		if (user.original_job_title == "Nomad" && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
+		if (!map.civilizations || (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES))
+			return
+		if (!completed.len)
+			user << "The book is blank."
+			return
+		if (user.original_job_title == "Nomad")
 			if (map.age1_done == FALSE)
 				if (world.time < 36000 && ( (map.custom_civs[user.civilization][1] >= 19) || (map.custom_civs[user.civilization][2] >= 19) || (map.custom_civs[user.civilization][3] >= 19)) )
 					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
 				if (world.time < map.age2_timer && ( (map.custom_civs[user.civilization][1] >= map.age1_top) || (map.custom_civs[user.civilization][2] >= map.age1_top) || (map.custom_civs[user.civilization][3] >= map.age1_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-world.time)/600] minutes."
 					return
 			if (map.age2_done == TRUE && map.age3_done == FALSE)
 				if (world.time < map.age3_timer && ( (map.custom_civs[user.civilization][1] >= map.age2_top) || (map.custom_civs[user.civilization][2] >= map.age2_top) || (map.custom_civs[user.civilization][3] >= map.age2_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-world.time)/600] minutes."
 					return
 			if (map.age3_done == TRUE && map.age4_done == FALSE)
 				if (world.time < map.age4_timer && ( (map.custom_civs[user.civilization][1] >= map.age3_top) || (map.custom_civs[user.civilization][2] >= map.age3_top) || (map.custom_civs[user.civilization][3] >= map.age3_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-world.time)/600] minutes."
 					return
 			if (map.age4_done == TRUE && map.age5_done == FALSE)
 				if (world.time < map.age5_timer && ( (map.custom_civs[user.civilization][1] >= map.age4_top) || (map.custom_civs[user.civilization][2] >= map.age4_top) || (map.custom_civs[user.civilization][3] >= map.age4_top)) )
-					user << "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes."
+					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-world.time)/600] minutes."
 					return
-		if (!map.civilizations || (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES))
-			return
-		else if(!completed.len)
-			user << "The book is blank."
-			return
-		else
-			var/current_tribesmen = 0
-			var/studytime = 300*k_level
-			var/modif = 1
-			if (user.religion_check() == "Knowledge")
-				modif += 0.25
-			if (user.religious_clergy == "Monks")
-				modif += 0.3
-			var/displaytime = convert_to_textminute(studytime)
-			user << "Studying this document... This will take [displaytime] to finish."
-			if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
-				user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
-				user.adaptStat("philosophy", 1*k_level*modif)
-				if (user.original_job_title == "Nomad")
-					if (user.civilization != null && user.civilization != "none")
-						if (alive_civilians.len <= 12)
-							current_tribesmen = alive_civilians.len
-						else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
-							current_tribesmen = alive_civilians.len/2
-						else
-							current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.custom_civs[user.civilization][3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.custom_civs[user.civilization][2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.custom_civs[user.civilization][1] += k_level/current_tribesmen
-					else
-						user << "You don't belong to any faction."
-						return
+
+		var/current_tribesmen = 0
+		var/studytime = 300*k_level
+		var/modif = 1
+		if (user.religion_check() == "Knowledge")
+			modif += 0.25
+		if (user.religious_clergy == "Monks")
+			modif += 0.3
+
+		var/displaytime = convert_to_textminute(studytime)
+		user << "Studying this document... This will take [displaytime] to finish."
+		if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
+
+			if (user.civilization != null && user.civilization != "none")
+				if (alive_civilians.len <= 12)
+					current_tribesmen = alive_civilians.len
+				else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
+					current_tribesmen = alive_civilians.len/2
 				else
-					if (user.civilization == civname_a)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.civa_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.civa_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.civa_research[1] += k_level/current_tribesmen
-					else if (user.civilization == civname_b)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.civb_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.civb_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.civb_research[1] += k_level/current_tribesmen
-					else if (user.civilization == civname_c)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.civc_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.civc_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.civc_research[1] += k_level/current_tribesmen
-					else if (user.civilization == civname_d)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.civd_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.civd_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.civd_research[1] += k_level/current_tribesmen
-					else if (user.civilization == civname_e)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.cive_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.cive_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.cive_research[1] += k_level/current_tribesmen
-					else if (user.civilization == civname_f)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-						if (k_class == "medicine" || k_class == "anatomy")
-							map.civf_research[3] += k_level/current_tribesmen
-						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-							map.civf_research[2] += k_level/current_tribesmen
-						if (k_class == "industry" || k_class == "philosophy")
-							map.civf_research[1] += k_level/current_tribesmen
+					current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.custom_civs[user.civilization][3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.custom_civs[user.civilization][2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.custom_civs[user.civilization][1] += k_level/current_tribesmen
+			else
+				user << "You don't belong to any faction."
+				return
+
+			if (user.civilization == civname_a)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.civa_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.civa_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.civa_research[1] += k_level/current_tribesmen
+			else if (user.civilization == civname_b)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.civb_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.civb_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.civb_research[1] += k_level/current_tribesmen
+			else if (user.civilization == civname_c)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.civc_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.civc_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.civc_research[1] += k_level/current_tribesmen
+			else if (user.civilization == civname_d)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.civd_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.civd_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.civd_research[1] += k_level/current_tribesmen
+			else if (user.civilization == civname_e)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.cive_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.cive_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.cive_research[1] += k_level/current_tribesmen
+			else if (user.civilization == civname_f)
+				current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (k_class == "medicine" || k_class == "anatomy")
+					map.civf_research[3] += k_level/current_tribesmen
+				if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
+					map.civf_research[2] += k_level/current_tribesmen
+				if (k_class == "industry" || k_class == "philosophy")
+					map.civf_research[1] += k_level/current_tribesmen
+
+			user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
+			user.adaptStat("philosophy", 1*k_level*modif)
 	else
 		..()

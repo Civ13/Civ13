@@ -123,18 +123,11 @@
 	var/mob/user
 
 	var/list/programs = list()
+
 /obj/structure/computer/New()
 	..()
 	boot(operatingsystem)
 	program_checker()
-
-/obj/structure/computer/nopower
-	name = "desktop computer"
-	desc = "A desktop computer running the latest version of Unga OS."
-	icon_state = "ibm_on"
-	powered = TRUE
-	powerneeded = FALSE
-	anchored = TRUE
 
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
@@ -271,3 +264,11 @@
 		if (src)
 			program_checker()
 			return
+
+/obj/structure/computer/nopower
+	name = "desktop computer"
+	desc = "A desktop computer running the latest version of Unga OS."
+	icon_state = "ibm_on"
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
