@@ -548,6 +548,8 @@
 			if (resultpath != null && gunpowder >= gunpowder_max && bulletn >= amount)
 				for(var/i=1;i<=amount;i++)
 					var/obj/item/ammo_casing/NC = new resultpath(get_turf(src))
+					NC.btype = inputbtype
+					NC.checktype()
 				qdel(src)
 				return
 			else
