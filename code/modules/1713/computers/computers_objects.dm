@@ -1,4 +1,3 @@
-//////////////////////////////////////////////////////////////
 /obj/structure/computer/nopower/aotd
 	name = "desktop computer"
 	desc = "A desktop computer running the latest version of Unga OS. Has a floppy drive."
@@ -165,6 +164,7 @@
 
 
 //////////////////////////////////////////////////////////////
+
 /obj/structure/computer/nopower/carsales
 	name = "CARTRADER Terminal"
 	desc = "A computer terminal connected to the CARTRADER network."
@@ -189,6 +189,7 @@
 
 
 //////////////////////////////////////////////////////////////
+
 /obj/structure/computer/nopower/police
 	name = "Police Processing Terminal"
 	desc = "A computer running unga OS 94 Law Enforcement Edition, with access to both civilians and LEOs."
@@ -212,6 +213,23 @@
 		programs += new/datum/program/gunregistry
 		programs += new/datum/program/licenseplates
 		programs += new/datum/program/fingerprintregistry
+
+//////////////////////////////////////////////////////////////
+
+/obj/structure/computer/nopower/platoontracker
+	name = "Military Asset Tracking System"
+	desc = "A satellite-based system, allowing realtime tracking of your troops."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "tracking"
+	powered = TRUE
+	powerneeded = FALSE
+	anchored = TRUE
+	density = TRUE
+	operatingsystem = "unga OS 94"
+	New()
+		..()
+		programs += new/datum/program/platoontracker
+
 //////////////////////////////////////////
 /////////DISKS///////////////////////////
 
@@ -236,6 +254,7 @@
 	var/faction = null
 	var/exchange_state = -1 //-1 inactive, 1-both fake, 2-one is real, 3-both real
 	var/datum/program/program
+	
 /obj/item/weapon/disk/examine(mob/user)
 	..()
 	if (faction)
