@@ -289,8 +289,7 @@
 					map.civf_research[1] += sum_i
 					map.civf_research[2] += sum_m
 					map.civf_research[3] += sum_h
-				else
-					..()
+					
 			user.adaptStat("philosophy", 1*current_research)
 			user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 		sum_i = null
