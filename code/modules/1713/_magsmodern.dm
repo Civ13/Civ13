@@ -846,8 +846,8 @@
 	weight = 0.045
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/autocannon_ap
-	name = "3UBR6 AP ammo belt"
+/obj/item/ammo_magazine/a30mm_ap
+	name = "AP-T ammo belt"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -855,15 +855,18 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
-	max_ammo = 16
+	max_ammo = 20
 	multiple_sprites = TRUE
 	belt = TRUE
 
-/obj/item/ammo_magazine/autocannon_ap/small
+/obj/item/ammo_magazine/a30mm_ap/btr80
+	max_ammo = 150
+
+/obj/item/ammo_magazine/a30mm_ap/small
 	max_ammo = 10
 
-/obj/item/ammo_magazine/autocannon_he
-	name = "3UOR6 HE ammo belt"
+/obj/item/ammo_magazine/a30mm_he
+	name = "HE-T ammo belt"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -871,12 +874,42 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/frag/a30mm_he
-	max_ammo = 16
+	max_ammo = 20
 	multiple_sprites = TRUE
 	belt = TRUE
 
-/obj/item/ammo_magazine/autocannon_he/small
+/obj/item/ammo_magazine/a30mm_he/btr80
+	max_ammo = 150
+
+/obj/item/ammo_magazine/a30mm_he/small
 	max_ammo = 10
+
+
+/obj/item/ammo_magazine/a35mm_keth
+	name = "FAP ammo belt"
+	icon_state = "maximbelt"
+	worn_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a35"
+	w_class = ITEM_SIZE_LARGE
+	slot_flags = SLOT_BACK|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a35mm_fap
+	max_ammo = 70
+	multiple_sprites = TRUE
+	belt = TRUE
+
+/obj/item/ammo_magazine/a35mm_hei
+	name = "HEI-T ammo belt"
+	icon_state = "maximbelt"
+	worn_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a35"
+	w_class = ITEM_SIZE_LARGE
+	slot_flags = SLOT_BACK|SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/frag/a35mm_hei
+	max_ammo = 70
+	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/flare
 	name = "flare casing pouch (.50 BMG)"

@@ -578,6 +578,7 @@
 		full_auto = TRUE
 	else
 		full_auto = FALSE
+		
 /obj/item/weapon/gun/attack_self(mob/user)
 	if (firemodes.len > 1)
 		switch_firemodes(user)

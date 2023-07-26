@@ -2425,7 +2425,7 @@
 	title = "Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRUSL"
 
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE

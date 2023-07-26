@@ -434,7 +434,7 @@
 "qA" = (/obj/structure/sign/traffic/zebracrossing{dir = 4},/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean)
 "qC" = (/obj/covers/sidewalk,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag,/obj/item/ammo_magazine/greasegun,/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean)
 "qG" = (/obj/covers/sidewalk,/turf/floor/plating/road,/area/caribbean)
-"qH" = (/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/baf1_a/rb,/obj/structure/engine/internal/gasoline/premade/baf1_a{name = "Honeywell AGT1500 engine"},/turf/floor/plating/road,/area/caribbean)
+"qH" = (/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/baf1_a/rb,/obj/structure/engine/internal/turbine/abrams,/turf/floor/plating/road,/area/caribbean)
 "qL" = (/obj/covers/wood,/obj/structure/table/modern,/obj/structure/computer/nopower,/turf/floor/broken_floor,/area/caribbean/roofed)
 "qN" = (/obj/covers/fancywood,/obj/structure/table/modern/table,/obj/item/clothing/head/helmet/korean/us_medic,/obj/item/clothing/head/helmet/korean/us_medic,/obj/item/clothing/head/helmet/korean/us_medic,/turf/floor/wood/fancywood,/area/caribbean/roofed)
 "qP" = (/obj/covers/fancywood,/obj/structure/railing/steel,/obj/item/trash/money,/turf/floor/dirt,/area/caribbean/roofed)

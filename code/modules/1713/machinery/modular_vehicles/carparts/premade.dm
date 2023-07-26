@@ -329,10 +329,10 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered/front),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/mercedes/lf,/obj/structure/bed/chair/drivers),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/rb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/lb/armored,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/centered),
 	)
 
@@ -357,10 +357,10 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/rf/armored,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0},/obj/structure/vehicleparts/movement/armored),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/engine/internal/diesel/premade/v6,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/eu/centered/front),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/tigr/lf,/obj/structure/bed/chair/drivers),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/car/tigr/rb,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/tigr/rb,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/tigr/lb,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/eu/centered),
 	)
 
@@ -717,7 +717,7 @@
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/right,/obj/structure/vehicleparts/frame/bmd2/rf),
 	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/bmd2/left,/obj/structure/vehicleparts/frame/bmd2/lf),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov),
+	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42),
 	"2,2" = list(/obj/structure/vehicleparts/frame/bmd2/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rbc,/obj/structure/lamp/lamp_small/tank/red),
@@ -733,7 +733,7 @@
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/bmd2new
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/bmd2new/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov),
+	"1,1" = list(/obj/structure/vehicleparts/frame/bmd2new/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42),
 	"2,1" = list(/obj/structure/vehicleparts/frame/bmd2new/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2new/rc,/obj/structure/lamp/lamp_small/tank/red),
@@ -752,7 +752,7 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/adrian/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/red),
 	"2,1" = list(/obj/structure/vehicleparts/frame/adrian/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/engine/internal/diesel/premade/adrian,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/adrian/rc,/obj/structure/bed/chair/drivers/tank,/obj/item/ammo_magazine/autocannon_he/small,/obj/item/ammo_magazine/autocannon_he/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/item/ammo_magazine/autocannon_ap/small,/obj/structure/lamp/lamp_small/tank/red),
+	"1,2" = list(/obj/structure/vehicleparts/frame/adrian/rc,/obj/structure/bed/chair/drivers/tank,/obj/item/ammo_magazine/a30mm_he/small,/obj/item/ammo_magazine/a30mm_he/small,/obj/item/ammo_magazine/a30mm_ap/small,/obj/item/ammo_magazine/a30mm_ap/small,/obj/item/ammo_magazine/a30mm_ap/small,/obj/structure/lamp/lamp_small/tank/red),
 	"2,2" = list(/obj/structure/vehicleparts/frame/adrian/lc,/obj/structure/bed/chair/office/dark{anchored = 1}),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/adrian/rb,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/structure/vehicleparts/movement/tracks/bmd2new/left_back),

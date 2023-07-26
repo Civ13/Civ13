@@ -298,8 +298,8 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/autocannon_ap
-	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=20, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
@@ -307,18 +307,35 @@
 	is_hmg = TRUE
 	full_auto = FALSE
 
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov
-	name = "30mm 2A42 'Shipunov' Autocannon"
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42
+	name = "Shipunov 2A42 30mm Autocannon"
+	desc = "The 30 mm 2A42 autocannon was developed as a replacement for 2A28 Grom. It fires 30mm rounds."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/autocannon_ap
-	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
+		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.2, 0.3, 0.3), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72
+	name = "Shipunov 2A72 30mm Autocannon"
+	desc = "A lighter simplified variant of the 2A42 with a lower number of parts, a longer barrel, and higher muzzle velocity, but also a lower rate of fire. It fires 30mm rounds."
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
+	firemodes = list(
+		list(name = "full auto", burst=3, burst_delay=3.5, fire_delay=2.5, dispersion=list(0.1, 0.1, 0.2, 0.2), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
@@ -331,8 +348,8 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/autocannon_ap
-	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_ap/small, /obj/item/ammo_magazine/autocannon_he, /obj/item/ammo_magazine/autocannon_he/small)
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_ap/small, /obj/item/ammo_magazine/a30mm_he, /obj/item/ammo_magazine/a30mm_he/small)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=35, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
@@ -351,8 +368,8 @@
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/autocannon_ap
-	good_mags = list(/obj/item/ammo_magazine/autocannon_ap, /obj/item/ammo_magazine/autocannon_he)
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
 	firemodes = list(
 		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)

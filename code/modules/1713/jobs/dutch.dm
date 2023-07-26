@@ -611,7 +611,7 @@
 	title = "Sergeant der Eerste Klasse"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNSL"
 
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE

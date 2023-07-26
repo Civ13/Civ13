@@ -49,7 +49,7 @@
 	KD_chance = KD_CHANCE_HIGH
 
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
-
+	update_layer()
 	if (last_user && last_user != user)
 		user << "<span class = 'warning'>\the [src] is already in use.</span>"
 		return
@@ -57,10 +57,9 @@
 	if (!(user.using_MG == src))
 		var/grip_dir = reverse_direction(dir)
 		var/turf/T = get_step(loc, grip_dir)
-		var/obj/structure/bed/chair/drivers/DR
-		for (DR in src.loc.contents)
+		for (var/obj/structure/bed/chair/drivers/DR in src.loc.contents)
 			if (DR in src.loc.contents)
-				user << "<span class='notice'>There is a seat in the way.</span>"
+				user << SPAN_NOTICE("There is a seat in the way.")
 				return
 		if (user.loc == T)
 			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
@@ -68,6 +67,7 @@
 					if (do_after(user, 15, src))
 						user.use_MG(src)
 						usedby(user, src)
+						update_layer()
 						started_using(user)
 						if (user.loc != loc)
 							user.use_MG(null)
@@ -87,16 +87,10 @@
 	else
 		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
 
-/obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A, params)
+/obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A)
 	if (A == src)
 		if (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm)
 			switch_firemodes(user)
-
-	if (check_direction(user, A))
-		afterattack(A, user, FALSE, params)
-	else
-	//	rotate_to(user, A)
-		update_layer()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/check_direction(mob/user, atom/A)
 	if (get_turf(A) == loc)
@@ -140,7 +134,7 @@
 				if (H.looking)
 					H.look_into_distance(user, FALSE)
 			var/datum/action/toggle_scope/S = A
-			S.boundto = src//The lines including this line and the line below this call to two different files, could be helpful to combine the functions of the files
+			S.boundto = src //The lines including this line and the line below this call to two different files, could be helpful to combine the functions of the files
 			H.look_into_distance(user, TRUE, TRUE)
 			last_user = user
 			break
@@ -178,7 +172,7 @@
 
 // helpers
 
-/mob/var/using_MG = null
+/mob/var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
 /mob/proc/use_MG(o)
 	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
 		using_MG = null
