@@ -753,3 +753,4 @@
 
 /obj/item/projectile/bullet/autocannon/frag/a35mm_hei
 	damage = DAMAGE_MEDIUM
+	incendiary = TRUE
