@@ -716,12 +716,12 @@
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	
+	var/turf/T = get_turf(A)
 	if (!(istype(A, /obj/structure/vehicleparts/frame)))
 		explosion(T, 0, 0, 2, 1)
 	if (incendiary)
 		ignite_turf(T,8,40)
 	
-	var/turf/T = get_turf(A)
 	var/list/target_turfs = getcircle(T, spread_range)
 	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
 
