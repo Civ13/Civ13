@@ -714,7 +714,6 @@
 
 /obj/item/projectile/bullet/autocannon/frag/on_impact(var/atom/A)
 	impact_effect(effect_transform)
-	playsound(src, "ric_sound", 50, TRUE, -2)
 	
 	var/turf/T = get_turf(A)
 	if (!(istype(A, /obj/structure/vehicleparts/frame)))
