@@ -1392,7 +1392,7 @@ var/global/redirect_all_players = null
 						temp_name = "Chinese Red Army"
 					if (temp_name == "Chinese")
 						temp_name = "Chinese National Army"
-				else if (map && map.ID == MAP_CAMPAIGN)
+				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 					if (temp_name == "Civilian")
 						temp_name = "Blugoslavia"
 					if (temp_name == "Pirates")

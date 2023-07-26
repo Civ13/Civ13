@@ -940,7 +940,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	filling_color = "#AFC4B5"
 	center_of_mass = list("x"=16, "y"=8)
 	nutriment_amt = 8
-	nutriment_desc = list("carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
+	nutriment_desc = list("corn" = 2, "cabbage" = 2, "potato" = 2)
 	decay = 20*600
 	New()
 		..()

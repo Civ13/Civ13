@@ -670,6 +670,10 @@
 	name = "BAF 12 gasoline engine"
 	enginesize = 12000
 
+/obj/structure/engine/internal/turbine/abrams
+	name = "Honeywell AGT1500 turbine engine"
+	enginesize = 15000
+
 /obj/structure/engine/internal/diesel/premade/v12
 	name = "V12 diesel engine"
 	enginesize = 15000

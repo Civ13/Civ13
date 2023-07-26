@@ -59,7 +59,7 @@
 
 
 /obj/item/weapon/material/bust
-	name = "stone bust"
+	name = "bust"
 	sharp = FALSE
 	edge = FALSE
 	desc = "A stone bust of a person"
@@ -77,7 +77,7 @@
 	cooldownw = 7
 
 /obj/item/weapon/material/hippocratic
-	name = "stone bust of hippocrates"
+	name = "bust of hippocrates"
 	sharp = FALSE
 	edge = FALSE
 	desc = "A stone bust of hippocrates"

@@ -5,7 +5,7 @@
 	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 600
+	respawn_delay = 90 SECONDS
 
 	faction_organization = list(
 		DUTCH,
@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, North City, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font> <br><big>Points are added to each team for each minute they control the different objectives.<br> First team to reach <b>70</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -45,7 +45,7 @@
 
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
-	grace_wall_timer = 10 MINUTES
+	grace_wall_timer = 3 MINUTES
 	no_hardcore = TRUE
 
 /obj/map_metadata/operation_falcon/New()
@@ -381,16 +381,3 @@
 
 ////////MAP SPECIFIC OBJECTS////////
 
-/obj/structure/computer/nopower/platoontracker
-	name = "Military Asset Tracking System"
-	desc = "A satellite-based system, allowing realtime tracking of your troops."
-	icon = 'icons/obj/device.dmi'
-	icon_state = "tracking"
-	powered = TRUE
-	powerneeded = FALSE
-	anchored = TRUE
-	density = TRUE
-	operatingsystem = "unga OS 94"
-	New()
-		..()
-		programs += new/datum/program/platoontracker

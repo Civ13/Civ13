@@ -387,8 +387,8 @@
 
 
 /datum/job/pirates/battleroyale
-	title = "Marooned Pirate"
-	en_meaning = "Marooned Pirate"
+	title = "Battle Royale Fighter"
+	en_meaning = ""
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateDM"
@@ -444,7 +444,7 @@
 //food and bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 
-	H.add_note("Role", "You are one of the pirates abandoned at this island. Be the last one to live!")
+	H.add_note("Role", "Be the last one to live!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -453,7 +453,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	spawn(200)
+	spawn(20)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
@@ -510,7 +510,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	spawn(200)
+	spawn(20)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
@@ -583,7 +583,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	spawn(200)
+	spawn(20)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
@@ -676,7 +676,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-	spawn(200)
+	spawn(20)
 		if (H.client)
 			H.client.screen += new/obj/screen/areashow("Area Location","8,14", H, null, "")
 			H.client.screen += new/obj/screen/areaclosing("Area Closing","1,14", H, null, "")
@@ -742,7 +742,7 @@
 		else if (randhead == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 
-	H.add_note("Role", "You are one of the pirates abandoned at this island. Be the last one to live!")
+	H.add_note("Role", "You are one of the pirates abandoned at this island.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -752,8 +752,5 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 
-	spawn(20)
-		if (H.client)
-			H.name = H.client.ckey
 
 	return TRUE
