@@ -71,7 +71,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american
 	name = "American MRE: Meat"
 	desc = "A package of meat and vegetables."
-	nutriment_desc = list("protein" = 1, "carot" = 2, "corn" = 2, "cabbage" = 2, "potato" = 2)
+	nutriment_desc = list("protein" = 1, "corn" = 2, "cabbage" = 2, "potato" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/blugoslavian
 	name = "Blugoslavian MRE: General Combat Rations"
@@ -96,7 +96,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
-	nutriment_desc = list("noodles" = 1, "carot" = 1, "corn" = 1, "cabbage" = 1, "potato" = 1, "dried meat" = 1)
+	nutriment_desc = list("noodles" = 1, "potato" = 1, "meat" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian
 	name = "Russian MRE: Potatoes"
