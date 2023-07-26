@@ -97,6 +97,8 @@
 		opacity = FALSE
 	else
 		opacity = TRUE
+	if (istype(src,/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door))
+		opacity = FALSE
 
 /obj/structure/simple_door/Destroy()
 	processing_objects -= src
