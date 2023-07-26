@@ -806,7 +806,7 @@
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
 	caliber = "a50cal"
-	max_ammo = 150
+	max_ammo = 100
 	weight = 0.8
 	multiple_sprites = TRUE
 	belt = TRUE

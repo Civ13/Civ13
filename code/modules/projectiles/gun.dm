@@ -571,7 +571,7 @@
 /obj/item/weapon/gun/proc/switch_firemodes(mob/user=null)
 	sel_mode++
 	if (sel_mode > firemodes.len)
-		sel_mode = TRUE
+		sel_mode = 1
 	var/datum/firemode/new_mode = firemodes[sel_mode]
 	user << "<span class='notice'>\The [src] is now set to [new_mode.name].</span>"
 	if (new_mode.name == "full auto")
