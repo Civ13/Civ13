@@ -186,7 +186,12 @@
 					else
 						can_fire = FALSE
 			if (can_fire)
-				MG.afterattack(A, src, FALSE, params)
+				if (MG.full_auto)
+					var/datum/firemode/F = MG.firemodes[MG.sel_mode]
+					spawn(F.burst_delay)
+						MG.afterattack(A, src, FALSE, params)
+				else
+					MG.afterattack(A, src, FALSE, params)
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)
