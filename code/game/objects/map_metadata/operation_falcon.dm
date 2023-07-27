@@ -382,13 +382,12 @@
 
 ////////MAP SPECIFIC OBJECTS////////
 
-var/global/list/fob_names_german = list("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
+var/global/list/fob_names_nato = list("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
 var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "Ivan", "Konstantin", "Leonid", "Mikhail", "Nikolai")
 
 /obj/item/fob_spawnpoint
 	name = "FOB"
 	desc = "A heavy garrison. Used to spawn in reinforcements close to the frontline."
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "hescobastion"
 	anchored = TRUE
@@ -398,31 +397,28 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	density = TRUE
 	health = 1000
 	var/faction_text = null
-/*
-	New()
-		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+	var/pickedfrom = null
+	var/pickedname = null
 
-/obj/item/fob_spawnpoint/proc/make_spawns(var/job_spawn_location)
-	if (map.fob_spawns)
-		for (var/turf/T in range(src,2))
-			var/obj/effect/landmark/SP = new/obj/effect/landmark(T)
-			SP.name = "[job_spawn_location]"
-		message_admins("Made new FOB spawnpoints with spawn location ([job_spawn_location]).")
-	return
-*/
 /obj/item/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
 	if (!faction_text)
 		faction_text = H.faction_text
+		playsound(loc, "radio_chatter", 100, FALSE)
+		message_admins("[H.name] ([H.ckey]) has built a FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
 		switch (H.faction_text)
-			if ("DUTCH")
-				var/pickedname = pick(fob_names_german)
-				fob_names_german -= pickedname
+			if (DUTCH)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
+				fob_names_nato -= pickedname
 				name = "[name] \'[pickedname]\'"
-			if ("RUSSIAN")
-				var/pickedname = pick(fob_names_russian)
+			if (BRITISH)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
+				fob_names_nato -= pickedname
+				name = "[name] \'[pickedname]\'"
+			if (RUSSIAN)
+				pickedfrom = fob_names_russian
+				pickedname = pick(pickedfrom)
 				fob_names_russian -= pickedname
 				name = "[name] \'[pickedname]\'"
 	return
@@ -436,10 +432,67 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		if (3.0)
 			health -= 20
 	if (health <= 0)
-		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-		for (var/obj/effect/landmark/SP in range(src,2))
-			if (SP.name != "landmark")
-				qdel(SP)
-		message_admins("FOB at (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
+		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		if (pickedname)
+			pickedfrom += pickedname
 		qdel(src)
 		return
+
+/obj/item/supply_crate
+	name = "supply crate"
+	desc = "A supply crate used to make FOBs. This is crate belongs to nobody"
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "supply_crate"
+	anchored = FALSE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = TRUE
+	health = 250
+	var/faction_text = null
+
+/obj/item/supply_crate/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 600
+		if (2.0)
+			health -= 200
+		if (3.0)
+			health -= 100
+	if (health <= 0)
+		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
+		message_admins("Supply crate at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		qdel(src)
+		return
+
+/obj/item/supply_crate/faction1/New()
+	..()
+	faction_text = map.faction1
+	name = "[map.roundend_condition_def2name(faction_text)] [name]"
+	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+/obj/item/supply_crate/faction2/New()
+	..()
+	faction_text = map.faction2
+	name = "[map.roundend_condition_def2name(faction_text)] [name]"
+	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+
+/obj/item/supply_crate/attack_hand(mob/living/human/H as mob)
+	if (faction_text == H.faction_text)
+		H << SPAN_NOTICE("You starting building a FOB with the [src].")
+		var/found = 0
+		for(var/obj/item/fob_spawnpoint/fob in world)
+			if (fob.faction_text == H.faction_text)
+				found++
+		if (found < 8)
+			if (do_after(H, 30 SECONDS, src))
+				H << SPAN("good", "<big>You build a FOB with the [src].</big>")
+				var/obj/item/fob_spawnpoint/fob = new/obj/item/fob_spawnpoint(get_turf(src))
+				fob.attack_hand(H)
+				qdel(src)
+				return
+		else
+			H << SPAN_WARNING("<big>There are too many friendly FOBs! Consider destroying one to build one somewhere else.</big>")
+	else
+		H << SPAN_WARNING("This supply crate does not belong to your faction!")
+	return

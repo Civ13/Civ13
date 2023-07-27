@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(BRITISH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Vadso City"
-	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radar Station, Western City, Eastern City and Hydro Dam</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radar Station, Western City, Eastern City and Hydro Dam</b>.<br>First team to reach <b>70</b> points wins!</font>"
 	faction1 = BRITISH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -48,8 +48,9 @@
 
 	var/a5_control = "nobody"
 	var/a5_name = "Hydro Dam"
-	grace_wall_timer = 10 MINUTES
+	grace_wall_timer = 3 MINUTES
 	no_hardcore = TRUE
+	fob_spawns = TRUE
 
 /obj/map_metadata/vadso_city/New()
 	..()
