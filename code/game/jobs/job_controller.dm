@@ -257,6 +257,36 @@ var/global/datum/controller/occupations/job_master
 						H_area.play_ambience(H)
 				return
 
+	if (map.fob_spawns)
+		var/list/spawnable_points = list()
+		spawnable_points += "Base"
+
+		for(var/obj/item/fob_spawnpoint/fob in world)
+			if (fob.faction_text == H.faction_text)
+				spawnable_points += fob
+		H.loc = null
+		var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
+		if (!(input == "Base"))
+			var/turf/fob_loc = get_turf(input)
+			var/list/valid_spawns = list()
+			for (var/turf/T in circlerangeturfs(3, fob_loc))
+				for (var/obj/O in T.contents)
+					if (O.density)
+						continue
+				for (var/mob/M in T.contents)
+					continue
+				valid_spawns += T
+
+			if (valid_spawns)
+				H.forceMove(pick(valid_spawns))
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
+			else
+				H << SPAN_WARNING("<big>No valid spawnpoint was found at this FOB. <br>Spawning at Base.</big>")
+
 	var/spawn_location = H.job_spawn_location
 	if(map.ID == MAP_GULAG13)
 		if(H.nationality == "German")

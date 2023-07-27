@@ -44,6 +44,7 @@ var/civmax_research = list(230,230,230)
 	var/is_RP = FALSE
 	var/mosinonly = FALSE
 	var/squads = 1
+	var/fob_spawns = FALSE
 	var/list/faction1_squads = list(
 		1 = list(),
 		2 = list(),
