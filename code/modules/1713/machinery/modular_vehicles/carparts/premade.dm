@@ -380,7 +380,7 @@
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/supply_crate/faction1),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/left/armored),
 
 	"1,4" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/reversed),
@@ -400,7 +400,7 @@
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/rf/truck/armored,/obj/structure/bed/chair/office/dark),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/lf/truck/armored,/obj/structure/bed/chair/drivers),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/supply_crate/faction2),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/left/armored),
 
 	"1,4" = list(/obj/structure/vehicleparts/frame/car/right/armored,/obj/structure/vehicleparts/movement/reversed),

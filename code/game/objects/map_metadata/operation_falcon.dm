@@ -397,6 +397,8 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	density = TRUE
 	health = 1000
 	var/faction_text = null
+	var/pickedfrom = null
+	var/pickedname = null
 
 /obj/item/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
 	if (!faction_text)
@@ -405,15 +407,18 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		message_admins("[H.name] ([H.ckey]) has built a FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
 		switch (H.faction_text)
 			if (DUTCH)
-				var/pickedname = pick(fob_names_nato)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
 				fob_names_nato -= pickedname
 				name = "[name] \'[pickedname]\'"
 			if (BRITISH)
-				var/pickedname = pick(fob_names_nato)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
 				fob_names_nato -= pickedname
 				name = "[name] \'[pickedname]\'"
 			if (RUSSIAN)
-				var/pickedname = pick(fob_names_russian)
+				pickedfrom = fob_names_russian
+				pickedname = pick(pickedfrom)
 				fob_names_russian -= pickedname
 				name = "[name] \'[pickedname]\'"
 	return
@@ -429,6 +434,8 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	if (health <= 0)
 		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
 		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		if (pickedname)
+			pickedfrom += pickedname
 		qdel(src)
 		return
 
@@ -473,12 +480,19 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 /obj/item/supply_crate/attack_hand(mob/living/human/H as mob)
 	if (faction_text == H.faction_text)
 		H << SPAN_NOTICE("You starting building a FOB with the [src].")
-		if (do_after(H, 30 SECONDS, src))
-			H << SPAN("good", "<big>You build a FOB with the [src].</big>")
-			var/obj/item/fob_spawnpoint/fob = new/obj/item/fob_spawnpoint(get_turf(src))
-			fob.attack_hand(H)
-			qdel(src)
-			return
+		var/found = 0
+		for(var/obj/item/fob_spawnpoint/fob in world)
+			if (fob.faction_text == H.faction_text)
+				found++
+		if (found < 8)
+			if (do_after(H, 30 SECONDS, src))
+				H << SPAN("good", "<big>You build a FOB with the [src].</big>")
+				var/obj/item/fob_spawnpoint/fob = new/obj/item/fob_spawnpoint(get_turf(src))
+				fob.attack_hand(H)
+				qdel(src)
+				return
+		else
+			H << SPAN_WARNING("<big>There are too many friendly FOBs! Consider destroying one to build one somewhere else.</big>")
 	else
 		H << SPAN_WARNING("This supply crate does not belong to your faction!")
 	return
