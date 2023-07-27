@@ -470,7 +470,7 @@
 "JX" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/structure/lamp/lamp_small,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
 "JY" = (/obj/structure/curtain/closed/green{pixel_x = 0; pixel_y = -32},/obj/structure/table/modern/table,/turf/floor/wood/fancywood,/area/caribbean/british/land/inside)
 "Ka" = (/obj/covers/road,/turf/floor/grass,/area/caribbean)
-"Kd" = (,/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/three/outside)
+"Kd" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/three/outside)
 "Km" = (/turf/floor/plating/road/whiteline{dir = 9; icon_state = "road_line"},/area/caribbean/supply/dutch)
 "Ko" = (/obj/covers/wood_wall,/turf/floor/dirt/dust,/area/caribbean)
 "Ks" = (/obj/structure/window/barrier/concrete{dir = 8},/turf/floor/plating/dark,/area/caribbean/no_mans_land/capturable/three)
