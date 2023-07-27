@@ -47,6 +47,7 @@
 	var/a4_name = "Lumber Company"
 	grace_wall_timer = 3 MINUTES
 	no_hardcore = TRUE
+	fob_spawns = TRUE
 
 /obj/map_metadata/operation_falcon/New()
 	..()
@@ -381,3 +382,64 @@
 
 ////////MAP SPECIFIC OBJECTS////////
 
+var/global/list/fob_names_german = list("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
+var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "Ivan", "Konstantin", "Leonid", "Mikhail", "Nikolai")
+
+/obj/item/fob_spawnpoint
+	name = "FOB"
+	desc = "A heavy garrison. Used to spawn in reinforcements close to the frontline."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "hescobastion"
+	anchored = TRUE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = TRUE
+	health = 1000
+	var/faction_text = null
+/*
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/item/fob_spawnpoint/proc/make_spawns(var/job_spawn_location)
+	if (map.fob_spawns)
+		for (var/turf/T in range(src,2))
+			var/obj/effect/landmark/SP = new/obj/effect/landmark(T)
+			SP.name = "[job_spawn_location]"
+		message_admins("Made new FOB spawnpoints with spawn location ([job_spawn_location]).")
+	return
+*/
+/obj/item/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
+	if (!faction_text)
+		faction_text = H.faction_text
+		switch (H.faction_text)
+			if ("DUTCH")
+				var/pickedname = pick(fob_names_german)
+				fob_names_german -= pickedname
+				name = "[name] \'[pickedname]\'"
+			if ("RUSSIAN")
+				var/pickedname = pick(fob_names_russian)
+				fob_names_russian -= pickedname
+				name = "[name] \'[pickedname]\'"
+	return
+
+/obj/item/fob_spawnpoint/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 600
+		if (2.0)
+			health -= 200
+		if (3.0)
+			health -= 20
+	if (health <= 0)
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
+		for (var/obj/effect/landmark/SP in range(src,2))
+			if (SP.name != "landmark")
+				qdel(SP)
+		message_admins("FOB at (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		qdel(src)
+		return

@@ -1027,9 +1027,6 @@ var/global/redirect_all_players = null
 						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction2_squad_leaders[H.squad])
 					H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
-	//
-
-	job_master.relocate(character)
 
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
