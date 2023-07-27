@@ -616,8 +616,6 @@
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 70)
 	min_positions = 1
 	max_positions = 10
@@ -670,8 +668,6 @@
 
 	is_operation_falcon = TRUE
 	is_medic = TRUE
-
-	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 2
@@ -729,8 +725,6 @@
 	is_operation_falcon = TRUE
 	is_radioman = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 5
@@ -781,8 +775,6 @@
 	spawn_location = "JoinLateRN"
 
 	is_operation_falcon = TRUE
-
-	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 5
@@ -927,8 +919,6 @@
 
 	is_operation_falcon = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 10
@@ -952,8 +942,6 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
-	FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/gunbox/specialist(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)

@@ -63,11 +63,13 @@
 			options["Sniper"] = list(/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper,/obj/item/ammo_magazine/a50cal,/obj/item/ammo_magazine/a50cal)
 			options["Anti-Tank"] = list(/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law)
 			options["Breacher"] = list(/obj/item/weapon/gun/projectile/shotgun/pump/remington870,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox)
-			options["Grenadier"] = list(/obj/item/weapon/gun/launcher/grenade/standalone/hk69,/obj/item/clothing/accessory/storage/webbing/shell40mm)
+			options["Grenadier - Standalone"] = list(/obj/item/weapon/gun/launcher/grenade/standalone/hk69,/obj/item/clothing/accessory/storage/webbing/shell40mm)
+			options["Grenadier - Underslung"] = list(/obj/item/weapon/gun/launcher/grenade/underslung/m203,/obj/item/clothing/accessory/storage/webbing/shell40mm)
 		if ("RUSSIAN")
 			options["Sniper"] = list(/obj/item/weapon/gun/projectile/semiautomatic/vintorez,/obj/item/ammo_magazine/vintorez,/obj/item/ammo_magazine/vintorez)
 			options["Anti-Tank"] = list(/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22,/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22)
 			options["Breacher"] = list(/obj/item/weapon/gun/projectile/submachinegun/saiga12,/obj/item/ammo_magazine/saiga12,/obj/item/ammo_magazine/saiga12,/obj/item/ammo_magazine/saiga12)
+			options["Grenadier - Underslung"] = list(/obj/item/weapon/gun/launcher/grenade/underslung/gp25,/obj/item/clothing/accessory/storage/webbing/vog25)
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
