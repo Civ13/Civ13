@@ -31,7 +31,7 @@
 	var/dispersion = 0.0
 
 	var/damage = 10
-	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
+	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS ELECTROCUT are the only things that should be in here
 	var/nodamage = FALSE //Determines if the projectile will skip any damage inflictions
 	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage using stun_effect_act() to mobs it hits, and other damage will be ignored
 	var/check_armor = "gun" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
@@ -79,7 +79,7 @@
 
 	var/can_hit_in_trench = 1
 	var/turf/firer_loc = null
-	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
+	var/btype = "FMJ" //normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
 
 /obj/item/projectile/New()

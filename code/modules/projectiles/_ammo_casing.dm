@@ -550,6 +550,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
 	value = 5
@@ -590,6 +591,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.04
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a32
 	caliber = "a32"
 	value = 5
@@ -600,6 +602,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.04
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a38
 	caliber = "a38"
 	value = 5
@@ -609,6 +612,7 @@
     icon_state = "pistol_bullet_anykind"
     spent_icon = "pistolcasing"
     weight = 0.05
+    btype = "FMJ"
     projectile_type = /obj/item/projectile/bullet/pistol/a380acp
     caliber = "a380acp"
     value = 5
@@ -629,6 +633,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45acp"
 	value = 7
@@ -649,6 +654,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.08
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a44
 	caliber = "a44"
 	value = 8
@@ -669,6 +675,7 @@
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.08
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a4570
 	caliber = "a4570"
 	value = 8
@@ -679,6 +686,7 @@
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.08
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a792x57
 	caliber = "a792x57"
 	value = 8
@@ -693,9 +701,16 @@
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.08
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a765x53
 	caliber = "a765x53"
 	value = 8
+
+/obj/item/ammo_casing/a765x53/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a765x53/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a765x25
 	name = "7.65x25mm Borchardt cartridge"
@@ -703,9 +718,15 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.08
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a765x25
 	caliber = "a765x25"
 	value = 8
+/obj/item/ammo_casing/a765x25/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a765x25/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a7x57
 	name = "7x57mm Mauser cartridge"
@@ -713,9 +734,15 @@
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.076
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a7x57
 	caliber = "a7x57"
 	value = 8
+/obj/item/ammo_casing/a7x57/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a7x57/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a77x58
 	name = "7.7x58mm Arisaka cartridge"
@@ -723,9 +750,16 @@
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.076
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a77x58
 	caliber = "a77x58"
 	value = 8
+
+/obj/item/ammo_casing/a77x58/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a77x58/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a77x58_wood
 	name = "7.7x58mm bullet"
@@ -754,9 +788,15 @@
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
 	caliber = "a762x54"
 	value = 2
+/obj/item/ammo_casing/a762x54/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a762x54/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a762x54/weak
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54/weak
@@ -796,9 +836,14 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
 	caliber = "a762x38"
 	value = 5
+/obj/item/ammo_casing/a762x38/HP
+	btype = "HP"
+/obj/item/ammo_casing/a762x38/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a8x27
 	name = "8x27mmR french ordnance cartridge"
@@ -829,6 +874,10 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/a9x19
 	caliber = "a9x19"
 	value = 2
+/obj/item/ammo_casing/a9x19/HP
+	btype = "HP"
+/obj/item/ammo_casing/a9x19/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a765x25
 	name = "7.65x25 Borchardt cartridge"
@@ -866,9 +915,16 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a792x33
 	caliber = "a792x33"
 	value = 2
+
+/obj/item/ammo_casing/a792x33/HP
+	btype = "HP"
+
+/obj/item/ammo_casing/a792x33/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a545x39
 	name = "5.45x39mm cartridge"
@@ -876,9 +932,15 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.04
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
 	caliber = "a545x39"
 	value = 2
+
+/obj/item/ammo_casing/a545x39/HP
+	btype = "HP"
+/obj/item/ammo_casing/a545x39/AP
+	btype = "AP"
 
 /obj/item/ammo_casing/a32acp
 	name = ".32 ACP cartridge"
@@ -886,6 +948,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.03
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a32acp
 	caliber = "a32acp"
 	value = 2
@@ -906,18 +969,33 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.04
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a556x45
 	caliber = "a556x45"
 	value = 2
+
+/obj/item/ammo_casing/a556x45/AP
+	btype = "AP"
+
+/obj/item/ammo_casing/a556x45/HP
+	btype = "HP"
+
 /obj/item/ammo_casing/a762x51
 	name = "7.62x51mm NATO cartridge"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
 	weight = 0.06
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x51
 	caliber = "a762x51"
 	value = 2
+
+/obj/item/ammo_casing/a762x51/AP
+	btype = "AP"
+
+/obj/item/ammo_casing/a762x51/HP
+	btype = "HP"
 
 /obj/item/ammo_casing/a762x51/weak
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x51/weak
@@ -929,9 +1007,15 @@
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
 	weight = 0.06
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x39
 	caliber = "a762x39"
 	value = 2
+/obj/item/ammo_casing/a762x39/AP
+	btype = "AP"
+
+/obj/item/ammo_casing/a762x39/HP
+	btype = "HP"
 
 /obj/item/ammo_casing/a44p
 	name = "Bugged bullet"
@@ -949,9 +1033,17 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
+	btype = "FMJ"
 	projectile_type = /obj/item/projectile/bullet/pistol/a57x28
 	caliber = "a57x28"
 	value = 2
+
+/obj/item/ammo_casing/a57x28/HP
+	btype = "HP"
+/obj/item/ammo_casing/a57x28/AP
+	btype = "AP"
+
+//////	SHOTUGN SHELLS//////////
 /obj/item/ammo_casing/shotgun
 	caliber = "12gauge"
 	weight = 0.12
@@ -983,3 +1075,4 @@
 	icon_state = "rubber"
 	spent_icon = "rubber_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/rubber
+

@@ -18,6 +18,14 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/ak74/HP
+	name = "AK-74 Magazine HP (5.45x39mm)"
+	ammo_type = /obj/item/ammo_casing/a545x39/HP
+
+/obj/item/ammo_magazine/ak74/AP
+	name = "AK-74 Magazine AP (5.45x39mm)"
+	ammo_type = /obj/item/ammo_casing/a545x39/AP
+
 /obj/item/ammo_magazine/bx7
 	name = "BX-7 (.50 caliber)"
 	icon_state = "bx7"
@@ -47,6 +55,14 @@
 	max_ammo = 30
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m16/HP
+	name = "STANAG magazine HP(5.56x45mm)"
+	ammo_type = /obj/item/ammo_casing/a556x45/HP
+
+/obj/item/ammo_magazine/m16/AP
+	name = "STANAG magazine AP(5.56x45mm)"
+	ammo_type = /obj/item/ammo_casing/a556x45/AP
 
 /obj/item/ammo_magazine/ar10
 	name = "AR-10 magazine (7.62x51mm)"
@@ -183,6 +199,14 @@
 	max_ammo = 17
 	weight = 0.33
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/glock17/HP
+	name = "G17 Glock HP (9x19mm)"
+	ammo_type = /obj/item/ammo_casing/a9x19/HP
+
+/obj/item/ammo_magazine/glock17/AP
+	name = "G17 Glock AP (9x19mm)"
+	ammo_type = /obj/item/ammo_casing/a9x19/AP
 
 /obj/item/ammo_magazine/sig250
 	name = "SIG 250 magazine (9x19mm)"

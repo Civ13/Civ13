@@ -157,7 +157,6 @@
 	force = 6.0
 	throwforce = 3.0
 	slot = "leg_armor"
-
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	body_parts_covered = LEGS
 	armor = list(melee = 75, arrow = 50, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
@@ -165,6 +164,39 @@
 	sharp = FALSE
 	edge = TRUE
 	w_class = 2.0
+
+//armor plates go here
+/obj/item/clothing/accessory/armor_plate
+	name = "light armor plate"
+	desc = "A basic armor plate made of steel-reinforced synthetic fibers. slide into a plate carrier."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "plate1"
+	item_state = "plate1"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+	armor = list(melee = 75, arrow = 50, gun = 30, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slot = ACCESSORY_SLOT_ARMOR_C
+
+/obj/item/clothing/accessory/armor_plate/medium
+	name = "medium armor plate"
+	desc = "A plasteel-reinforced synthetic armor plate, providing good protection. slide into  a plate carrier."
+	armor = list(melee = 75, arrow = 50, gun = 60, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.8
+
+/obj/item/clothing/accessory/armor_plate/heavy
+	name = "heavy armor plate"
+	desc = "A ceramics-reinforced synthetic armor plate, providing state of of the art protection. slides into to a plate carrier."
+	icon_state = "armor_merc"
+	armor = list(melee = 75, arrow = 50, gun = 70, energy = 32, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.2
 
 /obj/item/clothing/accessory/armor/legguards
 	name = "leg guards"
@@ -238,6 +270,8 @@
 	item_state = "iba_black"
 	worn_state = "iba_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	valid_accessory_slots = list(ACCESSORY_SLOT_INSIGNIA, ACCESSORY_SLOT_ARMOR_C, ACCESSORY_SLOT_ARMOR_A, ACCESSORY_SLOT_ARMOR_L, ACCESSORY_SLOT_ARMOR_S, ACCESSORY_SLOT_ARMOR_M)
+	restricted_accessory_slots = list(ACCESSORY_SLOT_ARMOR_C, ACCESSORY_SLOT_ARMOR_A, ACCESSORY_SLOT_ARMOR_L, ACCESSORY_SLOT_ARMOR_S)
 	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
 	value = 120
 	slowdown = 0.4

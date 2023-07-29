@@ -313,6 +313,12 @@
 	penetrating = 2
 	armor_penetration = 6
 
+/obj/item/projectile/bullet/pistol/a762x38/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/pistol/a762x38/AP
+	btype = "HP"
+
 /obj/item/projectile/bullet/pistol/a8x27
 	damage = DAMAGE_LOW - 6
 	penetrating = 1
@@ -394,20 +400,43 @@
 	penetrating = 5
 	armor_penetration = 42
 
+/obj/item/projectile/bullet/rifle/a765x53/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a765x53/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/rifle/a765x25
 	damage = DAMAGE_LOW + 2
 	penetrating = 2
 	armor_penetration = 7
+
+/obj/item/projectile/bullet/rifle/a765x25/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a765x25/AP
+	btype = "AP"
 
 /obj/item/projectile/bullet/rifle/a7x57
 	damage = DAMAGE_VERY_HIGH + 17
 	penetrating = 5
 	armor_penetration = 36
 
+/obj/item/projectile/bullet/rifle/a7x57/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a7x57/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/rifle/a77x58
 	damage = DAMAGE_VERY_HIGH + 20
 	penetrating = 5
 	armor_penetration = 44
+/obj/item/projectile/bullet/rifle/a77x58/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a77x58/AP
+	btype = "AP"
 
 /obj/item/projectile/bullet/rifle/a77x58_wood
 	damage = 2
@@ -473,20 +502,44 @@
 	penetrating = 3
 	armor_penetration = 28
 
+/obj/item/projectile/bullet/pistol/a792x33/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/pistol/a792x33/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/rifle/a762x39
 	damage = DAMAGE_HIGH + 12
 	penetrating = 3
 	armor_penetration = 30
+
+/obj/item/projectile/bullet/rifle/a762x39/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a762x39/AP
+	btype = "AP"
 
 obj/item/projectile/bullet/rifle/a545x39
 	damage = DAMAGE_MEDIUM_HIGH + 15
 	penetrating = 3
 	armor_penetration = 16
 
+/obj/item/projectile/bullet/rifle/a545x39/HP
+	btype = "HP"
+/obj/item/projectile/bullet/rifle/a545x39/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/rifle/a762x51
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
+
+/obj/item/projectile/bullet/rifle/a762x51/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a762x51/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	damage = (DAMAGE_VERY_HIGH)/2
 	penetrating = 3
@@ -497,10 +550,22 @@ obj/item/projectile/bullet/rifle/a556x45
 	penetrating = 3
 	armor_penetration = 18
 
+/obj/item/projectile/bullet/rifle/a556x45/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/rifle/a556x45/AP
+	btype = "AP"
+
 /obj/item/projectile/bullet/pistol/a765x25
 	damage = DAMAGE_LOW + 2
 	penetrating = 2
 	armor_penetration = 7
+
+/obj/item/projectile/bullet/pistol/a765x25/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/pistol/a765x25/AP
+	btype = "AP"
 
 /obj/item/projectile/bullet/pistol/a762x25
 	damage = DAMAGE_MEDIUM_HIGH + 4
@@ -511,6 +576,11 @@ obj/item/projectile/bullet/rifle/a556x45
 	damage = DAMAGE_LOW - 12
 	penetrating = 2
 	armor_penetration = 43
+/obj/item/projectile/bullet/pistol/a57x28/HP
+	btype = "HP"
+
+/obj/item/projectile/bullet/pistol/a57x28/AP
+	btype = "AP"
 
 /obj/item/projectile/bullet/rifle/a50cal
 	damage = DAMAGE_OH_GOD + 95

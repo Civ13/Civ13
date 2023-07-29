@@ -14,8 +14,7 @@
 	var/obj/item/projectile/BB = null	//The loaded bullet - make it so that the projectiles are created only when needed?
 	var/spent_icon = null
 	var/thrown_force_divisor = 0.1
-	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
-
+	var/btype = "normal" //FMJ, Normal, AP (armor piercing) and HP (hollow point)
 /obj/item/ammo_casing/New()
 	..()
 	if (ispath(projectile_type))
@@ -28,10 +27,12 @@
 /obj/item/ammo_casing/proc/checktype()
 	BB.btype = btype
 	BB.checktype()
-	if (btype == "AP")
-		name = "[name] (AP)"
+	if (btype == "FMJ")
+		name = "[name] (FMJ)"
 	else if (btype == "HP")
 		name = "[name] (HP)"
+	else if (btype == "AP")
+		name = "[name] (AP)"
 
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src
