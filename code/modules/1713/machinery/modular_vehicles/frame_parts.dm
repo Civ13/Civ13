@@ -77,6 +77,18 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 	w_front = list("c_windshield",FALSE,TRUE,0,0.1,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/car/lf/tanket
+	w_left = list("c_door",TRUE,TRUE,10,10,TRUE,TRUE)
+/obj/structure/vehicleparts/frame/car/rf/tanket
+	w_right = list("c_wall",FALSE,TRUE,10,10,TRUE,TRUE)
+
+/obj/structure/vehicleparts/frame/car/lf/tanket/front
+	w_left = list("c_wall",TRUE,TRUE,10,10,TRUE,TRUE)
+	w_front = list("c_armoredfront",FALSE,TRUE,10,10,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/rf/tanket/front
+	w_right = list("c_wall",FALSE,TRUE,10,10,TRUE,TRUE)
+	w_front = list("c_armoredfront",FALSE,TRUE,10,10,FALSE,FALSE)
+
 /obj/structure/vehicleparts/frame/car/lf/truck/armored
 	w_left = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
 	w_front = list("c_armoredfront",FALSE,TRUE,15,30,FALSE,FALSE)
@@ -197,6 +209,13 @@ var/global/list/vehicle_walls = list( \
 /obj/structure/vehicleparts/frame/car/lf
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/car/rb/tanket
+	w_right = list("c_door",TRUE,TRUE,10,10,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,10,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/lb/tanket
+	w_left = list("c_door",TRUE,TRUE,10,10,TRUE,TRUE)
+	w_back = list("c_wall",TRUE,TRUE,10,10,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/rb/armored
 	w_right = list("c_windoweddoor",TRUE,TRUE,5,30,TRUE,TRUE)
