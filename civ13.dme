@@ -463,7 +463,6 @@
 #include "code\modules\1713\crates.dm"
 #include "code\modules\1713\custom_apparel.dm"
 #include "code\modules\1713\doctor_handbook.dm"
-#include "code\modules\1713\equip_boxes.dm"
 #include "code\modules\1713\helmet.dm"
 #include "code\modules\1713\language_book.dm"
 #include "code\modules\1713\lantern.dm"
@@ -994,5 +993,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1903\abashiri.dmm"
+#include "maps\1969\hue.dmm"
 // END_INCLUDE
