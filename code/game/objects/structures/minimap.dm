@@ -184,9 +184,9 @@
 /obj/structure/sign/map_board/New()
 	..()
 	switch (map.ID)
-		if ("SOVAFGHAN")
+		if (MAP_SOVAFGHAN)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
-		if ("OPERATION_FALCON")
+		if (MAP_OPERATION_FALCON)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/structure/sign/map_board/examine(mob/user)

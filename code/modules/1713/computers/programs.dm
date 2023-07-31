@@ -2072,13 +2072,13 @@
 	if(mainbody == "---")
 		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
-			if ("DUTCH")
+			if (DUTCH)
 				mainbody += "[faction1_supply_points]<br>"
 				choice = dutch_choice
-			if ("RUSSIAN")
+			if (RUSSIAN)
 				mainbody += "[faction2_supply_points]<br>"
 				choice = rus_choice
-			if ("BRITISH")
+			if (BRITISH)
 				mainbody += "[faction1_supply_points]<br>"
 				choice = british_choice
 		for (var/i in choice)
@@ -2091,13 +2091,13 @@
 		var/list/choice
 		mainbody = "Supply Points Available: "
 		switch (user.faction_text)
-			if ("DUTCH")
+			if (DUTCH)
 				mainbody += "[faction1_supply_points]<br>"
 				choice = dutch_choice
-			if ("RUSSIAN")
+			if (RUSSIAN)
 				mainbody += "[faction2_supply_points]<br>"
 				choice = rus_choice
-			if ("BRITISH")
+			if (BRITISH)
 				mainbody += "[faction1_supply_points]<br>"
 				choice = british_choice
 		for (var/i in choice)
@@ -2107,7 +2107,7 @@
 	if (href_list["vehiclegiver"])
 		var/found = FALSE
 		switch (user.faction_text)
-			if ("DUTCH")
+			if (DUTCH)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
 					if (found)
 						break
@@ -2117,7 +2117,7 @@
 					for (var/mob/living/human/HT in T)
 						found = TRUE
 						break
-			if ("RUSSIAN")
+			if (RUSSIAN)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
 					if (found)
 						break
@@ -2127,7 +2127,7 @@
 					for (var/mob/living/human/HT in T)
 						found = TRUE
 						break
-			if ("BRITISH")
+			if (BRITISH)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/british))
 					if (found)
 						break
@@ -2148,10 +2148,8 @@
 		cost = text2num(cost)
 
 		var/obj/effects/premadevehicles/PV
-		var/basecolor
 		switch (user.faction_text)
-			if ("DUTCH")
-				basecolor = "#5C5C4C"
+			if (DUTCH)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/dutch))
 					if (found)
 						break
@@ -2161,8 +2159,7 @@
 					for (var/mob/living/human/HT in T)
 						found = TRUE
 						break
-			if ("RUSSIAN")
-				basecolor = "#5C5C4C"
+			if (RUSSIAN)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/russian))
 					if (found)
 						break
@@ -2172,8 +2169,7 @@
 					for (var/mob/living/human/HT in T)
 						found = TRUE
 						break
-			if ("BRITISH")
-				basecolor = "#5C5C4C"
+			if (BRITISH)
 				for(var/turf/T in get_area_turfs(/area/caribbean/supply/british))
 					if (found)
 						break
@@ -2190,7 +2186,7 @@
 			do_html(user)
 			return
 		switch (user.faction_text)
-			if ("DUTCH")
+			if (DUTCH)
 				if (faction1_supply_points)
 					if (faction1_supply_points >= cost)
 						faction1_supply_points -= cost
@@ -2204,7 +2200,7 @@
 					sleep(0.5)
 					do_html(user)
 					return
-			if ("RUSSIAN")
+			if (RUSSIAN)
 				if (faction2_supply_points)
 					if (faction2_supply_points >= cost)
 						faction2_supply_points -= cost
@@ -2218,7 +2214,7 @@
 					sleep(0.5)
 					do_html(user)
 					return
-			if ("BRITISH")
+			if (BRITISH)
 				if (faction1_supply_points)
 					if (faction1_supply_points >= cost)
 						faction1_supply_points -= cost
@@ -2262,15 +2258,14 @@
 		message_admins("[user.name] ([user.ckey]) ([user.faction_text]) bought a vehicle at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)", user.ckey)
 		log_game("[user.name] ([user.ckey]) ([user.faction_text]) bought a [href_list["vehiclegiver"]] at ([origin.x],[origin.y],[origin.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[origin.x];Y=[origin.y];Z=[origin.z]'>JMP</a>)")
 		if (PV)
-			PV.custom_color = basecolor
 			switch (user.faction_text)
-				if ("DUTCH")
+				if (DUTCH)
 					PV.doorcode = 5970
 					new /obj/item/weapon/key/dutch(src)
-				if ("RUSSIAN")
+				if (RUSSIAN)
 					PV.doorcode = 4975
 					new /obj/item/weapon/key/russian(src)
-				if ("BRITISH")
+				if (BRITISH)
 					PV.doorcode = 1990
 					new /obj/item/weapon/key/british(src)
 

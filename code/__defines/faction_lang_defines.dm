@@ -115,10 +115,13 @@
 			return "French Empire"
 
 	if (constant == DUTCH)
-		if (age >= 6)
-			return "Dutch Monarchy"
+		if (map.ID == "OPERATION_FALCON")
+			return "Dutch Royal Army"
 		else
-			return "Dutch Republic"
+			if (age >= 6)
+				return "Dutch Monarchy"
+			else
+				return "Dutch Republic"
 
 	if (constant == JAPANESE)
 		return "Japanese Empire"
