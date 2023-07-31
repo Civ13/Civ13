@@ -357,6 +357,7 @@
 	else
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
+
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	switch (map.ID)
 		if (MAP_OCCUPATION)
@@ -646,8 +647,6 @@
 	else
 		user << "<span class = 'warning'>You need enough gunpowder in the container to make a cartridge.</span>"
 		return
-
-
 
 /obj/item/stack/ammopart/casing/tank/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return

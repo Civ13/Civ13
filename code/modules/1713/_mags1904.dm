@@ -648,3 +648,8 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "shotgun rubber box (.12 gauge)"
 	icon_state = "beanbagbox"
 	ammo_type = /obj/item/ammo_casing/shotgun/rubber
+
+/obj/item/ammo_magazine/shellbox/breaching
+	name = "shotgun breaching slug box (.12 gauge)"
+	icon_state = "slugbox"
+	ammo_type = /obj/item/ammo_casing/shotgun/breaching

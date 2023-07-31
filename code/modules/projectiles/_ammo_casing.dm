@@ -1211,6 +1211,13 @@
 	spent_icon = "beanbag-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
 
+/obj/item/ammo_casing/shotgun/breaching
+	name = "breaching slug"
+	desc = "A 12 gauge breaching slug used to break open locks."
+	icon_state = "slug-shell"
+	spent_icon = "slug-spent"
+	projectile_type = /obj/item/projectile/bullet/shotgun/breaching
+
 /obj/item/ammo_casing/shotgun/rubber
 	name = "rubber shot"
 	desc = "A rubber shell."

@@ -674,22 +674,30 @@
 
 /obj/item/projectile/bullet/pellet/buckshot
 	name = "buckshot"
+	icon_state = "buckshot"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 10
-	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
-	damage = DAMAGE_MEDIUM_HIGH
 	damage = DAMAGE_VERY_HIGH + 67
 	armor_penetration = 33
 
 /obj/item/projectile/bullet/shotgun/beanbag
 	name = "beanbag"
-	check_armor = "melee"
-	armor_penetration = 0
 	damage = 5
+	armor_penetration = 0
 	agony = 60
+	check_armor = "melee"
+	
+	embed = FALSE
+	sharp = FALSE
+
+/obj/item/projectile/bullet/shotgun/breaching
+	name = "breaching slug"
+	damage = DAMAGE_LOW + 5
+	armor_penetration = 10
+	
 	embed = FALSE
 	sharp = FALSE
 
@@ -717,7 +725,7 @@
 	
 	var/turf/T = get_turf(A)
 	if (!(istype(A, /obj/structure/vehicleparts/frame)))
-		explosion(T, 0, 0, 2, 1)
+		explosion(T, 0, 0, 1, 1)
 	if (incendiary)
 		ignite_turf(T,8,40)
 	
