@@ -3203,7 +3203,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us/officer
