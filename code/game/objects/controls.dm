@@ -155,12 +155,13 @@
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
 			"<span class='danger'>You start deploying \the [W.name].</span>")
-		if (do_after(user, 80, src))
+		if (do_after(user, 8 SECONDS, src))
 			visible_message(
 				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
 				"<span class='danger'>You have deployed \the [W.name]!</span>")
-			qdel(W)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			var/obj/item/weapon/siegeladder/ANCH = W
+			user.remove_from_mob(ANCH)
+			ANCH.loc = src.loc
 			ANCH.anchored = TRUE
 			src.climbable = TRUE
 			ANCH.deployed = TRUE
@@ -233,7 +234,7 @@
 	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
 		user << "<span class='notice'>You start cutting through the [src]...</span>"
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
-		if (do_after(user, 50, target = src))
+		if (do_after(user, 5 SECONDS, src))
 			qdel(src)
 			return
 
@@ -252,22 +253,6 @@
 /obj/structure/gate/sandstone/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the wall uselessly!"//sucker
-	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
-		if (do_after(user, 80, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
-			qdel(W)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
-			ANCH.anchored = TRUE
-			src.climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
-			return
 	else
 		..()
 
@@ -289,22 +274,6 @@
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		user << "You hit the doors uselessly!"//sucker
-	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
-		if (do_after(user, 80, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
-			qdel(W)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
-			ANCH.anchored = TRUE
-			src.climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
-			return
 	else
 		..()
 
