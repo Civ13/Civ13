@@ -570,7 +570,7 @@
 		return
 	for (var/i = 1, i <= awards.len, i++)
 		if (awards[i][1]!="")
-			awards[i][6] =  awards.len
+			awards[i][6] = awards.len
 			var/txtexport = list2text(awards[i])
 			text2file(txtexport,F)
 			var/place2text = ""
