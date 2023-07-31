@@ -699,6 +699,11 @@ var/global/redirect_all_players = null
 			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Messiah"))
 				WWalert(usr,"Someone needs to spawn as David Koresh first!", "Error")
 				return
+		if (map && map.ID == MAP_DRUG_BUST)
+			var/obj/map_metadata/drug_bust/CP = map
+			if (isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Vyacheslav Grigoriev"))
+				WWalert(usr,"Someone needs to spawn as \"Tatarin\" first!", "Error")
+				return
 		if (map && map.ID == MAP_ALLEYWAY)
 			if (actual_job && actual_job.title == "Yama Wakagashira")
 				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
