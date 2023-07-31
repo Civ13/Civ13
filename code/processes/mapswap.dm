@@ -266,7 +266,8 @@
 					MAP_BATTLEROYALE_IMPERIAL = 0,
 					MAP_BATTLEROYALE_WILDWEST = 0,
 					MAP_BATTLEROYALE_MODERN = 0,
-					MAP_HUNGERGAMES = 0,)
+//					MAP_HUNGERGAMES = 0,
+				)
 			if ("MilSim (BETA TESTING)")
 //			MilSim 2014 to 2023 - TDM
 				maps = list(

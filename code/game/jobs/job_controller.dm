@@ -471,6 +471,9 @@ var/global/datum/controller/occupations/job_master
 		if (job.rank_abbreviation)
 			H.real_name = "[job.rank_abbreviation] [H.real_name]"
 			H.name = H.real_name
+		if (map.battleroyale && H.ckey)
+			H.real_name = H.ckey
+			H.name = H.ckey
 
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
