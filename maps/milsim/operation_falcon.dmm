@@ -284,7 +284,7 @@
 "vV" = (/obj/structure/floodlight/on,/turf/floor/dirt/dust,/area/caribbean)
 "vX" = (/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/one)
 "vZ" = (/turf/floor/plating/road/whiteline{dir = 5; icon_state = "road_line"},/area/caribbean/supply/dutch)
-"wa" = (/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/turf/floor/plating/road,/area/caribbean)
+"wa" = (/obj/structure/vehicleparts/frame/car/tigr/rf,/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/turf/floor/plating/road,/area/caribbean)
 "wc" = (/obj/structure/curtain/closed/green{pixel_x = 0; pixel_y = -32},/turf/floor/wood/fancywood,/area/caribbean/british/land/inside)
 "wg" = (/obj/structure/bed/fieldbed,/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/plating/road,/area/caribbean/british/land/inside)
 "wh" = (/obj/structure/lamp/lamp_big,/turf/floor/plating/tiled/woodh,/area/caribbean/british/land/inside)

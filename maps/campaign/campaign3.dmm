@@ -231,7 +231,7 @@
 "uy" = (/obj/structure/sign/traffic/side{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/taiga)
 "uC" = (/obj/structure/railing/steel,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/winter,/area/caribbean/nomads/taiga)
 "uJ" = (/obj/structure/sign/traffic/side{dir = 1},/mob/living/simple_animal/civilian,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/taiga)
-"uM" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
+"uM" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/taiga)
 "uP" = (/obj/covers/wood_ship,/obj/structure/table/modern/table,/obj/item/weapon/handcuffs,/turf/floor/dirt,/area/caribbean/roofed/taiga)
 "uQ" = (/obj/structure/barricade/antitank,/turf/floor/beach/water/ice,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
 "uR" = (/obj/structure/closet/crate/coldwar,/turf/floor/plating/road,/area/caribbean/british/land/inside/objective)

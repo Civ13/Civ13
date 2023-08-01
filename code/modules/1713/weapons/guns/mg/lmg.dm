@@ -477,7 +477,6 @@
 	load_delay = 50
 	slowdown = 0.9
 	effectiveness_mod = 1.01
-///NSVT//////////////
 
 /obj/item/weapon/gun/projectile/automatic/kord
 	name = "Kord 6P50"
@@ -501,7 +500,6 @@
 	load_delay = 55
 	slowdown = 0.8
 	effectiveness_mod = 0.85
-////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13
 	name = "Maschinengewehr 13"
@@ -539,7 +537,6 @@
 	update_held_icon()
 	return
 
-////////////////////////C6 GPMG/////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/c6
 	name = "C6 GPMG"
 	desc = "A Canadian License Produced FN MAG called the C6 GPMG, the main squad support weapon of the CAF."
@@ -548,7 +545,7 @@
 	base_icon = "c6"
 	max_shells = 220
 	caliber = "a762x51"
-	weight = 8.1
+	weight = 11.8
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x51
 	load_method = MAGAZINE
@@ -562,6 +559,7 @@
 	force = 20
 	throwforce = 30
 	effectiveness_mod = 1.07
+
 /obj/item/weapon/gun/projectile/automatic/c6/update_icon()
 	if (ammo_magazine)
 		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"

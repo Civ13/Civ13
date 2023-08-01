@@ -1,34 +1,32 @@
-//*********************
-//POD MACHINEGUNS
-//*********************
-/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
-	set category = null // was "Minigun" - removes lag
-	set name = "Eject magazine"
-	set src in range(1, usr)
-	try_remove_mag(usr)
-
-/////////////////////////////
-////Stationary Machinegun////
-/////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary
-	name = "machinegun"
-	desc = "a large machinegun."
-	icon_state = ""
-	item_state = ""
-	layer = MOB_LAYER + 3
-	anchored = TRUE
-	density = TRUE
-	w_class = ITEM_SIZE_GARGANTUAN
-	load_method = SINGLE_CASING
-	handle_casings = REMOVE_CASINGS
-	max_shells = 500
-	caliber = "a762x54"
-	slot_flags = FALSE
-	ammo_type = /obj/item/ammo_casing/a762x54
+	name = "Maxim 1895"
+	desc = "Heavy Maxim machinegun on cart mount."
+	icon_state = "maxim"
+	base_icon = "maxim"
 	stat = "machinegun"
 	maxhealth = 500
-	firemodes = list(name = "full auto", burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), accuracy=list(2))
+	layer = MOB_LAYER + 3
+	
+	max_shells = 0
+	w_class = ITEM_SIZE_GARGANTUAN
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	
+	density = TRUE
+	anchored = FALSE
+	auto_eject = TRUE
+	
+	caliber = "a762x54"
+	magazine_type = /obj/item/ammo_magazine/maxim
+	ammo_type = /obj/item/ammo_casing/a762x54
+	
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
+	firemodes = list(
+		list(name = "full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	slot_flags = FALSE
 	full_auto = TRUE
+	fire_delay = 3
 
 	var/maximum_use_range = FALSE // user loc at minigun's current loc (used in use_object.dm)
 
@@ -75,6 +73,12 @@
 				user.show_message("<span class = 'warning'>You need both hands to use a machinegun.</span>")
 		else
 			user.show_message("<span class='warning'>You're too far from the handles.</span>")
+
+/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
+	set category = null
+	set name = "Eject magazine"
+	set src in range(1, usr)
+	try_remove_mag(usr)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/try_remove_mag(mob/user)
 	if (!ishuman(user))

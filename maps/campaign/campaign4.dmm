@@ -776,7 +776,7 @@
 "NT" = (/obj/structure/wild/bush,/obj/structure/barbwire{dir = 1},/obj/structure/barbwire,/obj/structure/barricade/horizontal,/turf/floor/grass,/area/caribbean/nomads/forest)
 "NW" = (/obj/structure/sign/traffic/side{dir = 1},/obj/structure/barbwire{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
 "NX" = (/obj/structure/rails,/turf/floor/plating/road,/area/caribbean/nomads/forest)
-"Oa" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
+"Oa" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "Oe" = (/obj/structure/rails/turn/right,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest)
 "Oi" = (/obj/structure/wild/flowers,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
 "Om" = (/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/obj/structure/flag/redmenia,/turf/floor/plating/marble/decorative_tile,/area/caribbean/nomads/forest)

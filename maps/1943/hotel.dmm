@@ -178,7 +178,7 @@
 "dv" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall{icon_state = "green1"})
 "dw" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "dx" = (/obj/item/weapon/reagent_containers/food/condiment/peppermill,/obj/item/weapon/reagent_containers/food/condiment/peppermill,/obj/structure/table/modern/table,/turf/floor/plating/white,/area/caribbean/houses)
-"dy" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"dy" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "dz" = (/obj/effect/decal/cleanable/blood/writing{dir = 10},/obj/item/weapon/paper/crumpled/bloody{name = "Farewell note"; desc = "Whoever finds this tell my m"},/turf/floor/wood,/area/caribbean/german/inside)
 "dA" = (/obj/structure/bed/chair/wood/bleacher/l{name = "wood bench"},/turf/floor/plating/metroline{dir = 1; icon_state = "metroline"; name = "Lobby floor"},/area/caribbean/houses)
 "dB" = (/obj/structure/shopping_cart,/turf/floor/plating/steel,/area/caribbean/houses)

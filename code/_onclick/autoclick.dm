@@ -36,6 +36,7 @@
 				if (!can_fire)
 					continue
 				if (MG.last_user == src)
+					MG.next_fire_time = 0 // no 'you can't fire' spam
 					Click(selected_target[1], location, control, selected_target[2])
 
 				foundMG = TRUE
@@ -69,7 +70,7 @@
 	else if (!H)
 		for (var/obj/item/weapon/gun/projectile/automatic/stationary/MG in get_turf(src))
 			if (MG.last_user == src)
-				return TRUE
+				return MG.CanItemAutoclick(object, location, params)
 
 /obj/item/proc/CanItemAutoclick(object, location, params)
 	if (istype(src, /obj/item/weapon/gun))

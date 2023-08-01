@@ -132,7 +132,7 @@
 "dN" = (/obj/structure/window/barrier,/mob/living/simple_animal/mouse/white,/turf/floor/dirt,/area/caribbean/nomads/forest/snow)
 "dO" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "dP" = (/obj/item/weapon/trafficcone,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
-"dQ" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 0; layer = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
+"dQ" = (/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 0; layer = 4},/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "dR" = (/obj/structure/closet/cabinet,/turf/floor/wood{icon_state = "wood-broken3"},/area/caribbean/houses)
 "dT" = (/obj/covers/carpet/redcarpet,/obj/structure/bed/chair/wood/red{dir = 1; icon_state = "wooden_chair_red"},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/three)
 "dW" = (/obj/structure/barricade,/turf/floor/wood/ship{icon_state = "stage_stairs"},/area/caribbean/houses)

@@ -1163,7 +1163,7 @@
 "ws" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "wt" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing,/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "wu" = (/obj/structure/table/modern/table,/obj/item/weapon/book{desc = "For recording who is interred where and why."; name = "Internment Log"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/german/inside)
-"wv" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34{anchored = 1},/turf/floor/plating/road,/area/caribbean/german)
+"wv" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 1},/turf/floor/plating/road,/area/caribbean/german)
 "ww" = (/obj/covers/brick_wall,/obj/structure/sign/kiddieplaque{desc = "A Productive Worker is a Happy Worker."; name = "\improper Factory Floor"},/turf/wall/brick,/area/caribbean/german/inside)
 "wx" = (/obj/structure/closet,/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/pervitin,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/antitox,/obj/item/weapon/storage/pill_bottle/potassium_iodide,/turf/floor/wood,/area/caribbean/roofed)
 "wy" = (/obj/structure/table/modern,/obj/structure/potted_plant,/obj/structure/lamp/lamp_big/alwayson/white{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed)
