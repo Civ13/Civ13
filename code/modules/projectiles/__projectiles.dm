@@ -279,9 +279,9 @@
 	armor_penetration = 10
 
 /obj/item/projectile/bullet/rifle/a65x52
-	damage = DAMAGE_VERY_HIGH
+	damage = DAMAGE_VERY_HIGH + 10
 	penetrating = 5
-	armor_penetration = 35
+	armor_penetration = 52
 
 /obj/item/projectile/bullet/rifle/a8x53
 	damage = DAMAGE_VERY_HIGH + 13

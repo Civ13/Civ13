@@ -502,6 +502,22 @@
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/chi_ha/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
+/obj/effects/premadevehicles/tank/l3
+	name = "L3/33"
+	icon_state = "3x3"
+	custom_color = "#D79E57"
+	axis = /obj/structure/vehicleparts/axis/heavy/l3
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf,/obj/structure/vehicleparts/movement/tracks),
+	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf,/obj/structure/vehicleparts/movement/tracks),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc,/obj/structure/bed/chair/drivers/tank{anchored = 1}),
+	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/item/weapon/gun/projectile/automatic/stationary/breda30{anchored = 1},/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
+	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
+	)
+
 /obj/effects/premadevehicles/tank/t34
 	name = "T34"
 	icon_state = "4x4"
@@ -688,7 +704,7 @@
 
 /obj/effects/premadevehicles/apc/m113
 	name = "M113"
-	icon_state = "3x3"
+	icon_state = "4x4"
 	axis = /obj/structure/vehicleparts/axis/heavy/m113
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/m113/right,/obj/structure/vehicleparts/frame/m113/rf,/obj/structure/engine/internal/diesel/premade/m113,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
@@ -729,7 +745,7 @@
 
 /obj/effects/premadevehicles/apc/bmd2new
 	name = "BMD-2"
-	icon_state = "4x4"
+	icon_state = "3x3"
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/bmd2new
 	tocreate = list(

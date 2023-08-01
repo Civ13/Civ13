@@ -78,8 +78,18 @@
 	var/image/mob_overlay = null
 	var/overlay_state = null
 
+/obj/item/ammo_magazine/breda30
+	name = "Breda 30 clip (6.5x52mm)"
+	icon_state = "breda30"
+	mag_type = SPEEDLOADER
+	clip = TRUE
+	caliber = "a65x52"
+	ammo_type = /obj/item/ammo_casing/a65x52
+	max_ammo = 20
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/sten2
-	name = "Sten Magazine"
+	name = "Sten Magazine (9x19mm)"
 	icon_state = "sten2"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
@@ -122,6 +132,16 @@
 /obj/item/ammo_magazine/mp40/mp5
 	name = "MP5 magazine (9x19mm)"
 	icon_state = "mp5"
+
+/obj/item/ammo_magazine/mp40/model38
+	name = "MAB 38 magazine (9x19mm)"
+	icon_state = "mp40"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 30
+	weight = 0.34
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/fg42
 	name = "FG 42 magazine (7.92x57mm)"

@@ -889,7 +889,6 @@
 	caliber = "a577"
 	value = 8
 
-
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mmR cartridge"
 	desc = "A brass casing."

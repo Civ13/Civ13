@@ -672,6 +672,10 @@
 /obj/structure/engine/internal/gasoline/premade/panzervi
 	enginesize = 25000
 
+/obj/structure/engine/internal/gasoline/premade/l3
+	name = "FIAT-SPA CV3"
+	enginesize = 4300
+
 /obj/structure/engine/internal/diesel/premade/omw22_2
 	name = "OMW 15 liter diesel engine"
 	enginesize = 15000
