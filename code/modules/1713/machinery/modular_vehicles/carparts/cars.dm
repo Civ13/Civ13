@@ -420,6 +420,16 @@
 	speedlist = list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 6
 
+/obj/structure/vehicleparts/axis/car/cv
+	name = "CV 33"
+	desc = "A powered axis from a tankette."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 1900
+	speedlist = list(1=7,2=6,3=5,4=4,5=3)
+	turntimer = 6
+
 /obj/structure/vehicleparts/axis/car/falcon
 	name = "SMC Falcon"
 	desc = "A powered axis from a car."
