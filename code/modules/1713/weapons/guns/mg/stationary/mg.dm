@@ -169,7 +169,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30
 	name = "Breda 30 machine gun"
-	desc = "An Italian heavy machinegun. Chambered in 6.5x52mm Carcano."
+	desc = "The Fucile Mitragliatore Breda modello 30 is a Italian light machinegun that entered service in 1930. The design of the gun is rather impractical and often makes for long reload times. Chambered in 6.5x52mm Carcano."
 	icon_state = "type92hmg"
 	base_icon = "type92hmg"
 	caliber = "a65x52"
@@ -177,13 +177,32 @@
 	magazine_type = /obj/item/ammo_magazine/breda30
 	good_mags = list(/obj/item/ammo_magazine/breda30)
 	firemodes = list(
-		list(name = "full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name = "full auto", burst=3, burst_delay=2.5, fire_delay=2.5, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a65x52
 	load_method = SINGLE_CASING | SPEEDLOADER
+	max_shells = 20
+	load_delay = 3 SECONDS
 	
-/obj/item/weapon/gun/projectile/automatic/stationary/type98/update_icon()
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
+
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
+	pixel_y = -8
+	anchored = TRUE
+	density = FALSE
+	can_turn = FALSE
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary/update_icon()
+	..()
+	switch(dir)
+		if (NORTH)
+			pixel_y = 8
+		if (SOUTH)
+			pixel_y = -8
+		if (EAST)
+			pixel_x = 8
+		if (WEST)
+			pixel_x = -8
 
 /obj/item/weapon/gun/projectile/automatic/stationary/browning
 	name = "M1919A1 browning machine gun"
