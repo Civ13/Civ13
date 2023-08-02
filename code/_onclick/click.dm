@@ -77,7 +77,7 @@
 						opponent_has_ball = HM.football
 					if (prob(35) && opponent_has_ball)
 						H.visible_message("<font color='red'>[H] takes the ball from [HM]!</font>")
-						playsound(H.loc, 'sound/weapons/punch1.ogg', 50, 1)
+						playsound(get_turf(H), 'sound/weapons/punch1.ogg', 50, 1)
 						HM.football = null
 						opponent_has_ball.last_owner = H
 						opponent_has_ball.owner = H
@@ -86,7 +86,7 @@
 					else
 						H.visible_message("<font color='yellow'>[H] pressures [HM]!</font>")
 						H.do_attack_animation(HM)
-						playsound(H.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
+						playsound(get_turf(H), 'sound/weapons/punchmiss.ogg', 50, 1)
 					return
 		if (istype(H.get_active_hand(), /obj/item/weapon/flamethrower)) //TO DO TODO: move it to flamethrower.dm
 			var/obj/item/weapon/flamethrower/FL = H.get_active_hand()
@@ -156,42 +156,44 @@
 			throw_item(A)
 			return
 		throw_mode_off()
+
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
 	if (!W)
-		var/atom/movable/special_MG = null
 		if (using_MG) //TO DO TODO: move to mg.dm
-			special_MG = using_MG
-		if (special_MG && special_MG.loc)
-			var/obj/item/weapon/gun/projectile/automatic/stationary/MG = special_MG
 			var/can_fire = FALSE
-			switch (MG.dir)
+			switch (using_MG.dir)
 				if (EAST)
-					if (A.x > MG.x)
+					if (A.x > using_MG.x)
 						can_fire = TRUE
 					else
 						can_fire = FALSE
 				if (WEST)
-					if (A.x < MG.x)
+					if (A.x < using_MG.x)
 						can_fire = TRUE
 					else
 						can_fire = FALSE
 				if (NORTH, NORTHEAST, NORTHWEST)
-					if (A.y > MG.y)
+					if (A.y > using_MG.y)
 						can_fire = TRUE
 					else
 						can_fire = FALSE
 				if (SOUTH, SOUTHEAST, SOUTHWEST)
-					if (A.y < MG.y)
+					if (A.y < using_MG.y)
 						can_fire = TRUE
 					else
 						can_fire = FALSE
 			if (can_fire)
-				if (MG.full_auto)
-					var/datum/firemode/F = MG.firemodes[MG.sel_mode]
-					spawn(F.burst_delay)
-						MG.afterattack(A, src, FALSE, params)
+				if (istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
+					var/obj/item/weapon/gun/projectile/automatic/stationary/G = using_MG
+					if (G.full_auto)
+						var/datum/firemode/F = G.firemodes[G.sel_mode]
+						spawn(F.burst_delay)
+							using_MG.afterattack(A, src, FALSE, params)
+					else
+						using_MG.afterattack(A, src, FALSE, params)
 				else
-					MG.afterattack(A, src, FALSE, params)
+					using_MG.afterattack(A, src, FALSE, params)
+
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)
