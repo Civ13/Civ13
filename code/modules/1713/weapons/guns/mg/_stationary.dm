@@ -7,7 +7,7 @@
 	maxhealth = 500
 	layer = MOB_LAYER + 3
 	
-	max_shells = 0
+	max_shells = 500
 	w_class = ITEM_SIZE_GARGANTUAN
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
@@ -28,10 +28,9 @@
 	full_auto = TRUE
 	fire_delay = 3
 
-	var/maximum_use_range = FALSE // user loc at minigun's current loc (used in use_object.dm)
+	var/maximum_use_range = 0 // user loc at minigun's current loc (used in use_object.dm)
 
-	var/user_old_x = FALSE
-	var/user_old_y = FALSE
+	var/can_turn = TRUE
 
 	var/mob/last_user = null
 
@@ -49,7 +48,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
 	update_layer()
 	if (last_user && last_user != user)
-		user << "<span class = 'warning'>\the [src] is already in use.</span>"
+		user << SPAN_WARNING("\The [src] is already in use.")
 		return
 
 	if (!(user.using_MG == src))
@@ -70,9 +69,9 @@
 						if (user.loc != loc)
 							user.use_MG(null)
 			else
-				user.show_message("<span class = 'warning'>You need both hands to use a machinegun.</span>")
+				user.show_message(SPAN_WARNING(">You need both hands to use a machinegun."))
 		else
-			user.show_message("<span class='warning'>You're too far from the handles.</span>")
+			user.show_message(SPAN_WARNING("You're too far from the handles."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
 	set category = null
@@ -87,9 +86,9 @@
 		if (user.has_empty_hand())
 			unload_ammo(user)
 		else
-			user.show_message("<span class='warning'>You need an empty hand for this.</span>")
+			user.show_message(SPAN_WARNING("You need an empty hand for this."))
 	else
-		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
+		user.show_message(SPAN_WARNING("You can't do this while using \the [src]."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A)
 	if (A == src)
@@ -108,7 +107,7 @@
 	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/rotate_to(mob/user, atom/A)
-	user.show_message("<span class='warning'>You can't turn the [name] there.</span>")
+	user.show_message(SPAN_WARNING("You can't turn the [name] there."))
 	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_layer()
@@ -159,7 +158,7 @@
 	return user.using_MG == src && user.loc == loc
 
 /obj/item/weapon/gun/projectile/automatic/stationary/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (air_group || (height==0)) return TRUE
+	if (air_group || !density) return TRUE
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return FALSE
@@ -176,7 +175,9 @@
 
 // helpers
 
-/mob/var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
+/mob
+	var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
+
 /mob/proc/use_MG(o)
 	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
 		using_MG = null
