@@ -1,5 +1,3 @@
-/client/var/selected_target[2]
-
 /client/MouseDown(object, location, control, params)
 	if (object == mob)
 		return ..(object, location, control, params)
@@ -8,39 +6,34 @@
 		selected_target[1] = object
 		selected_target[2] = params
 		while (selected_target[1] && mob && !mob.lying && mob.stat == CONSCIOUS)
-			var/foundMG = FALSE
-			for (var/obj/item/weapon/gun/projectile/automatic/stationary/MG in get_turf(src))
+			if (mob.using_MG)
 				var/can_fire = TRUE
 				var/atom/A = object
-				switch (MG.dir)
+				switch (mob.using_MG.dir)
 					if (EAST)
-						if (A.x > MG.x)
+						if (A.x > mob.using_MG.x)
 							can_fire = TRUE
 						else
 							can_fire = FALSE
 					if (WEST)
-						if (A.x < MG.x)
+						if (A.x < mob.using_MG.x)
 							can_fire = TRUE
 						else
 							can_fire = FALSE
 					if (NORTH)
-						if (A.y > MG.y)
+						if (A.y > mob.using_MG.y)
 							can_fire = TRUE
 						else
 							can_fire = FALSE
 					if (SOUTH)
-						if (A.y < MG.y)
+						if (A.y < mob.using_MG.y)
 							can_fire = TRUE
 						else
 							can_fire = FALSE
-				if (!can_fire)
-					continue
-				if (MG.last_user == src)
-					MG.next_fire_time = 0 // no 'you can't fire' spam
+				if (can_fire && mob.using_MG.last_user == src)
+					mob.using_MG.next_fire_time = 0 // no 'you can't fire' spam
 					Click(selected_target[1], location, control, selected_target[2])
-
-				foundMG = TRUE
-			if (!foundMG)
+			else
 				var/obj/item/weapon/gun/G = mob.get_active_hand()
 				if (G && istype(G))
 					G.next_fire_time = 0 // no 'you can't fire' spam
@@ -64,13 +57,13 @@
 	if (object)
 		if (!object.IsAutoclickable())
 			return
-	var/obj/item/H = get_active_hand()
-	if (H)
-		return H.CanItemAutoclick(object, location, params)
-	else if (!H)
-		for (var/obj/item/weapon/gun/projectile/automatic/stationary/MG in get_turf(src))
-			if (MG.last_user == src)
-				return MG.CanItemAutoclick(object, location, params)
+	if (using_MG)
+		if (using_MG.last_user == src)
+			return using_MG.CanItemAutoclick(object, location, params)
+	else
+		var/obj/item/H = get_active_hand()
+		if (H)
+			return H.CanItemAutoclick(object, location, params)
 
 /obj/item/proc/CanItemAutoclick(object, location, params)
 	if (istype(src, /obj/item/weapon/gun))
