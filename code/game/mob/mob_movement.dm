@@ -1061,7 +1061,7 @@
 			if (H.football && H.football.owner == H)
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
-				MW.turndir("left")
+				MW.turndir(mob,"left")
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
