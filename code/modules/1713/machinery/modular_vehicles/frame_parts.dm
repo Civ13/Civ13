@@ -104,19 +104,26 @@ var/global/list/vehicle_walls = list( \
 	w_left = list("c_windoweddoor",TRUE,TRUE,10,25,TRUE,TRUE)
 	w_back = list("c_wall",TRUE,TRUE,10,30,FALSE,FALSE)
 
+/obj/structure/vehicleparts/frame/l3
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
+
 /obj/structure/vehicleparts/frame/l3/lf
 	w_front = list("c_armoredfront",FALSE,TRUE,14,14,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,TRUE,TRUE)
-	w_back = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
+	override_roof_icon = "l3_barrel"
 /obj/structure/vehicleparts/frame/l3/rf
-	w_front = list("c_armoredfront",FALSE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
 	w_right = list("c_wall",FALSE,TRUE,14,14,TRUE,TRUE)
-	w_back = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/l3/lc
+	w_front = list("l3_turret",TRUE,TRUE,14,14,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,TRUE,TRUE)
+	override_frame_icon = "l3_turret"
 /obj/structure/vehicleparts/frame/l3/rc
+	w_front = list("l3_driver_port",TRUE,TRUE,14,14,FALSE,FALSE)
 	w_right = list("c_door",FALSE,TRUE,14,14,TRUE,TRUE)
+	override_frame_icon = "l3_driver_port"
 /obj/structure/vehicleparts/frame/l3/rb
 	w_right = list("c_wall",TRUE,TRUE,14,14,TRUE,TRUE)
 	w_back = list("c_wall",TRUE,TRUE,8,8,FALSE,FALSE)

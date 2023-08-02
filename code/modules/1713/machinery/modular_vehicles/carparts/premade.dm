@@ -512,7 +512,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf,/obj/structure/vehicleparts/movement/tracks),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc,/obj/structure/bed/chair/drivers/tank{anchored = 1}),
-	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/item/weapon/gun/projectile/automatic/stationary/breda30{anchored = 1},/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30),
+	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
 	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
