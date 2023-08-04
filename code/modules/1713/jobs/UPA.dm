@@ -210,7 +210,7 @@
 		germanh.attackby(/obj/item/ammo_magazine/mg34, H)
 		germanh.attackby(/obj/item/ammo_magazine/mg34, H)
 		germanh.attackby(/obj/item/weapon/grenade/ww2/stg1924, H)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/mg34(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/mg34(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mg34belt(H), slot_belt)
 	else if (pickgun == 3 && prob(10))
 		var/obj/item/clothing/accessory/storage/webbing/ww1/germanh = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)

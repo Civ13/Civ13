@@ -135,7 +135,7 @@ var/global/datum/controller/occupations/job_master
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
-		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR)
 			set_factions2(16)
 		else if (map.ID == MAP_NATIONSRP_TRIPLE)
 			set_factions2(24)
@@ -471,6 +471,9 @@ var/global/datum/controller/occupations/job_master
 		if (job.rank_abbreviation)
 			H.real_name = "[job.rank_abbreviation] [H.real_name]"
 			H.name = H.real_name
+		if (map.battleroyale && H.ckey)
+			H.real_name = H.ckey
+			H.name = H.ckey
 
 		job.apply_fingerprints(H)
 		job.assign_faction(H)

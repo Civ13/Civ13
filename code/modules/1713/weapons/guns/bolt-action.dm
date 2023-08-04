@@ -825,7 +825,7 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/carcano
-	name = "carcano 1891"
+	name = "Carcano 1891"
 	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
 	icon_state = "carcano"
 	item_state = "carcano"

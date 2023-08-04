@@ -87,7 +87,7 @@
 	w_class = ITEM_SIZE_HUGE
 	slowdown = 0.3
 	slot_flags = SLOT_SHOULDER|SLOT_BACK
-	path = /obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
 
 /obj/item/weapon/foldable/hescokit
 	name = "HESCO bastion kit"

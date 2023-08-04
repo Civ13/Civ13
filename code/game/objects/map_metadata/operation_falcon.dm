@@ -403,7 +403,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 /obj/item/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
 	if (!faction_text)
 		faction_text = H.faction_text
-		playsound(loc, "radio_chatter", 100, FALSE)
+		playsound(loc, "radio_chatter", 250, FALSE)
 		message_admins("[H.name] ([H.ckey]) has built a FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
 		switch (H.faction_text)
 			if (DUTCH)

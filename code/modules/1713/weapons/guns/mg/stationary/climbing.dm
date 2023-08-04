@@ -8,8 +8,10 @@
 
 	if (!istype(usr, /mob/living))
 		return
-
-	set_dir(turn(dir, 90))
+	if (can_turn)
+		set_dir(turn(dir, 90))
+	else
+		usr << SPAN_WARNING("\The [src] is incapable of turning.")
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
@@ -19,12 +21,13 @@
 
 	if (!istype(usr, /mob/living))
 		return
-
-	set_dir(turn(dir, -90))
+	if (can_turn)
+		set_dir(turn(dir, -90))
+	else
+		usr << SPAN_WARNING("\The [src] is incapable of turning.")
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)
-
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/can_climb(var/mob/living/user, post_climb_check=0)
@@ -64,7 +67,7 @@
 		if (S.density)
 			return
 
-	usr.visible_message("<span class='warning'>[user] starts climbing onto \the [src]!</span>")
+	usr.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"))
 	climbers |= user
 
 	if (!do_after(user,(issmall(user) ? 20 : 34)))
@@ -85,7 +88,7 @@
 	usr.loc = target.loc
 
 	if (get_turf(user) == get_turf(src))
-		usr.visible_message("<span class='warning'>[user] climbs onto \the [src]!</span>")
+		usr.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"))
 	climbers -= user
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/can_touch(var/mob/user)
@@ -94,7 +97,7 @@
 	if (!Adjacent(user))
 		return FALSE
 	if (user.restrained() || user.buckled)
-		user << "<span class='notice'>You need your hands and legs free for this.</span>"
+		user << SPAN_NOTICE("You need your hands and legs free for this.")
 		return FALSE
 	if (user.stat || user.paralysis || user.sleeping || user.lying || user.weakened)
 		return FALSE

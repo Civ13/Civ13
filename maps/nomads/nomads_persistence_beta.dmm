@@ -129,7 +129,7 @@
 "Dn" = (/turf/floor/beach/water/deep/saltwater/shipline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/two)
 "Eg" = (/obj/covers/sidewalk,/turf/floor/grass,/area/caribbean/nomads/forest)
 "Ff" = (/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/item/clothing/suit/lifejacket,/obj/structure/closet/anchored,/obj/structure/lamp/lamp_big/alwayson{dir = 1},/turf/floor/plating/steel,/area/caribbean/nomads/forest)
-"Fl" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/redmenia,/obj/item/ammo_magazine/emptybelt/filled_556x45,/obj/item/ammo_magazine/emptybelt/filled_556x45,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
+"Fl" = (/obj/item/weapon/gun/projectile/automatic/stationary/redmenia,/obj/item/ammo_magazine/emptybelt/filled_556x45,/obj/item/ammo_magazine/emptybelt/filled_556x45,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
 "Fy" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "FD" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "FE" = (/obj/item/blueprint/gun/ak103,/obj/item/blueprint/gun/ak103,/obj/item/blueprint/gun/ak103,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
@@ -170,7 +170,7 @@
 "WV" = (/obj/structure/flag/blugoslavia,/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest)
 "Xf" = (/obj/map_metadata/nomads_persistence_beta,/turf/wall/rockwall,/area/caribbean/void/caves)
 "XD" = (/obj/effect/spawner/objspawner/tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/sea/temperate)
-"Yu" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/blugoslavia,/obj/item/ammo_magazine/emptybelt/filled_762x54,/obj/item/ammo_magazine/emptybelt/filled_762x54,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
+"Yu" = (/obj/item/weapon/gun/projectile/automatic/stationary/blugoslavia,/obj/item/ammo_magazine/emptybelt/filled_762x54,/obj/item/ammo_magazine/emptybelt/filled_762x54,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
 "Yy" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 
 (1,1,1) = {"

@@ -408,7 +408,7 @@
 "iH" = (/obj/structure/oven{fuel = 30},/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_two)
 "iI" = (/obj/structure/bed/chair/wood/red{dir = 4; icon_state = "wooden_chair_red"},/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_two)
 "iJ" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_two)
-"iL" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{dir = 4; icon_state = "maxim_ww2"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/houses/nml_two)
+"iL" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{dir = 4; icon_state = "maxim_ww2"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/houses/nml_two)
 "iM" = (/obj/structure/grille/chainlinkfence{dir = 8; icon_state = "chainlinkfence"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt/winter,/area/caribbean/nomads/ice)
 "iN" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_two)
 "iO" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_two)

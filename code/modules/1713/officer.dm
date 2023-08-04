@@ -207,7 +207,7 @@ var/global/list/valid_coordinates = list()
 		if (!radio)
 			radio = getFlatIcon(R)
 			currfreq = R.freq
-	if (currfreq == 0)
+	if (!currfreq)
 		src << SPAN_NOTICE("There is no radio nearby! You need one to order an airstrike.")
 		return
 	if (src.stat == DEAD)	
@@ -217,7 +217,48 @@ var/global/list/valid_coordinates = list()
 		var/list/validchoices = map.valid_artillery
 		var/valid_coords_check = FALSE
 		validchoices += "Cancel"
-		if (map.ID != "GROZNY")
+		if (map.ID == MAP_GROZNY)
+			var/input1 = WWinput(src, "Which type of artillery to request?", "Order Artillery Barrage", "Cancel", validchoices)
+			if (input1 == "Cancel")
+				return
+			else
+				var/inputx = input(src, "Choose the X coordinate:") as num
+				if (inputx > world.maxx)
+					inputx = world.maxx
+				if (inputx < 0)
+					inputx = 1
+				var/inputy = input(src, "Choose the Y coordinate:") as num
+				if (inputy > world.maxy)
+					inputy = world.maxy
+				if (inputy < 0)
+					inputy = 1
+				if (global.valid_coordinates.Find("[inputx],[inputy]"))
+					valid_coords_check = TRUE
+				else
+					for (var/coords in global.valid_coordinates)
+						var/splitcoords = splittext(coords, ",")
+						var/coordx = text2num(splitcoords[1])
+						var/coordy = text2num(splitcoords[2])
+						if (abs(coordx - inputx) <= 15)
+							if (abs(coordy - inputy) <= 15)
+								valid_coords_check = TRUE
+				if (!valid_coords_check)
+					src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+					return
+				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
+					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
+						src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+						return
+				src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] artillery on the way on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				playsound(loc, "radio_chatter", 250, FALSE)
+				map.artillery_count--
+				map.artillery_last = world.time
+				spawn(rand(15,25)*10)
+					airstrike(input1,inputx,inputy,src.z)
+				message_admins("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).", key_name_admin(src))
+				log_game("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).")
+				return
+		else
 			var/input1 = WWinput(src, "Which type of airstrike to request?", "Order Airstrike", "Cancel", validchoices)
 			if (input1 == "Cancel")
 				return
@@ -250,6 +291,7 @@ var/global/list/valid_coordinates = list()
 						src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
 						return
 				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				playsound(loc, "radio_chatter", 250, FALSE)
 				map.artillery_count--
 				map.artillery_last = world.time
 				spawn(rand(15,25)*10)
@@ -257,60 +299,20 @@ var/global/list/valid_coordinates = list()
 				message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).", key_name_admin(src))
 				log_game("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
 				return
-		else
-			var/input1 = WWinput(src, "Which type of artillery to request?", "Order Artillery Barrage", "Cancel", validchoices)
-			if (input1 == "Cancel")
-				return
-			else
-				var/inputx = input(src, "Choose the X coordinate:") as num
-				if (inputx > world.maxx)
-					inputx = world.maxx
-				if (inputx < 0)
-					inputx = 1
-				var/inputy = input(src, "Choose the Y coordinate:") as num
-				if (inputy > world.maxy)
-					inputy = world.maxy
-				if (inputy < 0)
-					inputy = 1
-				if (global.valid_coordinates.Find("[inputx],[inputy]"))
-					valid_coords_check = TRUE
-				else
-					for (var/coords in global.valid_coordinates)
-						var/splitcoords = splittext(coords, ",")
-						var/coordx = text2num(splitcoords[1])
-						var/coordy = text2num(splitcoords[2])
-						if (abs(coordx - inputx) <= 15)
-							if (abs(coordy - inputy) <= 15)
-								valid_coords_check = TRUE
-				if (!valid_coords_check)
-					src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
-					return
-				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
-					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-						src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
-						return
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
-				map.artillery_count--
-				map.artillery_last = world.time
-				spawn(rand(15,25)*10)
-					airstrike(input1,inputx,inputy,src.z)
-				message_admins("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).", key_name_admin(src))
-				log_game("[key_name_admin(src)] ordered an [input1] artillery at ([inputx],[inputy],[src.z]).")
-				return
 	else if (map.artillery_count <= 0)
 		map.artillery_count = 0
-		if (map.ID != "GROZNY")
-			src << "<span class='warning'>There are no more airstrikes available.</span>"
-			return
-		else
+		if (map.ID == MAP_GROZNY)
 			src << "<span class='warning'>There are no more artillery barrages available.</span>"
 			return
+		else
+			src << "<span class='warning'>There are no more airstrikes available.</span>"
+			return	
 	else if (world.time < map.artillery_last+map.artillery_timer)
-		if (map.ID != "GROZNY")
-			src << "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
+		if (map.ID == MAP_GROZNY)
+			src << "<span class='warning'>You can't order an artillery barrage yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
 			return
 		else
-			src << "<span class='warning'>You can't order an artillery barrage yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
+			src << "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
 			return
 /mob/living/human/proc/airstrike(var/type, var/inputx, var/inputy, var/inputz)
 	var/turf/T = get_turf(locate(inputx,inputy,inputz))
@@ -319,12 +321,12 @@ var/global/list/valid_coordinates = list()
 	if (type == "White Phosphorus")
 		new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(T)
 	else if (type == "Explosive")
-		if (map.ID != "GROZNY")
+		if (map.ID == MAP_GROZNY)
 			var/xoffsetmin = inputx-6
 			var/xoffsetmax = inputx+6
 			var/yoffsetmin = inputy-6
 			var/yoffsetmax = inputy+6
-			for (var/i = 1, i < 6, i++)
+			for (var/i = 1, i < 12, i++)
 				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 				explosion(O,1,1,3,1)
 		else
@@ -332,7 +334,7 @@ var/global/list/valid_coordinates = list()
 			var/xoffsetmax = inputx+6
 			var/yoffsetmin = inputy-6
 			var/yoffsetmax = inputy+6
-			for (var/i = 1, i < 12, i++)
+			for (var/i = 1, i < 6, i++)
 				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 				explosion(O,1,1,3,1)
 	else if (type == "Creeping Barrage")

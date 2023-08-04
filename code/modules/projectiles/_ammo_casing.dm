@@ -889,7 +889,6 @@
 	caliber = "a577"
 	value = 8
 
-
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mmR cartridge"
 	desc = "A brass casing."
@@ -1210,6 +1209,13 @@
 	icon_state = "beanbag-shell"
 	spent_icon = "beanbag-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
+
+/obj/item/ammo_casing/shotgun/breaching
+	name = "breaching slug"
+	desc = "A 12 gauge breaching slug used to break open locks."
+	icon_state = "slug-shell"
+	spent_icon = "slug-spent"
+	projectile_type = /obj/item/projectile/bullet/shotgun/breaching
 
 /obj/item/ammo_casing/shotgun/rubber
 	name = "rubber shot"

@@ -139,7 +139,7 @@
 "vi" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass,/area/caribbean/forest)
 "vp" = (/obj/structure/sign/traffic/side,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "vz" = (/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/item/flashlight/flare,/obj/structure/closet/crate/ww2,/turf/floor/dirt,/area/caribbean/forest)
-"vE" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/dirt/dust,/area/caribbean/forest)
+"vE" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/turf/floor/dirt/dust,/area/caribbean/forest)
 "vF" = (/obj/structure/railing/steel,/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "vO" = (/obj/covers/road,/obj/structure/sign/traffic/side,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "vR" = (/obj/structure/wild/rock,/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/forest)

@@ -1,39 +1,36 @@
-//*********************
-//POD MACHINEGUNS
-//*********************
-/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
-	set category = null // was "Minigun" - removes lag
-	set name = "Eject magazine"
-	set src in range(1, usr)
-	try_remove_mag(usr)
-
-/////////////////////////////
-////Stationary Machinegun////
-/////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary
-	name = "machinegun"
-	desc = "a large machinegun."
-	icon_state = ""
-	item_state = ""
-	layer = MOB_LAYER + 3
-	anchored = TRUE
-	density = TRUE
-	w_class = ITEM_SIZE_GARGANTUAN
-	load_method = SINGLE_CASING
-	handle_casings = REMOVE_CASINGS
-	max_shells = 500
-	caliber = "a762x54"
-	slot_flags = FALSE
-	ammo_type = /obj/item/ammo_casing/a762x54
+	name = "Maxim 1895"
+	desc = "Heavy Maxim machinegun on cart mount."
+	icon_state = "maxim"
+	base_icon = "maxim"
 	stat = "machinegun"
 	maxhealth = 500
-	firemodes = list(name = "full auto", burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), accuracy=list(2))
+	layer = MOB_LAYER + 3
+	
+	max_shells = 500
+	w_class = ITEM_SIZE_GARGANTUAN
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	
+	density = TRUE
+	anchored = FALSE
+	auto_eject = TRUE
+	
+	caliber = "a762x54"
+	magazine_type = /obj/item/ammo_magazine/maxim
+	ammo_type = /obj/item/ammo_casing/a762x54
+	
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
+	firemodes = list(
+		list(name = "full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	slot_flags = FALSE
 	full_auto = TRUE
+	fire_delay = 3
 
-	var/maximum_use_range = FALSE // user loc at minigun's current loc (used in use_object.dm)
+	var/maximum_use_range = 0 // user loc at minigun's current loc (used in use_object.dm)
 
-	var/user_old_x = FALSE
-	var/user_old_y = FALSE
+	var/can_turn = TRUE
 
 	var/mob/last_user = null
 
@@ -51,7 +48,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
 	update_layer()
 	if (last_user && last_user != user)
-		user << "<span class = 'warning'>\the [src] is already in use.</span>"
+		user << SPAN_WARNING("\The [src] is already in use.")
 		return
 
 	if (!(user.using_MG == src))
@@ -72,9 +69,15 @@
 						if (user.loc != loc)
 							user.use_MG(null)
 			else
-				user.show_message("<span class = 'warning'>You need both hands to use a machinegun.</span>")
+				user.show_message(SPAN_WARNING(">You need both hands to use a machinegun."))
 		else
-			user.show_message("<span class='warning'>You're too far from the handles.</span>")
+			user.show_message(SPAN_WARNING("You're too far from the handles."))
+
+/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
+	set category = null
+	set name = "Eject magazine"
+	set src in range(1, usr)
+	try_remove_mag(usr)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/try_remove_mag(mob/user)
 	if (!ishuman(user))
@@ -83,9 +86,9 @@
 		if (user.has_empty_hand())
 			unload_ammo(user)
 		else
-			user.show_message("<span class='warning'>You need an empty hand for this.</span>")
+			user.show_message(SPAN_WARNING("You need an empty hand for this."))
 	else
-		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
+		user.show_message(SPAN_WARNING("You can't do this while using \the [src]."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A)
 	if (A == src)
@@ -104,7 +107,7 @@
 	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/rotate_to(mob/user, atom/A)
-	user.show_message("<span class='warning'>You can't turn the [name] there.</span>")
+	user.show_message(SPAN_WARNING("You can't turn the [name] there."))
 	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_layer()
@@ -155,7 +158,7 @@
 	return user.using_MG == src && user.loc == loc
 
 /obj/item/weapon/gun/projectile/automatic/stationary/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (air_group || (height==0)) return TRUE
+	if (air_group || !density) return TRUE
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return FALSE
@@ -172,7 +175,9 @@
 
 // helpers
 
-/mob/var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
+/mob
+	var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
+
 /mob/proc/use_MG(o)
 	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
 		using_MG = null

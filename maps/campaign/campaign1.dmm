@@ -236,7 +236,7 @@
 "Mw" = (/obj/covers/wood,/obj/structure/potted_plant{dir = 9; icon_state = "potted_plant"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
 "MD" = (/obj/covers/wood,/obj/structure/bed/chair/wood/red,/turf/floor/dirt,/area/caribbean/roofed/temperate)
 "MT" = (/obj/item/stack/material/barbwire/ten,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
-"MU" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
+"MU" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Croze"})
 "MY" = (/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/dirt,/area/caribbean/forest)
 "Na" = (/obj/covers/wood,/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})
 "Nc" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "Croze"})

@@ -265,15 +265,16 @@
 	flags = FALSE
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
-	var/cooldown_horn = FALSE
+	var/cooldown = FALSE
+	var/whistle_sound = 'sound/effects/blowing_horn.ogg'
 
 /obj/item/weapon/horn/attack_self(mob/user as mob)
-	if (cooldown_horn == FALSE)
+	if (!cooldown)
 		playsound(loc, 'sound/effects/blowing_horn.ogg', 100, FALSE, 25)
-		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
-		cooldown_horn = TRUE
-		spawn(100)
-			cooldown_horn = FALSE
+		user.visible_message(SPAN_WARNING("[user] sounds the [name]!"))
+		cooldown = TRUE
+		spawn(10 SECONDS)
+			cooldown = FALSE
 		return
 
 /obj/item/weapon/whistle
@@ -281,118 +282,83 @@
 	desc = "Good for ordering the troops to go over the top."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whistle"
-	flags = CONDUCT
+	attack_verb = list("attacked", "whacked")
 	slot_flags = SLOT_BELT
+	w_class = ITEM_SIZE_SMALL | SLOT_POCKET
+	flags = CONDUCT
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	item_state = "zippo"
-	w_class = ITEM_SIZE_SMALL
 
-	attack_verb = list("attacked", "whacked")
 	var/cooldown = FALSE
+	var/whistle_sound = 'sound/effects/whistle.ogg'
 
 /obj/item/weapon/whistle/attack_self(mob/user as mob)
 	if (!cooldown)
-		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE, 5)
-		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
+		playsound(loc, whistle_sound, 100, FALSE, 5)
+		user.visible_message(SPAN_WARNING("[user] sounds the [name]!"))
 		cooldown = TRUE
 		spawn(10 SECONDS)
 			cooldown = FALSE
 		return
 
-/obj/item/weapon/deathwhistle
+/obj/item/weapon/whistle/death
 	name = "death whistle"
 	desc = "Good for terrifying enemy soldiers."
-	icon = 'icons/obj/items.dmi'
 	icon_state = "death_whistle"
-	flags = CONDUCT
-	slot_flags = SLOT_BELT
-	force = WEAPON_FORCE_HARMLESS
-	throwforce = WEAPON_FORCE_HARMLESS
-	item_state = "zippo"
-	w_class = ITEM_SIZE_SMALL
+	whistle_sound = 'sound/effects/death-whistle.ogg'
 
-	attack_verb = list("attacked", "whacked")
-	var/cooldown = FALSE
-
-/obj/item/weapon/deathwhistle/attack_self(mob/user as mob)
-	if (!cooldown)
-		playsound(loc, 'sound/effects/death-whistle.ogg', 100, FALSE, 5)
-		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
-		cooldown = TRUE
-		spawn(10 SECONDS)
-			cooldown = FALSE
-		return
+/obj/item/weapon/whistle/tin
+	name = "whistle"
+	desc = "A cheap whistle made from tin."
+	icon = 'icons/obj/clothing/masks.dmi'
+	icon_state = "whistle"
+	w_class = ITEM_SIZE_TINY
 
 /obj/item/weapon/siegeladder
 	name = "siege ladder"
 	desc = "A wood ladder, used to climb over walls."
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "siege_ladder"
-	flags = CONDUCT
+	var/depicon = "siege_ladder_dep"
+	flags = FALSE
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = ITEM_SIZE_LARGE
-	flags = FALSE
-
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
-	var/deployed = FALSE
 	nothrow = TRUE
 	flammable = TRUE
-	var/depicon = "siege_ladder_dep"
-	var/handicon = "siege_ladder"
+	var/deployed = FALSE
 
 /obj/item/weapon/siegeladder/metal
 	name = "ladder"
 	desc = "A metal ladder, good for climbing things."
-	icon = 'icons/obj/stairs.dmi'
 	icon_state = "metal_ladder"
-	flags = CONDUCT
-	force = WEAPON_FORCE_WEAK
-	throwforce = WEAPON_FORCE_WEAK
-	w_class = ITEM_SIZE_LARGE
-
-	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
-	deployed = FALSE
-	nothrow = TRUE
-	flammable = TRUE
 	depicon = "metal_ladder_dep"
-	handicon = "metal_ladder"
+	flags = CONDUCT
+	flammable = FALSE
 
-/obj/item/weapon/siegeladder/attackby(obj/item/weapon/O as obj, mob/user as mob)
+/obj/item/weapon/siegeladder/grapplinghook
+	name = "grappling hook"
+	desc = "A grappling hook attached to a rope, good for climbing things."
+	icon_state = "grapplehook"
+	depicon = "grapplehook_dep"
+	flammable = FALSE
+
+/obj/item/weapon/siegeladder/attack_hand(mob/user as mob)
 	if (deployed)
 		user.visible_message(
 			"<span class='danger'>\The [user] starts removing \the [src]!</span>",
 			"<span class='danger'>You start removing \the [src]!</span>")
-		if (do_after(user, 80, src))
+		if (do_after(user, 8 SECONDS, src))
 			user.visible_message(
 				"<span class='danger'>\The [user] has removed \the [src]!</span>",
 				"<span class='danger'>You have removed \the [src]!</span>")
 			anchored = FALSE
 			deployed = FALSE
-			icon_state = handicon
+			icon_state = initial(icon_state)
 			for (var/obj/structure/barricade/ST in src.loc)
 				ST.climbable = FALSE
-	else
-		..()
-
-/obj/structure/barricade/attackby(obj/item/weapon/siegeladder/O as obj, mob/living/user as mob)
-	if (istype(O, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [O.name].</span>",
-			"<span class='danger'>You start deploying \the [O.name].</span>")
-		if (do_after(user, 80, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [O.name]!</span>",
-				"<span class='danger'>You have deployed \the [O.name]!</span>")
-			qdel(O)
-			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
-			ANCH.anchored = TRUE
-			src.climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
-			return
 	else
 		..()
 
@@ -483,18 +449,18 @@
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 /*	var/welding = FALSE
 
-/obj/item/weapon/weldingtool/process(var/mob/living/human/L, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null)
+/obj/item/weapon/weldingtool/process(var/mob/living/human/L, var/obj/item/weapon/reagent_containers/glass/welding_tank/FM = null)
 	if (welding)
-		if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
-			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+		if (!L.back || !istype(L.back,/obj/item/weapon/reagent_containers/glass/welding_tank))
+			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>"
 			setWelding(0)
 			return
 
-		if (istype(L.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
+		if (istype(L.back,/obj/item/weapon/reagent_containers/glass/welding_tank))
 			FM = L.back
 
 		if (!FM)
-			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+			L << "<span class='warning'>You need a fuel tank on your back in order to be able to use a welder!</span>"
 			setWelding(0)
 			return
 
@@ -509,12 +475,12 @@
 	return
 
 //Returns the amount of fuel in the welder
-/obj/item/weapon/weldingtool/proc/get_fuel(var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+/obj/item/weapon/weldingtool/proc/get_fuel(var/obj/item/weapon/reagent_containers/glass/welding_tank/FM)
 	return FM.reagents.get_reagent_amount("gasoline")
 
 
 //Removes fuel from the welding tool. If a mob is passed, it will perform an eyecheck on the mob. This should probably be renamed to use()
-/obj/item/weapon/weldingtool/proc/remove_fuel(var/amount = TRUE, var/mob/M = null, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+/obj/item/weapon/weldingtool/proc/remove_fuel(var/amount = TRUE, var/mob/M = null, var/obj/item/weapon/reagent_containers/glass/welding_tank/FM)
 	if (!welding)
 		return FALSE
 	if (get_fuel() >= amount)
@@ -541,7 +507,7 @@
 
 //Sets the welding state of the welding tool. If you see W.welding = TRUE anywhere, please change it to W.setWelding(1)
 //so that the welding tool updates accordingly
-/obj/item/weapon/weldingtool/proc/setWelding(var/set_welding, var/mob/M, var/obj/item/weapon/reagent_containers/glass/flamethrower/FM)
+/obj/item/weapon/weldingtool/proc/setWelding(var/set_welding, var/mob/M, var/obj/item/weapon/reagent_containers/glass/welding_tank/FM)
 	var/turf/T = get_turf(src)
 	//If we're turning it on
 	if (set_welding && !welding)
@@ -664,15 +630,6 @@ Shinobi's unfinished welder stuff - siro*/
 	attack_verb = list("jabbed", "hit", "bashed")
 	flammable = TRUE
 
-/obj/item/weapon/whistle/tin
-	name = "whistle"
-	desc = "A cheap whistle made from tin."
-	icon = 'icons/obj/clothing/masks.dmi'
-	icon_state = "whistle"
-	flags = CONDUCT
-	slot_flags = SLOT_BELT | SLOT_POCKET
-	w_class = ITEM_SIZE_TINY
-
 /obj/item/weapon/compass
 	name = "compass"
 	desc = "An instrument containing a magnetized pointer which shows the direction of magnetic north and bearings from it."
@@ -682,7 +639,7 @@ Shinobi's unfinished welder stuff - siro*/
 	w_class = ITEM_SIZE_TINY
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
-	var/time = 100
+	var/time = 10 SECONDS
 	var/max_offset = 6
 
 /obj/item/weapon/compass/attack_self(mob/user as mob)
@@ -729,7 +686,7 @@ Shinobi's unfinished welder stuff - siro*/
 
 /obj/item/weapon/compass/modern/attack_self(mob/user as mob)
 	if (!on)
-		usr << "<span class = 'warning'>You need to turn the tablet on.</span>"
+		usr << SPAN_WARNING("You need to turn the tablet on.")
 		return
 	else
 		. = ..()
@@ -760,7 +717,7 @@ Shinobi's unfinished welder stuff - siro*/
 /obj/item/weapon/compass/modern/tacmap/New()
 	..()
 	switch (map.ID)
-		if ("OPERATION_FALCON")
+		if (MAP_OPERATION_FALCON)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/item/weapon/compass/modern/tacmap/examine(mob/user)

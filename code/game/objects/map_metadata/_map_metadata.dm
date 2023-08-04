@@ -672,7 +672,7 @@ var/civmax_research = list(230,230,230)
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
+	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 		// German major
 		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))

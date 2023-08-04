@@ -127,7 +127,7 @@
 "cz" = (/obj/structure/table/wood,/obj/item/clothing/head/helmet/gold_crown,/obj/structure/window/classic/metal,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/wood,/area/caribbean/british/land/inside/objective)
 "cA" = (/obj/structure/window/classic,/obj/structure/barricade/vertical,/obj/structure/curtain/closed/blue,/turf/floor/dirt,/area/caribbean/british/land/inside/objective)
 "cB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/carpet/tealcarpet,/area/caribbean/british/land/inside/objective)
-"cC" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
+"cC" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/browning{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/houses)
 "cD" = (/obj/structure/table/fancy,/obj/item/flashlight/lamp/littlelamp,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cE" = (/obj/structure/table/modern/table,/obj/structure/radio/faction1,/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)
 "cF" = (/obj/structure/bed/chair/office/light{dir = 8},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/carpet/bluecarpet,/area/caribbean/british/land/inside/objective)

@@ -1,29 +1,4 @@
-
-////////////////////////
-////Stationary maxim////
-////////////////////////
-/obj/item/weapon/gun/projectile/automatic/stationary/modern
-	name = "Maxim 1895"
-	desc = "Heavy Maxim machinegun on cart mount."
-	icon_state = "maxim"
-	base_icon = "maxim"
-	load_method = MAGAZINE
-	handle_casings = EJECT_CASINGS
-	caliber = "a762x54"
-	magazine_type = /obj/item/ammo_magazine/maxim
-	ammo_type = /obj/item/ammo_casing/a762x54
-
-	max_shells = FALSE
-	anchored = FALSE
-	auto_eject = TRUE
-	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
-	firemodes = list(
-		list(name = "full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
-		)
-	full_auto = TRUE
-	fire_delay = 3
-
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim
+/obj/item/weapon/gun/projectile/automatic/stationary/maxim
 	name = "Maxim 1895"
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
 	icon_state = "maxim"
@@ -37,7 +12,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
+/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2
 	name = "Maxim"
 	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
 	icon_state = "maxim_ww2"
@@ -52,7 +27,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08
 	name = "Maschinengewehr 08"
 	desc = "German Heavy Maxim machinegun, based on the original Maxim. Uses 7.92x57mm Mauser rounds."
 	icon_state = "mg08"
@@ -66,7 +41,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm
+/obj/item/weapon/gun/projectile/automatic/stationary/pkm
 	name = "PKM machine gun"
 	desc = "Soviet Heavy PKM machinegun. Uses 7.62x54mm rounds."
 	icon_state = "pkm"
@@ -79,7 +54,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/dshk
+/obj/item/weapon/gun/projectile/automatic/stationary/dshk
 	name = "DShK machine gun"
 	desc = "Soviet Heavy DShK machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "dshk"
@@ -92,7 +67,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a127
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/nsvt
+/obj/item/weapon/gun/projectile/automatic/stationary/nsvt
 	name = "NSVT machine gun"
 	desc = "Modern Soviet Heavy NSVT machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "nsvt"
@@ -105,11 +80,11 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a127
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable
+/obj/item/weapon/gun/projectile/automatic/stationary/foldable
 	anchored = TRUE
 	var/path
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/verb/Retrieve()
+/obj/item/weapon/gun/projectile/automatic/stationary/foldable/verb/Retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
@@ -125,7 +100,7 @@
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/foldable/pkm
+/obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
 	name = "Foldable PKM machine gun"
 	desc = "Soviet Heavy foldable PKM machinegun. Chambered in 7.62x54mm rounds."
 	icon_state = "pkm_foldable"
@@ -141,7 +116,7 @@
 
 	path = /obj/item/weapon/foldable/pkm
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
+/obj/item/weapon/gun/projectile/automatic/stationary/vickers
 	name = "Vickers machine gun"
 	desc = "A water-cooled heavy machinegun. Chambered in .303 british rounds."
 	icon_state = "vickers"
@@ -155,7 +130,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/hotchkiss1914
+/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914
 	name = "Hotchkiss M1914 machine gun"
 	desc = "A french heavy machinegun. Chambered in 8x50mm Lebel."
 	icon_state = "hotchkiss1914"
@@ -165,7 +140,7 @@
 	good_mags = list(/obj/item/ammo_magazine/hotchkiss)
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/type3
+/obj/item/weapon/gun/projectile/automatic/stationary/type3
 	name = "Type 3 machine gun"
 	desc = "A japanese heavy machinegun based on the French Hotchkiss. Chambered in 6.5x50mm Arisaka."
 	icon_state = "type3"
@@ -175,7 +150,7 @@
 	good_mags = list(/obj/item/ammo_magazine/type3)
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
+/obj/item/weapon/gun/projectile/automatic/stationary/type98
 	name = "Type 92 machine gun"
 	desc = "A japanese heavy machinegun. Chambered in 7.7x58mm Arisaka."
 	icon_state = "type92hmg"
@@ -189,10 +164,48 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98/update_icon()
+/obj/item/weapon/gun/projectile/automatic/stationary/type98/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30
+	name = "Breda 30 machine gun"
+	desc = "The Fucile Mitragliatore Breda modello 30 is a Italian light machinegun that entered service in 1930. The design of the gun is rather impractical and often makes for long reload times. Chambered in 6.5x52mm Carcano."
+	icon_state = "type92hmg"
+	base_icon = "type92hmg"
+	caliber = "a65x52"
+	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
+	magazine_type = /obj/item/ammo_magazine/breda30
+	good_mags = list(/obj/item/ammo_magazine/breda30)
+	firemodes = list(
+		list(name = "full auto", burst=3, burst_delay=2.5, fire_delay=2.5, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a65x52
+	load_method = SINGLE_CASING | SPEEDLOADER
+	max_shells = 20
+	load_delay = 3 SECONDS
+	
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
+
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
+	name = "vehicle mounted Breda 30 machine gun"
+	pixel_y = -8
+	anchored = TRUE
+	density = FALSE
+	can_turn = FALSE
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary/update_icon()
+	..()
+	switch(dir)
+		if (NORTH)
+			pixel_y = 8
+		if (SOUTH)
+			pixel_y = -8
+		if (EAST)
+			pixel_x = 8
+		if (WEST)
+			pixel_x = -8
+
+/obj/item/weapon/gun/projectile/automatic/stationary/browning
 	name = "M1919A1 browning machine gun"
 	desc = "An american heavy machinegun. Chambered in 30-06. rounds."
 	icon_state = "browning"
@@ -205,10 +218,10 @@
 		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a3006
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/browning/update_icon()
+/obj/item/weapon/gun/projectile/automatic/stationary/browning/update_icon()
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/m2browning
+/obj/item/weapon/gun/projectile/automatic/stationary/m2browning
 	name = "M2HB browning machine gun"
 	desc = "An american heavy machinegun. Chambered in .50 cal rounds."
 	icon_state = "m2"
@@ -222,7 +235,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
+/obj/item/weapon/gun/projectile/automatic/stationary/mg34
 	name = "MG 34 machine gun"
 	desc = "A german heavy machinegun. Chambered in 7.92x57 Mauser."
 	icon_state = "mg34hmg"
@@ -235,7 +248,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3
+/obj/item/weapon/gun/projectile/automatic/stationary/mg3
 	name = "MG 3 machine gun"
 	desc = "A german heavy machinegun. Chambered in 7.62x51mm rounds."
 	icon_state = "mg3"
@@ -248,7 +261,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/fnmag
+/obj/item/weapon/gun/projectile/automatic/stationary/fnmag
 	name = "FN MAG machine gun"
 	desc = "A Belgian general-purpose machine gun, designed in the early 1950s by Ernest Vervier. It has been used by more than 80 countries and it has been made under licence in several countries."
 	icon_state = "mg3"
@@ -261,7 +274,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/blugoslavia
+/obj/item/weapon/gun/projectile/automatic/stationary/blugoslavia
 	name = "BHMG-21 machine gun"
 	desc = "A Blugoslavian heavy machinegun. Uses 7.62x54mm rounds."
 	icon_state = "pkm"
@@ -274,7 +287,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/redmenia
+/obj/item/weapon/gun/projectile/automatic/stationary/redmenia
 	name = "RK-42 stationary machine gun"
 	desc = "A Redmenian heavy machinegun. Uses 5.56x45mm rounds."
 	icon_state = "nsvt"

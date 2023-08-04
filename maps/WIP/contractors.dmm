@@ -33,7 +33,7 @@
 /turf/floor/dirt,
 /area/caribbean)
 "aU" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,
+/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 /turf/floor/trench,
 /area/caribbean)
 "aW" = (
@@ -2205,7 +2205,7 @@
 /turf/floor/dirt/dust,
 /area/caribbean)
 "KK" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,
+/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 /turf/floor/dirt/dust,
 /area/caribbean)
 "KL" = (

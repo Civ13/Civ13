@@ -450,7 +450,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "cN" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim{
+/obj/item/weapon/gun/projectile/automatic/stationary/maxim{
 	dir = 4
 	},
 /obj/structure/window/barrier/sandbag{
@@ -6043,7 +6043,7 @@
 /turf/floor/plating/tiled,
 /area/caribbean/roofed)
 "FI" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,
+/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 /turf/floor/dirt/dust,
 /area/caribbean)
 "FJ" = (
@@ -6846,7 +6846,7 @@
 	icon_state = "sandbag";
 	dir = 4
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{
+/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{
 	dir = 4
 	},
 /turf/floor/plating/cobblestone/vertical,
@@ -7935,7 +7935,7 @@
 	},
 /area/caribbean/roofed)
 "Pw" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,
+/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 /obj/structure/window/barrier/rock,
 /turf/floor/wood{
 	icon_state = "wood-broken3"
@@ -9516,7 +9516,7 @@
 	pixel_x = 0;
 	pixel_y = 32
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2{
+/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{
 	dir = 1;
 	icon_state = "maxim_ww2"
 	},

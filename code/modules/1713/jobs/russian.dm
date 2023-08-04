@@ -2429,6 +2429,7 @@
 
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 
 	additional_languages = list("English" = 70)
 	min_positions = 1
@@ -2484,6 +2485,7 @@
 
 	is_operation_falcon = TRUE
 	is_medic = TRUE
+	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 2
@@ -2542,6 +2544,7 @@
 
 	is_operation_falcon = TRUE
 	is_radioman = TRUE
+	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 1
@@ -2594,6 +2597,7 @@
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
+	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 5
