@@ -188,6 +188,7 @@
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
+	name = "vehicle mounted Breda 30 machine gun"
 	pixel_y = -8
 	anchored = TRUE
 	density = FALSE
