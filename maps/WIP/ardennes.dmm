@@ -561,7 +561,7 @@
 "kV" = (/obj/effect/floor_decal/industrial/hatch,/turf/floor/plating/concrete,/area/caribbean/nomads/snow)
 "kW" = (/obj/structure/rails,/obj/effect/floor_decal/industrial/hatch,/turf/floor/plating/concrete,/area/caribbean/nomads/snow)
 "kX" = (/obj/item/weapon/gun/projectile/submachinegun/fg42,/obj/item/weapon/gun/projectile/submachinegun/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/turf/floor/trench,/area/caribbean/roofed/tundra)
-"kY" = (/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34,/turf/floor/winter,/area/caribbean/nomads/snow)
+"kY" = (/obj/item/weapon/gun/projectile/automatic/manual/mg34,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kZ" = (/turf/wall/rockwall,/area/caribbean/nomads/snow)
 "la" = (/turf/wall/indestructable,/area/caribbean/nomads/snow)
 "lb" = (/obj/map_metadata/ardennes,/turf/wall/indestructable,/area/caribbean/nomads/snow)

@@ -283,7 +283,7 @@
 "fw" = (/obj/item/weapon/gun/projectile/automatic/stationary/vickers,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "fx" = (/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "fy" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
-"fz" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/mg34,/obj/structure/closet/crate/ww2,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
+"fz" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/manual/mg34,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/mg34,/obj/structure/closet/crate/ww2,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "fA" = (/obj/structure/simple_door/wood2,/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)
 "fB" = (/obj/structure/sink{icon_state = "sink"; dir = 1},/turf/floor/plating/white,/area/caribbean/german/reichstag/lobby)
 "fC" = (/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/plating/steel,/area/caribbean/german/reichstag/lobby)

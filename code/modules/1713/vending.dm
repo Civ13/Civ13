@@ -689,7 +689,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/mg34 = 5,
+		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 15,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 2,
@@ -706,7 +706,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/mg34 = 2,
+		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 2,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 5,

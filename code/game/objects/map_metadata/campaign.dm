@@ -223,7 +223,7 @@
 				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
 				++available_jobs_per_side[job.base_type_flag()]
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-	else if (istype(map, /obj/map_metadata/nomads_persistence_beta))
+	else if (istype(map, /obj/map_metadata/nomads_persistence_beta) || istype(map, /obj/map_metadata/nationsrp/coldwar_campaign))
 		if (factjob == "BAF")
 			dat +="<b><h1><big>Blugoslavian People</big></h1></b>"
 		else if (factjob == "RDF")

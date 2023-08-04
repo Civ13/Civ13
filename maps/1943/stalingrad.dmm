@@ -130,7 +130,7 @@
 "cB" = (/obj/structure/wild/rock,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cC" = (/obj/structure/sign/flag/medical,/turf/wall/wood,/area/caribbean/german/inside)
 "cD" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
-"cE" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/weapon/gun/projectile/automatic/mg34,/turf/floor/wood,/area/caribbean/german/inside)
+"cE" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/gun/projectile/automatic/manual/mg34,/obj/item/weapon/gun/projectile/automatic/manual/mg34,/obj/item/weapon/gun/projectile/automatic/manual/mg34,/turf/floor/wood,/area/caribbean/german/inside)
 "cF" = (/obj/structure/wild/tree/live_tree/snow,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cG" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/german/inside)
 "cH" = (/obj/structure/radio/receiver/loudspeaker/faction1,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/german/inside)

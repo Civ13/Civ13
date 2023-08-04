@@ -1417,7 +1417,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT)
+					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 						holder2.icon_state = "redmenia"
 					else if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
@@ -1560,7 +1560,7 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT)
+					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""

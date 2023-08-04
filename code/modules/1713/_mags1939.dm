@@ -220,7 +220,7 @@
 	weight = 1.3
 	multiple_sprites = TRUE
 
-obj/item/ammo_magazine/dp
+/obj/item/ammo_magazine/dp
 	name = "DP pan (7.62x54mmR)"
 	icon_state = "dpdisk"
 	mag_type = MAGAZINE
