@@ -190,7 +190,7 @@
 		if (age >= 6)
 			if (map.ID == "ARAB_TOWN")
 				return "Hezbollah"
-			else if (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
+			else if (map.ID == "KANDAHAR" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
 				return "Mujahideen"
 			else if (map.ID == "SYRIA")
 				return "Syrian Armed Forces"

@@ -532,7 +532,7 @@
 #include "code\game\objects\map_metadata\sibersyn.dm"
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\skullisland.dm"
-#include "code\game\objects\map_metadata\sovafghan.dm"
+#include "code\game\objects\map_metadata\kandahar.dm"
 #include "code\game\objects\map_metadata\stalingrad.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\syria.dm"

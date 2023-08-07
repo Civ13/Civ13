@@ -1,5 +1,5 @@
-/obj/map_metadata/sovafghan
-	ID = MAP_SOVAFGHAN
+/obj/map_metadata/kandahar
+	ID = MAP_KANDAHAR
 	title = "Soviet-Afghan War"
 	no_winner ="The region of Kandahar is still contested."
 	lobby_icon = "icons/lobby/sovafghan.png"
@@ -19,7 +19,7 @@
 	age = "1984"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, CIVILIAN = 0.5, ARAB = 0.5)
-	battle_name = "Soviet Afghan War"
+	battle_name = "Kandahar Insurgency"
 	mission_start_message = "<font size=4>The <b><font color ='red'>Soviets</font></b>, along with the <b><font color ='green'>DRA</font></b>, have to remain in control of the Kandahar province, arrest or eliminate the Mujahideen leaders that are turning the local populace against the government. <br>The <b><font color ='black'>Mujahideen</font></b> must get rid of the communist oppressors in the region by capturing and holding their outposts or by killing/capturing their officers. <b>The faction with the most points (<b>100</b>) wins!</b><br>The gracewall ends in <b>8 minutes</b></font>"
 	faction1 = ARAB
 	faction2 = RUSSIAN
@@ -38,7 +38,7 @@
 	var/gracedown1 = TRUE
 	grace_wall_timer = 4800
 
-/obj/map_metadata/sovafghan/New()
+/obj/map_metadata/kandahar/New()
 	..()
 	var/newnamea = list("Soviet Army" = list(175,175,175,null,0,"star","#FF0000","#f5c400",0,0))
 	var/newnameb = list("DRA" = list(175,175,175,null,0,"star","#FF0000","#005400",0,0))
@@ -54,7 +54,7 @@
 	spawn(4800)
 		points_check()
 
-/obj/map_metadata/sovafghan/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/kandahar/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_afghan)
 		. = TRUE
@@ -64,7 +64,7 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/sovafghan/roundend_condition_def2name(define)
+/obj/map_metadata/kandahar/roundend_condition_def2name(define)
 	..()
 	switch (define)
 		if (RUSSIAN)
@@ -74,7 +74,7 @@
 		if (CIVILIAN)
 			return "DRA"
 
-/obj/map_metadata/sovafghan/roundend_condition_def2army(define)
+/obj/map_metadata/kandahar/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (RUSSIAN)
@@ -84,7 +84,7 @@
 		if (CIVILIAN)
 			return "DRA"
 
-/obj/map_metadata/sovafghan/army2name(army)
+/obj/map_metadata/kandahar/army2name(army)
 	..()
 	switch (army)
 		if ("Soviet Army")
@@ -94,7 +94,7 @@
 		if ("CIVILIAN")
 			return "DRA"
 
-/obj/map_metadata/sovafghan/cross_message(faction)
+/obj/map_metadata/kandahar/cross_message(faction)
 	if (faction == ARAB)
 		return "<font size = 4>The grace wall is down!</font>"
 	else if (faction == CIVILIAN)
@@ -104,7 +104,7 @@
 	else
 		return ""
 
-/obj/map_metadata/sovafghan/reverse_cross_message(faction)
+/obj/map_metadata/kandahar/reverse_cross_message(faction)
 	if (faction == ARAB)
 		return "<font size = 4>The grace wall is up!</font>"
 	else if (faction == CIVILIAN)
@@ -114,7 +114,7 @@
 	else
 		return ""
 
-/obj/map_metadata/sovafghan/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/kandahar/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -127,7 +127,7 @@
 			return FALSE
 	return FALSE
 
-/obj/map_metadata/sovafghan/proc/points_check()
+/obj/map_metadata/kandahar/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 4800)
 		var/c1 = 0
 		var/c2 = 0
@@ -321,7 +321,7 @@
 			world << "<big>Mujahideen: [muj_points]</big>"
 			world << "<big>Soviets and DRA: [sov_points]</big>"
 
-/obj/map_metadata/sovafghan/update_win_condition()
+/obj/map_metadata/kandahar/update_win_condition()
 	if (processes.ticker.playtime_elapsed > 4800)
 		if (sov_points < 100 && muj_points < 100)
 			return TRUE
@@ -345,7 +345,7 @@
 			return FALSE
 	return TRUE
 
-/obj/map_metadata/sovafghan/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/kandahar/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -437,7 +437,7 @@
 				user << "Here's also a little extra to get you going."
 				new/obj/item/stack/money/dollar/five(loc)
 			if (prob(5))
-				var/obj/map_metadata/sovafghan/MP = map
+				var/obj/map_metadata/kandahar/MP = map
 				var/randevent = rand(1,2)
 				switch (randevent)
 					if (1)
