@@ -622,9 +622,9 @@ var/global/redirect_all_players = null
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
-//Sovafghan DRA spawnpoints
-		if (map && map.ID == MAP_SOVAFGHAN)
-			var/obj/map_metadata/sovafghan/MP = map
+//Kandahar DRA spawnpoints
+		if (map && map.ID == MAP_KANDAHAR)
+			var/obj/map_metadata/kandahar/MP = map
 			var/randspawn = rand(1,4)
 			switch (randspawn)
 				if (1)
@@ -1104,7 +1104,7 @@ var/global/redirect_all_players = null
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
-		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
+		if (map && (istype(map, /obj/map_metadata/kandahar) || istype(map, /obj/map_metadata/hill_3234) || istype(map, /obj/map_metadata/magistral)))
 			dat += "[alive_arab.len] Mujahideen "
 		else if (map && istype(map, /obj/map_metadata/syria))
 			dat += "[alive_arab.len] Syrian Government Soldiers "
@@ -1346,7 +1346,7 @@ var/global/redirect_all_players = null
 						temp_name = "Russian Army"
 					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
-				else if (map && (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
+				else if (map && (map.ID == "KANDAHAR" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")
