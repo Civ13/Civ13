@@ -183,23 +183,23 @@
 				playsound(t1, "artillery_out_distant", 100, TRUE)
 
 /obj/structure/cannon/modern/tank/german75
-	name = "7.5 cm KwK 40"
-	desc = "a 75 mm german tank-based cannon."
+	name = "7.5cm KwK 40"
+	desc = "a 75mm german tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 25
 	caliber = 75
 
 /obj/structure/cannon/modern/tank/american75
-	name = "75 mm M3 gun"
-	desc = "a 75 mm american tank-based cannon."
+	name = "75mm M3 gun"
+	desc = "a 75mm american tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 25
 	caliber = 75
 
 /obj/structure/cannon/modern/tank/russian76/americanfield
-	name = "76.2 mm M5 gun"
+	name = "76.2mm M5 gun"
 	desc = "a 76.2mm american Anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
@@ -214,7 +214,7 @@
 
 /obj/structure/cannon/modern/tank/japanese57
 	name = "Type 90 Cannon"
-	desc = "a 57 mm japanese tank-based cannon."
+	desc = "a 57mm japanese tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 25
@@ -222,31 +222,31 @@
 
 /obj/structure/cannon/modern/tank/german88
 	name = "8.8 cm KwK 36"
-	desc = "an 88 mm german tank-based cannon."
+	desc = "an 88mm german tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
 	caliber = 88
 
 /obj/structure/cannon/modern/tank/omwtc10
-	name = "OMW-TC 10 cm"
-	desc = "a 100 mm Redmenian tank-based cannon."
+	name = "OMW-TC 100mm"
+	desc = "a 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
 	caliber = 100
 
 /obj/structure/cannon/modern/tank/autoloader/omwtc10
-	name = "OMW-TC 10 cm"
-	desc = "a 100 mm Redmenian tank-based cannon."
+	name = "OMW-TC 100mm"
+	desc = "a 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
 	caliber = 100
 
 /obj/structure/cannon/modern/tank/autoloader/t90a
-	name = "125 mm 2A46"
-	desc = "a 125 mm Russian tank-based cannon."
+	name = "2A46 125mm"
+	desc = "a 125mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
@@ -262,7 +262,7 @@
 
 /obj/structure/cannon/modern/tank/challenger2
 	name = "L30A1 120mm"
-	desc = "The L30A1, officially designated Gun 120 mm Tk L30, is a British-designed 120 mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	desc = "The L30A1, officially designated Gun 120mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 35
@@ -270,7 +270,7 @@
 
 /obj/structure/cannon/modern/tank/baftkn75
 	name = "BAF TKN 75mm"
-	desc = "a 75 mm Blugoslavian tank-based cannon."
+	desc = "a 75mm Blugoslavian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 16
 	maxrange = 30
@@ -278,7 +278,7 @@
 
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"
-	desc = "a 88 mm German anti-tank cannon."
+	desc = "a 88mm German anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxsway = 18
@@ -291,15 +291,15 @@
 		gunner_chair = new /obj/structure/bed/chair/gunner(src)
 
 /obj/structure/cannon/modern/tank/russian122
-	name = "122 mm M1943 D-25T"
-	desc = "a 122 mm Russian tank-based cannon."
+	name = "122mm M1943 D-25T"
+	desc = "a 122mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 27
 	caliber = 122
 
 /obj/structure/cannon/modern/tank/russian76
-	name = "76 mm M1940 F-34"
+	name = "76mm M1940 F-34"
 	desc = "a 76.2 mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
@@ -307,8 +307,8 @@
 	caliber = 76.2
 
 /obj/structure/cannon/modern/tank/russian45 //low cal but fires fast
-	name = "45 mm M1932 20-K"
-	desc = "a 45 mm Russian tank-based fast firing cannon."
+	name = "45mm M1932 20-K"
+	desc = "a 45mm Russian tank-based fast firing cannon."
 	icon_state = "tank_cannon"
 	maxsway = 12
 	maxrange = 25
@@ -317,7 +317,7 @@
 	firedelay = 20
 
 /obj/structure/cannon/modern/tank/russian45/field
-	name = "45 mm anti-tank gun model 1932"
+	name = "45mm anti-tank gun model 1932"
 	desc = "A 45mm fast firing anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
@@ -332,8 +332,8 @@
 		gunner_chair = new /obj/structure/bed/chair/gunner(src)
 
 /obj/structure/cannon/modern/tank/russian85
-	name = "85 mm M1939 D5-T"
-	desc = "a 85 mm Russian tank-based cannon."
+	name = "85mm M1939 D5-T"
+	desc = "a 85mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxsway = 14
 	maxrange = 33
@@ -341,7 +341,7 @@
 	anchored = TRUE
 
 /obj/structure/cannon/modern/tank/russian85/su85
-	desc = "a 85 mm SU-85 russian tank-based cannon."
+	desc = "a 85mm SU-85 russian tank-based cannon."
 	icon_state = "tank_cannon"
 	firedelay = 35
 	maxsway = 16
@@ -352,8 +352,8 @@
 /obj/structure/cannon/modern/tank/russian85/kv1
 
 /obj/structure/cannon/modern/tank/russian85/field
-	name = "85 mm M1939 52-K cannon"
-	desc = "a 85 mm russian anti-air cannon converted for anti-tank use."
+	name = "85mm M1939 52-K cannon"
+	desc = "a 85mm russian anti-air cannon converted for anti-tank use."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxsway = 18

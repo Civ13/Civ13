@@ -651,6 +651,12 @@
 /obj/structure/simple_door/key_door/insurgent
 	keyslot_type = /datum/keyslot/insurgent
 	unique_door_name = "Insurgent locked"
+
+/obj/structure/simple_door/key_door/wood
+	keyslot_type = /datum/keyslot/insurgent
+	material = "wood"
+	health = 150
+
 #undef INS_CODE
 
 #define US_CODE 995 * 10

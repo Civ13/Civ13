@@ -889,7 +889,6 @@
 	caliber = "a577"
 	value = 8
 
-
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mmR cartridge"
 	desc = "A brass casing."
@@ -1145,8 +1144,8 @@
 	value = 2
 
 /obj/item/ammo_casing/a30mm_ap
-	name = "3UBR6 AP"
-	desc = "A VERY big brass casing."
+	name = "30mm AP-T cartridge"
+	desc = "An Amour Piercing-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
@@ -1155,13 +1154,33 @@
 	value = 2
 
 /obj/item/ammo_casing/frag/a30mm_he
-	name = "3UOR6 HE"
-	desc = "A VERY big brass casing."
+	name = "30mm HE-T cartridge"
+	desc = "A High Explosive-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
 	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a30mm_he
 	caliber = "a30"
+	value = 2
+
+/obj/item/ammo_casing/a35mm_fap
+	name = "30mm FAP cartridge"
+	desc = "A Frangible Armour Piercing cartridge."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/a35mm_fap
+	caliber = "a35"
+	value = 2
+
+/obj/item/ammo_casing/frag/a35mm_hei
+	name = "30mm HEI-T cartridge"
+	desc = "A High Explosive Incendiary-Tracer cartridge."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a35mm_hei
+	caliber = "a35"
 	value = 2
 
 // Shotguns
@@ -1190,6 +1209,13 @@
 	icon_state = "beanbag-shell"
 	spent_icon = "beanbag-spent"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
+
+/obj/item/ammo_casing/shotgun/breaching
+	name = "breaching slug"
+	desc = "A 12 gauge breaching slug used to break open locks."
+	icon_state = "slug-shell"
+	spent_icon = "slug-spent"
+	projectile_type = /obj/item/projectile/bullet/shotgun/breaching
 
 /obj/item/ammo_casing/shotgun/rubber
 	name = "rubber shot"

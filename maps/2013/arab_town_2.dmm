@@ -162,7 +162,7 @@
 "di" = (/obj/structure/closet/anchored,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/turf/floor/dirt/dust,/area/caribbean/british{name = "American Base"})
 "dj" = (/obj/structure/window/barrier/jersey{icon_state = "jerseybarrier1"; dir = 1},/turf/floor/dirt,/area/caribbean/desert)
 "dk" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/desert)
-"dl" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm{icon_state = "pkm"; dir = 8},/turf/floor/plating/road,/area/caribbean/desert)
+"dl" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm{icon_state = "pkm"; dir = 8},/turf/floor/plating/road,/area/caribbean/desert)
 "dm" = (/obj/structure/window/barrier/jersey,/turf/floor/dirt,/area/caribbean/desert)
 "dn" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/plating/road,/area/caribbean/desert)
 "do" = (/obj/structure/window/barrier/jersey{icon_state = "jerseybarrier1"; dir = 4},/turf/floor/plating/road,/area/caribbean/desert)

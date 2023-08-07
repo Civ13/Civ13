@@ -164,9 +164,9 @@
 						spawn(3)
 							off_hand.Fire(A,user,params, accuracy_mod = 0.66)
 	if (!off_hand_fire)
-		Fire(A,user,params) //Otherwise, fire normally.
+		Fire(A, user, params) //Otherwise, fire normally.
 	else
-		Fire(A,user,params, accuracy_mod = 0.66)
+		Fire(A, user, params, accuracy_mod = 0.66)
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
@@ -221,7 +221,7 @@
 				return FALSE
 	..()
 
-/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
+/obj/item/weapon/gun/proc/Fire(atom/target, mob/living/user, clickparams = null, pointblank = FALSE, reflex = FALSE, forceburst = -1, force = FALSE, accuracy_mod = 1)
 
 	if (!user || !target) return
 
@@ -243,7 +243,7 @@
 
 		if (world.time < next_fire_time)
 			if (world.time % 3) //to prevent spam
-				user << "<span class='warning'>[src] is not ready to fire again!</span>"
+				user << SPAN_WARNING("[src] is not ready to fire again!")
 			return
 
 	//unpack firemode data
@@ -571,13 +571,14 @@
 /obj/item/weapon/gun/proc/switch_firemodes(mob/user=null)
 	sel_mode++
 	if (sel_mode > firemodes.len)
-		sel_mode = TRUE
+		sel_mode = 1
 	var/datum/firemode/new_mode = firemodes[sel_mode]
 	user << "<span class='notice'>\The [src] is now set to [new_mode.name].</span>"
 	if (new_mode.name == "full auto")
 		full_auto = TRUE
 	else
 		full_auto = FALSE
+		
 /obj/item/weapon/gun/attack_self(mob/user)
 	if (firemodes.len > 1)
 		switch_firemodes(user)

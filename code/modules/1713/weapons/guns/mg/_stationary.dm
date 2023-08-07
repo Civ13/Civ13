@@ -1,39 +1,36 @@
-//*********************
-//POD MACHINEGUNS
-//*********************
-/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
-	set category = null // was "Minigun" - removes lag
-	set name = "Eject magazine"
-	set src in range(1, usr)
-	try_remove_mag(usr)
-
-/////////////////////////////
-////Stationary Machinegun////
-/////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary
-	name = "machinegun"
-	desc = "a large machinegun."
-	icon_state = ""
-	item_state = ""
-	layer = MOB_LAYER + 3
-	anchored = TRUE
-	density = TRUE
-	w_class = ITEM_SIZE_GARGANTUAN
-	load_method = SINGLE_CASING
-	handle_casings = REMOVE_CASINGS
-	max_shells = 500
-	caliber = "a762x54"
-	slot_flags = FALSE
-	ammo_type = /obj/item/ammo_casing/a762x54
+	name = "Maxim 1895"
+	desc = "Heavy Maxim machinegun on cart mount."
+	icon_state = "maxim"
+	base_icon = "maxim"
 	stat = "machinegun"
 	maxhealth = 500
-	firemodes = list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), accuracy=list(2))
+	layer = MOB_LAYER + 3
+	
+	max_shells = 500
+	w_class = ITEM_SIZE_GARGANTUAN
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	
+	density = TRUE
+	anchored = FALSE
+	auto_eject = TRUE
+	
+	caliber = "a762x54"
+	magazine_type = /obj/item/ammo_magazine/maxim
+	ammo_type = /obj/item/ammo_casing/a762x54
+	
+	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
+	firemodes = list(
+		list(name = "full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	slot_flags = FALSE
 	full_auto = TRUE
+	fire_delay = 3
 
-	var/maximum_use_range = FALSE // user loc at minigun's current loc (used in use_object.dm)
+	var/maximum_use_range = 0 // user loc at minigun's current loc (used in use_object.dm)
 
-	var/user_old_x = FALSE
-	var/user_old_y = FALSE
+	var/can_turn = TRUE
 
 	var/mob/last_user = null
 
@@ -49,18 +46,17 @@
 	KD_chance = KD_CHANCE_HIGH
 
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
-
+	update_layer()
 	if (last_user && last_user != user)
-		user << "<span class = 'warning'>\the [src] is already in use.</span>"
+		user << SPAN_WARNING("\The [src] is already in use.")
 		return
 
 	if (!(user.using_MG == src))
 		var/grip_dir = reverse_direction(dir)
 		var/turf/T = get_step(loc, grip_dir)
-		var/obj/structure/bed/chair/drivers/DR
-		for (DR in src.loc.contents)
+		for (var/obj/structure/bed/chair/drivers/DR in src.loc.contents)
 			if (DR in src.loc.contents)
-				user << "<span class='notice'>There is a seat in the way.</span>"
+				user << SPAN_NOTICE("There is a seat in the way.")
 				return
 		if (user.loc == T)
 			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
@@ -68,13 +64,20 @@
 					if (do_after(user, 15, src))
 						user.use_MG(src)
 						usedby(user, src)
+						update_layer()
 						started_using(user)
 						if (user.loc != loc)
 							user.use_MG(null)
 			else
-				user.show_message("<span class = 'warning'>You need both hands to use a machinegun.</span>")
+				user.show_message(SPAN_WARNING(">You need both hands to use a machinegun."))
 		else
-			user.show_message("<span class='warning'>You're too far from the handles.</span>")
+			user.show_message(SPAN_WARNING("You're too far from the handles."))
+
+/obj/item/weapon/gun/projectile/automatic/stationary/verb/eject_mag()
+	set category = null
+	set name = "Eject magazine"
+	set src in range(1, usr)
+	try_remove_mag(usr)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/try_remove_mag(mob/user)
 	if (!ishuman(user))
@@ -83,20 +86,14 @@
 		if (user.has_empty_hand())
 			unload_ammo(user)
 		else
-			user.show_message("<span class='warning'>You need an empty hand for this.</span>")
+			user.show_message(SPAN_WARNING("You need an empty hand for this."))
 	else
-		user.show_message("<span class='warning'>You can't do this while using \the [src].</span>")
+		user.show_message(SPAN_WARNING("You can't do this while using \the [src]."))
 
-/obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A, params)
+/obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A)
 	if (A == src)
 		if (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm)
 			switch_firemodes(user)
-
-	if (check_direction(user, A))
-		afterattack(A, user, FALSE, params)
-	else
-	//	rotate_to(user, A)
-		update_layer()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/check_direction(mob/user, atom/A)
 	if (get_turf(A) == loc)
@@ -110,7 +107,7 @@
 	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/rotate_to(mob/user, atom/A)
-	user.show_message("<span class='warning'>You can't turn the [name] there.</span>")
+	user.show_message(SPAN_WARNING("You can't turn the [name] there."))
 	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_layer()
@@ -140,7 +137,7 @@
 				if (H.looking)
 					H.look_into_distance(user, FALSE)
 			var/datum/action/toggle_scope/S = A
-			S.boundto = src//The lines including this line and the line below this call to two different files, could be helpful to combine the functions of the files
+			S.boundto = src //The lines including this line and the line below this call to two different files, could be helpful to combine the functions of the files
 			H.look_into_distance(user, TRUE, TRUE)
 			last_user = user
 			break
@@ -161,7 +158,7 @@
 	return user.using_MG == src && user.loc == loc
 
 /obj/item/weapon/gun/projectile/automatic/stationary/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (air_group || (height==0)) return TRUE
+	if (air_group || !density) return TRUE
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return FALSE
@@ -178,7 +175,9 @@
 
 // helpers
 
-/mob/var/using_MG = null
+/mob
+	var/obj/item/weapon/gun/projectile/automatic/stationary/using_MG = null
+
 /mob/proc/use_MG(o)
 	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
 		using_MG = null

@@ -420,6 +420,16 @@
 	speedlist = list(1=7,2=6,3=5,4=4,5=3)
 	turntimer = 6
 
+/obj/structure/vehicleparts/axis/car/cv
+	name = "CV 33"
+	desc = "A powered axis from a tankette."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 1900
+	speedlist = list(1=7,2=6,3=5,4=4,5=3)
+	turntimer = 6
+
 /obj/structure/vehicleparts/axis/car/falcon
 	name = "SMC Falcon"
 	desc = "A powered axis from a car."
@@ -662,6 +672,10 @@
 /obj/structure/engine/internal/gasoline/premade/panzervi
 	enginesize = 25000
 
+/obj/structure/engine/internal/gasoline/premade/l3
+	name = "FIAT-SPA CV3"
+	enginesize = 4300
+
 /obj/structure/engine/internal/diesel/premade/omw22_2
 	name = "OMW 15 liter diesel engine"
 	enginesize = 15000
@@ -669,6 +683,10 @@
 /obj/structure/engine/internal/gasoline/premade/baf1_a
 	name = "BAF 12 gasoline engine"
 	enginesize = 12000
+
+/obj/structure/engine/internal/turbine/abrams
+	name = "Honeywell AGT1500 turbine engine"
+	enginesize = 15000
 
 /obj/structure/engine/internal/diesel/premade/v12
 	name = "V12 diesel engine"

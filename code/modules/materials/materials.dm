@@ -444,7 +444,7 @@ var/list/name_to_material
 
 /material/stonebrick
 	name = "stonebrick"
-	display_name = "stone brick"
+	display_name = "stone"
 	icon_base = "new_stonebrick"
 	icon_colour = "#808080"
 	hardness = 50

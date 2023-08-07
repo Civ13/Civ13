@@ -36,7 +36,7 @@ var/list/nonbreaking_types = list(
 			else if(state && !isSwitchingStates)
 				Close()
 		else
-			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
+			user.visible_message(SPAN_NOTICE("[H] knocks at the door."))
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 
 /obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
@@ -47,7 +47,7 @@ var/list/nonbreaking_types = list(
 			if(!state && !isSwitchingStates)
 				Open()
 		else
-			user.visible_message("<span class = 'notice'>[H] knocks at the door.</span>")
+			user.visible_message(SPAN_NOTICE("[H] knocks at the door."))
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 
 /obj/structure/simple_door/key_door/faction_door/Crossed(atom/user)
@@ -112,11 +112,11 @@ var/list/nonbreaking_types = list(
 		if (W.code == custom_code)
 			locked = !locked
 			if (locked == 1)
-				visible_message("<span class = 'notice'>[user] locks the door.</span>")
+				visible_message(SPAN_NOTICE("[user] locks the door."))
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 			else if (locked == 0)
-				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+				visible_message(SPAN_NOTICE("[user] unlocks the door."))
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 		if (W.code != custom_code)
@@ -126,11 +126,11 @@ var/list/nonbreaking_types = list(
 			if (KK.code == custom_code)
 				locked = !locked
 				if (locked == 1)
-					visible_message("<span class = 'notice'>[user] locks the door.</span>")
+					visible_message(SPAN_NOTICE("[user] locks the door."))
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 				else if (locked == 0)
-					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+					visible_message(SPAN_NOTICE("[user] unlocks the door."))
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 		if (W.code != custom_code)
@@ -142,15 +142,15 @@ var/list/nonbreaking_types = list(
 				user << "You don't have the skills to use this."
 				return
 			else
-				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>You pick the lock.</span>"
+						user << SPAN_NOTICE("You pick the lock.")
 						src.locked = 0
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='notice'>Your lockpick broke!</span>"
+						user << SPAN_NOTICE("Your lockpick broke!")
 						return
 					else
 						return
@@ -159,7 +159,7 @@ var/list/nonbreaking_types = list(
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
-				visible_message("<span class = 'danger'>[user] hits the door with [W]!</span>")
+				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
 				if (istype(material, /material/wood))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				else
@@ -190,26 +190,26 @@ var/list/nonbreaking_types = list(
 				user << "You don't have the skills to use this."
 				return
 			else
-				visible_message("<span class = 'danger'>[user] starts picking the [src.name]'s lock with the [W]!</span>")
+				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
 				if (do_after(user, 35*H.getStatCoeff("dexterity"), src))
 					if(prob(H.getStatCoeff("dexterity")*35))
-						user << "<span class='notice'>You pick the lock.</span>"
+						user << SPAN_NOTICE("You pick the lock.")
 						keyslot.locked = FALSE
 						return
 					else if (prob(60))
 						qdel(W)
-						user << "<span class='warning'>Your lockpick broke!</span>"
+						user << SPAN_WARNING("Your lockpick broke!")
 						return
 					else
-						user << "<span class='warning'>You failed to pick the lock!</span>"
+						user << SPAN_WARNING("You failed to pick the lock!")
 						return
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
 		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
-		if   (breachable && istype(pump) && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug)) && locked && pump.consume_next_projectile())
+		if (breachable && locked && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug) || istype(pump.chambered, /obj/item/projectile/bullet/shotgun/breaching)) && pump.consume_next_projectile())
 			locked = FALSE
 			update_icon()
-			visible_message("<span class='warning'>[user] breaks the lock on the [src]!</span>")
+			visible_message(SPAN_WARNING("[user] breaks the lock on the [src]!"))
 			pump.Fire(src, user)
 			playsound(src.loc, 'sound/weapons/heavysmash.ogg', 50, 1)
 			Open()
@@ -219,7 +219,7 @@ var/list/nonbreaking_types = list(
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
-				visible_message("<span class = 'danger'>[user] hits the door with [W]!</span>")
+				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
 				if (istype(material, /material/wood))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				if (istype(material, /material/paper))
@@ -235,9 +235,9 @@ var/list/nonbreaking_types = list(
 
 	if (keyslot_original_locked != keyslot_locked)
 		if (keyslot_locked)
-			visible_message("<span class = 'warning'>[user] locks the door.</span>")
+			visible_message(SPAN_WARNING("[user] locks the door."))
 		else
-			visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+			visible_message(SPAN_NOTICE("[user] unlocks the door."))
 		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 /obj/structure/simple_door/key_door/custom/attack_hand(mob/user as mob)
 
@@ -249,19 +249,19 @@ var/list/nonbreaking_types = list(
 			return
 
 		if (user.a_intent == I_HELP)
-			user.visible_message("<span class = 'notice'>[user] knocks at the door.</span>")
+			user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
 			for (var/mob/living/L in view(7, src))
 				if (!viewers(7, L).Find(user))
-					L << "<span class = 'notice'>You hear a knock at the door.</span>"
+					L << SPAN_NOTICE("You hear a knock at the door.")
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
-			user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
+			user.visible_message(SPAN_WARNING("[user] bangs on the door."))
 			for (var/mob/living/L in view(7, src))
 				if (!viewers(7, L).Find(user))
-					L << "<span class = 'notice'>You hear a knock at the door.</span>"
+					L << SPAN_NOTICE("You hear a knock at the door.")
 			playsound(get_turf(src), "doorknock", 100, TRUE)
 		else
-			user.visible_message("<span class = 'danger'>[user] kicks the door!</span>")
+			user.visible_message(SPAN_DANGER("[user] kicks the door!"))
 			if (istype(material, /material/wood))
 				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 			else
@@ -278,19 +278,19 @@ var/list/nonbreaking_types = list(
 				return
 
 			if (user.a_intent == I_HELP)
-				user.visible_message("<span class = 'notice'>[user] knocks at the door.</span>")
+				user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
 				for (var/mob/living/L in view(7, src))
 					if (!viewers(7, L).Find(user))
-						L << "<span class = 'notice'>You hear a knock at the door.</span>"
+						L << SPAN_NOTICE("You hear a knock at the door.")
 				playsound(get_turf(src), "doorknock", 75, TRUE)
 			else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
-				user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
+				user.visible_message(SPAN_WARNING("[user] bangs on the door."))
 				for (var/mob/living/L in view(7, src))
 					if (!viewers(7, L).Find(user))
-						L << "<span class = 'notice'>You hear a knock at the door.</span>"
+						L << SPAN_NOTICE("You hear a knock at the door.")
 				playsound(get_turf(src), "doorknock", 100, TRUE)
 			else
-				user.visible_message("<span class = 'danger'>[user] kicks the door!</span>")
+				user.visible_message(SPAN_DANGER("[user] kicks the door!"))
 				if (istype(material, /material/wood))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				if (istype(material, /material/paper))
@@ -319,52 +319,52 @@ var/list/nonbreaking_types = list(
 	damage_display()
 	if (health <= 0)
 		if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
-			visible_message("<span class = 'danger'>The shoji door is torn apart!</span>")
+			visible_message(SPAN_DANGER("The shoji door is torn apart!"))
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/wood || /obj/structure/simple_door/key_door/anyone/nordic || /obj/structure/simple_door/key_door/anyone/wood || /obj/structure/simple_door/key_door/anyone/rustic || /obj/structure/simple_door/key_door/anyone/aztec|| /obj/structure/simple_door/key_door/anyone/singledoor/privacy || /obj/structure/simple_door/key_door/anyone/singledoor/housedoor))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of wood splinters!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of wood splinters!"))
 			new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/wood(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/bamboo))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of bamboo splinters!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of bamboo splinters!"))
 			new /obj/item/stack/material/bamboo(loc)
 			new /obj/item/stack/material/bamboo(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/stone || /obj/structure/simple_door/key_door/anyone/doubledoor/marble || /obj/structure/simple_door/key_door/anyone/roman))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of stone rubble!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of stone rubble!"))
 			new /obj/item/stack/material/stone(loc)
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/sandstone))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of sandstone rubble!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of sandstone rubble!"))
 			new /obj/item/stack/material/sandstone(loc)
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/marble))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of marble rubble!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of marble rubble!"))
 			new /obj/item/stack/material/marble(loc)
 			new /obj/item/stack/material/marble(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/bone))
-			visible_message("<span class = 'danger'>[src] collapses into a pile of bones!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of bones!"))
 			new /obj/item/stack/material/bone(loc)
 			new /obj/item/stack/material/bone(loc)
 			qdel(src)
 		else
-			visible_message("<span class = 'danger'>[src] collapses into a pile of scrap metal!</span>")
+			visible_message(SPAN_DANGER("[src] collapses into a pile of scrap metal!"))
 		qdel(src)
 
 /obj/structure/simple_door/key_door/proc/damage_display()
 
 	if (health < 20 && !showed_damage_messages[1])
 		showed_damage_messages[1] = TRUE
-		visible_message("<span class = 'danger'>[src] looks like it's about to break!</span>")
+		visible_message(SPAN_DANGER("[src] looks like it's about to break!"))
 	else if (health < (initial_health/4) && !showed_damage_messages[2])
 		showed_damage_messages[2] = TRUE
-		visible_message("<span class = 'danger'>[src] looks extremely damaged!</span>")
+		visible_message(SPAN_DANGER("[src] looks extremely damaged!"))
 	else if (health < (initial_health/2) && !showed_damage_messages[3])
 		showed_damage_messages[3] = TRUE
-		visible_message("<span class = 'danger'>[src] looks very damaged.</span>")
+		visible_message(SPAN_DANGER("[src] looks very damaged."))
 	else if (health < (initial_health/1.2) && !showed_damage_messages[4])
 		showed_damage_messages[4] = TRUE
-		visible_message("<span class = 'danger'>[src] starts to show signs of damage.</span>")
+		visible_message(SPAN_DANGER("[src] starts to show signs of damage."))

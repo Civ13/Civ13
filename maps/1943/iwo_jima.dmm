@@ -582,7 +582,7 @@
 "lm" = (/obj/structure/mine_support,/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/trench,/area/caribbean/void/caves)
 "ln" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/trench,/area/caribbean/void/caves)
 "lo" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/void/caves)
-"lp" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{icon_state = "type98hmg"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/void/caves)
+"lp" = (/obj/item/weapon/gun/projectile/automatic/stationary/type98{icon_state = "type98hmg"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/void/caves)
 "lq" = (/obj/structure/mine_support,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/trench,/area/caribbean/void/caves)
 "lr" = (/obj/structure/mine_support,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/void/caves)
 "ls" = (/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/item/weapon/grenade/ww2/type97,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/void/caves)
@@ -656,9 +656,9 @@
 "nf" = (/mob/living/simple_animal/hostile/human/ww2_jap/summer,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "ng" = (/mob/living/simple_animal/hostile/human/ww2_jap,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside)
 "nh" = (/obj/item/weapon/key/japanese,/turf/floor/trench,/area/caribbean)
-"ni" = (/obj/roof/concrete,/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{anchored = 1},/turf/floor/trench,/area/caribbean)
+"ni" = (/obj/roof/concrete,/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/type98{anchored = 1},/turf/floor/trench,/area/caribbean)
 "nk" = (/obj/roof/wood,/obj/structure/simple_door/key_door/anyone/rustic,/turf/floor/trench,/area/caribbean)
-"nl" = (/obj/roof/wood,/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98{anchored = 1},/turf/floor/trench,/area/caribbean)
+"nl" = (/obj/roof/wood,/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/type98{anchored = 1},/turf/floor/trench,/area/caribbean)
 "nn" = (/turf/floor/dirt,/area/caribbean/admin)
 
 (1,1,1) = {"

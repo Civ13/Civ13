@@ -56,6 +56,8 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/gun
 	var/list/attachments = list()
 	var/attachment_slots = null // Use the 'ATTACH_' defines above; can ise in combination Ex. ATTACH_SCOPE|ATTACH_BARREL
+	var/silencer_ico
+	var/obj/item/weapon/attachment/silencer/silencer = null
 
 /obj/item/weapon/gun/examine(mob/user)
 	..()
@@ -572,11 +574,6 @@ Current Defines (_defines/attachment.dm)
 		G.overlays -= G.under_ico
 	else
 		return
-
-/obj/item/weapon/gun
-	var/silencer_ico
-	var/obj/item/weapon/attachment/silencer/silencer = null
-
 
 /////////////////SILENCERS//////////////////////////////
 

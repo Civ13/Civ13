@@ -1128,6 +1128,72 @@
 /obj/structure/flag/objective/five
 	name = "Objective Flag five"
 
+/obj/structure/flag/campaign
+	var/faction_text = null
+	var/original_faction = null
+/obj/structure/flag/campaign/attack_hand(var/mob/living/human/user)
+	if (faction_text != user.faction_text)
+		if (original_faction == user.faction_text)
+			user << SPAN_NOTICE("You begin hoisting your own flag...")
+			if (do_after(user, 10 SECONDS, src))
+				faction_text = user.faction_text
+				switch(faction_text)
+					if (PIRATES)
+						icon_state = "redmenia"
+						name = "Redmenia Flag"
+						desc = "The flag of Redmenia."
+						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						for (var/mob/M in player_list)
+							M.client << warning_sound
+						world << "<font size = 5><b>REDMENIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
+					if (CIVILIAN)
+						icon_state = "blugoslavia"
+						name = "Blugoslavia Flag"
+						desc = "The flag of Blugoslavia."
+						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						for (var/mob/M in player_list)
+							M.client << warning_sound
+						world << "<font size = 5><b>BLUGOSLAVIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
+				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
+		else
+			user << SPAN_NOTICE("You begin hoisting your own flag...")
+			if (do_after(user, 10 SECONDS, src))
+				faction_text = user.faction_text
+				switch(faction_text)
+					if (PIRATES)
+						icon_state = "redmenia"
+						name = "Redmenia Flag"
+						desc = "The flag of Redmenia."
+						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						for (var/mob/M in player_list)
+							M.client << warning_sound
+						world << "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>"
+					if (CIVILIAN)
+						icon_state = "blugoslavia"
+						name = "Blugoslavia Flag"
+						desc = "The flag of Blugoslavia."
+						var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+						for (var/mob/M in player_list)
+							M.client << warning_sound
+						world << "<font size = 5><b>BLUGOSLAVIA HAS CAPTURED THE REDMENIAN CAPITAL.</b></font>"
+				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
+	else
+		user << SPAN_WARNING("Long live [capitalize(icon_state)]!")
+	
+/obj/structure/flag/campaign/redmenia
+	icon_state = "redmenia"
+	name = "Redmenia Flag"
+	desc = "The flag of Redmenia."
+	faction_text = PIRATES
+	original_faction = PIRATES
+
+/obj/structure/flag/campaign/blugoslavia
+	icon_state = "blugoslavia"
+	name = "Blugoslavia Flag"
+	desc = "The flag of Blugoslavia."
+	faction_text = CIVILIAN
+	original_faction = CIVILIAN
+
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))
 		if(W.amount >= 5)

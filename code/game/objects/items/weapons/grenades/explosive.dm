@@ -13,6 +13,9 @@
 	embed = TRUE
 	sharp = TRUE
 
+/obj/item/projectile/bullet/pellet/fragment/short_range
+	kill_count = 4
+
 /obj/item/projectile/bullet/pellet/fragment/strong
 	damage = 30
 

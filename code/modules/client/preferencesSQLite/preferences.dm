@@ -184,6 +184,10 @@ var/list/preferences_datums = list()
 
 	character.h_style = h_style
 	character.f_style = f_style
+	if(!character.find_trait("Baldness"))
+		character.h_growth = hair_styles_list[h_style].growth
+	if(character.gender == MALE)
+		character.f_growth = facial_hair_styles_list[f_style].growth
 
 	character.traits = traits
 

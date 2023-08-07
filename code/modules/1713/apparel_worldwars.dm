@@ -3011,7 +3011,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown
 	name = "brown bomber's jacket"
-	desc = "A brown jacket meant for high-alititude temperatures."
+	desc = "A brown jacket meant for high-altitude temperatures."
 	icon_state = "bomberjacket"
 	item_state = "bomberjacket"
 	worn_state = "bomberjacket"
@@ -3022,7 +3022,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack
 	name = "black bomber's jacket"
-	desc = "A black jacket meant for high-alititude temperatures."
+	desc = "A black jacket meant for high-altitude temperatures."
 	icon_state = "blackbomberjacket"
 	item_state = "blackbomberjacket"
 	worn_state = "blackbomberjacket"
@@ -3203,7 +3203,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	..()
 	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/horn(src)
+	new/obj/item/weapon/whistle(src)
 	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/schnapps(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us/officer

@@ -71,7 +71,7 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "aG" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /obj/structure/window/barrier/sandbag{
@@ -648,7 +648,7 @@
 /area/caribbean/roofed)
 "et" = (
 /obj/structure/vehicleparts/frame/car/left/metal,
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 4
 	},
 /obj/item/ammo_magazine/mg08,
@@ -1603,7 +1603,7 @@
 	dir = 1;
 	icon_state = "sandbag"
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	icon_state = "mg08";
 	dir = 1
 	},
@@ -1960,7 +1960,7 @@
 /obj/structure/window/barrier/sandbag{
 	dir = 8
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /obj/item/ammo_magazine/mg08,
@@ -2271,7 +2271,7 @@
 	dir = 1;
 	icon_state = "sandbag"
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	icon_state = "mg08";
 	dir = 1
 	},
@@ -2353,7 +2353,7 @@
 /obj/structure/window/barrier/rock{
 	dir = 1
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	icon_state = "mg08";
 	dir = 1
 	},
@@ -2780,7 +2780,7 @@
 /area/caribbean/roofed)
 "rf" = (
 /obj/structure/window/barrier/sandbag,
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08,
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08,
 /obj/item/ammo_magazine/mg08,
 /turf/floor/trench,
 /area/caribbean)
@@ -2803,7 +2803,7 @@
 /turf/floor/carpet/greencarpet,
 /area/caribbean/roofed)
 "ry" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /turf/floor/dirt/dust,
@@ -6108,7 +6108,7 @@
 /turf/floor/trench,
 /area/caribbean)
 "KP" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08,
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08,
 /turf/floor/dirt/dust,
 /area/caribbean)
 "KQ" = (
@@ -6986,7 +6986,7 @@
 	dir = 4;
 	icon_state = "sandbag"
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 4
 	},
 /turf/floor/trench,
@@ -7034,7 +7034,7 @@
 /obj/structure/window/barrier/sandbag{
 	dir = 4
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /obj/item/ammo_magazine/mg08,
@@ -7310,7 +7310,7 @@
 	name = "The Caves"
 	})
 "RV" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 4
 	},
 /obj/structure/window/barrier/rock{
@@ -7331,7 +7331,7 @@
 	dir = 1;
 	icon_state = "sandbag"
 	},
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /turf/floor/trench,
@@ -7904,7 +7904,7 @@
 /area/caribbean/roofed)
 "UW" = (
 /obj/structure/vehicleparts/frame/car/left/metal,
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 4
 	},
 /obj/item/ammo_magazine/mg08,
@@ -8165,7 +8165,7 @@
 /turf/floor/grass,
 /area/caribbean)
 "WP" = (
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08{
+/obj/item/weapon/gun/projectile/automatic/stationary/mg08{
 	dir = 1
 	},
 /obj/structure/window/barrier/sandbag,

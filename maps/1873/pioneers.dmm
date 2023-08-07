@@ -67,7 +67,7 @@
 "bo" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/covers/wood/stairs,/turf/floor/dirt/dust,/area/caribbean)
 "bp" = (/obj/structure/practice_dummy,/turf/floor/dirt/dust,/area/caribbean)
 "bq" = (/obj/covers/wood/stairs,/turf/floor/wood,/area/caribbean/roofed)
-"br" = (/obj/covers/wood,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim{icon_state = "maxim"; dir = 1},/turf/floor/plating/cobblestone,/area/caribbean)
+"br" = (/obj/covers/wood,/obj/item/weapon/gun/projectile/automatic/stationary/maxim{icon_state = "maxim"; dir = 1},/turf/floor/plating/cobblestone,/area/caribbean)
 "bs" = (/obj/covers/wood_wall/log{icon_state = "log_wall"; dir = 8},/turf/floor/dirt,/area/caribbean/roofed)
 "bt" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/roofed)
 "bu" = (/obj/structure/barricade/stone_v/crenelated,/turf/floor/plating/cobblestone,/area/caribbean)

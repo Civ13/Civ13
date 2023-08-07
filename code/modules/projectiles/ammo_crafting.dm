@@ -174,6 +174,7 @@
 			return
 		else if (W.amount < amount)
 			user << "<span class = 'notice'>Not enough bullets. Reduce the casings stack or add more bullets.</span>"
+			return
 		else if (W.amount >= amount)
 			bulletn = amount
 			W.amount -= amount
@@ -184,18 +185,14 @@
 		return
 
 	if (istype(W, /obj/item/stack/cable_coil/))
-		if(W.amount < 5)
-			user << "<span class='notice'>You need more wires to do this.</span>"
-		else if(W.amount == 5)
+		if (W.amount >= 5)
 			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 			user << "<span class='notice'>You attach wires into the shell.</span>"
+			new/obj/item/stack/ammopart/casing/artillery/wired(get_turf(src))
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired(get_turf(src))
 		else
-			qdel(src)
-			W.amount = W.amount - 1
-			new/obj/item/stack/ammopart/casing/artillery/wired(get_turf(src))
+			user << "<span class='notice'>You need more wires to do this.</span>"
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder >= gunpowder_max)
 		make_chemical(W,user)
 		return
@@ -223,34 +220,26 @@
 /obj/item/stack/ammopart/casing/artillery/wired/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/electronics))
-		if(W.amount < 20)
-			user << "<span class='notice'>You need at least 20 electronics to do this.</span>"
-		else if(W.amount == 20)
+		if (W.amount >= 20)
 			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 			user << "<span class='notice'>You attach electronics to the wires.</span>"
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(get_turf(src))
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(get_turf(src))
 		else
-			qdel(src)
-			W.amount = W.amount - 8
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(get_turf(src))
+			user << "<span class='notice'>You need at least 20 electronics to do this.</span>"
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/ore/uranium))
-		if(W.amount < 10)
-			user << "<span class='notice'>You need at least 10 uranium to do this.</span>"
-		else if(W.amount == 10)
+		if (W.amount >= 10)
 			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 			user << "<span class='notice'>You attach uranium to the electronics and stuff it in the casing.</span>"
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(get_turf(src))
 			qdel(src)
 			qdel(W)
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(get_turf(src))
 		else
-			qdel(src)
-			W.amount = W.amount - 5
-			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(get_turf(src))
+			user << "<span class='notice'>You need at least 10 uranium to do this.</span>"
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
@@ -274,10 +263,11 @@
 				return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
-			user << "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>"
+			user << "<span class = 'notice'>You need to fill the casing(s) with gunpowder before putting the bullet on the casing.</span>"
 			return
 		else if (W.amount < amount)
 			user << "<span class = 'notice'>Not enough bullets. Reduce the casings stack or add more bullets.</span>"
+			return
 		else if (W.amount >= amount)
 			bulletn = amount
 			W.amount -= amount
@@ -345,6 +335,7 @@
 			return
 		else if (W.amount < amount)
 			user << "<span class = 'notice'>Not enough bullets. Reduce the casings stack or add more bullets.</span>"
+			return
 		else if (W.amount >= amount)
 			bulletn = amount
 			W.amount -= amount
@@ -366,6 +357,7 @@
 	else
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
+
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	switch (map.ID)
 		if (MAP_OCCUPATION)
@@ -656,8 +648,6 @@
 		user << "<span class = 'warning'>You need enough gunpowder in the container to make a cartridge.</span>"
 		return
 
-
-
 /obj/item/stack/ammopart/casing/tank/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
@@ -672,7 +662,7 @@
 				return
 		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
 			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user << "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s)</span>"
+				user << "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>"
 				return
 			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
 				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
@@ -685,6 +675,7 @@
 			return
 		else if (W.amount < amount)
 			user << "<span class = 'notice'>Not enough bullets. Reduce the casings stack or add more bullets.</span>"
+			return
 		else if (W.amount >= amount)
 			bulletn = amount
 			W.amount -= amount

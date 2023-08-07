@@ -44,6 +44,7 @@ var/civmax_research = list(230,230,230)
 	var/is_RP = FALSE
 	var/mosinonly = FALSE
 	var/squads = 1
+	var/fob_spawns = FALSE
 	var/list/faction1_squads = list(
 		1 = list(),
 		2 = list(),
@@ -367,7 +368,7 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/pollution()
 
-	if (global_pollution >= 1000)
+	if (global_pollution >= 2000)
 		change_weather(WEATHER_SMOG)
 		world << SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>")
 	if (global_pollution < 0)
@@ -671,7 +672,7 @@ var/civmax_research = list(230,230,230)
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
+	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 		// German major
 		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))

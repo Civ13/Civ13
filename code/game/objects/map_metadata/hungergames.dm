@@ -3,7 +3,7 @@
 	title = "Hunger Games (need staff)"
 	lobby_icon = "icons/lobby/battleroyale.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
-	respawn_delay = 36000000
+	respawn_delay = 0
 	is_singlefaction = TRUE
 	battleroyale = TRUE
 
@@ -17,17 +17,16 @@
 	age = "2013"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 1)
-	battle_name = "76th annual hunger games"
-	mission_start_message = "<font size=4>The 76th Annual Hunger Games will have 40 tributes competing, <b>Last standing tribute wins!</b> 3 minutes beforeyou may step off your platforms.</font>"
+	battle_name = "hunger games"
+	mission_start_message = "<font size=4>The Hunger Games will have multiple tributes competing, <b>Last standing tribute wins!</b> <br>You may step off your platforms in <b>3 minutes</b>.</font>"
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
 	var/message = ""
 	gamemode = "Battleroyale"
 	required_players = 12
-	has_hunger = TRUE
-	var/list/closed_areas = list()
 	grace_wall_timer = 1800
+	var/list/closed_areas = list()
 
 /obj/map_metadata/hunger_games/job_enabled_specialcheck(var/datum/job/J)
 
@@ -42,8 +41,12 @@
 	return .
 
 /obj/map_metadata/hunger_games/cross_message(faction)
+	for (var/obj/item/mine/ap/armed/mine in world)
+		qdel(mine)
 	if (faction == PIRATES)
-		return "<font size = 4><b>The 76th annual hunger games have started!</b></font>"
+		return "<font size = 4><b>The hunger games have started!</b></font>"
+	else
+		return ""
 
 /obj/map_metadata/hunger_games/update_win_condition()
 	if (processes.ticker.playtime_elapsed >= 54000)

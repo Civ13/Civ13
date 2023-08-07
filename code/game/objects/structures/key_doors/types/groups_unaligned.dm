@@ -127,9 +127,9 @@
 	desc = "A large set of reinforced steel doors."
 
 /obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door
-	name = "large steel double store"
-	health = 200
-	desc = "A large store steel and glass double door."
+	name = "double store doors"
+	desc = "A large steel and glass double door."
+	health = 150
 	icon = 'icons/obj/doors/material_doors.dmi'
 	basic_icon = "storedoor"
 	icon_state = "storedoor"

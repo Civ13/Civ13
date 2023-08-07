@@ -736,30 +736,30 @@
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W19))
 											radiation_pulse(target, 8, 70, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33))
 											radiation_pulse(target, 10, 45, 1000, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 											radiation_pulse(target, 10, 50, 1400, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else if (istype(fired_shell,/obj/item/cannon_ball/shell/nuclear/nomads))
-											radiation_pulse(target, 25, 150, 1800, TRUE)
+											radiation_pulse(target, 18, 150, 1000, TRUE)
 											explosion(target, 5, 8, 20, 80)
 											for (var/turf/floor/T in circlerangeturfs(4, target))
-												ignite_turf(T, 12, 70)
+												ignite_turf(T, 8, 70)
 											
 											for(var/mob/living/human/L in circlerangeturfs(80, target))
 												L.Weaken(3)
@@ -767,19 +767,19 @@
 													flick("e_flash", L.HUDtech["flash"])
 											change_global_pollution(200)
 											change_global_radiation(18)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else if (istype(fired_shell,/obj/item/cannon_ball/rocket/nuclear))
 											radiation_pulse(target, 12, 80, 1400, TRUE)
 											explosion(target, 2, 2, 2, 30)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 										else
 											radiation_pulse(target, 4, 50, 800, TRUE)
 											explosion(target, 2, 2, 2, 100)
 											change_global_pollution(150)
 											change_global_radiation(10)
-											world << "<font size=4 color='red'>A nuclear explosion has happened!</font>"
+											world << SPAN_DANGER("A nuclear explosion has happened!")
 
 									else
 										message_admins("Gas artillery shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>)..")

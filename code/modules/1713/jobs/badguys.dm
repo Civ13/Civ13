@@ -104,7 +104,6 @@
 	spawn_location = "JoinLateTatarin"
 
 	is_officer = TRUE
-	whitelisted = TRUE
 	is_vip = TRUE
 
 	is_heist = TRUE
@@ -149,6 +148,9 @@
 	H.setStat("pistol", STAT_VERY_VERY_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
+	if (map && map.ID == MAP_DRUG_BUST)
+		var/obj/map_metadata/drug_bust/CP = map
+		CP.HVT_list |= H
 
 /datum/job/russian/rednikov/guard
 	title = "Rednikov Guard"

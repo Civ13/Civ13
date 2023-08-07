@@ -185,7 +185,7 @@
 "EP" = (/obj/covers/wood_wall/log,/turf/floor/grass,/area/caribbean/nomads/forest)
 "EV" = (/obj/structure/wild/smallbush,/obj/structure/barbwire{dir = 1},/turf/floor/dirt/dark_dirt,/area/caribbean/nomads/forest)
 "Fd" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/nomads/forest)
-"Fl" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
+"Fl" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "Fm" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
 "Fs" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate/two)
 "Fw" = (/obj/structure/table/modern/table,/obj/item/weapon/folder/red,/turf/floor/dirt,/area/caribbean/nomads/forest)

@@ -5,7 +5,7 @@
 	lobby_icon = "icons/lobby/operation_falcon.png"
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 600
+	respawn_delay = 90 SECONDS
 
 	faction_organization = list(
 		DUTCH,
@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(DUTCH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Operation Falcon"
-	mission_start_message = "<font size=4>Both factions have <b>10 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radio Post, North City, Factory and Lumber Company</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font> <br><big>Points are added to each team for each minute they control the different objectives.<br> First team to reach <b>70</b> points wins!</font>"
 	faction1 = DUTCH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -45,8 +45,9 @@
 
 	var/a4_control = "nobody"
 	var/a4_name = "Lumber Company"
-	grace_wall_timer = 10 MINUTES
+	grace_wall_timer = 3 MINUTES
 	no_hardcore = TRUE
+	fob_spawns = TRUE
 
 /obj/map_metadata/operation_falcon/New()
 	..()
@@ -381,16 +382,117 @@
 
 ////////MAP SPECIFIC OBJECTS////////
 
-/obj/structure/computer/nopower/platoontracker
-	name = "Military Asset Tracking System"
-	desc = "A satellite-based system, allowing realtime tracking of your troops."
-	icon = 'icons/obj/device.dmi'
-	icon_state = "tracking"
-	powered = TRUE
-	powerneeded = FALSE
+var/global/list/fob_names_nato = list("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
+var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "Ivan", "Konstantin", "Leonid", "Mikhail", "Nikolai")
+
+/obj/item/fob_spawnpoint
+	name = "FOB"
+	desc = "A heavy garrison. Used to spawn in reinforcements close to the frontline."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "hescobastion"
 	anchored = TRUE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
 	density = TRUE
-	operatingsystem = "unga OS 94"
-	New()
-		..()
-		programs += new/datum/program/platoontracker
+	health = 1000
+	var/faction_text = null
+	var/pickedfrom = null
+	var/pickedname = null
+
+/obj/item/fob_spawnpoint/attack_hand(mob/living/human/H as mob)
+	if (!faction_text)
+		faction_text = H.faction_text
+		playsound(loc, "radio_chatter", 250, FALSE)
+		message_admins("[H.name] ([H.ckey]) has built a FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
+		switch (H.faction_text)
+			if (DUTCH)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
+				fob_names_nato -= pickedname
+				name = "[name] \'[pickedname]\'"
+			if (BRITISH)
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
+				fob_names_nato -= pickedname
+				name = "[name] \'[pickedname]\'"
+			if (RUSSIAN)
+				pickedfrom = fob_names_russian
+				pickedname = pick(pickedfrom)
+				fob_names_russian -= pickedname
+				name = "[name] \'[pickedname]\'"
+	return
+
+/obj/item/fob_spawnpoint/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 600
+		if (2.0)
+			health -= 200
+		if (3.0)
+			health -= 20
+	if (health <= 0)
+		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
+		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		if (pickedname)
+			pickedfrom += pickedname
+		qdel(src)
+		return
+
+/obj/item/supply_crate
+	name = "supply crate"
+	desc = "A supply crate used to make FOBs. This is crate belongs to nobody"
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "supply_crate"
+	anchored = FALSE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = TRUE
+	health = 250
+	var/faction_text = null
+
+/obj/item/supply_crate/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 600
+		if (2.0)
+			health -= 200
+		if (3.0)
+			health -= 100
+	if (health <= 0)
+		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
+		message_admins("Supply crate at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
+		qdel(src)
+		return
+
+/obj/item/supply_crate/faction1/New()
+	..()
+	faction_text = map.faction1
+	name = "[map.roundend_condition_def2name(faction_text)] [name]"
+	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+/obj/item/supply_crate/faction2/New()
+	..()
+	faction_text = map.faction2
+	name = "[map.roundend_condition_def2name(faction_text)] [name]"
+	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+
+/obj/item/supply_crate/attack_hand(mob/living/human/H as mob)
+	if (faction_text == H.faction_text)
+		H << SPAN_NOTICE("You starting building a FOB with the [src].")
+		var/found = 0
+		for(var/obj/item/fob_spawnpoint/fob in world)
+			if (fob.faction_text == H.faction_text)
+				found++
+		if (found < 8)
+			if (do_after(H, 30 SECONDS, src))
+				H << SPAN("good", "<big>You build a FOB with the [src].</big>")
+				var/obj/item/fob_spawnpoint/fob = new/obj/item/fob_spawnpoint(get_turf(src))
+				fob.attack_hand(H)
+				qdel(src)
+				return
+		else
+			H << SPAN_WARNING("<big>There are too many friendly FOBs! Consider destroying one to build one somewhere else.</big>")
+	else
+		H << SPAN_WARNING("This supply crate does not belong to your faction!")
+	return

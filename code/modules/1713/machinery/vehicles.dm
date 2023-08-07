@@ -345,6 +345,15 @@
 		tank_names_german -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/l3
+	name = "L3/33"
+	speeds = 4
+	speedlist = list(1=10,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#D79E57"
+	turret_type = ""
+	vehicle_size = "2x3"
+
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
 	speeds = 4

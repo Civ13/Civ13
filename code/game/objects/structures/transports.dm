@@ -767,6 +767,7 @@
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
 							user.r_hand = null
+					user.buckled = null
 				update_overlay()
 				update_icon()
 				return

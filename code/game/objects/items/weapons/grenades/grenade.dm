@@ -25,7 +25,7 @@
 
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
 	if (!active)
-		user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+		user << SPAN_WARNING("You light \the [name]! [det_time/10] seconds!")
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -56,7 +56,7 @@
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
 
 	spawn(det_time)
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!"))
 		prime(user)
 		return
 
@@ -279,7 +279,7 @@
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
 	update_icon()
 	spawn(det_time)
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!"))
 		prime()
 		return
 
@@ -328,7 +328,7 @@
 
 /obj/item/weapon/grenade/modern/mills
 	name = "mills bomb no. 5"
-	desc = "A British early XXth century grenade."
+	desc = "A British early 20th century grenade."
 	icon_state = "mills"
 	det_time = 70
 	throw_range = 7
@@ -336,21 +336,21 @@
 
 /obj/item/weapon/grenade/ww2/mills2
 	name = "mills bomb no. 36M"
-	desc = "A British early XXth century grenade, with a reduced timer to 4 seconds."
+	desc = "A British early 20th century grenade, with a reduced timer to 4 seconds."
 	icon_state = "mills"
 	det_time = 40
 	throw_range = 7
 
 /obj/item/weapon/grenade/modern/f1
 	name = "F1 grenade"
-	desc = "A French early XXth century grenade, also used by Russia."
+	desc = "A French early 20th century grenade, also used by Russia."
 	icon_state = "f1"
 	det_time = 40
 	throw_range = 8
 
 /obj/item/weapon/grenade/modern/stg1915
 	name = "M1915 Stielhandgranate"
-	desc = "A German early XXth century design."
+	desc = "A German early 20th century design."
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 10
@@ -585,6 +585,54 @@
 		else
 			return
 
+/obj/item/weapon/grenade/modern/impact
+	name = "impact grenade"
+	desc = "An impact grenade that explodes when hitting the ground after being thrown."
+	icon_state = "oto35"
+	throw_range = 12
+
+/obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
+	if (!active)
+		user << SPAN_WARNING("You prime \the [name]!")
+		firer = user
+		active = TRUE
+		add_fingerprint(user)
+	if (user)
+		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+		message_admins("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+		log_game("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+		firer = user
+	icon_state = initial(icon_state) + "_active"
+	active = TRUE
+	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+
+	// clicking a grenade a second time turned throw mode off, this fixes that
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if(istype(H) && !H.in_throw_mode)
+			H.throw_mode_on()
+
+/obj/item/weapon/grenade/modern/impact/throw_impact(atom/hit_atom)
+	if (active)
+		prime()
+	else
+		..()
+	return
+
+/obj/item/weapon/grenade/modern/impact/oto35
+	name = "OTO Mod. 35"
+	desc = "An Italian impact fuse hand grenade that entered into service in 1935."
+	icon_state = "oto35"
+	throw_range = 12
+
+/obj/item/weapon/grenade/modern/impact/oto35/throw_impact(atom/hit_atom)
+	if (active)
+		if (prob(90))
+			prime()
+	else
+		..()
+	return
+
 /obj/item/weapon/grenade/suicide_vest
 	name = "suicide vest"
 	desc = "An IED suicide vest. Deadly!"
@@ -633,13 +681,13 @@
 
 /obj/item/weapon/grenade/suicide_vest/attack_self(mob/user as mob)
 	if (!active && armed == "armed")
-		user << "<span class='warning'>You switch \the [name]!</span>"
+		user << SPAN_WARNING("You switch \the [name]!")
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/attack_hand(mob/user as mob)
 	if (!active && armed == "armed" && loc == user)
-		user << "<span class='warning'>You switch \the [name]!</span>"
+		user << SPAN_WARNING("You switch \the [name]!")
 		activate(user)
 		add_fingerprint(user)
 	else
@@ -655,7 +703,7 @@
 		armed = "disarmed"
 		return
 	else
-		usr << "<span class='warning'>You arm \the [src]!</span>"
+		usr << SPAN_WARNING("You arm \the [src]!")
 		armed = "armed"
 		return
 
@@ -674,7 +722,7 @@
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
 
 	spawn(det_time)
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!"))
 		prime()
 		return
 
@@ -698,14 +746,14 @@
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_self(mob/user as mob)
 	if (!active && armed1 == "armed")
-		user << "<span class='warning'>You switch \the [name]!</span>"
+		user << SPAN_WARNING("You switch \the [name]!")
 		firer = user
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_hand(mob/user as mob)
 	if (!active && armed1 == "armed" && loc == user)
-		user << "<span class='warning'>You switch \the [name]!</span>"
+		user << SPAN_WARNING("You switch \the [name]!")
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -723,7 +771,7 @@
 		firer = null
 		return
 	else
-		usr << "<span class='warning'>You arm \the [src]!</span>"
+		usr << SPAN_WARNING("You arm \the [src]!")
 		armed1 = "armed"
 		return
 
@@ -742,7 +790,7 @@
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
 
 	spawn(det_time)
-		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		visible_message(SPAN_WARNING("\The [src] goes off!</span>"))
 		prime()
 		return
 

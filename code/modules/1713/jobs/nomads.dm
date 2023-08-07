@@ -199,7 +199,7 @@
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		else if (map.ordinal_age == 6)
-			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 				spawn(5)
 					if (gender == "male")
@@ -233,13 +233,23 @@
 
 
 		else if (map.ordinal_age == 7)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+			if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
+				spawn(5)
+					if (original_job_title == "Civilization A Citizen")
+						equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(src), slot_w_uniform)
+						update_icons(1)
+					else if (original_job_title == "Civilization B Citizen")
+						equip_to_slot_or_del(new /obj/item/clothing/under/blugoslavia/standard(src), slot_w_uniform)
+						update_icons(1)
 			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		else if (map.ordinal_age == 8)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)

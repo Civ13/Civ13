@@ -2425,11 +2425,10 @@
 	title = "Serjant"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Srj."
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRUSL"
 
 	is_operation_falcon = TRUE
 	is_squad_leader = TRUE
-
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 70)
@@ -2486,7 +2485,6 @@
 
 	is_operation_falcon = TRUE
 	is_medic = TRUE
-
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
@@ -2546,7 +2544,6 @@
 
 	is_operation_falcon = TRUE
 	is_radioman = TRUE
-
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
@@ -2600,7 +2597,6 @@
 	spawn_location = "JoinLateRU"
 
 	is_operation_falcon = TRUE
-
 	uses_squads = TRUE
 
 	additional_languages = list("English" = 15)
@@ -2748,8 +2744,6 @@
 
 	is_operation_falcon = TRUE
 
-	uses_squads = TRUE
-
 	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 10
@@ -2775,8 +2769,6 @@
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
 	SP.attached(null,HGUN,TRUE)
-	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
-	FP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/gunbox/specialist(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke(H), slot_belt)
@@ -2802,6 +2794,7 @@
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
+	whitelisted = TRUE
 
 	additional_languages = list("English" = 15)
 	min_positions = 1

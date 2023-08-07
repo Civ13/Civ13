@@ -85,87 +85,90 @@
 
 /obj/item/weapon/grenade/smokebomb/signal/attack_self(mob/living/human/user as mob)
 	if (!active)
-		if (user.faction_text == "AMERICAN")
-			if (time_of_day != "Night")
-				var/list/options = list()
-				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ammo)
-				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_medical)
-				options["Explosives"] = list(/obj/structure/closet/crate/ww2/vietnam/us_explosives)
-				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_engineering)
-				options["AP mines"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ap_mines)
-				var/choice = input(user,"What type of supply drop?") as null|anything in options
-				if(src && choice)
-					var/list/things_to_spawn = options[choice]
-					for(var/new_type in things_to_spawn)
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE
-						sleep(500)
-						new new_type(get_turf(src))
+		switch (user.faction_text)
+			if (AMERICAN)
+				if (time_of_day != "Night")
+					var/list/options = list()
+					options["Ammunition"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ammo)
+					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_medical)
+					options["Explosives"] = list(/obj/structure/closet/crate/ww2/vietnam/us_explosives)
+					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_engineering)
+					options["AP mines"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ap_mines)
+					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					if(src && choice)
+						var/list/things_to_spawn = options[choice]
+						for(var/new_type in things_to_spawn)
+							user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+							firer = user
+							activate(user)
+							add_fingerprint(user)
+							if (ishuman(user))
+								var/mob/living/human/H = user
+								if(istype(H) && !H.in_throw_mode)
+									H.throw_mode_on()
+							triggered = TRUE
+							sleep(500)
+							new new_type(get_turf(src))
+				else
+					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
+			if (DUTCH)
+				if (time_of_day != "Night")
+					var/list/options = list()
+					options["Ammunition"] = list(/obj/structure/closet/crate/ww2/un/m16ammo)
+					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
+					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
+					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
+					options["FOB Supply Crate"] = list(/obj/item/supply_crate/faction1)
+					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					if(src && choice)
+						var/list/things_to_spawn = options[choice]
+						for(var/new_type in things_to_spawn)
+							user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+							firer = user
+							activate(user)
+							add_fingerprint(user)
+							if (ishuman(user))
+								var/mob/living/human/H = user
+								if(istype(H) && !H.in_throw_mode)
+									H.throw_mode_on()
+							triggered = TRUE
+							sleep(500)
+							new new_type(get_turf(src))
+				else
+					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
+			if (RUSSIAN)
+				if (time_of_day != "Night")
+					var/list/options = list()
+					options["Ammunition"] = list(/obj/structure/closet/crate/ww2/russian/ammo)
+					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
+					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
+					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
+					options["FOB Supply Crate"] = list(/obj/item/supply_crate/faction2)
+					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					if(src && choice)
+						var/list/things_to_spawn = options[choice]
+						for(var/new_type in things_to_spawn)
+							user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+							firer = user
+							activate(user)
+							add_fingerprint(user)
+							if (ishuman(user))
+								var/mob/living/human/H = user
+								if(istype(H) && !H.in_throw_mode)
+									H.throw_mode_on()
+							triggered = TRUE
+							sleep(500)
+							new new_type(get_turf(src))
+				else
+					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
 			else
-				visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
-		else if (user.faction_text == "DUTCH")
-			if (time_of_day != "Night")
-				var/list/options = list()
-				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/un/m16ammo)
-				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
-				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
-				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-				var/choice = input(user,"What type of supply drop?") as null|anything in options
-				if(src && choice)
-					var/list/things_to_spawn = options[choice]
-					for(var/new_type in things_to_spawn)
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE
-						sleep(500)
-						new new_type(get_turf(src))
-			else
-				visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
-		else if (user.faction_text == "RUSSIAN")
-			if (time_of_day != "Night")
-				var/list/options = list()
-				options["Ammunition"] = list(/obj/structure/closet/crate/ww2/russian/ammo)
-				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
-				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
-				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-				var/choice = input(user,"What type of supply drop?") as null|anything in options
-				if(src && choice)
-					var/list/things_to_spawn = options[choice]
-					for(var/new_type in things_to_spawn)
-						user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE
-						sleep(500)
-						new new_type(get_turf(src))
-			else
-				visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
-		else
-			firer = user
-			activate(user)
-			add_fingerprint(user)
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				if(istype(H) && !H.in_throw_mode)
-					H.throw_mode_on()
+				firer = user
+				activate(user)
+				add_fingerprint(user)
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					if(istype(H) && !H.in_throw_mode)
+						H.throw_mode_on()
 
 /obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
 	if (active)
@@ -178,18 +181,18 @@
 				sleep(300)
 				if (time_of_day != "Night")
 					world << "The sound of a helicopter rotor can be heard in the distance."
-					if (map.ID == "ROAD_TO_DAK_TO" || map.ID == "COMPOUND" || map.ID == "HUE" || map.ID == "ONG_THAHN")
+					if (map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_COMPOUND || map.ID == MAP_HUE || map.ID == MAP_ONG_THAHN)
 						playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
 						visible_message(SPAN_NOTICE("A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location."))
-					else if (user.faction_text == "RUSSIAN")
+					else if (user.faction_text == RUSSIAN)
 						playsound(get_turf(src), 'sound/effects/aircraft/mi8.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
 						visible_message(SPAN_NOTICE("A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location."))
-					else if (user.faction_text == "DUTCH")
+					else if (user.faction_text == DUTCH)
 						playsound(get_turf(src), 'sound/effects/aircraft/ch47.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)
-						visible_message(SPAN_NOTICE("A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
+						visible_message(SPAN_NOTICE("A Dutch Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
 					else
 						playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)

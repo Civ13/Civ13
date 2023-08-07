@@ -38,7 +38,7 @@
 	age8_done = FALSE
 	research_active = FALSE
 	is_singlefaction = TRUE
-	grace_wall_timer = 54000
+	grace_wall_timer = 90 MINUTES
 
 /obj/map_metadata/nationsrp/New()
 	..()
@@ -133,10 +133,23 @@
 	ID = MAP_NATIONSRP_COLDWAR_CAMPAIGN
 	title = "Nations RP Cold War"
 	lobby_icon = "icons/lobby/campaign.png"
-	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>2 days</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
 		"Emma:1" = "sound/music/emma.ogg",)
+	is_singlefaction = FALSE
+	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
+	faction_organization = list(
+		PIRATES,
+		CIVILIAN)
+
+	roundend_condition_sides = list(
+		list(PIRATES) = /area/caribbean/japanese,
+		list(CIVILIAN) = /area/caribbean/british,
+		)
+	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
+	faction1 = PIRATES
+	faction2 = CIVILIAN
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -146,6 +159,7 @@
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	grace_wall_timer = 2 DAYS
 
 /obj/map_metadata/nationsrp/coldwar_campaign/New()
 	..()
@@ -157,6 +171,33 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
+
+/obj/map_metadata/nationsrp/coldwar_campaign/cross_message(faction)
+	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	for (var/mob/M in player_list)
+		M.client << warning_sound
+
+	if (faction == PIRATES)
+		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
+	else if (faction == CIVILIAN)
+		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
+	else
+		return ""
+
+/obj/map_metadata/nationsrp/coldwar_campaign/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE
 
 /obj/map_metadata/nationsrp/triple
 	ID = MAP_NATIONSRP_TRIPLE

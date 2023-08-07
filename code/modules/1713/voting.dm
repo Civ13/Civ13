@@ -78,6 +78,18 @@
 		else
 			user << "You are not part of this Faction."
 			return
+
+/obj/structure/voting/civilain
+	name = "ballot box"
+	icon_state = "bet_box_blue"
+
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.faction_text == CIVILIAN)
+			..()
+		else
+			user << "You are not part of this Faction."
+			return
+
 /obj/structure/voting/proc/find_roles()
 	found_captain = FALSE
 	found_boatswain = FALSE

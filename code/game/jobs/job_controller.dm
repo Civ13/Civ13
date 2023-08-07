@@ -135,7 +135,7 @@ var/global/datum/controller/occupations/job_master
 	var/autobalance_for_players = round(max(_clients, clients.len))
 
 	if (map && map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
-		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+		if (map.ID == MAP_CIVILIZATIONS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR)
 			set_factions2(16)
 		else if (map.ID == MAP_NATIONSRP_TRIPLE)
 			set_factions2(24)
@@ -256,6 +256,36 @@ var/global/datum/controller/occupations/job_master
 					if (H_area)
 						H_area.play_ambience(H)
 				return
+
+	if (map.fob_spawns)
+		var/list/spawnable_points = list()
+		spawnable_points += "Base"
+
+		for(var/obj/item/fob_spawnpoint/fob in world)
+			if (fob.faction_text == H.faction_text)
+				spawnable_points += fob
+		H.loc = null
+		var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
+		if (!(input == "Base"))
+			var/turf/fob_loc = get_turf(input)
+			var/list/valid_spawns = list()
+			for (var/turf/T in circlerangeturfs(3, fob_loc))
+				for (var/obj/O in T.contents)
+					if (O.density)
+						continue
+				for (var/mob/M in T.contents)
+					continue
+				valid_spawns += T
+
+			if (valid_spawns)
+				H.forceMove(pick(valid_spawns))
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
+			else
+				H << SPAN_WARNING("<big>No valid spawnpoint was found at this FOB. <br>Spawning at Base.</big>")
 
 	var/spawn_location = H.job_spawn_location
 	if(map.ID == MAP_GULAG13)
@@ -441,6 +471,9 @@ var/global/datum/controller/occupations/job_master
 		if (job.rank_abbreviation)
 			H.real_name = "[job.rank_abbreviation] [H.real_name]"
 			H.name = H.real_name
+		if (map.battleroyale && H.ckey)
+			H.real_name = H.ckey
+			H.name = H.ckey
 
 		job.apply_fingerprints(H)
 		job.assign_faction(H)

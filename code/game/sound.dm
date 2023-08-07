@@ -63,6 +63,14 @@ var/list/pen_voice = list ('sound/voice/vehicle/pen_voice1.ogg', 'sound/voice/ve
 var/list/ric_voice = list ('sound/voice/vehicle/ric_voice1.ogg', 'sound/voice/vehicle/ric_voice2.ogg')
 var/list/track_voice = list ('sound/voice/vehicle/track_voice1.ogg', 'sound/voice/vehicle/track_voice2.ogg')
 
+var/list/radio_chatter = list (
+	'sound/voice/radio/chatter1.ogg',
+	'sound/voice/radio/chatter2.ogg',
+	'sound/voice/radio/chatter3.ogg',
+	'sound/voice/radio/chatter4.ogg',
+	'sound/voice/radio/chatter5.ogg',
+	'sound/voice/radio/chatter6.ogg')
+
 var/list/doorknock_sounds = list(
 	'sound/effects/doorknock1.ogg',
 	'sound/effects/doorknock2.ogg',
@@ -277,6 +285,9 @@ var/list/charge_sounds_redmenia = list(
 	'sound/effects/emotes/redmenia1.ogg',
 	'sound/effects/emotes/redmenia2.ogg',
 	'sound/effects/emotes/redmenia3.ogg',)
+var/list/charge_sounds_blugoslavia = list(
+	
+	)
 var/list/charge_sounds_police = list(
 	'sound/effects/emotes/charge_police1.ogg',
 	'sound/effects/emotes/charge_police2.ogg',
@@ -287,8 +298,6 @@ var/list/charge_sounds_rurobbers = list(
 	'sound/effects/emotes/robber2.ogg',
 	'sound/effects/emotes/robber3.ogg',
 	'sound/effects/emotes/robber4.ogg',)
-var/list/charge_sounds_blugoslavia = list()
-
 var/list/charge_sounds_gra = list(
 	'sound/effects/emotes/charge_replicant1.ogg',
 	'sound/effects/emotes/charge_replicant2.ogg',
@@ -473,6 +482,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("pen_voice") soundin = pick(pen_voice)
 			if ("ric_voice") soundin = pick(ric_voice)
 			if ("track_voice") soundin = pick(track_voice)
+
+			if ("radio_chatter") soundin = pick(radio_chatter)
 
 			// emote sounds from InterBay
 			if ("cough_male")
