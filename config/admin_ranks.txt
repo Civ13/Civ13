@@ -17,6 +17,7 @@ Event Admin +@ +SPAWN
 Supervisor +@ +PERMISSIONS
 Manager +@
 Head Admin +EVERYTHING
+Chief Technical Officer +EVERYTHING
 Admiral +EVERYTHING
 Host +EVERYTHING
 Debug Host +EVERYTHING
