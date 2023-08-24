@@ -217,3 +217,8 @@ DISABLE_FOV
 
 #if uncommented, does not automatically save persistence rounds to file
 SKIP_PERSISTENCE_SAVING
+
+#if uncommented, sends webhook events to Civilizationbot for processing
+#WEBHOOK_CAN_FIRE
+#WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads
+#WEBHOOK_KEY
