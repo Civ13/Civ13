@@ -271,6 +271,11 @@
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 		next_level_robbers = 1
 		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)

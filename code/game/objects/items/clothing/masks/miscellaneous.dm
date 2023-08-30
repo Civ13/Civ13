@@ -171,7 +171,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "clownmask"
 	item_state = "clownmask"
 	flags_inv = HIDEEARS|HIDEFACE
-	body_parts_covered = FACE|EYES
+	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
@@ -181,7 +181,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "payday1"
 	item_state = "payday1"
 	flags_inv = HIDEEARS|HIDEFACE
-	body_parts_covered = FACE|EYES
+	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
@@ -191,7 +191,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "payday2"
 	item_state = "payday2"
 	flags_inv = HIDEEARS|HIDEFACE
-	body_parts_covered = FACE|EYES
+	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
@@ -201,7 +201,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "payday3"
 	item_state = "payday3"
 	flags_inv = HIDEEARS|HIDEFACE
-	body_parts_covered = FACE|EYES
+	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
@@ -211,6 +211,6 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	icon_state = "payday4"
 	item_state = "payday4"
 	flags_inv = HIDEEARS|HIDEFACE
-	body_parts_covered = FACE|EYES
+	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
 	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
