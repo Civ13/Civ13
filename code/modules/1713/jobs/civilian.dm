@@ -2506,8 +2506,11 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/police(H), slot_wear_suit)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_l_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/glock(H), slot_belt)
-
-	H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+	
+	if (map.ID == MAP_BANK_ROBBERY)
+		H.add_note("Role", "You are a member of the police force. Secure <b>ALL</b> the hostages <b>BEFORE</b> capturing the vault. Arrest as many criminals as possible <b>without</b> killing them!")
+	else
+		H.add_note("Role", "You are a member of the police force. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
@@ -2560,7 +2563,10 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m16(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/m16(H), slot_belt)
-	H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective is to arrest (or deal justice to) as many criminals as possible!")
+	if (map.ID == MAP_BANK_ROBBERY)
+		H.add_note("Role", "You are a member of a SWAT team. Secure <b>ALL</b> the hostages <b>BEFORE</b> capturing the vault. Arrest as many criminals as possible <b>without</b> killing them!")
+	else
+		H.add_note("Role", "You are a member of a SWAT team and you've been called to get the situation under control. Your objective is to arrest (or deal justice to) as many criminals as possible!")
 
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
