@@ -156,8 +156,8 @@
 			cust_color2 = "red"
 		world << "<big><font color='[cust_color1]'><b>Eastern Outpost</b>: [a1_control]</font></big>"
 		world << "<big><font color='[cust_color2]'><b>Western Outpost</b>: [a2_control]</font></big>"
-		spawn(900)
-			outpost_status()
+	spawn(900)
+		outpost_status()
 
 /obj/map_metadata/ong_thahn/proc/viet_supplies()
 	new /obj/structure/closet/crate/ww2/vietnam/sks(get_turf(locate(31,96,1)))

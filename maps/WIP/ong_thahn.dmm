@@ -158,7 +158,7 @@
 "db" = (/obj/structure/sign/minefield,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt/jungledirt,/area/caribbean/colonies/jungle)
 "dc" = (/obj/structure/sign/minefield,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "dd" = (/obj/structure/sign/minefield,/turf/floor/grass,/area/caribbean/colonies/jungle)
-"de" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
+"de" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "df" = (/obj/item/mine/ap/armed,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "dg" = (/obj/item/mine/ap/armed,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "dh" = (/obj/structure/wild/tallgrass,/obj/item/mine/ap/armed,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
@@ -286,7 +286,7 @@
 "fB" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "fC" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "fD" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/turf/floor/trench,/area/caribbean/colonies/jungle)
-"fE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/closet/crate/airdrops/military,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/colonies/jungle)
+"fE" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "fF" = (/obj/structure/window/barrier/sandbag,/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "fG" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "fH" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/turf/floor/trench,/area/caribbean/colonies/jungle)
@@ -397,62 +397,62 @@
 "hN" = (/obj/structure/camonet{alpha = 150},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 "hO" = (/obj/structure/camonet{alpha = 150},/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 "ic" = (/obj/structure/gate/barrier{dir = 1; layer = 6.1; pixel_x = -8},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
+"iv" = (/obj/structure/wild/palm,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "iM" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "jf" = (/obj/item/stack/farming/seeds/hemp,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "jk" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
-"ju" = (/obj/structure/wild/jungle,/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "jG" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "jW" = (/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "kd" = (/obj/effect/floor_decal/dirtwall/inc33,/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "kf" = (/obj/structure/wild/flowers,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "kg" = (/turf/floor/trench,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"kh" = (/obj/structure/wild/tallgrass,/obj/random/mine/ap,/turf/floor/dirt/jungledirt,/area/caribbean/colonies/jungle)
 "kB" = (/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/grenade/smokebomb/signal{layer = 7},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "kJ" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/item/weapon/storage/ammo_can/stanag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "kM" = (/obj/effect/landmark{name = "JoinLateOutpost1"},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "kO" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/closet/crate/ww2/ppsh,/turf/floor/trench,/area/caribbean/colonies/jungle)
+"lh" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "ll" = (/mob/living/simple_animal/pig_gilt,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "lv" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "lF" = (/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "lQ" = (/obj/structure/window/barrier/sandbag,/obj/item/weapon/gun/projectile/automatic/stationary/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "lX" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "mm" = (/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"nE" = (/obj/structure/wild/palm,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
+"nA" = (/obj/random/mine/ap,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "og" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
-"on" = (/obj/structure/wild/bush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "oq" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "ov" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "ox" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"oz" = (/obj/random/mine/booby,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "oG" = (/obj/structure/wild/palm,/turf/floor/grass,/area/caribbean/colonies/jungle)
-"oO" = (/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/obj/item/weapon/storage/fancy/cigarettes/marlboro{layer = 6},/obj/item/weapon/material/ashtray/bronze{layer = 6},/obj/item/weapon/flame/lighter/zippo{layer = 6},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
+"oI" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "pa" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/barricade/wood_pole,/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "ph" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 "pJ" = (/obj/effect/floor_decal/dirtwall/inc33{dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "pQ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "pV" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{layer = 6},/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "qb" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/jungle,/area/caribbean/colonies/jungle)
+"ql" = (/obj/structure/wild/bush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "qK" = (/obj/structure/cannon/mortar{dir = 1},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "qP" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "qV" = (/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/obj/item/weapon/storage/ammo_can,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "qW" = (/obj/structure/window/barrier/incomplete{dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "rg" = (/obj/item/mine/ap/armed,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "rn" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"rM" = (/obj/structure/wild/bush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "sy" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/dirt/dust,/area/caribbean/colonies/jungle)
+"sT" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "sX" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/obj/item/weapon/gun/projectile/submachinegun/ak47/akms,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "tw" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"uA" = (/obj/structure/wild/smallbush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
-"uB" = (/obj/structure/sign/minefield,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "uK" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "uN" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "ve" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
+"vj" = (/obj/structure/wild/junglebush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "vr" = (/obj/covers/repairedfloor/ship,/turf/floor/beach/water/deep/jungle,/area/caribbean/colonies/jungle)
 "vu" = (/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "vF" = (/obj/structure/wild/junglebush,/obj/item/mine/boobytrap,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "vL" = (/obj/effect/floor_decal/dirtwall/inc33{dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
-"wf" = (/obj/structure/wild/tallgrass,/obj/random/mine/booby,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
-"wn" = (/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
+"we" = (/obj/structure/wild/smallbush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "wH" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
-"wT" = (/obj/random/mine/ap,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "wZ" = (/obj/item/flashlight/lantern/on/anchored{pixel_x = 18},/turf/floor/dirt,/area/caribbean/void/caves)
 "xm" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/storage/ammo_can/stanag,/obj/item/weapon/storage/ammo_can/stanag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "xo" = (/mob/living/simple_animal/mouse/gray,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -467,30 +467,32 @@
 "zq" = (/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/structure/table/rack,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "zH" = (/obj/structure/barbwire,/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "zK" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
-"Aa" = (/obj/structure/wild/tallgrass,/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Af" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "Aq" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "As" = (/obj/structure/multiz/ladder/ww2/tunneltop/vietcong,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "At" = (/obj/structure/flag/us,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "AE" = (/obj/effect/floor_decal/dirtwall/inc33,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "AM" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/closet/crate/ww2,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier,/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox/slug,/turf/floor/trench,/area/caribbean/colonies/jungle)
-"AQ" = (/obj/structure/wild/tallgrass,/obj/random/mine/ap,/turf/floor/dirt/jungledirt,/area/caribbean/colonies/jungle)
 "AR" = (/obj/structure/farming/plant/rice{layer = 5; vstatic = 1},/obj/effect/floor_decal/dirtwall/inc33,/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/beach/water/jungle,/area/caribbean/colonies/jungle)
+"AW" = (/obj/structure/sign/minefield,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
 "Bm" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/closet/crate/ww2{name = "SVD ammunition crate"},/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/obj/item/ammo_magazine/svd,/turf/floor/trench,/area/caribbean/colonies/jungle)
 "Bw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/weapon/gun/projectile/automatic/stationary/browning{dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
+"Ca" = (/obj/structure/wild/jungle,/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Cj" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "CC" = (/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
-"CR" = (/obj/random/mine/booby,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "CY" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 3},/obj/structure/closet/crate/ww2/mortar_shells,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "Dc" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barricade/wood_pole{layer = 6.1},/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "Dr" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "DA" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
+"DG" = (/obj/structure/wild/tallgrass,/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "EA" = (/obj/structure/wild/palm,/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/colonies/jungle)
 "EQ" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"FG" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt/jungledirt,/area/caribbean/colonies/jungle)
 "Gw" = (/obj/structure/grille/fence{dir = 1; pixel_x = 2; pixel_y = 2},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "GQ" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "GS" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "GY" = (/obj/structure/wild/jungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"Hm" = (/obj/structure/sign/minefield,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "HA" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "Ii" = (/turf/floor/beach/water/deep/jungle,/area/caribbean/japanese)
 "IT" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -501,31 +503,28 @@
 "Lg" = (/turf/wall/rockwall,/area/caribbean/colonies/jungle)
 "Lq" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/obj/structure/barricade/wood_pole,/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "Lw" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"LM" = (/obj/structure/wild/rock,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "LP" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "Mb" = (/obj/item/mine/boobytrap,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "Mf" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)
-"Mq" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass,/area/caribbean/colonies/jungle)
-"MK" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt/jungledirt,/area/caribbean/colonies/jungle)
 "MS" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"MV" = (/obj/structure/wild/junglebush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "MW" = (/obj/item/clothing/head/ghillie,/obj/structure/table/rack{layer = 3},/obj/item/clothing/head/ghillie,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "Na" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{layer = 6},/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "Ng" = (/obj/structure/vehicle/boat/rhib/premade,/turf/floor/beach/water/jungle,/area/caribbean/colonies/jungle)
-"Nj" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
+"Nl" = (/obj/random/mine/booby,/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "NE" = (/obj/structure/window/barrier/incomplete{dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
-"NJ" = (/obj/structure/camonet{alpha = 150},/obj/structure/closet/crate/ww2/ppsh,/turf/floor/trench,/area/caribbean/colonies/jungle)
+"NJ" = (/obj/random/mine/ap,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "NO" = (/obj/effect/floor_decal/dirtwall/inc33{dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
-"NQ" = (/obj/structure/sign/minefield,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "Oc" = (/obj/item/stack/farming/seeds/peyote,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "Oy" = (/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "OM" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "Pr" = (/obj/structure/camonet,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
-"Ps" = (/obj/structure/wild/rock,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Px" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 2},/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)
+"Qi" = (/obj/structure/wild/tallgrass,/obj/random/mine/booby,/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Qk" = (/obj/structure/camonet{alpha = 150},/obj/structure/roof_support{layer = 6.1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/sign/flag/medical{layer = 7; pixel_y = 8},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 "Qs" = (/obj/effect/floor_decal/dirtwall/inc33{dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
-"Qt" = (/obj/structure/wild/jungle,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "QQ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
+"QY" = (/obj/structure/wild/jungle,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Rg" = (/obj/item/mine/ap/armed,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "RO" = (/obj/structure/wild/bamboo{layer = 3.3},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "Sc" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt,/area/caribbean/void/caves)
@@ -541,13 +540,14 @@
 "Wp" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "WC" = (/obj/structure/vending/grenade_crate/alt{products = list(/obj/item/weapon/grenade/modern/f1=15,/obj/item/weapon/grenade/coldwar/rgd5=15,/obj/item/weapon/grenade/smokebomb/rdg2=20,/obj/item/weapon/grenade/antitank/rpg40=10,/obj/item/weapon/grenade/incendiary/anm14=5)},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "WZ" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/colonies/jungle)
-"Xl" = (/obj/random/mine/booby,/turf/floor/grass,/area/caribbean/colonies/jungle)
+"Xh" = (/obj/structure/table/wood{layer = 4.0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1; layer = 2.1},/obj/structure/camonet,/obj/item/weapon/storage/fancy/cigarettes/marlboro{layer = 6},/obj/item/weapon/material/ashtray/bronze{layer = 6},/obj/item/weapon/flame/lighter/zippo{layer = 6},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "Xm" = (/obj/structure/window/barrier/sandbag,/obj/structure/camonet,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one{climate = "jungle"; name = "Eastern Outpost"; ambience = list("sound/ambience/jungle1.ogg")})
 "Xp" = (/obj/structure/wild/smallbush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "Xs" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/dirt,/area/caribbean/colonies/jungle)
 "XF" = (/turf/floor/dirt,/area/caribbean/void/caves)
 "XK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/colonies/jungle)
 "XX" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
+"Ys" = (/obj/structure/wild/bush,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 "Yt" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
 "Yw" = (/obj/covers/repairedfloor,/obj/covers/repairedfloor/ship,/obj/structure/railing{dir = 1},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 "YH" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
@@ -557,7 +557,6 @@
 "Zu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/capturable/two/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Western Outpost"})
 "Zw" = (/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/colonies/jungle)
 "ZS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/one/outside{ambience = list("sound/ambience/jungle1.ogg"); climate = "jungle"; name = "Eastern Outpost"})
-"ZY" = (/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/grass/jungle,/area/caribbean/colonies/jungle)
 
 (1,1,1) = {"
 oqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqoqIi
@@ -835,7 +834,7 @@ crcrcrcrcrcrcsctcrcrcrcrcrcrcrcrcrcrcrcrcracayaccGghcBcBcBjkclclclclcBcBcBclacay
 crcrcrcrcrcrcsctcrcrcrcrcrcrcrcrcrcrcrcrcracacaccGcKWpxmZSgLcBcBcBcCWpqPZScIacacacacayacacaeaeacacacayacacacay
 crcrcrcrcrcrcsctcrcrcrcrcrcrcrcrcrcrcrcrcrcyayaycGcKBwvugsTwqPqPqPZSYtvugscIacayacacacacaeaeacacayayayacayacay
 crcrcrcrcrcracaccrcrcrcrcrcrcrcrcrcrcrcrcrcyoGaycGcHYHvuvuwHwHwHwHwHvuvuzKcIacacacacacacaeaeacayayacacaccucucu
-crcrcrcrcrcracaccrcrcrcrcrcrcrcrcrcrcrcrcracayWZaycLlvYtgsftoONaKYDcYtgsAqcJacacacaeaeaeacacacayacgqcucucrcrcr
+crcrcrcrcrcracaccrcrcrcrcrcrcrcrcrcrcrcrcracayWZaycLlvYtgsftXhNaKYDcYtgsAqcJacacacaeaeaeacacacayacgqcucucrcrcr
 crcrcrcrcrcrcsctcrcrcrcrcrcrcrcrcrcrcrcrcracayayaycGcHYtvubIcYKdcYbIvugscIcJacacaeaeaeacacacacaccucucrcrcrcrcr
 crcrcrcrcrcrcsctcrcrcrcrcrcrcrcrcrcrcrcrcrcyayayaycLfkYtgspaXmbIXmLqYHgscIcJacacacaeacacacaccucucrcrcrcrcrcrcr
 crcrcrcrcrcracaccrcrcrcrcrcrcrcrcrcrcrcrcrcyoGaccLcHOMhbCYqPqPvuqPZSYtzKcIcJacaeaeaeacaccucucrcrcrcrcrcrcrcrcr
@@ -871,39 +870,39 @@ bbbbbbacajajacbbaPbbbebbbbbbbbbbbbbbbbbbacacacacacacbfayacacaeacacbbbbbbbcbdbbbb
 bbbebbbkacacaybbbbbbbbbcbkbbbbbfbebbbbbbbbbbbbaeacacbiacacaeacacbdbbbbbcbcbbbbbebbbdbcaPbcbebbbbbbbcbcbbbcbcbc
 bbbbbbaybebgbibbbeayayaybcbebbbbbbaybebbbbbfbbacacaeaeacacaeacacbbbbbebbbbbbbbbbbbbbbcbnbbbbbcbbbebbbbbcbdbcbc
 bbbbbbaybibibebibibibebibbbcbbayayaybbbbbebgbkacacacaeaeaeaeacacbbbbbbbbbbbcbnbcbcbbbbbbbbbdbcbbbbbbbbbcbcbcbc
-beZYdadeZYMKdbMKZYZYuAZYZYdaZYdedededaZYnEZYQtZYdcacacdcaeaeacdcbbbbdaZYnEdaZYZYNjNjdaZYNjZYdeuBdedededeuBdede
-bbbibcaybbbebbbbbbbcbcbbbbbbbbaybraybibbbbbbbbbbbibnacacacaeacacbbbkaybebbbbZYbebbbbbbbdbbbbayayayayayayayayay
+bededalhdeFGdbFGdedewedededadelhlhlhdadeivdeQYdedcacacdcaeaeacdcbbbbdadeivdadedesTsTdadesTdelhAWlhlhlhlhAWlhlh
+bbbibcaybbbebbbbbbbcbcbbbbbbbbaybraybibbbbbbbbbbbibnacacacaeacacbbbkaybebbbbdebebbbbbbbdbbbbayayayayayayayayay
 ayaydfayayayayaybbbgbbbkbbacacacbebbbibebbbbbbbbbbbbayacacacacacbbbabbdhbbbnbbbbblbmbbbbbbbgayayaydfayaybgbebg
 aybbbbbebbbbbgaybbdibdayacajajacbcbbbbbbbbdjbbbbbebbaybbacaeacacbcbabnbbbcbcbgbbbbbkbbbebfbbdfayayayayaybbbbdi
 ITGQhDITZlITITITMbGQGQIThAkgkghEGQhDXpMSGQGQrgMSGQGQITIThAhArnhAhDtwITLPGQMbGQGQGQKZGQGQhDcnITGQITIThAhAGQhDGQ
 ITytITGQtwKZGQITGQMSGQITGQhEhAMSGQITGQGQGQGQGQGQGQGQaohAhAhAhAvFGQLPITGQGQGQGQafGQGQRgGQITITIThDKZhDhAhAvFGQGQ
 ITKZLwGQGQkfGQITtwGQGQITGQGQKZGQGQITGQOcGQGQGQGQGQKZITIThArnhAhAGQGQITRgGQGQMSMSGQGQGQGQITZlITGQGQGQhAhAITGQGQ
-aybfbcbbbbwnbeaybbbbbgwTbbbbwnblwnbgayayayaywTayayaywTayacaeaeacbbbbaybbbbbebbbbbbbdbbdkaybbbbbbbgacabacaybbbb
-wTbbbjbibebbbgaybebfbbaybbbgbbbbdkbbayayacaywTayayayayayacacaeacbbbgaybbbbbbblbmwnbbbbbgaybbwnbfwnacabacbgbbdk
-ayayaywTaywTaywTayayayayayaybidlbibbbgbbbbwTaybibebibbbgbiacacacdkdkaybbbgbbbbbkbbbebfbbaybbbgbbbbacabacbbwnbi
-bidlbibbbgbbbbaybibijubibbbgbbbibnbbbfwnbbaybbbibibibebbacacaeacacbkaybebbbbbbbebbbbbgbkaybebbbbbbacacbkbbbbbb
-bbbibnbbbfdkbbSubbbibibibebbbbbbbbbbbbbibcaybbbebbbbwnbbbnacacaeacbabbAabbbnbbbbdkbbaywTayXlbqbebbwnacbbdkbbbe
-bbbbbbbbbbbiAaaybbbebbbbbbwnbdbebebbwnbbbbaybbbbbbbjbcbbbbacacaeacbabnbbbcbcbbacacbbaybraybbbbbbbbbibnbgbbbcbb
-bdbebebbwnbbbbwTbbbbbbAQbcbbbbbbbbwnbbbbdkaywnbbwnbbbbbibbbbacacacbbbbbbbcbcbwajajCRbgbfaybbbhwnbbbbbgbbaywnbb
-bbbbbbwnbbbbbbaybbbbwnbbbbbibebbbbbbbbbbwnaybebabbbbbpbebebbacaeacacbbbbAawfacajajacbbbiaybebibbbbbeayaybubbbb
-bebbbbbbbbbbwnaybebabbbbbpbebbbbbgbbbkwnbbaybbbebbbgbebbwnbiacaeacacdkbebbbbacacacbkacwnaybbbbbibcbbbbbbdkbbbo
-bbbbbgbbbkdkbbaydkbebbbgbebbbbbbbbbdaybbbbbbbbbcbbbbbbwTaybbacacacacbbbbblbmbbacbbbbbbbbaybbbbbbwnbbbbbbbbbbbb
-bbbbbbbdaybbbbbbbbbcbbbbbbayaybbbbbbbbwnbibcaybbbebbbbdkbbacacaeacacbgbbbbbkbbbebnbgbbbdaybhbbbbbbbbbebgbibray
-bbbkbbbebfayaybbbgbbbbbkbbbebfbdbebebbbbbbbbayaybbwnbjbcacacaeacacbebbwnbbbebbbbbgbbXlaybbbjbcbbbbbobbbibebdbe
-bbbewnbbbgbkaybebbbbbbbebbbbbgbbbbbbwnbbdkwnaybbbbbbbbbbacacaeacacayayayayaybrayayaybuaybrbbbbbebbbbbbbjbibbbs
-bbbbbbbbayayayaybqaywTayaybqaybebbbbbbbbbbbbaybebabbbbbpacaeaeacbbwTbbbbwfbbdnbebbbbbbwnbsbtbbaybraybnbebbwnbb
-bbbbbbwnaybraybbbbbbbbbdbbbebfbbwnbgbbbkwnbbaybbbebbbgbeacaeacacacaybbbbbbbbbbbsbbbbbbbbbbbbwnbbbdbeayaybibebb
+aybfbcbbbbNJbeaybbbbbgnAbbbbNJblNJbgayayayaynAayayaynAayacaeaeacbbbbaybbbbbebbbbbbbdbbdkaybbbbbbbgacabacaybbbb
+nAbbbjbibebbbgaybebfbbaybbbgbbbbdkbbayayacaynAayayayayayacacaeacbbbgaybbbbbbblbmNJbbbbbgaybbNJbfNJacabacbgbbdk
+ayayaynAaynAaynAayayayayayaybidlbibbbgbbbbnAaybibebibbbgbiacacacdkdkaybbbgbbbbbkbbbebfbbaybbbgbbbbacabacbbNJbi
+bidlbibbbgbbbbaybibiCabibbbgbbbibnbbbfNJbbaybbbibibibebbacacaeacacbkaybebbbbbbbebbbbbgbkaybebbbbbbacacbkbbbbbb
+bbbibnbbbfdkbbSubbbibibibebbbbbbbbbbbbbibcaybbbebbbbNJbbbnacacaeacbabbDGbbbnbbbbdkbbaynAayozbqbebbNJacbbdkbbbe
+bbbbbbbbbbbiDGaybbbebbbbbbNJbdbebebbNJbbbbaybbbbbbbjbcbbbbacacaeacbabnbbbcbcbbacacbbaybraybbbbbbbbbibnbgbbbcbb
+bdbebebbNJbbbbnAbbbbbbkhbcbbbbbbbbNJbbbbdkayNJbbNJbbbbbibbbbacacacbbbbbbbcbcbwajajNlbgbfaybbbhNJbbbbbgbbayNJbb
+bbbbbbNJbbbbbbaybbbbNJbbbbbibebbbbbbbbbbNJaybebabbbbbpbebebbacaeacacbbbbDGQiacajajacbbbiaybebibbbbbeayaybubbbb
+bebbbbbbbbbbNJaybebabbbbbpbebbbbbgbbbkNJbbaybbbebbbgbebbNJbiacaeacacdkbebbbbacacacbkacNJaybbbbbibcbbbbbbdkbbbo
+bbbbbgbbbkdkbbaydkbebbbgbebbbbbbbbbdaybbbbbbbbbcbbbbbbnAaybbacacacacbbbbblbmbbacbbbbbbbbaybbbbbbNJbbbbbbbbbbbb
+bbbbbbbdaybbbbbbbbbcbbbbbbayaybbbbbbbbNJbibcaybbbebbbbdkbbacacaeacacbgbbbbbkbbbebnbgbbbdaybhbbbbbbbbbebgbibray
+bbbkbbbebfayaybbbgbbbbbkbbbebfbdbebebbbbbbbbayaybbNJbjbcacacaeacacbebbNJbbbebbbbbgbbozaybbbjbcbbbbbobbbibebdbe
+bbbeNJbbbgbkaybebbbbbbbebbbbbgbbbbbbNJbbdkNJaybbbbbbbbbbacacaeacacayayayayaybrayayaybuaybrbbbbbebbbbbbbjbibbbs
+bbbbbbbbayayayaybqaynAayaybqaybebbbbbbbbbbbbaybebabbbbbpacaeaeacbbnAbbbbQibbdnbebbbbbbNJbsbtbbaybraybnbebbNJbb
+bbbbbbNJaybraybbbbbbbbbdbbbebfbbNJbgbbbkNJbbaybbbebbbgbeacaeacacacaybbbbbbbbbbbsbbbbbbbbbbbbNJbbbdbeayaybibebb
 bebbdkbbbgbfaybbbhbfbcbbbbbfbcbbbbbbbdaybbbbbbbbbcbbbbbbacacaeacacaybebgbibbbbbbbebgbibbbbbgbbbbbbbsayaybidkbb
-bbbbbbbbbbbiaybebibbbbbgbfbbbjbbwnbbbbaybebgbibbwnbbbebgayacacaeacaybibibebibbbgbibibebibbbbbbbbbbbbwTbgbbayba
-bbbbbbbkbbwnaybbbbwnbbbbbidlbibbbgbbdkaybidlbebibbbgbibiayacacaeacacbbbibibibebbbbbjbibibebbbbbibebbaybbbjayba
-wnbbbbbbdkbbaybbbbbbbkwnbbbibnbbbfbbbbaybbbibibibebbbbbjaydkacaeacacbbbebbdkbbbbbnbebbdkbbbbbebibbbbwTbbbgbbwT
-bbbebnbgbbbdaybhbbwnbbbbbbbbbbbbacbibcaybbbebbbbbbbbbnbeaybbacacacaybbbbbbbjbcwnbbbbbbbtbcbbbbbbXlbaaybfbbbbay
-bbbbbgbbayaybrbjbcbbbgbbbdbebebbacacacacbbbbbbbjbcbbbbbbwTacacaeacXlbbbbwnbbbbbibbbbbbbbbbwnbbbjaybaaybbbbbbay
-brbbbbbbdkaybrbbbbbfbbbbbbbbbbacacajajacbbbbbbwnbbbibbbbayacacaeacaybebabbbbbpbebebabbbbbpbbbbbbaybbbbjubbbbbg
-bdbbbbbbbkbbbsbtbbbbwnbbbebbbbwnacajajacbebabbbbbpbebebaayacaeacacaybbbebbbgbebbbbbebbbgbebgbgbbaybebgaybrayay
-bbbhbbbbbbbbbbbbbbbbbbbbbbbbbgbbbkacacaybbbebbbgbebbbbbeayacaeaeacaybbwnbbbbdkbidkbbbbbbwnbbbobbXlbqaywnbdbebb
-aybjbcbbbgbdaybabbbbbcbcbbbbbbbdaybbbbbbbbbcbbbbbbayaywTayacaeaeacbebbbbbgbbayaybrbjbcbbbgbbbdbebfbbbfbebbbsbb
-deZYdaMVZYondedaZYZYNjuAdaclclclclZYZYZYdaZYnEPsNQQtZYZYcldcaeaedcdeZYdedaderMdaMqZYZYMVdbZYZYZYZYMVdbZYZYZYQt
+bbbbbbbbbbbiaybebibbbbbgbfbbbjbbNJbbbbaybebgbibbNJbbbebgayacacaeacaybibibebibbbgbibibebibbbbbbbbbbbbnAbgbbayba
+bbbbbbbkbbNJaybbbbNJbbbbbidlbibbbgbbdkaybidlbebibbbgbibiayacacaeacacbbbibibibebbbbbjbibibebbbbbibebbaybbbjayba
+NJbbbbbbdkbbaybbbbbbbkNJbbbibnbbbfbbbbaybbbibibibebbbbbjaydkacaeacacbbbebbdkbbbbbnbebbdkbbbbbebibbbbnAbbbgbbnA
+bbbebnbgbbbdaybhbbNJbbbbbbbbbbbbacbibcaybbbebbbbbbbbbnbeaybbacacacaybbbbbbbjbcNJbbbbbbbtbcbbbbbbozbaaybfbbbbay
+bbbbbgbbayaybrbjbcbbbgbbbdbebebbacacacacbbbbbbbjbcbbbbbbnAacacaeacozbbbbNJbbbbbibbbbbbbbbbNJbbbjaybaaybbbbbbay
+brbbbbbbdkaybrbbbbbfbbbbbbbbbbacacajajacbbbbbbNJbbbibbbbayacacaeacaybebabbbbbpbebebabbbbbpbbbbbbaybbbbCabbbbbg
+bdbbbbbbbkbbbsbtbbbbNJbbbebbbbNJacajajacbebabbbbbpbebebaayacaeacacaybbbebbbgbebbbbbebbbgbebgbgbbaybebgaybrayay
+bbbhbbbbbbbbbbbbbbbbbbbbbbbbbgbbbkacacaybbbebbbgbebbbbbeayacaeaeacaybbNJbbbbdkbidkbbbbbbNJbbbobbozbqayNJbdbebb
+aybjbcbbbgbdaybabbbbbcbcbbbbbbbdaybbbbbbbbbcbbbbbbayaynAayacaeaeacbebbbbbgbbayaybrbjbcbbbgbbbdbebfbbbfbebbbsbb
+lhdedavjdeYslhdadedesTwedaclclclcldedededadeivLMHmQYdedecldcaeaedclhdelhdalhqldaoIdedevjdbdedededevjdbdededeQY
 aybtbbbbbbbbaybbbbbbbcbcbbacbvababacbcbbbcbbayayayaybqayacacaeaeacacbdbebbbbbbbbbsbtbbbbacacbwbbbbbbbjbibebbbg
 ITGQGQGQGQGQITGQGQKZGQGQGQtwGQhAhAhAhAKZGQGQITZlITGQGQGQGQhAhArnhAhAGQkfGQGQGQGQGQGQGQGQhAkgkghAhDGQITGQGQGQhD
 IThDGQKZGQhDITGQGQGQjfxoGQGQGQhDITGQGQGQjfGQhDLwITGQGYLwMShArnhAhAGQGQGQKZhDmmGQGQhDGQKZhAkgkghALwafITGQGQGQGQ
@@ -957,8 +956,8 @@ bGaybGayayayeFgQhjhjhjhjhjhjUoeUaycEfxfWfxebZwebZwebZwecapeqacAsacacacaeacayacay
 aybGaygacDcDgcfxfMeaeaZwfNfNapgdeieGfxfXZwZwZwZwZwZwZwedapeqacAsacacacaeacacayaycEfYqKxBeHcDcDcDeieieicDcAcDcA
 aybGaycMpQqKfZfxfOesZwZwfQgMapeneveofxZwZwebZwebZwebZweeapeqayacacacaeacaeacacaycEepajbAeOfReIhjeIhjeIhjeIhjeI
 ayayaycEepajbAfxfPZwZwZwfPfPapepajbAfxZwZwZwZwZwZwZwZwegapePayayayacaeaeaeacacaycMewajexeOfxefZwefZwefZwefZwef
-LgayayemewajexerfFfFZwNJfFfFhiewajexgRfFfFfFZwZwZwfFfFfFgieqayacacacajajajajajajcAeWeEeRcMfxeJZweJZweJZweJZweJ
-LgLgeieSeyajezfBfBfBajajfBfBBmkOajfzgnfzelelajajajAMfEfCfyeVeicDacajajajajajajajeKeLeEeXeYfxefZwefZwefZwefZwef
+LgayayemewajexerfFfFZwZwfFfFhiewajexgRfFfFfFZwZwZwfFfFfFgieqayacacacajajajajajajcAeWeEeRcMfxeJZweJZweJZweJZweJ
+LgLgeieSeyajezfBfBfBajajfBkOBmkOajfzgnfzelelajajajAMfEfCfyeVeicDacajajajajajajajeKeLeEeXeYfxefZwefZwefZwefZwef
 LgLgLgfSekajekajajajajajajajajajajajajajajajajajajajajajajfBfBfBajajajajajajajajajajajeMeNfxeJZweJZweJZweJZweJ
 LgLgLgLgajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajajZwefZwefZwefZwefZwef
 LgLgLgLgLgajajajajajajajfTfUagYTlXhefIgOfLsXgmgoglfDfGfHhxgPqVeQeQgjgkgkWCajajajajajajajajfmeJZweJZweJZweJZweJ
