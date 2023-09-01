@@ -307,7 +307,7 @@
 			H << "This tunnel is too small for you!"
 			return
 		else if (map.ID == MAP_RETREAT && H.faction_text != "CHINESE")
-   			H << "This tunnel is too small for you!"
+			H << "This tunnel is too small for you!"
 			return
 		else
 			..()
