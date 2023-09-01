@@ -142,6 +142,7 @@
 		if (a1_control == "NVA" && a2_control == "NVA" && spam_check3 == FALSE)
 			spam_check3 = TRUE
 			world << "<big><font color='red'>The NVA has captured BOTH outposts! <br>The US Army retreats back to their FOB!</font></big>"
+			viet_supplies()
 	spawn(600)
 		outpost_check()
 
@@ -157,6 +158,11 @@
 		world << "<big><font color='[cust_color2]'><b>Western Outpost</b>: [a2_control]</font></big>"
 		spawn(900)
 			outpost_status()
+
+/obj/map_metadata/ong_thahn/proc/viet_supplies()
+	new /obj/structure/closet/crate/ww2/vietnam/sks(get_turf(locate(31,96,1)))
+	new /obj/structure/closet/crate/ww2/vietnam/akm(get_turf(locate(32,96,1)))
+	new /obj/structure/closet/crate/ww2/vietnam/viet_grenades(get_turf(locate(33,96,1)))
 
 /obj/map_metadata/ong_thahn/update_win_condition()
 	if (world.time >= victory_time)
@@ -242,5 +248,6 @@
 			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
+
 
 
