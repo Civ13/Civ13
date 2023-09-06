@@ -62,18 +62,38 @@
 	M.heal_organ_damage(3 * removed, 3 * removed)
 	M.adjustToxLoss(-3 * removed)
 
+/datum/reagent/salbutamol
+	name = "Salbutamol"
+	description = "A potent short-acting bronchodilator. Helps patients who have their airways obstructed in breathing."
+	taste_description = "bitterness"
+	reagent_state = LIQUID
+	color = "#cddfeb"
+	scannable = TRUE
+	overdose = 11
+	metabolism = 0.7
+
+/datum/reagent/salbutamol/affect_blood(mob/living/human/M, alien, removed)
+	M.adjustOxyLoss(-15 * removed)
+/datum/reagent/salbutamol/overdose(var/mob/living/human/M, var/alien)
+	..()
+	M.hallucination(60, 20)
+	M.add_chemical_effect(CE_PULSE, 2)
+	M.make_dizzy(5)
+	M.drowsyness += 2
+	M.take_organ_damage(removed * 0.1)
+
 /* Painkillers */
 
 /datum/reagent/paracetamol
 	name = "Paracetamol"
 	id = "paracetamol"
-	description = "Most probably know this as Tylenol, but this chemical is a mild, simple painkiller."
+	description = "Also known as acetaminophen. A mild, simple painkiller."
 	taste_description = "sickness"
 	reagent_state = LIQUID
 	color = "#C8A5DC"
-	overdose = 60
+	overdose = 61
 	scannable = TRUE
-	metabolism = 0.02
+	metabolism = 0.05
 
 /datum/reagent/paracetamol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 50)
@@ -89,7 +109,7 @@
 	taste_description = "sickness"
 	reagent_state = LIQUID
 	color = "#988f9c"
-	overdose = 60
+	overdose = 61
 	scannable = TRUE
 	metabolism = 0.02
 
@@ -607,7 +627,7 @@
 	M.hallucination = max(M.hallucination, 2)
 	M.AdjustWeakened(4)
 	M.make_dizzy(6)
-	M << "<span class='notice'>You Feel Weak.</span>"
+	M << "<span class='notice'>You feel weak.</span>"
 	..()
 	return
 
