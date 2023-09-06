@@ -81,7 +81,7 @@
 	M.make_dizzy(5)
 	M.make_jittery(5)
 	M.drowsyness += 2
-	M.take_organ_damage(removed * 0.1)
+	M.take_organ_damage(0.2)
 
 /* Painkillers */
 
