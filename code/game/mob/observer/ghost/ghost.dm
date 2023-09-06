@@ -30,6 +30,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	var/combatmode = "melee"
 	var/ghostlife = 100
 
+	var/last_revive_notification = null // world.time of last notification, used to avoid spamming players from defibs or cloners.
+
 /mob/observer/ghost/New(mob/body)
 	see_in_dark = 100
 
@@ -92,6 +94,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 			var/atom/target = locate(href_list["track"])
 			if (istype(target))
 				ManualFollow(target)
+	if(href_list["reenter"])
+		reenter_corpse()
+		return
 	if (href_list["respawn"])
 		abandon_mob()
 
@@ -501,3 +506,15 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if ((!target) || (!ghost)) return
 	. = "<a href='byond://?src=\ref[ghost];track=\ref[target]'>follow</a>"
 	. += target.extra_ghost_link(ghost)
+
+// Lets a ghost know someone's trying to bring them back, and for them to get into their body.
+// Mostly the same as TG's sans the hud element, since we don't have TG huds.
+/mob/observer/ghost/proc/notify_revive(var/message, var/sound)
+	if((last_revive_notification + 2 MINUTES) > world.time)
+		return
+	last_revive_notification = world.time
+	if(message)
+		to_chat(src, "<span class='ghostalert'><font size=4>[message]</font></span>")
+	to_chat(src, "<span class='ghostalert'><a href=?src=\ref[src];reenter=1>(Click to re-enter)</a></span>")
+	if(sound)
+		SEND_SOUND(src, sound(sound))

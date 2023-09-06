@@ -64,6 +64,7 @@ a, a:link, a:visited, :active, a:hover
 .say					{}
 .alert					{color: #ff0000;}
 h1.alert, h2.alert		{color: #ff0000;}
+.ghostalert				{color: #5c00e6;	font-style: italic; font-weight: bold;}
 
 .emote					{font-style: italic;}
 

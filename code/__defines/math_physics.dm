@@ -81,3 +81,8 @@
 #define IsPowerOfTwo(val) ((val & (val-1)) == 0)
 
 #define RoundUpToPowerOfTwo(val) (2 ** -round(-log(2,val)))
+
+// Performs a linear interpolation between a and b.
+// Note that amount=0 returns a, amount=1 returns b, and
+// amount=0.5 returns the mean of a and b.
+#define LERP(a, b, amount) ( amount ? ((a) + ((b) - (a)) * (amount)) : a )

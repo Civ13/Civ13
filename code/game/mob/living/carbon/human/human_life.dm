@@ -629,9 +629,10 @@
 
 		if (!client)
 			species.handle_npc(src)
+	else if (stat == DEAD)
+		handle_defib_timer()
 	process_roofs()
 	process_static_roofs()
-
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
 
@@ -1967,6 +1968,12 @@
 		return
 	else
 		return
+/mob/living/human/proc/handle_defib_timer()
+	var/obj/item/organ/brain/brain = internal_organs_by_name["brain"]
+	if(!brain)
+		return // No brain.
+
+	brain.tick_defib_timer()
 
 /mob/living/human/proc/handle_embedded_objects()
 

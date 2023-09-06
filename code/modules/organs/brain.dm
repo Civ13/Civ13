@@ -20,7 +20,7 @@
 	var/damage_threshold_value = 10
 	var/healed_threshold = 1
 	var/oxygen_reserve = 90 //number of processes that the brain can hold with low blood pressure 1 process = 2 secs, according to current obj process
-
+	var/defib_timer = -1
 
 /obj/item/organ/brain/New()
 	..()
@@ -32,6 +32,7 @@
 	min_broken_damage = max_damage*0.75
 
 	damage_threshold_value = round(max_damage / damage_threshold_count)
+	defib_timer = (config.defib_timer MINUTES) / 2
 
 /obj/item/organ/brain/Destroy()
 	. = ..()
@@ -92,9 +93,17 @@
 	to_chat(owner, "<span class = 'notice' font size='10'><B>What happened...?</B></span>")
 	alert(owner, "You have taken massive brain damage! You will not be able to remember the events leading up to your injury.", "Brain Damaged")
 
+/obj/item/organ/brain/proc/tick_defib_timer()
+	if(!owner || owner.stat == DEAD)
+		defib_timer = max(--defib_timer, 0)
+	else
+		defib_timer = min(++defib_timer, (config.defib_timer MINUTES) / 2)
+
 /obj/item/organ/brain/process()
 
 	if(owner)
+		if(owner.stat != DEAD) // So there's a lower risk of ticking twice.
+			tick_defib_timer()
 
 		if(owner.paralysis < 1) // Skip it if we're already down.
 
