@@ -72,7 +72,7 @@
 	overdose = 11
 	metabolism = 0.7
 
-/datum/reagent/salbutamol/affect_blood(mob/living/human/M, alien, removed)
+/datum/reagent/salbutamol/affect_blood(mob/living/human/M, alien, var/removed)
 	M.adjustOxyLoss(-15 * removed)
 /datum/reagent/salbutamol/overdose(var/mob/living/human/M, var/alien)
 	..()
