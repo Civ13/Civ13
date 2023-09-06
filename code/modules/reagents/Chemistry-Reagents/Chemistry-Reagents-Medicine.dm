@@ -76,9 +76,10 @@
 	M.adjustOxyLoss(-15 * removed)
 /datum/reagent/salbutamol/overdose(var/mob/living/human/M, var/alien)
 	..()
-	M.hallucination(60, 20)
+	M.hallucination = max(M.hallucination, 3)
 	M.add_chemical_effect(CE_PULSE, 2)
 	M.make_dizzy(5)
+	M.make_jittery(5)
 	M.drowsyness += 2
 	M.take_organ_damage(removed * 0.1)
 
