@@ -890,7 +890,7 @@ var/global/list/common_tools = list(
 	return FALSE
 
 /proc/isscrewdriver(O)
-	if (istype(O, /obj/item/weapon/hammer))
+	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/screwdriver)) // TO DO: separate hammers and screwdrivers in the whole codebase
 		return TRUE
 	return FALSE
 /*
