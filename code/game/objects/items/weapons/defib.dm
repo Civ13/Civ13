@@ -1,9 +1,9 @@
-#define DEFIB_TIME_LIMIT (8 MINUTES) //past this many seconds, defib is useless. Currently 8 Minutes
-#define DEFIB_TIME_LOSS  (2 MINUTES) //past this many seconds, brain damage occurs. Currently 2 minutes
+#define DEFIB_TIME_LIMIT (8 MINUTES) //Past this many seconds, defib is useless. Currently set at 8 minutes.
+#define DEFIB_TIME_LOSS  (2 MINUTES) //Past this many seconds, brain damage occurs. Currently set at 2 minutes.
 
 //backpack item
 /obj/item/weapon/defibrillator
-	name = "auto-resuscitator"
+	name = "defibrillator"
 	desc = "A device that delivers powerful shocks via detachable paddles to resuscitate incapacitated patients."
 	icon = 'icons/obj/defibrillator.dmi'
 	icon_state = "defibunit"
@@ -17,7 +17,7 @@
 	var/obj/item/weapon/shockpaddles/linked/paddles
 	var/obj/item/weapon/cell/bcell = null
 
-/obj/item/weapon/defibrillator/New() //starts without a cell for rnd
+/obj/item/weapon/defibrillator/New()
 	..()
 	if(ispath(paddles))
 		paddles = new paddles(src, src)
@@ -33,22 +33,21 @@
 	QDEL_NULL(paddles)
 	QDEL_NULL(bcell)
 
-/obj/item/weapon/defibrillator/loaded //starts with regular power cell for R&D to replace later in the round.
+/obj/item/weapon/defibrillator/loaded //Starts with a regular powercell
 	bcell = /obj/item/weapon/cell/standard
 
 /obj/item/weapon/defibrillator/update_icon()
 	var/list/new_overlays = list()
 
-	if(paddles) //in case paddles got destroyed somehow.
-		if(paddles.loc == src)
-			new_overlays += "[initial(icon_state)]-paddles"
-		if(bcell && bcell.check_charge(paddles.chargecost))
+	if(paddles && paddles.loc == src) //in case paddles got destroyed somehow.
+		new_overlays += "[initial(icon_state)]-paddles"
+	if(bcell && paddles)
+		if (bcell.check_charge(paddles.chargecost))
 			if(!paddles.safety)
 				new_overlays += "[initial(icon_state)]-emagged"
 			else
 				new_overlays += "[initial(icon_state)]-powered"
 
-	if(bcell)
 		var/ratio = Ceiling(bcell.percent()/25) * 25
 		new_overlays += "[initial(icon_state)]-charge[ratio]"
 	else
@@ -236,17 +235,17 @@
 
 /obj/item/weapon/shockpaddles/proc/can_use(mob/user, mob/M)
 	if(busy)
-		return 0
+		return FALSE
 	if(!check_charge(chargecost))
 		to_chat(user, "<span class='warning'>\The [src] doesn't have enough charge left to do that.</span>")
-		return 0
+		return FALSE
 	if(!wielded)
 		to_chat(user, "<span class='warning'>You need to wield the paddles with both hands before you can use them on someone!</span>")
-		return 0
+		return FALSE
 	if(cooldown)
 		to_chat(user, "<span class='warning'>\The [src] are re-energizing!</span>")
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 
 //Checks for various conditions to see if the mob is revivable
 /obj/item/weapon/shockpaddles/proc/can_defib(mob/living/human/H) //This is checked before doing the defib operation
@@ -254,17 +253,28 @@
 		return "buzzes, \"Unrecogized physiology. Operation aborted.\""
 	if(!check_contact(H))
 		return "buzzes, \"Patient's chest is obstructed. Operation aborted.\""
+	if(H.stat != DEAD)
+		return "buzzes, \"Vital signs detected. Operation aborted.\""
+
+	return null
 
 /obj/item/weapon/shockpaddles/proc/can_revive(mob/living/human/H) //This is checked right before attempting to revive
 	var/obj/item/organ/brain/brain = H.internal_organs_by_name["brain"]
-	if(H.species.has_organ["brain"] && (!brain || brain.damage >= 100))
+	if(H.species.has_organ["brain"] && (!brain || brain.damage >= 60 || brain.defib_timer <= 0 ))
 		return "buzzes, \"Resuscitation failed - Excessive neural degeneration. Further attempts futile.\""
+
 	H.updatehealth()
+
 	if(H.health + H.getOxyLoss() <= config.health_threshold_dead || !H.can_defib)
 		return "buzzes, \"Resuscitation failed - Severe tissue damage makes recovery of patient impossible via defibrillator. Further attempts futile.\""
+
+	var/bad_vital_organ = check_vital_organs(H)
+	if(bad_vital_organ)
+		return bad_vital_organ
+
 	//this needs to be last since if any of the 'other conditions are met their messages take precedence
-	/*if(!H.client && !H.teleop)
-		return "buzzes, \"Resuscitation failed - Mental interface error. Further attempts may be successful.\""*/ // For now, SSD players or those without a client can also be revived
+	/*if(!H.client &!H.teleop)
+		return "buzzes, \"Resuscitation failed - Mental interface error. Further attempts may be successful.\""*/
 	return null
 /obj/item/weapon/shockpaddles/proc/check_contact(mob/living/human/H)
 	if(!combat)
@@ -334,7 +344,11 @@
 // This proc is used so that we can return out of the revive process while ensuring that busy and update_icon() are handled
 /obj/item/weapon/shockpaddles/proc/do_revive(mob/living/human/H, mob/user)
 	if(H.ssd_check())
-		to_chat(find_dead_player(H.ckey, 1), "<span class='notice'>Someone is attempting to resuscitate you. Re-enter your body if you want to be revived!</span>")
+		for(var/mob/observer/ghost/ghost in player_list)
+			if(ghost.mind == H.mind)
+				ghost.notify_revive("Someone is trying to resuscitate you. Re-enter your body if you want to be revived!", 'sound/machines/ping.ogg')
+				break
+
 
 	//beginning to place the paddles on patient's chest to allow some time for people to move away to stop the process
 	user.visible_message("<span class='warning'>\The [user] begins to place [src] on [H]'s chest.</span>", "<span class='warning'>You begin to place [src] on [H]'s chest...</span>")
@@ -376,14 +390,16 @@
 	H.apply_damage(burn_damage_amt, BURN, "chest")
 
 	//set oxyloss so that the patient is just barely in crit, if possible
-	
+
 	var/barely_in_crit = config.health_threshold_crit - 1
 	var/adjust_health = barely_in_crit - H.health //need to increase health by this much
 	H.adjustOxyLoss(-adjust_health)
 
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
+
 	make_alive(H)
+
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
 
 
@@ -426,10 +442,9 @@
 	admin_attack_log(user, H, "Electrocuted using \a [src]", "Was electrocuted with \a [src]", "used \a [src] to electrocute")
 
 /obj/item/weapon/shockpaddles/proc/make_alive(mob/living/human/M) //This revives the mob
-	var/deadtime = world.time - M.timeofdeath
-
 	M.switch_from_dead_to_living_mob_list()
 	M.timeofdeath = 0
+	M.tod = null
 	M.stat = UNCONSCIOUS //Life() can bring them back to consciousness if it needs to.
 	M.regenerate_icons()
 	M.failed_last_breath = 0 //So mobs that died of oxyloss don't revive and have perpetual out of breath.
@@ -437,17 +452,31 @@
 	M.emote("gasp")
 	M.Weaken(rand(10,25))
 	M.updatehealth()
-	apply_brain_damage(M, deadtime)
+	apply_brain_damage(M)
 
-/obj/item/weapon/shockpaddles/proc/apply_brain_damage(mob/living/human/H, var/deadtime)
-	if(deadtime < DEFIB_TIME_LOSS) return
-
-	if(!H.species.has_organ["brain"]) return //no brain
+/obj/item/weapon/shockpaddles/proc/apply_brain_damage(mob/living/human/H)
+	if(!H.species.has_organ["brain"])
+		return //no brain
 
 	var/obj/item/organ/brain/brain = H.internal_organs_by_name["brain"]
-	if(!brain) return //no brain
+	if(!brain)
+		return //no brain
 
-	var/brain_damage = Clamp((deadtime - DEFIB_TIME_LOSS)/(DEFIB_TIME_LIMIT - DEFIB_TIME_LOSS)*brain.max_damage, H.getBrainLoss(), brain.max_damage)
+	// If the brain'd `defib_timer` var gets below this number, brain damage will happen at a linear rate.
+	// This is measures in `Life()` ticks. E.g. 10 minute defib timer = 6000 world.time units = 3000 `Life()` ticks.
+	var/brain_damage_timer = ((config.defib_timer MINUTES) / 2) - ((config.defib_braindamage_timer MINUTES) / 2)
+
+	if(brain.defib_timer > brain_damage_timer)
+		return // They got revived before brain damage got a chance to set in.
+
+	// As the brain decays, this will be between 0 and 1, with 1 being the most fresh.
+	var/brain_death_scale = brain.defib_timer / brain_damage_timer
+
+	// This is backwards from what you might expect, since 1 = fresh and 0 = rip.
+	var/damage_calc = LERP(brain.max_damage, H.getBrainLoss(), brain_death_scale)
+
+	// A bit of sanity.
+	var/brain_damage = between(H.getBrainLoss(), damage_calc, brain.max_damage)
 	H.setBrainLoss(brain_damage)
 
 /obj/item/weapon/shockpaddles/proc/make_announcement(var/message, var/msg_class)

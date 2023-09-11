@@ -1,5 +1,5 @@
 /datum/admins/proc/loadmap()
-	set category = "Server"
+	set category = "Debug"
 	set desc = "SAAAVE!"
 	set name = "Load Map (EXPERIMENTAL!)"
 	var/mapfile = file("map_saves/map.txt")
@@ -24,7 +24,7 @@
 	ticker.loadmap()
     
 /datum/admins/proc/savemap()
-	set category = "Server"
+	set category = "Debug"
 	set desc = "SAAAVE!"
 	set name = "Save Map (EXPERIMENTAL!)"
 	var/inp = WWinput(usr, "Are you sure you want to save the map?", "Load Map", "No", list("Yes","No"))

@@ -282,12 +282,12 @@
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
-			if (map.ID == MAP_RETREAT && H.faction_text != "CHINESE")
-				H << "This tunnel is too small for you!"
-				return
-			else
-				..()
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "USA Commando" && H.faction_text != "JAPANESE")
+			H << "This tunnel is too small for you!"
+			return
+		else if (map.ID == MAP_RETREAT && H.faction_text != "CHINESE")
+			H << "This tunnel is too small for you!"
+			return
 		else
 			..()
 	else
@@ -303,12 +303,12 @@
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
-		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando" && H.faction_text != "JAPANESE")
-			if (map.ID == MAP_RETREAT && H.faction_text != "CHINESE")
-				H << "This tunnel is too small for you!"
-				return
-			else
-				..()
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "USA Commando" && H.faction_text != "JAPANESE")
+			H << "This tunnel is too small for you!"
+			return
+		else if (map.ID == MAP_RETREAT && H.faction_text != "CHINESE")
+			H << "This tunnel is too small for you!"
+			return
 		else
 			..()
 	else

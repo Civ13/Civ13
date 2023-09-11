@@ -622,9 +622,9 @@ var/global/redirect_all_players = null
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
-//Sovafghan DRA spawnpoints
-		if (map && map.ID == MAP_SOVAFGHAN)
-			var/obj/map_metadata/sovafghan/MP = map
+//Kandahar DRA spawnpoints
+		if (map && map.ID == MAP_KANDAHAR)
+			var/obj/map_metadata/kandahar/MP = map
 			var/randspawn = rand(1,4)
 			switch (randspawn)
 				if (1)
@@ -672,6 +672,12 @@ var/global/redirect_all_players = null
 						if (actual_job && actual_job.title == "DRA Soldier")
 							actual_job.spawn_location = "JoinLateDRA"
 
+// // ONG THAHN - Changes US spawns before gracewall
+		if (map && map.ID == MAP_ONG_THAHN)
+			if (processes.ticker.playtime_elapsed <= 3600 || !map.admin_ended_all_grace_periods)
+				if (actual_job && findtext(href_list["SelectedJob"],"USA"))
+					if (actual_job.uses_squads)
+						actual_job.spawn_location = "JoinLateOutpost1"
 // BANK ROBBERY - Changes Robber spawns after gracewall
 
 		if (map && map.ID == MAP_BANK_ROBBERY)
@@ -1029,7 +1035,8 @@ var/global/redirect_all_players = null
 						H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
 				else if (map.faction2_squad_leaders[H.squad])
 					H << "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>"
-
+	if(!map.fob_spawns)
+		job_master.relocate(character)
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
@@ -1106,7 +1113,7 @@ var/global/redirect_all_players = null
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
-		if (map && (istype(map, /obj/map_metadata/sovafghan) || istype(map, /obj/map_metadata/hill_3234)))
+		if (map && (istype(map, /obj/map_metadata/kandahar) || istype(map, /obj/map_metadata/hill_3234) || istype(map, /obj/map_metadata/magistral)))
 			dat += "[alive_arab.len] Mujahideen "
 		else if (map && istype(map, /obj/map_metadata/syria))
 			dat += "[alive_arab.len] Syrian Government Soldiers "
@@ -1352,7 +1359,7 @@ var/global/redirect_all_players = null
 						temp_name = "Russian Army"
 					else if (temp_name == "Civilian")
 						temp_name = "Soviet Militia"
-				else if (map && (map.ID == "SOVAFGHAN" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
+				else if (map && (map.ID == "KANDAHAR" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
 					if (temp_name == "Russian")
 						temp_name = "Soviet Army"
 					else if (temp_name == "Arab")

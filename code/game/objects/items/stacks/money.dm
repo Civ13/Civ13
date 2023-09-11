@@ -177,7 +177,7 @@
 
 /obj/item/stack/money/dollar/New()
 	if (map && map.ordinal_age >= 4)
-		if (map.ID == MAP_SOVAFGHAN)
+		if (map.ID == MAP_KANDAHAR)
 			name = "1 Dollar Bill"
 			desc = "Paper bank note valued at 1 dollar."
 			singular_name = "1 Dollar Bill"

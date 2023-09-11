@@ -25,7 +25,7 @@
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
 		moneyin += M.amount*M.value
-		if (map.ID == MAP_SOVAFGHAN)
+		if (map.ID == MAP_KANDAHAR)
 			user << "You give \the [W] to the [src]."
 		else
 			user << "You put \the [W] in the [src]."
@@ -214,7 +214,7 @@
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
 		else if (map.ID == MAP_GULAG13)
 			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
-		else if (map.ID == MAP_SOVAFGHAN)
+		else if (map.ID == MAP_KANDAHAR)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
 		else
 			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 440, 600)
@@ -255,7 +255,7 @@
 				else
 					var/mob/living/human/H = usr
 					var/salestax = 0
-					if (map.ID != MAP_SOVAFGHAN)
+					if (map.ID != MAP_KANDAHAR)
 						if (H.civilization != "none")
 							salestax = (map.custom_civs[H.civilization][9]/100)*R.price
 					var/price_with_tax = R.price+salestax
@@ -279,7 +279,7 @@
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
 								qdel(D)
-						else if (map.ID == MAP_SOVAFGHAN)
+						else if (map.ID == MAP_KANDAHAR)
 							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
@@ -318,7 +318,7 @@
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
 					qdel(D)
-			else if (map.ID == MAP_SOVAFGHAN)
+			else if (map.ID == MAP_KANDAHAR)
 				var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)

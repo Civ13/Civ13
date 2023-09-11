@@ -1,5 +1,5 @@
 /datum/admins/proc/persistent()
-	set category = "Server"
+	set category = "Nomads"
 	set desc = "Set the current round as Persistent."
 	set name = "Persistence"
 
@@ -24,7 +24,7 @@
 	return
 
 /datum/admins/proc/persistent_chad()
-	set category = "Server"
+	set category = "Nomads"
 	set desc = "Set the current round as persistent Chad Mode +."
 	set name = "Persistence Chad Mode +"
 

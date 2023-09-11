@@ -71,12 +71,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/toggle_factions,
 	/client/proc/forcibly_enable_faction,
 	/client/proc/start_epochswap_vote,
-	/datum/admins/proc/set_research,
-	/datum/admins/proc/set_custom_research,
-	/datum/admins/proc/set_research_speed,
-	/datum/admins/proc/set_custom_age,
-	/datum/admins/proc/toggle_ores,
 )
+
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,
 	/client/proc/quickBan_person,
@@ -146,8 +142,6 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adjump,
 	/datum/admins/proc/loadmap,
 	/datum/admins/proc/savemap,
-	/datum/admins/proc/persistent,
-	/datum/admins/proc/persistent_chad,
 	/client/proc/nanomapgen_DumpImage
 	)
 var/list/admin_verbs_debug = list(
@@ -256,6 +250,8 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/set_custom_research,
 	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
+	/datum/admins/proc/persistent,
+	/datum/admins/proc/persistent_chad,
 //	/client/proc/roll_dices,
 	/proc/possess,
 	/proc/release
@@ -340,6 +336,16 @@ var/list/admin_verbs_host = list(
 		if (holder.rights & R_TRIALADMIN)		verbs += admin_verbs_trialadmin
 		if (holder.rights & R_HOST)
 			verbs += admin_verbs_host
+		if(map && map.nomads && (holder.rights & R_ADMIN))
+			verbs += list(
+				/datum/admins/proc/toggle_ores,
+				/datum/admins/proc/set_research,
+				/datum/admins/proc/set_custom_research,
+				/datum/admins/proc/set_research_speed,
+				/datum/admins/proc/set_custom_age,
+				/datum/admins/proc/persistent,
+				/datum/admins/proc/persistent_chad,
+			)
 
 /client/proc/remove_admin_verbs()
 	verbs.Remove(

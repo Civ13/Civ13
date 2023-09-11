@@ -401,7 +401,7 @@
 	uniform.attackby(mag, H)
 	var/obj/item/ammo_magazine/ak74/mag2 = new /obj/item/ammo_magazine/ak74(null)
 	uniform.attackby(mag2, H)
-	if (map.ID == MAP_SOVAFGHAN)
+	if (map.ID == MAP_KANDAHAR)
 		H.equip_to_slot_or_del(new /obj/item/weapon/key/soviet(H), slot_l_store)
 //jacket
 	if (prob(15))

@@ -399,6 +399,29 @@
 		icon_state = "single_use2_empty"
 		used = TRUE
 
+/obj/item/weapon/reagent_containers/syringe/salbutamol
+	name = "salbutamol injector"
+	desc = "Injector containing 5 units of salbutamol. Do NOT administer more than 10 units at once!"
+	icon_state = "single_use6"
+	w_class = ITEM_SIZE_TINY
+	volume = 5
+	amount_per_transfer_from_this = 5
+	single_use = TRUE
+	
+/obj/item/weapon/reagent_containers/syringe/salbutamol/New()
+	..()
+	reagents.add_reagent("salbutamol", 5)
+	mode = SYRINGE_INJECT
+
+/obj/item/weapon/reagent_containers/syringe/morphine/update_icon()
+	if (reagents && reagents.total_volume > 0)
+		icon_state = "single_use6"
+	else
+		icon_state = "single_use6_empty"
+		used = TRUE
+	
+// Stupid syringes to be reworked or removed
+
 /obj/item/weapon/reagent_containers/syringe/combat
 	name = "combat syringe"
 	desc = "A single-use injector made to pump you full of lifesaving drugs."

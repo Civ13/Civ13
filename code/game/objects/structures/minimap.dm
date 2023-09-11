@@ -162,7 +162,7 @@
 	name = "abashiri prison map"
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "abashiri_map")
 
-/obj/item/weapon/map_tdm/sovafghan/New()
+/obj/item/weapon/map_tdm/kandahar/New()
 	desc = "A portable map of the Kandahar region."
 	name = "Kandahar region map"
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
@@ -184,7 +184,7 @@
 /obj/structure/sign/map_board/New()
 	..()
 	switch (map.ID)
-		if (MAP_SOVAFGHAN)
+		if (MAP_KANDAHAR)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "sovafghan_map")
 		if (MAP_OPERATION_FALCON)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")

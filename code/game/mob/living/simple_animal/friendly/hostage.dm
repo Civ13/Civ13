@@ -65,7 +65,7 @@ var/global/civvies_killed = list()
 	var/killer = "none"
 	var/obj/map_metadata/campaign/CM = map
 	var/obj/map_metadata/bank_robbery/BR = map
-	var/obj/map_metadata/sovafghan/SA = map
+	var/obj/map_metadata/kandahar/SA = map
 
 	if (map.ID == MAP_CAMPAIGN && CM)
 		if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
@@ -126,7 +126,7 @@ var/global/civvies_killed = list()
 			game_log("CIVDEATH: [msg]")
 			message_admins(msg)
 
-	else if (map.ID == MAP_SOVAFGHAN && SA)
+	else if (map.ID == MAP_KANDAHAR && SA)
 		if (harmer_factions["Soviets"] > (harmer_factions["DRA"]||harmer_factions["Mujahideen"]))
 			killer = "Soviets"
 		else if (harmer_factions["Mujahideen"] > (harmer_factions["DRA"]||harmer_factions["Soviets"]))
@@ -162,7 +162,7 @@ var/global/civvies_killed = list()
 	if (P.firer && ishuman(P.firer))
 		var/mob/living/human/H = P.firer
 		var/obj/map_metadata/campaign/CM = map
-		var/obj/map_metadata/sovafghan/SA = map
+		var/obj/map_metadata/kandahar/SA = map
 		var/obj/map_metadata/bank_robbery/BR = map
 
 		if (map.ID == MAP_CAMPAIGN && CM)
@@ -171,7 +171,7 @@ var/global/civvies_killed = list()
 			else if (H.faction_text == CIVILIAN)
 				harmer_factions["Blugoslavia"]++
 
-		else if ( map.ID == MAP_SOVAFGHAN && SA)
+		else if ( map.ID == MAP_KANDAHAR && SA)
 			if (H.faction_text == RUSSIAN)
 				harmer_factions["Soviets"]++
 			else if (H.faction_text == CIVILIAN && H.original_job.is_dra == TRUE)
@@ -193,7 +193,7 @@ var/global/civvies_killed = list()
 				harmer_factions["Police"]++
 			else if (M.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
-		else if (map && map.ID == MAP_SOVAFGHAN)
+		else if (map && map.ID == MAP_KANDAHAR)
 			if (M.faction_text == RUSSIAN)
 				harmer_factions["Soviets"]++
 			else if (M.faction_text == CIVILIAN && M.original_job.is_dra == TRUE)
@@ -214,7 +214,7 @@ var/global/civvies_killed = list()
 				harmer_factions["Police"]++
 			else if (H.faction_text == RUSSIAN)
 				harmer_factions["Robbers"]++
-		else if (map && map.ID == MAP_SOVAFGHAN)
+		else if (map && map.ID == MAP_KANDAHAR)
 			if (H.faction_text == RUSSIAN)
 				harmer_factions["Soviets"]++
 			else if (H.faction_text == CIVILIAN && H.original_job.is_dra == TRUE)

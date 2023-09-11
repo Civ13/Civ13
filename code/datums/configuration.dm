@@ -95,6 +95,9 @@ var/list/gamemode_cache = list()
 	//so that it's similar to HALLOSS. Lowered it a bit since hitting paincrit takes much longer to wear off than a halloss stun.
 	var/organ_damage_spillover_multiplier = 0.5
 
+	var/defib_timer = 8 // How long until someone can't be defibbed anymore, in minutes.
+	var/defib_braindamage_timer = 2 // How long until someone will get brain damage when defibbed, in minutes. The closer to the end of the above timer, the more brain damage they get.
+
 	var/no_click_cooldown = FALSE
 
 	var/simultaneous_pm_warning_timeout = 100

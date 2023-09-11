@@ -744,7 +744,7 @@ var/italian_forceEnabled = FALSE
 	else if (map.ID == MAP_SIBERSYN || map.ID == MAP_TSARITSYN)
 		fact3 = "Red Army"
 		fact13 = "White Army"
-	else if (map.ID == MAP_SOVAFGHAN || map.ID == MAP_MAGISTRAL || map.ID == MAP_HILL_3234)
+	else if (map.ID == MAP_KANDAHAR || map.ID == MAP_MAGISTRAL || map.ID == MAP_HILL_3234)
 		fact3 = "DRA and Civilians"
 		fact11 = "Mujahideen"
 	else if (map.ID == MAP_HOSTAGES || map.ID == MAP_ARAB_TOWN_2)

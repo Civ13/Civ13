@@ -687,6 +687,25 @@ obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 				/obj/item/weapon/material/shovel/trench = 2,
 				)
 
+/obj/structure/closet/crate/ww2/vietnam/sks
+	name = "SKS crate"
+	paths = list(/obj/item/ammo_magazine/sks = 30,
+				/obj/item/weapon/gun/projectile/semiautomatic/sks = 6,
+				)
+/obj/structure/closet/crate/ww2/vietnam/akm
+	name = "AKM crate"
+	paths = list(/obj/item/ammo_magazine/ak47 = 30,
+				/obj/item/weapon/gun/projectile/submachinegun/ak47 = 6,
+				)
+/obj/structure/closet/crate/ww2/vietnam/viet_grenades
+	name = "grenade crate"
+	paths = list(/obj/item/weapon/grenade/modern/f1 = 8,
+				/obj/item/weapon/grenade/smokebomb/rdg1 = 4,
+				/obj/item/weapon/grenade/smokebomb/rdg2 = 4,
+				/obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka = 2,
+				/obj/item/weapon/matchbox = 2,
+				)
+
 /obj/structure/closet/crate/ww2
 	storagecap = 15
 

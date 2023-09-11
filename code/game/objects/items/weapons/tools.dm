@@ -135,6 +135,25 @@
 /*
  * Screwdriver
  */
+/obj/item/weapon/screwdriver
+	name = "screwdriver"
+	desc = "Your archetypal flathead screwdriver, with a nice, heavy polymer handle."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "screwdriver"
+	item_state = "screwdriver"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_EARS
+	force = WEAPON_FORCE_WEAK
+	w_class = ITEM_SIZE_TINY
+	throwforce = WEAPON_FORCE_WEAK
+	throw_speed = 3
+	throw_range = 5
+	attack_verb = list("stabbed")
+	flammable = FALSE
+
+/*
+ * Hammers
+ */
 /obj/item/weapon/hammer
 	name = "hammer"
 	desc = "Hit stuff apart with this."

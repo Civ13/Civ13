@@ -536,7 +536,7 @@ proc/admin_notice(var/message, var/rights)
 	log_admin("[key_name(usr)] initiated an immediate reboot.")
 	world.Reboot()
 /datum/admins/proc/set_research()
-	set category = "Special"
+	set category = "Nomads"
 	set desc = "Activates or Deactivates research."
 	set name = "Toggle Research"
 	if ((!map.civilizations && !map.nomads) || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
@@ -568,7 +568,7 @@ proc/admin_notice(var/message, var/rights)
 	else
 		return
 /datum/admins/proc/set_research_speed()
-	set category = "Special"
+	set category = "Nomads"
 	set desc = "Changes research speed in Auto-Research mode."
 	set name = "Set Research Speed"
 	if (!map.civilizations && !map.nomads)
@@ -590,7 +590,7 @@ proc/admin_notice(var/message, var/rights)
 		return
 
 /datum/admins/proc/set_custom_research()
-	set category = "Special"
+	set category = "Nomads"
 	set desc = "Changes the research."
 	set name = "Set Custom Research"
 	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_THREE_TRIBES)
@@ -616,7 +616,7 @@ proc/admin_notice(var/message, var/rights)
 		log_admin("[key_name(usr)] set the research to [customresearch].")
 		return
 /datum/admins/proc/set_custom_age()
-	set category = "Special"
+	set category = "Nomads"
 	set desc = "Changes the starting age."
 	set name = "Set Custom Age"
 	if (!map.civilizations && !map.nomads && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS)
@@ -1178,7 +1178,7 @@ client/proc/debug_variables_map()
 		map.load_new_recipes()
 	world.log << "Finished loading recipes."
 /datum/admins/proc/toggle_ores()
-	set category = "Special"
+	set category = "Nomads"
 	set desc = "Toggle ore spawners on and off"
 	set name = "Toggle Ore Spawners"
 

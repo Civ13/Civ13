@@ -221,8 +221,10 @@
 		civ_collector()
 
 /obj/map_metadata/bank_robbery/proc/civ_counter()
-	total_killed = civilians_killed["Robbers"]+civilians_killed["Police"]
-	civilians_alive = 12 - total_killed
+	for (var/mob/living/simple_animal/hostage/HO in world)
+		if (HO.stat != DEAD)
+			civilians_alive++
+	total_killed = civilians_killed["Robbers"] + civilians_killed["Police"]
 	spawn(100)
 		civ_counter()
 
@@ -253,8 +255,10 @@
 				new /obj/item/weapon/grenade/coldwar/rgd5(T)
 				new /obj/item/weapon/grenade/coldwar/rgd5(T)
 				new /obj/item/weapon/grenade/coldwar/rgd5(T)
-				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov(T)
-				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov(T)
+				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(T)
+				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(T)
+				new /obj/item/weapon/flame/lighter/random(T)
+				new /obj/item/weapon/flame/lighter/random(T)
 				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
 				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
 				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
@@ -267,6 +271,11 @@
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
 				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 		next_level_robbers = 1
 		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)

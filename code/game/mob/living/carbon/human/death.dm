@@ -134,8 +134,8 @@
 					world << "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>"
 
 
-			if (MAP_SOVAFGHAN)
-				var/obj/map_metadata/sovafghan/MP = map
+			if (MAP_KANDAHAR)
+				var/obj/map_metadata/kandahar/MP = map
 				if (faction_text == RUSSIAN && original_job.title == "Soviet Army Captain")
 					MP.muj_points += 15
 					world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
