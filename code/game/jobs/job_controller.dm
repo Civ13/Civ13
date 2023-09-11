@@ -27,6 +27,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FRENCH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[INDIANS]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DUTCH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ITALIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ROMAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GERMAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GREEK]
@@ -542,6 +543,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateSP"
 				if (DUTCH)
 					spawn_location = "JoinLateNL"
+				if (ITALIAN)
+					spawn_location = "JoinLateIT"
 				if (JAPANESE)
 					spawn_location = "JoinLateJP"
 				if (RUSSIAN)
@@ -645,6 +648,7 @@ var/global/datum/controller/occupations/job_master
 	var/indians = alive_n_of_side(INDIANS)
 	var/spanish = alive_n_of_side(SPANISH)
 	var/dutch = alive_n_of_side(DUTCH)
+	var/italian = alive_n_of_side(ITALIAN)
 	var/roman = alive_n_of_side(ROMAN)
 	var/greek = alive_n_of_side(GREEK)
 	var/arab = alive_n_of_side(ARAB)
@@ -670,6 +674,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_portuguese = INFINITY
 	var/max_indians = INFINITY
 	var/max_dutch = INFINITY
+	var/max_italian = INFINITY
 	var/max_roman = INFINITY
 	var/max_greek = INFINITY
 	var/max_arab = INFINITY
@@ -716,6 +721,9 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(DUTCH))
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
+		
+		if (map.faction_distribution_coeffs.Find(ITALIAN))
+			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
 
 		if (map.faction_distribution_coeffs.Find(JAPANESE))
 			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[JAPANESE])
@@ -807,6 +815,12 @@ var/global/datum/controller/occupations/job_master
 			if (dutch_forceEnabled)
 				return FALSE
 			if (dutch >= max_dutch)
+				return TRUE
+		
+		if (ITALIAN)
+			if (italian_forceEnabled)
+				return FALSE
+			if (italian >= max_italian)
 				return TRUE
 
 		if (JAPANESE)

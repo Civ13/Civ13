@@ -283,6 +283,17 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		var/list/mobs = getfitmobs(DUTCH)
 		if (mobs[input])
 			ManualFollow(mobs[input])
+
+/mob/observer/ghost/verb/follow_italian(input in getfitmobs(ITALIAN)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow an Italian"
+	set desc = "Follow and haunt a living Italian."
+
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(ITALIAN)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+
 /mob/observer/ghost/verb/follow_indians(input in getfitmobs(INDIANS)+"Cancel")
 	set category = "Ghost"
 	set name = "Follow a Native"

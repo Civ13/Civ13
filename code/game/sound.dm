@@ -190,6 +190,9 @@ var/list/charge_sounds_nl = list(
 	'sound/effects/emotes/charge_nl2.ogg',
 	'sound/effects/emotes/charge_nl3.ogg',
 	'sound/effects/emotes/charge_nl4.ogg',)
+var/list/charge_sounds_it = list(
+	
+	)
 var/list/charge_sounds_ro = list(
 	'sound/effects/emotes/charge_ro.ogg',)
 var/list/charge_sounds_jp = list(
@@ -535,6 +538,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_sp)
 			if ("charge_DUTCH")
 				soundin = pick(charge_sounds_nl)
+			if ("charge_ITALIAN")
+				soundin = pick(charge_sounds_it)
 			if ("charge_JAPANESE")
 				soundin = pick(charge_sounds_jp)
 			if ("charge_RUSSIAN")

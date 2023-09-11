@@ -56,6 +56,12 @@
 	male_tts_voice = "Ruben"
 	female_tts_voice = "Lotte"
 
+/datum/job/italian
+	default_language = "Italian"
+	additional_languages = list("French" = 15, "Spanish" = 10, "English" = 25)
+	male_tts_voice = "Giorgio"
+	female_tts_voice = "Bianca"
+
 /datum/job/french
 	default_language = "French"
 	additional_languages = list("English" = 10, "Spanish" = 15)
@@ -267,6 +273,10 @@
 		if (DUTCH)
 			for (var/datum/language/dutch/D in H.languages)
 				H.default_language = D
+				break
+		if (ITALIAN)
+			for (var/datum/language/italian/I in H.languages)
+				H.default_language = I
 				break
 		if (POLISH)
 			for (var/datum/language/polish/PO in H.languages)

@@ -50,6 +50,12 @@
 					if (H.original_job.base_type_flag() == DUTCH)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (ITALIAN)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == ITALIAN)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 		if (JAPANESE)
 			for (var/mob/living/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
@@ -168,6 +174,8 @@
 			return dead_indians.len + heavily_injured_indians.len + alive_indians.len
 		if (DUTCH)
 			return dead_dutch.len + heavily_injured_dutch.len + alive_dutch.len
+		if (ITALIAN)
+			return dead_italian.len + heavily_injured_italian.len + alive_italian.len
 		if (JAPANESE)
 			return dead_japanese.len + heavily_injured_japanese.len + alive_japanese.len
 		if (RUSSIAN)

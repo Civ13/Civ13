@@ -31,6 +31,7 @@
 	i2faction[22] = SWEDISH
 	i2faction[23] = DANISH
 	i2faction[24] = POLISH
+	i2faction[25] = ITALIAN
 	for (var/i in TRUE to 24)
 		var/faction = i2faction[i]
 		src << "<i># of [faction] total members:</i> <b>[soldiers[faction]]</b>"

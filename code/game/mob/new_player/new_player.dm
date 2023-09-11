@@ -1061,6 +1061,8 @@ var/global/redirect_all_players = null
 		dat += "[alive_spanish.len] Spanish "
 	if (DUTCH in map.faction_organization)
 		dat += "[alive_dutch.len] Dutch "
+	if (ITALIAN in map.faction_organization)
+		dat += "[alive_dutch.len] Italian "
 	if (PIRATES in map.faction_organization)
 		dat += "[alive_pirates.len] Pirates "
 	if (INDIANS in map.faction_organization)
@@ -1189,6 +1191,7 @@ var/global/redirect_all_players = null
 		INDIANS = FALSE,
 		PORTUGUESE = FALSE,
 		DUTCH = FALSE,
+		ITALIAN = FALSE,
 		BRITISH = FALSE,
 		ROMAN = FALSE,
 		GREEK = FALSE,
@@ -1254,6 +1257,9 @@ var/global/redirect_all_players = null
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/dutch) && !dutch_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/italian) && !italian_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/roman) && !roman_toggled)
