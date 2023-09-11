@@ -1460,6 +1460,8 @@
 						holder2.icon_state = "nl_basic"
 					else
 						holder2.icon_state = "nl_old_basic"
+				if (ITALIAN)
+					holder2.icon_state = "it_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
 						if (map.ID == MAP_ARAB_TOWN)
@@ -1668,20 +1670,9 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"nco")
-			if (map.ID == MAP_OPERATION_FALCON)
+			if (map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
-					switch (faction_text)
-						if ("RUSSIAN")
-							world << "<font color='green' size=4>[ckey] is now the <b>Russian Army</b> Commander!</font>"
-						if ("DUTCH")
-							world << "<font color='green' size=4>[ckey] is now the <b>Dutch Army</b> Commander!</font>"
-			if (map.ID == MAP_VADSO_CITY)
-				if (original_job.is_commander)
-					switch (faction_text)
-						if ("RUSSIAN")
-							world << "<font color='green' size=4>[ckey] is now the <b>Russian Army</b> Commander!</font>"
-						if ("BRITISH")
-							world << "<font color='green' size=4>[ckey] is now the <b>British Army</b> Commander!</font>"
+					world << "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>"
 			if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2

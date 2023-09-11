@@ -24,7 +24,7 @@
 	mission_start_message = "<font size=4>Rednikov have <b>5 minutes</b> to prepare before the SWAT raid the building!<br>The Police will win if they <b>capture the Storage Depot</b> in time! Rednikov will win if they manage to hold off the Police for <b>20 minutes!</b></font>"
 	faction1 = CIVILIAN
 	faction2 = RUSSIAN
-	grace_wall_timer = 3000
+	grace_wall_timer = 5 MINUTES
 	gamemode = "Drug Bust"
 	songs = list(
 		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
@@ -89,7 +89,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 1200 // 2 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/drug_bust/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

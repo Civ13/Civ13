@@ -133,7 +133,7 @@
 	name = "MP5 magazine (9x19mm)"
 	icon_state = "mp5"
 
-/obj/item/ammo_magazine/mp40/model38
+/obj/item/ammo_magazine/mp40/modello38
 	name = "MAB 38 magazine (9x19mm)"
 	icon_state = "mp40"
 	mag_type = MAGAZINE
