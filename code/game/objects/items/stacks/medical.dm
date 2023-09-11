@@ -416,6 +416,21 @@
 	heal_brute = 10 // for healing dogs and other animals
 	amount = 10
 
+/obj/item/bag_valve_mask
+	name = "bag valve mask"
+	desc = "A hand-held device commonly used to provide positive pressure ventilation to patients who are not breathing or not breathing adequately."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "valvemask"
+/obj/item/bag_valve_mask/attack(var/mob/living/human/M as mob, var/mob/user as mob)
+	if (M.wear_mask)
+		user << "<span class='warning'>Uncover their mouth first!.</span>"
+		return
+	visible_message("[user] starts to attach the [src] to [M]...")
+	if (do_after(user, 100, src))
+		M.adjustOxyLoss(-7)
+		user.visible_message("<span class='notice'>[user] manually ventilates [M].</span>", "<span class='notice'>You manually ventilate [M].</span>")
+		return
+
 /obj/item/revival_kit
 	name = "revival kit"
 	desc = "A full sized hospital and multiple years of rehabilitation in only couple of seconds, a true gift from the gods! Better not be greedy..."
