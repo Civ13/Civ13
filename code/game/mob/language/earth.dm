@@ -329,7 +329,7 @@
 	colour = "ITALIAN"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ITALIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/spanish = 30,/datum/language/french = 10,/datum/language/portuguese = 10)
+	mutual_intelligibility = list(/datum/language/spanish = 30, /datum/language/french = 10, /datum/language/portuguese = 10)
 
 /datum/language/inuit
 	name = "inuktitut"

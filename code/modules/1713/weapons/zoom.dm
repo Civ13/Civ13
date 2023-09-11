@@ -180,13 +180,13 @@ Parts of code courtesy of Super3222
 	var/direction_xoffset = 0
 	var/direction_yoffset = 0
 	switch(user.faction_text)
-		if ("DUTCH")
+		if (DUTCH)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
-		if ("RUSSIAN")
+		if (RUSSIAN)
 			new /obj/effect/plane_flyby/su25_no_message(T)
 			world << SPAN_DANGER("<font size=4>The clouds open up as a Su-25 cuts through and fires off a burst of rockets!</font>")
-		if ("AMERICAN")
+		if (AMERICAN)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
 	spawn(15)

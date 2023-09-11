@@ -24,6 +24,7 @@ var/list/alive_vietnamese = list()
 var/list/alive_chinese = list()
 var/list/alive_filipino = list()
 var/list/alive_polish = list()
+var/list/alive_italian = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -49,6 +50,7 @@ var/list/heavily_injured_vietnamese = list()
 var/list/heavily_injured_chinese = list()
 var/list/heavily_injured_filipino = list()
 var/list/heavily_injured_polish = list()
+var/list/heavily_injured_italian = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
@@ -74,6 +76,7 @@ var/list/dead_vietnamese = list()
 var/list/dead_chinese = list()
 var/list/dead_filipino = list()
 var/list/dead_polish = list()
+var/list/dead_italian = list()
 
 var/list/recently_died = list()
 
@@ -180,6 +183,10 @@ var/list/recently_died = list()
 				dead = dead_polish
 				injured = heavily_injured_polish
 				alive = alive_polish
+			if (ITALIAN)
+				dead = dead_italian
+				injured = heavily_injured_italian
+				alive = alive_italian
 	return list(alive, dead, injured)
 
 /mob/living/human/death()
