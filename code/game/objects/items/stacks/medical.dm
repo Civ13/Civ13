@@ -423,10 +423,10 @@
 	icon_state = "valvemask"
 /obj/item/bag_valve_mask/attack(var/mob/living/human/M as mob, var/mob/user as mob)
 	if (M.wear_mask)
-		user << "<span class='warning'>Uncover their mouth first!.</span>"
+		user << "<span class='warning'>Uncover their mouth first!</span>"
 		return
-	visible_message("[user] starts to attach the [src] to [M]...")
-	if (do_after(user, 100, src))
+	visible_message("[user] starts to attach the [src] to [M].")
+	if (do_after(user, 80, src)) // TO-DO: Make it dependent on medical skill
 		M.adjustOxyLoss(-7)
 		user.visible_message("<span class='notice'>[user] manually ventilates [M].</span>", "<span class='notice'>You manually ventilate [M].</span>")
 		return
