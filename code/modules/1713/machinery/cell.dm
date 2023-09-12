@@ -1,3 +1,6 @@
+#define CELLRATE 0.002 // Multiplier for watts per tick <> cell storage (e.g., 0.02 means if there is a load of 1000 watts, 20 units will be taken from a cell per second)
+                       // It's a conversion constant. power_used*CELLRATE = charge_provided, or charge_used/CELLRATE = power_provided
+
 /obj/item/weapon/cell
 	name = "power cell"
 	desc = "A rechargable electrochemical power cell."
@@ -89,3 +92,120 @@
 	name = "standard power cell"
 	desc = "A standard and relatively cheap power cell, commonly used."
 	maxcharge = 300
+
+/obj/item/weapon/cell/standard/empty/New()
+	..()
+	charge = 0
+
+/obj/item/weapon/cell/high
+	name = "high-capacity power cell"
+	desc = "A power cell with extended energy storage for longer-lasting use."
+	icon_state = "hcell"
+	maxcharge = 600
+
+/obj/item/weapon/cell/high/empty/New()
+	..()
+	charge = 0
+
+/obj/item/weapon/cell/super
+	name = "super-capacity power cell"
+	desc = "An energy cell with exceptional capacity for extended and reliable power."
+	icon_state = "scell"
+	maxcharge = 1200
+
+/obj/item/weapon/cell/super/empty/New()
+	..()
+	charge = 0
+
+/obj/item/weapon/cell/hyper
+	name = "hyper-capacity power cell"
+	desc = "The ultimate power cell, offering unparalleled energy reserves for the most demanding tasks."
+	icon_state = "scell"
+	maxcharge = 3000
+
+/obj/item/weapon/cell/hyper/empty/New()
+	..()
+	charge = 0
+
+
+// Cell charger
+
+/obj/machinery/cell_charger
+	name = "heavy-duty cell charger"
+	desc = "A much more powerful version of the standard recharger that is specially designed for charging power cells."
+	icon = 'icons/obj/machines/power.dmi'
+	icon_state = "ccharger0"
+	anchored = TRUE
+	density = FALSE
+	var/obj/item/weapon/cell/charging = null
+	var/chargelevel = -1
+	var/active_power_usage = 60000 //This is the power drawn when charging, given in Watts (may need to be adjusted)
+
+/obj/machinery/cell_charger/update_icon()
+	icon_state = "ccharger[charging ? 1 : 0]"
+
+	if(charging)
+		var/newlevel = 	round(charging.percent() * 4.0 / 99)
+		if(chargelevel != newlevel)
+
+			overlays.Cut()
+			overlays += "ccharger-o[newlevel]"
+
+			chargelevel = newlevel
+	else
+		overlays.Cut()
+
+/obj/machinery/cell_charger/examine(mob/user)
+	if(!..(user, 5))
+		return
+
+	to_chat(user, "There's [charging ? "a" : "no"] cell in the charger.")
+	if(charging)
+		to_chat(user, "Current charge: [charging.charge]")
+
+/obj/machinery/cell_charger/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/cell) && anchored)
+		if(charging)
+			to_chat(user, "<span class='warning'>There is already a cell in the charger.</span>")
+			return
+		else
+			/*var/area/a = loc.loc // Gets our locations location, like a dream within a dream
+			if(!isarea(a))
+				return
+			if(a.power_equip == 0) // There's no APC in this area, don't try to cheat power!
+				to_chat(user, "<span class='warning'>The [name] blinks red as you try to insert the cell!</span>")
+				return*/
+
+			user.drop_item()
+			W.loc = src
+			charging = W
+			user.visible_message("[user] inserts a cell into the charger.", "You insert a cell into the charger.")
+			chargelevel = -1
+		update_icon()
+	else if(istype(W, /obj/item/weapon/wrench))
+		if(charging)
+			to_chat(user, "<span class='warning'>Remove the cell first!</span>")
+			return
+
+		anchored = !anchored
+		to_chat(user, "You [anchored ? "attach" : "detach"] the cell charger [anchored ? "to" : "from"] the ground.")
+		playsound(src.loc, 'sound/items/Ratchet.ogg', 75, 1)
+
+/obj/machinery/cell_charger/attack_hand(mob/user)
+	if(charging)
+		user.put_in_hands(charging)
+		charging.add_fingerprint(user)
+		charging.update_icon()
+
+		src.charging = null
+		user.visible_message("[user] removes the cell from the charger.", "You remove the cell from the charger.")
+		chargelevel = -1
+		update_icon()
+
+/obj/machinery/cell_charger/process()
+	if(!anchored)
+		return
+
+	if (charging && !charging.fully_charged())
+		charging.give(active_power_usage*CELLRATE)
+		update_icon()
