@@ -123,6 +123,12 @@
 			else
 				return "Dutch Republic"
 
+	if (constant == ITALIAN)
+		if (age >= 7)
+			return "Italian Republic"
+		else
+			return "Italian Monarchy"
+
 	if (constant == JAPANESE)
 		return "Japanese Empire"
 
