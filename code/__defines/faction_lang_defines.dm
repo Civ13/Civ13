@@ -127,8 +127,7 @@
 		if (age >= 7)
 			return "Italian Republic"
 		else
-			return "Italian Monarchy""
-
+			return "Italian Monarchy"
 
 	if (constant == JAPANESE)
 		return "Japanese Empire"
