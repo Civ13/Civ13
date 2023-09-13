@@ -396,9 +396,9 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_mg(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/browning(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/american_bar(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/ammo_can/bar(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
 	if (map.ID == MAP_ARDENNES)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/us_coat(H), slot_wear_suit)

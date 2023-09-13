@@ -3843,7 +3843,7 @@
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
 //weapons
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)

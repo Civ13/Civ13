@@ -372,7 +372,7 @@
 "hm" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 4},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 1},/turf/floor/winter,/area/caribbean/nomads/snow)
 "hn" = (/obj/structure/props/computerprops/research,/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/one)
 "ho" = (/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/storage/belt/largepouches/olive/m60,/turf/floor/winter,/area/caribbean/nomads/snow)
-"hp" = (/obj/item/weapon/storage/ammo_can/stanag,/obj/item/weapon/gun/projectile/submachinegun/m16,/turf/floor/winter,/area/caribbean/nomads/snow)
+"hp" = (/obj/item/weapon/storage/ammo_can/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/turf/floor/winter,/area/caribbean/nomads/snow)
 "hq" = (/obj/item/weapon/gun_cleaning_kit,/turf/floor/winter/grass,/area/caribbean/nomads/snow)
 "hr" = (/obj/item/weapon/gun_cleaning_kit,/turf/floor/winter,/area/caribbean/nomads/snow)
 "hs" = (/turf/floor/dirt/underground/icy/rock,/area/caribbean/nomads/snow)

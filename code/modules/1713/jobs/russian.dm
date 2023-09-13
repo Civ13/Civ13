@@ -1260,7 +1260,7 @@
 	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm15medic(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/medic(H), slot_head)
 //other
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
@@ -1411,7 +1411,7 @@
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
 		if (4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 //weapon
@@ -2271,7 +2271,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 
