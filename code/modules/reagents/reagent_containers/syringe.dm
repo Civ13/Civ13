@@ -413,7 +413,7 @@
 	reagents.add_reagent("salbutamol", 5)
 	mode = SYRINGE_INJECT
 
-/obj/item/weapon/reagent_containers/syringe/morphine/update_icon()
+/obj/item/weapon/reagent_containers/syringe/salbutamol/update_icon()
 	if (reagents && reagents.total_volume > 0)
 		icon_state = "single_use6"
 	else

@@ -826,7 +826,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "Carcano 1891"
-	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
+	desc = "An Italian bolt-action rifle chambered in 6.50x52mm ammunition."
 	icon_state = "carcano"
 	item_state = "carcano"
 	base_icon = "carcano"
@@ -899,7 +899,6 @@
 	///1861,Pattern
 	//1853 Enfield,
 	//Frank Wesson Rifle,
-	//Colt Revolving Rifle,
 	//Sharps & Hankins Carbine,
 	///Volcanic Carbine,
 	///M1817 Common Rifle (All Rifles used during the civil war)
@@ -964,7 +963,7 @@
 
 /obj/item/weapon/gun/projectile/boltaction/lebel
 	name = "Lebel 1886/M93"
-	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8x50mmR Lebel."
+	desc = "An 8 round, bolt-action rifle, standard issue for French military, chambered in 8x50mmR Lebel."
 	icon_state ="lebel"
 	item_state ="lebel"
 	base_icon = "lebel"

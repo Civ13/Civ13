@@ -759,6 +759,7 @@
 #include "code\modules\1713\jobs\grozny.dm"
 #include "code\modules\1713\jobs\helpers.dm"
 #include "code\modules\1713\jobs\indians.dm"
+#include "code\modules\1713\jobs\italian.dm"
 #include "code\modules\1713\jobs\japanese.dm"
 #include "code\modules\1713\jobs\medieval.dm"
 #include "code\modules\1713\jobs\modern.dm"

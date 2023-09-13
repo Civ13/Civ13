@@ -33,6 +33,7 @@
 #define TEAM_SE 22
 #define TEAM_DK 23
 #define TEAM_PO 24
+#define TEAM_IT 25
 
 var/global/soldiers[24]
 
@@ -50,7 +51,6 @@ var/global/soldiers[24]
 /datum/faction/proc/base_type()
 	return "/datum/faction"
 
-// you appear to be a civilian to other civilians
 /datum/faction/civilian
 	icon_state = "civilian_basic"
 	title = "Civilian"
@@ -59,7 +59,6 @@ var/global/soldiers[24]
 /datum/faction/pirates/base_type()
 	return "/datum/faction/pirates"
 
-// you appear to be a pirate to other pirates
 /datum/faction/pirates
 	icon_state = "pirate_basic"
 	title = "Pirate"
@@ -68,7 +67,6 @@ var/global/soldiers[24]
 /datum/faction/pirates/base_type()
 	return "/datum/faction/pirates"
 
-// you appear to be a pirate to other pirates
 /datum/faction/spanish
 	icon_state = "spanish_basic"
 	title = "Spanish"
@@ -77,7 +75,6 @@ var/global/soldiers[24]
 /datum/faction/spanish/base_type()
 	return "/datum/faction/spanish"
 
-// you appear to be a pirate to other pirates
 /datum/faction/portuguese
 	icon_state = "portuguese_basic"
 	title = "Portuguese"
@@ -86,7 +83,6 @@ var/global/soldiers[24]
 /datum/faction/portuguese/base_type()
 	return "/datum/faction/portuguese"
 
-// you appear to be a pirate to other pirates
 /datum/faction/french
 	icon_state = "french_basic"
 	title = "French"
@@ -103,7 +99,6 @@ var/global/soldiers[24]
 /datum/faction/indians/base_type()
 	return "/datum/faction/indians"
 
-// you appear to be a british soldier to all other brits
 /datum/faction/british
 	icon_state = "rn_basic"
 	title = "Royal Navy Sailor"
@@ -112,7 +107,6 @@ var/global/soldiers[24]
 /datum/faction/british/base_type()
 	return "/datum/faction/british"
 
-// you appear to be a dutch soldier to all other brits
 /datum/faction/dutch
 	icon_state = "nl_basic"
 	title = "Dutch Sailor"
@@ -120,6 +114,14 @@ var/global/soldiers[24]
 
 /datum/faction/dutch/base_type()
 	return "/datum/faction/dutch"
+
+/datum/faction/italian
+	icon_state = "it_basic"
+	title = "Italian Soldier"
+	team = TEAM_IT
+
+/datum/faction/italian/base_type()
+	return "/datum/faction/italian"
 
 /datum/faction/japanese
 	icon_state = ""
@@ -274,6 +276,9 @@ var/global/soldiers[24]
 	else if (istype(J, /datum/job/dutch))
 		if ("[type]" == "/datum/faction/dutch")
 			soldiers[DUTCH]++
+	else if (istype(J, /datum/job/italian))
+		if ("[type]" == "/datum/faction/italian")
+			soldiers[ITALIAN]++
 	else if (istype(J, /datum/job/indians))
 		if ("[type]" == "/datum/faction/indians")
 			soldiers[INDIANS]++

@@ -161,6 +161,8 @@
 		. = INDIANS
 	else if (istype(src, /datum/job/dutch))
 		. = DUTCH
+	else if (istype(src, /datum/job/italian))
+		. = ITALIAN
 	else if (istype(src, /datum/job/japanese))
 		. = JAPANESE
 	else if (istype(src, /datum/job/russian))
@@ -222,6 +224,9 @@
 	else if (istype(src, /datum/job/dutch))
 		user.faction_text = "DUTCH"
 		user.base_faction = new/datum/faction/dutch(user, src)
+	else if (istype(src, /datum/job/italian))
+		user.faction_text = "ITALIAN"
+		user.base_faction = new/datum/faction/italian(user, src)
 	else if (istype(src, /datum/job/japanese))
 		user.faction_text = "JAPANESE"
 		user.base_faction = new/datum/faction/japanese(user, src)

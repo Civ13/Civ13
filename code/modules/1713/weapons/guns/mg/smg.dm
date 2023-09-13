@@ -272,12 +272,12 @@
 	sel_mode = 1
 	effectiveness_mod = 0.95
 
-/obj/item/weapon/gun/projectile/submachinegun/mp40/model38
+/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38
 	name = "MAB 38"
 	desc = "The Moschetto Automatico Beretta Modello 1938 is a submachine gun of the Royal Italian Army introduced in 1938, chambered in 9mm Luger."
 	weight = 4.2
-	magazine_type = /obj/item/ammo_magazine/mp40/model38
-	good_mags = list(/obj/item/ammo_magazine/mp40/model38)
+	magazine_type = /obj/item/ammo_magazine/mp40/modello38
+	good_mags = list(/obj/item/ammo_magazine/mp40/modello38)
 	full_auto = TRUE
 	equiptimer = 13
 	firemodes = list(
