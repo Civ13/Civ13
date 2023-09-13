@@ -549,7 +549,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mauser(H), slot_r_store)
 
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26medic(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 
@@ -593,7 +593,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
 //head
 	if (prob(40))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26(H), slot_head)
 	else if (prob(45))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
 	else

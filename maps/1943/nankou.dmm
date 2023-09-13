@@ -450,7 +450,7 @@
 "iH" = (/obj/item/weapon/storage/firstaid/advsmall,/turf/floor/trench,/area/caribbean/roofed)
 "iI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/storage/firstaid/combat,/turf/floor/trench,/area/caribbean)
 "iJ" = (/obj/item/weapon/storage/firstaid/advsmall,/turf/floor/trench,/area/caribbean)
-"iK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/storage/ammo_can/german_mg,/turf/floor/trench,/area/caribbean)
+"iK" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/storage/ammo_can/mg34belt,/turf/floor/trench,/area/caribbean)
 "iL" = (/obj/structure/table/wood,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/obj/item/weapon/storage/backpack/ww2/jap,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "iM" = (/obj/structure/table/wood,/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate,/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate,/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate,/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "iN" = (/obj/structure/window/classic/brickfull,/obj/structure/barricade,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command)

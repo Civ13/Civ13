@@ -28,7 +28,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26(H), slot_head)
 //gloves
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //back
@@ -91,7 +91,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/trenchsuit/poland(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26(H), slot_head)
 //gloves
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //back
@@ -165,7 +165,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 //head
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26medic(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26medic(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm_medic(H), slot_head)
 //belt

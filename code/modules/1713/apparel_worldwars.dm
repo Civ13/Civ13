@@ -57,8 +57,8 @@
 	health = 18
 
 /obj/item/clothing/head/helmet/ww/stahlhelm
-	name = "M1915 stahlhelm"
-	desc = "A typical grman stahlhelm helmet."
+	name = "M1915 Stahlhelm"
+	desc = "A typical German Stahlhelm helmet."
 	icon_state = "stahlhelm_old"
 	item_state = "stahlhelm_old"
 	worn_state = "stahlhelm_old"
@@ -66,46 +66,9 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/helmet/ww/adriangreek
-	name = "Greek M15 Adrian helmet"
-	desc = "A typical greek adrian helmet."
-	icon_state = "adrian_greek"
-	item_state = "adrian_greek"
-	worn_state = "adrian_greek"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
-
-	var/strap = FALSE
-
-/obj/item/clothing/head/helmet/ww/adriangreek/verb/toggle_strap()
-	set category = null
-	set src in usr
-	set name = "Toggle Strap"
-	if (strap)
-		icon_state = "adrian_greek"
-		item_state = "adrian_greek"
-		worn_state = "adrian_greek"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_greek"
-		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
-		update_icon()
-		strap = FALSE
-		usr.update_inv_head(1)
-	else if (!strap)
-		icon_state = "adrian_greek_strap"
-		item_state = "adrian_greek_strap"
-		worn_state = "adrian_greek_strap"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_greek_strap"
-		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
-		update_icon()
-		strap = TRUE
-		usr.update_inv_head(1)
-
 /obj/item/clothing/head/helmet/ww/adrian
 	name = "M15 Adrian helmet"
-	desc = "A typical french adrian."
+	desc = "A typical French Adrian."
 	icon_state = "adrian_standard"
 	item_state = "adrian_standard"
 	worn_state = "adrian_standard"
@@ -120,66 +83,43 @@
 	set src in usr
 	set name = "Toggle Strap"
 	if (strap)
-		icon_state = "adrian_standard"
-		item_state = "adrian_standard"
-		worn_state = "adrian_standard"
+		icon_state = "[initial(icon_state)]"
+		item_state = "[initial(icon_state)]"
+		worn_state = "[initial(icon_state)]"
 		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_standard"
+		item_state_slots["slot_wear_head"] = "[initial(icon_state)]"
 		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
 		update_icon()
 		strap = FALSE
 		usr.update_inv_head(1)
 	else if (!strap)
-		icon_state = "adrian_standard_strap"
-		item_state = "adrian_standard_strap"
-		worn_state = "adrian_standard_strap"
+		icon_state = "[initial(icon_state)]_strap"
+		item_state = "[initial(icon_state)]_strap"
+		worn_state = "[initial(icon_state)]_strap"
 		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_standard_strap"
+		item_state_slots["slot_wear_head"] = "[initial(icon_state)]_strap"
 		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
 		update_icon()
 		strap = TRUE
 		usr.update_inv_head(1)
 
-/obj/item/clothing/head/helmet/ww/adriansoviet
+/obj/item/clothing/head/helmet/ww/adrian/greek
+	name = "Greek M15 Adrian helmet"
+	desc = "A typical Greek Adrian helmet."
+	icon_state = "adrian_greek"
+	item_state = "adrian_greek"
+	worn_state = "adrian_greek"
+
+/obj/item/clothing/head/helmet/ww/adrian/soviet
 	name = "Russian M15 Adrian helmet"
-	desc = "The adrian helmet but soviet, used by the red army"
+	desc = "The Adrian helmet but Soviet, used by the red army"
 	icon_state = "adrian_russian"
 	item_state = "adrian_russian"
 	worn_state = "adrian_russian"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-	var/strap = FALSE
-
-/obj/item/clothing/head/helmet/ww/adriansoviet/verb/toggle_strap()
-	set category = null
-	set src in usr
-	set name = "Toggle Strap"
-	if (strap)
-		icon_state = "adrian_russian"
-		item_state = "adrian_russian"
-		worn_state = "adrian_russian"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_standard"
-		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
-		update_icon()
-		strap = FALSE
-		usr.update_inv_head(1)
-	else if (!strap)
-		icon_state = "adrian_russian_strap"
-		item_state = "adrian_russian_strap"
-		worn_state = "adrian_russian_strap"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "adrian_standard_strap"
-		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
-		update_icon()
-		strap = TRUE
-		usr.update_inv_head(1)
-
-/obj/item/clothing/head/helmet/ww/adrianm15medic
+/obj/item/clothing/head/helmet/ww/adrian/medic
 	name = "Medic M15 Adrian helmet"
-	desc = "The adrian helmet but soviet, used by the red army"
+	desc = "A Typical M15 Adrian helmet, this one for medics"
 	icon_state = "m15_adrian_m"
 	item_state = "m15_adrian_m"
 	worn_state = "m15_adrian_m"
@@ -187,46 +127,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/helmet/ww2/adrianm26
+/obj/item/clothing/head/helmet/ww/adrian/m26
 	name = "M26 Adrian helmet"
 	desc = "A Typical M26 Adrian Helmet"
 	icon_state = "m26_adrian"
 	item_state = "m26_adrian"
 	worn_state = "m26_adrian"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-	var/strap = FALSE
-
-/obj/item/clothing/head/helmet/ww2/adrianm26/verb/toggle_strap()
-	set category = null
-	set src in usr
-	set name = "Toggle Strap"
-	if (strap)
-		icon_state = "m26_adrian"
-		item_state = "m26_adrian"
-		worn_state = "m26_adrian"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "m26_adrian"
-		usr << "<span class = 'danger'>You put down your helmets strap.</span>"
-		update_icon()
-		strap = FALSE
-		usr.update_inv_head(1)
-	else if (!strap)
-		icon_state = "m26_adrian_s"
-		item_state = "m26_adrian_s"
-		worn_state = "m26_adrian_s"
-		body_parts_covered = HEAD
-		item_state_slots["slot_wear_head"] = "m26_adrian_s"
-		usr << "<span class = 'danger'>You put up your helmets strap.</span>"
-		update_icon()
-		strap = TRUE
-		usr.update_inv_head(1)
-
-/obj/item/clothing/head/helmet/ww2/adrianm26medic
+/obj/item/clothing/head/helmet/ww/adrian/m26medic
 	name = "Medic M26 Adrian helmet"
-	desc = "A Typical M26 Adrian Helmet, this one for medics"
+	desc = "A Typical M26 Adrian helmet, this one for medics"
 	icon_state = "m26_medic"
 	item_state = "m26_medic"
 	worn_state = "m26_medic"
@@ -1668,7 +1578,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault
 	New()
 		..()
-		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/weapon/grenade/modern/stg1915(hold)
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
@@ -1678,6 +1587,12 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/gewehr98(hold)
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
+	New()
+		..()
+		new/obj/item/ammo_magazine/gewehr98box(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34
 	New()
 		..()
@@ -1685,12 +1600,6 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/mg34(hold)
 		new/obj/item/ammo_magazine/mg34(hold)
 		new/obj/item/ammo_magazine/mg34(hold)
-		new/obj/item/weapon/grenade/smokebomb(hold)
-
-/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/sniper
-	New()
-		..()
-		new/obj/item/ammo_magazine/gewehr98box(hold)
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mauser
@@ -1709,13 +1618,9 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/mp40(hold)
 		new/obj/item/ammo_magazine/mp40(hold)
 
-/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40assault
+/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40/assault
 	New()
 		..()
-		new/obj/item/ammo_magazine/mp40(hold)
-		new/obj/item/ammo_magazine/mp40(hold)
-		new/obj/item/ammo_magazine/mp40(hold)
-		new/obj/item/ammo_magazine/mp40(hold)
 		new/obj/item/weapon/grenade/ww2/stg1924(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/fg42
@@ -1744,6 +1649,54 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/ammo_magazine/stg(hold)
 		new/obj/item/weapon/grenade/modern/stg1915(hold)
 		new/obj/item/weapon/grenade/antitank/stg24_bundle(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian
+	name = "italian webbing"
+	icon_state = "german_vest"
+	item_state = "german_vest"
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/carcano
+	New()
+		..()
+		new/obj/item/ammo_magazine/carcano(hold)
+		new/obj/item/ammo_magazine/carcano(hold)
+		new/obj/item/ammo_magazine/carcano(hold)
+		new/obj/item/ammo_magazine/carcano(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/carcano/assault
+	New()
+		..()
+		/obj/item/weapon/grenade/modern/impact/oto35
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/carcano/smoke
+	New()
+		..()
+		/obj/item/weapon/grenade/smokebomb
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/modello38
+	New()
+		..()
+		new/obj/item/ammo_magazine/mp40/modello38(hold)
+		new/obj/item/ammo_magazine/mp40/modello38(hold)
+		new/obj/item/ammo_magazine/mp40/modello38(hold)
+		new/obj/item/ammo_magazine/mp40/modello38(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/breda30
+	New()
+		..()
+		new/obj/item/ammo_magazine/breda30(hold)
+		new/obj/item/ammo_magazine/breda30(hold)
+		new/obj/item/ammo_magazine/breda30(hold)
+		new/obj/item/ammo_magazine/breda30(hold)
+		new/obj/item/weapon/grenade/smokebomb(hold)
+
+
 
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"
@@ -1980,70 +1933,80 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		/obj/item/ammo_casing,
 		/obj/item/weapon/key,
 		)
-/obj/item/weapon/storage/ammo_can/german_mg
-/obj/item/weapon/storage/ammo_can/german_mg/New()
-	..()
-	new/obj/item/ammo_magazine/mg34belt(src)
-	new/obj/item/ammo_magazine/mg34belt(src)
-	new/obj/item/ammo_magazine/mg34belt(src)
-	new/obj/item/ammo_magazine/mg34belt(src)
+/obj/item/weapon/storage/ammo_can/mg34belt
+	New()
+		..()
+		new/obj/item/ammo_magazine/mg34belt(src)
+		new/obj/item/ammo_magazine/mg34belt(src)
+		new/obj/item/ammo_magazine/mg34belt(src)
+		new/obj/item/ammo_magazine/mg34belt(src)
 
-/obj/item/weapon/storage/ammo_can/german_mg_drum
-/obj/item/weapon/storage/ammo_can/german_mg_drum/New()
-	..()
-	new/obj/item/ammo_magazine/mg34(src)
-	new/obj/item/ammo_magazine/mg34(src)
-	new/obj/item/ammo_magazine/mg34(src)
-	new/obj/item/ammo_magazine/mg34(src)
-	new/obj/item/ammo_magazine/mg34(src)
-	new/obj/item/ammo_magazine/mg34(src)
+/obj/item/weapon/storage/ammo_can/mg34drum
+	New()
+		..()
+		new/obj/item/ammo_magazine/mg34(src)
+		new/obj/item/ammo_magazine/mg34(src)
+		new/obj/item/ammo_magazine/mg34(src)
+		new/obj/item/ammo_magazine/mg34(src)
+		new/obj/item/ammo_magazine/mg34(src)
+		new/obj/item/ammo_magazine/mg34(src)
 
-/obj/item/weapon/storage/ammo_can/american_bar
-/obj/item/weapon/storage/ammo_can/american_bar/New()
-	..()
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
+/obj/item/weapon/storage/ammo_can/bar
+	New()
+		..()
+		new/obj/item/ammo_magazine/bar(src)
+		new/obj/item/ammo_magazine/bar(src)
+		new/obj/item/ammo_magazine/bar(src)
+		new/obj/item/ammo_magazine/bar(src)
+		new/obj/item/ammo_magazine/bar(src)
+		new/obj/item/ammo_magazine/bar(src)
 
-/obj/item/weapon/storage/ammo_can/american_mg
-/obj/item/weapon/storage/ammo_can/american_mg/New()
-	..()
-	new/obj/item/ammo_magazine/browning(src)
-	new/obj/item/ammo_magazine/browning(src)
-	new/obj/item/ammo_magazine/browning(src)
-	new/obj/item/ammo_magazine/browning(src)
+/obj/item/weapon/storage/ammo_can/browning
+	New()
+		..()
+		new/obj/item/ammo_magazine/browning(src)
+		new/obj/item/ammo_magazine/browning(src)
+		new/obj/item/ammo_magazine/browning(src)
+		new/obj/item/ammo_magazine/browning(src)
 
 /obj/item/weapon/storage/ammo_can/ak74
-/obj/item/weapon/storage/ammo_can/ak74/New()
-	..()
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak74(src)
+		new/obj/item/ammo_magazine/ak74(src)
+		new/obj/item/ammo_magazine/ak74(src)
+		new/obj/item/ammo_magazine/ak74(src)
+		new/obj/item/ammo_magazine/ak74(src)
+		new/obj/item/ammo_magazine/ak74(src)
 
-/obj/item/weapon/storage/ammo_can/stanag
-/obj/item/weapon/storage/ammo_can/stanag/New()
-	..()
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16/box(src)
-	new/obj/item/ammo_magazine/m16/box(src)
+/obj/item/weapon/storage/ammo_can/m16
+	New()
+		..()
+		new/obj/item/ammo_magazine/m16(src)
+		new/obj/item/ammo_magazine/m16(src)
+		new/obj/item/ammo_magazine/m16(src)
+		new/obj/item/ammo_magazine/m16/box(src)
+		new/obj/item/ammo_magazine/m16/box(src)
 
 /obj/item/weapon/storage/ammo_can/dp
-/obj/item/weapon/storage/ammo_can/dp/New()
-	..()
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
+	New()
+		..()
+		new/obj/item/ammo_magazine/dp(src)
+		new/obj/item/ammo_magazine/dp(src)
+		new/obj/item/ammo_magazine/dp(src)
+		new/obj/item/ammo_magazine/dp(src)
+		new/obj/item/ammo_magazine/dp(src)
+		new/obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/ammo_can/breda30
+	New()
+		..()
+		new/obj/item/ammo_magazine/breda30(src)
+		new/obj/item/ammo_magazine/breda30(src)
+		new/obj/item/ammo_magazine/breda30(src)
+		new/obj/item/ammo_magazine/breda30(src)
+		new/obj/item/ammo_magazine/breda30(src)
+		new/obj/item/ammo_magazine/breda30(src)
 
 /obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
@@ -2152,6 +2115,20 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "sovietboots"
 	item_state = "sovietboots"
 	worn_state = "sovietboots"
+
+/obj/item/clothing/under/ww2/italian
+	name = "italian uniform"
+	desc = "An Italian uniform, used by the Italian Royal Army."
+	icon_state = "it_uni"
+	item_state = "it_uni"
+	worn_state = "it_uni"
+
+/obj/item/clothing/under/ww2/italian_officer
+	name = "italian officer uniform"
+	desc = "An Italian uniform, used by officers of the Italian Royal Army."
+	icon_state = "it_uni_officer"
+	item_state = "it_uni_officer"
+	worn_state = "it_uni_officer"
 
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
@@ -2622,9 +2599,9 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/clothing/head/helmet/ww2/ss/dark
 	name = "german ss helmet"
 	desc = "The typical rounded steel helmet of the Schutzstaffel."
-	icon_state = "sshelm_dark"
-	item_state = "sshelm_dark"
-	worn_state = "sshelm_dark"
+	icon_state = "stahlhelm"
+	item_state = "stahlhelm"
+	worn_state = "stahlhelm"
 
 /obj/item/clothing/head/helmet/ww2/soviet
 	name = "soviet helmet"
@@ -2647,6 +2624,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "sovhelm_winter"
 	item_state = "sovhelm_winter"
 	worn_state = "sovhelm_winter"
+
+/obj/item/clothing/head/helmet/ww2/m33
+	name = "M33 Helmet"
+	desc = "The Elmetto Mod. 33 is a steel combat helmet designed in the 1930s in Italy. While not as good as the German Stahlhelm, the M33 was seen as a successful design, since it offered three times the resistance of the Adrian, and was relatively comfortable."
+	icon_state = "m33_helm"
+	item_state = "m33_helm"
+	worn_state = "m33_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	weight = 1.2
+	armor = list(melee = 35, arrow = 25, gun = 9, energy = 15, bomb = 35, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww2/usm1
 	name = "M1 Helmet"

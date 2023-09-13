@@ -614,6 +614,19 @@
 	unique_door_name = "German locked"
 #undef DE_CODE_OFF
 
+#define IT_CODE 995 * 24
+/datum/keyslot/italian
+	code = IT_CODE
+
+/obj/item/weapon/key/italian
+	code = IT_CODE
+	name = "Italian key"
+
+/obj/structure/simple_door/key_door/italian
+	keyslot_type = /datum/keyslot/italian
+	unique_door_name = "Italian locked"
+#undef IT_CODE
+
 #define VC_CODE 995 * 8
 /datum/keyslot/vietnamese
 	code = VC_CODE

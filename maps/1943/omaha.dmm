@@ -700,7 +700,7 @@
 "nD" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "nE" = (/obj/structure/barricade/tires,/obj/structure/barricade,/turf/floor/plating/road,/area/caribbean/forest)
 "nF" = (/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/plating/road,/area/caribbean/forest)
-"nG" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/storage/ammo_can/german_mg,/turf/floor/plating/road,/area/caribbean/forest)
+"nG" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/item/weapon/storage/ammo_can/mg34belt,/turf/floor/plating/road,/area/caribbean/forest)
 "nH" = (/obj/structure/barricade/wood_pole,/obj/structure/barbwire,/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/road,/area/caribbean/forest)
 "nI" = (/obj/structure/barricade,/obj/structure/barricade/horizontal,/turf/floor/plating/road,/area/caribbean/forest)
 "nJ" = (/obj/structure/barricade,/obj/structure/barricade/horizontal,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)

@@ -130,7 +130,7 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/white(H), slot_head)
 		if (5)
@@ -276,7 +276,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/adrianm26medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/m26medic(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
