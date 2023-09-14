@@ -1,6 +1,3 @@
-#define CELLRATE 0.002 // Multiplier for watts per tick <> cell storage (e.g., 0.02 means if there is a load of 1000 watts, 20 units will be taken from a cell per second)
-                       // It's a conversion constant. power_used*CELLRATE = charge_provided, or charge_used/CELLRATE = power_provided
-
 /obj/item/weapon/cell
 	name = "power cell"
 	desc = "A rechargable electrochemical power cell."
@@ -139,7 +136,7 @@
 	density = FALSE
 	var/obj/item/weapon/cell/charging = null
 	var/chargelevel = -1
-	var/active_power_usage = 60000 //This is the power drawn when charging, given in Watts (may need to be adjusted)
+	var/charge_rate = 20 //This is the power drawn when charging, given in Watts (may need to be adjusted)
 
 /obj/machinery/cell_charger/update_icon()
 	icon_state = "ccharger[charging ? 1 : 0]"
@@ -207,5 +204,5 @@
 		return
 
 	if (charging && !charging.fully_charged())
-		charging.give(active_power_usage*CELLRATE)
+		charging.give(charge_rate)
 		update_icon()
