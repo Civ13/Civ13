@@ -377,8 +377,9 @@
 				H << "You assign this key to the lock."
 				return
 			else
-				doorcode = K.code		//Leave it as before if its not a boat
-				H << "You assign this key to the lock."
+				if (src.w_front[6] || src.w_back[6] || src.w_left[6] || src.w_right[6])
+					doorcode = K.code		//Leave it as before if its not a boat
+					H << "You assign this key to the lock."
 				return
 	else
 		..()
