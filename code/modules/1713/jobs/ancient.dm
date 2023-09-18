@@ -215,9 +215,13 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
 	return TRUE
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////GREEK///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
 /datum/job/greek
 	faction = "Human"
 	is_ancient = TRUE
@@ -264,6 +268,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
 	return TRUE
+
 /datum/job/greek/squad_leader	//Greek - Phalanx
 	title = "Dimoerites"
 	en_meaning = "Greek Squad Leader"
@@ -307,14 +312,13 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
 	return TRUE
+
 /datum/job/greek/soldier
 	title = "Hoplites"
 	en_meaning = "Greek Spear Infantry"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGR"
-
-
 
 	min_positions = 12
 	max_positions = 200
