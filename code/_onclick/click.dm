@@ -184,15 +184,15 @@
 						can_fire = FALSE
 			if (can_fire)
 				if (istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
-					var/obj/item/weapon/gun/projectile/automatic/stationary/G = using_MG
+					var/obj/item/weapon/gun/projectile/automatic/stationary/G = G
 					if (G.full_auto)
 						var/datum/firemode/F = G.firemodes[G.sel_mode]
 						spawn(F.burst_delay)
-							using_MG.afterattack(A, src, FALSE, params)
+							G.afterattack(A, src, FALSE, params)
 					else
-						using_MG.afterattack(A, src, FALSE, params)
+						G.afterattack(A, src, FALSE, params)
 				else
-					using_MG.afterattack(A, src, FALSE, params)
+					G.afterattack(A, src, FALSE, params)
 
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
