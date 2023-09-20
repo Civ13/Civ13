@@ -249,7 +249,7 @@ var/message_spam_check_6 = FALSE
 
 	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && message_spam_check_1 == FALSE)
 		world << "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>"
-		message_spam_check_1 == FALSE
+		message_spam_check_1 == TRUE
 	else if (civilians_alive == 0 && message_spam_check_2 == FALSE)
 		world << "<big><span class = 'danger'>All the hostages have been killed! What a blood bath! The Police is now aggressively securing the building with more units!</danger></big>"
 		message_spam_check_2 = TRUE
