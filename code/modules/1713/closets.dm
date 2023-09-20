@@ -49,7 +49,9 @@
 	if(!ishuman(user))
 		return
 	if(istype(O, /obj/item/weapon/reagent_containers/glass/fire_extinguisher))
-		if(!has_extinguisher && opened && user.unEquip(O, src))
+		if(!has_extinguisher && opened)
+			user.remove_from_mob(O)
+			contents += O
 			has_extinguisher = O
 			to_chat(user, "<span class='notice'>You place [O] in [src].</span>")
 			playsound(src.loc, 'sound/effects/extin.ogg', 50, 0)
