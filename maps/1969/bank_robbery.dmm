@@ -7,6 +7,7 @@
 "aJ" = (/obj/structure/sign/traffic/crossing,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "bb" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/covers/divider_wall,/turf/floor/wood,/area/caribbean/british/land/inside)
 "bc" = (/turf/floor/plating/road/whiteline,/area/caribbean)
+"bl" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "bq" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean)
 "br" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/beach/water/swamp{name = "sewage"},/area/caribbean/no_mans_land/invisible_wall/two{location = 0; weather = 0})
 "bs" = (/turf/floor/beach/water/swamp{name = "sewage"},/area/caribbean/sewers{weather = 0; dynamic_lighting = 1})
@@ -42,7 +43,7 @@
 "fN" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"},/obj/structure/engine/internal/gasoline/premade/falcon,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/license_plate/us/centered/front,/obj/structure/vehicleparts/axis/car/falcon/police,/turf/floor/plating/road,/area/caribbean)
 "gd" = (/obj/structure/props/junk{icon_state = "mailbox"},/turf/floor/plating/road,/area/caribbean)
 "gj" = (/turf/floor/plating/steel,/area/caribbean/void/caves)
-"gn" = (/turf/floor/dirt,/area/caribbean/void/caves)
+"gn" = (/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "gA" = (/obj/structure/bed/chair/comfy/fancy_sofa/r{dir = 8},/turf/floor/carpet,/area/caribbean/british/land/inside)
 "gH" = (/obj/structure/closet/anchored,/obj/item/ammo_casing/shotgun/slug,/obj/item/ammo_casing/shotgun/slug,/obj/item/ammo_casing/shotgun/slug,/obj/item/ammo_casing/shotgun/slug,/obj/item/weapon/gun/projectile/shotgun/coachgun,/turf/floor/carpet,/area/caribbean/british/land/inside)
 "gS" = (/obj/structure/closet/safe,/obj/structure/lamp/lamp_big/alwayson,/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Vault Room"})
@@ -81,6 +82,7 @@
 "lk" = (/obj/structure/lamp/lamp_small/alwayson,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU2"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sewers{weather = 0; dynamic_lighting = 1})
 "lm" = (/obj/structure/window/classic/metal,/turf/floor/wood,/area/caribbean/british/land/inside)
 "lo" = (/obj/structure/table/carboot{dir = 4},/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 4},/obj/structure/vehicleparts/movement/reversed{dir = 4},/turf/floor/plating/road,/area/caribbean)
+"lr" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1},/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "lw" = (/obj/effect/decal/cleanable/blood,/obj/structure/sign/nosmoking{pixel_x = -30},/turf/floor/plating/white,/area/caribbean/british/land/inside)
 "lx" = (/obj/structure/vehicleparts/frame/car/falcon/rb{icon_state = "frame_steel_corner_rb"; dir = 1},/obj/structure/table/carboot{dir = 1},/obj/structure/vehicleparts/movement/reversed{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "lz" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
@@ -140,6 +142,7 @@
 "rt" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "sc" = (/obj/structure/railing/steel,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sewers{weather = 0; dynamic_lighting = 1})
 "sn" = (/obj/structure/sign/baily{pixel_x = -32},/turf/floor/wood,/area/caribbean/british/land/inside)
+"ss" = (/obj/structure/bed/padded,/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "sz" = (/obj/effect/floor_decal/industrial/warning{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "sJ" = (/obj/effect/floor_decal/industrial/warning{dir = 1; pixel_x = 8},/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean)
 "sM" = (/obj/structure/props/junk,/turf/floor/plating/road,/area/caribbean)
@@ -210,7 +213,9 @@
 "yS" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{dir = 8},/obj/structure/vehicleparts/axis/car/falcon{color = "#736953"; dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/turf/floor/plating/road,/area/caribbean/desert/escape)
 "ze" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 1},/obj/structure/vehicleparts/movement{dir = 1},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 1},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "zh" = (/obj/structure/railing/steel,/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/carpet,/area/caribbean/british/land/inside)
+"zk" = (/obj/structure/toilet,/obj/effect/decal/cleanable/urine,/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "zm" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU2"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sewers{weather = 0; dynamic_lighting = 1})
+"zq" = (/obj/effect/decal/cleanable/graffiti{pixel_x = 32; color = "#1a1a1a"; layer = 6},/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "zr" = (/obj/structure/closet/safe,/obj/item/stack/material/gold{max_amount = 1; value = 1000; weight = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/obj/item/stack/money/real/twenty{amount = 100; max_amount = 100},/turf/floor/plating/steel,/area/caribbean/british/land/inside/objective{name = "Vault Room"})
 "zs" = (/obj/structure/grille/chainlinkfence{dir = 8},/obj/effect/floor_decal/industrial/warning{dir = 8},/turf/floor/plating/road/whiteline,/area/caribbean/british/land/outside{name = "Evacuation Zone"})
 "zt" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/white,/area/caribbean/british/land/inside)
@@ -256,6 +261,7 @@
 "CT" = (/obj/structure/multiz/ladder/ww2/up/manhole/bank_robbery{icon_state = "pipe-t"; icon = 'icons/obj/machines/pipes.dmi'; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/sewers{weather = 0; dynamic_lighting = 1})
 "CZ" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/donut_box,/turf/floor/wood,/area/caribbean/british/land/inside)
 "Dh" = (/obj/effect/landmark{name = "JoinLateSwat"},/turf/floor/plating/road,/area/caribbean)
+"Dn" = (/obj/structure/toilet,/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "Dq" = (/obj/structure/sign/painting11{pixel_y = 32},/turf/floor/wood,/area/caribbean/british/land/inside)
 "Dv" = (/obj/covers/marble_wall/classic,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Dy" = (/obj/structure/table/modern/table,/obj/structure/computer/nopower{icon_state = "ibm_on"; pixel_y = 6},/turf/floor/wood,/area/caribbean/british/land/inside)
@@ -307,6 +313,7 @@
 "IK" = (/obj/item/tape/police{icon_state = "police_v_0"},/turf/floor/plating/road/yellowline{icon_state = "road_yellowline"; dir = 1},/area/caribbean)
 "IO" = (/turf/floor/plating/white,/area/caribbean/british/land/inside)
 "IV" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/british/land/inside)
+"Jd" = (/obj/covers/tiled_wall,/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "Jf" = (/obj/structure/vehicleparts/frame/car/falcon/lf{icon_state = "frame_steel_corner_lf"; dir = 8},/obj/structure/vehicleparts/movement{dir = 8},/obj/structure/engine/internal/gasoline/premade/falcon{dir = 8},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 4},/obj/structure/vehicleparts/axis/car/falcon/police{dir = 8},/turf/floor/plating/road/yellowline,/area/caribbean)
 "Jh" = (/obj/structure/grille/ironfence{desc = "Iron bars."; icon = 'icons/obj/structures.dmi'; icon_state = "bars"; name = "iron bars"},/obj/structure/window/classic/metal,/turf/floor/plating/steel,/area/caribbean/british/land/inside)
 "Jk" = (/obj/structure/sign/clock{pixel_y = 32},/turf/floor/carpet,/area/caribbean/british/land/inside)
@@ -379,6 +386,7 @@
 "So" = (/obj/structure/lamp/lamp_small/tank/blue/police{brightness_color = "#da0205"; dir = 4; name = "ambulance lights"},/obj/structure/bed/chair/drivers/car{dir = 1; icon_state = "carseat_driver_left"},/obj/structure/vehicleparts/frame/car/van/lfc{doorcode = 12443; override_color = "#7F0000"; dir = 1; w_left = list("none",1,1,0,0.1,1,1)},/obj/structure/emergency_lights/ambulance{dir = 1; icon_state = "modern_intercom"},/turf/floor/plating/road,/area/caribbean)
 "Sr" = (/obj/structure/railing/steel{icon_state = "railing0"; dir = 8},/turf/floor/carpet,/area/caribbean/british/land/inside)
 "Ss" = (/obj/item/tape/police{icon_state = "police_dir_0"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
+"Su" = (/obj/covers/jail/steeljail,/turf/floor/plating/concrete,/area/caribbean/void/caves)
 "Sx" = (/obj/structure/vehicleparts/frame/car/van/lf{dir = 1},/obj/structure/vehicleparts/axis/car/volle/ambulance{color = "#FFFFFF"; dir = 1},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1; icon_state = "license_plate_us"},/obj/structure/engine/internal/gasoline{dir = 1; enginesize = 7000},/obj/structure/vehicleparts/movement{dir = 1},/turf/floor/plating/road,/area/caribbean)
 "Sy" = (/obj/structure/sign/bank{pixel_x = 32},/obj/structure/redmailbox,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "SC" = (/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean/no_mans_land/invisible_wall/one)
@@ -450,62 +458,62 @@
 "ZP" = (/obj/effect/floor_decal/industrial/warning{dir = 1},/turf/floor/plating/road/whiteline{dir = 1},/area/caribbean)
 
 (1,1,1) = {"
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsGDGDGDGDGDGDGDGDGDGDGDGDGDTsTsTsTsTsTsTsTsTsNAPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxydNxNxNxNxNxNxydNxNxNxNxNxNxydChNxNxNxNxNxydNxNxNxNxNxChydNxNxNxNxNxNxNxydhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxNxNxNxNxhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdbspMNxezbsbsbsbsbsbsbsbsbsbsbspMNxbrbsbsbsbsbsbsbsbsbsbsbsvdNxezbsbsbsbsbsbsbshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdbspMGRezbsbsbsbsbsbsbsbsbsbsbspMGRbrbsbsbsbsbsbsbsbsbsbsbsvdGRezbsbsbsimimbsbshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxzmzmzmNxNxNxChNxNxNxNxNxNxNxNxNxhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxQwNxNxNxNxNxNxQwNxNxNxNxNxNxQwChNxNxNxbGNxlkzmzmNxNxNxChQwNxNxNxNxscscNxQwhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsGDGDGDGDGDGDGDGDGDGDGDGDGDTsTsTsTsNxbsbsNxTsNAPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdTsNxbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsNxTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsUNbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsNxTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsjejeTsTshdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKpnCRqrQXyxLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKiFiFiFiFiFLxLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaOVOVgjPmuliFiFzZqNiFiFaBLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaoGOVgjgjEniFiFzZMRiFiFXZLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaOVOVgjBzuliFiFMRzZiFiFwwLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaiFiFiFiFiFiFzrLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKgSNZaBDVZuLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
-yOPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfgn
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsGDGDGDGDGDGDGDGDGDGDGDGDGDTsTsTsTsTsTsTsTsTsNAPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxydNxNxNxNxNxNxydNxNxNxNxNxNxydChNxNxNxNxNxydNxNxNxNxNxChydNxNxNxNxNxNxNxydhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxNxNxNxNxhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdbspMNxezbsbsbsbsbsbsbsbsbsbsbspMNxbrbsbsbsbsbsbsbsbsbsbsbsvdNxezbsbsbsbsbsbsbshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdbspMGRezbsbsbsbsbsbsbsbsbsbsbspMGRbrbsbsbsbsbsbsbsbsbsbsbsvdGRezbsbsbsimimbsbshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxNxChNxNxNxNxNxzmzmzmNxNxNxChNxNxNxNxNxNxNxNxNxhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdNxNxQwNxNxNxNxNxNxQwNxNxNxNxNxNxQwChNxNxNxbGNxlkzmzmNxNxNxChQwNxNxNxNxscscNxQwhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsTsGDGDGDGDGDGDGDGDGDGDGDGDGDTsTsTsTsNxbsbsNxTsNAPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdhdTsNxbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsNxTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsUNbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsNxTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsNxbsbsCTTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdTsTsjejeTsTshdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKpnCRqrQXyxLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKiFiFiFiFiFLxLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaOVOVgjPmuliFiFzZqNiFiFaBLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaoGOVgjgjEniFiFzZMRiFiFXZLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaOVOVgjBzuliFiFMRzZiFiFwwLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaiFiFiFiFiFiFzrLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaoKgSNZaBDVZuLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfLaLaLaLaLaLaLaLaLaLaLaPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPf
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhd
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdhdhdhdhdhdhdhd
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdJdJdJdJdJdJdJd
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdDnlrssJdzklrss
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdgngnzqJdgngngn
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdgngngnJdgngngn
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdSuSuSuJdSuSuSu
+PfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdgngngnblgngngn
+yOPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfPfhdhdgngngngngngngn
 "}
 (1,1,2) = {"
 LnLnLnSsXMjAXMXMXMXMXMXMXMkWXAWdWdWdWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaWaRvRvWaWaWaWaWaWaWaWaWaWaWaWaWaWa
