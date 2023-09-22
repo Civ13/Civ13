@@ -226,9 +226,10 @@
 							H.update_icons()
 							WWalert(H,"You've been arrested. You may respawn (if possible) in 2 minutes.", "Arrest")
 							spawn(1200)
-								WWalert(H,"You may now respawn (if possible).", "Arrest")
-								H.death()
-								qdel(H)
+								if (H.stat != DEAD)
+									WWalert(H,"You may now respawn (if possible).", "Arrest")
+									H.death()
+									qdel(H)
 	spawn(300)
 		civ_collector()
 
