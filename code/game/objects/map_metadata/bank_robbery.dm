@@ -236,9 +236,9 @@
 /obj/map_metadata/bank_robbery/proc/civ_counter()
 	var/count = 0
 	for (var/mob/living/simple_animal/civilian/HO in world)
-		if (HO.stat == DEAD)
+		if (HO.stat != DEAD)
 			count++
-	civilians_alive = 12 - count
+	civilians_alive = count
 	total_killed = civilians_killed["Robbers"] + civilians_killed["Police"]
 	spawn(100)
 		civ_counter()
