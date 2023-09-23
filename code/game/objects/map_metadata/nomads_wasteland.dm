@@ -128,8 +128,10 @@
 	hasnukes = FALSE
 	is_zombie = TRUE
 	lobby_icon = "icons/lobby/wasteland2.png"
-	mission_start_message = "<big>Something has gone terribly wrong. Monsters roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
+	songs = list(
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = "sound/music/whytheyhidetheirbodies.ogg",)
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
