@@ -8,6 +8,7 @@
 	density = TRUE
 	var/health = 100
 	var/maxhealth = 100
+	var/can_damage = TRUE
 	var/material/material
 	var/material_name = "wood"
 	not_movable = TRUE
@@ -66,23 +67,23 @@
 			return //hitting things with the wrong type of stack usually doesn't produce messages, and probably doesn't need to.
 		if (health < maxhealth)
 			if (D.amount < 1)
-				user << "<span class='warning'>You need one sheet of [material.display_name] to repair \the [src].</span>"
+				user << SPAN_WARNING("You need one sheet of [material.display_name] to repair \the [src].")
 				return
-			visible_message("<span class='notice'>[user] begins to repair \the [src].</span>")
+			visible_message(SPAN_NOTICE("[user] begins to repair \the [src]."))
 			if (do_after(user,8 SECONDS,src) && health < maxhealth)
 				if (D.use(1))
 					health = maxhealth
-					visible_message("<span class='notice'>[user] repairs \the [src].</span>")
+					visible_message(SPAN_NOTICE("[user] repairs \the [src]."))
 				return
 		return
 	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
+		user.visible_message(
+			SPAN_DANGER("[user] starts deploying \the [W.name]."),
+			SPAN_NOTICE("You start deploying \the [W.name]."))
 		if (do_after(user, 8 SECONDS, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			user.visible_message(
+				SPAN_DANGER("[user] has deployed \the [W.name]!"),
+				SPAN_DANGER("You have deployed \the [W.name]!"))
 			var/obj/item/weapon/siegeladder/ANCH = W
 			user.remove_from_mob(ANCH)
 			ANCH.loc = src.loc
@@ -91,35 +92,38 @@
 			ANCH.deployed = TRUE
 			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir
-			return
-	else
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if (istype(W, /obj/item/weapon/poster/religious))
-			user << "You start placing the [W] on the [src]..."
-			if (do_after(user, 7 SECONDS, src))
-				visible_message("[user] places the [W] on the [src].")
-				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
-				var/obj/item/weapon/poster/religious/P = W
-				RP.religion = P.religion
-				RP.symbol = P.symbol
-				RP.color1 = P.color1
-				RP.color2 = P.color2
-				user.drop_from_inventory(W)
-				qdel(W)
-				return
-		if (istype(W, /obj/item/weapon/poster/faction))
-			user << "You start placing the [W] on the [src]..."
-			if (do_after(user, 7 SECONDS, src))
-				visible_message("[user] places the [W] on the [src].")
-				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
-				var/obj/item/weapon/poster/faction/P = W
-				RP.faction = P.faction
-				RP.bstyle = P.bstyle
-				RP.color1 = P.color1
-				RP.color2 = P.color2
-				user.drop_from_inventory(W)
-				qdel(W)
-				return
+		else
+			user.visible_message(
+				SPAN_DANGER("[user] stops deploying \the [W.name]."),
+				SPAN_DANGER("You stop deploying \the [W.name]."))
+		return
+	if (istype(W, /obj/item/weapon/poster/religious))
+		user << SPAN_NOTICE("You start placing the [W] on \the [src]...")
+		if (do_after(user, 7 SECONDS, src))
+			visible_message("[user] places the [W] on \the [src].")
+			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+			var/obj/item/weapon/poster/religious/P = W
+			RP.religion = P.religion
+			RP.symbol = P.symbol
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.remove_from_mob(W)
+			qdel(W)
+		return
+	if (istype(W, /obj/item/weapon/poster/faction))
+		user << SPAN_NOTICE("You start placing the [W] on \the [src]...")
+		if (do_after(user, 7 SECONDS, src))
+			visible_message("[user] places \the [W] on the [src].")
+			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+			var/obj/item/weapon/poster/faction/P = W
+			RP.faction = P.faction
+			RP.bstyle = P.bstyle
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.remove_from_mob(W)
+			qdel(W)
+		return
+	if (can_damage)
 		switch(W.damtype)
 			if ("fire")
 				health -= W.force * TRUE
@@ -127,16 +131,17 @@
 				health -= W.force * 0.75
 
 		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
-
 		user.do_attack_animation(src)
-
 		try_destroy()
-
-		..()
+	else
+		if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+			user << "You uselessly hit the wall!"
+		return
+	..()
 
 /obj/structure/barricade/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The barricade is smashed apart!</span>")
+		visible_message(SPAN_DANGER("The barricade is smashed apart!"))
 		dismantle()
 		qdel(src)
 		return
@@ -148,19 +153,19 @@
 /obj/structure/barricade/ex_act(severity)
 	switch(severity)
 		if (1.0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			dismantle()
 			return
 		if (2.0)
 			health -= (200 + round(maxhealth * 0.30))
 			if (health <= 0)
-				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+				visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 				dismantle()
 			return
 		if (3.0)
 			health -= (100 + round(maxhealth * 0.10))
 			if (health <= 0)
-				visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+				visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 				dismantle()
 			return
 /* the only barricades still in the code are wood barricades, which SHOULD
@@ -178,7 +183,7 @@
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage/3
-	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
+	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
 	try_destroy()
 
 /obj/structure/barricade/horizontal
@@ -229,6 +234,7 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 90
+	can_damage = FALSE
 
 /obj/structure/barricade/sandstone_v
 	name = "sandstone wall"
@@ -240,13 +246,7 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 90
-
-/obj/structure/barricade/sandstone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/sandstone_h/crenelated
 	name = "crenelated sandstone wall"
@@ -258,13 +258,7 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
-
-/obj/structure/barricade/sandstone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
@@ -276,13 +270,7 @@
 	material = "stone"
 	material_name = "stone"
 	protection_chance = 75
-
-/obj/structure/barricade/sandstone_v/crenelated/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/sandstone_h/New()
 	..()
@@ -329,7 +317,7 @@
 		if (3.0)
 			health -= 50
 	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
 
@@ -342,7 +330,7 @@
 		if (3.0)
 			health -= 50
 	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
 
@@ -355,7 +343,7 @@
 		if (3.0)
 			health -= 50
 	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
 
@@ -368,7 +356,7 @@
 		if (3.0)
 			health -= 50
 	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
 /obj/structure/barricade/antitank
@@ -427,13 +415,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
-
-/obj/structure/barricade/stone_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/stone_v
 	name = "stone wall"
@@ -445,13 +427,7 @@
 	maxhealth = 300
 	material_name = "stone"
 	protection_chance = 90
-
-/obj/structure/barricade/stone_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/stone_h/crenelated
 	name = "crenelated stone wall"
@@ -516,7 +492,7 @@
 		if (3.0)
 			health -= 50
 	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
 
@@ -530,7 +506,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -546,7 +522,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -562,7 +538,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -579,13 +555,8 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+	can_damage = FALSE
 
-/obj/structure/barricade/jap_h/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 /obj/structure/barricade/jap_h/New()
 	..()
 	icon_state = "jap_wall_h"
@@ -603,7 +574,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -619,13 +590,8 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+	can_damage = FALSE
 
-/obj/structure/barricade/jap_h_l/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 /obj/structure/barricade/jap_h_l/New()
 	..()
 	icon_state = "jap_wall_h_l"
@@ -643,7 +609,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -659,13 +625,8 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+	can_damage = FALSE
 
-/obj/structure/barricade/jap_h_r/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 /obj/structure/barricade/jap_h_r/New()
 	..()
 	icon_state = "jap_wall_h_r"
@@ -683,7 +644,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -699,13 +660,8 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+	can_damage = FALSE
 
-/obj/structure/barricade/jap_v/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 /obj/structure/barricade/jap_v/New()
 	..()
 	icon_state = "jap_wall_v"
@@ -723,7 +679,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -739,13 +695,8 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
+	can_damage = FALSE
 
-/obj/structure/barricade/jap_v_t/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 /obj/structure/barricade/jap_v_t/New()
 	..()
 	icon_state = "jap_wall_v_t"
@@ -763,7 +714,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -779,13 +730,7 @@
 	maxhealth = 2709
 	material_name = "stone"
 	protection_chance = 100
-
-/obj/structure/barricade/jap_v_b/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
+	can_damage = FALSE
 
 /obj/structure/barricade/jap_v_b/New()
 	..()
@@ -804,7 +749,7 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
@@ -961,6 +906,7 @@
 	protection_chance = 100
 	var/adjusts = TRUE
 	applies_material_colour = FALSE
+	can_damage = FALSE
 
 /obj/structure/barricade/jap/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
 	if (!adjusts)
@@ -1008,18 +954,11 @@
 			if (3.0)
 				health -= 50
 		if (health <= 0)
-			visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 			qdel(src)
 			return
 	else
 		return
-
-/obj/structure/barricade/jap/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-		return
-	else
-		..()
 
 /obj/structure/barricade/jap/tall
 	name = "tall shingled stone wall"
@@ -1034,3 +973,4 @@
 	protection_chance = 100
 	adjusts = TRUE
 	layer = MOB_LAYER + 0.1
+	can_damage = FALSE

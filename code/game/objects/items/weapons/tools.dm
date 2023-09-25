@@ -341,13 +341,31 @@
 	icon_state = "siege_ladder"
 	var/depicon = "siege_ladder_dep"
 	flags = FALSE
-	force = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_WEAK
 	w_class = ITEM_SIZE_LARGE
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	nothrow = TRUE
 	flammable = TRUE
 	var/deployed = FALSE
+
+/obj/item/weapon/siegeladder/attack_hand(mob/user as mob)
+	if (deployed)
+		user.visible_message(
+			SPAN_DANGER("[user] starts removing \the [src]!"),
+			SPAN_DANGER("You start removing \the [src]!"))
+		if (do_after(user, 8 SECONDS, src))
+			user.visible_message(
+				SPAN_DANGER("[user] has removed \the [src]!"),
+				SPAN_DANGER("You have removed \the [src]!"))
+			anchored = FALSE
+			deployed = FALSE
+			icon_state = initial(icon_state)
+			for (var/obj/structure/barricade/ST in get_turf(src))
+				ST.climbable = FALSE
+			user.put_in_any_hand_if_possible(src, prioritize_active_hand = TRUE)
+	else
+		..()
 
 /obj/item/weapon/siegeladder/metal
 	name = "ladder"
@@ -363,23 +381,6 @@
 	icon_state = "grapplehook"
 	depicon = "grapplehook_dep"
 	flammable = FALSE
-
-/obj/item/weapon/siegeladder/attack_hand(mob/user as mob)
-	if (deployed)
-		user.visible_message(
-			"<span class='danger'>\The [user] starts removing \the [src]!</span>",
-			"<span class='danger'>You start removing \the [src]!</span>")
-		if (do_after(user, 8 SECONDS, src))
-			user.visible_message(
-				"<span class='danger'>\The [user] has removed \the [src]!</span>",
-				"<span class='danger'>You have removed \the [src]!</span>")
-			anchored = FALSE
-			deployed = FALSE
-			icon_state = initial(icon_state)
-			for (var/obj/structure/barricade/ST in src.loc)
-				ST.climbable = FALSE
-	else
-		..()
 
 /obj/item/weapon/fishing
 	name = "fishing pole"
