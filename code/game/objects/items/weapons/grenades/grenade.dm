@@ -590,6 +590,7 @@
 	desc = "An impact grenade that explodes when hitting the ground after being thrown."
 	icon_state = "oto35"
 	throw_range = 12
+	secondary_action = FALSE
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
 	if (!active)

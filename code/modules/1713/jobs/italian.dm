@@ -113,7 +113,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/italian(H), slot_w_uniform)
 
 //head
-	if (prob(65))
+	if (prob(95))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/m33(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -174,7 +174,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/italian(H), slot_w_uniform)
 
 //head
-	if (prob(80))
+	if (prob(95))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/m33(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform

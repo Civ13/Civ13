@@ -833,7 +833,7 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
-obj/item/clothing/under/ww2/japuni_tanker
+/obj/item/clothing/under/ww2/japuni_tanker
 	name = "japanese tanker uniform"
 	desc = "A imperial japanese army uniform, this one bears the rank of a tanker."
 	icon_state = "japtanker"
@@ -847,7 +847,7 @@ obj/item/clothing/under/ww2/japuni_tanker
 	item_state = "japbandana"
 	worn_state = "japbandana"
 
-obj/item/clothing/accessory/harness
+/obj/item/clothing/accessory/harness
 	name = "japanese pilot harness"
 	desc = "a harness made to strap someone to their plane."
 	icon = 'icons/obj/clothing/ties.dmi'
@@ -894,7 +894,7 @@ obj/item/clothing/accessory/harness
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 100
 
-obj/item/clothing/head/ww2/jap_pilotcap
+/obj/item/clothing/head/ww2/jap_pilotcap
 	name = "japanese pilot cap"
 	desc = "A cap worn by japanese pilots."
 	icon_state = "jappilotcap"
@@ -902,7 +902,7 @@ obj/item/clothing/head/ww2/jap_pilotcap
 	worn_state = "jappilotcap"
 	flags = CONDUCT
 
-obj/item/clothing/head/ww2/jap_mp
+/obj/item/clothing/head/ww2/jap_mp
 	name = "Kenpeitai cap"
 	desc = "A cap worn by japanese Kenpeitai."
 	icon_state = "japcap_mp"
@@ -1697,6 +1697,33 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 		new/obj/item/weapon/grenade/smokebomb(hold)
 
 
+/obj/item/clothing/accessory/storage/webbing/ww1/greek
+	name = "greek webbing"
+	icon_state = "german_vest"
+	item_state = "german_vest"
+
+/obj/item/clothing/accessory/storage/webbing/ww1/greek/ww2
+	New()
+		..()
+		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/greek/ww2/c8x50
+	New()
+		..()
+		new/obj/item/ammo_magazine/c8x50(hold)
+		new/obj/item/ammo_magazine/c8x50(hold)
+		new/obj/item/ammo_magazine/c8x50(hold)
+		new/obj/item/ammo_magazine/c8x50(hold)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/greek/ww2/c8x50/assault
+	New()
+		..()
+		/obj/item/weapon/grenade/modern/f1
+
+/obj/item/clothing/accessory/storage/webbing/ww1/greek/ww2/c8x50/smoke
+	New()
+		..()
+		/obj/item/weapon/grenade/smokebomb
 
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"
@@ -2129,6 +2156,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "it_uni_officer"
 	item_state = "it_uni_officer"
 	worn_state = "it_uni_officer"
+
+/obj/item/clothing/under/ww2/greek
+	name = "greek uniform"
+	desc = "A Hellenic army uniform."
+	icon_state = "ww2_japuni"
+	item_state = "ww2_japuni"
+	worn_state = "ww2_japuni"
 
 /obj/item/clothing/under/ww2/civ1
 	name = "green civilian outfit"
@@ -2624,6 +2658,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "sovhelm_winter"
 	item_state = "sovhelm_winter"
 	worn_state = "sovhelm_winter"
+
+/obj/item/clothing/head/helmet/ww2/m1934
+	name = "Greek M1934/39 Helmet"
+	desc = "The M1934/39 helmet was the primary combat helmet used by the Greek Armed Forces during World War II. Greece purchased these helmets from Italy prior to the conflict as a replacement for their World War I-era Adrian helmets."
+	icon_state = "m33_helm"
+	item_state = "m33_helm"
+	worn_state = "m33_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	weight = 1.0
+	armor = list(melee = 35, arrow = 25, gun = 8, energy = 15, bomb = 33, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww2/m33
 	name = "M33 Helmet"

@@ -119,7 +119,7 @@
 	magazine_type = /obj/item/ammo_magazine/madsen
 	good_mags = list(/obj/item/ammo_magazine/madsen)
 	ammo_type = /obj/item/ammo_casing/a762x54
-	weight = 9.12
+	weight = 10.4
 	effectiveness_mod = 1.01
 	slot_flags = SLOT_SHOULDER
 
@@ -150,7 +150,7 @@
 	magazine_type = /obj/item/ammo_magazine/type96
 	good_mags = list(/obj/item/ammo_magazine/type96)
 	ammo_type = /obj/item/ammo_casing/a65x50
-	weight = 9.12
+	weight = 9.0
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
 	effectiveness_mod = 1.13
@@ -171,7 +171,7 @@
 	good_mags = list(/obj/item/ammo_magazine/dp)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	slot_flags = SLOT_SHOULDER
-	weight = 9.12
+	weight = 10
 	effectiveness_mod = 1.05
 	bad_magazine_types = list(/obj/item/ammo_magazine/maxim)
 
@@ -187,7 +187,7 @@
 	magazine_type = /obj/item/ammo_magazine/bar
 	good_mags = list(/obj/item/ammo_magazine/bar)
 	ammo_type = /obj/item/ammo_casing/a3006/weak
-	weight = 9.12
+	weight = 8.8
 	effectiveness_mod = 1.02
 	firemodes = list(
 		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
@@ -208,7 +208,7 @@
 	magazine_type = /obj/item/ammo_magazine/browning
 	good_mags = list(/obj/item/ammo_magazine/browning)
 	ammo_type = /obj/item/ammo_casing/a3006
-	weight = 12.50 //heavy piece of shit
+	weight = 15 //heavy piece of shit
 	effectiveness_mod = 1.01
 /obj/item/weapon/gun/projectile/automatic/browning_lmg/update_icon()
 	icon_state = "browlmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
@@ -291,6 +291,7 @@
 	max_shells = 20
 	caliber = "a65x52"
 	weight = 10.6
+	equiptimer = 20
 	slot_flags = SLOT_SHOULDER
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/breda30
@@ -301,7 +302,7 @@
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound 		= 'sound/weapons/guns/fire/Type92.ogg'
 	effectiveness_mod = 1.0
-	load_delay = 2.5 SECONDS
+	load_delay = 1.5 SECONDS
 	firemodes = list(
 		list(name = "full auto", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.7, 0.8, 1.0, 1.2, 1.4), recoil = 0),)
 	var/cover_open = FALSE
@@ -315,7 +316,7 @@
 	return ..()
 
 /obj/item/weapon/gun/projectile/automatic/breda30/proc/toggle_cover(mob/user)
-	if (do_after(user, 15, src, can_move = TRUE))
+	if (do_after(user, 12, src, can_move = TRUE))
 		cover_open ? playsound(loc, cover_close_sound, 100, TRUE) : playsound(loc, cover_open_sound, 100, TRUE)
 		cover_open = !cover_open
 		user << SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s magazine latch.")

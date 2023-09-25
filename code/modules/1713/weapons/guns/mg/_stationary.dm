@@ -58,6 +58,19 @@
 			if (DR in src.loc.contents)
 				user << SPAN_NOTICE("There is a seat in the way.")
 				return
+		if (user.loc == src.loc)
+			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
+				if (!map || !map.check_caribbean_block(user, loc))
+					if (do_after(user, 5, src))
+						user.use_MG(src)
+						usedby(user, src)
+						update_layer()
+						started_using(user)
+						if (user.loc != loc)
+							user.use_MG(null)
+						return
+			else
+				user.show_message(SPAN_WARNING("You need both hands to use a machinegun."))
 		if (user.loc == T)
 			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
 				if (!map || !map.check_caribbean_block(user, loc))
@@ -68,8 +81,9 @@
 						started_using(user)
 						if (user.loc != loc)
 							user.use_MG(null)
+						return
 			else
-				user.show_message(SPAN_WARNING(">You need both hands to use a machinegun."))
+				user.show_message(SPAN_WARNING("You need both hands to use a machinegun."))
 		else
 			user.show_message(SPAN_WARNING("You're too far from the handles."))
 
@@ -107,7 +121,7 @@
 	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/rotate_to(mob/user, atom/A)
-	user.show_message(SPAN_WARNING("You can't turn the [name] there."))
+	user.show_message(SPAN_WARNING("You can't turn \the [name] there."))
 	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_layer()

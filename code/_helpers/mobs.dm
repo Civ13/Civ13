@@ -639,6 +639,23 @@ Proc for attack log creation, because really why not
 
 	return japanese
 
+/proc/getgreekmobs(var/alive = FALSE)
+	var/list/greek = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/greek))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		greek += H
+
+	return greek
+
 /proc/getrussianmobs(var/alive = FALSE)
 	var/list/russian = list()
 	for (var/mob/living/human/H in mob_list)
@@ -830,6 +847,8 @@ Proc for attack log creation, because really why not
 			mobs = getitalianmobs(0)
 		if (JAPANESE)
 			mobs = getjapanesemobs(0)
+		if (GREEK)
+			mobs = getgreekmobs(0)
 		if (RUSSIAN)
 			mobs = getrussianmobs(0)
 		if (CHECHEN)
