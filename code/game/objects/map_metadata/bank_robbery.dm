@@ -214,16 +214,31 @@
 					if (H.restrained())
 						arrested_criminals++
 						spawn(10)
-							H.ghostize()
-							qdel(H)
-							WWalert(H,"You've been arrested.", "Arrest")
+							if (prob(50))
+								H.forceMove(locate(65,6,1))
+							else
+								H.forceMove(locate(69,6,1))
+							for (var/obj/item/I in H.contents)
+								if (!istype(I,/obj/item/weapon/handcuffs) && !istype(I,/obj/item/organ))
+									qdel(I)
+							H.equip_to_slot_or_del(new /obj/item/clothing/under/prisoner(H), slot_w_uniform)
+							H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+							H.update_icons()
+							WWalert(H,"You've been arrested. You may respawn (if possible) in 2 minutes.", "Arrest")
+							spawn(1200)
+								if (H.stat != DEAD)
+									WWalert(H,"You may now respawn (if possible).", "Arrest")
+									H.death()
+									qdel(H)
 	spawn(300)
 		civ_collector()
 
 /obj/map_metadata/bank_robbery/proc/civ_counter()
-	for (var/mob/living/simple_animal/hostage/HO in world)
+	var/count = 0
+	for (var/mob/living/simple_animal/civilian/HO in world)
 		if (HO.stat != DEAD)
-			civilians_alive++
+			count++
+	civilians_alive = count
 	total_killed = civilians_killed["Robbers"] + civilians_killed["Police"]
 	spawn(100)
 		civ_counter()
@@ -235,15 +250,37 @@
 		world << "<big>Dead hostages: [total_killed] </big>"
 		civ_status()
 
+//Shitty temporary solution, to be refactored if possible
+var/message_spam_check_1 = FALSE
+var/message_spam_check_2 = FALSE
+var/message_spam_check_3 = FALSE
+var/message_spam_check_4 = FALSE
+var/message_spam_check_5 = FALSE
+var/message_spam_check_6 = FALSE
+
 /obj/map_metadata/bank_robbery/proc/round_status()
-	var/spamcheck = FALSE
-	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && spamcheck == FALSE)
+
+	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && message_spam_check_1 == FALSE)
 		world << "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>"
-		spamcheck = TRUE
-	else if (civilians_alive == 0 && spamcheck == FALSE)
+		message_spam_check_1 = TRUE
+	else if (civilians_alive == 0 && message_spam_check_2 == FALSE)
 		world << "<big><span class = 'danger'>All the hostages have been killed! What a blood bath! The Police is now aggressively securing the building with more units!</danger></big>"
-		spamcheck = TRUE
-	round_status()
+		message_spam_check_2 = TRUE
+	if (civilians_killed["Robbers"] == kill_treshold-1 && message_spam_check_3 == FALSE)
+		world << "<big><font size=3><span class = 'warning'>At least [kill_treshold-1] additional civilians have been killed: the situation is critical!</span></font></big>"
+		message_spam_check_3 = TRUE
+	if ((civilians_killed["Robbers"] >= kill_treshold) && message_spam_check_4 == FALSE)
+		world << "<big><span class = 'danger'>Too many civilians have been killed: Additional SWAT units are on the way!</span></big>"
+		message_spam_check_4 = TRUE
+
+	if (civilians_killed["Police"] == kill_treshold-1 && message_spam_check_5 == FALSE)
+		for(var/mob/living/human/H in player_list)
+			if (H.faction_text == "CIVILIAN" && H.stat != DEAD)
+				H << "<big><span class = 'danger'>We're making too much civilian casualties: the situation is critical!</span></big>"
+		message_spam_check_5 = TRUE
+	if ((civilians_killed["Police"] >= kill_treshold) && message_spam_check_6 == FALSE)
+		world << "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>"
+		message_spam_check_6 = TRUE
 
 /obj/map_metadata/bank_robbery/proc/supplies() //To be rebalanced
 	var/next_level_police = 0
@@ -252,30 +289,17 @@
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "robber drop")
 				var/turf/T = get_turf(D)
-				new /obj/item/weapon/grenade/coldwar/rgd5(T)
-				new /obj/item/weapon/grenade/coldwar/rgd5(T)
-				new /obj/item/weapon/grenade/coldwar/rgd5(T)
-				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(T)
-				new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(T)
-				new /obj/item/weapon/flame/lighter/random(T)
-				new /obj/item/weapon/flame/lighter/random(T)
-				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
-				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
-				new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/ammo_magazine/rpk74/drum(T)
-				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
-				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
-				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
-				new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
-				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
-				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
-				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
-				new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+				for (var/i=1; i <= 3; i++)
+					new /obj/item/weapon/grenade/coldwar/rgd5(T)
+					new /obj/item/weapon/gun/projectile/automatic/rpk74(T)
+					new /obj/item/ammo_magazine/rpk74/drum(T)
+					new /obj/item/ammo_magazine/rpk74/drum(T)
+					new /obj/item/weapon/flame/lighter/random(T)
+					new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(T)
+					new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+					new /obj/item/clothing/head/helmet/modern/sovietfacehelmet(T)
+					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
+					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 		next_level_robbers = 1
 		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)
@@ -283,12 +307,10 @@
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "police drop")
 				var/turf/T = get_turf(D)
-				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
-				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
-				new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+				for (var/i=1; i <= 3; i++)
+					new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(T)
+					new /obj/item/ammo_magazine/shellbox(T)
 				new /obj/item/ammo_magazine/shellbox/beanbag(T)
-				new /obj/item/ammo_magazine/shellbox(T)
-				new /obj/item/ammo_magazine/shellbox(T)
 				new /obj/item/ammo_magazine/shellbox/rubber(T)
 				new /obj/item/weapon/shield/balistic(T)
 				new /obj/item/weapon/shield/balistic(T)
@@ -299,10 +321,8 @@
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "police drop")
 				var/turf/T = get_turf(D)
-				new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
-				new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
-				new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
-				new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
+				for (var/i=1; i <= 4; i++)
+					new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
 		next_level_police = 2
 		return
 	spawn(10)

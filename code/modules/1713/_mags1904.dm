@@ -468,7 +468,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	desc = "a pouch of .455 Webley bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a455
-	caliber = "awebly455"
+	caliber = "a455"
 	max_ammo = 24
 	weight = 0.95
 	multiple_sprites = TRUE

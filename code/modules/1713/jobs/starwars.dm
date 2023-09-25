@@ -86,24 +86,33 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/civilian/starwars/rebel/technician
+/datum/job/civilian/starwars/rebel/radio_technician
 	title = "Rebel Radio Technician"
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateJP"
 
-	is_medic = FALSE
 	is_starwars = TRUE
 	is_rebel = TRUE
 	can_be_female = TRUE
+	uses_squads = TRUE
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/civilian/starwars/rebel/technician/equip(var/mob/living/human/H)
+/datum/job/civilian/starwars/rebel/radio_technician/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel/officer(H), slot_w_uniform)
+	//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+	//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest(H), slot_wear_suit)
+
+	//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
+
+	//gear
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest/officer(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1/spaceradio(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dl44(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
@@ -111,7 +120,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.s_tone = rand(-35,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel Forces Informed and Updated!")
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the Rebel forces informed and updated!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
