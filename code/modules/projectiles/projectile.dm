@@ -2,45 +2,45 @@
 	name = "projectile"
 	icon = 'icons/obj/projectiles.dmi'
 	icon_state = "bullet"
-	density = FALSE // we no longer use Bump() to detect collisions - Kachnov
-	anchored = TRUE //There's a reason this is here, Mport. God fucking damn it -Agouri. Find&Fix by Pete. The reason this is here is to stop the curving of emitter shots.
+	density = FALSE								// we no longer use Bump() to detect collisions - Kachnov
+	anchored = TRUE								// There's a reason this is here, Mport. God fucking damn it -Agouri. Find&Fix by Pete. The reason this is here is to stop the curving of emitter shots.
 	pass_flags = PASSTABLE
 	mouse_opacity = FALSE
 	value = 0
 	flags = CONDUCT
-	var/bumped = FALSE //Prevents it from hitting more than one guy at once
-	var/hitsound_wall = ""//"ricochet"
-	var/def_zone = ""	//Aiming at
-	var/mob/firer = null//Who shot it
+	var/bumped = FALSE							// Prevents it from hitting more than one guy at once
+	var/hitsound_wall = ""						// "ricochet"
+	var/def_zone = ""							// Aiming at
+	var/mob/firer = null						// Who shot it
 	var/firer_original_dir = null
-	var/obj/item/weapon/gun/firedfrom = null // gun which shot it
-	var/silenced = FALSE	//Attack message
+	var/obj/item/weapon/gun/firedfrom = null	// gun which shot it
+	var/silenced = FALSE						// Attack message
 	var/yo = null
 	var/xo = null
 	var/current = null
-	var/shot_from = "" // name of the object which shot us
-	var/atom/original = null // the target clicked (not necessarily where the projectile is headed). Should probably be renamed to 'target' or something.
-	var/turf/starting = null // the projectile's starting turf
-	var/list/permutated = list() // we've passed through these atoms, don't try to hit them again
+	var/shot_from = ""							// name of the object which shot us
+	var/atom/original							// the target clicked (not necessarily where the projectile is headed). Should probably be renamed to 'target' or something.
+	var/turf/starting							// the projectile's starting turf
+	var/list/permutated = list()				// we've passed through these atoms, don't try to hit them again
 
-	var/blockedhit = FALSE //If blocked by shield/armor/etc
+	var/blockedhit = FALSE						//If blocked by shield/armor/etc
 
 	var/p_x = 16
-	var/p_y = 16 // the pixel location of the tile that the player clicked. Default is the center
+	var/p_y = 16								// the pixel location of the tile that the player clicked. Default is the center
 
 	var/accuracy = 0
 	var/dispersion = 0.0
 
 	var/damage = 10
-	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
-	var/nodamage = FALSE //Determines if the projectile will skip any damage inflictions
-	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage and stun damage using stun_effect_act() to mobs it hits, and other damage will be ignored
-	var/check_armor = "gun" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
+	var/damage_type = BRUTE						// BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
+	var/nodamage = FALSE						// Determines if the projectile will skip any damage inflictions
+	var/taser_effect = FALSE					// If set then the projectile will apply it's agony damage and stun damage using stun_effect_act() to mobs it hits, and other damage will be ignored
+	var/check_armor = "gun"						// Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
 	var/projectile_type = /obj/item/projectile
-	var/penetrating = 0 //If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
+	var/penetrating = 0							// If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
 	var/gibs = FALSE
 	var/crushes = FALSE
-	var/kill_count = 35 //This will de-increment every process(). When == 0, it will delete the projectile.
+	var/kill_count = 35							// This will de-increment every process(). When == 0, it will delete the projectile.
 		//Effects
 	var/stun = FALSE
 	var/weaken = FALSE
@@ -51,19 +51,21 @@
 	var/drowsy = FALSE
 	var/agony = FALSE
 	var/poisonous = FALSE
-	var/embed = FALSE // whether or not the projectile can embed itself in the mob
+	var/embed = FALSE							// whether or not the projectile can embed itself in the mob
 
 	var/did_muzzle_effect = FALSE
 
-	// effect types to be used
-	var/muzzle_type = null
-	var/tracer_type = null
-	var/impact_type = null
+	var/ricochet_id = 0
 
-	var/datum/plot_vector/trajectory = null	// used to plot the path of the projectile
-	var/datum/vector_loc/location = null		// current location of the projectile in pixel space
-	var/matrix/effect_transform = null			// matrix to rotate and scale projectile effects - putting it here so it doesn't
-										//  have to be recreated multiple times
+	// effect types to be used
+	var/muzzle_type
+	var/tracer_type
+	var/impact_type
+
+	var/datum/plot_vector/trajectory	// used to plot the path of the projectile
+	var/datum/vector_loc/location		// current location of the projectile in pixel space
+	var/matrix/effect_transform			// matrix to rotate and scale projectile effects - putting it here so it doesn't
+										// have to be recreated multiple times
 
 	armor_penetration = 90
 
@@ -80,7 +82,7 @@
 
 	var/can_hit_in_trench = TRUE
 	var/turf/firer_loc = null
-	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
+	var/btype = "normal" 				// normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
 	should_save = 0
 	
@@ -197,9 +199,10 @@
 		qdel(src)
 		return FALSE
 
-	original = target
 	loc = curloc
 	starting = curloc
+
+	original = target
 
 	yo = targloc.y - curloc.y + y_offset
 	xo = targloc.x - curloc.x + x_offset
@@ -216,7 +219,7 @@
 	is_shrapnel = TRUE
 	name = "shrapnel"
 
-	var/turf/curloc = loc
+	var/turf/curloc = get_turf(src)
 	var/turf/targloc = get_turf(target)
 
 	if (!istype(targloc) || !istype(curloc))
@@ -234,10 +237,11 @@
 		qdel(src)
 		return FALSE
 
-	original = target
 	loc = curloc
-	starting = curloc
 	current = curloc
+
+	starting = curloc
+	original = target
 
 	yo = targloc.y - curloc.y
 	xo = targloc.x - curloc.x
@@ -276,13 +280,20 @@
 /obj/item/projectile/proc/redirect(var/new_x, var/new_y, var/atom/starting_loc, var/mob/new_firer=null)
 	var/turf/new_target = locate(new_x, new_y, z)
 
+	starting = starting_loc
 	original = new_target
-	if (new_firer)
-		firer = src
-		firer_loc = get_turf(src)
-		firer_original_dir = firer.dir
+	current = starting_loc
+	loc = starting_loc
 
-	setup_trajectory(starting_loc, new_target)
+	yo = new_target.y - starting_loc.y
+	xo = new_target.x - starting_loc.x
+
+	if (new_firer)
+		firer = get_turf(src)
+		firer_loc = get_turf(src)
+		firer_original_dir = get_dir(src.loc, new_target.loc)
+
+	setup_trajectory()
 
 //Called when the projectile intercepts a mob. Returns TRUE if the projectile hit the mob, FALSE if it missed and should keep flying.
 /obj/item/projectile/proc/attack_mob(var/mob/living/target_mob, var/distance, var/miss_modifier=0)
@@ -628,6 +639,19 @@
 										passthrough = FALSE
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
+	if (istype(T, /turf/wall))
+		var/turf/wall/W = T
+		if(W.material.resilience > 0)
+			var/ricochetchance = round(W.material.resilience)
+			var/turf/curloc = get_turf(src)
+			if((curloc.x == starting.x) || (curloc.y == starting.y))
+				ricochetchance = round(ricochetchance / 5)
+			else
+				ricochetchance = min(100, round(W.bullet_ricochet(src, 1) * ricochetchance))
+			if(prob(ricochetchance))
+				W.bullet_ricochet(src)
+				return PROJECTILE_CONTINUE // complete projectile permutation
+
 	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
 		if (check_penetrate(T))
 			passthrough = TRUE

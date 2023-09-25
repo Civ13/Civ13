@@ -63,33 +63,33 @@ var/list/name_to_material
 
 // Material definition and procs follow.
 /material
-	var/name							  // Unique name for use in indexing the list.
-	var/display_name					  // Prettier name for display.
+	var/name							  	// Unique name for use in indexing the list.
+	var/display_name					  	// Prettier name for display.
 	var/use_name
-	var/flags = FALSE						 // Various status modifiers.
+	var/flags = FALSE						// Various status modifiers.
 	var/sheet_singular_name = "sheet"
 	var/sheet_plural_name = "sheets"
 
 	// Shards/tables/structures
-	var/shard_type = SHARD_SHRAPNEL	   // Path of debris object.
-	var/shard_icon						// Related to above.
-	var/shard_can_repair = TRUE			  // Can shards be turned into sheets with a welder?
-	var/list/recipes					  // Holder for all recipes usable with a sheet of this material.
-	var/destruction_desc = "breaks apart" // Fancy string for barricades/tables/objects exploding.
+	var/shard_type = SHARD_SHRAPNEL	   		// Path of debris object.
+	var/shard_icon							// Related to above.
+	var/shard_can_repair = TRUE			  	// Can shards be turned into sheets with a welder?
+	var/list/recipes						// Holder for all recipes usable with a sheet of this material.
+	var/destruction_desc = "breaks apart"	// Fancy string for barricades/tables/objects exploding.
 
 	// Icons
-	var/icon_colour									  // Colour applied to products of this material.
-	var/icon_base = "metal"							  // Wall and table base icon tag. See header.
-	var/door_icon_base = "metal"						 // Door base icon tag. See header.
-	var/icon_reinf = "reinf_metal"					   // Overlay used
+	var/icon_colour							// Colour applied to products of this material.
+	var/icon_base = "metal"					// Wall and table base icon tag. See header.
+	var/door_icon_base = "metal"			// Door base icon tag. See header.
+	var/icon_reinf = "reinf_metal"			// Overlay used
 
 	// Attributes
-	var/cut_delay = FALSE			// Delay in ticks when cutting through this wall.
-	var/integrity = 150		  // General-use HP value for products.
-	var/opacity = TRUE			  // Is the material transparent? 0.5< makes transparent walls/doors.
-	var/explosion_resistance = 5 // Only used by walls currently.
-	//var/conductive = TRUE		   // Objects with this var add CONDUCTS to flags on spawn. NEVER USED!
-	var/list/composite_material  // If set, object matter var will be a list containing these values.
+	var/cut_delay = FALSE					// Delay in ticks when cutting through this wall.
+	var/integrity = 150						// General-use HP value for products.
+	var/opacity = TRUE						// Is the material transparent? 0.5< makes transparent walls/doors.
+	var/explosion_resistance = 5 			// Only used by walls currently.
+//	var/conductive = TRUE		 			// Objects with this var add CONDUCTS to flags on spawn. NEVER USED!
+	var/list/composite_material  			// If set, object matter var will be a list containing these values.
 
 	// Placeholder vars for the time being, todo properly integrate windows/light tiles/rods.
 	var/created_window
@@ -98,8 +98,9 @@ var/list/name_to_material
 //	var/list/window_options = list()
 
 	// Damage values.
-	var/hardness = 60			// Prob of wall destruction by hulk, used for edge damage in weapons.
-	var/weight = 20			  // Determines blunt damage/throwforce for weapons.
+	var/hardness = 60						// Prob of wall destruction by hulk, used for edge damage in weapons.
+	var/weight = 20			 				// Determines blunt damage/throwforce for weapons.
+	var/resilience = 1						// The higher this value is, the higher is the chance that bullets will ricochet from wall's surface. Don't set negative values.
 
 	// Noise when someone is faceplanted onto a table made of this material.
 	var/tableslam_noise = 'sound/weapons/tablehit1.ogg'
@@ -155,6 +156,7 @@ var/list/name_to_material
 /material/proc/build_windows(var/mob/living/user, var/obj/item/stack/used_stack)
 	return FALSE
 */
+
 // Weapons handle applying a divisor for this value locally.
 /material/proc/get_blunt_damage()
 	return weight //todo
@@ -340,6 +342,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/gold
 	integrity = 75
+	resilience = 1.5
 
 /material/copper
 	name = "copper"
@@ -351,6 +354,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/copper
 	integrity = 90
+	resilience = 0.8
 
 /material/plastic
 	name = "plastic"
@@ -361,6 +365,7 @@ var/list/name_to_material
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/plastic
 	integrity = 30
+	resilience = 0.3
 
 /material/tin
 	name = "tin"
@@ -372,6 +377,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/tin
 	integrity = 60
+	resilience = 0.6
 
 /material/bronze
 	name = "bronze"
@@ -383,6 +389,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/bronze
 	integrity = 150
+	resilience = 0.8
 
 /material/lead
 	name = "lead"
@@ -405,6 +412,7 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	stack_type = /obj/item/stack/material/silver
 	integrity = 100
+	resilience = 1.0
 
 /material/sandstone
 	name = "sandstone"
@@ -418,6 +426,7 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/sandstone
+	resilience = 0.9
 
 /material/stone
 	name = "stone"
@@ -431,6 +440,7 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 	stack_type = /obj/item/stack/material/stone
+	resilience = 1.2
 
 /material/concrete
 	name = "concrete"
@@ -518,6 +528,7 @@ var/list/name_to_material
 	hitsound = 'sound/weapons/genhit.ogg'
 	door_icon_base = "metal"
 	stack_type = /obj/item/stack/material/steel
+	resilience = 1.5
 
 /material/glass
 	name = "glass"
@@ -536,6 +547,7 @@ var/list/name_to_material
 //	window_options = list("One Direction" = 1, "Full Window" = 4)
 	created_window = /obj/structure/window/classic
 	rod_product = /obj/item/stack/material/glass/reinforced
+	resilience = 0
 
 /material/glass/proc/is_reinforced()
 	return (hardness > 35) //todo
@@ -552,6 +564,7 @@ var/list/name_to_material
 	hitsound = 'sound/weapons/smash.ogg'
 	stack_type = /obj/item/stack/material/iron
 	integrity = 250
+	resilience = 1.4
 
 /material/iron/indestructable
 	name = "indestructable"
@@ -576,6 +589,7 @@ var/list/name_to_material
 	sheet_plural_name = "planks"
 	hitsound = 'sound/effects/woodhit.ogg'
 	stack_type = /obj/item/stack/material/wood
+	resilience = 0.9
 
 /material/wood/hard
 	name = "hardwood"
@@ -584,7 +598,7 @@ var/list/name_to_material
 	icon_base = "wood"
 	icon_colour = null
 	weight = 13
-
+	resilience = 1.1
 
 /material/wood/soft
 	name = "softwood"
@@ -593,6 +607,22 @@ var/list/name_to_material
 	door_icon_base = "wood"
 	icon_colour = "#D2BA9C"
 	weight = 10
+	resilience = 0.6
+
+/material/wood/straw
+	name = "straw"
+	icon_colour = "#BCB9B4"
+	hardness = 35
+	integrity = 55
+//	icon_base = "straw"
+	resilience = 0
+
+/material/wood/log
+	name = "log"
+	hardness = 200
+	integrity = 175
+	door_icon_base = "rustic"
+	resilience = 1.0
 
 /material/bamboo
 	name = "bamboo"
@@ -611,25 +641,14 @@ var/list/name_to_material
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/bamboo
+	resilience = 0.6
 
 /material/clay
 	name = "clay"
 	icon_colour = "#734222"
 	hardness = 90
 	integrity = 60
-
-/material/wood/straw
-	name = "straw"
-	icon_colour = "#BCB9B4"
-	hardness = 35
-	integrity = 55
-//	icon_base = "straw"
-
-/material/wood/log
-	name = "log"
-	hardness = 200
-	integrity = 175
-	door_icon_base = "rustic"
+	resilience = 0.6
 
 /material/paper
 	name = "paper"
@@ -637,12 +656,14 @@ var/list/name_to_material
 	integrity = 35
 	door_icon_base = "shoji"
 	hitsound = 'sound/effects/cardboardpunch.ogg'
+	resilience = 0.0
 
 /material/cloth
 	name = "cloth"
 	hardness = 10
 	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
+	resilience = 0.0
 
 /material/rettedfabric
 	name = "rettedfabric"
@@ -652,6 +673,7 @@ var/list/name_to_material
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/rettedfabric
+	resilience = 0.0
 
 /material/rawkevlar
 	name = "rawkevlar"
@@ -661,6 +683,7 @@ var/list/name_to_material
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/rawkevlar
+	resilience = 0.0
 
 /material/preparedkevlar
 	name = "preparedkevlar"
@@ -670,6 +693,7 @@ var/list/name_to_material
 	sheet_singular_name = "bundle"
 	sheet_plural_name = "bundles"
 	stack_type = /obj/item/stack/material/preparedkevlar
+	resilience = 0.0
 
 /material/kevlar
 	name = "kevlar"
@@ -680,13 +704,14 @@ var/list/name_to_material
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/kevlar
+	resilience = 0.0
 
 /material/woolcloth
 	name = "woolcloth"
 	hardness = 10
 	door_icon_base = "wood"
 	flags = MATERIAL_PADDING
-
+	resilience = 0.0
 
 /material/rags
 	name = "rags"
@@ -695,6 +720,7 @@ var/list/name_to_material
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/rags
+	resilience = 0.0
 
 /material/electronics
 	name = "electronic"
@@ -704,6 +730,7 @@ var/list/name_to_material
 	sheet_singular_name = "circuit"
 	sheet_plural_name = "circuits"
 	stack_type = /obj/item/stack/material/electronics
+	resilience = 0.5
 
 //TODO PLACEHOLDERS:
 /material/leather
