@@ -149,8 +149,6 @@
 	open = TRUE
 
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
 	if (istype(W, /obj/item/weapon/siegeladder))
 		visible_message(
 			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
@@ -168,8 +166,9 @@
 			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir
 			return
-	else
-		..()
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You hit the wall uselessly!"//sucker
+	..()
 
 /obj/structure/gate/blast
 	name = "blast door"
@@ -249,12 +248,6 @@
 	anchored = TRUE
 	density = FALSE
 	open = TRUE
-
-/obj/structure/gate/sandstone/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
-	else
-		..()
 
 /obj/structure/gate/whiterun
 	name = "Whiterun gate"

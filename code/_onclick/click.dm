@@ -160,39 +160,37 @@
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
 	if (!W)
 		if (using_MG) //TO DO TODO: move to mg.dm
-			var/can_fire = FALSE
-			switch (using_MG.dir)
-				if (EAST)
-					if (A.x > using_MG.x)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (WEST)
-					if (A.x < using_MG.x)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (NORTH, NORTHEAST, NORTHWEST)
-					if (A.y > using_MG.y)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (SOUTH, SOUTHEAST, SOUTHWEST)
-					if (A.y < using_MG.y)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-			if (can_fire)
-				if (istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
-					var/obj/item/weapon/gun/projectile/automatic/stationary/G = using_MG
+			if (istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
+				var/obj/item/weapon/gun/projectile/automatic/stationary/G = using_MG
+				var/can_fire = FALSE
+				switch (G.dir)
+					if (EAST)
+						if (A.x > G.x)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (WEST)
+						if (A.x < G.x)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (NORTH, NORTHEAST, NORTHWEST)
+						if (A.y > G.y)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (SOUTH, SOUTHEAST, SOUTHWEST)
+						if (A.y < G.y)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+				if (can_fire)
 					if (G.full_auto)
 						var/datum/firemode/F = G.firemodes[G.sel_mode]
 						spawn(F.burst_delay)
-							using_MG.afterattack(A, src, FALSE, params)
+							G.afterattack(A, src, FALSE, params)
 					else
-						using_MG.afterattack(A, src, FALSE, params)
-				else
-					using_MG.afterattack(A, src, FALSE, params)
+						G.afterattack(A, src, FALSE, params)
 
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)

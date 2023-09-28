@@ -222,7 +222,7 @@
 			world << "<big><b>[a4_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a4_name]</b>: Nobody</big>"
-	
+
 	switch (a1_control)
 		if ("Dutch Royal Army")
 			faction1_supply_points += 20
@@ -388,8 +388,8 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 /obj/item/fob_spawnpoint
 	name = "FOB"
 	desc = "A heavy garrison. Used to spawn in reinforcements close to the frontline."
-	icon = 'icons/obj/junk.dmi'
-	icon_state = "hescobastion"
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "fob"
 	anchored = TRUE
 	flammable = FALSE
 	w_class = ITEM_SIZE_LARGE
@@ -431,6 +431,14 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 			health -= 200
 		if (3.0)
 			health -= 20
+	try_destroy()
+
+/obj/item/fob_spawnpoint/bullet_act(var/obj/item/projectile/proj)
+	health -= proj.damage/4
+	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	try_destroy()
+
+/obj/item/fob_spawnpoint/proc/try_destroy()
 	if (health <= 0)
 		visible_message(SPAN_DANGER("<big>\The [src] is blown apart!</big>"))
 		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
@@ -438,10 +446,20 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 			pickedfrom += pickedname
 		qdel(src)
 		return
+/obj/item/fob_spawnpoint/attackby(obj/item/W as obj, mob/user as mob)
+	switch(W.damtype)
+		if ("fire")
+			health -= W.force * TRUE
+		if ("brute")
+			health -= W.force * 0.75
+	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
 
 /obj/item/supply_crate
 	name = "supply crate"
-	desc = "A supply crate used to make FOBs. This is crate belongs to nobody"
+	desc = "A supply crate used to make FOBs. This crate belongs to nobody."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "supply_crate"
 	anchored = FALSE

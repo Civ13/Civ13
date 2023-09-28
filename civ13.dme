@@ -756,6 +756,7 @@
 #include "code\modules\1713\jobs\french.dm"
 #include "code\modules\1713\jobs\gangsters.dm"
 #include "code\modules\1713\jobs\german.dm"
+#include "code\modules\1713\jobs\greek.dm"
 #include "code\modules\1713\jobs\grozny.dm"
 #include "code\modules\1713\jobs\helpers.dm"
 #include "code\modules\1713\jobs\indians.dm"
@@ -1103,5 +1104,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\1013\karak.dmm"
 // END_INCLUDE
