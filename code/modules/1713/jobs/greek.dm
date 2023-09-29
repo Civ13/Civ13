@@ -1,6 +1,5 @@
 /datum/job/greek
 	faction = "Human"
-	is_ancient = TRUE
 
 /datum/job/greek/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_greek_name()
@@ -15,8 +14,9 @@
 	spawn_location = "JoinLateGR"
 
 	is_commander = TRUE
-
 	is_officer = TRUE
+
+	is_ancient = TRUE
 
 	min_positions = 1
 	max_positions = 1
@@ -53,6 +53,7 @@
 	spawn_location = "JoinLateGR"
 
 	is_officer = TRUE
+	is_ancient = TRUE
 
 	min_positions = 2
 	max_positions = 10
@@ -95,6 +96,8 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateGR"
+
+	is_ancient = TRUE
 
 	min_positions = 12
 	max_positions = 200
@@ -139,7 +142,7 @@
 
 	spawn_location = "JoinLateGR"
 
-
+	is_ancient = TRUE
 
 	min_positions = 8
 	max_positions = 100
