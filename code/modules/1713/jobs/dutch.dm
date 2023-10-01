@@ -572,7 +572,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -626,7 +626,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -680,7 +680,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -737,7 +737,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -789,7 +789,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -840,7 +840,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -890,7 +890,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -936,7 +936,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -983,7 +983,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
