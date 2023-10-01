@@ -1921,7 +1921,7 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
-//syria
+//Syria
 
 /obj/item/clothing/under/syrian_gov
 	name = "Syrian Army uniform"
@@ -2262,3 +2262,11 @@
 	icon_state = "black_beanie"
 	item_state = "black_beanie"
 	cold_protection = HEAD
+
+/obj/item/clothing/under/m93_dpm
+	name = "M93 DPM camo uniform"
+	desc = "A DPM variant camo uniform used by the Dutch Army."
+	icon_state = "dutch_dpm"
+	item_state = "dutch_dpm"
+	worn_state = "dutch_dpm"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
