@@ -678,7 +678,7 @@
 "YZ" = (/obj/structure/curtain/open/shower,/obj/structure/shower{icon_state = "shower"; dir = 1},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/two)
 "Za" = (/obj/structure/vehicleparts/frame/car/tigr/rb,/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/movement/armored/reversed,/turf/floor/plating/road,/area/caribbean)
 "Zb" = (/obj/structure/grille/metalsheetfence/red,/obj/structure/sign/logo/red,/turf/wall/iron,/area/caribbean/no_mans_land/capturable/four/outside)
-"Zg" = (/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/front{dir = 1},/obj/structure/vehicleparts/axis/car/mercedes,/obj/structure/engine/internal/diesel/premade/v6,/turf/floor/plating/road,/area/caribbean)
+"Zg" = (/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/license_plate/nl/front{dir = 1},/obj/structure/vehicleparts/axis/car/mercedes{color = "#45453b"},/obj/structure/engine/internal/diesel/premade/v6,/turf/floor/plating/road,/area/caribbean)
 "Zm" = (/obj/structure/lamp/lamp_big,/turf/floor/plating/tiled/darker,/area/caribbean/no_mans_land/capturable/two)
 "ZD" = (/obj/structure/truck{pixel_y = 12},/turf/floor/plating/road,/area/caribbean/no_mans_land/capturable/four/outside)
 "ZH" = (/turf/floor/wood,/area/caribbean/no_mans_land/capturable/two)
