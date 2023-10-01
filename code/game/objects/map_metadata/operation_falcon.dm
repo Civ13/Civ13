@@ -396,6 +396,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	opacity = FALSE
 	density = TRUE
 	health = 1000
+	layer = 4.0
 	var/faction_text = null
 	var/pickedfrom = null
 	var/pickedname = null
@@ -453,6 +454,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		if ("brute")
 			health -= W.force * 0.75
 	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(src)
 	try_destroy()
 	..()

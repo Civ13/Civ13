@@ -85,7 +85,7 @@
 					"Modern Fire Arms (1949-2021)" = 0,
 					"Fiction" = 0,
 					"Battle Royale" = 6,
-					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
+					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 20,
 					"PvE (Voyage & Cursed Island)" = 0,
 //					"MilSim (BETA TESTING)" = 20,
 				)
