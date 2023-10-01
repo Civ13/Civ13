@@ -30,7 +30,7 @@
 	projectile.loc = get_turf(user)
 	projectile.allow_spin = FALSE
 	projectile.throw_at(target, throw_distance, release_force, user)
-	projectile.dir = get_dir(src.loc, target.loc)
+	projectile.dir = get_dir(get_turf(src), get_turf(target))
 	projectile.icon_state = "[initial(projectile.icon_state)]_active"
 	return TRUE
 
@@ -215,7 +215,7 @@
 /obj/item/weapon/gun/launcher/grenade/standalone/consume_next_projectile()
 	if (cover_opened)
 		return
-	else if (chambered | !cover_opened)
+	else if (chambered || !cover_opened)
 		if (ishuman(src.loc))
 			chambered.dir = src.loc.dir
 		chambered.det_time = 15
