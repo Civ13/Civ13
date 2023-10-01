@@ -751,6 +751,14 @@
 			explosion(hit_atom, 1, 1, 2, 4)
 			radiation_pulse(hit_atom, 6, 20, 700, TRUE)
 			handle_vehicle_hit(hit_atom,firer)
+
+			for (var/turf/floor/T in circlerangeturfs(3, hit_atom))
+				ignite_turf(T, 8, 70)
+			for(var/mob/living/human/L in circlerangeturfs(40, hit_atom))
+				L.Weaken(3)
+				if (L.HUDtech.Find("flash"))
+					flick("e_flash", L.HUDtech["flash"])
+			world << SPAN_DANGER("A nuclear explosion has happened!")
 			qdel(src)
 		else
 			..()

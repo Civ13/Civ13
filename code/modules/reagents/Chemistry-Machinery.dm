@@ -644,7 +644,7 @@
 	name = "pill maker"
 	desc = "Makes pills out of reagents."
 	density = TRUE
-	anchored = TRUE
+	anchored = FALSE
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "mixer0b"
 //	use_power = TRUE
@@ -678,6 +678,11 @@
 				return
 
 /obj/structure/chem_master/attackby(var/obj/item/weapon/B as obj, var/mob/user as mob)
+	..()
+
+	if (!anchored)
+		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		return
 
 	if (istype(B, /obj/item/weapon/reagent_containers/glass))
 
