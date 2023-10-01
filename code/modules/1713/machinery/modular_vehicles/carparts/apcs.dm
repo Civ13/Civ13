@@ -215,3 +215,49 @@
 	icon_state = "bmd2new_frame_steel_back_right"
 	w_back = list("bmd2new_back_right_frame",TRUE,TRUE,25,30,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,30,40,FALSE,FALSE)
+
+
+//BTR-80 96x96
+
+/obj/structure/vehicleparts/frame/btr80
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	// broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	pixel_x = -32
+	pixel_y = -32
+
+/obj/structure/vehicleparts/frame/btr80/lf
+	icon_state = "btr80_frame_steel_front_left"
+	w_front = list("btr80_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/rf
+	icon_state = "btr80_frame_steel_front_right"
+	w_front = list("btr80_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/lfc
+	icon_state = "btr80_frame_steel_middle_front_left"
+	w_left = list("btr80_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/rfc
+	icon_state = "btr80_frame_steel_middle_front_right"
+	w_right = list("btr80_middle_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/lbc
+	icon_state = "btr80_frame_steel_middle_back_left"
+	w_left = list("btr80_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/rbc
+	icon_state = "btr80_frame_steel_middle_back_right"
+	w_right = list("btr80_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/lb
+	icon_state = "btr80_frame_steel_back_left"
+	w_back = list("btr80_back_left_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/btr80/rb
+	icon_state = "btr80_frame_steel_back_right"
+	w_back = list("btr80_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
