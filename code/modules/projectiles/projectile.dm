@@ -641,16 +641,17 @@
 	++penetrating
 	if (istype(T, /turf/wall))
 		var/turf/wall/W = T
-		if(W.material.resilience > 0)
-			var/ricochetchance = round(W.material.resilience)
-			var/turf/curloc = get_turf(src)
-			if((curloc.x == starting.x) || (curloc.y == starting.y))
-				ricochetchance = round(ricochetchance / 5)
-			else
-				ricochetchance = min(100, round(W.bullet_ricochet(src, 1) * ricochetchance))
-			if(prob(ricochetchance))
-				W.bullet_ricochet(src)
-				return PROJECTILE_CONTINUE // complete projectile permutation
+		if (W.material)
+			if (W.material.resilience > 0)
+				var/ricochetchance = round(W.material.resilience)
+				var/turf/curloc = get_turf(src)
+				if((curloc.x == starting.x) || (curloc.y == starting.y))
+					ricochetchance = round(ricochetchance / 5)
+				else
+					ricochetchance = min(100, round(W.bullet_ricochet(src, 1) * ricochetchance))
+				if(prob(ricochetchance))
+					W.bullet_ricochet(src)
+					return PROJECTILE_CONTINUE // complete projectile permutation
 
 	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
 		if (check_penetrate(T))
