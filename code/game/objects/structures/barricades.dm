@@ -61,6 +61,7 @@
 	return material
 
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/D = W
 		if (material && D.get_material_name() != material.name)
