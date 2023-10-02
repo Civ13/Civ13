@@ -1501,6 +1501,18 @@
 	new /obj/item/weapon/grenade/coldwar/m67(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/olive/m16_breacher
+	storage_slots = 7
+/obj/item/weapon/storage/belt/smallpouches/olive/m16_breacher/New()
+	..()
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/weapon/plastique/c4(src)
+	new /obj/item/weapon/plastique/c4(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/siegeladder/grapplinghook(src)
+
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
@@ -1566,6 +1578,18 @@
 	new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/foldable_shovel/trench/etool(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_breacher
+	storage_slots = 7
+/obj/item/weapon/storage/belt/smallpouches/green/ak74m_breacher/New()
+	..()
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	new /obj/item/weapon/plastique/c4(src)
+	new /obj/item/weapon/plastique/c4(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/siegeladder/grapplinghook(src)
 
 /obj/item/clothing/under/blue_shorts
 	name = "blue shorts"
