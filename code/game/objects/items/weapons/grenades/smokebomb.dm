@@ -360,12 +360,12 @@
 
 /obj/item/weapon/grenade/smokebomb/ugl/shell40mm
 	name = "40x46mm 'M676' grenade shell"
-	desc = "Smoke Round, Cannot be thrown as the usual grenade, by the way."
+	desc = "Special smoke round designed for use in an underbarrel grenade launcher. Cannot be manually throwed."
 	icon_state = "M406s"
 
 /obj/item/weapon/grenade/smokebomb/ugl/vog25
 	name = "40x103mm 'GRD-50' grenade shell"
-	desc = "Smoke Round, Cannot be thrown as the usual grenade, by the way."
+	desc = "Special smoke round designed for use in an underbarrel grenade launcher. Cannot be manually throwed."
 	icon_state = "40x103mmshells"
 
 /obj/item/weapon/grenade/chemical/ugl/attack_self(mob/user)
