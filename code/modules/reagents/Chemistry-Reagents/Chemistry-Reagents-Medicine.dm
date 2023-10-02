@@ -281,11 +281,19 @@
 	overdose = REAGENTS_OVERDOSE
 	scannable = TRUE
 
-/datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	if (istype(M, /mob/living/human))
-		var/mob/living/human/HH = M
-		if (HH.disease == 1 && HH.disease_type == "typhus")
-			HH.disease_treatment = TRUE
+    /datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+        if (istype(M, /mob/living/human))
+            var/mob/living/human/HH = M
+            if (HH.disease == 1 && HH.disease_type == "typhus")
+                // Simulate a random roll to determine if penicillin cures the plague and other bacteria based illnesses
+                if (prob(25))  // Adjust this probability as needed
+                    HH.disease = 0
+                    HH.disease_type = "none"
+                    HH.disease_progression = 0
+                    HH.bodytemperature = 310.055
+                    HH.disease_treatment = 0
+                    if (prob(25))
+                        HH.disease_immunity += "typhus"
 
 /datum/reagent/saline_glucose
 	name = "Saline Glucose solution"
