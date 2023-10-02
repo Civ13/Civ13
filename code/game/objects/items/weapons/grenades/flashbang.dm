@@ -2,6 +2,7 @@
 	name = "flashbang"
 	icon_state = "flashbang"
 	item_state = "grenade"
+	secondary_action = FALSE
 	var/banglet = 0
 
 	prime()

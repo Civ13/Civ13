@@ -434,6 +434,7 @@
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
 	explosion_size = 0
+	secondary_action = FALSE
 
 /obj/item/weapon/grenade/coldwar/m67
 	name = "M67 grenade"
