@@ -283,9 +283,9 @@
 
 /datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (istype(M, /mob/living/human))
-        var/mob/living/human/HH = M
-        if (HH.disease && (HH.disease_type == "typhus" || HH.disease_type == "plague" || HH.disease_type == "flu"))
-            HH.disease_treatment = TRUE
+		var/mob/living/human/HH = M
+		if (HH.disease && (HH.disease_type == "typhus" || HH.disease_type == "plague" || HH.disease_type == "flu"))
+			HH.disease_treatment = TRUE
 
 /datum/reagent/saline_glucose
 	name = "Saline Glucose solution"
