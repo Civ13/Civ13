@@ -380,7 +380,9 @@
 	desc = "A grappling hook attached to a rope, good for climbing things."
 	icon_state = "grapplehook"
 	depicon = "grapplehook_dep"
+	w_class = ITEM_SIZE_NORMAL
 	flammable = FALSE
+	slot_flags = SLOT_SHOULDER | SLOT_ID
 
 /obj/item/weapon/fishing
 	name = "fishing pole"
