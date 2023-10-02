@@ -220,12 +220,12 @@
 /obj/item/weapon/gun/launcher/grenade/standalone/consume_next_projectile()
 	if (cover_opened)
 		return
-	else if (chambered || !cover_opened)
+	if (chambered)
 		if (ishuman(src.loc))
 			chambered.dir = src.loc.dir
 		chambered.det_time = 15
 		chambered.activate(null)
-	return chambered | !cover_opened
+	return chambered
 
 //load and unload directly into chambered
 /obj/item/weapon/gun/launcher/grenade/standalone/load(obj/item/weapon/grenade/G, mob/user)
