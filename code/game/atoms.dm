@@ -546,7 +546,8 @@
 	if(user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT|INCAPACITATION_BUCKLED_PARTIALLY|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_FORCELYING) || user.isinspace() \
 		|| istype(user.loc, /obj/structure/closet))
 		return
-
+	if (user.handcuffed && !isnull(user.pulledby)) // Can't jump while being handcuffed and pulled by someone
+		return
 	for(var/limbcheck in list("l_leg","r_leg"))//But we need to see if we have legs.
 		var/obj/item/organ/affecting = user.get_organ(limbcheck)
 		if(!affecting)//Oh shit, we don't have have any legs, we can't jump.
