@@ -295,7 +295,7 @@
                     if (prob(25))
                         HH.disease_immunity += "typhus"
 				else
-   					HH.disease_treatment = TRUE
+					HH.disease_treatment = TRUE
 
 /datum/reagent/saline_glucose
 	name = "Saline Glucose solution"
