@@ -588,7 +588,7 @@
 /obj/item/weapon/grenade/modern/impact
 	name = "impact grenade"
 	desc = "An impact grenade that explodes when hitting the ground after being thrown."
-	icon_state = "oto35"
+	icon_state = "rgo"
 	throw_range = 12
 	secondary_action = FALSE
 
@@ -633,6 +633,12 @@
 	else
 		..()
 	return
+
+/obj/item/weapon/grenade/modern/impact/rgo
+	name = "RGO"
+	desc = "A Soviet Russian defensive anti-personnel fragmentation hand grenade with an impact action."
+	icon_state = "rgo"
+	throw_range = 12
 
 /obj/item/weapon/grenade/suicide_vest
 	name = "suicide vest"
