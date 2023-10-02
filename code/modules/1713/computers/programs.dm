@@ -2060,7 +2060,7 @@
 		"2A6 Leopard Tank (1000)", "Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
 		)
 	var/list/rus_choice = list(
-		"T-90A Tank (1200)", "BMD-2 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
+		"T-90A Tank (1200)", "BTR-80 Infantry Fighting Vehicle (600)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
 		)
 	var/list/british_choice = list(
 		"FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
@@ -2243,8 +2243,8 @@
 
 			if ("T-90A Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-5,origin.z))
-			if ("BMD-2 Infantry Fighting Vehicle (600)")
-				PV = new /obj/effects/premadevehicles/apc/bmd2(locate(origin.x+3,origin.y-5,origin.z))
+			if ("BTR-80 Infantry Fighting Vehicle (700)")
+				PV = new /obj/effects/premadevehicles/apc/btr80(locate(origin.x+3,origin.y-5,origin.z))
 			if ("AMN-233114 Tigr-M Humvee with MG (500)")
 				PV = new /obj/effects/premadevehicles/car/tigr/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("KamAZ-4350 Truck (300)")
