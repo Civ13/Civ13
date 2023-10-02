@@ -9,7 +9,7 @@
 	var/throw_distance = 18
 	fire_sound_text = "a launcher firing"
 
-/obj/item/weapon/gun/launcher/grenade/standalone/New()
+/obj/item/weapon/gun/launcher/rocket/New()
 	..()
 	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
 	spawn_add_attachment(A, src)
