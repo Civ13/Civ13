@@ -50,13 +50,19 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		if (clients.len < 10)
+			return 1800 // 3 minutes
+		else
+			return 3000 // 5 minutes
 
 /obj/map_metadata/syria/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		if (clients.len < 10)
+			return 1800 // 3 minutes
+		else
+			return 3000 // 5 minutes
 
 /obj/map_metadata/syria/roundend_condition_def2name(define)
 	..()
