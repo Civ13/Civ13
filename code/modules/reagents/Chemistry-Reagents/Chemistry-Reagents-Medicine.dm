@@ -536,6 +536,9 @@
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
+	M.adjustOxyLoss(2)
+	if(M.losebreath < 5)
+		M.losebreath++
 
 
 /datum/reagent/pen_acid
