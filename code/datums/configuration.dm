@@ -82,7 +82,6 @@ var/list/gamemode_cache = list()
 
 	//game_options.txt configs
 
-	var/health_threshold_softcrit = FALSE
 	var/health_threshold_crit = -60
 	var/health_threshold_dead = -80
 

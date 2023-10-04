@@ -10,9 +10,9 @@
 	if (HUDtech.Find("pain"))
 		flick("dark32",HUDtech["pain"])
 	return
-mob/var/list/pain_stored = list()
-mob/var/last_pain_message = ""
-mob/var/next_pain_time = FALSE
+/mob/var/list/pain_stored = list()
+/mob/var/last_pain_message = ""
+/mob/var/next_pain_time = FALSE
 
 // partname is the name of a body part
 // amount is a num from TRUE to 100
@@ -52,7 +52,7 @@ mob/var/next_pain_time = FALSE
 // message is the custom message to be displayed
 // power decides how much painkillers will stop the message
 // force means it ignores anti-spam timer
-mob/living/human/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
+/mob/living/human/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
 	if(!message || stat || chem_effects[CE_PAINKILLER] > power)
 		return 0
 
@@ -86,36 +86,48 @@ mob/living/human/proc/custom_pain(var/message, var/power = 0, var/force = FALSE,
 			to_chat(src, "<b>[message]</b>")
 	next_pain_time = world.time + (100-power)
 
-mob/living/human/proc/handle_pain()
+/mob/living/human/proc/handle_pain()
 	if(stat)
+		return
+	if(!can_feel_pain())
 		return
 	if(world.time < next_pain_time)
 		return
+
 	var/maxdam = 0
 	var/obj/item/organ/external/damaged_organ = null
 	for(var/obj/item/organ/external/E in organs)
-		var/dam = E.get_pain() + E.get_damage()
+		if(!E.can_feel_pain())
+			continue
+		var/dam = E.get_damage()
+		for(var/obj/item/organ/I in E.internal_organs)
+			dam += I.damage
 		// make the choice of the organ depend on damage,
 		// but also sometimes use one of the less damaged ones
-		if(dam > maxdam && (maxdam == 0 || prob(70)) )
+		if(dam > maxdam && (maxdam == 0 || prob(70)))
 			damaged_organ = E
 			maxdam = dam
+
 	if(damaged_organ && chem_effects[CE_PAINKILLER] < maxdam)
 		if(maxdam > 10 && paralysis)
 			paralysis = max(0, paralysis - round(maxdam/10))
+		/*
+		if(maxdam > 50 && prob(maxdam / 5))
+			drop_item()
+		*/
 		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
 		var/msg
 		if (prob(10))
 			switch(maxdam)
-				if(1 to 10)
+				if(1 to 40)
 					msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
 
-				if(11 to 90)
+				if(41 to 80)
 					msg = "<font size=2>Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!</font>"
 
-				if(91 to 10000)
+				if(81 to INFINITY)
 					msg = "<font size=3>OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!</font>"
-		custom_pain(msg, 0, prob(10), affecting = damaged_organ, flash_pain = maxdam)
+		custom_pain(msg, maxdam, prob(10), damaged_organ, TRUE, flash_pain = maxdam)
 
 	// Damage to internal organs hurts a lot.
 	for(var/obj/item/organ/I in internal_organs)
@@ -151,7 +163,7 @@ mob/living/human/proc/handle_pain()
 	else
 		return TRUE
 
-mob/living/human/proc/suffer_well(var/prob)
+/mob/living/human/proc/suffer_well(var/prob)
 	if (prob(prob) && !stat)
 		emote("agony")
 		Weaken(10)

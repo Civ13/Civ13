@@ -349,6 +349,9 @@ var/list/organ_cache = list()
 					meat.name = "[name] meatsteak"
 				qdel(src)
 
+/obj/item/organ/proc/can_feel_pain()
+	return (!species || !(species.flags & NO_PAIN))
+
 /obj/item/organ/proc/is_usable()
 	return !(status & (ORGAN_CUT_AWAY|ORGAN_MUTATED|ORGAN_DEAD))
 

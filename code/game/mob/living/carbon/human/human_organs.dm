@@ -75,12 +75,13 @@
 	if (!stance_damage && (lying || resting || prone) && (life_tick % 4) == FALSE)
 		return
 
-	stance_damage = FALSE
+	stance_damage = 0
 
-	// Buckled to a bed/chair. Stance damage is forced to FALSE since they're sitting on something solid
+	// Buckled to a bed/chair. Stance damage is forced to 0 since they're sitting on something solid
 	if (istype(buckled, /obj/structure/bed))
 		return
 
+	var/limb_pain
 	for (var/limb_tag in list("l_leg","r_leg","l_foot","r_foot"))
 		var/obj/item/organ/external/E = organs_by_name[limb_tag]
 		if (!E || (E.status & (ORGAN_MUTATED|ORGAN_DEAD)) || E.is_stump()) //should just be !E.is_usable() here but dislocation screws that up.
@@ -89,6 +90,8 @@
 			stance_damage += 1
 		else if (E.is_dislocated())
 			stance_damage += 0.5
+		
+		if(E) limb_pain = E.can_feel_pain()
 
 	// Canes and crutches help you stand (if the latter is ever added)
 	// One cane mitigates a broken leg+foot, or a missing foot.
@@ -122,7 +125,7 @@
 	// standing is poor
 	if (stance_damage >= 4 || (stance_damage >= 2 && prob(5)))
 		if (!(lying || resting || prone))
-			if (species && !(species.flags & NO_PAIN))
+			if (limb_pain)
 				emote("painscream")
 			custom_emote(1, "collapses!")
 		Weaken(5) //can't emote while weakened, apparently.

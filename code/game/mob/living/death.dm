@@ -19,7 +19,7 @@
 
 	// combine and shuffle arms and legs so we don't bias either
 	for (var/obj/item/organ/external/E in shuffle(arms|legs))
-		if (prob(75) && prob(round(100/(arms.len+legs.len))))
+		if (prob(85) && prob(round(100/(arms.len+legs.len))))
 			E.droplimb()
 			--appendages
 

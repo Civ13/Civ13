@@ -31,7 +31,6 @@
 
 	restore_blood()
 	shock_stage = 0
-	traumatic_shock = 0
 	..()
 
 
@@ -140,53 +139,6 @@
 		if (src == M && istype(src, /mob/living/human))
 			var/mob/living/human/H = src
 			H.exam_self()
-			/*visible_message( \
-				text("\blue [src] examines [].",gender==MALE?"himself":"herself"), \
-				"\blue You check yourself for injuries." \
-				)
-
-			for (var/obj/item/organ/external/org in H.organs)
-				var/list/status = list()
-				var/brutedamage = org.brute_dam
-				var/burndamage = org.burn_dam
-				if (halloss > 0)
-					if (prob(30))
-						brutedamage += halloss
-					if (prob(30))
-						burndamage += halloss
-				switch(brutedamage)
-					if (1 to 20)
-						status += "bruised"
-					if (20 to 40)
-						status += "wounded"
-					if (40 to INFINITY)
-						status += "mangled"
-
-				switch(burndamage)
-					if (1 to 10)
-						status += "numb"
-					if (10 to 40)
-						status += "blistered"
-					if (40 to INFINITY)
-						status += "peeling away"
-
-				if (org.is_stump())
-					status += "MISSING"
-				if (org.status & ORGAN_MUTATED)
-					status += "weirdly shapen"
-				if (org.dislocated == 2)
-					status += "dislocated"
-				if (org.status & ORGAN_BROKEN)
-					status += "hurts when touched"
-				if (org.status & ORGAN_DEAD)
-					status += "is bruised and necrotic"
-				if (!org.is_usable())
-					status += "dangling uselessly"
-				if (status.len)
-					show_message("My [org.name] is <span class='warning'> [english_list(status)].</span>",1)
-				else
-					show_message("My [org.name] is <span class='notice'> OK.</span>",1)
-			*/
 		else if (on_fire)
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 			if (M.on_fire)
@@ -225,7 +177,7 @@
 			if (istype(H)) show_ssd = H.species.show_ssd
 			if (show_ssd && !client && !teleop)
 				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
-				"<span class='notice'>You shake [src], but they do not respond... Maybe they have shell shock?</span>")
+									"<span class='notice'>You shake [src], but they do not respond... Maybe they have shell shock?</span>")
 			else if (lying || sleeping)
 				sleeping = max(0,sleeping-5)
 				if (!sleeping)

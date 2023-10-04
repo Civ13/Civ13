@@ -15,8 +15,7 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
-	M.traumatic_shock = max(0,M.traumatic_shock-removed)
-	M.shock_stage = max(0,M.shock_stage-removed/2)
+	M.shock_stage = max(0,M.shock_stage-removed)
 	M.mood += removed*10
 	M.SetParalysis(0)
 	M.SetWeakened(0)
