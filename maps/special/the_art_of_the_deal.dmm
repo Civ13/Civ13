@@ -789,7 +789,7 @@
 "fIs" = (/obj/structure/barricade/antitank{alpha = 0},/obj/structure/roof_support/admin,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "fIv" = (/obj/covers/concretefloor,/obj/item/weapon/siegeladder/metal,/turf/floor/grass,/area/caribbean/nomads/forest)
 "fIV" = (/turf/floor/plating/road/yellowline{dir = 10; icon_state = "road_yellowline"},/area/caribbean/supply)
-"fJo" = (/obj/structure/table/rack/shelf,/obj/item/weapon/gun/projectile/leveraction/goldchester,/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed)
+"fJo" = (/obj/structure/table/rack/shelf,/obj/item/weapon/gun/projectile/leveraction/winchesterm1873/gold,/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed)
 "fJu" = (/obj/structure/lamp/lamp_big/alwayson,/obj/structure/sink{dir = 8; pixel_x = 14},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "fKJ" = (/turf/floor/trench,/area/caribbean/nomads/forest)
 "fKQ" = (/obj/structure/gate/barrier,/turf/floor/plating/road,/area/caribbean/nomads/forest)
