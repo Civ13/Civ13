@@ -15,8 +15,7 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
-	M.traumatic_shock = max(0,M.traumatic_shock-removed)
-	M.shock_stage = max(0,M.shock_stage-removed/2)
+	M.shock_stage = max(0,M.shock_stage-removed)
 	M.mood += removed*10
 	M.SetParalysis(0)
 	M.SetWeakened(0)
@@ -284,7 +283,7 @@
 /datum/reagent/penicillin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/HH = M
-		if (HH.disease == 1 && HH.disease_type == "typhus")
+		if (HH.disease && (HH.disease_type == "typhus" || HH.disease_type == "plague" || HH.disease_type == "flu"))
 			HH.disease_treatment = TRUE
 
 /datum/reagent/saline_glucose

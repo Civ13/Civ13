@@ -30,7 +30,7 @@
 	projectile.loc = get_turf(user)
 	projectile.allow_spin = FALSE
 	projectile.throw_at(target, throw_distance, release_force, user)
-	projectile.dir = get_dir(src.loc, target.loc)
+	projectile.dir = get_dir(get_turf(src), get_turf(target))
 	projectile.icon_state = "[initial(projectile.icon_state)]_active"
 	return TRUE
 
@@ -212,15 +212,20 @@
 		/obj/item/weapon/grenade/smokebomb
 		)
 
+/obj/item/weapon/gun/launcher/grenade/standalone/New()
+	..()
+	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
+
 /obj/item/weapon/gun/launcher/grenade/standalone/consume_next_projectile()
 	if (cover_opened)
 		return
-	else if (chambered | !cover_opened)
+	if (chambered)
 		if (ishuman(src.loc))
 			chambered.dir = src.loc.dir
 		chambered.det_time = 15
 		chambered.activate(null)
-	return chambered | !cover_opened
+	return chambered
 
 //load and unload directly into chambered
 /obj/item/weapon/gun/launcher/grenade/standalone/load(obj/item/weapon/grenade/G, mob/user)

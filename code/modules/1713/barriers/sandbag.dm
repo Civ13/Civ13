@@ -13,6 +13,7 @@
 	climbable = TRUE
 	mouse_drop_zone = TRUE
 	var/incomplete = FALSE
+	var/dismantlable = TRUE
 	maxhealth = 30
 	health = 30
 	New()
@@ -38,22 +39,21 @@
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
-		if (istype(src, /obj/structure/window/barrier/railing) || istype(src, /obj/structure/window/barrier/jersey) || istype(src, /obj/structure/window/barrier/sandstone) || istype(src, /obj/structure/window/barrier/ship) || istype(src, /obj/structure/window/barrier/palisade) || istype(src, /obj/structure/window/barrier/sandstone))
-			return
-		if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
-			visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
-			if (do_after(user, 200, src))
-				visible_message("<span class='danger'>[user] finishes dismantling the [src].</span>", "<span class='danger'>You finish dismantling the [src].</span>")
-				var/turf = get_turf(src)
+		if (dismantlable)
+			if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
+				visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
+				if (do_after(user, 200, src))
+					visible_message("<span class='danger'>[user] finishes dismantling the [src].</span>", "<span class='danger'>You finish dismantling the [src].</span>")
+					var/turf = get_turf(src)
 
-				if (!istype(src, /obj/structure/window/barrier/incomplete))
-					for (var/v in TRUE to rand(4,6))
-						new /obj/item/weapon/barrier(turf)
-				else
-					var/obj/structure/window/barrier/incomplete/I = src
-					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-						new /obj/item/weapon/barrier(turf)
-				qdel(src)
+					if (!istype(src, /obj/structure/window/barrier/incomplete))
+						for (var/v in TRUE to rand(4,6))
+							new /obj/item/weapon/barrier(turf)
+					else
+						var/obj/structure/window/barrier/incomplete/I = src
+						for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
+							new /obj/item/weapon/barrier(turf)
+					qdel(src)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -254,6 +254,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
+	dismantlable = FALSE
 	maxhealth = 30
 
 /obj/structure/window/barrier/palisade
@@ -265,6 +266,7 @@
 	anchored = TRUE
 	climbable = FALSE
 	flammable = TRUE
+	dismantlable = FALSE
 
 /obj/item/weapon/barrier/sandbag
 	name = "sandbag"
@@ -356,6 +358,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
+	dismantlable = FALSE
 	maxhealth = 1500
 
 /obj/structure/window/barrier/railing/stone
@@ -388,10 +391,8 @@
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
 	maxhealth = 80
+	dismantlable = FALSE
 
 /obj/structure/window/barrier/jersey/New()
 	..()
 	icon_state = "jerseybarrier[rand(1,2)]"
-
-/obj/structure/window/barrier/jersey/attack_hand(var/mob/user as mob)
-	return

@@ -300,6 +300,8 @@ var/world_topic_spam_protect_time = world.timeofday
 		. += "<b>Approved only</b>: Enabled"
 	. += ";"
 	. += "realtime=[num2text(world.realtime, 20)]"
+	. += ";"
+	. += "world.address=[world.address]"
 /proc/start_serverdata_loop()
 	spawn while (1)
 		var/F = file("serverdata.txt")

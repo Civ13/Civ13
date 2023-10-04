@@ -29,8 +29,6 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/bullet_ricochet(var/obj/item/projectile/Proj, var/ischance = 0)
 	if(Proj.starting)
 		var/turf/curloc = get_turf(src)
-		visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
-		playsound(curloc, "ric_sound", 50, TRUE, -2)
 		var/ricochet_temp_id = rand(1,1000)
 		if(!ischance) Proj.ricochet_id = ricochet_temp_id
 		if(!ischance && ((curloc.x == Proj.starting.x) || (curloc.y == Proj.starting.y)))
@@ -38,6 +36,8 @@ var/list/global/wall_cache = list()
 			var/critical_x = Proj.starting.x + random_value
 			var/critical_y = Proj.starting.y + random_value
 			Proj.redirect(critical_x, critical_y, curloc, src)
+			visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
+			playsound(curloc, "ric_sound", 50, TRUE, -2)
 			return
 		var/check_x0 = 32 * curloc.x
 		var/check_y0 = 32 * curloc.y
@@ -88,23 +88,31 @@ var/list/global/wall_cache = list()
 		if((wallnorth || wallsouth) && ((Proj.starting.y - curloc.y)*(wallsouth - wallnorth) >= 0))
 			if(!ischance)
 				Proj.redirect(round(check_x1 / 32), round((2 * check_y0 - check_y1)/32), curloc, src)
+				visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
+				playsound(curloc, "ric_sound", 50, TRUE, -2)
 				return
 			else
 				return abs((check_y0 - check_y1) / (check_x0 - check_x1))
 		if((walleast || wallwest) && ((Proj.starting.x - curloc.x)*(walleast-wallwest) >= 0))
 			if(!ischance)
 				Proj.redirect(round((2 * check_x0 - check_x1) / 32), round(check_y1 / 32), curloc, src)
+				visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
+				playsound(curloc, "ric_sound", 50, TRUE, -2)
 				return
 			else
 				return abs((check_x0 - check_x1) / (check_y0 - check_y1))
 		if((new_y * new_func) > 0)
 			if(!ischance)
 				Proj.redirect(round((2 * check_x0 - check_x1) / 32), round(check_y1 / 32), curloc, src)
+				visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
+				playsound(curloc, "ric_sound", 50, TRUE, -2)
 			else
 				return abs((check_x0 - check_x1) / (check_y0 - check_y1))
 		else
 			if(!ischance)
 				Proj.redirect(round(check_x1 / 32), round((2 * check_y0 - check_y1)/32), curloc, src)
+				visible_message(SPAN_DANGER("\The [Proj] ricochets from the surface of \the [src]!"))
+				playsound(curloc, "ric_sound", 50, TRUE, -2)
 			else
 				return abs((check_y0 - check_y1) / (check_x0 - check_x1))
 		return

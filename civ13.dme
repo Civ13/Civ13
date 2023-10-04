@@ -171,7 +171,6 @@
 #include "code\game\mob\living\carbon\carbon_defines.dm"
 #include "code\game\mob\living\carbon\give.dm"
 #include "code\game\mob\living\carbon\resist.dm"
-#include "code\game\mob\living\carbon\shock.dm"
 #include "code\game\mob\living\carbon\taste.dm"
 #include "code\game\mob\living\carbon\human\animals.dm"
 #include "code\game\mob\living\carbon\human\announcer.dm"
@@ -1104,5 +1103,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1013\karak.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE

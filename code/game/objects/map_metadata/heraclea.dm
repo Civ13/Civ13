@@ -32,6 +32,11 @@ obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		else
 			. = TRUE
+	if (istype(J, /datum/job/greek))
+		if (J.is_ancient == TRUE)
+			. = TRUE
+		else
+			. = FALSE
 	else
 		. = TRUE
 

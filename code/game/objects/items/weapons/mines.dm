@@ -16,7 +16,6 @@
 	anchored = FALSE
 	flags = CONDUCT
 	var/triggered = FALSE
-	var/triggertype = "explosive" //Calls that proc
 	
 	// failsafe to stop a horrible mine bug - kachnov
 	var/nextCanExplode = -1
@@ -140,11 +139,6 @@
 				qdel(src)
 
 //TYPES//
-//Explosive
-/obj/item/mine/proc/explosive(obj)
-	explosion(loc,2,2,4)
-	spawn(0)
-		qdel(src)
 
 /obj/item/mine/ap
 	name = "anti-personnel mine"

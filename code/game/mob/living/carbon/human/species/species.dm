@@ -702,3 +702,9 @@
 		H.client.screen |= overlay
 
 	return TRUE
+
+/datum/species/proc/get_blood_colour(var/mob/living/human/H)
+	return blood_color
+
+/datum/species/proc/get_flesh_colour(var/mob/living/human/H)
+	return flesh_color

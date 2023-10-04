@@ -259,34 +259,7 @@ var/global/datum/controller/occupations/job_master
 				return
 
 	if (map.fob_spawns)
-		var/list/spawnable_points = list()
-		spawnable_points += "Base"
-
-		for(var/obj/item/fob_spawnpoint/fob in world)
-			if (fob.faction_text == H.faction_text)
-				spawnable_points += fob
-		H.loc = null
-		var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
-		if (!(input == "Base"))
-			var/turf/fob_loc = get_turf(input)
-			var/list/valid_spawns = list()
-			for (var/turf/T in circlerangeturfs(3, fob_loc))
-				for (var/obj/O in T.contents)
-					if (O.density)
-						continue
-				for (var/mob/M in T.contents)
-					continue
-				valid_spawns += T
-
-			if (valid_spawns)
-				H.forceMove(pick(valid_spawns))
-				spawn (1)
-					var/area/H_area = get_area(H)
-					if (H_area)
-						H_area.play_ambience(H)
-				return
-			else
-				H << SPAN_WARNING("<big>No valid spawnpoint was found at this FOB. <br>Spawning at Base.</big>")
+		SpawnAtFob(H)
 
 	var/spawn_location = H.job_spawn_location
 	if(map.ID == MAP_GULAG13)
@@ -357,11 +330,57 @@ var/global/datum/controller/occupations/job_master
 				qdel(rhib)
 	*/
 
+/datum/controller/occupations/proc/SpawnAtFob(var/mob/living/human/H)
+	var/list/spawnable_points = list()
+	spawnable_points += "Base"
+
+	for(var/obj/item/fob_spawnpoint/fob in world)
+		if (fob.faction_text == H.faction_text)
+			spawnable_points += fob
+	H.loc = null
+	var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
+	if (!(input == "Base"))
+		var/turf/fob_loc = get_turf(input)
+		var/list/valid_spawns = list()
+		var/blocked = FALSE // Is the spawn blocked because there is an enemy nearby?
+		for (var/turf/T in circlerangeturfs(3, fob_loc))
+			var/spawnable_turf = TRUE // Is the turf we're checking spawnable? (Nothing on it that would block us like walls)
+			for (var/obj/O in T.contents)
+				if (O.density)
+					spawnable_turf = FALSE
+					continue
+			for (var/mob/living/human/M in T.contents)
+				if (M.stat == CONSCIOUS && M.faction_text != H.faction_text)
+					blocked = TRUE
+				spawnable_turf = FALSE
+				continue
+			if (T.density)
+				spawnable_turf = FALSE
+			if (spawnable_turf && !blocked)
+				valid_spawns += T
+
+		if (blocked)
+			H << SPAN_WARNING("<big>Cannot spawn at FOB because enemy is closeby.</big>")
+			SpawnAtFob(H)
+			return
+
+		if (valid_spawns.len)
+			H.forceMove(pick(valid_spawns))
+			spawn (1)
+				var/area/H_area = get_area(H)
+				if (H_area)
+					H_area.play_ambience(H)
+			return
+		else
+			H << SPAN_WARNING("<big>No valid spawnpoints were found at this FOB.</big>")
+			SpawnAtFob(H)
+			return
+
 /datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
 	occupations = list()
 	var/list/all_jobs = typesof(/datum/job)
 	if (!all_jobs.len)
-		world << "<span class = 'red'>\b Error setting up jobs, no job datums found</span>"
+		world << SPAN_DANGER("Error setting up jobs, no job datums found.")
 		return FALSE
 	for (var/J in all_jobs)
 		var/datum/job/job = new J()

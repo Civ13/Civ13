@@ -108,9 +108,9 @@
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
-				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+				if (H.faction_text == BRITISH && H.stat == CONSCIOUS)
 					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a1_control = "none"
@@ -138,9 +138,9 @@
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
-				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+				if (H.faction_text == BRITISH && H.stat == CONSCIOUS)
 					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a2_control = "none"
@@ -168,9 +168,9 @@
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
-				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+				if (H.faction_text == BRITISH && H.stat == CONSCIOUS)
 					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a3_control = "none"
@@ -198,9 +198,9 @@
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four))
-				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+				if (H.faction_text == BRITISH && H.stat == CONSCIOUS)
 					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a4_control = "none"
@@ -228,9 +228,9 @@
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/five))
-				if (H.faction_text == "BRITISH" && H.stat == CONSCIOUS)
+				if (H.faction_text == BRITISH && H.stat == CONSCIOUS)
 					c1++
-				else if (H.faction_text == "RUSSIAN" && H.stat == CONSCIOUS)
+				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
 			a4_control = "none"

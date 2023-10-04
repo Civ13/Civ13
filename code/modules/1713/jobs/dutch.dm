@@ -563,7 +563,6 @@
 
 	whitelisted = TRUE
 
-	additional_languages = list("English" = 70)
 	min_positions = 1
 	max_positions = 1
 
@@ -617,7 +616,6 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
-	additional_languages = list("English" = 70)
 	min_positions = 1
 	max_positions = 10
 
@@ -671,7 +669,6 @@
 	is_medic = TRUE
 	uses_squads = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 2
 	max_positions = 8
 
@@ -728,7 +725,6 @@
 	is_radioman = TRUE
 	uses_squads = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 5
 
@@ -780,7 +776,6 @@
 	is_operation_falcon = TRUE
 	uses_squads = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 100
 
@@ -806,8 +801,11 @@
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_breacher(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -831,7 +829,6 @@
 	is_operation_falcon = TRUE
 	uses_squads = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 5
 	max_positions = 100
 
@@ -881,7 +878,6 @@
 
 	is_operation_falcon = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6
 
@@ -927,7 +923,6 @@
 
 	is_operation_falcon = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 6
 
@@ -974,7 +969,6 @@
 
 	is_operation_falcon = TRUE
 
-	additional_languages = list("English" = 15)
 	min_positions = 1
 	max_positions = 10
 

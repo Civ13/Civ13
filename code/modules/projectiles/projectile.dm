@@ -318,13 +318,13 @@
 				if (H.head && istype(H.head, /obj/item/clothing/head/helmet))
 					var/obj/item/clothing/head/helmet/helmet = H.head
 					if (helmet.block_check(src))
-						visible_message("<span class='warning'>[H]'s helmet deflects the shrapnel!</span>")
+						H << SPAN_DANGER("Your helmet deflects \the [src]!")
 						return
 			else if (hit_zone == "chest")
 				if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/armor))
 					var/obj/item/clothing/suit/armor/armor = H.wear_suit
 					if (armor.block_check(src))
-						visible_message("<span class='warning'>[H]'s armor deflects the shrapnel!</span>")
+						H << SPAN_DANGER("Your armor absorbs the impact of \the [src]!")
 						return
 
 		do_bullet_act(target_mob, hit_zone)
@@ -641,16 +641,17 @@
 	++penetrating
 	if (istype(T, /turf/wall))
 		var/turf/wall/W = T
-		if(W.material.resilience > 0)
-			var/ricochetchance = round(W.material.resilience)
-			var/turf/curloc = get_turf(src)
-			if((curloc.x == starting.x) || (curloc.y == starting.y))
-				ricochetchance = round(ricochetchance / 5)
-			else
-				ricochetchance = min(100, round(W.bullet_ricochet(src, 1) * ricochetchance))
-			if(prob(ricochetchance))
-				W.bullet_ricochet(src)
-				return PROJECTILE_CONTINUE // complete projectile permutation
+		if (W.material)
+			if (W.material.resilience > 0)
+				var/ricochetchance = round(W.material.resilience)
+				var/turf/curloc = get_turf(src)
+				if((curloc.x == starting.x) || (curloc.y == starting.y))
+					ricochetchance = round(ricochetchance / 5)
+				else
+					ricochetchance = min(100, round(W.bullet_ricochet(src, 1) * ricochetchance))
+				if(prob(ricochetchance))
+					W.bullet_ricochet(src)
+					return PROJECTILE_CONTINUE // complete projectile permutation
 
 	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
 		if (check_penetrate(T))

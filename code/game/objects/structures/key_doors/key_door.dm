@@ -206,7 +206,7 @@ var/list/nonbreaking_types = list(
 				return
 	else if (istype(W, /obj/item/weapon/gun/projectile/shotgun/pump))
 		var/obj/item/weapon/gun/projectile/shotgun/pump/pump = W
-		if (breachable && locked && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug) || istype(pump.chambered, /obj/item/projectile/bullet/shotgun/breaching)) && pump.consume_next_projectile())
+		if (breachable && !state && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug) || istype(pump.chambered, /obj/item/projectile/bullet/shotgun/breaching)) && pump.consume_next_projectile())
 			locked = FALSE
 			update_icon()
 			visible_message(SPAN_WARNING("[user] breaks the lock on the [src]!"))

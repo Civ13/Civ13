@@ -80,11 +80,11 @@
 "bB" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/templar2,/turf/floor/dirt/dust,/area/caribbean/crusader/sand)
 "bC" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/obj/item/flashlight/lantern/on/anchored,/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8; climbable = 0},/obj/structure/window/barrier/railing{climbable = 0},/turf/floor/dirt/dust,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bD" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
-"bE" = (/obj/item/flashlight/torch/on/unlimited,/obj/structure/barricade/sandstone_h{opacity = 1},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"bE" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateFR"},/obj/structure/torch_stand/full{dir = 8},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bF" = (/obj/structure/bed/chair/comfy/red,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bG" = (/obj/structure/closet/crate/wood,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "bH" = (/obj/structure/window/barrier/railing{icon_state = "sandstone"; dir = 8; climbable = 0},/obj/structure/window/barrier/railing{climbable = 0},/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Inner Fortress"})
-"bI" = (/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"bI" = (/obj/structure/potted_plant,/obj/structure/torch_stand/full{dir = 8},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bJ" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Inner Fortress"})
 "bK" = (/obj/structure/table/wood,/obj/item/weapon/storage/bible,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bL" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
@@ -105,10 +105,10 @@
 "ca" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "cb" = (/obj/structure/barricade/sandstone_v/crenelated,/obj/covers/sandstone,/turf/floor/dirt/dust,/area/caribbean/crusader/sand)
 "cc" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/herbs,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
-"cd" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"cd" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/obj/structure/torch_stand/full{dir = 4},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "ce" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "cf" = (/obj/structure/barricade/sandstone_h,/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Walls"})
-"cg" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"cg" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/obj/structure/torch_stand/full{dir = 8},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "ch" = (/obj/item/weapon/material/spear,/turf/floor/beach/water,/area/caribbean/forest/dirt)
 "ci" = (/obj/structure/barricade/horizontal,/obj/structure/sign/custom{name = "Armory"},/obj/structure/window/barrier/railing{climbable = 0},/turf/floor/dirt/dust,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "cj" = (/obj/structure/barricade/sandstone_h,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
@@ -392,6 +392,8 @@
 "hC" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/one)
 "hD" = (/obj/structure/repair/grindstone,/turf/floor/dirt/dust,/area/caribbean/arab/sand)
 "hE" = (/obj/item/weapon/storage/bible/quran,/obj/structure/table/fancy,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
+"uf" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 9},/obj/structure/torch_stand/full{dir = 4},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"Vr" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateFR"},/obj/structure/torch_stand/full{dir = 4},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 
 (1,1,1) = {"
 cmcmcmcmcmcmcEcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcEcEcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcEcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcmcEcmcmcmcmcmcmcmcmcmcmcmcmcEcmcmcm
@@ -419,11 +421,11 @@ aqaqaqaqaqaqaqaqaqgkfKcmcmbxgiaqasasasasaqaqdidncUcucUcuaSatataIbvcIbvaJdKaBaYaN
 aqaqaqasasasaqaqaqgygzfKcuguaqaqasasasasasaqbpcucucucucuawatataIbnbfbnaJdKaBaBaBaBbgaNaNbgaNaBaBaBaBehehaVatatatakamamanamamamcMaqaqasasasasasasasaqaqbpadcmcucu
 asaqaqasasasaqaqasaqaqgAcJgiaqasasasasasasaqbpcucucucucuawatataIcNbfbnaJdKaBbhbiaBaBbjbkbjaBaBbibhaBehehaVcxatarbsatatatatatatdmaqaqasasasasasasasaqaqgkcJcJfKcu
 asasaqaqasasaqaqasasaqaqaqaqaqasasasasaqaqaqbpcucucucucuawatataIcWbnbnaJdKbqbtbibkbibyaNbybibkbibtbqehehehaCeqbBakatatatataratdmaqaqaqasasasasasasasaqaqaqaqgncJ
-aqaqaqaqaqaqaqasasasasasasasasasasasasaqaqdidncucucUcucuawatatbCcicpbnapdKaBbDbybEbibibFbibibEbIbKaBehfoehaUeqdUayayayayaEatatdzcYaqaqasasasasasasasaqaqaqaqaqaq
+aqaqaqaqaqaqaqasasasasasasasasasasasasaqaqdidncucucUcucuawatatbCcicpbnapdKaBbDufaBbEbibFbiVraBbIbKaBehfoehaUeqdUayayayayaEatatdzcYaqaqasasasasasasasaqaqaqaqaqaq
 cscucsgDgDgEaqaqasasasasasasasasasasasaqaqdAamamamanamamakatatatdbcHehehehbjaBaBaBbibObQbRbiaBaBaBbjfYehehaUeqdUbabababaaKatataFdccYaqaqasasasasasaqaqaqaqaqaqas
 cscucsbucugGgEaqaqaqaqasasasasasasasasaqaqdMbmatatatatatbsatatcxbXbBdKbUehaBbhbiaBbibObVbRbiaBbibhaBfYehdKaUeqdUbababaaHaKatatavcuguaqaqasasasasasasasasaqaqasas
 cscscscucucugGgDgDgIaqaqasasasasasasasaqaqdMatatatatatatakcvcvcvbzeqaDfoehbqbtbibkbibOcabRbibkbibtbqfZehdKaUeqdUbabaaHcPaKatatavcudcgJaqasasasasasasasasaqaqaqas
-cmcmcmdgcmcmadcucugGgEaqasasasasasasasasaqdMataxayayayaybabaaHbacbeqaDdKehaBcccdbEbibOcebRbibEcgbDaBcQehcSaUeqdUbabababdbeatatavcucuguaqaqasasasasasaqaqaqaqasas
+cmcmcmdgcmcmadcucugGgEaqasasasasasasasasaqdMataxayayayaybabaaHbacbeqaDdKehaBcccdaBbEbOcebRVraBcgbDaBcQehcSaUeqdUbabababdbeatatavcucuguaqaqasasasasasaqaqaqaqasas
 cEcmcmcEcmcmcmcucucugKaqaqaqasasasasasasaqdMataGaLaLaLbababaaHbacbeqaDdKehbjcjcjcjbibOcabRbiaBaBaBbjehehbTcAeqgaaXaXaXblblatatavcucuguaqaqasasasasaqaqaqaqaqaqaq
 cmcmcEagcmcmcmcmdgcUgGgEaqaqasasasasasasaqdMatbHbdbababababababacbeqcDbTehdKdKdKcjbibibibibiaBgbgcgdehehcFcFeqdUaXbabaayaEatatavcUcuguaqaqasasasaqaqaqaqgLgDddgD
 cmcmcmcEcmcmcmcmcEcmcugGgEaqasasasasasasaqdMatbJbJaXaXaXaXaXaXaXgeeqdbdbehdKdJdKcXbqbjdLbjbqbjdKdKgdehehaAaCeqdUaXbabaaLaKatataFcucuguaqaqasasasaqgLgDgDgMcscscs

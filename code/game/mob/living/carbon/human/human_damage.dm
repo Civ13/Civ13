@@ -65,6 +65,31 @@
 		brainloss = FALSE
 	return brainloss
 
+//Straight pain values, not affected by painkillers etc
+/mob/living/human/getHalLoss()
+	var/amount = 0
+	for(var/obj/item/organ/external/E in organs)
+		amount += E.get_pain()
+	return amount
+
+/mob/living/human/setHalLoss(var/amount)
+	adjustHalLoss(getHalLoss()-amount)
+
+/mob/living/human/adjustHalLoss(var/amount)
+	var/heal = (amount < 0)
+	amount = abs(amount)
+	var/list/pick_organs = organs.Copy()
+	while(amount > 0 && pick_organs.len)
+		var/obj/item/organ/external/E = pick(pick_organs)
+		pick_organs -= E
+		if(!istype(E))
+			continue
+
+		if(heal)
+			amount -= E.remove_pain(amount)
+		else
+			amount -= E.add_pain(amount)
+
 //These procs fetch a cumulative total damage from all organs
 /mob/living/human/getBruteLoss()
 	var/amount = FALSE
@@ -337,3 +362,27 @@ This function restores all organs.
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
 	return created_wound
+
+// Find out in how much pain the mob is at the moment.
+/mob/living/human/proc/get_shock()
+	if(!can_feel_pain())
+		return FALSE
+
+	var/traumatic_shock = getHalLoss()                 // Pain.
+	traumatic_shock -= chem_effects[CE_PAINKILLER] // TODO: check what is actually stored here.
+
+	if(stat == UNCONSCIOUS)
+		traumatic_shock *= 0.6
+
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ && (organ.is_broken() || organ.open))
+			traumatic_shock += 30
+
+	if (bloodstr)
+		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
+			traumatic_shock -= E.volume/4
+		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
+			traumatic_shock -= A.volume*2
+		for (var/datum/reagent/opium/O in ingested.reagent_list)
+			traumatic_shock -= O.volume/2
+	return max(0,traumatic_shock)

@@ -18,7 +18,7 @@
 
 /obj/effect/spawner/lootdrop/guns/industrial
 	name = "gun spawner"
-	loot = list(/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/boltaction/singleshot,/obj/item/weapon/gun/projectile/leveraction/winchester,/obj/item/weapon/gun/projectile/revolver/peacemaker)
+	loot = list(/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/boltaction/singleshot,/obj/item/weapon/gun/projectile/leveraction/winchesterm1873,/obj/item/weapon/gun/projectile/revolver/peacemaker)
 
 /obj/effect/spawner/lootdrop/guns/medieval
 	name = "gun spawner"
