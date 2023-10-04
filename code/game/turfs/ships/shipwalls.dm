@@ -2,6 +2,7 @@
 	name = "wall"
 	desc = "A thin wood ship wall."
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
+	dismantlable = FALSE
 
 /obj/structure/barricade/ship
 	name = "wall"

@@ -72,7 +72,7 @@
 	var/pain = FALSE
 	var/fracturetimer = 0
 	var/artery_name = "artery"		 	// Flavour text for carotid artery, aorta, etc.
-	var/arterial_bleed_severity = 1		// Multiplier for bleeding in a limb.
+	var/arterial_bleed_severity = 2		// Multiplier for bleeding in a limb.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -173,19 +173,21 @@
 	return FALSE
 
 /obj/item/organ/external/proc/dislocate(var/primary)
-	if (dislocated != -1)
-		if (primary)
-			dislocated = 2
-		else
-			dislocated = TRUE
-	owner.verbs |= /mob/living/human/proc/undislocate
+	if (dislocated == -1)
+		return
+	if (primary)
+		dislocated = 2
+	else
+		dislocated = 1
+	if (owner)
+		owner.verbs |= /mob/living/human/proc/undislocate
 	if (children && children.len)
 		for (var/obj/item/organ/external/child in children)
 			child.dislocate()
 
 /obj/item/organ/external/proc/undislocate()
 	if (dislocated != -1)
-		dislocated = FALSE
+		dislocated = 0
 	if (children && children.len)
 		for (var/obj/item/organ/external/child in children)
 			if (child.dislocated == TRUE)
@@ -201,12 +203,12 @@
 	damage = min(max_damage, (brute_dam + burn_dam))
 	pain = min(max_damage, (brute_dam + burn_dam))
 	if (damage > max_damage)
-		if (prob(20))
+		if (prob(damage - max_damage))
 			droplimb(0,DROPLIMB_EDGE)
 			for(var/mob/living/human/NB in view(6,src))
 				if (!NB.orc)
-					NB.mood -= 9
-					//NB.ptsd += 1
+					NB.mood -= 10
+					// NB.ptsd += 1
 	return
 
 
@@ -786,7 +788,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 					"<span class='danger'>\The [owner]'s [name] flies off in an arc!</span>",\
 					"<span class='moderate'><b>Your [name] goes flying off!</b></span>",\
 					"<span class='danger'>You hear a terrible sound of [gore_sound].</span>")
-			playsound(owner, 'sound/effects/gore/severed.ogg', 100, FALSE)//Pay the sound whether or not it's being amputated cleanly. Because I ilke that sound.
+			playsound(owner, 'sound/effects/gore/severed.ogg', 100, FALSE) // Play the sound whether or not it's being amputated cleanly. Because I ilke that sound.
 		if (DROPLIMB_BURN)
 			var/gore = " of burning flesh"
 			owner.visible_message(
@@ -801,34 +803,43 @@ Note that amputating the affected organ does in fact remove the infection from t
 					"<span class='danger'>\The [owner]'s [name] explodes[gore]!</span>",\
 					"<span class='moderate'><b>Your [name] explodes[gore]!</b></span>",\
 					"<span class='danger'>You hear the [gore_sound].</span>")
-				playsound(owner, "chop", 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE) //Splat.
 			else
 				owner.death()
-				playsound(owner, "chop", 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE) //Splat.
 
 	var/mob/living/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
 
-	if (disintegrate != DROPLIMB_BLUNT)
-		removed(null, ignore_children)
+	var/use_flesh_colour = species.get_flesh_colour(owner)
+	var/use_blood_colour = species.get_blood_colour(owner)
 
-		victim.traumatic_shock += 60
+	removed(null, ignore_children)
+	add_pain(60)
+	if(!clean)
+		victim.shock_stage += min_broken_damage
 
-		if (parent_organ)
-			var/datum/wound/lost_limb/W = new (src, disintegrate, clean)
+	if (parent_organ)
+		var/datum/wound/lost_limb/W = new (src, disintegrate, clean)
+		if(clean)
+			parent_organ.wounds |= W
+			parent_organ.update_damages()
+		else
 			var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
-			stump.artery_name = "mangled [artery_name]"
 			stump.name = "stump of \a [name]"
+			stump.artery_name = "mangled [artery_name]"
+			stump.arterial_bleed_severity = arterial_bleed_severity
 			stump.wounds |= W
 			victim.organs |= stump
+			if(disintegrate != DROPLIMB_BURN)
+				stump.sever_artery()
 			stump.update_damages()
-
 	spawn(1)
-		if (victim)
-			victim.updatehealth()
-			victim.UpdateDamageIcon()
-			victim.regenerate_icons()
+		victim.updatehealth()
+		victim.UpdateDamageIcon()
+		victim.regenerate_icons()
 		dir = 2
+
 	victim.instadeath_check()
 	switch(disintegrate)
 		if (DROPLIMB_EDGE)
@@ -845,32 +856,28 @@ Note that amputating the affected organ does in fact remove the infection from t
 		if (DROPLIMB_BURN)
 			new /obj/effect/decal/cleanable/ash(get_turf(victim))
 			for (var/obj/item/I in src)
-				if (I.w_class > 2 && !istype(I,/obj/item/organ))
+				if (I.w_class > ITEM_SIZE_SMALL && !istype(I,/obj/item/organ))
 					I.loc = get_turf(src)
 			qdel(src)
 		if (DROPLIMB_BLUNT)
-			if (!istype(src, /obj/item/organ/external/head))
-				var/obj/effect/decal/cleanable/blood/gibs/gore = new victim.species.single_gib_type(get_turf(victim))
-				if (victim.species.flesh_color)
-					gore.fleshcolor = victim.species.flesh_color
-				if (victim.species.blood_color)
-					gore.basecolor = victim.species.blood_color
+			var/obj/effect/decal/cleanable/blood/gibs/gore = new victim.species.single_gib_type(get_turf(victim))
+			if(species)
+				gore.fleshcolor = use_flesh_colour
+				gore.basecolor =  use_blood_colour
 				gore.update_icon()
-				gore.throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,3),30)
 
-				for (var/obj/item/organ/I in internal_organs)
-					I.removed()
-					if (istype(loc,/turf))
-						I.throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,3),30)
+			gore.throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,3),30)
 
-				for (var/obj/item/I in src)
-					if (I.w_class <= 2)
-						qdel(I)
-						continue
-					I.loc = get_turf(src)
+			for (var/obj/item/organ/I in internal_organs)
+				I.removed()
+				if (istype(loc,/turf))
 					I.throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,3),30)
 
-				qdel(src)
+			for (var/obj/item/I in src)
+				I.loc = get_turf(src)
+				I.throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,3),30)
+
+			qdel(src)
 
 /****************************************************
 			   HELPERS
@@ -1137,6 +1144,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	cannot_amputate = TRUE
 	parent_organ = null
 	artery_name = "aorta"
+	arterial_bleed_severity = 2
 	encased = "ribcage"
 	cavity_name = "thoracic"
 
@@ -1156,6 +1164,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	dislocated = -1
 //	gendered_icon = TRUE
 	artery_name = "iliac artery"
+	arterial_bleed_severity = 2
 	cavity_name = "abdominal"
 
 /obj/item/organ/external/arm
@@ -1171,6 +1180,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
+	arterial_bleed_severity = 1
+
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
 	name = "right arm"
@@ -1193,6 +1204,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left hip"
 	can_stand = TRUE
 	artery_name = "femoral artery"
+	arterial_bleed_severity = 1
+
 /obj/item/organ/external/leg/right
 	limb_name = "r_leg"
 	name = "right leg"
@@ -1215,6 +1228,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left ankle"
 	amputation_point = "left ankle"
 	can_stand = TRUE
+	artery_name = "dorsal artery"
+	arterial_bleed_severity = 1
+
 /obj/item/organ/external/foot/removed()
 	if (owner) owner.u_equip(owner.shoes)
 	..()
@@ -1241,6 +1257,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left wrist"
 	amputation_point = "left wrist"
 	can_grasp = TRUE
+	artery_name = "radial artery"
+	arterial_bleed_severity = 1
+
 /obj/item/organ/external/hand/removed()
 	owner.u_equip(owner.gloves)
 	..()
@@ -1267,6 +1286,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "jaw"
 	amputation_point = "neck"
 	artery_name = "carotid artery"
+	arterial_bleed_severity = 2
+
 	var/list/teeth_list = list()
 	var/max_teeth = 32
 	var/eye_icon = "eyes_s"
@@ -1275,13 +1296,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/head/removed()
 	if (owner)
 		name = "[owner.real_name]'s head"
-		owner.u_equip(owner.head)
-		owner.u_equip(owner.l_ear)
-		owner.u_equip(owner.r_ear)
-		owner.u_equip(owner.wear_mask)
+		owner.drop_from_inventory(owner.head)
+		owner.drop_from_inventory(owner.l_ear)
+		owner.drop_from_inventory(owner.r_ear)
+		owner.drop_from_inventory(owner.wear_mask)
 		spawn(1)
-			if (owner)
-				owner.update_hair()
+			owner.update_hair()
 	..()
 
 /obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list())
@@ -1408,7 +1428,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return -(pain-last_pain)
 
 /obj/item/organ/external/proc/add_pain(var/amount)
-
+	if(!can_feel_pain())
+		pain = 0
+		return
 	update_health()
 	var/last_pain = pain
 	pain = max(0,min(max_damage,pain+amount))

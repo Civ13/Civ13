@@ -212,10 +212,7 @@ var/list/coefflist = list()
 				return
 			else
 				var/atom/target = get_edge_target_turf(src, get_dir(src, get_step_away(src, src)))
-				throw_at(target, 200, 4)
-			//return
-//				var/atom/target = get_edge_target_turf(user, get_dir(src, get_step_away(user, src)))
-				//user.throw_at(target, 200, 4)
+				throw_at(target, 15, 4)
 
 		if (2.0)
 			b_loss += 60

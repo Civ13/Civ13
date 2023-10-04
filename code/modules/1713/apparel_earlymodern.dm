@@ -1535,7 +1535,9 @@
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_gren
 	can_hold = list(
-		/obj/item/weapon/gun/projectile/pistol
+		/obj/item/weapon/gun/projectile/pistol,
+		/obj/item/ammo_magazine,
+		/obj/item/stack/medical/bruise_pack/gauze
 	)
 /obj/item/weapon/storage/belt/smallpouches/olive/us_gren/New()
 	..()

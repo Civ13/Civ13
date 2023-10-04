@@ -326,15 +326,13 @@ default behaviour is:
 	brainloss = amount
 
 /mob/living/proc/getHalLoss()
-	return halloss
+	return 0
 
 /mob/living/proc/adjustHalLoss(var/amount)
-	if (status_flags & GODMODE)	return FALSE	//godmode
-	halloss = min(max(halloss + amount, FALSE),(maxHealth*2))
+	adjustBruteLoss(amount * 0.5)
 
 /mob/living/proc/setHalLoss(var/amount)
-	if (status_flags & GODMODE)	return FALSE	//godmode
-	halloss = amount
+	adjustBruteLoss((amount * 0.5)-getBruteLoss())
 
 /mob/living/proc/getTotalLoss()
 	return getBruteLoss() + getOxyLoss() + getToxLoss() + getBurnLoss() + getCloneLoss() + getBrainLoss() + getHalLoss()

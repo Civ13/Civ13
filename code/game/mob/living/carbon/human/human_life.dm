@@ -1341,48 +1341,50 @@
 
 /mob/living/human/proc/handle_shock()
 	..()
-	if (status_flags & GODMODE)	return FALSE	//godmode
-	if (species && species.flags & NO_PAIN) return
-
-	if (health < config.health_threshold_softcrit)// health FALSE makes you immediately collapse
-		shock_stage = max(shock_stage, 61)
-
-	traumatic_shock = updateshock()
-	if (traumatic_shock >= 80 && shock_stage < 160)
+	if(status_flags & GODMODE)	return FALSE	//godmode
+	if(!can_feel_pain())
+		shock_stage = 0
+		return
+		
+	var/traumatic_shock = get_shock()
+	if(traumatic_shock >= max(30, 0.8*shock_stage))
 		shock_stage += 1
-
-	else if (health < config.health_threshold_softcrit)
-		shock_stage = max(shock_stage, 61)
 	else
 		shock_stage = min(shock_stage, 160)
-		shock_stage = max(shock_stage-1, FALSE)
+		var/recovery = 1
+		if(traumatic_shock < 0.5 * shock_stage) // Fower shock faster if pain is gone completely
+			recovery++
+		if(traumatic_shock < 0.25 * shock_stage)
+			recovery++
+		shock_stage = max(shock_stage - recovery, 0)
 		return
+	if (stat == UNCONSCIOUS) return FALSE // If they're unconscious they won't feel pain
 
 	if (shock_stage == 10)
-		src << "<span class='danger'>[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!</span>"
+		custom_pain("[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!", 10, nohalloss = TRUE)
 
-	if (shock_stage >= 55)
-		if (shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
+	if (shock_stage >= 40)
+		if (shock_stage == 40) emote("me",1,"is having trouble keeping their eyes open.")
 		eye_blurry = max(2, eye_blurry)
 		stuttering = max(stuttering, 5)
 
 	if (shock_stage == 50)
-		src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
+		custom_pain("[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!", 40, nohalloss = TRUE)
 
 	if (shock_stage >= 70)
 		if (shock_stage == 90) emote("me",1,"'s body becomes limp.")
 		if (prob(2))
-			src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
-			Weaken(20)
+			custom_pain("[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!", shock_stage, nohalloss = TRUE)
+			Weaken(10)
 
 	if (shock_stage >= 80)
 		if (prob(5))
-			src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
+			custom_pain("[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!", shock_stage, nohalloss = TRUE)
 			Weaken(20)
 
 	if (shock_stage >= 120)
 		if (prob(2))
-			src << "<span class='danger'>[pick("You black out", "You feel like you could die any moment now", "You're about to lose consciousness")]!</span>"
+			custom_pain("[pick("You black out", "You feel like you could die any moment now", "You're about to lose consciousness")]!", shock_stage, nohalloss = TRUE)
 			Paralyse(5)
 
 	if (shock_stage == 150)
@@ -1397,6 +1399,7 @@
 		spawn(1200)
 			if (getBruteLoss() >= 150)
 				death()
+
 /mob/living/human/proc/handle_hud_list()
 	if (stat == DEAD)
 		hud_list[BASE_FACTION].icon_state = ""
