@@ -374,4 +374,15 @@ This function restores all organs.
 	if(stat == UNCONSCIOUS)
 		traumatic_shock *= 0.6
 
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ && (organ.is_broken() || organ.open))
+			traumatic_shock += 30
+
+	if (bloodstr)
+		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
+			traumatic_shock -= E.volume/4
+		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
+			traumatic_shock -= A.volume*2
+		for (var/datum/reagent/opium/O in ingested.reagent_list)
+			traumatic_shock -= O.volume/2
 	return max(0,traumatic_shock)

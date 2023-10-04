@@ -449,15 +449,15 @@
 
 		var/turf/floor/F = mob_loc
 		var/F_is_valid_floor = istype(F)
-		var/standing_on_snow = FALSE
+		var/standing_on_snow = 0
 
 		var/mob/living/human/H = mob
 		if (F && ishuman(H) && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
-			var/no_snow = FALSE
+			var/snow = TRUE
 			for (var/obj/covers/CV in get_turf(F))
-				no_snow = TRUE
+				snow = FALSE
 			for(var/obj/effect/flooding/FLD in get_turf(F))
 				switch(FLD.flood_level)
 					if (1)
@@ -481,8 +481,8 @@
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE && !H.lizard)
-				standing_on_snow = TRUE
+			if (F.icon == 'icons/turf/snow.dmi' && snow && !H.lizard)
+				standing_on_snow = 1
 				if (prob(50))
 					standing_on_snow = 1.25
 					snow_message = "You're slowed down a bit by the snow."
