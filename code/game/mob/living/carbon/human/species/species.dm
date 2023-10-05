@@ -40,28 +40,28 @@
 	var/max_age = 75
 
 	// Language/culture vars.
-	var/default_language = "Galactic Common" // Default language is used when 'say' is used without modifiers.
-	var/language = "Galactic Common"		 // Default racial language, if any.
-	var/list/secondary_langs = list()		// The names of secondary languages that are available to this species.
-	var/list/speech_sounds				   // A list of sounds to potentially play when speaking.
-	var/list/speech_chance				   // The likelihood of a speech sound playing.
-	var/num_alternate_languages = FALSE		  // How many secondary languages are available to select at character creation
-	var/name_language = "Galactic Common"	// The language to use when determining names for this species, or null to use the first name/last name generator
+	var/default_language = "Galactic Common" 	// Default language is used when 'say' is used without modifiers.
+	var/language = "Galactic Common"		 	// Default racial language, if any.
+	var/list/secondary_langs = list()			// The names of secondary languages that are available to this species.
+	var/list/speech_sounds				   		// A list of sounds to potentially play when speaking.
+	var/list/speech_chance				   		// The likelihood of a speech sound playing.
+	var/num_alternate_languages = FALSE		  	// How many secondary languages are available to select at character creation
+	var/name_language = "Galactic Common"		// The language to use when determining names for this species, or null to use the first name/last name generator
 
 	// Combat vars.
-	var/total_health = 100				   // Point at which the mob will enter crit.
-	var/list/unarmed_types = list(		   // Possible unarmed attacks that the mob will use in combat,
+	var/total_health = 100				   		// Point at which the mob will enter crit.
+	var/list/unarmed_types = list(		   		// Possible unarmed attacks that the mob will use in combat,
 		/datum/unarmed_attack,
 		/datum/unarmed_attack/bite
 		)
-	var/list/unarmed_attacks = null		  // For empty hand harm-intent attack
-	var/brute_mod =	 TRUE					// Physical damage multiplier.
-	var/burn_mod =	  TRUE					// Burn damage multiplier.
-	var/oxy_mod =	   TRUE					// Oxyloss modifier
-	var/toxins_mod =	TRUE					// Toxloss modifier
-	var/radiation_mod = TRUE					// Radiation modifier
-	var/flash_mod =	 TRUE					// Stun from blindness modifier.
-	var/vision_flags = SEE_SELF			  // Same flags as glasses.
+	var/list/unarmed_attacks = null		 		// For empty hand harm-intent attack
+	var/brute_mod =	1.0							// Physical damage multiplier.
+	var/burn_mod = 1.0							// Burn damage multiplier.
+	var/oxy_mod = 1.0							// Oxyloss modifier
+	var/toxins_mod = 1.0						// Toxloss modifier
+	var/radiation_mod = 1.0						// Radiation modifier
+	var/flash_mod =	1.0							// Stun from blindness modifier.
+	var/vision_flags = SEE_SELF					// Same flags as glasses.
 
 	// Death vars.
 	var/meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/human
@@ -70,7 +70,7 @@
 	var/gibbed_anim = "gibbed-h"
 	var/dusted_anim = "dust-h"
 	var/death_sound
-	var/death_message = ""//"seizes up and falls limp, their eyes dead and lifeless..."
+	var/death_message = "" // "seizes up and falls limp, their eyes dead and lifeless..."
 	var/knockout_message = "has been knocked unconscious!"
 	var/halloss_message = "slumps to the ground, too weak to continue fighting."
 	var/halloss_message_self = "You're in too much pain to keep going..."
