@@ -338,7 +338,7 @@ datum/wound/cut/massive
 	stages = list("big gaping hole" = 50, "healing gaping hole" = 20, "large blood soaked clot" = 15, "large angry scar" = 10, "large round scar" = FALSE)
 	damage_type = PIERCE
 
-datum/wound/puncture/massive
+/datum/wound/puncture/massive
 	max_bleeding_stage = 3
 	stages = list("massive wound" = 60, "massive healing wound" = 30, "massive blood soaked clot" = 25, "massive angry scar" = 10,  "massive jagged scar" = FALSE)
 	damage_type = PIERCE
