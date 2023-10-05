@@ -18,10 +18,6 @@
 	dir = SOUTH
 	organ_tag = "limb"
 
-	// Damage vars.
-	var/brute_mod = 1.0
-	var/burn_mod = 1.0
-
 	var/nationality = null
 
 	// Appearance vars.
@@ -252,51 +248,22 @@
 
 
 /obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null)
-	brute = round(brute * brute_mod, 0.1)
-	burn = round(burn * burn_mod, 0.1)
+	brute = round(brute * species.brute_mod, 0.1)
+	burn = round(burn * species.burn_mod, 0.1)
 	if((brute <= 0) && (burn <= 0))
 		return 0
 
-	// High brute damage or sharp objects may damage internal organs
-	var/damage_amt = brute
-	var/cur_damage = brute_dam
-	if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || (((sharp && damage_amt >= 5) || damage_amt >= 10) && prob(5))))
-		// Damage an internal organ
-		var/list/victims = list()
-		for(var/obj/item/organ/I in internal_organs)
-			if(I.damage < I.max_damage && prob(I.relative_size))
-				victims += I
-		if(!victims.len)
-			victims += pick(internal_organs)
-		for(var/obj/item/organ/victim in victims)
-			brute /= 2
-			damage_amt /= 2
-			victim.take_damage(damage_amt)
+	var/blunt = brute && !sharp && !edge
 
-	if(status & ORGAN_BROKEN && brute)
-		jostle_bone(brute)
-//		if(can_feel_pain() && prob(40))
-//			owner.emote("scream")	//getting hit on broken hand hurts
-	var/canbreak = TRUE
-	if(blunt_dam > min_broken_damage && prob(blunt_dam)) //blunt damage is gud at fracturing
-		if (canbreak)
-			if (istype(used_weapon, /obj/item/projectile))
-				if (prob(35))
-					fracture()
-			else
-				fracture()
-
-	if(brute_dam*0.8 > min_broken_damage && prob(brute_dam*0.7))
-		if (canbreak)
-			if (istype(used_weapon, /obj/item/projectile))
-				if (prob(18))
-					fracture()
-			else
-				fracture()
+	/*
+	if(used_weapon)
+		add_autopsy_data("[used_weapon]", brute + burn)
+	*/
 
 	var/can_cut = (prob(brute*2) || sharp)
 	var/spillover = 0
 	var/pure_brute = brute
+	var/pure_burn = burn
 	if(!is_damageable(brute + burn))
 		spillover =  brute_dam + burn_dam + brute - max_damage
 		if(spillover > 0)
@@ -305,86 +272,122 @@
 			spillover = brute_dam + burn_dam + brute + burn - max_damage
 			if(spillover > 0)
 				burn -= spillover
+	
+	owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
+	//If limb took enough damage, try to cut or tear it off
+	if(owner && loc == owner && !is_stump() && !cannot_amputate && config.limbs_can_break)
+		var/edge_eligible = FALSE
+		if(edge) // Check if the w_class is higher than our limb, so we don't cut off a limb with say, a scalpel
+			if(istype(used_weapon,/obj/item))
+				var/obj/item/W = used_weapon
+				if(W.w_class >= w_class)
+					edge_eligible = TRUE
+			else
+				edge_eligible = TRUE
+		if (!(istype(used_weapon, /obj/item/projectile)))
+			if (attempt_dismemberment(pure_brute, pure_burn, edge_eligible, used_weapon, spillover, (brute+burn>=max_damage*2)))
+				for(var/mob/living/human/NB in view(6,src))
+					if (!NB.orc)
+						NB.mood -= 10
+						// NB.ptsd += 1
+				return
+
+	// High brute damage or sharp objects may damage internal organs
+	if(internal_organs?.len)
+		var/internal_damage = pure_brute
+		damage_internal_organs(internal_damage, sharp, edge)
+
+	if(status & ORGAN_BROKEN && brute)
+		jostle_bone(brute)
+		if(can_feel_pain() && prob(40))
+			//getting hit on broken hand hurts
+			owner.emote("scream")
+	if(blunt_dam > min_broken_damage && prob(blunt_dam + brute * (1+blunt)) ) //blunt damage is gud at fracturing
+		if (istype(used_weapon, /obj/item/projectile))
+			if (prob(35))
+				fracture()
+		else
+			fracture()
+
 	// If the limbs can break, make sure we don't exceed the maximum damage a limb can take before breaking
 	// Non-vital organs are limited to max_damage. You can't kill someone by bludeonging their arm all the way to 200 -- you can
 	// push them faster into paincrit though, as the additional damage is converted into shock.
-
 	var/datum/wound/created_wound
-	if(is_damageable(brute + burn))
-		if(brute)
-			if(can_cut)
-				//need to check sharp again here so that blunt damage that was strong enough to break skin doesn't give puncture wounds
-				if(sharp && !edge)
-					created_wound = createwound( PIERCE, brute )
-				else
-					created_wound = createwound( CUT, brute )
+
+	if(brute)
+		var/to_create = BRUISE
+		if(can_cut)
+			//need to check sharp again here so that blunt damage that was strong enough to break skin doesn't give puncture wounds
+			if(sharp && !edge)
+				to_create = PIERCE
 			else
-				createwound( BRUISE, brute )
-		if(burn)
-			createwound( BURN, burn )
-	else
-		//If there are still hurties to dispense
-		if (spillover && owner)
-			owner.shock_stage += spillover * config.organ_damage_spillover_multiplier
+				to_create = CUT
+		created_wound = createwound(to_create, brute)
+
+	if(burn)
+		createwound(BURN, burn)
+
+	/*
+	//Initial pain spike
+	add_pain(0.6*burn + 0.4*brute)
+	*/
+
+	//Disturb treated burns
+	if(brute > 5)
+		var/disturbed = 0
+		for(var/datum/wound/burn/W in wounds)
+			if((W.disinfected || W.salved) && prob((brute + W.damage)/2))
+				W.disinfected = 0
+				W.salved = 0
+				disturbed += W.damage
+		if(disturbed)
+			to_chat(owner, SPAN_WARNING("Ow! Your burns were disturbed."))
+			add_pain(0.5*disturbed)
+
+	//If there are still hurties to dispense
+	if (spillover)
+		owner.shock_stage += spillover * config.organ_damage_spillover_multiplier
 
 	// sync the organ's damage with its wounds
-	src.update_damages()
-	if (owner)
-		owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
-	//If limb took enough damage, try to cut or tear it off
-	if(owner && loc == owner && !is_stump())
-		if(!cannot_amputate && (brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.organ_health_multiplier))
-			//organs can come off in three cases
-			//1. If the damage source is edge_eligible and the brute damage dealt exceeds the edge threshold, then the organ is cut off.
-			//2. If the damage amount dealt exceeds the disintegrate threshold, the organ is completely obliterated.
-			//3. If the organ has already reached or would be put over it's max damage amount (currently redundant),
-			//   and the brute damage dealt exceeds the tearoff threshold, the organ is torn off.
-			//Check edge eligibility
-			var/edge_eligible = 0
-			if(edge)
-				if(istype(used_weapon,/obj/item))
-					var/obj/item/W = used_weapon
-					if(W.w_class >= w_class)
-						edge_eligible = 1
-				else
-					edge_eligible = 1
-
-			if (!istype(used_weapon, /obj/item/projectile))
-				brute = pure_brute
-				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
-					if (prob(20))
-						droplimb(0, DROPLIMB_EDGE)
-						for(var/mob/living/human/NB in view(6,src))
-							if (!NB.orc)
-								NB.mood -= 10
-								//NB.ptsd += 1
-				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
-					if (prob(20))
-						droplimb(0, DROPLIMB_BURN)
-						for(var/mob/living/human/NB in view(6,src))
-							if (!NB.orc)
-								NB.mood -= 10
-								//NB.ptsd += 1
-				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
-					if (prob(20))
-						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/human/NB in view(6,src))
-							if (!NB.orc)
-								NB.mood -= 10
-								//NB.ptsd += 1
-				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
-					if (prob(20))
-						droplimb(0, DROPLIMB_BLUNT)
-						for(var/mob/living/human/NB in view(6,src))
-							if (!NB.orc)
-								NB.mood -= 10
-								//NB.ptsd += 1
+	update_damages()
+	owner.updatehealth()
 
 	if(owner && update_damstate())
 		owner.UpdateDamageIcon()
 
 	return created_wound
 
+/obj/item/organ/external/proc/damage_internal_organs(damage_amt = 0, sharp = FALSE, edge = FALSE)
+	var/cur_damage = brute_dam
+
+	var/organ_damage_threshold = 10
+	if(sharp)
+		if(edge)
+			organ_damage_threshold *= 0.75
+		else
+			organ_damage_threshold *= 0.5
+	//the bodypart needs to be a tiny bit beat up to cause organ damage
+	var/bodypart_damage_minimum = ceil(max_damage * 0.15)
+	//more damage, higher chance to damage organs
+	var/organ_damage_prob = 30 * damage_amt/organ_damage_threshold
+	//ribs protect
+	if(encased && !(status & ORGAN_BROKEN))
+		organ_damage_prob *= 0.5
+	//if all goes well...
+	if((cur_damage + damage_amt >= bodypart_damage_minimum || damage_amt >= organ_damage_threshold) && prob(organ_damage_prob))
+		//damage one internal organ based on size
+		var/list/victims = list()
+		for(var/obj/item/organ/I in internal_organs)
+			if(I.damage < I.max_damage)
+				victims[I] = I.relative_size
+		if(!victims.len)
+			return FALSE
+		var/obj/item/organ/victim = pickweight(victims)
+		if(victim)
+			if(istype(victim, /obj/item/organ/brain))
+				victim.take_damage(damage_amt)
+			else
+				victim.take_damage(damage_amt*0.5)
 
 /obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE, var/mob/living/human/healer = null)
 
@@ -1383,12 +1386,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/stack/teeth/generic //Used for species without unique teeth defined yet
 	name = "teeth"
 
-/obj/item/stack/proc/zero_amount()//Teeth shit
-	if (amount < 1)
-		qdel(src)
-		return TRUE
-	return FALSE
-
 
 /obj/item/organ/external/proc/sever_artery()
 	if(!(status & ORGAN_ARTERY_CUT) && species && species.has_organ["heart"])
@@ -1443,3 +1440,24 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/get_agony_multiplier()
 	return 1
+
+/obj/item/organ/external/proc/attempt_dismemberment(brute, burn, edge, used_weapon, spillover, force_droplimb)
+	if(force_droplimb)
+		if(brute >= burn)
+			droplimb(FALSE, edge ? DROPLIMB_EDGE : DROPLIMB_BLUNT)
+		else
+			droplimb(FALSE, DROPLIMB_BURN)
+		return TRUE
+
+	if(edge && brute + brute_dam >= max_damage / DROPLIMB_THRESHOLD_EDGE)
+		if((prob(brute/3) && !config.bones_can_break))
+			droplimb(FALSE, DROPLIMB_EDGE)
+			return TRUE
+	else if(burn+burn_dam >= max_damage / DROPLIMB_THRESHOLD_DESTROY)
+		if((prob(burn/3) && !config.bones_can_break))
+			droplimb(FALSE, DROPLIMB_BURN)
+			return TRUE
+	else if(brute+brute_dam >= max_damage / DROPLIMB_THRESHOLD_DESTROY)
+		if((prob(brute) && !config.bones_can_break))
+			droplimb(FALSE, DROPLIMB_BLUNT)
+			return TRUE
