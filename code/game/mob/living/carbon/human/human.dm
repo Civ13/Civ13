@@ -200,7 +200,6 @@ var/list/coefflist = list()
 		if (HUDtech.Find("flash"))
 			flick("flash", HUDtech["flash"])
 
-	var/shielded = FALSE
 	var/b_loss = null
 	var/f_loss = null
 	switch (severity)
@@ -212,7 +211,7 @@ var/list/coefflist = list()
 				return
 			else
 				var/atom/target = get_edge_target_turf(src, get_dir(src, get_step_away(src, src)))
-				throw_at(target, 15, 4)
+				throw_at(target, 8, 4)
 
 		if (2.0)
 			b_loss += 60
@@ -225,7 +224,7 @@ var/list/coefflist = list()
 			if (!istype(l_ear, /obj/item/clothing/ears/earmuffs) && !istype(r_ear, /obj/item/clothing/ears/earmuffs))
 				ear_damage += 30
 				ear_deaf += 120
-			if (prob(70) && !shielded)
+			if (prob(70))
 				Paralyse(10)
 
 		if (3.0)
@@ -236,10 +235,15 @@ var/list/coefflist = list()
 			if (!istype(l_ear, /obj/item/clothing/ears/earmuffs) && !istype(r_ear, /obj/item/clothing/ears/earmuffs))
 				ear_damage += 15
 				ear_deaf += 60
-			if (prob(50) && !shielded)
+			if (prob(50))
 				Paralyse(10)
 
 	var/update = FALSE
+
+	// factor in armour
+	var/protection = blocked_mult(getarmor(null, "bomb"))
+	b_loss *= protection
+	f_loss *= protection
 
 	// focus most of the blast on one organ
 	var/obj/item/organ/external/take_blast = pick(organs)
