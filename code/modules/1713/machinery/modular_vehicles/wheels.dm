@@ -106,10 +106,11 @@
 		if (spd <= 0)
 			return
 		else
-			H << "You increase the speed."
-			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
-			control.axis.vehicle_m_delay = spd
-			return
+			if (control.axis.currentspeed < control.axis.speedlist.len)
+				H << "You increase the speed."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
+				control.axis.vehicle_m_delay = spd
+				return
 
 
 /obj/item/vehicleparts/wheel/modular/secondary_attack_self(mob/living/human/user)
