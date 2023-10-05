@@ -40,7 +40,7 @@
 		var/obj/item/weapon/flint/F = W
 		if (!F.sharpened)
 			H << "<span class='warning'>You hit the rock with \the [W].</span>"
-			playsound(src,'sound/effects/Stamp.ogg',100,1)
+			playsound(src,'sound/effects/chop.ogg',100,1)
 			if (prob(20))
 				H << "\The [W] chips away, exposing a sharp edge!"
 				F.sharpen()

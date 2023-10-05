@@ -782,9 +782,9 @@
 		if(input != null)
 			if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
 				user << "You begin to mince the [input]."
-				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
-					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 					input = null
 					icon_state = "cutting_board_dirty"
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
@@ -794,9 +794,9 @@
 					return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(input, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
 				user << "You begin to mince the [input]."
-				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
-					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 					input = null
 					icon_state = "cutting_board_dirty"
 					new /obj/item/weapon/reagent_containers/food/snacks/mince(src.loc)
@@ -826,9 +826,9 @@
 				return
 			else if(istype(input, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
 				user << "You begin to mince the [input]."
-				playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+				playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 				if(do_after(user, 180))
-					playsound(loc, 'sound/effects/stamp.ogg', 60, TRUE)
+					playsound(loc, 'sound/effects/chop.ogg', 60, TRUE)
 					input = null
 					icon_state = "cutting_board_dirty"
 					new /obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat(src.loc)
