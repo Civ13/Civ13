@@ -245,7 +245,7 @@
 
 /obj/map_metadata/bank_robbery/proc/civ_status()
 	spawn(1200)
-		world << "<big>Evacuated hostages: [civilians_evacuated]/[civilians_alive] </big>"
+		world << "<big>Evacuated hostages: [civilians_evacuated] </big>"
 		world << "<big>Alive hostages: [civilians_alive] </big>"
 		world << "<big>Dead hostages: [total_killed] </big>"
 		civ_status()
@@ -259,7 +259,6 @@ var/message_spam_check_5 = FALSE
 var/message_spam_check_6 = FALSE
 
 /obj/map_metadata/bank_robbery/proc/round_status()
-
 	if ((civilians_evacuated == civilians_alive && civilians_alive != 0) && message_spam_check_1 == FALSE)
 		world << "<big><span class ='warning'>All remaining alive hostages have been evacuated! The Police is now securing the building with more units!</span></big>"
 		message_spam_check_1 = TRUE
@@ -281,6 +280,8 @@ var/message_spam_check_6 = FALSE
 	if ((civilians_killed["Police"] >= kill_treshold) && message_spam_check_6 == FALSE)
 		world << "<big><span class = 'danger'>The Police killed too many civilians: Robbers are bringing out the heavy artillery!</span></big>"
 		message_spam_check_6 = TRUE
+	spawn(10)
+		round_status()
 
 /obj/map_metadata/bank_robbery/proc/supplies() //To be rebalanced
 	var/next_level_police = 0
