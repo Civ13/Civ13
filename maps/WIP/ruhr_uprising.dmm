@@ -3707,11 +3707,6 @@
 	},
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
-"wQ" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/structure/closet/crate/brick,
-/turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
 "wS" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/item/ammo_magazine/gewehr98,
@@ -6503,14 +6498,6 @@
 	},
 /obj/structure/barricade/vertical,
 /turf/floor/grass,
-/area/caribbean)
-"Nf" = (
-/obj/structure/sign/flag/red2{
-	pixel_y = 32
-	},
-/obj/effect/decal/cleanable/dirt,
-/obj/structure/closet/crate/brick,
-/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Ni" = (
 /obj/item/weapon/clay/advclaybricks/fired/cement,
@@ -29368,7 +29355,7 @@ Em
 Em
 Em
 Em
-Nf
+Dz
 xI
 VW
 VW
@@ -29491,7 +29478,7 @@ PK
 PK
 BU
 Em
-wQ
+xI
 Ce
 VW
 VW
@@ -29614,7 +29601,7 @@ xr
 xr
 Ix
 cC
-wQ
+xI
 fs
 VW
 VW
@@ -29737,7 +29724,7 @@ xr
 xr
 Ix
 cC
-wQ
+xI
 xI
 VW
 VW
@@ -29860,7 +29847,7 @@ kR
 kR
 UV
 Em
-wQ
+xI
 xI
 VW
 VW
