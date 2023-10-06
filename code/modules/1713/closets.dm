@@ -4,7 +4,6 @@
 	icon_state = "cabinet_closed"
 	icon_closed = "cabinet_closed"
 	icon_opened = "cabinet_open"
-	store_mobs = FALSE
 
 /obj/structure/closet/cabinet/ceiling
 	name = "cabinet"
@@ -13,6 +12,7 @@
 	icon_closed = "cabinet_closed_ceiling"
 	icon_opened = "cabinet_open_ceiling"
 	anchored = TRUE
+	store_mobs = FALSE
 
 /obj/structure/closet/cabinet/first_aid
 	name = "first-aid closet"
@@ -24,6 +24,7 @@
 	density =  FALSE
 	wall_mounted = TRUE
 	storage_capacity = 2
+	store_mobs = FALSE
 	New()
 		..()
 		new /obj/item/weapon/storage/firstaid/advsmall(src)
@@ -38,6 +39,7 @@
 	density =  FALSE
 	wall_mounted = TRUE
 	storage_capacity = 1
+	store_mobs = FALSE
 	New()
 		..()
 		new /obj/item/weapon/defibrillator/loaded(src)
