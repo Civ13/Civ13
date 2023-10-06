@@ -4,6 +4,7 @@
 	icon_state = "cabinet_closed"
 	icon_closed = "cabinet_closed"
 	icon_opened = "cabinet_open"
+	store_mobs = FALSE
 
 /obj/structure/closet/cabinet/ceiling
 	name = "cabinet"
@@ -15,18 +16,31 @@
 
 /obj/structure/closet/cabinet/first_aid
 	name = "first-aid closet"
-	desc = "A wall-mounted storage unit for first-aid supplies"
+	desc = "A wall-mounted storage unit for first-aid supplies."
 	icon_state = "medical_wall"
 	icon_closed = "medical_wall"
 	icon_opened = "medical_wall_open"
 	anchored = TRUE
 	density =  FALSE
 	wall_mounted = TRUE
-	store_mobs = FALSE
 	storage_capacity = 2
 	New()
 		..()
 		new /obj/item/weapon/storage/firstaid/advsmall(src)
+
+/obj/structure/closet/cabinet/defibrillator
+	name = "defibrillator closet"
+	desc = "A wall-mounted storage unit for a defibrillator."
+	icon_state = "defib_wall"
+	icon_closed = "defib_wall"
+	icon_opened = "defib_wall_open"
+	anchored = TRUE
+	density =  FALSE
+	wall_mounted = TRUE
+	storage_capacity = 1
+	New()
+		..()
+		new /obj/item/weapon/defibrillator/loaded(src)
 
 /obj/structure/closet/cabinet/extinguisher_cabinet
 	name = "extinguisher cabinet"
@@ -37,7 +51,6 @@
 	anchored = TRUE
 	density = FALSE
 	wall_mounted = TRUE
-	store_mobs = FALSE
 	storage_capacity = 2
 	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/has_extinguisher
 
