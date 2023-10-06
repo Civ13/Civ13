@@ -245,7 +245,7 @@
 
 /obj/map_metadata/bank_robbery/proc/civ_status()
 	spawn(1200)
-		world << "<big>Evacuated hostages: [civilians_evacuated]/[12-civilians_alive] </big>"
+		world << "<big>Evacuated hostages: [civilians_evacuated] </big>"
 		world << "<big>Alive hostages: [civilians_alive] </big>"
 		world << "<big>Dead hostages: [total_killed] </big>"
 		civ_status()
