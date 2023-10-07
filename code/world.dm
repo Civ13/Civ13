@@ -302,6 +302,17 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += "realtime=[num2text(world.realtime, 20)]"
 	. += ";"
 	. += "world.address=[world.address]"
+	. += ";"
+	. += "round_timer=[roundduration2text()]"
+	. += ";"
+	if (map)
+		. += "map=[map.title]"
+		. += ";"
+		. += "epoch=[map.age]"
+		. += ";"
+		. += "season=[get_season()]"
+		. += ";"
+
 /proc/start_serverdata_loop()
 	spawn while (1)
 		var/F = file("serverdata.txt")
