@@ -123,6 +123,10 @@
 	icon_state = "arrow_vial"
 	volume = 15
 
+/obj/item/projectile/arrow/arrow/vial/New()
+	..()
+	create_reagents(volume)
+
 /obj/item/projectile/arrow/arrow/vial/poisonous
 	New()
 		..()
