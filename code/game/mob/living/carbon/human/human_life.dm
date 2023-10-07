@@ -1707,12 +1707,36 @@
 /mob/living/human/handle_fire()
 	if (..())
 		return
+	
+	if (prob(10))
+		src << pick(SPAN_DANGER("<big>OH MY GOD I AM ON FIRE!!!</big>"), SPAN_DANGER("<big>PUT IT OUT!!!</big>"), SPAN_DANGER("<big>I AM BURNING ALIVE!!!</big>", )SPAN_DANGER("<big>MY SKIN IS PEELING OFF!!!</big>"),)
+		emote("scream")
 
 	var/burn_temperature = fire_burn_temperature()
 	var/thermal_protection = get_heat_protection(burn_temperature)
 
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
+	
+	var/species_heat_mod = 1
+
+	var/protected_limbs = get_heat_protection_flags(burn_temperature)
+
+
+	if(species)
+		if(burn_temperature < species.heat_level_2)
+			species_heat_mod = 0.5
+		else if(burn_temperature < species.heat_level_3)
+			species_heat_mod = 0.75
+
+	burn_temperature -= species.heat_level_1
+
+	if(burn_temperature < 1)
+		return
+
+	for(var/obj/item/organ/external/E in organs)
+		if(!(E.body_part & protected_limbs) && prob(20))
+			E.take_damage(burn = round(species_heat_mod * log(10, (burn_temperature + 10)), 0.1), used_weapon = "Fire")
 
 /mob/living/human/handle_vision()
 
