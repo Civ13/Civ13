@@ -162,6 +162,7 @@ var/no_loop_cm2 = FALSE
 
 ///////////////////////////////////////////////////////////////////////
 var/no_loop_rot = FALSE
+
 /obj/map_metadata/rotstadt/update_win_condition()
 	if (world.time >= victory_time || round_finished)
 		if (win_condition_spam_check)
@@ -185,7 +186,7 @@ var/no_loop_rot = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavs</b> have captured the Redmenian stronghold! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RUSSIAN)
+				next_win = world.time + short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -194,7 +195,7 @@ var/no_loop_rot = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavs</b> have captured the Redmenian stronghold! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RUSSIAN)
+				next_win = world.time + short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -203,7 +204,7 @@ var/no_loop_rot = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavs</b> have captured the Redmenian stronghold! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RUSSIAN)
+				next_win = world.time + short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -212,7 +213,7 @@ var/no_loop_rot = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavs</b> have captured the Redmenian stronghold! They will win in {time} minutes."
-				next_win = world.time + short_win_time(RUSSIAN)
+				next_win = world.time + short_win_time(CIVILIAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -247,7 +248,7 @@ var/no_loop_rot = FALSE
 		dat += "[alive_civilians.len] Blugoslavians "
 
 	dat += "<br>"
-	
+
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 		if (!job.is_event)
 			continue
