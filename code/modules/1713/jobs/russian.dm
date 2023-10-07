@@ -2694,7 +2694,7 @@
 	return TRUE
 
 /datum/job/russian/modern_tanker
-	title = "Voditel' Tanka"
+	title = "Voditel Tanka"
 	en_meaning = "Armored Crewman"
 	rank_abbreviation = "Efr."
 	spawn_location = "JoinLateRU"
