@@ -1709,7 +1709,7 @@
 		return
 	
 	if (prob(10))
-		src << pick(SPAN_DANGER("<big>OH MY GOD I AM ON FIRE!!!</big>"), SPAN_DANGER("<big>PUT IT OUT!!!</big>"), SPAN_DANGER("<big>I AM BURNING ALIVE!!!</big>", )SPAN_DANGER("<big>MY SKIN IS PEELING OFF!!!</big>"),)
+		src << pick(SPAN_DANGER("<big>OH MY GOD I AM ON FIRE!!!</big>"), SPAN_DANGER("<big>PUT IT OUT!!!</big>"), SPAN_DANGER("<big>I AM BURNING ALIVE!!!</big>"), SPAN_DANGER("<big>MY SKIN IS PEELING OFF!!!</big>"))
 		emote("scream")
 
 	var/burn_temperature = fire_burn_temperature()
