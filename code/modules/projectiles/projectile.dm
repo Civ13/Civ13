@@ -277,23 +277,23 @@
 	return launch(target, target_zone, x_offset, y_offset)
 
 //Used to change the direction of the projectile in flight.
-/obj/item/projectile/proc/redirect(var/new_x, var/new_y, var/atom/starting_loc, var/mob/new_firer=null)
+/obj/item/projectile/proc/redirect(var/new_x, var/new_y, var/turf/starting_loc, var/mob/new_firer=null)
 	var/turf/new_target = locate(new_x, new_y, z)
+	if (src)
+		starting = starting_loc
+		original = new_target
+		current = starting_loc
+		loc = starting_loc
 
-	starting = starting_loc
-	original = new_target
-	current = starting_loc
-	loc = starting_loc
+		yo = new_target.y - starting_loc.y
+		xo = new_target.x - starting_loc.x
 
-	yo = new_target.y - starting_loc.y
-	xo = new_target.x - starting_loc.x
+		if (new_firer)
+			firer = get_turf(src)
+			firer_loc = get_turf(src)
+			firer_original_dir = get_dir(src.loc, new_target.loc)
 
-	if (new_firer)
-		firer = get_turf(src)
-		firer_loc = get_turf(src)
-		firer_original_dir = get_dir(src.loc, new_target.loc)
-
-	setup_trajectory()
+		setup_trajectory()
 
 //Called when the projectile intercepts a mob. Returns TRUE if the projectile hit the mob, FALSE if it missed and should keep flying.
 /obj/item/projectile/proc/attack_mob(var/mob/living/target_mob, var/distance, var/miss_modifier=0)
