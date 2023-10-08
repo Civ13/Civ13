@@ -762,6 +762,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni3(H), slot_w_uniform)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(15))
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
+		uniform.attackby(fj, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+		uniform.attackby(fj2, H)
+	var/obj/item/clothing/accessory/storage/webbing/m79_vest/filled/vest = new /obj/item/clothing/accessory/storage/webbing/m79_vest/filled(null)
+	uniform.attackby(vest, H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
@@ -790,15 +799,6 @@
 		H.original_job.is_afro = FALSE
 		H.h_style = pick("Bald","Short Hair","Buzzcut","Crewcut","Combover","Skinhead","Balding Hair","Flat Top","Mulder","Gelled Back","CIA","Slick","Fade","Average Joe","Undercut")
 
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (prob(15))
-		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
-		uniform.attackby(fj, H)
-	else
-		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
-		uniform.attackby(fj2, H)
-	var/obj/item/clothing/accessory/storage/webbing/m79_vest/filled/vest = new /obj/item/clothing/accessory/storage/webbing/m79_vest/filled(null)
-	uniform.attackby(vest, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a M79 grenade launcher specialist. Support your squad by using your main weapon, but avoid firing near them! You can holster your side-arm in your belt.")
 	H.setStat("strength", STAT_NORMAL)
