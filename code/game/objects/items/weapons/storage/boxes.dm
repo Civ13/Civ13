@@ -17,18 +17,8 @@
 	desc = "It has a picture of drinking glasses on it."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
+		for (var/i=1, i<= 12, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass(src)
 
 /obj/item/weapon/storage/box/wineglasses
 	name = "box of wine glasses"
@@ -36,16 +26,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
-
-
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine(src)
 
 /obj/item/weapon/storage/box/beermug
 	name = "box of beer mugs"
@@ -53,16 +35,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
+		for (var/i=1, i<= 10, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug(src)
 
 /obj/item/weapon/storage/box/sandbags
 	name = "box of sandbags"
@@ -70,94 +44,53 @@
 	can_hold = list(/obj/item/weapon/barrier/sandbag)
 	New()
 		..()
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
-		new /obj/item/weapon/barrier/sandbag(src)
+		for (var/i=1, i<= 12, i++)
+			new /obj/item/weapon/barrier/sandbag(src)
 
 /obj/item/weapon/storage/box/specialtyglass
 	name = "box of specialty glasses"
 	desc = "It has a picture of different drinking glasses on it."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
+		for (var/i=1, i<= 4, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball(src)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/flute(src)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cocktail(src)
 
 /obj/item/weapon/storage/box/shotglass
 	name = "box of shot glasses"
 	desc = "It has a picture of shot glasses on it."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
-		new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot(src)
+
 /obj/item/weapon/storage/box/condimentbottles
 	name = "box of condiment bottles"
 	desc = "It has a large ketchup smear on it."
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-		new /obj/item/weapon/reagent_containers/food/condiment(src)
-
-
+		for (var/i=1, i<= 6, i++)
+			new /obj/item/weapon/reagent_containers/food/condiment(src)
 
 /obj/item/weapon/storage/box/cups
 	name = "box of paper cups"
 	desc = "It has pictures of paper cups on the front."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
-		new /obj/item/weapon/reagent_containers/food/drinks/sillycup( src )
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/drinks/sillycup(src)
 
 /obj/item/weapon/storage/box/cutlery
 	name = "box of cutlery"
 	desc = "It has pictures of assorted flatware on the front."
 	New()
 		..()
-		new /obj/item/weapon/material/kitchen/utensil/fork( src )
-		new /obj/item/weapon/material/kitchen/utensil/fork( src )
-		new /obj/item/weapon/material/kitchen/utensil/fork( src )
-		new /obj/item/weapon/material/kitchen/utensil/fork( src )
-		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
-		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
-		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
-		new /obj/item/weapon/material/kitchen/utensil/spoon( src )
-		new /obj/item/weapon/material/kitchen/utensil/knife( src )
-		new /obj/item/weapon/material/kitchen/utensil/knife( src )
-		new /obj/item/weapon/material/kitchen/utensil/knife( src )
-		new /obj/item/weapon/material/kitchen/utensil/knife( src )
+		for (var/i=1, i<= 4, i++)
+			new /obj/item/weapon/material/kitchen/utensil/fork(src)
+			new /obj/item/weapon/material/kitchen/utensil/spoon(src)
+			new /obj/item/weapon/material/kitchen/utensil/knife(src)
 
 /obj/item/weapon/storage/box/handcuffs
 	name = "box of spare handcuffs"
@@ -165,14 +98,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-		new /obj/item/weapon/handcuffs(src)
-
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/handcuffs(src)
 
 /obj/item/weapon/storage/box/pillbottles
 	name = "box of pill bottles"
@@ -180,130 +107,74 @@
 
 	New()
 		..()
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
-		new /obj/item/weapon/storage/pill_bottle( src )
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/storage/pill_bottle(src)
 
 /obj/item/weapon/storage/box/bowls
 	name = "box of bowls"
 	desc = "It has a picture of bowls on it."
 	New()
 		..()
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
-		new /obj/item/kitchen/wood_bowl(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/kitchen/wood_bowl(src)
 
 /obj/item/weapon/storage/box/nood
 	name = "box of noodles"
 	desc = "It has a picture of dry noodles."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/noodles(src)
 
 /obj/item/weapon/storage/box/waffle
 	name = "box of waffles"
 	desc = "It has a picture of waffles."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/waffles(src)
 
 /obj/item/weapon/storage/box/canned
 	name = "box of canned food"
 	desc = "It has a picture of assorted can food brands."
 	New()
 		..()
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
-		new /obj/item/weapon/can/filled(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/can/filled(src)
 
 /obj/item/weapon/storage/box/wheat
 	name = "box of unmilled wheat"
 	desc = "It has a picture of a field of wheat."
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(src)
 
 /obj/item/weapon/storage/box/stermask
 	name = "box of sterile masks"
 	desc = "It has a picture of a blue sterile mask."
 	New()
 		..()
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
-		new /obj/item/clothing/mask/sterile(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/clothing/mask/sterile(src)
 
 /obj/item/weapon/storage/box/sterglove
 	name = "box of sterile gloves"
 	desc = "It has a picture of a white sterile gloves."
 	New()
 		..()
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
-		new /obj/item/clothing/gloves/color/white(src)
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/clothing/gloves/color/white(src)
 
 /obj/item/weapon/storage/box/ctail
 	name = "box of cocktail garnishes"
 	desc = "It has a celery, cocktail olives, and maraschino cherries."
 	New()
 		..()
-		new /obj/item/cocktail_stuff/celery(src)
-		new /obj/item/cocktail_stuff/celery(src)
-		new /obj/item/cocktail_stuff/celery(src)
-		new /obj/item/cocktail_stuff/celery(src)
-		new /obj/item/cocktail_stuff/cocktail_olive(src)
-		new /obj/item/cocktail_stuff/cocktail_olive(src)
-		new /obj/item/cocktail_stuff/cocktail_olive(src)
-		new /obj/item/cocktail_stuff/cocktail_olive(src)
-		new /obj/item/cocktail_stuff/maraschino_cherry(src)
-		new /obj/item/cocktail_stuff/maraschino_cherry(src)
-		new /obj/item/cocktail_stuff/maraschino_cherry(src)
-		new /obj/item/cocktail_stuff/maraschino_cherry(src)
+		for (var/i=1, i<= 4, i++)
+			new /obj/item/cocktail_stuff/celery(src)
+			new /obj/item/cocktail_stuff/cocktail_olive(src)
+			new /obj/item/cocktail_stuff/maraschino_cherry(src)
 
 /obj/item/weapon/storage/box/occinn
 	name = "box of spare Inn keys"
@@ -402,13 +273,5 @@
 	icon_state = "donk_kit"
 	New()
 		..()
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
-		new /obj/item/flashlight/flare(src)
+		for (var/i=1, i<= 10, i++)
+			new /obj/item/flashlight/flare(src)
