@@ -382,7 +382,7 @@
 
 ////////MAP SPECIFIC OBJECTS////////
 
-var/global/list/fob_names_nato = list("Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
+var/global/list/fob_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India")
 var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "Ivan", "Konstantin", "Leonid", "Mikhail", "Nikolai")
 
 /obj/item/fob_spawnpoint
@@ -486,6 +486,10 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		qdel(src)
 		return
 
+/obj/item/supply_crate/New()
+	..()
+	update_icon()
+
 /obj/item/supply_crate/faction1/New()
 	..()
 	faction_text = map.faction1
@@ -516,3 +520,13 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	else
 		H << SPAN_WARNING("This supply crate does not belong to your faction!")
 	return
+
+/obj/item/supply_crate/update_icon()
+	overlays.Cut()
+	switch(faction_text)
+		if (RUSSIAN)
+			overlays += "o-ru"
+		if (DUTCH)
+			overlays += "o-nl"
+		if (BRITISH)
+			overlays += "o-uk"
