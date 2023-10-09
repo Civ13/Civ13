@@ -11,7 +11,7 @@
 	name = "first-aid kit"
 	desc = "It's an emergency medical kit for general wounds."
 	icon_state = "firstaid2"
-	item_state = "firstaid_2"
+	item_state = "firstaid"
 	throw_speed = 2
 	throw_range = 8
 	item_icons = list(
@@ -129,19 +129,19 @@
 /obj/item/weapon/storage/firstaid/surgery_empty
 	name = "surgery kit"
 	desc = "Contains tools for surgery."
-	icon_state = "firstaid2"
-	item_state = "firstaid_2"
+	icon_state = "surgerykit"
+	item_state = "surgerykit"
 	storage_slots = 7
 	max_w_class = 3
 	max_storage_space = 28
 
 	make_exact_fit()
 
-/obj/item/weapon/storage/firstaid/surgery_bronze
+/obj/item/weapon/storage/firstaid/surgery_bronze //TO DO: have some other more ancient looking sprite
 	name = "surgery kit"
 	desc = "Contains tools for surgery."
-	icon_state = "firstaid2"
-	item_state = "firstaid_2"
+	icon_state = "surgerykit"
+	item_state = "surgerykit"
 
 /obj/item/weapon/storage/firstaid/surgery_bronze/New()
 	..()
@@ -154,38 +154,46 @@
 	new /obj/item/weapon/surgery/scalpel/bronze(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 
-/obj/item/weapon/storage/firstaid/ifak
-	name = "ifak"
-	desc = "An individual first aid kit."
-	icon_state = "ifak"
-	item_state = "ifak"
 
+/// Temp refactor of in-belt medkits
+
+/obj/item/weapon/storage/firstaid/ifak
+	name = "individual first-aid kit"
+	desc = "Contains basic first-aid."
+	icon_state = "ifirstaid"
+	item_state = "ifirstaid"
+	w_class = ITEM_SIZE_SMALL
+	slot_flags = SLOT_BACK | SLOT_BELT | SLOT_POCKET
+	can_hold = list(
+		/obj/item/stack/medical,
+		/obj/item/weapon/pill_pack,
+		/obj/item/weapon/reagent_containers/syringe
+		)
 /obj/item/weapon/storage/firstaid/ifak/New()
 	..()
-	if (empty) return
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-	new /obj/item/stack/medical/advanced/ointment(src)
-	new /obj/item/stack/medical/splint(src)
-	new /obj/item/weapon/pill_pack/tramadol(src)
-	new /obj/item/clothing/gloves/sterile/nitrile(src)
+	new /obj/item/stack/medical/splint/small(src)
+	new /obj/item/weapon/pill_pack/paracetamol(src)
+	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
 	return
 
-/obj/item/weapon/storage/firstaid/afak
-	name = "afak"
-	desc = "An advanced first aid kit."
-	icon_state = "afak"
-	item_state = "afak"
-
-/obj/item/weapon/storage/firstaid/afak/New()
+/obj/item/weapon/storage/box/firstaid //TO-DO: Redo this "box" subtype, it's kind of shitcode
+	name = "medical kit"
+	desc = "Contains medical supplies."
+	icon_state = "medkit"
+	item_state = "medkit"
+	can_hold = list(
+		/obj/item/stack/medical,
+		/obj/item/weapon/pill_pack,
+		/obj/item/weapon/pill_bottle,
+		/obj/item/weapon/reagent_containers/syringe
+		)
+/obj/item/weapon/storage/box/firstaid/New()
 	..()
-	if (empty) return
-	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
 	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
 	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/pill_pack/adrenaline(src)
-	new /obj/item/weapon/pill_pack/pervitin(src)
-	new /obj/item/weapon/pill_pack/tramadol(src)
-	new /obj/item/clothing/gloves/sterile/nitrile(src)
-	new /obj/item/revival_kit(src)
+	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
 	return
