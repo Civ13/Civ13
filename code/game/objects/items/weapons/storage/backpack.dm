@@ -573,7 +573,7 @@
 	desc = "A duffel bag full of Sergeant's supplies."
 	New()
 		..()
-		new /obj/item/weapon/storage/box/firstaid/advsmall(src)
+		new /obj/item/weapon/storage/box/firstaid(src)
 		new /obj/item/ammo_magazine/greasegun/box(src)
 		new /obj/item/ammo_magazine/greasegun/box(src)
 		new /obj/item/weapon/material/shovel/trench(src)

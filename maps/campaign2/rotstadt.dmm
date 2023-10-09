@@ -1842,8 +1842,8 @@
 /area/caribbean/roofed)
 "kl" = (
 /obj/structure/shelf,
-/obj/item/weapon/storage/box/firstaid/advsmall,
-/obj/item/weapon/storage/box/firstaid/advsmall,
+/obj/item/weapon/storage/box/firstaid,
+/obj/item/weapon/storage/box/firstaid,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "ko" = (
@@ -3673,8 +3673,8 @@
 /area/caribbean/roofed)
 "tM" = (
 /obj/structure/bed/wood,
-/obj/item/weapon/storage/box/firstaid/advsmall,
-/obj/item/weapon/storage/box/firstaid/advsmall,
+/obj/item/weapon/storage/box/firstaid,
+/obj/item/weapon/storage/box/firstaid,
 /obj/item/weapon/storage/firstaid/adv,
 /turf/floor/trench,
 /area/caribbean)

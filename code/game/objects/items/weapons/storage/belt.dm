@@ -39,7 +39,7 @@
 	new /obj/item/weapon/clipboard/full(src)
 	new /obj/item/weapon/reagent_containers/spray/pepper(src)
 	new /obj/item/camera/coldwar(src)
-	new /obj/item/weapon/storage/box/firstaid/advsmall(src)
+	new /obj/item/weapon/storage/box/firstaid(src)
 	new /obj/item/weapon/telephone/mobile(src)
 
 /obj/item/weapon/storage/belt/tactical
