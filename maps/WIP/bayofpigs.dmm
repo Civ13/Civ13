@@ -337,7 +337,7 @@
 "gz" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/steel,/area/caribbean)
 "gA" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barricade,/turf/floor/plating/steel,/area/caribbean)
 "gB" = (/obj/structure/engine/internal/hesselman{anchored = "1"; name = "Boat engine"},/turf/floor/plating/concrete,/area/caribbean/roofed)
-"gC" = (/obj/structure/closet/anchored,/obj/item/weapon/material/machete1,/obj/item/weapon/storage/box/firstaid/advsmall/small,/turf/floor/plating/concrete,/area/caribbean/roofed)
+"gC" = (/obj/structure/closet/anchored,/obj/item/weapon/material/machete1,/obj/item/weapon/storage/box/firstaid/small,/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gD" = (/obj/covers/cement_wall,/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gE" = (/obj/structure/closet/anchored,/obj/item/weapon/grenade/ww2/stg1924,/turf/floor/plating/concrete,/area/caribbean/roofed)
 "gF" = (/obj/structure/closet/anchored,/obj/item/weapon/grenade/ww2/mk2,/obj/item/weapon/grenade/ww2/mk2,/turf/floor/plating/concrete,/area/caribbean/roofed)

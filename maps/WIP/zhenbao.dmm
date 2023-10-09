@@ -180,7 +180,7 @@
 "dx" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 8; icon_state = "sandbag_33%"},/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
 "dy" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
 "dz" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed/tundra)
-"dA" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/early,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/box/firstaid/advsmall,/obj/item/weapon/storage/box/firstaid/advsmall,/obj/item/weapon/storage/box/firstaid/advsmall,/turf/floor/wood,/area/caribbean/roofed/tundra)
+"dA" = (/obj/structure/closet/crate/empty,/obj/item/weapon/storage/firstaid/early,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/box/firstaid,/obj/item/weapon/storage/box/firstaid,/obj/item/weapon/storage/box/firstaid,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "dB" = (/obj/covers/brick_wall,/obj/structure/sign/custom/golden{name = "Radio station"},/turf/wall/brick,/area/caribbean/roofed/taiga)
 "dC" = (/obj/covers/tent,/obj/structure/sign/flag/chinese/prc,/turf/floor/dirt,/area/caribbean/roofed/taiga)
 "dD" = (/obj/structure/sign/flag/chinese/prc,/obj/structure/barricade/wood_pole,/turf/floor/winter,/area/caribbean/nomads/taiga)

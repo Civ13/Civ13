@@ -866,7 +866,7 @@
 "qJ" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/box/canned,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "qK" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/box/wheat,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "qL" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"qM" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/storage/box/firstaid/advsmall,/obj/item/weapon/storage/box/canned,/turf/floor/wood,/area/caribbean/roofed/temperate)
+"qM" = (/obj/structure/table/modern/table,/obj/structure/closet/cabinet/ceiling,/obj/item/weapon/storage/box/firstaid,/obj/item/weapon/storage/box/canned,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "qN" = (/obj/structure/closet/cabinet,/obj/item/weapon/storage/box/cutlery,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "qO" = (/obj/structure/sink,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 8},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "qP" = (/obj/structure/window/classic/reinforced,/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/temperate)
