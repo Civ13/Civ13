@@ -2260,3 +2260,13 @@
 	item_state = "dutch_dpm"
 	worn_state = "dutch_dpm"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/head/helmet/modern/m95_dpm
+	name = "M95 helmet"
+	desc = "A PASGT derived helmet used by the Dutch Armed Forces. This one is in DPM pattern."
+	icon_state = "m95_dpm"
+	item_state = "m95_dpm"
+	worn_state = "m95_dpm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
