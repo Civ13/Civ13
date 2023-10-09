@@ -1669,11 +1669,8 @@
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,60,src))
 			user << "<span class='notice'>You dismantle \the [src].</span>"
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc) 	//5 out of 12 to craft
+			for (var/i=1, i<=5, i++)
+				new /obj/item/stack/material/wood(loc) //5 out of 12 to craft
 			qdel(src)
 
 	else
