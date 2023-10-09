@@ -497,12 +497,8 @@
 /obj/item/weapon/storage/belt/russian/soldier
 /obj/item/weapon/storage/belt/russian/soldier/New()
 	..()
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/clothing/accessory/storage/webbing/russband
@@ -541,12 +537,8 @@
 /obj/item/weapon/storage/belt/russian/ww1/soldier
 /obj/item/weapon/storage/belt/russian/ww1/soldier/New()
 	..()
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
-	new /obj/item/ammo_magazine/mosin(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/mosin(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 /obj/item/weapon/storage/belt/jap
 	name = "Japanese Soldier belt"
@@ -576,56 +568,35 @@
 /obj/item/weapon/storage/belt/jap/soldier
 /obj/item/weapon/storage/belt/jap/soldier/New()
 	..()
-	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/ammo_magazine/arisaka(src)
-	new /obj/item/ammo_magazine/arisaka(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier
 /obj/item/weapon/storage/belt/jap/ww2soldier/New()
 	..()
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/arisaka99(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier100
 /obj/item/weapon/storage/belt/jap/ww2soldier100/New()
 	..()
-	new /obj/item/ammo_magazine/type100(src)
-	new /obj/item/ammo_magazine/type100(src)
-	new /obj/item/ammo_magazine/type100(src)
-	new /obj/item/ammo_magazine/type100(src)
-	new /obj/item/ammo_magazine/type100(src)
+	for (var/i=1, i<=5, i++)
+		new /obj/item/ammo_magazine/type100(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier99
 /obj/item/weapon/storage/belt/jap/ww2soldier99/New()
 	..()
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
-	new /obj/item/ammo_magazine/type99(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/type99(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/ww2soldier96
 /obj/item/weapon/storage/belt/jap/ww2soldier96/New()
 	..()
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
-	new /obj/item/ammo_magazine/type96(src)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/ammo_magazine/type96(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard
@@ -635,18 +606,14 @@
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/handcuffs(src)
 	new /obj/item/weapon/attachment/bayonet(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
-	new /obj/item/ammo_magazine/arisaka99(src)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/ammo_magazine/arisaka99(src)
 /obj/item/weapon/storage/belt/jap/abashiri_guard
 /obj/item/weapon/storage/belt/jap/abashiri_guard/New()
 	..()
 	new /obj/item/weapon/material/classic_baton/guard(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/weapon/handcuffs(src)
 	new /obj/item/flashlight/flashlight(src)
 
 /obj/item/weapon/storage/belt/jap/camp_guard_SS
@@ -655,9 +622,8 @@
 	..()
 	new /obj/item/weapon/whistle(src)
 	new /obj/item/weapon/material/classic_baton/guard(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/weapon/handcuffs(src)
 
 /obj/item/weapon/storage/belt/jap/camp_officer
 /obj/item/weapon/storage/belt/jap/camp_officer/New()
@@ -1230,18 +1196,18 @@
 /obj/item/weapon/storage/belt/largepouches/white/pkm
 /obj/item/weapon/storage/belt/largepouches/white/pkm/New()
 	..()
-	new/obj/item/ammo_magazine/pkm/c100(src)
-	new/obj/item/ammo_magazine/pkm/c100(src)
+	new /obj/item/ammo_magazine/pkm/c100(src)
+	new /obj/item/ammo_magazine/pkm/c100(src)
 /obj/item/weapon/storage/belt/largepouches/white/rpk
 /obj/item/weapon/storage/belt/largepouches/white/rpk/New()
 	..()
-	new/obj/item/ammo_magazine/rpk74(src)
-	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/ammo_magazine/rpk74(src)
 /obj/item/weapon/storage/belt/largepouches/white/rpd
 /obj/item/weapon/storage/belt/largepouches/white/rpd/New()
 	..()
-	new/obj/item/ammo_magazine/rpd(src)
-	new/obj/item/ammo_magazine/rpd(src)
+	new /obj/item/ammo_magazine/rpd(src)
+	new /obj/item/ammo_magazine/rpd(src)
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
@@ -1262,46 +1228,46 @@
 	max_storage_space = 12
 	New()
 		..()
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/handcuffs/strips(src)
-		new/obj/item/weapon/handcuffs/strips(src)
-		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/weapon/handcuffs/strips(src)
+		new /obj/item/weapon/handcuffs/strips(src)
+		new /obj/item/weapon/grenade/flashbang/galaxywars(src)
 
 /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic
 	New()
 		..()
-		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
-		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+		new /obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
 
 /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/sgt
 	New()
 		..()
-		new/obj/item/weapon/grenade/incendiary/incendiarydetonator(src)
-		new/obj/item/weapon/plastique(src)
+		new /obj/item/weapon/grenade/incendiary/incendiarydetonator(src)
+		new /obj/item/weapon/plastique(src)
 
 /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash
 	New()
 		..()
-		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
-		new/obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new /obj/item/weapon/grenade/flashbang/galaxywars(src)
+		new /obj/item/weapon/grenade/flashbang/galaxywars(src)
 
 /obj/item/weapon/storage/belt/smallpouches/rebel
 	New()
 		..()
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/weapon/wrench(src)
-		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
-		new/obj/item/weapon/grenade/modern/thermaldetonator(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/weapon/wrench(src)
+		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
+		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
 
 /obj/item/weapon/storage/belt/smallpouches/red
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/clothing/mask/gas/swat_new(src)
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/ammo_magazine/m16(src)
-		new/obj/item/weapon/attachment/bayonet(src)
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/m16(src)
+		new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/smallpouches/red/white
 	icon_state = "smallpouches_white"
@@ -1310,8 +1276,8 @@
 /obj/item/weapon/storage/belt/largepouches/redmg
 /obj/item/weapon/storage/belt/largepouches/redmg/New()
 	..()
-	new/obj/item/ammo_magazine/dp(src)
-	new/obj/item/ammo_magazine/dp(src)
+	new /obj/item/ammo_magazine/dp(src)
+	new /obj/item/ammo_magazine/dp(src)
 
 /obj/item/weapon/storage/belt/largepouches/redmg/white
 	icon_state = "largepouches_white"
@@ -1322,10 +1288,10 @@
 	item_state = "smallpouches_olive"
 	New()
 		..()
-		new/obj/item/clothing/mask/gas/swat_new(src)
-		new/obj/item/stack/medical/bruise_pack/gauze(src)
-		new/obj/item/ammo_magazine/ak47(src)
-		new/obj/item/weapon/attachment/bayonet(src)
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/ak47(src)
+		new /obj/item/weapon/attachment/bayonet(src)
 
 /obj/item/weapon/storage/belt/smallpouches/blue/white
 	icon_state = "smallpouches_white"
@@ -1334,8 +1300,8 @@
 /obj/item/weapon/storage/belt/largepouches/bluemg
 /obj/item/weapon/storage/belt/largepouches/bluemg/New()
 	..()
-	new/obj/item/ammo_magazine/rpk47/drum(src)
-	new/obj/item/ammo_magazine/rpk47/drum(src)
+	new /obj/item/ammo_magazine/rpk47/drum(src)
+	new /obj/item/ammo_magazine/rpk47/drum(src)
 
 /obj/item/weapon/storage/belt/largepouches/bluemg/white
 	icon_state = "largepouches_white"
@@ -1345,59 +1311,52 @@
 	storage_slots = 6
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/thompson(src)
-	new/obj/item/ammo_magazine/thompson(src)
-	new/obj/item/ammo_magazine/thompson(src)
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/weapon/whistle(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 3, i++)
+		new /obj/item/ammo_magazine/thompson(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc
 	storage_slots = 6
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgtc/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/m1carbine(src)
-	new/obj/item/ammo_magazine/m1carbine(src)
-	new/obj/item/ammo_magazine/m1carbine/box(src)
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/weapon/whistle(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 3, i++)
+		new /obj/item/ammo_magazine/m1carbine(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/whistle(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper
 	max_w_class = 3
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper/New()
 	..()
-	new/obj/item/ammo_magazine/springfield(src)
-	new/obj/item/ammo_magazine/springfield(src)
-	new/obj/item/ammo_magazine/m3006box(src)
+	new /obj/item/ammo_magazine/springfield(src)
+	new /obj/item/ammo_magazine/springfield(src)
+	new /obj/item/ammo_magazine/m3006box(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner
 	storage_slots = 6
 	max_storage_space = 12
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
-	new/obj/item/ammo_magazine/bar(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 5, i++)
+		new /obj/item/ammo_magazine/bar(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2
 /obj/item/weapon/storage/belt/smallpouches/us_ww2/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/garand(src)
-	new/obj/item/ammo_magazine/garand(src)
-	new/obj/item/ammo_magazine/garand(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 3, i++)
+		new /obj/item/ammo_magazine/garand(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_grease
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_grease/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/ammo_magazine/greasegun(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 3, i++)
+		new /obj/item/ammo_magazine/greasegun(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
@@ -1407,67 +1366,66 @@
 /obj/item/weapon/storage/belt/smallpouches/green/bint
 /obj/item/weapon/storage/belt/smallpouches/green/bint/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/chechoff
 /obj/item/weapon/storage/belt/smallpouches/green/chechoff/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/horn(src)
-	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/horn(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/rusoff
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/green/rusoff/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
-	new/obj/item/ammo_magazine/ak74(src)
-	new/obj/item/ammo_magazine/ak74(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/officeruni
 	storage_slots = 4
 /obj/item/weapon/storage/belt/smallpouches/green/officeruni/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
-	new/obj/item/weapon/compass(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new /obj/item/weapon/compass(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff
 /obj/item/weapon/storage/belt/smallpouches/green/insuroff/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/horn(src)
-	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/horn(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/flask/officer/tea(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/mosin
 /obj/item/weapon/storage/belt/smallpouches/green/mosin/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/mosin (src)
-	new/obj/item/ammo_magazine/mosin (src)
-	new/obj/item/ammo_magazine/mosin (src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	for (var/i=1, i<= 3, i++)
+		new /obj/item/ammo_magazine/mosin (src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/mosinsniper
 	max_w_class = 3
 
 /obj/item/weapon/storage/belt/smallpouches/green/mosinsniper/New()
 	..()
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/ammo_magazine/mosin (src)
-	new/obj/item/ammo_magazine/mosinbox (src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/ammo_magazine/mosin (src)
+	new /obj/item/ammo_magazine/mosinbox (src)
 
 /obj/item/weapon/storage/belt/smallpouches/rusoff
 /obj/item/weapon/storage/belt/smallpouches/rusoff/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/stack/medical/bruise_pack/bint(src)
-	new/obj/item/weapon/whistle(src)
-	new/obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/stack/medical/bruise_pack/bint(src)
+	new /obj/item/weapon/whistle(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/flask/officer/vodka(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive
 	icon_state = "smallpouches_olive"
@@ -1476,18 +1434,16 @@
 /obj/item/weapon/storage/belt/smallpouches/olive/m16
 /obj/item/weapon/storage/belt/smallpouches/olive/m16/New()
 	..()
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_smoke/New()
 	..()
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1495,9 +1451,8 @@
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_grenade/New()
 	..()
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/weapon/grenade/coldwar/m67(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1505,9 +1460,8 @@
 	storage_slots = 7
 /obj/item/weapon/storage/belt/smallpouches/olive/m16_breacher/New()
 	..()
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/weapon/plastique/c4(src)
 	new /obj/item/weapon/plastique/c4(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1517,21 +1471,21 @@
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_sgt/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/ammo_magazine/m16(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_lt
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/olive/us_lt/New()
 	..()
-	new/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
-	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/ammo_magazine/greasegun(src)
+	new /obj/item/ammo_magazine/greasegun(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/us_gren
 	can_hold = list(
@@ -1541,33 +1495,31 @@
 	)
 /obj/item/weapon/storage/belt/smallpouches/olive/us_gren/New()
 	..()
-	new/obj/item/ammo_magazine/m1911(src)
-	new/obj/item/ammo_magazine/m1911(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/ammo_magazine/m1911(src)
+	new /obj/item/ammo_magazine/m1911(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/m14
 /obj/item/weapon/storage/belt/smallpouches/olive/m14/New()
 	..()
-	new/obj/item/ammo_magazine/m14(src)
-	new/obj/item/ammo_magazine/m14(src)
-	new/obj/item/weapon/grenade/smokebomb/m18smoke(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/ammo_magazine/m14(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/olive/greasegun
 /obj/item/weapon/storage/belt/smallpouches/olive/greasegun/New()
 	..()
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/ammo_magazine/greasegun(src)
-	new/obj/item/stack/medical/bruise_pack/gauze(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/greasegun(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/green/ak74m_smoke/New()
 	..()
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/grenade/smokebomb/rdg2(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1575,9 +1527,8 @@
 	storage_slots = 5
 /obj/item/weapon/storage/belt/smallpouches/green/ak74m_trench/New()
 	..()
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/foldable_shovel/trench/etool(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1585,9 +1536,8 @@
 	storage_slots = 7
 /obj/item/weapon/storage/belt/smallpouches/green/ak74m_breacher/New()
 	..()
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
-	new /obj/item/ammo_magazine/ak74/ak74m(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/ak74/ak74m(src)
 	new /obj/item/weapon/plastique/c4(src)
 	new /obj/item/weapon/plastique/c4(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
