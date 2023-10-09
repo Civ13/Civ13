@@ -111,7 +111,7 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-	if (config.allowedgamemodes == "BR")
+	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)
@@ -335,7 +335,7 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-	if (config.allowedgamemodes == "BR")
+	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)
