@@ -185,7 +185,7 @@
 	can_hold = list(
 		/obj/item/stack/medical,
 		/obj/item/weapon/pill_pack,
-		/obj/item/weapon/pill_bottle,
+		/obj/item/weapon/storage/pill_bottle,
 		/obj/item/weapon/reagent_containers/syringe
 		)
 /obj/item/weapon/storage/box/firstaid/New()
