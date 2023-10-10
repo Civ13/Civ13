@@ -2813,6 +2813,8 @@
 	else
 		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
 		uniform.attackby(b45ext, H)
+	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
+	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
