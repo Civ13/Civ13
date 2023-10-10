@@ -130,21 +130,23 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/stahlhelm(H), slot_head)
 //back
-	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/pickunifreikorps = rand(1,3)
 	switch(pickunifreikorps)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(fullwebbing, H)
 			for (var/i=1, i<= 8, i++)
 				fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(fullwebbing, H)
 			for (var/i=1, i<= 8, i++)
 				fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr71(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(fullwebbing, H)
 			for (var/i=1, i<= 8, i++)
 				fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr71, H)
