@@ -1910,7 +1910,7 @@
 		else
 			H << "<span class='notice'>\the [src] is full!</span>"
 		return
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
 		if (!open)
 			open = TRUE
 			update_icon()
@@ -1950,10 +1950,11 @@
 		"Ooga's Cuisine", "Burner King"
 	)
 	var/list/custcolor = list(
-		"#e6194b",	"#3cb44b",	"#ffe119",	"#4363d8", "#f58231",	"#911eb4",	"#46f0f0",	"#f032e6",
-		"#bcf60c",	"#fabebe",	"#008080",	"#e6beff",	"#9a6324", "#fffac8", "#800000", "#aaffc3",
-		"#808000", "#ffd8b1", "#000075", "#808080", "#ffffff", "#000000"
+		"#bb5865", "#66b985", "#f9e082", "#7694d0", "#f6a879", "#b88fd0", "#72cfcf", "#8b537a", 
+		"#bbdf8e", "#f5c5c5", "#5a8080", "#d4b4e8", "#b19f8a", "#f5f3d9", "#9c1414", "#9ed3b5", 
+		"#9e9f61", "#f6cfb5", "#282869", "#b3b3b3", "#f7f7f7", "#333333"
 	)
+		
 	var/list/filllist = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives,
 		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,
