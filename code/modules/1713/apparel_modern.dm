@@ -366,6 +366,19 @@
 	w_class = ITEM_SIZE_LARGE
 	weight = 3.8
 
+/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext
+	name = "6B45 extended body armor"
+	desc = "A modern body armor of Russian origin."
+	icon_state = "6b45_ext"
+	item_state = "6b45_ext"
+	worn_state = "6b45_ext"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 70, arrow = 95, gun = 60, energy = 22, bomb = 65, bio = 20, rad = FALSE)
+	value = 130
+	slowdown = 0.4
+	w_class = ITEM_SIZE_LARGE
+	weight = 4.2
+
 /* Us Army*/
 
 	/* Us Army Armor*/
@@ -2260,3 +2273,13 @@
 	item_state = "dutch_dpm"
 	worn_state = "dutch_dpm"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/head/helmet/modern/m95_dpm
+	name = "M95 helmet"
+	desc = "A PASGT derived helmet used by the Dutch Armed Forces. This one is in DPM pattern."
+	icon_state = "m95_dpm"
+	item_state = "m95_dpm"
+	worn_state = "m95_dpm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
