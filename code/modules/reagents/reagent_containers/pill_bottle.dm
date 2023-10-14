@@ -1,9 +1,11 @@
 /*
- * Pill Bottles
+ * Pill Bottles*
+ * 
+ * To-do: refactor the "for" statements into a proc
  */
 /obj/item/weapon/storage/pill_bottle
 	name = "pill bottle"
-	desc = "It's an airtight container for storing medication."
+	desc = "An airtight container for storing medication."
 	icon_state = "pill_canister"
 	icon = 'icons/obj/chemical.dmi'
 	item_state = "contsolid"
@@ -13,6 +15,7 @@
 	use_to_pickup = TRUE
 	use_sound = null
 	max_storage_space = 20
+	var/pill_amount = 14
 
 /obj/item/weapon/storage/pill_bottle/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/pen))
@@ -27,20 +30,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/antitox(src)
 
 /obj/item/weapon/storage/pill_bottle/paracetamol
 	name = "bottle of paracetamol pills"
@@ -48,23 +39,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-		new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
-
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/paracetamol(src)
 
 /obj/item/weapon/storage/pill_bottle/penicillin
 	name = "bottle of penicillin pills"
@@ -72,20 +48,8 @@
 
 /obj/item/weapon/storage/pill_bottle/penicillin/New()
 	..()
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
-	new /obj/item/weapon/reagent_containers/pill/penicillin(src)
+	for (var/i=1, i <= pill_amount, i++)
+		new /obj/item/weapon/reagent_containers/pill/penicillin(src)
 
 /obj/item/weapon/storage/pill_bottle/tramadol
 	name = "bottle of Tramadol pills"
@@ -93,20 +57,8 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
-		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/tramadol(src)
 
 /obj/item/weapon/storage/pill_bottle/pervitin
 	name = "bottle of Pervitin pills"
@@ -114,40 +66,17 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
-		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/pervitin(src)
+
 /obj/item/weapon/storage/pill_bottle/potassium_iodide
 	name = "bottle of potassium iodide pills"
 	desc = "Contains pills of potassium iodide, used for radiation poisoning."
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
-		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/potassium_iodide(src)
 
 /obj/item/weapon/storage/pill_bottle/citalopram
 	name = "bottle of Citalopram pills"
@@ -155,17 +84,5 @@
 
 	New()
 		..()
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
-		new /obj/item/weapon/reagent_containers/pill/citalopram( src )
+		for (var/i=1, i <= pill_amount, i++)
+			new /obj/item/weapon/reagent_containers/pill/citalopram(src)

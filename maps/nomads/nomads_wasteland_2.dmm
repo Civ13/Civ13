@@ -2349,7 +2349,7 @@
 "Vc" = (/obj/covers/concretefloor,/obj/item/weapon/soap,/turf/floor/dirt,/area/caribbean/void/caves)
 "Ve" = (/obj/covers/road,/obj/structure/closet/crate,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/obj/item/lightbulb/tube,/turf/floor/dirt,/area/caribbean/void/caves)
 "Vg" = (/obj/covers/road,/turf/floor/dirt,/area/caribbean/roofed)
-"Vh" = (/obj/covers/road,/obj/structure/closet/crate,/obj/item/weapon/storage/box/firstaid/advsmall,/turf/floor/dirt,/area/caribbean/void/caves)
+"Vh" = (/obj/covers/road,/obj/structure/closet/crate,/obj/item/weapon/storage/box/firstaid,/turf/floor/dirt,/area/caribbean/void/caves)
 "Vl" = (/mob/living/simple_animal/hostile/human/zombie,/turf/floor/plating/steel,/area/caribbean/roofed)
 "Vw" = (/obj/structure/sign/greencross{name = "Infirmary"; pixel_y = -32},/turf/floor/plating/steel,/area/caribbean/roofed)
 "Vy" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/fancy/donut_box,/obj/item/weapon/reagent_containers/food/snacks/donut,/obj/item/weapon/reagent_containers/food/snacks/donut,/obj/item/weapon/reagent_containers/food/snacks/donut,/turf/floor/plating/steel,/area/caribbean/roofed)

@@ -166,13 +166,10 @@
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,20,src))
 			user << "<span class='notice'>You carefully dismantle \the [src].</span>" //scavenging, the new proceeds auto-stack.
-			new /obj/item/stack/material/iron(loc)
-			new /obj/item/stack/material/iron(loc)
-			new /obj/item/stack/material/iron(loc)
-			new /obj/item/stack/material/iron(loc)
-			new /obj/item/stack/material/electronics(loc)
-			new /obj/item/stack/material/electronics(loc)
-			new /obj/item/stack/material/electronics(loc)
+			for (var/i=1, i<=4, i++)
+				new /obj/item/stack/material/iron(loc)
+			for (var/i=1, i<=3, i++)
+				new /obj/item/stack/material/electronics(loc)
 			qdel(src)
 
 
@@ -188,21 +185,16 @@
 		user << "<span class='notice'>You begin smashing apart \the [src].</span>"
 		if (do_after(user,30,src))
 			user << "<span class='notice'>You roughly smash apart \the [src].</span>"
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
+			for (var/i=1, i<=3, i++)
+				new /obj/item/stack/material/wood(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,20,src))
 			user << "<span class='notice'>You carefully dismantle \the [src].</span>"
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
-			new /obj/item/stack/material/wood(loc)
+			for (var/i=1, i<=6, i++)
+				new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/glass(loc)
 			new /obj/item/stack/material/glass(loc)
 			qdel(src)

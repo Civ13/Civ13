@@ -267,10 +267,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
 	uniform.attackby(russbando, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	for (var/i=1, i<= 4, i++)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier first-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -315,10 +313,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
 	uniform.attackby(russbando, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+	for (var/i=1, i<= 4, i++)
+		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
 	give_random_name(H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
@@ -703,11 +699,8 @@
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(webbing, H)
 	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	for (var/i=1, i<= 5, i++)
+		webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd(H), slot_l_hand)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, an anti-tank rifleman of the Red Army and you keep braging that your gun is bigger than your comrads'. Follow your <b>Sergeant's</b> orders!")
@@ -833,11 +826,8 @@
 	uniform.attackby(webbing, H)
 	give_random_name(H)
 	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
-	webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
+	for (var/i=1, i<= 5, i++)
+		webbing.attackby(new/obj/item/ammo_magazine/tt30, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a flamethrower unit of the Red Army. Assault enemy positions and tanks with your flamethrower. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -1926,10 +1916,8 @@
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/soldier(H), slot_belt)
 		var/obj/item/clothing/accessory/storage/webbing/russbando = new /obj/item/clothing/accessory/storage/webbing/russband(null)
 		uniform.attackby(russbando, H)
-		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
+		for (var/i=1, i<= 4, i++)
+			russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
 	else
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/russian/ww1/soldier(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier of the Red Army. Follow your Commander's and local Chekist orders!")
@@ -2441,8 +2429,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	if (prob(55))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(b45, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
+		uniform.attackby(b45ext, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
@@ -2607,8 +2599,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	if (prob(25))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(b45, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
+		uniform.attackby(b45ext, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
@@ -2661,8 +2657,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	if (prob(85))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(b45, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
+		uniform.attackby(b45ext, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
@@ -2757,8 +2757,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	if (prob(25))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(b45, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
+		uniform.attackby(b45ext, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
@@ -2803,8 +2807,12 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	if (prob(40))
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
+		uniform.attackby(b45, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/plates/b45/ext/b45ext = new /obj/item/clothing/accessory/armor/coldwar/plates/b45/ext(null)
+		uniform.attackby(b45ext, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)

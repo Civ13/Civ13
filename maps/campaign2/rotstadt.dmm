@@ -94,7 +94,6 @@
 "av" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/telephone/mobile/campaign/red,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "ay" = (
@@ -797,7 +796,6 @@
 	dir = 4
 	},
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "ei" = (
@@ -1062,7 +1060,6 @@
 "fH" = (
 /obj/structure/window/barrier/concrete,
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "fJ" = (
@@ -1845,8 +1842,8 @@
 /area/caribbean/roofed)
 "kl" = (
 /obj/structure/shelf,
-/obj/item/weapon/storage/box/firstaid/advsmall,
-/obj/item/weapon/storage/box/firstaid/advsmall,
+/obj/item/weapon/storage/box/firstaid,
+/obj/item/weapon/storage/box/firstaid,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "ko" = (
@@ -1863,7 +1860,6 @@
 	dir = 8
 	},
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "kq" = (
@@ -2333,7 +2329,6 @@
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "mX" = (
@@ -2562,7 +2557,6 @@
 /obj/structure/window/barrier/concrete{
 	dir = 4
 	},
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "oy" = (
@@ -3369,7 +3363,6 @@
 /obj/structure/table/modern/table,
 /obj/item/weapon/paper_bin,
 /obj/item/weapon/pen,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "sB" = (
@@ -3680,8 +3673,8 @@
 /area/caribbean/roofed)
 "tM" = (
 /obj/structure/bed/wood,
-/obj/item/weapon/storage/box/firstaid/advsmall,
-/obj/item/weapon/storage/box/firstaid/advsmall,
+/obj/item/weapon/storage/box/firstaid,
+/obj/item/weapon/storage/box/firstaid,
 /obj/item/weapon/storage/firstaid/adv,
 /turf/floor/trench,
 /area/caribbean)
@@ -4121,7 +4114,6 @@
 /area/caribbean)
 "vX" = (
 /obj/structure/window/barrier/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "vY" = (
@@ -4326,7 +4318,6 @@
 	dir = 8
 	},
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "wX" = (
@@ -5025,7 +5016,6 @@
 /obj/structure/table/modern/table,
 /obj/item/weapon/paper_bin,
 /obj/item/weapon/pen,
-/obj/roof/concrete,
 /obj/item/weapon/newspaper,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
@@ -6399,7 +6389,6 @@
 /area/caribbean)
 "Hj" = (
 /obj/structure/table/modern/table,
-/obj/roof/concrete,
 /obj/item/weapon/reagent_containers/food/drinks/coffee,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
@@ -6468,7 +6457,6 @@
 	dir = 1
 	},
 /obj/structure/filingcabinet/filingcabinet,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "HC" = (
@@ -7048,7 +7036,6 @@
 	dir = 1
 	},
 /obj/structure/filingcabinet/chestdrawer,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "La" = (
@@ -7604,7 +7591,6 @@
 /area/caribbean/roofed)
 "NN" = (
 /obj/structure/bed/chair/wood,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "NP" = (
@@ -7953,7 +7939,6 @@
 /obj/structure/window/barrier/concrete{
 	dir = 8
 	},
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "PH" = (
@@ -7971,7 +7956,6 @@
 /turf/floor/plating/steel,
 /area/caribbean/roofed)
 "PI" = (
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "PK" = (
@@ -7986,7 +7970,6 @@
 	dir = 1
 	},
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "PO" = (
@@ -8315,7 +8298,6 @@
 	},
 /obj/structure/window/barrier/concrete,
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "Rw" = (
@@ -8511,7 +8493,6 @@
 	dir = 4
 	},
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "Ss" = (
@@ -8604,7 +8585,6 @@
 /obj/item/ammo_magazine/c455,
 /obj/item/weapon/gun/projectile/revolver/webley4,
 /obj/item/clothing/accessory/holster/hip,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "SV" = (
@@ -8847,7 +8827,6 @@
 	},
 /obj/structure/window/barrier/concrete,
 /obj/structure/mine_support/stone/concrete,
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "Ui" = (
@@ -9460,7 +9439,6 @@
 	dir = 4;
 	icon_state = "wooden_chair"
 	},
-/obj/roof/concrete,
 /turf/floor/trench,
 /area/caribbean/japanese/land/inside)
 "Xq" = (
