@@ -35,10 +35,10 @@
 "aI" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/winter{icon_state = "dead_snowgrass"},/area/caribbean)
 "aJ" = (/mob/living/human/corpse/japanese,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "aK" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/mob/living/human/corpse/japanese,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"aL" = (/obj/structure/closet/cabinet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"aL" = (/obj/structure/closet/cabinet,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "aM" = (/obj/structure/vending/russianapparel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "aN" = (/obj/structure/vending/rusweapons,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"aO" = (/obj/structure/printingpress,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"aO" = (/obj/structure/printingpress,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "aP" = (/turf/floor/dirt/winter{icon_state = "grass6"},/area/caribbean)
 "aQ" = (/turf/floor/dirt/winter{icon_state = "dead_snowgrass"},/area/caribbean)
 "aR" = (/obj/structure/table/wood,/obj/item/weapon/key/russian,/turf/floor/carpet/redcarpet{icon_state = "carpetside"},/area/caribbean/russian/land/inside/command)
@@ -56,7 +56,7 @@
 "bd" = (/obj/structure/iv_drip,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "bf" = (/turf/floor/dirt/winter{icon_state = "snowgrass"},/area/caribbean)
 "bg" = (/obj/structure/simple_door/key_door/russian,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"bh" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun_cleaning_kit,/obj/item/weapon/key/russian,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"bh" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun_cleaning_kit,/obj/item/weapon/key/russian,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "bi" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUDoc"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "bj" = (/obj/structure/flag/russian,/turf/floor/dirt/winter{icon_state = "dead_snowgrass"},/area/caribbean)
 "bk" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/mop,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
@@ -109,7 +109,7 @@
 "cf" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "cg" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/mob/living/human/corpse/japanese,/turf/floor/dirt,/area/caribbean)
 "ch" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"ci" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"ci" = (/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "cj" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter{icon_state = "snowgrass"},/area/caribbean)
 "ck" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "cl" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
@@ -157,19 +157,19 @@
 "db" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
 "dc" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean)
 "dd" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
-"de" = (/obj/structure/mine_support/stone/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"de" = (/obj/structure/mine_support/stone/concrete,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "df" = (/obj/structure/window/barrier,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean)
 "dg" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "dh" = (/obj/structure/barricade,/turf/floor/dirt,/area/caribbean)
 "di" = (/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean)
 "dj" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean)
 "dk" = (/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"dl" = (/obj/structure/sign/minefield{desc = "<b>2347</b>"; name = "Forward Trench Phone #"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dl" = (/obj/structure/sign/minefield{desc = "<b>2347</b>"; name = "Forward Trench Phone #"},/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dm" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/mob/living/human/corpse/japanese,/turf/floor/dirt,/area/caribbean)
 "dn" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/dust,/area/caribbean)
-"do" = (/obj/structure/table/wood,/obj/item/camera/early,/obj/item/camera_film,/obj/item/camera_film,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"do" = (/obj/structure/table/wood,/obj/item/camera/early,/obj/item/camera_film,/obj/item/camera_film,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dp" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"dq" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dq" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dr" = (/obj/structure/barbwire,/mob/living/human/corpse/japanese,/turf/floor/dirt,/area/caribbean)
 "ds" = (/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dt" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean)
@@ -184,28 +184,28 @@
 "dC" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/turf/floor/dirt/burned,/area/caribbean)
 "dD" = (/obj/structure/sink,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dE" = (/obj/structure/bed/padded,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"dF" = (/obj/structure/table/wood,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"dG" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/trench,/area/caribbean)
-"dH" = (/obj/structure/filingcabinet{icon_state = "tallcabinet"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dF" = (/obj/structure/table/wood,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dG" = (/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"dH" = (/obj/structure/filingcabinet{icon_state = "tallcabinet"},/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dI" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dJ" = (/obj/roof/wood,/obj/structure/closet/cabinet,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/weapon/grenade/dynamite/ready{heavy_armor_penetration = 22},/obj/item/weapon/grenade/dynamite/ready{heavy_armor_penetration = 22},/obj/item/weapon/grenade/dynamite/ready{heavy_armor_penetration = 22},/turf/floor/trench,/area/caribbean)
 "dK" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/gun_cleaning_kit,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dL" = (/obj/structure/bed/padded,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dM" = (/obj/roof/wood,/obj/structure/closet/crate/footlocker,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/grenade/dynamite/ready{heavy_armor_penetration = 22},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "dN" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"dO" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/obj/structure/roof_support/admin,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"dP" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dO" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/obj/structure/roof_support/admin,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dP" = (/obj/structure/bed/chair,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dQ" = (/obj/structure/cannon/modern,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dR" = (/obj/structure/closet/anchored,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/storage/pill_bottle/penicillin,/obj/item/weapon/storage/pill_bottle/antitox,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dS" = (/obj/structure/closet/crate/wood,/turf/floor/trench,/area/caribbean)
-"dT" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dT" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "dU" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/flame/lighter/zippo,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dV" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigarettes/randompack,/obj/item/weapon/matchbox,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dW" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "dX" = (/obj/structure/closet/crate/sandbags,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"dY" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_small/alwayson,/obj/item/weapon/key/russian,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"dZ" = (/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"ea" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dY" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_small/alwayson,/obj/item/weapon/key/russian,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"dZ" = (/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"ea" = (/obj/structure/bookcase,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/item/weapon/book,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "eb" = (/obj/structure/closet/crate/footlocker,/obj/item/weapon/storage/fancy/cigar/full,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ec" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "ed" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
@@ -225,11 +225,11 @@
 "er" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "es" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "et" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
-"eu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/trench,/area/caribbean)
+"eu" = (/obj/structure/window/barrier{dir = 1},/turf/floor/dirt,/area/caribbean)
 "ev" = (/obj/item/weapon/material/shovel/trench,/turf/floor/trench,/area/caribbean)
 "ew" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
 "ex" = (/obj/structure/wild/burnedtree{icon_state = "burnedlog"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"ey" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
+"ey" = (/obj/structure/window/barrier/snowwall,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "ez" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eA" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eB" = (/obj/structure/wild/burnedtree{icon_state = "burnedbush8"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
@@ -345,8 +345,8 @@
 "gH" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/invisible_wall/one)
 "gI" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/one)
 "gJ" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/one)
-"gK" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim,/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"gL" = (/obj/structure/printingpress,/obj/structure/printingpress,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"gK" = (/obj/structure/closet/crate/ww1/ammo_maxim,/obj/structure/window/barrier/concrete{dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"gL" = (/obj/structure/printingpress,/obj/structure/printingpress,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "gM" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt,/area/caribbean)
 "gN" = (/obj/structure/barricade/steel,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "gO" = (/obj/structure/simple_door/key_door/russian,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
@@ -359,54 +359,70 @@
 "gW" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/advsmall,/obj/item/weapon/doctor_handbook,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "gX" = (/obj/structure/closet/crate,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "gY" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/bronze,/turf/floor/carpet/redcarpet{icon_state = "carpet14-10"},/area/caribbean/russian/land/inside/command)
-"gZ" = (/obj/structure/table/wood,/obj/item/weapon/globe,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"ha" = (/obj/structure/bed/chair/wood/red,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"hb" = (/obj/structure/table/wood,/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/material/ashtray/glass,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"gZ" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"ha" = (/obj/structure/bed/chair/wood/red,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"hb" = (/obj/structure/table/wood,/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/material/ashtray/glass,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "hc" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/mine_support/stone/concrete,/obj/structure/closet/crate/rations/biscuits,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "hd" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/mine_support/stone/concrete,/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
-"he" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/bronze,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"hf" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass{step_x = 0; step_y = 0},/obj/item/weapon/paper_bin{step_y = 0},/obj/structure/mine_support/stone/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"hg" = (/obj/structure/table/rack/coatrack,/obj/item/clothing/suit/storage/coat/rusoffcoat,/obj/item/clothing/head/rusoffcap,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"hi" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"he" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/bronze,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"hf" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass{step_x = 0; step_y = 0},/obj/item/weapon/paper_bin{step_y = 0},/obj/structure/mine_support/stone/concrete,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"hg" = (/obj/structure/table/rack/coatrack,/obj/item/clothing/suit/storage/coat/rusoffcoat,/obj/item/clothing/head/rusoffcap,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"hi" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter{icon_state = "grass1"},/area/caribbean)
 "hj" = (/obj/structure/table/wood/flipped,/turf/floor/dirt/winter{icon_state = "snowgrass"},/area/caribbean)
-"hk" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
+"hk" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "hm" = (/obj/item/weapon/globe,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "hn" = (/obj/item/weapon/globe,/mob/living/human/corpse/japanese,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "hx" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
+"il" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "jD" = (/obj/covers/wood/stairs,/turf/floor/trench,/area/caribbean)
-"jM" = (/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/dirt/dust,/area/caribbean)
+"jM" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "jY" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/turf/floor/trench,/area/caribbean)
-"oC" = (/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/trench,/area/caribbean)
-"oV" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean)
+"md" = (/obj/structure/window/barrier/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"mN" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
+"oC" = (/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/structure/table/rack/shelf/wooden,/turf/floor/trench,/area/caribbean)
+"oV" = (/obj/structure/barricade/steel,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window_frame/metal,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "pf" = (/obj/structure/mine_support/stone/concrete,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
-"pL" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/table/wood/flipped,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
+"pL" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter{icon_state = "dead_snowgrass"},/area/caribbean)
 "qq" = (/obj/structure/wild/burnedtree,/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt,/area/caribbean)
+"qs" = (/obj/structure/window/barrier/concrete,/obj/structure/bed/chair/commander/naval,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "qJ" = (/obj/structure/window/barrier{dir = 1},/turf/floor/trench,/area/caribbean)
-"tg" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
+"tg" = (/obj/structure/cannon/modern/tank/american75,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"tK" = (/obj/structure/shellrack,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "uk" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean)
 "vo" = (/obj/structure/table/wood/flipped{dir = 8},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"vq" = (/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914{dir = 4; name = "Hotchkiss MLE 1897 machine gun"},/turf/floor/trench,/area/caribbean)
-"wD" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt,/area/caribbean)
+"vq" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"wD" = (/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/concrete{dir = 8},/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"wL" = (/obj/structure/bed/chair/loader{dir = 8},/obj/structure/window/barrier/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "xJ" = (/obj/covers/wood/stairs,/turf/floor/dirt,/area/caribbean)
-"yT" = (/obj/structure/closet/crate/ww1/ammo_hotchkiss,/turf/floor/trench,/area/caribbean)
+"yT" = (/obj/structure/closet/crate/footlocker,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "yY" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/barrier,/turf/floor/dirt,/area/caribbean)
 "Dn" = (/obj/structure/table/wood/flipped,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"Ea" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean)
+"DA" = (/obj/structure/window/barrier/concrete{dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"Ea" = (/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/concrete{dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "ER" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/crowbar/prybar,/obj/item/weapon/crowbar/prybar,/obj/item/weapon/material/hatchet/steel,/obj/item/weapon/material/hatchet/steel,/turf/floor/trench,/area/caribbean)
 "Fa" = (/obj/structure/table/rack/shelf/wooden,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean)
-"FE" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"FU" = (/obj/structure/window/barrier/sandbag,/obj/structure/cannon/modern,/turf/floor/trench,/area/caribbean)
+"FE" = (/obj/structure/bed/chair/gunner,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
+"FU" = (/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/concrete{dir = 4},/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"Gt" = (/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/concrete{dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "HE" = (/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
-"HK" = (/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean)
-"IT" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/trench,/area/caribbean)
+"HK" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
+"In" = (/obj/structure/window/barrier/concrete{dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"IT" = (/obj/structure/closet/crate/ww1/ammo_maxim,/obj/structure/window/barrier/concrete{dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "Jg" = (/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/item/weapon/material/shovel/trench,/obj/structure/table/rack/shelf/wooden,/turf/floor/trench,/area/caribbean)
 "Kk" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
-"Lc" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/trench,/area/caribbean)
+"KG" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim,/obj/structure/window/barrier/rock,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"Lc" = (/obj/structure/barricade/steel,/obj/structure/window/barrier/concrete{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "Nd" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean)
-"Pk" = (/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/dirt,/area/caribbean)
+"Pk" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/burned,/area/caribbean)
+"PK" = (/obj/structure/barricade/steel,/obj/structure/window/barrier/concrete{dir = 1},/obj/structure/window/barrier/concrete{dir = 8},/obj/structure/mine_support/stone/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"PL" = (/obj/structure/wild/burnedbush,/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean)
 "PY" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
-"Vt" = (/obj/structure/cannon/modern{dir = 1},/turf/floor/dirt,/area/caribbean)
-"Wp" = (/obj/structure/mine_support{name = "roof support"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
+"Qg" = (/obj/structure/barricade/steel,/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window_frame/metal,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"QP" = (/obj/structure/window/barrier/concrete{dir = 8},/obj/structure/closet/crate/ww1/ammo_maxim,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"Vg" = (/obj/structure/window/barrier{dir = 1},/turf/floor/dirt/burned,/area/caribbean)
+"Vt" = (/obj/structure/window/barrier/concrete{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
+"VV" = (/obj/structure/barricade/steel,/obj/structure/window/barrier/concrete{dir = 1},/obj/structure/window/barrier/concrete{dir = 4},/obj/structure/mine_support/stone/concrete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
+"Wp" = (/obj/structure/window/barrier/concrete{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "WA" = (/obj/structure/table/wood/flipped{dir = 8},/obj/structure/table/wood/flipped,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 
 (1,1,1) = {"
@@ -414,53 +430,53 @@ abababababababababababababacdIdLdLdLdIaedLacadaFdRdRafaxbkdDdIdIaWbdacdIdpdWdWdW
 abababababababababababababaceqdKdKdVdIdUdLacgVdIdIagdIdIdIdIagdIdIdIacagdIdIdIdIacdIdIdIdIdIdIdIacdWdWdIdIdkacaRgUgYaogZcicihahbcicicicicicicibhacdLdVdIaeebdIgQacababababababababababababababababababab
 ababababababasasasababababbndsdIdIdIdIdKdEacdIdIdIbidIdIaFdNgWbidIgXacdIdIdWdWdXacananhcandIdIanacdWdWhddIdkacaTaBavaocicihedFhfcidecicidedlcidqacdLdKdIagdIdIgQgSabababababababababababababaEababababab
 abababababababababababababbneqdIaNaMdIdVdLaccadIcaagcadIdIdIagdIdIdIacagdkacacacacacacacbabcbcbaacacacacbcacacaSaCaUgOcicicidecicicicicidOdodPciacdLdVdIaNaMdIgQgSaEaEabababababababababababababababaEab
-abasasababababababababababaceqdIaMaNdIdVdLaccadIcadIcadIdIdIdIdIaWbdacdIdkacetetetetetetetetetetetetetetetetacaVaDawaohkhgcicicicicicidZdTdYdTdFacdLdKdIaMaNdIgQacabababababahabababababaEababababababab
-abababaiabababababababababaceqdIdIdIdIdIdIacbbacacacacaXbcbcaXacacacacbcacacetetetetettgetetetettgetetetetetacacacacacacacacacbabgbgbaacacacacacbadIdIdIdIdIdIgQacabababaPabababababababababaiababababab
-abababaQaQaQabababababababbndsdIdIdIdIdIdIbcetetetetetetetetetetetetetetetetetetacacacbbeNWpWpeNbbacacacetetetetetetetetetetetetetetetetetetetetbcdIdIdIdIdIdIgQgSabababaPabababababaEaEabaEabababababab
-ababababababaQababeAabababbneqdIdkdIdIdIdIbcetettgetetetetetetettgetetetetetetetacagdIdIdIetetdIdIdIagacetetetetetetetetettgetetetetetetettgetetbcdIdIdIagdkdIgQgSababaEaEaEajaEabaEaPababababababababab
+abasasababababababababababaceqdIaMaNdIdVdLaccadIcadIcadIdIdIdIdIaWbdacdIdkacdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIacaVaDawaohkhgcicicicicicidZdTdYdTdFacdLdKdIaMaNdIgQacabababababahabababababaEababababababab
+abababaiabababababababababaceqdIdIdIdIdIdIacbbacacacacaXbcbcaXacacacacbcacacdIdIdIdIdIdudIdIdIdIdudIdIdIdIdIacacacacacacacacacbabgbgbaacacacacacbadIdIdIdIdIdIgQacabababaPabababababababababaiababababab
+abababaQaQaQabababababababbndsdIdIdIdIdIdIbcdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIacacacbbeNeNeNeNbbacacacdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIbcdIdIdIdIdIdIgQgSabababaPabababababaEaEabaEabababababab
+ababababababaQababeAabababbneqdIdkdIdIdIdIbcdIdIdudIdIdIdIdIdIdIdudIdIdIdIdIdIdIacagdIdIdIdIdIdIdIdIagacdIdIdIdIdIdIdIdIdIdudIdIdIdIdIdIdIdudIdIbcdIdIdIagdkdIgQgSababaEaEaEajaEabaEaPababababababababab
 abababababababababaQabababaceqdIdkdIdQdIdIacbbacacacacacacacacacacacacbbbcbcbbacacdIetetetetetetetetdIacacacbbbcbcbbacacacacacacacacacacacacacacaYdIdQdIdIdkdIgQacababababababababababababababababababab
-abababababababababababababacacdIdIagdIdIdIacaMdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIgQacdIeePYetetetetecPYdIaceqdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIaMacdIdIdIdIdIdIacacababaPabababaPabaPabababababababababab
-abababakababababaQaQababababacacesesesesesacaNdIpfetetetetetetpfetetetetetetpfgQgSdIecPYetHEhxetecefdIbneqpfetetetetetetetpfetetetetetetpfetdIaNacesesesesesacacaPaPaPabababaPababaEaPababababababababab
-ababababababababeBababababababacacgNgNgNacacacdpdIetetetetetetetetetetetetetetgQgSdIeeerKkKkegKkfoPYdIbneqetetetetetetetetetetetetetetetetdIdIacacacgNgNgNacacabababababababaPaEaEaEabababababbfabababab
-ababababababaQabababababababababbNbNbNbNbNabacacesesgKesesdpesesgKesesdphidIdIgQacagdIfsehfsfsfsehdIagaceqdIdIdpdpesesgKesesdpesesgKesesdIdpacacabbNbNbNbNbNababababababababbfababbfalbfbfababababababab
-ababahasasasasasababababababababababababababbjacacgNgNgNacacacgNgNgNacacacacacacacacdudIetetetetdIduacacacacacacacacgNgNgNacacacgNgNgNacacacacblababababababababababababaPababababababababababamabababab
-ababababababaQaQabababababababababababababaQababbNbNbNbNbNabbNbNbNbNbNababababababacacagetetetetagacacabababababaEbNbNbNbNbNabbNbNgPbNgPabababababababababababababababababababababababababababababababab
+abababababababababababababacacdIdIagdIdIdIacaMdIGtjMiljMwDdpFUjMiljMEadIdIdIdIgQacdIeePYetetetetecPYdIaceqdIdIdIdIdIdIGtjMiljMwDdpFUjMiljMEadIaMacdIdIdIdIdIdIacacababaPabababaPabaPabababababababababab
+abababakababababaQaQababababacacesesesesesacaNdIetetqsetetetetetqsetetetetetpfgQoVdIecPYetHEhxetecefdIQgeqpfetetetetetetetqsetetetetetqsetetdIaNacesesesesesacacaPaPaPabababaPababaEaPababababababababab
+ababababababababeBababababababacacgNgNgNacacacdpWpetFEtKVtyTWpetFEtKVtetetetetgQoVdIeeerKkKkegKkfoPYdIQgeqetetetetetetWpetFEtKVtyTWpetFEtKVtdpacacacgNgNgNacacabababababababaPaEaEaEabababababbfabababab
+ababababababaQabababababababababbNbNbNbNbNabacacgKmdtgwLITKGgKmdtgwLDAdIdudIdIgQacagdIfsehfsfsfsehdIagaceqdIdIdIdIdIdIInmdtgwLITKGgKmdtgwLQPacacabbNbNbNbNbNababababababababbfababbfalbfbfababababababab
+ababahasasasasasababababababababababababababbjacacdGdGdGPKLcVVdGvqdGacacacacacacacacdudIetetetetdIduacacacacacacacacacacdGdGdGPKLcVVdGvqdGacacblababababababababababamabaPababababababababababamabababab
+ababababababaQaQabababababababababababababaQababbNbNbNbNbNbNbNbNbNbNbNababababababacacagetetetetagacacabababababaEababbNbNbNbNbNbNbNbNgPbNgPabababababababababababababababababababababababababababababab
 abababababababaQaQababababarabababababababaiababababababababababababababababababababacdIetetetetdIacababeHabababaEabababababaiababababaPababababababababaPabababababababaPababababababababaiabababababab
-abababaQabababababaQababababababababababaQeBabababababababababababababeBababababababaceqetetetetgQacababababababababababababababababababababababababababababababaiabababaPababababababababababababababab
-ababababababababababaQaQababababababababaQaQaQabababababababababababoVeueuITababababbndsetetetetgRgSababababoVeueuITahababababababaPaPababababababababababababababababababaPabababeAabababababababababab
-ababababeBababababaiababababababababababababayabababababababababababEabobodGababababbneqetetetetgQgSababababEabobodGababababababababaPaPaiababababababababababababababababaPabababababababababababababab
-abababababababababababababababababababababababababababaiababababababEaboLcdGababababaceqdIetetdIgQacababababEaboLcdGabababababababababababababababababababababababababababababababababababababababababab
-abababababababababababababababababababababababababababababababababFEboFUbqboeyabababacacdIdIdIdIacacabababFEboFUbqboeyarababababababababababababababababababababbfabDnDnDnDnDnDnDnDnDnDnabababababababab
-boboboboboboboboboboboboboboboboboboboboabababababababababababababFEboeyFEboeyabeAababacbbbcbcbbacabababaiFEboeyFEboeyabababababababababeAababbfababbobobobobobobobobobobobobobobobobobobobobobobobobobo
-bobobobobobobobobobobobobobobobobobobobobovoababababababaEaHabababFEboeyFEboeyabababblababdwdwababblabababFEboeyFEboeyababababababababababababbfabbobobobobobobobobobobobobobobobobobobobobobobobobobobo
-bpbqbqbqbqbqbrbsbtbubpbqbqbqbqbqbqbobobobovoababababababaEababaEabFEboeyFEboeyabababababababdwababababababFEboeyFEboeyabababababababababababbfababbobobobpbqbqbrbsbtbubpbpbqbqbqbqbpbpbpbpbpbqbqbqbqbpbp
-bvbvbwbwbxbybzbobobzbybybAbBbBcebCbDboboboWADnDnDnDnDnDnabababaEabFEboeyFEbopLDnDnDnDnababdwabaEaEababababFEboeyFEboeyababDnDnDnDnabababDnDnDnhjDnbobobtbEbFbybzbobobzbybybAbAbAbAbAbAbAbAbvbvbvbvbAbAbA
+abababaQabababababaQababababababababababaQeBabababababababababababababeBababababababaceqetetetetgQacabababababababarababababababababababababababababababababababaiabababaPababababababababababababababab
+ababababababababababaQaQababababababababaQaQaQababababarababababababababababababababbndsetetetetgRgSabababababababababababababababaPaPababababababababababababababababababaPabababeAabababababababababab
+ababababeBababababaiabababamababababababababayabababababababababababababababababababbneqetetetetgQgSababababababababababababababababaPaPaiababababarabababababababababababaPabababababababababababababab
+abababababababababababababababababababababababababababaiabababababarababababababababaceqdIetetdIgQacabababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababacacdIdIdIdIacacababarababababababarababababababababababababababababababababbfabDnDnDnDnDnDnDnDnDnDnabababababababab
+boboboboboboboboboboboboboboboboboboboboababababababababababababababababababababeAababacbbbcbcbbacabababaiabababababababababababababababeAababbfababbobobobobobobobobobobobobobobobobobobobobobobobobobo
+bobobobobobobobobobobobobobobobobobobobobovoababababababaEaHababababababababababababblababdwdwababblabababababababababababababababababababababbfabbobobobobobobobobobobobobobobobobobobobobobobobobobobo
+bpbqbqbqbqbqbrbsbtbubpbqbqbqbqbqbqbobobobovoababababababaEababaEababababababababababababababdwabababababababababababababababababababababababbfababbobobobpbqbqbrbsbtbubpbpbqbqbqbqbpbpbpbpbpbqbqbqbqbpbp
+bvbvbwbwbxbybzbobobzbybybAbBbBcebCbDboboboWADnDnDnDnDnDnabababaEabababababababDnDnDnDnababdwabaEaEababababababababababababDnDnDnDnabababDnDnDnhjDnbobobtbEbFbybzbobobzbybybAbAbAbAbAbAbAbAbvbvbvbvbAbAbA
 bGbHbHbGaEabboboboboababbIbGbGbJbKbsbobobobobLbLbLboboboboboboboboboboboboboboboboboboaEdwaEdwdwabbobobobobobobobobobobobobobobLbLbLbobobobobobobobobobtbMababboboboboababbNbNbObNbObNbNbNbNbNbNbNbNbNbN
 ababaEabaEbPbubqbqbrbQababaQabbRbSbsboboboboboboboboboboboboboboboevbobobobobobobobobobLbLbobobLbLboboboboboboboboevbobobobobobobobobobobobobobobobobobtbMabbPbubqbqbrbQabababbfbfbfbfababababababababab
 aEaEabababblbmbmbmbmababababaEbTbUbVbqbqbobobobWbobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobobWbobobobobobobobobobpbXbMababbmbmbmbmblababababbfababababababababababab
 aEababababababaQaQaQaQaQaIaEababbYbwcebAbZdabqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbobWbobobWbobqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbrccbAcdbfabababababababababababababababababababababab
 ewababababababababababababaQaQabbTbGbGbHbGbAbAbBbBbBbAbAbAcecebBbAbAbAcececececececechbubqbqbqbqbrcbcececececececececececfcfcfcfbAbAbAbAcjcjbAbAbAbAbNbNabababababababababababababababababexabababababab
-aEabaQababababababababaEaEabababaQababababbGbGbGbGbGbGbGbGbGbGbGbGbGbHbHbGbGbGbGbGbGckceclcececececmbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbNbNbNbNbNbNbNababababcnababababababababababababababababababababab
-ababaQababababababaEabababababababaEabababababababababaEaEbNbNbNbNcocobNbNbNbNbNbNbNcpbGbGbGbGbGbGcqbNbNcocobNcocococococoaEabaEababababababababababababababcncnababezabababababababeAababababeBabababab
-ababaQaEaEaEaEaQaEaQaEabeCababaEabaEaEabababababaQababababaEaEaEababababababababababblbNbNbNbNbNbNblaEababhmabababababababababababababababababababababababababababababababababababababababababababababab
-ababaQaQaEaEaQaQabababaEaEaEaEaEababaEaQaQaQaQaQezababaEababababababababababababababababababcrabababaEababeCabababababababababaEabababababababababeDabababababababababababababababababababababababababab
-abababaiabababaEaEaQaQaEaEabababaEaEaEabaEababaEaEaEeEaEababababababababaJababababababababababababababababhnhmhmhmabababababaEaEabababababababababcncnabababababababeBababababababababababababababababab
-abababababababababababababaEabababababababababababababababababababeAababababababababababababababababababhmhmabababababababababeFabababcncnabababababababababababcnababababababababababababababababababab
-abeGababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababeAabababababababababababcnabababababcncnabababababababababababab
-abababababababababababababababababababababababababababababababababeHabababababababababababababababababababababababababababababababababababababababababababababababababababcnabcnabababababababababababab
-ababababababababezabababababababababaiababababababababababababababababababababababaJabababababababababaJabababababababababababababababababababababababababababababababababababababababababababababababab
-ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcnabababababctcucucuabababababababababababababababab
-ababababababababababababababababababababababababababababababababababababababababababababababaJabababababababaEabababababababaEaEabaEaEabababababababababababababababababcucucuababababababababababababab
-ababababababababaiababababababababababababababababababababababababababctababababababababababababababababababaEaEaEarabababababababababaEaEababababababababababababababababababcucucucucucuababababababab
-ababababababababababababababababababababababababababababababababababcvabababababababababababababababababababababababababababababababababababababababababababababababababctabcncncnababababcucucuctababab
+aEabaQababababababababaEaEabababaQababababbGbGbGbGbGbGbGbGbGbGbGbGbGbHbHbGbGbGbGbGbGckceclcececececmbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbNbNbNbNbNbNbNababababcnabababababababababababababababbFbFbFbFbFbF
+ababaQababababababaEabababababababaEabababababababababaEaEbNbNbNbNcocobNbNbNbNbNbNbNcpbGbGbGbGbGbGcqbNbNcocobNcocococococoaEabaEababababababababababababababcncnababezabababababababeAabmNababeBabababab
+ababaQaEaEaEaEaQaEaQaEabeCababaEabaEaEabababababaQababababaEaEaEababababababababababblbNbNbNbNbNbNblaEababhmababababababababababababababababababababababababababababababababababababmNababababababababab
+ababaQaQaEaEaQaQabababaEaEaEaEaEababaEaQaQaQaQaQezababaEababababababababababababababababababcrabababaEababeCabababababababababaEabababababababababeDababababababababababbFbFbFbFbFbFabababababababababab
+abababaiabababaEaEaQaQaEaEabababaEaEaEabaEababaEaEaEeEaEababababababababaJababababababababababababababababhnhmhmhmabababababaEaEabababababababababcncnababababmNababeBabababababababababababababbFbFbFbF
+abababababababababababababaEabababababababababababababababababababeAababababababababababababababababababhmhmabababababababababeFabababcncnbFbFbFbFababababababmNcnababababababababababababbFbFbFabababab
+abeGababababababababababababababababababababababababababababababababababababababababababababababababababababeybFbFbFeyababababababababmNeAabababababbFbFbFbFbFabcnabababababcncnabababababababababababab
+ababababababbFbFbFbFbFababababababababababababababababababababababeHababababababababababababababababababababmNababababbFbFbFbFbFbFbFbFababababababababababababababababababHKbFHKbFbFabababababababababab
+bFbFbFbFbFabababezabababababababababaiababababababababababababababababababababababaJabababababababababaJababmNababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababbFbFbFbFabababababababababababababababababababababababababababababababbFbFbFbFbFabababababababababababababababababababababcnabababababctcucucuabababababababababababababababab
+abababababababababababababababababbFababababababbFbFbFbFbFbFababababababababababababababababaJabababababababaEabababababababaEaEabaEaEabababababababababababababababababcucucuababababababababababababab
+ababababababababaiababababababababababababababababababababababababababctababbFbFbFbFbFabababababababababababaEaEaEarabababababababababaEaEababababababababababababababababababcucucucucucuababababababab
+bFbFababababababababababababababababababababababababababababababababcvababababababababababababababababababababababababababababababababababababababbFbFbFbFbFbFbFababababctabcncncnababababcucucuctababab
 ababababababababababababababababababababaiababababababababababababcvababeJabababababctcucucucuabababababababababababababababababababezabababababababababababababababababcvababeAabababababababababababab
-abababcncncncncncncncncncncncncncncncncncncnabababababababababababcvabababababababababababababcucucucuababababababababaEaEabababababababababababababababababababababcucuabababababababababababababababab
-cnababababababbfbfcnabcncnabeKabcnabcnbfcnababcncnababababababcucuababababababababababababababababababcuaKcucucucxabaEabababcyababababababaEabababababababababababcvabcncnabcncncncncncncncncncnabababcn
-cnabababeJbfabababczbGbGbGbGaZbGbGbGcBcBcCbfabababcncncnabcucuabababababababababababaQaQababababababababababaEaEababababababcyababababababababababababababababababcvabababcnababcDababababababcDcncncncn
+ababbFHKHKHKHKcncncncncncnHKHKHKHKcncncncncnabababababababababababcvabababababababababababababcucucucuababababababababaEaEababbFbFbFbFbFababababababababababababababcucuabababababababababababababababab
+cnababababababbfbfcnabcncnabeKabcnabcnbfcnababcncnababababababcucuababababababababababababababababababcuaKcucucucxabaEababbFhiababababababaEabababababababababababcvabcncnabcncncncncncncncncncnabababcn
+cnabababeJbfabababczbGbGbGbGaZbGbGbGcBcBcCbfbFbFbFHKcncnabcucuabababababababababababaQaQababababababababababaEaEababababababcyababababababababababababababababababcvabababcnababcDababababababcDcncncncn
 cncncncnababcncncnabababcnabababbfbfababababbfbfcnabcncEaKababababababababcDababaQaQabababaQababcycyabababababababcycyabcycycnabcycycycycycyababababcDababababbGaZababcncnababababcncncncncnabababababcn
-aaaacncncncncncncncncncncncncnababcnezabababababcDcucuabababcDcncycycyabababcyaQcycyeLcycncncnaQcncycycycycncncycncyababcycncncncncncncncncncncncncncnabcnbGbGababababababcncncncncncncncncncncncncncncn
+aaaacncncncncncncncncncncncncnababcnezabababababcDcucuabababcDcncycycyabababcyaQcycyeLcycncncnaQcnhihihihiHKHKhiHKhibFabcycncncncncncncncncncncncncncnabcnbGbGababababababcncncncncncncncncncncncncncncn
 aaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncnczcEcEababcnbfaQbfbfababababbfbfbfcycycycycycncncncDaQcncncycncycycyababcycycycycycyababababcycncncDcnababcBcFabcncncncncncncnaaaaaaaaaaaaaaaaaaaaaacncncnaa
-aaaaaacncnaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncnbfbfbfbfbfcncncncncncDaQaQababaQcncncncncncncncncncnaQcyaQcnabababcncDcycycycycycnababcncncnababababcBcBcncncnababababaaaaaacnaaaaaaaaaaaacncnaaaacncnaaaa
+aaaaaacncnaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncnbfbfbfbfbfcncncncncncDpLpLbFbFpLHKHKHKcncncncncncncnaQcyaQcnabababcncDcycycycycycnababcncncnababababcBcBcncncnababababaaaaaacnaaaaaaaaaaaacncnaaaacncnaaaa
 aaaaasaaaaaaaaasaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncnaQcncncncnabababcncncDcncycycycncyabababaQcncncncncncncDcncncncncncncncncncnczcGaaaacncnaaaacnaacncnaacncnaaaaaaaaaaaaaacncncncncnaaaa
 bobocKbobobobobocZcZcZbobobobobobobobobobobobobobobobobobocnaaascncncncncncncncnababababcncncncncncncncncncncncncncnbobobobobobobobobobobobobobobobobobobobobobobobocZcZcZbobobobobobobobobobobobobobobo
 bobobobobobocLbobobWboboboboboboboboboboboboboboboboboboboboasasasaaaaaaaaaaaaaaaaaaaaasaaaaaaaacncnaaaaaaaacnaaaabobobobobobobobobobobobobobobobobobobobobobobobobobobWbobobobobobobobobobobobobobobobo
@@ -473,18 +489,18 @@ aaaaaaaaaaaaaaaaaEcnaaeUaaaaaaaacsaaaaaaaaaaaaaaaacHcQbsbobobzbzbzbzbzbzbzbzbobo
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasasaaaaaacHcIdabobobobobobobobocMboboboboboevbobWbobobobocMbobobobobobobobobodbcYcOaaaaaaaaaaaaaaeVaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacHdcddbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqdfdgdcaaaaaaaaaaaaaaaaaaaaaaaaaaaEaEdhaaaaaaaaaaaEaaaaaaaEaaaaaaaaaEaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaadidjdjdncgdjdndjdjdjdndjdjdjdjdmdjdndjdjdjdjdndjdjdjdjdndjdjdjdndiaaaaaaaaaaaaaaaaaaaaaaaaaaaacGcGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaeUaaaacAaaaadididididididididrdidxdidididididrdididididrdididididididididiaaaacAaaaaaaaaaaaaaaaaaaaaaacGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeUaaaaaaaaaa
-aaaaaaaaaacsaaaaaaaaaaaaaadhaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaadyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacGcGaaaaaaaEaaaaaaaaaaaEfaaaaaaaaaaaaaaEaEaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaadvaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwcUaaaaaaaaaaaaaaaaaaaaaaeZaaaaaaaaaEaaaaaaaaaadhcGcGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwaaaaaaaaaacUaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacsaaaaaaaaaafaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaadhdidididrdididididiaaaafbaaaaaaaaaaaaaaaaaaaaaaaaaaeVaaaaaaaaaaaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadtdtdhaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaadidicodrdidididhaaaaaaaaaaaaaaaaaaaaaacUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaafcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaa
-aaaaaaeVaafdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacUaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaaaaaa
-aaaaaaaacDcDaaaaeUaaaaaaaaaaaaaaaaaaaacsaaaaaaaaaaaaaaaaenaaaaaaaaaacDaaaaaaaaaafcaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaa
-aaaaaaaaaaaaaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaeUaaaacAaaaadididididididididrdidxdidididididrdididididrdididididididididiaaaacAaaaaaaaaaaaaaaaaaaaaaacGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeUaaaaaaaaeM
+aaaaaaaaaacsaaaaaaaaaaaaaadhaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaadyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaNd
+aaaaeueueueueueuaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacGcGaaaaaaaEaaaaaaaaaaaEfaaaaaaaaaaaaaaEaEeMeMaaeueueueueuaa
+aaaaaaaaaaaaaaaaeMaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaadvaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwcUaaaaaaaaaaaaaaaaaaaaaaeZaaaaaaaaaEaaaaaaaaaadhcGcGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeMNdaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagMaaaaaaaaaaaaaadtdBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwaaaaaaaaaacUaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEaaaaaaaaaaaaaaaaaaaaaaaaaaeMeMaaaaaaaaaaaaaaaaPLaaaaaaaaaafaaaaaaa
+aaaaaaaaaaaaaaaagMaaaaaaaaaaaaaaaaaadtdtaaaaaaaaaaaaaaaaaaaadhdidididrdididididiaaaafbaaaaaaaaaaaaaaaaaaaaaaaaaaeVaaaaaaaaaaaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaeMNdaaaaeueueuVgeueueuaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaeueueuaaeMaaaaaaaaaaaadtdtdhaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaadidicodrdidididhaaaaaaaaaaaaaaaaaaaaaacUaaaaaaaaaaaaaaeMeMeMeMaaaaaaaaaacDcDcDNdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaacDaagMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeMeMeMfcaaaaaaaafceueueueueueueueuaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaa
+aaaaaaeVaafdaaaaaaaaaaaaaaaaeueueueueuaaeMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacUaaaaaaaaaaaaaaaaaaaaaaaaaaeMeMeMaaaaaaaaaaaaaaaaaaNdaaaaaaaaaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagMaaaaaaaaeMeMeMcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaNdaaaaaaeueueueueueueueuaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaaaaaa
+aaaaaaaacDcDaaaaeUaaaaaaaaaaaaaaaaaaaacsaaeueueueuaaaaaaPkaaaaaaaaaacDaaaaaaaaaafcaaaaaaaaaaaaaaaaaaNdaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaa
+aaaaaaaaaaaaaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeueueueueueueueueueuaadwaaeueueueueueuVgeuaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaeUaaaaaacsaaaaaaaaaaaaaaaaaaaaaadwaaaaaacsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaacDcDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacUaaaaaaaaaadwaaaaaaaaaaaaaaaaaaaaaaaaaadhcGcGcGdycGcGcGcGcGcGcGcGdhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaaaaeVaaaaaadwaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -515,9 +531,9 @@ dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacDaaaaaaaafgaaaaaa
 dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaeVaaaaaaaaaaaaaaaaaadwaaaaaaaaaaaaaaaaeVaaaadwdwaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
 dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaafcaadwaaaaaaaaaaaaaaaaaaaaaaaaaaaadwdwdwaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
 dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeQaaaaaaaaaaaaaaaaaaaadwaadwdwaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
-dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaeVaaaaaaaaaaaaaaaaaacDaaaaVtaaaaVtaadwaaaaaadwaaaaeVaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
-dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaPkHKwDPkHKwDjMdwaaaaaadwdwaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
-dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaafiaaaaaaaaaaaaaaaaPkaaaaPkaaaaPkdwdwdwaaaadwaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
+dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaeVaaaaaaaaaaaaaaaaaacDaaaaaaaaaaaaaadwaaaaaadwaaaaeVaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
+dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwdwaaaaaadwdwaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
+dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaafiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwdwdwaaaadwaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
 gHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgJgIgJgJgIgJgJgIgIgIgIgIgIgIgIgIgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgH
 gHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgIgJgIgJgJgIgJgJgIgIgIgIgIgIgIgIgIgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgHgH
 dAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafcaaaaaadwaaaadwdwdwdwdwaaaaaaaaaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdA
@@ -529,7 +545,7 @@ dAdAdAdAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwbobobobobobobobobo
 dAdAdAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwdwboboboboaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaboboboboNddwaaaaaaaafGflflfGflfmfmfGfGdwdwaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdA
 dAdAdAdAdAdAdAdAdAaaaaaaaaaaaaaaaacDaaaafaaafiaaaaaaaaaaaadwaaboboboaaaaaaaaaaaaaaaaaaaaaaaaaadAdAdAaaaaaagMdSdSdSdSdSNdaaaaboboboukdwaadwdwdwdwfjdwdwdwbobodwdwdwdwaaaaaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdA
 dAdAdAdAdAdAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadwdwdwaaaaboboboaaaaaaaaaaaaaaaaaaaaaaaadAdAdAdAaaaaaagMoCboboboboboboboboboboukfkdwaadwaadwdwdwdwdwbobodwdwdwdwaaaaaaaafJfKfKfKfKfJaaaaaaaadAdAdAdA
-dAdAdAdAdAaaaaaaaaaaaacDfXfXfXfXfXfXfXfXfXfXfXfXfXfkaadwdwaaaaboboboaaaaaaePaaaaeQaaaaaaaaaadAdAdAdAdAaaaagMoCbovqyTyTbobobobobofmfmfmfmfLfLfLfLfLfLfmfmfmfmfmfmfmfmfmaaaaaafMfNdJdJfPfQaaaaaaaaaadAdAdA
+dAdAdAdAdAaaaaaaaaaaaacDfXfXfXfXfXfXfXfXfXfXfXfXfXfkaadwdwaaaaboboboaaaaaaePaaaaeQaaaaaaaaaadAdAdAdAdAaaaagMoCbodSdSdSbobobobobofmfmfmfmfLfLfLfLfLfLfmfmfmfmfmfmfmfmfmaaaaaafMfNdJdJfPfQaaaaaaaaaadAdAdA
 dAdAdAdAaaaaaaaaaaaaaaaafXgqfXfXgrfXgsfXgsfXfXgtfXaagMxJxJNdaaboboboaaaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAaaqqJgboFaERjYbobobobobofmfpfmfmfSfrfTfqfUfqfmfnfmfmfnfmfmfRfmaaaaaafMfVfmfmfWfQaaaaaaaaaaaadAdA
 dAdAdAaaaaaaaaaaaadwdwdwfXgufXfXgvgwgvgxgvgwgvdMfXaagMjDjDNdboboboboaaaafaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAaagMJgbobobobobobobobobofmfmfmfmfLfLfLfLfLfLfmfmfmfmfmfmfmfmfmbobobofmfmfmfmfYfQaaaaaaaaaaaadAdA
 dAdAaaaaaaaaaaaaaadwdwfxfXgzfXfXfXfXfXfXfXgAfXfXfXboboboboboboboboboaaaaaaaaaaaaaaaaaaaadAdAdAdAdAdAdAdAdAgMdSdSdSdSdSNdaaaabobofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmbobobofmfmfmfmfYfQaaaaaaaaaaaadAdA
