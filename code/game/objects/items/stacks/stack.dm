@@ -71,6 +71,12 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		return FALSE
 	return TRUE
 
+/obj/item/stack/proc/zero_amount()//Teeth shit
+	if (amount < 1)
+		qdel(src)
+		return TRUE
+	return FALSE
+
 /obj/item/stack/proc/use(var/used,var/mob/living/human/H = null)
 	if (!can_use(used))
 		return FALSE
