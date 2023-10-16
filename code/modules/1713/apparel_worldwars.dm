@@ -1944,7 +1944,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 /obj/item/weapon/storage/ammo_can/ak74
 	New()
 		..()
-		for (var/i=1, i<= 6, i++)
+		for (var/i=1, i<= 7, i++)
 			new/obj/item/ammo_magazine/ak74(src)
 
 /obj/item/weapon/storage/ammo_can/m16

@@ -777,7 +777,7 @@
 	uses_squads = TRUE
 
 	min_positions = 1
-	max_positions = 100
+	max_positions = 8
 
 /datum/job/dutch/modern_breacher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
