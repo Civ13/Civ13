@@ -2580,7 +2580,7 @@
 	return TRUE
 
 /datum/job/russian/modern_breacher
-	title = "Narushitel"
+	title = "Prolomshik"
 	en_meaning = "Breacher"
 	rank_abbreviation = "Ryad."
 	spawn_location = "JoinLateRU"
@@ -2589,7 +2589,7 @@
 	uses_squads = TRUE
 
 	min_positions = 1
-	max_positions = 100
+	max_positions = 8
 
 /datum/job/russian/modern_breacher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
