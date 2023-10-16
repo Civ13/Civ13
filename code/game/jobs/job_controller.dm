@@ -203,8 +203,8 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
-
-	if (H.original_job && H.original_job.uses_squads)
+	
+	if (H.original_job && H.original_job.uses_squads && !map.fob_spawns)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
 			spawn (10)
@@ -258,19 +258,16 @@ var/global/datum/controller/occupations/job_master
 						H_area.play_ambience(H)
 				return
 
-	if (map.fob_spawns)
-		SpawnAtFob(H)
-
 	var/spawn_location = H.job_spawn_location
-	if(map.ID == MAP_GULAG13)
+	if (!spawn_location && H.original_job)
+		spawn_location = H.original_job.spawn_location
+	if (map.ID == MAP_GULAG13)
 		if(H.nationality == "German")
 			spawn_location = "JoinLateCivG"
 		else if(H.nationality == "Polish")
 			spawn_location = "JoinLateCivP"
 		else if(H.nationality == "Ukrainian")
 			spawn_location = "JoinLateCivU"
-	if (!spawn_location && H.original_job)
-		spawn_location = H.original_job.spawn_location
 	if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		if (H.original_job_title in map.availablefactions)
 			if (H.original_job_title == "Human tribesman")
@@ -314,6 +311,9 @@ var/global/datum/controller/occupations/job_master
 		var/area/H_area = get_area(H)
 		if (H_area)
 			H_area.play_ambience(H)
+	
+	if (map.fob_spawns)
+		SpawnAtFob(H)
 	/*
 	if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 		new /obj/structure/vehicle/boat/rhib/premade/arrival(H.loc)
@@ -337,44 +337,62 @@ var/global/datum/controller/occupations/job_master
 	for(var/obj/item/fob_spawnpoint/fob in world)
 		if (fob.faction_text == H.faction_text)
 			spawnable_points += fob
-	H.loc = null
-	var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
-	if (!(input == "Base"))
-		var/turf/fob_loc = get_turf(input)
-		var/list/valid_spawns = list()
-		var/blocked = FALSE // Is the spawn blocked because there is an enemy nearby?
-		for (var/turf/T in circlerangeturfs(3, fob_loc))
-			var/spawnable_turf = TRUE // Is the turf we're checking spawnable? (Nothing on it that would block us like walls)
-			for (var/obj/O in T.contents)
-				if (O.density)
+	if (spawnable_points.len >= 2)
+		H.loc = null
+		var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
+		if (!(input == "Base"))
+			var/turf/fob_loc = get_turf(input)
+			var/list/valid_spawns = list()
+			var/blocked = FALSE // Is the spawn blocked because there is an enemy nearby?
+			for (var/turf/T in circlerangeturfs(3, fob_loc))
+				var/spawnable_turf = TRUE // Is the turf we're checking spawnable? (Nothing on it that would block us like walls)
+				for (var/obj/O in T.contents)
+					if (O.density)
+						spawnable_turf = FALSE
+						continue
+				for (var/mob/living/human/M in T.contents)
+					if (M.stat == CONSCIOUS && M.faction_text != H.faction_text)
+						blocked = TRUE
 					spawnable_turf = FALSE
 					continue
-			for (var/mob/living/human/M in T.contents)
-				if (M.stat == CONSCIOUS && M.faction_text != H.faction_text)
-					blocked = TRUE
-				spawnable_turf = FALSE
-				continue
-			if (T.density)
-				spawnable_turf = FALSE
-			if (spawnable_turf && !blocked)
-				valid_spawns += T
+				if (T.density)
+					spawnable_turf = FALSE
+				if (spawnable_turf && !blocked)
+					valid_spawns += T
 
-		if (blocked)
-			H << SPAN_WARNING("<big>Cannot spawn at FOB because enemy is closeby.</big>")
-			SpawnAtFob(H)
-			return
+			if (blocked)
+				H << SPAN_WARNING("<big>Cannot spawn at this FOB because the enemy is nearby.</big>")
+				SpawnAtFob(H)
+				return
 
-		if (valid_spawns.len)
-			H.forceMove(pick(valid_spawns))
+			if (valid_spawns.len)
+				H.forceMove(pick(valid_spawns))
+				world << "Debug: Success; [valid_spawns.len] valid spawns detected"
+				spawn (1)
+					var/area/H_area = get_area(H)
+					if (H_area)
+						H_area.play_ambience(H)
+				return
+			else
+				H << SPAN_WARNING("<big>No valid spawnpoints were found at this FOB.</big>")
+				SpawnAtFob(H)
+				return
+		else
+			var/spawn_location = H.job_spawn_location
+			if (!spawn_location && H.original_job)
+				spawn_location = H.original_job.spawn_location
+			var/turf/spawnpoint = null
+			var/list/turfs = latejoin_turfs[spawn_location]
+			if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)
+				spawnpoint = locate(48,50,1)
+			else
+				spawnpoint = pick(turfs)
+			if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
+				H.loc = spawnpoint
 			spawn (1)
 				var/area/H_area = get_area(H)
 				if (H_area)
 					H_area.play_ambience(H)
-			return
-		else
-			H << SPAN_WARNING("<big>No valid spawnpoints were found at this FOB.</big>")
-			SpawnAtFob(H)
-			return
 
 /datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
 	occupations = list()
@@ -521,7 +539,7 @@ var/global/datum/controller/occupations/job_master
 				H.add_language("Blugoslavian",FALSE)
 				for (var/datum/language/blugoslavian/A in H.languages)
 					H.default_language = A
-					
+
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
 		H.original_job_title = H.original_job.title
@@ -740,7 +758,7 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(DUTCH))
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
-		
+
 		if (map.faction_distribution_coeffs.Find(ITALIAN))
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
 
@@ -835,7 +853,7 @@ var/global/datum/controller/occupations/job_master
 				return FALSE
 			if (dutch >= max_dutch)
 				return TRUE
-		
+
 		if (ITALIAN)
 			if (italian_forceEnabled)
 				return FALSE
