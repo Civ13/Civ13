@@ -849,24 +849,27 @@ obj/screen/tactic
 /obj/screen/mov_intent/Click()
 //	if (ishuman(parentmob))
 	var/mob/living/human/C = parentmob
+	if (C.stat == DEAD)
+		return
 	if (C.legcuffed)
 		C << "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>"
 		C.m_intent = "walk"	//Just incase
 		update_icon()
 		return TRUE
 
-	if (C.m_intent == "run")
-		C.m_intent = "proning"
-	else if (C.m_intent == "proning")
-		if (C.facing_dir)
-			C.set_face_dir()
-		C.m_intent = "stealth"
-	else if (C.m_intent == "stealth")
-		C.m_intent = "walk"
-	else if (C.m_intent == "walk")
-		C.m_intent = "run"
-	else
-		C.m_intent = "walk"
+	switch (C.m_intent)
+		if ("run")
+			C.m_intent = "proning"
+		if ("proning")
+			if (C.facing_dir)
+				C.set_face_dir()
+			C.m_intent = "stealth"
+		if ("stealth")
+			C.m_intent = "walk"
+		if ("walk")
+			C.m_intent = "run"
+		else
+			C.m_intent = "walk"
 
 	if (C.m_intent == "proning")
 		C.prone = TRUE
@@ -881,7 +884,6 @@ obj/screen/tactic
 		update_icon()
 		C.transform = M
 		return
-
 	else
 		C.prone = FALSE
 		var/matrix/M = matrix()
