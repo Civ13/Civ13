@@ -429,7 +429,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 				new /obj/structure/flag/russian(src.loc)
 				new /obj/item/weapon/storage/ammo_can/ak74(locate(src.x, src.y-1, src.z))
 		for (var/obj/structure/flag/F in range(1,src))
-			pixel_x += 20
+			F.pixel_x += 20
 		new /obj/structure/closet/crate/sandbags(locate(src.x-(pick(-1,1)), src.y, src.z))
 	return
 
