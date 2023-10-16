@@ -412,16 +412,25 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 				pickedname = pick(pickedfrom)
 				fob_names_nato -= pickedname
 				name = "[name] \'[pickedname]\'"
+				new /obj/structure/flag/dutch(src.loc)
+				new /obj/item/weapon/storage/ammo_can/m16(locate(src.x, src.y-1, src.z))
 			if (BRITISH)
 				pickedfrom = fob_names_nato
 				pickedname = pick(pickedfrom)
 				fob_names_nato -= pickedname
 				name = "[name] \'[pickedname]\'"
+				new /obj/structure/flag/british(src.loc)
+				//To do: add proper ammo can for the British
 			if (RUSSIAN)
 				pickedfrom = fob_names_russian
 				pickedname = pick(pickedfrom)
 				fob_names_russian -= pickedname
 				name = "[name] \'[pickedname]\'"
+				new /obj/structure/flag/russian(src.loc)
+				new /obj/item/weapon/storage/ammo_can/ak74(locate(src.x, src.y-1, src.z))
+		for (var/obj/structure/flag/F in range(1,src))
+			pixel_x += 20
+		new /obj/structure/closet/crate/sandbags(locate(src.x-(pick(-1,1)), src.y, src.z))
 	return
 
 /obj/item/fob_spawnpoint/ex_act(severity)
@@ -445,14 +454,16 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		message_admins("FOB at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>) has been destroyed.")
 		if (pickedname)
 			pickedfrom += pickedname
+		for (var/obj/structure/flag/F in range(7,src))
+			qdel(F)
 		qdel(src)
 		return
 /obj/item/fob_spawnpoint/attackby(obj/item/W as obj, mob/user as mob)
 	switch(W.damtype)
 		if ("fire")
-			health -= W.force * TRUE
+			health -= W.force
 		if ("brute")
-			health -= W.force * 0.75
+			health -= W.force
 	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(src)
@@ -488,13 +499,15 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 
 /obj/item/supply_crate/New()
 	..()
-	update_icon()
+	spawn(2)
+		update_icon()
 
 /obj/item/supply_crate/faction1/New()
 	..()
 	faction_text = map.faction1
 	name = "[map.roundend_condition_def2name(faction_text)] [name]"
 	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+
 /obj/item/supply_crate/faction2/New()
 	..()
 	faction_text = map.faction2
@@ -502,6 +515,13 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
 
 /obj/item/supply_crate/attack_hand(mob/living/human/H as mob)
+	for (var/obj/item/fob_spawnpoint/fob in range(14, src))
+		if (fob.faction_text != src.faction_text)
+			H << SPAN_WARNING("<big>This area is too dangerous to build a FOB. Move away or destroy the enemy FOB!</big>")
+			return
+		if (fob.faction_text == src.faction_text)
+			H << SPAN_WARNING("You're building too close to a friendly FOB. Consider moving further away.")
+			return
 	if (faction_text == H.faction_text)
 		H << SPAN_NOTICE("You starting building a FOB with the [src].")
 		var/found = 0
@@ -523,10 +543,11 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 
 /obj/item/supply_crate/update_icon()
 	overlays.Cut()
-	switch(faction_text)
-		if (RUSSIAN)
-			overlays += "o-ru"
-		if (DUTCH)
-			overlays += "o-nl"
-		if (BRITISH)
-			overlays += "o-uk"
+	if (faction_text)
+		switch(faction_text)
+			if (RUSSIAN)
+				overlays += image(icon = 'icons/obj/junk.dmi', icon_state = "o-ru")
+			if (DUTCH)
+				overlays += image(icon = 'icons/obj/junk.dmi', icon_state = "o-nl")
+			if (BRITISH)
+				overlays += image(icon = 'icons/obj/junk.dmi', icon_state = "o-uk")
