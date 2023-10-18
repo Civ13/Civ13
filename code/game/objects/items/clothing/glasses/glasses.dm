@@ -70,6 +70,11 @@
 	else
 		attack_self(usr)
 		return
+
+/obj/item/clothing/glasses/AltClick()
+	..()
+	toggle()
+
 /obj/item/clothing/glasses/eyepatch
 	name = "eyepatch"
 	desc = "Yarr."

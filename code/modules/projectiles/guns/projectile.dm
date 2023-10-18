@@ -324,7 +324,7 @@
 	else
 		..()
 
-/obj/item/weapon/gun/projectile/verb/set_gp()
+/obj/item/weapon/gun/projectile/proc/set_gp()
 	set name = "Toggle Grenade Launcher"
 	set category = null
 	set src in usr

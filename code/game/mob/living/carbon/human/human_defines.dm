@@ -102,9 +102,7 @@
 
 	var/job_spawn_location = null // used to override job.spawn_location for a single mob
 
-	var/shoveling_snow = FALSE
-	var/shoveling_dirt = FALSE
-	var/shoveling_sand = FALSE
+	var/shoveling = FALSE
 	var/buriedalive = FALSE
 
 	var/circumcised = FALSE

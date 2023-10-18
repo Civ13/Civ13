@@ -765,8 +765,8 @@
 // yes, i know this is horrible shitcode. Pls no bully
 	if (!istype(loc, /mob/living/human))
 		deployed = FALSE
-		item_state = "dory"
-		worn_state = "dory"
+		item_state = initial(item_state)
+		worn_state = initial(worn_state)
 	else
 		var/mob/living/human/US = loc
 		if (deployed)
@@ -814,8 +814,8 @@
 			US.overlays += standing
 		else if (!deployed)
 			US.overlays -= standing
-			item_state = "dory"
-			worn_state = "dory"
+			item_state = initial(item_state)
+			worn_state = initial(worn_state)
 		spawn(1)
 			update_icon()
 
