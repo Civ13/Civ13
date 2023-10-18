@@ -89,8 +89,9 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	verb = say_quote(message, speaking)
 
 	if (is_muzzled())
-		src << "<span class='danger'>You're muzzled and cannot speak!</span>"
+		to_chat(src, "<span class='danger'>You're muzzled and cannot speak!</span>")
 		return
+
 	original_message = message
 
 	message = trim_left(message)
@@ -108,17 +109,20 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	if (!message || message == "")
 		return FALSE
 
-
 	var/list/handle_v = handle_speech_sound()
 	var/sound/speech_sound = handle_v[1]
 	var/sound_vol = handle_v[2]
 
 	var/italics = FALSE
 	var/message_range = 7
+
 	if (ishuman(src))
 		var/mob/living/human/H = src
 		if (H.wolfman && howl)
 			message_range = 30
+
+	var/list/listening = list()
+	var/list/listening_obj = list()
 	var/turf/T = get_turf(src)
 
 	//handle nonverbal and sign languages here
@@ -129,9 +133,6 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 
 		if (speaking.flags & SIGNLANG)
 			return say_signlang(message, pick(speaking.signlang_verb), speaking)
-
-	var/list/listening = list()
-	var/list/listening_obj = list()
 
 	if (T)
 		//DO NOT FUCKING CHANGE THIS TO GET_OBJ_OR_MOB_AND_BULLSHIT() -- Hugs and Kisses ~Ccomp
@@ -173,6 +174,13 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 				O.hear_talk(src, message, verb, speaking)
 	if (client)
 		log_say("[name]/[key] : [message]")
+	if (map.ID == MAP_PAPERS_PLEASE)
+		if (ishuman(src))
+			var/mob/living/human/H = src
+			if (H.original_job_title == "Inspector")
+				playsound(src, "sound/voice/speech/inspector.ogg", 75)
+			if (H.original_job_title == "Entrant")
+				playsound(src, "sound/voice/speech/inspector.ogg", 75)
 	return TRUE
 
 /mob/living/proc/say_signlang(var/message, var/verb="gestures", var/datum/language/language)
