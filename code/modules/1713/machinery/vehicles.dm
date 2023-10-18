@@ -678,7 +678,8 @@
 			return
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
-			H << "You increase the speed."
+			if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len+1)
+				H << "You increase the speed."
 			return
 	else
 		return

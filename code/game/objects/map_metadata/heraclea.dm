@@ -38,5 +38,5 @@ obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 	else
-		. = TRUE
+		. = FALSE
 

@@ -133,9 +133,8 @@
 	satisfaction = 4
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !istype(src,/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod) && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
-		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
+		for (var/i=1, i<=3, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		user << "You cut the fish into thin fillets."
 		qdel(src)
 	else
@@ -143,9 +142,8 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/hatchet)))
-		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
+		for (var/i=1, i<=3, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
 		user << "You cut the salmon into thin fillets."
 		qdel(src)
 	else

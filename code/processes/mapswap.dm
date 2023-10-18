@@ -62,7 +62,7 @@
 						"Fiction" = 0,
 						"Battle Royale" = 6,
 						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-						"PvE (Voyage & Cursed Island)" = 0,
+//						"PvE (Voyage & Cursed Island)" = 0,
 						"Chad Mode" = 30,
 //						"MilSim (BETA TESTING)" = 20,
 					)
@@ -86,7 +86,7 @@
 					"Fiction" = 0,
 					"Battle Royale" = 6,
 					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 20,
-					"PvE (Voyage & Cursed Island)" = 0,
+//					"PvE (Voyage & Cursed Island)" = 0,
 //					"MilSim (BETA TESTING)" = 20,
 				)
 
@@ -111,7 +111,7 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-	if (config.allowedgamemodes == "BR")
+	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)
@@ -335,7 +335,7 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-	if (config.allowedgamemodes == "BR")
+	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)

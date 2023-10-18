@@ -154,7 +154,7 @@
 "dc" = (/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "dd" = (/obj/structure/brazier/potbellystove,/turf/floor/wood,/area/caribbean/roofed/tundra)
 "de" = (/obj/structure/closet/fridge,/turf/floor/wood,/area/caribbean/roofed/tundra)
-"df" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/box/firstaid/advsmall,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
+"df" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/box/firstaid,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
 "dg" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/ww2,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
 "dh" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/toolbox/blue,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
 "di" = (/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)

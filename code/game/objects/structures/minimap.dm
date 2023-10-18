@@ -189,8 +189,17 @@
 		if (MAP_OPERATION_FALCON)
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
-/obj/structure/sign/map_board/examine(mob/user)
+/obj/structure/sign/map_board/examine(mob/living/human/user)
 	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	if (map.ID == MAP_OPERATION_FALCON)
+		var/friendly_fob = FALSE
+		var/dat = "<h1>FOB COORDINATES</h1>"
+		for (var/obj/item/fob_spawnpoint/F in world)
+			if (F.faction_text == user.faction_text)
+				friendly_fob = TRUE
+				dat += "<b>[F.name]:</b> ([F.x];[F.y])<br>"
+		if (friendly_fob)
+			user << browse(dat, "window=FOB Coordinates")
 
 /obj/structure/sign/map_board/attack_hand(mob/user)
 	examine(user)

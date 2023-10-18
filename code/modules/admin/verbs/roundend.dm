@@ -21,7 +21,6 @@
 	if (map)
 		map.next_win = world.time - 100
 		map.round_finished = TRUE
-	else
 		ticker.finished = TRUE
 
 	message_admins("[key_name(src)] ended the round!", key_name(usr))

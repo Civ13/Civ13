@@ -85,18 +85,14 @@
 	New()
 		..()
 		new /obj/item/ammo_magazine/pzb_case_ap(src)
-		new /obj/item/ammo_magazine/pzb_case(src)
-		new /obj/item/ammo_magazine/pzb_case(src)
-		new /obj/item/ammo_magazine/pzb_case(src)
+		for (var/i=1, i<= 3, i++)
+			new /obj/item/ammo_magazine/pzb_case(src)
 
 /obj/item/weapon/storage/backpack/satchel/black/germanat/rpb54
 	New()
 		..()
-		new /obj/item/ammo_casing/rocket/rpb54(src)
-		new /obj/item/ammo_casing/rocket/rpb54(src)
-		new /obj/item/ammo_casing/rocket/rpb54(src)
-		new /obj/item/ammo_casing/rocket/rpb54(src)
-		new /obj/item/ammo_casing/rocket/rpb54(src)
+		for (var/i=1, i<= 5, i++)
+			new /obj/item/ammo_casing/rocket/rpb54(src)
 
 /obj/item/weapon/storage/backpack/satchel/replicant
 	name = "synthetic backpack"
@@ -156,16 +152,8 @@
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full
 	New()
 		..()
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
-		new /obj/item/ammo_magazine/type99(src)
+		for (var/i=1, i<= 10, i++)
+			new /obj/item/ammo_magazine/type99(src)
 
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "backpack"
@@ -573,7 +561,7 @@
 	desc = "A duffel bag full of Sergeant's supplies."
 	New()
 		..()
-		new /obj/item/weapon/storage/box/firstaid/advsmall(src)
+		new /obj/item/weapon/storage/box/firstaid(src)
 		new /obj/item/ammo_magazine/greasegun/box(src)
 		new /obj/item/ammo_magazine/greasegun/box(src)
 		new /obj/item/weapon/material/shovel/trench(src)

@@ -15,14 +15,8 @@
 	desc = "This box contains body bags."
 	New()
 		..()
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-		new /obj/item/bodybag(src)
-
+		for (var/i=1, i<= 8, i++)
+			new /obj/item/bodybag(src)
 
 /obj/structure/closet/body_bag
 	name = "body bag"

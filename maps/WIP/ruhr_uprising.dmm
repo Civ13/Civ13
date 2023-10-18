@@ -136,6 +136,10 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"aY" = (
+/obj/structure/table/wood,
+/turf/floor/dirt,
+/area/caribbean/roofed)
 "bf" = (
 /obj/structure/sink/kitchen{
 	dir = 4;
@@ -194,6 +198,13 @@
 	name = "deep sewer water"
 	},
 /area/caribbean/roofed)
+"bD" = (
+/obj/structure/window/barrier{
+	dir = 4
+	},
+/obj/structure/window/barrier,
+/turf/floor/dirt/burned,
+/area/caribbean)
 "bH" = (
 /obj/structure/mine_support,
 /obj/structure/table/wood,
@@ -219,6 +230,10 @@
 /obj/structure/barricade/horizontal,
 /turf/floor/grass,
 /area/caribbean)
+"bP" = (
+/obj/effect/decal/cleanable/generic,
+/turf/floor/wood,
+/area/caribbean/roofed)
 "bR" = (
 /obj/structure/table/wood,
 /obj/item/weapon/pen,
@@ -291,6 +306,14 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed)
+"cm" = (
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/effect/decal/cleanable/dirt,
+/obj/item/weapon/material/shard,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "co" = (
 /obj/structure/window/classic/stonefull,
 /obj/structure/curtain/leather/open,
@@ -402,6 +425,11 @@
 /obj/structure/grille/ironfence,
 /turf/floor/grass,
 /area/caribbean)
+"cS" = (
+/obj/item/kitchen/wood_bowl,
+/obj/structure/bed/chair/wood,
+/turf/floor/wood,
+/area/caribbean/roofed)
 "cW" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/kitchen/wood_bowl,
@@ -463,6 +491,11 @@
 /obj/item/weapon/storage/toolbox/electrical,
 /obj/item/weapon/storage/toolbox/electrical,
 /obj/item/weapon/storage/toolbox/electrical,
+/obj/item/weapon/material/shovel/trench,
+/obj/item/weapon/material/shovel/trench,
+/obj/item/weapon/material/shovel/trench,
+/obj/item/weapon/material/shovel/trench,
+/obj/item/weapon/material/shovel/trench,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "dv" = (
@@ -474,6 +507,10 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/coffee,
 /turf/floor/wood,
 /area/caribbean/british/land/inside/objective)
+"dy" = (
+/obj/structure/wild/tallgrass,
+/turf/floor/dirt,
+/area/caribbean)
 "dA" = (
 /obj/structure/curtain/leather/open,
 /obj/structure/barricade/steel,
@@ -500,11 +537,13 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "dJ" = (
-/obj/structure/gate/blast,
 /obj/structure/window/barrier/sandbag{
 	dir = 4
 	},
 /obj/covers/repairedfloor,
+/obj/structure/table/wood/flipped{
+	dir = 1
+	},
 /turf/floor/beach/water/deep/swamp{
 	name = "deep sewer water"
 	},
@@ -1233,9 +1272,10 @@
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "hC" = (
-/obj/structure/table/wood,
-/obj/structure/gatecontrol/blastcontrol,
-/turf/floor/wood,
+/obj/item/flashlight/lantern/on/anchored,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
 /area/caribbean/roofed)
 "hE" = (
 /obj/structure/table/wood,
@@ -1372,6 +1412,13 @@
 /obj/structure/toilet/pit_latrine,
 /turf/floor/plating/steel,
 /area/caribbean/roofed)
+"iH" = (
+/obj/structure/window/barrier{
+	dir = 4
+	},
+/obj/effect/decal/cleanable/generic,
+/turf/floor/dirt/burned,
+/area/caribbean)
 "iI" = (
 /obj/structure/railing{
 	dir = 1;
@@ -1457,11 +1504,9 @@
 	icon_state = "chair";
 	dir = 8
 	},
-/obj/structure/window/barrier/sandbag{
-	dir = 1;
-	icon_state = "sandbag"
+/turf/floor/wood{
+	icon_state = "wood-broken4"
 	},
-/turf/floor/wood,
 /area/caribbean/roofed)
 "jb" = (
 /obj/structure/window/barrier/sandbag{
@@ -1625,7 +1670,7 @@
 "jM" = (
 /obj/structure/closet/crate/ww1/ammo_mg08,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
 /turf/floor/plating/cobblestone/vertical,
@@ -1890,6 +1935,10 @@
 	},
 /turf/floor/grass,
 /area/caribbean)
+"lh" = (
+/obj/item/mine/boobytrap,
+/turf/floor/dirt,
+/area/caribbean)
 "ln" = (
 /obj/structure/bed/padded,
 /obj/item/weapon/bedsheet/brown,
@@ -1911,6 +1960,11 @@
 /obj/item/weapon/storage/toolbox/emergency,
 /obj/item/weapon/storage/toolbox/emergency,
 /obj/item/weapon/storage/toolbox/emergency,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "lq" = (
@@ -2089,11 +2143,11 @@
 /turf/floor/dirt/dust,
 /area/caribbean)
 "mb" = (
-/obj/structure/grille/fence{
-	icon_state = "1";
-	dir = 1
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/simple_door/fence{
+	dir = 8
 	},
-/turf/floor/grass,
+/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "mi" = (
 /obj/item/trash/candle/lard,
@@ -2121,6 +2175,11 @@
 /obj/item/weapon/storage/toolbox/mechanical,
 /obj/item/weapon/storage/toolbox/mechanical,
 /obj/item/weapon/storage/toolbox/mechanical,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "mv" = (
@@ -2159,6 +2218,14 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed)
+"mM" = (
+/obj/structure/window/barrier,
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
+	},
+/turf/floor/dirt/burned,
+/area/caribbean)
 "mO" = (
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,
 /obj/effect/floor_decal/industrial/warning/dust{
@@ -2204,6 +2271,15 @@
 /obj/item/weapon/paper_bin,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"nf" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "ng" = (
 /obj/structure/table/wood,
 /obj/item/weapon/newspaper,
@@ -2279,6 +2355,12 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
+"nv" = (
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/wood{
+	icon_state = "wood-broken5"
+	},
+/area/caribbean/roofed)
 "nw" = (
 /obj/structure/barbwire{
 	dir = 4
@@ -2448,6 +2530,13 @@
 /obj/item/weapon/reagent_containers/food/snacks/sausage/bratwurst,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"oy" = (
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 8
+	},
+/turf/floor/wood,
+/area/caribbean/roofed)
 "oA" = (
 /obj/structure/window/barrier/sandbag{
 	dir = 4;
@@ -2563,6 +2652,14 @@
 /obj/covers/brick_wall,
 /turf/floor/dirt,
 /area/caribbean)
+"pH" = (
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
+	},
+/obj/structure/window/barrier,
+/turf/floor/dirt/burned,
+/area/caribbean)
 "pI" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/weapon/material/kitchen/utensil/knife/meat,
@@ -2572,7 +2669,9 @@
 /area/caribbean/roofed)
 "pL" = (
 /obj/covers/repairedfloor,
-/obj/structure/gate/blast,
+/obj/structure/table/wood/flipped{
+	dir = 1
+	},
 /turf/floor/beach/water/deep/swamp{
 	name = "deep sewer water"
 	},
@@ -2637,10 +2736,10 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "qq" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/window/barrier{
 	dir = 1
 	},
-/obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "qr" = (
@@ -2724,6 +2823,12 @@
 /obj/structure/wild/tree/live_tree,
 /turf/floor/grass,
 /area/caribbean)
+"qR" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/lamp/lamppost_small/alwayson,
+/obj/item/weapon/material/shard,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "qT" = (
 /obj/structure/window/barrier/rock,
 /obj/structure/window/barrier/rock{
@@ -2797,6 +2902,12 @@
 /obj/structure/furnace,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"ro" = (
+/obj/structure/window/barrier/sandbag,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "rw" = (
 /obj/structure/table/wood,
 /obj/item/kitchen/wood_bowl,
@@ -2808,6 +2919,12 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean)
+"rD" = (
+/obj/item/flashlight/lantern/on/anchored,
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/caribbean/roofed)
 "rF" = (
 /obj/structure/railing{
 	icon_state = "railing0";
@@ -2815,6 +2932,12 @@
 	},
 /obj/effect/decal/cleanable/generic,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/roofed)
+"rM" = (
+/obj/covers/brick_wall/incomplete,
+/turf/floor/wood{
+	icon_state = "wood-broken4"
+	},
 /area/caribbean/roofed)
 "rP" = (
 /obj/structure/barricade/wood_pole,
@@ -2932,6 +3055,10 @@
 	name = "deep sewer water"
 	},
 /area/caribbean/roofed)
+"sE" = (
+/obj/structure/wild/rock/basalt,
+/turf/floor/grass,
+/area/caribbean)
 "sF" = (
 /obj/structure/railing{
 	dir = 1;
@@ -3034,6 +3161,10 @@
 /obj/effect/decal/cleanable/poo/drip,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
+"tm" = (
+/obj/structure/closet/crate/sandbags,
+/turf/floor/wood,
+/area/caribbean/no_mans_land/invisible_wall/inside/two)
 "to" = (
 /obj/item/weapon/material/hatchet/steel,
 /turf/floor/grass,
@@ -3065,6 +3196,11 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"ts" = (
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/caribbean/roofed)
 "tt" = (
 /turf/wall/rockwall,
 /area/caribbean/void/caves{
@@ -3283,12 +3419,8 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "uC" = (
-/obj/structure/railing{
-	icon_state = "railing0";
-	dir = 1
-	},
-/obj/structure/table/modern,
-/turf/floor/plating/cobblestone/vertical/dark,
+/obj/structure/barricade/debris,
+/turf/floor/dirt,
 /area/caribbean/roofed)
 "uG" = (
 /obj/structure/lamp/lamppost_small/alwayson,
@@ -3308,6 +3440,15 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"uP" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 4
+	},
+/obj/structure/table/wood,
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/caribbean/roofed)
 "uR" = (
 /obj/item/flashlight/lantern/on/anchored,
 /obj/structure/window/barrier/rock{
@@ -3338,7 +3479,7 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "uW" = (
-/obj/effect/floor_decal/dirtwall,
+/obj/structure/window/barrier,
 /turf/floor/trench,
 /area/caribbean)
 "vb" = (
@@ -3516,6 +3657,15 @@
 /obj/structure/wild/rock,
 /turf/floor/grass,
 /area/caribbean)
+"vX" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1;
+	icon_state = "sandbag"
+	},
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "vZ" = (
 /obj/structure/simple_door/key_door/anyone/wood,
 /turf/floor/plating/white,
@@ -3636,6 +3786,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
+"wr" = (
+/obj/structure/window/barrier/sandbag,
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/caribbean/roofed)
 "ws" = (
 /obj/covers/stone_wall/classic,
 /turf/floor/dirt/underground,
@@ -3679,10 +3835,10 @@
 /turf/floor/plating/steel,
 /area/caribbean/roofed)
 "wI" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/window/barrier{
 	dir = 4
 	},
-/obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "wK" = (
@@ -3707,15 +3863,10 @@
 	},
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
-"wQ" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/structure/closet/crate/brick,
-/turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
 "wS" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/item/ammo_magazine/gewehr98,
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
 /turf/floor/plating/cobblestone/vertical,
@@ -3817,6 +3968,11 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"xB" = (
+/obj/structure/curtain/leather/open,
+/obj/structure/window_frame/brickfull,
+/turf/floor/wood,
+/area/caribbean/roofed)
 "xF" = (
 /obj/structure/bed/chair/wood,
 /turf/floor/wood,
@@ -3927,7 +4083,9 @@
 /obj/item/weapon/reagent_containers/food/condiment/flour,
 /obj/item/weapon/reagent_containers/food/condiment/flour,
 /obj/item/weapon/reagent_containers/food/condiment/flour,
-/turf/floor/wood,
+/turf/floor/wood{
+	icon_state = "wood-broken5"
+	},
 /area/caribbean/roofed)
 "yg" = (
 /obj/structure/window/barrier/sandbag{
@@ -3947,7 +4105,7 @@
 "yn" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/item/weapon/material/hatchet/steel,
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
 /turf/floor/plating/cobblestone/vertical,
@@ -4075,6 +4233,12 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"yZ" = (
+/obj/structure/table/wood,
+/turf/floor/wood{
+	icon_state = "wood-broken5"
+	},
+/area/caribbean/roofed)
 "za" = (
 /obj/structure/barbwire{
 	dir = 4;
@@ -4090,6 +4254,12 @@
 "zb" = (
 /turf/floor/wood,
 /area/caribbean/british/land/inside/objective)
+"zd" = (
+/obj/effect/decal/cleanable/generic,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "zh" = (
 /obj/effect/decal/cleanable/urine,
 /turf/floor/plating/white,
@@ -4148,8 +4318,8 @@
 	name = "The Caves"
 	})
 "zI" = (
-/obj/effect/floor_decal/dirtwall,
 /obj/effect/decal/cleanable/dirt,
+/obj/structure/window/barrier,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "zM" = (
@@ -4170,7 +4340,7 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "zT" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
 /turf/floor/dirt,
@@ -4199,6 +4369,16 @@
 /area/caribbean)
 "Ad" = (
 /obj/structure/simple_door/key_door/german,
+/turf/floor/wood,
+/area/caribbean/roofed)
+"Ae" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1
+	},
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 8
+	},
 /turf/floor/wood,
 /area/caribbean/roofed)
 "Ag" = (
@@ -4294,6 +4474,13 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"AC" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/catapult{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "AG" = (
 /obj/structure/sink{
 	pixel_x = 0;
@@ -4609,6 +4796,11 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"Cs" = (
+/obj/effect/decal/cleanable/generic,
+/obj/structure/window/barrier/sandbag,
+/turf/floor/wood,
+/area/caribbean/roofed)
 "Ct" = (
 /obj/structure/simple_door/key_door/anyone/wood,
 /turf/floor/dirt,
@@ -4662,7 +4854,7 @@
 /obj/covers/wood/stairs{
 	dir = 1
 	},
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 4
 	},
 /turf/floor/trench,
@@ -4745,6 +4937,14 @@
 	dir = 1
 	},
 /turf/floor/wood,
+/area/caribbean/roofed)
+"CZ" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 4
+	},
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
 /area/caribbean/roofed)
 "Da" = (
 /obj/structure/window/barrier/sandbag{
@@ -5012,13 +5212,11 @@
 /turf/wall/brick,
 /area/caribbean/roofed)
 "Eq" = (
-/obj/structure/railing{
-	icon_state = "railing0";
-	dir = 1
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 4
 	},
-/obj/structure/table/modern,
-/obj/structure/gatecontrol/blastcontrol,
-/turf/floor/plating/cobblestone/vertical/dark,
+/turf/floor/wood,
 /area/caribbean/roofed)
 "Er" = (
 /obj/structure/barbwire{
@@ -5121,6 +5319,10 @@
 	},
 /obj/structure/window/barrier/sandbag,
 /turf/floor/grass,
+/area/caribbean)
+"ES" = (
+/obj/structure/wild/rock,
+/turf/floor/dirt,
 /area/caribbean)
 "EV" = (
 /obj/structure/simple_door/key_door/anyone/wood,
@@ -5282,10 +5484,8 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Fz" = (
-/obj/effect/floor_decal/dirtwall{
-	dir = 1
-	},
-/turf/floor/dirt/burned,
+/obj/structure/wild/tree/live_tree,
+/turf/floor/dirt,
 /area/caribbean)
 "FA" = (
 /obj/structure/closet/crate/rations/vegetables,
@@ -5327,7 +5527,7 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
 "FQ" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 4
 	},
 /turf/floor/dirt,
@@ -5340,8 +5540,9 @@
 /obj/covers/wood/stairs{
 	dir = 1
 	},
-/obj/effect/floor_decal/dirtwall{
-	dir = 8
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
 	},
 /turf/floor/trench,
 /area/caribbean)
@@ -5545,6 +5746,10 @@
 	icon_state = "wood-broken5"
 	},
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
+"Hm" = (
+/obj/structure/wild/smallbush,
+/turf/floor/dirt,
+/area/caribbean)
 "Hn" = (
 /obj/structure/barbwire{
 	icon_state = "barbwire";
@@ -5646,6 +5851,18 @@
 	},
 /obj/effect/decal/cleanable/urine,
 /turf/floor/plating/white,
+/area/caribbean/roofed)
+"HT" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1;
+	icon_state = "sandbag"
+	},
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 4
+	},
+/obj/structure/window/barrier/sandbag,
+/turf/floor/wood,
 /area/caribbean/roofed)
 "HU" = (
 /obj/effect/landmark{
@@ -5813,6 +6030,14 @@
 	base_turf = /turf/floor/dirt;
 	name = "The Caves"
 	})
+"Jm" = (
+/obj/structure/bed/chair/wood{
+	dir = 1
+	},
+/turf/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/caribbean/roofed)
 "Jn" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/barricade/debris,
@@ -5955,14 +6180,10 @@
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed)
 "JX" = (
-/obj/structure/window/barrier/sandbag{
-	dir = 1
-	},
-/obj/structure/window/barrier/sandbag{
-	dir = 8
-	},
-/turf/floor/wood,
-/area/caribbean/roofed)
+/obj/effect/decal/cleanable/dirt,
+/obj/item/weapon/flame/lighter,
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
 "JZ" = (
 /obj/structure/window/barrier/sandbag{
 	dir = 1;
@@ -5982,6 +6203,12 @@
 	},
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
+"Kf" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/item/weapon/clay/advclaybricks/fired,
+/obj/item/weapon/clay/advclaybricks/fired,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "Kg" = (
 /obj/structure/vehicleparts/frame/car/van/lfc{
 	doorcode = 4975
@@ -6015,12 +6242,11 @@
 /turf/floor/wood,
 /area/caribbean/roofed)
 "Ko" = (
-/obj/structure/bed/chair/wood,
-/obj/structure/window/barrier/sandbag{
-	dir = 8
-	},
+/obj/structure/window/classic/stonefull,
+/obj/structure/curtain/leather/open,
+/obj/structure/grille/ironfence,
 /turf/floor/wood,
-/area/caribbean/roofed)
+/area/caribbean/british/land/inside/objective)
 "Kq" = (
 /obj/structure/window/barrier/sandbag{
 	dir = 1;
@@ -6117,11 +6343,13 @@
 	},
 /area/caribbean/roofed)
 "KT" = (
-/obj/structure/gate/blast,
 /obj/structure/window/barrier/sandbag{
 	dir = 8
 	},
 /obj/covers/repairedfloor,
+/obj/structure/table/wood/flipped{
+	dir = 1
+	},
 /turf/floor/beach/water/deep/swamp{
 	name = "deep sewer water"
 	},
@@ -6183,10 +6411,11 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
 "Lr" = (
-/obj/effect/floor_decal/dirtwall{
-	dir = 8
-	},
 /obj/effect/decal/cleanable/dirt,
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
+	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Lw" = (
@@ -6236,6 +6465,22 @@
 /obj/item/weapon/material/kitchen/utensil/knife/trench,
 /obj/structure/lamp/lamppost_small/alwayson,
 /turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
+"LG" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1;
+	icon_state = "sandbag"
+	},
+/turf/floor/wood{
+	icon_state = "wood-broken4"
+	},
+/area/caribbean/roofed)
+"LH" = (
+/obj/structure/window/barrier,
+/obj/structure/window/barrier{
+	dir = 4
+	},
+/turf/floor/dirt/burned,
 /area/caribbean)
 "LL" = (
 /obj/structure/bed/chair/wood/bleacher/r{
@@ -6390,6 +6635,10 @@
 /obj/item/trash/tray,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
+"Mn" = (
+/obj/structure/wild/junglebush,
+/turf/floor/dirt,
+/area/caribbean)
 "Mv" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/weapon/material/pickaxe/steel,
@@ -6428,6 +6677,11 @@
 	dir = 8
 	},
 /turf/floor/carpet/redcarpet,
+/area/caribbean/roofed)
+"MI" = (
+/obj/structure/bed/padded,
+/obj/item/weapon/paper_bin,
+/turf/floor/wood,
 /area/caribbean/roofed)
 "MK" = (
 /obj/structure/filingcabinet/filingcabinet,
@@ -6503,14 +6757,6 @@
 	},
 /obj/structure/barricade/vertical,
 /turf/floor/grass,
-/area/caribbean)
-"Nf" = (
-/obj/structure/sign/flag/red2{
-	pixel_y = 32
-	},
-/obj/effect/decal/cleanable/dirt,
-/obj/structure/closet/crate/brick,
-/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Ni" = (
 /obj/item/weapon/clay/advclaybricks/fired/cement,
@@ -6593,11 +6839,12 @@
 "NE" = (
 /obj/item/ammo_magazine/gewehr98,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
-/obj/effect/floor_decal/dirtwall{
-	dir = 8
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
@@ -6628,6 +6875,10 @@
 	},
 /turf/floor/carpet/redcarpet,
 /area/caribbean/roofed)
+"Oa" = (
+/obj/effect/decal/cleanable/generic,
+/turf/floor/dirt/burned,
+/area/caribbean)
 "Od" = (
 /obj/structure/barbwire{
 	dir = 4;
@@ -6763,6 +7014,15 @@
 	icon_state = "wood-broken4"
 	},
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
+"OR" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/obj/item/catapult_ball,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "OV" = (
 /obj/structure/mine_support,
 /obj/structure/roof_support/admin,
@@ -7047,6 +7307,10 @@
 	},
 /turf/floor/grass,
 /area/caribbean)
+"QB" = (
+/obj/structure/barricade/debris/brick,
+/turf/floor/dirt,
+/area/caribbean/roofed)
 "QD" = (
 /obj/structure/railing,
 /obj/structure/railing{
@@ -7361,6 +7625,13 @@
 /obj/effect/decal/cleanable/urine,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
+"Sp" = (
+/obj/structure/table/wood,
+/obj/item/trash/money,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "Sr" = (
 /obj/structure/table/wood,
 /obj/item/weapon/paper_bin,
@@ -7432,7 +7703,7 @@
 /turf/floor/grass,
 /area/caribbean)
 "SL" = (
-/obj/structure/gate/blast/open,
+/obj/structure/gate/barrier/vertical,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "SM" = (
@@ -7676,12 +7947,7 @@
 	name = "The Caves"
 	})
 "TR" = (
-/obj/structure/window/barrier/sandbag{
-	dir = 1
-	},
-/obj/structure/window/barrier/sandbag{
-	dir = 4
-	},
+/obj/structure/barricade/horizontal,
 /turf/floor/wood,
 /area/caribbean/roofed)
 "TS" = (
@@ -7838,6 +8104,16 @@
 /obj/structure/simple_door/key_door/anyone/wood,
 /turf/floor/carpet/redcarpet,
 /area/caribbean/roofed)
+"UD" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1
+	},
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 4
+	},
+/turf/floor/wood,
+/area/caribbean/roofed)
 "UG" = (
 /obj/structure/table/wood,
 /obj/structure/sink/kitchen{
@@ -7916,6 +8192,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
+"Vd" = (
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "Vg" = (
 /obj/item/stack/material/stonebrick,
 /turf/floor/dirt/burned,
@@ -8016,6 +8298,16 @@
 	dir = 1;
 	icon_state = "sandbag"
 	},
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
+/obj/item/weapon/plastique/russian,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "VJ" = (
@@ -8043,6 +8335,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"VT" = (
+/obj/structure/barricade/debris/brick,
+/obj/structure/mine_support{
+	name = "roof support"
+	},
+/turf/floor/dirt,
+/area/caribbean/roofed)
 "VW" = (
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -8057,7 +8356,7 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed)
 "VY" = (
-/obj/effect/floor_decal/dirtwall,
+/obj/structure/window/barrier,
 /turf/floor/dirt,
 /area/caribbean)
 "VZ" = (
@@ -8070,10 +8369,10 @@
 /area/caribbean/roofed)
 "Wa" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 4
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -8117,12 +8416,12 @@
 	name = "The Caves"
 	})
 "Wm" = (
-/obj/structure/window/barrier/sandbag{
-	dir = 1
+/obj/structure/window/barrier{
+	dir = 8;
+	icon_state = "dirt_wall"
 	},
-/obj/structure/bed/chair,
-/turf/floor/wood,
-/area/caribbean/roofed)
+/turf/floor/dirt/burned,
+/area/caribbean)
 "Wq" = (
 /obj/structure/mine_support,
 /obj/structure/sink/well,
@@ -8136,11 +8435,7 @@
 	name = "The Caves"
 	})
 "Wt" = (
-/obj/structure/grille/fence{
-	icon_state = "1";
-	dir = 4
-	},
-/turf/floor/grass,
+/turf/floor/beach/water,
 /area/caribbean)
 "Wx" = (
 /obj/structure/railing,
@@ -8153,6 +8448,12 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"WG" = (
+/obj/item/weapon/bedsheet/brown,
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "WH" = (
 /obj/structure/window/barrier/sandbag,
 /turf/floor/plating/cobblestone/vertical,
@@ -8289,6 +8590,17 @@
 /obj/item/ammo_magazine/mauser,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"Xq" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 1;
+	icon_state = "sandbag"
+	},
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
+	dir = 4
+	},
+/turf/floor/wood,
+/area/caribbean/roofed)
 "Xu" = (
 /obj/item/trash/money,
 /turf/floor/plating/cobblestone/vertical,
@@ -8357,6 +8669,22 @@
 	},
 /obj/item/flashlight/lantern/on/anchored,
 /turf/floor/plating/white,
+/area/caribbean/roofed)
+"XK" = (
+/obj/structure/window/barrier{
+	dir = 1
+	},
+/obj/structure/window/barrier{
+	dir = 4
+	},
+/turf/floor/dirt,
+/area/caribbean)
+"XQ" = (
+/obj/structure/window/barrier/sandbag{
+	dir = 8
+	},
+/obj/structure/pot,
+/turf/floor/wood,
 /area/caribbean/roofed)
 "XS" = (
 /obj/structure/simple_door/key_door/anyone/wood,
@@ -8427,6 +8755,15 @@
 /obj/structure/wild/smallbush,
 /turf/floor/grass,
 /area/caribbean)
+"Yk" = (
+/obj/structure/bed/chair/wood{
+	dir = 4;
+	icon_state = "wooden_chair"
+	},
+/turf/floor/wood{
+	icon_state = "wood-broken1"
+	},
+/area/caribbean/roofed)
 "Yl" = (
 /obj/item/weapon/gun/projectile/boltaction/gewehr71,
 /turf/floor/wood,
@@ -8466,11 +8803,16 @@
 /turf/floor/wood,
 /area/caribbean/british/land/inside/objective)
 "Yr" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier/sandbag{
+	dir = 1
+	},
+/obj/structure/window/barrier/sandbag{
+	icon_state = "sandbag";
 	dir = 8
 	},
-/turf/floor/dirt/burned,
-/area/caribbean)
+/obj/structure/window/barrier/sandbag,
+/turf/floor/wood,
+/area/caribbean/roofed)
 "Yu" = (
 /obj/item/weapon/key/german{
 	name = "Reichswehr key"
@@ -8668,14 +9010,22 @@
 /obj/item/weapon/storage/toolbox/emergency,
 /obj/item/weapon/storage/toolbox/emergency,
 /obj/item/weapon/storage/toolbox/emergency,
+/obj/item/weapon/material/hatchet/steel,
+/obj/item/weapon/material/hatchet/steel,
+/obj/item/weapon/material/hatchet/steel,
+/obj/item/weapon/material/hatchet/steel,
+/obj/item/weapon/material/hatchet/steel,
 /turf/floor/wood,
 /area/caribbean/no_mans_land/invisible_wall/inside/two)
 "Zt" = (
-/obj/effect/floor_decal/dirtwall{
+/obj/structure/window/barrier{
 	dir = 1
 	},
-/obj/effect/floor_decal/dirtwall{
-	dir = 8
+/turf/floor/dirt/burned,
+/area/caribbean)
+"Zz" = (
+/obj/structure/window/barrier{
+	dir = 4
 	},
 /turf/floor/dirt/burned,
 /area/caribbean)
@@ -19754,7 +20104,7 @@ We
 as
 Qt
 hA
-it
+gs
 Ni
 DJ
 DJ
@@ -19877,7 +20227,7 @@ We
 PX
 KT
 sB
-uC
+Gb
 dS
 We
 We
@@ -20000,7 +20350,7 @@ PX
 PX
 pL
 sB
-Eq
+Gb
 dS
 We
 We
@@ -20123,7 +20473,7 @@ We
 PX
 dJ
 sB
-uC
+Gb
 dS
 We
 We
@@ -20246,7 +20596,7 @@ We
 as
 lB
 Ni
-xK
+hA
 SM
 qZ
 SI
@@ -21594,8 +21944,8 @@ VW
 VW
 VW
 VW
-VW
-xI
+pX
+Jn
 Jn
 gd
 Fw
@@ -21715,10 +22065,10 @@ VW
 VW
 VW
 VW
-VW
-VW
-VW
-xI
+pX
+pX
+pX
+Jn
 Jn
 gd
 Yn
@@ -21836,11 +22186,11 @@ VW
 VW
 VW
 VW
-VW
-VW
-VW
-VW
-VW
+pX
+pX
+pX
+pX
+pX
 Jn
 Jn
 gW
@@ -21955,15 +22305,15 @@ xI
 xI
 xI
 Hg
-xI
-xI
-xI
-xI
-VW
-VW
-VW
-VW
-VW
+Jn
+Jn
+Jn
+Jn
+pX
+pX
+pX
+pX
+pX
 Jn
 pp
 vA
@@ -22077,16 +22427,16 @@ xI
 xI
 xI
 xI
-xI
-xI
-xI
-xI
-xI
-VW
-VW
-VW
-VW
-VW
+Jn
+Jn
+Jn
+Jn
+Jn
+pX
+pX
+pX
+pX
+pX
 Jn
 pp
 vA
@@ -22203,13 +22553,13 @@ Sf
 Sf
 Sf
 Sf
-xI
-Hg
-VW
-VW
-VW
-VW
-VW
+Jn
+Jn
+pX
+pX
+pX
+pX
+pX
 Jn
 pp
 vA
@@ -22326,13 +22676,13 @@ yP
 bf
 sS
 Sf
-xI
-xI
-VW
-VW
-VW
-VW
-VW
+Jn
+Jn
+pX
+pX
+pX
+pX
+pX
 Jn
 pp
 vA
@@ -22449,10 +22799,10 @@ yP
 yP
 FL
 Sf
-xI
-xI
-VW
-VW
+Jn
+Jn
+pX
+pX
 VW
 VW
 VW
@@ -22572,8 +22922,8 @@ yP
 yP
 oY
 Sf
-xI
-xI
+Jn
+Jn
 VW
 VW
 VW
@@ -24450,7 +24800,7 @@ xr
 Sf
 ar
 fs
-VW
+JX
 VW
 VW
 VW
@@ -24458,15 +24808,15 @@ VW
 fs
 xI
 wI
-wI
-wI
-wI
-wI
-wI
-wI
 xI
 xI
 xI
+wI
+wI
+wI
+wI
+wI
+wI
 xI
 xI
 xI
@@ -24581,12 +24931,12 @@ VW
 CX
 zI
 Zt
-Yr
-Yr
-Yr
-Yr
-Yr
-Yr
+Rx
+Rx
+Rx
+Rx
+Rx
+Rx
 Rx
 Rx
 Rx
@@ -24703,7 +25053,7 @@ VW
 fD
 CX
 zI
-Fz
+Zt
 Rx
 Rx
 Rx
@@ -24713,7 +25063,7 @@ Rx
 Rx
 Rx
 Rx
-xI
+qq
 IX
 VH
 Yq
@@ -24826,7 +25176,7 @@ VW
 VW
 xI
 zI
-Fz
+Zt
 OG
 Rx
 Rx
@@ -24836,7 +25186,7 @@ Rx
 Rx
 Rx
 Rx
-xI
+qq
 IX
 zb
 QV
@@ -24949,7 +25299,7 @@ VW
 VW
 fs
 zI
-Fz
+Zt
 OG
 Rx
 Rx
@@ -24959,7 +25309,7 @@ Rx
 Rx
 Rx
 Rx
-xI
+qq
 IX
 zb
 zb
@@ -25072,7 +25422,7 @@ VW
 VW
 xI
 zI
-Fz
+Zt
 Rx
 Rx
 Rx
@@ -25082,12 +25432,12 @@ Rx
 Rx
 Rx
 ke
-xI
+qq
 IX
 zb
 zb
-zb
-zb
+Xw
+Xw
 zb
 zb
 yC
@@ -25195,7 +25545,7 @@ VW
 VW
 NO
 zI
-Fz
+Zt
 Rx
 Rx
 Rx
@@ -25204,7 +25554,7 @@ Rx
 Rx
 ke
 ke
-VY
+ke
 qq
 IX
 FB
@@ -25317,8 +25667,8 @@ ZZ
 VW
 VW
 NO
-xI
-Rx
+zI
+Zt
 Rx
 Rx
 Rx
@@ -25327,7 +25677,7 @@ Rx
 ke
 ke
 ke
-VY
+ke
 qq
 IX
 FB
@@ -25441,7 +25791,7 @@ VW
 VW
 fs
 xI
-Rx
+Zt
 Rx
 Rx
 Rx
@@ -25450,7 +25800,7 @@ ke
 ke
 ui
 ke
-VY
+ke
 qq
 IX
 FB
@@ -25563,8 +25913,8 @@ VW
 pS
 Di
 xI
-zI
-Fz
+xI
+Zt
 Rx
 Rx
 Rx
@@ -25573,8 +25923,8 @@ ke
 ke
 ke
 ke
-VY
-qq
+ke
+xI
 IX
 IX
 IX
@@ -25686,18 +26036,18 @@ VW
 VW
 VW
 xI
-zI
-Fz
+xI
 Rx
 Rx
 Rx
+Rx
 ke
 ke
 ke
 ke
 ke
-VY
-qq
+ke
+xI
 IX
 sX
 zb
@@ -25809,8 +26159,8 @@ VW
 VW
 VW
 xI
-zI
-Fz
+xI
+Rx
 Rx
 ke
 ke
@@ -25819,9 +26169,9 @@ ke
 ke
 ke
 ke
-VY
-qq
-IX
+ke
+xI
+Ko
 zb
 zb
 zb
@@ -25932,8 +26282,7 @@ VW
 VW
 VW
 xI
-zI
-zT
+xI
 ke
 ke
 ke
@@ -25942,9 +26291,10 @@ ke
 ke
 ke
 ke
-VY
-qq
-IX
+ke
+ke
+xI
+Ko
 MY
 zb
 zb
@@ -26055,8 +26405,8 @@ xq
 VW
 VW
 xI
-zI
-zT
+xI
+ke
 ke
 ke
 ke
@@ -26065,9 +26415,9 @@ ke
 ke
 ui
 ke
-VY
-qq
-IX
+ke
+xI
+Ko
 dv
 zb
 zb
@@ -26178,8 +26528,8 @@ pX
 pX
 VW
 xI
-zI
-zT
+xI
+ke
 ke
 ke
 ke
@@ -26188,8 +26538,8 @@ ke
 ke
 ui
 ke
-VY
-qq
+ke
+xI
 IX
 kf
 zb
@@ -26230,8 +26580,8 @@ Cw
 qP
 Cw
 Hp
-mb
-mb
+Cw
+Cw
 Cw
 Cw
 Cw
@@ -26301,8 +26651,8 @@ VW
 VW
 VW
 xI
-zI
-zT
+xI
+ke
 ke
 ke
 ke
@@ -26311,9 +26661,9 @@ ke
 ke
 ui
 ke
-VY
-qq
-IX
+ke
+xI
+Ko
 Xw
 zb
 zb
@@ -26421,11 +26771,10 @@ WA
 VW
 kt
 VW
-VW
+JX
 VW
 xI
-zI
-zT
+xI
 ke
 ke
 ke
@@ -26434,9 +26783,10 @@ ke
 ke
 ke
 ke
-VY
-qq
-IX
+ke
+ke
+xI
+Ko
 zb
 zb
 fn
@@ -26547,8 +26897,7 @@ VW
 VW
 VW
 xI
-zI
-zT
+xI
 ke
 ke
 ke
@@ -26557,9 +26906,10 @@ ke
 ke
 ke
 ke
-VY
-qq
-IX
+ke
+ke
+xI
+Ko
 zb
 dh
 VH
@@ -26670,7 +27020,7 @@ jn
 VW
 VW
 fs
-zI
+xI
 zT
 ke
 ke
@@ -26681,7 +27031,7 @@ ke
 ke
 ke
 VY
-qq
+xI
 IX
 zb
 dh
@@ -26805,7 +27155,7 @@ ke
 ke
 VY
 qq
-IX
+Ko
 zb
 zb
 dX
@@ -26835,8 +27185,8 @@ Cw
 Cw
 Cw
 Hp
-mb
-mb
+Cw
+Cw
 Cw
 Hp
 Cw
@@ -26892,10 +27242,10 @@ yf
 cW
 rQ
 pI
-yP
-Sf
+cD
+uC
 ja
-kR
+ja
 kR
 yP
 yP
@@ -26928,7 +27278,7 @@ ke
 ke
 VY
 qq
-IX
+Ko
 Xw
 zb
 zb
@@ -27006,22 +27356,22 @@ VW
 Di
 BC
 VW
-VW
+pX
 xI
 xM
 hp
 vr
 yP
+vO
+KQ
 yP
+cD
+cD
+cD
 yP
-yP
-yP
-Sf
-vT
-yP
-yP
-yP
-yP
+PJ
+KQ
+PJ
 oY
 Sf
 An
@@ -27051,7 +27401,7 @@ ke
 ke
 VY
 qq
-IX
+Ko
 zb
 zb
 fn
@@ -27136,9 +27486,9 @@ Sf
 vr
 Re
 NF
-NF
-NF
-yP
+Vd
+nv
+KQ
 Sf
 Ut
 Sf
@@ -27163,16 +27513,16 @@ VW
 VW
 fs
 zI
-zT
-ke
-ke
+XK
+FQ
+FQ
+FQ
 FQ
 FQ
 FQ
 ke
 ke
-ke
-ke
+VY
 xI
 IX
 zb
@@ -27257,17 +27607,17 @@ xI
 xM
 EV
 vr
+KQ
+KQ
+vO
 yP
-yP
-yP
-yP
-yP
+KQ
 Sf
 cM
 yP
 XS
 yP
-yP
+PJ
 yP
 Sf
 xr
@@ -27286,9 +27636,9 @@ VW
 VW
 WA
 xI
-xI
-xI
-xI
+Lr
+Lr
+Lr
 Lr
 Lr
 Lr
@@ -27297,7 +27647,7 @@ xI
 xI
 xI
 xI
-IX
+Ko
 zb
 dh
 VH
@@ -27345,7 +27695,7 @@ Cw
 sU
 Cw
 qP
-Wt
+Cw
 Cw
 qP
 Cw
@@ -27380,17 +27730,17 @@ Hg
 xM
 Sf
 jh
-Gd
-xr
+Sp
+yZ
 yP
-NF
-yP
+Vd
+KQ
 Sf
 An
 yP
 Sf
 yP
-yP
+PJ
 yP
 Sf
 xr
@@ -27420,7 +27770,7 @@ Rl
 Rl
 xI
 xI
-IX
+Ko
 zb
 zb
 dX
@@ -27468,7 +27818,7 @@ Cw
 sU
 Cw
 qP
-Wt
+Cw
 Cw
 Cw
 Cw
@@ -27504,7 +27854,7 @@ xM
 hp
 vr
 yP
-xr
+yZ
 yP
 NF
 yP
@@ -27513,7 +27863,7 @@ Sf
 Sf
 Sf
 yP
-yP
+KQ
 yP
 Sf
 Sf
@@ -27543,7 +27893,7 @@ OE
 OE
 JZ
 xI
-IX
+Ko
 Xw
 zb
 zb
@@ -27717,7 +28067,7 @@ Cw
 Hp
 Cw
 Cw
-qP
+Cw
 qP
 Yh
 Cw
@@ -27789,7 +28139,7 @@ yG
 OE
 JZ
 xI
-IX
+Ko
 zb
 dh
 VH
@@ -27877,10 +28227,10 @@ qT
 qT
 qT
 qT
+qT
+qT
+qT
 DA
-xI
-xI
-xI
 xI
 xI
 xI
@@ -27912,7 +28262,7 @@ WP
 OE
 JZ
 xI
-IX
+Ko
 zb
 dh
 kf
@@ -27989,7 +28339,7 @@ xI
 VW
 VW
 VW
-VW
+pX
 VW
 xI
 xM
@@ -28035,7 +28385,7 @@ WP
 OE
 JZ
 xI
-IX
+Ko
 zb
 zb
 dX
@@ -28134,8 +28484,8 @@ Em
 zA
 Yg
 zA
+XQ
 zA
-Ko
 Jf
 Em
 eW
@@ -28238,13 +28588,13 @@ VW
 VW
 VW
 xI
-xM
-cC
+cm
+xB
 wU
 xf
 yP
 yP
-yP
+vO
 kg
 yP
 vZ
@@ -28257,14 +28607,14 @@ vZ
 yP
 kg
 yP
+xr
 yP
-RR
 Za
 cC
 eW
 xI
 VW
-VW
+JX
 VW
 pS
 VW
@@ -28281,7 +28631,7 @@ WP
 OE
 JZ
 xI
-IX
+Ko
 zb
 zb
 fn
@@ -28360,14 +28710,14 @@ VW
 VW
 VW
 VW
-Hg
+qR
 xM
-cC
+xB
 YQ
 xf
-yP
-yP
-yP
+vO
+vO
+vO
 re
 sS
 Em
@@ -28379,9 +28729,9 @@ IG
 Em
 yP
 yP
+sS
+oY
 yP
-yP
-RR
 Mg
 cC
 eW
@@ -28404,7 +28754,7 @@ WP
 OE
 JZ
 xI
-IX
+Ko
 zb
 dh
 VH
@@ -28487,20 +28837,20 @@ xI
 xM
 Em
 Kk
+bP
+vO
+ts
+wr
+Em
+Em
+Em
+Em
+Em
+Em
+Em
+Em
+Em
 yP
-yP
-yP
-yP
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-sS
 yP
 yP
 yP
@@ -28527,7 +28877,7 @@ aG
 OE
 JZ
 xI
-IX
+Ko
 zb
 dh
 ng
@@ -28608,12 +28958,12 @@ VW
 VW
 xI
 xM
-EV
+TR
 Kk
-Xh
-Xh
-kg
+vO
 yP
+rD
+wr
 Em
 cM
 Sr
@@ -28622,8 +28972,8 @@ Em
 cM
 Sr
 bR
-Em
-FL
+QB
+cS
 yP
 yP
 Xh
@@ -28731,22 +29081,22 @@ VW
 VW
 xI
 xM
-Em
-Wm
-xr
-xr
-Fl
+PJ
+UD
+Eq
+Eq
 yP
-Em
 yP
-xh
-xr
-Em
+KQ
 yP
 xh
-xr
-Em
-oY
+KQ
+QB
+yP
+xh
+aY
+QB
+RR
 yP
 vK
 xr
@@ -28773,7 +29123,7 @@ jt
 jt
 xI
 xI
-IX
+Ko
 Xw
 zb
 zb
@@ -28823,7 +29173,7 @@ Cw
 qP
 Cw
 Cw
-qP
+Cw
 qP
 OM
 Yh
@@ -28853,23 +29203,23 @@ VW
 VW
 VW
 Hg
-xM
-cC
+Oa
+Rx
 Wm
-xr
-xr
-Fl
+Wm
+mM
+Xq
+Cs
+vX
+KQ
+KQ
+KQ
+KQ
 yP
-Em
 yP
-yP
-kg
-Em
-kg
-yP
-yP
-Em
-re
+cD
+QB
+RR
 kg
 vK
 xr
@@ -28896,7 +29246,7 @@ ht
 ht
 xI
 xI
-IX
+Ko
 zb
 zb
 zb
@@ -28970,28 +29320,28 @@ Mb
 tw
 xI
 xI
-VW
+pX
 VW
 VW
 VW
 VW
 xI
-xM
-cC
-TR
-VQ
-VQ
-yD
-yD
-XS
+Rx
+Rx
+QF
+QF
+Rx
+mM
+HT
+vT
 yP
-yP
+KQ
+KQ
+KQ
 An
-Em
-An
 yP
-yP
-XS
+cD
+cD
 yD
 yD
 yD
@@ -29019,7 +29369,7 @@ OE
 OE
 JZ
 xI
-IX
+Ko
 zb
 zb
 zb
@@ -29070,7 +29420,7 @@ Cw
 Cw
 Cw
 Cw
-Wt
+Cw
 Cw
 qP
 Cw
@@ -29099,18 +29449,18 @@ VW
 VW
 VW
 xI
-SO
+Rx
+QF
+QF
+QF
+QF
+Rx
+pH
 Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
+VT
+VT
+VT
+VT
 Em
 Em
 Em
@@ -29193,7 +29543,7 @@ qP
 Cw
 iK
 Cw
-Wt
+Cw
 Cw
 OM
 Cw
@@ -29222,15 +29572,15 @@ VW
 VW
 VW
 xI
-xM
-wM
-qT
-qT
-qT
-qT
-qT
-qT
-DA
+Rx
+QF
+QF
+QF
+QF
+Oa
+Rx
+mb
+Kf
 xI
 xI
 xI
@@ -29244,7 +29594,7 @@ xI
 xI
 xI
 xI
-xI
+mb
 xI
 NO
 VW
@@ -29270,7 +29620,7 @@ Sf
 XS
 Sf
 Sf
-SL
+yP
 SL
 Sf
 Ku
@@ -29345,7 +29695,18 @@ VW
 VW
 VW
 Hg
-SO
+Rx
+QF
+QF
+QF
+QF
+Rx
+bD
+Em
+VT
+VT
+VT
+VT
 Em
 Em
 Em
@@ -29357,18 +29718,7 @@ Em
 Em
 Em
 Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Em
-Nf
+Dz
 xI
 VW
 VW
@@ -29468,22 +29818,22 @@ VW
 VW
 VW
 xI
-xM
-Em
-JX
-PK
-PK
-Yg
-zA
-XS
+Rx
+QF
+QF
+Rx
+Rx
+LH
+Yr
+vT
 yP
 yP
 An
-Em
+VT
 An
-yP
-yP
-XS
+Kn
+cD
+cD
 zA
 Yg
 zA
@@ -29491,11 +29841,11 @@ PK
 PK
 BU
 Em
-wQ
+xI
 Ce
 VW
 VW
-VW
+JX
 VW
 VW
 xI
@@ -29591,30 +29941,30 @@ VW
 VW
 VW
 xI
-xM
-cC
-Wm
-xr
-xr
-Fl
+Rx
+Rx
+iH
+Zz
+LH
+Ae
+ro
+LG
+PJ
+PJ
+KQ
+WG
 yP
-Em
 yP
-yP
-kg
-Em
-kg
-yP
-yP
-Em
-yP
+cD
+QB
+cD
 kg
 vK
 xr
 xr
 Ix
 cC
-wQ
+xI
 fs
 VW
 VW
@@ -29637,7 +29987,7 @@ xI
 Sf
 Gd
 DO
-hC
+xr
 ti
 yP
 yP
@@ -29714,30 +30064,30 @@ VW
 VW
 VW
 xI
-xM
-cC
-Wm
-xr
-xr
-Fl
+cm
+xB
+Ae
+oy
+oy
 yP
-Em
+zd
+KQ
+KQ
+Yk
+PJ
+PJ
 yP
-Kn
-xr
-Em
 yP
-Kn
-xr
-Em
-sS
+cD
+QB
+cD
 yP
 vK
 xr
 xr
 Ix
 cC
-wQ
+xI
 xI
 VW
 VW
@@ -29752,7 +30102,7 @@ HU
 HU
 HU
 HU
-Vo
+tm
 wP
 OE
 JZ
@@ -29762,7 +30112,7 @@ ti
 BM
 ti
 Sf
-SL
+yP
 SL
 Sf
 Ku
@@ -29840,27 +30190,27 @@ Hg
 xM
 Em
 Kk
-kR
-kR
-kg
 yP
+yP
+hC
+UV
 Em
 cM
 Sr
-bR
-Em
-cM
-Sr
-bR
-Em
-FL
+KQ
+rM
+MI
+xr
+cD
+QB
+cD
 yP
 yP
 kR
 kR
 UV
 Em
-wQ
+xI
 xI
 VW
 VW
@@ -29875,7 +30225,7 @@ HU
 im
 hx
 Dn
-Vo
+tm
 wP
 OE
 JZ
@@ -29963,10 +30313,10 @@ xI
 xM
 EV
 Kk
+bP
+KQ
 yP
-yP
-yP
-yP
+UV
 Em
 Em
 Em
@@ -30087,8 +30437,8 @@ xM
 Em
 en
 xf
-yP
-yP
+ts
+ts
 yP
 re
 sS
@@ -30207,13 +30557,13 @@ Di
 VW
 xI
 xM
-cC
+xB
 wU
-xf
+Jm
+ts
+ts
 yP
-yP
-yP
-kg
+rD
 yP
 vZ
 lx
@@ -30330,13 +30680,13 @@ VW
 VW
 Hg
 xM
-cC
+xB
 xm
 ue
 yD
-yD
-yD
-cs
+CZ
+CZ
+uP
 cs
 Em
 Bn
@@ -30477,7 +30827,7 @@ Em
 Em
 Dz
 xI
-VW
+JX
 VW
 xl
 VW
@@ -30545,11 +30895,11 @@ Cw
 Hp
 Cw
 Cw
-Cw
-Wi
-Cw
-fy
-Cw
+ke
+Mn
+ke
+dy
+ke
 Cw
 Cw
 qP
@@ -30583,10 +30933,10 @@ qT
 qT
 qT
 qT
+qT
+qT
+qT
 DA
-xI
-xI
-ke
 ke
 ke
 ke
@@ -30668,20 +31018,20 @@ Cw
 Cw
 qP
 Cw
+ke
+Wt
+Wt
+Wt
+ES
+Cw
+Cw
 Cw
 Cw
 qP
 Cw
-Hp
-Cw
-Cw
-Cw
-Cw
-qP
-Cw
 Cw
 Hp
-Cw
+sE
 Cw
 lg
 bN
@@ -30712,7 +31062,7 @@ Sf
 Sf
 cD
 cD
-cD
+uC
 Sf
 Sf
 Sf
@@ -30791,11 +31141,11 @@ Cw
 qP
 Cw
 Cw
-qP
-Cw
-Cw
-Cw
-Hp
+Fz
+Wt
+Wt
+Wt
+ES
 Cw
 Cw
 Hp
@@ -30914,11 +31264,11 @@ Cw
 Cw
 qP
 Hp
-Cw
-qP
-Cw
-Cw
-qP
+ke
+Wt
+Wt
+Wt
+ke
 iK
 Cw
 Cw
@@ -31037,11 +31387,11 @@ Cw
 qP
 Cw
 qP
-Cw
-Cw
-Cw
-qP
-Yh
+ke
+ke
+Wt
+ke
+Hm
 Cw
 Hp
 Cw
@@ -31161,9 +31511,9 @@ Cw
 qP
 Cw
 qP
-qP
-Hp
-YB
+Fz
+ES
+lh
 Cw
 Cw
 Cw
@@ -31294,7 +31644,7 @@ Cw
 Cw
 Hp
 Cw
-Cw
+sE
 Cw
 Cw
 Cw
@@ -31409,7 +31759,7 @@ qP
 Cw
 Cw
 Hp
-Wt
+Cw
 Cw
 qP
 Cw
@@ -31532,7 +31882,7 @@ Cw
 Cw
 Cw
 qP
-Wt
+Cw
 Cw
 Cw
 Cw
@@ -31710,7 +32060,7 @@ xI
 VW
 VW
 VW
-VW
+JX
 VW
 xI
 xI
@@ -31782,7 +32132,7 @@ qP
 Cw
 Cw
 qP
-Cw
+sE
 fy
 Wi
 Cw
@@ -32073,8 +32423,8 @@ jM
 jd
 fs
 xI
-up
-xI
+AC
+OR
 xJ
 VW
 wC
@@ -32269,7 +32619,7 @@ Hp
 Cw
 Cw
 Cw
-Cw
+sE
 Cw
 Hp
 Cw
@@ -32319,8 +32669,8 @@ FS
 VW
 VW
 VW
-VW
-VW
+nf
+nf
 VW
 VW
 pX
@@ -32635,10 +32985,10 @@ sU
 Cw
 Cw
 Cw
-qP
-Hp
-Cw
-Cw
+Fz
+ES
+ke
+ke
 YB
 Cw
 OM
@@ -32757,12 +33107,12 @@ Cw
 sU
 Cw
 Cw
-qP
+Fz
+ke
+Wt
+Wt
 Cw
-qP
-Cw
-Cw
-qP
+Fz
 Cw
 Cw
 Hp
@@ -32878,14 +33228,14 @@ kH
 SW
 Cw
 sU
+sE
 Cw
-Cw
-Cw
-Cw
-Hp
-Cw
-fy
-Cw
+ke
+Wt
+Wt
+Wt
+Wt
+ke
 qP
 rP
 OM
@@ -33003,12 +33353,12 @@ sN
 sU
 qP
 Cw
-qP
-Cw
-qP
-qP
-iK
-Cw
+Fz
+Wt
+Wt
+Wt
+Wt
+ke
 Wi
 lg
 Cw
@@ -33126,12 +33476,12 @@ sN
 sU
 iK
 Cw
-Wi
-Cw
-fy
+Mn
+ke
+dy
 Wt
-Hp
-Cw
+ES
+ke
 fy
 lg
 qP
@@ -33251,9 +33601,9 @@ Cw
 Cw
 Cw
 qP
-Cw
-Wt
-Cw
+ke
+ke
+ke
 qP
 Cw
 lg
@@ -33307,7 +33657,7 @@ hp
 xI
 fs
 SA
-VW
+JX
 xl
 VW
 VW

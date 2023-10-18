@@ -1218,42 +1218,35 @@
 /obj/item/weapon/storage/belt/destructionpouch/New()
 	..()
 	new /obj/item/weapon/grenade/smokebomb(src)
-	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
-	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
-	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
 	new /obj/item/weapon/grenade/ww2/stg1924(src)
 	new /obj/item/weapon/grenade/ww2/stg1924(src)
 
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
 	..()
-	new /obj/item/ammo_magazine/c762x25_ppsh(src)
-	new /obj/item/ammo_magazine/c762x25_ppsh(src)
-	new /obj/item/ammo_magazine/c762x25_ppsh(src)
-	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/ammo_magazine/c762x25_ppsh(src)
 
 /obj/item/weapon/storage/belt/smallpouches/chinese_rifle
 /obj/item/weapon/storage/belt/smallpouches/chinese_rifle/New()
 	..()
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/ammo_magazine/gewehr98(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_stanag
 /obj/item/weapon/storage/belt/smallpouches/us_stanag/New()
 	..()
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
-	new /obj/item/ammo_magazine/m16(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/un_fal
 /obj/item/weapon/storage/belt/smallpouches/un_fal/New()
 	..()
-	new /obj/item/ammo_magazine/fal(src)
-	new /obj/item/ammo_magazine/fal(src)
-	new /obj/item/ammo_magazine/fal(src)
+	for (var/i=1, i<=3, i++)
+		new /obj/item/ammo_magazine/fal(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
@@ -1275,8 +1268,8 @@
 /obj/item/weapon/storage/belt/smallpouches/green/rpk74
 /obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
 	..()
-	new/obj/item/ammo_magazine/rpk74(src)
-	new/obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/ammo_magazine/rpk74(src)
+	new /obj/item/ammo_magazine/rpk74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 
@@ -1765,55 +1758,43 @@
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/m16(hold)
-		new /obj/item/ammo_magazine/m16(hold)
-		new /obj/item/ammo_magazine/m16(hold)
-		new /obj/item/ammo_magazine/m16(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/m16(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/m60
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/b762(hold)
-		new /obj/item/ammo_magazine/b762(hold)
-		new /obj/item/ammo_magazine/b762(hold)
-		new /obj/item/ammo_magazine/b762(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/b762(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/m249
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/m249(hold)
-		new /obj/item/ammo_magazine/m249(hold)
-		new /obj/item/ammo_magazine/m249(hold)
-		new /obj/item/ammo_magazine/m249(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/m249(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/c6
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/c6can(hold)
-		new /obj/item/ammo_magazine/c6can(hold)
-		new /obj/item/ammo_magazine/c6can(hold)
-		new /obj/item/ammo_magazine/c6can(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/c6can(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/sten
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/sten2(hold)
-		new /obj/item/ammo_magazine/sten2(hold)
-		new /obj/item/ammo_magazine/sten2(hold)
-		new /obj/item/ammo_magazine/sten2(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/sten2(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/springfield
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		new /obj/item/ammo_magazine/springfield(hold)
-		new /obj/item/ammo_magazine/springfield(hold)
-		new /obj/item/ammo_magazine/springfield(hold)
-		new /obj/item/ammo_magazine/springfield(hold)
+		for (var/i=1, i<=4, i++)
+			new /obj/item/ammo_magazine/springfield(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_bandolier
 	name = "US Army bandolier"
@@ -1838,18 +1819,8 @@
 /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot
 	New()
 		..()
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
-		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		for (var/i=1, i<=12, i++)
+			new /obj/item/ammo_casing/shotgun/buckshot(hold)
 
 /obj/item/clothing/accessory/storage/webbing/m79_vest
 	name = "US Army M79 Vest"
@@ -1864,14 +1835,8 @@
 /obj/item/clothing/accessory/storage/webbing/m79_vest/filled
 	New()
 		..()
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		for (var/i=1, i<=8, i++)
+			new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
 
 /obj/item/clothing/accessory/storage/webbing/shell40mm
 	name = "Grenadier Webbing"
@@ -1882,14 +1847,10 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		for (var/i=1, i<=5, i++)
+			new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		for (var/i=1, i<=3, i++)
+			new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 
 /obj/item/clothing/accessory/storage/webbing/vog25
 	name = "Grenadier Webbing"
@@ -1900,14 +1861,10 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
-		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
-		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		for (var/i=1, i<=5, i++)
+			new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		for (var/i=1, i<=3, i++)
+			new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"

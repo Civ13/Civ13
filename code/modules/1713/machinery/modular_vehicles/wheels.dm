@@ -106,9 +106,10 @@
 		if (spd <= 0)
 			return
 		else
-			H << "You increase the speed."
-			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			control.axis.vehicle_m_delay = spd
+			if (control.axis.currentspeed < control.axis.speedlist.len+1)
+				H << "You increase the speed."
+				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			return
 
 

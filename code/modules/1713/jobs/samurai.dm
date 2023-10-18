@@ -130,14 +130,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
+	for (var/i=1, i<= 8, i++)
+		webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
 	uniform.attackby(webbingh, H)
 	H.civilization = "Eastern Army"
 	give_random_name(H)
@@ -322,14 +316,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
-	webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
+	for (var/i=1, i<= 8, i++)
+		webbingh.attackby(new/obj/item/stack/ammopart/stoneball, H)
 	uniform.attackby(webbingh, H)
 	H.civilization = "Western Army"
 	give_random_name(H)

@@ -14,7 +14,8 @@ var/list/vocal_emotes = list(
 	"sneeze",
 	"yawn",
 	"charge",
-	"gasp")
+	"gasp",
+	"burp")
 
 /mob/living/human/emote(var/act,var/m_type=1,var/message = null)
 
@@ -613,6 +614,18 @@ var/list/vocal_emotes = list(
 					else
 						message = "makes a strange noise."
 						m_type = 2
+			if ("burp")
+				if (miming)
+					message = "burps."
+					m_type = 1
+				else
+					if (!muzzled)
+						message = "burps."
+						m_type = 2
+						//TO-DO: Add burping sound
+					else
+						message = "muffles a burp."
+						m_type = 1
 
 			if ("sniff")
 				message = "sniffs."

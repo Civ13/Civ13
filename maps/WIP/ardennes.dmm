@@ -346,7 +346,7 @@
 "gH" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/nomads/snow)
 "gI" = (/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/nomads/snow)
 "gJ" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/item/mine/at/armed,/turf/floor/winter,/area/caribbean/nomads/snow)
-"gK" = (/obj/covers/cement_wall,/obj/item/weapon/storage/box/firstaid/advsmall,/turf/wall/cement,/area/caribbean/roofed/tundra)
+"gK" = (/obj/covers/cement_wall,/obj/item/weapon/storage/box/firstaid,/turf/wall/cement,/area/caribbean/roofed/tundra)
 "gL" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
 "gM" = (/obj/structure/barricade/steel,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/effect/floor_decal/industrial/danger,/turf/floor/plating/steel,/area/caribbean/roofed/tundra)
 "gN" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/steel,/area/caribbean/roofed/tundra)

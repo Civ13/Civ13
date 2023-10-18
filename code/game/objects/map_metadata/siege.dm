@@ -44,7 +44,7 @@ obj/map_metadata/siege/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 	else
-		. = TRUE
+		. = FALSE
 
 var/no_loop_rom = FALSE
 

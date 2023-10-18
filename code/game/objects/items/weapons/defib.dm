@@ -33,8 +33,11 @@
 	QDEL_NULL(paddles)
 	QDEL_NULL(bcell)
 
-/obj/item/weapon/defibrillator/loaded //Starts with a regular powercell
+/obj/item/weapon/defibrillator/loaded // Starts with a regular powercell
 	bcell = /obj/item/weapon/cell/standard
+
+/obj/item/weapon/defibrillator/loaded/high_cap
+	bcell = /obj/item/weapon/cell/high
 
 /obj/item/weapon/defibrillator/update_icon()
 	var/list/new_overlays = list()
