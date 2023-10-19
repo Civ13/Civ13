@@ -106,13 +106,14 @@
 	else
 		return ""
 
+var/spam_check1 = FALSE
+var/spam_check2 = FALSE
+var/spam_check3 = FALSE
+
 /obj/map_metadata/ong_thahn/proc/outpost_check()
 	if (processes.ticker.playtime_elapsed > grace_wall_timer)
 		var/c1 = 0
 		var/c2 = 0
-		var/spam_check1 = FALSE
-		var/spam_check2 = FALSE
-		var/spam_check3 = FALSE
 		for (var/mob/living/human/H in player_list)
 			var/area/temp_area = get_area(H)
 			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one))
@@ -248,6 +249,4 @@
 			return !faction1_can_cross_blocks()
 			return !faction2_can_cross_blocks()
 	return FALSE
-
-
 
