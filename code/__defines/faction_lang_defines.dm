@@ -25,6 +25,7 @@
 #define IROQUOIS "IROQUOIS"
 #define PASHTO "PASHTO"
 #define DARI "DARI"
+#define FARSI "FARSI"
 
 //used for languages & factions
 #define SPANISH "SPANISH"
@@ -45,6 +46,7 @@
 #define KOREAN "KOREAN"
 #define FILIPINO "FILIPINO"
 #define POLISH "POLISH"
+#define MONGOLIAN "MONGOLIAN"
 
 /proc/faction_const2name(constant,age = 0)
 
