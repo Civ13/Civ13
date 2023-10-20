@@ -111,7 +111,7 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
+	if (config.allowedgamemodes == "BR")
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)
@@ -306,6 +306,7 @@
 					MAP_NOMADS_MEDITERRANEAN = 0,
 //					MAP_NOMADS_ISLAND = 0,
 					MAP_NOMADS_KARAFUTO = 0,
+					MAP_NOMADS_ASIA = 10,
 					MAP_NOMADS_EUROPE = 10,
 				)
 			if ("Civilization 13 (Colony & Pioneers)")
@@ -335,7 +336,7 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
+	if (config.allowedgamemodes == "BR")
 		. = FALSE
 	else if (ready)
 		if (admin_triggered)
