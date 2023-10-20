@@ -432,7 +432,7 @@ s
 			for(var/obj/item/I in range(7, src))
 				var/area/I_area = get_area(I)
 				var/area/src_area = get_area(src)
-				if (I_area != istype(D_area, /area/caribbean/prison/jail) && I_area == src_area)
+				if (I_area != istype(I_area, /area/caribbean/prison/jail) && I_area == src_area)
 					CheckForContraband(I)
 			for(var/mob/living/human/H in range(7, src))
 				if (H.civilization != "Sheriff Office" || H.civilization != "Government")
@@ -458,7 +458,7 @@ s
 					CheckForContraband(I)
 		if (map.ID == MAP_GROZNY || map.ID == MAP_KANDAHAR || map.ID == MAP_MAGISTRAL)
 			for(var/obj/item/mine/M in range(3, src))
-				if (M.achored)
+				if (M.anchored)
 					CheckForExplosives()
 // Contraband checking
 
