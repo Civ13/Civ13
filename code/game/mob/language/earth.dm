@@ -36,6 +36,8 @@
 #define NORWEGIAN_SYLLABLES list("ja","ga","et","de","ka","vi","ik","bli","ve","ke","ste","der","dej","mi","eg","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","ike","sto","ren","sch","sei","jep")
 #define PASHTO_SYLLABLES list("aa", "bal", "bara", "be", "bi", "bo", "bu", "ce", "ci", "co", "cu", "che", "chi", "cho", "chu", "da", "dar", "de", "di", "do", "du", "ee", "fa", "far", "fe", "fi", "fo", "fu", "ga", "gar", "ge", "gi", "go", "gu", "ja", "jar", "je", "ji", "jo", "ju", "khe", "khi", "kho", "khu", "la", "le", "li", "lo", "lu", "ma", "mi", "mo", "mu", "na", "nar", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "qa", "qe", "qi", "qo", "qu", "re", "ri", "ro", "ru", "se", "she", "shi", "sho", "shu", "ta", "te", "ti", "to", "tu", "ve", "vi", "vo", "vu", "ya", "yar", "ye", "yi", "yo", "yu", "zan", "ze", "zi", "zo", "zu", "baal", "bala", "bar", "bara", "che", "dar", "dara", "fa", "far", "kala", "kho", "khor", "ma", "mar", "na", "nar", "pa", "para", "qa", "ra", "ro", "se", "sho", "shu", "ta", "to", "ve", "vi", "za", "zara")
 #define DARI_SYLLABLES list("aa", "and", "ba", "bal", "bar", "be", "bi", "bo", "bu", "da", "dar", "de", "di", "do", "du", "fa", "far", "fe", "fi", "fo", "fu", "ga", "gar", "ge", "gi", "go", "gu", "ha", "har", "he", "hi", "ho", "hu", "ja", "jar", "je", "ji", "jo", "ju", "ka", "kar", "ke", "ki", "ko", "ku", "la", "le", "li", "lo", "lu", "ma", "mar", "me", "mi", "mo", "mu", "na", "nar", "ne", "ni", "no", "nu", "pa", "par", "pe", "pi", "po", "pu", "qa", "qe", "qi", "qo", "qu", "ra", "ran", "re", "ri", "ro", "ru", "sa", "sar", "se", "si", "so", "su", "ta", "tar", "te", "ti", "to", "tu", "va", "var", "ve", "vi", "vo", "vu", "ya", "yar", "ye", "yi", "yo", "yu", "za", "zar", "ze", "zi", "zo", "zu", "baa", "bari", "dari", "gar", "gari", "kan", "kar", "mand", "mar", "nand", "par", "sart", "tard", "var", "zand", "zar")
+#define FARSI_SYLLABLES list("ka", "ki", "ku", "ke", "ko", "ma", "mi", "mu", "me", "mo", "ba", "bi", "bu", "be", "bo", "ra", "ri", "ru", "re", "ro", "sa", "si", "su", "se", "so", "ta", "ti", "tu", "te", "to", "za", "zi", "zu", "ze", "zo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "da", "di", "du", "de", "do", "ja", "ji", "ju", "je", "jo", "pa", "pi", "pu", "pe", "po", "kha", "khi", "khu", "khe", "kho", "sha", "shi", "shu", "she", "sho", "qa", "qi", "qu", "qe", "qo", "ha", "hi", "hu", "he", "ho", "la", "li", "lu", "le", "lo", "ma", "mi", "mu", "me", "mo", "ya", "yi", "yu", "ye", "yo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "za", "zi", "zu", "ze", "zo", "fa", "fi", "fu", "fe", "fo", "xa", "xi", "xu", "xe", "xo")
+#define MONGOLIAN_SYLLABLES list("ba", "baa", "be", "bee", "bi", "bii", "bo", "boo", "bu", "buu", "da", "daa", "de", "dee", "di", "dii", "do", "doo", "du", "duu", "ga", "gaa", "ge", "gee", "gi", "gii", "go", "goo", "gu", "guu", "ha", "haa", "he", "hee", "hi", "hii", "ho", "hoo", "hu", "huu", "ka", "kaa", "ke", "kee", "ki", "kii", "ko", "koo", "ku", "kuu", "la", "laa", "le", "lee", "li", "lii", "lo", "loo", "lu", "luu", "ma", "maa", "me", "mee", "mi", "mii", "mo", "moo", "mu", "muu", "na", "naa", "ne", "nee", "ni", "nii", "no", "noo", "nu", "nuu", "pa", "paa", "pe", "pee", "pi", "pii", "po", "poo", "pu", "puu", "qa", "qaa", "qe", "qee", "qi", "qii", "qo", "qoo", "qu", "quu", "ra", "raa", "re", "ree", "ri", "rii", "ro", "roo", "ru", "ruu", "sa", "saa", "se", "see", "si", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -133,6 +135,15 @@
 	syllables = DARI_SYLLABLES
 	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/pashto = 30)
 
+/datum/language/farsi
+	name = "Farsi"
+	desc = "Salaam, doos-e man!"
+	key = "fa"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = FARSI_SYLLABLES
+	mutual_intelligibility = list(/datum/language/arab = 30, /datum/language/pashto = 30, /datum/language/dari = 80)
+
 /datum/language/pashto
 	name = "Pashto"
 	desc = "Salam, khairaan-e man!"
@@ -171,12 +182,21 @@
 
 /datum/language/ainu
 	name = "Ainu"
-	desc = "Osoma!."
+	desc = "Osoma!"
 	key = "ai"
 	colour = "Ainu"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = AINU_SYLLABLES
 	mutual_intelligibility = list(/datum/language/japanese = 15, /datum/language/russian = 15)
+
+/datum/language/mongolian
+	name = "Mongolian"
+	desc = "Sain baina uu, nadadai!"
+	key = "mo"
+	colour = "Mongolian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = MONGOLIAN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/chinese = 15, /datum/language/russian = 10)
 
 /datum/language/russian
 	name = "Russian"
@@ -185,7 +205,7 @@
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/ukrainian = 35, /datum/language/polish = 10)
+	mutual_intelligibility = list(/datum/language/ukrainian = 60, /datum/language/polish = 10)
 
 /datum/language/ukrainian
 	name = "Ukrainian"
@@ -194,7 +214,7 @@
 	colour = "Ukrainian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/russian = 35, /datum/language/polish = 20)
+	mutual_intelligibility = list(/datum/language/russian = 60, /datum/language/polish = 30)
 
 /datum/language/polish
 	name = "Polish"
