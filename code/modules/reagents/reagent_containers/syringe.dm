@@ -386,6 +386,7 @@
 	volume = 20
 	amount_per_transfer_from_this = 20
 	single_use = TRUE
+	is_contraband = TRUE
 
 /obj/item/weapon/reagent_containers/syringe/thc/New()
 	..()

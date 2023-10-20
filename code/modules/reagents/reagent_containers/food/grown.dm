@@ -153,6 +153,7 @@
 	icon_state = "mushrooms"
 	satisfaction = 10
 	decay = 35*600
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("thc", 30)

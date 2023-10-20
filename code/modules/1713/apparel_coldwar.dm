@@ -1155,10 +1155,8 @@
 
 /obj/item/weapon/storage/belt/ugl/soviet/filled/New()
 	..()
-	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
-	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
-	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
-	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	for (var/i=1, i<= 4, i++)
+		new/obj/item/weapon/grenade/frag/ugl/vog25(src)
 	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
 	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
 
@@ -1522,66 +1520,56 @@
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
 	New()
 		..()
-		new/obj/item/ammo_magazine/sksm(hold)
-		new/obj/item/ammo_magazine/sksm(hold)
-		new/obj/item/ammo_magazine/sksm(hold)
+		for (var/i=1, i<= 3, i++)
+			new /obj/item/ammo_magazine/sksm(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
 	New()
 		..()
-		new/obj/item/ammo_magazine/svd(hold)
-		new/obj/item/ammo_magazine/svd(hold)
-		new/obj/item/ammo_magazine/svd(hold)
+		for (var/i=1, i<= 3, i++)
+			new /obj/item/ammo_magazine/svd(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
 	New()
 		..()
-		new/obj/item/ammo_magazine/ak47(hold)
-		new/obj/item/ammo_magazine/ak47(hold)
-		new/obj/item/ammo_magazine/ak47(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/ak47(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
 	New()
 		..()
-		new/obj/item/ammo_magazine/ak74(hold)
-		new/obj/item/ammo_magazine/ak74(hold)
-		new/obj/item/ammo_magazine/ak74(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/ak74(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
 	New()
 		..()
-		new/obj/item/ammo_magazine/ak47/drum(hold)
-		new/obj/item/ammo_magazine/ak47/drum(hold)
-		new/obj/item/ammo_magazine/ak47/drum(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/ak47/drum(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/nomads
 	New()
 		..()
-		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
-		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
-		new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
 	New()
 		..()
-		new/obj/item/ammo_magazine/m16(hold)
-		new/obj/item/ammo_magazine/m16(hold)
-		new/obj/item/ammo_magazine/m16(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/m16(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
 	New()
 		..()
-		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
-		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
-		new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
-
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
 	New()
 		..()
-		new/obj/item/ammo_magazine/mosin(hold)
-		new/obj/item/ammo_magazine/mosin(hold)
-		new/obj/item/ammo_magazine/mosin(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/mosin(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/sniper
 	New()
@@ -1592,9 +1580,8 @@
 /obj/item/clothing/accessory/storage/webbing/green_webbing/m24
 	New()
 		..()
-		new/obj/item/ammo_magazine/mosin(hold)
-		new/obj/item/ammo_magazine/mosin(hold)
-		new/obj/item/ammo_magazine/mosin(hold)
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/mosin(hold)
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
@@ -1721,28 +1708,20 @@
 /obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98
 	New()
 		..()
-		new/obj/item/ammo_magazine/gewehr98(hold)
-		new/obj/item/ammo_magazine/gewehr98(hold)
-		new/obj/item/ammo_magazine/gewehr98(hold)
-		new/obj/item/ammo_magazine/gewehr98(hold)
-		new/obj/item/ammo_magazine/gewehr98(hold)
+		for (var/i=1, i<= 5, i++)
+			new/obj/item/ammo_magazine/gewehr98(hold)
 
 /obj/item/clothing/accessory/storage/webbing/light/chinese/ak47
 	New()
 		..()
-		new/obj/item/ammo_magazine/ak47(hold)
-		new/obj/item/ammo_magazine/ak47(hold)
-		new/obj/item/ammo_magazine/ak47(hold)
-		new/obj/item/ammo_magazine/ak47(hold)
+		for (var/i=1, i<= 4, i++)
+			new/obj/item/ammo_magazine/ak47(hold)
 
 /obj/item/clothing/accessory/storage/webbing/light/chinese/sks
 	New()
 		..()
-		new/obj/item/ammo_magazine/sks(hold)
-		new/obj/item/ammo_magazine/sks(hold)
-		new/obj/item/ammo_magazine/sks(hold)
-		new/obj/item/ammo_magazine/sks(hold)
-		new/obj/item/ammo_magazine/sks(hold)
+		for (var/i=1, i<= 5, i++)
+			new/obj/item/ammo_magazine/sks(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest
 	name = "US Army webbing"

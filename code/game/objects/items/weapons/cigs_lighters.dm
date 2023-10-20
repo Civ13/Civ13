@@ -278,6 +278,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	smoketime = 200
 	chem_volume = 70
 	value = 28
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("thc",30)
