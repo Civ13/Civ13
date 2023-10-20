@@ -41,7 +41,11 @@
 	var/maxpoints = 4000
 	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
-
+	var/list/heat = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
 
 /obj/map_metadata/art_of_the_deal/update_win_condition()
 	if (win_condition_spam_check)
@@ -925,70 +929,68 @@
 	anchored = TRUE
 
 /obj/structure/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	var/smuggler_cooldown = 0
 	if (user.civilization == "Sheriff Office")
 		user << "Good day, officer."
 		return
-	else
-		var/smuggler_cooldown = 0
-		if (world.time > smuggler_cooldown)
-			if (istype(W, /obj/item/stack/money))
-				var/obj/item/stack/money/M = W
-				if (M && M.value*M.amount >= 500*4)
-					M.amount-=500/5
-					if (M.amount <= 0)
-						qdel(M)
-					user << "A shipment will arrive soon at the Docks. Better be ready."
-					if (prob(50))
-						for (var/mob/living/human/H in player_list)
-							if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
-								if (H.civilization != user.civilization)
-									H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
-						if (prob(50))
-							global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
-					smuggler_cooldown = world.time + 1800
-					sleep(rand(900,1800))
-					var/crate_type = rand(1,3)
-					if (prob(70))
-						switch(crate_type)
-							if (1)
-								new /obj/structure/largecrate/smuggler/crystals(get_turf(locate(84,6,1)))
-							if (2)
-								new /obj/structure/largecrate/smuggler/disks(get_turf(locate(84,6,1)))
-							if (3)
-								new /obj/structure/largecrate/smuggler/fake_disks(get_turf(locate(84,6,1)))
-					else
-						if (prob(70))
-							if (prob(60))
-								switch(crate_type)
-									if (1)
-										new /obj/structure/largecrate/smuggler/makarov(get_turf(locate(84,6,1)))
-									if (2)
-										new /obj/structure/largecrate/smuggler/magnum44(get_turf(locate(84,6,1)))
-									if (3)
-										new /obj/structure/largecrate/smuggler/m1911(get_turf(locate(84,6,1)))
-							else
-								switch(crate_type)
-									if (1)
-										new /obj/structure/largecrate/smuggler/skorpion(get_turf(locate(84,6,1)))
-									if (2)
-										new /obj/structure/largecrate/smuggler/uzi(get_turf(locate(84,6,1)))
-									if (3)
-										new /obj/structure/largecrate/smuggler/mac10(get_turf(locate(84,6,1)))
-						else
-							if (prob(70))
-								new /obj/structure/largecrate/smuggler/cocaine(get_turf(locate(84,6,1)))
-							else
-								new /obj/structure/largecrate/smuggler/ak47(get_turf(locate(84,6,1)))
-				else
-					user << "<span class='warning'>Not enough money! You need to give at least 500 dollars.</span>"
-					return
-		else
-			user << "No shipments available, come back later."
+	if (world.time <= smuggler_cooldown)
+		user << "No shipments available, come back later."
+		return
+	if (istype(W, /obj/item/stack/money))
+		var/obj/item/stack/money/M = W
+		if (M && M.value*M.amount < 500*4)
+			user << "<span class='warning'>Not enough money! You need to give at least 500 dollars.</span>"
 			return
+		M.amount-=500/5
+		if (M.amount <= 0)
+			qdel(M)
+		user << "A shipment will arrive soon at the Docks. Better be ready."
+		if (prob(50))
+			for (var/mob/living/human/H in player_list)
+				if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
+					if (H.civilization != user.civilization)
+						H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
+			if (prob(50))
+				spawn(rand(300,1800))
+					global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
+		smuggler_cooldown = world.time + 1800
+		spawn(rand(900,1800))
+			var/crate_group = rand(1,3)
+			var/crate_type = rand(1,3)
+				if (prob(90))
+					switch(crate_group)
+						if (1)
+							switch(crate_type)
+								if (1)
+									new /obj/structure/largecrate/smuggler/crystals(get_turf(locate(84,6,1)))
+								if (2)
+									new /obj/structure/largecrate/smuggler/disks(get_turf(locate(84,6,1)))
+								if (3)
+									new /obj/structure/largecrate/smuggler/fake_disks(get_turf(locate(84,6,1)))
+						if (2)
+							switch(crate_type)
+								if (1)
+									new /obj/structure/largecrate/smuggler/makarov(get_turf(locate(84,6,1)))
+								if (2)
+									new /obj/structure/largecrate/smuggler/magnum44(get_turf(locate(84,6,1)))
+								if (3)
+									new /obj/structure/largecrate/smuggler/m1911(get_turf(locate(84,6,1)))
+						if (3)
+							switch(crate_type)
+								if (1)
+									new /obj/structure/largecrate/smuggler/skorpion(get_turf(locate(84,6,1)))
+								if (2)
+									new /obj/structure/largecrate/smuggler/uzi(get_turf(locate(84,6,1)))
+								if (3)
+									new /obj/structure/largecrate/smuggler/mac10(get_turf(locate(84,6,1)))
+				else
+					if (prob(70))
+						new /obj/structure/largecrate/smuggler/cocaine(get_turf(locate(84,6,1)))
+					else
+						new /obj/structure/largecrate/smuggler/ak47(get_turf(locate(84,6,1)))
 
 /obj/random/disk
 	name = "random disk"
-
 /obj/random/disk/spawn_choices()
 	return list(/obj/item/weapon/disk/blue,
 				/obj/item/weapon/disk/red,
@@ -997,7 +999,6 @@
 
 /obj/random/disk/fake
 	name = "fake random disk"
-
 /obj/random/disk/fake/spawn_choices()
 	return list(/obj/item/weapon/disk/blue/fake,
 				/obj/item/weapon/disk/red/fake,
@@ -1024,7 +1025,8 @@
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,)
 
-/obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
+/obj/structure/props/biker/attack_hand(mob/living/human/user as mob)
+	var/optlist = list("Cancel","Sell drugs","Buy weapons")
 	if (reputation[user.civilization] < 0)
 		user << "I'm not dealing with you punks anymore, get the fuck out of here."
 		return
@@ -1035,53 +1037,72 @@
 			user << "Sorry, who the fuck are you? Get outta here!"
 		return
 	if (world.time <= biker_cooldown)
-		user << "My boys haven't finished moving the previous products. Come back later."
+		user << "My boys are busy for now. Come back later."
 		return
-	if (istype(W, /obj/item/weapon/reagent_containers/pill/))
-		var/obj/item/weapon/reagent_containers/pill/P = W
-		if (P && P.reagents.has_reagent("methamphetamine") && !P.reagents.has_reagent("cocaine"))
-			if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
-				qdel(P)
-				var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-				D.amount = (buying_price1+src.reputation[user.civilization])/(D.value/5)
-				if (D.amount == 0)
-					qdel(D)
-				user.put_in_hands(D)
-				user << "Here, there's more where it came from."
-				src.reputation[user.civilization] += 2
+	var/choice1 = WWinput(user, "What do you need?", "Bruce the Biker", "Cancel", optlist)
+	if (choice1 == "Cancel")
+		user << "Don't waste my time next time."
+		return
+	else if (choice1 == "Sell drugs")
+		if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/pill/) || istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/pill/))
+			var/obj/item/weapon/reagent_containers/pill/P
+			if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/pill/))
+				P = user.get_active_hand()
+			else if (istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/pill/))
+				P = user.get_inactive_hand()
+			if (P && P.reagents.has_reagent("methamphetamine") && !P.reagents.has_reagent("cocaine"))
+				if (P.reagents.get_reagent_amount("methamphetamine")>= 10)
+					qdel(P)
+					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+					D.amount = (buying_price1+src.reputation[user.civilization])/(D.value/5)
+					if (D.amount == 0)
+						qdel(D)
+					user.put_in_hands(D)
+					user << "Here, there's more where it came from."
+					src.reputation[user.civilization] += 2
+					return
+				else
+					user << pick("You've got some nerve trying to pass off this cut crap as meth! Fuck off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!")
+					return
+			else if (P && P.reagents.has_reagent("cocaine") && !P.reagents.has_reagent("methamphetamine"))
+				if (P.reagents.get_reagent_amount("cocaine")>= 25)
+					qdel(P)
+					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+					D.amount = (buying_price2+min(src.reputation[user.civilization],30))/(D.value/5)
+					if (D.amount == 0)
+						qdel(D)
+					user.put_in_hands(D)
+					user << "Here, there's more where it came from."
+					src.reputation[user.civilization] += 1
+					return
+				else
+					user << "What's that? Babypowder? Your shit's cut! Fuck off!"
+					return
+			else if (P && P.reagents.has_reagent("cocaine") && P.reagents.has_reagent("methamphetamine"))
+				user << "Are you trying to get my clients killed? Tell your cook to separate his shit."
 				return
-			else
-				user << pick("You've got some nerve trying to pass off this cut crap as meth! Piss off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!")
+			else if (P && P.reagents.has_reagent("crack"))
+				user << "Fuck off, my boys don't mess with that shit."
 				return
-		else if (P && P.reagents.has_reagent("cocaine") && !P.reagents.has_reagent("methamphetamine"))
-			if (P.reagents.get_reagent_amount("cocaine")>= 25)
-				qdel(P)
-				var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-				D.amount = (buying_price2+src.reputation[user.civilization])/(D.value/5)
-				if (D.amount == 0)
-					qdel(D)
-				user.put_in_hands(D)
-				user << "Here, there's more where it came from."
-				src.reputation[user.civilization] += 2
-				return
-			else
-				user << "What's that? Babypowder? Fuck off!"
-				return
-		else if (P && P.reagents.has_reagent("cocaine") && P.reagents.has_reagent("methamphetamine"))
-			user << "Are you trying to get my clients killed? Tell your cook to separate it."
+		if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/cocaineblock/) || istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/cocaineblock/))
+			var/obj/item/weapon/reagent_containers/cocaineblock/CB
+			if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/cocaineblock))
+				CB = user.get_active_hand()
+			else if (istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/cocaineblock))
+				CB = user.get_inactive_hand()
+			qdel(CB)
+			var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+			D.amount = ((buying_price2+src.reputation[user.civilization])*20)/(D.value/5)
+			if (D.amount == 0)
+				qdel(D)
+			user.put_in_hands(D)
+			user << "Holy shit, now that's some product. I'll need some time to distribute it."
+			biker_cooldown = world.time + 6000
 			return
-		else if (P && P.reagents.has_reagent("crack"))
-			user << "Fuck off, we don't mess with that shit."
-			return
-	else if (istype(W, /obj/item/weapon/reagent_containers/cocaineblock/))
-		qdel(W)
-		var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-		D.amount = ((buying_price2+src.reputation[user.civilization])*20)/(D.value/5)
-		if (D.amount == 0)
-			qdel(D)
-		user.put_in_hands(D)
-		user << "Holy shit, now that's some product. I'll need some time to distribute it."
-		biker_cooldown = world.time + 6000
+	else if (choice1 == "Buy weapons")
+		user << "Sorry, dude, the feds got our supply route, I have nothing to offer for now." //TO-DO: Add more options
+/obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	return
 
 /obj/structure/props/cartel
 	name = "Diego 'El Diablo' Morales"
@@ -1100,66 +1121,59 @@
 		"Giovanni Blu Stocks" = 0,
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,)
-	var/list/heat = list(
-		"Rednikov Industries" = 0,
-		"Giovanni Blu Stocks" = 0,
-		"Kogama Kraftsmen" = 0,
-		"Goldstein Solutions" = 0,)
 	var/list/buy_list = list("Cancel","1 gram","10 grams","a block")
 
 /obj/structure/props/cartel/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	if (reputation[user.civilization] < 0)
+		user << "Don't waste my time, find another hole to climb into, sapo."
+		return
+	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
+		user << "I have nothing to tell you."
+		return
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
-		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
-			user << "I have nothing to tell you."
-			return
+		if (reputation[user.civilization] <= 10)
+			buy_list = list("Cancel","1 gram")
+		else if (reputation[user.civilization] <= 30)
+			buy_list = list("Cancel","1 gram","10 grams")
 		else
-			if (reputation[user.civilization] < 0)
-				user << "Don't waste my time, find another hole to climb into, sapo."
-				return
+			buy_list = list("Cancel","1 gram","10 grams","a block")
+		var/choice = WWinput(user, "What do you want to buy?", "Cartel Member", "Cancel", buy_list)
+		if (choice == "Cancel" || !choice)
+			return
+		else if (choice == "1 gram")
+			if (M && M.value*M.amount >= 70*4)
+				M.amount-=70/5
+				if (M.amount <= 0)
+					qdel(M)
+				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+				user.put_in_hands(one_g)
+				reputation[user.civilization] += 1
 			else
-				if (reputation[user.civilization] <= 10)
-					buy_list = list("Cancel","1 gram")
-				else if (reputation[user.civilization] <= 30)
-					buy_list = list("Cancel","1 gram","10 grams")
-				else
-					buy_list = list("Cancel","1 gram","10 grams","a block")
-				var/choice = WWinput(user, "What do you want to buy?", "Cartel Member", "Cancel", buy_list)
-				if (choice == "Cancel" || !choice)
-					return
-				else if (choice == "1 gram")
-					if (M && M.value*M.amount >= 70*4)
-						M.amount-=70/5
-						if (M.amount <= 0)
-							qdel(M)
-						var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
-						user.put_in_hands(one_g)
-						reputation[user.civilization] += 1
-					else
-						user << "Not enough money, maricon."
-				else if (choice == "10 grams")
-					if (M && M.value*M.amount >= 600*4)
-						M.amount-=600/5
-						if (M.amount <= 0)
-							qdel(M)
-						var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
-						var/obj/item/weapon/storage/briefcase/briefcase = new /obj/item/weapon/storage/briefcase(null)
-						for (var/i = 1; i<=10;i++)
-							new one_g(briefcase)
-						user.put_in_hands(briefcase)
-						reputation[user.civilization] += 2
-					else
-						user << "Not enough money, maricon."
-				else if (choice == "a block")
-					if (M && M.value*M.amount >= 1200*4)
-						M.amount-=1200/5
-						if (M.amount <= 0)
-							qdel(M)
-						var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
-						user.put_in_hands(block)
-					else
-						user << "Not enough money, maricon."
-				return
+				user << "Not enough money, maricon."
+		else if (choice == "10 grams")
+			if (M && M.value*M.amount >= 600*4)
+				M.amount-=600/5
+				if (M.amount <= 0)
+					qdel(M)
+				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+				var/obj/item/weapon/storage/briefcase/briefcase = new /obj/item/weapon/storage/briefcase(null)
+				for (var/i = 1; i<=10;i++)
+					new one_g(briefcase)
+				user.put_in_hands(briefcase)
+				reputation[user.civilization] += 2
+			else
+				user << "Not enough money, maricon."
+		else if (choice == "a block")
+			if (M && M.value*M.amount >= 1200*4)
+				M.amount-=1200/5
+				if (M.amount <= 0)
+					qdel(M)
+				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
+				user.put_in_hands(block)
+			else
+				user << "Not enough money, maricon."
+		return
 	else
 		return
 
