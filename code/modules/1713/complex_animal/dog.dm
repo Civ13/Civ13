@@ -467,9 +467,9 @@ s
 	if (I.is_contraband)
 		if (prob(20) && world.time >= next_bork)
 			visible_message("<span class='warning'>\The [src] starts barking! [message]!</span>")
-            playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-            next_bork = world.time + 500
-            return
+			playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+			next_bork = world.time + 500
+			return
 
 /mob/living/simple_animal/complex_animal/dog/proc/CheckForExplosives()
 	if (prob(20) && world.time >= next_bork)
