@@ -429,80 +429,55 @@ s
 						next_bork = world.time + 500 // shut the fuck up dogs - kachnov
 						return
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			for(var/obj/item/weapon/disk/D in range(7, src))
-				var/area/D_area = get_area(D)
+			for(var/obj/item/I in range(7, src))
+				var/area/I_area = get_area(I)
 				var/area/src_area = get_area(src)
-				if (D_area != istype(D_area, /area/caribbean/prison/jail) && D_area == src_area)
-					if (prob(20) && world.time >= next_bork)
-						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband nearby!</span>")
-						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-						next_bork = world.time + 500
-						return
+				if (I_area != istype(D_area, /area/caribbean/prison/jail) && I_area == src_area)
+					CheckForContraband(I)
 			for(var/mob/living/human/H in range(7, src))
-				if (H.civilization != "Sheriff Office")
-					for(var/obj/item/weapon/disk/D in H.contents)
-						if (prob(20) && world.time >= next_bork)
-							visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband on a person nearby!</span>")
-							playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-							next_bork = world.time + 500
-							return
+				if (H.civilization != "Sheriff Office" || H.civilization != "Government")
+					for(var/obj/item/I in H.contents)
+						CheckForContraband(I)
 					var/obj/item/weapon/storage/B
 					for(B in H.contents)
-						for(var/obj/item/weapon/disk/D in B.contents)
-							if (prob(20) && world.time >= next_bork)
-								visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband in a person's bag nearby!</span>")
-								playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-								next_bork = world.time + 500
-								return
+						for(var/obj/item/I in B.contents)
+							CheckForContraband(I)
 					var/obj/item/clothing/suit/storage/S
 					for(S in H.contents)
-						for(var/obj/item/weapon/disk/D in S.pockets.contents)
-							if (prob(20) && world.time >= next_bork)
-								visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband on a person nearby!</span>")
-								playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-								next_bork = world.time + 500
-								return
+						for(var/obj/item/I in S.pockets.contents)
+							CheckForContraband(I)
 			for(var/obj/structure/closet/C in range(7, src))
-				for(var/obj/item/weapon/disk/D in C.contents)
-					if (prob(20) && world.time >= next_bork)
-						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
-						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-						next_bork = world.time + 500
-						return
+				for(var/obj/item/I in C.contents)
+					CheckForContraband(I)
 			var/obj/item/clothing/suit/storage/SG
 			for(SG in range(7, src))
-				for(var/obj/item/weapon/disk/D in SG.pockets.contents)
-					if (prob(20) && world.time >= next_bork)
-						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
-						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-						next_bork = world.time + 500
-						return
+				for(var/obj/item/I in SG.pockets.contents)
+					CheckForContraband(I)
 			for(var/obj/item/weapon/storage/B in range(7, src))
-				for(var/obj/item/weapon/disk/D in B.contents)
-					if (prob(20) && world.time >= next_bork)
-						visible_message ("<span class = 'warning'>\The [src] starts barking! It smells contraband inside something nearby!</span>")
-						playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-						next_bork = world.time + 500
-						return
+				for(var/obj/item/I in B.contents)
+					CheckForContraband(I)
 		if (map.ID == MAP_GROZNY || map.ID == MAP_KANDAHAR || map.ID == MAP_MAGISTRAL)
-			for(var/obj/item/mine/at/armed/ATA in range(3, src))
-				if (prob(20) && world.time >= next_bork)
-					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
-					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-					next_bork = world.time + 500
-					return
-			for(var/obj/item/mine/ap/armed/APA in range(3, src))
-				if (prob(20) && world.time >= next_bork)
-					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
-					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-					next_bork = world.time + 500
-					return
-			for(var/obj/item/mine/boobytrap/BT in range(3, src))
-				if (prob(20) && world.time >= next_bork)
-					visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
-					playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
-					next_bork = world.time + 500
-					return
+			for(var/obj/item/mine/M in range(3, src))
+				if (M.achored)
+					CheckForExplosives()
+// Contraband checking
+
+/mob/living/simple_animal/complex_animal/dog/proc/CheckForContraband(var/obj/item/I)
+	if (I.is_contraband)
+		if (prob(20) && world.time >= next_bork)
+			var/message = "It smells contraband nearby."
+			visible_message("<span class='warning'>\The [src] starts barking! [message]!</span>")
+            playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+            next_bork = world.time + 500
+            return
+
+/mob/living/simple_animal/complex_animal/dog/proc/CheckForExplosives()
+	if (prob(20) && world.time >= next_bork)
+		visible_message ("<span class = 'warning'>\The [src] starts barking! It detects an armed explosive in the near 3 tiles!</span>")
+		playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
+		next_bork = world.time + 500
+		return
+
 // dog combat
 
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
