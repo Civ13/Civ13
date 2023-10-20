@@ -463,9 +463,9 @@ s
 // Contraband checking
 
 /mob/living/simple_animal/complex_animal/dog/proc/CheckForContraband(var/obj/item/I)
+	var/message = "It smells contraband nearby."
 	if (I.is_contraband)
 		if (prob(20) && world.time >= next_bork)
-			var/message = "It smells contraband nearby."
 			visible_message("<span class='warning'>\The [src] starts barking! [message]!</span>")
             playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)
             next_bork = world.time + 500
