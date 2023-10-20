@@ -81,6 +81,8 @@
 
 	var/dried_type = null //Item, that will appear after drying (or dehydrating) process
 	var/dry_size = null //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
+	
+	var/is_contraband = FALSE //For now, used by dogs to detect the contraband item
 
 /obj/item/New()
 	maxhealth = health
