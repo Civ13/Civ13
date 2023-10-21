@@ -389,7 +389,7 @@
 		var/obj/item/stack/ammopart/stoneball/ST = W
 		if (!bullet && gunpowder)
 			user << "<span class='notice'>You begin loading \the [src] with \the [W]...</span>"
-			if (do_after(user, 100, src, can_move = TRUE))
+			if (do_after(user, (100 / user.getStatCoeff(stat)), src, can_move = TRUE))
 				if (bullet == FALSE)
 					user << "<span class='notice'>You load \the [src].</span>"
 					bullet = TRUE
@@ -423,7 +423,7 @@
 			return
 		else
 			user << "<span class='notice'>You begin packing \the [src] with gunpowder...</span>"
-			if (do_after(user, 100, src, can_move = TRUE))
+			if (do_after(user, (100 / user.getStatCoeff(stat)), src, can_move = TRUE))
 				if (gunpowder == FALSE)
 					if (W.reagents.has_reagent("gunpowder",1))
 						user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
