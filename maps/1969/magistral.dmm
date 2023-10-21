@@ -14,7 +14,7 @@
 "an" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm{anchored = 1; dir = 2},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/structure/vehicleparts/frame/mtlb/rf,/obj/structure/bed/chair/office/dark{anchored = 1; name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks/mtlb/right_front,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ao" = (/obj/structure/vehicleparts/frame/mtlb/lf,/obj/structure/vehicleparts/axis/heavy/mtlb,/obj/structure/vehicleparts/movement/tracks/mtlb/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ap" = (/turf/floor/beach/sand/dark,/area/caribbean/nomads/desert)
-"aq" = (/obj/structure/engine/internal/diesel/premade/omw22_2{name = "V12 diesel engine"},/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean/nomads/desert)
+"aq" = (/obj/structure/engine/internal/diesel/premade/v12,/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "ar" = (/obj/structure/vehicleparts/frame/t72/back,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "as" = (/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap/fueleddiesel,/obj/structure/vehicleparts/frame/t72/lb,/turf/floor/plating/road,/area/caribbean/nomads/desert)
 "at" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/t72/right/door{doorcode = 4975},/turf/floor/plating/road,/area/caribbean/nomads/desert)

@@ -248,6 +248,7 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = ITEM_SIZE_TINY
+	is_contraband = TRUE
 
 	var/fake = FALSE
 	var/used = FALSE
@@ -362,6 +363,7 @@
 	icon_state = "disk_uos0"
 	item_state = "disk_uos0"
 	var/operatingsystem = "unga OS"
+	is_contraband = FALSE
 
 	attackby(obj/item/W, mob/living/M)
 		return
@@ -569,6 +571,7 @@
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "disk_black"
 	item_state = "disk_black"
+	is_contraband = FALSE
 	var/included
 	var/list/compatible_os = list()
 

@@ -145,6 +145,7 @@
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "opium_extracted"
 	value = 17
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("opium", 5)
@@ -156,6 +157,7 @@
 	icon_state = "cocaine_pile"
 	var/vol = 1
 	value = 20
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("cocaine", 25)
@@ -188,6 +190,7 @@
 	icon = 'icons/obj/drugs.dmi'
 	icon_state = "cocaine_line"
 	value = 4
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("cocaine", 5)
@@ -197,6 +200,7 @@
 	desc = "A rock of crack cocaine. Ready to be smoked."
 	icon_state = "crack"
 	value = 4
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("crack", 5)
@@ -279,6 +283,7 @@ quinine
 	name = "Pervitine pill"
 	desc = "Pill with powerfull stimulant. Don't eat two of these, one will be enough for you."
 	icon_state = "pill16"
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("methamphetamine", REAGENTS_OVERDOSE*0.45) // slightly less than an OD
@@ -287,6 +292,7 @@ quinine
 	name = "ketamine pill"
 	desc = "You are not sure you should swallow this.. Ah why not."
 	icon_state = "pill16"
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("ketamine", REAGENTS_OVERDOSE*0.45) // slightly less than an OD
