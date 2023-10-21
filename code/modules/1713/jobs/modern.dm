@@ -495,7 +495,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/m24, slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/m24(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/m24(H), slot_belt)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

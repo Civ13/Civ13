@@ -15,6 +15,12 @@
 
 #define CHECK_TICK if (world.tick_usage > 80) sleep(world.tick_lag)
 
+#define TICK *world.tick_lag
+#define TICKS *world.tick_lag
+
+#define DS2TICKS(DS) (DS/world.tick_lag)	// Convert deciseconds to ticks
+#define TICKS2DS(T) ((T) TICKS) 				// Convert ticks to deciseconds
+
 /proc/get_game_time()
 	var/global/time_offset = 0
 	var/global/last_time = 0
@@ -31,11 +37,11 @@
 
 	return wtime + (time_offset + wusage) * world.tick_lag
 
-var/roundstart_hour = FALSE
+var/roundstart_hour = 0
 var/station_date = ""
-var/next_station_date_change = TRUE DAY
+var/next_station_date_change = 1 DAY
 
-#define roundduration2text_in_ticks (round_start_time ? world.time - round_start_time : FALSE)
+#define roundduration2text_in_ticks (round_start_time ? world.time - round_start_time : 0)
 #define station_time_in_ticks (roundstart_hour HOURS + roundduration2text_in_ticks)
 
 /proc/stationtime2text()
@@ -68,14 +74,14 @@ proc/isDay(var/month, var/day)
 		//else
 			//return TRUE
 
-var/next_duration_update = FALSE
-var/last_roundduration2text = FALSE
-var/last_roundduration2text_days = FALSE
-var/round_start_time = FALSE
+var/next_duration_update = 0
+var/last_roundduration2text = 0
+var/last_roundduration2text_days = 0
+var/round_start_time = 0
 
 /hook/roundstart/proc/start_timer()
 	round_start_time = world.time
-	return TRUE
+	return 1
 
 /proc/roundduration2text()
 	if (!round_start_time)

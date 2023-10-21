@@ -195,6 +195,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	pixel_y = 6
 	var/vol = 500
 	value = 100
+	is_contraband = TRUE
 	New()
 		..()
 		reagents.add_reagent("cocaine", 500)
@@ -254,6 +255,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	icon_state = "brick_stack2"
 	pixel_y = 6
 	value = 200
+	is_contraband = TRUE
 
 /obj/item/weapon/reagent_containers/cocaineblocks/three
 	name = "blocks of cocaine"

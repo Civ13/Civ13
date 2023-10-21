@@ -225,6 +225,7 @@
 	default_type = "hemp"
 	value = 2
 	flammable = TRUE
+	is_contraband = TRUE
 
 /obj/item/stack/material/flax
 	name = "Flax"

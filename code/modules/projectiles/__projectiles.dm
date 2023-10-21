@@ -123,6 +123,10 @@
 	icon_state = "arrow_vial"
 	volume = 15
 
+/obj/item/projectile/arrow/arrow/vial/New()
+	..()
+	create_reagents(volume)
+
 /obj/item/projectile/arrow/arrow/vial/poisonous
 	New()
 		..()
@@ -709,55 +713,41 @@
 // Autocannon
 
 /obj/item/projectile/bullet/autocannon/frag
-	damage = DAMAGE_LOW
+	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = 0
 	heavy_armor_penetration = 0
 
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment/short_range
-	var/num_fragments = 8  //total number of fragments produced by the grenade
+	var/num_fragments = 12  //total number of fragments produced by the grenade
 	var/fragment_damage = 20
-	var/spread_range = 2
+	var/spread_range = 7
 	var/incendiary = FALSE
 
 /obj/item/projectile/bullet/autocannon/frag/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	
 	var/turf/T = get_turf(A)
-	if (!(istype(A, /obj/structure/vehicleparts/frame)))
-		explosion(T, 0, 0, 1, 1)
+	explosion(T, 0, 0, 1, 1)
 	if (incendiary)
 		ignite_turf(T,8,40)
-	
-	var/list/target_turfs = getcircle(T, spread_range)
-	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
 
-	for (var/turf/TT in target_turfs)
-		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-		P.damage = fragment_damage
-		P.pellets = fragments_per_projectile
-		P.shot_from = name
-		P.launch_fragment(TT)
-		P.firer_loc = get_turf(src)
-
-		// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
-		for (var/mob/living/L in T)
-			P.attack_mob(L, 0, 0)
+	fragmentate(T, num_fragments, spread_range, fragment_type)
 
 /obj/item/projectile/bullet/autocannon/a30mm_ap
-	damage = DAMAGE_VERY_HIGH + 12
-	penetrating = 20
-	armor_penetration = 40
-	heavy_armor_penetration = 20
+	damage = DAMAGE_OH_GOD + 12
+	penetrating = 30
+	armor_penetration = 30
+	heavy_armor_penetration = 30
 
 /obj/item/projectile/bullet/autocannon/frag/a30mm_he
 	damage = DAMAGE_MEDIUM + 5
 
 /obj/item/projectile/bullet/autocannon/a35mm_fap
-	damage = DAMAGE_VERY_HIGH + 4
-	penetrating = 25
-	armor_penetration = 40
-	heavy_armor_penetration = 25
+	damage = DAMAGE_OH_GOD + 32
+	penetrating = 50
+	armor_penetration = 50
+	heavy_armor_penetration = 50
 
 /obj/item/projectile/bullet/autocannon/frag/a35mm_hei
 	damage = DAMAGE_MEDIUM

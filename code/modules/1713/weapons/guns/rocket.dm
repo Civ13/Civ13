@@ -758,7 +758,7 @@
 				L.Weaken(3)
 				if (L.HUDtech.Find("flash"))
 					flick("e_flash", L.HUDtech["flash"])
-			world << SPAN_DANGER("A nuclear explosion has happened!")
+			world << SPAN_DANGER("<big>A nuclear explosion has happened!</big>")
 			qdel(src)
 		else
 			..()

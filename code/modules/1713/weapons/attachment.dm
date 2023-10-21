@@ -90,6 +90,7 @@ Current Defines (_defines/attachment.dm)
 	for (var/obj/item/weapon/attachment/A in attachments)
 		A.removed(user, src)
 	for (var/obj/item/weapon/gun/launcher/grenade/underslung/G in attachments)
+		src.verbs -= /obj/item/weapon/gun/projectile/proc/set_gp
 		G.removed(user, src)
 
 // Use this under /New() of weapons if they spawn with attachments
@@ -157,6 +158,7 @@ Current Defines (_defines/attachment.dm)
 	if (istype(I, /obj/item/weapon/gun/launcher/grenade/underslung))
 		var/obj/item/weapon/gun/launcher/grenade/underslung/G = I
 		if (attachment_slots & ATTACH_UNDER)
+			src.verbs += /obj/item/weapon/gun/projectile/proc/set_gp
 			G.attached(user, src, FALSE)
 
 

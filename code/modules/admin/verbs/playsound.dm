@@ -41,7 +41,7 @@ var/list/sounds_cache = list()
 	sounds += "--CANCEL--"
 	sounds += sounds_cache
 
-	var/melody = input("Select a sound from the server to play", "Server sound list", "--CANCEL--") in sounds
+	var/melody = input(src, "Select a sound from the server to play", "Server sound list", "--CANCEL--") in sounds
 
 	if (melody == "--CANCEL--")	return
 
