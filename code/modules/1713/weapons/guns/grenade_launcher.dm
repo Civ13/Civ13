@@ -199,6 +199,7 @@
 	release_force = 2
 	throw_distance = 5
 	equiptimer = 30
+	slowdown = 0.8
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
 	var/cover_opened = FALSE
 	whitelisted_grenades = list(
