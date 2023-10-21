@@ -389,26 +389,49 @@
 		var/obj/item/stack/ammopart/stoneball/ST = W
 		if (!bullet && gunpowder)
 			user << "<span class='notice'>You begin loading \the [src] with \the [W]...</span>"
-			if (do_after(user, 100, src, can_move = TRUE))
-				if (bullet == FALSE)
-					user << "<span class='notice'>You load \the [src].</span>"
-					bullet = TRUE
-					var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
-					loaded += SBL
-					if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
-						icon_state = "firelance1"
-					if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
-						icon_state = "matchlock_cocked"
-					if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
-						icon_state = "tanegashima_cocked"
-						lighted = TRUE
-					if (ST.amount == 1)
-						qdel(W)
-					else
-						ST.amount -= 1
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				if (do_after(user, (100 / H.getStatCoeff(stat)), src, can_move = TRUE))
+					if (bullet == FALSE)
+						user << "<span class='notice'>You load \the [src].</span>"
+						bullet = TRUE
+						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
+						loaded += SBL
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
+							icon_state = "firelance1"
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+							icon_state = "matchlock_cocked"
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
+							icon_state = "tanegashima_cocked"
+							lighted = TRUE
+						if (ST.amount == 1)
+							qdel(W)
+						else
+							ST.amount -= 1
+						return
+				else
 					return
 			else
-				return
+				if (do_after(user, 100, src, can_move = TRUE))
+					if (bullet == FALSE)
+						user << "<span class='notice'>You load \the [src].</span>"
+						bullet = TRUE
+						var/obj/item/ammo_casing/stoneball/SBL = new/obj/item/ammo_casing/stoneball
+						loaded += SBL
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
+							icon_state = "firelance1"
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+							icon_state = "matchlock_cocked"
+						if (istype(src, /obj/item/weapon/gun/projectile/ancient/tanegashima))
+							icon_state = "tanegashima_cocked"
+							lighted = TRUE
+						if (ST.amount == 1)
+							qdel(W)
+						else
+							ST.amount -= 1
+						return
+				else
+					return
 		else if (bullet)
 			user << "<span class='notice'>There is already a projectile inside.</span>"
 			return
@@ -423,16 +446,29 @@
 			return
 		else
 			user << "<span class='notice'>You begin packing \the [src] with gunpowder...</span>"
-			if (do_after(user, 100, src, can_move = TRUE))
-				if (gunpowder == FALSE)
-					if (W.reagents.has_reagent("gunpowder",1))
-						user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
-						W.reagents.remove_reagent("gunpowder",1)
-						gunpowder = TRUE
-						return
-					else
-						user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
-						return
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				if (do_after(user, (100 / H.getStatCoeff(stat)), src, can_move = TRUE))
+					if (gunpowder == FALSE)
+						if (W.reagents.has_reagent("gunpowder",1))
+							user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
+							W.reagents.remove_reagent("gunpowder",1)
+							gunpowder = TRUE
+							return
+						else
+							user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
+							return
+			else
+				if (do_after(user, 100, src, can_move = TRUE))
+					if (gunpowder == FALSE)
+						if (W.reagents.has_reagent("gunpowder",1))
+							user << "<span class='notice'>You finish packing \the [src] with gunpowder.</span>"
+							W.reagents.remove_reagent("gunpowder",1)
+							gunpowder = TRUE
+							return
+						else
+							user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill \the [src].</span>"
+							return
 	else
 		..()
 

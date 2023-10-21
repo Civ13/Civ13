@@ -216,7 +216,7 @@
 ////////////////////////////Manual Machine guns/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/manual
 	var/cover_open = FALSE
-	var/cover_toggle_time = 1.5 SECONDS
+	var/cover_toggle_time = 5
 	var/cover_open_sound = 'sound/weapons/guns/interact/lmg_open.ogg'
 	var/cover_close_sound = 'sound/weapons/guns/interact/lmg_close.ogg'
 

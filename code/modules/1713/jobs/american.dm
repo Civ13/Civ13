@@ -313,6 +313,60 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/flamethrower_ww2
+	title = "Flamethrower Unit"
+	rank_abbreviation = "Pfc."
+
+	spawn_location = "JoinLateRN"
+
+	is_ww2 = TRUE
+	uses_squads = TRUE
+	is_ardennes = TRUE
+
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/american/flamethrower_ww2/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots/leggings(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/us_ww2_boots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/firefighter(H), slot_gloves)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/usm1(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/american(H), slot_wear_mask)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/flamethrower(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/flamethrower/filled(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/us_ww2/webbing = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
+	uniform.attackby(webbing, H)
+	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
+	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
+	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
+	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
+	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
+	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Axis tasked with spraying the flaming fires of hell upon your enemies. Follow your commander's orders!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
 /datum/job/american/machine_gunner_ww2
 	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."

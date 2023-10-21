@@ -1038,7 +1038,7 @@
 "zN" = (/obj/structure/lamp/lamp_small/alwayson{dir = 1},/obj/structure/shower{dir = 4; icon_state = "shower"},/turf/floor/plating/steel,/area/caribbean/desert/buildings{name = "Buildings"})
 "zU" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/desert/buildings{name = "Buildings"})
 "zY" = (/obj/structure/window/barrier/railing/stone{dir = 8},/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 1},/turf/floor/beach/water,/area/caribbean/desert)
-"Ab" = (/obj/structure/engine/internal/diesel/premade/omw22_2{name = "V12 diesel engine"},/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
+"Ab" = (/obj/structure/engine/internal/diesel/premade/v12,/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "Ae" = (/obj/structure/vehicleparts/frame/mtlb/rb{doorcode = 4975},/obj/structure/vehicleparts/movement/tracks/mtlb/left_back,/turf/floor/dirt,/area/caribbean/russian)
 "Af" = (/obj/covers/ornatemarblefloor/black,/obj/structure/potted_plant,/turf/floor/plating/marble/decorative_tile,/area/caribbean/no_mans_land/capturable/three{name = "Palace"})
 "Ag" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})

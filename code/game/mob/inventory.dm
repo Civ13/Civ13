@@ -206,7 +206,8 @@ var/list/slot_equipment_priority = list( \
 
 		if (W.scoped_invisible)
 			if (W.invisibility > 0)
-				W.invisibility = FALSE
+				W.invisibility = 0
+				W.scoped_invisible = FALSE
 
 		if (istype(W, /obj/item/clothing/glasses) && ishuman(src))
 			var/obj/item/clothing/glasses/G = W
@@ -348,6 +349,10 @@ var/list/slot_equipment_priority = list( \
 	u_equip(O)
 	if (client)
 		client.screen -= O
+	if (O.scoped_invisible)
+		if (O.invisibility > 0)
+			O.invisibility = 0
+			O.scoped_invisible = FALSE
 	O.layer = initial(O.layer)
 	O.plane = GAME_PLANE
 	O.screen_loc = null
