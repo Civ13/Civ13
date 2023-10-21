@@ -108,8 +108,9 @@
 					for (var/obj/effect/fire/F in T)
 						qdel(F)
 					for (var/mob/living/human/H in T)
-						if (H.fire_stacks > 0)
+						if (H.on_fire)
 							H.fire_stacks = 0
+							H.ExtinguishMob()
 
 			if(T == target.loc)
 				if(stop_at_turf)
