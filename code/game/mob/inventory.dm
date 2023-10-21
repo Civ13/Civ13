@@ -349,15 +349,15 @@ var/list/slot_equipment_priority = list( \
 	u_equip(O)
 	if (client)
 		client.screen -= O
-	if (O.scoped_invisible)
-		if (O.invisibility > 0)
-			O.invisibility = 0
-			O.scoped_invisible = FALSE
 	O.layer = initial(O.layer)
 	O.plane = GAME_PLANE
 	O.screen_loc = null
 	if (istype(O, /obj/item))
 		var/obj/item/I = O
+		if (I.scoped_invisible)
+			if (I.invisibility > 0)
+				I.invisibility = 0
+			O.scoped_invisible = FALSE
 		I.forceMove(loc, MOVED_DROP)
 		I.dropped(src)
 	return TRUE
