@@ -41,7 +41,7 @@ var/roundstart_hour = 0
 var/station_date = ""
 var/next_station_date_change = 1 DAY
 
-#define roundduration2text_in_ticks (round_start_time ? world.time - round_start_time : FALSE)
+#define roundduration2text_in_ticks (round_start_time ? world.time - round_start_time : 0)
 #define station_time_in_ticks (roundstart_hour HOURS + roundduration2text_in_ticks)
 
 /proc/stationtime2text()
