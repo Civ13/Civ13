@@ -347,7 +347,7 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/us_ww2/web = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
+	var/obj/item/clothing/accessory/storage/webbing/us_ww2/webbing = new /obj/item/clothing/accessory/storage/webbing/us_ww2(null)
 	uniform.attackby(webbing, H)
 	webbing.attackby(new/obj/item/stack/medical/bruise_pack/bint, H)
 	webbing.attackby(new/obj/item/ammo_magazine/m1911, H)
