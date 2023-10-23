@@ -921,11 +921,8 @@
 	new /obj/item/ammo_magazine/ak47(src)
 	new /obj/item/ammo_magazine/ak47(src)
 
-/obj/structure/props/smuggler // To be converted to a proper NPC
-	name = "Omar the Smuggler"
-	desc = "You've got money? I've got goods."
-	icon = 'icons/mob/npcs.dmi'
-	icon_state = "afghdrug"
+/obj/structure/npc_vendor
+	name = "NPC (Do not use!)"
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
@@ -933,7 +930,19 @@
 	opacity = FALSE
 	anchored = TRUE
 
-/obj/structure/props/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
+/obj/item/weapon/plastique/afterattack(atom/movable/target, mob/user, flag)
+	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+		if (istype(target, /obj/structure/npc_vendor) || istype(target, /obj/structure/closet/safe))
+			return
+	..()
+
+/obj/structure/npc_vendor/smuggler // To be converted to a proper NPC
+	name = "Omar the Smuggler"
+	desc = "You've got money? I've got goods."
+	icon = 'icons/mob/npcs.dmi'
+	icon_state = "afghdrug"
+
+/obj/structure/npc_vendor/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	var/smuggler_cooldown = 0
 	if (user.civilization == "Sheriff Office")
 		user << "Good day, officer."
@@ -1012,17 +1021,11 @@
 
 // Biker NPC (Drugs and weapons)
 
-/obj/structure/props/biker // To be converted to a proper NPC
+/obj/structure/npc_vendor/biker // To be converted to a proper NPC
 	name = "Bruce the Biker"
 	desc = "You've got drugs? I've got money."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "bruce"
-	flammable = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-	density = TRUE
-	opacity = FALSE
-	anchored = TRUE
 	var/biker_cooldown = 0
 	var/buying_price1 = 50
 	var/buying_price2 = 70
@@ -1032,7 +1035,7 @@
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,)
 
-/obj/structure/props/biker/attack_hand(mob/living/human/user as mob)
+/obj/structure/npc_vendor/biker/attack_hand(mob/living/human/user as mob)
 	var/optlist = list("Cancel","Sell drugs","Buy weapons")
 	if (reputation[user.civilization] < 0)
 		user << "\icon[src] I'm not dealing with you punks anymore, get the fuck out of here."
@@ -1155,22 +1158,16 @@
 						user.put_in_hands(P)
 						return
 
-/obj/structure/props/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
+/obj/structure/npc_vendor/biker/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	return
 
 // Cartel NPC (Cocaine)
 
-/obj/structure/props/cartel
+/obj/structure/npc_vendor/cartel
 	name = "Diego 'El Diablo' Morales"
 	desc = "Plata or plomo? I've got the product."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "cartel"
-	flammable = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-	density = TRUE
-	opacity = FALSE
-	anchored = TRUE
 	var/cartel_cooldown = 0
 	var/list/reputation = list(
 		"Rednikov Industries" = 0,
@@ -1179,7 +1176,7 @@
 		"Goldstein Solutions" = 0,)
 	var/list/buy_list = list("Cancel","1 gram","10 grams","a block")
 
-/obj/structure/props/cartel/attackby(obj/item/W as obj, mob/living/human/user as mob)
+/obj/structure/npc_vendor/cartel/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
 		user << "\icon[src] Don't waste my time, find another hole to climb into, sapo."
 		return
@@ -1241,17 +1238,11 @@
 
 // Mr. White (Chemicals and explosives)
 
-/obj/structure/props/walter
+/obj/structure/npc_vendor/walter
 	name = "Mr. White"
 	desc = "A respectable chemistry teacher."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "waltuh"
-	flammable = FALSE
-	not_movable = TRUE
-	not_disassemblable = TRUE
-	density = TRUE
-	opacity = FALSE
-	anchored = TRUE
 	var/walter_cooldown = 0
 	var/list/reputation = list(
 		"Rednikov Industries" = 0,
@@ -1261,7 +1252,7 @@
 	var/list/option_list = list("Cancel","Buy chemicals","Buy explosives")
 	var/list/chemical_list = list("Cancel","Diethylamine","Acetone","Potassium Chloride")
 
-/obj/structure/props/walter/attack_hand(mob/living/human/user as mob)
+/obj/structure/npc_vendor/walter/attack_hand(mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
 		user << "\icon[src] Don't waste my time."
 		return
@@ -1283,7 +1274,7 @@
 			return
 		if ("Buy chemicals")
 			var/chemical_price = 100
-			if (M.value*M.amount < chemical_price*4)
+			if (!M || M.value*M.amount < chemical_price*4)
 				user << "\icon[src] You need [chemical_price] dollars in one of your hands."
 				return
 			var/choice2 = WWinput(user, "What kind of chemicals?", "Mr. White", "Cancel", chemical_list)
@@ -1297,16 +1288,16 @@
 				if ("Potassium Chloride")
 					new /obj/item/weapon/reagent_containers/glass/bottle/potassium_chloride(user.loc)
 			M.amount -= chemical_price/5
-				if (M.amount <= 0)
-					qdel(M)
+			if (M.amount <= 0)
+				qdel(M)
 			return
 		if ("Buy explosives")
 			var/c4_price = 900
-			if (M.value*M.amount < c4_price*4)
+			if (!M || (M && M.value*M.amount < c4_price*4))
 				user << "\icon[src] You need [c4_price] dollars in one of your hands."
 				return
 			M.amount -= c4_price/5
-				if (M.amount <= 0)
-					qdel(M)
+			if (M.amount <= 0)
+				qdel(M)
 			new /obj/item/weapon/plastique/c4(user.loc)
 			return
