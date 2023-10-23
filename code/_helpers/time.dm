@@ -121,6 +121,7 @@ var/round_start_time = 0
 		last_roundduration2text_days = "[hours] hour[hours >= 2 ? "s" : ""], [mins] min[mins >= 2 ? "s" : ""]"
 	else
 		last_roundduration2text_days = "[mins] min[mins >= 2 ? "s" : ""]"
+	next_duration_update = world.time + 1 MINUTES
 	return last_roundduration2text_days
 
 //Can be useful for things dependent on process timing
