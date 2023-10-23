@@ -134,6 +134,7 @@
 			burningproc()
 			runonce = TRUE
 	set_light(3)
+	light_color = "#FF9900"
 	spawn(timer)
 		set_light(0)
 		qdel(src)

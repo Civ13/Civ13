@@ -1424,7 +1424,7 @@
 //AT GUN
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (map.ID == MAP_STALINGRAD || map.ID == MAP_BIGSIEGEMOSCOW || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_KURSK || map.ID == MAP_BARBAROSSA || map.ID == MAP_VITEBSK)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/antitank/stg24_bundle(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40(H), slot_r_store)
@@ -1901,7 +1901,7 @@
 	is_ardennes = TRUE
 
 	min_positions = 1
-	max_positions = 1
+	max_positions = 3
 
 /datum/job/german/ss_flamethrower/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

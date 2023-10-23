@@ -718,7 +718,7 @@
 	armor_penetration = 0
 	heavy_armor_penetration = 0
 
-	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment/short_range
+	var/fragment_type = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
 	var/num_fragments = 12  //total number of fragments produced by the grenade
 	var/fragment_damage = 20
 	var/spread_range = 7

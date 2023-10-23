@@ -744,8 +744,8 @@
 	is_afro = FALSE
 	whitelisted = TRUE
 
-	min_positions = 2
-	max_positions = 5
+	min_positions = 1
+	max_positions = 3
 
 /datum/job/american/american_grenadier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

@@ -91,7 +91,7 @@
 
 	var/movingto = get_step(get_turf(src), dir)
 	if (map && movingto && map.check_caribbean_block(user, movingto))
-		user << "<span class = 'warning'>You cannot pass the invisible wall until the Grace Period has ended.</span>"
+		user << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"
 		return FALSE
 
 	if (!climbable || !can_touch(user) || (!post_climb_check && (user in climbers)))

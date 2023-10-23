@@ -28,9 +28,9 @@
 	songs = list(
 		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 
-	valid_weather_types = list(WEATHER_WET)
+	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 
-/obj/map_metadata/verdun/New()
+/obj/map_metadata/verdun/New(var/turf/T)
 	..()
 	spawn(1)
 		faction2 = FRENCH
@@ -79,6 +79,20 @@
 			french_toggled = FALSE
 	spawn(30)
 		world << "<font size=3>This battle will feature <b>[faction1]</b> and <b>[faction2]</b> troops.</font>"
+
+	spawn(101)
+		if (season == "SPRING")
+			season = "FALL"
+		var/area/A = get_area(T)
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+			A.weather = 3
+			A.icon_state = "monsoon"
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			A.weather = 3
+			A.icon_state = "monsoon"
+		if (istype(A, /area/caribbean/nomads/forest))
+			A.weather = 3
+			A.icon_state = "monsoon"
 /obj/map_metadata/verdun/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww1 == TRUE)

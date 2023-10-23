@@ -802,7 +802,7 @@
 	is_karelia = TRUE
 
 	min_positions = 1
-	max_positions = 1
+	max_positions = 3
 
 /datum/job/russian/flamethrower_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

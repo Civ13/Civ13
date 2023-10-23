@@ -609,7 +609,7 @@
 "wU" = (/obj/item/weapon/gun/projectile/submachinegun/m16,/turf/floor/plating/road/yellowline{dir = 8; icon_state = "road_yellowline"},/area/caribbean)
 "wV" = (/obj/covers/fancywood,/obj/structure/filingcabinet/filingcabinet,/obj/structure/sign/flag/usa{pixel_y = 32},/turf/floor/dirt,/area/caribbean/roofed)
 "wW" = (/obj/structure/window/barrier/sandbag{dir = 4},/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/grass,/area/caribbean)
-"wX" = (/obj/structure/engine/internal/diesel/premade/omw22_2{name = "V12 diesel engine"},/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean)
+"wX" = (/obj/structure/engine/internal/diesel/premade/v12,/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t72/rb,/turf/floor/plating/road,/area/caribbean)
 "wZ" = (/obj/structure/sign/traffic/zebracrossing{dir = 4},/turf/floor/plating/road,/area/caribbean)
 "xc" = (/obj/covers/marbletile,/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/obj/structure/lamp/lamp_big/alwayson{dir = 4},/turf/floor/dirt,/area/caribbean/roofed)
 "xd" = (/obj/covers/wood,/obj/structure/railing{dir = 4; icon_state = "railing0"},/turf/floor/dirt,/area/caribbean/roofed)
