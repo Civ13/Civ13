@@ -324,12 +324,12 @@
 	var/full_name = "Isis"
 	return full_name
 
-/datum/language/proc/get_random_mongolian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_mongolian_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
-			return capitalize(pick(names_mongolian_female)) + " " + capitalize(pick(last_names_egyptian))
+			return capitalize(pick(names_mongolian_female))
 		else
-			return capitalize(pick(names_mongolian_male)) + " " + capitalize(pick(last_names_egyptian))
+			return capitalize(pick(names_mongolian_male))
 
 	var/full_name = "Chinggis"
 	return full_name
