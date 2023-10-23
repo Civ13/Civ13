@@ -782,13 +782,13 @@
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
 					if ("desert")
-						add_language("Arabic",TRUE)
+						add_language("Farsi",TRUE)
 						remove_language("English")
-						for (var/datum/language/arab/A in languages)
+						for (var/datum/language/farsi/A in languages)
 							default_language = A
 						name = species.get_random_arab_name(gender)
 						real_name = name
-						add_note("Known Languages", "Arabic")
+						add_note("Known Languages", "Farsi")
 						return
 					if ("temperate", "semiarid")
 						add_language("Chinese",TRUE)
@@ -800,13 +800,13 @@
 						add_note("Known Languages", "Chinese")
 						return
 					if ("tundra")
-						add_language("Russian",TRUE)
+						add_language("Mongolian",TRUE)
 						remove_language("English")
-						for (var/datum/language/russian/A in languages)
+						for (var/datum/language/mongolian/A in languages)
 							default_language = A
-						name = species.get_random_russian_name(gender)
+						name = species.get_random_mongolian_name(gender)
 						real_name = name
-						add_note("Known Languages", "Russian")
+						add_note("Known Languages", "Mongolian")
 						return
 /////////////////////////CIVS////////////////////////
 
