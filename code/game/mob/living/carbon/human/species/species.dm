@@ -598,8 +598,10 @@
 
 /datum/species/proc/get_random_mongolian_name(var/gender)
 	if (!name_language)
-
-		return capitalize(pick(names_mongolian_male))
+		if (gender == FEMALE)
+			return capitalize(pick(names_mongolian_female))
+		else
+			return capitalize(pick(names_mongolian_male))
 
 /datum/species/proc/create_organs(var/mob/living/human/H) //Handles creation of mob organs.
 
