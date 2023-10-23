@@ -324,7 +324,7 @@
 	var/full_name = "Isis"
 	return full_name
 
-/datum/language/proc/get_random_mongolian_name(name_count=1, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_mongolian_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(names_mongolian_female))
