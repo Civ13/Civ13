@@ -169,6 +169,28 @@
 		reagents.add_reagent("diethylamine", 60)
 		update_icon()
 
+/obj/item/weapon/reagent_containers/glass/bottle/acetone
+	name = "acetone bottle"
+	desc = "A small bottle."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "bottle-2"
+
+	New()
+		..()
+		reagents.add_reagent("acetone", 60)
+		update_icon()
+
+/obj/item/weapon/reagent_containers/glass/bottle/potassium_chloride
+	name = "potassium chloride bottle"
+	desc = "A small bottle."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "bottle-4"
+
+	New()
+		..()
+		reagents.add_reagent("potassium_chloride", 60)
+		update_icon()
+
 /obj/item/weapon/reagent_containers/glass/bottle/pacid
 	name = "Polytrinic Acid Bottle"
 	desc = "A small bottle. Contains a small amount of Polytrinic Acid"
