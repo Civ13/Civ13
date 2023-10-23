@@ -244,7 +244,7 @@
 					MAP_GROZNY = 10,
 					MAP_BANK_ROBBERY = 0,
 					MAP_DRUG_BUST = 0,
-					MAP_ARAB_TOWN = 0,
+//					MAP_ARAB_TOWN = 0, Disabled due to recent events
 					MAP_ARAB_TOWN_2 = 0,
 					MAP_HOSTAGES = 0,
 					MAP_SYRIA = 6,
