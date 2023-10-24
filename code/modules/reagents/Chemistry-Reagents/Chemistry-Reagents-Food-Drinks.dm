@@ -217,7 +217,7 @@
 	id = "apricotjuice"
 	description = "An orange, transparant liquid, tasting of apricots."
 	taste_description = "sweetness"
-	nutriment_factor = 25
+	nutrition = 25
 	reagent_state = LIQUID
 	color = "#FFFFFF"
 
