@@ -41,7 +41,7 @@
 	var/maxpoints = 4000
 	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
-
+	var/list/heat = list("Rednikov Industries" = 0, "Giovanni Blu Stocks" = 0, "Kogama Kraftsmen" = 0, "Goldstein Solutions" = 0)
 /obj/map_metadata/art_of_the_deal/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
@@ -94,11 +94,7 @@
 		map.globalmarketplace += list("gio1" = list("Giovanni Blu Stocks",null,1,1000+scores["Giovanni Blu Stocks"],"bank","gio1",1))
 		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000+scores["Kogama Krafsmen"],"bank","green1",1))
 		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000+scores["Goldstein Solutions"],"bank","yellow1",1))
-	var/list/heat = list(
-		"Rednikov Industries" = 0,
-		"Giovanni Blu Stocks" = 0,
-		"Kogama Kraftsmen" = 0,
-		"Goldstein Solutions" = 0,)
+
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
@@ -1218,8 +1214,7 @@
 				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
 				user.put_in_hands(briefcase)
 				reputation[user.civilization] += 2
-				if (map)
-					map.heat[user.civilization] += 2
+				map.heat[user.civilization] += 2
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "a block")
@@ -1229,8 +1224,7 @@
 					qdel(M)
 				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
 				user.put_in_hands(block)
-				if (map)
-					map.heat[user.civilization] += 5
+				map.heat[user.civilization] += 5
 			else
 				user << "\icon[src] Not enough money, maricon."
 		return
