@@ -77,15 +77,15 @@ proc/is_complete_print(var/print)
 			return
 
 	if(istype(I, /obj/item/weapon/evidencebag))
-		user << "<span class='notice'>You find putting an evidence bag in another evidence bag to be slightly absurd.</span>"
+		user << SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd.")
 		return
 
 	if(I.w_class > 3)
-		user << "<span class='notice'>[I] won't fit in [src].</span>"
+		user << SPAN_NOTICE("[I] won't fit in [src].")
 		return
 
 	if(contents.len)
-		user << "<span class='notice'>[src] already has something inside it.</span>"
+		user << SPAN_NOTICE("[src] already has something inside it.")
 		return
 
 	user.visible_message("[user] puts [I] into [src]", "You put [I] inside [src].",\
@@ -184,9 +184,9 @@ proc/is_complete_print(var/print)
 
 //Fibers proc
 
-atom/var/list/suit_fibers = list()
+/atom/var/list/suit_fibers = list()
 
-atom/proc/add_fibers(mob/living/human/M)
+/atom/proc/add_fibers(mob/living/human/M)
 	if(M.gloves && istype(M.gloves,/obj/item/clothing/gloves))
 		var/obj/item/clothing/gloves/G = M.gloves
 		if(G.transfer_blood) //bloodied gloves transfer blood to touched objects
@@ -246,7 +246,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		return 0
 	evidence |= supplied.evidence
 	name = "[initial(name)] (combined)"
-	user << "<span class='notice'>You transfer the contents of \the [supplied] into \the [src].</span>"
+	user << SPAN_NOTICE("You transfer the contents of \the [supplied] into \the [src].")
 	return 1
 
 /obj/item/weapon/forensics/sample/print/merge_evidence(var/obj/item/weapon/forensics/sample/supplied, var/mob/user)
@@ -258,7 +258,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		else
 			evidence[print] = supplied.evidence[print]
 	name = "[initial(name)] (combined)"
-	user << "<span class='notice'>You overlay \the [src] and \the [supplied], combining the print records.</span>"
+	user << SPAN_NOTICE("You overlay \the [src] and \the [supplied], combining the print records.")
 	return 1
 
 /obj/item/weapon/forensics/sample/attackby(var/obj/O, var/mob/user)
@@ -287,7 +287,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		return
 	var/mob/living/human/H = user
 	if (H.gloves)
-		user << "<span class='warning'>Take \the [H.gloves] off first.</span>"
+		user << SPAN_WARNING("Take \the [H.gloves] off first.")
 		return
 
 	user << SPAN_NOTICE("You firmly press your fingertips onto the card.")
@@ -358,7 +358,7 @@ atom/proc/add_fibers(mob/living/human/M)
 
 /obj/item/weapon/forensics/sample_kit/proc/take_sample(var/mob/user, var/atom/supplied)
 	var/obj/item/weapon/forensics/sample/S = new evidence_path(get_turf(user), supplied)
-	user << "<span class='notice'>You transfer [S.evidence.len] [S.evidence.len > 1 ? "[evidence_type]s" : "[evidence_type]"] to \the [S].</span>"
+	user << SPAN_NOTICE("You transfer [S.evidence.len] [S.evidence.len > 1 ? "[evidence_type]s" : "[evidence_type]"] to \the [S].")
 
 /obj/item/weapon/forensics/sample_kit/afterattack(var/atom/A, var/mob/user, var/proximity)
 	if(!proximity)
@@ -368,7 +368,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		take_sample(user,A)
 		return 1
 	else
-		user << "<span class='warning'>You are unable to locate any [evidence_type]s on \the [A].</span>"
+		user << SPAN_WARNING("You are unable to locate any [evidence_type]s on \the [A].")
 		return ..()
 
 /obj/item/weapon/forensics/sample_kit/powder
@@ -412,7 +412,7 @@ atom/proc/add_fibers(mob/living/human/M)
 	var/sample_type
 
 	if (H.wear_mask)
-		HU << SPAN_WARNING("\The [H] is wearing a mask.</span>")
+		HU << SPAN_WARNING("\The [H] is wearing a mask.")
 		return
 
 	if (!H.dna || !H.dna.unique_enzymes)
@@ -479,7 +479,7 @@ atom/proc/add_fibers(mob/living/human/M)
 
 	var/choice
 	if(!choices.len)
-		user << "<span class='warning'>There is no evidence on \the [A].</span>"
+		user << SPAN_WARNING("There is no evidence on \the [A].")
 		return
 	else if(choices.len == 1)
 		choice = choices[1]
@@ -499,7 +499,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		if ("Gunshot Residue")
 			var/obj/item/clothing/B = A
 			if(!istype(B) || !B.gunshot_residue)
-				user << "<span class='warning'>There is no residue on \the [A].</span>"
+				user << SPAN_WARNING("There is no residue on \the [A].")
 				return
 			gsr = B.gunshot_residue
 			sample_type = "residue"
@@ -598,23 +598,23 @@ atom/proc/add_fibers(mob/living/human/M)
 
 /obj/item/weapon/forensics/slide/attackby(var/obj/item/W, var/mob/living/human/user)
 	if(has_swab || has_sample)
-		usr << "<span class='warning'>There is already a sample in the slide.</span>"
+		usr << SPAN_WARNING("There is already a sample in the slide.")
 		return
 	if(istype (W, /obj/item/weapon/forensics/swab))
 		has_swab = W
 	else if(istype(W, /obj/item/weapon/forensics/sample/fibers))
 		has_sample = W
 	else
-		usr << "<span class='warning'>You don't think this will fit.</span>"
+		usr << SPAN_WARNING("You don't think this will fit.")
 		return
-	usr << "<span class='notice'>You insert the sample in the slide.</span>"
+	usr << SPAN_NOTICE("You insert the sample in the slide.")
 	user.unEquip(W)
 	W.forceMove(src)
 	update_icon()
 
 /obj/item/weapon/forensics/slide/attack_self(var/mob/user)
 	if(has_swab || has_sample)
-		usr << "<span class='notice'>You remove the sample from the [src]."
+		usr << SPAN_NOTICE("You remove the sample from the [src].")
 		if(has_swab)
 			user.put_in_hands(has_swab)
 			has_swab = null
@@ -648,11 +648,11 @@ atom/proc/add_fibers(mob/living/human/M)
 /obj/machinery/microscope/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if(sample)
-		user << "<span class='warning'>There is already a slide in the microscope.</span>"
+		user << SPAN_WARNING("There is already a slide in the microscope.")
 		return
 
 	if(istype(W, /obj/item/weapon/forensics/slide) || istype(W, /obj/item/weapon/forensics/sample/print))
-		user << "<span class='notice'>You insert \the [W] into the microscope.</span>"
+		user << SPAN_NOTICE("You insert \the [W] into the microscope.")
 		user.unEquip(W)
 		W.forceMove(src)
 		sample = W
@@ -662,16 +662,16 @@ atom/proc/add_fibers(mob/living/human/M)
 /obj/machinery/microscope/attack_hand(mob/user)
 
 	if(!sample)
-		user << "<span class='warning'>The microscope has no sample to examine.</span>"
+		user << SPAN_WARNING("The microscope has no sample to examine.")
 		return
 
-	user << "<span class='notice'>The microscope whirrs as you examine \the [sample].</span>"
+	user << SPAN_NOTICE("The microscope whirrs as you examine \the [sample].")
 
 	if(!do_after(user, 25) || !sample)
-		user << "<span class='notice'>You stop examining \the [sample].</span>"
+		user << SPAN_NOTICE("You stop examining \the [sample].")
 		return
 
-	user << "<span class='notice'>Printing findings now...</span>"
+	user << SPAN_NOTICE("Printing findings now...")
 	var/obj/item/weapon/paper/report = new(get_turf(src))
 	report.stamped = list(/obj/item/weapon/stamp)
 	report.overlays = list("paper_stamped")
@@ -697,7 +697,7 @@ atom/proc/add_fibers(mob/living/human/M)
 			if(fibers.evidence)
 				report.info += "Miscroscopic analysis on provided sample has determined the presence of unique fiber strings.<br><br>"
 				for(var/fiber in fibers.evidence)
-					report.info += "<span class='notice'>Most likely match for fibers: [fiber]</span><br><br>"
+					report.info += SPAN_NOTICE("Most likely match for fibers: [fiber]<br><br>")
 			else
 				report.info += "No fibers found."
 		else
@@ -711,7 +711,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		if(card.evidence && card.evidence.len)
 			report.info += "Surface analysis has determined unique fingerprint strings:<br><br>"
 			for(var/prints in card.evidence)
-				report.info += "<span class='notice'>Fingerprint string: </span>"
+				report.info += SPAN_NOTICE("Fingerprint string: ")
 				if(!is_complete_print(prints))
 					report.info += "INCOMPLETE PRINT"
 				else
@@ -730,9 +730,9 @@ atom/proc/add_fibers(mob/living/human/M)
 	if(!istype(remover) || remover.incapacitated() || !Adjacent(remover))
 		return
 	if(!sample)
-		remover << "<span class='warning'>\The [src] does not have a sample in it.</span>"
+		remover << SPAN_WARNING("\The [src] does not have a sample in it.")
 		return
-	remover << "<span class='notice'>You remove \the [sample] from \the [src].</span>"
+	remover << SPAN_NOTICE("You remove \the [sample] from \the [src].")
 	sample.forceMove(get_turf(src))
 	remover.put_in_hands(sample)
 	sample = null
@@ -773,11 +773,11 @@ atom/proc/add_fibers(mob/living/human/M)
 /obj/machinery/dnaforensics/attackby(var/obj/item/W, mob/user as mob)
 
 	if(bloodsamp)
-		user << "<span class='warning'>There is already a sample in the machine.</span>"
+		user << SPAN_WARNING("There is already a sample in the machine.")
 		return
 
 	if(closed)
-		user << "<span class='warning'>Open the cover before inserting the sample.</span>"
+		user << SPAN_WARNING("Open the cover before inserting the sample.")
 		return
 
 	var/obj/item/weapon/forensics/swab/swab = W
@@ -785,13 +785,13 @@ atom/proc/add_fibers(mob/living/human/M)
 		user.unEquip(W)
 		src.bloodsamp = swab
 		swab.loc = src
-		user << "<span class='notice'>You insert \the [W] into \the [src].</span>"
+		user << SPAN_NOTICE("You insert \the [W] into \the [src].")
 	else
-		user << "<span class='warning'>\The [src] only accepts used swabs.</span>"
+		user << SPAN_WARNING("\The [src] only accepts used swabs.")
 		return
 
 /obj/machinery/dnaforensics/proc/complete_scan()
-	src.visible_message("<span class='notice'>\icon[src] makes an insistent chime.</span>", 2)
+	src.visible_message(SPAN_NOTICE("\icon[src] makes an insistent chime."), 2)
 	playsound(loc, 'sound/machines/computer/beep.ogg', 80, TRUE)
 	update_icon()
 	if(bloodsamp)
@@ -818,21 +818,21 @@ atom/proc/add_fibers(mob/living/human/M)
 /obj/machinery/dnaforensics/attack_hand(mob/user as mob)
 	if(scanning)
 		scanning = 0
-		usr << "<span class='notice'>You abort the scan.</span>"
+		usr << SPAN_NOTICE("You abort the scan.")
 		update_icon()
 	else
 		if(bloodsamp && bloodsamp.loc == src)
 			if(closed == 1)
 				scanning = 1
-				usr << "<span class='notice'>Scan initiated. Please wait.</span>"
+				usr << SPAN_NOTICE("Scan initiated. Please wait.")
 				update_icon()
 				spawn(900)
-					usr << "<span class='notice'>Scan finished. </span>"
+					usr << SPAN_NOTICE("Scan finished.")
 					complete_scan()
 			else
-				usr << "<span class='notice'>Please close sample lid before initiating scan.</span>"
+				usr << SPAN_NOTICE("Please close sample lid before initiating scan.")
 		else
-			usr << "<span class='warning'>Insert an item to scan.</span>"
+			usr << SPAN_WARNING("Insert an item to scan.")
 			scanning = 0
 
 /obj/machinery/dnaforensics/verb/toggle_lid()
@@ -844,7 +844,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		return
 
 	if(scanning)
-		usr << "<span class='warning'>You can't do that while [src] is scanning!</span>"
+		usr << SPAN_WARNING("You can't do that while [src] is scanning!")
 		return
 
 	closed = !closed
@@ -858,18 +858,18 @@ atom/proc/add_fibers(mob/living/human/M)
 	if(usr.stat || !isliving(usr))
 		return
 	if(scanning)
-		usr << "<span class='warning'>You can't do that while [src] is scanning!</span>"
+		usr << SPAN_WARNING("You can't do that while \the [src] is scanning!")
 		return
 	else
 		if (closed)
-			usr << "<span class='warning'>You can't do that while the lid is closed!</span>"
+			usr << SPAN_WARNING("You can't do that while the lid is closed!")
 			return
 		else
 			if(bloodsamp)
 				bloodsamp.forceMove(src.loc)
 				bloodsamp = null
 			else
-				usr << "<span class='warning'>There's no sample in the scanner!</span>"
+				usr << SPAN_WARNING("There's no sample in the scanner!")
 				return
 
 /obj/machinery/dnaforensics/update_icon()
