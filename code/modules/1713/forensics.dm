@@ -320,7 +320,7 @@ atom/proc/add_fibers(mob/living/human/M)
 			HU.visible_message(SPAN_DANGER("\The [HU] tries to take prints from \the [H], but they resist."))
 			return 1
 
-	if (HU.zone_sel.selecting == "r_hand" || HU.zone_sel.selecting == "l_hand")
+	if (HU.targeted_organ == "r_hand" || HU.targeted_organ == "l_hand")
 		var/has_hand
 		var/obj/item/organ/external/O = H.organs_by_name["r_hand"]
 		if (istype(O) && !O.is_stump())
@@ -468,7 +468,7 @@ atom/proc/add_fibers(mob/living/human/M)
 		return
 
 	if(is_used())
-		user << "<span class='warning'>This swab has already been used.</span>"
+		user << SPAN_WARNING("This swab has already been used.")
 		return
 
 	add_fingerprint(user)
