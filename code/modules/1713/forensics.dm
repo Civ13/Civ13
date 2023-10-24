@@ -320,26 +320,24 @@ atom/proc/add_fibers(mob/living/human/M)
 			HU.visible_message(SPAN_DANGER("\The [HU] tries to take prints from \the [H], but they resist."))
 			return 1
 
-	if (HU.targeted_organ == "r_hand" || HU.targeted_organ == "l_hand")
-		var/has_hand
-		var/obj/item/organ/external/O = H.organs_by_name["r_hand"]
-		if (istype(O) && !O.is_stump())
+	var/has_hand
+	var/obj/item/organ/external/O = H.organs_by_name["r_hand"]
+	if (istype(O) && !O.is_stump())
+		has_hand = 1
+	else
+		O = H.organs_by_name["l_hand"]
+		if(istype(O) && !O.is_stump())
 			has_hand = 1
-		else
-			O = H.organs_by_name["l_hand"]
-			if(istype(O) && !O.is_stump())
-				has_hand = 1
-		if (!has_hand)
-			HU << SPAN_WARNING("They don't have any hands.")
-			return 1
-		HU.visible_message("[HU] takes a copy of \the [H]'s fingerprints.")
-		var/fullprint = H.get_full_print()
-		evidence[fullprint] = fullprint
-		copy_evidence(src)
-		name = "[initial(name)] (\the [H])"
-		icon_state = "fingerprint1"
+	if (!has_hand)
+		HU << SPAN_WARNING("They don't have any hands.")
 		return 1
-	return 0
+	HU.visible_message("[HU] takes a copy of \the [H]'s fingerprints.")
+	var/fullprint = H.get_full_print()
+	evidence[fullprint] = fullprint
+	copy_evidence(src)
+	name = "[initial(name)] (\the [H])"
+	icon_state = "fingerprint1"
+	return 1
 
 /obj/item/weapon/forensics/sample/print/copy_evidence(var/atom/supplied)
 	if(supplied.fingerprints && supplied.fingerprints.len)
