@@ -357,7 +357,7 @@ var/list/slot_equipment_priority = list( \
 		if (I.scoped_invisible)
 			if (I.invisibility > 0)
 				I.invisibility = 0
-			O.scoped_invisible = FALSE
+			I.scoped_invisible = FALSE
 		I.forceMove(loc, MOVED_DROP)
 		I.dropped(src)
 	return TRUE
