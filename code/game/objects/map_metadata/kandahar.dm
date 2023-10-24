@@ -287,33 +287,40 @@
 		else
 			world << "<big><b>North West Village Outpost</b>: Nobody</big>"
 	for (var/mob/living/human/H in player_list)
-		if (H.stat!=DEAD && (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE))
+		if (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE)
 			var/area/A = get_area(H)
 			if (istype(A, /area/caribbean/arab/caves/prison))
-				if (H.stat!=DEAD && H.original_job.title == "Soviet Army Captain")
-					muj_points += 4
-					world << "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>"
-				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Lieutenant")
-					muj_points += 3
-					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>"
-				else if (H.stat!=DEAD && H.original_job.title == "Soviet Army Sergeant")
-					muj_points += 2
-					world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>"
-				else if (H.stat!=DEAD && H.original_job.title == "DRA Governor")
-					muj_points += 5
-					world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
-				else if (H.stat!=DEAD && H.original_job.title == "DRA Lieutenant")
-					muj_points += 3
-					world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
-				else if (H.stat!=DEAD && H.original_job.title == "DRA Sergeant")
-					muj_points += 2
-					world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
-		if (H.stat!=DEAD && (H.original_job.is_muj == TRUE))
+				if (H.stat != DEAD)
+					switch(H.original_job.title)
+						if ("Soviet Army Captain")
+							muj_points += 4
+							world << "<font color='orange' size=2>The <b><font color='red'>Soviet Army Captain</font></b> is in captivity!</font>"
+						if ("Soviet Army Lieutenant")
+							muj_points += 3
+							world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Lieutenant</font></b> is in captivity!</font>"
+						if ("Soviet Army Sergeant")
+							muj_points += 2
+							world << "<font color='orange' size=2>A <b><font color='red'>Soviet Army Sergeant</font></b> is in captivity!</font>"
+						if ("DRA Governor")
+							muj_points += 5
+							world << "<font color='orange' size=2>The <b><font color='green'>DRA Governor</font></b> is in captivity!</font>"
+						if ("DRA Lieutenant")
+							muj_points += 3
+							world << "<font color='orange' size=2>A <b><font color='green'>DRA Lieutenant</font></b> is in captivity!</font>"
+						if ("DRA Sergeant")
+							muj_points += 2
+							world << "<font color='orange' size=2>A <b><font color='green'>DRA Sergeant</font></b> is in captivity!</font>"
+		if (H.original_job.is_muj == TRUE)
 			var/area/B = get_area(H)
 			if (istype(B, /area/caribbean/prison/jail))
-				if (H.stat!=DEAD && H.original_job.title == "Mujahideen Leader")
-					sov_points += 3
-					world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Leader</font></b> is currently being detained!</font>"
+				if (H.stat != DEAD)
+					switch(H.original_job_title)
+						if ("Mujahideen Warchief")
+							sov_points += 4
+							world << "<font color='orange' size=2>The <b><font color='black'>Mujahideen Warchief</font></b> is in captivity!</font>"
+						if ("Mujahideen Group Leader")
+							sov_points += 2
+							world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>"
 	spawn(600)
 		points_check()
 		spawn(300)

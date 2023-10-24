@@ -1651,14 +1651,13 @@
 
 ////////////////////////////////////////////////Mujahideen////////////////////////////////////////
 
-/datum/job/arab/mujahideen/leader
-	title = "Mujahideen Leader"
-	rank_abbreviation = "Leader"
+/datum/job/arab/mujahideen/warchief
+	title = "Mujahideen Warchief"
+	rank_abbreviation = "Malik"
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
-	is_squad_leader = TRUE
-	uses_squads = TRUE
+	is_
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
@@ -1666,9 +1665,9 @@
 	additional_languages = list("Dari" = 100, "Russian" = 60, "English"= 60)
 
 	min_positions = 1
-	max_positions = 6
+	max_positions = 1
 
-/datum/job/arab/mujahideen/leader/equip(var/mob/living/human/H)
+/datum/job/arab/mujahideen/warchief/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	var/randshoes = rand(1,5)
@@ -1704,16 +1703,7 @@
 		if (3)
 			uniform.attackby(three, H)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
-	var/obj/item/weapon/storage/bbelt = H.belt
-	var/obj/item/stack/medical/bruise_pack/gauze/ggauze = new /obj/item/stack/medical/bruise_pack/gauze(null)
-	var/obj/item/ammo_magazine/m16/mag1 = new /obj/item/ammo_magazine/m16(null)
-	var/obj/item/ammo_magazine/m16/mag2 = new /obj/item/ammo_magazine/m16(null)
-	var/obj/item/ammo_magazine/m16/mag3 = new /obj/item/ammo_magazine/m16(null)
-	bbelt.attackby(ggauze, H)
-	bbelt.attackby(mag1, H)
-	bbelt.attackby(mag2, H)
-	bbelt.attackby(mag3, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
 //head
 	var/randhat = rand(1,2)
 	switch (randhat)
@@ -1736,11 +1726,96 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are an <b>[title]</b>, an islamic leader. Lead the Holy war against the red menace!")
+	H.add_note("Role", "You are a <b>[title]</b>, an islamic leader. Lead the Holy War against the Red Menace!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+	return TRUE
+
+/datum/job/arab/mujahideen/group_leader
+	title = "Mujahideen Group Leader"
+	rank_abbreviation = "Jameedar"
+
+	spawn_location = "JoinLateAR"
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	is_afghan = TRUE
+	is_muj = TRUE
+	is_coldwar = TRUE
+	default_language = "Pashto"
+	additional_languages = list("Dari" = 70, "Russian" = 30, "English"= 10)
+
+	min_positions = 1
+	max_positions = 10
+
+/datum/job/arab/mujahideen/group_leader/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	var/randshoes = rand(1,4)
+	switch(randshoes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/one = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/green/two = new /obj/item/clothing/accessory/armor/coldwar/pasgt/green(null)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/three = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	var/randarmor = rand(1,3)
+	switch (randarmor)
+		if (1)
+			uniform.attackby(one, H)
+		if (2)
+			uniform.attackby(two, H)
+		if (3)
+			uniform.attackby(three, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/ak74(H), slot_belt)
+//head
+	var/randhat = rand(1,3)
+	switch (randhat)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/pakol(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
+	H.civilization = "Mujahideen"
+	if (H.f_style != "Full Beard" && H.f_style != "Long Beard")
+		H.f_style = pick("Full Beard", "Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+
+	H.add_note("Role", "You are a <b>[title]</b>. Follow the orders from your Warchief and lead your men against your enemies.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
@@ -1851,25 +1926,29 @@
 		if (6)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
 //gun and belt
-	var/randgun = rand(1,6)
-	switch(randgun)
+	var/randloadout = rand(1,5)
+	switch(randloadout)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			var/obj/item/clothing/accessory/storage/webbing/light/chinese/sks/webbing = new /obj/item/clothing/accessory/storage/webbing/light/chinese/sks(null)
+			uniform.attackby(webbing, H)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			var/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/mosinp = new /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_mosin(null)
+			uniform.attackby(mosinp, H)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			var/obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/mosinp = new /obj/item/clothing/accessory/storage/webbing/nlfsmallpouches/filled_mosin(null)
+			uniform.attackby(mosinp, H)
 		if (4)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
-		if (5)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
-		if (6)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
-	if (prob(15))
-		H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak47(H), slot_belt)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/fal(H), slot_belt)
 //head
 	var/randhat1 = rand (1,3)
 	var/randhat2 = rand (1,2)
@@ -1905,15 +1984,15 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are a <b>[title]</b>, an islamic rifleman militia. Use guerrila warfare tactics to defeat the infidels!")
+	H.add_note("Role", "You are a <b>[title]</b>. Use guerrila warfare tactics to defeat the infidels!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_LOW)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
 	give_random_name(H)
 
 	return TRUE
