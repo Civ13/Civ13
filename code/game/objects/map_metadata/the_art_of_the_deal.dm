@@ -1218,7 +1218,8 @@
 				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
 				user.put_in_hands(briefcase)
 				reputation[user.civilization] += 2
-				map.heat[user.civilization] += 2
+				if (map)
+					map.heat[user.civilization] += 2
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "a block")
@@ -1228,7 +1229,8 @@
 					qdel(M)
 				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
 				user.put_in_hands(block)
-				map.heat[user.civilization] += 5
+				if (map)
+					map.heat[user.civilization] += 5
 			else
 				user << "\icon[src] Not enough money, maricon."
 		return
