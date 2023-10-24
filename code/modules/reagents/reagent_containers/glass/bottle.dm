@@ -191,6 +191,17 @@
 		reagents.add_reagent("potassium_chloride", 60)
 		update_icon()
 
+/obj/item/weapon/reagent_containers/glass/bottle/carbon
+	name = "carbon bottle"
+	desc = "A small bottle."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "bottle-3"
+
+	New()
+		..()
+		reagents.add_reagent("carbon", 60)
+		update_icon()
+
 /obj/item/weapon/reagent_containers/glass/bottle/pacid
 	name = "Polytrinic Acid Bottle"
 	desc = "A small bottle. Contains a small amount of Polytrinic Acid"

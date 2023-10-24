@@ -41,11 +41,7 @@
 	var/maxpoints = 4000
 	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
-	var/list/heat = list(
-		"Rednikov Industries" = 0,
-		"Giovanni Blu Stocks" = 0,
-		"Kogama Kraftsmen" = 0,
-		"Goldstein Solutions" = 0,)
+	var/list/heat = list("Rednikov Industries" = 0, "Giovanni Blu Stocks" = 0, "Kogama Kraftsmen" = 0, "Goldstein Solutions" = 0)
 
 /obj/map_metadata/art_of_the_deal/update_win_condition()
 	if (win_condition_spam_check)
@@ -99,6 +95,7 @@
 		map.globalmarketplace += list("gio1" = list("Giovanni Blu Stocks",null,1,1000+scores["Giovanni Blu Stocks"],"bank","gio1",1))
 		map.globalmarketplace += list("green1" = list("Kogama Kraftsmen",null,1,1000+scores["Kogama Krafsmen"],"bank","green1",1))
 		map.globalmarketplace += list("yellow1" = list("Goldstein Solutions",null,1,1000+scores["Goldstein Solutions"],"bank","yellow1",1))
+
 /obj/map_metadata/art_of_the_deal/proc/assign_delivery_zones()
 	for(var/turf/floor/delivery/D in turfs)
 		var/list/tlist = list(list(D.name,D.x,D.y,D.get_coded_loc()))
@@ -1205,6 +1202,10 @@
 				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
 				user.put_in_hands(one_g)
 				reputation[user.civilization] += 1
+				if (prob(30))
+					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+						var/obj/map_metadata/art_of_the_deal/AD = map
+						AD.heat[user.civilization] += 1
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "10 grams")
@@ -1215,12 +1216,12 @@
 				M.amount-=600/5
 				if (M.amount <= 0)
 					qdel(M)
-				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
-				var/obj/item/weapon/storage/briefcase/briefcase = new /obj/item/weapon/storage/briefcase(null)
-				for (var/i = 1; i<=10;i++)
-					new one_g(briefcase)
+				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
 				user.put_in_hands(briefcase)
 				reputation[user.civilization] += 2
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+					var/obj/map_metadata/art_of_the_deal/AD = map
+					AD.heat[user.civilization] += 5
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "a block")
@@ -1230,11 +1231,19 @@
 					qdel(M)
 				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
 				user.put_in_hands(block)
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+					var/obj/map_metadata/art_of_the_deal/AD = map
+					AD.heat[user.civilization] += 10
 			else
 				user << "\icon[src] Not enough money, maricon."
 		return
 	else
 		return
+
+/obj/item/weapon/storage/briefcase/cocaine_10/New()
+	..()
+	for (var/i = 1; i<=10;i++)
+		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 
 // Mr. White (Chemicals and explosives)
 
@@ -1250,7 +1259,7 @@
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,)
 	var/list/option_list = list("Cancel","Buy chemicals","Buy explosives")
-	var/list/chemical_list = list("Cancel","Diethylamine","Acetone","Potassium Chloride")
+	var/list/chemical_list = list("Cancel","Diethylamine","Acetone","Potassium Chloride","Carbon")
 
 /obj/structure/npc_vendor/walter/attack_hand(mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
@@ -1287,6 +1296,8 @@
 					new /obj/item/weapon/reagent_containers/glass/bottle/acetone(user.loc)
 				if ("Potassium Chloride")
 					new /obj/item/weapon/reagent_containers/glass/bottle/potassium_chloride(user.loc)
+				if ("Carbon")
+					new /obj/item/weapon/reagent_containers/glass/bottle/carbon(user.loc)
 			M.amount -= chemical_price/5
 			if (M.amount <= 0)
 				qdel(M)
