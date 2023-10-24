@@ -96,9 +96,6 @@
 		if (J.title == "Spetznaz GRU")
 			J.max_positions = 2
 			J.total_positions = 2
-		if (J.title == "Mujahideen Leader")
-			J.max_positions = 10
-			J.total_positions = 10
 	else
 		. = FALSE
 

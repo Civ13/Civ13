@@ -37,9 +37,6 @@
 			. = TRUE
 		if (J.title == "DRA Governor")
 			. = FALSE
-		if (J.title == "Mujahideen Leader")
-			J.max_positions = 10
-			J.total_positions = 10
 	else
 		. = FALSE
 
