@@ -94,7 +94,7 @@
 "bP" = (/mob/living/simple_animal/frog,/turf/floor/dirt/flooded,/area/caribbean/nomads/forest/Jungle)
 "bQ" = (/mob/living/simple_animal/seagull,/turf/floor/dirt,/area/caribbean/nomads/semiarid)
 "bR" = (/turf/floor/grass,/area/caribbean/nomads/desert)
-"bS" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
+"bS" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bT" = (/obj/structure/wild/jungle{icon_state = "tree3"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bU" = (/turf/floor/dirt,/area/caribbean/nomads/desert)
 "bV" = (/mob/living/simple_animal/chicken,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

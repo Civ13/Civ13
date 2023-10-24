@@ -9,10 +9,10 @@
 	value = 3
 	bitesize = 2
 	decay = 25*600
-/obj/item/weapon/reagent_containers/food/snacks/grown/chinchona
-	name = "chinchona plant"
+/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
+	name = "cinchona plant"
 	icon = 'icons/obj/flora/plants.dmi'
-	icon_state = "chinchona_inhand"
+	icon_state = "cinchona_inhand"
 	desc = "Contains quinine."
 	nutriment_amt = 1
 	nutriment_desc = "bitter"

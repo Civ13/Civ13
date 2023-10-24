@@ -88,7 +88,7 @@
 "bJ" = (/obj/structure/wild/junglebush{icon_state = "22"},/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "bK" = (/obj/structure/wild/junglebush{icon_state = "14"},/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "bL" = (/obj/structure/wild/junglebush{icon_state = "2"},/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
-"bM" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"bM" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "bN" = (/obj/structure/wild/tree/live_tree/pine/snow{icon_state = "pine_2"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean/nomads/taiga)
 "bO" = (/obj/structure/wild/junglebush{icon_state = "6"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bP" = (/obj/structure/wild/junglebush{icon_state = "20"},/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)

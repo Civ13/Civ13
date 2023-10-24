@@ -717,7 +717,7 @@
 /datum/reagent/drink/quinine
 	name = "Quinine"
 	id = "quinine"
-	description = "Bitter, from the chinchona plant."
+	description = "Bitter, from the cinchona plant."
 	taste_description = "very strong bitterness"
 	color = "#f4f4f4"
 

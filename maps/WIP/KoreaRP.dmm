@@ -1225,8 +1225,8 @@
 "xC" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean)
 "xD" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
 "xE" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean)
-"xF" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/winter,/area/caribbean)
-"xG" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/grass,/area/caribbean)
+"xF" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/winter,/area/caribbean)
+"xG" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/grass,/area/caribbean)
 "xH" = (/obj/structure/sink/puddle/nomosquitoes,/turf/floor/winter,/area/caribbean)
 
 (1,1,1) = {"

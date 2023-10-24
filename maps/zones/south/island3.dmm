@@ -57,7 +57,7 @@
 "Ui" = (/obj/structure/wild/berrybush/majo,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "UH" = (/turf/floor/grass/jungle/savanna,/area/caribbean/sea/bottom)
 "UW" = (/obj/structure/wild/burnedbush,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
-"Vn" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
+"Vn" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "VG" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/sea/bottom)
 "Wp" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/sea/bottom)
 "WY" = (/obj/structure/wild/palm,/turf/floor/beach/sand/dark,/area/caribbean/sea/bottom)

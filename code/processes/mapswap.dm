@@ -419,7 +419,7 @@
 				P.amount *= 0.5
 				P.amount = round(P.amount)
 			for (var/obj/structure/wild/junglebush/V)
-				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/cinchona))
 					qdel(V)
 			spawn(10)
 				if (map.ID == MAP_NOMADS_ICE_AGE)
@@ -456,7 +456,7 @@
 				P.amount *= 0.5
 				P.amount = round(P.amount)
 			for (var/obj/structure/wild/junglebush/V)
-				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/cinchona))
 					qdel(V)
 			spawn(10)
 				if (map.ID == MAP_NOMADS_ICE_AGE)
