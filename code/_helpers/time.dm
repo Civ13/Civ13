@@ -75,6 +75,7 @@ proc/isDay(var/month, var/day)
 			//return TRUE
 
 var/next_duration_update = 0
+var/next_duration_update_days = 0
 var/last_roundduration2text = 0
 var/last_roundduration2text_days = 0
 var/round_start_time = 0
@@ -105,7 +106,7 @@ var/round_start_time = 0
 	if (!round_start_time)
 		return "0 mins"
 
-	if (last_roundduration2text_days && world.time < next_duration_update)
+	if (last_roundduration2text_days && world.time < next_duration_update_days)
 		return last_roundduration2text_days
 
 	var/mills = roundduration2text_in_ticks // 1/10 of a second, not real milliseconds but whatever
@@ -121,6 +122,7 @@ var/round_start_time = 0
 		last_roundduration2text_days = "[hours] hour[hours >= 2 ? "s" : ""], [mins] min[mins >= 2 ? "s" : ""]"
 	else
 		last_roundduration2text_days = "[mins] min[mins >= 2 ? "s" : ""]"
+	next_duration_update_days = world.time + 1 MINUTES
 	return last_roundduration2text_days
 
 //Can be useful for things dependent on process timing
