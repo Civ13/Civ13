@@ -174,14 +174,14 @@
 	reagent_state = LIQUID
 	nutriment_factor = 0.9
 
-/datum/reagent/nutriment/cola
+/datum/reagent/drink/cola
 	name = "cola"
 	id = "cola"
 	description = "A sweet taste of sugar."
 	taste_description = "sweet"
 	taste_mult = 1.1
 	reagent_state = LIQUID
-	nutriment_factor = 3
+	nutrition = 1
 	color = "#120b02"
 
 /datum/reagent/nutriment/ketchup
@@ -203,20 +203,22 @@
 	nutriment_factor = TRUE
 	color = "#FFFFFF"
 
-/datum/reagent/nutriment/coconutmilk //Added new reagent for coconuts
+/datum/reagent/drink/coconutmilk //Added new reagent for coconuts
 	name = "Coconut milk"
 	id = "coconutmilk"
 	description = "A white, milky liquid, loaded with sugary sweetness."
 	taste_description = "sweetness"
-	nutriment_factor = 25
+	nutrition = 25
+	reagent_state = LIQUID
 	color = "#FFFFFF"
 
-/datum/reagent/nutriment/apricotjuice //Added new reagent for apricots
+/datum/reagent/drink/apricotjuice //Added new reagent for apricots
 	name = "Apricot juice"
 	id = "apricotjuice"
 	description = "An orange, transparant liquid, tasting of apricots."
 	taste_description = "sweetness"
-	nutriment_factor = 25
+	nutrition = 25
+	reagent_state = LIQUID
 	color = "#FFFFFF"
 
 /datum/reagent/nutriment/cherryjelly
@@ -226,7 +228,7 @@
 	taste_description = "cherry"
 	taste_mult = 1.3
 	reagent_state = LIQUID
-	nutriment_factor = TRUE
+	nutriment_factor = 1
 	color = "#801E28"
 
 /datum/reagent/nutriment/cornoil
