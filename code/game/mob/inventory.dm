@@ -213,21 +213,22 @@ var/list/slot_equipment_priority = list( \
 			var/obj/item/clothing/glasses/G = W
 			var/mob/living/human/user = src
 			if(G.toggleable && G.active)
-				G.active = 0
+				G.active = FALSE
 				G.icon_state = G.off_state
 				user.update_inv_eyes()
 				user.flash_protection = FLASH_PROTECTION_NONE
 				G.tint = TINT_NONE
-				if (G.overtype == "nvg")
-					user.nvg = FALSE
-					G.restricts_view = 0
-					G.blocks_scope = FALSE
-					user.handle_vision()
-				else if (G.overtype == "thermal")
-					user.thermal = FALSE
-					G.restricts_view = 0
-					G.blocks_scope = FALSE
-					user.handle_vision()
+				switch (G.overtype)
+					if ("nvg")
+						user.nvg = FALSE
+						G.restricts_view = 0
+						G.blocks_scope = FALSE
+						user.handle_vision()
+					if ("thermal")
+						user.thermal = FALSE
+						G.restricts_view = 0
+						G.blocks_scope = FALSE
+						user.handle_vision()
 		remove_from_mob(W)
 		if (!(W && W.loc)) return TRUE // self destroying objects (tk, grabs)
 
