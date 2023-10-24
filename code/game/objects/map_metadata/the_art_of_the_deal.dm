@@ -1215,12 +1215,10 @@
 				M.amount-=600/5
 				if (M.amount <= 0)
 					qdel(M)
-				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
-				var/obj/item/weapon/storage/briefcase/briefcase = new /obj/item/weapon/storage/briefcase(null)
-				for (var/i = 1; i<=10;i++)
-					new one_g(briefcase)
+				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
 				user.put_in_hands(briefcase)
 				reputation[user.civilization] += 2
+				map.heat[user.civilization] += 2
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "a block")
@@ -1230,11 +1228,17 @@
 					qdel(M)
 				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
 				user.put_in_hands(block)
+				map.heat[user.civilization] += 5
 			else
 				user << "\icon[src] Not enough money, maricon."
 		return
 	else
 		return
+
+/obj/item/weapon/storage/briefcase/cocaine_10/New()
+	..()
+	for (var/i = 1; i<=10;i++)
+		new /obj/item/weapon/reagent_containers/pill/cocaine(src)
 
 // Mr. White (Chemicals and explosives)
 
@@ -1250,7 +1254,7 @@
 		"Kogama Kraftsmen" = 0,
 		"Goldstein Solutions" = 0,)
 	var/list/option_list = list("Cancel","Buy chemicals","Buy explosives")
-	var/list/chemical_list = list("Cancel","Diethylamine","Acetone","Potassium Chloride")
+	var/list/chemical_list = list("Cancel","Diethylamine","Acetone","Potassium Chloride","Carbon")
 
 /obj/structure/npc_vendor/walter/attack_hand(mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
@@ -1287,6 +1291,8 @@
 					new /obj/item/weapon/reagent_containers/glass/bottle/acetone(user.loc)
 				if ("Potassium Chloride")
 					new /obj/item/weapon/reagent_containers/glass/bottle/potassium_chloride(user.loc)
+				if ("Carbon")
+					new /obj/item/weapon/reagent_containers/glass/bottle/carbon(user.loc)
 			M.amount -= chemical_price/5
 			if (M.amount <= 0)
 				qdel(M)
