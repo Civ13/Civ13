@@ -151,7 +151,7 @@ proc/is_complete_print(var/print)
 
 /obj/item/weapon/csi_marker
 	name = "crime scene marker"
-	desc = "Plastic cards used to mark points of interests on the scene. Just like in the holoshows!"
+	desc = "Plastic cards used to mark points of interests on the scene. Just like in the movies!"
 	icon = 'icons/obj/forensics.dmi'
 	icon_state = "card1"
 	w_class = ITEM_SIZE_TINY
