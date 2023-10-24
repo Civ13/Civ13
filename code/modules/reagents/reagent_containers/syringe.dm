@@ -302,7 +302,7 @@
 
 /obj/item/weapon/reagent_containers/syringe/penicillin
 	name = "Syringe (penicillin)"
-	desc = "Contains antiviral agents."
+	desc = "Contains antibiotic agents."
 	New()
 		..()
 		reagents.add_reagent("penicillin", 15)
