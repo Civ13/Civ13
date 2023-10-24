@@ -976,26 +976,26 @@ var/list/seed_list_jungle
 	else
 		icon_state = "rocks[rand(1,3)]"
 
-/obj/structure/wild/junglebush/chinchona
-	name = "chinchona"
+/obj/structure/wild/junglebush/cinchona
+	name = "cinchona"
 	desc = "you can extract quinine from it."
 	icon = 'icons/obj/flora/plants.dmi'
-	icon_state = "chinchona1"
+	icon_state = "cinchona1"
 	opacity = FALSE
 	density = FALSE
 	healthamount = 1
 
-/obj/structure/wild/junglebush/chinchona/New()
+/obj/structure/wild/junglebush/cinchona/New()
 	..()
-	icon_state = "chinchona1"
+	icon_state = "cinchona1"
 
-/obj/structure/wild/junglebush/chinchona/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/junglebush/cinchona/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
-			user << "You harvest some of the chinchona."
-			new /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona(get_turf(user))
+			user << "You harvest some of the cinchona."
+			new /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona(get_turf(user))
 			healthamount = 0
 			regrow()
 			update_icon()
@@ -1011,9 +1011,9 @@ var/list/seed_list_jungle
 		update_icon()
 		return
 
-/obj/structure/wild/junglebush/chinchona/update_icon()
+/obj/structure/wild/junglebush/cinchona/update_icon()
 	..()
-	icon_state = "chinchona[healthamount]"
+	icon_state = "cinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)

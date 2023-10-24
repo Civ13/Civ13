@@ -245,7 +245,7 @@
 "gz" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "gA" = (/mob/living/simple_animal/mouse/gray,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "gB" = (/obj/item/stack/farming/seeds/coffee,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
-"gC" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
+"gC" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "gD" = (/obj/structure/sink/puddle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "gE" = (/obj/item/stack/farming/seeds/coca,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
 "gF" = (/obj/item/stack/farming/seeds/rice,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
