@@ -42,6 +42,7 @@
 	grace_wall_timer = 3000
 	availablefactions = list("Goldstein Solutions", "Kogama Kraftsmen", "Rednikov Industries", "Giovanni Blu Stocks")
 	var/list/heat = list("Rednikov Industries" = 0, "Giovanni Blu Stocks" = 0, "Kogama Kraftsmen" = 0, "Goldstein Solutions" = 0)
+
 /obj/map_metadata/art_of_the_deal/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
@@ -1201,6 +1202,10 @@
 				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
 				user.put_in_hands(one_g)
 				reputation[user.civilization] += 1
+				if (prob(30))
+					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+						var/obj/map_metadata/art_of_the_deal/AD = map
+						AD.heat[user.civilization] += 1
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "10 grams")
@@ -1214,7 +1219,9 @@
 				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
 				user.put_in_hands(briefcase)
 				reputation[user.civilization] += 2
-				map.heat[user.civilization] += 2
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+					var/obj/map_metadata/art_of_the_deal/AD = map
+					AD.heat[user.civilization] += 5
 			else
 				user << "\icon[src] Not enough money, maricon."
 		else if (choice == "a block")
@@ -1224,7 +1231,9 @@
 					qdel(M)
 				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
 				user.put_in_hands(block)
-				map.heat[user.civilization] += 5
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+					var/obj/map_metadata/art_of_the_deal/AD = map
+					AD.heat[user.civilization] += 10
 			else
 				user << "\icon[src] Not enough money, maricon."
 		return
