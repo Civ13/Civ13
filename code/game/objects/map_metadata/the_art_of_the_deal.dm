@@ -147,24 +147,31 @@
 			if (istype(J, /datum/job/civilian/businessman))
 				if(findtext(J.title, "CEO"))
 					J.whitelisted = FALSE
-		if (clients.len <= 12)
+		if (clients.len < 14)
 			if (J.title == "County Deputy" || J.title == "County Sheriff")
 				. = FALSE
 		if (clients.len <= 20)
 			if (J.title == "Physician" || J.title == "County Judge" || J.title == "Detective")
 				. = FALSE
-		if (clients.len <= 22)
-			if (J.title == "Legitimate Business")
-				. = FALSE
 			else if (J.title == "Paramedic")
 				J.max_positions = 2
 				J.total_positions = 2
+			else if (J.title == "Nurse")
+				J.max_positions = 1
+				J.total_positions = 1
+		if (clients.len > 20)
+			if (J.title == "Paramedic")
+				J.max_positions = 3
+				J.total_positions = 3
+			else if (J.title == "Nurse")
+				J.max_positions = 2
+				J.total_positions = 2
+		if (clients.len <= 22)
+			if (J.title == "Legitimate Business")
+				. = FALSE
 		if (clients.len <= 30)
 			if (J.title == "Mechanic" || J.title == "Homeless Man")
 				. = FALSE
-			else if (J.title == "Paramedic")
-				J.max_positions = 3
-				J.total_positions = 3
 		if (clients.len <= 35)
 			if (J.title == "McKellen Staff" || J.title == "McKellen Manager")
 				. = FALSE
