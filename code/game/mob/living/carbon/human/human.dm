@@ -9,6 +9,8 @@
 	var/looking = FALSE
 	var/look_amount = 3
 	var/can_defib = TRUE //Horrible damage (like beheadings) will prevent defibbing organics.
+	var/spawned_at_fob = FALSE // For spawning in at an FOB or your normal job spawnpoint
+
 /mob/living/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)
@@ -1096,12 +1098,12 @@ var/list/coefflist = list()
 					var/obj/screen/movable/action_button/A = O
 					if (A.name == "Look into Distance ([src])" || (A.owner && istype(A.owner, /datum/action/toggle_scope)))
 						continue
-				O.invisibility = 100
+				O.invisibility = 101
 				O.scoped_invisible = TRUE
 		else
 			for (var/obj/O in H.client.screen)
 				if (O.scoped_invisible)
-					O.invisibility = FALSE
+					O.invisibility = 0
 					O.scoped_invisible = FALSE
 
 /mob/living/human/proc/can_look(mob/living/user)//Largely copied from zoom.dm

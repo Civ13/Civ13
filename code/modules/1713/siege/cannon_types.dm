@@ -416,18 +416,18 @@
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)
-		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		usr << (SPAN_WARNING("You need to have a hand free to do this."))
 		return
 	usr.face_atom(src)
-	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
+	visible_message(SPAN_WARNING("[usr] starts to get \the [src] from the ground."))
 	for (var/obj/item/cannon_ball/mortar_shell/I in loaded)
 		I.loc = get_turf(src)
 		loaded -= I
-		visible_message("<span class = 'warning'>[usr] unloads the [src].</span>")
+		visible_message(SPAN_WARNING("[usr] unloads \the [src]."))
 	if (do_after(usr, 25, get_turf(usr)))
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
+		visible_message(SPAN_WARNING("[usr] retrieves \the [src] from the ground."))
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/I as obj, mob/M as mob)
 	if (istype(I, ammotype))

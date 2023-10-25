@@ -129,7 +129,7 @@
 
 /process/mapswap
 	// map = required players
-	var/list/maps = list(MAP_CURSED_ISLAND = 0,)
+	var/list/maps = list(MAP_KARAK = 0,)
 	var/epoch = "Imperial Age (1650-1780)"
 	var/ready = TRUE
 	var/admin_triggered = FALSE

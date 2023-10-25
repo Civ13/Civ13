@@ -1077,7 +1077,7 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	stat = "rifle"
 	accuracy_list = list(
 

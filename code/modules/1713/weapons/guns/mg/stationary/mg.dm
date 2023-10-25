@@ -189,21 +189,9 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
 	name = "vehicle mounted Breda 30 machine gun"
-	pixel_y = -8
 	anchored = TRUE
 	density = FALSE
 	can_turn = FALSE
-/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary/update_icon()
-	..()
-	switch(dir)
-		if (NORTH)
-			pixel_y = 8
-		if (SOUTH)
-			pixel_y = -8
-		if (EAST)
-			pixel_x = 8
-		if (WEST)
-			pixel_x = -8
 
 /obj/item/weapon/gun/projectile/automatic/stationary/browning
 	name = "M1919A1 browning machine gun"
@@ -318,6 +306,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	is_hmg = TRUE
+	anchored = TRUE
 	full_auto = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42
@@ -387,7 +376,6 @@
 		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.3, 1, 2.5), accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
-	anchored = TRUE
 	var/mode = "autocannon"
 
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm

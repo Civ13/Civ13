@@ -271,6 +271,9 @@
 	if (fire_stacks > 0 && !on_fire)
 		on_fire = TRUE
 		set_light(light_range + 3)
+		light_color = "#FF9900"
+		if (stat == CONSCIOUS)
+			emote("scream")
 		update_fire()
 
 /mob/living/proc/ExtinguishMob()
@@ -278,6 +281,8 @@
 		on_fire = FALSE
 		fire_stacks = 0
 		set_light(max(0, light_range - 3))
+		light_color = null
+		playsound(src, 'sound/items/cig_snuff.ogg', 50, TRUE) //A little sizzle as you're put out.
 		update_fire()
 
 /mob/living/proc/update_fire()

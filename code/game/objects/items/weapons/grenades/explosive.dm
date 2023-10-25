@@ -50,7 +50,7 @@
 			qdel(src)
 
 
-/obj/proc/fragmentate(var/turf/T, var/fragment_number = 30, var/spreading_range = 5, var/list/fragtypes=list(/obj/item/projectile/bullet/pellet/fragment/))
+/obj/proc/fragmentate(var/turf/T, var/fragment_number = 30, var/spreading_range = 5, var/list/fragtypes=list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1))
 	set waitfor = 0
 	..()
 	
@@ -102,7 +102,7 @@
 	throw_speed = 3
 	throw_range = 5 //heavy, can't be thrown as far
 
-	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment=1,/obj/item/projectile/bullet/pellet/fragment/strong=4)
+	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment = 1, /obj/item/projectile/bullet/pellet/fragment/strong = 4)
 	num_fragments = 200  //total number of fragments produced by the grenade
 	explosion_size = 3
 
@@ -116,7 +116,7 @@
 	desc = "Cannot be thrown as the usual grenade, by the way."
 	icon_state = "M406"
 	num_fragments = 50
-	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment)
+	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment = 1)
 	explosion_size = 2
 	throw_range = 30
 
@@ -128,6 +128,6 @@
 	desc = "Cannot be thrown as the usual grenade, by the way."
 	icon_state = "40x103mmshell"
 	num_fragments = 50
-	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment)
+	fragment_types = list(/obj/item/projectile/bullet/pellet/fragment = 1)
 	explosion_size = 2
 	throw_range = 30
