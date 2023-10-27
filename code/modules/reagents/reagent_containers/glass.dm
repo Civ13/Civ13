@@ -125,14 +125,14 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		reagents.add_reagent("grapejuice", 5)
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona)) //liquid transfer? solid???
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona)) //liquid transfer? solid???
 		if (!is_open_container())
 			user << "<span class='notice'>\The [src] is closed.</span>"
 			return
 		if (!reagents.get_free_space())
 			user << "<span class='notice'>[src] is full.</span>"
 			return
-		user << "You grind the chinchona plant, producing quinine."
+		user << "You grind the cinchona plant, producing quinine."
 		reagents.add_reagent("quinine", 10)
 		qdel(W)
 		return

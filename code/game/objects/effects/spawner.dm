@@ -914,11 +914,11 @@
 	create_path = /obj/structure/wild/jungle/medpine
 	timer = 6000
 
-/obj/effect/spawner/objspawner/chinchona
-	name = "chinchona spawner"
+/obj/effect/spawner/objspawner/cinchona
+	name = "cinchona spawner"
 	max_number = 3
 	max_range = 14
-	create_path = /obj/structure/wild/junglebush/chinchona
+	create_path = /obj/structure/wild/junglebush/cinchona
 	timer = 6000
 
 //ore spanwers for extended games

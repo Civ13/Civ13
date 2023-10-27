@@ -151,18 +151,18 @@
 					S.filled = TRUE
 					return
 
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
 		if (filled_type || filled)
 			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
 			return
 		else
-			user << "You start [plantverb] the chinchona..."
+			user << "You start [plantverb] the cinchona..."
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the chinchona."
+				user << "You finish [plantverb] the cinchona."
 				icon = 'icons/obj/flora/filled_plantpots.dmi'
-				icon_state = "[planttype]chinchona"
-				desc = "A pot with a chinchona plant."
-				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona
+				icon_state = "[planttype]cinchona"
+				desc = "A pot with a cinchona plant."
+				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
 				qdel(W)
 				return
 
@@ -369,18 +369,18 @@
 					S.filled = TRUE
 					return
 
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
 		if (filled_type || filled)
 			user << "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>"
 			return
 		else
-			user << "You start [plantverb] the chinchona..."
+			user << "You start [plantverb] the cinchona..."
 			if (do_after(user, 15, src))
-				user << "You finish [plantverb] the chinchona."
+				user << "You finish [plantverb] the cinchona."
 				icon = 'icons/obj/flora/filled_plantpots.dmi'
-				icon_state = "[planttype]chinchona"
-				desc = "A pot with a chinchona plant."
-				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona
+				icon_state = "[planttype]cinchona"
+				desc = "A pot with a cinchona plant."
+				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
 				qdel(W)
 				return
 
@@ -450,7 +450,7 @@
 - 2.exotic realised plants might need some exclusive resource from jungle biomes or where appropriate
 - 3.potted plant climatization on continents, generalised on general maps
 - potted plant climatization cont: allowed under a glass roof or something detrimental will happen to it to encourage greenhouses/exhibitions.
-- 4. potted plant harvests for chinchona, greenhousing (see point 3)
+- 4. potted plant harvests for cinchona, greenhousing (see point 3)
 - 5. A soil variant the previous points will rely upon closer to ye olde farming
 - 6.bees
 - bees cont: can react to potted plants if more realisation is brought in as a substitute to natural wild.dm structures

@@ -1247,6 +1247,12 @@
 		new /obj/item/ammo_magazine/fal(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
+/obj/item/weapon/storage/belt/smallpouches/fal
+/obj/item/weapon/storage/belt/smallpouches/fal/New()
+	..()
+	for (var/i=1, i<=4, i++)
+		new /obj/item/ammo_magazine/fal(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/New()
 	..()
@@ -1254,6 +1260,14 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
+
+/obj/item/weapon/storage/belt/smallpouches/ak74
+/obj/item/weapon/storage/belt/smallpouches/ak74/New()
+	..()
+	new /obj/item/weapon/grenade/modern/f1(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
+	new /obj/item/ammo_magazine/ak74(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt/New()

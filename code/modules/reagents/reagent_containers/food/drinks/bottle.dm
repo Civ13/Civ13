@@ -884,6 +884,8 @@
 	else
 		icon_state = "[base_icon]_empty"
 	return
+/obj/item/weapon/reagent_containers/food/drinks/can/on_reagent_change()
+	update_icon()
 
 /obj/item/weapon/reagent_containers/food/drinks/can/monster
 	icon_state = "monster"
