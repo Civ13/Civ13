@@ -597,9 +597,9 @@
 			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
 
 /datum/species/proc/get_random_afrikaans_name(var/gender)
-    if (!name_language)
-	    if (gender == FEMALE)
-		    return capitalize(pick(first_names_female_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
 		else
 			return capitalize(pick(first_names_male_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
 

@@ -506,9 +506,9 @@
 	mutual_intelligibility = list()
 
 /datum/language/afrikaans
-    name = "Afrikaans"
+	name = "Afrikaans"
 	desc = "Kom ons rik en rol!"
-    key = "afr"
+	key = "afr"
 	colour = "Afrikaans"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = AFRIKAANS_SYLLABLES

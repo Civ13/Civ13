@@ -355,11 +355,11 @@
 	return full_name
 
 /datum/language/proc/get_random_afrikaans_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-	    if (gender==FEMALE)
-		    return capitalize(pick(first_names_female_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
 		else
-		    return capitalize(pick(first_names_male_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
+			return capitalize(pick(first_names_male_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
 
 /datum/language
 	var/list/scramble_cache = list()
