@@ -159,6 +159,10 @@ var/list/first_names_male_irish = file2list("config/names/first_male_irish.txt")
 var/list/first_names_female_irish = file2list("config/names/first_female_irish.txt")
 var/list/last_names_irish = file2list("config/names/last_irish.txt")
 
+var/list/first_names_male_afrikaans = file2list("config/names/first_male_afrikaans.txt")
+var/list/first_names_female_afrikaans = file2list("config/names/first_male_afrikaans.txt")
+var/list/last_names_afrikaans = file2list ("config/names/last_afrikaans.txt")
+
 
 var/list/country_names = file2list("config/names/countries.txt")
 /* NOT USED FOR NOW!
