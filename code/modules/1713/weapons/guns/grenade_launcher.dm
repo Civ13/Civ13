@@ -193,6 +193,7 @@
 	icon_state = "hk69"
 	item_state = "hk69"
 	w_class = ITEM_SIZE_LARGE
+	throw_range = 4
 	max_grenades = 0
 	recoil = 1
 	gun_safety = TRUE
