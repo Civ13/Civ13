@@ -1027,16 +1027,16 @@
 		if ("No")
 			icon_state = new_icon_state
 		if ("White Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
-			overlays += cross
-		if ("Black Cross")
-			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
-			overlays += cross
-		if ("Blue Cross")
 			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross2")
 			overlays += cross
-		if ("Red Cross")
+		if ("Black Cross")
+			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
+			overlays += cross
+		if ("Blue Cross")
 			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross3")
+			overlays += cross
+		if ("Red Cross")
+			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
 			overlays += cross
 		if ("Green Cross")
 			var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross4")
@@ -1048,16 +1048,16 @@
 		if ("No")
 			icon_state = new_icon_state
 		if ("White Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
-			overlays += saltire
-		if ("Black Saltire")
-			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
-			overlays += saltire
-		if ("Blue Saltire")
 			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire2")
 			overlays += saltire
-		if ("Red Saltire")
+		if ("Black Saltire")
+			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
+			overlays += saltire
+		if ("Blue Saltire")
 			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire3")
+			overlays += saltire
+		if ("Red Saltire")
+			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
 			overlays += saltire
 		if ("Green Saltire")
 			var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire4")
