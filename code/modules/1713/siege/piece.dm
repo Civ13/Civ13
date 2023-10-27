@@ -406,7 +406,7 @@
 
 		if (istype(src, /obj/structure/cannon/rocket))
 			for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
-				if (do_after(user, firedelay, src, can_move = istank))
+				if (do_after(user, firedelay, src, can_move = FALSE))
 					// firing code
 
 					// screen shake
@@ -500,7 +500,9 @@
 										break
 
 						if (hit)
-							playsound(target, "artillery_in", 60, TRUE)
+							playsound(target, pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg'), 60, TRUE)
+							spawn(10)
+								playsound(target, "artillery_in", 60, TRUE)
 							spawn (10)
 								if (explosion)
 									explosion(target, 1, 2, 3, 4)
@@ -510,7 +512,7 @@
 												for (var/mob/M in F.axis.transporting)
 													shake_camera(M, 3, 3)
 											playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-											visible_message(SPAN_DANGER("<big>The hull gets hit by a rocket!</big>"))
+											target.visible_message(SPAN_DANGER("<big>The hull gets hit by a rocket!</big>"))
 											F.w_front[5] -= rand(8,16)
 											F.w_back[5] -= rand(8,16)
 											F.w_left[5] -= rand(8,16)
@@ -679,7 +681,7 @@
 														for (var/mob/M in F.axis.transporting)
 															shake_camera(M, 3, 3)
 													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-													F.visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
+													target.visible_message(SPAN_DANGER("<big>The hull gets hit by a mortar shell!</big>"))
 													F.w_front[5] -= rand(1,7)
 													F.w_back[5] -= rand(1,7)
 													F.w_left[5] -= rand(1,7)
@@ -706,7 +708,7 @@
 														for (var/mob/M in F.axis.transporting)
 															shake_camera(M, 3, 3)
 													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-													F.visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
+													target.visible_message(SPAN_DANGER("<big>The hull gets hit by an artillery shell!</big>"))
 													F.w_front[5] -= rand(8,16)
 													F.w_back[5] -= rand(8,16)
 													F.w_left[5] -= rand(8,16)
@@ -722,7 +724,7 @@
 														for (var/mob/M in F.axis.transporting)
 															shake_camera(M, 3, 3)
 													playsound(target, pick('sound/machines/tank/tank_ricochet1.ogg','sound/machines/tank/tank_ricochet2.ogg','sound/machines/tank/tank_ricochet3.ogg'),100, TRUE)
-													F.visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
+													target.visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary mortar shell!</big>"))
 													F.w_front[5] -= rand(5,20)
 													F.w_back[5] -= rand(5,20)
 													F.w_left[5] -= rand(5,20)
