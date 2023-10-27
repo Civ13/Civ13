@@ -1155,7 +1155,7 @@
 						if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 							var/obj/map_metadata/art_of_the_deal/AD = map
 							AD.heat[user.civilization] += 2
-							if (AD.heat[user.civilization] >= 30)
+							if (AD.heat[user.civilization] >= 40)
 								user << "\icon[src] You better run fast before the feds get you."
 								spawn(rand(300,600))
 									global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an illegal firearm. Detain and search the suspect as soon as possible.</big>")
@@ -1180,7 +1180,7 @@
 						if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 							var/obj/map_metadata/art_of_the_deal/AD = map
 							AD.heat[user.civilization] += 2
-							if (AD.heat[user.civilization] >= 30)
+							if (AD.heat[user.civilization] >= 40)
 								user << "\icon[src] You better run fast before the feds get you."
 								spawn(rand(300,600))
 									global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an illegal firearm. Detain and search the suspect as soon as possible.</big>")
@@ -1212,7 +1212,7 @@
 		return
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		var/obj/map_metadata/art_of_the_deal/AD = map
-		if (AD.heat[user.civilization] >= 30)
+		if (AD.heat[user.civilization] >= 40)
 			user << SPAN_WARNING("\icon[src] Chico, you'll get us busted by the feds. They are watching you close!")
 			if (prob(80))
 				spawn(300)
@@ -1242,7 +1242,7 @@
 				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
 				user.put_in_hands(one_g)
 				reputation[user.civilization] += 1
-				if (prob(30))
+				if (prob(40))
 					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 						var/obj/map_metadata/art_of_the_deal/AD = map
 						AD.heat[user.civilization] += 1
@@ -1352,8 +1352,8 @@
 			new /obj/item/weapon/plastique/c4(user.loc)
 			if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 				var/obj/map_metadata/art_of_the_deal/AD = map
-				AD.heat[user.civilization] += 20
-				if (AD.heat[user.civilization] >= 30)
+				AD.heat[user.civilization] += 25
+				if (AD.heat[user.civilization] >= 40)
 					user << "\icon[src] You better run fast before the feds get you."
 				spawn(300)
 					global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an explosive device.</big>")
@@ -1429,7 +1429,6 @@
 						AD.heat[user.civilization] -= 1
 						if (AD.heat[user.civilization] < 0)
 							AD.heat[user.civilization] = 0
-						heat_cooldown = world.time + 300
 					if ("5")
 						if (!M || M.value*M.amount < (5*heat_price)*4)
 							user << "\icon[src] You need at least [5*heat_price] dollars in one of your hands."
@@ -1440,7 +1439,7 @@
 						AD.heat[user.civilization] -= 5
 						if (AD.heat[user.civilization] < 0)
 							AD.heat[user.civilization] = 0
-						heat_cooldown = world.time + 1200
+						heat_cooldown = world.time + 600
 					if ("10")
 						if (!M || M.value*M.amount < (10*heat_price)*4)
 							user << "\icon[src] You need at least [10*heat_price] dollars in one of your hands."
@@ -1451,7 +1450,7 @@
 						AD.heat[user.civilization] -= 10
 						if (AD.heat[user.civilization] < 0)
 							AD.heat[user.civilization] = 0
-						heat_cooldown = world.time + 3000
+						heat_cooldown = world.time + 1200
 		if ("Get Intel")
 			if (world.time <= intel_cooldown)
 				user << "\icon[src] I need more time to investigate. Come back later."
