@@ -197,7 +197,7 @@
 	recoil = 1
 	gun_safety = TRUE
 	release_force = 2
-	throw_distance = 5
+	throw_distance = 25
 	equiptimer = 30
 	slowdown = 0.8
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
