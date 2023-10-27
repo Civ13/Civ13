@@ -147,7 +147,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						ticker.finished = TRUE // TO-DO: See if it doesn't affect anything else, but only seems to be in map metadata files.
 						processes.epochswap.admin_triggered = FALSE
 						processes.epochswap.ready = TRUE
-						processes.epochswap.is_ready() // Safe check, may be unncessary.
 						processes.epochswap.fire()
 						log_admin("Restart Vote triggered an epoch vote.")
 						message_admins("Restart Vote triggered an epoch vote.")
