@@ -663,7 +663,7 @@
 			config.disable_fov = FALSE
 			config.no_respawn_delays = FALSE
 			map.gamemode = "Hardcore"
-			global_damage_modifier = 1.30
+			global_damage_modifier = 1.15
 			return
 
 		/// CAPITOL MODES //
