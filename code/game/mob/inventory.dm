@@ -205,9 +205,8 @@ var/list/slot_equipment_priority = list( \
 			Target = loc
 
 		if (W.scoped_invisible)
-			if (W.invisibility > 0)
-				W.invisibility = 0
-				W.scoped_invisible = FALSE
+			W.invisibility = 0
+			W.scoped_invisible = FALSE
 
 		if (istype(W, /obj/item/clothing/glasses) && ishuman(src))
 			var/obj/item/clothing/glasses/G = W
@@ -356,8 +355,7 @@ var/list/slot_equipment_priority = list( \
 	if (istype(O, /obj/item))
 		var/obj/item/I = O
 		if (I.scoped_invisible)
-			if (I.invisibility > 0)
-				I.invisibility = 0
+			I.invisibility = 0
 			I.scoped_invisible = FALSE
 		I.forceMove(loc, MOVED_DROP)
 		I.dropped(src)
