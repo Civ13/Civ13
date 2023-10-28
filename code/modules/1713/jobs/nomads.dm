@@ -302,9 +302,9 @@
 										equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(src), slot_head)
 									if (4)
 										equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(src), slot_head)
-				else
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(src), slot_shoes)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(src), slot_shoes)
 			else
 				if (gender == "male")
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
