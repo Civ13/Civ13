@@ -1201,8 +1201,6 @@
 			//west English
 			if (original_job_title == "Civilization A Citizen")
 				add_language("English",TRUE)
-				remove_language("English")
-				remove_note("Known Languages","English")
 				for (var/datum/language/english/A in languages)
 					default_language = A
 				name = species.get_random_english_name(gender)
