@@ -28,12 +28,8 @@
 	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
-	var/real_season = "wet"
 /obj/map_metadata/nomads_asia/New()
 	..()
-	spawn(1800)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
 	spawn(18000)
 		seasons()
 
@@ -45,3 +41,12 @@
 		. = TRUE
 	else
 		. = FALSE
+
+/obj/map_metadata/nomads_asia/seasons()
+	..() //call the parent process, so everything applies as usual
+	if (season ==  "SUMMER" || season == "FALL")
+		for (var/turf/floor/beach/water/flooded/DF) // Directly change, you have no Z levels on your map
+			DF.ChangeTurf(/turf/floor/dirt/flooded)
+	else
+		for (var/turf/floor/dirt/flooded/DF) // Directly change, you have no Z levels on your map
+			DF.ChangeTurf(/turf/floor/beach/water/flooded)
