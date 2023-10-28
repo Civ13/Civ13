@@ -596,6 +596,13 @@
 		else
 			return capitalize(pick(first_names_male_filipino)) + " " + capitalize(pick(last_names_filipino))
 
+/datum/species/proc/get_random_mongolian_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(names_mongolian_female))
+		else
+			return capitalize(pick(names_mongolian_male))
+
 /datum/species/proc/get_random_afrikaans_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)

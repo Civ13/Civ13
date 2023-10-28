@@ -774,6 +774,40 @@
 								name = input_name
 								real_name = input_name
 								return
+//////////////////////////////////////////////////////
+////////////////////////Nomads_Asia///////////////////
+//////////////////////////////////////////////////////
+		else if (map.ID == MAP_NOMADS_ASIA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("desert")
+						add_language("Farsi",TRUE)
+						remove_language("English")
+						for (var/datum/language/farsi/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Farsi")
+						return
+					if ("temperate", "semiarid")
+						add_language("Chinese",TRUE)
+						remove_language("English")
+						for (var/datum/language/chinese/A in languages)
+							default_language = A
+						name = species.get_random_chinese_name(gender)
+						real_name = name
+						add_note("Known Languages", "Chinese")
+						return
+					if ("tundra")
+						add_language("Mongolian",TRUE)
+						remove_language("English")
+						for (var/datum/language/mongolian/A in languages)
+							default_language = A
+						name = species.get_random_mongolian_name(gender)
+						real_name = name
+						add_note("Known Languages", "Mongolian")
+						return
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
