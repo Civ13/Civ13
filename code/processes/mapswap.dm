@@ -307,6 +307,7 @@
 //					MAP_NOMADS_ISLAND = 0,
 					MAP_NOMADS_KARAFUTO = 0,
 					MAP_NOMADS_EUROPE = 10,
+					MAP_NOMADS_ASIA = 10,
 				)
 			if ("Civilization 13 (Colony & Pioneers)")
 				maps = list(
@@ -663,7 +664,7 @@
 			config.disable_fov = FALSE
 			config.no_respawn_delays = FALSE
 			map.gamemode = "Hardcore"
-			global_damage_modifier = 1.30
+			global_damage_modifier = 1.15
 			return
 
 		/// CAPITOL MODES //

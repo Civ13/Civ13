@@ -82,6 +82,16 @@
 	var/full_name = "Daan Visser"
 	return full_name
 
+/datum/language/proc/get_random_afrikaans_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
+		else
+			return capitalize(pick(first_names_male_afrikaans) + " " + capitalize(pick(last_names_afrikaans)))
+	
+	var/full_name = "Jan Botha"
+	return full_name
+
 /datum/language/proc/get_random_japanese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -324,6 +334,16 @@
 	var/full_name = "Isis"
 	return full_name
 
+/datum/language/proc/get_random_mongolian_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(names_mongolian_female))
+		else
+			return capitalize(pick(names_mongolian_male))
+
+	var/full_name = "Chinggis"
+	return full_name
+
 /datum/language/proc/get_random_korean_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -353,6 +373,7 @@
 
 	var/full_name = "Hyung Do Seong"
 	return full_name
+
 
 /datum/language
 	var/list/scramble_cache = list()
@@ -686,6 +707,13 @@
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
+		if (istype(new_language, /datum/language/mongolian))
+			if (ishuman(src))
+				var/mob/living/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_mongolian_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE
