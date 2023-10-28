@@ -262,7 +262,7 @@
 								equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(src), slot_shoes)
 							if (5)
 								equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(src), slot_w_uniform)
-								equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1/gator_cowboy(src) slot_shoes)
+								equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1/gator_cowboy(src), slot_shoes)
 						if (prob(70))
 							var/rand_hat = rand(1,2)
 							switch(rand_hat)
