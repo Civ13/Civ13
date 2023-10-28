@@ -5,7 +5,7 @@
 	lobby_icon = "icons/lobby/stalingrad.png"
 	no_winner ="The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
-	respawn_delay = 0
+	respawn_delay = 600 // 1 minute
 
 	faction_organization = list(
 		GERMAN,

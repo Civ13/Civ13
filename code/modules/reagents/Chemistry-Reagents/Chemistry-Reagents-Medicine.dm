@@ -272,7 +272,7 @@
 /datum/reagent/penicillin
 	name = "penicillin"
 	id = "penicillin"
-	description = "An all-purpose antiviral agent."
+	description = "An all-purpose antibiotic agent."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#C1C1C1"

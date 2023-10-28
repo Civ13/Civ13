@@ -20,7 +20,7 @@
 "at" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "au" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "av" = (/obj/structure/wild/rock,/turf/wall/rockwall,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
-"aw" = (/obj/structure/wild/junglebush/chinchona,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
+"aw" = (/obj/structure/wild/junglebush/cinchona,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "ax" = (/mob/living/simple_animal/frog,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "ay" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "az" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

@@ -244,7 +244,7 @@
 					MAP_GROZNY = 10,
 					MAP_BANK_ROBBERY = 0,
 					MAP_DRUG_BUST = 0,
-					MAP_ARAB_TOWN = 0,
+//					MAP_ARAB_TOWN = 0, Disabled due to recent events
 					MAP_ARAB_TOWN_2 = 0,
 					MAP_HOSTAGES = 0,
 					MAP_SYRIA = 6,
@@ -420,7 +420,7 @@
 				P.amount *= 0.5
 				P.amount = round(P.amount)
 			for (var/obj/structure/wild/junglebush/V)
-				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/cinchona))
 					qdel(V)
 			spawn(10)
 				if (map.ID == MAP_NOMADS_ICE_AGE)
@@ -457,7 +457,7 @@
 				P.amount *= 0.5
 				P.amount = round(P.amount)
 			for (var/obj/structure/wild/junglebush/V)
-				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				if (prob(75) && !istype(V,/obj/structure/wild/junglebush/cinchona))
 					qdel(V)
 			spawn(10)
 				if (map.ID == MAP_NOMADS_ICE_AGE)
@@ -664,7 +664,7 @@
 			config.disable_fov = FALSE
 			config.no_respawn_delays = FALSE
 			map.gamemode = "Hardcore"
-			global_damage_modifier = 1.30
+			global_damage_modifier = 1.15
 			return
 
 		/// CAPITOL MODES //

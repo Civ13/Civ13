@@ -155,9 +155,12 @@
 				else if (faction_text == CIVILIAN && original_job.title == "DRA Sergeant")
 					world << "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>"
 					MP.muj_points += 5
-				else if (faction_text == ARAB && original_job.title == "Mujahideen Leader")
-					MP.sov_points += 10
-					world << "<font color='red' size=3>A <b>Mujahideen Leader</b> has been killed!</font>"
+				else if (faction_text == ARAB && original_job.title == "Mujahideen Warchief")
+					MP.sov_points += 15
+					world << "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>"
+				else if (faction_text == ARAB && original_job.title == "Mujahideen Group Leader")
+					MP.sov_points += 5
+					world << "<font color='red' size=3>The <b>Mujahideen Group Leader</b> has been killed!</font>"
 
 			if (MAP_SEKIGAHARA)
 				if (civilization && civilization in map.scores)
@@ -420,7 +423,7 @@
 
 	if (client)
 		if (map.gamemode == "Hardcore")
-			client.next_normal_respawn = world.realtime+999999
+			client.next_normal_respawn = world.realtime + 999999
 		else
 			if (map.ID == MAP_CAMPAIGN)
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)

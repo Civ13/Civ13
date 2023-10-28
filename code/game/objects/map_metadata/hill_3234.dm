@@ -4,7 +4,7 @@
 	no_winner = "Hill 3234 is still under Soviet control."
 	lobby_icon = "icons/lobby/sovafghan.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 0
+	respawn_delay = 600 // 1 minute
 	victory_time = 24000
 	no_hardcore = TRUE
 
@@ -96,9 +96,6 @@
 		if (J.title == "Spetznaz GRU")
 			J.max_positions = 2
 			J.total_positions = 2
-		if (J.title == "Mujahideen Leader")
-			J.max_positions = 10
-			J.total_positions = 10
 	else
 		. = FALSE
 

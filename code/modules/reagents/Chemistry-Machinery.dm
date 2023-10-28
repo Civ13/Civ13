@@ -680,9 +680,13 @@
 /obj/structure/chem_master/attackby(var/obj/item/weapon/B as obj, var/mob/user as mob)
 	..()
 
-	if (!anchored)
+	if (!anchored && !istype(B,/obj/item/weapon/wrench))
 		user << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
 		return
+	if (istype(B,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
 
 	if (istype(B, /obj/item/weapon/reagent_containers/glass))
 
