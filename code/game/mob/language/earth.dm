@@ -83,7 +83,16 @@
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 40,/datum/language/oldnorse = 15)
+	mutual_intelligibility = list(/datum/language/english = 70, /datum/language/english = 10, /datum/language/german = 40, /datum/language/oldnorse = 15)
+
+/datum/language/afrikaans
+	name = "Afrikaans"
+	desc = "Kom ons rik en rol!"
+	key = "afr"
+	colour = "Afrikaans"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = AFRIKAANS_SYLLABLES
+	mutual_intelligibility = list(/datum/language/dutch = 70)
 
 /datum/language/carib
 	name = "Carib"
@@ -504,13 +513,4 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHECHEN_SYLLABLES
 	mutual_intelligibility = list()
-
-/datum/language/afrikaans
-	name = "Afrikaans"
-	desc = "Kom ons rik en rol!"
-	key = "afr"
-	colour = "Afrikaans"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = AFRIKAANS_SYLLABLES
-	mutual_intelligibility = list(/datum/language/dutch = 10)
 
