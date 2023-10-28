@@ -1592,9 +1592,15 @@
 						else if(nationality == "Ukrainian")
 							holder2.icon_state = "ukr_basic"
 					else if (original_job_title == "Civilization A Citizen")
-						holder2.icon_state = "civ1"
+						if (map.ID == MAP_NATIONSRP_COLDWAR)
+							holder2.icon_state = "us_basic"
+						else
+							holder2.icon_state = "civ1"
 					else if (original_job_title == "Civilization B Citizen")
-						holder2.icon_state = "civ2"
+						if (map.ID == MAP_NATIONSRP_COLDWAR)
+							holder2.icon_state = "sov_basic"
+						else
+							holder2.icon_state = "civ2"
 					else if (original_job_title == "Civilization C Citizen")
 						holder2.icon_state = "civ3"
 					else if (original_job_title == "Civilization D Citizen")
