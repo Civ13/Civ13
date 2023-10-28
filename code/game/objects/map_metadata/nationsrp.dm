@@ -117,6 +117,7 @@
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	grace_wall_timer = 24 HOURS
 
 /obj/map_metadata/nationsrp/coldwar/New()
 	..()
