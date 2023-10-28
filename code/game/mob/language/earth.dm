@@ -38,6 +38,7 @@
 #define DARI_SYLLABLES list("aa", "and", "ba", "bal", "bar", "be", "bi", "bo", "bu", "da", "dar", "de", "di", "do", "du", "fa", "far", "fe", "fi", "fo", "fu", "ga", "gar", "ge", "gi", "go", "gu", "ha", "har", "he", "hi", "ho", "hu", "ja", "jar", "je", "ji", "jo", "ju", "ka", "kar", "ke", "ki", "ko", "ku", "la", "le", "li", "lo", "lu", "ma", "mar", "me", "mi", "mo", "mu", "na", "nar", "ne", "ni", "no", "nu", "pa", "par", "pe", "pi", "po", "pu", "qa", "qe", "qi", "qo", "qu", "ra", "ran", "re", "ri", "ro", "ru", "sa", "sar", "se", "si", "so", "su", "ta", "tar", "te", "ti", "to", "tu", "va", "var", "ve", "vi", "vo", "vu", "ya", "yar", "ye", "yi", "yo", "yu", "za", "zar", "ze", "zi", "zo", "zu", "baa", "bari", "dari", "gar", "gari", "kan", "kar", "mand", "mar", "nand", "par", "sart", "tard", "var", "zand", "zar")
 #define FARSI_SYLLABLES list("ka", "ki", "ku", "ke", "ko", "ma", "mi", "mu", "me", "mo", "ba", "bi", "bu", "be", "bo", "ra", "ri", "ru", "re", "ro", "sa", "si", "su", "se", "so", "ta", "ti", "tu", "te", "to", "za", "zi", "zu", "ze", "zo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "da", "di", "du", "de", "do", "ja", "ji", "ju", "je", "jo", "pa", "pi", "pu", "pe", "po", "kha", "khi", "khu", "khe", "kho", "sha", "shi", "shu", "she", "sho", "qa", "qi", "qu", "qe", "qo", "ha", "hi", "hu", "he", "ho", "la", "li", "lu", "le", "lo", "ma", "mi", "mu", "me", "mo", "ya", "yi", "yu", "ye", "yo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "za", "zi", "zu", "ze", "zo", "fa", "fi", "fu", "fe", "fo", "xa", "xi", "xu", "xe", "xo")
 #define MONGOLIAN_SYLLABLES list("ba", "baa", "be", "bee", "bi", "bii", "bo", "boo", "bu", "buu", "da", "daa", "de", "dee", "di", "dii", "do", "doo", "du", "duu", "ga", "gaa", "ge", "gee", "gi", "gii", "go", "goo", "gu", "guu", "ha", "haa", "he", "hee", "hi", "hii", "ho", "hoo", "hu", "huu", "ka", "kaa", "ke", "kee", "ki", "kii", "ko", "koo", "ku", "kuu", "la", "laa", "le", "lee", "li", "lii", "lo", "loo", "lu", "luu", "ma", "maa", "me", "mee", "mi", "mii", "mo", "moo", "mu", "muu", "na", "naa", "ne", "nee", "ni", "nii", "no", "noo", "nu", "nuu", "pa", "paa", "pe", "pee", "pi", "pii", "po", "poo", "pu", "puu", "qa", "qaa", "qe", "qee", "qi", "qii", "qo", "qoo", "qu", "quu", "ra", "raa", "re", "ree", "ri", "rii", "ro", "roo", "ru", "ruu", "sa", "saa", "se", "see", "si", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
+#define AFRIKAANS_SYLLABLES list("ek", "yk", "my", "eek", "ag", "van", "en", "heid", "al", "oei", "oek", "uur", "er", "net", "het", "hoe", "wat", "en", "alle", "aard", "eer", "nee", "ont", "nee", "yk", "sy", "hy", "sal", "mal", "eyer", "nie", "ja", "ee", "ad", "een", "ol", "ier", "oor", "de", "aar", "aal", "mit", "em", "ie", "alle", "daag", "se", "aer", "ae", "eed")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -82,7 +83,16 @@
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 40,/datum/language/oldnorse = 15)
+	mutual_intelligibility = list(/datum/language/english = 70, /datum/language/english = 10, /datum/language/german = 40, /datum/language/oldnorse = 15)
+
+/datum/language/afrikaans
+	name = "Afrikaans"
+	desc = "Kom ons rik en rol!"
+	key = "afr"
+	colour = "Afrikaans"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = AFRIKAANS_SYLLABLES
+	mutual_intelligibility = list(/datum/language/dutch = 70)
 
 /datum/language/carib
 	name = "Carib"
@@ -503,3 +513,4 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHECHEN_SYLLABLES
 	mutual_intelligibility = list()
+
