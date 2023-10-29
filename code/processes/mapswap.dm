@@ -28,7 +28,7 @@
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
-	var/restart_triggered = TRUE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 
 /process/epochswap/setup()
