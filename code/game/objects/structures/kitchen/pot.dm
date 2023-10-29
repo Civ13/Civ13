@@ -19,7 +19,7 @@
 	var/fullness = 0 // 0 to 100
 	var/bowls = 0
 	var/initial_bowls = 0
-	var/stew_desc = ""
+	var/stew_desc = null
 	var/stew_nutriment = 0
 	var/stew_protein = 0
 	var/water = 0
