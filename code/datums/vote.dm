@@ -144,7 +144,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						world << "Round ending due to vote."
 						log_game("Ending the round due to restart vote.")
 						map.next_win = world.time - 100
-						ticker.finished = TRUE // TO-DO: See if it doesn't affect anything else, but only seems to be in map metadata files.
+						//ticker.finished = TRUE // TO-DO: See if it doesn't affect anything else, but only seems to be in map metadata files.
 						processes.epochswap.admin_triggered = FALSE
 						processes.epochswap.restart_triggered = TRUE
 						processes.epochswap.ready = TRUE
