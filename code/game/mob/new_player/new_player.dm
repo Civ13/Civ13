@@ -671,53 +671,54 @@ var/global/redirect_all_players = null
 							actual_job.spawn_location = "JoinLateDRACap"
 						if (actual_job && actual_job.title == "DRA Soldier")
 							actual_job.spawn_location = "JoinLateDRA"
-
+		if (map)
 // // ONG THAHN - Changes US spawns before gracewall
-		if (map && map.ID == MAP_ONG_THAHN)
-			if (processes.ticker.playtime_elapsed <= 3600 && !map.admin_ended_all_grace_periods)
-				if (actual_job && findtext(href_list["SelectedJob"],"USA"))
-					if (actual_job.uses_squads)
-						actual_job.spawn_location = "JoinLateOutpost1"
+			if (map.ID == MAP_ONG_THAHN)
+				if (processes.ticker.playtime_elapsed <= 3600 && !map.admin_ended_all_grace_periods)
+					if (actual_job && findtext(href_list["SelectedJob"],"USA"))
+						if (actual_job.uses_squads)
+							actual_job.spawn_location = "JoinLateOutpost1"
+
 // BANK ROBBERY - Changes Robber spawns after gracewall
+			if (map.ID == MAP_BANK_ROBBERY)
+				if (processes.ticker.playtime_elapsed >= 3000 || map.admin_ended_all_grace_periods)
+					if (actual_job && actual_job.title == "Bank Robber")
+						actual_job.spawn_location = "JoinLateRU2"
 
-		if (map && map.ID == MAP_BANK_ROBBERY)
-			if (processes.ticker.playtime_elapsed >= 3000 || map.admin_ended_all_grace_periods)
-				if (actual_job && actual_job.title == "Bank Robber")
-					actual_job.spawn_location = "JoinLateRU2"
-
-//prevent boss spawns if there are enemies in the building
-		if (map && map.ID == MAP_CAPITOL_HILL)
-			var/obj/map_metadata/capitol_hill/CP = map
-			if(!istype(map, /obj/map_metadata/capitol_hill/pla_offensive))
-				if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "US HVT"))
+// Prevents bosses and VIP from spawning if there are enemies in the building
+			if (map.ID == MAP_CAPITOL_HILL)
+				var/obj/map_metadata/capitol_hill/CP = map
+				if(!istype(map, /obj/map_metadata/capitol_hill/pla_offensive))
+					if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "US HVT"))
+						WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
+						return
+			if (map.ID == MAP_YELTSIN)
+				var/obj/map_metadata/yeltsin/CP = map
+				if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
 					WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
 					return
-		if (map && map.ID == MAP_YELTSIN)
-			var/obj/map_metadata/yeltsin/CP = map
-			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Soviet Supreme Chairman"))
-				WWalert(usr,"Someone needs to spawn as the HVT first!", "Error")
-				return
-		if (map && map.ID == MAP_WACO)
-			var/obj/map_metadata/waco/CP = map
-			if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Messiah"))
-				WWalert(usr,"Someone needs to spawn as David Koresh first!", "Error")
-				return
-		if (map && map.ID == MAP_DRUG_BUST)
-			var/obj/map_metadata/drug_bust/CP = map
-			if (isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Vyacheslav Grigoriev"))
-				WWalert(usr,"Someone needs to spawn as \"Tatarin\" first!", "Error")
-				return
-		if (map && map.ID == MAP_ALLEYWAY)
-			if (actual_job && actual_job.title == "Yama Wakagashira")
-				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
-					if (HM.original_job.is_ichi)
-						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
-						return
-			if (actual_job.title == "Ichi Wakagashira")
-				for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_one))
-					if (HM.original_job.is_yama)
-						WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
-						return
+			if (map.ID == MAP_WACO)
+				var/obj/map_metadata/waco/CP = map
+				if (CP.gamemode == "Protect the VIP" && isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Messiah"))
+					WWalert(usr,"Someone needs to spawn as David Koresh first!", "Error")
+					return
+			if (map.ID == MAP_DRUG_BUST)
+				var/obj/map_metadata/drug_bust/CP = map
+				if (isemptylist(CP.HVT_list) && (actual_job && actual_job.title != "Vyacheslav Grigoriev"))
+					WWalert(usr,"Someone needs to spawn as \"Tatarin\" first!", "Error")
+					return
+			if (map.ID == MAP_ALLEYWAY)
+				if (actual_job && actual_job.title == "Yama Wakagashira")
+					for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_two))
+						if (HM.original_job.is_ichi)
+							WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+							return
+				if (actual_job.title == "Ichi Wakagashira")
+					for(var/mob/living/human/HM in get_area_turfs(/area/caribbean/houses/nml_one))
+						if (HM.original_job.is_yama)
+							WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
+							return
+
 		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist && clients.len > 12)
 			var/found = FALSE
 			for (var/i in whitelist_list)
@@ -1322,103 +1323,135 @@ var/global/redirect_all_players = null
 			if (job.base_type_flag() != prev_side)
 				prev_side = job.base_type_flag()
 				var/temp_name = job.get_side_name()
-				if (map && map.ID == "ARAB_TOWN" && temp_name == "American")
-					temp_name = "Israeli"
-				else if (map && map.ID == "AFRICAN_WARLORDS")
-					if (temp_name == "Indians")
-						temp_name = "Blugisi"
-					else if (temp_name == "Civilian")
-						temp_name = "Yellowagwana"
-				else if (map && map.ID == "TADOJSVILLE")
-					if (temp_name == "Indians")
-						temp_name = "Mercenary Warband"
-					else if (temp_name == "Civilian")
-						temp_name = "United Nations Peacekeepers"
-				else if (map && map.ID == "MISSIONARY_RIDGE")
-					if (temp_name == "American")
-						temp_name = "Union"
-					else if (temp_name == "Civilian")
-						temp_name = "Confederate"
-				else if (map && map.ID == "WHITERUN")
-					if (temp_name == "Roman")
-						temp_name = "Imperials"
-					else if (temp_name == "Civilian")
-						temp_name = "Stormcloaks"
-				else if (map && map.ID == "SYRIA")
-					if (temp_name == "American")
-						temp_name = "Free Syrian Army"
-					else if (temp_name == "Arab")
-						temp_name = "Syrian Arab Republic"
-				else if (map && map.ID == "CAPITOL_HILL")
-					if (temp_name == "American")
-						temp_name = "American Government"
-					else if (temp_name == "Civilian")
-						temp_name = "Rioters"
-				else if (map && map.ID == "YELTSIN")
-					if (temp_name == "Russian")
-						temp_name = "Russian Army"
-					else if (temp_name == "Civilian")
-						temp_name = "Soviet Militia"
-				else if (map && (map.ID == "KANDAHAR" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL"))
-					if (temp_name == "Russian")
-						temp_name = "Soviet Army"
-					else if (temp_name == "Arab")
-						temp_name = "Mujahideen"
-					else if (temp_name == "Civilian")
-						temp_name = "DRA and Civilians"
-				else if (map && map.ID == "TANTIVEIV")
-					if (temp_name == "Civilian")
-						temp_name = "Rebels"
-					else if (temp_name == "American")
-						temp_name = "Imperials"
-				else if (map && map.ID == "RED_MENACE")
-					if (temp_name == "Russian")
-						temp_name = "Soviets"
-				else if (map && map.ID == "RUHR_UPRISING")
-					if (temp_name == "German")
-						temp_name = "Reactionaries"
-					if (temp_name == "Civilian")
-						temp_name = "Revolutionaries"
-				else if (map && map.ID == "BANK_ROBBERY")
-					if (temp_name == "Civilian")
-						temp_name = "Police Department"
-					if (temp_name == "Russian")
-						temp_name = "Robbers"
-				else if (map && map.ID == "DRUG_BUST")
-					if (temp_name == "Civilian")
-						temp_name = "Police and Federal Agents"
-					if (temp_name == "Russian")
-						temp_name = "Rednikov Mobsters"
-				else if (map && map.ID == "CLASH")
-					if (temp_name == "Norwegian")
-						temp_name = "Bear Clan"
-					if (temp_name == "Danish")
-						temp_name = "Raven Clan"
-				else if (map && map.ID == "EAST_LOS_SANTOS")
-					if (temp_name == "Indians")
-						temp_name = "Ballas"
-					if (temp_name == "American")
-						temp_name = "Grove Street Families"
-				else if (map && map.ID == "LONG_MARCH")
-					if (temp_name == "Civilian")
-						temp_name = "Chinese Red Army"
-					if (temp_name == "Chinese")
-						temp_name = "Chinese National Army"
-				else if (map && map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-					if (temp_name == "Civilian")
-						temp_name = "Blugoslavia"
-					if (temp_name == "Pirates")
-						temp_name = "Redmenia"
-				else if (map && map.ID == MAP_ROTSTADT)
-					if (temp_name == "Civilian")
-						temp_name = "Blugoslavian Armed Forces"
-					if (temp_name == "Pirates")
-						temp_name = "Rotstadt People's Republic"
-				else if (map && map.ID == "MAP_HOLDMADRID")
-					if (temp_name == "Civilian")
-						temp_name = "Republican"
-					if (temp_name == "Spanish")
-						temp_name = "Spanish"
+				if (map)
+					switch (map.ID)
+						if (MAP_ARAB_TOWN)
+							if (temp_name == "American")
+								temp_name = "Israeli"
+						if (MAP_AFRICAN_WARLORDS)
+							if (temp_name == "Indians")
+								temp_name = "Blugisi"
+							else if (temp_name == "Civilian")
+								temp_name = "Yellowagwana"
+						if (MAP_TADOJSVILLE)
+							if (temp_name == "Indians")
+								temp_name = "Mercenary Warband"
+							else if (temp_name == "Civilian")
+								temp_name = "United Nations Peacekeepers"
+						if (MAP_MISSIONARY_RIDGE)
+							if (temp_name == "American")
+								temp_name = "Union"
+							else if (temp_name == "Civilian")
+								temp_name = "Confederate"
+						if (MAP_WHITERUN)
+							if (temp_name == "Roman")
+								temp_name = "Imperials"
+							else if (temp_name == "Civilian")
+								temp_name = "Stormcloaks"
+						if (MAP_SYRIA)
+							if (temp_name == "American")
+								temp_name = "Free Syrian Army"
+							else if (temp_name == "Arab")
+								temp_name = "Syrian Arab Republic"
+						if (MAP_CAPITOL_HILL)
+							if (temp_name == "American")
+								temp_name = "American Government"
+							else if (temp_name == "Civilian")
+								temp_name = "Rioters"
+						if (MAP_YELTSIN)
+							if (temp_name == "Russian")
+								temp_name = "Russian Army"
+							else if (temp_name == "Civilian")
+								temp_name = "Soviet Militia"
+
+						if (MAP_KANDAHAR)
+							if (temp_name == "Russian")
+								temp_name = "Soviet Army"
+							else if (temp_name == "Arab")
+								temp_name = "Mujahideen"
+							else if (temp_name == "Civilian")
+								temp_name = "DRA and Civilians"
+						if (MAP_HILL_3234)
+							if (temp_name == "Russian")
+								temp_name = "Soviet Army"
+							else if (temp_name == "Arab")
+								temp_name = "Mujahideen"
+							else if (temp_name == "Civilian")
+								temp_name = "DRA and Civilians"
+						if (MAP_MAGISTRAL)
+							if (temp_name == "Russian")
+								temp_name = "Soviet Army"
+							else if (temp_name == "Arab")
+								temp_name = "Mujahideen"
+							else if (temp_name == "Civilian")
+								temp_name = "DRA and Civilians"
+						
+						if (MAP_RED_MENACE)
+							if (temp_name == "Russian")
+								temp_name = "Soviets"
+						if (MAP_TANTIVEIV)
+							if (temp_name == "Civilian")
+								temp_name = "Rebels"
+							else if (temp_name == "American")
+								temp_name = "Imperials"
+						if (MAP_RUHR_UPRISING)
+							if (temp_name == "German")
+								temp_name = "Reactionaries"
+							if (temp_name == "Civilian")
+								temp_name = "Revolutionaries"
+						if (MAP_BANK_ROBBERY)
+							if (temp_name == "Civilian")
+								temp_name = "Police Department"
+							if (temp_name == "Russian")
+								temp_name = "Robbers"
+						if (MAP_DRUG_BUST)
+							if (temp_name == "Civilian")
+								temp_name = "Police and Federal Agents"
+							if (temp_name == "Russian")
+								temp_name = "Rednikov Mobsters"
+						if (MAP_CLASH)
+							if (temp_name == "Norwegian")
+								temp_name = "Bear Clan"
+							if (temp_name == "Danish")
+								temp_name = "Raven Clan"
+						if (MAP_EAST_LOS_SANTOS)
+							if (temp_name == "Indians")
+								temp_name = "Ballas"
+							if (temp_name == "American")
+								temp_name = "Grove Street Families"
+						if (MAP_LONG_MARCH)
+							if (temp_name == "Civilian")
+								temp_name = "Chinese Red Army"
+							if (temp_name == "Chinese")
+								temp_name = "Chinese National Army"
+
+						if (MAP_CAMPAIGN)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
+						if (MAP_NOMADS_PERSISTENCE_BETA)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
+						if (MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
+
+						if (MAP_ROTSTADT)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavian Armed Forces"
+							if (temp_name == "Pirates")
+								temp_name = "Rotstadt People's Republic"
+						if (MAP_HOLDMADRID)
+							if (temp_name == "Civilian")
+								temp_name = "Republican"
+							if (temp_name == "Spanish")
+								temp_name = "Spanish"
+
 				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
 					dat += "<br>[side_name]"
@@ -1440,7 +1473,7 @@ var/global/redirect_all_players = null
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>[end_extra_span]"
 					++available_jobs_per_side[job.base_type_flag()]
-	if(map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		dat += "&[CIVILIAN]&<b><a style=\"background-color:#010203;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
 	dat += "</center>"
 
