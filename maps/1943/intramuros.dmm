@@ -44,7 +44,7 @@
 "aR" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
 "aS" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
 "aT" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
-"aU" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4; climbable = 0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/cannon{dir = 4; icon = 'icons/obj/cannon_h.dmi'; icon_state = "cannon"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/outside)
+"aU" = (/obj/structure/window/barrier/railing/stone{icon_state = "stone"; dir = 4; climbable = 0},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/cannon{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/outside)
 "aV" = (/obj/structure/radio/receiver/loudspeaker/faction1{icon_state = "loudspeaker"; dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
 "aW" = (/obj/structure/closet/coffin,/mob/living/human/corpse/ww2_jap_sl,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
 "aX" = (/obj/structure/closet/coffin,/mob/living/human/corpse/ww2_jap_mg,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/japanese/land/inside)
