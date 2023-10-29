@@ -28,6 +28,7 @@
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
+	var/restart_triggered = TRUE
 	var/finished_at = -1
 
 /process/epochswap/setup()
@@ -114,7 +115,7 @@
 	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
-		if (admin_triggered)
+		if (admin_triggered || restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
