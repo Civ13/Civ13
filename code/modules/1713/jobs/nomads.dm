@@ -3,6 +3,10 @@
 	real_name = name
 
 /mob/living/human/proc/give_clothes()
+	if (map.chad_mode)
+		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
+		equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
+		return
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
@@ -20,25 +24,8 @@
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
 			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
 			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
-	if (map.chad_mode)
-		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
-	if (!map.chad_mode)
-
-//knives and other tools/////////////////////////////////////////////////
-//knives removed since flint was introduced
-/*
-		if (map.civilizations && map.ID != MAP_NOMADS_MOUNTAIN)
-			if (map.ordinal_age == 0)
-				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
-			else if (map.ordinal_age == 1)
-				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_belt)
-			else if (map.ordinal_age == 2)
-				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_belt)
-			else if (map.ordinal_age >= 3)
-				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_belt)
-*/
-//clothes/////////////////////////////////////////////////
-		if (map.ordinal_age == 0)
+	switch (map.ordinal_age)
+		if (0)
 			if (map && map.ID == MAP_NOMADS_ISLAND)
 				if (gender=="male")
 					equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
@@ -47,12 +34,12 @@
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 
-		else if (map.ordinal_age == 1)
+		if (1)
 			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
-		else if (map.ordinal_age == 2)
+		if (2)
 			if (map && map.ID == MAP_CIVILIZATIONS)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				spawn(5)
@@ -98,8 +85,32 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-
-		else if (map.ordinal_age == 3)
+			else if (map.ID == MAP_NOMADS_ASIA)
+				var/area/mob_area = get_area(src)
+				if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/steppe_tunic(src), slot_w_uniform)
+				else if (mob_area.climate == "desert")
+					var/rand_uni = rand(1,3)
+					switch(rand_uni)
+						if (1)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(src), slot_w_uniform)
+						if (2)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
+						if (3)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(src), slot_shoes)
+					equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(src), slot_head)
+			else
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf3(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+		if (3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
@@ -180,7 +191,7 @@
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 
-		else if (map.ordinal_age == 4)
+		if (4)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
 			else
@@ -189,7 +200,7 @@
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 
-		else if (map.ordinal_age == 5)
+		if (5)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
@@ -198,8 +209,8 @@
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
-		else if (map.ordinal_age == 6)
-			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR)
+		if (6)
+			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2) // TODO: separate all NATIONSRP maps to appropriate ages
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 				spawn(5)
 					if (gender == "male")
@@ -231,8 +242,7 @@
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
-
-		else if (map.ordinal_age == 7)
+		if (7)
 			if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
 				spawn(5)
@@ -314,7 +324,7 @@
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
-		else if (map.ordinal_age == 8)
+		if (8)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
 				spawn(5)
@@ -333,25 +343,22 @@
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
-	else
-		if (s_tone <= -175)
-			equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
-
 
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
 		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
-			if (map.ordinal_age <= 4)
-				if (map.ordinal_age == 0)
-					equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
-				else
-					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-			else if (map.ordinal_age >= 5)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(src), slot_shoes)
-			update_inv_wear_suit(1)
+			if (map.ID != MAP_NOMADS_ASIA)
+				if (map.ordinal_age <= 4)
+					if (map.ordinal_age == 0)
+						equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
+					else
+						equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				else if (map.ordinal_age >= 5)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(src), slot_shoes)
+				update_inv_wear_suit(1)
 		else if (mob_area.climate == "desert")
 			if (map.ordinal_age > 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)

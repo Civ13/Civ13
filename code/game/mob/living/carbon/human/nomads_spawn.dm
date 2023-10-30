@@ -951,9 +951,9 @@
 				name = species.get_random_mongolian_name(gender)
 				real_name = name
 				add_note("Known Languages", "Mongolian")
-				possible_h_list = list("Black", "Dark Brown","Blond","Dirty Blond")
+				possible_h_list = list("Black", "Dark Brown")
 				possible_e_list = list("Blue","Brown")
-				possible_s_list = list(-10,-28)
+				possible_s_list = list(-25,-60)
 			if ("desert")
 				add_language("Farsi",TRUE)
 				remove_language("English")
@@ -963,10 +963,9 @@
 				name = species.get_random_arab_name(gender)
 				real_name = name
 				add_note("Known Languages", "Farsi")
-				possible_h_list = list("Light Brown","Dark Brown")
+				possible_h_list = list("Black","Light Brown","Dark Brown")
 				possible_e_list = list("Green","Brown","Black")
-				possible_s_list = list(-35,-60)
-
+				possible_s_list = list(-35,-80)
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
 		s_tone = rand(possible_s_list[2],possible_s_list[1])
