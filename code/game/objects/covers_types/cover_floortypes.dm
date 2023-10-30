@@ -812,6 +812,16 @@
 	layer = 1.99
 	flammable = TRUE
 
+/obj/covers/disco
+	name = "disco floor"
+	desc = "Get your groove on."
+	icon_state = "disco1"
+	material = "Steel"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	layer = 1.99
+
 /obj/covers/catwalk
 	name = "catwalk"
 	desc = "A cat wouldn't like this"

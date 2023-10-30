@@ -2388,10 +2388,7 @@
 /datum/job/civilian/businessman/mckellen/manager/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.add_note("Role", "You are a part of McKellen's Entreprises. Your goal is to manage the restaurant and produce illegal substances secretly, while also attempting to extort other businesses for their revenue and criminal power.")
-
-
 //clothes
-
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
@@ -2876,7 +2873,6 @@
 	is_deal = TRUE
 	is_vip = TRUE
 
-
 	min_positions = 1
 	max_positions = 1
 
@@ -3097,7 +3093,6 @@
 			uniform1.attackby(armband, H)
 			if (H.h_style != "Mohawk")
 				H.h_style = "Mohawk"
-
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless(H), slot_gloves)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/beggar_clothing, slot_w_uniform)
@@ -3115,7 +3110,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket, slot_wear_suit)
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/fingerless, slot_gloves)
 			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey, slot_l_hand)
-
 	if (prob(60))
 		var/randaddiction = rand(1,4)
 		switch(randaddiction)
@@ -3136,46 +3130,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_LOW)
-/*
-/datum/job/civilian/fireperson
-	title = "Fire Response"
-	en_meaning = ""
-	rank_abbreviation = "Fire Response"
-	whitelisted = TRUE
-	spawn_location = "JoinLateCivH"
-	selection_color = "#880000"
-	is_deal = TRUE
-	can_be_female = TRUE
-	min_positions = 3
-	max_positions = 15
 
-/datum/job/civilian/fireperson/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.civilization = "Fire Response"
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/oldfirefighter(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/ointment(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/modern2(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionpolice(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/twohanded/fireaxe(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/fire_extinguisher(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/nbc/olive/fire(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/nbc/olive/fire(H), slot_head)
-	H.add_note("Role", "You are a fireperson. Put out fires, fix broken roads, coordinate with other emergency services, and try to keep everyone safe.")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_HIGH)
-	spawn(50)
-		H.client.screen += new/obj/screen/areashow_aod("Area Location","8,14", H, null, "")
-*/
 /datum/job/civilian/businessman/legitimate
 	title = "Legitimate Business"
 	selection_color = "#6f4e37"
@@ -3191,19 +3146,17 @@
 	H.equip_to_slot_or_del(new /obj/item/stack/money/dollar/onehundy(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/telephone/mobile(H), slot_r_store)
 	H.add_note("Role", "You are a legitimate business person. Find a business to invest in or start your own.")
-
-
-
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 //suit
-	var/randsuit = pick(1,2,3)
-	if (randsuit == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
-	else if (randsuit == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
+	var/randsuit = rand(1,3)
+	switch(randsuit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/charcoal_suit(H), slot_wear_suit)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/black_suit(H), slot_wear_suit)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/navy_suit(H), slot_wear_suit)
 //glasses
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
@@ -3232,7 +3185,7 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
