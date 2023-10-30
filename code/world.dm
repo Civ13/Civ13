@@ -305,7 +305,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += ";"
 	. += "round_timer=[roundduration2text()]"
 	. += ";" 
-	. += "ckey_list= [list2params(clients)]"
+	. += "ckey_list=[list2params(clients)]"
 	. += ";"
 	if (map)
 		. += "map=[map.title]"
