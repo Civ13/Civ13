@@ -2,7 +2,7 @@
 	ID = MAP_THE_ART_OF_THE_DEAL
 	title = "The Art of the Deal"
 	lobby_icon = "icons/lobby/taotd.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 3000
 	is_singlefaction = TRUE
 	has_hunger = TRUE
@@ -193,6 +193,13 @@
 					H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
 					H.next_gracewall_message = world.time + 10
 				return TRUE
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.civilization == "Sheriff Office")
+				if (!H.is_undercover)
+					if (world.time >= H.next_gracewall_message)
+						H << "<span class = 'warning'>That area is out of jurisdiction, at least, on duty...</span>"
+						H.next_gracewall_message = world.time + 10
+					return TRUE
 		return !faction1_can_cross_blocks()
 	return FALSE
 
@@ -678,6 +685,7 @@
 	return "[a][b]"
 
 /mob/living/human/var/hidden_name = ""
+/mob/living/human/var/is_undercover = FALSE
 
 /mob/living/human/proc/undercover()
 	set category = "IC"
@@ -708,6 +716,7 @@
 		name = chosen_name
 		real_name = chosen_name
 		voice = chosen_name
+		is_undercover = TRUE
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
@@ -719,6 +728,7 @@
 			real_name = "Detective [hidden_name]"
 			name = "Detective [hidden_name]"
 			voice = "Detective [hidden_name]"
+		is_undercover = FALSE
 		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
 
@@ -1497,3 +1507,21 @@
 					user << "\icon[src] There's [count_d] illegal disks in circulation right now."
 					intel_cooldown = world.time + 6000
 					return
+
+/obj/structure/npc_vendor/bouncer
+	name = "Marcellus"
+	desc = "Your \"friendly\" neighborhood bouncer. Your wife loves him."
+	icon_state = "bouncer"
+
+/obj/structure/npc_vendor/bouncer/attack_hand(mob/living/human/user as mob)
+	user << "\icon[src] No weapons, no drugs inside the club, else I'll make you drop the soap."
+	return
+
+/obj/structure/npc_vendor/big_lenny
+	name = "Big Lenny"
+	desc = "A barber that likes to relax."
+	icon_state = "big_lenny"
+
+/obj/structure/npc_vendor/big_lenny/attack_hand(mob/living/human/user as mob)
+	user << "\icon[src] Shiieeet, come back another time, I'm taking a nap."
+	return
