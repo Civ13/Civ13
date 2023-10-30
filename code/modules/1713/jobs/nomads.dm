@@ -86,6 +86,7 @@
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			else if (map.ID == MAP_NOMADS_ASIA)
+				var/area/mob_area = get_area(src)
 				if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/steppe_tunic(src), slot_w_uniform)
@@ -97,7 +98,7 @@
 						if (2)
 							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(src), slot_w_uniform)
 						if (3)
-							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(src), slot_w_uniform)<w
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(src), slot_w_uniform)
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal/leather(src), slot_shoes)
