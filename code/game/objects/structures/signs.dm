@@ -492,6 +492,11 @@
 	desc = "A sign indicating something for rent."
 	icon_state = "rent"
 
+/obj/structure/sign/donut_shop
+	name = "Randy's Donuts"
+	desc = "A donut and pastries franchise."
+	icon_state = "donut_shop"
+
 /obj/structure/sign/deer_trophy
 	name = "hunting deer trophy"
 	desc = "Looks like we finally found Bambi..."
