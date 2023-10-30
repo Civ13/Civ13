@@ -628,7 +628,23 @@
 	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
 	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 20,
 	)
-
+/obj/structure/vending/sales/menu/donuts
+	products = list(
+	/obj/item/weapon/storage/fancy/donut_box = 30,
+	/obj/item/weapon/reagent_containers/food/snacks/cheesecakeslice = 10,
+	/obj/item/weapon/reagent_containers/food/snacks/chocolatecakeslice = 10,
+	/obj/item/weapon/reagent_containers/food/snacks/muffin = 15,
+	/obj/item/weapon/reagent_containers/food/drinks/coffee = 20,
+	/obj/item/weapon/reagent_containers/food/condiment/bsugar = 30,
+	)
+	prices = list(
+	/obj/item/weapon/storage/fancy/donut_box = 60,
+	/obj/item/weapon/reagent_containers/food/snacks/cheesecakeslice = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/chocolatecakeslice = 40,
+	/obj/item/weapon/reagent_containers/food/snacks/muffin = 40,
+	/obj/item/weapon/reagent_containers/food/drinks/coffee = 20,
+	/obj/item/weapon/reagent_containers/food/condiment/bsugar = 20,
+	)
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
