@@ -27,7 +27,7 @@
 "aaK" = (/obj/covers/repairedfloor/ship,/obj/covers/steelplating,/obj/structure/barricade/steel,/obj/structure/window/classic/reinforced,/obj/structure/curtain/open/bed,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
 "aaL" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "aaM" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"aaN" = (/obj/structure/table/modern,/obj/item/weapon/reagent_containers/pill/pervitin{name = "Methamphetamine pill"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"aaN" = (/obj/structure/table/modern,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "aaO" = (/obj/covers/repairedfloor/ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/fork,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
 "aaP" = (/obj/covers/repairedfloor/ship,/obj/structure/bed/chair/wood/red,/turf/floor/plating/tiled/woodh,/area/caribbean/roofed/temperate)
 "aaQ" = (/obj/structure/sign/painting9{pixel_y = 32},/turf/floor/carpet/redcarpet,/area/caribbean/roofed)
