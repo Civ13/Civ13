@@ -368,8 +368,8 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-		 user << "You do not have access to this."
-		 return
+			user << "You do not have access to this."
+			return
 
 /obj/structure/vending/sales/business_weapons
 	name = "weapon and ammo rack"
@@ -416,14 +416,14 @@
 		if (user.gun_permit)
 			..()
 		else
-		 user << "You do not have a valid gun permit. Get one first from your local police station."
-		 return
+			user << "You do not have a valid gun permit. Get one first from your local police station."
+			return
 	attackby(obj/item/I, mob/living/human/user)
 		if (user.gun_permit)
 			..()
 		else
-		 user << "You do not have a valid gun permit. Get one first from your local police station."
-		 return
+			user << "You do not have a valid gun permit. Get one first from your local police station."
+			return
 /obj/structure/vending/police_equipment
 	name = "police equipment"
 	desc = "All the equipment to keep your officers in top shape."
@@ -461,8 +461,8 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-		 user << "You do not have access to this."
-		 return
+			user << "You do not have access to this."
+			return
 
 /obj/structure/vending/police_weapons
 	name = "lethal police weapons"
@@ -485,8 +485,8 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-		 user << "You do not have access to this."
-		 return
+			user << "You do not have access to this."
+			return
 
 /obj/structure/vending/police_weapons/ltl
 	name = "less than lethal police weapons"
@@ -515,8 +515,8 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-		 user << "You do not have access to this."
-		 return
+			user << "You do not have access to this."
+			return
 /obj/item/weapon/package
 	name = "package"
 	desc = "Some kind of package."
@@ -736,14 +736,15 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		if (jobtype == "Deputy")
-			real_name = "Deputy [hidden_name]"
-			name = "Deputy [hidden_name]"
-			voice = "Deputy [hidden_name]"
-		else
-			real_name = "Detective [hidden_name]"
-			name = "Detective [hidden_name]"
-			voice = "Detective [hidden_name]"
+		switch(jobtype)
+			if ("Deputy")
+				real_name = "Deputy [hidden_name]"
+				name = "Deputy [hidden_name]"
+				voice = "Deputy [hidden_name]"
+			if ("Detective")
+				real_name = "Detective [hidden_name]"
+				name = "Detective [hidden_name]"
+				voice = "Detective [hidden_name]"
 		is_undercover = FALSE
 		src << "<b><big>You are now revealing your identity again.</big></b>"
 		return
@@ -1057,7 +1058,7 @@
 	icon_state = "bruce"
 	var/biker_cooldown = 0
 	var/buying_price1 = 50
-	var/buying_price2 = 70
+	var/buying_price2 = 65
 	var/list/reputation = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,
@@ -1112,7 +1113,7 @@
 					if (P.reagents.get_reagent_amount("cocaine")>= 25)
 						qdel(P)
 						var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-						D.amount = (buying_price2+min(src.reputation[user.civilization],30))/(D.value/5)
+						D.amount = (buying_price2+min(src.reputation[user.civilization],15))/(D.value/5)
 						if (D.amount == 0)
 							qdel(D)
 						user.put_in_hands(D)
@@ -1222,6 +1223,11 @@
 	desc = "Plata or plomo? I've got the product."
 	icon_state = "cartel"
 	var/cartel_cooldown = 0
+	var/heat_message_cooldown = list(
+		"Rednikov Industries" = 0,
+		"Giovanni Blu Stocks" = 0,
+		"Kogama Kraftsmen" = 0,
+		"Goldstein Solutions" = 0,)
 	var/list/reputation = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,
@@ -1238,70 +1244,78 @@
 		return
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		var/obj/map_metadata/art_of_the_deal/AD = map
+		if (AD.heat[user.civilization] >= 35 && AD.heat[user.civilization] < 40)
+			user << SPAN_NOTICE("\icon[src] You should start being more careful with what you've got going. Maybe someone can help you go under the radar.")
 		if (AD.heat[user.civilization] >= 40)
 			user << SPAN_WARNING("\icon[src] Chico, you'll get us busted by the feds. They are watching you close!")
-			if (prob(80))
+			if (prob(80) && world.time >= heat_message_cooldown[user.civilization])
 				spawn(300)
 					if (prob(50))
-						global_broadcast(FREQP,"<big> The DEA informs the local authorities that the company [user.civilization] is involved in drug trafficking. Pay close attention to their activities.</big>")
+						global_broadcast(FREQP,"<big> The DEA informs the local authorities that the company [user.civilization] <b>may be</b> involved in drug trafficking. Pay close attention to their activities.</big>")
 					else
-						global_broadcast(FREQP,"<big> The DEA informs the local authorities that [user.real_name], working for [user.civilization], is involved in drug trafficking. Detain and search the suspect.</big>")
+						global_broadcast(FREQP,"<big> The DEA informs the local authorities that [user.real_name], working for [user.civilization], <b>may be</b> involved in drug trafficking. Surveillance of the individual is required, detain and search if necessary.</big>")
+					heat_message_cooldown[user.civilization] = world.time + 1200
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
-		if (reputation[user.civilization] < 10)
-			buy_list = list("Cancel","1 gram")
-		else if (reputation[user.civilization] < 30)
-			buy_list = list("Cancel","1 gram","10 grams")
-		else
-			buy_list = list("Cancel","1 gram","10 grams","a block")
+		switch (reputation[user.civilization])
+			if (0 to 14)
+				buy_list = list("Cancel","1 gram")
+			if (15 to 29)
+				buy_list = list("Cancel","1 gram","10 grams")
+			if (30 to INFINITY)
+				buy_list = list("Cancel","1 gram","10 grams","a block")
 		var/choice = WWinput(user, "What do you want to buy?", "Cartel Member", "Cancel", buy_list)
-		if (choice == "Cancel" || !choice)
+		if (!choice)
 			return
-		else if (choice == "1 gram")
-			var/gram_price = 70
-			if (reputation[user.civilization] >= 10)
-				gram_price = max(50, 70-reputation[user.civilization])
-			if (M && M.value*M.amount >= gram_price*4)
-				M.amount -= gram_price/5
-				if (M.amount <= 0)
-					qdel(M)
-				var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
-				user.put_in_hands(one_g)
-				reputation[user.civilization] += 1
-				if (prob(40))
+		switch (choice)
+			if ("Cancel")
+				return
+			if ("1 gram")
+				var/gram_price = 70
+				if (reputation[user.civilization] >= 10)
+					gram_price = max(50, 70-Floor(reputation[user.civilization]/2))
+				if (M && M.value*M.amount >= gram_price*4)
+					M.amount -= gram_price/5
+					if (M.amount <= 0)
+						qdel(M)
+					var/obj/item/weapon/reagent_containers/pill/cocaine/one_g = new /obj/item/weapon/reagent_containers/pill/cocaine(null)
+					user.put_in_hands(one_g)
+					if (prob(50))
+						reputation[user.civilization] += 1
+					if (prob(40))
+						if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+							var/obj/map_metadata/art_of_the_deal/AD = map
+							AD.heat[user.civilization] += 1
+				else
+					user << "\icon[src] Not enough money, maricon."
+			if ("10 grams")
+				var/tenner_price = 600
+				if (reputation[user.civilization] >= 20)
+					tenner_price = max(500, tenner_price-(2*reputation[user.civilization]))
+				if (M && M.value*M.amount >= tenner_price*4)
+					M.amount-=tenner_price/5
+					if (M.amount <= 0)
+						qdel(M)
+					var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
+					user.put_in_hands(briefcase)
+					reputation[user.civilization] += 1
 					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 						var/obj/map_metadata/art_of_the_deal/AD = map
-						AD.heat[user.civilization] += 1
-			else
-				user << "\icon[src] Not enough money, maricon."
-		else if (choice == "10 grams")
-			var/tenner_price = 600
-			if (reputation[user.civilization] >= 30)
-				tenner_price = max(500, tenner_price-(2*reputation[user.civilization]))
-			if (M && M.value*M.amount >= 600*4)
-				M.amount-=600/5
-				if (M.amount <= 0)
-					qdel(M)
-				var/obj/item/weapon/storage/briefcase/cocaine_10/briefcase = new /obj/item/weapon/storage/briefcase/cocaine_10(null)
-				user.put_in_hands(briefcase)
-				reputation[user.civilization] += 2
-				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-					var/obj/map_metadata/art_of_the_deal/AD = map
-					AD.heat[user.civilization] += 5
-			else
-				user << "\icon[src] Not enough money, maricon."
-		else if (choice == "a block")
-			if (M && M.value*M.amount >= 1200*4)
-				M.amount-=1200/5
-				if (M.amount <= 0)
-					qdel(M)
-				var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
-				user.put_in_hands(block)
-				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-					var/obj/map_metadata/art_of_the_deal/AD = map
-					AD.heat[user.civilization] += 10
-			else
-				user << "\icon[src] Not enough money, maricon."
+						AD.heat[user.civilization] += 5
+				else
+					user << "\icon[src] Not enough money, maricon."
+			if ("a block")
+				if (M && M.value*M.amount >= 1200*4)
+					M.amount-=1200/5
+					if (M.amount <= 0)
+						qdel(M)
+					var/obj/item/weapon/reagent_containers/cocaineblock/block = new /obj/item/weapon/reagent_containers/cocaineblock/(null)
+					user.put_in_hands(block)
+					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+						var/obj/map_metadata/art_of_the_deal/AD = map
+						AD.heat[user.civilization] += 10
+				else
+					user << "\icon[src] Not enough money, maricon."
 		return
 	else
 		return
@@ -1366,6 +1380,7 @@
 			M.amount -= chemical_price/5
 			if (M.amount <= 0)
 				qdel(M)
+			walter_cooldown = world.time + 600
 			return
 		if ("Buy explosives")
 			var/c4_price = 900
