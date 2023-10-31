@@ -947,12 +947,21 @@
 			visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
 			stopmovementloop()
 			driver.SpinAnimation(5,1)
-			if (isturf(locate(x+1,y,z)))
-				driver.forceMove(locate(x+1,y,z))
-			else if (isturf(locate(x-1,y,z)))
-				driver.forceMove(locate(x+1,y,z))
-			else
+			var/list/turf/emptyTurfs = new
+			for(var/turf/TT in range(1,src))
+				var/invalid = FALSE
+				if (istype(TT, /turf/wall) || istype(TT, /turf/floor/dirt/underground) || istype (TT, /turf/floor/beach/water))
+					invalid = TRUE
+				for(var/obj/structure/OB in TT)
+					invalid = TRUE
+				for(var/obj/covers/OB in TT)
+					invalid = TRUE
+				if (!invalid)
+					emptyTurfs += TT
+			if (!emptyTurfs.len)
 				driver.forceMove(locate(x,y,z))
+			else
+				driver.forceMove((pick(emptyTurfs)))
 			driver.Weaken(5)
 			driver.adjustBruteLoss(rand(8,19))
 			if (!driver.head)
