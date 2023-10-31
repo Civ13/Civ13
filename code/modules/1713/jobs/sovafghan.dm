@@ -1654,7 +1654,7 @@
 
 	spawn_location = "JoinLateAR"
 	is_officer = TRUE
-	is_
+	is_commander = TRUE
 	is_afghan = TRUE
 	is_muj = TRUE
 	is_coldwar = TRUE
