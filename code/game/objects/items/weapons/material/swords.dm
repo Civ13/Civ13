@@ -86,9 +86,9 @@
 	desc = "A wood sword used for nonlethal practice."
 	icon_state = "wood_sword"
 	item_state = "wood_sword"
-	block_chance = 60
-	force_divisor = 5
-	thrown_force_divisor = 3
+	block_chance = 50
+	force_divisor = 0.1
+	thrown_force_divisor = 0.1
 	force = 1
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 0
@@ -107,20 +107,6 @@
 	desc = "A bamboo sword used for nonlethal practice."
 	icon_state = "bokken_sword"
 	item_state = "bokken_sword"
-	block_chance = 50
-	force_divisor = 5
-	thrown_force_divisor = 3
-	force = 1
-	slot_flags = SLOT_BELT | SLOT_BACK
-	value = 0
-	cooldownw = 8
-	sharpness = 0
-	flammable = TRUE
-	attack_verb = list("thwacked", "hit", "clonked", "batted", "tapped", "smacked", "poked", "slapped")
-	hitsound = 'sound/weapons/kick.ogg'
-	drawsound = 'sound/items/unholster_sword01.ogg'
-	sharp = FALSE
-	edge = FALSE
 	default_material = "bamboo"
 
 /obj/item/weapon/material/sword/training/attack_self(mob/user)
