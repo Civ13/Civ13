@@ -413,17 +413,28 @@
 		/obj/item/ammo_magazine/m24 = 80,
 	)
 	attack_hand(mob/living/human/user as mob)
-		if (user.gun_permit)
-			..()
-		else
-			user << "You do not have a valid gun permit. Get one first from your local police station."
+		if (!user.gun_permit)
+			user << SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station.")
 			return
+		var/count = 0
+		for (var/list/L in map.gun_registrations)
+			if(L[3] == user.real_name)
+				count++
+		if (count > 4)
+			user << SPAN_WARNING("You can't buy more weapons. You already have [count] weapons registered to your name.")
+		..()
 	attackby(obj/item/I, mob/living/human/user)
-		if (user.gun_permit)
-			..()
-		else
-			user << "You do not have a valid gun permit. Get one first from your local police station."
+		if (!user.gun_permit)
+			user << SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station.")
 			return
+		var/count = 0
+		for (var/list/L in map.gun_registrations)
+			if(L[3] == user.real_name)
+				count++
+		if (count > 4)
+			user << SPAN_WARNING("You can't buy more weapons. You already have [count] weapons registered to your name.")
+		..()
+
 /obj/structure/vending/police_equipment
 	name = "police equipment"
 	desc = "All the equipment to keep your officers in top shape."
