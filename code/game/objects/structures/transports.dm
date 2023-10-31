@@ -948,16 +948,16 @@
 			stopmovementloop()
 			driver.SpinAnimation(5,1)
 			var/list/turf/emptyTurfs = new
-			for(var/turf/T in range(1,src))
+			for(var/turf/TT in range(1,src))
 				var/invalid = FALSE
-				if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+				if (istype(TT, /turf/wall) || istype(TT, /turf/floor/dirt/underground) || istype (TT, /turf/floor/beach/water))
 					invalid = TRUE
-				for(var/obj/structure/OB in T)
+				for(var/obj/structure/OB in TT)
 					invalid = TRUE
-				for(var/obj/covers/OB in T)
+				for(var/obj/covers/OB in TT)
 					invalid = TRUE
 				if (!invalid)
-					emptyTurfs += T
+					emptyTurfs += TT
 			if (!emptyTurfs.len)
 				driver.forceMove(locate(x,y,z))
 			else
