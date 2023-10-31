@@ -573,7 +573,7 @@
 					OB.pixel_y += 10
 				if (EAST)
 					OB.pixel_x += 32
-					OB.pixel_y += 24	
+					OB.pixel_y += 24
 				if (WEST)
 					OB.pixel_x += 0
 					OB.pixel_y += 24
@@ -895,163 +895,155 @@
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check()
 	update_customdesc()
-	if (check_engine())
-		var/turf/T = get_turf(get_step(src,driver.dir))
-		if (!T)
+	var/turf/T = get_turf(get_step(src,driver.dir))
+	var/area/A = get_area(T)
+	if (!check_engine() || !T)
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
+		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+			visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
 			moving = FALSE
 			stopmovementloop()
 			return FALSE
-		var/blocked = 0
-		for (var/obj/structure/O in get_turf(get_step(src,driver.dir)))
-			if (O.density == TRUE)
-				blocked = 1
-				visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
-		if (get_turf(get_step(src,driver.dir)).density == TRUE)
+	if (map && map.check_caribbean_block(driver,T))
+		visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+	var/blocked = 0
+	for (var/obj/structure/O in get_turf(get_step(src,driver.dir)))
+		if (O.density == TRUE)
 			blocked = 1
-			visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
-		for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
-			if (CV.density == TRUE)
+			visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+	if (get_turf(get_step(src,driver.dir)).density == TRUE)
+		blocked = 1
+		visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
+	for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
+		if (CV.density == TRUE)
+			blocked = 1
+			visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+	for (var/mob/living/L in get_turf(get_step(src,driver.dir)))
+		if (ishuman(L))
+			var/mob/living/human/HH = L
+			HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
+			HH.Weaken(rand(2,5))
+			blocked = 1
+			visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+		else if (istype(L,/mob/living/simple_animal))
+			var/mob/living/simple_animal/SA = L
+			SA.health -= rand(7,16)*axis.currentspeed
+			if (SA.mob_size >= 30)
 				blocked = 1
-				visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-		for (var/mob/living/L in get_turf(get_step(src,driver.dir)))
-			if (ishuman(L))
-				var/mob/living/human/HH = L
-				HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
-				HH.Weaken(rand(2,5))
-				blocked = 1
-				visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
-			else if (istype(L,/mob/living/simple_animal))
-				var/mob/living/simple_animal/SA = L
-				SA.health -= rand(7,16)*axis.currentspeed
-				if (SA.mob_size >= 30)
-					blocked = 1
-					visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
-				else
-					visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
-		if (blocked)
-			moving = FALSE
-			health -= rand(3,4)*axis.currentspeed
-			driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
-			if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
-				visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
-				stopmovementloop()
-				driver.SpinAnimation(5,1)
-				if (isturf(locate(x+1,y,z)))
-					driver.forceMove(locate(x+1,y,z))
-				else if (isturf(locate(x-1,y,z)))
-					driver.forceMove(locate(x+1,y,z))
-				else
-					driver.forceMove(locate(x,y,z))
-				driver.Weaken(5)
-				driver.adjustBruteLoss(rand(8,19))
-				if (!driver.head)
-					driver << "<span class='warning'>Your head hits the ground!</span>"
-					driver.adjustBrainLoss(rand(5,8))
-				if (driver.head && !istype(driver.head, /obj/item/clothing/head/helmet))
-					driver << "<span class='warning'>Your head hits the ground!</span>"
-					driver.adjustBrainLoss(rand(3,6))
-				if (driver.l_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.l_hand = null
-				else if (driver.r_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.r_hand = null
-				driver.driver = FALSE
-				driver.driver_vehicle = null
-				driver.pixel_x = 0
-				driver.pixel_y = 0
-				unbuckle_mob()
-				update_overlay()
-				update_icon()
-				ontop -= driver
-				driver = null
-				return FALSE
-			axis.currentspeed = 0
-			stopmovementloop()
-			return FALSE
-		var/canpass = FALSE
-		for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
-			if (CVV.density == FALSE)
-				canpass = TRUE
-		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
-			if (driver in src.loc)
-				return TRUE
+				visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
 			else
-				driver.driver = FALSE
-				driver.driver_vehicle = null
-				driver << "You leave the [src]."
-				driver.buckled  = null
-				driver.pixel_x = 0
-				driver.pixel_y = 0
-				unbuckle_mob()
-				update_overlay()
-				update_icon()
-				ontop -= driver
-				if (driver.l_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.l_hand = null
-				else if (driver.r_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.r_hand = null
-				driver = null
-		else
-			moving = FALSE
+				visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+	if (blocked)
+		moving = FALSE
+		health -= rand(3,4)*axis.currentspeed
+		driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
+		if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
+			visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
 			stopmovementloop()
+			driver.SpinAnimation(5,1)
+			if (isturf(locate(x+1,y,z)))
+				driver.forceMove(locate(x+1,y,z))
+			else if (isturf(locate(x-1,y,z)))
+				driver.forceMove(locate(x+1,y,z))
+			else
+				driver.forceMove(locate(x,y,z))
+			driver.Weaken(5)
+			driver.adjustBruteLoss(rand(8,19))
+			if (!driver.head)
+				driver << "<span class='warning'>Your head hits the ground!</span>"
+				driver.adjustBrainLoss(rand(5,8))
+			if (driver.head && !istype(driver.head, /obj/item/clothing/head/helmet))
+				driver << "<span class='warning'>Your head hits the ground!</span>"
+				driver.adjustBrainLoss(rand(3,6))
+			if (driver.l_hand == dwheel)
+				driver.remove_from_mob(dwheel)
+				dwheel.forceMove(src)
+				driver.l_hand = null
+			else if (driver.r_hand == dwheel)
+				driver.remove_from_mob(dwheel)
+				dwheel.forceMove(src)
+				driver.r_hand = null
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+			driver.pixel_x = 0
+			driver.pixel_y = 0
+			unbuckle_mob()
+			update_overlay()
+			update_icon()
+			ontop -= driver
+			driver = null
 			return FALSE
+		axis.currentspeed = 0
+		stopmovementloop()
+		return FALSE
+	var/canpass = FALSE
+	for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
+		if (CVV.density == FALSE)
+			canpass = TRUE
+	if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
+		if (driver in src.loc)
+			return TRUE
+		else
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+			driver << "You leave the [src]."
+			driver.buckled  = null
+			driver.pixel_x = 0
+			driver.pixel_y = 0
+			unbuckle_mob()
+			update_overlay()
+			update_icon()
+			ontop -= driver
+			if (driver.l_hand == dwheel)
+				driver.remove_from_mob(dwheel)
+				dwheel.forceMove(src)
+				driver.l_hand = null
+			else if (driver.r_hand == dwheel)
+				driver.remove_from_mob(dwheel)
+				dwheel.forceMove(src)
+				driver.r_hand = null
+			driver = null
 	else
 		moving = FALSE
 		stopmovementloop()
 		return FALSE
 
 /obj/structure/vehicle/motorcycle/check_engine()
-
 	if (!engine || !fueltank)
 		return FALSE
-	else
-		if (fueltank.reagents.total_volume <= 0)
-			fueltank.reagents.total_volume = 0
-			return FALSE
-		else
-			if (engine.on)
-				return TRUE
-			else
-				return FALSE
+	if (fueltank.reagents.total_volume <= 0)
+		fueltank.reagents.total_volume = 0
 		return FALSE
-
+	if (!engine.on)
+		return FALSE
 	return TRUE
 
 /obj/structure/vehicle/motorcycle/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
-		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
-			if (GC.reagents.has_reagent("gasoline"))
-				if (GC.reagents.get_reagent_amount("gasoline")<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
-					fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
-					GC.reagents.del_reagent("gasoline")
-					user << "You empty \the [W] into the fueltank."
-					update_customdesc()
-					return
-				else
-					var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
-					fueltank.reagents.add_reagent("gasoline",amttransf)
-					GC.reagents.remove_reagent("gasoline",amttransf)
-					user << "You fill the fueltank completly with \the [W]."
-					update_customdesc()
-					return
-			else
-				user << "\The [W] has no gasoline in it."
-				update_customdesc()
-				return
-		else
+		if (fueltank.reagents.total_volume >= fueltank.reagents.maximum_volume)
 			user << "The fueltank is full already."
-			update_customdesc()
-			return
-	else
-		..()
+		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
+			if (!GC.reagents.has_reagent("gasoline"))
+				user << "\The [W] has no gasoline in it."
+			if (GC.reagents.get_reagent_amount("gasoline") <= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+				fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
+				GC.reagents.del_reagent("gasoline")
+				user << "You empty \the [W] into the fueltank."
+			else
+				var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+				fueltank.reagents.add_reagent("gasoline",amttransf)
+				GC.reagents.remove_reagent("gasoline",amttransf)
+				user << "You fill the fueltank completely with \the [W]."
+		update_customdesc()
+		return
+	..()
 
 /obj/structure/vehicle/motorcycle/do_color(_color = null)
 	var/tempcolor = customcolor
