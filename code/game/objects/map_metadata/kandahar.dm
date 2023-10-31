@@ -37,6 +37,9 @@
 	is_RP = TRUE
 	var/gracedown1 = TRUE
 	grace_wall_timer = 4800
+	var/list/supply_points = list(
+		"Soviet Army" = 0,
+		"Mujahideen" = 0,)
 
 /obj/map_metadata/kandahar/New()
 	..()
@@ -399,7 +402,7 @@
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
 		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 200,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
-		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/ = 150,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 150,
 
 
 		/obj/item/ammo_magazine/m16 = 20,
@@ -409,17 +412,15 @@
 		/obj/item/weapon/plastique/c4 = 80,
 	)
 	attack_hand(mob/living/human/user as mob)
-		if (user.faction_text == "ARAB")
-			..()
-		else
-		 user << "You are not part of the Mujahideen, you should really leave the area."
-		 return
+		if (user.faction_text != "ARAB")
+			user << "You are not part of the Mujahideen, you should really leave the area."
+			return
+		..()
 	attackby(obj/item/I, mob/living/human/user)
-		if (user.faction_text == "ARAB")
-			..()
-		else
-		 user << "You are not part of the Mujahideen, you should really leave the area."
-		 return
+		if (user.faction_text != "ARAB")
+			user << "You are not part of the Mujahideen, you should really leave the area."
+			return
+		..()
 
 /obj/structure/props/afghan/druglord
 	name = "Tarik the Trafficker"
@@ -472,3 +473,86 @@
 	else
 		user << "I've got no business with you! Get lost, you dog!"
 		return
+
+/obj/item/weapon/package/humanitarian
+	name = "humanitarian package"
+	desc = "Contains essential supplies for crisis-affected populations"
+	icon_state = "humanitarian"
+/*/obj/structure/supply_radio
+	name = "supply ordering radio"
+	desc = "Used to communicate with the Logistical Brigade to order supplies."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "radio_transmitter"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+	anchored = TRUE
+	var/options = list("Cancel","RPK-74 crate")
+	var/cooldown = 0
+/obj/structure/supply_radio/attack_hand(mob/living/human/user as mob)
+	if (user.faction_text != "RUSSIAN")
+		return
+	if (!user.is_officer && !user.is_squad_leader)
+		return
+	if (map.supply_points["Soviet Army"] <= 0)
+		user << SPAN_NOTICE("No supply points.")
+		return
+	var/choice1 == WWinput(user, "Which supplies to order:", "Order Supplies", "Cancel", options)
+	switch(choice1)
+		if ("Cancel")
+			return
+		if ("RPK-74 crate")*/
+
+/mob/living/simple_animal/civilian/afghan/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (istype(W, /obj/item/weapon/package/humanitarian))
+		if (H.faction_text == "ARAB")
+			return
+		if (package_given)
+			return
+		if (H.a_intent == I_HELP)
+			qdel(W)
+			if (map && map.ID == MAP_KANDAHAR)
+				var/obj/map_metadata/kandahar/KD = map
+				KD.supply_points["Soviet Army"] += 20
+			package_given = TRUE
+			return
+	..()
+
+/mob/living/simple_animal/civilian/afghan/attack_hand(mob/living/human/user as mob)
+	if (user.faction_text == "ARAB")
+		if (user.a_intent == I_HELP)
+			if (already_coerced)
+				user << SPAN_WARNING("\icon[src] No way! Leave me alone!")
+				return
+			if (package_given)
+				user << SPAN_WARNING("\icon[src] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
+				already_coerced = TRUE
+				return
+			if (user.original_job_title != "Mujahideen Imam" && user.original_job_title != "Mujahideen Warchief")
+				if (prob(50))
+					user << SPAN_WARNING("\icon[src] I refuse!")
+					already_coerced = TRUE
+					return
+				if (prob(30))
+					new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
+				else
+					new /mob/living/simple_animal/hostile/human/muj_insurgent(loc)
+				qdel(src)
+				return
+			if (prob(30))
+				user << SPAN_WARNING("\icon[src] I refuse!")
+				already_coerced = TRUE
+				return
+			if (prob(50))
+				new /mob/living/simple_animal/hostile/human/muj_insurgent(loc)
+			else
+				new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
+			if (prob(50))
+				world << "The Mujahideen coerced some of the local population into their ranks."
+			qdel(src)
+			return
+	..()
+
+	
