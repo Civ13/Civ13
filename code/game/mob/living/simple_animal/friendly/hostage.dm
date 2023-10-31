@@ -236,6 +236,8 @@ var/global/civvies_killed = list()
 	icon_dead = "afghciv1_dead"
 	meat_amount = 0
 	harmer_factions = list("Soviets" = 0, "DRA" = 0, "Mujahideen" = 0)
+	var/package_given = FALSE
+	var/already_coerced = FALSE
 	New()
 		..()
 		icon_state = "afghciv[rand(1,4)]"
