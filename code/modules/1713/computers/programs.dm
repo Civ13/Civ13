@@ -1203,36 +1203,36 @@
 		else if (href_list["cartrader"] == "ASNO Quattroporte (500)")
 			PV = new /obj/effects/premadevehicles/asno/quattroporte(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Quattroporte", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "ASNO Quattroporte", basecolor))
 
 		else if (href_list["cartrader"] == "ASNO Piccolino (400)")
 			PV = new /obj/effects/premadevehicles/asno/piccolino(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "ASNO Piccolino", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "ASNO Piccolino", basecolor))
 
 		else if (href_list["cartrader"] == "Ubermacht Erstenklasse (800)")
 			PV = new /obj/effects/premadevehicles/ubermacht/erstenklasse(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Ubermacht Erstenklasse", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "Ubermacht Erstenklasse", basecolor))
 
 		else if (href_list["cartrader"] == "SMC Falcon (750)")
 			PV = new /obj/effects/premadevehicles/smc/falcon(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Falcon", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "SMC Falcon", basecolor))
 
 		else if (href_list["cartrader"] == "Yamasaki Kazoku (600)")
 			PV = new /obj/effects/premadevehicles/yamasaki/kazoku(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Kazoku", basecolor))
 
 		else if (href_list["cartrader"] == "Yamasaki Shinobu 5000 (1200)")
 			PV = new /obj/effects/premadevehicles/yamasaki/shinobu(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "Yamasaki Shinobu 5000", basecolor))
 		else if  (href_list["cartrader"] == "SMC Wyoming (700)")
 			PV = new /obj/effects/premadevehicles/smc/wyoming(locate(origin.x+3,origin.y-3,origin.z))
 			spawn(5)
-				map.vehicle_registations += list(list("[PV.reg_number]",user.civilization, "SMC Wyoming", basecolor))
+				map.vehicle_registrations += list(list("[PV.reg_number]",user.civilization, "SMC Wyoming", basecolor))
 		if (PV)
 			PV.custom_color = chosencolor
 			PV.doorcode = rand(1000,9999)
@@ -1280,7 +1280,7 @@
 		mainbody = "<font color ='red'><b>ACCESS DENIED</b></font>"
 	else
 		mainbody = ""
-		for(var/list/L in map.vehicle_registations)
+		for(var/list/L in map.vehicle_registrations)
 			mainbody += "<b>[L[1]]</b> - <b>[L[4]] [L[3]]</b> - registered to <b>[L[2]]</b><br>"
 	..()
 
@@ -1646,7 +1646,7 @@
 		mainbody += "<font color ='red'><b>ACCESS DENIED</b></font>"
 		return
 	else
-		for(var/list/L in map.gun_registations)
+		for(var/list/L in map.gun_registrations)
 			mainbody += "<b>[L[1]] (no. [L[2]])</b> - registered to <b>[L[3]]</b><br>"
 	..()
 

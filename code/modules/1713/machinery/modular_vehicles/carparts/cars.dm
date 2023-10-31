@@ -449,10 +449,10 @@
 		..()
 		spawn(40)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Unmarked SMC Falcon", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Sheriff Office", "Unmarked SMC Falcon", ""))
 			doorcode = 13443
 		else
-			map.vehicle_registations += list(list("[reg_number]","Police", "Unmarked SMC Falcon", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Police", "Unmarked SMC Falcon", ""))
 
 /obj/structure/vehicleparts/axis/car/shinobu
 	name = "Yamasaki Shinobu"
@@ -471,10 +471,10 @@
 		..()
 		spawn(40)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			map.vehicle_registations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Sheriff Office", "Yamasaki Shinobu Police Interceptor", ""))
 			doorcode = 13443
 		else
-			map.vehicle_registations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Police", "Yamasaki Shinobu Police Interceptor", ""))
 
 /obj/structure/vehicleparts/axis/car/kazoku
 	name = "Yamasaki Kazoku"
@@ -501,7 +501,7 @@
 	New()
 		..()
 		spawn(40)
-			map.vehicle_registations += list(list("[reg_number]","Police", "SMC Falcon Police Interceptor", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Police", "SMC Falcon Police Interceptor", ""))
 
 
 /obj/structure/vehicleparts/axis/car/volle
@@ -627,7 +627,7 @@
 	New()
 		..()
 		spawn(40)
-			map.vehicle_registations += list(list("[reg_number]","Paramedics", "Ubermacht Volle KW Ambulance", ""))
+			map.vehicle_registrations += list(list("[reg_number]","Paramedics", "Ubermacht Volle KW Ambulance", ""))
 
 /obj/structure/engine/internal/gasoline/ethanol/premade/piccolino
 	enginesize = 2800

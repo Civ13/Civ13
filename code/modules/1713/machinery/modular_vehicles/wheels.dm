@@ -212,7 +212,7 @@
 			H << "You grab the wheel."
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 				if (H.stat != DEAD && H.civilization != "Sheriff Office" && H.civilization != "Paramedics" && H.civilization != "Government")
-					for(var/list/L in map.vehicle_registations)
+					for(var/list/L in map.vehicle_registrations)
 						if (L[1]==wheel.control.axis.reg_number && L[2] != H.civilization)
 							if (!(H.real_name in map.warrants))
 								var/reason = "Grand Theft Auto"
