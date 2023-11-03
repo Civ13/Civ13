@@ -107,6 +107,10 @@
 	name = "civ13 admin seal"
 	icon_state = "steal-admin"
 
+/obj/item/weapon/stamp/sealcourt
+	name = "court seal stamp"
+	icon_state = "steal-court"
+
 // "Syndicate stamp to forge documents." Was the orrigional comments for the orrigional item. Its a fancy adujustable stamp now, nothing sinister yet. - siro
 /obj/item/weapon/stamp/chameleon/attack_self(mob/user as mob)
 
