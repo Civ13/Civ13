@@ -1,6 +1,8 @@
 /obj/structure/cannon
 	name = "cannon"
-	icon = 'icons/obj/cannon_v.dmi'
+	icon = 'icons/obj/cannon.dmi'
+	pixel_x = -16
+	pixel_y = 0
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "cannon"
@@ -70,25 +72,27 @@
 			assembled = TRUE
 			anchored = TRUE
 			if (loader_chair)
-				if (dir==NORTH)
-					loader_chair.forceMove(locate(x,y-1,z))
-				else if (dir==SOUTH)
-					loader_chair.forceMove(locate(x,y+1,z))
-				else if (dir==EAST)
-					loader_chair.forceMove(locate(x-1,y,z))
-				else if (dir==WEST)
-					loader_chair.forceMove(locate(x+1,y,z))
+				switch (dir)
+					if (NORTH)
+						loader_chair.forceMove(locate(x,y-1,z))
+					if (SOUTH)
+						loader_chair.forceMove(locate(x,y+1,z))
+					if (EAST)
+						loader_chair.forceMove(locate(x-1,y,z))
+					if (WEST)
+						loader_chair.forceMove(locate(x+1,y,z))
 				loader_chair.dir = dir
 				loader_chair.anchored = TRUE
 			if (gunner_chair)
-				if (dir==NORTH)
-					gunner_chair.forceMove(locate(x+1,y,z))
-				else if (dir==SOUTH)
-					gunner_chair.forceMove(locate(x-1,y,z))
-				else if (dir==EAST)
-					gunner_chair.forceMove(locate(x,y-1,z))
-				else if (dir==WEST)
-					gunner_chair.forceMove(locate(x,y+1,z))
+				switch (dir)
+					if (NORTH)
+						gunner_chair.forceMove(locate(x+1,y,z))
+					if (SOUTH)
+						gunner_chair.forceMove(locate(x-1,y,z))
+					if (EAST)
+						gunner_chair.forceMove(locate(x,y-1,z))
+					if (WEST)
+						gunner_chair.forceMove(locate(x,y+1,z))
 				gunner_chair.dir = dir
 				gunner_chair.anchored = TRUE
 			icon_state = "feldkanone18_assembled"
@@ -252,12 +256,12 @@
 	if (istype(src, /obj/structure/cannon/modern/tank))
 		istank = TRUE
 	var/mob/living/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && H.faction_text == INDIANS)
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 
 	if (!locate(user) in range(1,src))
-		if (icon != 'icons/obj/cannon_v.dmi')
+		if (dir != EAST && dir != WEST)
 			user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
 			return FALSE
 		else
@@ -876,28 +880,36 @@
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 	return
 
@@ -915,28 +927,36 @@
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
@@ -971,26 +991,35 @@
 	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
 	if (spritemod)
-		if (dir==SOUTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (dir==NORTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (dir==EAST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
-		if (dir==WEST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
+		switch (dir)
+			if (SOUTH)
+				bound_height = 64
+				bound_width = 32
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (NORTH)
+				bound_height = 64
+				bound_width = 32
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (EAST)
+				bound_height = 32
+				bound_width = 64
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (WEST)
+				bound_height = 32
+				bound_width = 64
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
 	return TRUE
 
 /obj/structure/cannon/Bump(var/atom/A, yes)
@@ -1005,26 +1034,35 @@
 			A.Bumped(src)
 		return
 	if (spritemod)
-		if (dir==SOUTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (dir==NORTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (dir==EAST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
-		if (dir==WEST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
+		switch (dir)
+			if (SOUTH)
+				bound_height = 64
+				bound_width = 32
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (NORTH)
+				bound_height = 64
+				bound_width = 32
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (EAST)
+				bound_height = 32
+				bound_width = 64
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
+			if (WEST)
+				bound_height = 32
+				bound_width = 64
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
+				icon_state = "cannon"
 	..()
 	return
 
@@ -1035,22 +1073,30 @@
 			if (SOUTH)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 			if (NORTH)
 				bound_height = 64
 				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
+				pixel_x = -16
+				pixel_y = 0
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 			if (EAST)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 			if (WEST)
 				bound_height = 32
 				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
+				pixel_x = 0
+				pixel_y = -16
+				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 
 /obj/structure/cannon/modern/tank/proc/do_tank_fire(var/mob/user)

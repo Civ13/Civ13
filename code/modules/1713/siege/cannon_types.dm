@@ -85,11 +85,13 @@
 	angle = 20
 	caliber = 75
 	name = "cannon"
-	icon = 'icons/obj/cannon_v.dmi'
+	icon = 'icons/obj/cannon.dmi'
 	density = TRUE
 	icon_state = "cannon"
 	bound_height = 64
 	bound_width = 32
+	pixel_x = -16
+	pixel_y = 0
 	anchored = TRUE
 	ammotype = /obj/item/cannon_ball
 

@@ -452,7 +452,7 @@
 				else if (map.ordinal_age == 6)
 					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
 				else if (map.ordinal_age >= 7)
-					listing += list("9x19 Parabellum", "9x18 Makarov"," .45 Colt")
+					listing += list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
 				var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 				switch (input)
 					if ("Cancel")
@@ -691,7 +691,7 @@
 			var/calibt = WWinput(user, "Which type of shell do you want to craft?", "Shell Crafting", "HE", list("HE", "AP", "APCR"))
 			switch (calibt)
 				if ("HE")
-					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
 					TS.atype = "HE"
 					TS.caliber = caliber
 					TS.heavy_armor_penetration = 15*(caliber/75)
@@ -700,7 +700,7 @@
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 				else if ("AP")
-					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
 					TS.atype = "AP"
 					TS.caliber = caliber
 					TS.heavy_armor_penetration = 52*(caliber/75)
@@ -709,7 +709,7 @@
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 				else if ("APCR")
-					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(user.loc)
+					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
 					TS.atype = "APCR"
 					TS.caliber = caliber
 					TS.heavy_armor_penetration = 75*(caliber/75)

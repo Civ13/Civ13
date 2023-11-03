@@ -220,6 +220,9 @@
 	flammable = TRUE
 	unique = TRUE
 
+/obj/item/weapon/book/holybook/examine(mob/user)
+	return
+
 /obj/item/weapon/book/holybook/New()
 	..()
 	spawn(10)

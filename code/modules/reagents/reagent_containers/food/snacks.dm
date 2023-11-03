@@ -265,11 +265,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/examine(mob/user)
 	if (!..(user, TRUE))
 		return
-	if (bitecount==0)
+	if (bitecount == 0)
 		return
-	else if (bitecount==1)
+	else if (bitecount == 1)
 		user << "<span class='notice'>\The [src] was bitten by someone!</span>"
-	else if (bitecount<=3)
+	else if (bitecount <= 3)
 		user << "<span class='notice'>\The [src] was bitten [bitecount] time\s!</span>"
 	else
 		user << "<span class='notice'>\The [src] was bitten multiple times!</span>"

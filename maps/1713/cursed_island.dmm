@@ -80,7 +80,7 @@
 "bB" = (/obj/structure/barricade/vertical,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/sand,/area/caribbean/british/land/outside)
 "bC" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/beach/sand,/area/caribbean/british/land/outside)
 "bD" = (/obj/structure/pot,/turf/floor/beach/sand,/area/caribbean/british/land/outside)
-"bE" = (/obj/structure/cannon{dir = 4; icon = 'icons/obj/cannon_h.dmi'},/turf/floor/beach/sand,/area/caribbean/british/land/outside)
+"bE" = (/obj/structure/cannon{dir = 4},/turf/floor/beach/sand,/area/caribbean/british/land/outside)
 "bF" = (/obj/structure/religious/impaledskull,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bG" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/island)
 "bH" = (/obj/item/stack/material/bone,/turf/floor/dirt,/area/caribbean/tribes/caves)

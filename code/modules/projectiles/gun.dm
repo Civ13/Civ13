@@ -170,8 +170,8 @@
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
-	if (istype(H) && (H.faction_text == "INDIANS") && (map && (!map.ID == MAP_AFRICAN_WARLORDS || !map.ID == MAP_TADOJSVILLE)))
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
+	if (istype(H) && (H.faction_text == INDIANS) && (map && (!map.ID == MAP_AFRICAN_WARLORDS || !map.ID == MAP_TADOJSVILLE)))
+		user << SPAN_DANGER("You have no idea how this thing works.")
 		return
 	if (A == user)
 		var/tgt = user.targeted_organ
