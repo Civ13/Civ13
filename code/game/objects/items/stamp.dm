@@ -71,7 +71,7 @@
 	name = "APPROVED ink stamp"
 	icon_state = "stamp-cent"
 
-/obj/item/weapon/stamp/stamp-latin
+/obj/item/weapon/stamp/stamplatin
 	name = "latin ink stamp"
 	icon_state = "stamp-latin"
 
