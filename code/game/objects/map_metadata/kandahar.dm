@@ -289,6 +289,9 @@
 			world << "<big><font color='[cust_color]'><b>North West Village Outpost</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>North West Village Outpost</b>: Nobody</big>"
+	if (a1_control == "Mujahideen" && a2_control == "Mujahideen" && a3_control == "Mujahideen" && a4_control == "Mujahideen")
+		muj_points++
+		world << "<big><font color='yellow'><b>The Mujahideen control all points!</b></font></big>"
 	for (var/mob/living/human/H in player_list)
 		if (H.original_job.is_soviet == TRUE || H.original_job.is_dra == TRUE)
 			var/area/A = get_area(H)
