@@ -197,7 +197,7 @@
 			if (H.civilization == "Sheriff Office")
 				if (!H.is_undercover)
 					if (world.time >= H.next_gracewall_message)
-						H << "<span class = 'warning'>That area is out of jurisdiction, at least, on duty...</span>"
+						H << "<span class = 'warning'>That area is out of your jurisdiction, at least, on duty...</span>"
 						H.next_gracewall_message = world.time + 10
 					return TRUE
 		return !faction1_can_cross_blocks()
@@ -719,14 +719,11 @@
 	set name = "Toggle Undercover"
 	set desc = "Hide your identity for undercover police operations."
 
-	var/jobtype = "none"
 	if (findtext(name, "Deputy") || findtext(name, "Detective"))
 		if (findtext(name, "Deputy"))
 			real_name = replacetext(real_name, "Deputy ", "")
-			jobtype = "Deputy"
 		else if (findtext(name, "Detective"))
 			real_name = replacetext(real_name, "Detective ", "")
-			jobtype = "Detective"
 		hidden_name = real_name
 		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
@@ -747,8 +744,8 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		switch(jobtype)
-			if ("Deputy")
+		switch(original_job_title)
+			if ("County Deputy")
 				real_name = "Deputy [hidden_name]"
 				name = "Deputy [hidden_name]"
 				voice = "Deputy [hidden_name]"
