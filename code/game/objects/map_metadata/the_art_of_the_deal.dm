@@ -197,7 +197,7 @@
 			if (H.civilization == "Sheriff Office")
 				if (!H.is_undercover)
 					if (world.time >= H.next_gracewall_message)
-						H << "<span class = 'warning'>That area is out of jurisdiction, at least, on duty...</span>"
+						H << "<span class = 'warning'>That area is out of your jurisdiction, at least, on duty...</span>"
 						H.next_gracewall_message = world.time + 10
 					return TRUE
 		return !faction1_can_cross_blocks()
@@ -719,14 +719,11 @@
 	set name = "Toggle Undercover"
 	set desc = "Hide your identity for undercover police operations."
 
-	var/jobtype = "none"
 	if (findtext(name, "Deputy") || findtext(name, "Detective"))
 		if (findtext(name, "Deputy"))
 			real_name = replacetext(real_name, "Deputy ", "")
-			jobtype = "Deputy"
 		else if (findtext(name, "Detective"))
 			real_name = replacetext(real_name, "Detective ", "")
-			jobtype = "Detective"
 		hidden_name = real_name
 		var/chosen_name = WWinput(src, "Which ethnicity do you want your name to be?","Choose Name","Cancel",list("Cancel","Russian","Jewish","Italian","Japanese"))
 		switch(chosen_name)
@@ -747,8 +744,8 @@
 		src << "<b><big>You go undercover.</big></b>"
 		return
 	else
-		switch(jobtype)
-			if ("Deputy")
+		switch(original_job_title)
+			if ("County Deputy")
 				real_name = "Deputy [hidden_name]"
 				name = "Deputy [hidden_name]"
 				voice = "Deputy [hidden_name]"
@@ -1415,7 +1412,8 @@
 	name = "Agent Harrison Yates"
 	desc = "A federal agent with questionable morality."
 	icon_state = "narc"
-	var/list/option_list = list("Cancel","Bribe","Reduce heat")
+	var/list/option_list_comp = list("Cancel","Bribe","Reduce heat")
+	var/list/option_list_police = list("Cancel","Get Intel")
 	var/list/reputation = list(
 		"Rednikov Industries" = 0,
 		"Giovanni Blu Stocks" = 0,
@@ -1423,132 +1421,132 @@
 		"Goldstein Solutions" = 0,)
 	var/intel_cooldown = 0
 	var/heat_cooldown = 0
-	light_range = 1
+	light_range = 2
 
 /obj/structure/npc_vendor/fed/attack_hand(mob/living/human/user as mob)
-	if (user.civilization == "Paramedics")
+	if (user.civilization == "Paramedics" || user.civilization == "none")
 		return
-	if (user.civilization == "Sheriff Office" || user.civilization == "Government")
-		option_list = list("Cancel","Get Intel")
 	var/obj/item/stack/money/M
 	if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
 		if (istype(user.get_active_hand(),/obj/item/stack/money))
 			M = user.get_active_hand()
 		else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 			M = user.get_inactive_hand()
-	var/choice1 = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", option_list)
-	switch(choice1)
-		if ("Cancel")
-			return
-		if ("Bribe")
-			if (reputation[user.civilization] < 0)
-				user << "\icon[src] Don't waste my time. I can't do anything for you anymore."
+	if (user.civilization != "Sheriff Office" && user.civilization != "Government")
+		var/choice1 = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", option_list_comp)
+		switch(choice1)
+			if ("Cancel")
 				return
-			var/bribe_price = 500
-			if (!M || M.value*M.amount < bribe_price*4)
-				user << "\icon[src] You need at least [bribe_price] dollars in one of your hands."
-				return
-			M.amount -= bribe_price/5
-			if (M.amount <= 0)
-				qdel(M)
-			reputation[user.civilization] += 1
-			user << "\icon[src] Pleasure doing business with you."
-		if ("Reduce heat")
-			if (reputation[user.civilization] == 0)
-				user << "\icon[src] I will need a little sign of appreciation for this, if you know what I mean."
-				return
-			if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-				var/obj/map_metadata/art_of_the_deal/AD = map
-				var/heat_price = ceil(200/reputation[user.civilization])
-				if (AD.heat[user.civilization] == 0)
-					user << "\icon[src] You gentlemen are off the radar, for now."
+			if ("Bribe")
+				if (reputation[user.civilization] < 0)
+					user << "\icon[src] Don't waste my time. I can't do anything for you anymore."
 					return
-				if (world.time <= heat_cooldown)
-					user << "\icon[src] Not so fast, pal. I can't just temper with evidence that fast. That's not your sister."
+				var/bribe_price = 500
+				if (!M || M.value*M.amount < bribe_price*4)
+					user << "\icon[src] You need at least [bribe_price] dollars in one of your hands."
 					return
-				var/evidence_amount = list("Cancel","1","5","10")
-				var/heat_choice = WWinput(user, "Your company has currently [AD.heat[user.civilization]] evidence files gathered against it. How many do you want me to get rid off?","Agent Harrison Yates", "Cancel", evidence_amount)
-				switch(heat_choice)
+				M.amount -= bribe_price/5
+				if (M.amount <= 0)
+					qdel(M)
+				reputation[user.civilization] += 1
+				user << "\icon[src] Pleasure doing business with you."
+			if ("Reduce heat")
+				if (reputation[user.civilization] == 0)
+					user << "\icon[src] I will need a little sign of appreciation for this, if you know what I mean."
+					return
+				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
+					var/obj/map_metadata/art_of_the_deal/AD = map
+					var/heat_price = ceil(200/reputation[user.civilization])
+					if (AD.heat[user.civilization] == 0)
+						user << "\icon[src] You gentlemen are off the radar, for now."
+						return
+					if (world.time <= heat_cooldown)
+						user << "\icon[src] Not so fast, pal. I can't just temper with evidence that fast. That's not your sister."
+						return
+					var/evidence_amount = list("Cancel","1","5","10")
+					var/heat_choice = WWinput(user, "Your company has currently [AD.heat[user.civilization]] evidence files gathered against it. How many do you want me to get rid off?","Agent Harrison Yates", "Cancel", evidence_amount)
+					switch(heat_choice)
+						if ("Cancel")
+							return
+						if ("1")
+							if (!M || M.value*M.amount < heat_price*4)
+								user << "\icon[src] You need at least [heat_price] dollars in one of your hands."
+								return
+							M.amount -= heat_price/5
+							if (M.amount <= 0)
+								qdel(M)
+							AD.heat[user.civilization] -= 1
+							if (AD.heat[user.civilization] < 0)
+								AD.heat[user.civilization] = 0
+						if ("5")
+							if (!M || M.value*M.amount < (5*heat_price)*4)
+								user << "\icon[src] You need at least [5*heat_price] dollars in one of your hands."
+								return
+							M.amount -= (5*heat_price)/5
+							if (M.amount <= 0)
+								qdel(M)
+							AD.heat[user.civilization] -= 5
+							if (AD.heat[user.civilization] < 0)
+								AD.heat[user.civilization] = 0
+							heat_cooldown = world.time + 600
+						if ("10")
+							if (!M || M.value*M.amount < (10*heat_price)*4)
+								user << "\icon[src] You need at least [10*heat_price] dollars in one of your hands."
+								return
+							M.amount -= (10*heat_price)/5
+							if (M.amount <= 0)
+								qdel(M)
+							AD.heat[user.civilization] -= 10
+							if (AD.heat[user.civilization] < 0)
+								AD.heat[user.civilization] = 0
+							heat_cooldown = world.time + 1200
+	else
+		var/choice2 = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", option_list_police)
+		switch (choice2)
+			if ("Cancel")
+				return
+			if ("Get Intel")
+				if (world.time <= intel_cooldown)
+					user << "\icon[src] I need more time to investigate. Come back later."
+					return
+				var/intel_type = list("Cancel","Narcotics","Illegal Firearms","Disks")
+				var/intel_choice = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", intel_type)
+				switch(intel_choice)
 					if ("Cancel")
 						return
-					if ("1")
-						if (!M || M.value*M.amount < heat_price*4)
-							user << "\icon[src] You need at least [heat_price] dollars in one of your hands."
-							return
-						M.amount -= heat_price/5
-						if (M.amount <= 0)
-							qdel(M)
-						AD.heat[user.civilization] -= 1
-						if (AD.heat[user.civilization] < 0)
-							AD.heat[user.civilization] = 0
-					if ("5")
-						if (!M || M.value*M.amount < (5*heat_price)*4)
-							user << "\icon[src] You need at least [5*heat_price] dollars in one of your hands."
-							return
-						M.amount -= (5*heat_price)/5
-						if (M.amount <= 0)
-							qdel(M)
-						AD.heat[user.civilization] -= 5
-						if (AD.heat[user.civilization] < 0)
-							AD.heat[user.civilization] = 0
-						heat_cooldown = world.time + 600
-					if ("10")
-						if (!M || M.value*M.amount < (10*heat_price)*4)
-							user << "\icon[src] You need at least [10*heat_price] dollars in one of your hands."
-							return
-						M.amount -= (10*heat_price)/5
-						if (M.amount <= 0)
-							qdel(M)
-						AD.heat[user.civilization] -= 10
-						if (AD.heat[user.civilization] < 0)
-							AD.heat[user.civilization] = 0
-						heat_cooldown = world.time + 1200
-		if ("Get Intel")
-			if (world.time <= intel_cooldown)
-				user << "\icon[src] I need more time to investigate. Come back later."
+					if ("Narcotics")
+						var/count_c = 0
+						var/count_m = 0
+						for (var/obj/item/weapon/reagent_containers/pill/P in world)
+							if (P)
+								if (P.reagents.has_reagent("cocaine") && P.reagents.get_reagent_amount("cocaine")>= 25)
+									count_c++
+								if (P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine")>= 10)
+									count_m++
+						user << "\icon[src] There's currently [count_c] grams of cocaine and [count_m] grams of methamphtamine in circulation right now."
+						var/count_b = 0
+						for (var/obj/item/weapon/reagent_containers/cocaineblock/block in world)
+							if (block)
+								count_b++
+						user << "\icon[src] There's currently [count_b] blocks of cocaine in circulation."
+					if ("Illegal Firearms")
+						var/count_f = 0
+						var/count_bomb = 0
+						for (var/obj/item/weapon/gun/projectile/firearm in world)
+							if (firearm.serial == "")
+								count_f++
+						for (var/obj/item/weapon/plastique/c4/bomb in world)
+							if (bomb)
+								count_bomb++
+						user << "\icon[src] There's [count_f] illegal firearms and [count_bomb] explosives in circulation right now."
+					if ("Disks")
+						var/count_d = 0
+						for (var/obj/item/weapon/disk/D in world)
+							if (D.faction)
+								count_d++
+						user << "\icon[src] There's [count_d] illegal disks in circulation right now."
+				intel_cooldown = world.time + 4800
 				return
-			var/intel_type = list("Cancel","Narcotics","Illegal Firearms","Disks")
-			var/intel_choice = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", intel_type)
-			switch(intel_choice)
-				if ("Cancel")
-					return
-				if ("Narcotics")
-					var/count_c = 0
-					var/count_m = 0
-					for (var/obj/item/weapon/reagent_containers/pill/P in world)
-						if (P)
-							if (P.reagents.has_reagent("cocaine") && P.reagents.get_reagent_amount("cocaine")>= 25)
-								count_c++
-							if (P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine")>= 10)
-								count_m++
-					user << "\icon[src] There's currently [count_c] grams of cocaine and [count_m] grams of methamphtamine in circulation right now."
-					var/count_b = 0
-					for (var/obj/item/weapon/reagent_containers/cocaineblock/block in world)
-						if (block)
-							count_b++
-					user << "\icon[src] There's currently [count_b] blocks of cocaine in circulation."
-					intel_cooldown = world.time + 6000
-					return
-				if ("Illegal Firearms")
-					var/count_f = 0
-					var/count_bomb = 0
-					for (var/obj/item/weapon/gun/projectile/firearm in world)
-						if (firearm.serial == "")
-							count_f++
-					for (var/obj/item/weapon/plastique/c4/bomb in world)
-						if (bomb)
-							count_bomb++
-					user << "\icon[src] There's [count_f] illegal firearms and [count_bomb] explosives in circulation right now."
-					intel_cooldown = world.time + 6000
-					return
-				if ("Disks")
-					var/count_d = 0
-					for (var/obj/item/weapon/disk/D in world)
-						if (D.faction)
-							count_d++
-					user << "\icon[src] There's [count_d] illegal disks in circulation right now."
-					intel_cooldown = world.time + 6000
-					return
 
 /obj/structure/npc_vendor/bouncer
 	name = "Marcellus"
