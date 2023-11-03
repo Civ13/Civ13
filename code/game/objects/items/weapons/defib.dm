@@ -146,11 +146,9 @@
 
 	if(ismob(paddles.loc))
 		var/mob/M = paddles.loc
-		if(M.drop_from_inventory(paddles, src))
+		if(M.drop_from_inventory(paddles))
 			to_chat(user, "<span class='notice'>\The [paddles] snap back into the main unit.</span>")
-	else
-		paddles.forceMove(src)
-
+	paddles.forceMove(src)
 	update_icon()
 
 /*
@@ -394,13 +392,13 @@
 
 	//set oxyloss so that the patient is just barely in crit, if possible
 
-	var/barely_in_crit = config.health_threshold_crit - 1
+	/*var/barely_in_crit = config.health_threshold_crit - 1
 	var/adjust_health = barely_in_crit - H.health //need to increase health by this much
-	H.adjustOxyLoss(-adjust_health)
+	H.adjustOxyLoss(-adjust_health)*/
 
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
-
+	H.resuscitate()
 	make_alive(H)
 
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
