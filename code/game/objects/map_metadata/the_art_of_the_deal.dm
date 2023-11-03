@@ -1545,8 +1545,8 @@
 							if (D.faction)
 								count_d++
 						user << "\icon[src] There's [count_d] illegal disks in circulation right now."
-					intel_cooldown = world.time + 4800
-					return
+				intel_cooldown = world.time + 4800
+				return
 
 /obj/structure/npc_vendor/bouncer
 	name = "Marcellus"
