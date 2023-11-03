@@ -1486,6 +1486,12 @@
 				stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
 			else
 				stock_img = image("icon" = src.icon, "icon_state" = "none")
+				
+		if (!bolt_open)
+			receiver_img = image("icon" = src.icon, "icon_state" = "[src.receiver_type]")
+		else
+			receiver_img = image("icon" = src.icon, "icon_state" = "[src.receiver_type]_open")
+
 		if (ammo_magazine)
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
 		else
@@ -1500,7 +1506,7 @@
 		if (receiver_type == "Pump-Action" || receiver_type == "Revolver")
 			return
 
-		if (feeding_type == "Bolt-Action")
+		if (receiver_type == "Bolt-Action")
 			if (!bolt_open)
 				icon_state = "[base_icon]"
 			else

@@ -13,6 +13,9 @@
 	var/styleb = "scroll"
 	unique = TRUE
 
+/obj/item/weapon/book/research/examine(mob/user)
+	return
+
 /obj/item/weapon/book/research/New()
 	..()
 	if (map.ordinal_age >= 3)
