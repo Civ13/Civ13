@@ -1,0 +1,280 @@
+"aK" = (/obj/covers/wood_wall/log,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"aM" = (/obj/covers/wood,/obj/roof/thatch,/obj/effect/landmark{name = "JoinLateBShaman"},/turf/floor/grass,/area/caribbean)
+"aT" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"aV" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/dirt,/area/caribbean)
+"bt" = (/obj/covers/wood/stairs{dir = 2; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"bK" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/turf/floor/dirt/dust,/area/caribbean)
+"bP" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/dirt,/area/caribbean)
+"cF" = (/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/invisible_wall)
+"cK" = (/obj/structure/wild/largejungle,/obj/effect/spawner/mobspawner/frogpoisonous,/turf/floor/grass,/area/caribbean)
+"cL" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean)
+"cZ" = (/obj/structure/grille/logfence,/turf/floor/dirt,/area/caribbean)
+"dc" = (/obj/structure/grille/logfence{dir = 8; icon_state = "palisade"},/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean)
+"dk" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"dR" = (/obj/structure/wild/flowers{icon_state = "smallbush38"},/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"dT" = (/obj/effect/spawner/mobspawner/mouse,/turf/floor/grass,/area/caribbean)
+"dU" = (/obj/structure/grille/logfence{dir = 1; icon_state = "palisade"},/turf/floor/grass,/area/caribbean)
+"dZ" = (/obj/structure/wild/jungle{icon_state = "tree7"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ep" = (/obj/effect/floor_decal/dirtwall,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"eO" = (/obj/roof/thatch,/obj/covers/thatch,/obj/effect/spawner/mobspawner/monkeys,/turf/floor/dirt/dust,/area/caribbean)
+"eR" = (/obj/map_metadata/twotribes,/turf/floor/grass,/area/caribbean)
+"fi" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"fJ" = (/obj/structure/wild/jungle{icon_state = "tree3"},/turf/floor/grass,/area/caribbean)
+"fP" = (/obj/covers/dirt_wall/blocks,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"fT" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean)
+"gi" = (/obj/covers/wood,/obj/structure/bed/wood,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"gL" = (/obj/covers/wood,/obj/structure/closet/crate/wood,/obj/roof/thatch,/turf/floor/dirt,/area/caribbean)
+"gM" = (/obj/roof/thatch,/obj/covers/dirt_wall/blocks,/turf/floor/dirt/dust,/area/caribbean)
+"gO" = (/obj/structure/dehydrator,/turf/floor/dirt/dust,/area/caribbean)
+"gW" = (/turf/floor/beach/water/flooded,/area/caribbean)
+"hu" = (/obj/structure/wild/rock{icon_state = "basalt1"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"hy" = (/turf/floor/dirt/underground,/area/caribbean)
+"hC" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/obj/item/weapon/storage/produce_basket,/obj/item/weapon/berriesgatherer,/turf/floor/dirt/dust,/area/caribbean)
+"hR" = (/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean)
+"iu" = (/obj/structure/wild/flowers{icon_state = "flower10"},/turf/floor/grass,/area/caribbean)
+"iF" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean)
+"iX" = (/obj/structure/wild/berrybush/zelenyy,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"ja" = (/obj/structure/wild/flowers{icon_state = "smallbush16"},/obj/effect/spawner/mobspawner/parrot,/turf/floor/grass,/area/caribbean)
+"jv" = (/obj/structure/wild/largejungle,/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/grass,/area/caribbean)
+"jL" = (/obj/structure/wild/largejungle,/obj/effect/spawner/mobspawner/monkeys,/turf/floor/grass,/area/caribbean)
+"jU" = (/obj/covers/wood,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"kb" = (/obj/structure/table/wood,/obj/item/weapon/material/hatchet/tribal/bone{pixel_y = -3},/obj/item/weapon/material/hatchet/tribal/bone,/obj/item/weapon/material/hatchet/tribal/bone{pixel_y = 3},/turf/floor/dirt/dust,/area/caribbean)
+"kj" = (/obj/item/stack/material/bone{amount = 7},/obj/effect/decal/cleanable/blood,/turf/floor/dirt/dust,/area/caribbean)
+"kn" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"kA" = (/obj/structure/wild/berrybush/azul,/turf/floor/grass,/area/caribbean)
+"kP" = (/obj/structure/wild/berrybush/zelenyy,/turf/floor/grass,/area/caribbean)
+"kT" = (/obj/structure/wild/flowers{icon_state = "smallbush22"},/turf/floor/grass,/area/caribbean)
+"lq" = (/obj/covers/wood/stairs{dir = 6; icon_state = "wood2_stairs"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"lw" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ly" = (/obj/structure/wild/jungle{icon_state = "tree6"},/turf/floor/grass,/area/caribbean)
+"lK" = (/obj/structure/wild/flowers{icon_state = "smallbush16"},/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean)
+"lT" = (/obj/structure/grille/logfence{dir = 8; icon_state = "palisade"},/turf/floor/dirt/dust,/area/caribbean)
+"md" = (/obj/item/weapon/flint/sharpened,/turf/floor/grass,/area/caribbean)
+"mf" = (/obj/structure/wild/jungle{icon_state = "tree4"},/turf/floor/grass,/area/caribbean)
+"mg" = (/obj/structure/wild/berrybush/tinto,/turf/floor/grass,/area/caribbean)
+"mn" = (/obj/covers/wood/stairs{dir = 1},/obj/covers/wood/stairs{dir = 10; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"mC" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"mF" = (/obj/effect/floor_decal/dirtwall{dir = 1; icon_state = "dirt_wall"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"mV" = (/obj/covers/wood/stairs{dir = 4; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"nd" = (/obj/structure/religious/tiki_statue,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"oa" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/produce_basket,/obj/item/weapon/berriesgatherer,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"oc" = (/obj/effect/floor_decal/dirtwall{dir = 1; icon_state = "dirt_wall"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"od" = (/obj/covers/wood/stairs{dir = 6; icon_state = "wood2_stairs"},/turf/floor/dirt/dust,/area/caribbean)
+"oz" = (/obj/covers/repairedfloor,/turf/floor/beach/water/flooded,/area/caribbean)
+"oH" = (/obj/structure/grille/logfence{dir = 4; icon_state = "palisade"},/turf/floor/dirt/dust,/area/caribbean)
+"oK" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean)
+"oM" = (/obj/structure/wild/berrybush/corcairghorm,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"oU" = (/obj/structure/wild/flowers{icon_state = "flower7"},/turf/floor/grass,/area/caribbean)
+"pc" = (/obj/structure/wild/flowers{icon_state = "flower10"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"pr" = (/obj/covers/wood/stairs{dir = 1},/obj/covers/wood/stairs{dir = 1; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"py" = (/obj/structure/wild/berrybush/amar,/turf/floor/grass,/area/caribbean)
+"pA" = (/obj/structure/wild/berrybush/majo,/turf/floor/grass,/area/caribbean)
+"pK" = (/obj/covers/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"pQ" = (/obj/covers/wood/stairs{dir = 10},/turf/floor/dirt/dust,/area/caribbean)
+"pT" = (/obj/roof/thatch,/obj/covers/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"qq" = (/obj/covers/wood/stairs{dir = 8; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"qE" = (/obj/structure/wild/smallbush{icon_state = "smallbush30"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"qH" = (/obj/structure/wild/flowers{icon_state = "smallbush38"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"qS" = (/turf/floor/dirt/dust,/area/caribbean)
+"rf" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/obj/item/clothing/under/loinleather,/obj/item/clothing/under/loinleather{pixel_y = 3},/obj/item/clothing/under/loinleather{pixel_y = 6},/obj/item/clothing/under/loinleather{pixel_y = 9},/obj/item/clothing/under/loinleather{pixel_y = 12},/obj/item/clothing/under/loinleather{pixel_y = 15},/turf/floor/dirt/dust,/area/caribbean)
+"rh" = (/obj/structure/wild/flowers{icon_state = "smallbush38"},/turf/floor/grass,/area/caribbean)
+"rK" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean)
+"su" = (/obj/structure/grille/logfence{dir = 4; icon_state = "palisade"},/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"sH" = (/obj/structure/table/wood,/obj/item/clothing/under/loinleather,/obj/item/clothing/under/loinleather{pixel_y = 3},/obj/item/clothing/under/loinleather{pixel_y = 6},/obj/item/clothing/under/loinleather{pixel_y = 9},/obj/item/clothing/under/loinleather{pixel_y = 12},/obj/item/clothing/under/loinleather{pixel_y = 15},/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"te" = (/obj/structure/table/wood,/obj/covers/wood,/obj/roof/thatch,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/obj/item/clothing/accessory/armband/french,/turf/floor/grass,/area/caribbean)
+"tf" = (/obj/covers/wood,/obj/structure/closet/crate/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"ts" = (/obj/item/weapon/branch/sharpened,/obj/item/weapon/flint/sharpened,/turf/floor/grass,/area/caribbean)
+"tJ" = (/obj/structure/wild/jungle{icon_state = "tree7"},/turf/floor/grass,/area/caribbean)
+"tW" = (/obj/covers/wood/stairs{dir = 9; icon_state = "wood2_stairs"},/turf/floor/dirt/dust,/area/caribbean)
+"ue" = (/obj/structure/wild/tallgrass,/obj/effect/spawner/mobspawner/snake,/turf/floor/grass,/area/caribbean)
+"ul" = (/obj/structure/wild/berrybush/marron,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"uq" = (/obj/structure/wild/rock,/obj/effect/spawner/mobspawner/panthers/jaguar,/turf/floor/grass,/area/caribbean)
+"uB" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/obj/item/clothing/accessory/armband/british,/turf/floor/dirt/dust,/area/caribbean)
+"uC" = (/obj/structure/curtain/leather,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"uK" = (/obj/structure/wild/jungle{icon_state = "tree4"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"uT" = (/obj/covers/wood/stairs{dir = 1},/obj/covers/wood/stairs{dir = 1; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"ve" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/bow/sling{pixel_y = -3},/obj/item/weapon/gun/projectile/bow/sling,/obj/item/weapon/gun/projectile/bow/sling{pixel_y = 3},/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"vf" = (/obj/structure/grille/logfence{dir = 1; icon_state = "palisade"},/turf/floor/dirt,/area/caribbean)
+"vq" = (/obj/structure/grille/logfence{dir = 8; icon_state = "palisade"},/turf/floor/grass,/area/caribbean)
+"vy" = (/obj/structure/grille/logfence,/turf/floor/dirt/dust,/area/caribbean)
+"vI" = (/obj/structure/wild/flowers{icon_state = "smallbush38"},/obj/structure/wild/flowers{icon_state = "flower7"},/turf/floor/grass,/area/caribbean)
+"vO" = (/obj/covers/thatch,/obj/roof/thatch,/obj/structure/curtain/leather,/turf/floor/dirt/dust,/area/caribbean)
+"vQ" = (/obj/structure/table/wood,/obj/item/weapon/melee/classic_baton/club{pixel_y = 6},/obj/item/weapon/melee/classic_baton/club{pixel_y = 3},/obj/item/weapon/melee/classic_baton/club,/obj/item/weapon/shield/nomads,/obj/item/weapon/shield/nomads,/obj/item/weapon/shield/nomads,/turf/floor/dirt/dust,/area/caribbean)
+"vY" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"wn" = (/obj/structure/table/wood,/obj/item/weapon/material/spear{pixel_y = 3},/obj/item/weapon/material/spear,/obj/item/weapon/material/spear{pixel_y = -3},/obj/item/weapon/shield/nguni_shield,/obj/item/weapon/shield/nguni_shield,/obj/item/weapon/shield/nguni_shield,/turf/floor/dirt/dust,/area/caribbean)
+"wr" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean)
+"xh" = (/turf/floor/dirt/jungledirt,/area/caribbean)
+"xi" = (/obj/structure/wild/jungle{icon_state = "tree5"},/turf/floor/grass,/area/caribbean)
+"xu" = (/obj/structure/wild/berrybush/marron,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"xy" = (/obj/item/weapon/material/spear,/turf/floor/dirt/dust,/area/caribbean)
+"xS" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/dirt/dust,/area/caribbean)
+"yi" = (/obj/covers/wood/stairs{dir = 6; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"yu" = (/obj/structure/grille/logfence{dir = 4; icon_state = "palisade"},/turf/floor/dirt,/area/caribbean)
+"yJ" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"zd" = (/obj/effect/spawner/mobspawner/frogpoisonous,/turf/floor/grass,/area/caribbean)
+"zj" = (/obj/structure/wild/flowers{icon_state = "smallbush16"},/obj/structure/wild/berrybush/marron,/turf/floor/grass,/area/caribbean)
+"zN" = (/obj/roof/thatch,/obj/covers/thatch,/obj/effect/landmark{name = "JoinLateRChief"},/turf/floor/dirt/dust,/area/caribbean)
+"Af" = (/obj/roof/thatch,/obj/covers/thatch,/obj/effect/landmark{name = "JoinLateRTribesperson"},/turf/floor/dirt/dust,/area/caribbean)
+"Ak" = (/turf/floor/dirt/underground{opacity = 0},/area/caribbean/no_mans_land/capturable/one)
+"AC" = (/obj/effect/floor_decal/dirtwall{dir = 4; icon_state = "dirt_wall"},/turf/floor/dirt/dust,/area/caribbean)
+"AF" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"Ba" = (/obj/covers/wood/stairs{dir = 2; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"BH" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/bint/leather,/turf/floor/dirt/dust,/area/caribbean)
+"BY" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/dirt,/area/caribbean)
+"Cf" = (/obj/covers/wood/stairs{dir = 9; icon_state = "wood2_stairs"},/obj/covers/wood/stairs{dir = 5; icon_state = "wood2_stairs"},/turf/floor/dirt/dust,/area/caribbean)
+"Co" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette/joint,/obj/item/clothing/mask/smokable/cigarette/joint{pixel_y = 3},/obj/item/clothing/mask/smokable/cigarette/joint{pixel_y = 6},/turf/floor/dirt/dust,/area/caribbean)
+"Cw" = (/obj/structure/table/wood,/obj/item/stack/material/stone{amount = 50},/turf/floor/dirt/dust,/area/caribbean)
+"CE" = (/obj/structure/wild/rock{icon_state = "rock1"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"CJ" = (/obj/covers/thatch,/obj/structure/table/wood,/obj/item/weapon/storage/produce_basket,/obj/item/weapon/berriesgatherer,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"CP" = (/obj/effect/spawner/mobspawner/parrot,/turf/floor/grass,/area/caribbean)
+"CX" = (/obj/structure/closet/crate/wood,/turf/floor/dirt/dust,/area/caribbean)
+"Dm" = (/obj/structure/wild/berrybush/marron,/turf/floor/grass,/area/caribbean)
+"Dr" = (/obj/structure/table/wood,/obj/item/stack/material/stone{amount = 50},/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"DB" = (/obj/covers/wood,/obj/structure/table/wood,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"DC" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/hatchet/tribal/flint,/obj/item/weapon/material/hatchet/tribal/flint,/obj/roof/thatch,/turf/floor/dirt,/area/caribbean)
+"DR" = (/obj/structure/wild/flowers{icon_state = "smallbush10"},/turf/floor/grass,/area/caribbean)
+"DY" = (/obj/structure/wild/largejungle,/obj/effect/spawner/mobspawner/alligator,/turf/floor/grass,/area/caribbean)
+"Eb" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"Ez" = (/obj/effect/spawner/mobspawner/panthers,/obj/structure/wild/flowers{icon_state = "smallbush38"},/turf/floor/grass,/area/caribbean)
+"EN" = (/obj/covers/wood/stairs{dir = 10},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"Fb" = (/obj/covers/wood/stairs{dir = 5; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"Fp" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"Ft" = (/obj/structure/wild/jungle{icon_state = "tree2"},/turf/floor/grass,/area/caribbean)
+"FK" = (/obj/structure/wild/junglebush,/obj/effect/spawner/mobspawner/panthers/jaguar,/turf/floor/grass,/area/caribbean)
+"Gf" = (/obj/structure/wild/jungle{icon_state = "tree5"},/turf/floor/dirt,/area/caribbean)
+"GP" = (/obj/structure/wild/berrybush/narco,/turf/floor/grass,/area/caribbean)
+"Hd" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/grass,/area/caribbean)
+"Ho" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean)
+"Ht" = (/obj/covers/wood,/obj/roof/thatch,/obj/effect/landmark{name = "JoinLateBChief"},/turf/floor/grass,/area/caribbean)
+"Hv" = (/obj/covers/thatch,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"HK" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"HQ" = (/obj/effect/spawner/mobspawner/panthers/jaguar,/turf/floor/grass,/area/caribbean)
+"HT" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
+"If" = (/obj/covers/wood,/obj/structure/simple_door/wood,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"In" = (/obj/structure/oven/fireplace,/turf/floor/dirt/dust,/area/caribbean)
+"Jm" = (/obj/covers/wood/stairs{dir = 9; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"Jn" = (/obj/structure/wild/berrybush/narco,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"Jv" = (/obj/structure/wild/rock{icon_state = "basalt1"},/turf/floor/grass,/area/caribbean)
+"Ke" = (/turf/floor/dirt/underground{opacity = 0},/area/caribbean)
+"Ks" = (/obj/effect/spawner/mobspawner/panthers/jaguar,/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean)
+"Kv" = (/obj/effect/spawner/mobspawner/alligator,/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean)
+"KT" = (/obj/structure/wild/berrybush/corcairghorm,/turf/floor/grass,/area/caribbean)
+"Ln" = (/obj/structure/altar/wood,/obj/item/weapon/material/hatchet/tribal/bone,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"LL" = (/obj/structure/grille/logfence{dir = 8; icon_state = "palisade"},/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean)
+"Mq" = (/obj/effect/floor_decal/dirtwall{dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"ML" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean)
+"Nf" = (/obj/item/weapon/material/hatchet/tribal/flint,/turf/floor/dirt/dust,/area/caribbean)
+"Nj" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"Nu" = (/obj/structure/wild/rock{icon_state = "rock1"},/turf/floor/grass,/area/caribbean)
+"NI" = (/obj/structure/wild/flowers{icon_state = "flower13"},/turf/floor/grass,/area/caribbean)
+"NQ" = (/obj/structure/grille/logfence{dir = 4; icon_state = "palisade"},/obj/structure/wild/rock{icon_state = "rock1"},/turf/floor/grass,/area/caribbean)
+"Od" = (/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"Ol" = (/obj/effect/floor_decal/dirtwall,/turf/floor/dirt/dust,/area/caribbean)
+"Ow" = (/obj/effect/spawner/mobspawner/panthers,/turf/floor/grass,/area/caribbean)
+"Ox" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"OD" = (/obj/effect/floor_decal/dirtwall{dir = 4; icon_state = "dirt_wall"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"OR" = (/obj/structure/wild/largejungle,/turf/floor/dirt,/area/caribbean)
+"Pb" = (/obj/covers/wood/stairs{dir = 6; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean)
+"Pc" = (/obj/structure/wild/flowers{icon_state = "smallbush16"},/turf/floor/grass,/area/caribbean)
+"Pi" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/bint/leather,/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"Pk" = (/obj/structure/wild/smallbush{icon_state = "smallbush30"},/turf/floor/grass,/area/caribbean)
+"Pl" = (/obj/structure/wild/jungle{icon_state = "tree2"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"PP" = (/obj/item/weapon/material/spear,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"PZ" = (/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette/joint,/obj/item/clothing/mask/smokable/cigarette/joint{pixel_y = 3},/obj/item/clothing/mask/smokable/cigarette/joint{pixel_y = 6},/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt/dust,/area/caribbean)
+"Qs" = (/obj/item/weapon/material/hatchet/tribal/flint,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"QN" = (/obj/covers/repairedfloor,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/invisible_wall)
+"RD" = (/obj/covers/wood,/obj/roof/thatch,/turf/floor/dirt,/area/caribbean)
+"RJ" = (/turf/floor/dirt,/area/caribbean)
+"RP" = (/obj/structure/wild/junglebush,/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean)
+"Se" = (/obj/covers/wood,/obj/roof/thatch,/obj/effect/landmark{name = "JoinLateBTribesperson"},/turf/floor/grass,/area/caribbean)
+"Sq" = (/obj/item/weapon/branch/sharpened,/turf/floor/grass,/area/caribbean)
+"SV" = (/obj/structure/wild/rock{icon_state = "basalt1"},/turf/floor/dirt,/area/caribbean)
+"Tc" = (/obj/effect/spawner/mobspawner/frogpoisonous,/turf/floor/dirt,/area/caribbean)
+"Tk" = (/obj/effect/spawner/mobspawner/frog,/turf/floor/grass,/area/caribbean)
+"TK" = (/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"TV" = (/obj/structure/grille/logfence,/turf/floor/grass,/area/caribbean)
+"Ue" = (/obj/structure/salting_container,/turf/floor/dirt/dust,/area/caribbean)
+"Uf" = (/obj/structure/grille/logfence{dir = 1; icon_state = "palisade"},/turf/floor/dirt/dust,/area/caribbean)
+"Ug" = (/obj/effect/floor_decal/dirtwall{dir = 8},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"UG" = (/obj/effect/spawner/mobspawner/snake,/turf/floor/grass,/area/caribbean)
+"UQ" = (/obj/structure/wild/berrybush/narco,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"Vv" = (/obj/structure/wild/rock{icon_state = "rock4"},/turf/floor/grass,/area/caribbean)
+"VE" = (/obj/covers/wood_wall/log/corner,/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"VU" = (/obj/structure/grille/logfence{dir = 4; icon_state = "palisade"},/turf/floor/grass,/area/caribbean)
+"Xd" = (/obj/covers/wood_wall/log{dir = 4; icon_state = "log_wall"},/obj/roof/thatch,/turf/floor/grass,/area/caribbean)
+"Xg" = (/obj/effect/floor_decal/dirtwall,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"XM" = (/obj/structure/wild/jungle{icon_state = "tree7"},/turf/floor/dirt,/area/caribbean)
+"Yi" = (/obj/item/weapon/melee/classic_baton/club,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"Yl" = (/turf/floor/grass,/area/caribbean)
+"Ym" = (/obj/item/weapon/melee/classic_baton/club,/turf/floor/dirt/dust,/area/caribbean)
+"YJ" = (/obj/roof/thatch,/obj/covers/thatch,/obj/effect/landmark{name = "JoinLateRShaman"},/turf/floor/dirt/dust,/area/caribbean)
+"YO" = (/obj/structure/wild/jungle,/turf/floor/grass,/area/caribbean)
+"YT" = (/obj/covers/wood/stairs{dir = 1},/obj/covers/wood/stairs{dir = 10; icon_state = "wood2_stairs2"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/capturable/one)
+"Zi" = (/obj/structure/wild/rock{icon_state = "rock4"},/obj/structure/wild/jungle{icon_state = "tree4"},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"Zs" = (/obj/roof/thatch,/obj/covers/thatch,/obj/structure/bed/bedroll,/turf/floor/dirt/dust,/area/caribbean)
+"Zt" = (/obj/effect/spawner/mobspawner/alligator,/turf/floor/grass,/area/caribbean)
+"Zw" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/bow/sling{pixel_y = -3},/obj/item/weapon/gun/projectile/bow/sling,/obj/item/weapon/gun/projectile/bow/sling{pixel_y = 3},/turf/floor/dirt/dust,/area/caribbean)
+"ZE" = (/obj/effect/floor_decal/dirtwall{dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+"ZH" = (/obj/item/weapon/material/hatchet/tribal/flint,/turf/floor/grass,/area/caribbean/no_mans_land/capturable/one)
+
+(1,1,1) = {"
+YlYlYlFtYlYlcLtJYlYlVUqSqSqSxSqSqSfPqSqSqSqSqSqSqSqSgOvqYlYlcLYlYlYlYlHTYlVvYlYlYlYlYlYlYlYlYlYlYlYlRJgWgWgWgWgWgWRJRJYlYOYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlYlVvYlYlYlYlYlYlYlYlYliuYlYlYlYlYlYlYlYlYl
+YlFtYlYlYlYlYloUmgxiNQqSqSqSqSpKpTfPfPqSqSqSqSqSqSqSgOvqmfYlYlYlYlYlYlHQYlhRYlYlYlYlYlYlHQtJYlYlYlYlRJRJgWgWgWgWgWgWRJRJZtYlYlYlYOYlYlYlYlYOYlYlYlYlYOYlYlYOYlYlYlYlVvYlmfYlYlYlYlYlYlYlYlYlYlYlYOYlYlYlYl
+rhNuYlhRHTFtYlYlYlYlVUqSqSqSpKpTpTHvfPqSqSqSqSqSqSqSgOLLYlYlYlhRYlYOYlYlYlHTYltJYlVvlyYlYlYlwrYlVvYlYlRJRJgWgWgWgWgWgWRJRJRJYOYlYlYlYlYOYlYlYlYOYlYlYlYlYlYlYlYlYOYlYlYlcLYlYlYOYlYlYlYlYllyYlNuYlYlYlYlrh
+YlYlfJcLYlYlYlxiVvhRVUqSqSqSpTpTpTHvfPqSqSqSqSqSqSqSqSYlhRYlYOHQYlcLYlYllyYlYlcLYlYlYlwrtJYlYlfJZtYlYlYlTcRJgWgWgWgWgWgWgWRJRJYlYlYlYlYlYlYlYlYlYONuYlxiYlYlYOYlMLYlYlYlYlYlYlYlHTYOYlYOYlYlYlYlYlYlYOYlYl
+FtkAYlYlYlhRYlYlYlYlYlqSqSpKpTeOpTHvfPqSqSqSqSqSqSqSqSdcYlcLYlYlVvhRYlYlDmHTwrYlhRYlYlYlHTYlcLYlYlYlmfYlYlRJRJgWgWgWgWgWgWgWRJRJYOYlYlYlYlxiYlGPqSqSqSqSqSqSqSqSYlYlYlfJYlYlYlYlYlYlYlYlYlYlYlYOYlYlYlYlYl
+YlYlYlYlYOYlxicLrhxioUqSqSfPpTpTpTfPfPgOqSqSqSqSqSqSqSUfqSUfUfdcYlYOYlFtYlcLYlYlHQYllyYlYlYlYlYlYlYlYlYlYlYlRJRJgWgWgWgWgWgWgWRJRJZtYOYlYlYlqSqSqSqSqSqSqSqSqSqSqSYOYlNuMLiuYOYlYlYlYlYllyYlcLYlYlmfYlYlYl
+YlYlfJmgCPYlYlYlmgYlVUqSqSfPfPHvfPfPqSqSqSqSqSxSqSqSqSqSqSqSqSvqYlYluqYlYlhRYltJYljvYlYlHTfJYlHTYOYlYlYlYlYlYlRJRJRJgWgWgWgWgWgWRJRJRJYlYlqSqSqSqSqSqSYlYlGPqSqSqSqSYlYlYlYlYlYlYlYOYlYliuYlYlYlYlrhYlYlYl
+tJHTYlcLYlhRVvYlYlhRVUqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSvqcLYlYlYlFtYlYlYlwrYlYlYlhRYlYlYlYlYlmfYlYlhRYlYlYlTcRJgWgWgWgWgWgWgWRJFtYlqSqSqSYlYlYlfJYlJvfPfPvOfPfPGPYlYlYlYlYlYlYlYlYlYlYlYOYlYlYlYOYl
+YlYlYlYltJYlcLYOYlYlNQvyvyvyvyvyvyvyvyqSxSqSvyvyvyvyvyxSqSqSqSYlYlmfhRYlYlYlYlhRYlDmxiYlYlYlFtYlYlYlYlYllyYlcLYlYlYlRJRJgWgWgWgWgWgWRJRJYOqSqSGPYlYlYlYlGPfPfPpTpTpTfPfPYlfJYlYOYliuYlYOYlYlYlYlYlYlYlYlYl
+YlYlYOhRYlYlYlYlYlYORJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJyuvyqSqSqSKsYlYlFtYlYlYlfJYlHQYlHTYlYOYlHTYllycLhRYlYlYlYlYlhRYlYlRJRJRJgWgWgWgWgWRJRJqSqSZtJvYlYlYlYlfPZspTpTpTZsfPYlYlMLYlYlYlYlYlYlYlmfYlYlYlmfYlYl
+fJYlYlcLYlYOYlYlYlRJRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWRJRJlTqSqSqSqSqSYlYlFtYlHTYlYlYlVvDmKeKeKeKeKeKeKeKeKehRYlYlHTYlcLYlZtRJRJgWgWgWgWgWRJqSqSRJRJYlfJYlYlfPZspTpTpTZsfPYlVvYlYlYlYlYlYlYlYlYlYlYOYlYlRJRJ
+YlYlYlYlrhdTHTYOJvRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWRJlTqSqSqSqSqSqSFKYlYlYlYlfJKeKeKeKeYlPkYlYlwrDmYlKeKeKeKeKeKeKeHTYlYlzdRJgWgWgWgWgWozQNcFRJRJRJYlYlfPZspTpTpTZsfPYlYlYlYlYlYOYlYlYOMLYlHTYlRJRJRJgW
+YlYOVvYOYlYlYlRJRJRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWlTqSqSqSqSqSqSqSYlxiYlKeKeKewrHTYlYlwrYlYlYlYlYlYlYlYlYlYlYlKeKeKeJvcLRJRJgWgWgWgWozQNcFcFcFRJRJRJfPfPhCBHbKfPfPYlYlfJYlYlcLYlYlYlYlYlRJRJRJcFcFcF
+YlkAYlCPYlxiRJRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWozozozRJRJqSqSqSqSqSqSmVMqqSqSqShRYlMLFthRYlYlhRYlYlYlYlYlYlYlYlKeKeYlYlRJRJgWgWgWozQNcFcFcFcFcFRJRJfPfPfPfPfPZtYlYlYllyYlYlmfYlrhRJRJRJcFcFcFcFcF
+YlYlcLYlpyRJRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWozozozgWRJRJqSqSqSqSqSCfMqYmqSqSqSqSqSYlYlYlYOPkYlmfYlYlYODmHTPkYlKeYlYlZtRJRJRJRJqSEbmCcFcFcFcFcFRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJcFcFcFcFcFcFRJ
+YOhRYlxiJvRJgWgWgWgWgWgWgWgWgWgWRJRJRJxhxhRJRJRJgWgWgWgWozozozgWgWRJRJqSqSqSqSFbMqqSqSqSqSqSqSqShRYlHTqSqSqSqSqSqSqSqSxyqSKehRYlDmcLrhqSqSqSEbmCmCmCcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFRJRJ
+YlYlYlRJRJRJgWgWgWgWgWgWgWgWgWRJxhxhxhxhoKxhxhRJRJgWgWgWozozozgWgWgWRJVvYlYlYlKeKeYlJvqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSACJmqSqSqSqSqSqSqSqSpcaTdZRJRJRJcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFRJRJYO
+cLxiHTRJgWgWgWgWgWgWgWgWgWgWRJxhxhoKiFxhxhxhxhYlRJRJgWgWozozozgWgWgWRJRJhRYlYOcLKeHTYlYOYlYlYlqSqSqSqSqSqSqSqSYlYlYlMLqSACtWqSqSqSqSqSqSqStJNjJnaTYlYlRJRJRJcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFcFRJRJRJYlYl
+YlRJRJRJgWgWgWgWgWgWgWRJRJxhxhxhxhxhoKxhxhYlcLYlZtRJRJRJozozozgWgWgWgWRJRJRJkPcLKeKeYlYlJvhRYlHTOlOlOlqSqSYlHThRYlYOYlqSACqqqSqSqSqSqSqSqSrhJnaTulfJYlYlxiRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJYlYOYlYl
+YORJgWgWgWgWgWgWgWxhRJxhxhxhxhiFoKxhxhxhYloKhRoKVvYlYlRJqSqSqSRJgWgWgWgWgWRJRJRJRJKeKeKeKeKeKeKebtodPbKeKeKeKeKeKeKeKeKeKeKeRJRJRJqSqSqSqSDmyJAFaTcLYliuYlZtxiYlYlYltJYlYlYlYlxicLYlYlFtYlYlYOYlmfYlcLYlYO
+RJRJgWgWgWgWgWgWRJxhRJxhxhxhxhxhxhxhVvhRYlcLYlYloKYlYlYlqSqSqSRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWozozozgWgWgWgWgWgWgWgWgWgWgWgWgWgWRJRJqSqSqSlwqHJnVvYlYlYlYlcLVvfJYlYlcLxiVUdUdUdUdUdUdUdUdUdUdUdUdUdUdUdU
+RJgWgWgWgWgWgWgWxhxhoKxhoKiFoKxhZtYloKYloKYloKhRYlhRYlqSqSqSqSRJRJgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWozozozgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWRJRJqSqSEbaTaTUGGPYlfJYlYlYlYlYlYlYlVUdUYlYlYlYlYlYlYlqSqSqSqSqSqSqSqS
+gWgWgWgWgWgWgWRJxhxhxhxhxhxhxhYloKoKoKhRYlYlYlZtoKYlqSqSqSqSqSHTRJRJRJRJRJgWgWgWgWgWgWgWgWgWgWgWozozozgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWgWRJqSqSEbEblwYlDRYlYlcLYOiuYlfJYlVUdUYlYlYlYlYlYlHTqSqSfPfPfPfPfPqSqS
+gWgWgWgWgWgWgWRJxhoKiFxhoKxhhRYloKoKoKcLhRYloKYlYlHTqSqSqSqSqSkPiuYlHoYlRJRJRJRJRJRJRJAkAkAkAkAkYTENuTAkAkAkAkAkRJRJRJRJgWgWgWgWgWgWgWRJRJqSEbEbEbYlYOVvcLYlYlYlVvcLfJVUYlYlYlYlYOYlYlqSqSfPfPCJBHCofPfPqS
+gWgWgWgWgWgWgWRJxhxhxhoKxhYlVvcLoKYlYlHToKYlYlhRYlYlqSqSqSqSwrYlYlYlYlHTHomfUGkPYlYlcLAkOdOdOdOdocococqEOdOdOdAkAkhRYlbPRJRJRJRJgWgWgWgWRJRJEbEbEbqSYlPkYlYlYlYlfJYlYlVUYlYlfJYlYlYlqSqSqSfPZspTpTpTZsfPqS
+cFcFcFcFcFcFcFcFRJxhxhxhiFoKYloKZthRoKYlYlHTYloKYlqSqSqSqSqSkPYlYlmfhRYlYlYlHTDmhRYlAkAkOdknOdOdvYvYvYknOdOdOdOdAkNIYlYlFtHTcLbPgWgWgWgWgWRJmCEbEbqSqSYODRYlfJYlYlwrYlVUYlYlYlYlHTqSqSqSqSfPZszNAfYJZsfPqS
+cFcFcFcFcFcFcFcFcFRJxhoKxhYlhRYloKYlYlhRYloKhRYlYlqSqSqSqSqSYltJNuMLYlhRHdYlYlcLYlAkAkOdOdOdFpuKvYvYvYZHOdOdHKOdAkYllykPcLYlYlRJRJgWgWgWgWgWmCmCEbqSqSqSYlYlHTcLVvcLfJVUYlYlYlYlqSqSqSqSCXfPZspTpTpTZsfPqS
+cFcFcFcFcFcFcFcFcFRJRJxhxhxhcLZtcLYloKYloKYloKYlqSqSqSqSqSqSYlcLwrYlYlYlHoDmYlYlrhAkOdOdHKknxuvYvYndvYvYHKknFpOdAkhRYlYlHdrhYOYlRJaVgWgWgWgWcFmCdRqSqSqSkTYOYlYlSqiuHTVUYlFtYlYlqSkjqSqSCXfPfPpTpTpTfPfPqS
+RJRJRJRJRJRJcFcFcFcFRJRJxhoKYlYlJvYlhRYlYlcLYloKqSqSqSqSqSYlYlHTYlYlFtPkYlYlYlYlAkAkqEOdknfivYQsvYvYvYvYvYvYfiHKAkAkMLhRYlVvrhcLYORJRJgWgWgWcFcFmCRJqSqSDRtsYlYlHTYlYlVUYlYlHTqSqSqSqSqSqSwnfPfPvOfPfPvQqS
+RJRJRJfTRJRJRJcFcFcFcFRJxhxhRPoKYloKYloKcLYlYlYlqSqSqSqSqShRYlYlhRYlMLYlNuYlYOAkAkOdCEZivYvYvYvYvYLnvYvYvYvYvYiXqEAkAkAkAkAkAkAkYlYlRJRJgWgWcFcFcFRJqSqSPkJvYlfJPkYlYlVUYlZwCwqSqSqSInqSqSqSqSqSqSqSqSqSqS
+BYORRJoKRJRJRJRJcFcFcFcFRJRJxhxhYlYlYloKoKhRoKYlqSqSqSqSwrHoYlYlYlYlUGrhcLYlAkAkOdOdvYvYvYvYvYvYvYvYvYvYvYvYvYvYknOdCEknFpOdqEAkjLYlmfRJRJgWcFcFcFRJqSqSwrHTmdkTSqVvYOVUqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqS
+oKfTRJSVORrKRJRJRJcFcFcFcFRJxhoKDYoKcLoKoKoKYlqSqSqSqSqSiuYlMLFtYlYlYlHoYlAkAkOdOxvYvYvYvYvYOdvYvYvYvYQsOdvYvYvYvYvYvYvYvYvYvYAkkTMLrhFtRJRJcFcFcFRJqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSNfqSqS
+YlzdHTcLYloKRJRJRJRJcFcFcFcFRJxhYlYlYlYlYlVvYlqSqSqSqSYlYlYlHTMLYlmfYlYlAkAkOdOdvYvYvYvYfiFpHKfivYvYvYUQuKOdqEvYvYvYvYvYvYvYvYAkAkcLcLDmYlRJcFcFcFRJqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSInqSqSqSqS
+hRYloKYlVvTkcLhRRJRJRJcFcFcFRJRJxhhRoKhRYlKvYlqSqSqSqSDRlyYlYlYlueYlAkAkAkXgOdvYvYvYvYOdOdOdOdknknOddkfiqEOdOdOxvYvYvYvYvYvYvYvYAkAkAkcLYORJcFcFcFRJqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqS
+oKoKhRYloKYloKYloKRJRJcFcFcFcFRJxhoKxhYloKYloKqSqSqSqSHoUGYlYlcLKTAkAkOdCEODepvYvYdkknOdHKOdOdOdOdPlOdhuknOdOdOdOxOdFpvYvYvYvYvYvYvYAkAkMLRJcFcFcFRJqSqSpyYlYlpAYlJvYlVUYlYlqSqSqSqSqSqSqSqSNfqSqSqSqSqSqS
+JvoKoKYlYlhRYlJvHThRRJRJcFcFcFcFRJRJxhhRYlYlYlqSqSqSqSwrcLlyYlAkAkAkOdHKvYvYvYUgOdHKOdOxOdOdHKTKOdOxOdOdOdOdHKOdknTKOdkndkvYvYvYvYvYvYAkEzRJcFcFcFRJqSqSDRYlYODRHTfJmdVUYlYlYlJvqSqSInqSqSqSqSqSqSqSqSqSqS
+oKoKoKoKoKYlcLYloKcLYlRJRJcFcFcFcFRJxhxhoKhRZtqSqSqSqSYlHTAkAkAkknOdvYvYvYvYvYmFZEAkAkAkAkAkdkOdknOdHKOdAkAkAkAkAkAkAkAkAkvYvYvYYivYvYAkYlaVcFcFcFRJqSqSJvYlYlYlcLYlVvVUYlYOYlYlqSqSqSqSqSkbfPfPuCfPfPqSqS
+cLYlYlcLcKYlYlYlYlYlhRRJRJcFcFcFcFRJRJoKxhYloKqSqSqSqSYlAkAkCEoMOdvYvYvYvYOdOdFpAkAkVvYlYlAkAkAkAkAkAkAkAkVvYlYlYlYlYlYlAkAkvYvYvYvYvYAkYlRJcFcFcFRJqSqSYlfJHTYlYlYliusuYlYlYlYlYlqSqSqSgOfPfPpTpTpTfPfPqS
+YloKhRYlVvoKYlhRYloKYloKRJRJcFcFcFcFRJxhxhYlYlqSqSqSqSMLAkknOdvYvYvYvYOdknHKAkAkAkcLYlmfHTYlYlYlYlYlYlYlYlkTYlNIYlYOYlYlVvAkAkvYPPvYvYAkmfRJcFcFcFRJqSqSiuYlDRYlYOYlYlVUYlYlYlfJYlqSqSqSgOfPuBpTpTpTpTfPqS
+hRYlYlYlYlYlYloKYlcLzdYlTkRJRJcFcFcFcFRJxhxhZtqSqSqSqScLAkFpvYYivYOdOdOdAkAkAkcLYlYlYlYlYlkPhRYlYOYlYlfJkPYlFtYlYlUGYlfJYlYlAkAkepepepAkrhRJcFcFcFRJqSqSqSYlVvYlcLHTYlVUYlFtYlYlYlYlqSqSgOfPBHpTpTpTpTfPqS
+cZcZcZcZcZcZcZcZcZcZRJhRYlRJRJRJcFcFcFcFRJxhxhqSqSqSqSYlAkOdvYvYvYHKOdAkAkYlYlYlYlKsYlYlYlYOYlcLYlYlYlYlYlcLkTMLYlYlYlNIYlYlYlAkBalqyiAkVvRJcFcFcFRJqSqSqSfJwrVvYlYlfJVUYlYlYlYlYlYlqSqSgOfPrfpTpTpTpTfPqS
+YlYlYltJYlYlYlJvtJVURJRJYlYloKRJRJcFcFcFRJRJxhqSqSqSqSYOAkAkepepepOdknAkcLYlMLYltJYlYlYOYlkTYlYlHdxihRYlYlYlYlUGfJYlYlYlYlmfYlVvqSqSqSOwYlRJcFcFcFRJRJqSqSYlHTYlYlMLYlVUYlJvYlYOYlYlqSqSUefPfPpTpTpTfPfPqS
+YlVEXdXdXdXdXdVEUeoHcZRJRJYloKYlRJRJcFcFcFRJxhxhqSqSqSYlcLAkBalqyiAkAkAkYltJYlHQYlYlYlYlHdYlFtYlYlMLYlYlYOYlYlYlHTYllyYlYlYlNIYlqSqSqSMLlyRJcFcFcFcFRJqSqSiufJYlYlYlYlsuTVYlYlYlYlYlYlqSqSqSfPfPgMfPfPqSqS
+YOaKtfgLDCveDraKgOqSoHcZRJhRYlYlYlRJcFcFcFRJRJxhqSqSqSqSqSqSqSqSqSqSqSqSqSqSYlxiYlMLtJcLhRHTPccLxikPlyYlzjlyhRYlkPNIPclyqSqSqSqSqSqSqSqSqSqSqSQNQNQNqSqSqSYlMLcLYOYlYOMLVUTVYlYlYlfJYlYlYlqSqSqSqSqSqSqSYl
+YlaKRDjUjUjUjUaKgOqSqSyuRJRJoKYloKRJRJcFcFcFRJxhxhqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSQNQNQNqSqSqSYlYlMLrhYlrhcLYlVUTVTVTVTVTVTVTVTVTVTVTVTVTVTVTV
+YlaKsHoajUDBPiaKgOqSInyuRJRJYlhRYlYlRJRJcFcFcFRJxhxhqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSQNQNQNqSqSiucLlyiuoUmfYlYlMLYlYlYlYlYlNIYlYlYlYlYlYlcLYlYlYl
+xiVEXdXdIfXdXdVEgOqSqSyuRJRJRJRJRJRJRJRJRJcFcFcFRJRJqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSRJRJRJRJRJRJRJRJRJRJcFcFcFRJRJYlDRMLYlYlrhYlmfYlYlYlmfYlYlYlYlYlYlFtYlYlYlYllyYl
+qSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSQNQNQNQNQNqSqSqSqSqSqSqSRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJRJqSqSqSRJRJRJRJRJRJRJRJVvYlpAYOYlYlHTYlRJcFcFcFcFRJiuYlYlfJYlYlcLMLrhmfYlYlKTmfYlFtYlkAYlYlYlYlYloUYl
+qSqSqSqSInqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSQNQNQNQNQNqSqSqSqSYlYlYlmfcLYlDmNuYOkTYlYlYOVvDRYlrhNukTxiRJqSqSqSXMYlYlHTYlYlmfYlHdlyYlhRYlYOYltJRJRJcFcFcFRJRJlypAvIMLfJoUYlYlYlYldTYlPccLYlYlYlDRfJYlfJYlNIYl
+qSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSQNQNQNQNQNqSqSYlFtYlfJHTYlMLYOYlhRHTDRYOVvcLNuDmxiKeKeKeKeKemnpQprKeKeKeKehRNuYlhRYlNuYlYlYlYlhRYlYlRJcFcFcFcFRJRJMLYlYlMLYlfJYlYlYlYloUYlYlDRYlYlYlNIYlYlYlcLYl
+lyVEXdXdIfXdXdVEkbqSqSyuRJRJRJRJRJRJRJRJRJRJRJcFcFcFRJDmYlcLYlrhhRYlVvhRDRYlYlYlHdKeKeKeKeKeKeNuYlkPYlYlYlYlJvkPYOKeKeKeKeKeKehRYlYOhRYlYlYlmfRJRJcFcFcFcFRJrhtJYlYlYlYloUrhtJYlYlmfYlYllyYlcLYlFtYlYlYlYl
+YlaKgijUHtjUteaKwnqSInyuRJRJRJRJRJRJRJRJRJRJRJcFcFcFRJRJFtYlFtNuMLfJcLJvYlmfHTFtKeKeYlYlkPYlYlYlYOYllyYlYlYlYljarhHTYOkPrhYOKeKeKeKeJvKTlyYlYlGPRJRJcFcFcFRJRJRJMLmfcLrhYlYlYlYlYlPcpAYlYlYlYlYlYlYlfJYlYl
+YlaKgijUSejUPiaKvQqSqSyuRJRJDRtJYlcLfJDRFthyhycFcFcFcFhyhyhyKeKeKeKeKeKeKeKeKeKeKeYlYOhRYlYOYlYlYlDmHTHdYllyYlYlhRYlYlYlYlYlYlYlYOKeKeKeHThRYlYlmfRJcFcFcFcFcFRJYlpAkAYltJYlYlmfYlYlYlYloUYltJYlKTYlYlYlYl
+xiaKgijUaMRDPZaKqSqSoHvfRJfJHTYlYlYlrhYlhyhyhycFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhylyNuMLYllyYlYlYlxiYlYlYlxiYlYlYOPcMLtJYlKeKeKeFtYlYlRJRJcFcFcFcFRJRJRJcLYlYlYlcLYlYlYlYllyYlGPYlYlYlFtYllyNI
+YlVEXdXdXdXdXdVEqSoHvfRJRJcLYlYlfJYlYlJvhyhyhyhycFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyVvlyhRYlMLHTxiYlYllyhRHTYlDmYllyYlYlKeKehRHdVvRJcFcFcFcFcFcFRJRJkAYlmfYlYlYllyYlKTYlYlYlYlPcYlYlYlYl
+YllyYltJYlYlYllyHTVURJGfDRYlYlYlYlYlxihyhyhyhyhycFcFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyJvYllyYlKeKeFtYlRJRJcFcFcFcFcFcFRJRJRJYloUmfYlYlDRkPtJNIYlFtYlYllyYlYl
+vfvfvfvfvfvfvfvfvfvfRJMLYlYlYlfJYlcLhyhyhyhyhyhyhycFcFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhRYllyKeKTYlYlRJRJcFcFcFcFcFcFcFRJYlYlYlYlYlYlYlYlYlYlYlYlYlYlFtGP
+cLYlYlkTYlfJMLYlYlYlYlcLfJHTYlYlHThyhyhyhyhyhyhyhyhycFcFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyJvYlYlKeKefJhRYlRJRJcFcFcFcFcFcFRJRJlyYlmfYlcLYlYlFtYlYllyYlYlcLYl
+eRfJYlxiHTYlcLxiYlfJMLYlYlYlfJYlkThyhyhyhyhyhyhyhyhyhycFcFcFcFhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhylKYltJKeJvmfVvfJRJcFcFcFcFcFcFcFRJYlYlzjNIYllyYlYlFtYlPcYlFtYlYl
+"}
