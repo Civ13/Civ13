@@ -42,49 +42,70 @@
 
 
 //INKSTAMPS FOLLOW -siro
-/obj/item/weapon/stamp/captain
-	name = "large blue ink stamp"
-	icon_state = "stamp-cap"
+//NEW STAMPS - goldenfreddycl
+/obj/item/weapon/stamp/fna
+	name = "fna ink stamp"
+	icon_state = "stamp-fna"
 
-/obj/item/weapon/stamp/hop
-	name = "blue ink stamp"
-	icon_state = "stamp-hop"
+/obj/item/weapon/stamp/fnaseal
+	name = "fna seal stamp"
+	icon_state = "seal-fna"
 
-/obj/item/weapon/stamp/hos
-	name = "red ink stamp"
-	icon_state = "stamp-hos"
+/obj/item/weapon/stamp/cccp
+	name = "red cccp stamp"
+	icon_state = "stamp-cccp"
 
-/obj/item/weapon/stamp/ce
-	name = "yellow ink stamp"
-	icon_state = "stamp-ce"
+/obj/item/weapon/stamp/cccpseal
+	name = "red cccp seal stamp"
+	icon_state = "seal-cccp"
 
-/obj/item/weapon/stamp/rd
-	name = "research director's ink stamp"
-	icon_state = "stamp-rd"
-
-/obj/item/weapon/stamp/cmo
-	name = "chief medical officer's ink stamp"
-	icon_state = "stamp-cmo"
+/obj/item/weapon/stamp/nkvdseal
+	name = "nkvd seal stamp"
+	icon_state = "stamp-cent"
 
 /obj/item/weapon/stamp/denied
 	name = "DENIED ink stamp"
 	icon_state = "stamp-deny"
 
-/obj/item/weapon/stamp/clown
-	name = "silly ink stamp"
-	icon_state = "stamp-clown"
-
-/obj/item/weapon/stamp/internalaffairs
-	name = "dark red ink stamp"
-	icon_state = "stamp-intaff"
-
 /obj/item/weapon/stamp/centcomm
 	name = "APPROVED ink stamp"
 	icon_state = "stamp-cent"
 
-/obj/item/weapon/stamp/qm
-	name = "yellow ink stamp"
-	icon_state = "stamp-qm"
+/obj/item/weapon/stamp/stamp-latin
+	name = "latin ink stamp"
+	icon_state = "stamp-latin"
+
+/obj/item/weapon/stamp/stampgerman
+	name = "german ink stamp"
+	icon_state = "stamp-german"
+
+/obj/item/weapon/stamp/stampgaul
+	name = "gaelic ink stamp"
+	icon_state = "stamp-gaul"
+
+/obj/item/weapon/stamp/seallatin
+	name = "latin seal stamp"
+	icon_state = "seal-latin"
+
+/obj/item/weapon/stamp/sealgerman
+	name = "german seal stamp"
+	icon_state = "seal-german"
+
+/obj/item/weapon/stamp/sealgaul
+	name = "gaelic seal stamp"
+	icon_state = "seal-gaul"
+
+/obj/item/weapon/stamp/sealberlincensored
+	name = "family friendly berlin seal stamp"
+	icon_state = "seal-berlin-cens"
+
+/obj/item/weapon/stamp/sealberlin
+	name = "berlin seal stamp"
+	icon_state = "steal-berlin"
+
+/obj/item/weapon/stamp/sealadmin
+	name = "civ13 admin seal"
+	icon_state = "steal-admin"
 
 // "Syndicate stamp to forge documents." Was the orrigional comments for the orrigional item. Its a fancy adujustable stamp now, nothing sinister yet. - siro
 /obj/item/weapon/stamp/chameleon/attack_self(mob/user as mob)
