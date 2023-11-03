@@ -495,7 +495,7 @@
 		stampoverlay.pixel_x = rand(-2, 2)
 		stampoverlay.pixel_y = rand(-3, 2)
 		stampoverlay.icon_state = "[P.icon_state]"
-		var/image/stampoverlay_paper = image("icons/stamps/dmi/[P.icon_state].png")
+		var/image/stampoverlay_paper = image("icons/stamps/dmi/[P.icon_state].dmi")
 		stampoverlay.icon_state = P.icon_state
 		stamps += "<img src='\ref[stampoverlay_paper.icon]'>"
 		if(!stamped)
