@@ -104,7 +104,7 @@
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"
 	lobby_icon = "icons/lobby/coldwar.png"
-	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>24 hours</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
 		"Emma:1" = "sound/music/emma.ogg",)
@@ -117,13 +117,14 @@
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	grace_wall_timer = 24 HOURS
 
 /obj/map_metadata/nationsrp/coldwar/New()
 	..()
-	civname_a = "English Nation"
-	civname_b = "Russian Nation"
-	var/newnamea = list("English Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
-	var/newnameb = list("Russian Nation" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
+	civname_a = "United States of America"
+	civname_b = "Soviet Union"
+	var/newnamea = list("United States of America" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#000a66"))
+	var/newnameb = list("Soviet Union" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)

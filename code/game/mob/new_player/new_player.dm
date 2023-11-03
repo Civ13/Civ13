@@ -672,12 +672,14 @@ var/global/redirect_all_players = null
 						if (actual_job && actual_job.title == "DRA Soldier")
 							actual_job.spawn_location = "JoinLateDRA"
 		if (map)
-// // ONG THAHN - Changes US spawns before gracewall
+// ONG THAHN - Changes US spawns before gracewall
 			if (map.ID == MAP_ONG_THAHN)
-				if (processes.ticker.playtime_elapsed <= 3600 && !map.admin_ended_all_grace_periods)
-					if (actual_job && findtext(href_list["SelectedJob"],"USA"))
-						if (actual_job.uses_squads)
+				if (actual_job && findtext(href_list["SelectedJob"],"USA"))
+					if (actual_job.uses_squads)
+						if (processes.ticker.playtime_elapsed <= 3600 && !map.admin_ended_all_grace_periods)
 							actual_job.spawn_location = "JoinLateOutpost1"
+						else if (processes.ticker.playtime_elapsed >= 3600 || map.admin_ended_all_grace_periods)
+							actual_job.spawn_location = "JoinLateRN"
 
 // BANK ROBBERY - Changes Robber spawns after gracewall
 			if (map.ID == MAP_BANK_ROBBERY)

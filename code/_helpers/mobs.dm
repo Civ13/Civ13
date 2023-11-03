@@ -324,6 +324,20 @@ proc/random_polish_name(gender, species = "Human")
 	else
 		return current_species.get_random_polish_name(gender)
 
+// Afrikaans names. No real ingame purpose at the moment.
+proc/random_afrikaans_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
+		else
+			return capitalize(pick(first_names_male_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
+	else
+		return current_species.get_random_afrikaans_name(gender)
+
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"

@@ -922,6 +922,66 @@
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
 
+	else if (map.ID == MAP_NOMADS_ASIA)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/area/mob_area = get_area(src)
+		switch (mob_area.climate)
+			if ("temperate", "semiarid")
+				add_language("Chinese",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/chinese/A in languages)
+					default_language = A
+				name = species.get_random_chinese_name(gender)
+				real_name = name
+				add_note("Known Languages", "Chinese")
+				possible_h_list = list("Dark Brown","Black")
+				possible_e_list = list("Brown","Black")
+				possible_s_list = list(-15,-25)
+			if ("tundra")
+				add_language("Mongolian",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/mongolian/A in languages)
+					default_language = A
+				name = species.get_random_mongolian_name(gender)
+				real_name = name
+				add_note("Known Languages", "Mongolian")
+				possible_h_list = list("Black", "Dark Brown")
+				possible_e_list = list("Blue","Brown")
+				possible_s_list = list(-25,-60)
+			if ("desert")
+				add_language("Farsi",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/farsi/A in languages)
+					default_language = A
+				name = species.get_random_arab_name(gender)
+				real_name = name
+				add_note("Known Languages", "Farsi")
+				possible_h_list = list("Black","Light Brown","Dark Brown")
+				possible_e_list = list("Green","Brown","Black")
+				possible_s_list = list(-35,-80)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRP)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"
@@ -955,21 +1015,21 @@
 				possible_h_list = list("Orange","Light Brown","Red","Brown")
 				possible_e_list = list("Green","Blue")
 				possible_s_list = list(-15,-30)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[2],possible_s_list[1])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 
 	else if (map.ID == MAP_NATIONSRP_TRIPLE)
 		var/new_hair = "Black"
@@ -1016,21 +1076,21 @@
 				possible_h_list = list("Light Brown","Blond","Dirty Blond")
 				possible_e_list = list("Blue","Green")
 				possible_s_list = list(-15,-30)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[1],possible_s_list[2])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 
 	else if (map.ID == MAP_NATIONSRPMED)
 		var/new_hair = "Dark Brown"
@@ -1065,21 +1125,21 @@
 				possible_h_list = list("Dark Brown","Black")
 				possible_e_list = list("Black")
 				possible_s_list = list(-85,-110)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[1],possible_s_list[2])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 
 	else if (map.ID == MAP_NATIONSRP_WW2)
 		var/new_hair = "Dark Brown"
@@ -1114,21 +1174,21 @@
 				possible_h_list = list("Light Brown","Blond","Dirty Blond")
 				possible_e_list = list("Blue","Green")
 				possible_s_list = list(-15,-30)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[1],possible_s_list[2])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 
 	else if (map.ID == MAP_NATIONSRP_COLDWAR)
 		var/new_hair = "Black"
@@ -1140,8 +1200,6 @@
 			//west English
 			if (original_job_title == "Civilization A Citizen")
 				add_language("English",TRUE)
-				remove_language("English")
-				remove_note("Known Languages","English")
 				for (var/datum/language/english/A in languages)
 					default_language = A
 				name = species.get_random_english_name(gender)
@@ -1163,21 +1221,21 @@
 				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
 				possible_e_list = list("Blue","Green")
 				possible_s_list = list(-10,-28)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[1],possible_s_list[2])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 
 	else if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 		var/new_hair = "Black"
@@ -1212,21 +1270,21 @@
 				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")
 				possible_e_list = list("Blue","Green")
 				possible_s_list = list(-10,-28)
-		new_hair = pick(possible_h_list)
-		new_eyes = pick(possible_e_list)
-		s_tone = rand(possible_s_list[2],possible_s_list[1])
-		var/hex_hair = hair_colors[new_hair]
-		r_hair = hex2num(copytext(hex_hair, 2, 4))
-		g_hair = hex2num(copytext(hex_hair, 4, 6))
-		b_hair = hex2num(copytext(hex_hair, 6, 8))
-		r_facial = hex2num(copytext(hex_hair, 2, 4))
-		g_facial = hex2num(copytext(hex_hair, 4, 6))
-		b_facial = hex2num(copytext(hex_hair, 6, 8))
-		var/hex_eyes = eye_colors[new_eyes]
-		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
-		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
-		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
-		change_eye_color(r_eyes, g_eyes, b_eyes)
+			new_hair = pick(possible_h_list)
+			new_eyes = pick(possible_e_list)
+			s_tone = rand(possible_s_list[1],possible_s_list[2])
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
 	else
 		if (faction_text == ARAB)
 			if (original_job.title == "Wagner Group PMC")

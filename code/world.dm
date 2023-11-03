@@ -304,7 +304,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += "world.address=[world.address]"
 	. += ";"
 	. += "round_timer=[roundduration2text()]"
-	. += ";"
+	. += ";" 
 	if (map)
 		. += "map=[map.title]"
 		. += ";"
@@ -312,6 +312,8 @@ var/world_topic_spam_protect_time = world.timeofday
 		. += ";"
 		. += "season=[get_season()]"
 		. += ";"
+	. += "ckey_list=[list2params(clients)]"
+	. += ";"
 
 /proc/start_serverdata_loop()
 	spawn while (1)
