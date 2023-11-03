@@ -14,7 +14,7 @@
 
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/island,
-		list(FRENCH) = /area/caribbean/island,
+		list(FRENCH) = /area/caribbean/island
 		)
 	age = "Ab immemorabili"
 	ordinal_age = 0
