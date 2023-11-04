@@ -782,6 +782,7 @@
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\starwars.dm"
 #include "code\modules\1713\jobs\superiors.dm"
+#include "code\modules\1713\jobs\tribes.dm"
 #include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\waco.dm"
 #include "code\modules\1713\jobs\wildwest.dm"
@@ -1105,5 +1106,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\5000bc\twotribes.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE
