@@ -80,7 +80,7 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		return ""
 
 /obj/map_metadata/camp/reverse_cross_message(faction)
-	if (faction == ENGLISH)
+	if (faction == BRITISH)
 		return "<span class = 'userdanger'>The English may no longer cross the invisible wall!</span>"
 	else if (faction == FRENCH)
 		return "<span class = 'userdanger'>The French may no longer cross the invisible wall!</span>"
