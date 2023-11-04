@@ -1246,7 +1246,7 @@
 	var/obj/item/weapon/key/japanese_officer/G2 = new/obj/item/weapon/key/japanese_officer(null)
 	KC.attackby(G1,H)
 	KC.attackby(G2,H)
-	H.equip_to_slot_or_del(KC, slot_l_store)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
 	give_random_name(H)
 	world << "<b><big>[H.real_name] is the Camp Director of the Japanese Forces!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the guards and organize the POWs.")
@@ -1300,6 +1300,7 @@
 	var/obj/item/weapon/key/japanese_officer/G2 = new/obj/item/weapon/key/japanese_officer(null)
 	KC.attackby(G1,H)
 	KC.attackby(G2,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad of guards. Organize your group according to the <b>Camp director's</b> orders!")
 	H.setStat("strength", STAT_VERY_HIGH)
@@ -1348,6 +1349,7 @@
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
 	KC.attackby(G1,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a medic, and you are in charge of keeping the guardss and POWs healthy.")
@@ -1393,6 +1395,7 @@
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
 	KC.attackby(G1,H)
+	H.equip_to_slot_or_del(KC, slot_wear_id)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple POW camp guard. Keep the POWs docile and alive, follow your <b>Officer's</b> orders!")
