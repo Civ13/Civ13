@@ -22,13 +22,13 @@
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	battle_name = "Battle of the Two Tribes"
-	mission_start_message = "<font size=4>The <b>Red</b> and <b>Blue</b> tribes are engaged in battle, both attempting to capture the central shrine. Prepare for battle, it will begin in <b>5 minutes</b>!</font>"
+	mission_start_message = "<font size=4>The <b>Red</b> and <b>Blue</b> tribes are engaged in battle, both attempting to capture the central shrine. Prepare for battle, it will begin in <b>8 minutes</b>!</font>"
 
 	faction1 = BRITISH
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
-	grace_wall_timer = 2400
+	grace_wall_timer = 6000
 
 /obj/map_metadata/twotribes/job_enabled_specialcheck(var/datum/job/J)
 	..()
