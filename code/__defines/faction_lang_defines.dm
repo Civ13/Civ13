@@ -57,7 +57,10 @@
 		if (age >= 6)
 			return "United Kingdom"
 		else
-			return "British Empire"
+			if (map.ID == "TWOTRIBES")
+				return "Red Tribe"
+			else
+				return "British Empire"
 
 	if (constant == CIVILIAN)
 		if (map.ID == "TSARITSYN")
@@ -114,7 +117,10 @@
 		if (age >= 4)
 			return "French Republic"
 		else
-			return "French Empire"
+			if (map.ID == "TWOTRIBES")
+				return "Blue Tribe"
+			else
+				return "French Empire"
 
 	if (constant == DUTCH)
 		if (map.ID == "OPERATION_FALCON")
