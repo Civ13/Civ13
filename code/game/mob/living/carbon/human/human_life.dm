@@ -1430,11 +1430,15 @@
 						holder2.icon_state = "brit_basic"
 					else if (map.ordinal_age >= 3)
 						holder2.icon_state = "rn_basic"
+					else if (map.ID == MAP_TWOTRIBES)
+						holder2.icon_state = "civ1"
 					else
 						holder2.icon_state = "eng_basic"
 				if (FRENCH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "fr2_basic"
+					else if (map.ID == MAP_TWOTRIBES)
+						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = "fr_basic"
 				if (SPANISH)

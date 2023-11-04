@@ -881,7 +881,10 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
-			return "British Empire"
+			if (map.ID == MAP_TWOTRIBES)
+				return "Red Tribe"
+			else
+				return "British Empire"
 		if (PIRATES)
 			if (map.ID == MAP_CAMPAIGN)
 				return "Redmenia Defence Force"
@@ -895,7 +898,10 @@ var/civmax_research = list(230,230,230)
 		if (INDIANS)
 			return "Native Tribe"
 		if (FRENCH)
-			return "French Empire"
+			if (map.ID == MAP_TWOTRIBES)
+				return "Blue Tribe"
+			else
+				return "French Empire"
 		if (PORTUGUESE)
 			return "Portuguese Empire"
 		if (SPANISH)

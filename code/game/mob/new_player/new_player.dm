@@ -618,7 +618,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -1062,11 +1062,17 @@ var/global/redirect_all_players = null
 	dat += "<br>"
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
-		dat += "[alive_british.len] British "
+		if (map && istype(map, /obj/map_metadata/twotribes))
+			dat += "[alive_french.len] Red Tribesmen "
+		else
+			dat += "[alive_british.len] British "
 	if (PORTUGUESE in map.faction_organization)
 		dat += "[alive_portuguese.len] Portuguese "
 	if (FRENCH in map.faction_organization)
-		dat += "[alive_french.len] French "
+		if (map && istype(map, /obj/map_metadata/twotribes))
+			dat += "[alive_french.len] Blue Tribesmen "
+		else
+			dat += "[alive_french.len] French "
 	if (SPANISH in map.faction_organization)
 		dat += "[alive_spanish.len] Spanish "
 	if (DUTCH in map.faction_organization)
