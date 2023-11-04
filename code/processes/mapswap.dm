@@ -171,6 +171,7 @@
 					MAP_TEUTOBURG = 8,
 					MAP_HERACLEA = 8,
 					MAP_SAMMIRHAYEED = 10,
+					MAP_TWOTRIBES = 0,
 				)
 			if ("Early Fire Arms (1650-1930)")
 // 			1903 - TDM
