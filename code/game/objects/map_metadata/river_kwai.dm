@@ -32,10 +32,8 @@
 obj/map_metadata/river_kwai/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/japanese))
-		if (J.is_prison == TRUE && J.is_ww2 == TRUE)
+		if (J.is_prison == TRUE && J.is_ww2 == TRUE && J.is_abashiri == FALSE)
 			. = TRUE
-		if (J.is_abashiri)
-			. = FALSE
 		else
 			. = FALSE
 	else if (istype(J, /datum/job/british))
