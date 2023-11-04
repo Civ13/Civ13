@@ -373,9 +373,11 @@
 			for (var/mob/M in player_list)
 				if (!new_player_mob_list.Find(M))
 					M << SPAN_DANGER("<font size=4>The air lights up as a Su-25 and a pursuing F-16 fly overhead.</font>")
-					M.client << uploaded_sound1
+					if (M.client)
+						M.client << uploaded_sound1
 					spawn(5 SECONDS)
-						M.client << uploaded_sound2
+						if (M.client)
+							M.client << uploaded_sound2
 
 	spawn(rand(1600,4000))
 		jet_flyby()
