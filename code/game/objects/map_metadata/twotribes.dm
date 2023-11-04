@@ -83,7 +83,7 @@
 		return ""
 
 /obj/map_metadata/twotribes/reverse_cross_message(faction)
-	if (faction == ENGLISH)
+	if (faction == BRITISH)
 		return "<span class = 'userdanger'>The Red Tribe may no longer cross the invisible wall!</span>"
 	else if (faction == FRENCH)
 		return "<span class = 'userdanger'>The Blue Tribe may no longer cross the invisible wall!</span>"

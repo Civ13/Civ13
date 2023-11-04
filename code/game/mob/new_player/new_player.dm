@@ -1062,11 +1062,17 @@ var/global/redirect_all_players = null
 	dat += "<br>"
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
-		dat += "[alive_british.len] British "
+		if (map && istype(map, /obj/map_metadata/twotribes))
+			dat += "[alive_french.len] Red Tribesmen "
+		else
+			dat += "[alive_british.len] British "
 	if (PORTUGUESE in map.faction_organization)
 		dat += "[alive_portuguese.len] Portuguese "
 	if (FRENCH in map.faction_organization)
-		dat += "[alive_french.len] French "
+		if (map && istype(map, /obj/map_metadata/twotribes))
+			dat += "[alive_french.len] Blue Tribesmen "
+		else
+			dat += "[alive_french.len] French "
 	if (SPANISH in map.faction_organization)
 		dat += "[alive_spanish.len] Spanish "
 	if (DUTCH in map.faction_organization)
