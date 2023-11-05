@@ -10,6 +10,10 @@
 	max_positions = 999
 	selection_color = "#CC0000"
 
+/datum/job/pirates/redfaction/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_english_name(H.gender)
+	H.real_name = H.name
+
 /datum/job/pirates/redfaction/civilian
 	title = "Redmenian Civilian"
 	rank_abbreviation = ""
@@ -375,6 +379,10 @@
 	max_positions = 999
 	additional_languages = list("Redmenian" = 15)
 	selection_color = "#102f44"
+
+/datum/job/civilian/bluefaction/give_random_name(var/mob/living/human/H)
+	H.name = H.species.get_random_english_name(H.gender)
+	H.real_name = H.name
 
 /datum/job/civilian/bluefaction/civilian
 	title = "Blugoslavian Civilian"
