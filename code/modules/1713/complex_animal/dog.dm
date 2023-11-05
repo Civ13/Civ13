@@ -48,7 +48,8 @@
 	var/atom/walking_to = null
 
 	var/race = "corgi"
-	var max_dist_pounce = 10
+	var/max_dist_pounce = 10
+	var/pounce_probability = 45
 
 	maxHealth = 55
 	health = 55
@@ -491,32 +492,39 @@ s
 
 
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
-/mob/living/simple_animal/complex_animal/dog/proc/combat(var/mob/living/human/H)
-	if (stat == CONSCIOUS && H && H != src)
-		var dist = get_dist(src, H)
-		var max_dist_pounce = 10 // Maximum distance for a pounce
-		var max_dist_shred = 1 // Maximum distance for shredding
-		var pounce_probability = 45 // Adjust this probability as needed
-
-		if (dist <= max_dist_shred && H in view(1, src))
-			if (H.adjustBruteLoss(rand(8, 12) / H.getStatCoeff("strength")))
-				visible_message("<span class = 'warning'>\The [src] shreds [H] with their teeth!</span>")
+mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
+	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
+		if (world.time >= next_shred)
+			if (H in range(1, src))
+				dir = get_dir(src, H)
+				visible_message("<span class='warning'>\The [src] shreds [H] with their teeth!</span>")
+				H.adjustBruteLoss(rand(8, 12) / H.getStatCoeff("strength"))
 				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
-		else if (dist <= max_dist_pounce && prob(pounce_probability))  // Check if target is within our pounce range and the pounce probability succeeds
-			// Prepare to leap.
-			visible_message("<span class = 'warning'>\The [src] prepares to leap at [H]!</span>")
-			step_to(src, H)
-			// Face the victim.
-			src.throw_at(H, 5, 0.5, src)
-			// You can add a message here to indicate the dog is pouncing.
-			visible_message("<span class = 'warning'>\The [src] pounces on [H]!</span>")
-			// Play a sound effect for the pounce.
-			//playsound(get_turf(src), 'sound/animals/dog/pounce.ogg', rand(70, 80))
-			// Apply the weakening effect to the target.
-			if (H)
-				H.Weaken(20)
+				next_shred = world.time + 20
+				spawn (20)
+					if (!client)
+						shred(H)
+		else if (H in range(1, src))
+			spawn (20)
+				if (!client)
+					shred(H)
 
 
+
+/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
+	if (max_dist_pounce >= get_dist(src, H) && prob(pounce_probability))
+		// Prepare to leap.
+		visible_message("<span class = 'warning'>\The [src] prepares to leap at [H]!</span>")
+		step_to(src, H)
+		// Face the victim.
+		src.throw_at(H, 5, 0.5, src)
+		// You can add a message here to indicate the dog is pouncing.
+		visible_message("<span class = 'warning'>\The [src] pounces on [H]!</span>")
+		// Play a sound effect for the pounce.
+		//playsound(get_turf(src), 'sound/animals/dog/pounce.ogg', rand(70, 80))
+		// Apply the weakening effect to the target.
+		if (H)
+			H.Weaken(20)
 
 
 
@@ -529,7 +537,7 @@ s
 				enemies |= H
 
 				spawn (rand(2,3))
-					combat(H)
+					shred(H)
 
 				// make other dogs go after them too
 				for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))
@@ -543,7 +551,7 @@ s
 		if (W.force > resistance)
 
 			enemies |= H
-			processes.callproc.queue(src, /mob/living/simple_animal/complex_animal/dog/proc/combat, list(H), 2)
+			processes.callproc.queue(src, /mob/living/simple_animal/complex_animal/dog/proc/shred, list(H), 2)
 
 			// make other dogs go after them too
 			for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))
@@ -598,12 +606,12 @@ s
 						stop_following()
 					// Check if the target is within pounce range; if so, try to pounce.
 					if (get_dist(src, H) <= max_dist_pounce)
-						if (combat(H))
+						if (shred(H))
 							return
 					else
 						walking_to = H
 				else
-					combat(H)
+					shred(H)
 	else if (following)
 		walking_to = following
 	else if (stat != CONSCIOUS || resting)
@@ -614,7 +622,7 @@ s
 	if (stat == CONSCIOUS && !resting)
 		for (var/mob/living/human/H in get_step(src, dir))
 			if (assess_hostility(H) && shouldGoAfter(H) && !client)
-				combat(H)
+				shred(H)
 			else if (client)
 				walking_to = null
 
