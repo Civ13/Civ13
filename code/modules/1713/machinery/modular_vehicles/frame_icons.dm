@@ -165,7 +165,7 @@
 				var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
 
 				if (axis)
-					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
 				if (roof_turret && axis && axis.color)
@@ -228,7 +228,7 @@
 				var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
 
 				if (axis)
-					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
 				if (roof_turret && axis && axis.color)
