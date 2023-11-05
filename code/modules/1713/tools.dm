@@ -117,6 +117,7 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	var/dig_speed = 7
 	var/usespeed = 1.5
 	default_material = "iron"
 	force_divisor = 0.25
@@ -130,13 +131,16 @@
 	default_material = "steel"
 	health = 50
 	maxhealth = 50
+	dig_speed = 7
 
 /obj/item/weapon/material/shovel/bone
 	icon_state = "shovel_bone"
+	desc = "A shovel made out of some bone, it's not the best but it gets the job done."
 	usespeed = 0.6
 	default_material = "bone"
 	health = 7.5
 	maxhealth = 7.5
+	dig_speed = 7
 
 // Foldable shovels
 /obj/item/weapon/material/shovel/spade/foldable
@@ -144,6 +148,7 @@
 	icon_state = "trench_shovel"
 	item_state = "lopata"
 	usespeed = 0.9
+	dig_speed = 7
 	var/path = /obj/item/weapon/foldable_shovel
 	secondary_action = TRUE
 
@@ -156,26 +161,24 @@
 
 /obj/item/weapon/material/shovel/trench
 	name = "entrenching tool"
-	desc = "A shovel used specifically for digging trenches."
+	desc = "A compact shovel used specifically for digging and moving dirt.."
 	icon_state = "trench_shovel"
-	var/dig_speed = 7
+	dig_speed = 7
 	force = 35
 	usespeed = 0.8
 
 /obj/item/weapon/material/shovel/trench/foldable
 	name = "foldable entrenching tool"
-	desc = "A foldable shovel used specifically for digging trenches."
+	desc = "A foldable shovel used specifically for digging and moving dirt.."
 	icon_state = "trench_shovel"
-	dig_speed = 8
 	usespeed = 0.8
 	var/path = /obj/item/weapon/foldable_shovel/trench
 	secondary_action = TRUE
 
 /obj/item/weapon/material/shovel/trench/foldable/etool
 	name = "foldable entrenching tool"
-	desc = "A foldable shovel used specifically for digging trenches."
+	desc = "A foldable shovel used specifically for digging and moving dirt."
 	icon_state = "etool"
-	dig_speed = 8
 	usespeed = 0.8
 	path = /obj/item/weapon/foldable_shovel/trench/etool
 
@@ -196,9 +199,11 @@
 	w_class = ITEM_SIZE_SMALL
 	weight = 1.18
 	usespeed = 0.8
+	dig_speed = 7
 
 /obj/item/weapon/material/shovel/spade/wood
 	usespeed = 0.4
+	dig_speed = 7
 	default_material = "wood"
 	material = "wood"
 	icon_state = "spadem"
@@ -242,6 +247,7 @@
 	name = "small shovel"
 	icon_state = "lopata"
 	item_state = "lopata"
+	dig_speed = 7
 	usespeed = 0.9
 
 /obj/item/weapon/material/pickaxe

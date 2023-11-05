@@ -168,7 +168,7 @@
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		var/obj/item/weapon/material/shovel/SH = C
-		if (H.a_intent != I_DISARM)
+		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
 					if (T.available_snow > 0)
