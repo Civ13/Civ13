@@ -41,7 +41,7 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 1200
 	else
-		return 4800 // 8 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/twotribes/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
