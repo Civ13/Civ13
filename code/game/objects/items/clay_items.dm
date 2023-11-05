@@ -185,14 +185,28 @@
 	if (isliving(A) || isturf(A) || (isobj(A) && A.density))
 		shatter()
 
+/// This code is not to be confused with apply_hit_effect()
+///
+/// This code handles the throwing of bottles.
+///
 /obj/item/weapon/reagent_containers/food/drinks/clay/throw_impact(atom/hit_atom, var/speed)
 
 	..()
-	if (reagents)
+	if (reagents && reagents.total_volume > 0)
 		hit_atom.visible_message("<span class='notice'>The contents of \the [src] splash all over [hit_atom]!</span>")
 		reagents.splash(hit_atom, reagents.total_volume)
-	shatter(loc, hit_atom)
+		shatter(loc, hit_atom)
+	else
+		hit_atom.visible_message("<span class='notice'>The clay of \the [src] shatters all over [hit_atom]!</span>")
+		shatter(loc, hit_atom)
 
+// call shatter when you want it to become a broken_bottle
+
+
+/// This code is not to be confused with throw_impact()
+///
+/// This code handles the hitting of bottles on people.
+///
 /obj/item/weapon/reagent_containers/food/drinks/clay/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
 	var/blocked = ..()
 
@@ -214,11 +228,16 @@
 	else
 		user.visible_message("<span class='danger'>\The [user] shatters [src] into [target]!</span>")
 
-	if (reagents)
+	if (reagents && reagents.total_volume > 0)
 		spawn (1) // wait until after our explosion, if we have one
 			user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
-			if (reagents) reagents.splash(target, reagents.total_volume)
-
+			reagents.splash(target, reagents.total_volume)
+			shatter(loc, target)
+	else
+		user.visible_message("<span class='notice'>The clay of \the [src] shatters all over [target]!</span>")
+		shatter(loc, target)
+	
+// call shatter when you want it to become a broken_bottle
 	//Finally, shatter the bottle. This kills (qdel) the bottle.
 
 	var/obj/item/weapon/clayshards/B = shatter(target.loc, target)
