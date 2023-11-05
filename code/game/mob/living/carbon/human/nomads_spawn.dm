@@ -1251,7 +1251,7 @@
 				remove_note("Known Languages","English")
 				for (var/datum/language/redmenian/A in languages)
 					default_language = A
-				name = species.get_random_chechen_name(gender)
+				name = species.get_random_english_name(gender)
 				real_name = name
 				add_note("Known Languages", "Redmenian")
 				possible_h_list = list("Light Brown","Dark Brown","Black","Brown")
@@ -1264,7 +1264,7 @@
 				remove_note("Known Languages","English")
 				for (var/datum/language/blugoslavian/A in languages)
 					default_language = A
-				name = species.get_random_russian_name(gender)
+				name = species.get_random_english_name(gender)
 				real_name = name
 				add_note("Known Languages", "Blugoslavian")
 				possible_h_list = list("Red","Orange","Light Blond","Blond","Dirty Blond")

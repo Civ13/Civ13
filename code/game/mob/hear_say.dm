@@ -111,15 +111,16 @@
 					speaker.client.stored_chat_text += CT
 
 			if (config.tts_on && ishuman(src) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
-				play_tts(message2,speaker)
+				play_tts(message2, speaker)
 
-/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
+/mob/proc/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
 
 	if (!client || !message)
 		return
 
 	if (!destination && origin)
 		destination = origin
+	
 	message = capitalize(message)
 	message = replacetext(message, "&#39", "'")
 
@@ -153,7 +154,15 @@
 	if (isghost(src))
 		if (speaker_name != speaker.real_name) //Announce computer and various stuff that broadcasts doesn't use it's real name but AI's can't pretend to be other mobs.
 			speaker_name = "[speaker.real_name] ([speaker_name])"
-		track = /*"[speaker_name] */"([ghost_follow_link(speaker, src)])"
+		track = "[speaker_name] ([ghost_follow_link(speaker, src)])"
+
+	/*
+	var/formatted
+	if(language)
+		formatted = language.format_message_radio(message, verb)
+	else
+		formatted = "[verb], <span class=\"body\">\"[message]\"</span>"
+	*/
 
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
@@ -161,6 +170,7 @@
 		message = ten_code(message, speaker)
 	if (findtext(message,"reploc") || findtext(message," reploc"))
 		message = reploc(message, speaker)
+
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
@@ -188,7 +198,7 @@
 
 		on_hear_radio(destination, full_message)
 
-/mob/proc/hear_phone(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/origin, var/obj/item/weapon/telephone/destination)
+/mob/proc/hear_phone(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/item/weapon/telephone/origin, var/obj/item/weapon/telephone/destination)
 
 	if (!client || !message)
 		return
@@ -197,6 +207,7 @@
 		destination = origin
 
 	message = capitalize(message)
+	message = replacetext(message, "&#39", "'")
 
 	if (sleeping || stat==1) //If unconscious or sleeping
 		hear_sleep(message)
@@ -248,14 +259,16 @@
 			full_message = "<font size = [fontsize] color=#FFAE19><b>[contactname]([destination.phonenumber]):</font></b><font size = [fontsize]> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_radio(destination, full_message)
 
-/mob/proc/hear_voicepipe(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/voyage/voicepipe/destination=null, var/obj/structure/voyage/voicepipe/origin=null)
+/mob/proc/hear_voicepipe(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/voyage/voicepipe/destination=null, var/obj/structure/voyage/voicepipe/origin=null)
 
 	if (!client || !message)
 		return
 
 	if (!destination && origin)
 		destination = origin
+	
 	message = capitalize(message)
+	message = replacetext(message, "&#39", "'")
 
 	if (sleeping || stat==1) //If unconscious or sleeping
 		hear_sleep(message)
