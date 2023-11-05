@@ -48,6 +48,7 @@
 	var/atom/walking_to = null
 
 	var/race = "corgi"
+	var max_dist_pounce = 10
 
 	maxHealth = 55
 	health = 55
@@ -353,12 +354,18 @@ s
 		visible_message("<span class = 'notice'>\The [src] looks calm.</span>")
 	attack_mode = -1
 	onModeChange()
+	enemies = list()
+	if (H && !following)
+		follow(H)
 
 /mob/living/simple_animal/complex_animal/dog/proc/stop(var/mob/living/human/H)
 	passive()
 	stop_patrol()
 	visible_message("<span class = 'notice'>\The [src] stops doing everything they were doing.</span>")
 	onModeChange()
+	enemies = list()
+	if (H && !following)
+		follow(H)
 
 /mob/living/simple_animal/complex_animal/dog/proc/follow(var/mob/living/human/H)
 	visible_message("<span class = 'notice'>\The [src] starts following [H].</span>")
@@ -482,23 +489,36 @@ s
 
 // dog combat
 
+
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
-/mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
-	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
-		if (world.time >= next_shred)
-			if (H in range(1, src))
-				dir = get_dir(src, H)
+/mob/living/simple_animal/complex_animal/dog/proc/combat(var/mob/living/human/H)
+	if (stat == CONSCIOUS && H && H != src)
+		var dist = get_dist(src, H)
+		var max_dist_pounce = 10 // Maximum distance for a pounce
+		var max_dist_shred = 1 // Maximum distance for shredding
+		var pounce_probability = 45 // Adjust this probability as needed
+
+		if (dist <= max_dist_shred && H in view(1, src))
+			if (H.adjustBruteLoss(rand(8, 12) / H.getStatCoeff("strength")))
 				visible_message("<span class = 'warning'>\The [src] shreds [H] with their teeth!</span>")
-				H.adjustBruteLoss(rand(8,12)/H.getStatCoeff("strength"))
-				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70,80))
-				next_shred = world.time + 20
-				spawn (20)
-					if (!client)
-						shred(H)
-		else if (H in range(1, src))
-			spawn (20)
-				if (!client)
-					shred(H)
+				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
+		else if (dist <= max_dist_pounce && prob(pounce_probability))  // Check if target is within our pounce range and the pounce probability succeeds
+			// Prepare to leap.
+			visible_message("<span class = 'warning'>\The [src] prepares to leap at [H]!</span>")
+			step_to(src, H)
+			// Face the victim.
+			src.throw_at(H, 5, 0.5, src)
+			// You can add a message here to indicate the dog is pouncing.
+			visible_message("<span class = 'warning'>\The [src] pounces on [H]!</span>")
+			// Play a sound effect for the pounce.
+			//playsound(get_turf(src), 'sound/animals/dog/pounce.ogg', rand(70, 80))
+			// Apply the weakening effect to the target.
+			if (H)
+				H.Weaken(20)
+
+
+
+
 
 // things we do when someone touches us
 /mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/human/H, var/intent = I_HELP)
@@ -509,7 +529,7 @@ s
 				enemies |= H
 
 				spawn (rand(2,3))
-					shred(H)
+					combat(H)
 
 				// make other dogs go after them too
 				for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))
@@ -523,7 +543,7 @@ s
 		if (W.force > resistance)
 
 			enemies |= H
-			processes.callproc.queue(src, /mob/living/simple_animal/complex_animal/dog/proc/shred, list(H), 2)
+			processes.callproc.queue(src, /mob/living/simple_animal/complex_animal/dog/proc/combat, list(H), 2)
 
 			// make other dogs go after them too
 			for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))
@@ -576,9 +596,14 @@ s
 				if (get_dist(src, H) > 1 && H.stat != DEAD)
 					if (prioritizes == "attacking" && following)
 						stop_following()
-					walking_to = H
+					// Check if the target is within pounce range; if so, try to pounce.
+					if (get_dist(src, H) <= max_dist_pounce)
+						if (combat(H))
+							return
+					else
+						walking_to = H
 				else
-					shred(H)
+					combat(H)
 	else if (following)
 		walking_to = following
 	else if (stat != CONSCIOUS || resting)
@@ -589,7 +614,7 @@ s
 	if (stat == CONSCIOUS && !resting)
 		for (var/mob/living/human/H in get_step(src, dir))
 			if (assess_hostility(H) && shouldGoAfter(H) && !client)
-				shred(H)
+				combat(H)
 			else if (client)
 				walking_to = null
 
