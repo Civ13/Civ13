@@ -183,7 +183,7 @@
 
 		//Creates a shattering noise and replaces the bottle with a broken_bottle
 		var/obj/item/weapon/broken_bottle/B = new /obj/item/weapon/broken_bottle(newloc)
-		if (prob(33)) // probability of 33%
+		if (prob(33))
 			new/obj/item/weapon/material/shard(newloc) // Create a glass shard at the target's location!
 
 		B.icon_state = icon_state
@@ -285,13 +285,11 @@
 // Checks if there are reagents in the bottle to output the message of us splashing alcohol over the target.
 	if (reagents && reagents.total_volume > 0)
 		reagents.splash(target, reagents.total_volume)
-		spawn (1) // wait until after our explosion, if we have one
-			user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
-			shatter(loc, target, alcohol_power)
+		user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
 	else
-		spawn (1) // wait until after our explosion, if we have one
-			user.visible_message("<span class='notice'>The empty bottle of \the [src] shatters all over [target]!</span>")
-			shatter(loc, target, alcohol_power)
+		user.visible_message("<span class='notice'>The empty bottle of \the [src] shatters all over [target]!</span>")
+	spawn (1)
+		shatter(loc, target, alcohol_power)
 
 
 	//Finally, shatter the bottle. This kills (qdel) the bottle.

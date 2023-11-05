@@ -195,10 +195,10 @@
 	if (reagents && reagents.total_volume > 0)
 		hit_atom.visible_message("<span class='notice'>The contents of \the [src] splash all over [hit_atom]!</span>")
 		reagents.splash(hit_atom, reagents.total_volume)
-		shatter(loc, hit_atom)
+		
 	else
 		hit_atom.visible_message("<span class='notice'>The clay of \the [src] shatters all over [hit_atom]!</span>")
-		shatter(loc, hit_atom)
+	shatter(loc, hit_atom)
 
 // call shatter when you want it to become a broken_bottle
 
@@ -232,10 +232,10 @@
 		spawn (1) // wait until after our explosion, if we have one
 			user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
 			reagents.splash(target, reagents.total_volume)
-			shatter(loc, target)
+			
 	else
 		user.visible_message("<span class='notice'>The clay of \the [src] shatters all over [target]!</span>")
-		shatter(loc, target)
+	shatter(loc, target)
 	
 // call shatter when you want it to become a broken_bottle
 	//Finally, shatter the bottle. This kills (qdel) the bottle.
