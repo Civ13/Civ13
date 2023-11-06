@@ -234,7 +234,7 @@ obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 		if (3.0)
 			if (!broken)
 				broken = TRUE
-				visible_message("<span class='danger'>\The [name] breaks down!</span>")
+				visible_message(SPAN_DANGER("\The [name] breaks down!"))
 			return
 
 
@@ -251,7 +251,7 @@ obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 		if (3.0)
 			if (!broken && prob(80))
 				broken = TRUE
-				visible_message("<span class='danger'>\The [name] breaks down!</span>")
+				visible_message(SPAN_DANGER("\The [name] breaks down!"))
 			return
 
 /obj/structure/vehicleparts/movement/armored/ex_act(severity)
@@ -267,13 +267,13 @@ obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 		if (3.0)
 			if (!broken && prob(80))
 				broken = TRUE
-				visible_message("<span class='danger'>\The [name] breaks down!</span>")
+				visible_message(SPAN_DANGER("\The [name] breaks down!"))
 			return
 
 /obj/structure/vehicleparts/movement/Destroy()
 	if (axis)
 		axis.wheels -= src
-	visible_message("<span class='danger'>\The [name] gets destroyed!</span>")
+	visible_message(SPAN_DANGER("<big>\The [name] gets destroyed!</big>"))
 	..()
 
 
