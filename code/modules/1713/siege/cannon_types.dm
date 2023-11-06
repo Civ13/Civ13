@@ -4,6 +4,8 @@
 	icon_state = "modern_cannon"
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
+	pixel_x = 0
+	pixel_y = 0
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80

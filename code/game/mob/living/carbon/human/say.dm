@@ -1,4 +1,5 @@
 /mob/living/human/say(var/message, var/howling = FALSE)
+	var/verb = "says"
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
@@ -52,20 +53,20 @@
 	if (!animalistic)
 		for (var/obj/structure/radio/RD in range(2,src))
 			if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
-				RD.broadcast(message_without_html, src)
+				RD.broadcast(message_without_html, src, verb)
 
 		for (var/obj/item/weapon/radio/PRD in range(1,src))
 			if (PRD.transmitter && PRD.transmitter_on)
 				if (PRD in contents)
 					if (dd_hasprefix(message_without_html, ";"))
 						message_without_html = replacetext(message_without_html,";","")
-						PRD.broadcast(message_without_html, src)
+						PRD.broadcast(message_without_html, src, verb)
 				else
-					PRD.broadcast(message_without_html, src)
+					PRD.broadcast(message_without_html, src, verb)
 
 		for (var/obj/item/weapon/telephone/TL in range(2,src))
 			if (TL.connected)
-				TL.broadcast(message_without_html, src)
+				TL.broadcast(message_without_html, src, , verb)
 
 		for (var/obj/structure/voyage/voicepipe/VP in range(1,src))
 			if (VP.vp_reference)
@@ -73,12 +74,12 @@
 					switch(VP.dir)
 						if(NORTH,EAST)
 							if(src in get_turf(get_step(VP,EAST)))
-								VP.broadcast(message_without_html, src)
+								VP.broadcast(message_without_html, src, verb)
 						if(SOUTH,WEST)
 							if(src in get_turf(get_step(VP,WEST)))
-								VP.broadcast(message_without_html, src)
+								VP.broadcast(message_without_html, src, verb)
 				else
-					VP.broadcast(message_without_html, src)
+					VP.broadcast(message_without_html, src, verb)
 
 /mob/living/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)

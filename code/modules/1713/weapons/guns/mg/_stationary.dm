@@ -106,8 +106,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/usedby(mob/user, atom/A)
 	if (A == src)
-		if (src != /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm)
-			switch_firemodes(user)
+		switch_firemodes(user)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/check_direction(mob/user, atom/A)
 	if (get_turf(A) == loc)
