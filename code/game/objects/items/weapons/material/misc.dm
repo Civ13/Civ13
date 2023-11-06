@@ -1052,18 +1052,64 @@
 
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (istype(I, /obj/item/weapon/lungemine))
-		visible_message("The lunge mine hits \the [src]!")
+		visible_message(SPAN_DANGER("<big>[H] jabs \the [src] with a [I] causing it to explode!</big>"))
 		message_admins("[H] used a lunge mine on a vehicle at [x], [y], [z].")
 		log_admin("[H] used a lunge mine on a vehicle at [x], [y], [z].")
+		var/penloc = CheckPenLoc(get_turf(H))
 		explosion(H.loc, 1, 3, 2, 0)
+
 		for (var/mob/M in axis.transporting)
 			shake_camera(M, 4, 4)
-
-		w_left[5] -= 55
-		w_right[5] -= 55
-		w_front[5] -= 55
-		w_back[5] -= 55
-		try_destroy()
+			
+		switch(penloc)
+			if ("left")
+				if (w_left[5] > 0)
+					w_left[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+			if ("right")
+				if (w_right[5] > 0)
+					w_right[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+			if ("front")
+				if (w_front[5] > 0)
+					w_front[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("back")
+				if (w_back[5] > 0)
+					w_back[5] -= heavy_armor_penetration
+					visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("frontleft")
+				if (w_left[5] > 0 && w_front[5] > 0)
+					if (w_left[4] > w_front[4] && w_left[5]>0)
+						w_left[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					else
+						w_front[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("frontright")
+				if (w_right[5] > 0 && w_front[5] > 0)
+					if (w_right[4] >.w_front[4] && w_right[5]>0)
+						w_right[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					else
+						w_front[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
+			if ("backleft")
+				if (w_left[5] > 0 && w_back[5] > 0)
+					if (w_left[4] > w_back[4] && w_left[5]>0)
+						w_left[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The left hull gets damaged!</big></span>")
+					else
+						w_back[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
+			if ("backright")
+				if (w_right[5] > 0 && w_back[5] > 0)
+					if (w_right[4] > w_back[4] && w_right[5]>0)
+						w_right[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
+					else
+						w_back[5] -= heavy_armor_penetration
+						visible_message("<span class = 'danger'><big>The rear hull gets damaged!</big></span>")
 		if (H)
 			H.awards["tank"]+=(heavy_armor_penetration/200)
 	else
