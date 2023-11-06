@@ -57,21 +57,21 @@
 
 /obj/item/weapon/foldable/generic
 	name = "Foldable Mortar"
-	desc = "A light-weight portable mortar"
+	desc = "A light-weight portable mortar."
 	icon_state = "mortar"
 	item_state = "type89"
 	path = /obj/structure/cannon/mortar/foldable/generic
 
 /obj/item/weapon/foldable/type89_mortar
 	name = "Type 89 Mortar"
-	desc = "A light-weight portable mortar"
+	desc = "A light-weight portable mortar."
 	icon_state = "type89"
 	item_state = "type89"
 	path = /obj/structure/cannon/mortar/foldable/type89
 
 /obj/item/weapon/foldable/atgm
 	name = "Anti-Tank Guided Missile system"
-	desc = "A light-weight portable ATGM"
+	desc = "A light-weight portable ATGM."
 	icon_state = "atgm"
 	item_state = "atgm"
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
@@ -135,7 +135,7 @@
 
 /obj/item/weapon/material/shovel/bone
 	icon_state = "shovel_bone"
-	desc = "A shovel made out of some bone, it's not the best but it gets the job done."
+	desc = "A shovel made out of some bone."
 	usespeed = 0.6
 	default_material = "bone"
 	health = 7.5
@@ -161,7 +161,7 @@
 
 /obj/item/weapon/material/shovel/trench
 	name = "entrenching tool"
-	desc = "A compact shovel used specifically for digging and moving dirt.."
+	desc = "A compact shovel used specifically for digging and moving dirt."
 	icon_state = "trench_shovel"
 	dig_speed = 7
 	force = 35
@@ -169,7 +169,7 @@
 
 /obj/item/weapon/material/shovel/trench/foldable
 	name = "foldable entrenching tool"
-	desc = "A foldable shovel used specifically for digging and moving dirt.."
+	desc = "A foldable shovel used specifically for digging and moving dirt."
 	icon_state = "trench_shovel"
 	usespeed = 0.8
 	var/path = /obj/item/weapon/foldable_shovel/trench
@@ -212,7 +212,7 @@
 /obj/item/weapon/foldable_shovel
 	name = "foldable shovel"
 	icon = 'icons/obj/items.dmi'
-	desc = "A foldable shovel which is currently, folded"
+	desc = "A foldable shovel which is currently, folded."
 	icon_state = "trench_shovel_folded"
 	item_state = "lopata"
 	edge = FALSE
@@ -224,14 +224,14 @@
 
 /obj/item/weapon/foldable_shovel/trench
 	name = "foldable entrenching tool"
-	desc = "A foldable entrenching tool which is currently, folded"
+	desc = "A foldable entrenching tool which is currently, folded."
 	icon_state = "trench_shovel_folded"
 	item_state = "lopata"
 	path = /obj/item/weapon/material/shovel/trench/foldable
 
 /obj/item/weapon/foldable_shovel/trench/etool
 	name = "foldable entrenching tool"
-	desc = "A foldable entrenching tool which is currently, folded"
+	desc = "A foldable entrenching tool which is currently, folded."
 	icon_state = "etool_folded"
 	item_state = "lopata"
 	path = /obj/item/weapon/material/shovel/trench/foldable/etool
