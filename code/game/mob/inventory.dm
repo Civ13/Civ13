@@ -206,7 +206,6 @@ var/list/slot_equipment_priority = list( \
 
 		if (W.scoped_invisible)
 			W.invisibility = 0
-			W.scoped_invisible = FALSE
 
 		if (istype(W, /obj/item/clothing/glasses) && ishuman(src))
 			var/obj/item/clothing/glasses/G = W
