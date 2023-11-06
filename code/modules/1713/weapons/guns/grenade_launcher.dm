@@ -9,7 +9,7 @@
 	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
 	fire_sound_text = "a metallic thunk"
 	recoil = 0
-	throw_distance = 25
+	firing_range = 25
 	release_force = 5
 	gun_safety = FALSE
 
@@ -29,7 +29,7 @@
 	update_release_force(projectile)
 	projectile.loc = get_turf(user)
 	projectile.allow_spin = FALSE
-	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.throw_at(target, firing_range, release_force, user)
 	projectile.dir = get_dir(get_turf(src), get_turf(target))
 	projectile.icon_state = "[initial(projectile.icon_state)]_active"
 	return TRUE
@@ -115,7 +115,7 @@
 	icon_state = "grenade_launcher"
 	w_class = ITEM_SIZE_NORMAL
 	force = 5
-	throw_distance = 25
+	firing_range = 25
 	max_grenades = 0
 	var/A_attached = FALSE
 	var/image/ongun
@@ -154,7 +154,7 @@
 /obj/item/weapon/gun/launcher/grenade/underslung/m203
 	name = "M203 grenade launcher"
 	release_force = 2
-	throw_distance = 25
+	firing_range = 25
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
@@ -172,7 +172,7 @@
 /obj/item/weapon/gun/launcher/grenade/underslung/gp25
 	name = "GP-25 'Koster' grenade launcher"
 	release_force = 2
-	throw_distance = 25
+	firing_range = 25
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
@@ -198,7 +198,7 @@
 	recoil = 1
 	gun_safety = TRUE
 	release_force = 2
-	throw_distance = 40
+	firing_range = 40
 	equiptimer = 30
 	slowdown = 0.8
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK

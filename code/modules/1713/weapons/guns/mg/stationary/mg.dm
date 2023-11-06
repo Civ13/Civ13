@@ -89,16 +89,16 @@
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)
-		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return
 	usr.face_atom(src)
 
-	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
+	visible_message(SPAN_WARNING("[usr] starts to get the [src] from the ground."))
 	if (do_after(usr, 40, get_turf(usr)))
 		unload_ammo(usr)
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
+		visible_message(SPAN_WARNING("[usr] retrieves the [src] from the ground."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
 	name = "Foldable PKM machine gun"
@@ -377,13 +377,13 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	var/firing_mode = 0 // 0 = autocannon, 1 = ATGM
-	var/debounce = FALSE // A bit of cooldown on switching firing modes
+	var/debounce = FALSE // A bit of cooldown for switching firing modes
 
-	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
+	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm // What kind of ammo can be loaded into the ATGM
 	var/max_rockets = 1
-	var/list/rockets = new/list()
-	var/release_force = 0
-	var/throw_distance = 30
+	var/list/rockets = new/list() // What rockets are currently loaded
+	var/release_force = 5
+	var/firing_range = 30
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode()
 	set name = "Toggle ATGM Mode"
@@ -406,15 +406,15 @@
 	switch_firingmode()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, atgm_ammo))
-		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
+	if (istype(I, atgm_ammo)) // If our ammo type is correct start a delay and load our ammo
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE)) 
 			user.remove_from_mob(I)
 			I.loc = src
 			rockets += I
 			user.visible_message("[user] loads a [I] into \the [src].", "You load a [I] into \the [src]")
 			update_icon()
 		else
-			usr << SPAN_WARNING("\The [src] cannot hold more rockets.")
+			to_chat(usr, SPAN_WARNING("\The [src] cannot hold more rockets."))
 		return
 	..()
 
@@ -429,7 +429,7 @@
 					rockets -= I
 				update_icon()
 			else
-				user << SPAN_WARNING("The ATGM is empty")
+				to_chat(user, SPAN_WARNING("The ATGM is empty"))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_click_empty(mob/user)
 	switch (firing_mode)
@@ -452,7 +452,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/consume_next_projectile()
 	switch (firing_mode)
 		if (0) // Autocannon
-			//get the next casing
+			// Copied code from consume_next_projectile() since using ..() didn't work
 			if (loaded.len)
 				chambered = loaded[1] //load next casing.
 				if (handle_casings != HOLD_CASINGS)
@@ -488,6 +488,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
 	switch (firing_mode)
 		if (0) // Autocannon
+			// Copied code from handle_post_fire() since using ..() didn't work
 			playsound(get_turf(user), fire_sound, 100, TRUE, 100)
 
 			if (muzzle_flash)
@@ -517,6 +518,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 	switch (firing_mode)
 		if (0) // Autocannon
+			// Copied code from process_projectile() since using ..() didn't work
 			var/obj/item/projectile/P = projectile
 
 			if (!istype(P))
@@ -543,7 +545,7 @@
 			return !P.launch(target, user, src, target_zone, x_offset, y_offset)
 		if (1) // ATGM
 			projectile.loc = get_turf(user)
-			projectile.throw_at(target, throw_distance, release_force, user)
+			projectile.throw_at(target, firing_range, release_force, user)
 			projectile.dir = get_dir(src.loc, target.loc)
 			if (ishuman(user) && istype(projectile, /obj/item/missile))
 				var/obj/item/missile/MS = projectile
@@ -611,8 +613,8 @@
 	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm
 	var/max_rockets = 1
 	var/list/rockets = new/list()
-	var/release_force = 0
-	var/throw_distance = 30
+	var/release_force = 5
+	var/firing_range = 30
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
@@ -624,7 +626,7 @@
 			update_icon()
 			return
 		else
-			usr << SPAN_WARNING("\The [src] cannot hold more rockets.")
+			to_chat(usr, SPAN_WARNING("\The [src] cannot hold more rockets."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/unload_ammo(mob/user, var/allow_dump=1)
 	if (rockets.len)
@@ -633,7 +635,7 @@
 			rockets -= I
 		update_icon()
 	else
-		user << SPAN_WARNING("The ATGM is empty")
+		to_chat(user, SPAN_WARNING("The ATGM is empty"))
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_click_empty(mob/user)
@@ -662,7 +664,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 	projectile.loc = get_turf(user)
-	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.throw_at(target, firing_range, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
 	if (ishuman(user) && istype(projectile, /obj/item/missile))
 		var/obj/item/missile/MS = projectile
@@ -687,14 +689,14 @@
 	set name = "Retrieve"
 	set src in range(1, usr)
 	if (usr.l_hand && usr.r_hand)
-		usr << "<span class = 'warning'>You need to have a hand free to do this.</span>"
+		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return
 	usr.face_atom(src)
-	visible_message("<span class = 'warning'>[usr] starts to get the [src] from the ground.</span>")
+	visible_message(SPAN_WARNING("[usr] starts to get the [src] from the ground."))
 	if (do_after(usr, 40, get_turf(usr)))
 		for (var/obj/item/ammo_casing/rocket/I in rockets)
 			I.loc = get_turf(src)
 			rockets -= I
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
-		visible_message("<span class = 'warning'>[usr] retrieves the [src] from the ground.</span>")
+		visible_message(SPAN_WARNING("[usr] retrieves the [src] from the ground."))
