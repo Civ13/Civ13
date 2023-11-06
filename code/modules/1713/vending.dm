@@ -152,6 +152,7 @@
 		/obj/item/weapon/gun/projectile/submachinegun/uzi = 12,
 		/obj/item/weapon/gun/projectile/submachinegun/tec9 = 10,
 		/obj/item/ammo_magazine/ak47 = 35,
+		/obj/item/ammo_magazine/ak74 = 15,
 		/obj/item/ammo_magazine/uzi = 40,
 		/obj/item/ammo_magazine/tec9 = 40,
 		/obj/item/weapon/material/kitchen/utensil/knife/military = 10,
