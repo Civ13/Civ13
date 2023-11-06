@@ -88,7 +88,6 @@
 				reagents.splash(hit_atom, reagents.total_volume)
 			else
 				hit_atom.visible_message("<span class='notice'>The empty bottle of \the [src] shatters all over \the [hit_atom]!</span>")  // Adds an else statement for shattering into shards
-				shatter(loc, hit_atom, alcohol_power)
 			shatter(loc, hit_atom, alcohol_power)
 // call shatter when you want it to become a broken_bottle
 
