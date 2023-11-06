@@ -525,11 +525,11 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
 
-/obj/item/ammo_casing/rocket/fire_act()
+/obj/item/ammo_casing/rocket/fire_act(temperature)
 	var/turf/t = get_turf(src)
 	if (temperature > T0C+500)
 		if (prob(20))
-			visible_message(SPAN_DANGER("<big>\The [NS] cooks-off and explodes!</big>"))
+			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
 			explosion(t,0,1,1,1)
 			qdel(src)
 

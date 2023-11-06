@@ -1060,7 +1060,7 @@
 
 		for (var/mob/M in axis.transporting)
 			shake_camera(M, 4, 4)
-			
+
 		switch(penloc)
 			if ("left")
 				if (w_left[5] > 0)
@@ -1088,7 +1088,7 @@
 						visible_message("<span class = 'danger'><big>The front hull gets damaged!</big></span>")
 			if ("frontright")
 				if (w_right[5] > 0 && w_front[5] > 0)
-					if (w_right[4] >.w_front[4] && w_right[5]>0)
+					if (w_right[4] > w_front[4] && w_right[5]>0)
 						w_right[5] -= heavy_armor_penetration
 						visible_message("<span class = 'danger'><big>The right hull gets damaged!</big></span>")
 					else
