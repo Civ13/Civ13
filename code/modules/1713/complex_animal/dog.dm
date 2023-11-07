@@ -48,8 +48,7 @@
 	var/atom/walking_to = null
 
 	var/race = "corgi"
-	var/max_dist_pounce = 10
-	var/pounce_probability = 45
+
 
 	maxHealth = 55
 	health = 55
