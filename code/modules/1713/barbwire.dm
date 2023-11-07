@@ -21,20 +21,6 @@
 /obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return TRUE
 
-/obj/structure/barbwire/proc/check_cover(obj/item/projectile/P, turf/from)
-	var/turf/cover = get_turf(src)
-	if (!cover)
-		return TRUE
-	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
-		return TRUE
-
-	var/chance = 50 + (P.penetrating * 3)
-	if (prob(chance))
-		visible_message("<span class='warning'>[P] hits \the [src]!</span>")
-		return FALSE
-	else
-		return TRUE
-
 /obj/structure/barbwire/Crossed(AM as mob|obj)
 	if (ismob(AM))
 		var/mob/M = AM
@@ -49,7 +35,7 @@
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
 				if (affecting)
-					M << "<span class = 'red'><b>Your [affecting.name] gets slightly cut by \the [src]!</b></span>"
+					to_chat(M, SPAN_DANGER("Your [affecting.name] gets slightly cut by \the [src]!"))
 			else if (prob (33))
 				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
@@ -59,7 +45,7 @@
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
 				if (affecting)
-					M << "<span class = 'red'><b>Your [affecting.name] gets cut by \the [src]!</b></span>"
+					to_chat(M, SPAN_DANGER("Your [affecting.name] gets cut by \the [src]!"))
 			else
 				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
@@ -69,34 +55,47 @@
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
 				if (affecting)
-					M << "<span class = 'red'><b>Your [affecting.name] gets deeply cut by \the [src]!</b></span>"
-			// stop crawling until we're up to prevent buggy crawling
-			H.scrambling = TRUE
-			spawn (35)
-				if (H && H.stat != DEAD)
-					H.scrambling = FALSE
+					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
+	return ..()
+
+/obj/structure/barbwire/Uncross(AM as mob)
+	if(ismob(AM))
+		var/mob/M = AM
+		if (ishuman(M))
+			if(prob(50))
+				M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
+				var/mob/living/human/H = M
+				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
+				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
+				if (affecting.take_damage(8, FALSE))
+					H.UpdateDamageIcon()
+				H.updatehealth()
+				return FALSE
+			else
+				M.visible_message(SPAN_DANGER("[M] frees themself from the barbed wire!"))
+				return TRUE
 	return ..()
 
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wirecutters))
 		if (anchored)
-			user.visible_message("<span class = 'notice'>\The [user] starts to cut through \the [src] with \the [W].</span>")
+			user.visible_message(SPAN_NOTICE("\The [user] starts to cut through \the [src] with \the [W]."))
 			if (!do_after(user,60))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to cut through \the [src].</span>")
+				user.visible_message(SPAN_NOTICE("\The [user] decides not to cut through \the [src]."))
 				return
-			user.visible_message("<span class = 'notice'>\The [user] finishes cutting through \the [src]!</span>")
+			user.visible_message(SPAN_NOTICE("\The [user] finishes cutting through \the [src]!"))
 			playsound(loc, 'sound/items/Wirecutter.ogg', 50, TRUE)
 			qdel(src)
 			return
 
 	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet))
 		if (anchored)
-			user.visible_message("<span class = 'notice'>\The [user] starts to hack through \the [src] with \the [W].</span>")
+			user.visible_message(SPAN_NOTICE("\The [user] starts to hack through \the [src] with \the [W]."))
 			if (!do_after(user,120))
-				user.visible_message("<span class = 'notice'>\The [user] decides to hack through \the [src].</span>")
+				user.visible_message(SPAN_NOTICE("\The [user] decides to hack through \the [src]."))
 				return
 			if (prob(40))
-				user.visible_message("<span class = 'notice'>\The [user] finishes hacking through \the [src]!</span>")
+				user.visible_message(SPAN_NOTICE("\The [user] finishes hacking through \the [src]!"))
 				playsound(loc, 'sound/items/Wirecutter.ogg', 50, TRUE)
 				qdel(src)
 				return
@@ -109,7 +108,7 @@
 					else
 						affecting = H.get_organ("r_hand")
 
-					user << "<span class = 'red'><b>Your hand slips, causing \the [src] to gauge your [affecting.name] open!</b></span>"
+					to_chat(user, SPAN_DANGER("Your hand slips, causing \the [src] to gauge your [affecting.name] open!"))
 					playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 					if (affecting.take_damage(18, FALSE))
 						H.UpdateDamageIcon()
