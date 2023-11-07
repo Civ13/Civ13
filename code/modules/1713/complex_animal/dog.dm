@@ -498,35 +498,28 @@ mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 			if (H in range(1, src))
 				dir = get_dir(src, H)
 				visible_message("<span class='warning'>\The [src] shreds [H] with their teeth!</span>")
-				H.adjustBruteLoss(rand(8, 12) / H.getStatCoeff("strength"))
+				H.apply_damage(20, BRUTE, "l_leg","r_leg","groin")
 				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
 				next_shred = world.time + 20
 				spawn (20)
 					if (!client)
 						shred(H)
-		else if (H in range(1, src))
-			spawn (20)
-				if (!client)
-					shred(H)
 
 
 
-/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
-	if (max_dist_pounce >= get_dist(src, H) && prob(pounce_probability))
+
+/*/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
 		// Prepare to leap.
 		visible_message("<span class = 'warning'>\The [src] prepares to leap at [H]!</span>")
 		step_to(src, H)
 		// Face the victim.
 		src.throw_at(H, 5, 0.5, src)
-		// You can add a message here to indicate the dog is pouncing.
 		visible_message("<span class = 'warning'>\The [src] pounces on [H]!</span>")
-		// Play a sound effect for the pounce.
-		//playsound(get_turf(src), 'sound/animals/dog/pounce.ogg', rand(70, 80))
 		// Apply the weakening effect to the target.
 		if (H)
 			H.Weaken(20)
 
-
+*/
 
 // things we do when someone touches us
 /mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/human/H, var/intent = I_HELP)
@@ -604,12 +597,7 @@ mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 				if (get_dist(src, H) > 1 && H.stat != DEAD)
 					if (prioritizes == "attacking" && following)
 						stop_following()
-					// Check if the target is within pounce range; if so, try to pounce.
-					if (get_dist(src, H) <= max_dist_pounce)
-						if (shred(H))
-							return
-					else
-						walking_to = H
+					walking_to = H
 				else
 					shred(H)
 	else if (following)
@@ -631,3 +619,7 @@ mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 
 /mob/living/simple_animal/complex_animal/dog/onEveryXMovement(var/mob/X)
 	return
+
+
+
+
