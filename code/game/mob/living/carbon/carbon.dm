@@ -4,6 +4,7 @@
 	ingested = new/datum/reagents/metabolism(1000, src, CHEM_INGEST)
 	touching = new/datum/reagents/metabolism(1000, src, CHEM_TOUCH)
 	reagents = bloodstr
+	voice_pitch = rand(70,140)
 	..()
 
 /mob/living/human/Life()

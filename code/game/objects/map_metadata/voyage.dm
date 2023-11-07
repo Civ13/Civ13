@@ -932,7 +932,7 @@
 	vp_reference = "Prow"
 	name = "voicepipe (prow post)"
 
-/obj/structure/voyage/voicepipe/proc/broadcast(var/msg, var/mob/living/human/speaker)
+/obj/structure/voyage/voicepipe/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -947,7 +947,7 @@
 		if (hearer.stat == CONSCIOUS)
 			for (var/obj/structure/voyage/voicepipe/phone in view(7, hearer))
 				if (src.vp_reference == phone.vp_reference && src != phone)
-					hearer.hear_voicepipe(msg, speaker.default_language, speaker, src, phone)
+					hearer.hear_voicepipe(msg, verbage, speaker.default_language, speaker, src, phone)
 
 /obj/effect/sailing_effect
 	name = "waves"

@@ -147,7 +147,7 @@ var/list/global/phone_numbers = list()
 	else
 		return
 
-/obj/item/weapon/telephone/proc/broadcast(var/msg, var/mob/living/human/speaker)
+/obj/item/weapon/telephone/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -162,7 +162,7 @@ var/list/global/phone_numbers = list()
 		if (hearer.stat == CONSCIOUS)
 			for (var/obj/item/weapon/telephone/phone in view(7, hearer))
 				if (src == phone.origincall || src == phone)
-					hearer.hear_phone(msg, speaker.default_language, speaker, src, phone)
+					hearer.hear_phone(msg, verbage, speaker.default_language, speaker, src, phone)
 
 /obj/item/weapon/telephone/attack_self(var/mob/user as mob)
 	if (!connected && !ringing)

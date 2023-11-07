@@ -4,6 +4,8 @@
 	icon_state = "modern_cannon"
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
+	pixel_x = 0
+	pixel_y = 0
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80
@@ -373,6 +375,8 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "mortar"
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	anchored = TRUE
@@ -451,6 +455,8 @@
 	icon_state = "m29_davy_crockett_empty"
 	var/icon_state_unloaded = "m29_davy_crockett_empty"
 	var/icon_state_loaded = "m29_davy_crockett_loaded"
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	anchored = FALSE
@@ -479,6 +485,8 @@
 	icon_state = "modern_rocket"
 	ammotype = /obj/item/cannon_ball/rocket
 	spritemod = FALSE
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	maxsway = 10

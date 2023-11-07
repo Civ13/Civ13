@@ -29,6 +29,8 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/bullet_ricochet(var/obj/item/projectile/Proj, var/ischance = 0)
 	if(Proj.starting)
 		var/turf/curloc = get_turf(src)
+		if (!curloc)
+			return
 		var/ricochet_temp_id = rand(1,1000)
 		if(!ischance) Proj.ricochet_id = ricochet_temp_id
 		if(!ischance && ((curloc.x == Proj.starting.x) || (curloc.y == Proj.starting.y)))

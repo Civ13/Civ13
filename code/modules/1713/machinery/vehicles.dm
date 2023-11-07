@@ -215,6 +215,9 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/bmd2new/atgm
+	turret_type = "bmd2_atgm_turret"
+
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
 	speeds = 4
@@ -229,6 +232,9 @@
 		var/pickedname = pick(tank_names_soviet)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/btr80/atgm
+	turret_type = "btr_atgm_turret"
 
 /obj/structure/vehicleparts/axis/heavy/t3485
 	name = "T-34-85"
