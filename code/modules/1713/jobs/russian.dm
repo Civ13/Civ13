@@ -2845,7 +2845,7 @@
 	title = "Parashyutist"
 	en_meaning = "Paratrooper"
 	rank_abbreviation = "Efr."
-	spawn_location = "Paradrop"
+	spawn_location = "ParadropRU"
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
