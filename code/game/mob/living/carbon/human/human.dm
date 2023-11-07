@@ -1100,7 +1100,7 @@ var/list/coefflist = list()
 					if (A.name == "Look into Distance ([src])" || (A.owner && istype(A.owner, /datum/action/toggle_scope)))
 						continue
 				O.scoped_invisible = TRUE
-				O.invisibility = 101
+				O.invisibility = 100
 		else
 			for (var/obj/O in H.client.screen)
 				if (O.scoped_invisible)

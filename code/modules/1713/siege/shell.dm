@@ -43,17 +43,16 @@
 	if (prob(10))
 		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
 		explosion(t,0,1,1,2)
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
-		spawn(5)
-			qdel(src)
+		visible_message(SPAN_DANGER("<big>\The [src] is hit by a projectile causing it to explode!</big>"))
+		qdel(src)
 
 /obj/item/cannon_ball/rocket/fire_act(temperature)
 	var/turf/t = get_turf(src)
 	if (temperature > T0C+500)
-		explosion(t,1,1,1,2)
-		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
-		qdel(src)
-	return ..()
+		if (prob(20))
+			explosion(t,1,1,1,2)
+			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
+			qdel(src)
 
 /obj/item/cannon_ball/rocket/incendiary
 	name = "incendiary rocket"
@@ -78,17 +77,16 @@
 	if (prob(20))
 		playsound(t, 'sound/effects/smoke.ogg', 20, TRUE, -3)
 		explosion(t,1,1,2,5)
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
-		spawn(5)
-			qdel(src)
+		visible_message(SPAN_DANGER("<big>\The [src] is hit by a projectile causing it to explode!</big>"))
+		qdel(src)
 
 /obj/item/cannon_ball/shell/fire_act(temperature)
 	var/turf/t = get_turf(src)
 	if (temperature > T0C+500)
-		explosion(t,1,1,2,5) //cook off makes it explode less
-		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
-		qdel(src)
-	return ..()
+		if (prob(20))
+			explosion(t,1,1,2,5) //cook off makes it explode less
+			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
+			qdel(src)
 
 /obj/item/cannon_ball/shell/incendiary
 	name = "incendiary artillery shell"
@@ -309,17 +307,16 @@
 	if (prob(5))
 		playsound(t, 'sound/effects/smoke.ogg', 10, TRUE, -3)
 		explosion(t,0,1,1,1)
-		visible_message("<span class = 'warning'>\The [src] is hit by a projectile causing it to explode!</span>")
-		spawn(5)
-			qdel(src)
+		visible_message(SPAN_DANGER("<big>\The [src] is hit by a projectile causing it to explode!</big>"))
+		qdel(src)
 
 /obj/item/cannon_ball/mortar_shell/fire_act(temperature)
 	var/turf/t = get_turf(src)
 	if (temperature > T0C+500)
-		explosion(t,0,1,1,1)
-		qdel(src)
-		visible_message("<span class = 'warning'>\The [src] cooks off and explodes!</span>")
-	return ..()
+		if (prob(20))
+			explosion(t,0,1,1,1)
+			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
+			qdel(src)
 
 
 /obj/item/cannon_ball/mortar_shell/type89

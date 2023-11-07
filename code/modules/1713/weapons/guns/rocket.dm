@@ -6,7 +6,7 @@
 	slot_flags = SLOT_SHOULDER
 	var/load_delay = 10
 	var/release_force = 0
-	var/throw_distance = 18
+	var/firing_range = 18
 	fire_sound_text = "a launcher firing"
 
 /obj/item/weapon/gun/launcher/rocket/New()
@@ -41,7 +41,7 @@
 /obj/item/weapon/gun/launcher/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
 	update_release_force(projectile)
 	projectile.loc = get_turf(user)
-	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.throw_at(target, firing_range, release_force, user)
 	projectile.dir = get_dir(src.loc, target.loc)
 	if (ishuman(user) && istype(projectile, /obj/item/missile))
 		var/obj/item/missile/MS = projectile
@@ -77,7 +77,7 @@
 	var/list/rockets = new/list()
 	var/caliber = "rocket"
 	release_force = 15
-	throw_distance = 30
+	firing_range = 30
 	fire_delay = 6
 	equiptimer = 28
 	load_delay = 18
@@ -183,7 +183,7 @@
 
 	load_delay = 20
 	release_force = 0
-	throw_distance = 16
+	firing_range = 16
 
 	var/open = FALSE
 	var/recentpump = FALSE // to prevent spammage
@@ -363,7 +363,7 @@
 	recoil = 2
 	fire_delay = 12
 	release_force = 12
-	throw_distance = 10
+	firing_range = 10
 	var/rocket_path
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/New()
@@ -403,7 +403,7 @@
 	recoil = 2
 	fire_delay = 12
 	release_force = 12
-	throw_distance = 10
+	firing_range = 10
 	rocket_path = /obj/item/ammo_casing/rocket/panzerfaust
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust/update_icon()
@@ -424,7 +424,7 @@
 	recoil = 2
 	fire_delay = 10
 	release_force = 15
-	throw_distance = 18
+	firing_range = 18
 	rocket_path = /obj/item/ammo_casing/rocket/m72law
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22
@@ -436,7 +436,7 @@
 	recoil = 2
 	fire_delay = 10
 	release_force = 15
-	throw_distance = 18
+	firing_range = 18
 	rocket_path = /obj/item/ammo_casing/rocket/rpg22
 
 //Bazooka
@@ -524,6 +524,14 @@
 	caliber = "rocket"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
+
+/obj/item/ammo_casing/rocket/fire_act(temperature)
+	var/turf/t = get_turf(src)
+	if (temperature > T0C+500)
+		if (prob(20))
+			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
+			explosion(t,0,1,1,1)
+			qdel(src)
 
 /obj/item/ammo_casing/rocket/bazooka
 	name = "M6A1 HEAT rocket"
