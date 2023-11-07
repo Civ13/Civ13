@@ -70,7 +70,7 @@ var/global/list/sparring_attack_cache = list()
 					var/turf/T = get_step(get_turf(target), get_dir(get_turf(user), get_turf(target)))
 					if (T && !T.density)
 						step(target, get_dir(get_turf(user), get_turf(target)))
-						target.visible_message("<span class='danger'>[pick("[target] was sent flying backward!", "[target] staggers back from the impact!")]</span>")
+						target.visible_message("<span class='danger'>[pick("[target] was sent flying backwards!", "[target] staggers back from the impact!")]</span>")
 					else
 						target.visible_message("<span class='danger'>[target] slams into [T]!</span>")
 						target.Weaken(rand(1,2))
@@ -81,6 +81,7 @@ var/global/list/sparring_attack_cache = list()
 					if (prob(50))
 						target.set_dir(reverse_dir[target.dir])
 					target.apply_effect(attack_damage * 0.4, WEAKEN, armor)
+				
 			if ("groin")
 				target.visible_message("<span class='warning'>[target] looks like \he is in pain!</span>", "<span class='warning'>[(target.gender=="female") ? "Oh god that hurt!" : "Oh no, not your[pick("testicles", "crown jewels", "clockweights", "family jewels", "marbles", "bean bags", "teabags", "sweetmeats", "goolies")]!"]</span>")
 				target.apply_effects(stutter = attack_damage * 2, agony = attack_damage* 3, blocked = armor)
@@ -199,6 +200,7 @@ var/global/list/sparring_attack_cache = list()
 
 /datum/unarmed_attack/kick/get_unarmed_damage(var/mob/living/human/user)
 	var/obj/item/clothing/shoes = user.shoes
+
 	if (!istype(shoes))
 		return damage
 	return damage + (shoes ? shoes.force : FALSE)

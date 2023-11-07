@@ -69,7 +69,11 @@
 	rag = null
 	return ..()
 
-//when thrown on impact, bottles shatter and spill their contents
+/// This code is not to be confused with apply_hit_effect()
+///
+/// This code handles the throwing of bottles.
+///
+///when thrown on impact, bottles shatter and spill their contents
 /obj/item/weapon/reagent_containers/food/drinks/bottle/throw_impact(atom/hit_atom, var/speed)
 	var/alcohol_power = calculate_alcohol_power()
 
@@ -79,10 +83,14 @@
 	if (isGlass && istype(M))
 		var/throw_dist = get_dist(throw_source, loc)
 		if (shatter_check(throw_dist)) //not as reliable as shattering directly
-			if (reagents)
-				hit_atom.visible_message("<span class='notice'>The contents of \the [src] splash all over [hit_atom]!</span>")
+			if (reagents && reagents.total_volume > 0)  // Check if reagents exist and the bottle is not empty
+				hit_atom.visible_message("<span class='notice'>The contents of \the [src] splash all over \the [hit_atom]!</span>")
 				reagents.splash(hit_atom, reagents.total_volume)
+			else
+				hit_atom.visible_message("<span class='notice'>The empty bottle of \the [src] shatters all over \the [hit_atom]!</span>")  // Adds an else statement for shattering into shards
 			shatter(loc, hit_atom, alcohol_power)
+// call shatter when you want it to become a broken_bottle
+
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/proc/calculate_alcohol_power()
 	. = 0
@@ -242,6 +250,11 @@
 		else
 			icon_state = icon_state_empty
 
+
+/// This code is not to be confused with throw_impact()
+///
+/// This code handles the hitting of bottles on people.
+///
 /obj/item/weapon/reagent_containers/food/drinks/bottle/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
 	var/blocked = ..()
 
@@ -267,10 +280,16 @@
 	//The reagents in the bottle splash all over the target, thanks for the idea Nodrak
 	var/alcohol_power = calculate_alcohol_power()
 
-	if (reagents)
-		spawn (1) // wait until after our explosion, if we have one
-			user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
-			if (reagents) reagents.splash(target, reagents.total_volume)
+
+// Checks if there are reagents in the bottle to output the message of us splashing alcohol over the target.
+	if (reagents && reagents.total_volume > 0)
+		reagents.splash(target, reagents.total_volume)
+		user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
+	else
+		user.visible_message("<span class='notice'>The empty bottle of \the [src] shatters all over [target]!</span>")
+	spawn (1)
+		shatter(loc, target, alcohol_power)
+
 
 	//Finally, shatter the bottle. This kills (qdel) the bottle.
 
