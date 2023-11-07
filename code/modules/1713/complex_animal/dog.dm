@@ -497,7 +497,7 @@ mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 			if (H in range(1, src))
 				dir = get_dir(src, H)
 				visible_message("<span class='warning'>\The [src] shreds [H] with their teeth!</span>")
-				H.apply_damage(20, BRUTE, "l_leg","r_leg","groin")
+				H.apply_damage(20, BRUTE, "l_leg","r_leg","groin",sharp=1)
 				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
 				next_shred = world.time + 20
 				spawn (20)
