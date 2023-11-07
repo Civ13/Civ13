@@ -619,6 +619,3 @@ mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 /mob/living/simple_animal/complex_animal/dog/onEveryXMovement(var/mob/X)
 	return
 
-
-
-
