@@ -21,9 +21,19 @@
 	base_icon = "wheel_t_dark"
 	movement_icon = "wheel_t_dark_m"
 	ntype = "wheel"
-	var/left = FALSE
 
 /obj/structure/vehicleparts/movement/armored/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/armored/btr
+	name = "armored wheels"
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "wheel_t_dark"
+	base_icon = "wheel_t_dark"
+	movement_icon = "wheel_t_dark_m"
+	ntype = "wheel"
+
+/obj/structure/vehicleparts/movement/armored/btr/reversed
 	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks

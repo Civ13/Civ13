@@ -2057,13 +2057,25 @@
 	compatible_os = list("unga OS 94","unga OS")
 
 	var/list/dutch_choice = list(
-		"2A6 Leopard Tank (1000)", "Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
+		"2A6 Leopard Tank (1000)",
+		"Mercedes-Benz Jeep with MG (400)",
+		"DAF YA-4442 Supply Truck (300)",
+		"Mercedes-Benz Jeep (200)",
 		)
 	var/list/rus_choice = list(
-		"T-90A Tank (1200)", "BTR-80 Infantry Fighting Vehicle (700)", "AMN-233114 Tigr-M Humvee with MG (500)", "KamAZ-4350 Truck (300)", "AMN-233114 Tigr-M Humvee (200)"
+		"T-90A Tank (1200)",
+		"BMD-2 IFV with ATGM (1200)",
+		"BMD-2 IFV (900)",
+		"BTR-80 APC (700)",
+		"Tigr-M Humvee with MG (400)",
+		"KamAZ-4350 Truck (300)",
+		"Tigr-M Humvee (200)",
 		)
 	var/list/british_choice = list(
-		"FV4034 Challenger 2 Tank (1000)","Mercedes-Benz G280 Jeep with MG (500)", "DAF YA-4442 Supply Truck (400)", "Mercedes-Benz G280 Jeep (200)"
+		"FV4034 Challenger 2 Tank (1000)",
+		"Mercedes-Benz Jeep with MG (400)",
+		"DAF YA-4442 Supply Truck (300)",
+		"Mercedes-Benz Jeep (200)",
 		)
 
 /datum/program/carspawn/do_html(mob/living/human/user)
@@ -2229,27 +2241,31 @@
 					do_html(user)
 					return
 			else
-				user << "<h1>Your faction does not have any points pool, report this to a developer! (Bierkraan#9876)</h1>"
+				to_chat(user, "<h1>Your faction does not have any points pool, report this to a developer! (Bierkraan#9876)</h1>")
 
 		switch (href_list["vehiclegiver"])
 			if ("2A6 Leopard Tank (1000)")
 				PV = new /obj/effects/premadevehicles/tank/leopard2a6(locate(origin.x+3,origin.y-5,origin.z))
-			if ("Mercedes-Benz G280 Jeep with MG (500)")
+			if ("Mercedes-Benz Jeep with MG (400)")
 				PV = new /obj/effects/premadevehicles/car/mercedes/mg(locate(origin.x+3,origin.y-5,origin.z))
-			if ("DAF YA-4442 Supply Truck (400)")
+			if ("DAF YA-4442 Supply Truck (300)")
 				PV = new /obj/effects/premadevehicles/truck/daf(locate(origin.x+3,origin.y-5,origin.z))
-			if ("Mercedes-Benz G280 Jeep (200)")
+			if ("Mercedes-Benz Jeep (200)")
 				PV = new /obj/effects/premadevehicles/car/mercedes(locate(origin.x+3,origin.y-5,origin.z))
 
 			if ("T-90A Tank (1200)")
 				PV = new /obj/effects/premadevehicles/tank/t90a(locate(origin.x+3,origin.y-5,origin.z))
-			if ("BTR-80 Infantry Fighting Vehicle (700)")
+			if ("BMD-2 IFV with ATGM (1200)")
+				PV = new /obj/structure/vehicleparts/axis/heavy/bmd2new/atgm(locate(origin.x+3,origin.y-5,origin.z))
+			if ("BMD-2 IFV (900)")
+				PV = new /obj/structure/vehicleparts/axis/heavy/bmd2new(locate(origin.x+3,origin.y-5,origin.z))
+			if ("BTR-80 APC (700)")
 				PV = new /obj/effects/premadevehicles/apc/btr80(locate(origin.x+3,origin.y-5,origin.z))
-			if ("AMN-233114 Tigr-M Humvee with MG (500)")
+			if ("Tigr-M Humvee with MG (400)")
 				PV = new /obj/effects/premadevehicles/car/tigr/mg(locate(origin.x+3,origin.y-5,origin.z))
 			if ("KamAZ-4350 Truck (300)")
 				PV = new /obj/effects/premadevehicles/truck/kamaz(locate(origin.x+3,origin.y-5,origin.z))
-			if ("AMN-233114 Tigr-M Humvee (200)")
+			if ("Tigr-M Humvee (200)")
 				PV = new /obj/effects/premadevehicles/car/tigr(locate(origin.x+3,origin.y-5,origin.z))
 
 			if ("FV4034 Challenger 2 Tank (1000)")

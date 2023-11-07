@@ -178,15 +178,27 @@
 
 /obj/structure/computer/nopower/carspawn
 	name = "Vehicle Supply Terminal"
-	desc = "A computer terminal connected to the supply network."
+	desc = "A computer terminal connected to a supply network."
 	powered = TRUE
 	powerneeded = FALSE
 	anchored = TRUE
 	operatingsystem = "unga OS 94"
 	New()
 		..()
+		desc += "<br>You currently have ... supply points."
 		programs += new/datum/program/carspawn
 
+/obj/structure/computer/nopower/carspawn/examine(mob/user)
+	desc = "A computer terminal connected to a supply network."
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		switch (H.faction_text)
+			if (DUTCH)
+				desc += "<br>You currently have [faction1_supply_points] supply points."
+			if (RUSSIAN)
+				desc += "<br>You currently have [faction2_supply_points] supply points."
+			if (BRITISH)
+				desc += "<br>You currently have [faction1_supply_points] supply points."
 
 //////////////////////////////////////////////////////////////
 
