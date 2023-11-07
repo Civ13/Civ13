@@ -48,8 +48,6 @@
 	var/atom/walking_to = null
 
 	var/race = "corgi"
-
-
 	maxHealth = 55
 	health = 55
 	mob_size = MOB_MEDIUM
@@ -491,13 +489,13 @@ s
 
 
 /mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
-mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
+/mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
 		if (world.time >= next_shred)
 			if (H in range(1, src))
 				dir = get_dir(src, H)
 				visible_message("<span class='warning'>\The [src] shreds [H] with their teeth!</span>")
-				H.apply_damage(20, BRUTE, "l_leg","r_leg","groin",sharp=1)
+				H.apply_damage(rand(15,25)/H.getStatCoeff("strength"))
 				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
 				next_shred = world.time + 20
 				spawn (20)
