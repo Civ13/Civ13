@@ -185,20 +185,18 @@
 	operatingsystem = "unga OS 94"
 	New()
 		..()
-		desc += "<br>You currently have ... supply points."
 		programs += new/datum/program/carspawn
 
 /obj/structure/computer/nopower/carspawn/examine(mob/user)
-	desc = "A computer terminal connected to a supply network."
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		switch (H.faction_text)
 			if (DUTCH)
-				desc += "<br>You currently have [faction1_supply_points] supply points."
+				to_chat(H, "You currently have [faction1_supply_points] supply points.")
 			if (RUSSIAN)
-				desc += "<br>You currently have [faction2_supply_points] supply points."
+				to_chat(H, "You currently have [faction2_supply_points] supply points.")
 			if (BRITISH)
-				desc += "<br>You currently have [faction1_supply_points] supply points."
+				to_chat(H, "You currently have [faction1_supply_points] supply points.")
 
 //////////////////////////////////////////////////////////////
 

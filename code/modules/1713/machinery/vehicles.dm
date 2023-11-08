@@ -923,27 +923,37 @@
 		for (var/obj/item/mine/M in range(5, src))
 			if (M.anchored)
 				M.trigger(src)
-				for (var/mob/O in viewers(7, loc))
-					O << SPAN_DANGER("\The [src] explodes the [M]!")
+				for (var/mob/O in viewers(7, get_turf(src)))
+					to_chat(O, SPAN_DANGER("\The [src] explodes the [M]!"))
 		sleep(6 SECONDS)
 		explode_mines()
 	else return
 
-/obj/item/tank_systems/iars
-	name = "IARS"
-	desc = "An Infrared Anti-Rocket System."
+/obj/item/tank_systems/aps
+	name = "Active Protection System"
+	desc = "A hard-kill active protection system for defense against Rocket-Propelled Grenades and Anti-Tank Guided Missiles."
+	var/uses = 12
 	New()
 		..()
 		spawn(5)
 		explode_missiles()
 
-/obj/item/tank_systems/iars/proc/explode_missiles()
+/obj/item/tank_systems/aps/proc/explode_missiles()
 	if (src)
-		for (var/obj/item/missile/M in range(6, src))
-			if (M)
-				M.throw_impact(get_turf(M))
-				for (var/mob/O in viewers(7, loc))
-					O << SPAN_DANGER("\The [src] explodes the rocket!")
+		if (uses > 0)
+			for (var/obj/item/missile/M in range(6, src))
+				if (M)
+					M.throw_impact(get_turf(M))
+					--uses
+					for (var/mob/O in viewers(7, get_turf(src)))
+						to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))
 		sleep(1 SECONDS)
 		explode_missiles()
 	else return
+
+/obj/item/tank_systems/aps/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE("It has [uses] uses left."))
+
+/obj/item/tank_systems/aps/ironfist
+	name = "Iron Fist APS"
