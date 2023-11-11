@@ -85,7 +85,7 @@ macro "macro"
 		command = "quick-equip"
 	elem 
 		name = "F"
-		command = "Face Direction"
+		command = "Face-Direction"
 	elem 
 		name = "CTRL+F"
 		command = "a-intent left"
@@ -237,7 +237,7 @@ macro "hotkeymode"
 		command = "quick-equip"
 	elem 
 		name = "F"
-		command = "Face Direction"
+		command = "Face-Direction"
 	elem 
 		name = "CTRL+F"
 		command = "a-intent left"
