@@ -239,13 +239,13 @@
 
 /obj/item/weapon/book/holybook/attack_self(var/mob/living/human/user as mob)
 	if (user.religion == religion && religion != "none")
-		user << "You stare at the glorious holy book of your religion."
+		to_chat(user, "You stare at the glorious holy book of your religion.")
 	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
 		if (user.religion != "none")
 			if (map.custom_religions[user.religion][7] == "Clerics")
-				user << "You can't abandon a Clerical religion!"
+				to_chat(user, ("You can't abandon a Clerical religion!"))
 				return
-		user << "You start reading the [title]..."
+		to_chat(user, "You start reading the [title]...")
 		if (do_after(user, 900, src))
 			var/choice = WWinput(user, "After reading the [title], you feel attracted to the [religion] religion. Do you want to convert?", "[title]", "Yes", list("Yes","No"))
 			if (choice == "No")
@@ -255,7 +255,7 @@
 				user.religious_leader = FALSE
 				user.religion_type = religion_type
 				user.religion_style = map.custom_religions[religion][7]
-				user << "<big>You convert to the [religion] religion!</big>"
+				to_chat(user, ("<big>You convert to the [religion] religion!</big>"))
 				if (map.custom_religions[religion][7] == "Clerics")
 					map.custom_religions[religion][3] += 15
 				return
@@ -313,7 +313,7 @@
 		invisibility = 0
 /obj/structure/poster/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		user << "You start ripping off the [src]..."
+		to_chat(user, "You start ripping off the [src]...")
 		if (do_after(user, 70, src))
 			visible_message("[user] rips the [src]!")
 			overlays.Cut()
@@ -360,18 +360,18 @@ obj/structure/altar
 		if (istype(W, /obj/item/clothing/accessory/armband/talisman))
 			var/obj/item/clothing/accessory/armband/talisman/T = W
 			if (T.religion != religion)
-				user << "You start destroying \the [W] in the name of your religion, [religion]..."
+				to_chat(user, "You start destroying \the [W] in the name of your religion, [religion]...")
 				if (do_after(user, 100, src))
-					user << "You destroy \the [W]!"
+					to_chat(user, "You destroy \the [W]!")
 					map.custom_religions[religion][3] += 3
 					qdel(W)
 					return
 		else if (istype(W, /obj/item/weapon/book/holybook))
 			var/obj/item/weapon/book/holybook/T = W
 			if (T.religion != religion)
-				user << "You start destroying \the [W] in the name of your religion, [religion]..."
+				to_chat(user, "You start destroying \the [W] in the name of your religion, [religion]...")
 				if (do_after(user, 100, src))
-					user << "You destroy \the [W]!"
+					to_chat(user, "You destroy \the [W]!")
 					map.custom_religions[religion][3] += 10
 					qdel(W)
 					return
@@ -391,7 +391,7 @@ obj/structure/altar
 
 /obj/structure/altar/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		visible_message(SPAN_DANGER("[src] is broken into pieces!"))
 		qdel(src)
 		return
 
@@ -435,15 +435,15 @@ obj/structure/altar/attack_hand(mob/living/human/H as mob)
 					var/mob/living/human/choice2 = choice3
 					var/answer = WWinput(choice2, "[H] asks you to convert to his religion, [H.religion]. Will you accept?", null, "Yes", list("Yes","No"))
 					if (answer == "Yes")
-						usr << "[choice2] accepts your offer. They are worshipping [H.religion]."
-						src << "You accept [H]'s offer. You are now worshipping [H.religion]."
+						to_chat(usr, ("[choice2] accepts your offer. They are worshipping [H.religion]."))
+						to_chat(src, ("You accept [H]'s offer. You are now worshipping [H.religion]."))
 						choice2.religion = H.religion
 						choice2.religious_leader = FALSE
 						choice2.religion_type = H.religion_type
 						choice2.religion_style = H.religion_style
 						return
 					else if (answer == "No")
-						usr << "[closemobs] has rejected your offer."
+						to_chat(usr, ("[closemobs] has rejected your offer."))
 						return
 					else
 						return
@@ -540,7 +540,7 @@ obj/structure/altar/iron
 
 /obj/structure/banner/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		user << "You start ripping off the [src]..."
+		to_chat(user, "You start ripping off the [src]...")
 		if (do_after(user, 130, src))
 			visible_message("[user] rips the [src]!")
 			qdel(src)
@@ -559,6 +559,6 @@ obj/structure/altar/iron
 			</body></html>
 		"}
 
-		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+		to_chat(usr, browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450"))
 	else
 		return

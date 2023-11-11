@@ -32,11 +32,11 @@
 		if (istype(src, /obj/structure/engine))
 			var/obj/structure/engine/EN = src
 			if (!isemptylist(EN.connections))
-				user << SPAN_NOTICE("Remove the cables first.")
+				to_chat(user, SPAN_NOTICE("Remove the cables first."))
 				return
 		if (do_after(user,15,src))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-			user << (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor."))
+			to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
 			anchored = !anchored
 			return
 	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)

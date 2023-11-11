@@ -430,7 +430,7 @@
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 
-	user << msg
+	to_chat(user, msg)
 
 /mob/living/human/Topic(href, href_list[], hsrc)
 

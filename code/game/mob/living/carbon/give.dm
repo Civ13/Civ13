@@ -61,40 +61,40 @@
 		return
 
 	if (user == src)
-		user << "You cannot recruit yourself."
+		to_chat(user, "You cannot recruit yourself.")
 		return
 
 	if (user.original_job_title != "Nomad" && !findtext(user.original_job_title,"Civilization"))
-		user << "You can't recruit in this map."
+		to_chat(user, "You can't recruit in this map.")
 		return
 
 	if (user.civilization == "none" || user.civilization == null)
-		user << "You are not part of a faction."
+		to_chat(user, "You are not part of a faction.")
 		return
 
 	if (!user.leader || user.faction_perms[4] == 0)
-		user << "You don't have the permissions to recruit."
+		to_chat(user, "You don't have the permissions to recruit.")
 		return
 
 	if (!istype(src) || src.incapacitated() || src.client == null)
-		user << "The target does not seem to respond..."
+		to_chat(user, "The target does not seem to respond...")
 		return
 
 	if (left_factions.len)
 		for (var/i in left_factions)
 			if (i[1]==user.civilization && i[2]>world.realtime)
-				user << "You can't recruit [usr] since he has left your faction recently!"
+				to_chat(user, "You can't recruit [usr] since he has left your faction recently!")
 				return
 	var/answer = WWinput(src, "[usr] wants to recruit you into his faction, [user.civilization]. Will you accept?", null, "Yes", list("Yes","No"))
 	if (answer == "Yes")
-		usr << "[src] accepts your offer. They are now part of [user.civilization]."
-		src << "You accept [usr]'s offer. You are now part of [user.civilization]."
+		to_chat(usr, ("[src] accepts your offer. They are now part of [user.civilization]."))
+		to_chat(src, ("You accept [usr]'s offer. You are now part of [user.civilization]."))
 		src.faction_leaving_proc()
 		spawn(1)
 			src.civilization = user.civilization
 		return
 	else if (answer == "No")
-		usr << "[src] has rejected your offer."
+		to_chat(usr, "[src] has rejected your offer.")
 		return
 	else
 		return
@@ -120,15 +120,15 @@
 		return
 
 	if (!map.civilizations || user.civilization == "none" || user.civilization == null)
-		user << "You are not part of a faction."
+		to_chat(user, "You are not part of a faction.")
 		return
 
 	if (!user.leader || user.faction_perms[1] == 0)
-		user << "You don't have the permissions to change faction permissions."
+		to_chat(user, "You don't have the permissions to change faction permissions.")
 		return
 
 	if (!istype(src) || src.incapacitated() || src.client == null)
-		user << "The target does not seem to respond..."
+		to_chat(user, "The target does not seem to respond...")
 		return
 
 	var/answer = WWinput(user, "Add or Remove a permission?", null, "Add", list("Add","Remove","Cancel"))

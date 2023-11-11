@@ -331,7 +331,7 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
 	dat += "<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>"
 
-	user << browse(dat, text("window=mob[name];size=340x540"))
+	to_chat(user, browse(dat, text("window=mob[name];size=340x540")))
 	onclose(user, "mob[name]")
 	return
 
@@ -810,6 +810,7 @@ var/list/coefflist = list()
 		if (!fail_msg)
 			fail_msg = "There is no exposed flesh or thin material [target_zone == "head" ? "on their head" : "on their body"] to inject into."
 		user << "<span class='alert'>[fail_msg]</span>"
+		
 
 /mob/living/human/proc/exam_self()
 	var/organpain = FALSE
@@ -1111,20 +1112,20 @@ var/list/coefflist = list()
 	var/mob/living/human/H = user
 
 	if(user.stat || !ishuman(user))
-		user << "<span class = 'warning'>You are unable to look into the distance right now.</span>"
+		to_chat(user, SPAN_WARNING("You are unable to look into the distance right now."))
 		return FALSE
 	else if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
 		var/obj/item/clothing/mask/currmask = H.wear_mask
 		if (currmask.blocks_scope)
-			user << "You can't see any farther while wearing \the [currmask]!"
+			to_chat(user, "You can't see any farther whilst wearing \the [currmask]!")
 			return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
-		user << "Your visor gets in the way of seeing further."
+		to_chat(user, "Your visor gets in the way of seeing farther.")
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
 		if (E.is_bruised() || E.is_broken() || H.eye_blind > 0)
-			if (!silent) user << "<span class = 'danger'>Your eyes are injured! You can't see any farther.</span>"
+			if (!silent) to_chat(user, SPAN_DANGER("Your eyes are injured! You can't see any farther!"))
 			return FALSE
 	return TRUE
 

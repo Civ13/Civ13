@@ -386,7 +386,7 @@
 
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		user << "You start ripping off the [src]..."
+		to_chat(user, ("You start ripping off the [src]..."))
 		if (do_after(user, 130, src))
 			visible_message("[user] rips the [src]!")
 			qdel(src)
@@ -527,7 +527,7 @@
 		invisibility = 0
 /obj/structure/poster/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		user << "You start ripping off the [src]..."
+		to_chat(user, ("You start ripping off the [src]..."))
 		if (do_after(user, 70, src))
 			visible_message("[user] rips the [src]!")
 			overlays.Cut()

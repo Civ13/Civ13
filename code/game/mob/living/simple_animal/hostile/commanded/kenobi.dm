@@ -123,13 +123,13 @@
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
 			L.S1 = src
-			user << "You tie \the [src] with the leash."
+			to_chat(user, "You tie \the [src] with the leash.")
 			L.onedefined = TRUE
 			return
 		else if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
 			L.S2.following_mob = L.S1
-			user << "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1]."
+			to_chat(user, "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1].")
 			qdel(L)
 			return
 	else if (istype(O, /obj/item/stack/medical))
@@ -146,7 +146,7 @@
 							M.show_message("<span class='notice'>[user] applies the [MED] on [src].</span>")
 					return TRUE
 		else
-			user << "<span class='notice'>\The [src] is dead, medical items won't bring \him back to life.</span>"
+			to_chat(user, SPAN_NOTICE("\The [src] is dead, performing first-aid won't bring \him back to life."))
 			return TRUE
 	else if (!O.sharp || istype(O, /obj/item/weapon/macuahuitl))
 		if (!O.force && !istype(O, /obj/item/stack/medical/bruise_pack))
@@ -305,10 +305,10 @@
 
 /mob/living/simple_animal/hostile/human/kenobi/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
-	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
+	visible_message(SPAN_DANGER("\The [src] has been attacked with \the [O] by [user]."))
 
 	if (O.force <= resistance)
-		user << "<span class='danger'>This weapon is ineffective, it does no damage.</span>"
+		to_chat(user, SPAN_DANGER("This weapon is ineffective, it does no damage."))
 		return 2
 
 	var/damage = O.force
