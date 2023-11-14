@@ -2206,7 +2206,7 @@ RECIPE: /material/wood/,notice board,/obj/structure/noticeboard,12,145,1,1,paper
 RECIPE: /material/wood/,printing press,/obj/structure/printingpress,12,120,1,1,paper & printing,102,0,0,8,null
 RECIPE: /material/wood/,large blue stamp,/obj/item/weapon/stamp/captain,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,DENIED stamp,/obj/item/weapon/stamp/denied,1,30,0,1,paper & printing,103,0,0,8,null
-RECIPE: /material/wood/,APPROVED stamp,/obj/item/weapon/stamp/centcomm,1,30,0,1,paper & printing,103,0,0,8,null
+RECIPE: /material/wood/,APPROVED stamp,/obj/item/weapon/stamp/approved,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,silly stamp,/obj/item/weapon/stamp/clown,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,red stamp,/obj/item/weapon/stamp/hos,1,30,0,1,paper & printing,103,0,0,8,null
 RECIPE: /material/wood/,blue stamp,/obj/item/weapon/stamp/hop,1,30,0,1,paper & printing,103,0,0,8,null
