@@ -1,1 +1,0 @@
-All the dmi files of the pngs. This will be used by code.
