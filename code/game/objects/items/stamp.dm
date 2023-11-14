@@ -37,7 +37,7 @@
 
 /obj/item/weapon/stamp/mail
 	name = "envelope seal"
-	icon_state = "stamp_blank"
+	icon_state = "stamp-blank"
 	desc = "A stamp for sealing important envelopes."
 
 
@@ -47,7 +47,7 @@
 	name = "fna ink stamp"
 	icon_state = "stamp-fna"
 
-/obj/item/weapon/stamp/fnaseal
+/obj/item/weapon/stamp/mail/fna
 	name = "fna seal stamp"
 	icon_state = "seal-fna"
 
@@ -55,21 +55,21 @@
 	name = "red cccp stamp"
 	icon_state = "stamp-cccp"
 
-/obj/item/weapon/stamp/cccpseal
+/obj/item/weapon/stamp/mail/cccp
 	name = "red cccp seal stamp"
 	icon_state = "seal-cccp"
 
 /obj/item/weapon/stamp/nkvdseal
 	name = "nkvd seal stamp"
-	icon_state = "stamp-cent"
+	icon_state = "stamp-nkvd"
 
 /obj/item/weapon/stamp/denied
 	name = "DENIED ink stamp"
 	icon_state = "stamp-deny"
 
-/obj/item/weapon/stamp/centcomm
+/obj/item/weapon/stamp/approved
 	name = "APPROVED ink stamp"
-	icon_state = "stamp-cent"
+	icon_state = "stamp-approved"
 
 /obj/item/weapon/stamp/stamplatin
 	name = "latin ink stamp"
@@ -83,33 +83,32 @@
 	name = "gaelic ink stamp"
 	icon_state = "stamp-gaul"
 
-/obj/item/weapon/stamp/seallatin
+/obj/item/weapon/stamp/mail/latin
 	name = "latin seal stamp"
 	icon_state = "seal-latin"
 
-/obj/item/weapon/stamp/sealgerman
+/obj/item/weapon/stamp/mail/german
 	name = "german seal stamp"
 	icon_state = "seal-german"
 
-/obj/item/weapon/stamp/sealgaul
+/obj/item/weapon/stamp/mail/gaul
 	name = "gaelic seal stamp"
 	icon_state = "seal-gaul"
 
-/obj/item/weapon/stamp/sealberlincensored
-	name = "family friendly berlin seal stamp"
-	icon_state = "seal-berlin-cens"
-
-/obj/item/weapon/stamp/sealberlin
+/obj/item/weapon/stamp/mail/berlin
 	name = "berlin seal stamp"
 	icon_state = "steal-berlin"
 
-/obj/item/weapon/stamp/sealadmin
-	name = "civ13 admin seal"
-	icon_state = "steal-admin"
+/obj/item/weapon/stamp/mail/berlin/censored
+	icon_state = "seal-berlin-cens"
 
-/obj/item/weapon/stamp/sealcourt
+/obj/item/weapon/stamp/mail/admin
+	name = "civ13 admin seal"
+	icon_state = "seal-admin"
+
+/obj/item/weapon/stamp/mail/court
 	name = "court seal stamp"
-	icon_state = "steal-court"
+	icon_state = "seal-court"
 
 // "Syndicate stamp to forge documents." Was the orrigional comments for the orrigional item. Its a fancy adujustable stamp now, nothing sinister yet. - siro
 /obj/item/weapon/stamp/chameleon/attack_self(mob/user as mob)
