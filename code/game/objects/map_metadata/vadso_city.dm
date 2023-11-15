@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(BRITISH = 0.5, RUSSIAN = 0.5)
 	battle_name = "Vadso City"
-	mission_start_message = "<font size=4>Both factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Radar Station, Western City, Eastern City and Hydro Dam</b>.<br>First team to reach <b>70</b> points wins!</font>"
+	mission_start_message = "<font size=4>Both factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font> <br><big>Points are added to each team for each minute they control the different objectives.</big> <br><font size=6>First team to reach <b>100</b> points wins!</big></font>"
 	faction1 = BRITISH
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -29,7 +29,7 @@
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
 	var/british_points = 0
-	var/win_points = 70 // Amount of points needed to win
+	var/win_points = 100 // Amount of points needed to win
 
 	var/faction1_flag = "british"
 	var/faction2_flag = "russian"

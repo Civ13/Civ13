@@ -1058,14 +1058,14 @@ mob/proc/yank_out_object()
 
 /mob/verb/face_direction()
 
-	set name = "Face Direction"
+	set name = "Face-Direction"
 	set category = "IC"
 	set src = usr
 
 	set_face_dir()
 
 	if (!facing_dir)
-		usr << "You are now not facing anything."
+		usr << "You are no longer facing anything."
 	else
 		usr << "You are now facing [dir2text(facing_dir)]."
 	if (ishuman(src))

@@ -21,9 +21,19 @@
 	base_icon = "wheel_t_dark"
 	movement_icon = "wheel_t_dark_m"
 	ntype = "wheel"
-	var/left = FALSE
 
 /obj/structure/vehicleparts/movement/armored/reversed
+	reversed = TRUE
+
+/obj/structure/vehicleparts/movement/armored/btr
+	name = "armored wheels"
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "wheel_t_dark"
+	base_icon = "wheel_t_dark"
+	movement_icon = "wheel_t_dark_m"
+	ntype = "wheel"
+
+/obj/structure/vehicleparts/movement/armored/btr/reversed
 	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/tracks
@@ -57,7 +67,7 @@
 /obj/structure/vehicleparts/movement/tracks/right/reversed
 	reversed = TRUE
 
-obj/structure/vehicleparts/movement/tracks/mtlb/left_front
+/obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	icon_state = "mtlb_tracks_left_front"
 	base_icon = "mtlb_tracks_left_front"
@@ -164,7 +174,20 @@ obj/structure/vehicleparts/movement/tracks/mtlb/left_front
 	base_icon = "is3_tracks_right_back"
 	movement_icon = "is3_tracks_right_back_m"
 
-
+/obj/structure/vehicleparts/movement/tracks/apc/left
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "tracks_end_left"
+	base_icon = "tracks_end_left"
+	movement_icon = "tracks_end_left_m"
+/obj/structure/vehicleparts/movement/tracks/apc/right
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "tracks_end_right"
+	base_icon = "tracks_end_right"
+	movement_icon = "tracks_end_right_m"
+/obj/structure/vehicleparts/movement/tracks/apc/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/apc/right/reversed
+	reversed = TRUE
 
 /obj/structure/vehicleparts/movement/update_icon()
 	if (broken)

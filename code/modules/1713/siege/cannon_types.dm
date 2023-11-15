@@ -492,18 +492,15 @@
 	maxsway = 10
 	firedelay = 12
 	maxrange = 60
-	max_loaded = 9
+	max_loaded = 12
 	w_class = ITEM_SIZE_GARGANTUAN
 	see_amount_loaded = TRUE
 
+/obj/structure/cannon/rocket/old
+	icon_state = "old_rocket"
+	max_loaded = 9
+
 /obj/structure/cannon/rocket/loaded/New()
 	..()
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
+	for (var/i=1, i<=12, i++)
+		loaded += new /obj/item/cannon_ball/rocket(src)

@@ -185,14 +185,14 @@
 		tank_names_usa -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-/obj/structure/vehicleparts/axis/heavy/bmd2
-	name = "BMD-2"
+/obj/structure/vehicleparts/axis/heavy/bmd1
+	name = "BMD-1"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "bmd2_turret"
-	vehicle_size = "2x4"
+	turret_type = "bmd1_turret"
+	vehicle_size = "2x3"
 	vehicle_type = "apc"
 	New()
 		..()
@@ -200,7 +200,7 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-/obj/structure/vehicleparts/axis/heavy/bmd2new
+/obj/structure/vehicleparts/axis/heavy/bmd2
 	name = "BMD-2"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
@@ -215,13 +215,13 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-/obj/structure/vehicleparts/axis/heavy/bmd2new/atgm
+/obj/structure/vehicleparts/axis/heavy/bmd2/atgm
 	turret_type = "bmd2_atgm_turret"
 
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
-	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
+	speeds = 5
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
 	turret_type = "btr_turret"
@@ -235,6 +235,16 @@
 
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
 	turret_type = "btr_atgm_turret"
+
+/obj/structure/vehicleparts/axis/heavy/cv90
+	name = "BTR-80"
+	speeds = 5
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_type = "cv90_turret"
+	vehicle_size = "2x4_non96x96"
+	vehicle_type = "apc"
 
 /obj/structure/vehicleparts/axis/heavy/t3485
 	name = "T-34-85"
@@ -899,7 +909,7 @@
 	name = "small wool sail"
 	desc = "A small cloth sail. Will fit a minor boat."
 
-/obj/item/tank_systems
+/obj/item/tank_system
 	name = "Tank System"
 	desc = "Base parent object, DO NOT USE."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -910,7 +920,7 @@
 	opacity = FALSE
 	density = FALSE
 
-/obj/item/tank_systems/ecms
+/obj/item/tank_system/ecms
 	name = "ECMS"
 	desc = "An Electromagnetic Counter-Mine System."
 	New()
@@ -918,32 +928,42 @@
 		spawn(5)
 		explode_mines()
 
-/obj/item/tank_systems/ecms/proc/explode_mines()
+/obj/item/tank_system/ecms/proc/explode_mines()
 	if (src)
 		for (var/obj/item/mine/M in range(5, src))
 			if (M.anchored)
 				M.trigger(src)
-				for (var/mob/O in viewers(7, loc))
-					O << SPAN_DANGER("\The [src] explodes the [M]!")
+				for (var/mob/O in viewers(7, get_turf(src)))
+					to_chat(O, SPAN_DANGER("\The [src] explodes the [M]!"))
 		sleep(6 SECONDS)
 		explode_mines()
 	else return
 
-/obj/item/tank_systems/iars
-	name = "IARS"
-	desc = "An Infrared Anti-Rocket System."
+/obj/item/tank_system/aps
+	name = "Active Protection System"
+	desc = "A hard-kill active protection system for defense against Rocket-Propelled Grenades and Anti-Tank Guided Missiles."
+	var/uses = 12
 	New()
 		..()
 		spawn(5)
 		explode_missiles()
 
-/obj/item/tank_systems/iars/proc/explode_missiles()
+/obj/item/tank_system/aps/proc/explode_missiles()
 	if (src)
-		for (var/obj/item/missile/M in range(6, src))
-			if (M)
-				M.throw_impact(get_turf(M))
-				for (var/mob/O in viewers(7, loc))
-					O << SPAN_DANGER("\The [src] explodes the rocket!")
+		if (uses > 0)
+			for (var/obj/item/missile/M in range(6, src))
+				if (M)
+					M.throw_impact(get_turf(M))
+					--uses
+					for (var/mob/O in viewers(7, get_turf(src)))
+						to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))
 		sleep(1 SECONDS)
 		explode_missiles()
 	else return
+
+/obj/item/tank_system/aps/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE("It has [uses] uses left."))
+
+/obj/item/tank_system/aps/ironfist
+	name = "Iron Fist APS"
