@@ -32,8 +32,6 @@
 				if (affecting && affecting.take_damage(5, FALSE))
 					H.UpdateDamageIcon()
 				H.updatehealth()
-				if (!(H.species && (H.species.flags)))
-					H.Weaken(1)
 				if (affecting)
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets slightly cut by \the [src]!"))
 			else if (prob (33))
@@ -42,8 +40,6 @@
 				if (affecting && affecting.take_damage(10, FALSE))
 					H.UpdateDamageIcon()
 				H.updatehealth()
-				if (!(H.species && (H.species.flags)))
-					H.Weaken(1)
 				if (affecting)
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets cut by \the [src]!"))
 			else
@@ -52,8 +48,6 @@
 				if (affecting && affecting.take_damage(15, FALSE))
 					H.UpdateDamageIcon()
 				H.updatehealth()
-				if (!(H.species && (H.species.flags)))
-					H.Weaken(1)
 				if (affecting)
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
 	return ..()
@@ -62,7 +56,7 @@
 	if(ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
-			if(prob(40))
+			if(prob(45))
 				M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
 				var/mob/living/human/H = M
 				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
