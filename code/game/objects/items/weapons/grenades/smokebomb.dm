@@ -118,7 +118,7 @@
 					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-					options["FOB Supply Crate"] = list(/obj/item/supply_crate/faction1)
+					options["FOB Supply Crate"] = list(/obj/structure/supply_crate/faction1)
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						var/list/things_to_spawn = options[choice]
@@ -143,7 +143,7 @@
 					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-					options["FOB Supply Crate"] = list(/obj/item/supply_crate/faction2)
+					options["FOB Supply Crate"] = list(/obj/structure/supply_crate/faction2)
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						var/list/things_to_spawn = options[choice]
