@@ -335,7 +335,7 @@
 					user << SPAN_WARNING("There are no shell racks to load from nearby.")
 					return */
 
-				playsound(loc, 'sound/machines/autoloader.ogg',100, TRUE)
+				playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
 				var/obj/item/cannon_ball/shell/tank/chosen
 
 				user << SPAN_NOTICE("The autoloader begins loading a shell.")

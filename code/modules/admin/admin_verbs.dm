@@ -123,7 +123,6 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/radiation_emission,
 	/client/proc/nuke,
 	/client/proc/create_crate,
-	/client/proc/rearm_jets,
 	)
 
 var/list/admin_verbs_server = list(

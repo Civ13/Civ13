@@ -1169,7 +1169,7 @@
 "Gc" = (/obj/structure/camonet{alpha = 150},/obj/structure/barricade/wood_pole{pixel_x = -12},/turf/floor/trench,/area/caribbean/no_mans_land/capturable/four{name = "North West Village Outpost"; climate = "desert"; location = 1})
 "Gd" = (/obj/structure/curtain/black,/turf/floor/wood/fancywood,/area/caribbean/desert/buildings{name = "Buildings"})
 "Ge" = (/obj/structure/bed/chair/wood{dir = 1; icon_state = "wooden_chair"},/mob/living/simple_animal/civilian/afghan/city,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
-"Gg" = (/obj/effects/premadevehicles/apc/bmd2new,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
+"Gg" = (/obj/effects/premadevehicles/apc/bmd2,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "Gj" = (/obj/structure/table/rack/shelf,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/obj/item/stack/material/barbwire/ten,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "Gl" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/dust,/area/caribbean/desert)
 "Gp" = (/obj/structure/camonet{alpha = 150},/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/two{climate = "desert"})
