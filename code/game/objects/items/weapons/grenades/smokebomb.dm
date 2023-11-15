@@ -162,12 +162,6 @@
 					if(istype(H) && !H.in_throw_mode)
 						H.throw_mode_on()
 
-
-
-
-
-
-
 /obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
 	if (active)
 		if (user)
