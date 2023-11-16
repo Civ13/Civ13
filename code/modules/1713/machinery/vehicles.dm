@@ -117,6 +117,32 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/t3485
+	name = "T-34-85"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	turret_type = "t3485_turret"
+	reg_number = ""
+	color = "#4a5243"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/su100
+	name = "SU-100, self-propelled cannon based on T-34 chassis but with increased frontal armor"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	turret_type = "su100_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/bt7
 	name = "BT-7"
 	speeds = 7
