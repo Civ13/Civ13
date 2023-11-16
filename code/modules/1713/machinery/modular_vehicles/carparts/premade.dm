@@ -524,7 +524,7 @@
 	custom_color = "#3d5931"
 	axis = /obj/structure/vehicleparts/axis/heavy/t34
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2),
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
 
@@ -538,7 +538,7 @@
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
 	"2,4" = list(/obj/structure/vehicleparts/frame/t34/back, /obj/structure/shellrack/full76),
-	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 /obj/effects/premadevehicles/tank/t3485
 	name = "T3485"
@@ -546,7 +546,7 @@
 	custom_color = "#4a5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/t3485
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2),
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
 
@@ -560,7 +560,7 @@
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
 	"2,4" = list(/obj/structure/vehicleparts/frame/t34/back, /obj/structure/shellrack/full85),
-	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
 /obj/effects/premadevehicles/tank/su100
@@ -583,7 +583,7 @@
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/su100/right_back,/obj/structure/vehicleparts/frame/su100/rb),
 	"2,4" = list(/obj/structure/vehicleparts/frame/su100/back, /obj/structure/engine/internal/diesel/premade/chiha),
-	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/su100/left_back,/obj/structure/vehicleparts/frame/su100/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueled)
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/su100/left_back,/obj/structure/vehicleparts/frame/su100/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
 /obj/effects/premadevehicles/tank/kv1
