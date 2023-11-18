@@ -131,7 +131,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/su100
-	name = "SU-100, self-propelled cannon based on T-34 chassis but with increased frontal armor"
+	name = "SU-100"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
@@ -491,7 +491,7 @@
 		var/pickedname = pick(tank_names_japanese)
 		tank_names_japanese -= pickedname
 		name = "[name] \'[pickedname]\'"
-		
+
 /obj/structure/vehicleparts/axis/heavy/m4
 	name = "M-4 Sherman"
 	speeds = 4
