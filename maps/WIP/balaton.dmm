@@ -1,3 +1,4 @@
+"aa" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/t34/right_back,/turf/floor/grass,/area/caribbean/no_mans_land)
 "ab" = (/turf/floor/dirt,/area/caribbean/no_mans_land)
 "ac" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land)
 "ad" = (/turf/floor/grass,/area/caribbean/german/reichstag/lobby)
@@ -295,25 +296,36 @@
 "fJ" = (/obj/item/weapon/material/shovel,/turf/floor/dirt,/area/caribbean/russian/land/outside{name = "Soviet Base"})
 "fK" = (/obj/structure/safe,/obj/item/ammo_magazine/stg,/obj/item/ammo_magazine/stg,/obj/item/ammo_magazine/stg,/obj/item/ammo_magazine/stg,/turf/floor/wood/ship,/area/caribbean/german/reichstag/roof/objective)
 "fL" = (/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/grass,/area/caribbean/no_mans_land)
-"fM" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{icon_state = "maxim_ww2"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/structure/vehicleparts/frame/t34/lf{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fN" = (/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/obj/structure/vehicleparts/axis/heavy/t34{dir = 1},/obj/structure/vehicleparts/frame/t34/front{dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fO" = (/obj/structure/bed/chair/drivers/tank{icon_state = "driver_tank"; dir = 1},/obj/structure/vehicleparts/movement/tracks{dir = 1; icon_state = "tracks_end"; invisibility = 0},/obj/structure/vehicleparts/frame/t34/rf{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
+"fM" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full85,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fN" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/t34/left_back,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fO" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/no_mans_land)
 "fP" = (/obj/structure/closet/crate,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/turf/floor/grass,/area/caribbean/no_mans_land)
-"fQ" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 4},/obj/structure/vehicleparts/frame/t34/left{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fR" = (/obj/structure/cannon/modern/tank/russian76{anchored = 1; dir = 1; icon_state = "tank_cannon"},/obj/structure/vehicleparts/frame/t34{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fS" = (/obj/structure/bed/chair/commander{icon_state = "commanders_seat"; dir = 1},/obj/structure/vehicleparts/frame/t34/right{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
+"fQ" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/t34/bc,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fR" = (/obj/structure/vehicleparts/frame/t34/left/door,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fS" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean/no_mans_land)
 "fT" = (/obj/structure/cannon/modern/tank/russian85/field{icon_state = "feldkanone18"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land)
-"fU" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/t34/left/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fV" = (/obj/structure/bed/chair/loader{icon_state = "officechair_white"; dir = 1},/obj/structure/vehicleparts/frame/t34{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fW" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/t34/right/door{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
-"fX" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb{dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
-"fY" = (/obj/structure/shellrack/full76,/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/t34/back{dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
-"fZ" = (/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/frame/t34/rb{icon_state = "frame_steel"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land)
+"fU" = (/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/turf/floor/grass,/area/caribbean/no_mans_land)
+"fV" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land)
+"fW" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fX" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t3485,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fY" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fZ" = (/obj/structure/vehicleparts/frame/su100/rb,/obj/structure/vehicleparts/movement/tracks/su100/right_back,/turf/floor/grass,/area/caribbean/no_mans_land)
 "ga" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land)
 "gb" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean/no_mans_land)
 "gc" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "gd" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water,/area/caribbean/no_mans_land)
 "ge" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
+"gf" = (/obj/structure/vehicleparts/frame/su100/back,/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/grass,/area/caribbean/no_mans_land)
+"gg" = (/obj/structure/vehicleparts/frame/su100/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/su100/left_back,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gh" = (/obj/structure/vehicleparts/frame/su100/rbc,/obj/structure/shellrack/full85,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gi" = (/obj/structure/vehicleparts/frame/su100/bc,/obj/structure/shellrack/full85,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gj" = (/obj/structure/vehicleparts/frame/su100/lbc,/obj/structure/shellrack/full85,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gk" = (/obj/structure/vehicleparts/frame/su100/rfc,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gl" = (/obj/structure/vehicleparts/frame/su100/fc,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gm" = (/obj/structure/vehicleparts/frame/su100/lfc,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gn" = (/obj/structure/vehicleparts/frame/su100/rf,/obj/structure/vehicleparts/movement/tracks/su100/right_front,/obj/structure/bed/chair/gunner,/turf/floor/grass,/area/caribbean/no_mans_land)
+"go" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/obj/structure/vehicleparts/axis/heavy/su100,/turf/floor/grass,/area/caribbean/no_mans_land)
+"gp" = (/obj/structure/vehicleparts/frame/su100/lf,/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/grass,/area/caribbean/no_mans_land)
 "gI" = (/turf/wall/stone,/area/caribbean/german/reichstag/first)
 "gJ" = (/obj/structure/window/classic/metal,/turf/floor/plating/steel,/area/caribbean/german/reichstag/first)
 "gK" = (/turf/wall/wood,/area/caribbean/german/reichstag/first)
@@ -653,18 +665,18 @@ ahapapapapapapapapapapapapapapapapapapapapapapapapapapapafafapapapapapapapapapap
 apapapapapapapapapapapapapapapapapapapapapapapapabapapafapafafapafapapapabapapapapapapapapapapapapapapapapapapapapcvapapapapapapmmmmmmdemmdedemmdeaMbimmdemmmmmmmmapapapapapapapapapapapapabcbcccdapapapapapapapapapapapbDbqbxbybTbTbTbTbLbWbXbXbXbYbYbYby
 cacacacacacacacacacacacacacacaceapapapapapapapapapapafapafapabapapapapapapapapapapapapapapapapapapafapaqapapapapapafapapapapapafmmmmdebigcmmmmmmbZmmmmmmmmmmmmmmmmapapabapapapapapapapapapapapckclapahapapapapapapapapapbDdFfJbybTbTbTbTbLbWcfcgcmcncncnby
 cococoaTaTaTaTaTaTaTcpaTaTaTaTaTapafapapapapapapapapapafapapafapafabapapapapapapahapapapapapapafapapapapapafapafapafapapapapapapmmmmmmaMbimmdemmmmbbmmmmmmmmmmmmmmapapapapapapapapapapapapapahcrctapaGcqapapapapapahapapbDdFfJcubTbTbTbTcwcKcKcKcKcKcKcKcu
-cococoaTaTaTaTaTaTaTaTaTaTaTaTaTapapapapapapapcjdPdPdPenafapapapapapapapapapafapapapapapafapapapapapapafafapapapapafapafapafapapmmdemmmmmmbZmmmmmmmmmmmmmmmmmmmmmmapapapapapapapapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUcUcUcVcVcWcXcXdfdfdfbx
-dpdqdrdqdqdqdrdqdpaTaTaTaTaTaTaTapapapapapapdmdmdndndofcapapapapapapapapapapapapapapapapapabafafapafapapapapapafapapafapapapapapmmmmmmmmaMaMmmdemmmmmmmmmmmmmmmmmmapapapapapapapapapapapapapapapapapapdsdTdVabapapapapapbDbqbxbxbxcUcUbxbxbxbxbxbxbxbxbxbx
-dtdudwdAdAdCdDfKdtaTaTaTaTaTaTaTapapapapapacdmdmdydmdzfdapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapcvapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapapapapapapapapapapapapapapapapapapapapapapapapbDbqbxbxbxcUcUdHdHdHdHdHdHdHdHdHdH
-dtdAdwdIdwdwdKdwdtaTaTaTaTaTaTaTapapapapapapdmdmdydBdzfcapapapapapapapapapapapapapapapapapapapapapabapapapapapapafapapahapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapapapapapapapapapapapapapapapapapapabapapapapapbDbqbxbxcUcUcUdHdHdHdHdHdHdHdHdHdH
+cococoaTaTaTaTaTaTaTaTaTaTaTaTaTapapapapapapapcjdPdPdPenafapapapapapapapapapafapapapapapafapapapapapapafafapapapapafapafapafapapmmdemmmmmmbZmmmmmmmmmmmmmmmmmmmmmmapapapapfZgfggapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUcUcUcVcVcWcXcXdfdfdfbx
+dpdqdrdqdqdqdrdqdpaTaTaTaTaTaTaTapapapapapapdmdmdndndofcapapapapapapapapapapapapapapapapapabafafapafapapapapapafapapafapapapapapmmmmmmmmaMaMmmdemmmmmmmmmmmmmmmmmmapapapapghgigjapapapapapapapapapapapdsdTdVabapapapapapbDbqbxbxbxcUcUbxbxbxbxbxbxbxbxbxbx
+dtdudwdAdAdCdDfKdtaTaTaTaTaTaTaTapapapapapacdmdmdydmdzfdapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapcvapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapgkglgmapapapapapapapapapapapapapapapapapapapapbDbqbxbxbxcUcUdHdHdHdHdHdHdHdHdHdH
+dtdAdwdIdwdwdKdwdtaTaTaTaTaTaTaTapapapapapapdmdmdydBdzfcapapapapapapapapapapapapapapapapapapapapapabapapapapapapafapapahapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapgngogpapapapapapapapapapapapapapapabapapapapapbDbqbxbxcUcUcUdHdHdHdHdHdHdHdHdHdH
 dLdAdwdMdIdwdwdwdraTaTaTaTaTaTdNapapabapapabdmdEdEdmdzfcapapapapabapapapapapapapafapapapapapapapapapapapapapapapapapapahapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapapacapapapapapapapapapapapapapapapapapapapapapbDbqdOdOcUcUcUdHdHdHdHdHdHdHdHdHdH
 dtdSdwdIdwdwdwdwdtaTaTdWdNaTaTaTapapapapapapdmdEdEdmdzfcabapapapapapapapapapapapapapapapapapapapapapapapapapapapapabapapapapapapbZmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvcUcUcUcUcUcUcUcUcUcUcUcUcUcUcUcU
 dtdXdwdwdwdwdwdYdtaTaTaTaTaTaTdWapapapapdGapdmdZdZdmdzfcapapapapapapapahapapapapapapapapapapapapapapapapapapapapapapapapapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmcsdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvcUcUcUcUcUcUcUcUcUcUcUcUcUcUcUcU
 dpdqdrdqeaeedrdqdpaTaTefaTaTaTaTapapabahdGapdmdmdmdmdJfcapapapapapapapabapapapapapapapapapapapdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvcscscscscscscscscscscscscscscscscsdvdvapapapapapapapapapapapapabapapfLfLahabapapabapapapbDbqbxbxcUcUegezeAeBeCeDeCeDbxbxbx
-eEeEeEeEeEeEeEeFeFeFeFeFeFeFeFeFdvdvdvdvdvdvdmdmdmdmdzfedvdvdvdvdvdQdvdQdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvcscscscsdRcscscscscscscscscscscsmmapapapapfMfNfOapapapapapapapapapapapfPapapapapapapapapbDbqbxbxcUcUegezeAeBeGeGeGeGbxbxbx
-eEeEeEeEeEeEeEeFeFeFeFeFeFeFeFeFdvdvdvdvdvdvdmdmdmdmdzfedvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvabapapapapapapapapapapapapapapapcvmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapfQfRfSapapapapapapapapfTapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
-dpdqeHeaeHeIdpaTaTdNaTaTaTaTaTaTapapapapapapdmdmdmdmdzfcapapapapapapapapapapapapapacapapapapapapafapapapapapapapapapapapapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapfUfVfWapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
-dteJeKeLeLeMdtaTaTaTaTaTaTaTaTaTapapapapapapdmdZdZdmdzfcapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapmmmmmmmmmmmmmmbZbZmmmmmmmmbZbZbZmmababapapfXfYfZapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
+eEeEeEeEeEeEeEeFeFeFeFeFeFeFeFeFdvdvdvdvdvdvdmdmdmdmdzfedvdvdvdvdvdQdvdQdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvcscscscsdRcscscscscscscscscscscsmmapapapapaafMfNapapapapapapapapapapapfPapapapapapapapapbDbqbxbxcUcUegezeAeBeGeGeGeGbxbxbx
+eEeEeEeEeEeEeEeFeFeFeFeFeFeFeFeFdvdvdvdvdvdvdmdmdmdmdzfedvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvdvabapapapapapapapapapapapapapapapcvmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapfOfQfRapapapapapapapapfTapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
+dpdqeHeaeHeIdpaTaTdNaTaTaTaTaTaTapapapapapapdmdmdmdmdzfcapapapapapapapapapapapapapacapapapapapapafapapapapapapapapapapapapapapapmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmapapapapfSfUfVapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
+dteJeKeLeLeMdtaTaTaTaTaTaTaTaTaTapapapapapapdmdZdZdmdzfcapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapapmmmmmmmmmmmmmmbZbZmmmmmmmmbZbZbZmmababapapfWfXfYapapapapapapapapapapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
 eHeNeOeLeLeKeHaTaTaTaTaTaTaTaTaTapapapapapapdmdEdEdmdzfcapapapapapapapapapapabapapapapapapapapapapapapapapapacafapapapahapapapapmmmmmmbZmmmmmmmmmmmmmmmmmmmmmmmmmmapafapapapapapapabapapafapapapapapapapapapapapapapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
 dtfBeOeLeLeMdtaTaTaTaTaTaTaTaTaTapapapapcvapdmdEdEdmdzfcapabapapabapapabapapapapapapabafapapapafapapapapapapapapapapafapapapabapmmdemmmmmmmmdemmmmmmmmmmmmmmmmmmmmapapapapapapapapapapapapapapapapapabapapapapapafapapapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx
 eHeKeKeLeLeKeHdNaTaTaTaTaTaTaTaTapapapapapapdmdmdydBdzfcapapabapapapapapapapapafapapapapapapapapabapapapapapapapapapapapapapapapmmmmmmmmmmmmmmmmmmmmmmmmdemmmmmmmmapapapapapapafafafafafafafafafafafafafafafafafapafafapbDbqbxbxcUcUbxbxbxbxbxbxbxbxbxbxbx

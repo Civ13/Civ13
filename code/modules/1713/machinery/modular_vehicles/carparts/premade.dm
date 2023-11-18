@@ -524,21 +524,66 @@
 	custom_color = "#3d5931"
 	axis = /obj/structure/vehicleparts/axis/heavy/t34
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/t34,/obj/structure/cannon/modern/tank/russian76),
+	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian76),
 	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left, /obj/structure/bed/chair/gunner),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/t34/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/t34, /obj/structure/bed/chair/loader),
+	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc, /obj/structure/bed/chair/loader),
 	"3,3" = list(/obj/structure/vehicleparts/frame/t34/left/door,),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
 	"2,4" = list(/obj/structure/vehicleparts/frame/t34/back, /obj/structure/shellrack/full76),
-	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
+	)
+/obj/effects/premadevehicles/tank/t3485
+	name = "T3485"
+	icon_state = "4x4"
+	custom_color = "#4a5243"
+	axis = /obj/structure/vehicleparts/axis/heavy/t3485
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
+	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right, /obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85/kv1),
+	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left, /obj/structure/bed/chair/gunner),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/t34/right/door),
+	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc, /obj/structure/bed/chair/loader),
+	"3,3" = list(/obj/structure/vehicleparts/frame/t34/left/door,),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
+	"2,4" = list(/obj/structure/vehicleparts/frame/t34/back, /obj/structure/shellrack/full85),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back,/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
+	)
+
+/obj/effects/premadevehicles/tank/su100
+	name = "SU100"
+	icon_state = "4x4"
+	custom_color = "#4a5243"
+	axis = /obj/structure/vehicleparts/axis/heavy/su100
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/su100/right_front,/obj/structure/vehicleparts/frame/su100/rf, /obj/structure/bed/chair/gunner),
+	"2,1" = list(/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian85),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/vehicleparts/frame/su100/lf, /obj/structure/bed/chair/drivers/tank),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/su100/rfc, /obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/su100/fc, /obj/structure/bed/chair/loader),
+	"3,2" = list(/obj/structure/vehicleparts/frame/su100/lfc,/obj/item/weapon/storage/toolbox/emergency),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/su100/rbc, /obj/structure/shellrack/full85),
+	"2,3" = list(/obj/structure/vehicleparts/frame/su100/bc, /obj/structure/shellrack/full85),
+	"3,3" = list(/obj/structure/vehicleparts/frame/su100/lbc, /obj/structure/shellrack/full85),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/su100/right_back,/obj/structure/vehicleparts/frame/su100/rb),
+	"2,4" = list(/obj/structure/vehicleparts/frame/su100/back, /obj/structure/engine/internal/diesel/premade/chiha),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/su100/left_back,/obj/structure/vehicleparts/frame/su100/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
 /obj/effects/premadevehicles/tank/kv1
