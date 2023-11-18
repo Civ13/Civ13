@@ -58,33 +58,50 @@
 	w_front = list("c_armoredfront",TRUE,TRUE,45,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/t34
-
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	pixel_x = -32
+	pixel_y = -32
 /obj/structure/vehicleparts/frame/t34/front
-	w_front = list("c_wall",TRUE,TRUE,50,50,FALSE,FALSE)
+	icon_state = "t34_frame_steel_front_middle"
+	w_front = list("t34_front_middle_frame",TRUE,TRUE,50,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/back
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
+	icon_state = "t34_frame_steel_back"
+	w_back = list("t34_back_middle_frame",TRUE,TRUE,45,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/left
-	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	icon_state = "t34_frame_steel_middle_front_left"
+	w_left = list("t34_middle_front_left_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/t34/fc
+	icon_state = "t34_frame_steel_middle_front"
 /obj/structure/vehicleparts/frame/t34/right
-	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
+	icon_state = "t34_frame_steel_middle_front_right"
+	w_right = list("t34_middle_front_right_frame",TRUE,TRUE,45,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/left/door
-	w_left = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	icon_state = "t34_frame_steel_middle_back_left"
+	w_left = list("t34_middle_back_left_frame",TRUE,TRUE,45,50,TRUE,TRUE)
 	doorcode = 4975
+/obj/structure/vehicleparts/frame/t34/bc
+	icon_state = "t34_frame_steel_middle_back"
 /obj/structure/vehicleparts/frame/t34/right/door
-	w_right = list("c_door",TRUE,TRUE,26,28,TRUE,TRUE)
+	icon_state = "t34_frame_steel_middle_back_right"
+	w_right = list("t34_middle_back_right_frame",TRUE,TRUE,45,50,TRUE,TRUE)
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/t34/rb
-	w_right = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
+	icon_state = "t34_frame_steel_back_right"
+	w_back = list("t34_back_right_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/lb
-	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
+	icon_state = "t34_frame_steel_back_left"
+	w_back = list("t34_back_left_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/rf
-	w_right = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
+	icon_state = "t34_frame_steel_front_right"
+	w_front = list("t34_front_right_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t34/lf
-	w_left = list("c_wall",TRUE,TRUE,40,50,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,50,50,FALSE,FALSE)
+	icon_state = "t34_frame_steel_front_left"
+	w_front = list("t34_front_left_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/su85
 
@@ -777,5 +794,54 @@
 	w_back = list("is3_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
 
+/// SU-100
+
+/obj/structure/vehicleparts/frame/su100
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	pixel_x = -32
+	pixel_y = -32
+/// front
+/obj/structure/vehicleparts/frame/su100/lf
+	icon_state = "su100_frame_steel_front_left"
+	w_front = list("su100_front_left_frame",TRUE,TRUE,120,120,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/front
+	icon_state = "su100_frame_steel_front_middle"
+	w_front = list("su100_front_middle_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/rf
+	icon_state = "su100_frame_steel_front_right"
+	w_front = list("su100_front_right_frame",TRUE,TRUE,120,120,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
+/// middle-front
+/obj/structure/vehicleparts/frame/su100/lfc
+	icon_state = "su100_frame_steel_middle_front_left"
+	w_left = list("su100_middle_front_left_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/fc
+	icon_state = "su100_frame_steel_middle_front"
+/obj/structure/vehicleparts/frame/su100/rfc
+	icon_state = "su100_frame_steel_middle_front_right"
+	w_right = list("su100_middle_front_right_frame",TRUE,TRUE,45,50,TRUE,TRUE)
+/// middle-back
+/obj/structure/vehicleparts/frame/su100/lbc
+	icon_state = "su100_frame_steel_middle_back_left"
+	w_left = list("su100_middle_back_left_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/bc
+	icon_state = "su100_frame_steel_middle_back"
+/obj/structure/vehicleparts/frame/su100/rbc
+	icon_state = "su100_frame_steel_middle_back_right"
+	w_right = list("su100_middle_back_right_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+/// back
+/obj/structure/vehicleparts/frame/su100/lb
+	icon_state = "su100_frame_steel_back_left"
+	w_back = list("su100_back_left_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/back
+	icon_state = "su100_frame_steel_back"
+	w_back = list("su100_back_middle_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/su100/rb
+	icon_state = "su100_frame_steel_back_right"
+	w_back = list("su100_back_right_frame",TRUE,TRUE,45,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,45,50,FALSE,FALSE)
 
 

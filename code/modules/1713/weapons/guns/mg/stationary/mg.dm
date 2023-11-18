@@ -291,7 +291,7 @@
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
-	name = "30mm Autocannon"
+	name = "30mm autocannon"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
@@ -309,14 +309,36 @@
 	anchored = TRUE
 	full_auto = FALSE
 
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42
-	name = "Shipunov 2A42 30mm Autocannon"
-	desc = "The 30mm 2A42 autocannon was developed as a replacement for 2A28 Grom. It fires 30mm rounds."
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/grom2a28 // BMD-1
+	name = "2A28 Grom 73mm semi-automatic gun"
+	desc = "The 73mm 2A28 semi-automatic gun was developed as a replacement for the 2A28 Grom. It fires 73mm rounds."
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a73"
+	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
+	load_method = SINGLE_CASING | MAGAZINE
+	handle_casings = REMOVE_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a73mm
+	good_mags = list(/obj/item/ammo_magazine/a73mm)
+	firemodes = list(
+		list(name = "single shot", burst=1, fire_delay=75, dispersion=list(0.1, 0.2, 0.3, 0.3), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a73mm
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/grom2a28/handle_post_fire(mob/user, atom/target)
+	..()
+	playsound(get_turf(src), 'sound/machines/autoloader.ogg', 60, TRUE)
+	for (var/datum/firemode/FM in firemodes)
+		spawn(FM.fire_delay)
+			to_chat(user, SPAN_NOTICE("\The [src] loads another round."))
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42 // BMD-2
+	name = "Shipunov 2A42 30mm autocannon"
+	desc = "The 30mm 2A42 autocannon was developed as a replacement for the 2A28 Grom. It fires 30mm rounds."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
-	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
@@ -325,14 +347,29 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72
-	name = "Shipunov 2A72 30mm Autocannon"
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72 // BTR-80
+	name = "Shipunov 2A72 30mm autocannon"
 	desc = "A lighter simplified variant of the 2A42 with a lower number of parts, a longer barrel, and higher muzzle velocity, but also a lower rate of fire. It fires 30mm rounds."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
-	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
+	firemodes = list(
+		list(name = "full auto", burst=3, burst_delay=3.5, fire_delay=2.5, dispersion=list(0.1, 0.1, 0.2, 0.2), accuracy=list(2)),
+		)
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
+	full_auto = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster // CV-90
+	name = "Bushmaster III 35mm autocannon"
+	desc = "The Bushmaster III is a chain gun, like the other members of the Bushmaster family, which grants it great dependability and safety from ammunition cook-off even though it does result in lower rates of fire."
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
@@ -343,7 +380,7 @@
 	full_auto = TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/red
-	name = "30mm Autocannon"
+	name = "30mm autocannon"
 	desc = "An autocannon capable of firing 20 rounds per minute."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
@@ -362,7 +399,7 @@
 ///////////////////////////////////// ATGM Autocannons ////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
-	name = "30mm Autocannon with ATGM"
+	name = "30mm autocannon with ATGM"
 	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
 	icon_state = "atgm_autocannon"
 	base_icon = "atgm_autocannon"
@@ -558,13 +595,12 @@
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a42
-	name = "Shipunov 2A42 30mm Autocannon with ATGM"
-	desc = "The 30mm 2A42 autocannon was developed as a replacement for 2A28 Grom. It fires 30mm rounds. This one has an Anti-Tank Guided Missile system installed."
+	name = "Shipunov 2A42 30mm autocannon with ATGM"
+	desc = "The 30mm 2A42 autocannon was developed as a replacement the for 2A28 Grom. It fires 30mm rounds. This one has an Anti-Tank Guided Missile system installed."
 	icon_state = "atgm_autocannon"
 	base_icon = "atgm_autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
-	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
@@ -574,13 +610,12 @@
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72
-	name = "Shipunov 2A72 30mm Autocannon with ATGM"
+	name = "Shipunov 2A72 30mm autocannon with ATGM"
 	desc = "A lighter simplified variant of the 2A42 with a lower number of parts, a longer barrel, and higher muzzle velocity, but also a lower rate of fire. It fires 30mm rounds. This one has an Anti-Tank Guided Missile system installed."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a30"
 	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
-	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)

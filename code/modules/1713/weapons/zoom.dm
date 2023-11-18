@@ -113,65 +113,171 @@ Parts of code courtesy of Super3222
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator
 	name = "laser designator"
-	desc = "A laser designator for marking airstrikes. <b>You have 5 airstrikes left.</b>"
+	desc = "A laser designator for marking airstrikes."
 	icon_state = "laser_designator"
 	max_zoom = ZOOM_CONSTANT*4
 	attachable = FALSE
 	value = 15
 	w_class = ITEM_SIZE_SMALL
 	var/checking = FALSE
-	var/airstrikes_remaining = 5
+	var/aircraft_remaining
+	var/airstrikes_remaining
+	
 	var/delay = 20 SECONDS
 	var/debounce = FALSE
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
-	desc = "A laser designator for marking airstrikes. <b>You have [airstrikes_remaining] airstrikes left.</b>"
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		switch (H.faction_text) // Check how much jets and airstrikes they have left
+			if (DUTCH)
+				aircraft_remaining = faction1_aircraft_remaining
+				airstrikes_remaining = faction1_airstrikes_remaining
+			if (RUSSIAN)
+				aircraft_remaining = faction2_aircraft_remaining
+				airstrikes_remaining = faction2_airstrikes_remaining
+			if (AMERICAN)
+				aircraft_remaining = faction1_aircraft_remaining
+				airstrikes_remaining = faction1_airstrikes_remaining
+			if (BRITISH)
+				aircraft_remaining = faction1_aircraft_remaining
+				airstrikes_remaining = faction1_airstrikes_remaining
+		to_chat(user, "<b>There are [aircraft_remaining] aircraft in your Area of Operations.</b>")
+		to_chat(user, "<b>You have [airstrikes_remaining] airstrikes remaining.</b>")
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
-		H << "You don't know how to use this."
+		to_chat(H, "You don't know how to use this.")
 		return
 	else
 		if (!checking)
-			if (airstrikes_remaining > 0)
-				if (debounce <= world.time)
-					
-					
-					checking = TRUE
-					var/dist1 = abs(H.x-target.x)
-					var/dist2 = abs(H.y-target.y)
-					var/distcon = max(dist1,dist2)
-					var/gdir = get_dir(H, target)
-					H << SPAN_DANGER("<big>You lasing the target, stay still...</big>")
-					var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancel", "NORTH", "EAST", "SOUTH", "WEST"))
-					if (input != "Cancel")
-						if (do_after(H, 1.5 SECONDS, src, can_move = FALSE))
-							H << "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>"
-							checking = FALSE
+			switch (H.faction_text) // Check how much jets and airstrikes they have left
+				if (DUTCH)
+					aircraft_remaining = faction1_aircraft_remaining
+					airstrikes_remaining = faction1_airstrikes_remaining
+				if (RUSSIAN)
+					aircraft_remaining = faction2_aircraft_remaining
+					airstrikes_remaining = faction2_airstrikes_remaining
+				if (AMERICAN)
+					aircraft_remaining = faction1_aircraft_remaining
+					airstrikes_remaining = faction1_airstrikes_remaining
+				if (BRITISH)
+					aircraft_remaining = faction1_aircraft_remaining
+					airstrikes_remaining = faction1_airstrikes_remaining
+			if (aircraft_remaining > 0)
+				if (airstrikes_remaining > 0)
+					if (debounce <= world.time) // Cooldown
+						checking = TRUE
+						var/dist1 = abs(H.x-target.x)
+						var/dist2 = abs(H.y-target.y)
+						var/distcon = max(dist1,dist2)
+						var/gdir = get_dir(H, target)
+						to_chat(H, SPAN_DANGER("<big>You lasing the target, stay still...</big>"))
+						var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancel", "NORTH", "EAST", "SOUTH", "WEST"))
+						if (input != "Cancel")
+							if (do_after(H, 1.5 SECONDS, src, can_move = FALSE))
+								to_chat(H, "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>")
+								checking = FALSE
 
-							var/turf/T = locate(target.x,target.y,target.z)
-							airstrike(T,H,input)
-							debounce = world.time + delay
+								var/turf/T = locate(target.x,target.y,target.z)
+								try_airstrike(T, H, input)
+								debounce = world.time + delay
+							else
+								to_chat(H, "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>")
+								checking = FALSE
+								return
 						else
-							H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
+							to_chat(H, "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>")
 							checking = FALSE
 							return
 					else
-						H << "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>"
-						checking = FALSE
+						to_chat(H, "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>")
 						return
 				else
-					H << "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>"
+					to_chat(H, SPAN_DANGER("<big><b>All avaliable aircraft are out of ammunition.</big></b>"))
 					return
 			else
-				H << SPAN_DANGER("<big><b>Close Air Support is out of ammunition.</big></b>")
+				to_chat(H, SPAN_DANGER("<big><b>There are no more avaliable aircraft in your Area of Operations.</big></b>"))
 				return
 
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob,var/direction)
-	message_admins("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
-	log_game("[user.name] ([user.ckey]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
-	airstrikes_remaining--
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/try_shoot_down_aircraft(var/turf/T, mob/living/human/user as mob, var/direction, var/aircraft_name = "Unknown Aircraft")
+	spawn(8 SECONDS)
+		var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+		sam_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				to_chat(M, SPAN_DANGER("<big>A SAM site fires at the [aircraft_name]!</big>"))
+				M.client << sam_sound
+		spawn(5 SECONDS)
+			if (prob(95)) // Shoot down the jet
+				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						to_chat(M, SPAN_DANGER("<big>The SAM directly hits the [aircraft_name], shooting it down!</big>"))
+						if (M.client)
+							M.client << uploaded_sound
+				
+				switch (user.faction_text)
+					if (DUTCH)
+						faction1_aircraft_remaining--
+					if (RUSSIAN)
+						faction2_aircraft_remaining--
+					if (AMERICAN)
+						faction1_aircraft_remaining--
+					if (BRITISH)
+						faction1_aircraft_remaining--
+				message_admins("[map.roundend_condition_def2name(user.faction_text)] Aircraft [aircraft_name] has been shot down.")
+				log_game("Aircraft [aircraft_name] has been shot down.")
+				return
+			else // Evade the Anti-Air
+				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						to_chat(M, SPAN_NOTICE("<big><b>The SAM misses the [aircraft_name]!</b></big>"))
+						if (M.client)
+							M.client << uploaded_sound
+				airstrike(T, user, direction, aircraft_name)
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/try_airstrike(var/turf/T, mob/living/human/user as mob, var/direction)
+	message_admins("[user.ckey] ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
+	log_game("[user.ckey] ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+	switch (user.faction_text)
+		if (DUTCH)
+			faction1_airstrikes_remaining--
+		if (RUSSIAN)
+			faction2_airstrikes_remaining--
+		if (AMERICAN)
+			faction1_airstrikes_remaining--
+		if (BRITISH)
+			faction1_airstrikes_remaining--
+
+	var/aircraft_name
+	switch(user.faction_text)
+		if (DUTCH)
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			aircraft_name = "F-16"
+		if (RUSSIAN)
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			aircraft_name = "Su-25"
+		if (AMERICAN)
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			aircraft_name = "F-16"
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
+	
+	var/anti_air_in_range = FALSE
+	for (var/obj/structure/milsim/anti_air/AA in range(60, T))
+		if (AA.faction_text != user.faction_text)
+			anti_air_in_range++
+	if (anti_air_in_range)
+		try_shoot_down_aircraft(T, user, direction, aircraft_name)
+	else
+		airstrike(T, user, direction, aircraft_name)
+	return
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob, var/direction, var/aircraft_name = "Unknown Aircraft")
 	var/strikenum = 5
 
 	var/xoffset = 0
@@ -179,16 +285,9 @@ Parts of code courtesy of Super3222
 
 	var/direction_xoffset = 0
 	var/direction_yoffset = 0
-	switch(user.faction_text)
-		if (DUTCH)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
-		if (RUSSIAN)
-			new /obj/effect/plane_flyby/su25_no_message(T)
-			world << SPAN_DANGER("<font size=4>The clouds open up as a Su-25 cuts through and fires off a burst of rockets!</font>")
-		if (AMERICAN)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			world << SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>")
+
+	to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
+	
 	spawn(15)
 		for (var/i = 1, i <= strikenum, i++)
 			switch (direction)

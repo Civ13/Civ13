@@ -33,10 +33,12 @@
 		active=FALSE
 		update_icon()
 		H << "<span class='danger'>You extinguish \the [src].</span>"
+		set_light(0)
 	else
 		active=TRUE
 		update_icon()
 		H << "<span class='danger'>You light \the [src].</span>"
+		set_light(2, 1, "#FF9900")
 
 /obj/item/weapon/flamethrower/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
 	if (!active || !H)
