@@ -72,11 +72,6 @@
 
 var/global/sound_tts_num = 0
 
-/mob/living/human/var/voice_pitch = 100
-/mob/living/human/New()
-	..()
-	voice_pitch = rand(70,140)
-
 /mob/proc/play_tts(message,var/mob/living/human/speaker)
 	if (!message || message == "" || !client || !speaker)
 		return
@@ -88,7 +83,7 @@ var/global/sound_tts_num = 0
 		voice = "ap --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
 	else
 		voice = "slt --setf duration_stretch=0.9 --setf int_f0_target_mean=[speaker.voice_pitch]"
-	sound_tts_num+=1
+	sound_tts_num += 1
 	var/genUID = sound_tts_num
 	if (world.system_type != UNIX)
 		shell("./tts/mimic -t \"[message]\" -voice [voice] -o [genUID].wav")
@@ -98,7 +93,7 @@ var/global/sound_tts_num = 0
 		var/fpath = "[genUID].wav"
 		if (fexists(fpath))
 			if (client)
-				src.playsound_local(loc,fpath,100)
+				src.playsound_local(loc, fpath, 100)
 			spawn(50)
 				fdel(fpath)
 		return

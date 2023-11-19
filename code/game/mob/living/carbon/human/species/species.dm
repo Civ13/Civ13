@@ -196,7 +196,7 @@
 		if (A.climate == "desert" && A.location == AREA_OUTSIDE)
 			if (!H.shoes)
 				if (prob(25))
-					H << "<span class='danger'>The hot ground burns your feet!</span>"
+					H << SPAN_DANGER("The hot ground burns your feet!")
 					H.adjustBurnLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
@@ -229,11 +229,11 @@
 			H.adjustBurnLossByPart(0.2*dmod, i)
 
 		if (prob(12))
-			H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
+			H << SPAN_DANGER("[pick(heat_discomfort_strings)]")
 
 		if (A.weather == WEATHER_EXTREME && findtext(A,"sandstorm"))
 			if (prob(15))
-				H << "<span class='danger'>The dust abrades your exposed flesh!</span>"
+				H << SPAN_DANGER("The dust abrades your exposed flesh!")
 			for (var/i in exposed_bp)
 				H.adjustBurnLossByPart(1*dmod, i)
 
@@ -257,7 +257,7 @@
 		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
-					H << "<span class='danger'>Your feet are freezing!</span>"
+					H << SPAN_DANGER("Your feet are freezing!")
 					H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
@@ -290,21 +290,21 @@
 			H.adjustBurnLossByPart(0.5*dmod, i)
 
 		if (prob(12))
-			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
+			H << SPAN_DANGER("[pick(cold_discomfort_strings)]")
 
 		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
 			if (prob(12))
-				H << "<span class='danger'>The blizzard chills you to the bone!</span>"
+				H << SPAN_DANGER("The blizzard chills you to the bone!")
 			H.adjustBurnLoss(0.8*dmod)
 /*
 		var/area/A = get_area(H)
 		if (A.weather == WEATHER_WET && findtext(A,"rain"))
 			if (prob(15))
-				H << "<span class='danger'>The cold rain chills you to the bone.</span>"
+				H << SPAN_DANGER("The cold rain chills you to the bone.")
 			H.adjustBurnLoss(3) // wet is bad
 		else if (A.weather == WEATHER_WET && findtext(A,"snow"))
 			if (prob(15))
-				H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
+				H << SPAN_DANGER("The freezing snowfall chills you to the bone.")
 			H.adjustBurnLoss(2)
 */
 /datum/species/proc/sanitize_name(var/name)
@@ -649,8 +649,10 @@
 		if (FEMALE)
 			t_him = "her"
 
-	H.visible_message("<span class='notice'>[H] hugs [target] to make [t_him] feel better!</span>", \
-					"<span class='notice'>You hug [target] to make [t_him] feel better!</span>")
+	H.visible_message(
+		SPAN_NOTICE("[H] hugs [target] to make [t_him] feel better!"), \
+		SPAN_NOTICE("You hug [target] to make [t_him] feel better!")
+		)
 
 /datum/species/proc/remove_inherent_verbs(var/mob/living/human/H)
 	if (inherent_verbs)

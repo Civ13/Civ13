@@ -10,6 +10,7 @@
 	var/look_amount = 3
 	var/can_defib = TRUE //Horrible damage (like beheadings) will prevent defibbing organics.
 	var/spawned_at_fob = FALSE // For spawning in at an FOB or your normal job spawnpoint
+	var/voice_pitch = 100
 
 /mob/living/human/New(var/new_loc, var/new_species = null)
 
@@ -1099,7 +1100,7 @@ var/list/coefflist = list()
 					if (A.name == "Look into Distance ([src])" || (A.owner && istype(A.owner, /datum/action/toggle_scope)))
 						continue
 				O.scoped_invisible = TRUE
-				O.invisibility = 101
+				O.invisibility = 100
 		else
 			for (var/obj/O in H.client.screen)
 				if (O.scoped_invisible)

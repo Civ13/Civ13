@@ -4,6 +4,8 @@
 	icon_state = "modern_cannon"
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
+	pixel_x = 0
+	pixel_y = 0
 	maxsway = 10
 	firedelay = 30
 	maxrange = 80
@@ -373,6 +375,8 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "mortar"
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	anchored = TRUE
@@ -451,6 +455,8 @@
 	icon_state = "m29_davy_crockett_empty"
 	var/icon_state_unloaded = "m29_davy_crockett_empty"
 	var/icon_state_loaded = "m29_davy_crockett_loaded"
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	anchored = FALSE
@@ -479,23 +485,22 @@
 	icon_state = "modern_rocket"
 	ammotype = /obj/item/cannon_ball/rocket
 	spritemod = FALSE
+	pixel_x = 0
+	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
 	maxsway = 10
 	firedelay = 12
 	maxrange = 60
-	max_loaded = 9
+	max_loaded = 12
 	w_class = ITEM_SIZE_GARGANTUAN
 	see_amount_loaded = TRUE
 
+/obj/structure/cannon/rocket/old
+	icon_state = "old_rocket"
+	max_loaded = 9
+
 /obj/structure/cannon/rocket/loaded/New()
 	..()
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
+	for (var/i=1, i<=12, i++)
+		loaded += new /obj/item/cannon_ball/rocket(src)

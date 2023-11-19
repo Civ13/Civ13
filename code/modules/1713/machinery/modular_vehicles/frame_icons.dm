@@ -165,7 +165,70 @@
 				var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
 
 				if (axis)
-					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]", layer=11.1, dir=C.dir)
+				else
+					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
+				if (roof_turret && axis && axis.color)
+					roof_turret.color = axis.color
+				if (C.dir == NORTH)
+					if (dir == NORTH)
+						roof_turret.pixel_x = -96
+						roof_turret.pixel_y = -80
+					else if (dir == SOUTH)
+						roof_turret.pixel_x = -96
+						roof_turret.pixel_y = -80
+					else if (dir == WEST)
+						roof_turret.pixel_x = -96
+						roof_turret.pixel_y = -80
+					else if (dir == EAST)
+						roof_turret.pixel_x = -96
+						roof_turret.pixel_y = -80
+				else if (C.dir == SOUTH)
+					if (dir == NORTH)
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -80
+					else if (dir == SOUTH)
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -80
+					else if (dir == WEST)
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -80
+					else if (dir == EAST)
+						roof_turret.pixel_x = -64
+						roof_turret.pixel_y = -80
+				else if (C.dir == WEST)
+					if (dir == NORTH)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -96
+					else if (dir == SOUTH)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -96
+					else if (dir == WEST)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -96
+					else if (dir == EAST)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -96
+				else if (C.dir == EAST)
+					if (dir == NORTH)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -64
+					else if (dir == SOUTH)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -64
+					else if (dir == WEST)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -64
+					else if (dir == EAST)
+						roof_turret.pixel_x = -80
+						roof_turret.pixel_y = -64
+				roof.overlays += roof_turret
+		else if (axis && (axis.vehicle_size == "2x4_non96x96"))
+			for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)
+				var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
+
+				if (axis)
+					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
 				if (roof_turret && axis && axis.color)
@@ -186,16 +249,16 @@
 				else if (C.dir == SOUTH)
 					if (dir == NORTH)
 						roof_turret.pixel_x = -96
-						roof_turret.pixel_y = -112
+						roof_turret.pixel_y = -96
 					else if (dir == SOUTH)
 						roof_turret.pixel_x = -96
-						roof_turret.pixel_y = -112
+						roof_turret.pixel_y = -96
 					else if (dir == WEST)
 						roof_turret.pixel_x = -96
-						roof_turret.pixel_y = -112
+						roof_turret.pixel_y = -80
 					else if (dir == EAST)
 						roof_turret.pixel_x = -96
-						roof_turret.pixel_y = -112
+						roof_turret.pixel_y = -96
 				else if (C.dir == WEST)
 					if (dir == NORTH)
 						roof_turret.pixel_x = -112
@@ -228,7 +291,7 @@
 				var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
 
 				if (axis)
-					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+					roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]", layer=11.1, dir=C.dir)
 				else
 					roof_turret = image(icon=ic,loc=src, icon_state="", layer=11.1, dir=C.dir)
 				if (roof_turret && axis && axis.color)

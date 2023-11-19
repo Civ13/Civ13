@@ -38,6 +38,9 @@
 	var/following = null
 
 	var/prioritizes = "attacking"
+	
+	var/pounce_range = 3 // How far the mob can be away from a target in order for it to pounce
+	var/next_shred = -1 
 
 	var/last_patrol_area = null
 
@@ -48,7 +51,6 @@
 	var/atom/walking_to = null
 
 	var/race = "corgi"
-
 	maxHealth = 55
 	health = 55
 	mob_size = MOB_MEDIUM
@@ -353,12 +355,18 @@ s
 		visible_message("<span class = 'notice'>\The [src] looks calm.</span>")
 	attack_mode = -1
 	onModeChange()
+	enemies = list()
+	if (H && !following)
+		follow(H)
 
 /mob/living/simple_animal/complex_animal/dog/proc/stop(var/mob/living/human/H)
 	passive()
 	stop_patrol()
 	visible_message("<span class = 'notice'>\The [src] stops doing everything they were doing.</span>")
 	onModeChange()
+	enemies = list()
+	if (H && !following)
+		follow(H)
 
 /mob/living/simple_animal/complex_animal/dog/proc/follow(var/mob/living/human/H)
 	visible_message("<span class = 'notice'>\The [src] starts following [H].</span>")
@@ -482,23 +490,53 @@ s
 
 // dog combat
 
-/mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
+
 /mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
 		if (world.time >= next_shred)
 			if (H in range(1, src))
 				dir = get_dir(src, H)
-				visible_message("<span class = 'warning'>\The [src] shreds [H] with their teeth!</span>")
-				H.adjustBruteLoss(rand(8,12)/H.getStatCoeff("strength"))
-				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70,80))
+				visible_message("<span class='warning'>\The [src] shreds [H] with their teeth!</span>")
+				var/limb = rand(1, 3)
+				switch(limb)
+					if(1)
+						H.apply_damage((rand(8,12)/H.getStatCoeff("strength")), BRUTE, "l_leg", FALSE, sharp = TRUE, used_weapon = "Teeth")
+					if(2)
+						H.apply_damage((rand(8,12)/H.getStatCoeff("strength")), BRUTE, "r_leg", FALSE, sharp = TRUE, used_weapon = "Teeth")
+					if(3)
+						H.apply_damage((rand(8,12)/H.getStatCoeff("strength")), BRUTE, "groin", FALSE, sharp = TRUE, used_weapon = "Teeth")
+				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
 				next_shred = world.time + 20
 				spawn (20)
 					if (!client)
 						shred(H)
-		else if (H in range(1, src))
-			spawn (20)
-				if (!client)
-					shred(H)
+
+/*
+/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
+	// Prepare to leap.
+	visible_message(SPAN_WARNING("\The [src] prepares to pounce on [H]!"))
+	step_to(src, H) // Face the victim.
+	anchored = TRUE
+	if (do_after(src, 3 SECONDS))
+		anchored = FALSE
+		if (get_dist(src, H) > pounce_range)
+			visible_message(SPAN_NOTICE("\The [src] stops trying to pounce."))
+			return
+		
+		throw_at(H, 5, 0.5, src)
+		visible_message(SPAN_DANGER("\The [src] pounces on [H]!"))
+
+		if (H && (get_turf(src) == get_turf(H))) // Apply the weakening effect to the target.
+			H.Weaken(20)
+			H.lying = TRUE
+			set_dir(EAST) //face the victim
+			H.set_dir(SOUTH) //face up
+		return
+	else
+		anchored = FALSE
+		visible_message(SPAN_NOTICE("\The [src] stops trying to pounce."))
+		return
+*/
 
 // things we do when someone touches us
 /mob/living/simple_animal/complex_animal/dog/onTouchedBy(var/mob/living/human/H, var/intent = I_HELP)
@@ -577,6 +615,13 @@ s
 					if (prioritizes == "attacking" && following)
 						stop_following()
 					walking_to = H
+					
+					/*
+					if (get_dist(src, H) <= pounce_range)
+						if (prob(60))
+							pounce(H)
+					*/
+					
 				else
 					shred(H)
 	else if (following)
@@ -598,3 +643,4 @@ s
 
 /mob/living/simple_animal/complex_animal/dog/onEveryXMovement(var/mob/X)
 	return
+

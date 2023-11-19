@@ -319,7 +319,7 @@ var/global/FREQM = rand(101,120)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
-/obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker)
+/obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -342,7 +342,7 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in view(2,hearer))
 				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
@@ -350,7 +350,7 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -358,11 +358,11 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, speaker.default_language, speaker, src, src)
+		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
@@ -717,7 +717,7 @@ var/global/FREQM = rand(101,120)
 		<br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
-/obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/human/speaker)
+/obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
 
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
@@ -740,7 +740,7 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in view(2,hearer))
 				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
@@ -748,7 +748,7 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
@@ -756,10 +756,10 @@ var/global/FREQM = rand(101,120)
 					continue
 				used_radios += radio
 				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, speaker.default_language, speaker, radio, src)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, speaker.default_language, speaker, src, src)
+		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
 
 /obj/item/weapon/radio/galacticbattles
 	name = "portable communications backpack"

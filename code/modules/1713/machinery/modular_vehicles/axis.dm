@@ -268,7 +268,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		if ((istype(M, /obj/structure) || istype(M, /obj/item)) && !istype(M, /obj/structure/vehicleparts/frame) && (!istype(M, /obj/structure/vehicleparts/movement) || istype(M, /obj/structure/vehicleparts/movement/sail)) && !istype(M, /obj/structure/wild))
 			var/obj/MO = M
 			MO.forceMove(get_step(MO.loc, m_dir))
-			if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/catapult))
+			if (!istype(M, /obj/structure/cannon) && !istype(M, /obj/structure/catapult) && !istype(M, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
 				MO.dir = dir
 				MO.update_icon()
 		if (istype(M, /obj/structure/vehicleparts/movement) && !istype(M, /obj/structure/vehicleparts/movement/sail))

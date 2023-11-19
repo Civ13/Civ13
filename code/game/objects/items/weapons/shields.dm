@@ -382,7 +382,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "metal_riot"
 	material = "iron"
 	health = 90
-	w_class = ITEM_SIZE_SMALL
+	w_class = ITEM_SIZE_LARGE
 	base_block_chance = 65
 	slowdown = 0.35
 

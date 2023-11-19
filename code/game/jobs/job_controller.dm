@@ -335,7 +335,7 @@ var/global/datum/controller/occupations/job_master
 	var/list/spawnable_points = list()
 	spawnable_points += "Base"
 
-	for(var/obj/item/fob_spawnpoint/fob in world)
+	for(var/obj/structure/fob_spawnpoint/fob in world)
 		if (fob.faction_text == H.faction_text)
 			spawnable_points += fob
 	H.loc = null

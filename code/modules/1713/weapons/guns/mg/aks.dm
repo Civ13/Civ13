@@ -138,7 +138,7 @@
 	effectiveness_mod = 1.08
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum)
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
 	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/campaign
@@ -175,5 +175,5 @@
 	effectiveness_mod = 1.12
 	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum)
+	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
 

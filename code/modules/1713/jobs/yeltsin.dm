@@ -573,7 +573,7 @@
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/weapon/material/scythe(H), slot_l_hand)
 		if (4)
-			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(H), slot_l_hand)
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/weapon/branch/sharpened(H), slot_l_hand)
 		if (6)
@@ -587,7 +587,7 @@
 
 //vodka
 	if (prob(30))
-		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/molotov/vodka(H), slot_r_hand)
 
 
 //pockets
@@ -598,12 +598,8 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/flint/sharpened(H), slot_l_store)
 
-	var/ranpocr = rand(1,2)
-	switch(ranpocr)
-		if (1)
-			H.equip_to_slot_or_del(new /obj/item/weapon/flame/lighter/zippo(H), slot_r_store)
-		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/glass/rag(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/flame/lighter/zippo(H), slot_r_store)
+
 //suit
 	var/randsuits = rand(1,6)
 	if (randsuits == 1)

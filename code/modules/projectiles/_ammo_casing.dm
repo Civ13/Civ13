@@ -1183,6 +1183,17 @@
 	caliber = "a35"
 	value = 2
 
+/obj/item/ammo_casing/a73mm
+	name = "73mm PG-15V High-Explosive Anti-Tank grenade"
+	desc = "A High-Explosive Anti-Tank grenade."
+	icon_state = "pg15v"
+	spent_icon = "pg15v"
+	weight = 5
+	projectile_type = /obj/item/projectile/bullet/autocannon/a73mm
+	caliber = "a75"
+	value = 8
+
+
 // Shotguns
 
 /obj/item/ammo_casing/shotgun
