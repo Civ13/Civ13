@@ -1830,15 +1830,12 @@
 "Jj" = (/obj/structure/vehicleparts/frame/su100/fc,/obj/structure/bed/chair/loader,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jk" = (/obj/structure/vehicleparts/frame/su100/lfc,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jl" = (/obj/structure/vehicleparts/frame/su100/rf,/obj/structure/vehicleparts/movement/tracks/su100/right_front,/obj/structure/bed/chair/gunner,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Jm" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/vehicleparts/axis/heavy/su100,/obj/structure/cannon/modern/tank/russian100,/turf/floor/plating/road,/area/caribbean/russian/land)
+"Jm" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/obj/structure/vehicleparts/axis/heavy/su100,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jn" = (/obj/structure/vehicleparts/frame/su100/lf,/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jo" = (/obj/structure/vehicleparts/frame/su100/rbc,/obj/effect/autoassembler,/obj/structure/shellrack/full100,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jp" = (/obj/structure/vehicleparts/frame/su100/bc,/obj/structure/shellrack/full100,/turf/floor/plating/road,/area/caribbean/russian/land)
 "Jq" = (/obj/structure/vehicleparts/frame/su100/lbc,/obj/structure/shellrack/full100,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Jr" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/vehicleparts/axis/heavy/su100/su85m,/obj/structure/cannon/modern/tank/russian85/su85,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Js" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/shell/tank/AP100,/obj/item/cannon_ball/shell/tank/AP100,/obj/item/cannon_ball/shell/tank/AP100,/obj/item/cannon_ball/shell/tank/AP100,/obj/item/cannon_ball/shell/tank/AP100,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Jt" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/shell/tank/APCR100,/obj/item/cannon_ball/shell/tank/APCR100,/obj/item/cannon_ball/shell/tank/APCR100,/obj/item/cannon_ball/shell/tank/APCR100,/obj/item/cannon_ball/shell/tank/APCR100,/turf/floor/plating/road,/area/caribbean/russian/land)
-"Ju" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/shell/tank/HE100,/obj/item/cannon_ball/shell/tank/HE100,/obj/item/cannon_ball/shell/tank/HE100,/obj/item/cannon_ball/shell/tank/HE100,/obj/item/cannon_ball/shell/tank/HE100,/turf/floor/plating/road,/area/caribbean/russian/land)
+"Jr" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/vehicleparts/axis/heavy/su85m,/obj/structure/cannon/modern/tank/russian85/su85,/turf/floor/plating/road,/area/caribbean/russian/land)
 
 (1,1,1) = {"
 aaaSbGbHbGbHbGbHbTbTbTbTbHaycbbIdraqaamxmxararararaqaaarawawawawawawawaBaMgxararararararararcCnanananananananacCnacCnanananananananacCarararararararaHaIaaarawawawawawawawaraaaqararararmxmxaaaqlebIaPamamaQbIamamamamamamambIamamamamamamfGbIaa
@@ -2104,8 +2101,8 @@ sbsbsbsbsbsbsbsbsbsbsbsbsbwrwwwwtosfsfsgIgsbsbsbsbsbsbJlJmJnsbsbsbwAtTwAsbsbsbti
 sbsbsbsbsbsbsbsbsbsbsbsbsbsbwwHCtEsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsEsbsbsbsbtYuWuWuWuWuWuWuWudsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsgHXsbsbsbsbsbsbsbwrsbwrsbwrsbwrsbsbsbsbsbsbsbsbtgthsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsKsLsbsbsMsbsMsbsbsbsbsbsbsbsbsbsfsfIbIqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbujujujujujujujsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsUsVsbsbsMsbsMsbsbsbsbsWsbsbsbsbsbHXsgIqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguFuGuKuKuKuKuPuKuKuGuGuFsgsbsTwzGXGYsbsbsbsbsbsbsbsQsRsSsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
-sbtgthsbsbsMsbsMsbsbsbsbsbsbsTsbsbsfsfsbsbsbsbsbsbsbsbJsJtJusbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbuXuYuZtgvavbvctxvdvevfuXsbsbsbGZJgJhsbsbwywAwAsbsbtatbtcsbsbsbIuIvIvIvIvIvIvIvIvIvIwIYsbsbsbsbtztysbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
-sbsbsbsbsbsbsbsbsbtytzsbsbsbsbsbsbsbsbsbsbsbsbsbtUsbsbJsJtJusbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbsbsbvkvkvkvkvkvkvkvksbsbsbsbsbJiJjJksbsbwAtTwAsbsbtlGQtnsbsbsbIxsbsbsbsbsbsbsbsbsbIysbsbsbsbsbtPtOsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
+sbtgthsbsbsMsbsMsbsbsbsbsbsbsTsbsbsfsfsbsbsbsbsbsbsbsbHaHbHcsbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbuXuYuZtgvavbvctxvdvevfuXsbsbsbGZJgJhsbsbwywAwAsbsbtatbtcsbsbsbIuIvIvIvIvIvIvIvIvIvIwIYsbsbsbsbtztysbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
+sbsbsbsbsbsbsbsbsbtytzsbsbsbsbsbsbsbsbsbsbsbsbsbtUsbsbHaHbHcsbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbsbsbvkvkvkvkvkvkvkvksbsbsbsbsbJiJjJksbsbwAtTwAsbsbtlGQtnsbsbsbIxsbsbsbsbsbsbsbsbsbIysbsbsbsbsbtPtOsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbtMsbuUsbsbsbtOtPsbsbsbsbsbsbsfsfsgsusbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguXsbsMsbsMsbsMsbsMsbsMuXsgsbsbJlJrJnsbsbwAtTwAsbsbtBtCtDsbsbsbIxsbIzIzIzsbsbIzsbsbIysbsbsbsbsbtSsbsbsbsbuUsbsbtMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbtAsbuVsbsbsbsbsbsbtSsbsbsbwrsbsbsbsbsbIHsbsbsbsbsbIZJasbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbuXvmsMsbsMvnsMsbsMvnsMuXsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIAsbsbsbsbsbIBsbsbsbICsbsbsbsbsbtosbsbsbtAsbsbsbuVsbsbsbsbsnsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbtUsbsbtosbsbsbsbsbsbsfsfsbsbsbsbsbsbsbGNGNsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguFuGuKuKuKuKuKuKuKuKuGuFsgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIxIDsbsbsbsbsbsbsbsbICsbsbsbsbsbwBsbsbsbsbsbsbsbsbsbtUsbsbsbsbsbsbsbsbsbsbsbsbsbsb
