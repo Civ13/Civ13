@@ -6,7 +6,6 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "cannon"
-	var/angle = 20
 	var/travelled = 0
 	var/max_distance = 0
 	var/high_distance = 0
@@ -26,8 +25,7 @@
 	var/nuclear = FALSE
 	var/reagent_payload = "none"
 	var/maxrange = 50
-	var/maxsway = 4
-	var/sway = 0
+
 	var/firedelay = 20
 	var/caliber = 75
 	var/broken = FALSE
@@ -37,6 +35,13 @@
 	var/obj/structure/bed/chair/gunner/gunner_chair = null
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
+
+	var/azimuth = 270
+	var/distance = 5
+	var/scope_mod = "Disabled"
+	var/target_x = 0
+	var/target_y = -5
+	var/list/image/target_image = new/list(20)
 
 /obj/structure/cannon/verb/assemble()
 	set category = null
@@ -364,27 +369,83 @@
 						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 					return
 
-	if (href_list["set_angle"])
-		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
-		angle = Clamp(angle, 5, maxrange)
+	if (href_list["set_distance"])
+		distance = input(user, "Set Distance? (From [5] to [maxrange] meters") as num
+		if(distance < 5)
+			distance = 5
+		if(distance > max_distance)
+			distance = 5
 
-	if (href_list["angle_minus"])
-		angle = angle - 1
-		angle = Clamp(angle, 5, maxrange)
-	if (href_list["angle_plus"])
-		angle = angle + 1
-		angle = Clamp(angle, 5, maxrange)
+	if (href_list["distance_1minus"])
+		distance = distance - 1
+		if(distance < 5)
+			distance = 5
+	if (href_list["distance_10minus"])
+		distance = distance - 10
+		if(distance < 5)
+			distance = 5
 
-	if (href_list["set_sway"])
-		sway = input(user, "Set the Left-Right sway to what? (From -[maxsway] to [maxsway] meters - negatives are left, positives are right)") as num
-		sway = Clamp(sway, -maxsway, maxsway)
 
-	if (href_list["sway_minus"])
-		sway = sway - 1
-		sway = Clamp(sway, -maxsway, maxsway)
-	if (href_list["sway_plus"])
-		sway = sway + 1
-		sway = Clamp(sway, -maxsway, maxsway)
+	if (href_list["distance_1plus"])
+		distance = distance + 1
+		if(distance > max_distance)
+			distance = max_distance
+	if (href_list["distance_10plus"])
+		distance = distance + 10
+		if(distance > max_distance)
+			distance = max_distance
+
+	if (href_list["set_azimuth"])
+		azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
+		if(azimuth < 0)
+			azimuth += 360
+		if(azimuth >= 360)
+			azimuth -= 360
+
+	if (href_list["azimuth_1minus"])
+		azimuth = azimuth - 1
+		if(azimuth < 0)
+			azimuth += 360
+	if (href_list["azimuth_10minus"])
+		azimuth = azimuth - 10
+		if(azimuth < 0)
+			azimuth += 360
+
+	if (href_list["azimuth_10plus"])
+		azimuth = azimuth + 10
+		if(azimuth >= 360)
+			azimuth -= 360
+	if (href_list["azimuth_1plus"])
+		azimuth = azimuth + 1
+		if(azimuth >= 360)
+			azimuth -= 360
+
+	// 90 north
+	// 180 west
+	// 270 south
+	// 360 = 0 east
+
+	target_coords()
+	update_scope()
+
+	if(azimuth >= 45 && azimuth < 135)
+		dir = NORTH
+	else if(azimuth >= 135 && azimuth < 225)
+		dir = WEST
+	else if(azimuth >= 225 && azimuth < 315)
+		dir = SOUTH
+	else
+		dir = EAST
+
+	if (href_list["toggle_scope"])
+		if(scope_mod == "Enabled")
+			scope_mod = "Disabled"
+			src.overlays -= target_image
+			user << "<span class = 'danger'>Scope disabled</span>"
+		else
+			scope_mod = "Enabled"
+			user << "<span class = 'danger'>Scope enabled</span>"
+			update_scope()
 
 	if (href_list["fire"])
 
@@ -434,7 +495,6 @@
 
 					// actual hit somewhere (or not)
 					var/turf/target = get_turf(src)
-					var/odir = dir
 
 					max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
 
@@ -453,26 +513,13 @@
 					spawn (0)
 						var/v = max_distance
 
-						if (v > high_distance)
+						if (v > max_distance * 0.80)
 							high = FALSE
 
 						var/hit = FALSE
 
-						var/tx = 0
-						var/ty = 0
-						switch (odir)
-							if (EAST)
-								tx = x + max_distance + rand(-2,2)
-								ty = y - sway + rand(-2,2)
-							if (WEST)
-								tx = x - max_distance + rand(-2,2)
-								ty = y + sway + rand(-2,2)
-							if (NORTH)
-								tx = x + sway + rand(-2,2)
-								ty = y + max_distance + rand(-2,2)
-							if (SOUTH)
-								tx = x - sway + rand(-2,2)
-								ty = y - max_distance + rand(-2,2)
+						var/tx = x + target_x + rand(-2,2)
+						var/ty = y + target_y + rand(-2,2)
 						if (tx < 1)
 							tx = 1
 						if (tx > world.maxx)
@@ -579,7 +626,6 @@
 						T.do_tank_fire(user)
 					else
 						var/turf/target = get_turf(src)
-						var/odir = dir
 
 						max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
 
@@ -614,36 +660,8 @@
 
 							var/hit = FALSE
 
-							var/tx = 0
-							var/ty = 0
-							if (istype(src,/obj/structure/cannon/mortar))
-								switch (odir)
-									if (EAST)
-										tx = x + max_distance + rand(-1,1)
-										ty = y - sway + rand(-1,1)
-									if (WEST)
-										tx = x - max_distance + rand(-1,1)
-										ty = y + sway + rand(-1,1)
-									if (NORTH)
-										tx = x + sway + rand(-1,1)
-										ty = y + max_distance + rand(-1,1)
-									if (SOUTH)
-										tx = x - sway + rand(-1,1)
-										ty = y - max_distance + rand(-1,1)
-							else
-								switch (odir)
-									if (EAST)
-										tx = x + max_distance
-										ty = y - sway + rand(-1,1)
-									if (WEST)
-										tx = x - max_distance
-										ty = y + sway + rand(-1,1)
-									if (NORTH)
-										tx = x + sway + rand(-1,1)
-										ty = y + max_distance
-									if (SOUTH)
-										tx = x - sway + pick(0,pick(1,-1))
-										ty = y - max_distance
+							var/tx = x + target_x + rand(-1,1)
+							var/ty = y + target_y + rand(-1,1)
 							if (tx < 1)
 								tx = 1
 							if (tx > world.maxx)
@@ -828,7 +846,7 @@
 
 	if (m)
 
-		max_distance = angle
+		max_distance = maxrange
 
 		m << browse({"
 
@@ -853,8 +871,9 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Distance: <a href='?src=\ref[src];angle_minus=1'>-1</a> | <a href='?src=\ref[src];set_angle=1'>[angle] meters</a> | <a href='?src=\ref[src];angle_plus=1'>+1</a><br><br>
-		Left-Right sway: <a href='?src=\ref[src];sway_minus=1'>-1</a> | <a href='?src=\ref[src];set_sway=1'>[sway] meters</a> | <a href='?src=\ref[src];sway_plus=1'>+1</a><br><br>
+		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
+		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10plus=10'>+10</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];azimuth_10minus=1'>-10</a><br><br>
+		Scope: <a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
@@ -865,6 +884,37 @@
 		<br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
+
+/obj/structure/cannon/proc/target_coords()
+	// round(abs(x)) * sign(x) - round to the nearest whole
+	target_x = round(abs(distance * cos(azimuth))) * sign(cos(azimuth))
+	target_y = round(abs(distance * sin(azimuth))) * sign(sin(azimuth))
+
+/obj/structure/cannon/proc/sway()
+	if(azimuth >= 45 && azimuth < 135)
+		return target_x
+	else if(azimuth >= 135 && azimuth < 225)
+		return target_y
+	else if(azimuth >= 225 && azimuth < 315)
+		return (-1 * target_x)
+	else
+		return (-1 * target_y)
+
+/obj/structure/cannon/proc/update_scope()
+	src.overlays -= target_image
+	del(target_image)
+	target_image = new/list(distance)
+	target_coords()
+	var/i
+	var/j = 4
+	for(i = 1, i <= distance - 4, i++)
+		var/point_x = round(abs(j * cos(azimuth))) * sign(cos(azimuth))
+		var/point_y = round(abs(j * sin(azimuth))) * sign(sin(azimuth))
+		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
+		j++
+	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
+	if (scope_mod == "Enabled")
+		src.overlays += target_image
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -877,40 +927,38 @@
 	switch(dir)
 		if (EAST)
 			dir = NORTH
+			azimuth = 90
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				pixel_x = -16
-				pixel_y = 0
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
+			azimuth = 270
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				pixel_x = -16
-				pixel_y = 0
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
+			azimuth = 180
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				pixel_x = 0
-				pixel_y = -16
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
+			azimuth = 0
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				pixel_x = 0
-				pixel_y = -16
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
+	target_coords()
+	update_scope()
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -924,40 +972,38 @@
 	switch(dir)
 		if (EAST)
 			dir = SOUTH
+			azimuth = 270
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				pixel_x = -16
-				pixel_y = 0
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
+			azimuth = 90
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
-				pixel_x = -16
-				pixel_y = 0
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
+			azimuth = 0
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				pixel_x = 0
-				pixel_y = -16
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
+			azimuth = 180
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
-				pixel_x = 0
-				pixel_y = -16
 				icon = 'icons/obj/cannon.dmi'
 				icon_state = "cannon"
+	target_coords()
+	update_scope()
 	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
 	if (direction)
@@ -1102,17 +1148,9 @@
 /obj/structure/cannon/modern/tank/proc/do_tank_fire(var/mob/user)
 	if (!loaded.len)
 		return FALSE
-
 	var/turf/TF
-	switch(dir)
-		if (NORTH)
-			TF = locate(src.x+sway,src.y+angle,z)
-		if (SOUTH)
-			TF = locate(src.x-sway,src.y-angle,z)
-		if (EAST)
-			TF = locate(src.x+angle,src.y-sway,z)
-		if (WEST)
-			TF = locate(src.x-angle,src.y+sway,z)
+	target_coords()
+	TF = locate(src.x + target_x,src.y + target_y,z)
 	if (!TF)
 		return FALSE
 	var/sub = loaded[1].subtype
