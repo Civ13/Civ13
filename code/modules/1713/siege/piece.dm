@@ -36,7 +36,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/azimuth = 270
+	var/degree = 270
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0
@@ -371,10 +371,7 @@
 
 	if (href_list["set_distance"])
 		distance = input(user, "Set Distance? (From [5] to [maxrange] meters") as num
-		if(distance < 5)
-			distance = 5
-		if(distance > max_distance)
-			distance = 5
+		distance = clamp(5, distance, max_distance)
 
 	if (href_list["distance_1minus"])
 		distance = distance - 1
@@ -385,7 +382,6 @@
 		if(distance < 5)
 			distance = 5
 
-
 	if (href_list["distance_1plus"])
 		distance = distance + 1
 		if(distance > max_distance)
@@ -395,30 +391,30 @@
 		if(distance > max_distance)
 			distance = max_distance
 
-	if (href_list["set_azimuth"])
-		azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
-		if(azimuth < 0)
-			azimuth += 360
-		if(azimuth >= 360)
-			azimuth -= 360
+	if (href_list["set_degree"])
+		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
+		if(degree < 0)
+			degree += 360
+		if(degree >= 360)
+			degree -= 360
 
-	if (href_list["azimuth_1minus"])
-		azimuth = azimuth - 1
-		if(azimuth < 0)
-			azimuth += 360
-	if (href_list["azimuth_10minus"])
-		azimuth = azimuth - 10
-		if(azimuth < 0)
-			azimuth += 360
+	if (href_list["degree_1minus"])
+		degree = degree - 1
+		if(degree < 0)
+			degree += 360
+	if (href_list["degree_10minus"])
+		degree = degree - 10
+		if(degree < 0)
+			degree += 360
 
-	if (href_list["azimuth_10plus"])
-		azimuth = azimuth + 10
-		if(azimuth >= 360)
-			azimuth -= 360
-	if (href_list["azimuth_1plus"])
-		azimuth = azimuth + 1
-		if(azimuth >= 360)
-			azimuth -= 360
+	if (href_list["degree_10plus"])
+		degree = degree + 10
+		if(degree >= 360)
+			degree -= 360
+	if (href_list["degree_1plus"])
+		degree = degree + 1
+		if(degree >= 360)
+			degree -= 360
 
 	// 90 north
 	// 180 west
@@ -428,11 +424,11 @@
 	target_coords()
 	update_scope()
 
-	if(azimuth >= 45 && azimuth < 135)
+	if(degree >= 45 && degree < 135)
 		dir = NORTH
-	else if(azimuth >= 135 && azimuth < 225)
+	else if(degree >= 135 && degree < 225)
 		dir = WEST
-	else if(azimuth >= 225 && azimuth < 315)
+	else if(degree >= 225 && degree < 315)
 		dir = SOUTH
 	else
 		dir = EAST
@@ -872,7 +868,7 @@
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
 		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10plus=10'>+10</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];azimuth_10minus=1'>-10</a><br><br>
+		Increase/Decrease angle: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[degree] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: <a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a><br><br>
 		<br>
 		<center>
@@ -887,15 +883,15 @@
 
 /obj/structure/cannon/proc/target_coords()
 	// round(abs(x)) * sign(x) - round to the nearest whole
-	target_x = round(abs(distance * cos(azimuth))) * sign(cos(azimuth))
-	target_y = round(abs(distance * sin(azimuth))) * sign(sin(azimuth))
+	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
+	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
 
 /obj/structure/cannon/proc/sway()
-	if(azimuth >= 45 && azimuth < 135)
+	if(degree >= 45 && degree < 135)
 		return target_x
-	else if(azimuth >= 135 && azimuth < 225)
+	else if(degree >= 135 && degree < 225)
 		return target_y
-	else if(azimuth >= 225 && azimuth < 315)
+	else if(degree >= 225 && degree < 315)
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
@@ -908,8 +904,8 @@
 	var/i
 	var/j = 4
 	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(azimuth))) * sign(cos(azimuth))
-		var/point_y = round(abs(j * sin(azimuth))) * sign(sin(azimuth))
+		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
+		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
 		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 		j++
 	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
@@ -927,7 +923,7 @@
 	switch(dir)
 		if (EAST)
 			dir = NORTH
-			azimuth = 90
+			degree = 90
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -935,7 +931,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
-			azimuth = 270
+			degree = 270
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -943,7 +939,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
-			azimuth = 180
+			degree = 180
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -951,7 +947,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
-			azimuth = 0
+			degree = 0
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -972,7 +968,7 @@
 	switch(dir)
 		if (EAST)
 			dir = SOUTH
-			azimuth = 270
+			degree = 270
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -980,7 +976,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
-			azimuth = 90
+			degree = 90
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -988,7 +984,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
-			azimuth = 0
+			degree = 0
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -996,7 +992,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
-			azimuth = 180
+			degree = 180
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64

@@ -18,7 +18,6 @@
 	icon_state = "naval_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	spritemod = FALSE
-
 	firedelay = 1
 	maxrange = 180
 	anchored = TRUE
@@ -379,7 +378,7 @@
 	ammotype = /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91
 	explosion = TRUE
 	maxrange = 30
-	firedelay = 1
+	firedelay = 8
 	path = /obj/item/weapon/foldable/type89_mortar
 
 /obj/structure/cannon/mortar/foldable/generic

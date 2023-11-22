@@ -614,7 +614,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 
 	for(var/mob/living/MB in transporting)
 		MB.dir = dir
-	
+
 	return TRUE
 
 /obj/effect/pseudovehicle
