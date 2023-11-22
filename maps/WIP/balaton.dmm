@@ -324,7 +324,7 @@
 "gl" = (/obj/structure/vehicleparts/frame/su100/fc,/obj/structure/bed/chair/loader,/turf/floor/grass,/area/caribbean/no_mans_land)
 "gm" = (/obj/structure/vehicleparts/frame/su100/lfc,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/grass,/area/caribbean/no_mans_land)
 "gn" = (/obj/structure/vehicleparts/frame/su100/rf,/obj/structure/vehicleparts/movement/tracks/su100/right_front,/obj/structure/bed/chair/gunner,/turf/floor/grass,/area/caribbean/no_mans_land)
-"go" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/obj/structure/vehicleparts/axis/heavy/su100,/turf/floor/grass,/area/caribbean/no_mans_land)
+"go" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/obj/structure/vehicleparts/axis/heavy/su100/su85m,/turf/floor/grass,/area/caribbean/no_mans_land)
 "gp" = (/obj/structure/vehicleparts/frame/su100/lf,/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/grass,/area/caribbean/no_mans_land)
 "gI" = (/turf/wall/stone,/area/caribbean/german/reichstag/first)
 "gJ" = (/obj/structure/window/classic/metal,/turf/floor/plating/steel,/area/caribbean/german/reichstag/first)

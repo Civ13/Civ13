@@ -143,6 +143,9 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/su100/su85m
+	name = "SU-85M"
+
 /obj/structure/vehicleparts/axis/heavy/bt7
 	name = "BT-7"
 	speeds = 7
