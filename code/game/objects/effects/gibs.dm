@@ -20,7 +20,7 @@
 
 	proc/Gib(atom/location)
 		if (gibtypes.len != gibamounts.len || gibamounts.len != gibdirections.len)
-			world << "<span class='warning'>Gib list length mismatch!</span>"
+			to_chat(world, SPAN_WARNING("Gib list length mismatch!"))
 			return
 
 		if (sparks)

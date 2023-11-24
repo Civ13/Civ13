@@ -180,7 +180,7 @@
 			if (triggered)
 				sleep(300)
 				if (time_of_day != "Night")
-					world << "The sound of a helicopter rotor can be heard in the distance."
+					to_chat(world, "The sound of a helicopter rotor can be heard in the distance.")
 					if (map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_COMPOUND || map.ID == MAP_HUE || map.ID == MAP_ONG_THAHN)
 						playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 70)
 						sleep(200)

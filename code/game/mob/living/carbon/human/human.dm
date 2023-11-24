@@ -578,19 +578,19 @@ var/list/coefflist = list()
 		if (prob(round(damage/10)*20))
 			germs++
 		if (germs == 100)
-			world << "Reached stage TRUE in [ticks] ticks"
+			to_chat(world, "Reached stage TRUE in [ticks] ticks")
 		if (germs > 100)
 			if (prob(10))
 				damage++
 				germs++
 		if (germs == 1000)
-			world << "Reached stage 2 in [ticks] ticks"
+			to_chat(world, "Reached stage 2 in [ticks] ticks")
 		if (germs > 1000)
 			damage++
 			germs++
 		if (germs == 2500)
-			world << "Reached stage 3 in [ticks] ticks"
-	world << "Mob took [tdamage] tox damage"
+			to_chat(world, "Reached stage 3 in [ticks] ticks")
+	to_chat(world, "Mob took [tdamage] tox damage")
 */
 //returns TRUE if made bloody, returns FALSE otherwise
 
@@ -651,7 +651,7 @@ var/list/coefflist = list()
 		usr << "<span class='warning'>You failed to check the pulse. Try again.</span>"
 
 /mob/living/human/proc/set_species(var/new_species, var/default_colour)
-//	world << "set species"
+//	to_chat(world, "set species")
 	if (!dna)
 		if (!new_species)
 			new_species = "Human"
@@ -809,7 +809,7 @@ var/list/coefflist = list()
 	if (!. && error_msg && user)
 		if (!fail_msg)
 			fail_msg = "There is no exposed flesh or thin material [target_zone == "head" ? "on their head" : "on their body"] to inject into."
-		user << "<span class='alert'>[fail_msg]</span>"
+		to_chat(user, "<span class='alert'>[fail_msg]</span>")
 		
 
 /mob/living/human/proc/exam_self()

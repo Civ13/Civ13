@@ -153,7 +153,7 @@ the HUD updates properly! */
 		return
 
 	#ifdef PROCESS_FACTION_HUD_DEBUG
-	world << "[viewer] processing faction huds."
+	to_chat(world, "[viewer] processing faction huds.")
 	#endif
 
 	var/datum/arranged_hud_process/P = arrange_hud_process(M, Alt, faction_hud_users)

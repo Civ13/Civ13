@@ -33,7 +33,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
 			if (mode == "gamemode" && ticker.current_state >= 2)
-				world << "<b>Voting aborted due to game start.</b>"
+				to_chat(world, "<b>Voting aborted due to game start.</b>")
 				reset()
 				return
 
@@ -132,7 +132,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (59% is needed)</b>"
 		log_vote(text)
-		world << "<font color='purple'>[text]</font>"
+		to_chat(world, "<font color='purple'>[text]</font>")
 		return .
 
 	proc/result()
@@ -141,7 +141,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(mode)
 				if ("restart")
 					if (. == "Restart Round")
-						world << "Round ending due to vote."
+						to_chat(world, "Round ending due to vote.")
 						log_game("Ending the round due to restart vote.")
 						map.next_win = world.time - 100
 						//ticker.finished = TRUE // TO-DO: See if it doesn't affect anything else, but only seems to be in map metadata files.
@@ -273,12 +273,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				text += "\n[question]"
 
 			log_vote(text)
-			world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"
+			to_chat(world, "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>")
 
-			world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+			to_chat(world, sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
 			if (mode == "gamemode" && round_progressing)
 				round_progressing = FALSE
-				world << "<font color='red'><b>Round start has been delayed.</b></font>"
+				to_chat(world, "<font color='red'><b>Round start has been delayed.</b></font>")
 			time_remaining = round(config.vote_period/10)
 			callback = _callback
 			return TRUE

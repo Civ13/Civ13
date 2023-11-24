@@ -1686,7 +1686,7 @@
 						holder2.overlays += icon(holder2.icon,"nco")
 			if (map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
-					world << "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>"
+					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2

@@ -219,7 +219,7 @@
 
 	if (health_percentage <= 75 && health_percentage > 50)//Is the person a little hurt?
 		msg += "<span class='warning'><b>[T.He] looks somewhat wounded.\n</b></span>"
-
+	
 	if (health_percentage <= 50 && health_percentage > 25)//Hurt.
 		msg += "<span class='warning'><b>[T.He] looks wounded.</b></span>\n"
 

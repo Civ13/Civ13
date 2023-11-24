@@ -1219,7 +1219,7 @@ obj/screen/tactic
 		underlays |= list(blind_icon)
 //	else
 //		underlays.Remove(list(blind_icon))
-//	world << underlays.len
+//	to_chat(world, underlays.len)
 
 /obj/screen/frippery
 	name = ""

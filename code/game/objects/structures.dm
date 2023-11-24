@@ -27,7 +27,7 @@
 /obj/structure/attackby(obj/item/O as obj, mob/user as mob, icon_x, icon_y)
 	if (istype(O,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
-			user << SPAN_NOTICE("Remove the cables first.")
+			to_chat(user, SPAN_NOTICE("Remove the cables first."))
 			return
 		if (istype(src, /obj/structure/engine))
 			var/obj/structure/engine/EN = src
@@ -41,9 +41,9 @@
 			return
 	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << SPAN_NOTICE("You begin dismantling \the [src].")
+		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user,25,src))
-			user << SPAN_NOTICE("You dismantle \the [src].")
+			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
 			new /obj/item/stack/material/wood(get_turf(src))
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))
@@ -91,19 +91,19 @@
 
 	var/movingto = get_step(get_turf(src), dir)
 	if (map && movingto && map.check_caribbean_block(user, movingto))
-		user << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"
+		to_chat(user, SPAN_WARNING("You cannot pass the invisible wall until the <b>Grace Period</b> has ended."))
 		return FALSE
 
 	if (!climbable || !can_touch(user) || (!post_climb_check && (user in climbers)))
 		return FALSE
 
 	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/barrier))
-		user << "<span class='danger'>You can't climb there, the way is blocked.</span>"
+		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
 		return FALSE
 
 	var/obj/occupied = turf_is_crowded()
 	if (occupied)
-		user << "<span class='danger'>There's \a [occupied] in the way.</span>"
+		to_chat(user, SPAN_DANGER("There's \a [occupied] in the way."))
 		return FALSE
 	return TRUE
 
@@ -232,7 +232,7 @@
 	if (!Adjacent(user))
 		return FALSE
 	if (user.restrained() || user.buckled)
-		user << "<span class='notice'>You need your hands and legs free for this.</span>"
+		to_chat(user, SPAN_NOTICE("You need your hands and legs free for this."))
 		return FALSE
 	if (user.stat || user.paralysis || user.sleeping || user.lying || user.weakened)
 		return FALSE
@@ -248,7 +248,7 @@
 
 /obj/structure/proc/connect_cable(var/mob/user, var/obj/item/stack/cable_coil/W)
 	if (powersource)
-		user << "There's already a cable connected here! Split it further from \the [src]."
+		to_chat(user, "There's already a cable connected here! Split it further from \the [src]")
 		return
 	var/obj/item/stack/cable_coil/CC = W
 	powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
@@ -272,7 +272,7 @@
 					NCOO.connections += powersource
 				if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
 					powersource.connections += NCOO
-				user << "You connect the two cables."
+				to_chat(user, "You connect the two cables.")
 
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
 			if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
@@ -280,4 +280,4 @@
 					NCOC.connections += powersource
 				if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
 					powersource.connections += NCOC
-	user << SPAN_NOTICE("You connect the cable to \the [src].")
+	to_chat(user, SPAN_NOTICE("You connect the cable to \the [src]."))

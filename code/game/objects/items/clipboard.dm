@@ -59,7 +59,7 @@
 		W.loc = src
 		if (istype(W, /obj/item/weapon/paper))
 			toppaper = W
-		user << "<span class='notice'>You clip the [W] onto \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You clip the [W] onto \the [src]."))
 		update_icon()
 
 	else if (istype(toppaper) && istype(W, /obj/item/weapon/pen))
@@ -87,7 +87,7 @@
 	for (var/obj/item/weapon/photo/Ph in src)
 		dat += "<A href='?src=\ref[src];remove=\ref[Ph]'>Remove</A> <A href='?src=\ref[src];rename=\ref[Ph]'>Rename</A> - <A href='?src=\ref[src];look=\ref[Ph]'>[Ph.name]</A><BR>"
 
-	user << browse(dat, "window=clipboard")
+	to_chat(user, browse(dat, "window=clipboard"))
 	onclose(user, "clipboard")
 	add_fingerprint(usr)
 	return

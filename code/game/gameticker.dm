@@ -59,8 +59,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 			pregame_timeleft = GAMETICKER_PREGAME_TIME
 			maytip = TRUE
 
-			world << "<b><span style = 'notice'>Welcome to the pre-game lobby!</span></b>"
-			world << "The game will start in [pregame_timeleft] seconds."
+			to_chat(world, SPAN_NOTICE("<b>Welcome to the pre-game lobby!</b>"))
+			to_chat(world, "The game will start in [pregame_timeleft] seconds.")
 
 			while (current_state == GAME_STATE_PREGAME)
 				for (var/i=0, i<10, i++)
@@ -77,11 +77,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 								vote.process()
 				if (pregame_timeleft == 20)
 					if (tip)
-						world << "<span class = 'notice'><b>Tip of the round:</b> [tip]</span>"
+						to_chat(world, SPAN_NOTICE("<b>Tip of the round:</b> [tip]"))
 					else
 						var/list/tips = file2list("config/tips.txt")
 						if (tips.len)
-							world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
+							to_chat(world, SPAN_NOTICE("<b>Tip of the round:</b> [pick(tips)]"))
 							qdel_list(tips)
 					maytip = FALSE
 				if (pregame_timeleft <= 0)
@@ -89,11 +89,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 					/* if we were force started, still show the tip */
 					if (maytip)
 						if (tip)
-							world << "<span class = 'notice'><b>Tip of the round:</b> [tip]</span>"
+							to_chat(world, SPAN_NOTICE("<b>Tip of the round:</b> [tip]"))
 						else
 							var/list/tips = file2list("config/tips.txt")
 							if (tips.len)
-								world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
+								to_chat(world, SPAN_NOTICE("<b>Tip of the round:</b> [pick(tips)]"))
 								qdel_list(tips)
 		while (!setup())
 
@@ -105,7 +105,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	job_master.ResetOccupations()
 
 	if (!map || !map.can_start() && !admin_started)
-		world << "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby."
+		to_chat(world, "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby.")
 		current_state = GAME_STATE_PREGAME
 		job_master.ResetOccupations()
 		return FALSE
@@ -125,7 +125,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 	spawn(0)//Forking here so we dont have to wait for this to finish
 
-	//	world << "<span class = 'notice'><b>Enjoy the game!</b></FONT>"
+	//	to_chat(world, SPAN_NOTICE("<b>Enjoy the game!</b>")
 		//Holiday Round-start stuff	~Carn
 
 		// todo: make these hooks. Apparently they all fail on /hook/roundstart
@@ -198,7 +198,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 						restart_after = 1200 - n
 
 			if (!delay_end)
-				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>TBD</b></big></span>"
+				to_chat(world, SPAN_NOTICE("<big>Restarting in <b>90</b> seconds. Next map: <b>TBD</b></big>"))
 				if (restart_after > restart_timeout)
 					restarting_is_very_bad = TRUE
 					spawn (restart_after - restart_timeout)
@@ -209,8 +209,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 				if (!delay_end)
 					world.Reboot()
 				else
-					world << "<span class='notice'><b>An admin has delayed the round end.</b></span>"
+					to_chat(world, SPAN_NOTICE("<b>An admin has delayed the round end.</b>"))
 			else
-				world << "<span class='notice'><b>An admin has delayed the round end.</b></span>"
+				to_chat(world, SPAN_NOTICE("<b>An admin has delayed the round end.</b>"))
 
 	return TRUE
