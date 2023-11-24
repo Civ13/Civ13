@@ -951,8 +951,8 @@
 				name = species.get_random_mongolian_name(gender)
 				real_name = name
 				add_note("Known Languages", "Mongolian")
-				possible_h_list = list("Black", "Dark Brown")
-				possible_e_list = list("Blue","Brown")
+				possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+				possible_e_list = list("Black","Brown","Green")
 				possible_s_list = list(-25,-60)
 			if ("desert")
 				add_language("Farsi",TRUE)

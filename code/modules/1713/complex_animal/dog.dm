@@ -38,6 +38,9 @@
 	var/following = null
 
 	var/prioritizes = "attacking"
+	
+	var/pounce_range = 3 // How far the mob can be away from a target in order for it to pounce
+	var/next_shred = -1 
 
 	var/last_patrol_area = null
 
@@ -488,7 +491,6 @@ s
 // dog combat
 
 
-/mob/living/simple_animal/complex_animal/dog/var/next_shred = -1
 /mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
 		if (world.time >= next_shred)
@@ -509,20 +511,31 @@ s
 					if (!client)
 						shred(H)
 
+/*
+/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
+	// Prepare to leap.
+	visible_message(SPAN_WARNING("\The [src] prepares to pounce on [H]!"))
+	step_to(src, H) // Face the victim.
+	anchored = TRUE
+	if (do_after(src, 3 SECONDS))
+		anchored = FALSE
+		if (get_dist(src, H) > pounce_range)
+			visible_message(SPAN_NOTICE("\The [src] stops trying to pounce."))
+			return
+		
+		throw_at(H, 5, 0.5, src)
+		visible_message(SPAN_DANGER("\The [src] pounces on [H]!"))
 
-
-
-/*/mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
-		// Prepare to leap.
-		visible_message("<span class = 'warning'>\The [src] prepares to leap at [H]!</span>")
-		step_to(src, H)
-		// Face the victim.
-		src.throw_at(H, 5, 0.5, src)
-		visible_message("<span class = 'warning'>\The [src] pounces on [H]!</span>")
-		// Apply the weakening effect to the target.
-		if (H)
+		if (H && (get_turf(src) == get_turf(H))) // Apply the weakening effect to the target.
 			H.Weaken(20)
-
+			H.lying = TRUE
+			set_dir(EAST) //face the victim
+			H.set_dir(SOUTH) //face up
+		return
+	else
+		anchored = FALSE
+		visible_message(SPAN_NOTICE("\The [src] stops trying to pounce."))
+		return
 */
 
 // things we do when someone touches us
@@ -602,6 +615,13 @@ s
 					if (prioritizes == "attacking" && following)
 						stop_following()
 					walking_to = H
+					
+					/*
+					if (get_dist(src, H) <= pounce_range)
+						if (prob(60))
+							pounce(H)
+					*/
+					
 				else
 					shred(H)
 	else if (following)

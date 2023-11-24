@@ -658,7 +658,7 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
+	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
 	weight = 3.47
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -787,7 +787,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum,/obj/item/ammo_magazine/ak74/rubber)
+	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/rubber, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -1067,7 +1067,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74/ak74m
-	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
@@ -1370,7 +1370,7 @@
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/campaign
 	magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled
 	good_mags = list(/obj/item/ammo_magazine/emptymagazine, /obj/item/ammo_magazine/emptymagazine/rifle, /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled)
-	
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
 	base_icon = "m4mws"

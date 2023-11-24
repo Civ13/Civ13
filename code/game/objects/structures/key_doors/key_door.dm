@@ -212,7 +212,15 @@ var/list/nonbreaking_types = list(
 			visible_message(SPAN_WARNING("[user] breaks the lock on the [src]!"))
 			pump.Fire(src, user)
 			playsound(src.loc, 'sound/weapons/heavysmash.ogg', 50, 1)
-			Open()
+			density = FALSE
+			opacity = FALSE
+			state = TRUE
+			update_icon()
+			isSwitchingStates = FALSE
+			for (var/atom/movable/lighting_overlay/L in view(7*3, src))
+				L.update_overlay()
+			for(var/obj/roof/R in range(1,src))
+				R.update_transparency(1)
 			new/obj/effect/sparks(src.loc)
 			return
 	else

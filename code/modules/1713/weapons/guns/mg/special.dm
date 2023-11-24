@@ -131,7 +131,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74)
+	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
