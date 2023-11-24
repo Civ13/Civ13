@@ -369,6 +369,15 @@
 		loader_chair = new /obj/structure/bed/chair/loader(src)
 		gunner_chair = new /obj/structure/bed/chair/gunner(src)
 
+/obj/structure/cannon/modern/tank/russian100
+	name = "100mm D10S"
+	desc = "a 100mm Russian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxsway = 14
+	maxrange = 33
+	caliber = 100
+	anchored = TRUE
+
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -492,18 +501,15 @@
 	maxsway = 10
 	firedelay = 12
 	maxrange = 60
-	max_loaded = 9
+	max_loaded = 12
 	w_class = ITEM_SIZE_GARGANTUAN
 	see_amount_loaded = TRUE
 
+/obj/structure/cannon/rocket/old
+	icon_state = "old_rocket"
+	max_loaded = 9
+
 /obj/structure/cannon/rocket/loaded/New()
 	..()
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
-	loaded += new /obj/item/cannon_ball/rocket(src)
+	for (var/i=1, i<=12, i++)
+		loaded += new /obj/item/cannon_ball/rocket(src)

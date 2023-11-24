@@ -26,6 +26,7 @@
 "az" = (/obj/structure/wild/tree/live_tree/snow{icon_state = "tree_6"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "aA" = (/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "aB" = (/obj/structure/rails,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"aC" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/t34/right_back,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "aD" = (/obj/structure/oven{fuel = 1000},/turf/floor/wood,/area/caribbean/german/inside)
 "aE" = (/obj/structure/table/modern/table,/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/german/inside)
 "aF" = (/obj/structure/bed/chair/wood/bleacher/r{desc = "A long bench like seat."; name = "wood bench"},/turf/floor/wood,/area/caribbean/german/inside)
@@ -71,6 +72,7 @@
 "bt" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/german/inside)
 "bu" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 8},/turf/floor/wood,/area/caribbean/german/inside)
 "bv" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
+"bw" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full76,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "bx" = (/obj/item/weapon/stool/wood,/turf/floor/wood,/area/caribbean/german/inside)
 "by" = (/obj/structure/table/modern/table,/obj/item/kitchen/snack_bowl,/turf/floor/wood,/area/caribbean/german/inside)
 "bz" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/german{climate = "tundra"})
@@ -218,6 +220,7 @@
 "el" = (/turf/wall/cement,/area/caribbean/houses)
 "em" = (/mob/living/simple_animal/mouse/gray,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "en" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/houses)
+"eo" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/t34/left_back,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "ep" = (/obj/structure/rails,/turf/floor/plating/cobblestone/dark,/area/caribbean/void/caves)
 "eq" = (/obj/structure/wild/burnedbush{icon_state = "burnedbush7"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "er" = (/turf/wall/stone{opacity = 0},/area/caribbean/void/caves)
@@ -271,6 +274,7 @@
 "fn" = (/turf/wall/rockwall{icon_state = "rock_debris2"},/area/caribbean/void/caves)
 "fo" = (/obj/structure/sink{icon_state = "sink"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/houses)
 "fp" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/houses)
+"fq" = (/obj/structure/bed/chair/loader,/obj/structure/vehicleparts/frame/t34/bc,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "fr" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt/burned,/area/caribbean/houses)
 "fs" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "ft" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
@@ -331,7 +335,11 @@
 "gw" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "gx" = (/obj/structure/closet/cabinet,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "gy" = (/obj/structure/closet/crate/ww2/ammo_mg34,/turf/floor/wood,/area/caribbean/german/inside)
+"gz" = (/obj/structure/vehicleparts/frame/t34/left/door,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "gA" = (/obj/structure/oven/woodstove,/turf/floor/dirt/burned,/area/caribbean/nomads/forest/snow)
+"gB" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
+"gC" = (/obj/structure/cannon/modern/tank/russian76{anchored = 1},/obj/structure/vehicleparts/frame/t34/fc,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
+"gD" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "gE" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood{icon_state = "wood-broken7"},/area/caribbean/houses)
 "gF" = (/obj/structure/barbwire,/obj/structure/barbwire,/obj/structure/barbwire,/obj/structure/barbwire,/turf/floor/winter/grass,/area/caribbean/nomads/forest/snow)
 "gG" = (/mob/living/simple_animal/cat,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
@@ -343,7 +351,10 @@
 "gM" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/houses)
 "gN" = (/obj/structure/sign/traffic/zebracrossing,/turf/floor/plating/road,/area/caribbean/nomads/forest/snow)
 "gO" = (/obj/structure/wild/tree/live_tree/pine/snow,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
+"gP" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "gQ" = (/turf/floor/carpet/redcarpet,/area/caribbean/houses)
+"gR" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
+"gS" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "gT" = (/obj/structure/wild/junglebush,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "gU" = (/obj/structure/wild/burnedtree{icon_state = "burnedlog"},/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
 "gV" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
@@ -933,7 +944,6 @@
 "sz" = (/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "sA" = (/obj/covers/carpet/redcarpet,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/three)
 "sB" = (/obj/covers/steelplating,/obj/roof,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/capturable/two)
-"sC" = (/obj/structure/vehicleparts/frame/t34/rb,/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sD" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "sE" = (/obj/structure/barbwire,/obj/structure/barricade/antitank,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "sF" = (/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
@@ -943,11 +953,9 @@
 "sJ" = (/turf/floor/wood{icon_state = "wood-broken5"},/area/caribbean/nomads/forest/snow)
 "sK" = (/turf/floor/wood{icon_state = "wood-broken3"},/area/caribbean/nomads/forest/snow)
 "sL" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
-"sM" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full76,/obj/item/cannon_ball/shell/tank/HE76,/obj/item/cannon_ball/shell/tank/HE76,/obj/item/cannon_ball/shell/tank/HE76,/obj/item/cannon_ball/shell/tank/HE76,/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sN" = (/turf/floor/dirt/winter{icon_state = "grass3X"},/area/caribbean/houses)
 "sO" = (/obj/structure/shelf,/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
 "sP" = (/obj/structure/shelf,/obj/item/weapon/storage/ww2/shaving_kit,/turf/floor/wood,/area/caribbean/houses)
-"sQ" = (/obj/structure/vehicleparts/frame/t34/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sR" = (/obj/structure/shelf,/obj/item/weapon/storage/bible/orthodox,/obj/structure/lamp/lamp_big/broken{icon_state = "tube_broken"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "sS" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "sT" = (/obj/structure/filingcabinet{icon_state = "tallcabinet"},/turf/floor/wood,/area/caribbean/houses)
@@ -969,7 +977,6 @@
 "tj" = (/obj/structure/barricade/antitank,/turf/floor/dirt/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tk" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
 "tl" = (/obj/structure/bed/chair/office/dark{icon_state = "officechair_dark"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
-"tm" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/bed/chair/loader{anchored = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tn" = (/obj/item/weapon/reagent_containers/glass/barrel/modern,/turf/floor/dirt/burned,/area/caribbean/nomads/forest/snow)
 "to" = (/obj/covers/carpet/redcarpet,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/three)
 "tp" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood{icon_state = "wood-broken1"},/area/caribbean/houses)
@@ -1000,14 +1007,10 @@
 "tO" = (/obj/structure/flag/reich,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/nomads/forest/snow)
 "tP" = (/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/trench,/area/caribbean/nomads/forest/snow)
 "tQ" = (/obj/structure/cannon/modern/tank/russian85/field,/turf/floor/trench,/area/caribbean/nomads/forest/snow)
-"tR" = (/obj/structure/vehicleparts/frame/t34/left/door,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tS" = (/obj/structure/sign/kiddieplaque{desc = ""; name = "Telephone Central"},/obj/covers/brick_wall,/turf/wall/stone{icon_state = "newbrick13"},/area/caribbean/no_mans_land/capturable/one)
 "tT" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "7"},/turf/floor/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tU" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tV" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"tW" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander{anchored = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"tX" = (/obj/structure/vehicleparts/frame/t34,/obj/structure/cannon/modern/tank/russian76{anchored = 1},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"tY" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{anchored = 1; dir = 8; icon_state = "officechair_white"},/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "tZ" = (/obj/structure/closet/crate/ww2/artillery_shells/HE76,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "ua" = (/obj/structure/closet/crate/ww2/artillery_shells/HE76,/turf/floor/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "ub" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/trench,/area/caribbean/nomads/forest/snow)
@@ -1129,9 +1132,6 @@
 "wn" = (/obj/structure/bed/chair{icon_state = "wooden_chair"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/three)
 "wo" = (/obj/structure/engine/internal/diesel,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/one)
 "wp" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_66%"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/one)
-"wq" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"wr" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34,/obj/structure/lamp/lamp_small/tank/red,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
-"ws" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/turf/floor/plating/road,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "wt" = (/obj/structure/closet/crate/ww2/artillery_shells/APCR76,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
 "wu" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads/forest/snow)
 "wv" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/winter,/area/caribbean/russian/land/outside{climate = "tundra"; name = "Soviet Base"})
@@ -1796,6 +1796,7 @@ oQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQ
 oQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQ
 AEoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQoQ
 "}
+
 (1,1,2) = {"
 ababegegegegegegegegegegegegegegcPcYcYcYcPcPacacacacacacacacacacacacacacacafafajajajafafacacacacacacacacacacacacacacaccPcYcYcYcPegegegegegegegegegegegcPagagagagagaBagagagaBagagagag
 ababegflezFdegflezFdegfuththgYegcPcYcYcYcPcPacamaoapamaoamacatauawawaxaDacafafajajajafafacaEaFaGaHaEacaIaJaKacaKaJaIaccPcYcYcYcPegsGthaLththsHegaMEQegcPagagagagagaBagagagaBagagagag
@@ -2022,10 +2023,10 @@ qIqIososososqHnnnunununnqKosososososqGqIosqGosososososososososososososqGqGqGqGos
 qIqIqIqIqIqIqNnnqpnuqpnnqOqIqIqIososqIqIqIqIqIqIqIqIqPqQqQqQqQqQqQqQqQqQqRqIqIqIqIqIqIqIqIqIqIqIqIqIqIosqIqIqIqIqIqIqSqMqMqMqSqIqIqIosqIqUosqIqIqIosqIqIqIqIqIqIqIqIqIqIosqIqIqIqIqI
 qIqUqIqIqIqUqIqLqMnuqMqLqIqIqIqUqIqXqIqUqIqIqUqIqIqYqZrarcrcrcrcrcrcrcrdreqYqIqIqIqIqUqIqIqIqIqIqIqIqIqIqIqIqIqUqIyWqSqMqMqMqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqIqIqIqIqIqIqIqIqI
 qIqGqUrfqIqIqIqSqMqMqMqSqIqIrgqIqIqIqUqIrhririrjqIqXqZrkrlrmrmrnrmrororxreqIqIqGqIqIqIqIqIrDririrFqIqGqIqIqIqUqIqIqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqUqI
-qIqIqIqIqIqIqIqSqMqMqMqSqIqIqIqIqIqIqIqIrGrRqIsbqIqIqZsesjsjrmrmrmsjsjskslqIqIqXqIqIqIqIqIrGrRqIsbqIqIqUqIqIqIqIqIyWqSqMqMqMqSsmsnsyqMqMqMsmsnsyqMqMqMsCsMsQqMqMsSsXqIqIqIqIqIqIqIqI
-qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqIqIqGqIqUqIsZsZsZqIqIqIsZsZsZqIqIqIqIqIqItaqIqIqIqIqIqIqIqIqIqIqIqIqIqIqIqSqMqMqMqSqMtbtcqMqMqMqMtbtcqMqMqMtdtmtRqMqMsSsXqIqIqIqIqIqIqIqI
-qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqUqIqIqIqIqIqIqGqIqIqIqIqIqIqIqIqIqIqUqIqIqIqIqIqIqIqIqIqIqIqIqIqIqItTqIyWqSqMqMqMqSqMtUtVqMqMqMqMtUtVqMqMqMtWtXtYqMqMtZuaqIuAqIqIqIqIqIqI
-qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqUqUqIqIqIqUqIqIqGqIqIqIqIqUqIqIqIqIqIqUqIqIqIqIvjvjvjvjqIqIqIvuvuvuvuvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMwqwrwsqMqMwtwvqIqIqIqIqIqIqIqI
+qIqIqIqIqIqIqIqSqMqMqMqSqIqIqIqIqIqIqIqIrGrRqIsbqIqIqZsesjsjrmrmrmsjsjskslqIqIqXqIqIqIqIqIrGrRqIsbqIqIqUqIqIqIqIqIyWqSqMqMqMqSsmsnsyqMqMqMsmsnsyqMqMqMaCbweoqMqMsSsXqIqIqIqIqIqIqIqI
+qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqIqIqGqIqUqIsZsZsZqIqIqIsZsZsZqIqIqIqIqIqItaqIqIqIqIqIqIqIqIqIqIqIqIqIqIqIqSqMqMqMqSqMtbtcqMqMqMqMtbtcqMqMqMtdfqgzqMqMsSsXqIqIqIqIqIqIqIqI
+qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqUqIqIqIqIqIqIqGqIqIqIqIqIqIqIqIqIqIqUqIqIqIqIqIqIqIqIqIqIqIqIqIqIqItTqIyWqSqMqMqMqSqMtUtVqMqMqMqMtUtVqMqMqMgBgCgDqMqMtZuaqIuAqIqIqIqIqIqI
+qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqIqUqUqIqIqIqUqIqIqGqIqIqIqIqUqIqIqIqIqIqUqIqIqIqIvjvjvjvjqIqIqIvuvuvuvuvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMgPgRgSqMqMwtwvqIqIqIqIqIqIqIqI
 qIqGqGqGqGqGqGqSqMqMqMqSqGqGqGqGqGqGqGqIqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqSqIqIqIqIwGwYwZxwqIqIqIvuxxxCxKvuyWqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqUqIqIqIqIqI
 qIqIyvqIqIqIqIqSqMqMqMqSqIqIqGqGqGqIqIqIqSqSqSqSyFqSyFqSqSqSqSqSqSqSqSqSqSqSqSqSqSqIqUqIqIyKyKyLyLqIqIqIvuyMyNxKvuqIqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqIqI
 qIqIqIqGqGqUqIqSqMqMqMqSqSqSqSqSqSqSqSqSqSqSBWBWBWlEBWBWBWlFBWBWBWBWlEBWBWBWBWqSqSqUqIqIqIqIqIqIqIqIqIqIvuyZqSxKvuyWqSqMqMqMqSqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqMqSqIqIqIqIqIqIqIqIqI

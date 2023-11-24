@@ -109,19 +109,12 @@ var/global/list/supplydrop_turfs = list()
 var/global/faction1_supply_points = 1600
 var/global/faction2_supply_points = 1600
 
-//Campaign Aircraft Stuff
-var/global/aircraft_blue = "MWA-20"
-var/global/aircraft_blue_countermeasures = null
-var/global/aircraft_red = "RMA-13"
-var/global/aircraft_red_countermeasures = null
+//Aircraft Stuff
+var/global/faction1_aircraft_remaining = 3
+var/global/faction2_aircraft_remaining = 3
 
-var/global/aircraft_calltime_blue = 3600 // 6 Minutes
-var/global/aircraft_calltime_red = 3600 // 6 Minutes
-
-var/global/airstrikes_remaining_blue = 5
-var/global/airstrikes_remaining_red = 5
-var/global/airstrike_number_blue = 4
-var/global/airstrike_number_red = 4
+var/global/faction1_airstrikes_remaining = 12
+var/global/faction2_airstrikes_remaining = 12
 
 // for mass deletion
 var/global/list/bullet_casings = list()
