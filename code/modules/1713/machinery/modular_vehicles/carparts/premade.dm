@@ -119,7 +119,7 @@
 		reg_number = tempnum
 		license_plate_numbers += tempnum
 		return tempnum
-		
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //ASNO
@@ -150,7 +150,7 @@
 
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/quattroporte/lc),
-	
+
 	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/quattroporte/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
@@ -285,7 +285,7 @@
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/kazoku/lc),
 
-	
+
 	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/kazoku/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
@@ -544,7 +544,7 @@
 	name = "T3485"
 	icon_state = "4x4"
 	custom_color = "#4a5243"
-	axis = /obj/structure/vehicleparts/axis/heavy/t3485
+	axis = /obj/structure/vehicleparts/axis/heavy/t34/t3485
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
