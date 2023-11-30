@@ -225,6 +225,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "tripod"
 	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.3
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 /obj/item/weapon/type92tripod/attack_self(mob/user)
@@ -252,6 +253,7 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "type92hmg_item"
 	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.6
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 

@@ -1993,19 +1993,45 @@
 		tlist += GS
 	return tlist
 
-/obj/item/weapon/can/filled/JPNMRE
-	list/randbrand = list(
+/obj/item/weapon/can/JPNMRE //I'm too sleep deprived and brain dead to figure out how to do this properly -kenobi
+	var/list/randbrand = list(
 		"IJA", "IJN"
 	)
-	list/custcolor = list(
-		"#EAEAEA", "#8F1313"
+	var/list/custcolor = list(
+		"#8F1313"
 	)
 
-	list/filllist = list(
+	var/list/filllist = list(
 		/obj/item/weapon/reagent_containers/food/snacks/boiledrice, /obj/item/weapon/reagent_containers/food/snacks/ramen,
 		/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,	/obj/item/weapon/reagent_containers/food/snacks/hardtack
 	)
 	icon_state = "can"
+	var/currspawn = null
+/obj/item/weapon/can/JPNMRE/New()
+	..()
+	currspawn = pick(filllist)
+	brand = "[pick(randbrand)]"
+	stored = fill()
+	open = FALSE
+	sealed = TRUE
+	customcolor1 = pick(custcolor)
+	customcolor2 = pick(custcolor)
+	name = "[brand]'s [stored[1].name]"
+	spawn(1)
+		do_color()
+
+/obj/item/weapon/can/JPNMRE/proc/fill()
+	var/list/tlist = list()
+	currspawn = pick(filllist)
+	for (var/i=1, i <= rand(3,5), i++)
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/GS = new currspawn(src)
+		GS.name = "canned [GS.name]"
+		if (GS.satisfaction>0)
+			GS.satisfaction *= 0.5 //canned food doesn't taste as good
+		else
+			GS.satisfaction *= 1.5 //food that is already bad will taste worse when canned
+		tlist += GS
+	return tlist
 ////////////////////////////////////////////////////////////////////////
 //  Compost bin  ///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////

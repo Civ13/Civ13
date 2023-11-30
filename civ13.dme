@@ -480,6 +480,7 @@
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\long_march.dm"
 #include "code\game\objects\map_metadata\magistral.dm"
+#include "code\game\objects\map_metadata\marco_polo_bridge.dm"
 #include "code\game\objects\map_metadata\missionary_ridge.dm"
 #include "code\game\objects\map_metadata\moscow194.dm"
 #include "code\game\objects\map_metadata\nanjing.dm"
@@ -1105,5 +1106,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\khalkhyn_gol.dmm"
+#include "maps\1943\marco_polo_bridge.dmm"
 // END_INCLUDE

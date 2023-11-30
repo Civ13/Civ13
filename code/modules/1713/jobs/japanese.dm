@@ -628,7 +628,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else if (map.ID != MAP_NANKOU && map.ID != MAP_NANJING && prob(5))
@@ -637,6 +637,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/full(H), slot_back)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
@@ -740,7 +742,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_med(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -749,6 +751,9 @@
 //other
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/full(H), slot_back)
+
 	if (map.ID == MAP_INTRAMUROS)
 		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 		var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
@@ -796,15 +801,21 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (prob(10))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		if (prob(90))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japsakurahelm(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+		else if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	var/randweap = rand(1,2)
-	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -814,6 +825,8 @@
 		else if (randweap == 2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 			H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/full(H), slot_back)
 	give_random_name(H)
 	if (map.ID == MAP_INTRAMUROS)
 		var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
@@ -925,19 +938,27 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (prob(10))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		if (prob(90))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japsakurahelm(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+		else if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type96(H), slot_shoulder)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier96(H), slot_belt)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_shoulder)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/ww2/jap/full(H), slot_back)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -987,14 +1008,20 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (prob(10))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		if (prob(90))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japsakurahelm(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+		else if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
-	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
+	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 	else
@@ -1051,12 +1078,18 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
 
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
-	else if (prob(10))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+	if (map.ID == MAP_MARCO_POLO_BRIDGE)
+		if (prob(90))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japsakurahelm(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
+		if (prob(70))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm(H), slot_head)
+		else if (prob(10))
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm/bandana(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
 //back
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38/sniper(H), slot_shoulder)
