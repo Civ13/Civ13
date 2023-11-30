@@ -428,50 +428,80 @@
 "il" = (/obj/structure/closet/crate/ww2/artillery_shells/HE76,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "im" = (/obj/structure/vehicleparts/frame/t34/right/door,/obj/effect/autoassembler,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "in" = (/obj/structure/vehicleparts/frame/t34/right,/obj/structure/bed/chair/commander,/turf/floor/grass,/area/caribbean/russian/land/outside)
-"io" = (/obj/structure/wild/jungle/medpine,/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
+"io" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean)
 "ip" = (/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/obj/item/weapon/grenade/antitank/type99,/turf/floor/dirt,/area/caribbean/admin)
 "iq" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
-"ir" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"ir" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean)
 "is" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside)
 "it" = (/obj/structure/wild/tallgrass,/obj/effects/premadevehicles/kurogane/type95,/turf/floor/dirt/dust,/area/caribbean/forest)
-"iu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean)
+"iu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
 "iv" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iw" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{icon_state = "maxim_ww2"; dir = 8},/turf/floor/dirt,/area/caribbean/russian/land/outside)
 "ix" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iy" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iz" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "iA" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/grass,/area/caribbean/russian/land/outside)
+"iB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean)
+"iC" = (/obj/structure/wild/jungle/medpine,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean)
+"iD" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean)
+"iE" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
+"iF" = (/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
+"iG" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
+"iH" = (/obj/structure/wild/tree/live_tree,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean)
+"iI" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean/russian/land/outside)
+"iJ" = (/obj/covers/wood,/turf/floor/wood,/area/caribbean/russian/land/outside)
+"iK" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean/russian/land/outside)
+"iL" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean)
+"iM" = (/obj/covers/wood,/turf/floor/wood,/area/caribbean)
+"iN" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean)
+"iO" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/dirt,/area/caribbean)
+"iP" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean)
+"iQ" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/trench,/area/caribbean)
+"iR" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/trench,/area/caribbean)
 "iS" = (/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/dirt,/area/caribbean/japanese/land/inside)
+"iT" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean)
+"iU" = (/obj/structure/window/barrier/sandbag,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/trench,/area/caribbean)
+"iV" = (/obj/structure/window/barrier/sandbag,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/trench,/area/caribbean)
+"iW" = (/obj/structure/wild/tree/live_tree,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean)
+"iX" = (/obj/structure/wild/tree/live_tree,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean)
+"iY" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/dirt,/area/caribbean)
+"iZ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/dirt,/area/caribbean)
+"ja" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean)
+"jb" = (/obj/structure/wild/jungle/medpine,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean)
+"jc" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean)
+"jd" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean)
+"je" = (/obj/structure/wild/jungle/medpine,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean)
+"jf" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean)
 
 (1,1,1) = {"
-acacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabYbYbYacaaaaaaakakakakababababababahababakauauawauauauauauauawauauauauakakabababababababababababababababakeuakakaaaaaaaaaa
-adaaaeaaaaaebJaaaaaaaaaaaaaaaaaaaaaaaaacaaaabJaaaeaaaaaaaaaabYbYaaaaaaaeakakakakabaoapaqaraxaqasabakauazayaAaBbnaFaEbRaBbRaEaDauakakabaIaqaqaqaqbGabbOaGaqaHaqbZabakakakaMaaaaaaacac
-acaabJaaacacaaaaaaagaaaaacaaaaaebJaaaaaaaaaaaaaaaaaabJagacacbYbYbYacacaaakakakakaJaCapaqaraqaqaLabaMauayayayaybnaycgbwaydVcgayauaMakahaCbSaCbTaqaqahaqaqaqaqaqaqahakakakakacaaaeaaaa
-aaaaaaaaaaaaaaaaaaaaaabJacacaaaaaaaaaaaaaaagaaaaaaaaaaacacaaacbYcabJaaadakakakakdsduapaqaraqaqaCabaMauayayayaydWayayayayayayayauakakabdPaqaqaqaqaqdQaqaqaqaHaqaHdRakakakakaaaabJaaaa
-aaaaaaaeaabJaaagaaaaaaaaaaaeaaaaaaaeacbJaeaaaaaaaaaaaaaaaaaaacbYbYaaaaaaakakakakabdSaqaqararararabakauaycfecaybnayayayayayayaBauakakabdPaqaqdUdUdUahdXaqaqaqaqaqdRijakakaMaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaabYaaaaaaaaakakakakdsaqaqaqdYaqdYaqabakauaycfercfbnayayayayayayayauakakabdUaqaqaCaCaCabeaaqaqaHaqaHahakakakakaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaacaeaaaaaaaaagaaaaaaaaaaacaaaaaaaaagaaaaaabYbYaaaaadacakakakakdsebaqebaqaqaqaqabakauayayayaybnayayayayeIfrayauakakabedaqaqaCaCaCabeeaqaqaqaqaqabaMakakakaaaaacaaaa
-bJacaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaaeacaaaaaaacbMbYgjioaabJakakakakabcEaqebaqaqaqcGabaMaucHayayaybncNayfRaBbRaEcSauejaMabcWaqaqelelcWabdleoepaHaqdnabakakakakaaaaaaagaa
-aaagaaacacbMadaaaaaaaabJaaaaaeaaaaaaaaaaanaaaaaaaaaaaaaaaeaabYiqirgJacaaakakakakababeqabfTisahababakauauawfUawauauauauawauauauauakaMababahdQaheqababababeqeqabababakakakakaaaaaaaaaa
-acaaaaanaeaaaaaaaaaaaaagaaaaaaaaaaaaadagaaaeaaaaaaaaacacaabYbYiqggacacacakakakakaMaMewaMaMaMaMaMaMaMaMewdoaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMewaMaMaMaMaMakakakakakakakaaaeacaaaa
-aaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaacbJaaaaacbYbYghiugjacacakakakakakeuexaMaMaMaMakaMaMakakakaMaMaMaMakakewakesakakaMaMaMakakakaMakakaMewaMeweFevaMaMakakakakaaaaaaaaaa
-aaaaaaaaaabJaaaaaaaeaaaaacaaagaaaaaabJaaaaaaaaaaaaaaaaagbYbYbYacgsgsacbJakakakakakeuiwaMetaMakakakakakakakakaMaMewakakakaMaMakakakakakakakakezakaMaMaMaMaMeFeveAakakakakaMaaaaaaaaaa
-aaaaaaaaagaaaaaaaaaaanaaaaaaaaaaaaaaagaaaaaaaaagaaaaaaacbYbYaeaaaaaaaaaaakakakakakeueBckckclevaMakakakakeuexaMaMaMeFevakakakakakakaMaMaMakakakakeFexaMaMaMeFevakakaMakakakaaaaaaaaaa
-aaaaaaacaaaaaeaaacaaaabJaaaaeXaaaaaaaaaiaaaaaaaaaaaaaaaabYacaaaaaaaaaaaaakakakakakakeGeGeGeGakakakakaMakeueCckckckeEevakakakakakakesakakakakaMaMeueBckckckeEevaMaMakakakakaaaaacaiac
-aaaaaaaaaaaaaaaaaaagaaaaaaaaaaaiaaaaaaaaaaaaaebJaaaaaabYbYacaaaaagaaaaaaakakakakakakakakakakakakakakakakakeGeGeMeGeGaMaMakakakakakakakakakakaMakakeGeGeGeGeGaMaMakakaMakaMaaaaaaaaaa
+acacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabYbYbYacaaioireQakakakababababababahababakauauawauauauauauauawauauauauakakabababababababababababababababakeuakakaaaaaaaaaa
+adaaaeaaaaaebJaaaaaaaaaaaaaaaaaaaaaaaaacaaaabJaaaeaaaaaaaaaabYbYaaaaioireQakakakabaoapaqaraxaqasabakauazayaAaBbnaFaEbRaBbRaEaDauakakabaIaqaqaqaqbGabbOaGaqaHaqbZabakakakaMaaaaaaacac
+acaabJaaacacaaaaaaagaaaaacaaaaaebJaaaaaaaaaaaaaaaaaabJagacacbYbYbYacghireQakakakaJaCapaqaraqaqaLabaMauayayayaybnaycgbwaydVcgayauaMakahaCbSaCbTaqaqahaqaqaqaqaqaqahakakakakacaaaeaaaa
+aaaaaaaaaaaaaaaaaaaaaabJacacaaaaaaaaaaaaaaagaaaaaaaaaaacacaaacbYcabJioireQakakakdsduapaqaraqaqaCabaMauayayayaydWayayayayayayayauakakabdPaqaqaqaqaqdQaqaqaqaHaqaHdRakakakakaaaabJaaaa
+aaaaaaaeaabJaaagaaaaaaaaaaaeaaaaaaaeacbJaeaaaaaaaaaaaaaaaaaaacbYbYaaioireQakakakabdSaqaqararararabakauaycfecaybnayayayayayayaBauakakabdPaqaqdUdUdUahdXaqaqaqaqaqdRijakakaMaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaabYaaaaiuireQakakakdsaqaqaqdYaqdYaqabakauaycfercfbnayayayayayayayauakakabdUaqaqaCaCaCabeaaqaqaHaqaHahakakakakaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaacaeaaaaaaaaagaaaaaaaaaaacaaaaaaaaagaaaaaabYbYaaioiBaleQakakakdsebaqebaqaqaqaqabakauayayayaybnayayayayeIfrayauakakabedaqaqaCaCaCabeeaqaqaqaqaqabaMakakakaaaaacaaaa
+bJacaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaaeacaaaaaaacbMbYgjiCiraleQakakakabcEaqebaqaqaqcGabaMaucHayayaybncNayfRaBbRaEcSauejaMabcWaqaqelelcWabdleoepaHaqdnabakakakakaaaaaaagaa
+aaagaaacacbMadaaaaaaaabJaaaaaeaaaaaaaaaaanaaaaaaaaaaaaaaaeaabYiqiBiDalalakakakakababeqabfTisahababakauauawfUawauauauauawauauauauakaMababahdQaheqababababeqeqabababakakakakaaaaaaaaaa
+acaaaaanaeaaaaaaaaaaaaagaaaaaaaaaaaaadagaaaeaaaaaaaaacacaabYbYiqiralalalakakakakaMaMewaMaMaMaMaMaMaMaMewdoaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMewaMaMaMaMaMakakakakakakakaaaeacaaaa
+aaaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabJaaaaacbJaaaaacbYbYghiEiFalalakakakakakeuexaMaMaMaMakaMaMakakakaMaMaMaMakakewakesakakaMaMaMakakakaMakakaMewaMeweFevaMaMakakakakaaaaaaaaaa
+aaaaaaaaaabJaaaaaaaeaaaaacaaagaaaaaabJaaaaaaaaaaaaaaaaagbYbYbYacgsgtiralakakakakakeuiwaMetaMakakakakakakakakaMaMewakakakaMaMakakakakakakakakezakaMaMaMaMaMeFeveAakakakakaMaaaaaaaaaa
+aaaaaaaaagaaaaaaaaaaanaaaaaaaaaaaaaaagaaaaaaaaagaaaaaaacbYbYaeaaaaioiralakakakakakeueBckckclevaMakakakakeuexaMaMaMeFevakakakakakakaMaMaMakakakakeFexaMaMaMeFevakakaMakakakaaaaaaaaaa
+aaaaaaacaaaaaeaaacaaaabJaaaaeXaaaaaaaaaiaaaaaaaaaaaaaaaabYacaaaaaaioiEiFakakakakakakeGeGeGeGakakakakaMakeueCckckckeEevakakakakakakesakakakakaMaMeueBckckckeEevaMaMakakakakaaaaacaiac
+aaaaaaaaaaaaaaaaaaagaaaaaaaaaaaiaaaaaaaaaaaaaebJaaaaaabYbYacaaaaagaagJgJakakakakakakakakakakakakakakakakakeGeGeMeGeGaMaMakakakakakakakakakakaMakakeGeGeGeGeGaMaMakakaMakaMaaaaaaaaaa
 aaaaaaaaaabJaaaaaaaaaaaeaaaaaaaaacacaaaaaaaaaaacaaagaabYbYaaaaaaaaaaaaaaakakakakakakakakakakakakesesakakakakakakakakakakaMakakakakakakakakakaMaMaMaMaMakakakakakakakakakakaaaaaaaaac
-aaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaaaaaaaaaaacbYbYaaaaaaaaaaaaaaakakakakakakakakakakakakakaKaMakdBeieyakakaKakakdBeieyakaMakakesakakakakakakakakakesaMakakakakakakbJagaaaaaa
-aaaaaaaaaaaaadaaaabJaaaaacaaaaacaabJaaagaaaaaaaeaaaaacbYchaaaaaeaaaaaaaiakakakakakakakaMivakakakaMfzaMakimeDikakakilakakimeDikakakakakakakaMakakakakakakizakakakakakakakakacaaaaacaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacacacacakakakakakakakakakaMakakakakakakinfPixakakakaMakinfPixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
-aaacaaaaaaaaaaaaacaeaaaaagaaaaaaaaaaaaacacaaaaaaaaaaaeaabYbYacacacaaaaaaakakakakakakakakakakakakakakakakiyfMiAakakakakakiyfMiAakakakakakakakakakakakakakakakakakakakaMakaMaaaaaaacaa
-aaaaaaagaaaaacacbMaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaacaaaabYbYaeaaaaagaaaaakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakaaaaacaaaa
-aaaaaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaagaaaebYbYbYaaaaaaaaaaaaaeakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacaeaaaa
-aaaaaaaaacacaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaabJbJbYbYbYbJaaaaaaaaaaaaaaaaacaaaaaaaaacaaaaacaaaaaaaaaaacaaaaacaaaaacaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaeaaaaaaaaacaaaeacaaaaaaaaaaagaaaaaaacaaagaaacaaaaaabYbYacaaaaaaaaaaaabJaaaaaaaaaaaaacagaaaaacacaaaaaaaaaaaaaaaaaaacaaafaaaaagaaaaaaanaaaaaaaabMacbJaaaaaaaaaiaaaaaaaaanaaaaagaa
-aaaaaabMaaaaaaaaaaaaaaaaagaaaaaaaabJaaanaaaaaaaaaaaaagaabYbYaaaaaaaeaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaaacaaaaaeaabJaaaaaaaaaaaaaaacaaaaaaaaaeaaaaaaagaaaaaaaaaaaaaaacacaaaaaaaaaaaabJaa
-aaaaaaacagaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabYaaagaaaaaaaaaaagaaaaaaaaaaacaaaaaaaaaaaaadaaacacacaaacagaaaaaaaaaaaaaaacaaaaaaacaaaaaaaaaaaaaaagaaaaaaaaaaaaaafgaaaaaaaaaa
-aaaaaaacaaaaaaaaaaaaaaaaaaaaacaaaaaeaaaaaaaeaaaaaaaeaabYbYaaananaaaaaaacaaaaaaaeaaaaaaaaaaaaaeaaaaaaaaaabJaaaaaaaaaaaaaeaaaaaaaaaaaabLaaaaaaacaaaaaaacacaaaaaaaaaaaaaaaaaaaebJaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaabYbYbYacaeaaacacaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaabJaaaaaaaaaaaaaaaaaaaaagacaaaaanaaagacacaaaaaaaaaeaaaaacaaaeagaaaaaaaaaaaaaaaaaa
+aaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaaaaaaaaaaacbYbYaaaaaaaaaaiGiGakakakakakakakakakakakakakaKaMakdBeieyakakaKakakdBeieyakaMakakesakakakakakakakakakesaMakakakakakakbJagaaaaaa
+aaaaaaaaaaaaadaaaabJaaaaacaaaaacaabJaaagaaaaaaaeaaaaacbYchaaaaaeaaioiBiDakakakakakakakaMivakakakaMfzaMakimeDikakakilakakimeDikakakakakakakaMakakakakakakizakakakakakakakakacaaaaacaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaaabJaaaaacaabJacacbYbYaaaaacghiralakakakakakakakakakaMakakakakakakinfPixakakakaMakinfPixakakakaMakakakakakakakakakakaMakakakakakakakaaaaaaacaa
+aaacaaaaaaaaaaaaacaeaaaaagaaaaaaaaaaaaacacaaaaaaaaaaaeaabYbYacacacioiraleQakakakakakakakakakakakakakakakiyfMiAakakakakakiyfMiAakakakakakakakakakakakakakakakakakakakaMakaMaaaaaaacaa
+aaaaaaagaaaaacacbMaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaacaaaabYbYaeaaaaiHiraleQakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakaaaaacaaaa
+aaaaaaaaaaacaeaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaagaaaebYbYbYaaaaaaioiralalakakakakakakakakakakakakakakiIiJiJiJiKakakakiIiJiJiJiKakakakakakakakakakakakakakakakakakakakakakacacaeaaaa
+aaaaaaaaacacaaaaaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaabJbJbYbYbYbJaaaaioiralalalalalaaaaaaaaacaaaaacaaaaaaiLiMiMiMiNacaaaaiOiMiMiMiNaaaaaaaaaaaaacaaaaaaaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaeaaaaaaaaacaaaeacaaaaaaaaaaagaaaaaaacaaagaaacaaaaaabYbYacaaaaioiPalalalalalalalalalalalalalalalaliQiMiMiMiRalalaliQiMiMiMiNagaaaaaaanaaaaaaaabMacbJaaaaaaaaaiaaaaaaaaanaaaaagaa
+aaaaaabMaaaaaaaaaaaaaaaaagaaaaaaaabJaaanaaaaaaaaaaaaagaabYbYaaaaaaaeiTiPiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiUiMiMiMiViFiFiFiUiMiMiMiRalalalalalalalalalalalalalalalalalalalalalalalalalal
+aaaaaaacagaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabYaaagaaaaaaaagJiWgJgJgJgJgJgsgJgJgJgJgJgJiXgJiYiMiMiMiZiWgJgJjaiMiMiMiViFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiFiF
+aaaaaaacaaaaaaaaaaaaaaaaaaaaacaaaaaeaaaaaaaeaaaaaaaeaabYbYaaananaaaaaaacaaaaaaaeaaaaaaaaaaaaaeaaaaaaaaiLiMiMiMiNaaaaaajbiMiMiMjcgJgJjdgJgJgJgsgJgJgJgsgsgJgJgJgJgJgJgJgJgJjejfgJgJgJ
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaabYbYbYacaeaaacacaaaaaaaaaaaaaaaaaaaaaaaaacacacaaaabJaaaaaaaaaaaaaaaaiLiMiMiMiNaaanaaagacacaaaaaaaaaeaaaaacaaaeagaaaaaaaaaaaaaaaaaa
 aaaaaeaaaeaabJaaacacaaaaaeaaaaaaanaaaaagaaacacaaaabYbYacaaaaaafnaaaaagaaaaaeaaaaaaaaaaagaaaaaaacacagbMaaaaaaagaaaaaaacaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaaaaaaaaceXaaaabJaaaaaaaaanaaaa
 aaaaaaaaaaaaaaaaaeaaaaaaaaaaaaaabJaaaaaaaaaaaaagaaacbYaaaaaaaaaafnaafnfnfnaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagaaaaaaagaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaaaeaaaaaaaaaaaabYgCaaacagaaaaaafnfnaaaaaaagaaaaaaaaeXaaaaaaaaaaafaaaaaaaaaaaaaaaaalalaaaaaaaaaaaiaaaaaaaaaaaabJaaaabJaaaaaaaaaaaaaaaaagaaaaaaaebJ
