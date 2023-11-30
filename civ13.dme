@@ -1105,4 +1105,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\1943\khalkhyn_gol.dmm"
 // END_INCLUDE
