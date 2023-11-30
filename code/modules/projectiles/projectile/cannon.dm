@@ -61,9 +61,9 @@
 	var/turf/targloc = get_turf(target)
 	var/dx = targloc.x - launcher.x
 	var/dy = targloc.y - launcher.y
-	var/azimuth = Atan2(dx, dy) // N = 90
-	var/x1 = launcher.x + round(abs(4 * cos(azimuth))) * sign(cos(azimuth))
-	var/y1 = launcher.y + round(abs(4 * sin(azimuth))) * sign(sin(azimuth))
+	var/degree = Atan2(dx, dy) // N = 0
+	var/x1 = launcher.x + round(abs(4 * cos(degree))) * sign(cos(degree))
+	var/y1 = launcher.y + round(abs(4 * sin(degree))) * sign(sin(degree))
 	var/turf/curloc = locate(x1, y1, launcher.z)
 	if (!istype(targloc) || !istype(curloc))
 		qdel(src)
