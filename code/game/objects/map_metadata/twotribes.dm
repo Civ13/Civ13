@@ -22,13 +22,13 @@
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	battle_name = "Battle of the Two Tribes"
-	mission_start_message = "<font size=4>The <b>Red</b> and <b>Blue</b> tribes are engaged in battle, both attempting to capture the central shrine. Prepare for battle, it will begin in <b>8 minutes</b>!</font>"
+	mission_start_message = "<font size=4>The <b>Red</b> and <b>Blue</b> tribes are engaged in battle, both attempting to capture the central shrine. Prepare for battle, it will begin in <b>5 minutes</b>!</font>"
 
 	faction1 = BRITISH
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
-	grace_wall_timer = 6000
+	grace_wall_timer = 2400
 
 /obj/map_metadata/twotribes/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -41,7 +41,7 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 1200
 	else
-		return 3000 // 5 minutes
+		return 4800 // 8 minutes
 
 /obj/map_metadata/twotribes/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -83,7 +83,7 @@
 		return ""
 
 /obj/map_metadata/twotribes/reverse_cross_message(faction)
-	if (faction == BRITISH)
+	if (faction == ENGLISH)
 		return "<span class = 'userdanger'>The Red Tribe may no longer cross the invisible wall!</span>"
 	else if (faction == FRENCH)
 		return "<span class = 'userdanger'>The Blue Tribe may no longer cross the invisible wall!</span>"
