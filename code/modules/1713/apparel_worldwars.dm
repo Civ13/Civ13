@@ -268,6 +268,16 @@
 ////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet/ww2
 	health = 20
+/obj/item/clothing/head/helmet/ww2/japsakurahelm
+	name = "japanese sakura helmet"
+	desc = "A Adrian style japanese helmet, the top having a cherry blossom shaped vent."
+	icon_state = "sakura_helm"
+	item_state = "sakura_helm"
+	worn_state = "sakura_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 33, arrow = 25, gun = 8, energy = 15, bomb = 38, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/helmet/ww2/japhelm
 	name = "japanese helmet"
 	desc = "A typical rounded steel helmet."

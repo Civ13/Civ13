@@ -1945,16 +1945,16 @@
 /obj/item/weapon/can/filled
 	var/list/randbrand = list(
 		"Master Taislin", "Metsobeshi", "Old Man", "Welmert",
-		"McDonohugh", "McKellen's Delight",	"Freeman", "Kostas Finest",
+		"McDonohugh", "McKellen's Delight",	"Freeman", "Valithorento's Finest",
 		"Slowman", "Pajeet Special", "Toyoda", "Uma Delicia",
-		"Ooga's Cuisine", "Burner King"
+		"Ooga's Cuisine", "Burner King", "Kenobi Kabosh"
 	)
 	var/list/custcolor = list(
-		"#bb5865", "#66b985", "#f9e082", "#7694d0", "#f6a879", "#b88fd0", "#72cfcf", "#8b537a", 
-		"#bbdf8e", "#f5c5c5", "#5a8080", "#d4b4e8", "#b19f8a", "#f5f3d9", "#9c1414", "#9ed3b5", 
+		"#bb5865", "#66b985", "#f9e082", "#7694d0", "#f6a879", "#b88fd0", "#72cfcf", "#8b537a",
+		"#bbdf8e", "#f5c5c5", "#5a8080", "#d4b4e8", "#b19f8a", "#f5f3d9", "#9c1414", "#9ed3b5",
 		"#9e9f61", "#f6cfb5", "#282869", "#b3b3b3", "#f7f7f7", "#333333"
 	)
-		
+
 	var/list/filllist = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives,
 		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,
@@ -1993,6 +1993,19 @@
 		tlist += GS
 	return tlist
 
+/obj/item/weapon/can/filled/JPNMRE
+	list/randbrand = list(
+		"IJA", "IJN"
+	)
+	list/custcolor = list(
+		"#EAEAEA", "#8F1313"
+	)
+
+	list/filllist = list(
+		/obj/item/weapon/reagent_containers/food/snacks/boiledrice, /obj/item/weapon/reagent_containers/food/snacks/ramen,
+		/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,	/obj/item/weapon/reagent_containers/food/snacks/hardtack
+	)
+	icon_state = "can"
 ////////////////////////////////////////////////////////////////////////
 //  Compost bin  ///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
