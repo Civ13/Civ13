@@ -58,22 +58,16 @@
 
 
 /obj/item/projectile/shell/launch(atom/target, mob/user, obj/structure/cannon/modern/tank/launcher, var/x_offset=0, var/y_offset=0)
-	var/turf/curloc = null
-
-	switch(launcher.dir)
-		if (NORTH)
-			curloc = locate(launcher.x, launcher.y+4, launcher.z)
-		if (SOUTH)
-			curloc = locate(launcher.x, launcher.y-4, launcher.z)
-		if (WEST)
-			curloc = locate(launcher.x-4, launcher.y, launcher.z)
-		if (EAST)
-			curloc = locate(launcher.x+4, launcher.y, launcher.z)
 	var/turf/targloc = get_turf(target)
+	var/dx = targloc.x - launcher.x
+	var/dy = targloc.y - launcher.y
+	var/azimuth = Atan2(dx, dy) // N = 90
+	var/x1 = launcher.x + round(abs(4 * cos(azimuth))) * sign(cos(azimuth))
+	var/y1 = launcher.y + round(abs(4 * sin(azimuth))) * sign(sin(azimuth))
+	var/turf/curloc = locate(x1, y1, launcher.z)
 	if (!istype(targloc) || !istype(curloc))
 		qdel(src)
 		return TRUE
-
 	if (user)
 		firer = user
 		firer_original_dir = firer.dir
