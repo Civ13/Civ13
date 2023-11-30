@@ -718,7 +718,7 @@
 		L.set_face_dir()
 
 		if (!L.facing_dir)
-			L << "You are now not facing anything."
+			L << "You are no longer facing anything."
 			icon_state = "fixeye"
 		else
 			L << "You are now facing [dir2text(L.facing_dir)]."

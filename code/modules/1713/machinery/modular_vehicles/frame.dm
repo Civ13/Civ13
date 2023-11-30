@@ -541,11 +541,12 @@
 		if (F.axis == axis)
 			return
 	if (mwheel && prob(30))
-		if (mwheel.ntype == "wheel")
-			mwheel.broken = TRUE
-			visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-			new/obj/effect/effect/smoke/small(loc)
-			update_icon()
+		if (!(istype(mwheel, /obj/structure/vehicleparts/movement/armored)))
+			if (mwheel.ntype == "wheel")
+				mwheel.broken = TRUE
+				visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
+				new/obj/effect/effect/smoke/small(loc)
+				update_icon()
 	if (penloc)
 		if (istype(proj, /obj/item/projectile/shell))
 			var/obj/item/projectile/shell/PS = proj

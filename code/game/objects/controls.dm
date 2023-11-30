@@ -281,11 +281,12 @@
 /obj/structure/gate/ex_act(severity)
 	switch(severity)
 		if (1)
-			health -= 150
+			health -= maxhealth
 		if (2)
-			health -= 100
+			health -= rand(100, 300)
 		if (3)
-			health -= 50
+			health -= rand(50, 100)
+			
 	if (health <= 0)
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 		qdel(src)

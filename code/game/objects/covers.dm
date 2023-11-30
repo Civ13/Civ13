@@ -171,7 +171,7 @@
 		return
 
 /obj/covers/fire_act(temperature)
-	if (prob(20) && flammable == TRUE)
+	if (prob(20) && flammable)
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
 

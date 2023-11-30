@@ -293,7 +293,7 @@
 		playsound(loc, 'sound/effects/blowing_horn.ogg', 100, FALSE, 25)
 		user.visible_message(SPAN_WARNING("[user] sounds the [name]!"))
 		cooldown = TRUE
-		spawn(10 SECONDS)
+		spawn(6 SECONDS)
 			cooldown = FALSE
 		return
 
@@ -318,7 +318,7 @@
 		playsound(loc, whistle_sound, 100, FALSE, 5)
 		user.visible_message(SPAN_WARNING("[user] sounds the [name]!"))
 		cooldown = TRUE
-		spawn(10 SECONDS)
+		spawn(6 SECONDS)
 			cooldown = FALSE
 		return
 

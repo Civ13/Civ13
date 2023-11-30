@@ -487,23 +487,28 @@
 		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]")
 		return
 
-	else if ((istype(P, /obj/item/weapon/stamp) && !( istype(P, /obj/item/weapon/stamp/mail))))
-		if ((!in_range(src, usr) && loc != user && !( istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
+	else if ((istype(P, /obj/item/weapon/stamp) && !(istype(P, /obj/item/weapon/stamp/mail))))
+		if ((!in_range(src, usr) && loc != user && !(istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
 			return
-		playsound(src,'sound/effects/stamp_down.ogg',40,1)
-		var/image/stampoverlay = image('icons/stamps/overlay/overlays.dmi')
+		
+
+		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
 		stampoverlay.pixel_x = rand(-2, 2)
 		stampoverlay.pixel_y = rand(-3, 2)
-		stampoverlay.icon_state = "[P.icon_state]"
-		var/image/stampoverlay_paper = image("icons/stamps/dmi/[P.icon_state].dmi")
-		stampoverlay.icon_state = P.icon_state
-		stamps += "<img src='\ref[stampoverlay_paper.icon]'>"
+		stampoverlay.icon_state = "paper_[P.icon_state]"
+		var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
+		if (istype(P, /obj/item/weapon/stamp/mail))
+			stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
+		stampoverlay_paper.icon_state = P.icon_state
+		stamps += "<img src='\ref[stampoverlay_paper]'>"
+		
 		if(!stamped)
 			stamped = new
 		stamped += P.type
 		overlays += stampoverlay
 
-		user << "<span class='notice'>You stamp the paper with the [P.name].</span>"
+		playsound(src,'sound/effects/stamp_down.ogg', 70, TRUE)
+		to_chat(user, SPAN_NOTICE("You stamp the paper with the [P.name]."))
 
 	else if (istype(P, /obj/item/weapon/flame))
 		burnpaper(P, user)

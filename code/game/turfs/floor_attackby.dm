@@ -133,42 +133,46 @@
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
-
+		
 	else if (istype(C, /obj/item/weapon/reagent_containers/food/drinks))
 		if (user.a_intent == I_HARM)
 			if (istype(C, /obj/item/weapon/reagent_containers/food/drinks/bottle))
 				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = C
 				if (B.rag)
 					return
-			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
-			if (C.reagents.has_reagent("petroleum", 5))
-				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (C.reagents.has_reagent("gasoline", 5))
-				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (C.reagents.has_reagent("diesel", 10))
-				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (C.reagents.has_reagent("biodiesel", 10))
-				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (C.reagents.has_reagent("olive_oil", 15))
-				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (C.reagents.has_reagent("water", 75))
-				new/obj/effect/flooding(user.loc)
-			if (C.reagents.has_reagent("water", 50))
-				new/obj/effect/flooding(user.loc)
-			if (C.reagents.has_reagent("water", 25))
-				new/obj/effect/flooding(user.loc)
-			var/obj/item/weapon/reagent_containers/food/drinks/DK = C
-			DK.proper_spill(src, DK.reagents.total_volume)
-			C.reagents.clear_reagents()
-			C.update_icon()
-			C.reagents.del_reagent("cholera")
-			return
+			if (C.reagents && C.reagents.total_volume > 0)
+				visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
+				if (C.reagents.has_reagent("petroleum", 5))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("gasoline", 5))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("diesel", 10))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("biodiesel", 10))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("olive_oil", 15))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("water", 75))
+					new/obj/effect/flooding(user.loc)
+				if (C.reagents.has_reagent("water", 50))
+					new/obj/effect/flooding(user.loc)
+				if (C.reagents.has_reagent("water", 25))
+					new/obj/effect/flooding(user.loc)
+				var/obj/item/weapon/reagent_containers/food/drinks/DK = C
+				DK.proper_spill(src, DK.reagents.total_volume)
+				C.reagents.clear_reagents()
+				C.update_icon()
+				C.reagents.del_reagent("cholera")
+			else
+				usr << "<span class='warning'>\The [C] is empty.</span>"
+		return
+
 
 	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		var/obj/item/weapon/material/shovel/SH = C
-		if (H.a_intent != I_DISARM)
+		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
 					if (T.available_snow > 0)

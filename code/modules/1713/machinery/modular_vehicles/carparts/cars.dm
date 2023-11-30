@@ -531,7 +531,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/mercedes
@@ -597,9 +597,9 @@
 	desc = "A powered axis from a car."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	speeds = 7
+	speeds = 5
 	maxpower = 1000
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	turntimer = 6
 	reg_number = ""
 	color = "#ffffff"
@@ -618,7 +618,7 @@
 	icon_state = "axis_powered"
 	speeds = 5
 	maxpower = 800
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/volle/ambulance
