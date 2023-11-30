@@ -36,7 +36,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 270
+	var/degree = 0
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0
@@ -392,7 +392,7 @@
 			distance = max_distance
 
 	if (href_list["set_degree"])
-		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 270, N = 0, W = 90, S = 180)") as num
+		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 90, N = 0, W = 270, S = 180)") as num
 		if(degree < 0)
 			degree += 360
 		if(degree >= 360)
@@ -417,9 +417,9 @@
 			degree -= 360
 
 	// 360 = 0 north
-	// 90 west
+	// 270 west
 	// 180 south
-	// 270 east
+	// 90 east
 
 	target_coords()
 	update_scope()
@@ -427,11 +427,11 @@
 	if(degree >= 315 && degree < 45)
 		dir = NORTH
 	else if(degree >= 45 && degree < 135)
-		dir = WEST
+		dir = EAST
 	else if(degree >= 135 && degree < 225)
 		dir = SOUTH
-	else
-		dir = EAST
+	else if(degree >= 225 && degree < 315)
+		dir = WEST
 
 	if (href_list["toggle_scope"])
 		if(scope_mod == "Enabled")
@@ -883,18 +883,18 @@
 
 /obj/structure/cannon/proc/target_coords()
 	// round(abs(x)) * sign(x) - round to the nearest whole
-	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
-	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
+	target_x = round(abs(distance * sin(degree))) * sign(sin(degree))
+	target_y = round(abs(distance * cos(degree))) * sign(cos(degree))
 
 /obj/structure/cannon/proc/sway()
-	if(degree >= 45 && degree < 135)
-		return target_x
-	else if(degree >= 135 && degree < 225)
+	if(degree >= 315 && degree < 45)
+		return target_y
+	else if(degree >= 45 && degree < 135)
 		return target_y
 	else if(degree >= 225 && degree < 315)
-		return (-1 * target_x)
-	else
 		return (-1 * target_y)
+	else
+		return (-1 * target_x)
 
 /obj/structure/cannon/proc/update_scope()
 	src.overlays -= target_image
@@ -904,8 +904,8 @@
 	var/i
 	var/j = 4
 	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
-		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
+		var/point_x = round(abs(j * sin(degree))) * sign(sin(degree))
+		var/point_y = round(abs(j * cos(degree))) * sign(cos(degree))
 		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 		j++
 	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
@@ -923,7 +923,7 @@
 	switch(dir)
 		if (EAST)
 			dir = NORTH
-			degree = 90
+			degree = 0
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -931,7 +931,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
-			degree = 270
+			degree = 180
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -939,7 +939,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
-			degree = 180
+			degree = 270
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -947,7 +947,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
-			degree = 0
+			degree = 90
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -968,7 +968,7 @@
 	switch(dir)
 		if (EAST)
 			dir = SOUTH
-			degree = 270
+			degree = 180
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -976,7 +976,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
-			degree = 90
+			degree = 0
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -984,7 +984,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
-			degree = 0
+			degree = 90
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -992,7 +992,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
-			degree = 180
+			degree = 270
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
