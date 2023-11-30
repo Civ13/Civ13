@@ -392,7 +392,7 @@
 			distance = max_distance
 
 	if (href_list["set_degree"])
-		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
+		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 270, N = 0, W = 90, S = 180)") as num
 		if(degree < 0)
 			degree += 360
 		if(degree >= 360)
@@ -416,19 +416,19 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 90 north
-	// 180 west
-	// 270 south
-	// 360 = 0 east
+	// 360 = 0 north
+	// 90 west
+	// 180 south
+	// 270 east
 
 	target_coords()
 	update_scope()
 
-	if(degree >= 45 && degree < 135)
+	if(degree >= 315 && degree < 45)
 		dir = NORTH
-	else if(degree >= 135 && degree < 225)
+	else if(degree >= 45 && degree < 135)
 		dir = WEST
-	else if(degree >= 225 && degree < 315)
+	else if(degree >= 135 && degree < 225)
 		dir = SOUTH
 	else
 		dir = EAST
