@@ -933,7 +933,7 @@
 
 /obj/item/missile/explosive/atgm
 	icon_state = "atgm_missile"
-	var/num_fragments = 40
+	num_fragments = 40
 	heavy_armor_penetration = 850 // no chance to survive
 	throw_impact(atom/hit_atom)
 		if(primed)
