@@ -315,8 +315,12 @@
 	caliber = 85
 	anchored = TRUE
 
+/obj/structure/cannon/modern/tank/russian85/course
+	desc = "a 85mm SU-85 Russian course cannon."
+	course = TRUE
+
 /obj/structure/cannon/modern/tank/russian85/su85
-	desc = "a 85mm SU-85 russian tank-based cannon."
+	desc = "a 85mm SU-85 Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	firedelay = 1
 	maxrange = 35
@@ -327,7 +331,7 @@
 
 /obj/structure/cannon/modern/tank/russian85/field
 	name = "85mm M1939 52-K cannon"
-	desc = "a 85mm russian anti-air cannon converted for anti-tank use."
+	desc = "a 85mm Russian anti-air cannon converted for anti-tank use."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxrange = 38
@@ -345,6 +349,10 @@
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
+
+/obj/structure/cannon/modern/tank/russian100/course
+	desc = "a 100mm SU-100 Russian course cannon."
+	course = TRUE
 
 /obj/structure/cannon/mortar
 	name = "mortar"

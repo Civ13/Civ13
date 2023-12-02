@@ -43,6 +43,8 @@
 	var/target_y = -5
 	var/list/image/target_image = new/list(20)
 
+	var/course = FALSE
+
 /obj/structure/cannon/verb/assemble()
 	set category = null
 	set name = "Assemble"
@@ -412,19 +414,32 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 360 north = 0 north
-	// 90 west
-	// 180 south
-	// 270
+	// 90 north
+	// 180 west
+	// 270 south
+	// 0 east
+
+	if (course)
+		if (dir == NORTH)
+			degree = clamp(degree, 45, 134)
+		else if (dir == WEST)
+			degree = clamp(degree, 135, 224)
+		else if (dir == SOUTH)
+			degree = clamp(degree, 225, 315)
+		else
+			if (degree >= 45)
+				degree = 44
+			if (degree < 315)
+				degree = 315
 
 	target_coords()
 	update_scope()
 
-	if(degree >= 315)
+	if(degree >= 45 && degree < 135)
 		dir = NORTH
-	else if(degree >= 45 && degree < 135)
-		dir = WEST
 	else if(degree >= 135 && degree < 225)
+		dir = WEST
+	else if(degree >= 225 && degree < 315)
 		dir = SOUTH
 	else
 		dir = EAST
@@ -878,15 +893,11 @@
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/cannon/proc/target_coords()
-	// round(abs(x)) * sign(x) - round to the nearest whole
-	var/actual_degree = degree + 90
-	if (actual_degree >= 360)  
-		actual_degree -= 360
-	target_x = round(abs(distance * cos(actual_degree))) * sign(cos(actual_degree))
-	target_y = round(abs(distance * sin(actual_degree))) * sign(sin(actual_degree))
+	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
+	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
 
 /obj/structure/cannon/proc/sway()
-	if(degree >= 315 && degree < 45)
+	if(degree > 315 || degree < 45)
 		return target_x
 	else if(degree >= 45 && degree < 135)
 		return target_y
@@ -895,6 +906,19 @@
 	else
 		return (-1 * target_y)
 
+/obj/structure/cannon/proc/rotate_to(var/new_dir)
+	if (new_dir == NORTH)
+		degree = 90
+	else if (new_dir == WEST)
+		degree = 180
+	else if (new_dir == SOUTH)
+		degree = 270
+	else
+		degree = 0
+	dir = new_dir
+	target_coords()
+	update_scope()
+
 /obj/structure/cannon/proc/update_scope()
 	src.overlays -= target_image
 	del(target_image)
@@ -902,13 +926,9 @@
 	target_coords()
 	var/i
 	var/j = 4
-
-	var/actual_degree = degree + 90
-	if (actual_degree >= 360)  
-		actual_degree -= 360
 	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(actual_degree))) * sign(cos(actual_degree))
-		var/point_y = round(abs(j * sin(actual_degree))) * sign(sin(actual_degree))
+		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
+		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
 		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 		j++
 	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
@@ -921,6 +941,10 @@
 	set src in range(2, usr)
 
 	if (!istype(usr, /mob/living))
+		return
+
+	if (course)
+		user << "<span class = 'danger'>You can't fire yet.</span>"
 		return
 
 	switch(dir)
@@ -966,6 +990,10 @@
 	set src in range(2, usr)
 
 	if (!istype(usr, /mob/living))
+		return
+
+	if (course)
+		user << "<span class = 'danger'>You can't fire yet.</span>"
 		return
 
 	switch(dir)
