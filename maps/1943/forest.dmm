@@ -623,7 +623,7 @@
 "lY" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/trench,/area/caribbean/forest)
 "lZ" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full85,/turf/floor/plating/road,/area/caribbean)
 "ma" = (/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/turf/floor/plating/road,/area/caribbean)
-"mb" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean)
+"mb" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t3485,/turf/floor/plating/road,/area/caribbean)
 "mc" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "md" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "me" = (/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)

@@ -315,9 +315,6 @@
 	caliber = 85
 	anchored = TRUE
 
-/obj/structure/cannon/modern/tank/russian85/course
-	course = TRUE
-
 /obj/structure/cannon/modern/tank/russian85/su85
 	desc = "a 85mm SU-85 russian tank-based cannon."
 	icon_state = "tank_cannon"
@@ -348,9 +345,6 @@
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
-
-/obj/structure/cannon/modern/tank/russian100/course
-	course = TRUE
 
 /obj/structure/cannon/mortar
 	name = "mortar"

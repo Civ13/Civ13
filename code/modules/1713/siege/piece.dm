@@ -43,8 +43,6 @@
 	var/target_y = -5
 	var/list/image/target_image = new/list(20)
 
-	var/course = FALSE
-
 /obj/structure/cannon/verb/assemble()
 	set category = null
 	set name = "Assemble"
@@ -414,42 +412,19 @@
 		if(degree >= 360)
 			degree -= 360
 
-<<<<<<< Updated upstream
 	// 360 north = 0 north
 	// 90 west
 	// 180 south
 	// 270
-=======
-	// 90 north
-	// 180 west
-	// 270 south
-	// 0 east
->>>>>>> Stashed changes
 
 	target_coords()
 	update_scope()
 
-<<<<<<< Updated upstream
 	if(degree >= 315)
-=======
-	if (course && dir == NORTH)
-		degree = clamp(degree, 45, 134)
-	else if (course && dir == WEST)
-		degree = clamp(degree, 135, 224)
-	else if (course && dir == SOUTH)
-		degree = clamp(degree, 225, 315)
-	else
-		if (degree >= 45)
-			degree = 44
-		if (degree < 315)
-			degree = 315
-
-	if(degree >= 45 && degree < 135)
->>>>>>> Stashed changes
 		dir = NORTH
-	else if(degree >= 135 && degree < 225)
+	else if(degree >= 45 && degree < 135)
 		dir = WEST
-	else if(degree >= 225 && degree < 315)
+	else if(degree >= 135 && degree < 225)
 		dir = SOUTH
 	else
 		dir = EAST
@@ -926,7 +901,6 @@
 	target_image = new/list(distance)
 	target_coords()
 	var/i
-<<<<<<< Updated upstream
 	var/j = 4
 
 	var/actual_degree = degree + 90
@@ -935,30 +909,11 @@
 	for(i = 1, i <= distance - 4, i++)
 		var/point_x = round(abs(j * cos(actual_degree))) * sign(cos(actual_degree))
 		var/point_y = round(abs(j * sin(actual_degree))) * sign(sin(actual_degree))
-=======
-	var/j = 3
-	for(i = 1, i <= distance - 3, i++)
-		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
-		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
->>>>>>> Stashed changes
 		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 		j++
 	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
 	if (scope_mod == "Enabled")
 		src.overlays += target_image
-
-/obj/structure/cannon/modern/tank/proc/rotate_to(var/new_dir)
-	if (new_dir == NORTH)
-		degree = 90
-	else if (new_dir == WEST)
-		degree = 180
-	else if (new_dir == SOUTH)
-		degree = 270
-	else
-		degree = 0
-	dir = new_dir
-	target_coords()
-	update_scope()
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -968,21 +923,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		usr << "<span class = 'danger'>Course cannon can't be rotated</span>"
-		return
-
-	degree += 90
-	if (degree >= 360)
-		degree -=360
-
 	switch(dir)
 		if (EAST)
 			dir = NORTH
-<<<<<<< Updated upstream
 			degree = 0
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -990,10 +934,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
-<<<<<<< Updated upstream
 			degree = 180
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -1001,10 +942,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
-<<<<<<< Updated upstream
 			degree = 270
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -1012,10 +950,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
-<<<<<<< Updated upstream
 			degree = 90
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -1033,21 +968,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		usr << "<span class = 'danger'>Course cannon can't be rotated</span>"
-		return
-
-	degree -= 90
-	if (degree < 0)
-		degree +=360
-
 	switch(dir)
 		if (EAST)
 			dir = SOUTH
-<<<<<<< Updated upstream
 			degree = 180
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -1055,10 +979,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
-<<<<<<< Updated upstream
 			degree = 0
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -1066,10 +987,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
-<<<<<<< Updated upstream
 			degree = 90
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -1077,10 +995,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
-<<<<<<< Updated upstream
 			degree = 270
-=======
->>>>>>> Stashed changes
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
