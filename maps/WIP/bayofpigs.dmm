@@ -27,7 +27,7 @@
 "aA" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "aB" = (/turf/floor/plating/road,/area/caribbean)
 "aC" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/plating/road,/area/caribbean)
-"aD" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t3485,/turf/floor/plating/road,/area/caribbean)
+"aD" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean)
 "aE" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/plating/road,/area/caribbean)
 "aF" = (/obj/structure/window/classic/portholefull,/obj/structure/barricade/steel,/obj/structure/curtain/leather,/turf/floor/plating/steel,/area/caribbean/roofed)
 "aG" = (/obj/covers/cement_wall,/turf/floor/plating/steel,/area/caribbean)

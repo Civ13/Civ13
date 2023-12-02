@@ -121,6 +121,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t34/t3485
+	name = "T-34-85"
 	turret_type = "t3485_turret"
 	color = "#4a5243"
 
