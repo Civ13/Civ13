@@ -172,11 +172,6 @@
 	name = "Area map"
 	img = image(icon = 'icons/minimaps.dmi', icon_state = "clash_map")
 
-/obj/item/weapon/map_tdm/smallingrad/New()
-	desc = "A portable map of the West coast of the Stalingrad."
-	name = "Stalingrad region map"
-	img = image(icon = 'icons/minimaps.dmi', icon_state = "smallingrad_map")
-
 ///MAP BOARD///
 
 /obj/structure/sign/map_board
