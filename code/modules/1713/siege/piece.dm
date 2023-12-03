@@ -36,7 +36,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 180
+	var/degree = 270
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0

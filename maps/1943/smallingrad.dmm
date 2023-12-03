@@ -92,6 +92,8 @@
 "bN" = (/obj/structure/window/barrier/sandbag,/turf/floor/wood,/area/caribbean/no_mans_land/capturable/four)
 "bO" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; pixel_y = 0},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
 "bP" = (/obj/structure/barbwire,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/capturable/four)
+"bQ" = (/obj/item/weapon/map_tdm/smallingrad,/turf/floor/dirt/winter,/area/caribbean/nomads/forest/snow)
+"bR" = (/obj/item/weapon/map_tdm/smallingrad,/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "bV" = (/obj/item/weapon/material/kitchen/rollingpin,/turf/floor/dirt/burned,/area/caribbean/houses)
 "cb" = (/obj/structure/wild/tree/live_tree/pine/snow,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "cc" = (/mob/living/simple_animal/mouse/white,/turf/floor/wood,/area/caribbean/nomads/forest/snow)
@@ -875,7 +877,7 @@ qnqnqnveqnqnqnqnqnqnqnRlRlRlRlRlRlRlRlRlRlRlRlRlRlRlRlqnqnveqnqnqnqnqnqnqndnhGai
 qnaaqeqeqeqeqeqeqeqeqeRpaKaLaLaLaLaLaLaLaLaLaLaLaLaKRpqeqeqeqeqeqeqeqeqnvednhGaiaujUjUauai
 qnqeqeafafafafafafafdqaPaMWxWGWKWKWLWGWGWGWGWGWGWNaMaPafafafafafafqeqeqnqndnhGaiaiaiaiaiai
 qnqeafdqdqafasafafWYafaNaNXdXZYeasafafXZYeafafafDzaOaPYmafafPvPvPvPvqeqnqndnhGhGhGhGhGhGhG
-qnqeafafafYmafafafafdqaNaPXdasasYsasasasafYDafZYDzaPaPafafafafafafafqepMpMbAhGbBazazazbBbB
+qnqeafafafYmafafafafdqaNaPXdasbQYsasasbQafYDbRZYDzaPaPafafafafafafafqepMpMbAhGbBazazazbBbB
 qnqeafafafafafafdqdqafaPaNafaQEyEyEyEyEyaQasafEhafaPaTasasafafafafafrPweIinOlwPvPvafPvafPv
 qnqeafafafafdqdqafafafaPaPdqaQFtFtWIWIFtSjasafrqafaPaPafafafWYafafafUtJCqnQUlZPvPvPvafafYm
 qnNzdqafafoWafafafoWafaPaPdqaSNlUDUDUDUDSjaQafrqafaTaTasasasasafafCTGoUfUfUfGoIYafPvafafaf
