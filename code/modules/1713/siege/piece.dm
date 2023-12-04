@@ -36,7 +36,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 180
+	var/degree = 270
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0
@@ -390,7 +390,8 @@
 		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["set_degree"])
-		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
+		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
+		degree = azimuth + 90
 		if(degree < 0)
 			degree += 360
 		if(degree >= 360)
@@ -414,7 +415,7 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 90 north
+	// 90 north NOT AZIMUTH
 	// 180 west
 	// 270 south
 	// 0 east
@@ -852,7 +853,9 @@
 /obj/structure/cannon/proc/do_html(var/mob/m)
 
 	if (m)
-
+		var/azimuth = degree - 90
+		if (azimuth >= 360)
+			azimuth -= 360
 		max_distance = maxrange
 
 		m << browse({"
@@ -879,7 +882,7 @@
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
 		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[degree] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
+		Increase/Decrease azimuth: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: <a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a><br><br>
 		<br>
 		<center>
