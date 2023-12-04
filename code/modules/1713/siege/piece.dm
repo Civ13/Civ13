@@ -36,7 +36,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 270
+	var/degree = 180
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0
@@ -371,25 +371,21 @@
 
 	if (href_list["set_distance"])
 		distance = input(user, "Set Distance? (From [5] to [maxrange] meters") as num
-		distance = clamp(5, distance, max_distance)
+		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["distance_1minus"])
 		distance = distance - 1
-		if(distance < 5)
-			distance = 5
+		distance = clamp(distance, 5, max_distance)
 	if (href_list["distance_10minus"])
 		distance = distance - 10
-		if(distance < 5)
-			distance = 5
+		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["distance_1plus"])
 		distance = distance + 1
-		if(distance > max_distance)
-			distance = max_distance
+		distance = clamp(distance, 5, max_distance)
 	if (href_list["distance_10plus"])
 		distance = distance + 10
-		if(distance > max_distance)
-			distance = max_distance
+		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["set_degree"])
 		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
@@ -416,19 +412,19 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 90 north
-	// 180 west
-	// 270 south
-	// 360 = 0 east
+	// 360 north = 0 north
+	// 90 west
+	// 180 south
+	// 270
 
 	target_coords()
 	update_scope()
 
-	if(degree >= 45 && degree < 135)
+	if(degree >= 315)
 		dir = NORTH
-	else if(degree >= 135 && degree < 225)
+	else if(degree >= 45 && degree < 135)
 		dir = WEST
-	else if(degree >= 225 && degree < 315)
+	else if(degree >= 135 && degree < 225)
 		dir = SOUTH
 	else
 		dir = EAST
@@ -437,10 +433,10 @@
 		if(scope_mod == "Enabled")
 			scope_mod = "Disabled"
 			src.overlays -= target_image
-			user << "<span class = 'danger'>Scope disabled</span>"
+			to_chat(user, SPAN_DANGER("Scope disabled"))
 		else
 			scope_mod = "Enabled"
-			user << "<span class = 'danger'>Scope enabled</span>"
+			to_chat(user,  SPAN_DANGER("Scope enabled"))
 			update_scope()
 
 	if (href_list["fire"])
@@ -883,15 +879,18 @@
 
 /obj/structure/cannon/proc/target_coords()
 	// round(abs(x)) * sign(x) - round to the nearest whole
-	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
-	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
+	var/actual_degree = degree + 90
+	if (actual_degree >= 360)  
+		actual_degree -= 360
+	target_x = round(abs(distance * cos(actual_degree))) * sign(cos(actual_degree))
+	target_y = round(abs(distance * sin(actual_degree))) * sign(sin(actual_degree))
 
 /obj/structure/cannon/proc/sway()
-	if(degree >= 45 && degree < 135)
+	if(degree >= 315 && degree < 45)
 		return target_x
-	else if(degree >= 135 && degree < 225)
+	else if(degree >= 45 && degree < 135)
 		return target_y
-	else if(degree >= 225 && degree < 315)
+	else if(degree >= 135 && degree < 225)
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
@@ -903,9 +902,13 @@
 	target_coords()
 	var/i
 	var/j = 4
+
+	var/actual_degree = degree + 90
+	if (actual_degree >= 360)  
+		actual_degree -= 360
 	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
-		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
+		var/point_x = round(abs(j * cos(actual_degree))) * sign(cos(actual_degree))
+		var/point_y = round(abs(j * sin(actual_degree))) * sign(sin(actual_degree))
 		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 		j++
 	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
@@ -923,7 +926,7 @@
 	switch(dir)
 		if (EAST)
 			dir = NORTH
-			degree = 90
+			degree = 0
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -931,7 +934,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = SOUTH
-			degree = 270
+			degree = 180
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -939,7 +942,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = WEST
-			degree = 180
+			degree = 270
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -947,7 +950,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = EAST
-			degree = 0
+			degree = 90
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -968,7 +971,7 @@
 	switch(dir)
 		if (EAST)
 			dir = SOUTH
-			degree = 270
+			degree = 180
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -976,7 +979,7 @@
 				icon_state = "cannon"
 		if (WEST)
 			dir = NORTH
-			degree = 90
+			degree = 0
 			if (spritemod)
 				bound_height = 64
 				bound_width = 32
@@ -984,7 +987,7 @@
 				icon_state = "cannon"
 		if (NORTH)
 			dir = EAST
-			degree = 0
+			degree = 90
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
@@ -992,7 +995,7 @@
 				icon_state = "cannon"
 		if (SOUTH)
 			dir = WEST
-			degree = 180
+			degree = 270
 			if (spritemod)
 				bound_height = 32
 				bound_width = 64
