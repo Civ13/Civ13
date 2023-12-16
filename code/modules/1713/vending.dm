@@ -348,6 +348,23 @@
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
 	)
 
+/obj/structure/vending/chineseapparel/early
+	name = "Chinese apparel rack"
+	desc = "Basic wear for soldiers of the Chinese Army."
+	icon_state = "apparel_china"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/ww2/chiuni = 15,
+		/obj/item/clothing/under/ww2/chiuni2 = 15,
+		/obj/item/clothing/head/ww2/chicap = 15,
+		/obj/item/clothing/head/ww2/chicap2 = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/material/shovel/trench = 10,
+		/obj/item/flashlight/militarylight/alt = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+	)
+
 /obj/structure/vending/usa_apparel_ww2
 	name = "US Army apparel rack"
 	desc = "Basic wear for soldiers of the US Army."

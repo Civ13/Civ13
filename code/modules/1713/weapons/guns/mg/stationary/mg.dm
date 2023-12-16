@@ -130,6 +130,20 @@
 		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
 
+/obj/item/weapon/gun/projectile/automatic/stationary/vickers/type24
+	name = "Type 24 machine gun"
+	desc = "A water-cooled heavy machinegun. Chambered in 7.92x57mm mauser rounds."
+	icon_state = "vickers"
+	base_icon = "vickers"
+	caliber = "a792x57_weak"
+	fire_sound = 'sound/weapons/guns/fire/Vickers.ogg'
+	magazine_type = /obj/item/ammo_magazine/mg08
+	good_mags = list(/obj/item/ammo_magazine/mg08)
+	firemodes = list(
+		list(name = "full auto", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.0, 1.1, 1.2), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
+
 /obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914
 	name = "Hotchkiss M1914 machine gun"
 	desc = "A french heavy machinegun. Chambered in 8x50mm Lebel."
@@ -167,6 +181,107 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/type98/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
+/obj/structure/type92tripod
+	name = "Type 92 Tripod"
+	desc = "A tripod for the Type 92 HMG. Slap the gun on it to make use of it."
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "type92hmg_stand"
+	anchored = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+
+/obj/structure/type92tripod/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (istype(W, /obj/item/weapon/type92hmg))
+		if (do_after(H, 20, H.loc) && src)
+			new /obj/item/weapon/gun/projectile/automatic/stationary/type98(src.loc)
+			qdel(src)
+			qdel(W)
+			visible_message("<span class='danger'>[H] starts assembling the Type 92 HMG.</span>", "<span class='danger'>You start assembling the Type 92 HMG.</span>")
+			return
+	else
+		to_chat(usr, SPAN_WARNING("You cant put that on the tripod!"))
+		return
+
+/obj/structure/type92tripod/attack_hand(var/mob/living/human/H as mob)
+	if (H.l_hand && H.r_hand)
+		to_chat(H, SPAN_WARNING("You need to have a hand free to do this."))
+		return
+	H.face_atom(src)
+	visible_message(SPAN_WARNING("[H] starts to retrieve the [src]."))
+	if (do_after(H, 20, H.loc) && src)
+		H.put_in_any_hand_if_possible(new /obj/item/weapon/type92tripod, prioritize_active_hand = TRUE)
+		qdel(src)
+		visible_message(SPAN_WARNING("[H] grabs the [src]."))
+		return
+
+	visible_message(SPAN_WARNING("[usr] starts to disassemble the [src]."))
+/obj/item/weapon/type92tripod
+	name = "Type 92 HMG tripod"
+	desc = "Used to make gun emplacements"
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "tripod"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_PAINFUL
+	throwforce = WEAPON_FORCE_NORMAL
+	item_state = "tripod"
+	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.3
+
+	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
+/obj/item/weapon/type92tripod/attack_self(mob/user)
+	if (ishuman(user))
+		var/turf/targetfloor = get_turf(get_step(user, user.dir))
+		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
+			to_chat(usr, SPAN_WARNING("You cant place this here!."))
+			return
+		else
+			var/mob/living/human/H = user
+			visible_message("<span class='danger'>[H] starts placing the Type 92 Tripod.</span>", "<span class='danger'>You start placing the Type 92 Tripod.</span>")
+			if (do_after(H, 20, H.loc) && src)
+				qdel(src)
+				new/obj/structure/type92tripod(get_step(H, H.dir), H)
+				visible_message("<span class='danger'>[user] finishes placing the Type 92 Tripod.</span>")
+				return
+
+/obj/item/weapon/type92hmg
+	name = "Dismounted Type 92 HMG"
+	desc = "Slap this on a Type 92 Tripod to assemble the weapon. It's useless otherwise."
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "type92hmg_item"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_PAINFUL
+	throwforce = WEAPON_FORCE_NORMAL
+	item_state = "type92hmg_item"
+	w_class = ITEM_SIZE_HUGE
+	slowdown = 0.6
+
+	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
+
+/obj/item/weapon/gun/projectile/automatic/stationary/type98/verb/disassemble()
+	set category = null
+	set name = "Disassemble"
+	set src in range(1, usr)
+	if (usr.l_hand && usr.r_hand)
+		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
+		return
+	usr.face_atom(src)
+
+	visible_message(SPAN_WARNING("[usr] starts to disassemble the [src]."))
+	if (do_after(usr, 40, get_turf(usr)))
+		if (src.ammo_magazine)
+			unload_ammo(usr)
+			new /obj/item/weapon/type92tripod(src.loc)
+			new /obj/item/weapon/type92hmg(src.loc)
+			qdel(src)
+			return
+		else
+			usr.put_in_any_hand_if_possible(new /obj/item/weapon/type92hmg, prioritize_active_hand = TRUE)
+			new /obj/item/weapon/type92tripod(src.loc)
+			qdel(src)
+			visible_message(SPAN_WARNING("[usr] disassembles the [src]."))
+			return
+
+
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30
 	name = "Breda 30 machine gun"
 	desc = "The Fucile Mitragliatore Breda modello 30 is a Italian light machinegun that entered service in 1930. The design of the gun is rather impractical and often makes for long reload times. Chambered in 6.5x52mm Carcano."
@@ -183,7 +298,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 20
 	load_delay = 2 SECONDS
-	
+
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
@@ -444,7 +559,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo)) // If our ammo type is correct start a delay and load our ammo
-		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE)) 
+		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.remove_from_mob(I)
 			I.loc = src
 			rockets += I
@@ -521,7 +636,7 @@
 				rockets -= I
 				return M
 			return null
-	
+
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
 	switch (firing_mode)
 		if (0) // Autocannon

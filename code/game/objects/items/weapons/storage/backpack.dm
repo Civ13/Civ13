@@ -129,10 +129,13 @@
 		new /obj/item/clothing/head/helmet/ww2/japhelm(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
+		new /obj/item/weapon/can/JPNMRE(src)
+		new /obj/item/weapon/can/JPNMRE(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
 	name = "japanese ammo crate"
-	desc = "It's a crate equipped with straps for carrying, often used by assistant gunners."
+	desc = "It's a crate equipped with straps for carrying, often used by ammo bearers."
 	icon_state = "ammo_crate"
 	item_state = "ammo_crate"
 	worn_state = "ammo_crate"
@@ -154,6 +157,12 @@
 		..()
 		for (var/i=1, i<= 10, i++)
 			new /obj/item/ammo_magazine/type99(src)
+
+/obj/item/weapon/storage/backpack/ww2/jap/ammo_crate/full96
+	New()
+		..()
+		for (var/i=1, i<= 10, i++)
+			new /obj/item/ammo_magazine/type96(src)
 
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "backpack"

@@ -16,7 +16,7 @@
 	desc = "supports wheels."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	var/vehicle_size = "3x4"
+	var/tile_size = "32x32"
 	var/vehicle_type = "car"
 	var/list/wheels = list()
 	var/currentspeed = 0
@@ -42,6 +42,8 @@
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
 	var/turret_type = "tank_turret"
+	var/turret_x = 0
+	var/turret_y = 0
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -97,7 +99,7 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	turret_type = "is3_turret"
-	vehicle_size = "3x5"
+	tile_size = "96x96"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -111,24 +113,16 @@
 	reg_number = ""
 	color = "#3d5931"
 	turret_type = "t34_turret"
+	tile_size = "96x96"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-/obj/structure/vehicleparts/axis/heavy/t3485
-	name = "T-34-85"
-	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
+/obj/structure/vehicleparts/axis/heavy/t34/t3485
 	turret_type = "t3485_turret"
-	reg_number = ""
 	color = "#4a5243"
-	New()
-		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/su100
 	name = "SU-100"
@@ -137,11 +131,15 @@
 	reg_number = ""
 	color = "#4a5243"
 	turret_type = "su100_turret"
+	tile_size = "96x96"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/su100/su85m
+	name = "SU-85M"
 
 /obj/structure/vehicleparts/axis/heavy/bt7
 	name = "BT-7"
@@ -188,7 +186,7 @@
 	reg_number = ""
 	color = "#4a5243"
 	turret_type = "none"
-	vehicle_size = "2x4"
+	tile_size = "96x96"
 	vehicle_type = "apc"
 	New()
 		..()
@@ -202,7 +200,6 @@
 	speedlist = list(1=14,2=10,3=8)
 	reg_number = ""
 	turret_type = "none"
-	vehicle_size = "3x4"
 	color = "#939276"
 	vehicle_type = "apc"
 	New()
@@ -218,8 +215,10 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "bmd1_turret"
-	vehicle_size = "2x3"
+	tile_size = "96x96"
 	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -233,8 +232,10 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "bmd2_turret"
-	vehicle_size = "2x3"
+	tile_size = "96x96"
 	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -251,8 +252,10 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "btr_turret"
-	vehicle_size = "2x4"
+	tile_size = "96x96"
 	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 0
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -269,21 +272,9 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	turret_type = "cv90_turret"
-	vehicle_size = "2x4_non96x96"
 	vehicle_type = "apc"
-
-/obj/structure/vehicleparts/axis/heavy/t3485
-	name = "T-34-85"
-	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
-	turret_type = "t3485_turret"
-	reg_number = ""
-	color = "#3d5931"
-	New()
-		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+	turret_x = 16
+	turret_y = 16
 
 /obj/structure/vehicleparts/axis/heavy/t72
 	name = "T-72"
@@ -409,7 +400,6 @@
 	reg_number = ""
 	color = "#D79E57"
 	turret_type = ""
-	vehicle_size = "2x3"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
@@ -434,8 +424,10 @@
 	reg_number = ""
 	color = "#555346"
 	turret_type = "bmd2_turret"
-	vehicle_size = "2x3"
+	tile_size = "96x96"
 	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 16
 
 /obj/structure/vehicleparts/axis/heavy/t90a
 	name = "T-90A"

@@ -96,7 +96,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
-	nutriment_desc = list("noodles" = 1, "potato" = 1, "meat" = 1)
+	nutriment_desc = list("noodles" = 3)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian
 	name = "Russian MRE: Potatoes"

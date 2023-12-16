@@ -1945,16 +1945,16 @@
 /obj/item/weapon/can/filled
 	var/list/randbrand = list(
 		"Master Taislin", "Metsobeshi", "Old Man", "Welmert",
-		"McDonohugh", "McKellen's Delight",	"Freeman", "Kostas Finest",
+		"McDonohugh", "McKellen's Delight",	"Freeman", "Valithorento's Finest",
 		"Slowman", "Pajeet Special", "Toyoda", "Uma Delicia",
-		"Ooga's Cuisine", "Burner King"
+		"Ooga's Cuisine", "Burner King", "Kenobi Kabosh"
 	)
 	var/list/custcolor = list(
-		"#bb5865", "#66b985", "#f9e082", "#7694d0", "#f6a879", "#b88fd0", "#72cfcf", "#8b537a", 
-		"#bbdf8e", "#f5c5c5", "#5a8080", "#d4b4e8", "#b19f8a", "#f5f3d9", "#9c1414", "#9ed3b5", 
+		"#bb5865", "#66b985", "#f9e082", "#7694d0", "#f6a879", "#b88fd0", "#72cfcf", "#8b537a",
+		"#bbdf8e", "#f5c5c5", "#5a8080", "#d4b4e8", "#b19f8a", "#f5f3d9", "#9c1414", "#9ed3b5",
 		"#9e9f61", "#f6cfb5", "#282869", "#b3b3b3", "#f7f7f7", "#333333"
 	)
-		
+
 	var/list/filllist = list(
 		/obj/item/weapon/reagent_containers/food/snacks/grown/grapes, /obj/item/weapon/reagent_containers/food/snacks/grown/olives,
 		/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom,	/obj/item/weapon/reagent_containers/food/snacks/grown/watermelon,
@@ -1993,6 +1993,45 @@
 		tlist += GS
 	return tlist
 
+/obj/item/weapon/can/JPNMRE //I'm too sleep deprived and brain dead to figure out how to do this properly -kenobi
+	var/list/randbrand = list(
+		"IJA", "IJN"
+	)
+	var/list/custcolor = list(
+		"#8F1313"
+	)
+
+	var/list/filllist = list(
+		/obj/item/weapon/reagent_containers/food/snacks/boiledrice, /obj/item/weapon/reagent_containers/food/snacks/ramen,
+		/obj/item/weapon/reagent_containers/food/snacks/driedsalmon,	/obj/item/weapon/reagent_containers/food/snacks/hardtack
+	)
+	icon_state = "can"
+	var/currspawn = null
+/obj/item/weapon/can/JPNMRE/New()
+	..()
+	currspawn = pick(filllist)
+	brand = "[pick(randbrand)]"
+	stored = fill()
+	open = FALSE
+	sealed = TRUE
+	customcolor1 = pick(custcolor)
+	customcolor2 = pick(custcolor)
+	name = "[brand]'s [stored[1].name]"
+	spawn(1)
+		do_color()
+
+/obj/item/weapon/can/JPNMRE/proc/fill()
+	var/list/tlist = list()
+	currspawn = pick(filllist)
+	for (var/i=1, i <= rand(3,5), i++)
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/GS = new currspawn(src)
+		GS.name = "canned [GS.name]"
+		if (GS.satisfaction>0)
+			GS.satisfaction *= 0.5 //canned food doesn't taste as good
+		else
+			GS.satisfaction *= 1.5 //food that is already bad will taste worse when canned
+		tlist += GS
+	return tlist
 ////////////////////////////////////////////////////////////////////////
 //  Compost bin  ///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
