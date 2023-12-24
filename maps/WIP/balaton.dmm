@@ -307,7 +307,7 @@
 "fU" = (/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/turf/floor/grass,/area/caribbean/no_mans_land)
 "fV" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land)
 "fW" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/grass,/area/caribbean/no_mans_land)
-"fX" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t3485,/turf/floor/grass,/area/caribbean/no_mans_land)
+"fX" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/grass,/area/caribbean/no_mans_land)
 "fY" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/grass,/area/caribbean/no_mans_land)
 "fZ" = (/obj/structure/vehicleparts/frame/su100/rb,/obj/structure/vehicleparts/movement/tracks/su100/right_back,/turf/floor/grass,/area/caribbean/no_mans_land)
 "ga" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land)
