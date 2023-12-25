@@ -41,7 +41,6 @@
 	var/scope_mod = "Disabled"
 	var/target_x = 0
 	var/target_y = -5
-	var/list/image/target_image = new/list(20)
 
 	var/course = FALSE
 
@@ -446,13 +445,13 @@
 		dir = EAST
 
 	if (href_list["toggle_scope"])
-		if(scope_mod == "Enabled")
+		if (scope_mod == "Enabled")
 			scope_mod = "Disabled"
-			src.overlays -= target_image
-			to_chat(user, SPAN_DANGER("Scope disabled"))
+			delete_scope_image()
+			to_chat(user, SPAN_NOTICE("Scope disabled."))
 		else
 			scope_mod = "Enabled"
-			to_chat(user,  SPAN_DANGER("Scope enabled"))
+			to_chat(user,  SPAN_NOTICE("Scope enabled."))
 			update_scope()
 
 	if (href_list["fire"])
@@ -881,8 +880,8 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
-		Increase/Decrease azimuth: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
+		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
+		Increase/Decrease <b>azimuth</b>: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: <a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a><br><br>
 		<br>
 		<center>
@@ -922,21 +921,27 @@
 	target_coords()
 	update_scope()
 
+/obj/structure/cannon/proc/delete_scope_image()
+	for (var/image/img in usr.client.images)
+		if (img.icon_state == "point")
+			user.client.images.Remove(img)
+		if (img.icon_state == "cannon_target")
+			user.client.images.Remove(img)
+
 /obj/structure/cannon/proc/update_scope()
-	src.overlays -= target_image
-	del(target_image)
-	target_image = new/list(distance)
-	target_coords()
-	var/i
-	var/j = 4
-	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(degree))) * sign(cos(degree))
-		var/point_y = round(abs(j * sin(degree))) * sign(sin(degree))
-		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
-		j++
-	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
 	if (scope_mod == "Enabled")
-		src.overlays += target_image
+		delete_scope_image()
+		var/image/targeted_image
+		target_coords()
+		var/i
+		for(i = 1, i <= distance, i++)
+			var/point_x = round(abs(i * cos(degree))) * sign(cos(degree))
+			var/point_y = round(abs(i * sin(degree))) * sign(sin(degree))
+			if (point_x != 0 || point_y != 0)
+				targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
+				usr.client.images += targeted_image
+		targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
+		usr.client.images += targeted_image
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
