@@ -245,7 +245,14 @@
 
 /obj/structure/cannon/modern/tank/challenger2
 	name = "L30A1 120mm"
-	desc = "The L30A1, officially designated Gun 120mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	desc = "The L30A1, officially designated Gun 120 mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	icon_state = "tank_cannon"
+	maxrange = 35
+	caliber = 120
+
+/obj/structure/cannon/modern/tank/m1a1_abrams
+	name = "M256 120mm"
+	desc = "The M256 is an American 120 mm smoothbore tank gun. It uses a German-designed Rh-120 L44 gun tube and combustible cartridges with an American-designed mount, cradle and recoil mechanism."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 120

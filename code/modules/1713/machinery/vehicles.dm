@@ -459,6 +459,19 @@
 	color = "#CCC0A6"
 	turret_type = "challenger2_turret"
 
+/obj/structure/vehicleparts/axis/heavy/m1a1_abrams
+	name = "M1A1 Abrams"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#58564a"
+	turret_type = "m1a1_WIP2_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4

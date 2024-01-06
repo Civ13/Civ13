@@ -1477,14 +1477,74 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21
+/obj/item/weapon/gun/projectile/submachinegun/m21
 	name = "M21 SWS"
 	desc = "An American sniper rifle, chambered in 7.62x51mm."
+	icon = 'icons/obj/guns/rifles.dmi'
+	icon_state = "m21"
+	item_state = "m21"
+	base_icon = "m21"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
+	magazine_type = /obj/item/ammo_magazine/m14
+	good_mags = list(/obj/item/ammo_magazine/m14)
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	weight = 3.6
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
 	effectiveness_mod = 1.12
-	sel_mode = 0
 	firemodes = list(
 		list(name = "semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		)
+	sel_mode = 0
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 63,
+			SHORT_RANGE_MOVING = 38,
+
+			MEDIUM_RANGE_STILL = 53,
+			MEDIUM_RANGE_MOVING = 32,
+
+			LONG_RANGE_STILL = 43,
+			LONG_RANGE_MOVING = 25,
+
+			VERY_LONG_RANGE_STILL = 33,
+			VERY_LONG_RANGE_MOVING = 18),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 78,
+			SHORT_RANGE_MOVING = 51,
+
+			MEDIUM_RANGE_STILL = 68,
+			MEDIUM_RANGE_MOVING = 45,
+
+			LONG_RANGE_STILL = 58,
+			LONG_RANGE_MOVING = 38,
+
+			VERY_LONG_RANGE_STILL = 48,
+			VERY_LONG_RANGE_MOVING = 32),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 83,
+			SHORT_RANGE_MOVING = 55,
+
+			MEDIUM_RANGE_STILL = 73,
+			MEDIUM_RANGE_MOVING = 48,
+
+			LONG_RANGE_STILL = 63,
+			LONG_RANGE_MOVING = 42,
+
+			VERY_LONG_RANGE_STILL = 53,
+			VERY_LONG_RANGE_MOVING = 35),
+	)
+	New()
+		..()
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+		SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"

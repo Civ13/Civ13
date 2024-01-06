@@ -27,11 +27,18 @@
 	songs = list(
 		"Killing Joke - Eighties:1" = "sound/music/eighties.ogg",)
 	gamemode = "Siege"
+	var/us_reinforcements_time = 15000
 
 /obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_reds)
-		. = TRUE
+		if (J.title == "US Army Lieutenant" || J.title == "US Army Captain")
+			if (world.time < us_reinforcements_time)
+				. = FALSE
+			else
+				. = TRUE
+		else
+			. = TRUE
 	else
 		. = FALSE
 
@@ -89,7 +96,6 @@
 
 
 /obj/map_metadata/red_menace/update_win_condition()
-
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
@@ -168,3 +174,58 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+// Map-specific objects and mechanics //
+
+/*/obj/map_metadata/red_menace/proc/toggle_reinforcements()
+	var/done = FALSE
+	if (!done)
+		if (world.time >= us_reinforcements_time)
+		us_reinforcements()
+		done = TRUE
+	toggle_reinforcements()*/
+
+/obj/map_metadata/red_menace/proc/us_reinforcements()
+	for (var/obj/effect/spawner/objspawner/m1a1_abrams/MA in world)
+		MA.activated = TRUE
+		spawn(15)
+			MA.activated = FALSE
+	for (var/datum/job/J in job_master.occupations)
+		if (J.is_reds)
+			if (J.title == "US Army Lieutenant")
+				J.max_positions = 2
+				J.total_positions = 2
+				J.spawn_location = "JoinLateRNSL2"
+			if (J.title == "US Army Staff Sergeant")
+				J.max_positions = 4
+				J.total_positions = 4
+				J.spawn_location = "JoinLateRNSL2"
+			if (J.title == "US Army Radio Operator")
+				J.max_positions = 3
+				J.total_positions = 3
+				J.spawn_location = "JoinLateRN3"
+			if (J.title == "US Army Designated Marksman")
+				J.max_positions = 5
+				J.total_positions = 5
+				J.spawn_location = "JoinLateRN3"
+			if (J.title == "US Army Automatic Rifleman")
+				J.max_positions = 8
+				J.total_positions = 8
+				J.spawn_location = "JoinLateRN3"
+			if (J.title == "US Army Rifleman")
+				J.max_positions = 44
+				J.total_positions = 44
+				J.spawn_location = "JoinLateRN3"
+			if (J.title == "US Army Crewman")
+				J.max_positions = 12
+				J.total_positions = 12
+				J.spawn_location = "JoinLateRNT2"
+	world << SPAN_NOTICE("<big>American reinforcements have arrived!</big>")
+
+/obj/effect/spawner/objspawner/m1a1_abrams
+	name = "M1A1 Abrams spawner"
+	max_range = 0
+	max_number = 1
+	timer = 10
+	activated = FALSE
+	create_path = /obj/effects/premadevehicles/tank/m1a1_abrams
