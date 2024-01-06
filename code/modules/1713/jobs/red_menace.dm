@@ -511,19 +511,59 @@
 ////////////////////////////////////////////////Americans (1985)////////////////////////////////////////
 
 /// ARMY
+/datum/job/american/coldwar/captain
+	title = "US Army Captain"
+	rank_abbreviation = "Cpt."
+
+	spawn_location = "JoinLateRNSL2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_officer = TRUE
+	is_commander = TRUE
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/og107(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Guide your men to protect your homeland at all costs.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
 /datum/job/american/coldwar/lieutenant
 	title = "US Army Lieutenant"
 	rank_abbreviation = "Lt."
 
-	spawn_location = "JoinLateRNSL"
+	spawn_location = "JoinLateRNSL2"
 
 	can_be_female = FALSE
 	is_reds = TRUE
 	is_officer = TRUE
 	can_get_coordinates = TRUE
 
-	min_positions = 1
-	max_positions = 1
+	min_positions = 2
+	max_positions = 2
 
 /datum/job/american/coldwar/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -798,7 +838,7 @@
 	is_reds = TRUE
 
 	min_positions = 1
-	max_positions = 1000
+	max_positions = 500
 
 /datum/job/american/modernciv/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
