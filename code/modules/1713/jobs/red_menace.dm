@@ -726,6 +726,45 @@
 				H.real_name = H.name
 	return TRUE
 
+/datum/job/american/coldwar/lieutenant
+	title = "US Army Lieutenant"
+	rank_abbreviation = "Lt."
+
+	spawn_location = "JoinLateRNSL"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_officer = TRUE
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal(H), slot_r_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Guide your platoon to protect your homeland at all costs.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
 /datum/job/american/coldwar/ssergeant
 	title = "US Army Staff Sergeant"
 	rank_abbreviation = "SSgt."
