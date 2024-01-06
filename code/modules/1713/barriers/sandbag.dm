@@ -395,4 +395,4 @@
 
 /obj/structure/window/barrier/jersey/New()
 	..()
-	icon_state = "jerseybarrier[rand(1,2)]"
+	icon_state = "jerseybarrier[rand(1,5)]"
