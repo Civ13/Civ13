@@ -1489,6 +1489,7 @@
 	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
 	good_mags = list(/obj/item/ammo_magazine/m14)
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
 	equiptimer = 15

@@ -1368,7 +1368,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/m14
 /obj/item/weapon/storage/belt/smallpouches/green/m14/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
