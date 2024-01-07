@@ -1595,7 +1595,7 @@
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/mosin(hold)
+			new/obj/item/ammo_magazine/m24(hold)
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"

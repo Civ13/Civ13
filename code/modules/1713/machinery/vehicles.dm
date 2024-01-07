@@ -252,7 +252,7 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "btr_turret"
+	turret_type = "btr80_turret"
 	tile_size = "96x96"
 	vehicle_type = "apc"
 	turret_x = 16
