@@ -1124,7 +1124,7 @@ var/list/atom_types = null
 	if (do_load)
 		var/loct = WWinput(usr, "Which location to load into?","Load Map","Random",list("north","south","random"))
 		var/options = list("manual input")
-		var/t_options = flist("maps/zones/voyage[loct]/")
+		var/t_options = flist("maps/zones/voyage/[loct]/")
 		for(var/i in t_options)
 			if(findtext(i,"dmm"))
 				options += replacetext(i, ".dmm", "")
