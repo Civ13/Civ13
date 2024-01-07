@@ -11,7 +11,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
-
+	selection_color = "#CC0000"
 	min_positions = 1
 	max_positions = 1
 
@@ -65,6 +65,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
+	selection_color = "#CC0000"
 
 	min_positions = 1
 	max_positions = 2
@@ -125,6 +126,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
+	selection_color = "#CC0000"
 
 	min_positions = 2
 	max_positions = 8
@@ -189,6 +191,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 
 	is_medic = TRUE
 
@@ -243,6 +246,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_reds = TRUE
@@ -307,6 +311,7 @@
 	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_reds = TRUE
 
@@ -330,10 +335,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
 //head
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
@@ -388,6 +390,7 @@
 	spawn_location = "JoinLateRU"
 
 	uses_squads = TRUE
+	selection_color = "#CC0000"
 	is_reds = TRUE
 
 	min_positions = 1
@@ -451,7 +454,7 @@
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-
+	selection_color = "#870101"
 	is_reds = TRUE
 
 	min_positions = 1
@@ -522,6 +525,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
 
 	min_positions = 1
 	max_positions = 1
@@ -561,6 +565,8 @@
 	is_reds = TRUE
 	is_officer = TRUE
 	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
+
 
 	min_positions = 2
 	max_positions = 2
@@ -601,6 +607,8 @@
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
+
 
 	min_positions = 1
 	max_positions = 1
@@ -638,6 +646,8 @@
 	spawn_location = "JoinLateRN2"
 
 	can_be_female = FALSE
+	selection_color ="#0464d1"
+
 	is_reds = TRUE
 	uses_squads = TRUE
 	is_radioman = TRUE
@@ -677,6 +687,8 @@
 	can_be_female = FALSE
 	is_reds = TRUE
 	uses_squads = TRUE
+	selection_color ="#0464d1"
+
 
 	min_positions = 1
 	max_positions = 1
@@ -685,7 +697,7 @@
 	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m21(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m21(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/m14, slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -713,6 +725,8 @@
 	can_be_female = FALSE
 	is_reds = TRUE
 	uses_squads = TRUE
+	selection_color ="#0464d1"
+
 
 	min_positions = 1
 	max_positions = 1
@@ -753,6 +767,8 @@
 
 	min_positions = 1
 	max_positions = 4
+	selection_color ="#0464d1"
+
 
 /datum/job/american/coldwar/private/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -789,6 +805,8 @@
 
 	min_positions = 1
 	max_positions = 8
+	selection_color ="#0464d1"
+
 
 /datum/job/american/coldwar/tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -839,6 +857,8 @@
 
 	min_positions = 1
 	max_positions = 500
+	selection_color ="#75a3d7"
+
 
 /datum/job/american/modernciv/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

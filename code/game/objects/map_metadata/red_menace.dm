@@ -6,8 +6,8 @@
 	respawn_delay = 1200
 	no_hardcore = TRUE
 	victory_time = 27000
-	grace_wall_timer = 3600
-
+	grace_wall_timer = 3000
+	no_winner = "The Townhall remains under American control."
 	faction_organization = list(
 		AMERICAN,
 		RUSSIAN)
@@ -20,7 +20,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
-	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the City Hall!<br>Capture point is on the 2nd floor.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the Town Hall!<br>Capture point is on the 2nd floor.<br>The US Army reinforcements will arrive in 25 minutes.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
@@ -28,6 +28,13 @@
 		"Killing Joke - Eighties:1" = "sound/music/eighties.ogg",)
 	gamemode = "Siege"
 	var/us_reinforcements_time = 15000
+
+/obj/map_metadata/red_menace/New()
+	..()
+	spawn(7500)
+		world << "<big>American reinforcements are halfway here!</big>"
+	spawn(15000)
+		us_reinforcements()
 
 /obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -176,14 +183,6 @@
 	return FALSE
 
 // Map-specific objects and mechanics //
-
-/*/obj/map_metadata/red_menace/proc/toggle_reinforcements()
-	var/done = FALSE
-	if (!done)
-		if (world.time >= us_reinforcements_time)
-		us_reinforcements()
-		done = TRUE
-	toggle_reinforcements()*/
 
 /obj/map_metadata/red_menace/proc/us_reinforcements()
 	for (var/obj/effect/spawner/objspawner/m1a1_abrams/MA in world)
