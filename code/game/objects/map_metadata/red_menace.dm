@@ -20,7 +20,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
-	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the Town Hall!<br>Capture point is on the 2nd floor.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the Town Hall!<br>Capture point is on the 2nd floor.<br>The US Army reinforcements will arrive in 25 minutes.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
