@@ -1,7 +1,7 @@
-var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein")
-var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
-var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go")
-var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader")
+var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein","Sturmgeist","Schattenblitz","Ritter","Blitzwachter")
+var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom","Gvozdika","Tyulpan","Krokodil","Grach","Bereza","Zhuravl","Topol","Bogatyr","Yenot","Orel","Natasha","Molodets","Rusalka","Volga","Molot","Serp","Zubr","Kazak")
+var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go","Bushido","Hinomaru","Shuriken")
+var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
 
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
