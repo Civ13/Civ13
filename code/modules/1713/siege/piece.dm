@@ -371,7 +371,7 @@
 					return
 
 	if (href_list["set_distance"])
-		distance = input(user, "Set Distance? (From [5] to [maxrange] meters") as num
+		distance = input(user, "Set Distance? (From [5] to [maxrange] meters)") as num
 		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["distance_1minus"])
