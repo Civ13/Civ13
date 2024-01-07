@@ -11,7 +11,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 	min_positions = 1
 	max_positions = 1
 
@@ -65,7 +65,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 
 	min_positions = 1
 	max_positions = 2
@@ -126,7 +126,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 
 	min_positions = 2
 	max_positions = 8
@@ -191,7 +191,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 
 	is_medic = TRUE
 
@@ -246,7 +246,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_reds = TRUE
@@ -311,7 +311,7 @@
 	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_reds = TRUE
 
@@ -390,7 +390,7 @@
 	spawn_location = "JoinLateRU"
 
 	uses_squads = TRUE
-	selection_color = = "#CC0000"
+	selection_color = "#CC0000"
 	is_reds = TRUE
 
 	min_positions = 1
@@ -454,7 +454,7 @@
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-	selection_color ="#870101"
+	selection_color = "#870101"
 	is_reds = TRUE
 
 	min_positions = 1
