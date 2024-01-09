@@ -29,6 +29,7 @@
 	is_naval = TRUE
 	course = TRUE
 	naval_position = "middle"
+	has_scope = FALSE
 
 /obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
 	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
