@@ -500,7 +500,7 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
-		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
 			if(istype(job, /datum/job/pirates/redfaction))
 				H.remove_language("English")
 				H.add_language("Redmenian",FALSE)
@@ -651,7 +651,7 @@ var/global/datum/controller/occupations/job_master
 					H.stopDumbDamage = FALSE
 
 			spawn(12)
-				if(map.ID != MAP_CAMPAIGN)
+				if(map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
 					H.memory()
 
 			return H

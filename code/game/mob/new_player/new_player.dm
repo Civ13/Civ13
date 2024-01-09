@@ -1454,6 +1454,11 @@ var/global/redirect_all_players = null
 								temp_name = "Blugoslavian Armed Forces"
 							if (temp_name == "Pirates")
 								temp_name = "Rotstadt People's Republic"
+						if (MAP_BATTLE_SHIPS)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
 						if (MAP_HOLDMADRID)
 							if (temp_name == "Civilian")
 								temp_name = "Republican"

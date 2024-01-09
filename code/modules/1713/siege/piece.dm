@@ -43,6 +43,9 @@
 	var/target_y = -5
 	var/list/image/target_image = new/list(20)
 
+	var/is_naval = FALSE
+	var/naval_position = "middle"
+
 /obj/structure/cannon/verb/assemble()
 	set category = null
 	set name = "Assemble"
@@ -923,39 +926,140 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	switch(dir)
-		if (EAST)
-			dir = NORTH
-			degree = 0
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (WEST)
-			dir = SOUTH
-			degree = 180
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (NORTH)
-			dir = WEST
-			degree = 270
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (SOUTH)
-			dir = EAST
-			degree = 90
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
+	if (!is_naval)
+		switch (dir)
+			if (EAST)
+				dir = NORTH
+				degree = 0
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (WEST)
+				dir = SOUTH
+				degree = 180
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (NORTH)
+				dir = WEST
+				degree = 270
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (SOUTH)
+				dir = EAST
+				degree = 90
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+	else
+		var/turf/behind
+		switch (dir)
+			if (NORTH)
+				behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				behind = locate(src.x+1, src.y, src.z)
+		var/obj/structure/bed/chair/chair_found
+		for (var/obj/structure/bed/chair/chair in behind)
+			chair_found = chair
+
+		switch (dir)
+			if (EAST)
+				dir = NORTH
+				degree = 0
+				pixel_y = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x -= 2
+						src.y += 2
+					if ("left")
+						pixel_x = -20
+						src.x -= 3
+						src.y += 1
+					if ("right")
+						pixel_x = -44
+						src.x -= 1
+						src.y += 3
+			if (WEST)
+				dir = SOUTH
+				degree = 180
+				pixel_y = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x += 2
+						src.y -= 2
+					if ("left")
+						pixel_x = -44
+						src.x += 1
+						src.y -= 3
+					if ("right")
+						pixel_x = -20
+						src.x += 3
+						src.y -= 1
+			if (NORTH)
+				dir = WEST
+				degree = 270
+				pixel_x = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x -= 2
+						src.y -= 2
+					if ("left")
+						pixel_y = -20
+						src.x -= 1
+						src.y -= 3
+					if ("right")
+						pixel_y = -44
+						src.x -= 3
+						src.y -= 1
+			if (SOUTH)
+				dir = EAST
+				degree = 90
+				pixel_x = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x += 2
+						src.y += 2
+					if ("left")
+						pixel_y = -44
+						src.x += 3
+						src.y += 1
+					if ("right")
+						pixel_y = -20
+						src.x += 1
+						src.y += 3
+		var/turf/new_behind
+		switch (dir)
+			if (NORTH)
+				new_behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				new_behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				new_behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				new_behind = locate(src.x+1, src.y, src.z)
+		if (chair_found)
+			chair_found.loc = new_behind
+			chair_found.dir = src.dir
+			if (chair_found.buckled_mob)
+				chair_found.buckled_mob.loc = new_behind
+	
 	target_coords()
 	update_scope()
 	return
@@ -968,39 +1072,140 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	switch(dir)
-		if (EAST)
-			dir = SOUTH
-			degree = 180
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (WEST)
-			dir = NORTH
-			degree = 0
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (NORTH)
-			dir = EAST
-			degree = 90
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (SOUTH)
-			dir = WEST
-			degree = 270
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
+	if (!is_naval)
+		switch(dir)
+			if (EAST)
+				dir = SOUTH
+				degree = 180
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (WEST)
+				dir = NORTH
+				degree = 0
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (NORTH)
+				dir = EAST
+				degree = 90
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (SOUTH)
+				dir = WEST
+				degree = 270
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+	else
+		var/turf/behind
+		switch (dir)
+			if (NORTH)
+				behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				behind = locate(src.x+1, src.y, src.z)
+		var/obj/structure/bed/chair/chair_found
+		for (var/obj/structure/bed/chair/chair in behind)
+			chair_found = chair
+
+		switch (dir)
+			if (EAST)
+				dir = SOUTH
+				degree = 180
+				pixel_y = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x += 2
+						src.y -= 2
+					if ("left")
+						pixel_x = -44
+						src.x += 3
+						src.y -= 1
+					if ("right")
+						pixel_x = -20
+						src.x += 3
+						src.y -= 1
+			if (WEST)
+				dir = NORTH
+				degree = 0
+				pixel_y = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x += 2
+						src.y += 2
+					if ("left")
+						pixel_x = -20
+						src.x += 1
+						src.y += 3
+					if ("right")
+						pixel_x = -44
+						src.x += 3
+						src.y += 1
+			if (NORTH)
+				dir = EAST
+				degree = 90
+				pixel_x = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x += 2
+						src.y -= 2
+					if ("left")
+						pixel_y = -44
+						src.x += 3
+						src.y -= 1
+					if ("right")
+						pixel_y = -20
+						src.x += 1
+						src.y -= 3
+			if (SOUTH)
+				dir = WEST
+				degree = 270
+				pixel_x = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x -= 2
+						src.y += 2
+					if ("left")
+						pixel_y = -20
+						src.x -= 1
+						src.y += 3
+					if ("right")
+						pixel_y = -44
+						src.x -= 3
+						src.y += 1
+		var/turf/new_behind
+		switch (dir)
+			if (NORTH)
+				new_behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				new_behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				new_behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				new_behind = locate(src.x+1, src.y, src.z)
+		if (chair_found)
+			chair_found.loc = new_behind
+			chair_found.dir = src.dir
+			if (chair_found.buckled_mob)
+				chair_found.buckled_mob.loc = new_behind
+
 	target_coords()
 	update_scope()
 	return

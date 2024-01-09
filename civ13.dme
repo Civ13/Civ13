@@ -432,6 +432,7 @@
 #include "code\game\objects\map_metadata\ardennes.dm"
 #include "code\game\objects\map_metadata\bank_robbery.dm"
 #include "code\game\objects\map_metadata\barbarossa.dm"
+#include "code\game\objects\map_metadata\battle_ships.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
 #include "code\game\objects\map_metadata\berlin.dm"
 #include "code\game\objects\map_metadata\bohemia.dm"

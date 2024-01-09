@@ -22,7 +22,7 @@ var/GRACE_PERIOD_LENGTH = 7
 						time_of_day = "Midday"
 					if (MAP_CAMPAIGN)
 						time_of_day = "Morning"
-					if ( MAP_DRUG_BUST)
+					if (MAP_DRUG_BUST)
 						time_of_day = "Night"
 			update_lighting(time_of_day, null, FALSE)
 			if (!map || !map.no_time_of_day_cycle)
