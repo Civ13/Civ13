@@ -22,6 +22,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/voted_epoch = "1713"
 	var/voted_gamemode = "Classic (Stone Age Start)"
 	var/autogamemode_triggered = FALSE
+	var/faction = 1
 	New()
 		if (vote != src)
 			if (istype(vote))
@@ -32,14 +33,17 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (mode)
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
-			if (mode == "gamemode" && ticker.current_state >= 2)
+			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
 				world << "<b>Voting aborted due to game start.</b>"
 				reset()
 				return
 
 			// Calculate how much time is remaining by comparing current time, to time of vote start,
 			// plus vote duration
-			time_remaining = round((started_time + config.vote_period - world.time)/10)
+			if (mode == "ship selection")
+				time_remaining = round((started_time + 300 - world.time)/10)
+			else
+				time_remaining = round((started_time + config.vote_period - world.time)/10)
 
 			if (time_remaining < 0)
 				result()
@@ -57,6 +61,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_CAMPAIGN || map.ID == MAP_GLADIATORS || map.ID == MAP_ALLEYWAY || map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CAMPAIGN || map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_JUNGLE_OF_THE_CHADS || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_TESTING || map.battleroyale || map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_FOUR_KINGDOMS)
 			return
 		if (map.persistence)
+			return
+		if (map.ID == MAP_BATTLE_SHIPS)
+			if (faction == 3)
+				initiate_vote("gamemode","the server", TRUE)
+			else if (faction <= 2)
+				initiate_vote("ship selection","the server", TRUE)
 			return
 		if (map.ID == MAP_CAPITOL_HILL && istype(map, /obj/map_metadata/capitol_hill/pla_offensive))
 			return
@@ -77,6 +87,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		time_remaining = 0
 		mode = null
 		question = null
+		default = null
 		choices.Cut()
 		voted.Cut()
 		voting.Cut()
@@ -167,6 +178,16 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")
 					processes.gamemode.swap(.)
+				if ("ship selection")
+					var/obj/map_metadata/battle_ships/battle_ships = map
+					if (faction == 3)
+						return .
+					else if (faction == 1)
+						faction = 2
+						battle_ships.load_map(lowertext(.), "south")
+					else if (faction == 2)
+						faction = 3
+						battle_ships.load_map(lowertext(.), "north")
 		return .
 
 	proc/submit_vote(var/ckey, var/vote)
@@ -263,6 +284,17 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 							default = "Classic (Stone Age Start)"
 					choices.Add(options)
 
+				if ("ship selection")
+					if (faction == 1)
+						question = "What ship should the Redmenians use?"
+					else if (faction == 2)
+						question = "What ship should the Blugoslavians use?"
+					default = "Indomitable"
+					var/list/options = list()
+					options = list(
+						"Indomitable")
+					choices.Add(options)
+
 				else
 					return FALSE
 			mode = vote_type
@@ -273,10 +305,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				text += "\n[question]"
 
 			log_vote(text)
-			world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"
+			if (mode == "ship selection")
+				world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have 60 seconds to vote.</span>"
+				world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+			else
+				world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"
+				world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 
-			world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
-			if (mode == "gamemode" && round_progressing)
+			if ((mode == "gamemode" || mode == "ship selection") && round_progressing)
 				round_progressing = FALSE
 				world << "<font color='red'><b>Round start has been delayed.</b></font>"
 			time_remaining = round(config.vote_period/10)

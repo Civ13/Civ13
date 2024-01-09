@@ -321,11 +321,11 @@
 	var/y_offset = 0 //for north maps
 	if (location == "north")
 		y_offset = 51
-	var/dmm_file = "maps/zones/[location]/[mapname].dmm"
+	var/dmm_file = "maps/zones/voyage/[location]/[mapname].dmm"
 	if(!isfile(file(dmm_file)))
 		var/newName_p1 = splittext(mapname,"_")
 		var/newName = newName_p1[1]
-		dmm_file = "maps/zones/[location]/[newName].dmm"
+		dmm_file = "maps/zones/voyage/[location]/[newName].dmm"
 	var/dmm_text = file2text(dmm_file)
 	var/dmm_suite/suite = new()
 	suite.read_map(dmm_text, 1, y_offset, 1)

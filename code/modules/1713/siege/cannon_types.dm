@@ -19,38 +19,88 @@
 	ammotype = /obj/item/cannon_ball/shell/tank
 	spritemod = FALSE
 	firedelay = 1
-	maxrange = 180
+	maxrange = 200
 	anchored = TRUE
 	density = TRUE
 	bound_height = 96
 	bound_width = 64
 	caliber = 204
 	can_assemble = FALSE
+	is_naval = TRUE
+	course = TRUE
+	naval_position = "middle"
 
-/obj/structure/cannon/modern/naval/attack_hand(var/mob/attacker)
-	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
-		var/mob/living/human/H = attacker
-		if(findtext(H.original_job_title,"Marine"))
-			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+/obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
+	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+		var/mob/living/human/H = user
+		if (findtext(H.original_job_title,"Marine"))
+			to_chat(user, SPAN_WARNING("You do not know how to operate this gun!"))
 			return
 	else
-		interact(attacker)
+		interact(user)
 
 /obj/structure/cannon/modern/naval/n380
 	name = "380mm naval cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	firedelay = 1
-	maxrange = 100
+	maxrange = 150
 	caliber = 380
 	density = FALSE
+
+/obj/structure/cannon/modern/naval/n380/left
+	naval_position = "left"
+/obj/structure/cannon/modern/naval/n380/right
+	naval_position = "right"
 
 /obj/structure/cannon/modern/naval/n150
 	name = "150mm naval cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	firedelay = 1
-	maxrange = 60
+	maxrange = 80
 	caliber = 150
 	density = FALSE
+
+/obj/structure/cannon/modern/naval/n150/left
+	naval_position = "left"
+/obj/structure/cannon/modern/naval/n150/right
+	naval_position = "right"
+
+/obj/structure/naval_cannon_control
+	name = "naval battery control"
+	desc = "Controls the rotation of a naval battery."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gate_control"
+	anchored = TRUE
+	var/cooldown = 3 SECONDS
+	var/debounce = 0
+	var/distance = 3
+	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	layer = 3.01
+
+/obj/structure/naval_cannon_control/attack_hand(var/mob/user as mob)
+	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+		var/mob/living/human/H = user
+		if (findtext(H.original_job_title,"Marine"))
+			to_chat(user, SPAN_WARNING("You do not know how to operate this machinery!"))
+			return
+	if (debounce <= world.time)
+		debounce = world.time + cooldown
+		var/turning_side = WWinput(user, "What side are you turning the to turret?", "Cannon Battery Control", "Cancel", list("Left", "Right", "Cancel"))
+		if (turning_side == "Cancel")
+			return
+		else
+			if (do_after(user,50,src))
+				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+				for (var/obj/structure/cannon/modern/naval/C in range(distance, get_turf(src)))
+					if (turning_side == "Left")
+						C.rotate_left()
+					if (turning_side == "Right")
+						C.rotate_right()
+			return
+	else
+		to_chat(user, SPAN_WARNING("The turret turned too recently. Try again in a bit"))
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
