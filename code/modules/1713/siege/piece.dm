@@ -957,8 +957,8 @@
 	if (course)
 		user << SPAN_DANGER("You can't turn \the [src].")
 		return
-		
-	if (!naval)
+
+	if (!is_naval)
 		switch(dir)
 			if (EAST)
 				dir = NORTH
