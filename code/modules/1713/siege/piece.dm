@@ -36,12 +36,13 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 180
+	var/degree = 270
 	var/distance = 5
 	var/scope_mod = "Disabled"
 	var/target_x = 0
 	var/target_y = -5
-	var/list/image/target_image = new/list(20)
+
+	var/course = FALSE
 
 	var/is_naval = FALSE
 	var/naval_position = "middle"
@@ -373,7 +374,7 @@
 					return
 
 	if (href_list["set_distance"])
-		distance = input(user, "Set Distance? (From [5] to [maxrange] meters") as num
+		distance = input(user, "Set Distance? (From [5] to [maxrange] meters)") as num
 		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["distance_1minus"])
@@ -391,7 +392,8 @@
 		distance = clamp(distance, 5, max_distance)
 
 	if (href_list["set_degree"])
-		degree = input(user, "Set the Degree to what? (From [0] to [359] degrees - E = 0, N = 90, W = 180, S = 270)") as num
+		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
+		degree = azimuth + 90
 		if(degree < 0)
 			degree += 360
 		if(degree >= 360)
@@ -415,31 +417,44 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 360 north = 0 north
-	// 90 west
-	// 180 south
-	// 270
+	// 90 north NOT AZIMUTH
+	// 180 west
+	// 270 south
+	// 0 east
+
+	if (course)
+		if (dir == NORTH)
+			degree = clamp(degree, 45, 134)
+		else if (dir == WEST)
+			degree = clamp(degree, 135, 224)
+		else if (dir == SOUTH)
+			degree = clamp(degree, 225, 315)
+		else
+			if (degree >= 45)
+				degree = 44
+			if (degree < 315)
+				degree = 315
 
 	target_coords()
 	update_scope()
 
-	if(degree >= 315)
+	if(degree >= 45 && degree < 135)
 		dir = NORTH
-	else if(degree >= 45 && degree < 135)
-		dir = WEST
 	else if(degree >= 135 && degree < 225)
+		dir = WEST
+	else if(degree >= 225 && degree < 315)
 		dir = SOUTH
 	else
 		dir = EAST
 
 	if (href_list["toggle_scope"])
-		if(scope_mod == "Enabled")
+		if (scope_mod == "Enabled")
 			scope_mod = "Disabled"
-			src.overlays -= target_image
-			to_chat(user, SPAN_DANGER("Scope disabled"))
+			delete_scope_image()
+			to_chat(user, SPAN_NOTICE("Scope disabled."))
 		else
 			scope_mod = "Enabled"
-			to_chat(user,  SPAN_DANGER("Scope enabled"))
+			to_chat(user,  SPAN_NOTICE("Scope enabled."))
 			update_scope()
 
 	if (href_list["fire"])
@@ -840,7 +855,9 @@
 /obj/structure/cannon/proc/do_html(var/mob/m)
 
 	if (m)
-
+		var/azimuth = degree - 90
+		if (azimuth >= 360)
+			azimuth -= 360
 		max_distance = maxrange
 
 		m << browse({"
@@ -866,8 +883,8 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[degree] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
+		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
+		Increase/Decrease <b>azimuth</b>: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: <a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a><br><br>
 		<br>
 		<center>
@@ -881,15 +898,11 @@
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/cannon/proc/target_coords()
-	// round(abs(x)) * sign(x) - round to the nearest whole
-	var/actual_degree = degree + 90
-	if (actual_degree >= 360)  
-		actual_degree -= 360
-	target_x = round(abs(distance * cos(actual_degree))) * sign(cos(actual_degree))
-	target_y = round(abs(distance * sin(actual_degree))) * sign(sin(actual_degree))
+	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
+	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
 
 /obj/structure/cannon/proc/sway()
-	if(degree >= 315 && degree < 45)
+	if(degree > 315 || degree < 45)
 		return target_x
 	else if(degree >= 45 && degree < 135)
 		return target_y
@@ -898,25 +911,40 @@
 	else
 		return (-1 * target_y)
 
-/obj/structure/cannon/proc/update_scope()
-	src.overlays -= target_image
-	del(target_image)
-	target_image = new/list(distance)
+/obj/structure/cannon/proc/rotate_to(var/new_dir)
+	if (new_dir == NORTH)
+		degree = 90
+	else if (new_dir == WEST)
+		degree = 180
+	else if (new_dir == SOUTH)
+		degree = 270
+	else
+		degree = 0
+	dir = new_dir
 	target_coords()
-	var/i
-	var/j = 4
+	update_scope()
 
-	var/actual_degree = degree + 90
-	if (actual_degree >= 360)  
-		actual_degree -= 360
-	for(i = 1, i <= distance - 4, i++)
-		var/point_x = round(abs(j * cos(actual_degree))) * sign(cos(actual_degree))
-		var/point_y = round(abs(j * sin(actual_degree))) * sign(sin(actual_degree))
-		target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
-		j++
-	target_image[i] = new/image(icon='icons/effects/Targeted.dmi',icon_state="cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
+/obj/structure/cannon/proc/delete_scope_image()
+	for (var/image/img in usr.client.images)
+		if (img.icon_state == "point")
+			user.client.images.Remove(img)
+		if (img.icon_state == "cannon_target")
+			user.client.images.Remove(img)
+
+/obj/structure/cannon/proc/update_scope()
 	if (scope_mod == "Enabled")
-		src.overlays += target_image
+		delete_scope_image()
+		var/image/targeted_image
+		target_coords()
+		var/i
+		for(i = 1, i <= distance, i++)
+			var/point_x = round(abs(i * cos(degree))) * sign(cos(degree))
+			var/point_y = round(abs(i * sin(degree))) * sign(sin(degree))
+			if (point_x != 0 || point_y != 0)
+				targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
+				usr.client.images += targeted_image
+		targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
+		usr.client.images += targeted_image
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -926,8 +954,11 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (!is_naval)
-		switch (dir)
+	if (course)
+		user << "<span class = 'danger'>You can't fire yet.</span>"
+		return
+	if (!naval)
+		switch(dir)
 			if (EAST)
 				dir = NORTH
 				degree = 0
@@ -1059,7 +1090,7 @@
 			chair_found.dir = src.dir
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
-	
+
 	target_coords()
 	update_scope()
 	return
@@ -1070,6 +1101,10 @@
 	set src in range(2, usr)
 
 	if (!istype(usr, /mob/living))
+		return
+
+	if (course)
+		user << "<span class = 'danger'>You can't fire yet.</span>"
 		return
 
 	if (!is_naval)

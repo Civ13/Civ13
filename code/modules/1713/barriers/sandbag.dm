@@ -395,4 +395,10 @@
 
 /obj/structure/window/barrier/jersey/New()
 	..()
-	icon_state = "jerseybarrier[rand(1,2)]"
+	icon_state = "jerseybarrier[rand(1,5)]"
+
+/obj/structure/window/barrier/jersey/alt
+	icon_state = "jerseybarrier_alt1"
+	New()
+		..()
+		icon_state = "jerseybarrier_alt[rand(1,2)]"

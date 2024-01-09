@@ -1964,7 +1964,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/gerhelm/paratrooper(H), slot_head)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/randimpw = rand(1,4)

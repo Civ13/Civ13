@@ -784,6 +784,7 @@
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\starwars.dm"
 #include "code\modules\1713\jobs\superiors.dm"
+#include "code\modules\1713\jobs\tribes.dm"
 #include "code\modules\1713\jobs\UPA.dm"
 #include "code\modules\1713\jobs\waco.dm"
 #include "code\modules\1713\jobs\wildwest.dm"

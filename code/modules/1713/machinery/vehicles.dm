@@ -121,6 +121,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t34/t3485
+	name = "T-34-85"
 	turret_type = "t3485_turret"
 	color = "#4a5243"
 
@@ -251,7 +252,7 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "btr_turret"
+	turret_type = "btr80_turret"
 	tile_size = "96x96"
 	vehicle_type = "apc"
 	turret_x = 16
@@ -457,6 +458,19 @@
 	reg_number = ""
 	color = "#CCC0A6"
 	turret_type = "challenger2_turret"
+
+/obj/structure/vehicleparts/axis/heavy/m1a1_abrams
+	name = "M1A1 Abrams"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#58564a"
+	turret_type = "m1a1_WIP2_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"

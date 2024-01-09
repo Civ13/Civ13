@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////Soviet army (1985's)////////////////////////////////////////
-
-/datum/job/russian/coldwar/lieutenant
-	title = "Soviet Armed Forces Lieutenant"
-	rank_abbreviation = "Lt."
+/datum/job/russian/coldwar/captain
+	title = "Soviet Armed Forces Captain"
+	rank_abbreviation = "Kapt."
 
 	spawn_location = "JoinLateRUCap"
 
@@ -12,6 +11,61 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
+	selection_color = "#CC0000"
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/coldwar/captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/coldwar/soviet_officer(H), slot_w_uniform)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/eyepatch(H), slot_eyes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/coldwar/soviet_officer(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+//jacket
+	if (prob(15))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+	H.civilization = "Soviet Armed Forces"
+	give_random_name(H)
+
+	if (H.f_style != "Shaved" && H.f_style != "Selleck Mustache" && H.f_style != "Hulk Hogan Mustache" && H.f_style != "Van Dyke Mustache" && H.f_style != "Waston Mustache")
+		H.f_style = pick("Selleck Mustache","Watson Mustache","Hulk Hogan Mustache","Van Dyke Mustache","Shaved")
+	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
+		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
+	H.s_tone = rand(-40,-25)
+	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole battalion. Organize your troops accordingly!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/datum/job/russian/coldwar/lieutenant
+	title = "Soviet Armed Forces Lieutenant"
+	rank_abbreviation = "Leyt."
+
+	spawn_location = "JoinLateRUCap"
+
+	is_officer = TRUE
+	whitelisted = TRUE
+	is_reds = TRUE
+
+	can_get_coordinates = TRUE
+	selection_color = "#CC0000"
 
 	min_positions = 1
 	max_positions = 2
@@ -19,15 +73,11 @@
 /datum/job/russian/coldwar/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
 //head
-	if (prob(20))
-		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/gglasses(H), slot_eyes)
-	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
@@ -36,7 +86,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	armour.attackby(plates1, H)
@@ -53,7 +103,7 @@
 	if (H.h_style != "Bald" && H.f_style != "Crewcut" && H.f_style != "Undercut" && H.f_style != "Short Hair" && H.f_style != "Cut Hair" && H.f_style != "Skinhead" && H.f_style != "Average Joe" && H.f_style != "Fade" && H.f_style != "Combover" && H.f_style != "Gelled Back" && H.f_style != "Slick" && H.f_style != "Balding Hair" && H.f_style != "Joestar")
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Gelled Back","Slick","Balding Hair","Joestar")
 	H.s_tone = rand(-40,-25)
-	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
+	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of a platoon. Lead your men accordingly!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -67,7 +117,7 @@
 
 /datum/job/russian/coldwar/sergeant
 	title = "Soviet Armed Forces Sergeant"
-	rank_abbreviation = "Sgt."
+	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUCap"
 
@@ -76,6 +126,7 @@
 	is_reds = TRUE
 
 	can_get_coordinates = TRUE
+	selection_color = "#CC0000"
 
 	min_positions = 2
 	max_positions = 8
@@ -84,11 +135,13 @@
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
@@ -138,6 +191,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 
 	is_medic = TRUE
 
@@ -149,7 +203,7 @@
 /datum/job/russian/coldwar/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
@@ -163,8 +217,8 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
-	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
@@ -192,6 +246,7 @@
 	rank_abbreviation = "Efr."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_radioman = TRUE
 	is_reds = TRUE
@@ -256,6 +311,7 @@
 	rank_abbreviation = "Ryad."
 
 	spawn_location = "JoinLateRU"
+	selection_color = "#CC0000"
 	uses_squads = TRUE
 	is_reds = TRUE
 
@@ -279,10 +335,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	uniform.attackby(armour2, H)
 //head
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 //back
 	if (prob(10))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/pkm(H), slot_shoulder)
@@ -337,6 +390,7 @@
 	spawn_location = "JoinLateRU"
 
 	uses_squads = TRUE
+	selection_color = "#CC0000"
 	is_reds = TRUE
 
 	min_positions = 1
@@ -400,7 +454,7 @@
 
 	spawn_location = "JoinLateRU"
 	whitelisted = TRUE
-
+	selection_color = "#870101"
 	is_reds = TRUE
 
 	min_positions = 1
@@ -459,6 +513,339 @@
 
 ////////////////////////////////////////////////Americans (1985)////////////////////////////////////////
 
+/// ARMY
+/datum/job/american/coldwar/captain
+	title = "US Army Captain"
+	rank_abbreviation = "Cpt."
+
+	spawn_location = "JoinLateRNSL2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_officer = TRUE
+	is_commander = TRUE
+	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/og107(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses/large(H), slot_eyes)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Guide your men to protect your homeland at all costs.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+/datum/job/american/coldwar/lieutenant
+	title = "US Army Lieutenant"
+	rank_abbreviation = "Lt."
+
+	spawn_location = "JoinLateRNSL2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_officer = TRUE
+	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
+
+
+	min_positions = 2
+	max_positions = 2
+
+/datum/job/american/coldwar/lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal(H), slot_r_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Guide your platoon to protect your homeland at all costs.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+/datum/job/american/coldwar/ssergeant
+	title = "US Army Staff Sergeant"
+	rank_abbreviation = "SSgt."
+
+	spawn_location = "JoinLateRNSL"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_squad_leader = TRUE
+	uses_squads = TRUE
+	can_get_coordinates = TRUE
+	selection_color ="#0464d1"
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/ssergeant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal(H), slot_r_store)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Guide your squad of survivors to protect your homeland at all costs.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+/datum/job/american/coldwar/radop
+	title = "US Army Radio Operator"
+	rank_abbreviation = "Cpl."
+
+	spawn_location = "JoinLateRN2"
+
+	can_be_female = FALSE
+	selection_color ="#0464d1"
+
+	is_reds = TRUE
+	uses_squads = TRUE
+	is_radioman = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/radop/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. You're responsible for your squad's communications.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+/datum/job/american/coldwar/dmr
+	title = "US Army Designated Marksman"
+	rank_abbreviation = "Spc."
+
+	spawn_location = "JoinLateRN2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	uses_squads = TRUE
+	selection_color ="#0464d1"
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/dmr/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/m21(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/m14, slot_belt)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Support your squad by providing accurate fire at distant enemies, as well as their positions.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+/datum/job/american/coldwar/mgunner
+	title = "US Army Automatic Rifleman"
+	rank_abbreviation = "Pfc."
+
+	spawn_location = "JoinLateRN2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	uses_squads = TRUE
+	selection_color ="#0464d1"
+
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/coldwar/mgunner/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249, slot_belt)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, one of the few survivors of your platoon. Follow your sergeant's orders and protect the civilians from the invaders.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+
+/datum/job/american/coldwar/private
+	title = "US Army Rifleman"
+	rank_abbreviation = "Pvt."
+
+	spawn_location = "JoinLateRN2"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	uses_squads = TRUE
+
+	min_positions = 1
+	max_positions = 4
+	selection_color ="#0464d1"
+
+
+/datum/job/american/coldwar/private/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(armor, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, one of the few survivors of your platoon. Follow your sergeant's orders and protect the civilians from the invaders.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+
+/datum/job/american/coldwar/tanker
+	title = "US Army Crewman"
+	rank_abbreviation = "Cpl."
+
+	spawn_location = "JoinLateRNT"
+
+	can_be_female = FALSE
+	is_reds = TRUE
+	is_tanker = FALSE
+
+	min_positions = 1
+	max_positions = 8
+	selection_color ="#0464d1"
+
+
+/datum/job/american/coldwar/tanker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/(null)
+	uniform.attackby(armor, H)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>. Follow orders and use your armor to defeat the enemy!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_NORMAL)
+	return TRUE
+
+/////// Civilians ///////
+
 /datum/job/american/modernciv
 	title = "American Civilian"
 	rank_abbreviation = ""
@@ -469,7 +856,9 @@
 	is_reds = TRUE
 
 	min_positions = 1
-	max_positions = 1000
+	max_positions = 500
+	selection_color ="#75a3d7"
+
 
 /datum/job/american/modernciv/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -673,240 +1062,4 @@
 				H.setStat("medical", STAT_MEDIUM_LOW)
 				H.name = H.species.get_random_spanish_name(H.gender)
 				H.real_name = H.name
-	return TRUE
-
-/datum/job/american/coldwar/ssergeant
-	title = "US Army Staff Sergeant"
-	rank_abbreviation = "SSgt."
-
-	spawn_location = "JoinLateRNSL"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	is_squad_leader = TRUE
-	uses_squads = TRUE
-	can_get_coordinates = TRUE
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/american/coldwar/ssergeant/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal(H), slot_r_store)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. Guide your squad of survivors to protect your homeland at all costs.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
-/datum/job/american/coldwar/radop
-	title = "US Army Radio Operator"
-	rank_abbreviation = "Cpl."
-
-	spawn_location = "JoinLateRN2"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	uses_squads = TRUE
-	is_radioman = TRUE
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/american/coldwar/radop/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. You're responsible for your squad's communications.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-
-/datum/job/american/coldwar/dmr
-	title = "US Army Designated Marksman"
-	rank_abbreviation = "Spc."
-
-	spawn_location = "JoinLateRN2"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	uses_squads = TRUE
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/american/coldwar/dmr/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/m14, slot_belt)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. Support your squad by providing accurate fire at distant enemies, as well as their positions.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-
-/datum/job/american/coldwar/mgunner
-	title = "US Army Automatic Rifleman"
-	rank_abbreviation = "Pfc."
-
-	spawn_location = "JoinLateRN2"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	uses_squads = TRUE
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/american/coldwar/mgunner/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249, slot_belt)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, one of the few survivors of your platoon. Follow your sergeant's orders and protect the civilians from the invaders.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
-
-/datum/job/american/coldwar/private
-	title = "US Army Rifleman"
-	rank_abbreviation = "Pvt."
-
-	spawn_location = "JoinLateRN2"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	uses_squads = TRUE
-
-	min_positions = 1
-	max_positions = 4
-
-/datum/job/american/coldwar/private/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/stanag, slot_belt)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-	uniform.attackby(armor, H)
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, one of the few survivors of your platoon. Follow your sergeant's orders and protect the civilians from the invaders.")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-
-/datum/job/american/coldwar/tanker
-	title = "US Army Crewman"
-	rank_abbreviation = "Cpl."
-
-	spawn_location = "JoinLateRNT"
-
-	can_be_female = FALSE
-	is_reds = TRUE
-	is_tanker = FALSE
-
-	min_positions = 1
-	max_positions = 8
-
-/datum/job/american/coldwar/tanker/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/crewman(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/american(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
-		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
-		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_l_store)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/(null)
-	uniform.attackby(armor, H)
-
-	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. Follow orders and use your armor to defeat the enemy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_NORMAL)
 	return TRUE
