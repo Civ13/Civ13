@@ -15,7 +15,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
 	battle_name = "Battle over the Ocean"
-	mission_start_message = "<font size=4><b>5 minutes</b> until the battle begins.</font>"
+	mission_start_message = "<font size=4><b>5 minutes</b> until the battle begins. Both sides have to sink eachothers ships by dealing as much damage to the bottom deck as possible!</font>"
 	grace_wall_timer = 3000
 	faction1 = PIRATES
 	faction2 = CIVILIAN
@@ -82,7 +82,7 @@
 /obj/map_metadata/battle_ships/proc/check_roundend_conditions()
 	//sinking
 	if (get_sink_faction1() >= 100)
-		roundend_msg = "The Redmenian ship has sank due to flooding in the lower decks!<br><font color='red'><h2>The Blugoslavians have won!</h2></font>"
+		roundend_msg = "The Redmenian ship has sank due to flooding in the lower decks!<br><font color='blue'><h2>The Blugoslavians have won!</h2></font>"
 		map.next_win = world.time - 100
 		return
 	if (get_sink_faction2() >= 100)
@@ -100,7 +100,7 @@
 				if (H.faction_text == faction2)
 					found_faction2 = TRUE
 		if (!found_faction1)
-			roundend_msg = "The whole Redmenian crew has succumbed!<br><font color='red'><h2>The Blugoslavians have won!</h2></font>"
+			roundend_msg = "The whole Redmenian crew has succumbed!<br><font color='blue'><h2>The Blugoslavians have won!</h2></font>"
 			map.next_win = world.time - 100
 			return
 		if (!found_faction2)
