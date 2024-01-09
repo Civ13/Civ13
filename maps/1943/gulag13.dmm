@@ -826,7 +826,7 @@
 "ry" = (/obj/covers/brick_wall,/obj/structure/sign/flag/sov,/turf/floor/plating/tiled,/area/caribbean/houses/nml_two)
 "rz" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/radio/receiver/loudspeaker/faction1{dir = 1},/turf/floor/dirt/winter,/area/caribbean/russian/land/outside/tundra)
 "rA" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle/on,/turf/floor/plating/tiled/dark,/area/caribbean/houses/nml_one)
-"rB" = (/obj/structure/cannon/modern{angle = 30; dir = 4},/turf/floor/dirt/dust,/area/caribbean/russian/land/outside/tundra)
+"rB" = (/obj/structure/cannon/modern{dir = 4},/turf/floor/dirt/dust,/area/caribbean/russian/land/outside/tundra)
 "rD" = (/obj/structure/wild/burnedtree{icon = 'icons/obj/flora/pinetrees.dmi'; icon_state = "stump"; name = "tree stump"},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/ice)
 "rE" = (/obj/structure/radio/receiver/loudspeaker/faction1{dir = 4},/turf/floor/winter,/area/caribbean/russian/land/outside/tundra)
 "rF" = (/obj/structure/wild/smallbush/winter,/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/turf/floor/winter/grass,/area/caribbean/nomads/ice)

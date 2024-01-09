@@ -245,7 +245,14 @@
 
 /obj/structure/cannon/modern/tank/challenger2
 	name = "L30A1 120mm"
-	desc = "The L30A1, officially designated Gun 120mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	desc = "The L30A1, officially designated Gun 120 mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	icon_state = "tank_cannon"
+	maxrange = 35
+	caliber = 120
+
+/obj/structure/cannon/modern/tank/m1a1_abrams
+	name = "M256 120mm"
+	desc = "The M256 is an American 120 mm smoothbore tank gun. It uses a German-designed Rh-120 L44 gun tube and combustible cartridges with an American-designed mount, cradle and recoil mechanism."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 120
@@ -315,8 +322,12 @@
 	caliber = 85
 	anchored = TRUE
 
+/obj/structure/cannon/modern/tank/russian85/course
+	desc = "a 85mm SU-85 Russian course cannon."
+	course = TRUE
+
 /obj/structure/cannon/modern/tank/russian85/su85
-	desc = "a 85mm SU-85 russian tank-based cannon."
+	desc = "a 85mm SU-85 Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	firedelay = 1
 	maxrange = 35
@@ -327,7 +338,7 @@
 
 /obj/structure/cannon/modern/tank/russian85/field
 	name = "85mm M1939 52-K cannon"
-	desc = "a 85mm russian anti-air cannon converted for anti-tank use."
+	desc = "a 85mm Russian anti-air cannon converted for anti-tank use."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxrange = 38
@@ -345,6 +356,10 @@
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
+
+/obj/structure/cannon/modern/tank/russian100/course
+	desc = "a 100mm SU-100 Russian course cannon."
+	course = TRUE
 
 /obj/structure/cannon/mortar
 	name = "mortar"
