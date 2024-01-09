@@ -27,6 +27,7 @@
 	caliber = 204
 	can_assemble = FALSE
 	is_naval = TRUE
+	course = TRUE
 	naval_position = "middle"
 
 /obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
