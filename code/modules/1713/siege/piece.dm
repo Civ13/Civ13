@@ -955,8 +955,9 @@
 		return
 
 	if (course)
-		user << "<span class = 'danger'>You can't fire yet.</span>"
+		user << SPAN_DANGER("You can't turn \the [src].")
 		return
+		
 	if (!naval)
 		switch(dir)
 			if (EAST)
@@ -1104,7 +1105,7 @@
 		return
 
 	if (course)
-		user << "<span class = 'danger'>You can't fire yet.</span>"
+		user << SPAN_DANGER("You can't turn \the [src].")
 		return
 
 	if (!is_naval)
