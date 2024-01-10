@@ -418,10 +418,10 @@
 		if(degree >= 360)
 			degree -= 360
 
-	// 90 north NOT AZIMUTH
-	// 180 west
-	// 270 south
-	// 0 east
+	// 0 north
+	// 90 east
+	// 180 south
+	// 270 west
 
 	if (course)
 		if (dir == NORTH)
