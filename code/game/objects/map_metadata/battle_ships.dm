@@ -193,9 +193,9 @@
 		location = pick("south","north")
 	var/y_offset = 0 //for north maps
 	if (location == "north")
-		y_offset = 76
+		y_offset = 66
 	var/dmm_file = "maps/zones/battle_ships/[location]/[mapname].dmm"
-	if(!isfile(file(dmm_file)))
+	if (!isfile(file(dmm_file)))
 		var/newName_p1 = splittext(mapname,"_")
 		var/newName = newName_p1[1]
 		dmm_file = "maps/zones/battle_ships/[location]/[newName].dmm"

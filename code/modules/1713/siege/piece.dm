@@ -395,33 +395,33 @@
 	if (href_list["set_degree"])
 		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
 		degree = azimuth + 90
-		if(degree < 0)
+		if (degree < 0)
 			degree += 360
-		if(degree >= 360)
+		if (degree >= 360)
 			degree -= 360
 
 	if (href_list["degree_1minus"])
 		degree = degree - 1
-		if(degree < 0)
+		if (degree < 0)
 			degree += 360
 	if (href_list["degree_10minus"])
 		degree = degree - 10
-		if(degree < 0)
+		if (degree < 0)
 			degree += 360
 
 	if (href_list["degree_10plus"])
 		degree = degree + 10
-		if(degree >= 360)
+		if (degree >= 360)
 			degree -= 360
 	if (href_list["degree_1plus"])
 		degree = degree + 1
-		if(degree >= 360)
+		if (degree >= 360)
 			degree -= 360
 
-	// 90 north NOT AZIMUTH
-	// 180 west
-	// 270 south
-	// 0 east
+	// 0 north
+	// 90 west
+	// 180 south
+	// 270 east
 
 	if (course)
 		if (dir == NORTH)
@@ -439,11 +439,11 @@
 	target_coords()
 	update_scope()
 
-	if(degree >= 45 && degree < 135)
+	if (degree >= 45 && degree < 135)
 		dir = NORTH
-	else if(degree >= 135 && degree < 225)
+	else if (degree >= 135 && degree < 225)
 		dir = WEST
-	else if(degree >= 225 && degree < 315)
+	else if (degree >= 225 && degree < 315)
 		dir = SOUTH
 	else
 		dir = EAST
@@ -471,11 +471,11 @@
 		if (istype(map, /obj/map_metadata/voyage))
 			var/turf/onestep = get_step(loc, src.dir)
 			var/turf/twostep = get_step(onestep, src.dir)
-			for(var/obj/structure/barricade/ship/BS in onestep)
+			for (var/obj/structure/barricade/ship/BS in onestep)
 				if (BS.opacity)
 					user << "You have no opening to fire through!"
 					return
-			for(var/obj/structure/barricade/ship/BS1 in twostep)
+			for (var/obj/structure/barricade/ship/BS1 in twostep)
 				if (BS1.opacity)
 					user << "You have no opening to fire through!"
 					return
@@ -584,7 +584,7 @@
 								if (incendiary)
 									explosion(target, 0, 1, 3, 4)
 									for (var/turf/floor/T in circlerangeturfs(3,target))
-										if(!locate(/obj/structure/vehicleparts/frame) in T)
+										if (!locate(/obj/structure/vehicleparts/frame) in T)
 											ignite_turf(T, 12, 70)
 								else
 									message_admins("Gas rocket shell ([reagent_payload]) hit at ([target.x],[target.y],[target.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[target.x];Y=[target.y];Z=[target.z]'>JMP</a>).")
@@ -728,7 +728,7 @@
 
 										else if (istype(src, /obj/structure/cannon/modern/naval))
 											explosion(target, 2, 3, 3, 4)
-											if(target.z > 1)
+											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
 													explosion(tgtbelow, 2, 3, 3, 3)
@@ -774,7 +774,7 @@
 											if (locate(/obj/structure/vehicleparts/frame) in target)
 												target.visible_message(SPAN_DANGER("<big>The hull gets hit by an incendiary artillery shell!</big>"))
 											for (var/turf/floor/T in circlerangeturfs(3,target))
-												if(!locate(/obj/structure/vehicleparts/frame) in T)
+												if (!locate(/obj/structure/vehicleparts/frame) in T)
 													ignite_turf(T, 12, 70)
 
 									if (nuclear)
@@ -857,6 +857,8 @@
 
 	if (m)
 		var/azimuth = degree - 90
+		if (azimuth < 0)
+			azimuth += 360
 		if (azimuth >= 360)
 			azimuth -= 360
 		max_distance = maxrange
@@ -903,11 +905,11 @@
 	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
 
 /obj/structure/cannon/proc/sway()
-	if(degree > 315 || degree < 45)
+	if (degree > 315 || degree < 45)
 		return target_x
-	else if(degree >= 45 && degree < 135)
+	else if (degree >= 45 && degree < 135)
 		return target_y
-	else if(degree >= 135 && degree < 225)
+	else if (degree >= 135 && degree < 225)
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
@@ -955,11 +957,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		user << SPAN_DANGER("You can't turn \the [src].")
-		return
-
 	if (!is_naval)
+		if (course)
+			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
+			return
 		switch(dir)
 			if (EAST)
 				dir = NORTH
@@ -1105,11 +1106,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		user << SPAN_DANGER("You can't turn \the [src].")
-		return
-
 	if (!is_naval)
+		if (course)
+			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
+			return
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
