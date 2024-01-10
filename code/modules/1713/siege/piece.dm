@@ -955,11 +955,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		user << SPAN_DANGER("You can't turn \the [src].")
-		return
-
 	if (!is_naval)
+		if (course)
+			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
+			return
 		switch(dir)
 			if (EAST)
 				dir = NORTH
@@ -1105,11 +1104,10 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	if (course)
-		user << SPAN_DANGER("You can't turn \the [src].")
-		return
-
 	if (!is_naval)
+		if (course)
+			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
+			return
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
