@@ -322,8 +322,11 @@
 	"1,3" = list(/obj/structure/vehicleparts/frame/car/right),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/left),
 
-	"1,4" = list(/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement/reversed),
-	"2,4" = list(/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu),
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/right),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/left),
+
+	"1,5" = list(/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement/reversed),
+	"2,5" = list(/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu),
 	)
 ///////////////////////////////////////////////CARS///////////////////////////////////////////////////////
 /obj/effects/premadevehicles/car

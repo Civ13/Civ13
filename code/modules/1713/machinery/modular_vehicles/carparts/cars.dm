@@ -401,13 +401,13 @@
 	w_front = list("type94front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type94front_left"
-	icon_state = "frame_steel_corner_lf_type94"
+	icon_state = "frame_steel_corner_lf_type95"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/type94/rf
 	w_front = list("type94front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	hasoverlay = "type94front_right"
-	icon_state = "frame_steel_corner_rf_type94"
+	icon_state = "frame_steel_corner_rf_type95"
 	removesroof = TRUE
 /obj/structure/vehicleparts/frame/car/type94/lc
 	w_front = list("type94windshielddoor_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
