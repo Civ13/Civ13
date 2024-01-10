@@ -305,6 +305,26 @@
 	"1,3" = list(/obj/structure/bed/chair/carseat/right/type95,/obj/structure/vehicleparts/frame/car/type95/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lb,/obj/structure/vehicleparts/movement/reversed),
 	)
+//Isuzu Type 94
+//Kurogane Type 95
+/obj/effects/premadevehicles/isuzu/type94
+	name = "Isuzu Type 94"
+	icon_state = "4x4"
+	custom_color = "#736953"
+	axis = /obj/structure/vehicleparts/axis/car/type94
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/type94/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/type94/lf,/obj/structure/engine/internal/gasoline/premade/type94,/obj/structure/vehicleparts/movement),
+
+	"1,2" = list(/obj/structure/bed/chair/drivers/car/type94,/obj/structure/vehicleparts/frame/car/type94/rc),
+	"2,2" = list(/obj/structure/bed/chair/carseat/left/type94,/obj/structure/vehicleparts/frame/car/type94/lc),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu),
+	)
 ///////////////////////////////////////////////CARS///////////////////////////////////////////////////////
 /obj/effects/premadevehicles/car
 
