@@ -1340,7 +1340,6 @@
 					Weaken(15)
 
 /mob/living/human/proc/handle_shock()
-	..()
 	if(status_flags & GODMODE)	return FALSE	//godmode
 	if(!can_feel_pain())
 		shock_stage = 0

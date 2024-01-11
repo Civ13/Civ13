@@ -130,8 +130,6 @@
 		layer = FLY_LAYER
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/living/human/user)
-	..()
-
 	user.forceMove(loc)
 	user.dir = dir
 	user.pixel_x = pixel_x
@@ -156,7 +154,6 @@
 			break
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/stopped_using(mob/user as mob)
-	..()
 	user.pixel_x = 0
 	user.pixel_y = 0
 	for (var/datum/action/A in actions)

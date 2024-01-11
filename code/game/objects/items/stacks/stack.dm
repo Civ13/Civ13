@@ -208,8 +208,6 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		spawn(0)
 			if (src && usr.using_object == src)
 				interact(usr)
-	else
-		..()
 	return
 
 /obj/item/stack/examine(mob/user)
