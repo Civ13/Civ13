@@ -3,13 +3,13 @@
 	title = "Battle Ships"
 	no_winner = "The battle is going on."
 	lobby_icon = "icons/lobby/campaign.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/faction1/ship,
-		list(CIVILIAN) = /area/caribbean/faction2/ship,
+		list(PIRATES) = /area/caribbean/faction1/ship/lower,
+		list(CIVILIAN) = /area/caribbean/faction2/ship/lower,
 		)
 	age = "2024"
 	ordinal_age = 8
