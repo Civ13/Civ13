@@ -670,9 +670,17 @@
 								high = FALSE
 
 							var/hit = FALSE
-
+							
 							var/tx = x + target_x + rand(-1,1)
 							var/ty = y + target_y + rand(-1,1)
+
+							if (istype(src, /obj/structure/cannon/modern/naval))
+								tx += rand(-4,4)
+								ty += rand(-4,4)
+							else
+								tx += rand(-1,1)
+								ty += rand(-1,1)
+
 							if (tx < 1)
 								tx = 1
 							if (tx > world.maxx)
@@ -726,12 +734,18 @@
 												var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
 												fragmentate(target, 12, 7, fragment_types)
 
-										else if (istype(src, /obj/structure/cannon/modern/naval))
+										else if (istype(fired_shell, /obj/item/cannon_ball/shell/tank/HE380))
 											explosion(target, 2, 3, 3, 4)
 											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
-													explosion(tgtbelow, 2, 3, 3, 3)
+													explosion(tgtbelow, 1, 2, 2, 3)
+										else if (istype(fired_shell, /obj/item/cannon_ball/shell/tank/HE150))
+											explosion(target, 1, 2, 2, 3)
+											if (target.z > 1)
+												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+												if (tgtbelow)
+													explosion(tgtbelow, 0, 1, 1, 3)
 
 										else
 											explosion(target, 2, 3, 4, 6)

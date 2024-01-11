@@ -675,41 +675,30 @@
 	additional_languages = list("Redmenian" = 100)
 	
 /datum/job/civilian/bluefaction/navy/petty
-	title = "BNF Squad 1 Petty Officer"
+	title = "BNF Petty Officer"
 	is_squad_leader = TRUE
 	is_navy = TRUE
 	max_positions = 10
-	rank_abbreviation = "1-PO"
+	rank_abbreviation = "PO"
 	squad = 1
 /datum/job/civilian/bluefaction/navy/one
 	is_navy = TRUE
-	title = "BNF Squad 1 Sailor"
+	title = "BNF Sailor"
 	squad = 1
-	rank_abbreviation = "1-Sailor"
-/datum/job/civilian/bluefaction/navy/petty/two
-	is_navy = TRUE
-	title = "BNF Squad 2 Petty Officer"
-	is_squad_leader = TRUE
-	max_positions = 10
-	rank_abbreviation = "2-PO"
-	squad = 2
-/datum/job/civilian/bluefaction/navy/two
-	is_navy = TRUE
-	title = "BNF Squad 2 Sailor"
-	squad = 2
-	rank_abbreviation = "2-Sailor"
+	rank_abbreviation = "Sailor"
+
 /datum/job/civilian/bluefaction/navy/marine/sl
 	is_navy = TRUE
 	title = "BNF Marine Squadleader"
 	is_squad_leader = TRUE
 	max_positions = 10
 	rank_abbreviation = "Sgt."
-	squad = 3
+	squad = 2
 /datum/job/civilian/bluefaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "BNF Marine"
 	rank_abbreviation = "Pvt."
-	squad = 3
+	squad = 2
 /datum/job/civilian/bluefaction/navy/doctor
 	is_navy = TRUE
 	title = "BNF Doctor"
@@ -795,41 +784,30 @@
 	additional_languages = list("Blugoslavian" = 100)
 	
 /datum/job/pirates/redfaction/navy/petty
-	title = "IRN Squad 1 Petty Officer"
+	title = "IRNPetty Officer"
 	is_squad_leader = TRUE
 	is_navy = TRUE
 	max_positions = 10
-	rank_abbreviation = "1-PO"
+	rank_abbreviation = "PO"
 	squad = 1
 /datum/job/pirates/redfaction/navy/one
 	is_navy = TRUE
-	title = "IRN Squad 1 Sailor"
+	title = "IRN Sailor"
 	squad = 1
-	rank_abbreviation = "1-Sailor"
-/datum/job/pirates/redfaction/navy/petty/two
-	title = "IRN Squad 2 Petty Officer"
-	is_squad_leader = TRUE
-	is_navy = TRUE
-	max_positions = 10
-	rank_abbreviation = "2-PO"
-	squad = 2
-/datum/job/pirates/redfaction/navy/two
-	is_navy = TRUE
-	title = "IRN Squad 2 Sailor"
-	squad = 2
-	rank_abbreviation = "2-Sailor"
+	rank_abbreviation = "Sailor"
+
 /datum/job/pirates/redfaction/navy/marine/sl
 	is_navy = TRUE
 	title = "IRN Marine Squadleader"
 	is_squad_leader = TRUE
 	max_positions = 10
 	rank_abbreviation = "Sgt."
-	squad = 3
+	squad = 2
 /datum/job/pirates/redfaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "IRN Marine"
 	rank_abbreviation = "Pvt."
-	squad = 3
+	squad = 2
 /datum/job/pirates/redfaction/navy/doctor
 	is_navy = TRUE
 	title = "IRN Doctor"

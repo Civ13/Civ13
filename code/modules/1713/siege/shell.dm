@@ -72,6 +72,16 @@
 	explosion(t,2,1,2,5)
 	qdel(src)
 
+/obj/item/cannon_ball/shell/tank/HE380/ex_act()
+	var/turf/t = get_turf(src)
+	explosion(t,1,1,2,5)
+	qdel(src)
+
+/obj/item/cannon_ball/shell/tank/HE150/ex_act()
+	var/turf/t = get_turf(src)
+	explosion(t,0,1,1,3)
+	qdel(src)
+
 /obj/item/cannon_ball/shell/bullet_act(var/obj/item/projectile/proj, def_zone)
 	var/turf/t = get_turf(src)
 	if (prob(20))
