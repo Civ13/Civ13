@@ -37,6 +37,8 @@
 		if (findtext(H.original_job_title,"Marine"))
 			to_chat(user, SPAN_WARNING("You do not know how to operate this gun!"))
 			return
+		else
+			interact(user)
 	else
 		interact(user)
 

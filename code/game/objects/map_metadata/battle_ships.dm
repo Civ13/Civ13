@@ -3,13 +3,13 @@
 	title = "Battle Ships"
 	no_winner = "The battle is going on."
 	lobby_icon = "icons/lobby/campaign.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/faction1/ship,
-		list(CIVILIAN) = /area/caribbean/faction2/ship,
+		list(PIRATES) = /area/caribbean/faction1/ship/lower,
+		list(CIVILIAN) = /area/caribbean/faction2/ship/lower,
 		)
 	age = "2024"
 	ordinal_age = 8
@@ -204,10 +204,10 @@
 	suite.read_map(dmm_text, 1, y_offset, 1)
 	if (location == "south")
 		ship_faction1 = capitalize(mapname)
-		world << "<font size=4 color='red'>The Redmenian ship in this battle is the HMS [ship_faction1].</font>"
+		world << "<font size=4 color='red'>The Redmenian ship in this battle is the [ship_faction1].</font>"
 	if (location == "north")
 		ship_faction2 = capitalize(mapname)
-		world << "<font size=4 color='blue'>The Blugoslavian ship in this battle is the HMS [ship_faction2].</font>"
+		world << "<font size=4 color='blue'>The Blugoslavian ship in this battle is the [ship_faction2].</font>"
 
 /obj/map_metadata/battle_ships/job_enabled_specialcheck(var/datum/job/J)
 	..()
