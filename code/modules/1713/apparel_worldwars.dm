@@ -565,6 +565,27 @@
 		return
 
 
+/obj/item/clothing/head/ww2/japcap_navy_officer
+	name = "japanese naval officer cap"
+	desc = "A cap worn by japanese officers in the navy."
+	icon_state = "ww2_japcap_navy_officer"
+	item_state = "ww2_japcap_navy_officer"
+	worn_state = "ww2_japcap_navy_officer"
+
+/obj/item/clothing/head/ww2/japcap_navy_po
+	name = "japanese petty officer cap"
+	desc = "A cap worn by japanese petty officers in the navy."
+	icon_state = "ww2_japcap_navy"
+	item_state = "ww2_japcap_navy"
+	worn_state = "ww2_japcap_navy"
+
+/obj/item/clothing/head/ww2/japcap_navy_cap
+	name = "japanese sailor cap"
+	desc = "A cap worn by japanese seamen."
+	icon_state = "japanese_sailor_hat"
+	item_state = "japanese_sailor_hat"
+	worn_state = "japanese_sailor_hat"
+
 /obj/item/clothing/head/ww2/japcap_snlf
 	name = "japanese cap"
 	desc = "A cap worn by japanese soldiers in the SNLF."
@@ -808,6 +829,54 @@
 /obj/item/clothing/under/ww2/japuni/New()
 	..()
 	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/japuni_navy
+	name = "japanese naval uniform"
+	desc = "A imperial japanese navy uniform."
+	icon_state = "ww2_japuni_navy"
+	item_state = "ww2_japuni_navy"
+	worn_state = "ww2_japuni_navy"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/japuni_navy/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni_navy)
+		return
+	else
+		if (rolled)
+			worn_state = "japuni_navy"
+			item_state = "japuni_navy"
+			icon_state = "japuni_navy"
+			item_state_slots["w_uniform"] = "japuni_navy"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			worn_state = "japuni_navy_rolled"
+			item_state = "japuni_navy_rolled"
+			icon_state = "japuni_navy_rolled"
+			item_state_slots["w_uniform"] = "japuni_navy_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ww2/japuni_navy_po
+	name = "japanese naval petty officer uniform"
+	desc = "A imperial japanese naval petty officer uniform."
+	icon_state = "ww2_japuni_navy_po"
+	item_state = "ww2_japuni_navy_po"
+	worn_state = "ww2_japuni_navy_po"
+
+/obj/item/clothing/under/ww2/japuni_navy_officer
+	name = "japanese naval officer uniform"
+	desc = "A imperial japanese naval officer uniform."
+	icon_state = "ww2_japuni_navy_officer"
+	item_state = "ww2_japuni_navy_officer"
+	worn_state = "ww2_japuni_navy_officer"
 
 /obj/item/clothing/under/ww2/japuni_snlf
 	name = "japanese uniform"
