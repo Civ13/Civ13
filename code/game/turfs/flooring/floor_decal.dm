@@ -57,6 +57,21 @@ var/list/floor_decals = list()
 	qdel(src)
 	return
 
+/obj/effect/floor_decal/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			qdel(src)
+			return
+		if (2.0)
+			qdel(src)
+			return
+		if (3.0)
+			if (prob(75))
+				qdel(src)
+			return
+		else
+	return
+
 /obj/effect/floor_decal/corner
 	icon_state = "corner_white"
 
