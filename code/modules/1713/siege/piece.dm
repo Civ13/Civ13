@@ -144,8 +144,10 @@
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
 		var/loadtime = caliber/2
+		/*
 		if (istype(src,/obj/structure/cannon/modern/naval))
 			loadtime = caliber
+		*/
 		if (do_after(M, loadtime, M, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				found_loader = FALSE
