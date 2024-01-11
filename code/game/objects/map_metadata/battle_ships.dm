@@ -204,10 +204,10 @@
 	suite.read_map(dmm_text, 1, y_offset, 1)
 	if (location == "south")
 		ship_faction1 = capitalize(mapname)
-		world << "<font size=4 color='red'>The Redmenian ship in this battle is the HMS [ship_faction1].</font>"
+		world << "<font size=4 color='red'>The Redmenian ship in this battle is the [ship_faction1].</font>"
 	if (location == "north")
 		ship_faction2 = capitalize(mapname)
-		world << "<font size=4 color='blue'>The Blugoslavian ship in this battle is the HMS [ship_faction2].</font>"
+		world << "<font size=4 color='blue'>The Blugoslavian ship in this battle is the [ship_faction2].</font>"
 
 /obj/map_metadata/battle_ships/job_enabled_specialcheck(var/datum/job/J)
 	..()

@@ -284,25 +284,30 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					choices.Add(options)
 
 				if ("ship selection")
-					default = "Indomitable"
+					default = "Patrol_boat"
 					var/list/options = list()
 					switch (faction)
 						if (1)
 							question = "What ship should the Redmenians use?"
 							options = list(
-							"Indomitable",
-							"Patrol_boat",
-							//"Kurama",
+							"Indomitable" = 10,
+							"Patrol_boat" = 0,
+							//"Kurama" = 20,
 							)
 						if (2)
 							question = "What ship should the Blugoslavians use?"
 							options = list(
-							"Indomitable",
-							"Patrol_boat",
-							//"Kurama",
+							"Indomitable" = 10,
+							"Patrol_boat" = 0,
+							//"Kurama" = 20,
 							)
 
-					choices.Add(options)
+					for (var/cur_option in options)
+						choices.Add(cur_option)
+						choices[cur_option] = 0
+					for (var/cur_option in options)
+						if (clients.len < options[cur_option])
+							disabled[cur_option] = "[options[cur_option]] players needed"
 
 				else
 					return FALSE
