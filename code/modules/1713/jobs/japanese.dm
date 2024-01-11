@@ -1634,7 +1634,7 @@
 /datum/job/japanese/ijn_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy(H), slot_shoes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_navy_po(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_navy_po(H), slot_head)
 	else
@@ -1688,7 +1688,7 @@
 /datum/job/japanese/ijn_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy(H), slot_shoes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_navy_po(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_navy_po(H), slot_head)
 	else
@@ -1737,7 +1737,7 @@
 /datum/job/japanese/ijn_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy(H), slot_shoes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_navy(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_navy_cap(H), slot_head)
 	else
@@ -1789,7 +1789,7 @@
 /datum/job/japanese/ijn_ww2infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy(H), slot_shoes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_navy(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_navy_cap(H), slot_head)
 	else

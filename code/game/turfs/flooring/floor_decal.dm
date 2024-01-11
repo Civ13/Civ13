@@ -1188,3 +1188,8 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/tatami/cee
 	icon_state = "tatami_frame_cee"
+
+/* ship water line*/
+/obj/effect/floor_decal/shipline
+	name = "deep saltwater"
+	icon_state = "ship_line"
