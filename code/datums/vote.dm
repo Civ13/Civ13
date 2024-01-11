@@ -292,7 +292,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					default = "Indomitable"
 					var/list/options = list()
 					options = list(
-						"Indomitable")
+						"Indomitable",
+						"Kurama")
 					choices.Add(options)
 
 				else
