@@ -200,7 +200,7 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -212,7 +212,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	ripable = FALSE
