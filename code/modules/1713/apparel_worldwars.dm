@@ -565,6 +565,27 @@
 		return
 
 
+/obj/item/clothing/head/ww2/japcap_navy_officer
+	name = "japanese naval officer cap"
+	desc = "A cap worn by japanese officers in the navy."
+	icon_state = "ww2_japcap_navy_officer"
+	item_state = "ww2_japcap_navy_officer"
+	worn_state = "ww2_japcap_navy_officer"
+
+/obj/item/clothing/head/ww2/japcap_navy_po
+	name = "japanese petty officer cap"
+	desc = "A cap worn by japanese petty officers in the navy."
+	icon_state = "ww2_japcap_navy"
+	item_state = "ww2_japcap_navy"
+	worn_state = "ww2_japcap_navy"
+
+/obj/item/clothing/head/ww2/japcap_navy_cap
+	name = "japanese sailor cap"
+	desc = "A cap worn by japanese seamen."
+	icon_state = "japanese_sailor_hat"
+	item_state = "japanese_sailor_hat"
+	worn_state = "japanese_sailor_hat"
+
 /obj/item/clothing/head/ww2/japcap_snlf
 	name = "japanese cap"
 	desc = "A cap worn by japanese soldiers in the SNLF."
@@ -809,6 +830,54 @@
 	..()
 	update_clothing_icon()
 
+/obj/item/clothing/under/ww2/japuni_navy
+	name = "japanese naval uniform"
+	desc = "A imperial japanese navy uniform."
+	icon_state = "ww2_japuni_navy"
+	item_state = "ww2_japuni_navy"
+	worn_state = "ww2_japuni_navy"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/japuni_navy/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/japuni_navy)
+		return
+	else
+		if (rolled)
+			worn_state = "japuni_navy"
+			item_state = "japuni_navy"
+			icon_state = "japuni_navy"
+			item_state_slots["w_uniform"] = "japuni_navy"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+			update_clothing_icon()
+		else if (!rolled)
+			worn_state = "japuni_navy_rolled"
+			item_state = "japuni_navy_rolled"
+			icon_state = "japuni_navy_rolled"
+			item_state_slots["w_uniform"] = "japuni_navy_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+			heat_protection = ARMS
+			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+			update_clothing_icon()
+
+/obj/item/clothing/under/ww2/japuni_navy_po
+	name = "japanese naval petty officer uniform"
+	desc = "A imperial japanese naval petty officer uniform."
+	icon_state = "ww2_japuni_navy_po"
+	item_state = "ww2_japuni_navy_po"
+	worn_state = "ww2_japuni_navy_po"
+
+/obj/item/clothing/under/ww2/japuni_navy_officer
+	name = "japanese naval officer uniform"
+	desc = "A imperial japanese naval officer uniform."
+	icon_state = "ww2_japuni_navy_officer"
+	item_state = "ww2_japuni_navy_officer"
+	worn_state = "ww2_japuni_navy_officer"
+
 /obj/item/clothing/under/ww2/japuni_snlf
 	name = "japanese uniform"
 	desc = "A imperial japanese SNLF uniform."
@@ -961,6 +1030,7 @@
 	icon_state = "japboots_ww2"
 	item_state = "japboots_ww2"
 	worn_state = "japboots_ww2"
+	var/baseicon = "japboots_ww2"
 	var/puttees = FALSE
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/update_icon()
 	if (puttees)
@@ -976,23 +1046,23 @@
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/verb/strip_off_puttees(mob/user as mob)
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees)
+	if (type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy)
 		return
 	else
 		if (puttees)
-			item_state = "japboots_ww2"
-			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
-			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			item_state = "[baseicon]"
+			icon_state = "[baseicon]"
+			worn_state = "[baseicon]"
+			item_state_slots["slot_w_uniform"] = "[baseicon]"
 			usr << "<span class = 'danger'>You unwrap your puttees.</span>"
 			puttees = FALSE
 			new/obj/item/puttees(user.loc)
 			update_clothing_icon()
 		else if (!puttees)
-			item_state = "japboots_ww2"
-			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
-			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			item_state = "[baseicon]"
+			icon_state = "[baseicon]"
+			worn_state = "[baseicon]"
+			item_state_slots["slot_w_uniform"] = "[baseicon]"
 			usr << "<span class = 'danger'>You haven't any puttees on the boots!</span>"
 			puttees = FALSE
 			update_clothing_icon()
@@ -1004,10 +1074,10 @@
 		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
 		src.puttees = TRUE
 		qdel(W)
-		src.item_state = "japboots_ww2_puttees"
-		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		src.item_state = "[baseicon]_puttees"
+		src.icon_state = "[baseicon]_puttees"
+		src.worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 		update_clothing_icon()
 		return
 
@@ -1015,15 +1085,15 @@
 	puttees = TRUE
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/update_icon()
 	if (puttees)
-		item_state = "japboots_ww2_puttees"
-		icon_state = "japboots_ww2_puttees"
-		worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		item_state = "[baseicon]_puttees"
+		icon_state = "[baseicon]_puttees"
+		worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 	else
-		item_state = "japboots_ww2"
-		icon_state = "japboots_ww2"
-		worn_state = "japboots_ww2"
-		item_state_slots["slot_w_uniform"] = "japboots_ww2"
+		item_state = "[baseicon]"
+		icon_state = "[baseicon]"
+		worn_state = "[baseicon]"
+		item_state_slots["slot_w_uniform"] = "[baseicon]"
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/puttees) && !puttees)
@@ -1031,13 +1101,28 @@
 		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
 		src.puttees = TRUE
 		qdel(W)
-		src.item_state = "japboots_ww2_puttees"
-		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		src.item_state = "[baseicon]_puttees"
+		src.icon_state = "[baseicon]_puttees"
+		src.worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 		update_clothing_icon()
 		return
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/New()
+	..()
+	update_icon()
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy
+	name = "black leather boots"
+	desc = "A pair of hobnailed leather boots"
+	icon_state = "japboots_ww2_navy"
+	item_state = "japboots_ww2_navy"
+	worn_state = "japboots_ww2_navy"
+	puttees = FALSE
+	baseicon = "japboots_ww2_navy"
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees
+	puttees = TRUE
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees/New()
 	..()
 	update_icon()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

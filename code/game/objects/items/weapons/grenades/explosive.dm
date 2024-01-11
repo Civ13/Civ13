@@ -52,8 +52,7 @@
 
 /obj/proc/fragmentate(var/turf/T, var/fragment_number = 30, var/spreading_range = 5, var/list/fragtypes=list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1))
 	set waitfor = 0
-	..()
-	
+
 	if(!T) return
 
 	var/list/target_turfs = getcircle(T, spreading_range)

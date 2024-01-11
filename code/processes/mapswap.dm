@@ -27,7 +27,6 @@
 		"Fiction" = 0,
 	)
 	var/ready = TRUE
-	var/admin_triggered = FALSE
 	var/restart_triggered = FALSE
 	var/finished_at = -1
 
@@ -115,7 +114,7 @@
 	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
-		if (admin_triggered || restart_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -133,7 +132,7 @@
 	var/list/maps = list(MAP_KARAK = 0,)
 	var/epoch = "Imperial Age (1650-1780)"
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 	var/next_map_title = "TBD"
 	var/done = FALSE
@@ -342,7 +341,7 @@
 	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
-		if (admin_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -362,7 +361,7 @@
 
 /process/gamemode
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 
 /process/gamemode/setup()
@@ -382,7 +381,7 @@
 	. = FALSE
 
 	if (ready)
-		if (admin_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
