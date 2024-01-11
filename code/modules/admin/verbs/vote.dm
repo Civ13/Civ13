@@ -5,7 +5,7 @@
 	if (!check_rights(R_ADMIN))
 		return
 	if (processes.mapswap)
-		processes.mapswap.admin_triggered = TRUE
+		processes.mapswap.restart_triggered = TRUE
 		processes.mapswap.ready = TRUE
 		processes.mapswap.fire()
 		log_admin("[key_name(usr)] triggered a map vote.")
@@ -19,7 +19,7 @@
 	if (!check_rights(R_TRIALADMIN)) //Temporary solution, change back to R_ADMIN when enough true "Knight" staff.
 		return
 	if (processes.epochswap)
-		processes.epochswap.admin_triggered = TRUE
+		processes.epochswap.restart_triggered = TRUE
 		processes.epochswap.ready = TRUE
 		processes.epochswap.fire()
 		log_admin("[key_name(usr)] triggered am epoch vote.")
