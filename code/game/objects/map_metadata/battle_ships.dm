@@ -8,8 +8,8 @@
 		PIRATES,
 		CIVILIAN)
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/faction1/ship/lower,
-		list(CIVILIAN) = /area/caribbean/faction2/ship/lower,
+		list(PIRATES) = /area/caribbean/faction1/ship,
+		list(CIVILIAN) = /area/caribbean/faction2/ship,
 		)
 	age = "2024"
 	ordinal_age = 8
