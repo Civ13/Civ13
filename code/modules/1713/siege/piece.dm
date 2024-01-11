@@ -739,13 +739,13 @@
 											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
-													explosion(tgtbelow, 1, 2, 2, 3)
+													explosion(tgtbelow, 2, 2, 2, 3)
 										else if (istype(fired_shell, /obj/item/cannon_ball/shell/tank/HE150))
-											explosion(target, 1, 2, 2, 3)
+											explosion(target, 2, 2, 2, 3)
 											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
-													explosion(tgtbelow, 0, 1, 1, 3)
+													explosion(tgtbelow, 1, 2, 2, 3)
 
 										else
 											explosion(target, 2, 3, 4, 6)
