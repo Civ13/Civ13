@@ -916,13 +916,13 @@
 
 /obj/structure/cannon/proc/rotate_to(var/new_dir)
 	if (new_dir == NORTH)
-		degree = 90
-	else if (new_dir == WEST)
-		degree = 180
-	else if (new_dir == SOUTH)
-		degree = 270
-	else
 		degree = 0
+	else if (new_dir == WEST)
+		degree = 90
+	else if (new_dir == SOUTH)
+		degree = 180
+	else
+		degree = 270
 	dir = new_dir
 	target_coords()
 	update_scope()
@@ -1038,12 +1038,12 @@
 						src.y -= 2
 					if ("left")
 						pixel_x = -44
-						src.x += 1
-						src.y -= 3
-					if ("right")
-						pixel_x = -20
 						src.x += 3
 						src.y -= 1
+					if ("right")
+						pixel_x = -20
+						src.x += 1
+						src.y -= 3
 			if (NORTH)
 				dir = WEST
 				degree = 270
@@ -1166,15 +1166,15 @@
 				switch (naval_position)
 					if ("middle")
 						pixel_x = -32
-						src.x += 2
+						src.x -= 2
 						src.y -= 2
 					if ("left")
 						pixel_x = -44
-						src.x += 3
-						src.y -= 1
+						src.x -= 1
+						src.y -= 3
 					if ("right")
 						pixel_x = -20
-						src.x += 3
+						src.x -= 3
 						src.y -= 1
 			if (WEST)
 				dir = NORTH
