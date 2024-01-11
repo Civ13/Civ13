@@ -1030,6 +1030,7 @@
 	icon_state = "japboots_ww2"
 	item_state = "japboots_ww2"
 	worn_state = "japboots_ww2"
+	var/baseicon = "japboots_ww2"
 	var/puttees = FALSE
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/update_icon()
 	if (puttees)
@@ -1045,23 +1046,23 @@
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/verb/strip_off_puttees(mob/user as mob)
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees)
+	if (type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees && type != /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy)
 		return
 	else
 		if (puttees)
-			item_state = "japboots_ww2"
-			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
-			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			item_state = "[baseicon]"
+			icon_state = "[baseicon]"
+			worn_state = "[baseicon]"
+			item_state_slots["slot_w_uniform"] = "[baseicon]"
 			usr << "<span class = 'danger'>You unwrap your puttees.</span>"
 			puttees = FALSE
 			new/obj/item/puttees(user.loc)
 			update_clothing_icon()
 		else if (!puttees)
-			item_state = "japboots_ww2"
-			icon_state = "japboots_ww2"
-			worn_state = "japboots_ww2"
-			item_state_slots["slot_w_uniform"] = "japboots_ww2"
+			item_state = "[baseicon]"
+			icon_state = "[baseicon]"
+			worn_state = "[baseicon]"
+			item_state_slots["slot_w_uniform"] = "[baseicon]"
 			usr << "<span class = 'danger'>You haven't any puttees on the boots!</span>"
 			puttees = FALSE
 			update_clothing_icon()
@@ -1073,10 +1074,10 @@
 		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
 		src.puttees = TRUE
 		qdel(W)
-		src.item_state = "japboots_ww2_puttees"
-		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		src.item_state = "[baseicon]_puttees"
+		src.icon_state = "[baseicon]_puttees"
+		src.worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 		update_clothing_icon()
 		return
 
@@ -1084,15 +1085,15 @@
 	puttees = TRUE
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/update_icon()
 	if (puttees)
-		item_state = "japboots_ww2_puttees"
-		icon_state = "japboots_ww2_puttees"
-		worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		item_state = "[baseicon]_puttees"
+		icon_state = "[baseicon]_puttees"
+		worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 	else
-		item_state = "japboots_ww2"
-		icon_state = "japboots_ww2"
-		worn_state = "japboots_ww2"
-		item_state_slots["slot_w_uniform"] = "japboots_ww2"
+		item_state = "[baseicon]"
+		icon_state = "[baseicon]"
+		worn_state = "[baseicon]"
+		item_state_slots["slot_w_uniform"] = "[baseicon]"
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/puttees) && !puttees)
@@ -1100,13 +1101,28 @@
 		user << "<span class='notice'>You wrap the puttees around your legs.</span>"
 		src.puttees = TRUE
 		qdel(W)
-		src.item_state = "japboots_ww2_puttees"
-		src.icon_state = "japboots_ww2_puttees"
-		src.worn_state = "japboots_ww2_puttees"
-		item_state_slots["shoes"] = "japboots_ww2_puttees"
+		src.item_state = "[baseicon]_puttees"
+		src.icon_state = "[baseicon]_puttees"
+		src.worn_state = "[baseicon]_puttees"
+		item_state_slots["shoes"] = "[baseicon]_puttees"
 		update_clothing_icon()
 		return
 /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees/New()
+	..()
+	update_icon()
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy
+	name = "black leather boots"
+	desc = "A pair of hobnailed leather boots"
+	icon_state = "japboots_ww2_navy"
+	item_state = "japboots_ww2_navy"
+	worn_state = "japboots_ww2_navy"
+	puttees = FALSE
+	baseicon = "japboots_ww2_navy"
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees
+	puttees = TRUE
+/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees/New()
 	..()
 	update_icon()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

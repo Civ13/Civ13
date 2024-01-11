@@ -426,7 +426,7 @@
 	desc = "Basic wear for soldiers of the Imperial Japanese Army."
 	icon_state = "apparel_japan_ww2"
 	products = list(
-		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 = 15,
 		/obj/item/clothing/under/ww2/japuni = 15,
 		/obj/item/clothing/suit/storage/coat/ww2/japcoat = 15,
 		/obj/item/clothing/head/ww2/japcap = 15,
@@ -446,7 +446,7 @@
 	desc = "Basic wear for soldiers of the Imperial Japanese Special Navy Landing Force."
 	icon_state = "apparel_japan_ww2"
 	products = list(
-		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy = 15,
 		/obj/item/clothing/under/ww2/japuni_snlf = 15,
 		/obj/item/clothing/head/ww2/japcap_snlf = 15,
 		/obj/item/clothing/head/helmet/ww2/japhelm_snlf = 15,
@@ -464,9 +464,11 @@
 	desc = "Basic wear for soldiers of the Imperial Japanese Navy."
 	icon_state = "apparel_japan_ww2"
 	products = list(
-		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy = 15,
 		/obj/item/clothing/under/ww2/japuni_snlf = 15,
 		/obj/item/clothing/head/ww2/japcap_snlf = 15,
+		/obj/item/clothing/under/ww2/japuni_navy = 15,
+		/obj/item/clothing/head/ww2/japcap_navy_cap = 15,
 		/obj/item/clothing/head/helmet/ww2/japhelm_snlf = 15,
 		/obj/item/clothing/head/ww2/jap_headband = 10,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
