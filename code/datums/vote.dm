@@ -285,14 +285,20 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					choices.Add(options)
 
 				if ("ship selection")
-					if (faction == 1)
-						question = "What ship should the Redmenians use?"
-					else if (faction == 2)
-						question = "What ship should the Blugoslavians use?"
 					default = "Indomitable"
 					var/list/options = list()
-					options = list(
-						"Indomitable")
+					switch (faction)
+						if (1)
+							question = "What ship should the Redmenians use?"
+							options = list(
+							"Indomitable",
+							"Patrol_boat")
+						if (2)
+							question = "What ship should the Blugoslavians use?"
+							options = list(
+							"Indomitable",
+							"Patrol_boat")
+
 					choices.Add(options)
 
 				else
