@@ -141,3 +141,4 @@
 		)
 	sel_mode = 1
 	effectiveness_mod = 1.40
+	has_ak_reload = TRUE

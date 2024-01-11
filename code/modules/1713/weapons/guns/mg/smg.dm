@@ -669,6 +669,7 @@
 	stat = "rifle"
 	effectiveness_mod = 1
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	accuracy_list = list(
 
@@ -721,10 +722,13 @@
 	icon_state = "ak47gold"
 	item_state = "ak47gold"
 	base_icon = "ak47gold"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese
 	name = "Type 56 Assault Rifle"
 	desc = "Chinese 7.62x39mm rifle. It is a variant of the Soviet-designed AK-47."
+	has_ak_reload = TRUE
+
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
 	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm. This one has a wire underfolding stock."
@@ -734,6 +738,7 @@
 	base_icon = "akms"
 	var/folded = FALSE
 	weight = 3
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
 	if (folded)
@@ -798,6 +803,7 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	accuracy_list = list(
 
@@ -864,6 +870,7 @@
 	var/folded = FALSE
 	weight = 2.95
 	effectiveness_mod = 1.05
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
 	if (folded)
@@ -927,6 +934,7 @@
 	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
 	if (folded)
@@ -991,6 +999,7 @@
 	damage_modifier = 0.95
 	equiptimer = 12
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
 	if (folded)
@@ -1021,7 +1030,7 @@
 	effectiveness_mod = 1.07
 	damage_modifier = 0.98
 	equiptimer = 10
-
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb/New()
 	..()
@@ -1077,6 +1086,7 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	stat = "rifle"
 	accuracy_list = list(
@@ -1137,6 +1147,7 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
 	name = "AK-15"
@@ -1153,6 +1164,7 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
@@ -2116,6 +2128,7 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/white
 	name = "White VZ-58"
@@ -2124,6 +2137,7 @@
 	icon_state = "white_vz58"
 	item_state = "white_vz58"
 	base_icon = "white_vz58"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/black
 	name = "Black VZ-58"
@@ -2132,6 +2146,7 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/c7
 	name = "C7"
