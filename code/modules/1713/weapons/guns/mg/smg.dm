@@ -2319,3 +2319,18 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/////////////////////////////////*FALLOUT*////////////////////////////////////////////
+/obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
+	name = "Service Rifle"
+	desc = "A pre-war rifle design employed as the standard arm of the New California Republic."
+	base_icon = "service_rifle"
+	icon_state = "service_rifle"
+	item_state = "service_rifle"
+	full_auto = FALSE
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0, recoil=0, move_delay=0.1, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
+		)
+	magazine_type = /obj/item/ammo_magazine/ncr
+	good_mags = list(/obj/item/ammo_magazine/ncr, /obj/item/ammo_magazine/m16)
