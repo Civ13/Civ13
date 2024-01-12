@@ -598,8 +598,8 @@
 			var/mob/living/human/M = A
 			if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 				user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
-				if (do_after(M, 40, src))
-					user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
+				if (do_after(M, 25, src))
+					user.visible_message(SPAN_NOTICE("[M] climbs onto \the [src]."), SPAN_NOTICE("You climb onto \the [src]."))
 					M.plane = GAME_PLANE
 					M.forceMove(get_turf(src))
 					if (!driver)
@@ -654,8 +654,8 @@
 /obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
 		user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
-		if (do_after(user, 30, src))
-			user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+		if (do_after(user, 5, src))
+			user.visible_message("<div class='notice'>[user] leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
 			user.pixel_x = 0
 			user.pixel_y = 0
@@ -777,7 +777,7 @@
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
-		if (driver in get_turf(loc))
+		if (driver in get_turf(src))
 			return TRUE
 		else
 			driver.driver = FALSE
