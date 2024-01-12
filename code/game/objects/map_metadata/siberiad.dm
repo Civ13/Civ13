@@ -177,7 +177,7 @@
 			return !faction1_can_cross_blocks()
 	return FALSE
 
-// MAP SPECIFIC OBJECTS
+// MAP SPECIFIC OBJECTS => To move to a separate file
 
 /obj/structure/nuclear_missile
 	name = "nuclear missile"
@@ -191,14 +191,15 @@
 	flammable = FALSE
 	anchored = TRUE
 	var/active = FALSE
+	var/flight_time = 3 SECONDS
 	pixel_x = -32
 	layer = 6.01
 
 /obj/structure/nuclear_missile/update_icon()
+	overlays.Cut()
 	if (active)
-		icon_state = "rocket_fly"
-	else
-		icon_state = "rocket"
+		overlays += image("icon" = 'icons/obj/decals_wider.dmi', "icon_state" = "rocket_o", "pixel_y" = -96)
+
 /obj/structure/nuclear_missile/proc/activate()
 	if (!active)
 		active = TRUE
@@ -207,6 +208,8 @@
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>")
+				//M << SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>")
 				M.client << uploaded_sound
-		qdel(src)
+		animate(src, pixel_y = 15*32, time = flight_time, alpha = 150, easing = SINE_EASING | EASE_IN)
+		spawn(flight_time) // has to be equal to flight time else it'll look weird
+			qdel(src)
