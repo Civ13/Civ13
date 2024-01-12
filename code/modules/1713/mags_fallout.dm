@@ -1,5 +1,5 @@
 //New file for my sanity
-/obj/item/ammo_magazine/ncr
+/obj/item/ammo_magazine/service_rifle
 	name = "service rifle magazine (5.56x45mm)"
 	icon_state = "service_rifle"
 	mag_type = MAGAZINE
