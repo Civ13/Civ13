@@ -72,12 +72,12 @@
 	explosion(t,2,1,2,5)
 	qdel(src)
 
-/obj/item/cannon_ball/shell/tank/HE380/ex_act()
+/obj/item/cannon_ball/shell/naval/HE380/ex_act()
 	var/turf/t = get_turf(src)
 	explosion(t,1,1,2,5)
 	qdel(src)
 
-/obj/item/cannon_ball/shell/tank/HE150/ex_act()
+/obj/item/cannon_ball/shell/naval/HE150/ex_act()
 	var/turf/t = get_turf(src)
 	explosion(t,0,1,1,3)
 	qdel(src)
@@ -277,25 +277,31 @@
 	heavy_armor_penetration = 125
 	damage = 450
 
-/obj/item/cannon_ball/shell/tank/HE150
+/obj/item/cannon_ball/shell/naval
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "naval shell"
+	icon_state = "navalshell"
+	w_class = ITEM_SIZE_GARGANTUAN
+	value = 20
+	caliber = 100
+	heavy_armor_penetration = 15
+	atype = "HE"
+	New()
+		..()
+		name = "[caliber]mm [atype] shell"
+		icon_state = "navalshell"
+
+/obj/item/cannon_ball/shell/naval/HE150
 	atype = "HE"
 	caliber = 150
 	heavy_armor_penetration = 80
 	damage = 350
-	icon_state = "navalshell"
-	New()
-		..()
-		icon_state = "navalshell"
 
-/obj/item/cannon_ball/shell/tank/HE380
+/obj/item/cannon_ball/shell/naval/HE380
 	atype = "HE"
 	caliber = 380
 	heavy_armor_penetration = 120
 	damage = 650
-	icon_state = "navalshell"
-	New()
-		..()
-		icon_state = "navalshell"
 
 // Mortar
 
