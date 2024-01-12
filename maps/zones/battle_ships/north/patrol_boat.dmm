@@ -163,7 +163,7 @@
 "RG" = (/obj/covers/road,/obj/covers/road,/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "RN" = (/obj/covers/road,/obj/structure/railing/steel{dir = 8},/obj/structure/railing/steel,/obj/effect/floor_decal/corner_steel_grid/full,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "RW" = (/obj/covers/road,/obj/structure/railing/steel,/obj/effect/floor_decal/corner_steel_grid{dir = 10},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
-"Si" = (/obj/covers/steelplating,/obj/structure/table/modern,/obj/item/weapon/whistle,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/item/weapon/gun/projectile/revolver/colt1892,/obj/effect/floor_decal/steeldecal/steel_decals5,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
+"Si" = (/obj/covers/steelplating,/obj/structure/table/modern,/obj/item/weapon/whistle,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/item/weapon/gun/projectile/revolver/peacemaker,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "Sl" = (/obj/covers/steelplating,/obj/structure/radio/receiver/loudspeaker/faction2{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "Sr" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/effect/floor_decal/industrial/warning,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/engine)
 "Te" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)

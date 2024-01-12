@@ -91,7 +91,7 @@
 "wn" = (/obj/structure/table/modern,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/covers/steelplating/white,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction1/ship/lower)
 "wv" = (/obj/covers/steelplating,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction1/ship/lower)
 "wy" = (/obj/covers/road,/obj/structure/window/barrier/concrete{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper)
-"wD" = (/obj/covers/steelplating,/obj/structure/table/modern,/obj/item/weapon/whistle,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/item/weapon/gun/projectile/revolver/colt1892,/obj/effect/floor_decal/steeldecal/steel_decals5,/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper/inside)
+"wD" = (/obj/covers/steelplating,/obj/structure/table/modern,/obj/item/weapon/whistle,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/item/weapon/gun/projectile/revolver/peacemaker,/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper/inside)
 "wJ" = (/obj/covers/road,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper)
 "xC" = (/obj/covers/road,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper)
 "xQ" = (/obj/effect/floor_decal/corner_steel_grid/full{dir = 8},/obj/effect/floor_decal/spline/plain{dir = 9},/obj/covers/road,/turf/floor/broken_floor,/area/caribbean/faction1/ship/upper)
