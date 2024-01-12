@@ -2473,7 +2473,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/snw10(H), slot_l_hand)
 			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_r_store)
-			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/slug(H), slot_l_store)
+			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox/rubber(H), slot_l_store)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/bank/c38(H), slot_belt)
 		if(3)
 			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p220(H), slot_l_store)
