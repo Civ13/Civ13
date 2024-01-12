@@ -116,9 +116,9 @@
 				if (original_job.is_commander)
 					switch (faction_text)
 						if (RUSSIAN)
-							world << "<font color='red' size=4>The <b>Russian Army</b> Commander played has been killed!</font>"
+							world << "<font color='red' size=4>The <b>Russian Army</b> Commander has been killed!</font>"
 						if (DUTCH)
-							world << "<font color='red' size=4>The <b>Dutch Army</b> Commander played has been killed!</font>"
+							world << "<font color='red' size=4>The <b>Dutch Army</b> Commander has been killed!</font>"
 			
 			if (MAP_CAPITOL_HILL)
 				if (civilization && civilization in map.scores)
