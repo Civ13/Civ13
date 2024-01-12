@@ -21,7 +21,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"In the Navy:1" = "sound/music/inthenavy.ogg",)
 	var/ship_faction1
 	var/ship_faction2
 	var/roundend_msg = "The round has ended in a stalemate!"

@@ -119,6 +119,7 @@
 	icon_state = "svt"
 	item_state = "svt"
 	base_icon = "svt"
+	cliploader = TRUE
 	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
@@ -126,11 +127,11 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/svt
-	good_mags = list(/obj/item/ammo_magazine/svt)
+	good_mags = list(/obj/item/ammo_magazine/svt, /obj/item/ammo_magazine/mosin)
 	weight = 3.85
 	load_delay = 8
 	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -230,6 +231,7 @@
 	magazine_type = /obj/item/ammo_magazine/sksm
 	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/ak47)
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	cliploader = TRUE
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
 	desc = "Soviet designated marksman's rifle, feeding from detachable 10-round magazines. Chambered in 7.62x54mmR."
@@ -247,6 +249,7 @@
 	magazine_type = /obj/item/ammo_magazine/svd
 	good_mags = list(/obj/item/ammo_magazine/svd)
 	weight = 3.85
+	cliploader = TRUE
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=8)
 		)
@@ -307,6 +310,7 @@
 	base_icon = "g43"
 	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	cliploader = TRUE
 	max_shells = 10
 	load_delay = 8
 	caliber = "a792x57"
@@ -341,6 +345,7 @@
 	ammo_type = /obj/item/ammo_casing/a792x33
 	magazine_type = /obj/item/ammo_magazine/stg
 	good_mags = list(/obj/item/ammo_magazine/stg, /obj/item/ammo_magazine/vgclip)
+	cliploader = TRUE
 	weight = 4.6
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=5)
