@@ -191,7 +191,8 @@
 	flammable = FALSE
 	anchored = TRUE
 	var/active = FALSE
-	var/flight_time = 3 SECONDS
+	var/flight_time = 4 SECONDS
+	var/flight_distance = 15 // in tiles
 	pixel_x = -32
 	layer = 6.01
 
@@ -210,6 +211,6 @@
 			if (!new_player_mob_list.Find(M))
 				//M << SPAN_DANGER("<font size=3>A nuclear missile has been launched!</font>")
 				M.client << uploaded_sound
-		animate(src, pixel_y = 15*32, time = flight_time, alpha = 150, easing = SINE_EASING | EASE_IN)
+		animate(src, pixel_y = flight_distance*32, time = flight_time, alpha = 150, easing = SINE_EASING | EASE_IN)
 		spawn(flight_time) // has to be equal to flight time else it'll look weird
 			qdel(src)
