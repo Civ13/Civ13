@@ -81,11 +81,11 @@
 
 /obj/map_metadata/battle_ships/proc/check_roundend_conditions()
 	//sinking
-	if (get_sink_faction1() >= 100)
+	if (get_sink_faction1() >= 200)
 		roundend_msg = "The Redmenian ship has sank due to flooding in the lower decks!<br><font color='blue'><h2>The Blugoslavians have won!</h2></font>"
 		map.next_win = world.time - 100
 		return
-	if (get_sink_faction2() >= 100)
+	if (get_sink_faction2() >= 200)
 		roundend_msg = "The Blugoslavian ship has sank due to flooding in the lower decks!<br><font color='red'><h2>The Redmenians have won!</h2></font>"
 		map.next_win = world.time - 100
 		return
@@ -107,6 +107,8 @@
 			roundend_msg = "The whole Blugoslavian crew has succumbed!<br><font color='red'><h2>The Redmenians have won!</h2></font>"
 			map.next_win = world.time - 100
 			return
+	spawn(300)
+		check_roundend_conditions()
 
 /obj/map_metadata/battle_ships/proc/clear_map()
 	//North
@@ -226,9 +228,14 @@
 
 /obj/map_metadata/battle_ships/New()
 	..()
-			
+	spawn(100)
+		load_new_recipes("config/crafting/material_recipes_battle_ships.txt")
+		override_global_recipes = "battle_ships"
 
 /obj/map_metadata/battle_ships/cross_message()
+	check_roundend_conditions()
+	world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 	return "<font size = 4><font color='red'>The battle has begun!</font>"
+
 /obj/map_metadata/battle_ships/reverse_cross_message()
 	return ""
