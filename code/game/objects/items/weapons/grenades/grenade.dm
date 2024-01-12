@@ -331,7 +331,7 @@
 	desc = "A British early 20th century grenade."
 	icon_state = "mills"
 	det_time = 70
-	throw_range = 7
+	throw_range = 9
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/ww2/mills2
@@ -339,14 +339,14 @@
 	desc = "A British early 20th century grenade, with a reduced timer to 4 seconds."
 	icon_state = "mills"
 	det_time = 40
-	throw_range = 7
+	throw_range = 9
 
 /obj/item/weapon/grenade/modern/f1
 	name = "F1 grenade"
 	desc = "A French early 20th century grenade, also used by Russia."
 	icon_state = "f1"
 	det_time = 40
-	throw_range = 8
+	throw_range = 11
 
 /obj/item/weapon/grenade/modern/stg1915
 	name = "M1915 Stielhandgranate"
@@ -386,35 +386,35 @@
 	desc = "A Soviet fragmentation grenade."
 	icon_state = "rgd33"
 	det_time = 50
-	throw_range = 9
+	throw_range = 11
 
 /obj/item/weapon/grenade/ww2/rg42
 	name = "RG-42 grenade"
 	desc = "A Soviet fragmentation grenade."
 	icon_state = "rg42"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/mk2
 	name = "Mk2 grenade"
 	desc = "An American grenade introduced in 1918."
 	icon_state = "mk2"
 	det_time = 50
-	throw_range = 8
+	throw_range = 10
 
 /obj/item/weapon/grenade/ww2/type97
 	name = "Type-97 grenade"
 	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 5 seconds."
 	icon_state = "type97"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/type91
 	name = "Type-91 grenade"
 	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 8 seconds."
 	icon_state = "type91"
 	det_time = 80
-	throw_range = 10
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/m26
@@ -422,7 +422,7 @@
 	desc = "An American grenade introduced in the 1950's."
 	icon_state = "m26"
 	det_time = 50
-	throw_range = 9
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/stinger
@@ -430,7 +430,7 @@
 	desc = "A less then lethal  grenade that Explodes into a burst of rubber balls."
 	icon_state = "sting"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
 	explosion_size = 0
@@ -441,28 +441,28 @@
 	desc = "An American grenade introduced as a replacement for the M26."
 	icon_state = "m67"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/hg85
 	name = "HG 85 grenade"
 	desc = "The HG 85 is a round fragmentation hand grenade designed for the Swiss Armed Forces."
 	icon_state = "hg85"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/hg85/l109
 	name = "L109 grenade"
 	desc = "The L109 is the British designation for the HG 85. It differs from the HG 85 in that it has a special safety clip, which is similar to the safety clip on the American M67 grenade."
 	icon_state = "l109"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/rgd5
 	name = "RGD-5 grenade"
 	desc = "A Soviet fragmentation grenade designed in the 1950's."
 	icon_state = "rgd5"
 	det_time = 50
-	throw_range = 11
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/prime()
 	set waitfor = 0

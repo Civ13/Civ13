@@ -106,6 +106,21 @@
 
 
 /obj/covers/Destroy()
+	if (map.ID == MAP_BATTLE_SHIPS)
+		if(istype(get_turf(src), /turf/floor/beach/water))
+			var/turf/T1 = get_step(get_turf(src), pick(NORTH,NORTHWEST))
+			if(T1)
+				new/obj/effect/flooding(T1)
+			var/turf/T2 = get_step(get_turf(src), pick(EAST,NORTHEAST))
+			if(T2)
+				new/obj/effect/flooding(T2)
+			var/turf/T3 = get_step(get_turf(src), pick(WEST,SOUTHWEST))
+			if(T3)
+				new/obj/effect/flooding(T3)
+			var/turf/T4 = get_step(get_turf(src), pick(SOUTH,SOUTHEAST))
+			if(T4)
+				new/obj/effect/flooding(T4)
+				
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)

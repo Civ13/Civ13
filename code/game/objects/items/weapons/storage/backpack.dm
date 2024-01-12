@@ -425,6 +425,16 @@
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
 
+/obj/item/weapon/storage/backpack/heavyrucksack/mortar
+	New()
+		..()
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"
 	desc = "A big backpack made for long walks."
