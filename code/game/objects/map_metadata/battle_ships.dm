@@ -1,8 +1,8 @@
 /obj/map_metadata/battle_ships
 	ID = MAP_BATTLE_SHIPS
 	title = "Battle Ships"
-	no_winner = "The battle is going on."
-	lobby_icon = "icons/lobby/campaign.png"
+	no_winner = "The battle is still going on."
+	lobby_icon = "icons/lobby/battleships.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
 		PIRATES,
