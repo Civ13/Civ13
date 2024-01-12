@@ -20,21 +20,20 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.4, AMERICAN = 0.6)
 	battle_name = "Battle for America"
-	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the battle begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the Town Hall!<br>Capture point is on the 2nd floor.<br>The US Army reinforcements will arrive in 25 minutes.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the assault begins!<br>The Americans will win if they hold out for <b>45 minutes</b>.<br>The Soviets will win if they manage to capture the Town Hall!<br>Capture point is on the 2nd floor.<br>The US Army reinforcements will arrive in 20 minutes.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Killing Joke - Eighties:1" = "sound/music/eighties.ogg",)
 	gamemode = "Siege"
-	var/us_reinforcements_time = 15000
+	var/us_reinforcements_time = 20 MINUTES
+	var/reinforcements_called = FALSE
 
 /obj/map_metadata/red_menace/New()
 	..()
-	spawn(7500)
-		world << "<big>American reinforcements are halfway here!</big>"
-	spawn(15000)
-		us_reinforcements()
+	spawn(1800)
+		handle_reinforcements()
 
 /obj/map_metadata/red_menace/job_enabled_specialcheck(var/datum/job/J)
 	..()
@@ -107,14 +106,14 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Americans</b> have successfully defended the City Hall! The Soviets have halted the attack!"
+		var/message = "The <b>Americans</b> have successfully defended the Town Hall! The Soviets have halted the attack!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Soviets</b> have captured the City Hall! The Battle for America is over!"
+		var/message = "The <b>Soviets</b> have captured the Town Hall! The Battle for America is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
@@ -124,7 +123,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have captured the City Hall! They will win in {time} minutes."
+				current_win_condition = "The <b>Soviets</b> have captured the Town Hall! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -133,7 +132,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have captured the City Hall! They will win in {time} minutes."
+				current_win_condition = "The <b>Soviets</b> have captured the Town Hall! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -142,7 +141,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have captured City Hall! They will win in {time} minutes."
+				current_win_condition = "The <b>Soviets</b> have captured Town Hall! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -151,14 +150,14 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have captured the City Hall! They will win in {time} minutes."
+				current_win_condition = "The <b>Soviets</b> have captured the Town Hall! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Americans</b> have recaptured the City Hall!</font>"
+			world << "<font size = 3>The <b>Americans</b> have recaptured the Town Hall!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -183,6 +182,14 @@
 	return FALSE
 
 // Map-specific objects and mechanics //
+
+/obj/map_metadata/red_menace/proc/handle_reinforcements()
+	if (world.time >= us_reinforcements_time && !reinforcements_called)
+		us_reinforcements()
+		reinforcements_called = TRUE
+		return
+	spawn(100)
+		handle_reinforcements()
 
 /obj/map_metadata/red_menace/proc/us_reinforcements()
 	for (var/obj/effect/spawner/objspawner/m1a1_abrams/MA in world)
