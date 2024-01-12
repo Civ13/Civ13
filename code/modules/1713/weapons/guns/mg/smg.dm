@@ -2332,5 +2332,5 @@
 	firemodes = list(
 		list(name = "semi auto",	burst=1, burst_delay=0, recoil=0, move_delay=0.1, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
 		)
-	magazine_type = /obj/item/ammo_magazine/ncr
-	good_mags = list(/obj/item/ammo_magazine/ncr, /obj/item/ammo_magazine/m16)
+	magazine_type = /obj/item/ammo_magazine/service_rifle
+	good_mags = list(/obj/item/ammo_magazine/service_rifle, /obj/item/ammo_magazine/m16)
