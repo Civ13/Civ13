@@ -270,8 +270,30 @@
 /obj/item/weapon/storage/box/flare
 	name = "box of flares"
 	desc = "Contains 10 red flares."
-	icon_state = "donk_kit"
+	icon_state = "flare_box"
+	can_hold = list(/obj/item/flashlight/flare)
 	New()
 		..()
 		for (var/i=1, i<= 10, i++)
 			new /obj/item/flashlight/flare(src)
+
+/obj/item/weapon/storage/box/flare/attack_hand(mob/user as mob)
+	..()
+	update_icon()
+/obj/item/weapon/storage/attack_self(mob/user as mob)
+	..()
+	update_icon()
+
+/obj/item/weapon/storage/box/flare/update_icon()
+	if (contents.len > 0)
+		switch(contents.len)
+			if (1 to 3)
+				icon_state = "flare_box_33"
+			if (4 to 7)
+				icon_state = "flare_box_66"
+			if (8 to INFINITY)
+				icon_state = "flare_box_full"
+	else
+		icon_state = "flare_box_empty"
+	
+	
