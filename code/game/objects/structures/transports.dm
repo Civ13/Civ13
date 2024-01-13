@@ -747,10 +747,6 @@
 	update_customdesc()
 	var/turf/T = get_turf(get_step(src,driver.dir))
 	var/area/A = get_area(T)
-	if (!check_engine() || !T)
-		moving = FALSE
-		stopmovementloop()
-		return FALSE
 	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 			visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
