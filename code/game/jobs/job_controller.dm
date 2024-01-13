@@ -315,21 +315,6 @@ var/global/datum/controller/occupations/job_master
 			var/area/H_area = get_area(H)
 			if (H_area)
 				H_area.play_ambience(H)
-		/*
-		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
-			new /obj/structure/vehicle/boat/rhib/premade/arrival(H.loc)
-			var/spawned = 0
-			for (var/obj/structure/vehicle/boat/rhib/premade/arrival/rhib in range(1,H))
-				if (spawned < 1)
-					if (H.faction_text == "PIRATES")
-						rhib.dir = EAST
-					else if (H.faction_text == "CIVILIAN")
-						rhib.dir = WEST
-					rhib.faststart(H)
-					spawned++
-				else
-					qdel(rhib)
-		*/
 
 /datum/controller/occupations/proc/SpawnAtFob(var/mob/living/human/H)
 	var/list/spawnable_points = list()
