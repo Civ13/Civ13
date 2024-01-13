@@ -55,6 +55,7 @@
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction1/ship/lower))
 		amount_of_turfs++
+	amount_of_turfs = amount_of_turfs * 0.6
 	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction1()
@@ -75,7 +76,8 @@
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction2/ship/lower))
 		amount_of_turfs++
-	return amount_of_turfs
+	amount_of_turfs = amount_of_turfs * 0.6
+	return 
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction2()
 	var/t_level = 0
