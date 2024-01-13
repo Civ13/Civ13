@@ -206,6 +206,13 @@
 		sleep(rand(80,120))
 		activate_signal(user)
 
+/obj/item/flashlight/flare/throw_impact(atom/hit_atom)
+	if (on)
+		if (ishuman(hit_atom))
+			var/mob/living/human/H = hit_atom
+			H.IgniteMob()
+	..()
+
 /obj/item/flashlight/flare/proc/activate_signal(mob/living/human/user as mob)
 	return
 
