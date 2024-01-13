@@ -143,11 +143,11 @@
 		if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
-		var/loadtime = caliber/2
-		/*
+
+		var/loadtime = caliber*0.5
 		if (istype(src,/obj/structure/cannon/modern/naval))
-			loadtime = caliber
-		*/
+			loadtime = caliber*0.25
+
 		if (do_after(M, loadtime, M, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				found_loader = FALSE
