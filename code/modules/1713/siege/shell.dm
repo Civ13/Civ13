@@ -393,7 +393,7 @@
 /obj/item/cannon_ball/rocket/nuclear
 	name = "Nuclear Rocket"
 	desc = "You might want to step back a bit..."
-	icon_state = "shell_nuclear_rocket"
+	icon_state = "rocket_nuclear"
 	value = 80
 	atype = "NUCLEAR"
 

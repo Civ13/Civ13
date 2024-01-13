@@ -135,6 +135,30 @@
 	health = 80
 	opacity = TRUE
 	hitsound = 'sound/weapons/blade_parry1.ogg'
+
+/obj/structure/grille/metalsheetfence/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/siegeladder))
+		user.visible_message(
+			SPAN_DANGER("[user] starts deploying \the [W.name]."),
+			SPAN_NOTICE("You start deploying \the [W.name]."))
+		if (do_after(user, 8 SECONDS, src))
+			user.visible_message(
+				SPAN_DANGER("[user] has deployed \the [W.name]!"),
+				SPAN_DANGER("You have deployed \the [W.name]!"))
+			var/obj/item/weapon/siegeladder/ANCH = W
+			user.remove_from_mob(ANCH)
+			ANCH.loc = src.loc
+			ANCH.anchored = TRUE
+			climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = ANCH.depicon
+			ANCH.dir = src.dir
+		else
+			user.visible_message(
+				SPAN_DANGER("[user] stops deploying \the [W.name]."),
+				SPAN_DANGER("You stop deploying \the [W.name]."))
+	..()
+
 /obj/structure/grille/metalsheetfence/blue
 	icon_state = "metal_fence2"
 /obj/structure/grille/metalsheetfence/red

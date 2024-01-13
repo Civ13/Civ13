@@ -54,8 +54,9 @@
 	if (!(user.using_MG == src))
 		var/grip_dir = reverse_direction(dir)
 		var/turf/T = get_step(loc, grip_dir)
-		for (var/obj/structure/bed/chair/drivers/DR in src.loc.contents)
-			if (DR in src.loc.contents)
+		var/turf/TT = get_turf(src)
+		for (var/obj/structure/bed/chair/drivers/DR in TT.contents)
+			if (DR in TT.contents)
 				user << SPAN_NOTICE("There is a seat in the way.")
 				return
 		if (user.loc == src.loc)
