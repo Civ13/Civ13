@@ -1209,3 +1209,4 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/shipline
 	name = "deep saltwater"
 	icon_state = "ship_line"
+	plane = FLOOR_PLANE
