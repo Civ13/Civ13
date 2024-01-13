@@ -334,7 +334,7 @@
 	magazine_type = /obj/item/ammo_magazine/a50cal_can
 	good_mags = list(/obj/item/ammo_magazine/a50cal_can)
 	firemodes = list(
-		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2)), accuracy=list(2))
+		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
 
