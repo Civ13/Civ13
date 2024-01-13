@@ -51,6 +51,12 @@
 		if ("Blugoslavian Naval Forces")
 			return "Blugoslavian"
 
+/obj/map_metadata/battle_ships/proc/get_sinkable_amount_faction1()
+	var/amount_of_turfs = 0
+	for (var/turf/T in get_area_turfs(/area/caribbean/faction1/ship/lower))
+		amount_of_turfs++
+	return amount_of_turfs
+
 /obj/map_metadata/battle_ships/proc/get_sink_faction1()
 	var/t_level = 0
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower))
@@ -64,6 +70,12 @@
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower/engine))
 		t_level += F.flood_level*2
 	return t_level
+
+/obj/map_metadata/battle_ships/proc/get_sinkable_amount_faction2()
+	var/amount_of_turfs = 0
+	for (var/turf/T in get_area_turfs(/area/caribbean/faction2/ship/lower))
+		amount_of_turfs++
+	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction2()
 	var/t_level = 0
@@ -81,12 +93,12 @@
 
 /obj/map_metadata/battle_ships/proc/check_roundend_conditions()
 	//sinking
-	if (get_sink_faction1() >= 200)
-		roundend_msg = "The Redmenian ship has sank due to flooding in the lower decks!<br><font color='blue'><h2>The Blugoslavians have won!</h2></font>"
+	if (get_sink_faction1() >= get_sinkable_amount_faction1())
+		roundend_msg = "The Redmenian ship has sank due to flooding in the lower decks! ([get_sink_faction1()]/[get_sinkable_amount_faction1()]) <br><h2><font color='blue'>The Blugoslavians have won!</font></h2>"
 		map.next_win = world.time - 100
 		return
-	if (get_sink_faction2() >= 200)
-		roundend_msg = "The Blugoslavian ship has sank due to flooding in the lower decks!<br><font color='red'><h2>The Redmenians have won!</h2></font>"
+	if (get_sink_faction2() >= get_sinkable_amount_faction2())
+		roundend_msg = "The Blugoslavian ship has sank due to flooding in the lower decks! ([get_sink_faction2()]/[get_sinkable_amount_faction2()]) <br><h2><font color='red'>The <b>Redmenians</b> have won!</font></h2>"
 		map.next_win = world.time - 100
 		return
 	//everyone dead
@@ -100,11 +112,11 @@
 				if (H.faction_text == faction2)
 					found_faction2 = TRUE
 		if (!found_faction1)
-			roundend_msg = "The whole Redmenian crew has succumbed!<br><font color='blue'><h2>The Blugoslavians have won!</h2></font>"
+			roundend_msg = "The whole Redmenian crew has succumbed! <br><h2><font color='blue'>The Blugoslavians have won!</font></h2>"
 			map.next_win = world.time - 100
 			return
 		if (!found_faction2)
-			roundend_msg = "The whole Blugoslavian crew has succumbed!<br><font color='red'><h2>The Redmenians have won!</h2></font>"
+			roundend_msg = "The whole Blugoslavian crew has succumbed! <br><h2><font color='red'>The <b>Redmenians</b> have won!</font></h2>"
 			map.next_win = world.time - 100
 			return
 	spawn(300)
