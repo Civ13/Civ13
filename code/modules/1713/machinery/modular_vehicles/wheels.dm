@@ -160,14 +160,6 @@
 	icon_state = "driver_tank"
 	flammable = FALSE
 
-/obj/structure/bed/chair/drivers/user_buckle_mob(mob/living/M, mob/user)
-	var/turf/T = get_turf(src)
-	for (var/obj/structure/bed/chair/CH in T.contents)
-		if (CH in T.contents && CH != src)
-			to_chat(user, SPAN_NOTICE("There is a seat in the way."))
-			return
-	..()
-
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (axis)
