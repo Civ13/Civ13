@@ -75,9 +75,15 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (is_open_container())
 			if (reagents.total_volume)
 				if (user.a_intent == I_HARM)
-					user.visible_message("<span class='danger'>[user] splashes the contents of [src] onto [attacked]!</span>", \
-										"<span class='notice'>You splash the contents of [src] onto [attacked].</span>")
-					proper_spill(attacked, reagents.total_volume)
+					if (map.ID == MAP_BATTLE_SHIPS && z > 1)
+						user.visible_message("<span class='danger'>[user] splashes the contents of [src] onto [attacked]!</span>", \
+											"<span class='notice'>You splash the contents of [src] onto [attacked].</span>")
+						reagents.reagent_list = list()
+						reagents.total_volume = 0
+					else
+						user.visible_message("<span class='danger'>[user] splashes the contents of [src] onto [attacked]!</span>", \
+											"<span class='notice'>You splash the contents of [src] onto [attacked].</span>")
+						proper_spill(attacked, reagents.total_volume)
 					return TRUE
 				else if (istype(attacked, /turf/floor/dirt))
 					if (locate(/obj/structure/farming/plant) in attacked)
