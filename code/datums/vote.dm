@@ -22,7 +22,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/voted_epoch = "1713"
 	var/voted_gamemode = "Classic (Stone Age Start)"
 	var/autogamemode_triggered = FALSE
-	var/faction = 1
+	var/faction = 0
+	var/ship_size = "Small Ships"
 	New()
 		if (vote != src)
 			if (istype(vote))
@@ -41,7 +42,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			// Calculate how much time is remaining by comparing current time, to time of vote start,
 			// plus vote duration
 			if (mode == "ship selection")
-				time_remaining = round((started_time + 300 - world.time)/10)
+				if (faction == 0)
+					time_remaining = round((started_time + 600 - world.time)/10)
+				else
+					time_remaining = round((started_time + 300 - world.time)/10)
 			else
 				time_remaining = round((started_time + config.vote_period - world.time)/10)
 
@@ -181,6 +185,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					var/obj/map_metadata/battle_ships/battle_ships = map
 					if (faction == 3)
 						return .
+					else if (faction == 0)
+						faction = 1
 					else if (faction == 1)
 						faction = 2
 						battle_ships.load_map(lowertext(.), "south")
@@ -286,21 +292,41 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("ship selection")
 					default = "Patrol_boat"
 					var/list/options = list()
-					switch (faction)
-						if (1)
-							question = "What ship should the Redmenians use?"
-							options = list(
-							"Indomitable" = 10,
-							"Patrol_boat" = 0,
-							//"Kurama" = 20,
-							)
-						if (2)
-							question = "What ship should the Blugoslavians use?"
-							options = list(
-							"Indomitable" = 10,
-							"Patrol_boat" = 0,
-							//"Kurama" = 20,
-							)
+					
+					var/list/small_ships = list(
+						"Patrol_boat" = 0,
+					)
+					var/list/destroyers = list(
+						"Indomitable" = 0,
+					)
+					var/list/battle_ships = list(
+						"Kurama" = 0,
+					)
+					if (faction == 0)
+						question = "What kind of ships should face eachother?"
+						options = list(
+						"Small Ships" = 0,
+						"Destroyers" = 10,
+						//"Battle Ships" = 20,
+						)
+						default = "Small Ships"
+
+					else
+						switch (faction)
+							if (1)
+								question = "What ship should the Redmenians use?"
+							if (2)
+								question = "What ship should the Blugoslavians use?"
+						switch (ship_size)
+							if ("Small Ships")
+								options = small_ships
+								default = "Patrol_boat"
+							if ("Destroyers")
+								options = destroyers
+								default = "Indomitable"
+							if ("Battle Ships")
+								options = battle_ships
+								default = "Kurama"
 
 					for (var/cur_option in options)
 						choices.Add(cur_option)
