@@ -303,7 +303,7 @@
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound 		= 'sound/weapons/guns/fire/Type92.ogg'
 	effectiveness_mod = 1.0
-	load_delay = 1.5 SECONDS
+	load_delay = 12
 	firemodes = list(
 		list(name = "full auto", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.7, 0.8, 1.0, 1.2, 1.4), recoil = 0),)
 	var/cover_open = FALSE

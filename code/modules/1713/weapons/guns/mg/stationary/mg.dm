@@ -297,7 +297,7 @@
 	ammo_type = /obj/item/ammo_casing/a65x52
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 20
-	load_delay = 2 SECONDS
+	load_delay = 12
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
