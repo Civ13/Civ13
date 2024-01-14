@@ -73,6 +73,9 @@ var/list/floor_decals = list()
 		else
 	return
 
+/obj/effect/floor_decal/attackby(obj/item/W, mob/user)
+	return
+
 /obj/effect/floor_decal/corner
 	icon_state = "corner_white"
 
@@ -1210,3 +1213,4 @@ var/list/floor_decals = list()
 	name = "deep saltwater"
 	icon_state = "ship_line"
 	plane = FLOOR_PLANE
+	mouse_opacity = FALSE
