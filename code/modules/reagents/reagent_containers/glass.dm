@@ -470,7 +470,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	name = "steel bucket"
 	desc = "It's a bucket."
 	icon_state = "steel_bucket"
-	item_state = "bucket" //TODO: need be checked!!!!!!!!!!!
+	item_state = "steel_bucket" //TODO: need be checked!!!!!!!!!!!
 	flammable = FALSE
 
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
