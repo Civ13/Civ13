@@ -455,8 +455,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	possible_transfer_amounts = list(5,10,15,25,30)
 
 /obj/item/weapon/reagent_containers/glass/bucket
-	desc = "It's a bucket."
 	name = "bucket"
+	desc = "It's a bucket."
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "bucket"
 	item_state = "bucket" //TODO: need be checked!!!!!!!!!!!
@@ -465,6 +465,13 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	possible_transfer_amounts = list(10,20,30,60,120)
 	volume = 120
 	flammable = TRUE
+
+/obj/item/weapon/reagent_containers/glass/bucket/steel
+	name = "steel bucket"
+	desc = "It's a bucket."
+	icon_state = "steel_bucket"
+	item_state = "steel_bucket" //TODO: need be checked!!!!!!!!!!!
+	flammable = FALSE
 
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
 	if (istype(D, /obj/item/weapon/mop))
