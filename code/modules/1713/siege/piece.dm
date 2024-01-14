@@ -129,7 +129,7 @@
 			broken = FALSE
 			return
 	if (istype(W, ammotype))
-		var/obj/item/cannon_ball/shell/tank/TS = W
+		var/obj/item/cannon_ball/TS = W
 		if (caliber != TS.caliber && caliber != null && caliber != 0)
 			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
 			return
@@ -143,9 +143,11 @@
 		if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
 			return FALSE
-		var/loadtime = caliber/2
+
+		var/loadtime = caliber*0.5
 		if (istype(src,/obj/structure/cannon/modern/naval))
-			loadtime = caliber
+			loadtime = caliber*0.25
+
 		if (do_after(M, loadtime, M, can_move = TRUE))
 			if (M && (locate(M) in range(1,src)))
 				found_loader = FALSE
@@ -206,6 +208,12 @@
 
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, ammotype))
+		/*
+		var/obj/item/cannon_ball/TS = W
+		if (caliber != TS.caliber && caliber != null && caliber != 0)
+			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
+			return
+		*/
 		if (loaded.len >= max_loaded)
 			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
 			return
@@ -300,9 +308,8 @@
 	if (href_list["load"])
 		if (!loaded.len)
 			if (!autoloader)
-				var/obj/item/cannon_ball/M = user.get_active_hand()
-				if (istype(M, ammotype))
-					var/obj/item/cannon_ball/shell/tank/TS = M
+				var/obj/item/cannon_ball/TS = user.get_active_hand()
+				if (istype(TS, ammotype))
 					if (caliber != TS.caliber && caliber != null && caliber != 0)
 						user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
 						return
@@ -324,9 +331,9 @@
 							if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
 								user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
 								return FALSE
-							user.remove_from_mob(M)
-							M.loc = src
-							loaded += M
+							user.remove_from_mob(TS)
+							TS.loc = src
+							loaded += TS
 							user << SPAN_NOTICE("You load \the [src].")
 							if (istype(src, /obj/structure/cannon/modern/tank))
 								playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
@@ -335,7 +342,7 @@
 				var/list/loadable = list()
 				for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
 					if (AL.storage.contents)
-						for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+						for (var/obj/item/cannon_ball/TS in AL.storage.contents)
 							if (istype(TS, ammotype))
 								if (caliber != TS.caliber && caliber != null && caliber != 0)
 									user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
@@ -346,7 +353,7 @@
 					return */
 
 				playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
-				var/obj/item/cannon_ball/shell/tank/chosen
+				var/obj/item/cannon_ball/chosen
 
 				user << SPAN_NOTICE("The autoloader begins loading a shell.")
 				spawn (6 SECONDS)
@@ -734,18 +741,18 @@
 												var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
 												fragmentate(target, 12, 7, fragment_types)
 
-										else if (istype(fired_shell, /obj/item/cannon_ball/shell/tank/HE380))
+										else if (istype(fired_shell, /obj/item/cannon_ball/shell/naval/HE380))
 											explosion(target, 2, 3, 3, 4)
 											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
-													explosion(tgtbelow, 1, 2, 2, 3)
-										else if (istype(fired_shell, /obj/item/cannon_ball/shell/tank/HE150))
-											explosion(target, 1, 2, 2, 3)
+													explosion(tgtbelow, 2, 2, 2, 3)
+										else if (istype(fired_shell, /obj/item/cannon_ball/shell/naval/HE150))
+											explosion(target, 2, 2, 2, 3)
 											if (target.z > 1)
 												var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
 												if (tgtbelow)
-													explosion(tgtbelow, 0, 1, 1, 3)
+													explosion(tgtbelow, 1, 2, 2, 3)
 
 										else
 											explosion(target, 2, 3, 4, 6)

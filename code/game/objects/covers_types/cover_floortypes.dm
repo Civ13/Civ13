@@ -56,7 +56,7 @@
 		Destroy()
 
 /obj/covers/repairedfloor/ship/Destroy()
-	if(istype(src.loc, /turf/floor/beach/water))
+	if(istype(src.loc, /turf/floor/beach/water) && map.ID == MAP_BATTLE_SHIPS)
 		var/turf/T1 = get_step(src.loc,pick(NORTH,NORTHWEST))
 		if(T1)
 			new/obj/effect/flooding(T1)

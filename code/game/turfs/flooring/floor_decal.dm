@@ -10,6 +10,7 @@ var/list/floor_decals = list()
 	name = "floor decal"
 	icon = 'icons/turf/flooring/decals.dmi'
 	layer = TURF_LAYER + 0.2
+	anchored = TRUE
 	var/supplied_dir
 
 /obj/effect/floor_decal/New(var/newloc, var/newdir, var/newcolour)
@@ -1208,3 +1209,4 @@ var/list/floor_decals = list()
 /obj/effect/floor_decal/shipline
 	name = "deep saltwater"
 	icon_state = "ship_line"
+	plane = FLOOR_PLANE

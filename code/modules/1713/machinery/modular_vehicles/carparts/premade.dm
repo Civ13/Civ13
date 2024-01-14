@@ -709,7 +709,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/t90a/rf,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/pkm),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t90a/front),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/t90a/right, /obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/t90a,/obj/structure/cannon/modern/tank/autoloader/t90a,/obj/structure/shellrack/autoloader/full125),
@@ -732,7 +732,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/leopard/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
 	"2,1" = list(/obj/structure/vehicleparts/frame/leopard/front),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/leopard/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/leopard/lf,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/leopard/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/leopard,/obj/structure/cannon/modern/tank/leopard),
@@ -755,7 +755,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/t90a/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t90a/front,/obj/structure/bed/chair/drivers/tank),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/t90a/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/t90a,/obj/structure/cannon/modern/tank/challenger2),
@@ -778,7 +778,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/baf1_a/rf,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning),
 	"2,1" = list(/obj/structure/vehicleparts/frame/baf1_a/front,/obj/structure/bed/chair/drivers/tank),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/baf1_a/lf,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/baf1_a/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/baf1_a/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/baf1_a,/obj/structure/cannon/modern/tank/m1a1_abrams),
@@ -912,7 +912,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80),
 	"2,3" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lbc),
@@ -931,7 +931,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/apcr,/obj/item/ammo_casing/rocket/atgm/apcr),
 	"2,3" = list(/obj/structure/vehicleparts/frame/btr80/lbc),
@@ -950,7 +950,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/cv90/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/cv90/rfc,/obj/item/tank_system/aps/ironfist,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/frame/cv90/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/frame/cv90/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/cv90/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80),
 	"2,3" = list(/obj/structure/vehicleparts/frame/cv90/lbc),

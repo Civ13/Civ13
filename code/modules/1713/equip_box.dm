@@ -36,12 +36,13 @@
 	var/list/options = list()
 	switch (user.faction_text)
 		if (DUTCH)
-			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
-			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
+			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
+			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack/mortar,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 		if (RUSSIAN)
-			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack)
-			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
-			options["Foldable PKM"] = list(/obj/item/weapon/foldable/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm)
+			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
+			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack/mortar,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
+			options["Foldable PKM"] = list(/obj/item/weapon/foldable/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm)
+	
 	var/choice = input(user,"What type of equipment?") as null|anything in options
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
@@ -60,7 +61,7 @@
 	var/list/options = list()
 	switch (user.faction_text)
 		if (DUTCH)
-			options["Sniper"] = list(/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper,/obj/item/ammo_magazine/a50cal,/obj/item/ammo_magazine/a50cal)
+			options["Sniper"] = list(/obj/item/weapon/gun/projectile/semiautomatic/barrett,/obj/item/ammo_magazine/barrett,/obj/item/ammo_magazine/barrett,/obj/item/ammo_magazine/barrett)
 			options["Anti-Tank"] = list(/obj/item/weapon/gun/launcher/rocket/single_shot/m72law,/obj/item/weapon/gun/launcher/rocket/single_shot/m72law)
 			options["Grenadier - Standalone"] = list(/obj/item/weapon/gun/launcher/grenade/standalone/hk69,/obj/item/clothing/accessory/storage/webbing/shell40mm)
 			options["Grenadier - Underslung"] = list(/obj/item/weapon/gun/launcher/grenade/underslung/m203,/obj/item/clothing/accessory/storage/webbing/shell40mm)

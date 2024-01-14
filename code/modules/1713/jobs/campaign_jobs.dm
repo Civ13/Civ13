@@ -878,7 +878,7 @@
 			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 		else
 			if (findtext(title, "Marine"))
-				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16(null)
+				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47(null)
 				uniform.attackby(webbing, H)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)

@@ -289,6 +289,7 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Russians</b> have reached [rus_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			world << sound('sound/music/russian_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 3)
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -298,6 +299,7 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Dutch</b> have reached [dutch_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			world << sound('sound/music/dutch_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 3)
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE

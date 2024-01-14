@@ -1573,6 +1573,12 @@
 		for (var/i=1, i<= 3, i++)
 			new/obj/item/ammo_magazine/m16(hold)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47
+	New()
+		..()
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/ak47(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
 	New()
 		..()

@@ -16,7 +16,7 @@
 	desc = "A giant artillery cannon usually mounted on a ship."
 	icon = 'icons/obj/ship_cannon.dmi'
 	icon_state = "naval_cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
+	ammotype = /obj/item/cannon_ball/shell/naval
 	spritemod = FALSE
 	firedelay = 1
 	maxrange = 200
@@ -44,7 +44,7 @@
 
 /obj/structure/cannon/modern/naval/n380
 	name = "380mm naval cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
+	ammotype = /obj/item/cannon_ball/shell/naval/HE380
 	firedelay = 1
 	maxrange = 150
 	caliber = 380
@@ -57,7 +57,7 @@
 
 /obj/structure/cannon/modern/naval/n150
 	name = "150mm naval cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
+	ammotype = /obj/item/cannon_ball/shell/naval/HE150
 	firedelay = 1
 	maxrange = 80
 	caliber = 150
