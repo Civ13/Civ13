@@ -1247,7 +1247,7 @@
 	name = "Ship"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	location = AREA_OUTSIDE
-	icon_state = "blue2"
+	icon_state = "red2"
 
 /area/caribbean/faction1/ship/upper
 	base_turf =/turf/floor/broken_floor
@@ -1263,11 +1263,11 @@
 
 /area/caribbean/faction1/ship/lower/engine
 	name = "Engine Room"
-	icon_state = "blue3"
+	icon_state = "red3"
 
 /area/caribbean/faction1/ship/lower/storage
 	name = "Storage Area"
-	icon_state = "blue3"
+	icon_state = "red3"
 
 /area/caribbean/faction1/ship/lower/storage/kitchen
 	name = "Kitchen Storage Area"
@@ -1280,7 +1280,7 @@
 	name = "Ship"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	location = AREA_OUTSIDE
-	icon_state = "red2"
+	icon_state = "blue2"
 
 /area/caribbean/faction2/ship/upper
 	base_turf =/turf/floor/broken_floor
@@ -1296,11 +1296,11 @@
 
 /area/caribbean/faction2/ship/lower/engine
 	name = "Engine Room"
-	icon_state = "red3"
+	icon_state = "blue3"
 
 /area/caribbean/faction2/ship/lower/storage
 	name = "Storage Area"
-	icon_state = "red3"
+	icon_state = "blue3"
 
 /area/caribbean/faction2/ship/lower/storage/kitchen
 	name = "Kitchen Storage Area"

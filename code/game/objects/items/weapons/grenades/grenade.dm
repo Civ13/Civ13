@@ -19,13 +19,13 @@
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
 		if (det_time > 1)
-			user << "The timer is set to [det_time/10] seconds."
+			to_chat(user, "The timer is set to [det_time/10] seconds.")
 			return
 
 
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
 	if (!active)
-		user << SPAN_WARNING("You light \the [name]! [det_time/10] seconds!")
+		to_chat(user, SPAN_WARNING("You light \the [name]! [det_time/10] seconds!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -236,7 +236,7 @@
 		else
 			R.amount -= 1
 		state = 2
-		user << "You attach the wick to \the [src]."
+		to_chat(user, "You attach the wick to \the [src].")
 		name = "dynamite stick"
 		icon_state = "dynamite2"
 		return
@@ -244,7 +244,7 @@
 		var/obj/item/weapon/reagent_containers/RG = W
 		if (RG.reagents.has_reagent("nitroglycerin",2))
 			RG.reagents.remove_reagent("nitroglycerin",2)
-			user << "You fill \the [src] with the explosive charge."
+			to_chat(user, "You fill \the [src] with the explosive charge.")
 			state = 1
 			name = "filled dynamite stick"
 			icon_state = "dynamite1"
@@ -573,10 +573,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure that you want to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the booby trap..."
+			to_chat(user, "Placing the booby trap...")
 			if (do_after(user, 100, src))
 				if (src)
-					user << "You successfully place the booby trap here using \the [src]."
+					to_chat(user, "You successfully place the booby trap here using \the [src].")
 					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
 					firer = user
@@ -595,18 +595,17 @@
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
 	if (!active)
-		user << SPAN_WARNING("You prime \the [name]!")
+		to_chat(user, SPAN_WARNING("You prime \the [name]!"))
 		firer = user
-		active = TRUE
 		add_fingerprint(user)
-	if (user)
-		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
-		message_admins("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
-		log_game("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
-		firer = user
-	icon_state = initial(icon_state) + "_active"
-	active = TRUE
-	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+		icon_state = initial(icon_state) + "_active"
+		active = TRUE
+		playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+		if (user)
+			msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+			message_admins("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+			log_game("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+			firer = user
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
 	if (ishuman(user))
@@ -684,18 +683,18 @@
 
 /obj/item/weapon/grenade/suicide_vest/examine(mob/user)
 	..()
-	user << "\The [src] is <b>[armed]</b>."
+	to_chat(user, "\The [src] is <b>[armed]</b>.")
 	return
 
 /obj/item/weapon/grenade/suicide_vest/attack_self(mob/user as mob)
 	if (!active && armed == "armed")
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/attack_hand(mob/user as mob)
 	if (!active && armed == "armed" && loc == user)
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		activate(user)
 		add_fingerprint(user)
 	else
@@ -707,11 +706,11 @@
 	set src in range(1, usr)
 
 	if (armed == "armed")
-		usr << "You disarm \the [src]."
+		to_chat(usr, "You disarm \the [src].")
 		armed = "disarmed"
 		return
 	else
-		usr << SPAN_WARNING("You arm \the [src]!")
+		to_chat(usr, SPAN_WARNING("You arm \the [src]!"))
 		armed = "armed"
 		return
 
@@ -749,19 +748,19 @@
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/examine(mob/user)
 	..()
-	user << "\The [src] is <b>[armed]</b>."
+	to_chat(user, "\The [src] is <b>[armed]</b>.")
 	return
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_self(mob/user as mob)
 	if (!active && armed1 == "armed")
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_hand(mob/user as mob)
 	if (!active && armed1 == "armed" && loc == user)
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -774,12 +773,12 @@
 	set src in range(1, usr)
 
 	if (armed1 == "armed")
-		usr << "You disarm \the [src]."
+		to_chat(usr, "You disarm \the [src].")
 		armed1 = "disarmed"
 		firer = null
 		return
 	else
-		usr << SPAN_WARNING("You arm \the [src]!")
+		to_chat(usr, SPAN_WARNING("You arm \the [src]!"))
 		armed1 = "armed"
 		return
 
@@ -950,10 +949,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the mine..."
+			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
 				if (src)
-					user << "You successfully place the mine here using \the [src]."
+					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type
 					firer = user
@@ -973,10 +972,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the mine..."
+			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
 				if (src)
-					user << "You successfully place the mine here using \the [src]."
+					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type
 					firer = user

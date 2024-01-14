@@ -55,20 +55,12 @@
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction1/ship/lower))
 		amount_of_turfs++
-	amount_of_turfs = amount_of_turfs * 0.6
+	amount_of_turfs = amount_of_turfs * 0.75
 	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction1()
 	var/t_level = 0
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower/storage/kitchen))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower/storage))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower/storage/magazine))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower/engine))
 		t_level += F.flood_level*2
 	return t_level
 
@@ -76,20 +68,12 @@
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction2/ship/lower))
 		amount_of_turfs++
-	amount_of_turfs = amount_of_turfs * 0.6
+	amount_of_turfs = amount_of_turfs * 0.75
 	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction2()
 	var/t_level = 0
 	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower/storage/kitchen))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower/storage))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower/storage/magazine))
-		t_level += F.flood_level*2
-	for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower/engine))
 		t_level += F.flood_level*2
 	return t_level
 
