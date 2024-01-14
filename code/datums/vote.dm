@@ -43,7 +43,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			// plus vote duration
 			if (mode == "ship selection")
 				if (faction == 0)
-					time_remaining = round((started_time + 600 - world.time)/10)
+					time_remaining = round((started_time + 450 - world.time)/10)
 				else
 					time_remaining = round((started_time + 300 - world.time)/10)
 			else
