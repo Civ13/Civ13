@@ -38,7 +38,7 @@
 	var/a1_name = "Radio Post"
 
 	var/a2_control = "nobody"
-	var/a2_name = "North City"
+	var/a2_name = "Central Town"
 
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
