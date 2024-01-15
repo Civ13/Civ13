@@ -509,53 +509,54 @@
 		if ("RPK-74 crate")*/
 
 /mob/living/simple_animal/civilian/afghan/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (istype(W, /obj/item/weapon/package/humanitarian))
-		if (H.faction_text == "ARAB")
-			return
-		if (package_given)
-			return
-		if (H.a_intent == I_HELP)
-			qdel(W)
-			if (map && map.ID == MAP_KANDAHAR)
-				var/obj/map_metadata/kandahar/KD = map
-				KD.supply_points["Soviet Army"] += 20
-			package_given = TRUE
-			return
+	if (src.stat != DEAD)
+		if (istype(W, /obj/item/weapon/package/humanitarian))
+			if (H.faction_text == "ARAB")
+				return
+			if (package_given)
+				return
+			if (H.a_intent == I_HELP)
+				qdel(W)
+				if (map && map.ID == MAP_KANDAHAR)
+					var/obj/map_metadata/kandahar/KD = map
+					KD.supply_points["Soviet Army"] += 20
+				package_given = TRUE
+				return
 	..()
 
 /mob/living/simple_animal/civilian/afghan/attack_hand(mob/living/human/user as mob)
-	if (user.faction_text == "ARAB")
-		if (user.a_intent == I_HELP)
-			if (already_coerced)
-				user << SPAN_WARNING("\icon[src] No way! Leave me alone!")
-				return
-			if (package_given)
-				user << SPAN_WARNING("\icon[src] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
-				already_coerced = TRUE
-				return
-			if (user.original_job_title != "Mujahideen Imam" && user.original_job_title != "Mujahideen Warchief")
-				if (prob(50))
+	if (src.stat != DEAD)
+		if (user.faction_text == "ARAB")
+			if (user.a_intent == I_HELP)
+				if (already_coerced)
+					user << SPAN_WARNING("\icon[src] No way! Leave me alone!")
+					return
+				if (package_given)
+					user << SPAN_WARNING("\icon[src] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
+					already_coerced = TRUE
+					return
+				if (user.original_job_title != "Mujahideen Imam" && user.original_job_title != "Mujahideen Warchief")
+					if (prob(50))
+						user << SPAN_WARNING("\icon[src] I refuse!")
+						already_coerced = TRUE
+						return
+					if (prob(30))
+						new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
+					else
+						new /mob/living/simple_animal/hostile/human/muj_insurgent(loc)
+					qdel(src)
+					return
+				if (prob(30))
 					user << SPAN_WARNING("\icon[src] I refuse!")
 					already_coerced = TRUE
 					return
-				if (prob(30))
-					new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
-				else
+				if (prob(50))
 					new /mob/living/simple_animal/hostile/human/muj_insurgent(loc)
+				else
+					new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
+				if (prob(50))
+					world << "The Mujahideen coerced some of the local population into their ranks."
 				qdel(src)
 				return
-			if (prob(30))
-				user << SPAN_WARNING("\icon[src] I refuse!")
-				already_coerced = TRUE
-				return
-			if (prob(50))
-				new /mob/living/simple_animal/hostile/human/muj_insurgent(loc)
-			else
-				new /mob/living/simple_animal/hostile/human/muj_insurgent/akm(loc)
-			if (prob(50))
-				world << "The Mujahideen coerced some of the local population into their ranks."
-			qdel(src)
-			return
 	..()
 
-	

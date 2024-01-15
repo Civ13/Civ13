@@ -785,7 +785,7 @@
 	additional_languages = list("Blugoslavian" = 100)
 	
 /datum/job/pirates/redfaction/navy/petty
-	title = "IRNPetty Officer"
+	title = "IRN Petty Officer"
 	is_squad_leader = TRUE
 	is_navy = TRUE
 	max_positions = 10
