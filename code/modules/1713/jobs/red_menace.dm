@@ -846,8 +846,82 @@
 
 /////// Civilians ///////
 
+/datum/job/american/american_cop
+	title = "Policeman"
+	rank_abbreviation = "Officer"
+
+	spawn_location = "JoinLateRN"
+
+	can_be_female = TRUE
+	is_reds = TRUE
+
+	min_positions = 1
+	max_positions = 15
+	selection_color ="#75a3d7"
+
+/datum/job/american/american_cop/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/police/modern(H), slot_belt)
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police/black(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform1 = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform1.attackby(hiph, H)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump/remington870/brown(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
+	H.add_note("Role", "You are a Police Officer. Keep your fellow American citizens safe!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+
+/datum/job/american/american_paramedic
+	title = "EMS Worker"
+	rank_abbreviation = "Paramedic"
+
+	spawn_location = "JoinLateRN"
+
+	can_be_female = TRUE
+	is_reds = TRUE
+
+	min_positions = 1
+	max_positions = 6
+	selection_color ="#75a3d7"
+
+/datum/job/american/american_paramedic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(stet, H)
+	H.add_note("Role", "You are a Paramedic. Tend to your fellow American citizens!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	give_random_name(H)
+
 /datum/job/american/modernciv
-	title = "American Civilian"
+	title = "American Citizen"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRN"
@@ -858,7 +932,6 @@
 	min_positions = 1
 	max_positions = 500
 	selection_color ="#75a3d7"
-
 
 /datum/job/american/modernciv/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -890,7 +963,48 @@
 			if (8)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/mafia(H), slot_w_uniform)
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/white(H), slot_shoes)
-
+		if (prob(70))
+			var/pickjacket = rand(1,8)
+			switch(pickjacket)
+				if (1)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/oldyjacket(H), slot_wear_suit)
+				if (2)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/servicejacket(H), slot_wear_suit)
+				if (3)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown(H), slot_wear_suit)
+				if (4)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketblack(H), slot_wear_suit)
+				if (5)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker(H), slot_wear_suit)
+				if (6)
+					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/modern_long_brown(H), slot_wear_suit)
+				if (7)
+					var/obj/item/clothing/suit/storage/jacket/custom/hoodie/HO = new /obj/item/clothing/suit/storage/jacket/custom/hoodie(null)
+					HO.color = pick("#3c3935","#c8c4ba","#535a58","#60463c","#191c4e", "#243c22")
+					HO.uncolored = FALSE
+					HO.update_icon()
+					H.equip_to_slot_or_del(HO, slot_wear_suit)
+				if (8)
+					var/obj/item/clothing/suit/storage/jacket/custom/cloth_jacket/JA = new /obj/item/clothing/suit/storage/jacket/custom/cloth_jacket(null)
+					JA.color = pick("#3c3935","#c8c4ba","#535a58","#60463c","#191c4e", "#243c22")
+					JA.uncolored = FALSE
+					JA.update_icon()
+					H.equip_to_slot_or_del(JA, slot_wear_suit)
+		if (prob(50))
+			var/pickhat = rand(1,6)
+			switch(pickhat)
+				if (1)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+				if (2)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+				if (3)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/cap(H), slot_head)
+				if (4)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/red(H), slot_head)
+				if (5)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/cap/blue(H), slot_head)
+				if (6)
+					H.equip_to_slot_or_del(new /obj/item/clothing/head/bandana/toughguy(H), slot_head)
 		H.add_note("Role", "You are a proud American citizen! Defend against the Red Menace!")
 		H.setStat("strength", STAT_NORMAL)
 		H.setStat("crafting", STAT_NORMAL)
@@ -903,50 +1017,9 @@
 		H.setStat("machinegun", STAT_NORMAL)
 		give_random_name(H)
 	else
-		var/loadout = rand(1,7)
+		var/loadout = rand(1,5)
 		switch(loadout)
-			if(1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/paramedic(H), slot_w_uniform)
-				H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-				H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-				var/obj/item/clothing/accessory/stethoscope/stet = new /obj/item/clothing/accessory/stethoscope(null)
-				var/obj/item/clothing/under/uniform = H.w_uniform
-				uniform.attackby(stet, H)
-				H.add_note("Role", "You are a Paramedic. Tend to your fellow American citizens!")
-				H.setStat("strength", STAT_NORMAL)
-				H.setStat("crafting", STAT_NORMAL)
-				H.setStat("rifle", STAT_NORMAL)
-				H.setStat("dexterity", STAT_MEDIUM_HIGH)
-				H.setStat("swords", STAT_NORMAL)
-				H.setStat("pistol", STAT_NORMAL)
-				H.setStat("bows", STAT_NORMAL)
-				H.setStat("medical", STAT_VERY_HIGH)
-				give_random_name(H)
-			if (2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/traffic_police, slot_w_uniform)
-				H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/traffic_police(H), slot_head)
-				if (prob(30))
-					H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/police(H), slot_wear_suit)
-				var/obj/item/clothing/under/uniform1 = H.w_uniform
-				var/obj/item/clothing/accessory/holster/hip/hiph = new /obj/item/clothing/accessory/holster/hip(null)
-				uniform1.attackby(hiph, H)
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/coltpolicepositive(H), slot_l_hand)
-				H.add_note("Role", "You are a Police Officer. Keep your fellow American citizens safe!")
-				H.setStat("strength", STAT_MEDIUM_HIGH)
-				H.setStat("crafting", STAT_NORMAL)
-				H.setStat("rifle", STAT_NORMAL)
-				H.setStat("dexterity", STAT_MEDIUM_HIGH)
-				H.setStat("swords", STAT_NORMAL)
-				H.setStat("pistol", STAT_HIGH)
-				H.setStat("bows", STAT_NORMAL)
-				H.setStat("medical", STAT_MEDIUM_LOW)
-				give_random_name(H)
-			if (3)
+			if (1)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
 			//clothes
@@ -968,7 +1041,7 @@
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_LOW)
 				give_random_name(H)
-			if (4)
+			if (2)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 			//clothes
@@ -989,7 +1062,7 @@
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_LOW)
 				give_random_name(H)
-			if (5)
+			if (3)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 			//clothes
@@ -997,22 +1070,19 @@
 			//head
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
 			//back
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/shotgun/pump(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/leveraction/winchesterm1886(H), slot_shoulder)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
-				var/obj/item/clothing/under/uniform = H.w_uniform
-				var/obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/band = new /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier(null)
-				uniform.attackby(band, H)
 				H.add_note("Role", "You are a Hunter. Defend your town against the invaders.")
 				H.setStat("strength", STAT_NORMAL)
 				H.setStat("crafting", STAT_NORMAL)
-				H.setStat("rifle", STAT_MEDIUM_HIGH)
-				H.setStat("dexterity", STAT_MEDIUM_HIGH)
+				H.setStat("rifle", STAT_HIGH)
+				H.setStat("dexterity", STAT_NORMAL)
 				H.setStat("swords", STAT_NORMAL)
 				H.setStat("pistol", STAT_NORMAL)
 				H.setStat("bows", STAT_MEDIUM_HIGH)
 				H.setStat("medical", STAT_LOW)
 				give_random_name(H)
-			if (6)
+			if (4)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 			//clothes
@@ -1034,7 +1104,7 @@
 				H.setStat("bows", STAT_NORMAL)
 				H.setStat("medical", STAT_MEDIUM_HIGH)
 				give_random_name(H)
-			if (7)
+			if (5)
 			//shoes
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/white(H), slot_shoes)
 			//clothes
