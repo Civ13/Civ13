@@ -762,15 +762,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni3(H), slot_w_uniform)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (prob(15))
-		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
-		uniform.attackby(fj, H)
-	else
-		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
-		uniform.attackby(fj2, H)
-	var/obj/item/clothing/accessory/storage/webbing/m79_vest/filled/vest = new /obj/item/clothing/accessory/storage/webbing/m79_vest/filled(null)
-	uniform.attackby(vest, H)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
@@ -780,6 +771,15 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/buttpack(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(15))
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969/fj = new /obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969(null)
+		uniform.attackby(fj, H)
+	else
+		var/obj/item/clothing/accessory/armor/coldwar/flakjacket/fj2 = new /obj/item/clothing/accessory/armor/coldwar/flakjacket(null)
+		uniform.attackby(fj2, H)
+	var/obj/item/clothing/accessory/storage/webbing/m79_vest/filled/vest = new /obj/item/clothing/accessory/storage/webbing/m79_vest/filled(null)
+	uniform.attackby(vest, H)
 	if (prob(45))
 		H.f_style = pick("Selleck Mustache", "3 O'clock Shadow and Mustache","5 O'clock Shadow and Mustache","7 O'clock Shadow and Mustache","3 O'clock Shadow","5 O'clock Shadow","7 O'clock Shadow", "Van Dyke Mustache","Elvis Sideburns","Goatee")
 	else
