@@ -457,6 +457,12 @@ Current Defines (_defines/attachment.dm)
 	max_zoom = ZOOM_CONSTANT+2
 	acc_modifier = 1.1
 
+/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid
+	icon_state = "elcan_arid"
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter
+	icon_state = "elcan_winter"
+
 /obj/item/weapon/attachment/scope/adjustable/advanced/fg42
 	name = "FG42 sight"
 	icon_state = "fg42"
