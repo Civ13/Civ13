@@ -260,8 +260,8 @@
 				)
 			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
 				maps = list(
-					MAP_HUNT = 6,
-					MAP_FOOTBALL = 6,
+//					MAP_HUNT = 6,
+//					MAP_FOOTBALL = 6,
 					MAP_GULAG13 = 6,
 //					MAP_ABASHIRI = 6,
 //					MAP_RIVER_KWAI = 0,
