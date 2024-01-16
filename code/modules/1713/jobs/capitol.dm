@@ -282,7 +282,8 @@
 		var/obj/map_metadata/capitol_hill/CP = map
 		CP.HVT_list |= H
 	return TRUE
-//special ones for the russian mode
+
+// Special roles for the Chinese Offensive mode
 /datum/job/american/hvt/specials
 	title = "President of the USA"
 	en_meaning = "VIP"
@@ -307,6 +308,11 @@
 		H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 		H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 		H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+		if (map && map.ID == MAP_CAPITOL_HILL_PLA)
+			var/obj/map_metadata/capitol_hill/pla_offensive/CP = map
+			CP.HVT_list |= H
+		return TRUE
+
 /datum/job/american/hvt/specials/vice
 	title = "Vice-President of the USA"
 	en_meaning = "VIP"
@@ -336,10 +342,11 @@
 		var/obj/item/clothing/accessory/holster/hip/double/HOLSTER = new /obj/item/clothing/accessory/holster/hip/double(null)
 		uniform.attackby(HOLSTER, H)
 		H.add_note("Role", "You are an essential member of the U.S. Government. They are out to get you! Rely on the feds and stay alive!")
-		if (map && map.ID == MAP_CAPITOL_HILL)
-			var/obj/map_metadata/capitol_hill/CP = map
+		if (map && map.ID == MAP_CAPITOL_HILL_PLA)
+			var/obj/map_metadata/capitol_hill/pla_offensive/CP = map
 			CP.HVT_list |= H
 		return TRUE
+
 /datum/job/american/hvt/specials/speaker
 	title = "Speaker of the House"
 	en_meaning = "VIP"
@@ -367,8 +374,8 @@
 		var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/under/armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/under(null)
 		uniform.attackby(armor, H)
 		H.add_note("Role", "You are an essential member of the U.S. Government. They are out to get you! Rely on the feds and stay alive!")
-		if (map && map.ID == MAP_CAPITOL_HILL)
-			var/obj/map_metadata/capitol_hill/CP = map
+		if (map && map.ID == MAP_CAPITOL_HILL_PLA)
+			var/obj/map_metadata/capitol_hill/pla_offensive/CP = map
 			CP.HVT_list |= H
 		return TRUE
 ////////////MILITIAS/////////////

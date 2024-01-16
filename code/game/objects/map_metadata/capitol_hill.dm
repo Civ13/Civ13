@@ -301,17 +301,16 @@ var/no_loop_capitol = FALSE
 			return !faction1_can_cross_blocks()
 	return FALSE
 
-///CHINESES!!!!//////////
+/////////CHINESE//////////
 /obj/map_metadata/capitol_hill/pla_offensive
 	ID = MAP_CAPITOL_HILL_PLA
 	title = "PLA Offensive on the Capitol Hill"
 	lobby_icon = "icons/lobby/capitolchina.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 1200
+	respawn_delay = 600
 	no_winner = "The operation is still underway."
 	no_hardcore = TRUE
 	gamemode = "Protect the VIP"
-
 	faction_organization = list(
 		AMERICAN,
 		CHINESE)
@@ -373,13 +372,13 @@ var/no_loop_capitol = FALSE
 
 /obj/map_metadata/capitol_hill/pla_offensive/cross_message(faction)
 	if (faction == CHINESE)
-		return "<font size = 4>The Chinese may now cross the invisible wall!</font>"
+		return "<font size = 4>The PLA may now cross the invisible wall!</font>"
 	else
 		return ""
 
 /obj/map_metadata/capitol_hill/pla_offensive/reverse_cross_message(faction)
 	if (faction == CHINESE)
-		return "<span class = 'userdanger'>The Chinese may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The PLA may no longer cross the invisible wall!</span>"
 	else
 		return ""
 
