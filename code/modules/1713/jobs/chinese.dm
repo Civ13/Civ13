@@ -930,7 +930,8 @@
 	spawn_location = "JoinLateRUSgt"
 
 	is_pla = TRUE
-	is_commander =  = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
 	whitelisted = TRUE
 
 	can_get_coordinates = TRUE
