@@ -14,7 +14,7 @@
 
 /datum/job/indians/ballas/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.name = H.species.get_random_english_name(H.gender)
+	H.name = H.species.get_random_afro_american_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
 	var/hex_hair = hair_colors[new_hair]
@@ -113,7 +113,7 @@
 
 /datum/job/american/grove/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.name = H.species.get_random_english_name(H.gender)
+	H.name = H.species.get_random_afro_american_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
 	var/hex_hair = hair_colors[new_hair]
