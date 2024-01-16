@@ -2186,7 +2186,28 @@
 	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."
 	equiptimer = 11
 	effectiveness_mod = 1.23
+	icon_state = "c8"
+	item_state = "c8"
+	base_icon = "c8"
 
+/obj/item/weapon/gun/projectile/submachinegun/c7/arid
+	icon_state = "c7_arid"
+	item_state = "c7_arid"
+	base_icon = "c7_arid"
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/arid/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid(src)
+	SP.attached(null,src,TRUE)
+/obj/item/weapon/gun/projectile/submachinegun/c7/winter
+	icon_state = "c7_winter"
+	item_state = "c7_winter"
+	base_icon = "c7_winter"
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/winter/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter(src)
+	SP.attached(null,src,TRUE)
 /obj/item/weapon/gun/projectile/submachinegun/m2carbine
 	name = "M2 carbine"
 	desc = "An American Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
