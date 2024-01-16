@@ -1304,14 +1304,10 @@
 			else if (map.ID == MAP_KANDAHAR || map.ID == MAP_MAGISTRAL || map.ID == MAP_HILL_3234)
 				s_tone = rand(-75,-90)
 		else if (faction_text == AMERICAN && map.ordinal_age >= 7)
-			if (original_job.is_afro == TRUE || original_job.is_gta)
-				s_tone = rand(-150,-120)
-			else if (map.ID == MAP_EAST_LOS_SANTOS)
+			if (map.ID == MAP_EAST_LOS_SANTOS)
 				s_tone = rand(-150,-120)
 			else if (map.ID == MAP_SYRIA && original_job.title != "Delta Force Operator")
 				s_tone = rand(-100,-60)
-			else
-				s_tone = rand(-40,-25)
 		else
 			if (s_tone < -65)
 				s_tone = -65

@@ -95,7 +95,7 @@
 /datum/job/var/is_soviet = FALSE
 /datum/job/var/is_muj = FALSE
 /datum/job/var/is_dra = FALSE
-/datum/job/var/is_afro = FALSE
+/datum/job/var/can_be_afro = FALSE
 /datum/job/var/is_waco = FALSE
 /datum/job/var/is_clash = FALSE
 /datum/job/var/is_event_role = FALSE
