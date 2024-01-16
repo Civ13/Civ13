@@ -701,7 +701,7 @@
 				H.driver_vehicle.running_sound()
 		return
 	else if (H.driver_vehicle.fueltank.reagents.total_volume <= 0)
-		H << "There is not enough fuel!"
+		to_chat(H, "There is not enough fuel!")
 		return
 
 	if (H.driver_vehicle.axis.currentspeed <= 0)
@@ -715,11 +715,11 @@
 			if (H.driver_vehicle.axis.currentspeed == 1)
 				H.driver_vehicle.moving = TRUE
 				H.driver_vehicle.startmovementloop()
-				H << "You put on the first gear."
+				to_chat(H, "You put the vehicle into first gear.")
 		return
-	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
+	else if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
-		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
+		if (H.driver_vehicle.axis.currentspeed > H.driver_vehicle.axis.speedlist.len)
 			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
@@ -727,7 +727,7 @@
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
 			if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len+1)
-				H << "You increase the speed."
+				to_chat(H, "You increase the speed.")
 			return
 	else
 		return
