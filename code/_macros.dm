@@ -131,6 +131,7 @@
 #define SPAN_RED(X) SPAN("red", X)
 #define SPAN_ALERT(X) SPAN("alert", X)
 #define SPAN_DEADSAY(X) SPAN("deadsay", X)
+#define SPAN_INFO(X) SPAN("info", X)
 
 #define DIRECT_OUTPUT(A, B) A << B
 #define SEND_IMAGE(target, image) DIRECT_OUTPUT(target, image)

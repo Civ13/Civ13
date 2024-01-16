@@ -42,16 +42,16 @@
 			if (I_HELP)
 				if (H != src && istype(H) && health < config.health_threshold_crit && health > config.health_threshold_dead && !on_fire)
 					if (!H.check_has_mouth())
-						H << "<span class='danger'>You don't have a mouth, you cannot perform CPR!</span>"
+						to_chat(H, SPAN_DANGER("You don't have a mouth, you cannot perform CPR!"))
 						return
 					if (!check_has_mouth())
-						H << "<span class='danger'>They don't have a mouth, you cannot perform CPR!</span>"
+						to_chat(H, SPAN_DANGER("They don't have a mouth, you cannot perform CPR!"))
 						return
 					if ((H.head && (H.head.body_parts_covered & FACE)) || (H.wear_mask && (H.wear_mask.body_parts_covered & FACE)))
-						H << "<span class='notice'>Remove your mask!</span>"
+						to_chat(H, SPAN_NOTICE("Remove your mask!"))
 						return FALSE
 					if ((head && (head.body_parts_covered & FACE)) || (wear_mask && (wear_mask.body_parts_covered & FACE)))
-						H << "<span class='notice'>Remove [src]'s mask!</span>"
+						to_chat(H, SPAN_NOTICE("Remove [src]'s mask!"))
 						return FALSE
 
 					if (!cpr_time)
@@ -70,8 +70,8 @@
 					updatehealth()
 					H.visible_message("<span class='danger'>\The [H] performs CPR on \the [src]!</span>")
 					if (stat != DEAD)
-						src << "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>"
-					H << "<span class='warning'>Repeat at least every 7 seconds.</span>"
+						to_chat(src, SPAN_NOTICE("You feel a breath of fresh air enter your lungs. It feels good."))
+					to_chat(H, SPAN_WARNING("Repeat at least every 7 seconds."))
 					if(is_asystole())
 						if(prob(5/H.getStatCoeff("medical")))
 							var/obj/item/organ/external/chest = get_organ("chest")
@@ -86,23 +86,23 @@
 							resuscitate()
 
 					if(!H.check_has_mouth())
-						to_chat(H, "<span class='warning'>You don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
+						to_chat(H, SPAN_WARNING("You don't have a mouth, you cannot do mouth-to-mouth resuscitation!"))
 						return
 					if(!check_has_mouth())
-						to_chat(H, "<span class='warning'>They don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
+						to_chat(H, SPAN_WARNING("They don't have a mouth, you cannot do mouth-to-mouth resuscitation!"))
 						return
 					if((H.head && (H.head.body_parts_covered & FACE)) || (H.wear_mask && (H.wear_mask.body_parts_covered & FACE)))
-						to_chat(H, "<span class='warning'>You need to remove your mouth covering for mouth-to-mouth resuscitation!</span>")
+						to_chat(H, SPAN_WARNING("You need to remove your mouth covering for mouth-to-mouth resuscitation!"))
 						return 0
 					if((head && (head.body_parts_covered & FACE)) || (wear_mask && (wear_mask.body_parts_covered & FACE)))
-						to_chat(H, "<span class='warning'>You need to remove \the [src]'s mouth covering for mouth-to-mouth resuscitation!</span>")
+						to_chat(H, SPAN_WARNING("You need to remove \the [src]'s mouth covering for mouth-to-mouth resuscitation!"))
 						return 0
 					if (!H.internal_organs_by_name["lungs"])
-						to_chat(H, "<span class='danger'>You need lungs for mouth-to-mouth resuscitation!</span>")
+						to_chat(H, SPAN_DANGER("You need lungs for mouth-to-mouth resuscitation!"))
 						return
 					var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
 					if(L)
-						to_chat(src, "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>")
+						to_chat(src, SPAN_NOTICE("You feel a breath of fresh air enter your lungs. It feels good."))
 				help_shake_act(M)
 				return TRUE
 
