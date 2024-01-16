@@ -1017,7 +1017,7 @@
 	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
-/datum/job/chinese/pla
+/datum/job/chinese/pla/soldier
 	title = "Lie Bing"
 	en_meaning = "PLA Infantryman"
 	rank_abbreviation = ""
@@ -1026,7 +1026,7 @@
 	uses_squads = TRUE
 
 	min_positions = 25
-	max_positions = 80
+	max_positions = 100
 
 /datum/job/chinese/pla/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
