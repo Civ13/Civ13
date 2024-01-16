@@ -52,7 +52,8 @@
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
 	return ..()
 
-/obj/structure/barbwire/Uncross(AM as mob)
+// Disabled until a fix is found
+/*/obj/structure/barbwire/Uncross(AM as mob)
 	if(ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
@@ -68,7 +69,7 @@
 			else
 				M.visible_message(SPAN_DANGER("[M] frees themself from the barbed wire!"))
 				return TRUE
-	return ..()
+	return ..()*/
 
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wirecutters))
