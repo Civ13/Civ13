@@ -187,6 +187,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						return .
 					else if (faction == 0)
 						faction = 1
+						ship_size = .
 					else if (faction == 1)
 						faction = 2
 						battle_ships.load_map(lowertext(.), "south")
@@ -290,7 +291,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					choices.Add(options)
 
 				if ("ship selection")
-					default = "Patrol_boat"
 					var/list/options = list()
 					
 					var/list/small_ships = list(
