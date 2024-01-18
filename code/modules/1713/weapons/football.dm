@@ -576,15 +576,16 @@
 		visible_message("<span class='notice'>[user] dunks [W] into the [src]!</span>", 3)
 		return
 
-/obj/structure/basketball_hoop/hitby(atom/movable/AM)
-	if (isitem(AM) && !istype(AM,/obj/item/projectile))
-		if(prob(50))
-			AM.forceMove(get_turf(src))
-			visible_message("<span class='notice'>Swish! [AM] lands in [src].</span>", 4)
+/obj/structure/basketball_hoop/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover,/obj/item) && mover.throwing)
+		var/obj/item/I = mover
+		if(istype(I, /obj/item/projectile))
 			return
+		if(prob(50))
+			I.dropInto(loc)
+			visible_message(SPAN_NOTICE("Swish! \the [I] lands in \the [src]."))
 		else
-			visible_message("<span class='warning'>[AM] bounces off of [src]'s rim!</span>", 4)
-			return ..()
+			visible_message(SPAN_WARNING("\The [I] bounces off of \the [src]'s rim!"))
+		return 0
 	else
-		return ..()
-
+		return ..(mover, target, height, air_group)
