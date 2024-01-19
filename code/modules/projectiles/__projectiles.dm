@@ -135,11 +135,13 @@
 /obj/item/projectile/arrow/bolt/vial/poisonous
 	New()
 		..()
-		reagents.add_reagent("batrachotoxin",15)
-/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/human/M as mob)
-	if (prob(10))
-		M.fire_stacks += 1
-	if (M)
+		reagents.add_reagent("batrachotoxin",15)\
+
+/obj/item/projectile/arrow/arrow/fire/on_impact(var/atom/A)
+	if (A && ishuman(A))
+		var/mob/living/M = A
+		if (prob(10))
+			M.fire_stacks += 1
 		M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
@@ -218,14 +220,17 @@
 	gibs = TRUE
 	crushes = TRUE
 
-/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/human/M as mob)
-	if (prob(10))
-		M.fire_stacks += 1
-	if (M)
-		M.IgniteMob()
+/obj/item/projectile/arrow/bolt/fire/on_impact(var/atom/A)
+	if (A && isliving(A))
+		var/mob/living/M = A
+		if (prob(10))
+			M.fire_stacks += 1
+		if (M)
+			M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
 	..()
+
 
 /obj/item/projectile/arrow/bolt/vial
 	damage = DAMAGE_MEDIUM
@@ -234,7 +239,7 @@
 	icon_state = "bolt_vial"
 	volume = 15
 
-/obj/item/projectile/arrow/on_impact(var/atom/A as mob)
+/obj/item/projectile/arrow/on_impact(var/atom/A)
 	if (istype(src, /obj/item/projectile/arrow/bolt/vial) || istype(src, /obj/item/projectile/arrow/arrow/vial))
 		if (reagents)
 			if (ishuman(A))
