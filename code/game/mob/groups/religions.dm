@@ -17,17 +17,17 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 		if (U.religion != "none")
-			usr << "<span class='danger'>You are already member of a religion. Abandon it first.</span>"
+			to_chat(usr, SPAN_DANGER("You are already member of a religion. Abandon it first."))
 			return
 		else
 			if (U.getStatCoeff("philosophy") < 2.49)
-				usr << "<span class='danger'>Your philosophy skill is too low. You need 2.5 or more to create a religion.</span>"
+				to_chat(usr, SPAN_DANGER("Your philosophy skill is too low. You need 2.5 or more to create a religion."))
 				return
 			var/choosename = input(src, "Choose a name for the new religion:") as text|null
 			create_religion_pr(choosename)
 			return
 	else
-		usr << "<span class='danger'>You cannot create a religion in this map.</span>"
+		to_chat(usr, SPAN_DANGER("You cannot create a religion in this map."))
 		return
 
 /mob/living/human/proc/create_religion_pr(var/newname = "none")
@@ -36,7 +36,7 @@
 	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_religion_nr.len, i++)
 		if (map.custom_religion_nr[i] == newname)
-			usr << "<span class='danger'>That religion already exists. Choose another name.</span>"
+			to_chat(usr, SPAN_DANGER("That religion already exists. Choose another name."))
 			return
 	if (newname != null && newname != "none")
 		var/choosetype = "Knowledge"
@@ -76,7 +76,7 @@
 		//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
 		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
 		map.custom_religions += newnamev
-		usr << "<big>You are now the leader of the <b>[newname]</b> religion.</big>"
+		to_chat(usr, "<big>You are now the leader of the <b>[newname]</b> religion.</big>")
 		switch(chooseclergy)
 			if ("Shamans")
 				if (H.gender == "male")
@@ -109,10 +109,10 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 		if (U.religion == "none")
-			usr << "<span class='danger'>You are not part of any religion.</span>"
+			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
 			return
 		else if (U.religious_leader || U.religious_clergy != FALSE)
-			usr << "<span class='danger'>You cannot leave a religion while part of its clergy!</span>"
+			to_chat(usr, SPAN_DANGER("You cannot leave a religion while part of its clergy!"))
 			return
 		else
 			if (map.custom_religions[U.religion][1] != null)
@@ -122,9 +122,9 @@
 			U.religion_type = "none"
 			U.religion_style = "none"
 			U.religious_leader = FALSE
-			usr << "You left your religion. You are now an atheist."
+			to_chat(usr, "You left your religion. You are now an atheist.")
 	else
-		usr << "<span class='danger'>You cannot leave your religion in this map.</span>"
+		to_chat(usr, SPAN_DANGER("You cannot leave your religion in this map."))
 		return
 
 /mob/living/human/proc/clergy()
@@ -138,17 +138,17 @@
 		return
 	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 		if (U.religion == "none")
-			usr << "<span class='danger'>You are not part of any religion.</span>"
+			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
 			return
 		else if (U.religious_leader || U.religious_clergy != FALSE)
-			usr << "<span class='danger'>You are already part of the clergy!</span>"
+			to_chat(usr, SPAN_DANGER("You are already part of the clergy!"))
 			return
 		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")
 			switch(map.custom_religions[U.religion][7])
 
 				if ("Shamans")
 					U.religious_clergy = "Shamans"
-					U << "<big>You become a Shaman for the [U.religion]!</big>"
+					to_chat(U, "<big>You become a Shaman for the [U.religion]!</big>")
 					if (U.gender == "male")
 						U.fully_replace_character_name(U.real_name,"Shaman [U.name]")
 					else
@@ -198,7 +198,7 @@
 					U.religious_clergy = "Cultists"
 					U << "<big>You become a Cultist of the [U.religion]!</big>"
 	else
-		usr << "<span class='danger'>You cannot join the clergy on this map.</span>"
+		to_chat(usr, SPAN_DANGER("You cannot join the clergy on this map."))
 		return
 /mob/living/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)

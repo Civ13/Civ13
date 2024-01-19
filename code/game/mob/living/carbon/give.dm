@@ -11,7 +11,7 @@
 	if (!I)
 		I = usr.get_inactive_hand()
 	if (!I)
-		usr << "<span class='warning'>You don't have anything in your hands to give to \the [target].</span>"
+		to_chat(usr, SPAN_WARNING("You don't have anything in your hands to give to \the [target]."))
 		return
 
 	if (WWinput(target, "[usr] wants to give you \a [I]. Will you accept it?", null, "Yes", list("Yes","No")) == "No")
@@ -22,18 +22,18 @@
 	if (!I) return
 
 	if (!Adjacent(target))
-		usr << "<span class='warning'>You need to stay in reaching distance while giving an object.</span>"
-		target << "<span class='warning'>\The [usr] moved too far away.</span>"
+		to_chat(usr, SPAN_WARNING("You need to stay in reaching distance whilst giving an object."))
+		to_chat(target, SPAN_WARNING("\The [usr] moved too far away."))
 		return
 
 	if (I.loc != usr || (usr.l_hand != I && usr.r_hand != I))
-		usr << "<span class='warning'>You need to keep the item in your hands.</span>"
-		target << "<span class='warning'>\The [usr] seems to have given up on passing \the [I] to you.</span>"
+		to_chat(usr, SPAN_WARNING("You need to keep the item in your hands."))
+		to_chat(target, SPAN_WARNING("\The [usr] seems to have given up on passing \the [I] to you."))
 		return
 
 	if (target.r_hand != null && target.l_hand != null)
-		target << "<span class='warning'>Your hands are full.</span>"
-		usr << "<span class='warning'>Their hands are full.</span>"
+		to_chat(target, SPAN_WARNING("Your hands are full."))
+		to_chat(usr, SPAN_WARNING("Their hands are full."))
 		return
 
 	if (usr.unEquip(I))
@@ -161,33 +161,33 @@
 		var/list/a3list = list("Cancel")
 		if (faction_perms[1] == 1)
 			a3list += "Permission Management"
-			src << "<big>You gained the Permission Management.</big>"
+			to_chat(src, "<big>You gained the Permission Management.</big>")
 		if (faction_perms[2] == 1)
 			a3list += "Announcements"
-			src << "<big>You gained the Announcement permission.</big>"
+			to_chat(src, "<big>You gained the Announcement permission.</big>")
 		if (faction_perms[3] == 1)
 			a3list += "Giving Titles"
-			src << "<big>You gained the Title Giving permission.</big>"
+			to_chat(src, "<big>You gained the Title Giving permission.</big>")
 		if (faction_perms[4] == 1)
 			a3list += "Recruitment"
-			src << "<big>You gained the Recruitment permission.</big>"
+			to_chat(src, "<big>You gained the Recruitment permission.</big>")
 
 		var/answer3 = WWinput(user, "Which permission to remove?", null, "Cancel", a3list)
 		switch(answer3)
 			if ("Permission Management")
 				faction_perms[1] = 0
-				src << "<big>You lost the Permission Management.</big>"
+				to_chat(src, "<big>You lost the Permission Management.</big>")
 			if ("Announcements")
 				faction_perms[2] = 0
-				src << "<big>You lost the Announcement permission.</big>"
+				to_chat(src, "<big>You lost the Announcement permission.</big>")
 				remove_commander()
 			if ("Giving Titles")
 				faction_perms[3] = 0
-				src << "<big>You lost the Title Giving permission.</big>"
+				to_chat(src, "<big>You lost the Title Giving permission.</big>")
 				remove_title_changer()
 			if ("Recruitment")
 				faction_perms[4] = 0
-				src << "<big>You lost the Recruitment permission.</big>"
+				to_chat(src, "<big>You lost the Recruitment permission.</big>")
 			else
 				return
 	else

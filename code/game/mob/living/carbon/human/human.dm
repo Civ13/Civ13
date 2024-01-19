@@ -639,12 +639,12 @@ var/list/coefflist = list()
 		"You begin counting your pulse.")
 
 	if (pulse())
-		usr << "<span class='notice'>[self ? "You have a" : "[src] has a"] pulse! Counting...</span>"
+		to_chat(usr, SPAN_NOTICE("[self ? "You have a" : "[src] has a"] pulse! Counting..."))
 	else
-		usr << "<span class='danger'>[src] has no pulse!</span>"	//it is REALLY UNLIKELY that a dead person would check his own pulse
+		to_chat(usr, SPAN_DANGER("[src] has no pulse!"))	//it is REALLY UNLIKELY that a dead person would check his own pulse
 		return
 
-	usr << "You must[self ? "" : " both"] remain still until counting is finished."
+	to_chat(usr, "You must[self ? "" : " both"] remain still until counting is finished.")
 	if (do_after(usr, 60, usr.loc))
 		usr << "<span class='notice'>[self ? "Your" : "[src]'s"] pulse is [get_pulse(GETPULSE_HAND)].</span>"
 	else

@@ -23,11 +23,11 @@
 
 	if(state != 4)
 		if (state == 5)
-			usr << "The washing machine is already running."
+			to_chat(usr, "The washing machine is already running.")
 		else if (state == 3)
-			usr << "You need to close the door first."
+			to_chat(usr, "You need to close the door first.")
 		else
-			usr << "You need to fill the washing machine with something."
+			to_chat(usr, "You need to fill the washing machine with something.")
 		return
 	state = 5
 	update_icon()
@@ -45,7 +45,7 @@
 /obj/machinery/washing_machine/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if(is_type_in_list(W, disallowed_types))
-		user << "<span class='warning'>You can't fit \the [W] inside.</span>"
+		to_chat(user, SPAN_WARNING("You can't fit \the [W] inside."))
 		return
 
 	else if(istype(W, /obj/item/clothing) || istype(W, /obj/item/weapon/bedsheet))
@@ -56,9 +56,9 @@
 				washing += W
 				state = 3
 			else
-				user << "<span class='notice'>You can't put the item in right now.</span>"
+				to_chat(user, SPAN_NOTICE("You can't put the item in right now."))
 		else
-			user << "<span class='notice'>The washing machine is full!</span>"
+			to_chat(user, SPAN_NOTICE("The washing machine is full!"))
 	else
 		..()
 	update_icon()
@@ -81,6 +81,6 @@
 			washing.Cut()
 			state = 1
 		if(5)
-			user << "<span class='warning'>The [src] is busy.</span>"
+			to_chat(user, SPAN_WARNING("The [src] is busy."))
 	update_icon()
 
