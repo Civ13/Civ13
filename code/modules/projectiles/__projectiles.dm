@@ -135,7 +135,7 @@
 /obj/item/projectile/arrow/bolt/vial/poisonous
 	New()
 		..()
-		reagents.add_reagent("batrachotoxin",15)\
+		reagents.add_reagent("batrachotoxin",15)
 
 /obj/item/projectile/arrow/arrow/fire/on_impact(var/atom/A)
 	if (A && ishuman(A))
