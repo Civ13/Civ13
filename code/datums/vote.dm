@@ -32,8 +32,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (mode)
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
-			if (mode == "gamemode" && ticker.current_state >= 2)
-				to_chat(world, "<b>Voting aborted due to game start.</b>")
+			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
+				world << "<b>Voting aborted due to game start.</b>"
 				reset()
 				return
 

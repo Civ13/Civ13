@@ -116,9 +116,9 @@
 				if (original_job.is_commander)
 					switch (faction_text)
 						if (RUSSIAN)
-							to_chat(world, "<font color='red' size=4>The <b>Russian Army</b> Commander played has been killed!</font>")
+							to_chat(world, "<font color='red' size=4>The <b>Russian Army</b> Commander has been killed!</font>")
 						if (DUTCH)
-							to_chat(world, "<font color='red' size=4>The <b>Dutch Army</b> Commander played has been killed!</font>")
+							to_chat(world, "<font color='red' size=4>The <b>Dutch Army</b> Commander has been killed!</font>")
 			
 			if (MAP_CAPITOL_HILL)
 				if (civilization && civilization in map.scores)
