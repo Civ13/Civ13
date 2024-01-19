@@ -38,7 +38,7 @@
 			qdel(src)
 
 
-// Planes DO NOT USE YET, NEEDS CODE ADJUSTEMENTS
+// Planes
 
 /obj/structure/plane
 	name = "plane"
@@ -53,29 +53,27 @@
 	anchored = TRUE
 	var/flight_time = 12 SECONDS
 	var/flight_distance = 15 // in tiles
-	var/start_point_x = 1
-	var/start_point_y = 1
+	var/start_point_x = 0
+	var/start_point_y = 0
 	var/end_point_x = 0
 	var/end_point_y = 0
-	layer = 14
+	layer = 30
 
 /obj/structure/plane/proc/fly()
 	switch(dir)
 		if (NORTH)
-			//flight_distance = world.maxy-src.y
-			end_point_y = world.maxy
-			end_point_x = src.x
-			//animate(src, pixel_y = flight_distance*32, time = flight_time, easing = LINEAR_EASING)
-			src.Move(locate(end_point_x,end_point_y,src.z))
+			animate(src, pixel_y = flight_distance*32, time = flight_time, easing = LINEAR_EASING)
+			spawn(flight_time)
+				y = y+flight_distance
 		if (SOUTH)
-			flight_distance = world.maxy-src.y
 			animate(src, pixel_y = -(flight_distance*32), time = flight_time, easing = LINEAR_EASING)
+			spawn(flight_time)
+				y = y-flight_distance
 		if (EAST)
-			flight_distance = world.maxx-src.x
 			animate(src, pixel_x = flight_distance*32, time = flight_time, easing = LINEAR_EASING)
+			spawn(flight_time)
+				x = x+flight_distance
 		if (WEST)
-			flight_distance = world.maxx-src.x
 			animate(src, pixel_x = -(flight_distance*32), time = flight_time, easing = LINEAR_EASING)
-	spawn(flight_time)
-		qdel(src)
-
+			spawn(flight_time)
+				x = x-flight_distance
