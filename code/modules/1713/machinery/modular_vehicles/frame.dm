@@ -694,9 +694,9 @@
 				if ("back")
 					w_back[5] -= proj.damage * 0.01
 		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
-		//if (istype(proj, /obj/item/projectile/shell))
-			//playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
-		//	new/obj/effect/effect/smoke/small/fast(loc)
+		if (istype(proj, /obj/item/projectile/shell))
+			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
+			new/obj/effect/effect/smoke/small/fast(loc)
 		try_destroy()
 		return
 	else
