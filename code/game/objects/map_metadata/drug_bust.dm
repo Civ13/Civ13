@@ -202,24 +202,26 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		desc = "A block of very pure cocaine. Contains [vol] grams."
 
 /obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
-	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (reagents.get_reagent_amount("cocaine") >= 10)
-			user << "You cut a line from the [src]."
-			reagents.remove_reagent("cocaine",5)
-			var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
-			user.put_in_hands(coca)
-			vol = reagents.get_reagent_amount("cocaine")/25
-			desc = "A block of very pure cocaine. Contains [vol] grams."
-			if (reagents.get_reagent_amount("cocaine") >= 500)
-				name = "block of cocaine"
-				desc = "A block of very pure cocaine."
-				icon_state = "single_brick"
-			else
-				name = "torn block of cocaine"
-				desc = "A block of very pure cocaine that's been cut or torn from the outside."
-				icon_state = "single_brick_torn"
-	else
+	if (!istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
 		user << "You need a knife to cut the [src]."
+		return
+	if (reagents.get_reagent_amount("cocaine") < 10)
+		qdel(src)
+		return
+	user << "You cut a line from the [src]."
+	reagents.remove_reagent("cocaine",5)
+	var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
+	user.put_in_hands(coca)
+	vol = reagents.get_reagent_amount("cocaine")/25
+	desc = "A block of very pure cocaine. Contains [vol] grams."
+	if (reagents.get_reagent_amount("cocaine") >= 500)
+		name = "block of cocaine"
+		desc = "A block of very pure cocaine."
+		icon_state = "single_brick"
+	else
+		name = "torn block of cocaine"
+		desc = "A block of very pure cocaine that's been cut or torn from the outside."
+		icon_state = "single_brick_torn"
 
 /obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
@@ -294,5 +296,8 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		user << "You split a from the [src] apart."
 		var/obj/item/weapon/reagent_containers/cocaineblock/block = new/obj/item/weapon/reagent_containers/cocaineblock(user)
 		user.put_in_hands(block)
+		qdel(src)
 	else
 		..()
+
+//TO-DO: Recode cocaine blocks to stackable properly
