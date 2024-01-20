@@ -1023,16 +1023,16 @@
 	attackby(obj/item/I, mob/living/human/user)
 		if(istype(I, /obj/item/weapon/reagent_containers/glass))
 			if (I.reagents.get_free_space() >= 50)
-				user << "You start filling \the [I]..."
-				if (do_after(user,40,src))
+				to_chat(user, "You start filling \the [I]...")
+				if (do_after(user, 15, src))
 					if (I.reagents.get_free_space() >= 50)
 						I.reagents.add_reagent("sodiumchloride", 8)
 						I.reagents.add_reagent("water", 42)
-						user << "You fill \the [I]."
+						user.visible_message(SPAN_NOTICE("[user] fills \the [I] with water."), SPAN_NOTICE("You fill \the [I] with water."))
 						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 						flood_level--
 						if (flood_level <= 0)
 							qdel(src)
 			else
-				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+				to_chat(user, SPAN_WARNING("There is not enough free capacity in \the [I] to fill it."))
 		return TRUE
