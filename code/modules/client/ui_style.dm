@@ -46,7 +46,7 @@
 			mouse_pointer_icon = 'icons/effects/white_cursors.dmi'
 		if ("Green Crosshair")
 			mouse_pointer_icon = 'icons/effects/green_cursors.dmi'
-		if (choice == "Alternative White Crosshair")
+		if ("Alternative White Crosshair")
 			mouse_pointer_icon = 'icons/misc/pointer.dmi'
 	prefs.cursor = mouse_pointer_icon
 	prefs.save_preferences()
