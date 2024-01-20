@@ -36,7 +36,7 @@
 	set desc = "Configure your mouse cursor."
 //	set hidden = TRUE
 
-	var/choice = WWinput(usr, "Which style?", "Mouse Cursor", "Default", list("Default","Red Crosshair","Green Crosshair","White Crosshair", "Escalation Crosshair"))
+	var/choice = WWinput(usr, "Which style?", "Mouse Cursor", "Default", list("Default", "Red Crosshair", "Green Crosshair", "White Crosshair", "Escalation Crosshair"))
 	if (choice == "Default")
 		mouse_pointer_icon = initial(mouse_pointer_icon)
 	else if (choice == "Red Crosshair")
