@@ -691,12 +691,13 @@
 	is_navy = TRUE
 	title = "BNF Marine Squadleader"
 	is_squad_leader = TRUE
-	max_positions = 10
+	max_positions = 5
 	rank_abbreviation = "Sgt."
 	squad = 2
 /datum/job/civilian/bluefaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "BNF Marine"
+	max_positions = 20
 	rank_abbreviation = "Pvt."
 	squad = 2
 /datum/job/civilian/bluefaction/navy/doctor
@@ -801,12 +802,13 @@
 	is_navy = TRUE
 	title = "IRN Marine Squadleader"
 	is_squad_leader = TRUE
-	max_positions = 10
+	max_positions = 5
 	rank_abbreviation = "Sgt."
 	squad = 2
 /datum/job/pirates/redfaction/navy/marine/soldier
 	is_navy = TRUE
 	title = "IRN Marine"
+	max_positions = 20
 	rank_abbreviation = "Pvt."
 	squad = 2
 /datum/job/pirates/redfaction/navy/doctor
