@@ -403,11 +403,10 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/examine(mob/user)
     ..()
-    if (istype(src, /obj/item/weapon/gun/launcher/rocket/single_shot)) // Added subtype check
-        if (is_used)
-            to_chat(user, SPAN_NOTICE("<b>USED</B>"))
-        else
-            to_chat(user, SPAN_NOTICE("<b>UNUSED</B>"))
+    if (is_used)
+        to_chat(user, SPAN_NOTICE("<b>USED</B>"))
+    else
+        to_chat(user, SPAN_NOTICE("<b>UNUSED</B>"))
 
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust
