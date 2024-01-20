@@ -14,7 +14,7 @@
 
 /datum/job/indians/ballas/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.name = H.species.get_random_english_name(H.gender)
+	H.name = H.species.get_random_afro_american_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
 	var/hex_hair = hair_colors[new_hair]
@@ -24,6 +24,7 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	H.change_skin_tone(rand(-150,-110))
 
 //clothing
 	var/outfit = rand(1,3)
@@ -96,6 +97,7 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
+	return TRUE
 
 /datum/job/american/grove
 	title = "Grove Sreet Gangster"
@@ -111,7 +113,7 @@
 
 /datum/job/american/grove/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
-	H.name = H.species.get_random_english_name(H.gender)
+	H.name = H.species.get_random_afro_american_name(H.gender)
 	H.real_name = H.name
 	var/new_hair = "Black"
 	var/hex_hair = hair_colors[new_hair]
@@ -121,7 +123,7 @@
 	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
-	H.s_tone = rand(-150,-120)
+	H.change_skin_tone(-150,-110)
 
 //clothing
 	var/outfit = pick(1,2,3)
@@ -194,3 +196,4 @@
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_l_store)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/mp5(H), slot_r_store)
+	return TRUE

@@ -15,6 +15,7 @@
 	else
 		if (!maskup)
 			if (rolled)
+				flags_inv = null
 				worn_state = "ncr_fatigues"
 				item_state = "ncr_fatigues"
 				icon_state = "ncr_fatigues"
@@ -25,6 +26,7 @@
 				update_clothing_icon()
 				return
 			if (!rolled)
+				flags_inv = null
 				worn_state = "ncr_fatigues_rolled"
 				item_state = "ncr_fatigues_rolled"
 				icon_state = "ncr_fatigues_rolled"
@@ -36,6 +38,7 @@
 				return
 		else
 			if (rolled)
+				flags_inv = HIDEFACE
 				worn_state = "ncr_fatigues_maskup"
 				item_state = "ncr_fatigues_maskup"
 				icon_state = "ncr_fatigues_maskup"
@@ -46,6 +49,7 @@
 				update_clothing_icon()
 				return
 			else
+				flags_inv = HIDEFACE
 				worn_state = "ncr_fatigues_maskup_rolled"
 				item_state = "ncr_fatigues_maskup_rolled"
 				icon_state = "ncr_fatigues_maskup_rolled"
@@ -177,7 +181,7 @@
 	update_clothing_icon()
 
 /obj/item/weapon/storage/belt/fallout/ncr
-	name = "Japanese Soldier belt"
+	name = "NCR Trooper belt"
 	desc = "A belt that can hold gear like pistols, ammo and other things."
 	icon_state = "ncr_belt"
 	item_state = "ncr_belt"
@@ -207,3 +211,4 @@
 	for (var/i=1, i<=6, i++)
 		new /obj/item/ammo_magazine/service_rifle(src)
 	new /obj/item/weapon/attachment/bayonet(src)
+	new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us(src)

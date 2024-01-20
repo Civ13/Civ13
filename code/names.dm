@@ -166,6 +166,9 @@ var/list/first_names_male_afrikaans = file2list("config/names/first_male_afrikaa
 var/list/first_names_female_afrikaans = file2list("config/names/first_male_afrikaans.txt")
 var/list/last_names_afrikaans = file2list ("config/names/last_afrikaans.txt")
 
+var/list/first_names_male_afro_american = file2list("config/names/first_male_afro_american.txt")
+var/list/last_names_afro_american = file2list("config/names/last_afro_american.txt")
+
 var/list/country_names = file2list("config/names/countries.txt")
 /* NOT USED FOR NOW!
 var/civname_a = pick(country_names)

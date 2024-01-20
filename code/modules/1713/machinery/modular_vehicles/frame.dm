@@ -397,7 +397,7 @@
 		startingturf = get_turf(proj.loc)
 	else if (istype(proj, /obj/item/weapon/grenade))
 		startingturf = get_turf(proj)
-		
+
 	if (!startingturf)
 		return "front"
 	var/incdir = get_dir(startingturf, get_turf(src))
@@ -744,7 +744,7 @@
 		axis = null
 		mwheel = null
 		..()
-		
+
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
 		if (1.0)

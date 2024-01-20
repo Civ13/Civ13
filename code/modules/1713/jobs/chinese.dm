@@ -923,6 +923,100 @@
 
 ////////////////////MODERN PLA/////////////////////
 
+/datum/job/chinese/pla/captain
+	title = "Shang Wei"
+	en_meaning = "PLA Captain"
+	rank_abbreviation = "Shang."
+	spawn_location = "JoinLateRUSgt"
+
+	is_pla = TRUE
+	is_commander = TRUE
+	is_officer = TRUE
+	whitelisted = TRUE
+
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/chinese/pla/captain/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/qbz95(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad in the Chinese advance!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/chinese/pla/lieutenant
+	title = "Zhong Wei"
+	en_meaning = "PLA Lieutenant"
+	rank_abbreviation = "Zh."
+	spawn_location = "JoinLateRUSgt"
+
+	is_pla = TRUE
+	is_officer = TRUE
+	whitelisted = TRUE
+
+	can_get_coordinates = TRUE
+
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/chinese/pla/lieutenant/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	give_random_name(H)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chinese_type07(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/qgf03(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/qbz95(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	uniform.attackby(armour, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	holsterh.attackby(new/obj/item/weapon/gun/projectile/pistol/makarov, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, lead your squad in the Chinese advance!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("machinegun", STAT_VERY_HIGH)
+	return TRUE
+
+
 /datum/job/chinese/pla/sergeant
 	title = "Zhong Shi"
 	en_meaning = "PLA Sergeant"
@@ -1017,7 +1111,7 @@
 	H.setStat("machinegun", STAT_HIGH)
 	return TRUE
 
-/datum/job/chinese/pla
+/datum/job/chinese/pla/soldier
 	title = "Lie Bing"
 	en_meaning = "PLA Infantryman"
 	rank_abbreviation = ""
@@ -1026,7 +1120,7 @@
 	uses_squads = TRUE
 
 	min_positions = 25
-	max_positions = 80
+	max_positions = 100
 
 /datum/job/chinese/pla/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

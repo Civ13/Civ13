@@ -2083,6 +2083,16 @@
 	stripped = FALSE
 	base_icon = "cad_pat_arid"
 
+/obj/item/clothing/under/caf/winter
+	name = "cadpat uniform"
+	desc = "A canadian pattern uniform"
+	icon_state = "cad_pat_winter"
+	item_state = "cad_pat_winter"
+	worn_state = "cad_pat_winter"
+	rolled = FALSE
+	stripped = FALSE
+	base_icon = "cad_pat_winter"
+
 /obj/item/clothing/under/caf/verb/roll_sleeves()
 	set category = null
 	set src in usr
@@ -2134,7 +2144,7 @@
 /obj/item/clothing/under/caf/verb/strip()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/ww2/japuni)
+	if (type != /obj/item/clothing/under/caf)
 		return
 	else
 		if (stripped)
@@ -2202,6 +2212,11 @@
 	item_state = "cg634_arid"
 	worn_state = "cg634_arid"
 
+/obj/item/clothing/head/helmet/modern/cg634/winter
+	icon_state = "cg634_winter"
+	item_state = "cg634_winter"
+	worn_state = "cg634_winter"
+
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest
 	name = "CAF Tacvest"
 	desc = "A large webbing with several pouches."
@@ -2214,6 +2229,29 @@
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest/arid
 	icon_state = "caf_tacvest_arid"
+	worn_state = "caf_tacvest_arid"
+
+/obj/item/clothing/accessory/storage/webbing/caf_tacvest/winter
+	icon_state = "caf_tacvest_winter"
+	worn_state = "caf_tacvest_winter"
+
+/obj/item/clothing/head/jungle_hat/caf
+	name = "cadpat tilly"
+	desc = "A wide brim, soft sun hat."
+	icon_state = "tilly_cadpat"
+	item_state = "tilly_cadpat"
+	worn_state = "tilly_cadpat"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/jungle_hat/caf/arid
+	icon_state = "tilly_cadpat_arid"
+	item_state = "tilly_cadpat_arid"
+	worn_state = "tilly_cadpat_arid"
+
+/obj/item/clothing/head/jungle_hat/caf/winter
+	icon_state = "tilly_cadpat_winter"
+	item_state = "tilly_cadpat_winter"
+	worn_state = "tilly_cadpat_winter"
 
 /obj/item/clothing/head/helmet/modern/mechanical
 	name = "Mechanical Helmet"

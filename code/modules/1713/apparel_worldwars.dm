@@ -1636,14 +1636,18 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "german_vest"
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2
+	name = "german equipment"
+	worn_state = "german_ww2_webbing"
+	slots = 9
 	New()
 		..()
 		new/obj/item/stack/medical/bruise_pack/gauze(hold)
+		new/obj/item/weapon/material/shovel/trench/foldable/etool/german(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98
 	New()
 		..()
-		for (var/i=1, i<= 4, i++)
+		for (var/i=1, i<= 6, i++)
 			new/obj/item/ammo_magazine/gewehr98(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault
@@ -1678,6 +1682,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 			new/obj/item/ammo_magazine/mauser(hold)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mp40
+	worn_state = "german_ww2_webbing_mp40"
 	New()
 		..()
 		for (var/i=1, i<= 4, i++)
