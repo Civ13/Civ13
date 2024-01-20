@@ -158,3 +158,12 @@ var/last_chew = FALSE
 	icon = 'icons/obj/items.dmi'
 	icon_state = "strips"
 	flammable = TRUE
+
+/obj/item/weapon/handcuffs/zip
+	name = "zip ties"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "cuff_zip"
+	flammable = TRUE
+	breakouttime = 200 // Deciseconds = 20s
+	cuff_sound = 'sound/weapons/cablecuff.ogg'
+	cuff_type = "zip ties"
