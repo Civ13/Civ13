@@ -83,14 +83,15 @@
 	load_delay = 18
 
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
-	..()
-	if (max_rockets > 1)
-		user << SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>")
-	else
-		if (rockets.len)
-			user << SPAN_NOTICE("<b>LOADED</B>")
-		else
-			user << SPAN_NOTICE("<b>UNLOADED</B>")
+    ..()
+    if (!istype(src, /obj/item/weapon/gun/launcher/rocket/single_shot)) // Check if not single_shot or its subtypes
+        if (max_rockets > 1)
+            to_chat(user, SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>"))
+        else
+            if (rockets.len)
+                to_chat(user, SPAN_NOTICE("<b>LOADED</B>"))
+            else
+                to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -365,6 +366,7 @@
 	release_force = 12
 	firing_range = 10
 	var/rocket_path
+	var/is_used = FALSE
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/New()
 	..()
@@ -393,6 +395,20 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)
 	..()
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/handle_post_fire(mob/user, atom/target)
+	..()
+	is_used = TRUE
+	update_icon()
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/examine(mob/user)
+    ..()
+    if (istype(src, /obj/item/weapon/gun/launcher/rocket/single_shot)) // Added subtype check
+        if (is_used)
+            to_chat(user, SPAN_NOTICE("<b>USED</B>"))
+        else
+            to_chat(user, SPAN_NOTICE("<b>UNUSED</B>"))
+
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust
 	name = "Panzerfaust 60"
