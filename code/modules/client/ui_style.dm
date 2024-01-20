@@ -36,19 +36,18 @@
 	set desc = "Configure your mouse cursor."
 //	set hidden = TRUE
 
-	var/choice = WWinput(usr, "Which style?", "Mouse Cursor", "Default", list("Default", "Red Crosshair", "Green Crosshair", "White Crosshair", "Escalation Crosshair"))
-	if (choice == "Default")
-		mouse_pointer_icon = initial(mouse_pointer_icon)
-	else if (choice == "Red Crosshair")
-		mouse_pointer_icon = 'icons/effects/red_cursors.dmi'
-	else if (choice == "White Crosshair")
-		mouse_pointer_icon = 'icons/effects/white_cursors.dmi'
-	else if (choice == "Green Crosshair")
-		mouse_pointer_icon = 'icons/effects/green_cursors.dmi'
-	else if (choice == "Escalation Crosshair")
-		mouse_pointer_icon = 'icons/misc/pointer.dmi'
-	else
-		mouse_pointer_icon = initial(mouse_pointer_icon)
+	var/choice = WWinput(usr, "Which style?", "Mouse Cursor", "Default", list("Default", "Red Crosshair", "Green Crosshair", "White Crosshair", "Alternative White Crosshair"))
+	switch (choice)
+		if ("Default")
+			mouse_pointer_icon = initial(mouse_pointer_icon)
+		if ("Red Crosshair")
+			mouse_pointer_icon = 'icons/effects/red_cursors.dmi'
+		if ("White Crosshair")
+			mouse_pointer_icon = 'icons/effects/white_cursors.dmi'
+		if ("Green Crosshair")
+			mouse_pointer_icon = 'icons/effects/green_cursors.dmi'
+		if (choice == "Alternative White Crosshair")
+			mouse_pointer_icon = 'icons/misc/pointer.dmi'
 	prefs.cursor = mouse_pointer_icon
 	prefs.save_preferences()
 	return
