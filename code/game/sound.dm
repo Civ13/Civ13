@@ -12,8 +12,8 @@
 #define HANGAR 10
 #define CARPETED_HALLWAY 11
 #define HALLWAY 12
-	#define STONE_CORRIDOR 13
-	#define ALLEY 14
+#define STONE_CORRIDOR 13
+#define ALLEY 14
 #define FOREST 15
 #define CITY 16
 #define MOUNTAINS 17
