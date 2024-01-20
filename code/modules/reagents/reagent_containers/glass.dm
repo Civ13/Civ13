@@ -56,7 +56,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	user << "<span class='notice'>You swallow a gulp from \the [src].</span>"
 
 /obj/item/weapon/reagent_containers/glass/feed_sound(var/mob/user)
-	playsound(user.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+	playsound(user.loc, "drink", rand(10, 50), TRUE)
 
 /obj/item/weapon/reagent_containers/glass/attack_self()
 	..()
