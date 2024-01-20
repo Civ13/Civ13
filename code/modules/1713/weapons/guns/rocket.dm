@@ -145,7 +145,7 @@
 	item_state = "rpg7"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	load_delay = 24.8
+	load_delay = 45 // note that the rpgreload.ogg cuts before this cooldown is finished TO-DO: extend the sound file or replace it entirely with a better one
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/loaded/New()
 	..()
