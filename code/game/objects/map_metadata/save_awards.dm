@@ -9,10 +9,11 @@ AWARDS:
 "assault badge" = deal > 100 damage to 2 different enemies
 "iron cross 2nd class" = deal > 100 damage to 5 different enemies
 "iron cross 1st class" = deal > 100 damage to 8 different enemies
+"bronze public order ribbon" = arrest 3 criminals
 */
 
 /mob/living/human
-	var/list/awards = list("medic"=0,"wounded"=0,"service"=0,"tank"=0,"kills"=list("",0,0), "kill_count"=0)
+	var/list/awards = list("medic" = 0, "wounded"= 0, "service" = 0, "tank"= 0, "kills"=list("",0,0), "kill_count"= 0, "arrests"= 0)
 	var/list/awarded = list()
 /mob/living/human/proc/process_awards()
 	if (!client)
@@ -37,9 +38,14 @@ AWARDS:
 				else if (original_job && original_job.title == "Sei no Daimyo")
 					map.scores["Western Army"] += 1
 					awards["service"]=0
+	
+	if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)
+		if (awards["arrests"]>=3 && client && !("bronze public order ribbon" in awarded))
+			map.give_award(client.ckey, name, "bronze public order ribbon", capitalize(faction_text),src)
+			return TRUE
 
 	if (map.gamemode == "Hardcore")
-		if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST) //Prevents farming medals until a medal for arrests is made
+		if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST) //Prevents farming kill medals on those maps
 			return FALSE
 		else
 			if (map.ordinal_age>=5)
@@ -85,6 +91,7 @@ AWARDS:
 					map.give_award(client.ckey, name,"order of the rising sun", capitalize(faction_text),src)
 				return TRUE
 	return FALSE
+
 /obj/map_metadata/proc/save_awards()
 	var/F = file("SQL/awards.txt")
 	if (!awards.len)
@@ -133,8 +140,12 @@ AWARDS:
 
 				if ("iron cross 1st class")
 					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/iron_cross_1st(get_turf(L))
+				
 				if ("order of the rising sun")
 					MEDAL = new /obj/item/clothing/accessory/medal/japanese/ww2/rising_sun(get_turf(L))
+				
+				if ("bronze public order ribbon")
+					MEDAL = new /obj/item/clothing/accessory/medal/police/bronze(get_turf(L))
 
 			if (MEDAL)
 				var/obj/item/clothing/CL = L.w_uniform

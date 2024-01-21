@@ -728,11 +728,25 @@
 	name = "Merchant's Guild Pin"
 	desc = "A Guild pin signifying that the wearer supports the beliefs of working to protect and further the Guild's rights."
 
+// Police ribbons
 
+/obj/item/clothing/accessory/medal/police/bronze
+	icon_state = "police_bronze"
+	worn_state = "police_bronze"
+	name = "bronze Public Order ribbon"
+	desc = "A ribbon given to law enforcement officers that distinguished themselves during their service."
 
+/obj/item/clothing/accessory/medal/police/silver
+	icon_state = "police_silver"
+	worn_state = "police_silver"
+	name = "silver Public Order ribbon"
+	desc = "A ribbon given to law enforcement officers that distinguished themselves during their service."
 
-
-
+/obj/item/clothing/accessory/medal/police/gold
+	icon_state = "police_gold"
+	worn_state = "police_gold"
+	name = "golden Public Order ribbon"
+	desc = "A ribbon given to law enforcement officers that distinguished themselves during their service."
 
 
 

@@ -30,7 +30,11 @@
 		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
 	var/list/HVT_list = list()
 
-obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/drug_bust/New()
+	..()
+	collector()
+
+/obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_heist == TRUE)
 		. = TRUE
@@ -107,6 +111,17 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
+	for (var/mob/living/human/H in HVT_list)
+		if (H.original_job_title == "Vyacheslav Grigoriev" && H.stat != DEAD)
+			if (H.restrained())
+				var/area/A = get_area(H)
+				if (istype(A,/area/caribbean/prison/jail))
+					ticker.finished = TRUE
+					var/message = "The HVT has been busted!"
+					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					show_global_battle_report(null)
+					win_condition_spam_check = TRUE
+					return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		world << "<font size = 4><span class = 'notice'>SWAT seized total control of the Storage Depot!</span></font>"
@@ -164,7 +179,8 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.original_job.is_outlaw == TRUE && !H.original_job.is_law == TRUE)
-				return TRUE
+				if (!H.restrained())
+					return TRUE
 		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
 			if (H.original_job.is_law == TRUE && !H.original_job.is_outlaw == TRUE)
 				return TRUE
@@ -172,9 +188,39 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 			return !faction1_can_cross_blocks()
 	return FALSE
 
+/obj/map_metadata/drug_bust/proc/collector()
+	for (var/mob/living/human/H in player_list)
+		var/area/A = get_area(H)
+		if (istype(A,/area/caribbean/british/land/outside))
+			if (H.restrained() && H.stat != DEAD && H.faction_text == RUSSIAN)
+				for (var/mob/living/human/L in player_list)
+					if (L.ckey == H.handcuffed.fingerprintslast && L.faction_text == CIVILIAN)
+						L.awards["arrests"] += 1
+				spawn(10)
+					if (prob(50))
+						H.forceMove(locate(51,6,2)) //Hard coded for now
+					else
+						H.forceMove(locate(55,6,2)) //Hard coded for now
+					for (var/obj/item/I in H.contents)
+						if (!istype(I,/obj/item/weapon/handcuffs) && !istype(I,/obj/item/organ))
+							qdel(I)
+					H.equip_to_slot_or_del(new /obj/item/clothing/under/prisoner(H), slot_w_uniform)
+					H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
+					H.update_icons()
+					WWalert(H,"You've been arrested. You may respawn (if possible) in 2 minutes.", "Arrest")
+					spawn(1200)
+						if (H.stat != DEAD)
+							WWalert(H,"You may now respawn (if possible).", "Arrest")
+							H.death()
+							qdel(H)
+	spawn(100)
+		collector()
 
 
 ////////////////////////////////Objects and stuff//////////////////////////////////////////////////
+
+
+
 
 /obj/item/weapon/paper/police/searchwarrant/drug
 	icon_state = "police_warrant"
