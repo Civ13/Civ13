@@ -194,6 +194,7 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 	icon_state = "single_brick"
 	pixel_y = 6
 	var/vol = 500
+	var/torn = FALSE
 	value = 100
 	is_contraband = TRUE
 	New()
@@ -201,29 +202,41 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 		reagents.add_reagent("cocaine", 500)
 		desc = "A block of very pure cocaine. Contains [vol] grams."
 
+/obj/item/weapon/reagent_containers/cocaineblock/update_icon()
+	if (torn)
+		icon_state = "single_brick_torn"
+		desc = "A block of very pure cocaine that's been cut or torn from the outside. Contains [vol] grams."
+	else
+		icon_state = "single_brick"
+
+
 /obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/weapon/reagent_containers/cocaineblock/))
+		user << "You stack the blocks together."
+		new /obj/item/weapon/reagent_containers/cocaineblocks(src.loc)
+		qdel(src)
+		qdel(I)
+		return
 	if (!istype(I, /obj/item/weapon/material/kitchen/utensil/knife))
 		user << "You need a knife to cut the [src]."
 		return
-	if (reagents.get_reagent_amount("cocaine") < 10)
+	if (reagents.get_reagent_amount("cocaine") <= 0)
 		qdel(src)
 		return
-	user << "You cut a line from the [src]."
-	reagents.remove_reagent("cocaine",5)
-	var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
+	if (reagents.get_reagent_amount("cocaine") <= 25)
+		new/obj/item/weapon/reagent_containers/pill/cocaine(src.loc)
+		qdel(src)
+		return
+	if (!torn)
+		torn = TRUE
+		update_icon()
+	user << "You take out some cocaine from the [src]."
+	reagents.remove_reagent("cocaine",25)
+	var/obj/item/weapon/reagent_containers/pill/cocaine/coca = new/obj/item/weapon/reagent_containers/pill/cocaine(user)
 	user.put_in_hands(coca)
-	vol = reagents.get_reagent_amount("cocaine")/25
-	desc = "A block of very pure cocaine. Contains [vol] grams."
-	if (reagents.get_reagent_amount("cocaine") >= 500)
-		name = "block of cocaine"
-		desc = "A block of very pure cocaine."
-		icon_state = "single_brick"
-	else
-		name = "torn block of cocaine"
-		desc = "A block of very pure cocaine that's been cut or torn from the outside."
-		icon_state = "single_brick_torn"
+	vol = reagents.get_reagent_amount("cocaine")
 
-/obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
+/*/obj/item/weapon/reagent_containers/cocaineblock/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
 		user << "You put \the [I] into \the [src]."
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
@@ -239,12 +252,13 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 			icon_state = "single_brick_torn"
 		qdel(I)
 	else
-		..()
+		..()*/
 
 /obj/item/weapon/reagent_containers/cocaineblock/torn
 	icon_state = "single_brick_torn"
 	vol = 400
 	value = 100
+	torn = TRUE
 	New()
 		..()
 		reagents.add_reagent("cocaine", 400)
@@ -252,52 +266,56 @@ obj/map_metadata/drug_bust/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/item/weapon/reagent_containers/cocaineblocks
 	name = "blocks of cocaine"
-	desc = "2 block of very pure cocaine, packed together for shipping."
 	icon = 'icons/obj/drugs.dmi'
 	icon_state = "brick_stack2"
 	pixel_y = 6
-	value = 200
+	var/blocks_amount = 2
 	is_contraband = TRUE
+	New()
+		..()
+		desc = "[blocks_amount] blocks of very pure cocaine, packed together for shipping."
+		value = blocks_amount*100
 
 /obj/item/weapon/reagent_containers/cocaineblocks/three
-	name = "blocks of cocaine"
-	desc = "3 block of very pure cocaine, packed together for shipping."
-	icon = 'icons/obj/drugs.dmi'
+	blocks_amount = 3
 	icon_state = "brick_stack3"
-	pixel_y = 6
-	value = 300
 
 /obj/item/weapon/reagent_containers/cocaineblocks/four
-	name = "blocks of cocaine"
-	desc = "4 block of very pure cocaine, packed together for shipping."
-	icon = 'icons/obj/drugs.dmi'
+	blocks_amount = 4
 	icon_state = "brick_stack4"
-	pixel_y = 6
-	value = 400
 
 /obj/item/weapon/reagent_containers/cocaineblocks/five
-	name = "blocks of cocaine"
-	desc = "5 block of very pure cocaine, packed together for shipping."
-	icon = 'icons/obj/drugs.dmi'
+	blocks_amount = 5
 	icon_state = "brick_stack5"
-	pixel_y = 6
-	value = 500
 
 /obj/item/weapon/reagent_containers/cocaineblocks/six
-	name = "blocks of cocaine"
-	desc = "6 block of very pure cocaine, packed together for shipping."
-	icon = 'icons/obj/drugs.dmi'
+	blocks_amount = 6
 	icon_state = "brick_stack6"
-	pixel_y = 6
-	value = 600
+
+/obj/item/weapon/reagent_containers/cocaineblocks/update_icon()
+	icon_state = "brick_stack[blocks_amount]"
+	desc = "[blocks_amount] blocks of very pure cocaine, packed together for shipping."
 
 /obj/item/weapon/reagent_containers/cocaineblocks/attack_hand(mob/living/user)
 	if (src == user.l_hand || src == user.r_hand)
-		user << "You split a from the [src] apart."
 		var/obj/item/weapon/reagent_containers/cocaineblock/block = new/obj/item/weapon/reagent_containers/cocaineblock(user)
 		user.put_in_hands(block)
-		qdel(src)
+		user << "You split the [src] apart."
+		if (blocks_amount > 2)
+			blocks_amount -= 1
+			update_icon()
+		else
+			new/obj/item/weapon/reagent_containers/cocaineblock(user.loc)
+			qdel(src)
 	else
 		..()
 
-//TO-DO: Recode cocaine blocks to stackable properly
+/obj/item/weapon/reagent_containers/cocaineblocks/attackby(var/obj/item/I, var/mob/user)
+	if (!istype(I, /obj/item/weapon/reagent_containers/cocaineblock))
+		return
+	if (blocks_amount >= 6)
+		to_chat(user, SPAN_WARNING("You cannot stack more blocks!"))
+		return
+	qdel(I)
+	blocks_amount += 1
+	update_icon()
