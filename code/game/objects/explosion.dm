@@ -1,5 +1,5 @@
 
-/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = 'sound/weapons/Explosives/Dynamite.ogg')
+/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = "explosion")
 /*
 	// TODO: splits explosions bigger than 5x5 into sub-explosions
 	var/num_explosions = devastation_range/5
