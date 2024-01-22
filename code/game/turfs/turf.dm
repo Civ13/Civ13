@@ -367,6 +367,8 @@ var/const/enterloopsanity = 100
 			//Shoe sounds
 			if (type == /turf/floor/plating)
 				footstepsound = "platingfootsteps"
+			else if (istype(src, obj/covers))
+				footstepsound = "erikafootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			else if (istype(src, /turf/floor/winter))
