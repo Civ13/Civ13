@@ -8,6 +8,7 @@
 	var/release_force = 0
 	var/firing_range = 18
 	fire_sound_text = "a launcher firing"
+	var/datum/effect/effect/system/smoke_spread/puff
 
 /obj/item/weapon/gun/launcher/rocket/New()
 	..()
@@ -85,12 +86,12 @@
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	..()
 	if (max_rockets > 1)
-		user << SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>")
+		to_chat(user, SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>"))
 	else
-		if (rockets.len)	
-			user << SPAN_NOTICE("<b>LOADED</B>")
+		if (rockets.len)
+			to_chat(user, SPAN_NOTICE("<b>LOADED</B>"))
 		else
-			user << SPAN_NOTICE("<b>UNLOADED</B>")
+			to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -99,10 +100,10 @@
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			user << "You put the rocket in \the [src]."
+			to_chat(user, "You put the rocket in \the [src].")
 			update_icon()
 		else
-			user << "\The [src] cannot hold more rockets."
+			to_chat(user, "\The [src] cannot hold more rockets.")
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)
@@ -131,7 +132,23 @@
 		return M
 	return null
 
+/obj/item/weapon/gun/launcher/New()
+	..()
+	puff = new /datum/effect/effect/system/smoke_spread()
+	puff.attach(src)
+	update_icon()
+
 /obj/item/weapon/gun/launcher/rocket/handle_post_fire(mob/user, atom/target)
+	sleep(1)
+	var/smoke_dir = user.dir
+	if(user)
+		switch(smoke_dir) //We want the opposite of their direction.
+			if(2,8)
+				smoke_dir /= 2
+			if(1,4)
+				smoke_dir *= 2
+	puff.set_up(1,,,smoke_dir)
+	puff.start()
 	message_admins("[key_name_admin(user)] fired a rocket from a rocket launcher ([src.name]) at [target].", key_name_admin(user))
 	log_game("[key_name_admin(user)] used a rocket launcher ([src.name]) at [target].")
 	update_icon()
