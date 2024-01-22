@@ -27,7 +27,7 @@
 #define PSYCHOTIC 25
 
 var/list/shatter_sound = list('sound/effects/Glassbr1.ogg','sound/effects/Glassbr2.ogg','sound/effects/Glassbr3.ogg')
-var/list/explosion_sound = list('sound/effects/Explosion1.ogg','sound/effects/Explosion2.ogg')
+var/list/explosion_sound = list('sound/effects/explosion1.ogg','sound/effects/Explosion2.ogg','sound/effects/explosion3.ogg','sound/effects/explosion4.ogg','sound/effects/explosion5.ogg','sound/effects/explosion6.ogg')
 var/list/spark_sound = list('sound/effects/sparks1.ogg','sound/effects/sparks2.ogg','sound/effects/sparks3.ogg','sound/effects/sparks4.ogg')
 var/list/rustle_sound = list('sound/effects/rustle1.ogg','sound/effects/rustle2.ogg','sound/effects/rustle3.ogg','sound/effects/rustle4.ogg','sound/effects/rustle5.ogg')
 var/list/punch_sound = list('sound/weapons/punch1.ogg','sound/weapons/punch2.ogg','sound/weapons/punch3.ogg', 'sound/weapons/punch4.ogg')
@@ -39,19 +39,23 @@ var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/gu
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
 var/list/laser_ric_sound = list ('sound/weapons/magic/LS_Hit_1.ogg','sound/weapons/magic/LS_Hit_3.ogg','sound/weapons/magic/LS_Hit_4.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
-var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
+var/list/casing_sound = list ('sound/weapons/guns/misc/casing_drop1.ogg', 'sound/weapons/guns/misc/casing_drop2.ogg','sound/weapons/guns/misc/casing_drop3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
 var/list/chop_sound = list('sound/effects/gore/chop.ogg', 'sound/effects/gore/chop2.ogg', 'sound/effects/gore/chop3.ogg', 'sound/effects/gore/chop4.ogg', 'sound/effects/gore/chop5.ogg', 'sound/effects/gore/chop6.ogg')
-var/list/platingfootsteps = list('sound/effects/footsteps/plating/plating1.ogg','sound/effects/footsteps/plating/plating2.ogg','sound/effects/footsteps/plating/plating3.ogg','sound/effects/footsteps/plating/plating4.ogg')
-var/list/erikafootsteps = list('sound/effects/footsteps/tile1.ogg','sound/effects/footsteps/tile2.ogg','sound/effects/footsteps/tile3.ogg','sound/effects/footsteps/tile4.ogg')
+var/list/platingfootsteps = list('sound/effects/footsteps/plating/metalgrate1.ogg', 'sound/effects/footsteps/plating/metalgrate2.ogg', 'sound/effects/footsteps/plating/metalgrate3.ogg', 'sound/effects/footsteps/plating/metalgrate4.ogg')
+var/list/erikafootsteps = list('sound/effects/footsteps/tile1-2.ogg','sound/effects/footsteps/tile2-2.ogg','sound/effects/footsteps/tile3-2.ogg','sound/effects/footsteps/tile4-2.ogg')
 var/list/grassfootsteps = list('sound/effects/footsteps/grass/grass1.ogg','sound/effects/footsteps/grass/grass2.ogg','sound/effects/footsteps/grass/grass3.ogg','sound/effects/footsteps/grass/grass4.ogg')
-var/list/dirtfootsteps = list('sound/effects/footsteps/dirt/dirt1.ogg','sound/effects/footsteps/dirt/dirt2.ogg','sound/effects/footsteps/dirt/dirt3.ogg','sound/effects/footsteps/dirt/dirt4.ogg')
-var/list/waterfootsteps = list('sound/effects/footsteps/water/slosh1.ogg','sound/effects/footsteps/water/slosh2.ogg','sound/effects/footsteps/water/slosh3.ogg','sound/effects/footsteps/water/slosh4.ogg')
+var/list/roadfootsteps = list('sound/effects/footsteps/road/concrete1.ogg', 'sound/effects/footsteps/road/concrete2.ogg', 'sound/effects/footsteps/road/concrete3.ogg', 'sound/effects/footsteps/road/concrete4.ogg', 'sound/effects/footsteps/road/concrete5.ogg', 'sound/effects/footsteps/road/concrete6.ogg', 'sound/effects/footsteps/road/concrete7.ogg', 'sound/effects/footsteps/road/concrete8.ogg')
+var/list/dirtfootsteps = list('sound/effects/footsteps/dirt/dirt1-2.ogg', 'sound/effects/footsteps/dirt/dirt2-2.ogg', 'sound/effects/footsteps/dirt/dirt3-2.ogg', 'sound/effects/footsteps/dirt/dirt4-2.ogg', 'sound/effects/footsteps/dirt/dirt5.ogg', 'sound/effects/footsteps/dirt/dirt6.ogg', 'sound/effects/footsteps/dirt/dirt7.ogg', 'sound/effects/footsteps/dirt/dirt8.ogg')
+var/list/waterfootsteps = list('sound/effects/footsteps/water/wade1.ogg', 'sound/effects/footsteps/water/wade2.ogg', 'sound/effects/footsteps/water/wade3.ogg', 'sound/effects/footsteps/water/wade4.ogg', 'sound/effects/footsteps/water/wade5.ogg', 'sound/effects/footsteps/water/wade6.ogg', 'sound/effects/footsteps/water/wade7.ogg', 'sound/effects/footsteps/water/wade8.ogg')
 var/list/sandfootsteps = list('sound/effects/footsteps/sand/sand_step1.ogg','sound/effects/footsteps/sand/sand_step2.ogg','sound/effects/footsteps/sand/sand_step3.ogg','sound/effects/footsteps/sand/sand_step4.ogg','sound/effects/footsteps/sand/sand_step5.ogg','sound/effects/footsteps/sand/sand_step6.ogg','sound/effects/footsteps/sand/sand_step7.ogg','sound/effects/footsteps/sand/sand_step8.ogg')
-var/list/woodfootsteps = list('sound/effects/footsteps/wood/wood_step1.ogg','sound/effects/footsteps/wood/wood_step2.ogg','sound/effects/footsteps/wood/wood_step3.ogg','sound/effects/footsteps/wood/wood_step4.ogg','sound/effects/footsteps/wood/wood_step5.ogg','sound/effects/footsteps/wood/wood_step6.ogg','sound/effects/footsteps/wood/wood_step7.ogg','sound/effects/footsteps/wood/wood_step8.ogg')
-var/list/carpetfootsteps = list('sound/effects/footsteps/carpet/carpet_step1.ogg','sound/effects/footsteps/carpet/carpet_step2.ogg','sound/effects/footsteps/carpet/carpet_step3.ogg','sound/effects/footsteps/carpet/carpet_step4.ogg','sound/effects/footsteps/carpet/carpet_step5.ogg','sound/effects/footsteps/carpet/carpet_step6.ogg','sound/effects/footsteps/carpet/carpet_step7.ogg','sound/effects/footsteps/carpet/carpet_step8.ogg')
-var/list/snowfootsteps = list('sound/effects/footsteps/snow/snow1.ogg','sound/effects/footsteps/snow/snow2.ogg','sound/effects/footsteps/snow/snow3.ogg','sound/effects/footsteps/snow/snow4.ogg','sound/effects/footsteps/snow/snow5.ogg')
+var/list/woodfootsteps = list('sound/effects/footsteps/wood/wood1.ogg', 'sound/effects/footsteps/wood/wood2.ogg', 'sound/effects/footsteps/wood/wood3.ogg', 'sound/effects/footsteps/wood/wood4.ogg', 'sound/effects/footsteps/wood/wood5.ogg', 'sound/effects/footsteps/wood/wood6.ogg', 'sound/effects/footsteps/wood/wood7.ogg', 'sound/effects/footsteps/wood/wood8.ogg')
+var/list/carpetfootsteps = list('sound/effects/footsteps/carpet/carpet1.ogg','sound/effects/footsteps/carpet/carpet2.ogg','sound/effects/footsteps/carpet/carpet3.ogg','sound/effects/footsteps/carpet/carpet4.ogg','sound/effects/footsteps/carpet/carpet5.ogg','sound/effects/footsteps/carpet/carpet6.ogg','sound/effects/footsteps/carpet/carpet7.ogg','sound/effects/footsteps/carpet/carpet8.ogg')
+var/list/snowfootsteps = list('sound/effects/footsteps/snow/snow1-2.ogg', 'sound/effects/footsteps/snow/snow2-2.ogg', 'sound/effects/footsteps/snow/snow3-2.ogg', 'sound/effects/footsteps/snow/snow4-2.ogg', 'sound/effects/footsteps/snow/snow5-2.ogg', 'sound/effects/footsteps/snow/snow6.ogg', 'sound/effects/footsteps/snow/snow7.ogg', 'sound/effects/footsteps/snow/snow8.ogg')
 var/list/icefootsteps = list('sound/effects/footsteps/ice/ice1.ogg','sound/effects/footsteps/ice/ice2.ogg','sound/effects/footsteps/ice/ice3.ogg','sound/effects/footsteps/ice/ice4.ogg','sound/effects/footsteps/ice/ice5.ogg')
+
+var/list/eat = list('sound/vo/eat.1.ogg', 'sound/vo/eat.2.ogg', 'sound/vo/eat.3.ogg', 'sound/vo/eat.4.ogg', 'sound/vo/eat.4.ogg', 'sound/vo/eat.5.ogg')
+var/list/drink = list('sound/vo/drink.1.ogg', 'sound/vo/drink.2.ogg', 'sound/vo/drink.3.ogg', 'sound/vo/drink.4.ogg', 'sound/vo/drink.4.ogg', 'sound/vo/drink.5.ogg')
 
 var/list/artillery_out = list( 'sound/weapons/WW2/new_exp_high_1.ogg', 'sound/weapons/WW2/new_exp_high_2.ogg', 'sound/weapons/WW2/new_exp_high_3.ogg')
 var/list/artillery_in = list( 'sound/weapons/WW2/new_artillery_incoming01.ogg', 'sound/weapons/WW2/new_artillery_incoming02.ogg', 'sound/weapons/WW2/new_artillery_incoming03.ogg', 'sound/weapons/WW2/new_artillery_incoming04.ogg', 'sound/weapons/WW2/new_artillery_incoming05.ogg', 'sound/weapons/WW2/new_artillery_incoming06.ogg')
@@ -474,6 +478,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("woodfootsteps") soundin = pick(woodfootsteps)
 			if ("carpetfootsteps") soundin = pick(carpetfootsteps)
 			if ("snowfootsteps") soundin = pick(snowfootsteps)
+			if ("roadfootsteps") soundin = pick(roadfootsteps)
 			if ("icefootsteps") soundin = pick(icefootsteps)
 			if ("doorknock") soundin = pick(doorknock_sounds)
 			if ("artillery_out") soundin = pick(artillery_out)
@@ -485,6 +490,9 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("pen_voice") soundin = pick(pen_voice)
 			if ("ric_voice") soundin = pick(ric_voice)
 			if ("track_voice") soundin = pick(track_voice)
+
+			if ("drink") soundin = pick(drink)
+			if ("eat") soundin = pick(eat)
 
 			if ("radio_chatter") soundin = pick(radio_chatter)
 

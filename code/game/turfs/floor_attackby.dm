@@ -997,7 +997,7 @@
 			H.water += 75
 			H.bladder += 25
 			H << "You drink some water from."
-			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+			playsound(H.loc, "drink", rand(10, 50), TRUE)
 			return
 		else
 			return
