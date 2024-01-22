@@ -83,6 +83,7 @@
 	equiptimer = 28
 	load_delay = 18
 
+
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	..()
 	if (max_rockets > 1)
