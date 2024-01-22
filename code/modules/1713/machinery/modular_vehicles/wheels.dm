@@ -70,9 +70,14 @@
 		H.remove_from_mob(src)
 		src.forceMove(drivingchair)
 		return
-	if (!control.axis.engine || !control.axis.engine.fueltank)
+	if (!control.axis.engine)
 		return
-	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents && control.axis.engine.fueltank.reagents.total_volume > 0)
+	if (!control.axis.engine.fueltank)
+		return
+	if (!control.axis.engine.fueltank.reagents)
+		to_chat(H, "There is not enough fuel!")
+		return
+	if (!control.axis.engine.on && control.axis.engine.fueltank.reagents.total_volume > 0)
 		control.axis.currentspeed = 0
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))

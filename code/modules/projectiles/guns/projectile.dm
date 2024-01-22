@@ -204,31 +204,31 @@
 		switch(AM.mag_type)
 			if (MAGAZINE)
 				if (AM.ammo_mag != ammo_mag && ammo_mag != "default")
-					user << "<span class='warning'>[src] requires another magazine.</span>" //wrong magazine
+					to_chat(user, SPAN_WARNING("[src] requires another magazine.</span>")) //wrong magazine
 					return
 				if (ammo_magazine)
-					if (has_ak_reload)
+					if (has_ak_reload && ishuman(user))
 						if (unload_sound) playsound(loc, unload_sound, 75, TRUE)
 						ammo_magazine.forceMove(get_turf(src))
 						ammo_magazine.update_icon()
 						ammo_magazine = null
 
 						user.remove_from_mob(AM)
-						if (src.is_laser_mg == TRUE)
-							AM.loc = user.back
-							ammo_magazine = AM
-						else
+					
+						var/mob/living/human/H = user
+						if (prob(clamp((H.getStatCoeff("[stat]") - 80), 0, 100)))
 							AM.loc = src
 							ammo_magazine = AM
 
-						if (prob(0.1))
-							to_chat(user, SPAN_NOTICE("You tactically reload your [src] <red><b>LIKE A REAL CHAD</red></b>."))
-						else
 							to_chat(user, SPAN_NOTICE("You tactically reload your [src] using the other magazine."))
-						if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
-						cock_gun(user)
+							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
+							cock_gun(user)
+						else
+							AM.loc = get_turf(src)
+
+							to_chat(user, SPAN_DANGER("<big>You clumsily drop both magazines while reloading your [src]!</big>"))
 					else
-						user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
+						to_chat(user, SPAN_DANGER("[src] already has a magazine loaded.")) //already a magazine here
 						return
 				user.remove_from_mob(AM)
 				if (src.is_laser_mg == TRUE)

@@ -94,8 +94,8 @@
 	desc = "Compact combined mask designed in the late 1970s, used by Soviet and Russian Armed Forces."
 
 /obj/item/clothing/mask/gas/american
-	icon_state = "pmk1"
-	item_state = "pmk1"
+	icon_state = "m2"
+	item_state = "m2"
 	name = "M2 gas mask"
 	desc = "Compact combined mask designed in 1939, used by the US army."
 

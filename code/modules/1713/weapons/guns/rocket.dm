@@ -73,7 +73,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/bang.ogg'
+	fire_sound = 'sound/effects/rpg_fire.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	var/caliber = "rocket"
@@ -95,6 +95,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
@@ -108,9 +109,9 @@
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
 		rockets.len--
+		update_icon()
 		user.put_in_hands(G)
 		user.visible_message("\The [user] removes \a [G] from [src].", SPAN_NOTICE("You remove \a [G] from \the [src]."))
-		update_icon()
 	else
 		user << SPAN_WARNING("\The [src] is empty.")
 
@@ -126,7 +127,7 @@
 		var/obj/item/missile/M = new I.projectile_type(src)
 		if (ishuman(src.loc))
 			M.dir = src.loc.dir
-		M.primed = 1
+		M.primed = TRUE
 		rockets -= I
 		return M
 	return null
@@ -161,7 +162,7 @@
 	item_state = "rpg7"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	load_delay = 45
+	load_delay = 45 // note that the rpgreload.ogg cuts before this cooldown is finished TO-DO: extend the sound file or replace it entirely with a better one
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/loaded/New()
 	..()
@@ -537,7 +538,7 @@
 	name = "RPG rocket"
 	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "rocketshell"
-	projectile_type = /obj/item/missile
+	projectile_type = /obj/item/missile/explosive
 	caliber = "rocket"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
@@ -554,14 +555,14 @@
 	name = "M6A1 HEAT rocket"
 	desc = "A high explosive anti tank warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "m6a1"
-	projectile_type = /obj/item/missile
+	projectile_type = /obj/item/missile/explosive
 	caliber = "bazooka"
 
 /obj/item/ammo_casing/rocket/rpb54
 	name = "RPzB. Gr. 4312"
 	desc = "A high explosive anti tank warhead and propeller designed to be fired from a Raketen-Panzerbüchse."
 	icon_state = "rpb54"
-	projectile_type = /obj/item/missile
+	projectile_type = /obj/item/missile/explosive
 	caliber = "rpb54"
 
 /obj/item/ammo_casing/rocket/panzerfaust
@@ -640,7 +641,8 @@
 /obj/item/missile
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "missile"
-	var/primed = null
+	flags = CONDUCT
+	var/primed = FALSE
 	var/mob/living/human/firer = null
 	var/turf/startingturf = null
 	throwforce = 15
@@ -651,42 +653,48 @@
 	var/damage_step = 2
 	heavy_armor_penetration = 80
 	allow_spin = FALSE
-	var/explosive = TRUE
-	flags = CONDUCT
-	throw_impact(atom/hit_atom)
-		if(primed)
-			if (explosive)
-				explosion(hit_atom, 0, 1, 2, 4)
-				handle_vehicle_hit(hit_atom,firer)
-				var/turf/T = get_turf(hit_atom)
-				if(!T) return
-				var/target_x = 0
-				var/target_y = 0
+	var/explosive = FALSE
+	
+	var/devastation_range = 0
+	var/heavy_impact_range = 1
+	var/light_impact_range = 2
+	var/flash_range = 4
 
-				if (dir == SOUTH)
-					target_y = -10
-				else if (dir == NORTH)
-					target_y = 10
-				else if (dir == WEST)
-					target_x = -10
-				else
-					target_x = 10
-				var/i
-				for (i = 0, i < num_fragments, i++)
-					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-					P.damage = fragment_damage
-					P.pellets = num_fragments
-					P.range_step = damage_step
-					P.shot_from = name
-					P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
+/obj/item/missile/throw_impact(atom/hit_atom)
+	if(primed)
+		if (explosive)
+			explosion(hit_atom, devastation_range, heavy_impact_range, light_impact_range, flash_range)
+			handle_vehicle_hit(hit_atom,firer)
+			var/turf/T = get_turf(hit_atom)
+			if(!T) return
+			var/target_x = 0
+			var/target_y = 0
 
-					for (var/mob/living/L in T)
-						P.attack_mob(L, 0, 0)
-				spawn (5)
-					qdel(src)
-		else
-			..()
-		return
+			if (dir == SOUTH)
+				target_y = -10
+			else if (dir == NORTH)
+				target_y = 10
+			else if (dir == WEST)
+				target_x = -10
+			else
+				target_x = 10
+			var/i
+			for (i = 0, i < num_fragments, i++)
+				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+				P.damage = fragment_damage
+				P.pellets = num_fragments
+				P.range_step = damage_step
+				P.shot_from = name
+				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
+
+				for (var/mob/living/L in T)
+					P.attack_mob(L, 0, 0)
+			spawn (5)
+				qdel(src)
+	else
+		..()
+	return
+
 /obj/item/missile/proc/handle_vehicle_hit(hit_atom, var/mob/living/human/firer = null)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,hit_atom))
 		for (var/mob/M in F.axis.transporting)
@@ -743,119 +751,40 @@
 
 /obj/item/missile/explosive
 	heavy_armor_penetration = 260
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 1, 2, 4)
-			handle_vehicle_hit(hit_atom,firer)
-			var/turf/T = get_turf(hit_atom)
-			if(!T) return
-			var/target_x = 0
-			var/target_y = 0
+	explosive = TRUE
 
-			if (dir == SOUTH)
-				target_y = -10
-			else if (dir == NORTH)
-				target_y = 10
-			else if (dir == WEST)
-				target_x = -10
-			else
-				target_x = 10
-			var/i
-			for (i = 0, i < num_fragments, i++)
-				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-				P.damage = fragment_damage
-				P.pellets = num_fragments
-				P.range_step = damage_step
-				P.shot_from = name
-				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 2
+	flash_range = 3
 
-				for (var/mob/living/L in T)
-					P.attack_mob(L, 0, 0)
-			spawn (5)
-				qdel(src)
-		else
-			..()
-		return
 /obj/item/missile/explosive/panzerfaust
 	heavy_armor_penetration = 140
 	icon_state = "panzerfaust_missile"
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 1, 2, 3)
-			handle_vehicle_hit(hit_atom,firer)
-			var/turf/T = get_turf(hit_atom)
-			if(!T) return
-			var/target_x = 0
-			var/target_y = 0
 
-			if (dir == SOUTH)
-				target_y = -10
-			else if (dir == NORTH)
-				target_y = 10
-			else if (dir == WEST)
-				target_x = -10
-			else
-				target_x = 10
-			var/i
-			for (i = 0, i < num_fragments, i++)
-				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-				P.damage = fragment_damage
-				P.pellets = num_fragments
-				P.range_step = damage_step
-				P.shot_from = name
-				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
-
-				for (var/mob/living/L in T)
-					P.attack_mob(L, 0, 0)
-			spawn (5)
-				qdel(src)
-		else
-			..()
-		return
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 2
+	flash_range = 3
 
 /obj/item/missile/explosive/m72law
 	heavy_armor_penetration = 350
-	icon_state = "missile"
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 1, 2, 3)
-			handle_vehicle_hit(hit_atom,firer)
-			var/turf/T = get_turf(hit_atom)
-			if(!T) return
-			var/target_x = 0
-			var/target_y = 0
 
-			if (dir == SOUTH)
-				target_y = -10
-			else if (dir == NORTH)
-				target_y = 10
-			else if (dir == WEST)
-				target_x = -10
-			else
-				target_x = 10
-			var/i
-			for (i = 0, i < num_fragments, i++)
-				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-				P.damage = fragment_damage
-				P.pellets = num_fragments
-				P.range_step = damage_step
-				P.shot_from = name
-				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
-
-				for (var/mob/living/L in T)
-					P.attack_mob(L, 0, 0)
-			spawn (5)
-				qdel(src)
-		else
-			..()
-		return
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 2
+	flash_range = 3
 
 /obj/item/missile/explosive/piat
 	heavy_armor_penetration = 80
-	icon_state = "missile"
+
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 2
+	flash_range = 3
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 0, 1, 2, 3)
+			explosion(hit_atom, devastation_range, heavy_impact_range, light_impact_range, flash_range)
 			handle_vehicle_hit(hit_atom,firer)
 			qdel(src)
 		else
@@ -864,46 +793,22 @@
 
 /obj/item/missile/explosive/piat44
 	heavy_armor_penetration = 180
-	icon_state = "missile"
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 1, 2, 3, 4)
-			handle_vehicle_hit(hit_atom,firer)
-			var/turf/T = get_turf(hit_atom)
-			if(!T) return
-			var/target_x = 0
-			var/target_y = 0
-
-			if (dir == SOUTH)
-				target_y = -10
-			else if (dir == NORTH)
-				target_y = 10
-			else if (dir == WEST)
-				target_x = -10
-			else
-				target_x = 10
-			var/i
-			for (i = 0, i < num_fragments, i++)
-				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-				P.damage = fragment_damage
-				P.pellets = num_fragments
-				P.range_step = damage_step
-				P.shot_from = name
-				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
-
-				for (var/mob/living/L in T)
-					P.attack_mob(L, 0, 0)
-			spawn (5)
-				qdel(src)
-		else
-			..()
-		return
+	
+	devastation_range = 1
+	heavy_impact_range = 2
+	light_impact_range = 3
+	flash_range = 4
 
 /obj/item/missile/nuclear
 	heavy_armor_penetration = 40
+
+	devastation_range = 1
+	heavy_impact_range = 1
+	light_impact_range = 2
+	flash_range = 4
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 1, 1, 2, 4)
+			explosion(hit_atom, devastation_range, heavy_impact_range, light_impact_range, flash_range)
 			radiation_pulse(hit_atom, 6, 20, 700, TRUE)
 			handle_vehicle_hit(hit_atom,firer)
 
@@ -921,10 +826,15 @@
 
 /obj/item/missile/fragmentation
 	heavy_armor_penetration = 6
+
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 3
+	flash_range = 1
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom,0,1,3,1)
-			handle_vehicle_hit(hit_atom,firer)
+			explosion(hit_atom, devastation_range, heavy_impact_range, light_impact_range, flash_range)
+			handle_vehicle_hit(hit_atom, firer)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)
@@ -951,48 +861,26 @@
 /obj/item/missile/explosive/atgm
 	icon_state = "atgm_missile"
 	num_fragments = 40
-	heavy_armor_penetration = 850 // no chance to survive
-	throw_impact(atom/hit_atom)
-		if(primed)
-			explosion(hit_atom, 0, 0, 2, 2)
-			handle_vehicle_hit(hit_atom,firer)
-			var/turf/T = get_turf(hit_atom)
-			if(!T) return
-			var/target_x = 0
-			var/target_y = 0
+	heavy_armor_penetration = 300
 
-			if (dir == SOUTH)
-				target_y = -10
-			else if (dir == NORTH)
-				target_y = 10
-			else if (dir == WEST)
-				target_x = -10
-			else
-				target_x = 10
-			var/i
-			for (i = 0, i < num_fragments, i++)
-				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-				P.damage = fragment_damage
-				P.pellets = num_fragments
-				P.range_step = damage_step
-				P.shot_from = name
-				P.launch_fragment(locate(src.x + target_x + rand(-2,2), src.y + target_y + rand(-2,2), src.z))
-
-				for (var/mob/living/L in T)
-					P.attack_mob(L, 0, 0)
-			spawn (5)
-				qdel(src)
-		else
-			..()
-		return
+	devastation_range = 0
+	heavy_impact_range = 0
+	light_impact_range = 2
+	flash_range = 2
 
 /obj/item/missile/explosive/atgm_he
 	icon_state = "atgm_missile"
 	heavy_armor_penetration = 20
+
+	devastation_range = 2
+	heavy_impact_range = 2
+	light_impact_range = 2
+	flash_range = 4
+
 	throw_impact(atom/hit_atom)
 		if(primed)
-			explosion(hit_atom, 2, 2, 2, 2)
-			handle_vehicle_hit(hit_atom,firer)
+			explosion(hit_atom, devastation_range, heavy_impact_range, light_impact_range, flash_range)
+			handle_vehicle_hit(hit_atom, firer)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
 			var/list/target_turfs = getcircle(T, spread_range)
@@ -1015,5 +903,11 @@
 
 /obj/item/missile/explosive/atgm/apcr
 	icon_state = "atgm_missile"
-	heavy_armor_penetration = 300
+	num_fragments = 0
+	heavy_armor_penetration = 850 // Nothing survives this
+
+	devastation_range = 0
+	heavy_impact_range = 0
+	light_impact_range = 2
+	flash_range = 2
 

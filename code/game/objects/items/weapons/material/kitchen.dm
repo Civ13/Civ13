@@ -54,7 +54,7 @@
 				user << "<span class='danger'>You cannot force any more food to go down [M]'s throat.</span>"
 				return
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
-		playsound(M.loc,'sound/items/eatfood.ogg', rand(10,40), TRUE)
+		playsound(M.loc,"eat", rand(20,45), TRUE)
 		overlays.Cut()
 		return
 	else
