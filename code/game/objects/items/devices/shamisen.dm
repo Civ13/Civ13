@@ -14,7 +14,7 @@
 	value = 0
 
 /obj/item/shamisen/proc/playnote(var/note as text)
-	//world << "Note: [note]"
+	//to_chat(world, "Note: [note]")
 	var/soundfile
 	/*BYOND loads resource files at compile time if they are ''. This means you can't really manipulate them dynamically.
 	Tried doing it dynamically at first but its more trouble than its worth. Would have saved many lines tho.*/

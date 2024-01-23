@@ -147,7 +147,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (59% is needed)</b>"
 		log_vote(text)
-		world << "<font color='purple'>[text]</font>"
+		to_chat(world, "<font color='purple'>[text]</font>")
 		return .
 
 	proc/result()
@@ -156,7 +156,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(mode)
 				if ("restart")
 					if (. == "Restart Round")
-						world << "Round ending due to vote."
+						to_chat(world, "Round ending due to vote.")
 						log_game("Ending the round due to restart vote.")
 						map.next_win = world.time - 100
 						map.round_finished = TRUE
@@ -346,15 +346,15 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 			log_vote(text)
 			if (mode == "ship selection")
-				world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have 60 seconds to vote.</span>"
-				world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+				to_chat(world, "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have 60 seconds to vote.</span>")
+				to_chat(world, sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
 			else
-				world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"
-				world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
+				to_chat(world, "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>")
+				to_chat(world, sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
 
 			if ((mode == "gamemode" || mode == "ship selection") && round_progressing)
 				round_progressing = FALSE
-				world << "<font color='red'><b>Round start has been delayed.</b></font>"
+				to_chat(world, "<font color='red'><b>Round start has been delayed.</b></font>")
 			time_remaining = round(config.vote_period/10)
 			callback = _callback
 			return TRUE

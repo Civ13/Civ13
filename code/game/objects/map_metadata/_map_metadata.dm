@@ -360,9 +360,9 @@ var/civmax_research = list(230,230,230)
 			windspeed = "a gale"
 			winddesc = "A [winddirection]ern gale."
 	if (windspeedvar != oldspeed)
-		world << "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>"
+		to_chat(world, "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>")
 	if (winddirection != oldwind)
-		world << "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>"
+		to_chat(world, "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>")
 	spawn(rand(3600,6000))
 		wind()
 
@@ -370,7 +370,7 @@ var/civmax_research = list(230,230,230)
 
 	if (global_pollution >= 2000)
 		change_weather(WEATHER_SMOG)
-		world << SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>")
+		to_chat(world, SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>"))
 	if (global_pollution < 0)
 		set_global_pollution(0)
 	else
@@ -438,16 +438,16 @@ var/civmax_research = list(230,230,230)
 		ar_to_close_timeleft--
 	if (last_crossing_block_status[faction1] == FALSE)
 		if (faction1_can_cross_blocks() && cross_message(faction1) != "")
-			world << cross_message(faction1)
+			to_chat(world, cross_message(faction1))
 
 	else if (last_crossing_block_status[faction1] == TRUE)
 		if (!faction1_can_cross_blocks() && reverse_cross_message(faction1) != "")
-			world << reverse_cross_message(faction1)
+			to_chat(world, reverse_cross_message(faction1))
 
 
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks() && cross_message(faction2) != "")
-			world << cross_message(faction2)
+			to_chat(world, cross_message(faction2))
 			if (battleroyale)
 				var/warning_sound = sound('sound/effects/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 				for (var/mob/M in player_list)
@@ -455,7 +455,7 @@ var/civmax_research = list(230,230,230)
 
 	else if (last_crossing_block_status[faction2] == TRUE)
 		if (!faction2_can_cross_blocks() && reverse_cross_message(faction2) != "")
-			world << reverse_cross_message(faction2)
+			to_chat(world, reverse_cross_message(faction2))
 
 	last_crossing_block_status[faction2] = faction2_can_cross_blocks()
 	last_crossing_block_status[faction1] = faction1_can_cross_blocks()
@@ -482,7 +482,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age1_lim && world.time > 36000)
-					world << "<big>The world has advanced into the Bronze Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Bronze Age!</big>")
 					age = "313 B.C."
 					set_ordinal_age()
 					age1_done = TRUE
@@ -496,7 +496,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age2_lim && world.time >= age2_timer)
-					world << "<big>The world has advanced into the Medieval Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Medieval Age!</big>")
 					age = "1013"
 					set_ordinal_age()
 					age2_done = TRUE
@@ -510,7 +510,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age3_lim && world.time >= age3_timer)
-					world << "<big>The world has advanced into the Imperial Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Imperial Age!</big>")
 					age = "1713"
 					set_ordinal_age()
 					age3_done = TRUE
@@ -523,7 +523,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age4_lim && world.time >= age4_timer)
-					world << "<big>The world has advanced into the Industrial Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Industrial Age!</big>")
 					age = "1873"
 					set_ordinal_age()
 					age4_done = TRUE
@@ -535,7 +535,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age5_lim && world.time >= age5_timer)
-					world << "<big>The world has advanced into the Early Modern Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Early Modern Age!</big>")
 					age = "1903"
 					set_ordinal_age()
 					age5_done = TRUE
@@ -547,7 +547,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age6_lim && world.time >= age6_timer)
-					world << "<big>The world has advanced into the Second World War!</big>"
+					to_chat(world, "<big>The world has advanced into the Second World War!</big>")
 					age = "1943"
 					set_ordinal_age()
 					age6_done = TRUE
@@ -559,7 +559,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age7_lim && world.time >= age7_timer)
-					world << "<big>The world has advanced into the Cold War!</big>"
+					to_chat(world, "<big>The world has advanced into the Cold War!</big>")
 					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
@@ -571,7 +571,7 @@ var/civmax_research = list(230,230,230)
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age8_lim && world.time >= age8_timer)
-					world << "<big>The world has advanced into the Modern Age!</big>"
+					to_chat(world, "<big>The world has advanced into the Modern Age!</big>")
 					age = "2013"
 					set_ordinal_age()
 					age8_done = TRUE
@@ -651,7 +651,7 @@ var/civmax_research = list(230,230,230)
 				only_client_is_host = TRUE
 
 	if (playercount >= required_players || only_client_is_host)
-		world << mission_start_message
+		to_chat(world, mission_start_message)
 		return TRUE
 
 	return FALSE
@@ -669,7 +669,7 @@ var/civmax_research = list(230,230,230)
 			message = "The round has ended!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		win_condition_spam_check = TRUE
 		return FALSE
 	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN)
@@ -711,7 +711,7 @@ var/civmax_research = list(230,230,230)
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 		else
 			if (current_win_condition != no_winner && current_winner && current_loser)
-				world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
+				to_chat(world, "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>")
 				current_winner = null
 				current_loser = null
 			next_win = -1
@@ -801,7 +801,7 @@ var/civmax_research = list(230,230,230)
 	return .
 
 /obj/map_metadata/proc/announce_current_win_condition()
-	world << "<font size = 3>[current_stat_message()]</font>"
+	to_chat(world, "<font size = 3>[current_stat_message()]</font>")
 
 /obj/map_metadata/proc/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -997,7 +997,7 @@ var/civmax_research = list(230,230,230)
 	if (force || config.seasons_on)
 		if (season == "FALL")
 			season = "WINTER"
-			world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
+			to_chat(world, "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>")
 			change_weather_somehow()
 			spawn(1200)
 				for (var/obj/structure/wild/tree/live_tree/TREES in world)
@@ -1053,7 +1053,7 @@ var/civmax_research = list(230,230,230)
 
 		else if (season == "SPRING")
 			season = "SUMMER"
-			world << "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>"
+			to_chat(world, "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>")
 			change_weather_somehow()
 			spawn(300)
 				for (var/obj/structure/wild/tree/live_tree/TREES in world)
@@ -1083,7 +1083,7 @@ var/civmax_research = list(230,230,230)
 				WT.ChangeTurf(/turf/floor/dirt)
 		else if (season == "WINTER")
 			season = "SPRING"
-			world << "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>"
+			to_chat(world, "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>")
 			spawn(900)
 				for (var/obj/structure/wild/tree/live_tree/TREES in world)
 					TREES.change_season()
@@ -1138,7 +1138,7 @@ var/civmax_research = list(230,230,230)
 						qdel(SW3)
 		else if (season == "SUMMER")
 			season = "FALL"
-			world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>"
+			to_chat(world, "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>")
 			spawn(900)
 				for (var/obj/structure/wild/tree/live_tree/TREES in world)
 					TREES.change_season()

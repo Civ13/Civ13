@@ -173,10 +173,10 @@
 				if (user.hand)
 					temp = H.organs_by_name["l_hand"]
 				if (temp && !temp.is_usable())
-					user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
+					to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
 					return
 				if (!temp)
-					user << "<span class='notice'>You try to use your hand, but realize it is no longer attached!</span>"
+					to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attacked!"))
 					return
 			pickup(user)
 			if (istype(loc, /obj/item/weapon/storage))
@@ -200,10 +200,10 @@
 					if (user.hand)
 						temp = H.organs_by_name["l_hand"]
 					if (temp && !temp.is_usable())
-						user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
+						to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
 						return
 					if (!temp)
-						user << "<span class='notice'>You try to use your hand, but realize it is no longer attached!</span>"
+						to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attached!"))
 						return
 				pickup(user)
 				if (istype(loc, /obj/item/weapon/storage))
@@ -243,11 +243,11 @@
 						success = TRUE
 						S.handle_item_insertion(I, TRUE)	//The TRUE stops the "You put the [src] into [S]" insertion message from being displayed.
 					if (success && !failure)
-						user << "<span class='notice'>You put everything in [S].</span>"
+						to_chat(user, SPAN_NOTICE("You put everything in [S]."))
 					else if (success)
-						user << "<span class='notice'>You put some things in [S].</span>"
+						to_chat(user, SPAN_NOTICE("You put some things in [S]."))
 					else
-						user << "<span class='notice'>You fail to pick anything up with \the [S].</span>"
+						to_chat(user, SPAN_NOTICE("You fail to pick up anything with \the [S]."))
 
 			else if (S.can_be_inserted(src))
 				S.handle_item_insertion(src)
@@ -484,11 +484,11 @@ var/list/global/slot_flags_enumeration = list(
 		for (var/obj/item/protection in list(H.head, H.wear_mask))
 			if (protection && (protection.body_parts_covered & EYES))
 				// you can't stab someone in the eyes wearing a mask!
-				user << "<span class='warning'>You're going to need to remove the eye covering first.</span>"
+				to_chat(user, SPAN_WARNING("You're going to need to remove the eye covering first."))
 				return
 
 	if (!M.has_eyes())
-		user << "<span class='warning'>You cannot locate any eyes on [M]!</span>"
+		to_chat(user, SPAN_WARNING("You cannot locate any eyes on [M]!"))
 		return
 
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey],[M.stat]) with [name] (INTENT: [uppertext(user.a_intent)])</font>"
@@ -504,30 +504,26 @@ var/list/global/slot_flags_enumeration = list(
 
 	if (istype(H))
 		if (prob(80) && H != user)
-			for (var/mob/O in (viewers(M) - user - M))
-				O.show_message("<span class='warning'>[M] tried to stab [user] in the eyes but missed!</span>", TRUE)
-			M << "<span class='warning'>[user] tried to stab you in the eyes but missed!</span>"
-			user << "<span class='warning'>You tried to stab [M] in the eyes with [src] but missed!</span>"
+			visible_message(SPAN_NOTICE("[M] tried to stab [user] in the eyes with \the [src] but missed!"))
+			to_chat(M, SPAN_WARNING("[user] tried to stab you in the eyes with \the [src] but missed!"))
+			to_chat(user, SPAN_WARNING("You tried to stab [M] in the eyes with \the [src] but missed!"))
 			return
 
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
-		if (H != user)
-			for (var/mob/O in (viewers(M) - user - M))
-				O.show_message("<span class='danger'>[M] has been stabbed in the eye with [src] by [user].</span>", TRUE)
-			M << "<span class='danger'>[user] stabs you in the eye with [src]!</span>"
-			user << "<span class='danger'>You stab [M] in the eye with [src]!</span>"
+		if (H != user)	
+			visible_message(SPAN_DANGER("[M] has been stabbed in the eye with \the [src] by [user]."))
+			to_chat(M, SPAN_DANGER("[user] stabs you in the eye with \the [src]!"))
+			to_chat(user, SPAN_DANGER("You stab [M] in the eye with \the [src]!"))
 		else
-			user.visible_message( \
-				"<span class='danger'>[user] has stabbed themself with [src]!</span>", \
-				"<span class='danger'>You stab yourself in the eyes with [src]!</span>" \
-			)
+			visible_message(SPAN_DANGER("[user] has stabbed themselves with \the [src]!"))
+			user.visible_message(SPAN_DANGER("You stab yourself in the eyes with \the [src]"))
 
 		eyes.damage += rand(3,4)
 		if (eyes.damage >= eyes.min_bruised_damage)
 			if (prob(50))
 				if (M.stat != 2)
-					M << "<span class='warning'>You drop what you're holding and clutch at your eyes!</span>"
+					to_chat(M, SPAN_WARNING("You drop what you're holding and clutch at your eyes!"))
 					M.drop_item()
 				M.eye_blurry += 10
 				M.Paralyse(1)

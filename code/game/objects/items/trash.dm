@@ -59,12 +59,12 @@
 		if(istype(W, /obj/item/weapon/reagent_containers/glass))
 			var/obj/item/weapon/reagent_containers/glass/G = W
 			if(!G.is_open_container())
-				user << "<span class='notice'>\The [G.name] is closed.</span>"
+				to_chat(user, SPAN_NOTICE("\The [G.name] is closed."))
 				return
 			if(!G.reagents.get_free_space())
-				user << "<span class='notice'>[G.name] is full.</span>"
+				to_chat(user, SPAN_NOTICE("[G.name] is full."))
 				return
-			user << "You smash the [src.name] inside the [G.name], creating lard."
+			to_chat(user, "You smash the [src.name] inside the [G.name], creating lard.")
 			G.reagents.add_reagent("lard", 1)
 			qdel(src)
 			return

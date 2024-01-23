@@ -102,7 +102,7 @@
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
@@ -144,7 +144,7 @@
 
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] has lost control of the Hotel!</font>"
+			to_chat(world, "<font size = 3>The [current_winner] has lost control of the Hotel!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1

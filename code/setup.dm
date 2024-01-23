@@ -124,7 +124,7 @@
 				map.default_research = 19
 			map.gamemode = "Persistent (Auto-Research)"
 			config.allow_vote_restart = FALSE
-			world << "<big><b>The current round has been set as a Persistent Round.</b></big>"
+			to_chat(world, "<big><b>The current round has been set as a Persistent Round.</b></big>")
 */
 	if (config.allowedgamemodes == "PERSISTENCE")
 		map.persistence = TRUE
@@ -138,7 +138,7 @@
 			map.default_research = 19
 		map.gamemode = "Persistent (Auto-Research)"
 		config.allow_vote_restart = FALSE
-		world << "<big><b>The current round has been set as a Persistent Round.</b></big>"
+		to_chat(world, "<big><b>The current round has been set as a Persistent Round.</b></big>")
 
 	//////////////////////////////////////////////////////
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)

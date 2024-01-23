@@ -238,7 +238,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	spawn (150)
 
 		var/sleeptime = 0
-		world << "<span class = 'danger'>Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b></span>"
+		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		if (processScheduler) // just in case
@@ -332,7 +332,7 @@ var/global/nextsave = 0
 				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
 				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
 				if (minsleft <= 2 && hr)
-					world << "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>"
+					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
 				if (nextsave <= world.realtime)
 					nextsave = world.realtime + 216000
 					spawn(0)
@@ -348,9 +348,9 @@ var/global/nextsave = 0
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
 					var/dmsg =  "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]: [tempmsg[2]]</font></b>"
-					world << dmsg
+					to_chat(world, dmsg)
 					log_discord(dmsg)
-					//world << "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]"
+					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
 			F << ""
 

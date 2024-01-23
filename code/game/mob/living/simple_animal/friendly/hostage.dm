@@ -80,11 +80,11 @@ var/global/civvies_killed = list()
 			switch(killer)
 				if("Blugoslavia")
 					if(announce_death)
-						world << "<font size=4>The <b>[name]</b> was killed by <font color='blue'><b>[killer]</b></font>!</font>"
+						to_chat(world, "<font size=4>The <b>[name]</b> was killed by <font color='blue'><b>[killer]</b></font>!</font>")
 					CM.civilians_killed["Blugoslavia"]++
 				if("Redmenia")
 					if(announce_death)
-						world << "<font size=4>The <b>[name]</b> was killed by <font color='red'><b>[killer]</b></font>!</font>"
+						to_chat(world, "<font size=4>The <b>[name]</b> was killed by <font color='red'><b>[killer]</b></font>!</font>")
 					CM.civilians_killed["Redmenia"]++
 			harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
 			game_log("CIVDEATH: [msg]")
@@ -102,10 +102,10 @@ var/global/civvies_killed = list()
 			civvies_killed += list(uniquenum)
 			switch(killer)
 				if("Robbers")
-					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>!</font>"
+					to_chat(world, "<font size=2>A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>!</font>")
 					BR.civilians_killed["Robbers"]++
 				if("Police")
-					world << "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>! This is unacceptable!</font>"
+					to_chat(world, "<font size=2>A <b>[name]</b> has been killed by the <font color='blue'><b>[killer]</b></font>! This is unacceptable!</font>")
 					BR.civilians_killed["Police"]++
 			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
 			game_log("CIVDEATH: [msg]")
@@ -122,15 +122,15 @@ var/global/civvies_killed = list()
 			civvies_killed = list(uniquenum)
 			switch(killer)
 				if("Soviets")
-					world << "A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>. The alliance is losing local support!"
+					to_chat(world, "A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>. The alliance is losing local support!")
 					SA.sov_points -= 1
 					SA.muj_points += 1
 				if("DRA")
-					world << "A <b>[name]</b> has been killed by the <font color='green'><b>[killer]</b></font>. The alliance is losing local support!"
+					to_chat(world, "A <b>[name]</b> has been killed by the <font color='green'><b>[killer]</b></font>. The alliance is losing local support!")
 					SA.sov_points -= 1
 					SA.muj_points += 1
 				if("Mujahideen")
-					world << "A <b>[name]</b> has been killed by the <font color='black'><b>[killer]</b></font>. They are losing local support!"
+					to_chat(world, "A <b>[name]</b> has been killed by the <font color='black'><b>[killer]</b></font>. They are losing local support!")
 					SA.muj_points -= 1
 					SA.sov_points += 1
 			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"

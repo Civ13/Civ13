@@ -156,9 +156,9 @@
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
+			to_chat(user, SPAN_RED("The [O] is full."))
 		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 	else
 		..()
 									// \/ port the ploughting for the whole cattle family
@@ -175,16 +175,16 @@
 				if(plough)
 					return
 				var/obj/item/stack/material/rope/NR
-				user << "You try to attach the Plough to the cattle."
+				to_chat(user, "You try to attach the plough to the cattle.")
 				if(istype(user.l_hand, /obj/item/stack/material/rope/))	//Check in which hand is the rope to not mess up
 					NR = user.l_hand
 					if (NR.amount < 2)
-						user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to do this.</span>"
+						to_chat(user, SPAN_WARNING("You need at least a stack of 2 ropes on one of your hands in order to do this."))
 						return
 				else if(istype(user.r_hand, /obj/item/stack/material/rope/))
 					NR = user.r_hand
 					if (NR.amount < 2)
-						user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to do this.</span>"
+						to_chat(user, SPAN_WARNING("You need at least a stack of 2 ropes on one of your hands in order to do this."))
 						return
 				if (do_after(user,35,src))
 					NR.amount -= 2
@@ -197,7 +197,7 @@
 						icon_state = "bull_plough"
 					plough = TRUE
 		else
-			user << "You need a rope to attach the Plough to the cattle."
+			to_chat(user, "You need a rope to attach the plough to the cattle.")
 	else
 		..()						//If its not set here as new action, just assume the previous one for attackby
 
@@ -216,9 +216,9 @@
 			road_status = "Adjust to stop making Roads"
 		else
 			road_status = "Adjust to make Roads"
-		var/choice1 = WWinput(usr, "What would you like to do with the Cow's Plough?", "Cattle Pulled Plough", "Remove", list("Remove", road_status, plough_status, "Cancel"))
+		var/choice1 = WWinput(usr, "What would you like to do with the cow's plough?", "Cattle Pulled Plough", "Remove", list("Remove", road_status, plough_status, "Cancel"))
 		if (choice1 == "Remove")
-			user << "You try to detach the Plough from the Cow."
+			to_chat(user, "You try to detach the plough from the cow.")
 			if (do_after(user,35,src))
 				if(cattle_gender == "female")
 					icon_state = "cow"
@@ -342,7 +342,7 @@
 
 /mob/living/simple_animal/cattle/cow/attack_hand(mob/living/human/M as mob)
 	if (!stat && M.a_intent == I_DISARM && icon_state != icon_dead)
-		M.visible_message("<span class='warning'>[M] tips over [src].</span>","<span class='notice'>You tip over [src].</span>")
+		M.visible_message(SPAN_NOTICE("[M] tips over [src]."), SPAN_NOTICE("You tip over [src]."))
 		Weaken(30)
 		icon_state = icon_dead
 		spawn(rand(20,50))
@@ -482,9 +482,9 @@
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
+			to_chat(user, SPAN_RED("The [O] is full."))
 		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 	else
 		..()
 
@@ -660,9 +660,9 @@
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
+			to_chat(user, SPAN_RED("The [O] is full."))
 		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 	else
 		..()
 
@@ -808,9 +808,9 @@
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
+			to_chat(user, SPAN_RED("The [O] is full."))
 		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 		return
 	else
 		..()
@@ -978,14 +978,14 @@
 			user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 			var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 			if (G.reagents.total_volume >= G.volume)
-				user << "<span class = 'red'>The [O] is full.</span>"
+				to_chat(user, SPAN_RED("The [O] is full."))
 			if (!transfered)
-				user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+				to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 			return
 	else if (istype(O, /obj/item/weapon/shears) && sheared == FALSE)
-		user << "You start shearing \the [src]..."
+		to_chat(user, "You start shearing \the [src]...")
 		if (do_after(user, 150, src) && sheared == FALSE)
-			user << "You finish shearing \the [src]."
+			to_chat(user, "You finish shearing \the [src].")
 			sheared = TRUE
 			update_icons()
 			regrowth()
@@ -995,9 +995,9 @@
 		..()
 /mob/living/simple_animal/sheep/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (istype(O, /obj/item/weapon/shears) && sheared == FALSE)
-		user << "You start shearing \the [src]..."
+		to_chat(user, "You start shearing \the [src]...")
 		if (do_after(user, 150, src) && sheared == FALSE)
-			user << "You finish shearing \the [src]."
+			to_chat(user, "You finish shearing \the [src].")
 			sheared = TRUE
 			update_icons()
 			regrowth()
@@ -1080,7 +1080,7 @@
 /mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead && !istype(O, /obj/item/weapon/leash))
 		if (content_size + O.w_class > max_content_size)
-			user << "The camel is too burdened already!"
+			to_chat(user, "The camel is too burdened already!")
 			return
 		else
 			content_size += O.w_class

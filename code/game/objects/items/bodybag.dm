@@ -48,7 +48,7 @@
 			name = "body bag"
 		return
 	else if (istype(W, /obj/item/weapon/wirecutters))
-		user << "You cut the tag off the bodybag"
+		to_chat(user, "You cut the tag off the bodybag.")
 		name = "body bag"
 		overlays.Cut()
 		return

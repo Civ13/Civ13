@@ -62,12 +62,12 @@
 	var/filename
 	for (key in stylesheets)
 		filename = "[ckey(key)].css"
-		user << browse_rsc(stylesheets[key], filename)
+		to_chat(user, browse_rsc(stylesheets[key], filename))
 		head_content += "<link rel='stylesheet' type='text/css' href='[filename]'>"
 
 	for (key in scripts)
 		filename = "[ckey(key)].js"
-		user << browse_rsc(scripts[key], filename)
+		to_chat(user, browse_rsc(scripts[key], filename))
 		head_content += "<script type='text/javascript' src='[filename]'></script>"
 
 	var/title_attributes = "class='uiTitle'"
@@ -104,12 +104,12 @@
 	var/window_size = ""
 	if (width && height)
 		window_size = "size=[width]x[height];"
-	user << browse(get_content(), "window=[window_id];[window_size][window_options]")
+	to_chat(user, browse(get_content(), "window=[window_id];[window_size][window_options]"))
 	if (use_onclose)
 		onclose(user, window_id, ref)
 
 /datum/browser/proc/close()
-	user << browse(null, "window=[window_id]")
+	to_chat(user, browse(null, "window=[window_id]"))
 
 // This will allow you to show an icon in the browse window
 // This is added to mob so that it can be used without a reference to the browser object
@@ -136,7 +136,7 @@
 // e.g. canisters, timers, etc.
 //
 // windowid should be the specified window name
-// e.g. code is	: user << browse(text, "window=fred")
+// e.g. code is	: to_chat(user, browse(text, "window=fred")
 // then use 	: onclose(user, "fred")
 //
 // Optionally, specify the "ref" parameter as the controlled atom (usually src)
@@ -151,7 +151,7 @@
 
 	winset(user, windowid, "on-close=\".windowclose [param]\"")
 
-	//world << "OnClose [user]: [windowid] : ["on-close=\".windowclose [param]\""]"
+	//to_chat(world, "OnClose [user]: [windowid] : ["on-close=\".windowclose [param]\""]")
 
 
 // the on-close client verb
@@ -163,11 +163,11 @@
 	set hidden = TRUE						// hide this verb from the user's panel
 	set name = ".windowclose"			// no autocomplete on cmd line
 
-	//world << "windowclose: [atomref]"
+	//to_chat(world, "windowclose: [atomref]")
 	if (atomref!="null")				// if passed a real atomref
 		var/hsrc = locate(atomref)	// find the reffed atom
 		if (hsrc)
-			//world << "[src] Topic [href] [hsrc]"
+			//to_chat(world, "[src] Topic [href] [hsrc]")
 			usr = mob
 			Topic("close=1", list("close"="1"), hsrc)	// this will direct to the atom's
 			return										// Topic() proc via client.Topic()
@@ -175,6 +175,6 @@
 	// no atomref specified (or not found)
 	// so just reset the user mob's machine var
 	if (src && mob)
-		//world << "[src] was [mob.machine], setting to null"
+		//to_chat(world, "[src] was [mob.machine], setting to null")
 		mob.unset_using_object()
 	return

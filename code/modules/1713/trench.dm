@@ -131,7 +131,7 @@ var/list/global/floor_cache = list()
 				return TRUE //prevent afterattack 
 	else if (istype(C, /obj/item/clothing) && !busy)
 		var/obj/item/clothing/CL = C
-		usr << "<span class='notice'>You start washing \the [C].</span>"
+		to_chat(usr, SPAN_NOTICE("You start washing \the [C]."))
 		var/turf/location = user.loc
 
 		busy = TRUE

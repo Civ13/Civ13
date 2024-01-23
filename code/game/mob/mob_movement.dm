@@ -132,17 +132,17 @@
 				var/mob/living/human/C = usr
 				C.toggle_throw_mode()
 			else
-				usr << "<span class = 'red'>This mob type cannot throw items.</span>"
+				to_chat(usr, SPAN_RED("This mob type cannot throw items."))
 			return
 		if (NORTHWEST)
 			if (ishuman(usr))
 				var/mob/living/human/C = usr
 				if (!C.get_active_hand())
-					usr << "<span class = 'red'>You have nothing to drop in your hand.</span>"
+					to_chat(usr, SPAN_RED("You have nothing to drop in your hand."))
 					return
 				drop_item()
 			else
-				usr << "<span class = 'red'>This mob type cannot drop items.</span>"
+				to_chat(usr, SPAN_RED("This mob type cannot drop items."))
 			return
 
 //This gets called when you press the delete button.
@@ -150,7 +150,7 @@
 	set hidden = TRUE
 
 	if (!usr.pulling)
-		usr << "<span class = 'notice'>You are not pulling anything.</span>"
+		to_chat(usr, SPAN_NOTICE("You are not pulling anything."))
 		return
 	usr.stop_pulling()
 
