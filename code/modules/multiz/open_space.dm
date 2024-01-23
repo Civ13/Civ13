@@ -125,7 +125,6 @@ var/list/sky_drop_map = list()
 						affecting.fracture()
 					H.updatehealth()
 				else
-					H.pixel_y = 60
 					spawn (5)
 						H.client.canmove = FALSE
 						var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
@@ -133,14 +132,11 @@ var/list/sky_drop_map = list()
 						I.pixel_y = 16
 
 						H.overlays += I
-
-						for (var/v in 1 to 6)
-							spawn (5)
-								H.pixel_y -= 10
-
+						H.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+						animate(H, time = 20, pixel_y = 0, easing = SINE_EASING | EASE_OUT)
 						spawn (20)
 							flick("closing", I)
-							spawn (10) // animation is over now
+							spawn (5) // closing animation is over now
 								H.overlays -= I
 								H.pixel_y = 0
 								qdel(I)
