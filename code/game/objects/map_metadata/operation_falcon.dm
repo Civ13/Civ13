@@ -38,7 +38,7 @@
 	var/a1_name = "Radio Post"
 
 	var/a2_control = "nobody"
-	var/a2_name = "North City"
+	var/a2_name = "Central Town"
 
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
@@ -88,16 +88,15 @@
 			return "Russian"
 
 /obj/map_metadata/operation_falcon/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-	for (var/mob/M in player_list)
-		M.client << warning_sound
-
-	if (faction == DUTCH)
-		return "<font size = 4>Operation Falcon has begun!</font>"
-	else if (faction == RUSSIAN)
-		return "<font size = 4>Operation Falcon has begun!</font>"
-	else
-		return ""
+	switch (faction)
+		if (DUTCH)
+			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << warning_sound
+			return "<font size = 4>Operation Falcon has begun!</font>"
+		else
+			return ""
 
 /obj/map_metadata/operation_falcon/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
@@ -289,6 +288,12 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Russians</b> have reached [rus_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+
+			var/anthem = sound('sound/music/russian_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << anthem
+
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -298,6 +303,12 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Dutch</b> have reached [dutch_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			
+			var/anthem = sound('sound/music/dutch_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << anthem
+
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE

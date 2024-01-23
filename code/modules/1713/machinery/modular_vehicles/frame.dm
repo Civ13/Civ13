@@ -397,7 +397,7 @@
 		startingturf = get_turf(proj.loc)
 	else if (istype(proj, /obj/item/weapon/grenade))
 		startingturf = get_turf(proj)
-		
+
 	if (!startingturf)
 		return "front"
 	var/incdir = get_dir(startingturf, get_turf(src))
@@ -707,25 +707,25 @@
 	var/isnowopen = FALSE
 
 	if (w_left[5] < 0)
-		if (w_left[6] || w_left[1] == "c_door" || w_left[1] == "c_windoweddoor")
+		if (w_left[6] || findtext(w_left[1], "door"))
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_right[5] < 0)
-		if (w_right[6] || w_right[1] == "c_door" || w_right[1] == "c_windoweddoor")
+		if (w_right[6] || findtext(w_right[1], "door"))
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_front[5] < 0)
-		if (w_front[6] || w_front[1] == "c_door" || w_front[1] == "c_windoweddoor")
+		if (w_front[6] || findtext(w_front[1], "door"))
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
 		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
 	if (w_back[5] < 0)
-		if (w_back[6] || w_back[1] == "c_door" || w_back[1] == "c_windoweddoor")
+		if (w_back[6] || findtext(w_back[1], "door"))
 			isnowopen = TRUE
 		else
 			isnowopen = FALSE
@@ -744,6 +744,7 @@
 		axis = null
 		mwheel = null
 		..()
+
 /obj/structure/vehicleparts/frame/ex_act(severity)
 	switch(severity)
 		if (1.0)

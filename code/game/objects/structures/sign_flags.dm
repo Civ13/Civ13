@@ -50,7 +50,13 @@
 /obj/structure/sign/flag/usa/delta_force
 	name = "Delta Force insignia"
 	desc = "Insignia of the 1st Special Forces Operational Detachment-Delta."
-	icon_state = "flag_wag"
+	icon_state = "delta_force"
+
+/obj/structure/sign/flag/usa/delta_force/two
+	icon_state = "delta_force2"
+
+/obj/structure/sign/flag/usa/delta_force/three
+	icon_state = "delta_force3"
 
 /obj/structure/sign/flag/gb/rebel
 	name = "Alliance to Restore the Democracy Flag"

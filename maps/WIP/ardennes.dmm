@@ -537,7 +537,7 @@
 "kx" = (/obj/structure/vehicleparts/frame/car/right/armored,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2,/turf/floor/winter,/area/caribbean/nomads/snow)
 "ky" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/engine/internal/gasoline/premade/panzeriv{desc = "A relatively cheap six-stroke gasoline engine."; name = "six-stroke gasoline engine"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kz" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/sdfkzfront/right/door,/turf/floor/winter,/area/caribbean/nomads/snow)
-"kA" = (/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"; vehicle_size = "2x4"},/obj/structure/vehicleparts/frame/car/left/metalreinforced,/turf/floor/winter,/area/caribbean/nomads/snow)
+"kA" = (/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"},/obj/structure/vehicleparts/frame/car/left/metalreinforced,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kB" = (/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 1; layer = 4},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34,/obj/structure/vehicleparts/frame/sdfkzfront/rf,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kC" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/turf/floor/winter,/area/caribbean/nomads/snow)
 "kD" = (/turf/floor/winter/grass,/area/caribbean/nomads/snow)

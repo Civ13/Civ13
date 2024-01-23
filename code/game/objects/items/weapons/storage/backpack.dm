@@ -129,8 +129,9 @@
 		new /obj/item/clothing/head/helmet/ww2/japhelm(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
 		new /obj/item/weapon/grenade/ww2/type97(src)
-		new /obj/item/weapon/can/filled/JPNMRE(src)
-		new /obj/item/weapon/can/filled/JPNMRE(src)
+		new /obj/item/weapon/can/JPNMRE(src)
+		new /obj/item/weapon/can/JPNMRE(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/backpack/ww2/jap/ammo_crate
 	name = "japanese ammo crate"
@@ -423,6 +424,16 @@
 		new/obj/item/ammo_casing/rocket/atgm/apcr(src)
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
+
+/obj/item/weapon/storage/backpack/heavyrucksack/mortar
+	New()
+		..()
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
+		new/obj/item/cannon_ball/mortar_shell(src)
 
 /obj/item/weapon/storage/backpack/civbag
 	name = "backpack"

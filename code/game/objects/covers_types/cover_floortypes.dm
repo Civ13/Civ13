@@ -23,7 +23,7 @@
 	..()
 	spawn(15)
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_CAMPAIGN)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
 			visible_message("The [src] sinks!")
 			qdel(src)
 			return
@@ -56,7 +56,7 @@
 		Destroy()
 
 /obj/covers/repairedfloor/ship/Destroy()
-	if(istype(src.loc, /turf/floor/beach/water))
+	if(istype(src.loc, /turf/floor/beach/water) && map.ID == MAP_BATTLE_SHIPS)
 		var/turf/T1 = get_step(src.loc,pick(NORTH,NORTHWEST))
 		if(T1)
 			new/obj/effect/flooding(T1)

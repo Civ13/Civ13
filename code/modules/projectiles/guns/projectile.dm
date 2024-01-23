@@ -16,7 +16,8 @@
 	var/reload_sound 	= 'sound/weapons/guns/interact/pistol_magin.ogg'
 	var/cocked_sound 	= 'sound/weapons/guns/interact/pistol_cock.ogg'
 	var/bulletinsert_sound 	= 'sound/weapons/guns/interact/bullet_insert.ogg'
-
+	var/has_ak_reload = FALSE
+	var/cliploader = FALSE
 	//For SINGLE_CASING or SPEEDLOADER guns
 	var/max_shells = FALSE			//the number of casings that will fit inside
 	var/ammo_type = null		//the type of ammo that the gun comes preloaded with
@@ -60,9 +61,10 @@
 		loaded = list()
 		chambered = null
 	else
-		if (ispath(ammo_type) && ((load_method & (SINGLE_CASING|SPEEDLOADER)) || istype(src, /obj/item/weapon/gun/projectile/shotgun)))
+		if (ispath(ammo_type) && ((load_method & (SINGLE_CASING|SPEEDLOADER)) && !cliploader || istype(src, /obj/item/weapon/gun/projectile/shotgun)))
 			for (var/i in TRUE to max_shells)
 				loaded += new ammo_type(src)
+
 		if (ispath(magazine_type) && (load_method & MAGAZINE))
 			ammo_magazine = new magazine_type(src)
 
@@ -202,11 +204,32 @@
 		switch(AM.mag_type)
 			if (MAGAZINE)
 				if (AM.ammo_mag != ammo_mag && ammo_mag != "default")
-					user << "<span class='warning'>[src] requires another magazine.</span>" //wrong magazine
+					to_chat(user, SPAN_WARNING("[src] requires another magazine.</span>")) //wrong magazine
 					return
 				if (ammo_magazine)
-					user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
-					return
+					if (has_ak_reload && ishuman(user))
+						if (unload_sound) playsound(loc, unload_sound, 75, TRUE)
+						ammo_magazine.forceMove(get_turf(src))
+						ammo_magazine.update_icon()
+						ammo_magazine = null
+
+						user.remove_from_mob(AM)
+					
+						var/mob/living/human/H = user
+						if (prob(clamp((H.getStatCoeff("[stat]") - 80), 0, 100)))
+							AM.loc = src
+							ammo_magazine = AM
+
+							to_chat(user, SPAN_NOTICE("You tactically reload your [src] using the other magazine."))
+							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
+							cock_gun(user)
+						else
+							AM.loc = get_turf(src)
+
+							to_chat(user, SPAN_DANGER("<big>You clumsily drop both magazines while reloading your [src]!</big>"))
+					else
+						to_chat(user, SPAN_DANGER("[src] already has a magazine loaded.")) //already a magazine here
+						return
 				user.remove_from_mob(AM)
 				if (src.is_laser_mg == TRUE)
 					AM.loc = user.back
@@ -218,22 +241,46 @@
 				if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 				cock_gun(user)
 			if (SPEEDLOADER)
-				if (loaded.len >= max_shells)
-					user << "<span class='warning'>[src] is full!</span>"
-					return
-				var/count = FALSE
-				for (var/obj/item/ammo_casing/C in AM.stored_ammo)
+				if (cliploader == TRUE)
+					if (src.ammo_magazine)
+						if (loaded.len >= ammo_magazine.max_ammo)
+							user << "<span class='warning'>[src] is full!</span>"
+							return
+						var/count = FALSE
+						for (var/obj/item/ammo_casing/C in AM.stored_ammo)
+							if (src.ammo_magazine.stored_ammo.len >= src.ammo_magazine.max_ammo)
+								user << "<span class='warning'>[src] is full!</span>"
+								break
+							if (C.caliber == caliber)
+								C.loc = src
+								src.ammo_magazine.stored_ammo += C
+								AM.stored_ammo -= C //should probably go inside an ammo_magazine proc, but I guess less proc calls this way...
+								count++
+						if (count)
+							user.visible_message("[user] reloads [src].", "<span class='notice'>You load [count] round\s into \the [src].</span>")
+							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
+							cock_gun(user)
+					else
+						user << "<span class='warning'>[src] has no magazine!</span>"
+						return
+
+				else
 					if (loaded.len >= max_shells)
-						break
-					if (C.caliber == caliber)
-						C.loc = src
-						loaded += C
-						AM.stored_ammo -= C //should probably go inside an ammo_magazine proc, but I guess less proc calls this way...
-						count++
-				if (count)
-					user.visible_message("[user] reloads [src].", "<span class='notice'>You load [count] round\s into \the [src].</span>")
-					if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
-					cock_gun(user)
+						user << "<span class='warning'>[src] is full!</span>"
+						return
+					var/count = FALSE
+					for (var/obj/item/ammo_casing/C in AM.stored_ammo)
+						if (loaded.len >= max_shells)
+							break
+						if (C.caliber == caliber)
+							C.loc = src
+							loaded += C
+							AM.stored_ammo -= C //should probably go inside an ammo_magazine proc, but I guess less proc calls this way...
+							count++
+					if (count)
+						user.visible_message("[user] reloads [src].", "<span class='notice'>You load [count] round\s into \the [src].</span>")
+						if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
+						cock_gun(user)
 		AM.update_icon()
 
 	else if (istype(A, /obj/item/ammo_casing))

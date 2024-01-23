@@ -321,11 +321,11 @@
 	var/y_offset = 0 //for north maps
 	if (location == "north")
 		y_offset = 51
-	var/dmm_file = "maps/zones/[location]/[mapname].dmm"
+	var/dmm_file = "maps/zones/voyage/[location]/[mapname].dmm"
 	if(!isfile(file(dmm_file)))
 		var/newName_p1 = splittext(mapname,"_")
 		var/newName = newName_p1[1]
-		dmm_file = "maps/zones/[location]/[newName].dmm"
+		dmm_file = "maps/zones/voyage/[location]/[newName].dmm"
 	var/dmm_text = file2text(dmm_file)
 	var/dmm_suite/suite = new()
 	suite.read_map(dmm_text, 1, y_offset, 1)
@@ -998,7 +998,7 @@
 	desc = "The water seems to be about 50cm deep."
 	icon = 'icons/misc/beach.dmi'
 	icon_state = "flood_overlay1"
-	layer = 2
+	layer = 2.3
 	density = FALSE
 	anchored = TRUE
 	var/flood_level = 1
@@ -1023,16 +1023,16 @@
 	attackby(obj/item/I, mob/living/human/user)
 		if(istype(I, /obj/item/weapon/reagent_containers/glass))
 			if (I.reagents.get_free_space() >= 50)
-				user << "You start filling \the [I]..."
-				if (do_after(user,40,src))
+				to_chat(user, "You start filling \the [I]...")
+				if (do_after(user, 15, src))
 					if (I.reagents.get_free_space() >= 50)
 						I.reagents.add_reagent("sodiumchloride", 8)
 						I.reagents.add_reagent("water", 42)
-						user << "You fill \the [I]."
+						user.visible_message(SPAN_NOTICE("[user] fills \the [I] with water."), SPAN_NOTICE("You fill \the [I] with water."))
 						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 						flood_level--
 						if (flood_level <= 0)
 							qdel(src)
 			else
-				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+				to_chat(user, SPAN_WARNING("There is not enough free capacity in \the [I] to fill it."))
 		return TRUE

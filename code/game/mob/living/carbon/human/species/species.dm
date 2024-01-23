@@ -561,6 +561,13 @@
 		else
 			return capitalize(pick(first_names_male_oldnorse)) + " " + capitalize(pick(last_names_oldnorse))
 
+/datum/species/proc/get_random_afro_american_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_afro_american))
+		else
+			return capitalize(pick(first_names_male_afro_american)) + " " + capitalize(pick(last_names_afro_american))
+
 /datum/species/proc/get_random_inuit_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)

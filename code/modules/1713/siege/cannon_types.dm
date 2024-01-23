@@ -6,8 +6,8 @@
 	spritemod = FALSE
 	pixel_x = 0
 	pixel_y = 0
-	maxsway = 10
-	firedelay = 30
+
+	firedelay = 1
 	maxrange = 80
 	w_class = ITEM_SIZE_GARGANTUAN
 
@@ -16,44 +16,94 @@
 	desc = "A giant artillery cannon usually mounted on a ship."
 	icon = 'icons/obj/ship_cannon.dmi'
 	icon_state = "naval_cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
+	ammotype = /obj/item/cannon_ball/shell/naval
 	spritemod = FALSE
-	maxsway = 40
-	firedelay = 30
-	maxrange = 180
+	firedelay = 1
+	maxrange = 200
 	anchored = TRUE
 	density = TRUE
 	bound_height = 96
 	bound_width = 64
 	caliber = 204
 	can_assemble = FALSE
+	is_naval = TRUE
+	course = TRUE
+	naval_position = "middle"
+	has_scope = FALSE
 
-/obj/structure/cannon/modern/naval/attack_hand(var/mob/attacker)
-	if (ishuman(attacker) && map.ID == MAP_CAMPAIGN)
-		var/mob/living/human/H = attacker
-		if(findtext(H.original_job_title,"Marine"))
-			attacker << "<span class = 'warning'>You do not know how to operate this gun!</span>"
+/obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
+	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+		var/mob/living/human/H = user
+		if (findtext(H.original_job_title,"Marine"))
+			to_chat(user, SPAN_WARNING("You do not know how to operate this gun!"))
 			return
+		else
+			interact(user)
 	else
-		interact(attacker)
+		interact(user)
 
 /obj/structure/cannon/modern/naval/n380
 	name = "380mm naval cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
-	maxsway = 40
-	firedelay = 80
-	maxrange = 100
+	ammotype = /obj/item/cannon_ball/shell/naval/HE380
+	firedelay = 1
+	maxrange = 150
 	caliber = 380
 	density = FALSE
 
+/obj/structure/cannon/modern/naval/n380/left
+	naval_position = "left"
+/obj/structure/cannon/modern/naval/n380/right
+	naval_position = "right"
+
 /obj/structure/cannon/modern/naval/n150
 	name = "150mm naval cannon"
-	ammotype = /obj/item/cannon_ball/shell/tank
-	maxsway = 40
-	firedelay = 50
-	maxrange = 60
+	ammotype = /obj/item/cannon_ball/shell/naval/HE150
+	firedelay = 1
+	maxrange = 80
 	caliber = 150
 	density = FALSE
+
+/obj/structure/cannon/modern/naval/n150/left
+	naval_position = "left"
+/obj/structure/cannon/modern/naval/n150/right
+	naval_position = "right"
+
+/obj/structure/naval_cannon_control
+	name = "naval battery control"
+	desc = "Controls the rotation of a naval battery."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "gate_control"
+	anchored = TRUE
+	var/cooldown = 3 SECONDS
+	var/debounce = 0
+	var/distance = 3
+	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	layer = 3.01
+
+/obj/structure/naval_cannon_control/attack_hand(var/mob/user as mob)
+	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+		var/mob/living/human/H = user
+		if (findtext(H.original_job_title,"Marine"))
+			to_chat(user, SPAN_WARNING("You do not know how to operate this machinery!"))
+			return
+	if (debounce <= world.time)
+		debounce = world.time + cooldown
+		var/turning_side = WWinput(user, "What side are you turning the to turret?", "Cannon Battery Control", "Cancel", list("Left", "Right", "Cancel"))
+		if (turning_side == "Cancel")
+			return
+		else
+			if (do_after(user,50,src))
+				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+				for (var/obj/structure/cannon/modern/naval/C in range(distance, get_turf(src)))
+					if (turning_side == "Left")
+						C.rotate_left()
+					if (turning_side == "Right")
+						C.rotate_right()
+			return
+	else
+		to_chat(user, SPAN_WARNING("The turret turned too recently. Try again in a bit"))
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
@@ -63,8 +113,7 @@
 	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs
 	spritemod = FALSE
-	maxsway = 12
-	firedelay = 3
+	firedelay = 1
 	maxrange = 25
 	anchored = TRUE
 	bound_height = 32
@@ -84,7 +133,7 @@
 	spritemod = TRUE
 	w_class = ITEM_SIZE_HUGE
 	maxrange = 35
-	angle = 20
+	distance = 20
 	caliber = 75
 	name = "cannon"
 	icon = 'icons/obj/cannon.dmi'
@@ -133,18 +182,10 @@
 			else
 				W = new/obj/item/cannon_ball(src)
 			loaded = W
-			angle = 13+rand(-5,5)
-			sway = rand(-maxsway,maxsway)
-			var/turf/TF
-			switch(dir)
-				if (NORTH)
-					TF = locate(src.x+sway,src.y+angle,z)
-				if (SOUTH)
-					TF = locate(src.x-sway,src.y-angle,z)
-				if (EAST)
-					TF = locate(src.x+angle,src.y-sway,z)
-				if (WEST)
-					TF = locate(src.x-angle,src.y+sway,z)
+			distance = 13+rand(-5,5)
+			target_coords()
+			target_x += rand(-5,5)
+			var/turf/TF = locate(src.x + target_x, src.y + target_y)
 			if (!TF)
 				return FALSE
 
@@ -190,7 +231,6 @@
 	name = "7.5cm KwK 40"
 	desc = "a 75mm german tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 25
 	caliber = 75
 
@@ -198,7 +238,6 @@
 	name = "75mm M3 gun"
 	desc = "a 75mm american tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 25
 	caliber = 75
 
@@ -207,7 +246,6 @@
 	desc = "a 76.2mm american Anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxsway = 13
 	maxrange = 27
 	assembled = FALSE
 	can_assemble = TRUE
@@ -220,7 +258,6 @@
 	name = "Type 90 Cannon"
 	desc = "a 57mm japanese tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 25
 	caliber = 57
 
@@ -228,7 +265,6 @@
 	name = "8.8 cm KwK 36"
 	desc = "an 88mm german tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 35
 	caliber = 88
 
@@ -236,7 +272,6 @@
 	name = "OMW-TC 100mm"
 	desc = "a 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 35
 	caliber = 100
 
@@ -244,7 +279,6 @@
 	name = "OMW-TC 100mm"
 	desc = "a 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 35
 	caliber = 100
 
@@ -252,7 +286,6 @@
 	name = "2A46 125mm"
 	desc = "a 125mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 35
 	caliber = 125
 
@@ -260,15 +293,20 @@
 	name = "Rheinmetall 120 mm L/55"
 	desc = "a 120 mm German tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 35
 	caliber = 120
 
 /obj/structure/cannon/modern/tank/challenger2
 	name = "L30A1 120mm"
-	desc = "The L30A1, officially designated Gun 120mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
+	desc = "The L30A1, officially designated Gun 120 mm Tk L30, is a British-designed 120mm rifled tank gun, installed in the turrets of Challenger 2 main battle tanks."
 	icon_state = "tank_cannon"
-	maxsway = 14
+	maxrange = 35
+	caliber = 120
+
+/obj/structure/cannon/modern/tank/m1a1_abrams
+	name = "M256 120mm"
+	desc = "The M256 is an American 120 mm smoothbore tank gun. It uses a German-designed Rh-120 L44 gun tube and combustible cartridges with an American-designed mount, cradle and recoil mechanism."
+	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 120
 
@@ -276,7 +314,6 @@
 	name = "BAF TKN 75mm"
 	desc = "a 75mm Blugoslavian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 16
 	maxrange = 30
 	caliber = 75
 
@@ -285,7 +322,6 @@
 	desc = "a 88mm German anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxsway = 18
 	maxrange = 38
 	assembled = FALSE
 	can_assemble = TRUE
@@ -298,7 +334,6 @@
 	name = "122mm M1943 D-25T"
 	desc = "a 122mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 27
 	caliber = 122
 
@@ -306,7 +341,6 @@
 	name = "76mm M1940 F-34"
 	desc = "a 76.2 mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 27
 	caliber = 76.2
 
@@ -314,20 +348,18 @@
 	name = "45mm M1932 20-K"
 	desc = "a 45mm Russian tank-based fast firing cannon."
 	icon_state = "tank_cannon"
-	maxsway = 12
 	maxrange = 25
 	caliber = 45
 	anchored = TRUE
-	firedelay = 20
+	firedelay = 1
 
 /obj/structure/cannon/modern/tank/russian45/field
 	name = "45mm anti-tank gun model 1932"
 	desc = "A 45mm fast firing anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxsway = 18
 	maxrange = 31
-	firedelay = 20
+	firedelay = 1
 	assembled = FALSE
 	can_assemble = TRUE
 	New()
@@ -339,16 +371,18 @@
 	name = "85mm M1939 D5-T"
 	desc = "a 85mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 33
 	caliber = 85
 	anchored = TRUE
 
+/obj/structure/cannon/modern/tank/russian85/course
+	desc = "a 85mm SU-85 Russian course cannon."
+	course = TRUE
+
 /obj/structure/cannon/modern/tank/russian85/su85
-	desc = "a 85mm SU-85 russian tank-based cannon."
+	desc = "a 85mm SU-85 Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	firedelay = 35
-	maxsway = 16
+	firedelay = 1
 	maxrange = 35
 	caliber = 85
 	anchored = TRUE
@@ -357,10 +391,9 @@
 
 /obj/structure/cannon/modern/tank/russian85/field
 	name = "85mm M1939 52-K cannon"
-	desc = "a 85mm russian anti-air cannon converted for anti-tank use."
+	desc = "a 85mm Russian anti-air cannon converted for anti-tank use."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxsway = 18
 	maxrange = 38
 	assembled = FALSE
 	can_assemble = TRUE
@@ -373,10 +406,13 @@
 	name = "100mm D10S"
 	desc = "a 100mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
-	maxsway = 14
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
+
+/obj/structure/cannon/modern/tank/russian100/course
+	desc = "a 100mm SU-100 Russian course cannon."
+	course = TRUE
 
 /obj/structure/cannon/mortar
 	name = "mortar"
@@ -396,7 +432,6 @@
 	explosion = TRUE
 	reagent_payload = "none"
 	maxrange = 40
-	maxsway = 7
 	firedelay = 12
 	w_class = ITEM_SIZE_HUGE
 
@@ -411,7 +446,6 @@
 	ammotype = /obj/item/cannon_ball/mortar_shell/type89 || /obj/item/weapon/grenade/ww2/type91
 	explosion = TRUE
 	maxrange = 30
-	maxsway = 10
 	firedelay = 8
 	path = /obj/item/weapon/foldable/type89_mortar
 
@@ -422,7 +456,6 @@
 	ammotype = /obj/item/cannon_ball/mortar_shell
 	explosion = TRUE
 	maxrange = 35
-	maxsway = 7
 	firedelay = 12
 	path = /obj/item/weapon/foldable/generic
 
@@ -477,7 +510,6 @@
 	nuclear = TRUE
 	reagent_payload = "none"
 	maxrange = 40
-	maxsway = 8
 	firedelay = 24
 	w_class = ITEM_SIZE_GARGANTUAN
 
@@ -498,7 +530,6 @@
 	pixel_y = 0
 	bound_height = 32
 	bound_width = 32
-	maxsway = 10
 	firedelay = 12
 	maxrange = 60
 	max_loaded = 12

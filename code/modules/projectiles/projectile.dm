@@ -454,7 +454,6 @@
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
-	..()
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))
@@ -488,12 +487,18 @@
 	var/passthrough_message = null
 
 	if (ismob(firer) && (istype(get_turf(firer), /turf/floor/trench) && firer.prone))
-		if (!istype(T,/turf/floor/trench) && get_dist(T, firer)>2)
-			T.visible_message("<span class = 'warning'>The [name] hits the trench wall!</span>")
+		if (!istype(T, /turf/floor/trench) && get_dist(T, firer) >= 3) // If the target is 3 tiles or more away block the shot
+			T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
 			qdel(src)
 			return
-	if(can_hit_in_trench)
-		if(kill_count < (initial(kill_count) - 1))
+	if (ismob(firer) && !(istype(get_turf(firer), /turf/floor/trench)))
+		if (istype(T, /turf/floor/trench) &&  (firer.prone ? (get_dist(T, firer) >= 3) : (get_dist(T, firer) >= 6))) // If the shooter is lying down 
+			T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
+			qdel(src)
+			return
+
+	if (can_hit_in_trench)
+		if (kill_count < (initial(kill_count) - 1))
 			if(!istype(T, /turf/floor/trench))
 				can_hit_in_trench = FALSE
 			else
@@ -749,13 +754,16 @@
 						if (get_dist(firer, B) == 1)
 							_untouchable += B
 							
-					if ((src == /obj/item/projectile/bullet/autocannon) || (src == /obj/item/missile/explosive/atgm) || (src == /obj/item/projectile/bullet/rifle/a50cal/weak))
+					if (istype(src, /obj/item/projectile/bullet/autocannon) ||  istype(src, /obj/item/projectile/bullet/rifle/a50cal/weak))
+						var/fired_from_axis = null
+						for (var/obj/structure/vehicleparts/frame/F in firer_loc)
+							if (F.axis)
+								fired_from_axis = F.axis
 						for (var/obj/structure/vehicleparts/frame/F in src_loc)
-							if (get_dist(firer, F) <= 2)
+							if (F.axis == fired_from_axis)
 								_untouchable += F
-						for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/F)
-							if (get_dist(firer, F) <= 2)
-								_untouchable += F
+								for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/FUEL in F.loc)
+									_untouchable += FUEL
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()

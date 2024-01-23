@@ -54,8 +54,9 @@
 	if (!(user.using_MG == src))
 		var/grip_dir = reverse_direction(dir)
 		var/turf/T = get_step(loc, grip_dir)
-		for (var/obj/structure/bed/chair/drivers/DR in src.loc.contents)
-			if (DR in src.loc.contents)
+		var/turf/TT = get_turf(src)
+		for (var/obj/structure/bed/chair/drivers/DR in TT.contents)
+			if (DR in TT.contents)
 				user << SPAN_NOTICE("There is a seat in the way.")
 				return
 		if (user.loc == src.loc)
@@ -130,8 +131,6 @@
 		layer = FLY_LAYER
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/living/human/user)
-	..()
-
 	user.forceMove(loc)
 	user.dir = dir
 	user.pixel_x = pixel_x
@@ -156,7 +155,6 @@
 			break
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/stopped_using(mob/user as mob)
-	..()
 	user.pixel_x = 0
 	user.pixel_y = 0
 	for (var/datum/action/A in actions)

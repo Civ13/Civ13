@@ -1,7 +1,7 @@
-var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein")
-var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
-var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go")
-var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader")
+var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein","Sturmgeist","Schattenblitz","Ritter","Blitzwachter")
+var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom","Gvozdika","Tyulpan","Krokodil","Grach","Bereza","Zhuravl","Topol","Bogatyr","Yenot","Orel","Natasha","Molodets","Rusalka","Volga","Molot","Serp","Zubr","Kazak")
+var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go","Bushido","Hinomaru","Shuriken")
+var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
 
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
@@ -127,7 +127,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					MAT.trigger(FR)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
 			for (var/obj/item/mine/boobytrap/MAT in T)
 				if (MAT.anchored)
 					qdel(MAT)
@@ -155,7 +155,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					protec = TRUE
 				if (!protec)
 					if (current_weight >= 800)
-						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						visible_message("<span class='warning'>\The [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
 						for(var/obj/item/I in L)
 							qdel(I)
 						L.crush()
@@ -166,16 +166,16 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							var/mob/living/human/HH = L
 							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							HH.Weaken(rand(2,5))
-							visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+							visible_message("<span class='warning'>\The [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
 							L.forceMove(get_turf(get_step(TT,dir)))
 						else if (istype(L,/mob/living/simple_animal))
 							var/mob/living/simple_animal/SA = L
 							SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							if (SA.mob_size >= 30)
-								visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+								visible_message("<span class='warning'>\The [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
 								L.forceMove(get_turf(get_step(TT,dir)))
 							else
-								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								visible_message("<span class='warning'>\The [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 								for(var/obj/item/I in SA)
 									qdel(I)
 								SA.crush()
@@ -185,17 +185,17 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
 					done = TRUE
 					if (FM.axis != src)
-						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+						visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
 				if (!done)
 					if (O.density == TRUE && !(O in transporting))
 						if (current_weight >= 400 && !istype(O, /obj/structure/redmailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/billboard))
-							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							visible_message("<span class='warning'>\The [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 						else
-							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+							visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
 					else if (O.density == FALSE && !(O in transporting))
 						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/cable) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/lamp/lamppost_small/) && !istype(O, /obj/structure/lamp/lamp_big/alwayson) && !istype(O, /obj/structure/lamp/lamp_small/alwayson))
@@ -203,14 +203,14 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							qdel(O)
 
 			if (T.density == TRUE)
-				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+				visible_message("<span class='warning'>\The [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
 			for(var/obj/covers/CV in TT && !(CV in transporting))
 				if (current_weight < 600)
 					if (CV.density || CV.wall)
-						visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+						visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
@@ -302,17 +302,17 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					MAT.trigger(F)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
 			if (istype(M, /obj/item/mine/boobytrap))
 				var/obj/item/mine/boobytrap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if (istype(M, /obj/item/mine/ap))
 				var/obj/item/mine/ap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
 					transporting += M
@@ -614,7 +614,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 
 	for(var/mob/living/MB in transporting)
 		MB.dir = dir
-	
+
 	return TRUE
 
 /obj/effect/pseudovehicle

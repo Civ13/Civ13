@@ -6,7 +6,7 @@
 	uses_squads = TRUE
 	squad = 0
 	additional_languages = list("Blugoslavian" = 15)
-	min_positions = 999
+	min_positions = 1
 	max_positions = 999
 	selection_color = "#CC0000"
 
@@ -375,7 +375,7 @@
 	is_event = TRUE
 	uses_squads = TRUE
 	squad = 0
-	min_positions = 999
+	min_positions = 1
 	max_positions = 999
 	additional_languages = list("Redmenian" = 15)
 	selection_color = "#102f44"
@@ -669,44 +669,44 @@
 /datum/job/civilian/bluefaction/navy/captain
 	title = "BNF Captain"
 	is_commander = TRUE
+	is_navy = TRUE
+	max_positions = 1
 	rank_abbreviation = "Captain"
 	additional_languages = list("Redmenian" = 100)
-/datum/job/civilian/bluefaction/navy/ensign
-	title = "BNF Ensign"
-	is_officer = TRUE
-	rank_abbreviation = "Ensign"
-	additional_languages = list("Redmenian" = 100)
+	
 /datum/job/civilian/bluefaction/navy/petty
-	title = "BNF Squad 1 Petty Officer"
+	title = "BNF Petty Officer"
 	is_squad_leader = TRUE
-	rank_abbreviation = "1-PO"
+	is_navy = TRUE
+	max_positions = 10
+	rank_abbreviation = "PO"
 	squad = 1
 /datum/job/civilian/bluefaction/navy/one
-	title = "BNF Squad 1 Sailor"
+	is_navy = TRUE
+	title = "BNF Sailor"
 	squad = 1
-	rank_abbreviation = "1-Sailor"
-/datum/job/civilian/bluefaction/navy/petty/two
-	title = "BNF Squad 2 Petty Officer"
-	is_squad_leader = TRUE
-	rank_abbreviation = "2-PO"
-	squad = 2
-/datum/job/civilian/bluefaction/navy/two
-	title = "BNF Squad 2 Sailor"
-	squad = 2
-	rank_abbreviation = "2-Sailor"
+	rank_abbreviation = "Sailor"
+
 /datum/job/civilian/bluefaction/navy/marine/sl
+	is_navy = TRUE
 	title = "BNF Marine Squadleader"
 	is_squad_leader = TRUE
+	max_positions = 5
 	rank_abbreviation = "Sgt."
-	squad = 3
+	squad = 2
 /datum/job/civilian/bluefaction/navy/marine/soldier
+	is_navy = TRUE
 	title = "BNF Marine"
+	max_positions = 20
 	rank_abbreviation = "Pvt."
-	squad = 3
+	squad = 2
 /datum/job/civilian/bluefaction/navy/doctor
+	is_navy = TRUE
 	title = "BNF Doctor"
 	rank_abbreviation = "Dr."
+	max_positions = 6
 	is_medic = TRUE
+	
 /datum/job/civilian/bluefaction/navy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.squad = squad
@@ -728,12 +728,11 @@
 	if (findtext(title, "Petty Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_blugoslavia(H), slot_head)
-	else if (findtext(title, "Ensign"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_blugoslavia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	else if (findtext(title, "Captain"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_blugoslavia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 	else if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/nvg(H), slot_eyes)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47(H), slot_head)
@@ -746,8 +745,7 @@
 		FP.attached(null,HGUN,TRUE)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat/blugoslavia(H), slot_head)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket/yellow(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket/blue(H), slot_wear_suit)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -764,7 +762,7 @@
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
 	else
-		if (is_officer || is_squad_leader || is_commander || squad == 6)
+		if (is_officer || is_squad_leader || is_commander || squad == 6 || findtext(title, "Sailor"))
 			var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 			uniform.attackby(HH, H)
 			var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
@@ -782,42 +780,41 @@
 /datum/job/pirates/redfaction/navy/captain
 	title = "IRN Captain"
 	is_commander = TRUE
+	is_navy = TRUE
+	max_positions = 1
 	rank_abbreviation = "Captain"
 	additional_languages = list("Blugoslavian" = 100)
-/datum/job/pirates/redfaction/navy/ensign
-	title = "IRN Ensign"
-	is_officer = TRUE
-	rank_abbreviation = "Ensign"
-	additional_languages = list("Blugoslavian" = 100)
+	
 /datum/job/pirates/redfaction/navy/petty
-	title = "IRN Squad 1 Petty Officer"
+	title = "IRN Petty Officer"
 	is_squad_leader = TRUE
-	rank_abbreviation = "1-PO"
+	is_navy = TRUE
+	max_positions = 10
+	rank_abbreviation = "PO"
 	squad = 1
 /datum/job/pirates/redfaction/navy/one
-	title = "IRN Squad 1 Sailor"
+	is_navy = TRUE
+	title = "IRN Sailor"
 	squad = 1
-	rank_abbreviation = "1-Sailor"
-/datum/job/pirates/redfaction/navy/petty/two
-	title = "IRN Squad 2 Petty Officer"
-	is_squad_leader = TRUE
-	rank_abbreviation = "2-PO"
-	squad = 2
-/datum/job/pirates/redfaction/navy/two
-	title = "IRN Squad 2 Sailor"
-	squad = 2
-	rank_abbreviation = "2-Sailor"
+	rank_abbreviation = "Sailor"
+
 /datum/job/pirates/redfaction/navy/marine/sl
+	is_navy = TRUE
 	title = "IRN Marine Squadleader"
 	is_squad_leader = TRUE
+	max_positions = 5
 	rank_abbreviation = "Sgt."
-	squad = 3
+	squad = 2
 /datum/job/pirates/redfaction/navy/marine/soldier
+	is_navy = TRUE
 	title = "IRN Marine"
+	max_positions = 20
 	rank_abbreviation = "Pvt."
-	squad = 3
+	squad = 2
 /datum/job/pirates/redfaction/navy/doctor
+	is_navy = TRUE
 	title = "IRN Doctor"
+	max_positions = 6
 	rank_abbreviation = "Dr."
 	is_medic = TRUE
 
@@ -842,12 +839,11 @@
 	if (findtext(title, "Petty Officer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
-	else if (findtext(title, "Ensign"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_redmenia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	else if (findtext(title, "Captain"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cap_redmenia(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	else if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/m67(H), slot_l_store)
@@ -860,8 +856,6 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/us_sailor_hat/redmenia(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/lifejacket(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -878,7 +872,7 @@
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)
 	else
-		if (is_officer || is_squad_leader || is_commander || squad == 6)
+		if (is_officer || is_squad_leader || is_commander || squad == 6 || findtext(title, "Sailor"))
 			var/obj/item/clothing/accessory/holster/hip/HH = new /obj/item/clothing/accessory/holster/hip(null)
 			uniform.attackby(HH, H)
 			var/obj/item/weapon/gun/projectile/pistol/m1911/PISTOL = new /obj/item/weapon/gun/projectile/pistol/m1911(H)
@@ -886,7 +880,7 @@
 			H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 		else
 			if (findtext(title, "Marine"))
-				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16(null)
+				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47(null)
 				uniform.attackby(webbing, H)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)

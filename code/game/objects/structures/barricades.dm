@@ -89,7 +89,7 @@
 			user.remove_from_mob(ANCH)
 			ANCH.loc = src.loc
 			ANCH.anchored = TRUE
-			src.climbable = TRUE
+			climbable = TRUE
 			ANCH.deployed = TRUE
 			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir

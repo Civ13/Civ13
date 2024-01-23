@@ -19,13 +19,13 @@
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
 		if (det_time > 1)
-			user << "The timer is set to [det_time/10] seconds."
+			to_chat(user, "The timer is set to [det_time/10] seconds.")
 			return
 
 
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
 	if (!active)
-		user << SPAN_WARNING("You light \the [name]! [det_time/10] seconds!")
+		to_chat(user, SPAN_WARNING("You light \the [name]! [det_time/10] seconds!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -236,7 +236,7 @@
 		else
 			R.amount -= 1
 		state = 2
-		user << "You attach the wick to \the [src]."
+		to_chat(user, "You attach the wick to \the [src].")
 		name = "dynamite stick"
 		icon_state = "dynamite2"
 		return
@@ -244,7 +244,7 @@
 		var/obj/item/weapon/reagent_containers/RG = W
 		if (RG.reagents.has_reagent("nitroglycerin",2))
 			RG.reagents.remove_reagent("nitroglycerin",2)
-			user << "You fill \the [src] with the explosive charge."
+			to_chat(user, "You fill \the [src] with the explosive charge.")
 			state = 1
 			name = "filled dynamite stick"
 			icon_state = "dynamite1"
@@ -331,7 +331,7 @@
 	desc = "A British early 20th century grenade."
 	icon_state = "mills"
 	det_time = 70
-	throw_range = 7
+	throw_range = 9
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/ww2/mills2
@@ -339,14 +339,14 @@
 	desc = "A British early 20th century grenade, with a reduced timer to 4 seconds."
 	icon_state = "mills"
 	det_time = 40
-	throw_range = 7
+	throw_range = 9
 
 /obj/item/weapon/grenade/modern/f1
 	name = "F1 grenade"
 	desc = "A French early 20th century grenade, also used by Russia."
 	icon_state = "f1"
 	det_time = 40
-	throw_range = 8
+	throw_range = 11
 
 /obj/item/weapon/grenade/modern/stg1915
 	name = "M1915 Stielhandgranate"
@@ -386,35 +386,35 @@
 	desc = "A Soviet fragmentation grenade."
 	icon_state = "rgd33"
 	det_time = 50
-	throw_range = 9
+	throw_range = 11
 
 /obj/item/weapon/grenade/ww2/rg42
 	name = "RG-42 grenade"
 	desc = "A Soviet fragmentation grenade."
 	icon_state = "rg42"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/mk2
 	name = "Mk2 grenade"
 	desc = "An American grenade introduced in 1918."
 	icon_state = "mk2"
 	det_time = 50
-	throw_range = 8
+	throw_range = 10
 
 /obj/item/weapon/grenade/ww2/type97
 	name = "Type-97 grenade"
 	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 5 seconds."
 	icon_state = "type97"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/type91
 	name = "Type-91 grenade"
 	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 8 seconds."
 	icon_state = "type91"
 	det_time = 80
-	throw_range = 10
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/m26
@@ -422,7 +422,7 @@
 	desc = "An American grenade introduced in the 1950's."
 	icon_state = "m26"
 	det_time = 50
-	throw_range = 9
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 
 /obj/item/weapon/grenade/coldwar/stinger
@@ -430,7 +430,7 @@
 	desc = "A less then lethal  grenade that Explodes into a burst of rubber balls."
 	icon_state = "sting"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 	fragment_type = /obj/item/projectile/bullet/pellet/rubberball
 	explosion_size = 0
@@ -441,28 +441,28 @@
 	desc = "An American grenade introduced as a replacement for the M26."
 	icon_state = "m67"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/hg85
 	name = "HG 85 grenade"
 	desc = "The HG 85 is a round fragmentation hand grenade designed for the Swiss Armed Forces."
 	icon_state = "hg85"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/hg85/l109
 	name = "L109 grenade"
 	desc = "The L109 is the British designation for the HG 85. It differs from the HG 85 in that it has a special safety clip, which is similar to the safety clip on the American M67 grenade."
 	icon_state = "l109"
 	det_time = 50
-	throw_range = 10
+	throw_range = 12
 
 /obj/item/weapon/grenade/coldwar/rgd5
 	name = "RGD-5 grenade"
 	desc = "A Soviet fragmentation grenade designed in the 1950's."
 	icon_state = "rgd5"
 	det_time = 50
-	throw_range = 11
+	throw_range = 12
 
 /obj/item/weapon/grenade/ww2/prime()
 	set waitfor = 0
@@ -573,10 +573,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure that you want to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the booby trap..."
+			to_chat(user, "Placing the booby trap...")
 			if (do_after(user, 100, src))
 				if (src)
-					user << "You successfully place the booby trap here using \the [src]."
+					to_chat(user, "You successfully place the booby trap here using \the [src].")
 					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
 					firer = user
@@ -595,18 +595,17 @@
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
 	if (!active)
-		user << SPAN_WARNING("You prime \the [name]!")
+		to_chat(user, SPAN_WARNING("You prime \the [name]!"))
 		firer = user
-		active = TRUE
 		add_fingerprint(user)
-	if (user)
-		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
-		message_admins("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
-		log_game("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
-		firer = user
-	icon_state = initial(icon_state) + "_active"
-	active = TRUE
-	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+		icon_state = initial(icon_state) + "_active"
+		active = TRUE
+		playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+		if (user)
+			msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+			message_admins("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
+			log_game("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+			firer = user
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
 	if (ishuman(user))
@@ -684,18 +683,18 @@
 
 /obj/item/weapon/grenade/suicide_vest/examine(mob/user)
 	..()
-	user << "\The [src] is <b>[armed]</b>."
+	to_chat(user, "\The [src] is <b>[armed]</b>.")
 	return
 
 /obj/item/weapon/grenade/suicide_vest/attack_self(mob/user as mob)
 	if (!active && armed == "armed")
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/attack_hand(mob/user as mob)
 	if (!active && armed == "armed" && loc == user)
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		activate(user)
 		add_fingerprint(user)
 	else
@@ -707,11 +706,11 @@
 	set src in range(1, usr)
 
 	if (armed == "armed")
-		usr << "You disarm \the [src]."
+		to_chat(usr, "You disarm \the [src].")
 		armed = "disarmed"
 		return
 	else
-		usr << SPAN_WARNING("You arm \the [src]!")
+		to_chat(usr, SPAN_WARNING("You arm \the [src]!"))
 		armed = "armed"
 		return
 
@@ -749,19 +748,19 @@
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/examine(mob/user)
 	..()
-	user << "\The [src] is <b>[armed]</b>."
+	to_chat(user, "\The [src] is <b>[armed]</b>.")
 	return
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_self(mob/user as mob)
 	if (!active && armed1 == "armed")
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
 
 /obj/item/weapon/grenade/suicide_vest/kamikaze/attack_hand(mob/user as mob)
 	if (!active && armed1 == "armed" && loc == user)
-		user << SPAN_WARNING("You switch \the [name]!")
+		to_chat(user, SPAN_WARNING("You switch \the [name]!"))
 		firer = user
 		activate(user)
 		add_fingerprint(user)
@@ -774,12 +773,12 @@
 	set src in range(1, usr)
 
 	if (armed1 == "armed")
-		usr << "You disarm \the [src]."
+		to_chat(usr, "You disarm \the [src].")
 		armed1 = "disarmed"
 		firer = null
 		return
 	else
-		usr << SPAN_WARNING("You arm \the [src]!")
+		to_chat(usr, SPAN_WARNING("You arm \the [src]!"))
 		armed1 = "armed"
 		return
 
@@ -950,10 +949,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the mine..."
+			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
 				if (src)
-					user << "You successfully place the mine here using \the [src]."
+					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type
 					firer = user
@@ -973,10 +972,10 @@
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the mine..."
+			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
 				if (src)
-					user << "You successfully place the mine here using \the [src]."
+					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type
 					firer = user

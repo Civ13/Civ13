@@ -28,6 +28,8 @@
 	var/mobcapacity = 1
 	var/storagecapacity = 0
 
+	var/leave_time = 5
+
 	mouse_drop_zone = TRUE
 
 	var/animal_propelled = FALSE
@@ -183,7 +185,7 @@
 /obj/structure/vehicle/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
 		user.visible_message(SPAN_NOTICE("[user] start leaving \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
-		if (do_after(user, 30, src))
+		if (do_after(user, leave_time, src))
 			user.visible_message(SPAN_NOTICE("[user] sucessfully leaves \the [src]."), SPAN_NOTICE("You leave \the [src]."))
 			ontop -= user
 			user.pixel_x = 0
@@ -234,7 +236,7 @@
 					return
 
 			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
-			if (do_after(user, 30, src))
+			if (do_after(user, leave_time, src))
 				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
 				user.pixel_x = 0
@@ -388,39 +390,6 @@
 			engine.fueltank = fueltank
 			engine.connections += axis
 			dwheel.forceMove(src)
-
-/obj/structure/vehicle/boat/rhib/premade/arrival
-	name = "SINKING rigid hull inflatable boat"
-	desc = "Uh oh."
-
-/obj/structure/vehicle/boat/rhib/premade/arrival/New()
-	..()
-	delete_self()
-
-/obj/structure/vehicle/boat/rhib/premade/arrival/proc/delete_self()
-	spawn (120 SECONDS)
-		if (driver)
-			driver.pixel_x = 0
-			driver.pixel_y = 0
-			if (wheeled)
-				if (driver.l_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.l_hand = null
-				else if (driver.r_hand == dwheel)
-					driver.remove_from_mob(dwheel)
-					dwheel.forceMove(src)
-					driver.r_hand = null
-				driver.update_icons()
-			driver.buckled = null
-			driver.driver = FALSE
-			driver.driver_vehicle = null
-		if (currentcap)
-			currentcap.pixel_x = 0
-			currentcap.pixel_y = 0
-			currentcap.buckled = null
-			currentcap = null
-		qdel(src)
 
 /obj/structure/vehicle/boat/sailboat
 	name = "sailing outrigger"
@@ -598,8 +567,8 @@
 			var/mob/living/human/M = A
 			if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 				user.visible_message(SPAN_NOTICE("[M] starts getting on \the [src]..."), SPAN_NOTICE("You start getting on \the [src]..."))
-				if (do_after(M, 40, src))
-					user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
+				if (do_after(M, 25, src))
+					user.visible_message(SPAN_NOTICE("[M] climbs onto \the [src]."), SPAN_NOTICE("You climb onto \the [src]."))
 					M.plane = GAME_PLANE
 					M.forceMove(get_turf(src))
 					if (!driver)
@@ -653,9 +622,9 @@
 
 /obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
-		user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
-		if (do_after(user, 30, src))
-			user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+		user.visible_message("<div class='notice'>[user] starts leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
+		if (do_after(user, leave_time, src))
+			user.visible_message("<div class='notice'>[user] leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
 			user.pixel_x = 0
 			user.pixel_y = 0
@@ -746,8 +715,8 @@
 					stopmovementloop()
 					return
 
-			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
-			if (do_after(user, 30, src))
+			user.visible_message("<div class='notice'>[user] starts leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
+			if (do_after(user, leave_time, src))
 				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
 				user.pixel_x = 0
@@ -776,13 +745,43 @@
 
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
-	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
-		if (driver in get_turf(loc))
+	var/turf/T = get_turf(get_step(src,driver.dir))
+	var/area/A = get_area(T)
+	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
+		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+			visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
+			moving = FALSE
+			stopmovementloop()
+			return FALSE
+	if (map && map.check_caribbean_block(driver,T))
+		visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+	
+	if (driver.stat == UNCONSCIOUS || driver.stat == DEAD)
+		visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
+		stopmovementloop()
+		driver.driver = FALSE
+		driver.driver_vehicle = null
+		driver.pixel_x = 0
+		driver.pixel_y = 0
+		unbuckle_mob()
+		update_overlay()
+		update_icon()
+		ontop -= driver
+		driver = null
+
+	if (istype(get_turf(get_step(src, driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src, driver.dir)), /turf/floor/trench/flooded))
+		if (driver in get_turf(src))
 			return TRUE
 		else
+			to_chat(driver, "You fall off \the [src].")
+			stopmovementloop()
 			driver.driver = FALSE
 			driver.driver_vehicle = null
-			driver << "You leave the [src]."
+			driver.pixel_x = 0
+			driver.pixel_y = 0
 			unbuckle_mob()
 			update_overlay()
 			update_icon()
@@ -903,12 +902,12 @@
 		return FALSE
 	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-			visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+			visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
 			moving = FALSE
 			stopmovementloop()
 			return FALSE
 	if (map && map.check_caribbean_block(driver,T))
-		visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+		visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
 		moving = FALSE
 		stopmovementloop()
 		return FALSE
@@ -916,29 +915,29 @@
 	for (var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 		if (O.density == TRUE)
 			blocked = 1
-			visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+			visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 	if (get_turf(get_step(src,driver.dir)).density == TRUE)
 		blocked = 1
-		visible_message("<span class='warning'>\the [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
+		visible_message("<span class='warning'>\The [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
 	for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
 		if (CV.density == TRUE)
 			blocked = 1
-			visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+			visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 	for (var/mob/living/L in get_turf(get_step(src,driver.dir)))
 		if (ishuman(L))
 			var/mob/living/human/HH = L
 			HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
 			HH.Weaken(rand(2,5))
 			blocked = 1
-			visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+			visible_message("<span class='warning'>\The [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
 		else if (istype(L,/mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = L
 			SA.health -= rand(7,16)*axis.currentspeed
 			if (SA.mob_size >= 30)
 				blocked = 1
-				visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+				visible_message("<span class='warning'>\The [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
 			else
-				visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+				visible_message("<span class='warning'>\The [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 	if (blocked)
 		moving = FALSE
 		health -= rand(3,4)*axis.currentspeed
@@ -1102,6 +1101,7 @@
 	var/current_cargo = 0
 	pixel_x = -18
 	pixel_y = -10
+	leave_time = 30
 
 /obj/structure/vehicle/carriage/MouseDrop_T(atom/A, mob/living/human/user)
 	if(istype(A, /turf) || istype(A, /area)) //failsafe
@@ -1830,7 +1830,7 @@
 /obj/structure/vehicle/carriage/attack_hand(mob/living/human/user as mob)
 	if ((user in ontop))
 		visible_message("<div class='notice'>[user] starts leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
-		if (do_after(user, 30, src))
+		if (do_after(user, leave_time, src))
 			if(bucklepoint1 == user)
 				bucklepoint1 = null
 			else if(bucklepoint2 == user)

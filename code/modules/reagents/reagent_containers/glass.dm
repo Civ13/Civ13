@@ -56,7 +56,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	user << "<span class='notice'>You swallow a gulp from \the [src].</span>"
 
 /obj/item/weapon/reagent_containers/glass/feed_sound(var/mob/user)
-	playsound(user.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+	playsound(user.loc, "drink", rand(10, 50), TRUE)
 
 /obj/item/weapon/reagent_containers/glass/attack_self()
 	..()
@@ -455,16 +455,24 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	possible_transfer_amounts = list(5,10,15,25,30)
 
 /obj/item/weapon/reagent_containers/glass/bucket
-	desc = "It's a bucket."
 	name = "bucket"
+	desc = "It's a bucket."
 	icon = 'icons/obj/janitor.dmi'
 	icon_state = "bucket"
-	item_state = "bucket" //TODO: need be checked!!!!!!!!!!!
+	item_state = "bucket"
 	w_class = ITEM_SIZE_NORMAL
 	amount_per_transfer_from_this = 20
 	possible_transfer_amounts = list(10,20,30,60,120)
 	volume = 120
 	flammable = TRUE
+
+/obj/item/weapon/reagent_containers/glass/bucket/steel
+	name = "steel bucket"
+	desc = "It's a bucket."
+	icon_state = "steel_bucket"
+	item_state = "steel_bucket"
+	volume = 150
+	flammable = FALSE
 
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
 	if (istype(D, /obj/item/weapon/mop))

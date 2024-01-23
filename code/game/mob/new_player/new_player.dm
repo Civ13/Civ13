@@ -618,7 +618,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES && map.ID != MAP_BATTLE_SHIPS && map.ID != MAP_NANKOU && map.ID != MAP_MARCO_POLO_BRIDGE)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -1393,7 +1393,7 @@ var/global/redirect_all_players = null
 								temp_name = "Mujahideen"
 							else if (temp_name == "Civilian")
 								temp_name = "DRA and Civilians"
-						
+
 						if (MAP_RED_MENACE)
 							if (temp_name == "Russian")
 								temp_name = "Soviets"
@@ -1454,6 +1454,11 @@ var/global/redirect_all_players = null
 								temp_name = "Blugoslavian Armed Forces"
 							if (temp_name == "Pirates")
 								temp_name = "Rotstadt People's Republic"
+						if (MAP_BATTLE_SHIPS)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
 						if (MAP_HOLDMADRID)
 							if (temp_name == "Civilian")
 								temp_name = "Republican"

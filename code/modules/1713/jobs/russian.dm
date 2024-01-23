@@ -2613,16 +2613,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
-	H.equip_to_slot_or_del(HGUN, slot_shoulder)
+	H.equip_to_slot_or_del(HGUN, slot_l_hand)
 	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/saiga12(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/saiga12(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/saiga12(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/impact/rgo(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74m_breacher(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
@@ -3357,10 +3357,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
 //coat
-	if (prob(45))
+	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat(H), slot_wear_suit)
-	else if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/soviet(H), slot_wear_suit)
 //grenade

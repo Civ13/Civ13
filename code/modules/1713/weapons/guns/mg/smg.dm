@@ -669,6 +669,7 @@
 	stat = "rifle"
 	effectiveness_mod = 1
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	accuracy_list = list(
 
@@ -721,10 +722,13 @@
 	icon_state = "ak47gold"
 	item_state = "ak47gold"
 	base_icon = "ak47gold"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese
 	name = "Type 56 Assault Rifle"
 	desc = "Chinese 7.62x39mm rifle. It is a variant of the Soviet-designed AK-47."
+	has_ak_reload = TRUE
+
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
 	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm. This one has a wire underfolding stock."
@@ -734,6 +738,7 @@
 	base_icon = "akms"
 	var/folded = FALSE
 	weight = 3
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
 	if (folded)
@@ -798,6 +803,7 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	accuracy_list = list(
 
@@ -864,6 +870,7 @@
 	var/folded = FALSE
 	weight = 2.95
 	effectiveness_mod = 1.05
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
 	if (folded)
@@ -927,6 +934,7 @@
 	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
 	if (folded)
@@ -991,6 +999,7 @@
 	damage_modifier = 0.95
 	equiptimer = 12
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
 	if (folded)
@@ -1021,7 +1030,7 @@
 	effectiveness_mod = 1.07
 	damage_modifier = 0.98
 	equiptimer = 10
-
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb/New()
 	..()
@@ -1077,6 +1086,7 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	stat = "rifle"
 	accuracy_list = list(
@@ -1137,6 +1147,7 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
 	name = "AK-15"
@@ -1153,6 +1164,7 @@
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
@@ -1477,14 +1489,75 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21
+/obj/item/weapon/gun/projectile/semiautomatic/m21
 	name = "M21 SWS"
 	desc = "An American sniper rifle, chambered in 7.62x51mm."
+	icon = 'icons/obj/guns/rifles.dmi'
+	icon_state = "m21"
+	item_state = "m21"
+	base_icon = "m21"
+	w_class = ITEM_SIZE_LARGE
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
+	magazine_type = /obj/item/ammo_magazine/m14
+	good_mags = list(/obj/item/ammo_magazine/m14)
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	weight = 3.6
+	equiptimer = 15
+	gun_type = GUN_TYPE_RIFLE
+	slot_flags = SLOT_SHOULDER
 	effectiveness_mod = 1.12
-	sel_mode = 0
 	firemodes = list(
 		list(name = "semi auto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		)
+	accuracy_list = list(
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 63,
+			SHORT_RANGE_MOVING = 38,
+
+			MEDIUM_RANGE_STILL = 53,
+			MEDIUM_RANGE_MOVING = 32,
+
+			LONG_RANGE_STILL = 43,
+			LONG_RANGE_MOVING = 25,
+
+			VERY_LONG_RANGE_STILL = 33,
+			VERY_LONG_RANGE_MOVING = 18),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 78,
+			SHORT_RANGE_MOVING = 51,
+
+			MEDIUM_RANGE_STILL = 68,
+			MEDIUM_RANGE_MOVING = 45,
+
+			LONG_RANGE_STILL = 58,
+			LONG_RANGE_MOVING = 38,
+
+			VERY_LONG_RANGE_STILL = 48,
+			VERY_LONG_RANGE_MOVING = 32),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 83,
+			SHORT_RANGE_MOVING = 55,
+
+			MEDIUM_RANGE_STILL = 73,
+			MEDIUM_RANGE_MOVING = 48,
+
+			LONG_RANGE_STILL = 63,
+			LONG_RANGE_MOVING = 42,
+
+			VERY_LONG_RANGE_STILL = 53,
+			VERY_LONG_RANGE_MOVING = 35),
+	)
+	New()
+		..()
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+		SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
@@ -2055,6 +2128,7 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/white
 	name = "White VZ-58"
@@ -2063,6 +2137,7 @@
 	icon_state = "white_vz58"
 	item_state = "white_vz58"
 	base_icon = "white_vz58"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/black
 	name = "Black VZ-58"
@@ -2071,6 +2146,7 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/c7
 	name = "C7"
@@ -2110,7 +2186,28 @@
 	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."
 	equiptimer = 11
 	effectiveness_mod = 1.23
+	icon_state = "c8"
+	item_state = "c8"
+	base_icon = "c8"
 
+/obj/item/weapon/gun/projectile/submachinegun/c7/arid
+	icon_state = "c7_arid"
+	item_state = "c7_arid"
+	base_icon = "c7_arid"
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/arid/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid(src)
+	SP.attached(null,src,TRUE)
+/obj/item/weapon/gun/projectile/submachinegun/c7/winter
+	icon_state = "c7_winter"
+	item_state = "c7_winter"
+	base_icon = "c7_winter"
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/winter/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter(src)
+	SP.attached(null,src,TRUE)
 /obj/item/weapon/gun/projectile/submachinegun/m2carbine
 	name = "M2 carbine"
 	desc = "An American Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
@@ -2243,3 +2340,18 @@
 	effectiveness_mod = 1.20
 	sel_mode = 1
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/////////////////////////////////*FALLOUT*////////////////////////////////////////////
+/obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle
+	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
+	name = "Service Rifle"
+	desc = "A pre-war rifle design employed as the standard arm of the New California Republic."
+	base_icon = "service_rifle"
+	icon_state = "service_rifle"
+	item_state = "service_rifle"
+	full_auto = FALSE
+	firemodes = list(
+		list(name = "semi auto",	burst=1, burst_delay=0, recoil=0, move_delay=0.1, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
+		)
+	magazine_type = /obj/item/ammo_magazine/service_rifle
+	good_mags = list(/obj/item/ammo_magazine/service_rifle, /obj/item/ammo_magazine/m16)

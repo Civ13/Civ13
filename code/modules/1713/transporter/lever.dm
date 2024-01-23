@@ -257,20 +257,18 @@
 	var/none_state = "lever_none" // Icon for when the transport object is not being used
 	var/pushed_state = "lever_pulled" // Icon for when the transport object is used
 	var/next_activation = -1; // Used for cooldown
-	var/cooldown = 80 SECONDS
+	var/cooldown = 60 SECONDS
 	var/facing_dir = NORTH
 
 /obj/structure/boat_spawn_lever/attack_hand(var/mob/user as mob)
 	if (world.time < next_activation)
-		next_activation = world.time + 5 SECONDS
 		user << SPAN_NOTICE("This boat spawner is cooling down, try again in a bit.")
 		return
 	else
 		next_activation = world.time + cooldown
-		var/obj/structure/vehicle/boat/rhib/premade/arrival/arrival = new /obj/structure/vehicle/boat/rhib/premade/arrival(locate(src.x,src.y-2,src.z))
-		arrival.dir = facing_dir
+		var/obj/structure/vehicle/boat/rhib/premade/premade = new /obj/structure/vehicle/boat/rhib/premade(locate(src.x,src.y-2,src.z))
+		premade.dir = facing_dir
 		icon_state = pushed_state
-		user << SPAN_DANGER("<font size = 3><big>You have <b>2 minutes</b> to get to shore before this boat sinks.</font>")
 		spawn (5)
 			icon_state = none_state
 		return

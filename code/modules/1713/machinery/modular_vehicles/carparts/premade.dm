@@ -119,7 +119,7 @@
 		reg_number = tempnum
 		license_plate_numbers += tempnum
 		return tempnum
-		
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //ASNO
@@ -150,7 +150,7 @@
 
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/quattroporte/lc),
-	
+
 	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/quattroporte/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/quattroporte/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
@@ -285,7 +285,7 @@
 	"1,2" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rc),
 	"2,2" = list(/obj/structure/bed/chair/drivers/car,/obj/structure/vehicleparts/frame/car/kazoku/lc),
 
-	
+
 	"1,3" = list(/obj/structure/bed/chair/carseat/right,/obj/structure/vehicleparts/frame/car/kazoku/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left,/obj/structure/vehicleparts/frame/car/kazoku/lb,/obj/structure/vehicleparts/license_plate/eu/centered,/obj/structure/vehicleparts/movement/reversed),
 	)
@@ -304,6 +304,29 @@
 
 	"1,3" = list(/obj/structure/bed/chair/carseat/right/type95,/obj/structure/vehicleparts/frame/car/type95/rb,/obj/structure/vehicleparts/movement/reversed),
 	"2,3" = list(/obj/structure/bed/chair/carseat/left/type95,/obj/structure/vehicleparts/frame/car/type95/lb,/obj/structure/vehicleparts/movement/reversed),
+	)
+//Isuzu Type 94
+//Kurogane Type 95
+/obj/effects/premadevehicles/isuzu/type94
+	name = "Isuzu Type 94"
+	icon_state = "4x4"
+	custom_color = "#736953"
+	axis = /obj/structure/vehicleparts/axis/car/type94
+	tocreate = list(
+	"1,1" = list(/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/movement,/obj/structure/vehicleparts/frame/car/type94/rf),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/type94/lf,/obj/structure/engine/internal/gasoline/premade/type94,/obj/structure/vehicleparts/movement),
+
+	"1,2" = list(/obj/structure/bed/chair/drivers/car/type94,/obj/structure/vehicleparts/frame/car/type94/rc),
+	"2,2" = list(/obj/structure/bed/chair/carseat/left/type94,/obj/structure/vehicleparts/frame/car/type94/lc),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/right),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/right),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/left),
+
+	"1,5" = list(/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement/reversed),
+	"2,5" = list(/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed,/obj/structure/vehicleparts/license_plate/eu),
 	)
 ///////////////////////////////////////////////CARS///////////////////////////////////////////////////////
 /obj/effects/premadevehicles/car
@@ -544,7 +567,7 @@
 	name = "T3485"
 	icon_state = "4x4"
 	custom_color = "#4a5243"
-	axis = /obj/structure/vehicleparts/axis/heavy/t3485
+	axis = /obj/structure/vehicleparts/axis/heavy/t34/t3485
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
@@ -686,7 +709,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/t90a/rf,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/pkm),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t90a/front),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/t90a/right, /obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/t90a,/obj/structure/cannon/modern/tank/autoloader/t90a,/obj/structure/shellrack/autoloader/full125),
@@ -709,7 +732,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/leopard/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
 	"2,1" = list(/obj/structure/vehicleparts/frame/leopard/front),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/leopard/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/leopard/lf,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/leopard/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/leopard,/obj/structure/cannon/modern/tank/leopard),
@@ -732,7 +755,7 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/t90a/rf,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/ammo_magazine/mg3belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
 	"2,1" = list(/obj/structure/vehicleparts/frame/t90a/front,/obj/structure/bed/chair/drivers/tank),
-	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf,/obj/structure/radio/transmitter_receiver/nopower/tank/faction1),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/t90a/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/t90a/right,/obj/structure/bed/chair/commander),
 	"2,2" = list(/obj/structure/vehicleparts/frame/t90a,/obj/structure/cannon/modern/tank/challenger2),
@@ -745,6 +768,29 @@
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/t90a/rb, /obj/structure/engine/internal/diesel/premade/v12),
 	"2,4" = list(/obj/structure/vehicleparts/frame/t90a/back, /obj/structure/shellrack/full120),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/t90a/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
+	)
+
+/obj/effects/premadevehicles/tank/m1a1_abrams
+	name = "M1A1 Abrams"
+	icon_state = "4x4"
+	custom_color = "#58564a"
+	axis = /obj/structure/vehicleparts/axis/heavy/m1a1_abrams
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/right,/obj/structure/vehicleparts/frame/baf1_a/rf,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning),
+	"2,1" = list(/obj/structure/vehicleparts/frame/baf1_a/front,/obj/structure/bed/chair/drivers/tank),
+	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/baf1_a/lf),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/baf1_a/right,/obj/structure/bed/chair/commander),
+	"2,2" = list(/obj/structure/vehicleparts/frame/baf1_a,/obj/structure/cannon/modern/tank/m1a1_abrams),
+	"3,2" = list(/obj/structure/vehicleparts/frame/baf1_a/left,/obj/structure/bed/chair/gunner),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/baf1_a/right/door{doorcode = 9950}),
+	"2,3" = list(/obj/structure/vehicleparts/frame/baf1_a,/obj/structure/bed/chair/loader),
+	"3,3" = list(/obj/structure/vehicleparts/frame/baf1_a/left),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/baf1_a/rb, /obj/structure/engine/internal/turbine/abrams),
+	"2,4" = list(/obj/structure/vehicleparts/frame/baf1_a/back, /obj/structure/shellrack/full120),
+	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/baf1_a/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
 ////////////APCS/////////////
@@ -866,7 +912,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80),
 	"2,3" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lbc),
@@ -885,7 +931,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/apcr,/obj/item/ammo_casing/rocket/atgm/apcr),
 	"2,3" = list(/obj/structure/vehicleparts/frame/btr80/lbc),
@@ -904,7 +950,7 @@
 	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/cv90/lf),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/cv90/rfc,/obj/item/tank_system/aps/ironfist,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72),
-	"2,2" = list(/obj/structure/vehicleparts/frame/cv90/lfc,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"2,2" = list(/obj/structure/vehicleparts/frame/cv90/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/cv90/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80),
 	"2,3" = list(/obj/structure/vehicleparts/frame/cv90/lbc),

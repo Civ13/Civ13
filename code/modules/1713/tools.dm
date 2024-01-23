@@ -189,6 +189,13 @@
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
+/obj/item/weapon/material/shovel/trench/foldable/etool/german
+	name = "german entrenching tool"
+	desc = "A foldable shovel used specifically for digging and moving dirt."
+	icon_state = "etool"
+	usespeed = 0.8
+	path = /obj/item/weapon/foldable_shovel/trench/german
+
 /obj/item/weapon/material/shovel/spade
 	name = "spade"
 	desc = "A small tool for digging and moving dirt."
@@ -235,6 +242,13 @@
 	icon_state = "etool_folded"
 	item_state = "lopata"
 	path = /obj/item/weapon/material/shovel/trench/foldable/etool
+
+/obj/item/weapon/foldable_shovel/trench/german
+	name = "german entrenching tool"
+	desc = "A foldable entrenching tool which is currently, folded."
+	icon_state = "german_shovel_folded"
+	item_state = "lopata"
+	path = /obj/item/weapon/material/shovel/trench/foldable/etool/german
 
 /obj/item/weapon/foldable_shovel/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
@@ -314,7 +328,6 @@
 	if (!(user.has_empty_hand(both = FALSE)))
 		user << "<span class='warning'>You need both hands to use the [src]!</span>"
 		return FALSE
-	..()
 
 /obj/item/weapon/wirecutters/boltcutters
 	name = "boltcutters"
@@ -582,7 +595,7 @@
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
-			if(map.ID == MAP_CAMPAIGN && istype(nT, /turf/floor/broken_floor))
+			if((map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS) && istype(nT, /turf/floor/broken_floor))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return

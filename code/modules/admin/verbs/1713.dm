@@ -724,6 +724,9 @@ var/italian_forceEnabled = FALSE
 	else if (map.ID == MAP_ROTSTADT)
 		fact2 = "Rotstadt People's Republic"
 		fact3 = "Blugoslavian Armed Forces"
+	else if (map.ID == MAP_BATTLE_SHIPS)
+		fact2 = "Redmenia"
+		fact3 = "Blugoslavia"
 	else if (map.ID == MAP_WHITERUN)
 		fact3 = "Stormcloaks"
 		fact9 = "Imperials"

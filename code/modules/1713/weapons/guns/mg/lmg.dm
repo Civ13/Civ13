@@ -227,7 +227,7 @@
 	return ..()
 
 /obj/item/weapon/gun/projectile/automatic/manual/proc/toggle_cover(mob/user)
-	if (do_after(user, cover_toggle_time, src, can_move = TRUE))
+	if (do_after(user, cover_toggle_time, src, can_move = TRUE, needhand = FALSE))
 		cover_open ? playsound(loc, cover_close_sound, 100, TRUE) : playsound(loc, cover_open_sound, 100, TRUE)
 		cover_open = !cover_open
 		user << SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s cover.")
@@ -272,6 +272,7 @@
 	weight = 12.1
 	slot_flags = SLOT_SHOULDER
 	load_method = MAGAZINE
+	cover_toggle_time = 2
 	magazine_type = /obj/item/ammo_magazine/mg34
 	good_mags = list(/obj/item/ammo_magazine/mg34, /obj/item/ammo_magazine/mg34belt)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
@@ -302,7 +303,7 @@
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound 		= 'sound/weapons/guns/fire/Type92.ogg'
 	effectiveness_mod = 1.0
-	load_delay = 1.5 SECONDS
+	load_delay = 12
 	firemodes = list(
 		list(name = "full auto", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.7, 0.8, 1.0, 1.2, 1.4), recoil = 0),)
 	var/cover_open = FALSE

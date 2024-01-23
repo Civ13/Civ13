@@ -27,7 +27,6 @@
 		"Fiction" = 0,
 	)
 	var/ready = TRUE
-	var/admin_triggered = FALSE
 	var/restart_triggered = FALSE
 	var/finished_at = -1
 
@@ -115,7 +114,7 @@
 	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
-		if (admin_triggered || restart_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -133,7 +132,7 @@
 	var/list/maps = list(MAP_KARAK = 0,)
 	var/epoch = "Imperial Age (1650-1780)"
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 	var/next_map_title = "TBD"
 	var/done = FALSE
@@ -202,6 +201,7 @@
 					MAP_REICHSTAG = 0,
 					MAP_MICROMAHA = 0,
 					MAP_NANKOU = 0,
+					MAP_MARCO_POLO_BRIDGE = 0,
 					MAP_SMALLINGRAD = 0,
 					MAP_REICHFLAKTURM = 0,
 					MAP_PAVLOV_HOUSE = 0,
@@ -260,8 +260,8 @@
 				)
 			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
 				maps = list(
-					MAP_HUNT = 6,
-					MAP_FOOTBALL = 6,
+//					MAP_HUNT = 6,
+//					MAP_FOOTBALL = 6,
 					MAP_GULAG13 = 6,
 //					MAP_ABASHIRI = 6,
 //					MAP_RIVER_KWAI = 0,
@@ -341,7 +341,7 @@
 	if (map && map.battleroyale)
 		. = FALSE
 	else if (ready)
-		if (admin_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -361,7 +361,7 @@
 
 /process/gamemode
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 
 /process/gamemode/setup()
@@ -381,7 +381,7 @@
 	. = FALSE
 
 	if (ready)
-		if (admin_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
