@@ -61,7 +61,7 @@
 						far_volume += (dist <= far_dist * 0.5 ? 50 : 0) // add 50 volume if the mob is pretty close to the explosion
 						if(devastation_range > 0)
 							M.playsound_local(epicenter, 'sound/effects/explosionfarnew.ogg', far_volume * 2, 1, frequency, falloff = 5)
-							shake_camera(M, 5, 1)
+							shake_camera(M, 5, 1) // shakes no matter how far [40m artillery and you still get shaken, tweak if necessary]
 						else
 							M.playsound_local(epicenter, 'sound/effects/explosionsmallfarnew.ogg', far_volume * 2, 1, frequency, falloff = 5)
 
@@ -101,7 +101,7 @@
 					var/atom/movable/AM = atom_movable
 					if(AM && AM.simulated)
 						AM.ex_act(dist)
-	var/datum/explosiondata/data = new
+	var/datum/explosiondata/data = new // handles the data for rpgs and sounds for dynamite and missiles, etc.
 	data.epicenter = epicenter
 	data.devastation_range = devastation_range
 	data.heavy_impact_range = heavy_impact_range
@@ -147,6 +147,9 @@
 
 /turf/wall
 	explosion_resistance = 10
+
+/turf/floor/plating/road
+	explosion_resistance = 4
 
 
 var/list/explosion_turfs = list()
@@ -213,7 +216,7 @@ proc/explosion_rec(turf/epicenter, power, shaped)
 	explosion_in_progress = 0
 
 
-//Code-wise, a safe value for power is something up to ~25 or ~30.. This does quite a bit of damage to the station.
+//Code-wise, a safe value for power is something up to ~25 or ~30.. This does quite a bit of damage.
 //direction is the direction that the spread took to come to this tile. So it is pointing in the main blast direction - meaning where this tile should spread most of it's force.
 /turf/proc/explosion_spread(power, direction)
 	if(power <= 0)
