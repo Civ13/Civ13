@@ -109,7 +109,6 @@
 	if(explosion_size)
 		explosion(O, 0, 2, explosion_size, 2) //has a chance to blow a hole in the floor
 
-
 /obj/item/weapon/grenade/frag/ugl/shell40mm
 	name = "40x46mm 'M381 HE' grenade shell"
 	desc = "Cannot be thrown as the usual grenade, by the way."

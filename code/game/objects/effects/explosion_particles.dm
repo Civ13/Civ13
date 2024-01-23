@@ -66,3 +66,40 @@
 		var/datum/effect/effect/system/smoke_spread/S = new/datum/effect/effect/system/smoke_spread()
 		S.set_up(5,0,location,null)
 		S.start()
+
+/obj/effect/crater64
+    name = "explosion crater"
+    icon_state = "dirt_shell"
+    icon = 'icons/effects/crater64.dmi'
+    layer = 0.99
+    density = 0
+    opacity = 0
+    anchored = 1
+    mouse_opacity = 0
+    pixel_x = -16
+    pixel_y = -16
+
+/obj/effect/crater64/New()
+	spawn(0)
+		dir = pick(1, 2, 4, 8)
+		transform = transform.Scale(1.04)
+
+
+/obj/effect/explosion_small/New()
+	..()
+	spawn (15)
+		qdel(src)
+	return
+
+/datum/effect/system/explosion_small	
+	var/turf/location
+
+/datum/effect/system/explosion_small/proc/set_up(loca)
+	if(istype(loca, /turf/)) location = loca
+	else location = get_turf(loca)
+
+/datum/effect/system/explosion_small/proc/start()
+	new/obj/effect/explosion_small( location )
+	var/datum/effect/system/expl_particles/P = new/datum/effect/system/expl_particles()
+	P.set_up(10,location)
+	P.start()

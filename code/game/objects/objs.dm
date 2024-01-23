@@ -34,8 +34,6 @@
 	var/mob/living/buckled_mob = null
 	var/sinkable = TRUE // If the obj can sink in deep water
 
-	var/explosion_resistance
-
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)
