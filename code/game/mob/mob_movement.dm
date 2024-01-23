@@ -132,7 +132,7 @@
 				var/mob/living/human/C = usr
 				C.toggle_throw_mode()
 			else
-				to_chat(SPAN_RED("This mob type cannot throw items."))
+				to_chat(usr, SPAN_RED("This mob type cannot throw items."))
 			return
 		if (NORTHWEST)
 			if (ishuman(usr))

@@ -963,12 +963,14 @@ mob/proc/yank_out_object()
 		return
 
 	if (self)
-		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>","<span class='warning'><b>You rip [selection] out of your body.</b>"))
+		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>"))
+		to_chat(usr, SPAN_WARNING("You rip [selection] out of your body."))
 	else
-		visible_message(SPAN_WARNING("<b>[usr] rips [selection] out of [src]'s body.</b></span>","<span class='warning'><b>[usr] rips [selection] out of your body.</b>"))
+		visible_message(SPAN_WARNING("<b>[usr] rips [selection] out of [src]'s body.</b></span>"))
+		to_chat(usr, SPAN_WARNING("[usr] rips [selection] out of your body."))
 	valid_objects = get_visible_implants(0)
 	if (valid_objects.len == TRUE) //Yanking out last object - removing verb.
-		verbs -= /mob/proc/yank_out_object
+		verbs -= /mob/proc/yank_out_object	
 
 	if (ishuman(src))
 		var/mob/living/human/H = src
