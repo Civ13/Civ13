@@ -139,9 +139,6 @@
 		F.timer = duration * 10 // So it's in seconds
 	return
 
-/turf
-	var/explosion_resistance
-
 /turf/floor
 	explosion_resistance = TRUE
 
@@ -257,7 +254,6 @@ proc/explosion_rec(turf/epicenter, power, shaped)
 	. = ..()
 	for(var/obj/O in src)
 		. += O.get_explosion_resistance()
-
 
 /turf/simulated/floor/get_explosion_resistance()
 	. = ..()
