@@ -213,9 +213,9 @@
 			plough_status = "Raise Plough"
 		var/road_status
 		if(plough_road)
-			road_status = "Adjust to stop making roads"
+			road_status = "Adjust to stop making Roads"
 		else
-			road_status = "Adjust to make roads"
+			road_status = "Adjust to make Roads"
 		var/choice1 = WWinput(usr, "What would you like to do with the cow's plough?", "Cattle Pulled Plough", "Remove", list("Remove", road_status, plough_status, "Cancel"))
 		if (choice1 == "Remove")
 			to_chat(user, "You try to detach the plough from the cow.")
@@ -234,13 +234,13 @@
 					new/obj/item/weapon/plough(user.loc)
 					plough_material = null
 				plough_material = null
-		else if (choice1 == "Raise plough")
+		else if (choice1 == "Raise Plough")
 			plough_raised = TRUE
-		else if (choice1 == "Lower plough")
+		else if (choice1 == "Lower Plough")
 			plough_raised = FALSE
-		else if (choice1 == "Adjust to make roads")
+		else if (choice1 == "Adjust to make Roads")
 			plough_road = TRUE
-		else if (choice1 == "Adjust to stop making roads")
+		else if (choice1 == "Adjust to stop making Roads")
 			plough_road = FALSE
 		else
 			return
