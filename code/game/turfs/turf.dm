@@ -380,7 +380,7 @@ var/const/enterloopsanity = 100
 				footstepsound = "sandfootsteps"
 			else	if (istype(src, /turf/floor/plating/road))
 				footstepsound = "roadfootsteps"
-			else	if (istype(src, obj/covers))
+			else	if (istype(src, /obj/covers))
 				footstepsound = "erikafootsteps"
 			else	if (istype(src, /turf/floor/plating/tiled/woodv))
 				footstepsound = "woodfootsteps"
