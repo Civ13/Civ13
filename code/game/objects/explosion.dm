@@ -54,7 +54,7 @@
 							M.playsound_local(epicenter, get_sfx("explosion_small"), 100, 1, frequency, falloff = 5)
 							shake_camera(M, 4, 1)
 
-						//You hear a far explosion if you're outside the blast radius. Small bombs shouldn't be heard all over the map.
+						//You hear a far explosion if you're outside the blast radius. Small bombs shouldn't be heard all over the station.
 
 					else if(dist <= far_dist)
 						var/far_volume = Clamp(far_dist*3, 30, 50) // Volume is based on explosion size and dist
