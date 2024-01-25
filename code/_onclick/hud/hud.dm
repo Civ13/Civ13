@@ -166,11 +166,11 @@ var/list/global_huds = list(
 	set hidden = TRUE
 
 	if (!hud_used)
-		usr << "<span class='warning'>This mob type does not use a HUD.</span>"
+		to_chat(usr, SPAN_WARNING("This mob type does not use a HUD."))
 		return
 
 	if (!ishuman(src))
-		usr << "<span class='warning'>Inventory hiding is currently only supported for human mobs, sorry.</span>"
+		to_chat(usr, SPAN_WARNING("Inventory hiding is currently only supported for human mobs, sorry."))
 		return
 
 	if (!client) return

@@ -25,7 +25,7 @@
 	var/mob/living/human/H = src
 	for(var/i = 1, i <= map.custom_company_nr.len, i++)
 		if (map.custom_company_nr[i] == newname || newname == "Global")
-			usr << "<span class='danger'>That company already exists. Choose another name.</span>"
+			to_chat(usr, SPAN_DANGER("That company already exists. Choose another name."))
 			return
 	if (newname != null && newname != "none")
 		var/choosecolor1 = "#000000"
@@ -42,7 +42,7 @@
 		var/list/newnamev = list("[newname]" = list(list(H,100,0)))
 		map.custom_company += newnamev
 		map.custom_company_colors += list("[newname]" = list(choosecolor1,choosecolor2))
-		usr << "<big>You now own <b>100%</b> of the new company [newname].</big>"
+		to_chat(usr, "<big>You now own <b>100%</b> of the new company [newname].</big>")
 		return
 	else
 		return
@@ -66,7 +66,7 @@
 					currlist_ind += cname
 					found = TRUE
 		if (!found)
-			usr << "You do not own any stocks."
+			to_chat(usr, "You do not own any stocks.")
 			return
 		else
 			var/compchoice = WWinput(H, "Which company to transfer stock ownership?", "Stock Transfer", "Cancel", currlist_ind)
@@ -103,7 +103,7 @@
 					CM << "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>"
 					return
 	else
-		usr << "<span class='danger'>You cannot transfer company ownership on this map.</span>"
+		to_chat(usr, SPAN_DANGER("You cannot transfer company ownership on this map."))
 		return
 
 //searches company members for a player

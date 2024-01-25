@@ -282,7 +282,7 @@
 	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You this surface is too rough to chisel upon.</span>"
+			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
 		..()
@@ -290,12 +290,12 @@
 	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
 		if (I.shiv < 10)
 			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
+			visible_message(SPAN_WARNING("[U] sharpens \the [I] on \the [src]!"))
 			if (I.shiv >= 10)
 				U.drop_from_inventory(I)
 				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
 				U.put_in_hands(SHK)
-				U << "\The [I] turns into a shank."
+				to_chat(U, "\The [I] turns into a shank.")
 				qdel(I)
 	..()
 
@@ -308,7 +308,7 @@
 	if(istype(W, /obj/item/weapon/chisel))
 		var design = "smooth"
 		if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You need to have a hammer in one of your hands to use a chisel.</span>"
+			to_chat(user, SPAN_WARNING("You need to have a hammer in one of your hands to use a chisel."))
 			return
 		else
 			var/display = list("Smooth", "Cave", "Underground Cave", "Carved Brick", "Cobbled", "Tiled", "Cancel")
@@ -316,24 +316,25 @@
 			if (input == "Cancel")
 				return
 			else if  (input == "Smooth")
-				user << "<span class='notice'>You will now carve the smooth design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the smooth design!"))
 				design = "smooth"
 			else if  (input == "Cave")
-				user << "<span class='notice'>You will now carve the cave design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the cave design!"))
 				design = "cave"
 			else if  (input == "Underground Cave")
-				user << "<span class='notice'>You will now carve the cave design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the cave design!"))
 				design = "undercave"
 			else if  (input == "Carved Brick")
-				user << "<span class='notice'>You will now carve the brick design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the brick design!"))
 				design = "carvedbrick"
 			else if  (input == "Cobbled")
-				user << "<span class='notice'>You will now carve the cobbled design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the cobbled design!"))
 				design = "cobbled"
 			else if  (input == "Tiled")
-				user << "<span class='notice'>You will now carve the tiled design!</span>"
+				to_chat(user, SPAN_NOTICE("You will not carve the tiled design!"))
 				design = "tiled"
-			visible_message("<span class='danger'>[user] starts to chisel a design!</span>", "<span class='danger'>You start chiseling a design.</span>")
+			visible_message(SPAN_DANGER("[user] starts to chisel a design!"))
+			user.visible_message(SPAN_DANGER("You start chiseling a design."))
 			playsound(src,'sound/effects/pickaxe.ogg',60,1)
 			if (do_after(user, 60, src))
 			//Designs possible are "smooth", "cave", "carvedbrick", "cobbled", "tiled"
@@ -345,12 +346,12 @@
 				else if(design == "cave")
 					src.icon_state = "rocky"
 					base_icon_state = icon_state
-					src.name = "underground cave wall"
+					src.name = "cave wall"
 					src.desc = "A cave wall."
 				else if(design == "undercave")
 					src.icon_state = "rock"
 					base_icon_state = icon_state
-					src.name = "cave wall"
+					src.name = "underground cave wall"
 					src.desc = "A cave wall."
 				else if(design == "carvedbrick")
 					src.icon_state = "b_brick_stone_wall"
@@ -395,7 +396,7 @@
 	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/chisel))
 		if (istype(H.l_hand, /obj/item/weapon/hammer) && istype(H.r_hand, /obj/item/weapon/hammer))
-			user << "<span class = 'warning'>You this surface is too rough to chisel upon.</span>"
+			to_chat(user, SPAN_WARNING("This surface is too rough to chisel upon."))
 			return
 	else
 		..()

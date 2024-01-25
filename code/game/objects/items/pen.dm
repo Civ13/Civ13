@@ -68,7 +68,7 @@
 	else
 		icon_state = "pen_[colour]"
 
-	user << "<span class='notice'>Changed color to '[colour].'</span>"
+	to_chat(user, SPAN_NOTICE("Changed color to '[colour]"))
 
 /obj/item/weapon/pen/invisible
 	desc = "It's an invisble pen marker."
@@ -79,7 +79,7 @@
 /obj/item/weapon/pen/attack(mob/M as mob, mob/user as mob)
 	if (!ismob(M))
 		return
-	user << "<span class='warning'>You stab [M] with the pen.</span>"
+	to_chat(user, SPAN_WARNING("You stab [M] with the pen."))
 //	M << "<span class = 'red'>You feel a tiny prick!</span>" //That's a whole lot of meta!
 	M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been stabbed with [name]  by [user.name] ([user.ckey])</font>")
 	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Used the [name] to stab [M.name] ([M.ckey])</font>")

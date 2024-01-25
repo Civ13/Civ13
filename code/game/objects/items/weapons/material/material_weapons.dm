@@ -57,7 +57,7 @@
 	force = round(force*force_divisor)*min(crafting_quality,2)
 	throwforce = round(material.get_blunt_damage()*thrown_force_divisor)*min(crafting_quality,2)
 	//spawn(1)
-	//	world << "[src] has force [force] and throwforce [throwforce] when made from default material [material.name]"
+	//	to_chat(world, "[src] has force [force] and throwforce [throwforce] when made from default material [material.name]")
 
 /obj/item/weapon/material/proc/set_material(var/new_material)
 	material = get_material_by_name(new_material)

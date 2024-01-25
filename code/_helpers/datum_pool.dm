@@ -56,7 +56,7 @@ var/global/list/GlobalPool = list()
 
 	if (length(GlobalPool[D.type]) > ATOM_POOL_COUNT)
 		#ifdef DEBUG_ATOM_POOL
-		world << text("DEBUG_DATUM_POOL: PlaceInPool([]) exceeds []. Discarding.", D.type, ATOM_POOL_COUNT)
+		to_chat(world, text("DEBUG_DATUM_POOL: PlaceInPool([]) exceeds []. Discarding.", D.type, ATOM_POOL_COUNT))
 		#endif
 		if (processes.garbage)
 			processes.garbage.AddTrash(D)

@@ -1,6 +1,6 @@
 
 /hook/roundstart/proc/mainstuff()
-	world << "<b><big>The round has started!</big></b>"
+	to_chat(world, "<b><big>The round has started!</big></b>")
 
 	for (var/C in clients)
 		winset(C, null, "mainwindow.flash=1")

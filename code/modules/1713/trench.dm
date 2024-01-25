@@ -131,7 +131,7 @@ var/list/global/floor_cache = list()
 				return TRUE //prevent afterattack 
 	else if (istype(C, /obj/item/clothing) && !busy)
 		var/obj/item/clothing/CL = C
-		usr << "<span class='notice'>You start washing \the [C].</span>"
+		to_chat(usr, SPAN_NOTICE("You start washing \the [C]."))
 		var/turf/location = user.loc
 
 		busy = TRUE
@@ -462,7 +462,7 @@ var/list/global/floor_cache = list()
 			H.water += 75
 			H.bladder += 75
 			H << "You drink some water."
-			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+			playsound(H.loc, "drink", rand(10, 50), TRUE)
 			return
 		else
 			return
@@ -544,7 +544,7 @@ var/list/global/floor_cache = list()
 				H.water += 75
 				H.bladder += 75
 				H << "You drink some water."
-				playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+				playsound(H.loc, "drink", rand(10, 50), TRUE)
 				return
 			else
 				return

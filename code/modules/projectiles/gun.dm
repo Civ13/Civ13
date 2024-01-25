@@ -398,13 +398,13 @@
 	//Accuracy modifiers
 	P.accuracy = accuracy*acc_mod
 	P.dispersion = dispersion
-/*
+
 	//accuracy bonus from aiming
 	if (aim_targets && (target in aim_targets))
 		//If you aim at someone beforehead, it'll hit more often.
 		//Kinda balanced by fact you need like 2 seconds to aim
 		//As opposed to no-delay pew pew
-		P.accuracy += 2*/
+		P.accuracy += 2
 
 //does the actual launching of the projectile
 /obj/item/weapon/gun/proc/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)

@@ -56,8 +56,7 @@
 			tlist[2] += scores[SF.faction]
 			if (tlist[2] >= maxpoints)
 				var/message = "[tlist[1]] has reached a valuation over [maxpoints] and won!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-				score()
+				to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 				win_condition_spam_check = TRUE
 				ticker.finished = TRUE
 				return TRUE
@@ -190,14 +189,14 @@
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
 			if (H.original_job_title == "Nurse")
 				if (world.time >= H.next_gracewall_message)
-					H << "<span class = 'warning'>You cannot leave the Hospital area as a Nurse.</span>"
+					to_chat(H, SPAN_WARNING("You cannot leave the hospital area as a nurse."))
 					H.next_gracewall_message = world.time + 10
 				return TRUE
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
 			if (H.civilization == "Sheriff Office")
 				if (!H.is_undercover)
 					if (world.time >= H.next_gracewall_message)
-						H << "<span class = 'warning'>That area is out of your jurisdiction, at least, on duty...</span>"
+						to_chat(H, SPAN_WARNING("You can't go any farther, it's out of your jurisdiction; at least, on duty..."))
 						H.next_gracewall_message = world.time + 10
 					return TRUE
 		return !faction1_can_cross_blocks()
@@ -238,7 +237,7 @@
 	if (repeat)
 		spawn(12000)
 			spawn_disks(repeat)
-	world << "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>"
+	to_chat(world, "<font size=2 color ='yellow'>New disks have arrived at the vaults!</font>")
 
 /obj/map_metadata/art_of_the_deal/proc/refill_marketplace(repeat = FALSE)
 	if (precursor_stocks.len >= 4)
@@ -291,7 +290,7 @@
 		spawn(rand(12000,14000))
 			refill_marketplace(repeat)
 /obj/map_metadata/art_of_the_deal/proc/score()
-	world << "<b><font color='yellow' size=3>Scores:</font></b>"
+	to_chat(world, "<b><font color='yellow' size=3>Scores:</font></b>")
 	for(var/obj/structure/closet/safe/SF in world)
 		if (SF.faction)
 			var/list/tlist = list(SF.faction,0)
@@ -304,7 +303,7 @@
 					var/obj/item/stack/money/M = I
 					tlist[2]+=M.amount*M.value/4
 			tlist[2] += scores[SF.faction]
-			world << "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>"
+			to_chat(world, "<big><font color='yellow' size=2>[tlist[1]]: [tlist[2]] points</font></big>")
 //five-o scores
 	var/list/tlist2 = list("Sheriff Office",0)
 	for(var/obj/item/I in get_area(/area/caribbean/prison/jail))
@@ -316,7 +315,7 @@
 			var/obj/item/stack/money/M = I
 			tlist2[2]+= M.amount*(M.value/4)
 	tlist2[2] += scores["Sheriff Office"]
-	world << "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>"
+	to_chat(world, "<big><font color='yellow' size=2>[tlist2[1]]: [tlist2[2]] points</font></big>")
 	spawn(3000)
 		score()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,6 +339,7 @@
 		/obj/item/weapon/handcuffs/rope = 50,
 		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
+
 /obj/structure/vending/undercover_apparel
 	name = "undercover apparel"
 	desc = "All the equipment needed for undercover missions."
@@ -364,11 +364,12 @@
 		/obj/item/clothing/accessory/holster/chest = 10,
 		/obj/item/weapon/material/kitchen/utensil/knife/shank/iron = 10,
 	)
+
 	attack_hand(mob/living/human/user as mob)
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-			user << "You do not have access to this."
+			to_chat(user, "You do not have access to this.")
 			return
 
 /obj/structure/vending/sales/business_weapons
@@ -391,6 +392,7 @@
 		/obj/item/clothing/head/ghillie = 2,
 		/obj/item/clothing/suit/storage/ghillie = 2,
 	)
+
 	prices = list(
 		/obj/item/clothing/accessory/armor/nomads/civiliankevlar = 1000,
 		/obj/item/clothing/head/ghillie = 500,
@@ -414,25 +416,25 @@
 	)
 	attack_hand(mob/living/human/user as mob)
 		if (!user.gun_permit)
-			user << SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station.")
+			to_chat(user, SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station."))
 			return
 		var/count = 0
 		for (var/list/L in map.gun_registrations)
 			if(L[3] == user.real_name)
 				count++
 		if (count > 4)
-			user << SPAN_WARNING("You can't buy more weapons. You already have [count] weapons registered to your name.")
+			to_chat(user, SPAN_WARNING("You can't buy more weapons. You can only have [count] weapons registered to your name."))
 		..()
 	attackby(obj/item/I, mob/living/human/user)
 		if (!user.gun_permit)
-			user << SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station.")
+			to_chat(user, SPAN_WARNING("You do not have a valid gun permit. Get one first from your local police station."))
 			return
 		var/count = 0
 		for (var/list/L in map.gun_registrations)
 			if(L[3] == user.real_name)
 				count++
 		if (count > 4)
-			user << SPAN_WARNING("You can't buy more weapons. You already have [count] weapons registered to your name.")
+			to_chat(user, SPAN_WARNING("You can't buy more weapons. You can only have [count] weapons registered to your name."))
 		..()
 
 /obj/structure/vending/police_equipment
@@ -472,7 +474,7 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-			user << "You do not have access to this."
+			to_chat(user, "You do not have access to this.")
 			return
 
 /obj/structure/vending/police_weapons
@@ -496,7 +498,7 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-			user << "You do not have access to this."
+			to_chat(user, "You do not have access to this.")
 			return
 
 /obj/structure/vending/police_weapons/ltl
@@ -526,7 +528,7 @@
 		if (user.civilization == "Sheriff Office")
 			..()
 		else
-			user << "You do not have access to this."
+			to_chat(user, "You do not have access to this.")
 			return
 /obj/item/weapon/package
 	name = "package"
@@ -545,15 +547,18 @@
 	sharp = FALSE
 	edge = FALSE
 	w_class = ITEM_SIZE_NORMAL
+
 /obj/item/weapon/paper_bin/police
 	name = "incoming documents"
 	desc = "incoming documents and warrants will arrive here."
 	amount = 0
+
 /obj/item/weapon/paper/police
 	icon_state = "police_record"
 	base_icon = "police_record"
 	name = "Police Record"
 	var/spawntimer = 0
+
 /obj/item/weapon/paper/police/warrant
 	icon_state = "police_record"
 	base_icon = "police_record"
@@ -573,6 +578,7 @@
 			if (spawntimer)
 				spawn(spawntimer)
 					qdel(src)
+
 /obj/item/weapon/paper/police/searchwarrant
 	icon_state = "police_warrant"
 	base_icon = "police_warrant"
@@ -596,6 +602,7 @@
 	desc = "Place your order here!"
 	sound_type = 'sound/effects/deskbell.ogg'
 	icon_state = "menu"
+
 /obj/structure/vending/sales/menu/pizza
 	products = list(
 	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzasauced = 30,
@@ -615,6 +622,7 @@
 	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/meatpizza = 120,
 	/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/pizzahawaiian = 12000,
 	)
+
 /obj/structure/vending/sales/menu/ramen
 	products = list(
 	/obj/item/weapon/reagent_containers/food/snacks/ramen = 30,
@@ -624,6 +632,7 @@
 	/obj/item/weapon/reagent_containers/food/snacks/ramen = 100,
 	/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake = 120,
 	)
+
 /obj/structure/vending/sales/menu/mcd
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "mcd2"
@@ -639,6 +648,7 @@
 	/obj/item/weapon/reagent_containers/food/snacks/fries = 20,
 	/obj/item/weapon/reagent_containers/food/drinks/can/cola = 20,
 	)
+
 /obj/structure/vending/sales/menu/donuts
 	products = list(
 	/obj/item/weapon/storage/fancy/donut_box = 30,
@@ -656,6 +666,7 @@
 	/obj/item/weapon/reagent_containers/food/drinks/coffee = 20,
 	/obj/item/weapon/reagent_containers/food/condiment/bsugar = 20,
 	)
+
 //////////////////SCREEN HELPERS////////////////////////////
 /obj/screen/areashow_aod
 	maptext = "<center><font color='yellow'>Unknown Area</font></center>"
@@ -741,7 +752,7 @@
 		real_name = chosen_name
 		voice = chosen_name
 		is_undercover = TRUE
-		src << "<b><big>You go undercover.</big></b>"
+		to_chat(src, "<b><big>You go undercover.</big></b>")
 		return
 	else
 		switch(original_job_title)
@@ -754,7 +765,7 @@
 				name = "Detective [hidden_name]"
 				voice = "Detective [hidden_name]"
 		is_undercover = FALSE
-		src << "<b><big>You are now revealing your identity again.</big></b>"
+		to_chat(src, "<b><big>You are now revealing your identity again.</big></b>")
 		return
 
 /obj/item/clothing/accessory/armband/policebadge
@@ -828,7 +839,7 @@
 							else
 								var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(SF)
 								D.amount = i[5]/D.value
-					H << "<big><font color='green'>You fulfill the order. The payment has been sent to your company's safe.</font></big>"
+					to_chat(H, "<big><font color='green'>You fulfill the order. The payment has been sent to your company's safe.</font></big>")
 
 	else
 		..()
@@ -983,29 +994,32 @@
 
 /obj/structure/npc_vendor/smuggler/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	var/smuggler_cooldown = 0
-	if (user.civilization == "Sheriff Office")
-		user << "Good day, officer."
+	if (user.civilization == "Sheriff Office" || user.civilization == "Government")
+		to_chat(user, "Good day, everything is okay and running smoothly.")
 		return
+	if (user.civilization == "Paramedics")
+		to_chat(user, "Keep up the good work, no one here is injured, see you.")
+		return 
 	if (world.time <= smuggler_cooldown)
-		user << "No shipments available, come back later."
+		to_chat(user, "No shipments available, come back later.")
 		return
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
 		if (M && M.value*M.amount < 500*4)
-			user << "<span class='warning'>Not enough money! You need to give at least 500 dollars.</span>"
+			to_chat(user, SPAN_WARNING("Not enough money! You need to give me at least 500 dollars."))
 			return
 		M.amount-=500/5
 		if (M.amount <= 0)
 			qdel(M)
-		user << "A shipment will arrive soon at the Docks. Better be ready."
+		to_chat(user, "A shipment will arrive soon at the Docks. Better be ready.")
 		if (prob(50))
 			for (var/mob/living/human/H in player_list)
 				if (H.civilization == "Goldstein Solutions" || H.civilization == "Kogama Kraftsmen" || H.civilization ==  "Rednikov Industries" || H.civilization ==  "Giovanni Blu Stocks")
 					if (H.civilization != user.civilization)
-						H << "<b>Word of mouth goes that a shipment will arrive soon at the Docks. Might be worth intercepting it.</b>"
+						to_chat(H, "<b>Word of mouth goes that a shipment will arrive soon at the docks. Might be worth intercepting it.</b>")
 			if (prob(50))
 				spawn(rand(300,1800))
-					global_broadcast(FREQP,"<big>A Confidential Informant gave away that a suspicious shipment will arrive soon at the Docks!</big>")
+					global_broadcast(FREQP,"<big>A confidential informant gave away that a suspicious shipment will arrive soon at the docks!</big>")
 		smuggler_cooldown = world.time + 1800
 		spawn(rand(900,1800))
 			if (prob(90))
@@ -1076,21 +1090,21 @@
 /obj/structure/npc_vendor/biker/attack_hand(mob/living/human/user as mob)
 	var/optlist = list("Cancel","Sell drugs","Buy weapons")
 	if (reputation[user.civilization] < 0)
-		user << "\icon[src] I'm not dealing with you punks anymore, get the fuck out of here."
+		to_chat(user, "\icon[src] I'm not dealing with you punks anymore, get the fuck out of here.")
 		return
 	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
 		if (user.civilization == "Sheriff Office")
-			user << "\icon[src] Get off my property, pig."
+			to_chat(user, "\icon[src] Get off my property, pig.")
 		else
-			user << "\icon[src] Sorry, who the fuck are you? Get outta here!"
+			to_chat(user, "\icon[src] Sorry, who the fuck are you? Get outta here!")
 		return
 	if (world.time <= biker_cooldown)
-		user << "\icon[src] My boys are busy for now. Come back later."
+		to_chat(user, "\icon[src] My boys are busy for now. Come back later.")
 		return
 	var/choice1 = WWinput(user, "What do you need?", "Bruce the Biker", "Cancel", optlist)
 	switch(choice1)
 		if ("Cancel")
-			user << "\icon[src] Don't waste my time again."
+			to_chat(user, "\icon[src] Don't waste my time again.")
 			return
 		if ("Sell drugs")
 			if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/pill/) || istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/pill/))
@@ -1107,7 +1121,7 @@
 						if (D.amount == 0)
 							qdel(D)
 						user.put_in_hands(D)
-						user << "\icon[src] Here, there's more where it came from."
+						to_chat(user, "\icon[src] Here, there's more where it came from.")
 						src.reputation[user.civilization] += 2
 						if (prob(50))
 							if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
@@ -1115,7 +1129,7 @@
 								AD.heat[user.civilization] += 1
 						return
 					else
-						user << pick("\icon[src] You've got some nerve trying to pass off this cut crap as meth! Fuck off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!")
+						to_chat(user, pick("\icon[src] You've got some nerve trying to pass off this cut crap as meth! Fuck off!","What the hell is this weak shit? Even my grandmother's painkillers pack more punch!"))
 						return
 				else if (P && P.reagents.has_reagent("cocaine") && !P.reagents.has_reagent("methamphetamine"))
 					if (P.reagents.get_reagent_amount("cocaine")>= 25)
@@ -1125,7 +1139,7 @@
 						if (D.amount == 0)
 							qdel(D)
 						user.put_in_hands(D)
-						user << "\icon[src] Here, there's more where it came from."
+						to_chat(user, "\icon[src] Here, there's more where it came from.")
 						src.reputation[user.civilization] += 1
 						if (prob(50))
 							if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
@@ -1133,13 +1147,13 @@
 								AD.heat[user.civilization] += 1
 						return
 					else
-						user << "\icon[src] What's that? Babypowder? Your shit's cut! Fuck off!"
+						to_chat(user, "\icon[src] What's that? Babypowder? Your shit's cut! Fuck off!")
 						return
 				else if (P && P.reagents.has_reagent("cocaine") && P.reagents.has_reagent("methamphetamine"))
-					user << "\icon[src] Are you trying to get my clients killed? Tell your cook to separate his shit."
+					to_chat(user, "\icon[src] Are you trying to get my clients killed? Tell your cook to separate his shit.")
 					return
 				else if (P && P.reagents.has_reagent("crack"))
-					user << "\icon[src] Fuck off, my boys don't mess with that shit."
+					to_chat(user, "\icon[src] Fuck off, my boys don't mess with that shit.")
 					return
 			else if (istype(user.get_active_hand(),/obj/item/weapon/reagent_containers/cocaineblock/) || istype(user.get_inactive_hand(),/obj/item/weapon/reagent_containers/cocaineblock/))
 				var/obj/item/weapon/reagent_containers/cocaineblock/CB
@@ -1153,14 +1167,14 @@
 				if (D.amount == 0)
 					qdel(D)
 				user.put_in_hands(D)
-				user << "\icon[src] Holy shit, now that's some product. I'll need some time to distribute it."
+				to_chat(user, "\icon[src] Holy shit, now that's some product. I'll need some time to distribute it.")
 				biker_cooldown = world.time + 6000
 				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 					var/obj/map_metadata/art_of_the_deal/AD = map
 					AD.heat[user.civilization] += 15
 				return
 			else
-				user << "\icon[src] You need have the drugs in one of your hands."
+				to_chat(user, "\icon[src] You need have the drugs in one of your hands.")
 				return
 		if ("Buy weapons")
 			//path, price
@@ -1169,7 +1183,7 @@
 			var/obj/item/stack/money/M
 			switch(choice2)
 				if ("Cancel")
-					user << "\icon[src] Don't bother wasting my time again."
+					to_chat(user, "\icon[src] Don't bother wasting my time again.")
 					return
 				if ("Smith & Wesson Model 30")
 					if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
@@ -1178,7 +1192,7 @@
 						else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 							M = user.get_inactive_hand()
 						if(M.value*M.amount < 350*4)
-							user << "\icon[src] Not enough money. You need 350 dollars."
+							to_chat(user, "\icon[src] Not enough money. You need 350 dollars.")
 							return
 						M.amount -= 350/5
 						if (M.amount <= 0)
@@ -1191,7 +1205,7 @@
 							var/obj/map_metadata/art_of_the_deal/AD = map
 							AD.heat[user.civilization] += 2
 							if (AD.heat[user.civilization] >= 40)
-								user << "\icon[src] You better run fast before the feds get you."
+								to_chat(user, "\icon[src] You better run fast before the feds get you.")
 								spawn(rand(300,600))
 									global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an illegal firearm. Detain and search the suspect as soon as possible.</big>")
 						return
@@ -1202,7 +1216,7 @@
 						else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 							M = user.get_inactive_hand()
 						if(M.value*M.amount < 700*4)
-							user << "\icon[src] Not enough money. You need 700 dollars."
+							to_chat(user, "\icon[src] Not enough money. You need 700 dollars.")
 							return
 						M.amount -= 700/5
 						if (M.amount <= 0)
@@ -1216,7 +1230,7 @@
 							var/obj/map_metadata/art_of_the_deal/AD = map
 							AD.heat[user.civilization] += 2
 							if (AD.heat[user.civilization] >= 40)
-								user << "\icon[src] You better run fast before the feds get you."
+								to_chat(user, "\icon[src] You better run fast before the feds get you.")
 								spawn(rand(300,600))
 									global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an illegal firearm. Detain and search the suspect as soon as possible.</big>")
 						return
@@ -1245,17 +1259,17 @@
 
 /obj/structure/npc_vendor/cartel/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
-		user << "\icon[src] Don't waste my time, find another hole to climb into, sapo."
+		to_chat(user, "\icon[src] Don't waste my time, find another hole to climb into, sapo.")
 		return
 	if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
-		user << "\icon[src] I have nothing to tell you."
+		to_chat(user, "\icon[src] I have nothing to tell you.")
 		return
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		var/obj/map_metadata/art_of_the_deal/AD = map
 		if (AD.heat[user.civilization] >= 35 && AD.heat[user.civilization] < 40)
-			user << SPAN_NOTICE("\icon[src] You should start being more careful with what you've got going. Maybe someone can help you go under the radar.")
+			to_chat(user, SPAN_NOTICE("\icon[src] You should start being more careful with the produce. Maybe someone can help you get under the radar."))
 		if (AD.heat[user.civilization] >= 40)
-			user << SPAN_WARNING("\icon[src] Chico, you'll get us busted by the feds. They are watching you close!")
+			to_chat(user, SPAN_WARNING("\icon[src] Chico, you'll get us busted by the feds. They are watching you close!"))
 			if (prob(80) && world.time >= heat_message_cooldown[user.civilization])
 				spawn(300)
 					if (prob(50))
@@ -1295,7 +1309,7 @@
 							var/obj/map_metadata/art_of_the_deal/AD = map
 							AD.heat[user.civilization] += 1
 				else
-					user << "\icon[src] Not enough money, maricon."
+					to_chat(user, "\icon[src] Not enough money, maricon.")
 			if ("10 grams")
 				var/tenner_price = 600
 				if (reputation[user.civilization] >= 20)
@@ -1311,7 +1325,7 @@
 						var/obj/map_metadata/art_of_the_deal/AD = map
 						AD.heat[user.civilization] += 5
 				else
-					user << "\icon[src] Not enough money, maricon."
+					to_chat(user, "\icon[src] Not enough money, maricon.")
 			if ("a block")
 				if (M && M.value*M.amount >= 1200*4)
 					M.amount-=1200/5
@@ -1323,7 +1337,7 @@
 						var/obj/map_metadata/art_of_the_deal/AD = map
 						AD.heat[user.civilization] += 10
 				else
-					user << "\icon[src] Not enough money, maricon."
+					to_chat(user, "\icon[src] Not enough money, maricon.")
 		return
 	else
 		return
@@ -1350,13 +1364,13 @@
 
 /obj/structure/npc_vendor/walter/attack_hand(mob/living/human/user as mob)
 	if (reputation[user.civilization] < 0)
-		user << "\icon[src] Don't waste my time."
+		to_chat(user, "\icon[src] Don't waste my time.")
 		return
 	if (user.civilization == "Sheriff Office" || user.civilization == "Government")
-		user << "\icon[src] I have nothing to tell you."
+		to_chat(user, "\icon[src] I have nothing to tell you.")
 		return
 	if (world.time <= walter_cooldown)
-		user << "\icon[src] I need more time to cook. Come back later."
+		to_chat(user, "\icon[src] I need more time to cook. Come back later.")
 		return
 	var/obj/item/stack/money/M
 	if (istype(user.get_active_hand(),/obj/item/stack/money) || istype(user.get_inactive_hand(),/obj/item/stack/money))
@@ -1371,7 +1385,7 @@
 		if ("Buy chemicals")
 			var/chemical_price = 100
 			if (!M || M.value*M.amount < chemical_price*4)
-				user << "\icon[src] You need [chemical_price] dollars in one of your hands."
+				to_chat(user, "\icon[src] You need [chemical_price] dollars in one of your hands.")
 				return
 			var/choice2 = WWinput(user, "What kind of chemicals?", "Mr. White", "Cancel", chemical_list)
 			switch(choice2)
@@ -1393,7 +1407,7 @@
 		if ("Buy explosives")
 			var/c4_price = 900
 			if (!M || (M && M.value*M.amount < c4_price*4))
-				user << "\icon[src] You need [c4_price] dollars in one of your hands."
+				to_chat(user, "\icon[src] You need [c4_price] dollars in one of your hands.")
 				return
 			M.amount -= c4_price/5
 			if (M.amount <= 0)
@@ -1403,7 +1417,7 @@
 				var/obj/map_metadata/art_of_the_deal/AD = map
 				AD.heat[user.civilization] += 25
 				if (AD.heat[user.civilization] >= 40)
-					user << "\icon[src] You better run fast before the feds get you."
+					to_chat(user, "\icon[src] You better run fast before the feds get you.")
 				spawn(300)
 					global_broadcast(FREQP,"<big>The ATF reports that [user.real_name] may have acquired an explosive device.</big>")
 			return
@@ -1439,29 +1453,29 @@
 				return
 			if ("Bribe")
 				if (reputation[user.civilization] < 0)
-					user << "\icon[src] Don't waste my time. I can't do anything for you anymore."
+					to_chat(user, "\icon[src] Don't waste my time. I can't do anything for you anymore.")
 					return
 				var/bribe_price = 500
 				if (!M || M.value*M.amount < bribe_price*4)
-					user << "\icon[src] You need at least [bribe_price] dollars in one of your hands."
+					to_chat(user, "\icon[src] You need at least [bribe_price] dollars in one of your hands.")
 					return
 				M.amount -= bribe_price/5
 				if (M.amount <= 0)
 					qdel(M)
 				reputation[user.civilization] += 1
-				user << "\icon[src] Pleasure doing business with you."
+				to_chat(user, "\icon[src] Pleasure doing business with you.")
 			if ("Reduce heat")
 				if (reputation[user.civilization] == 0)
-					user << "\icon[src] I will need a little sign of appreciation for this, if you know what I mean."
+					to_chat(user, "\icon[src] I will need a little sign of appreciation for this, if you know what I mean.")
 					return
 				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 					var/obj/map_metadata/art_of_the_deal/AD = map
 					var/heat_price = ceil(200/reputation[user.civilization])
 					if (AD.heat[user.civilization] == 0)
-						user << "\icon[src] You gentlemen are off the radar, for now."
+						to_chat(user, "\icon[src] You gentlemen are off the radar, for now.")
 						return
 					if (world.time <= heat_cooldown)
-						user << "\icon[src] Not so fast, pal. I can't just temper with evidence that fast. That's not your sister."
+						to_chat(user, "\icon[src] Not so fast, pal. I can't just temper with evidence that fast. That's not your sister.")
 						return
 					var/evidence_amount = list("Cancel","1","5","10")
 					var/heat_choice = WWinput(user, "Your company has currently [AD.heat[user.civilization]] evidence files gathered against it. How many do you want me to get rid off?","Agent Harrison Yates", "Cancel", evidence_amount)
@@ -1470,7 +1484,7 @@
 							return
 						if ("1")
 							if (!M || M.value*M.amount < heat_price*4)
-								user << "\icon[src] You need at least [heat_price] dollars in one of your hands."
+								to_chat(user, "\icon[src] You need at least [heat_price] dollars in one of your hands.")
 								return
 							M.amount -= heat_price/5
 							if (M.amount <= 0)
@@ -1480,7 +1494,7 @@
 								AD.heat[user.civilization] = 0
 						if ("5")
 							if (!M || M.value*M.amount < (5*heat_price)*4)
-								user << "\icon[src] You need at least [5*heat_price] dollars in one of your hands."
+								to_chat(user, "\icon[src] You need at least [5*heat_price] dollars in one of your hands.")
 								return
 							M.amount -= (5*heat_price)/5
 							if (M.amount <= 0)
@@ -1491,7 +1505,7 @@
 							heat_cooldown = world.time + 600
 						if ("10")
 							if (!M || M.value*M.amount < (10*heat_price)*4)
-								user << "\icon[src] You need at least [10*heat_price] dollars in one of your hands."
+								to_chat(user, "\icon[src] You need at least [10*heat_price] dollars in one of your hands.")
 								return
 							M.amount -= (10*heat_price)/5
 							if (M.amount <= 0)
@@ -1507,7 +1521,7 @@
 				return
 			if ("Get Intel")
 				if (world.time <= intel_cooldown)
-					user << "\icon[src] I need more time to investigate. Come back later."
+					to_chat(user, "\icon[src] I need more time to investigate. Come back later.")
 					return
 				var/intel_type = list("Cancel","Narcotics","Illegal Firearms","Disks")
 				var/intel_choice = WWinput(user, "What do you need?", "Agent Harrison Yates", "Cancel", intel_type)
@@ -1523,12 +1537,12 @@
 									count_c++
 								if (P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine")>= 10)
 									count_m++
-						user << "\icon[src] There's currently [count_c] grams of cocaine and [count_m] grams of methamphtamine in circulation right now."
+						to_chat(user, "\icon[src] There's currently [count_c] grams of cocaine and [count_m] grams of methamphtamine in circulation right now.")
 						var/count_b = 0
 						for (var/obj/item/weapon/reagent_containers/cocaineblock/block in world)
 							if (block)
 								count_b++
-						user << "\icon[src] There's currently [count_b] blocks of cocaine in circulation."
+						to_chat(user, "\icon[src] There's currently [count_b] blocks of cocaine in circulation.")
 					if ("Illegal Firearms")
 						var/count_f = 0
 						var/count_bomb = 0
@@ -1538,13 +1552,13 @@
 						for (var/obj/item/weapon/plastique/c4/bomb in world)
 							if (bomb)
 								count_bomb++
-						user << "\icon[src] There's [count_f] illegal firearms and [count_bomb] explosives in circulation right now."
+						to_chat(user, "\icon[src] There's [count_f] illegal firearms and [count_bomb] explosives in circulation right now.")
 					if ("Disks")
 						var/count_d = 0
 						for (var/obj/item/weapon/disk/D in world)
 							if (D.faction)
 								count_d++
-						user << "\icon[src] There's [count_d] illegal disks in circulation right now."
+						to_chat(user, "\icon[src] There's [count_d] illegal disks in circulation right now.")
 				intel_cooldown = world.time + 4800
 				return
 
@@ -1554,7 +1568,7 @@
 	icon_state = "bouncer"
 
 /obj/structure/npc_vendor/bouncer/attack_hand(mob/living/human/user as mob)
-	user << "\icon[src] No weapons, no drugs inside the club, else I'll make you drop the soap."
+	to_chat(user, "\icon[src] No weapons, no drugs inside the club, else I'll make you drop the soap.")
 	return
 
 /obj/structure/npc_vendor/big_lenny
@@ -1563,5 +1577,5 @@
 	icon_state = "big_lenny"
 
 /obj/structure/npc_vendor/big_lenny/attack_hand(mob/living/human/user as mob)
-	user << "\icon[src] Shiieeet, come back another time, I'm taking a nap."
+	to_chat(user, "\icon[src] Shiieeet, come back another time, I'm taking a nap.")
 	return

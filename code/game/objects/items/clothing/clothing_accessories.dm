@@ -26,7 +26,7 @@
 				H.update_inv_w_uniform()
 			return
 		else
-			user << "<span class='warning'>You cannot attach more accessories of this type to [src].</span>"
+			to_chat(user, SPAN_DANGER("You cannot attach more accessories of this type to [src]."))
 		return
 
 	if (accessories.len)

@@ -296,5 +296,5 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 			var/list/L = chemical_reactions_list[reaction]
 			for (var/t in L)
 				. += "	has: [t]\n"
-	world << .
+	to_chat(world, .)
 */
