@@ -69,7 +69,6 @@
 "iq" = (/obj/structure/table/modern,/obj/item/weapon/globe,/obj/covers/repairedfloor/ship/three,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "ir" = (/obj/covers/steelplating,/obj/effect/floor_decal/techfloor/hole,/obj/effect/floor_decal/techfloor/hole/right,/obj/effect/floor_decal/techfloor/hole/right{pixel_y = 12},/obj/effect/floor_decal/techfloor/hole{pixel_y = 12},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "ix" = (/obj/covers/steelplating,/obj/structure/railing/steel{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
-"iB" = (/obj/map_metadata/battle_ships,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "iH" = (/obj/covers/steelplating,/obj/structure/closet/anchored,/obj/effect/decal/cleanable/cobweb,/obj/effect/decal/cleanable/dirt,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "iL" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "iP" = (/obj/covers/steelplating,/obj/structure/mine_support/stone/concrete,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
@@ -171,7 +170,7 @@
 "ue" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/obj/effect/floor_decal/corner_steel_grid,/obj/structure/table/modern,/obj/structure/computer/nopower{pixel_y = 5},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "uf" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/structure/railing/steel{dir = 8},/obj/structure/railing/steel{dir = 1},/obj/structure/bed/chair/commander/naval{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "ug" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/structure/table/modern,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
-"um" = (/obj/covers/steelplating,/obj/effect/floor_decal/industrial/danger{dir = 8},/obj/structure/sign/securearea{desc = "A warning sign which reads 'DANGER - EXPLOSIVES'."; name = "\improper DANGER - EXPLOSIVES"; pixel_x = -32},/obj/effect/decal/cleanable/cobweb,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
+"um" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/effect/floor_decal/corner_steel_grid{dir = 6},/obj/effect/floor_decal/steeldecal/steel_decals_central3{dir = 8},/obj/structure/radio/receiver/loudspeaker/faction1{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/storage/magazine)
 "up" = (/obj/covers/steelplating,/obj/structure/railing/steel{dir = 8},/obj/structure/railing/steel,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "uw" = (/obj/covers/steelplating,/obj/effect/floor_decal/corner_steel_grid/diagonal{dir = 8},/obj/effect/floor_decal/corner_steel_grid/diagonal,/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 8},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "uN" = (/obj/covers/steelplating,/obj/structure/closet/crate/ww2/mosin_ammo,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
@@ -336,6 +335,7 @@
 "NE" = (/obj/covers/steelplating,/obj/effect/floor_decal/corner_steel_grid/diagonal{dir = 8},/obj/effect/floor_decal/corner_steel_grid/diagonal,/obj/structure/table/modern,/obj/covers/jail/steeljail{icon = 'icons/obj/structures.dmi'; icon_state = "bars_bank"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "NP" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/anyone,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "NX" = (/obj/covers/steelplating,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/item/cannon_ball/shell/naval/HE150,/obj/structure/table/rack/shelf,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/storage/magazine)
+"Og" = (/obj/covers/steelplating,/obj/structure/railing/steel{dir = 8},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/structure/boat_spawn_lever/west,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "Os" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "Ow" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/anyone,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/storage)
 "OD" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/effect/floor_decal/corner_steel_grid{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
@@ -409,6 +409,7 @@
 "VX" = (/obj/covers/steelplating,/obj/structure/flag/blugoslavia,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "We" = (/obj/covers/cement_wall,/obj/structure/cell_tower{desc = "A large steel antenna, to power field radios."; name = "radio antenna"},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "Wq" = (/obj/covers/road,/obj/structure/sign/flag/blugoslavia{pixel_y = 32},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
+"Wr" = (/obj/covers/steelplating,/obj/effect/floor_decal/industrial/danger{dir = 8},/obj/structure/sign/securearea{desc = "A warning sign which reads 'DANGER - EXPLOSIVES'."; name = "\improper DANGER - EXPLOSIVES"; pixel_x = -32},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "Ws" = (/obj/covers/steelplating,/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "WD" = (/obj/structure/table/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/item/weapon/storage/firstaid/combat/modern,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/obj/covers/steelplating/white,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "WG" = (/obj/covers/steelplating,/obj/structure/toilet,/obj/effect/floor_decal/rust,/obj/effect/decal/cleanable/poo,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
@@ -429,7 +430,7 @@
 "YS" = (/obj/covers/steelplating,/obj/effect/floor_decal/spline/plain,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "YX" = (/obj/covers/steelplating,/obj/structure/mine_support/stone/concrete,/obj/structure/railing/steel,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "YZ" = (/obj/covers/steelplating,/obj/structure/mine_support/stone/concrete,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
-"Ze" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
+"Ze" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/obj/structure/boat_spawn_lever/east,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "Zg" = (/obj/covers/steelplating,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/obj/structure/radio/receiver/loudspeaker/faction2,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "Zh" = (/obj/covers/road,/obj/structure/radio/receiver/loudspeaker/faction2{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "Zq" = (/obj/covers/steelplating,/obj/structure/mine_support/stone/concrete,/obj/structure/railing/steel{dir = 1; icon_state = "railing0"},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 8},/obj/structure/railing/steel{dir = 8},/obj/structure/railing/steel{dir = 4; icon_state = "railing0"},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
@@ -451,9 +452,9 @@ PCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQyrTQgrWDsOLTLTTQcZsowZsoHFHFTiTQlYwZTQaKJVTQrnDE
 PCPCPCPCPCPCTQTQTQTQTQTQZUrBFtTQyrTQHCJjJjJjJjTQJJsowZwZHFHFHFTQTiwZTQsgTOTQsgTOTQsgTOTQRNMhZgMuMhMhxKfyqvMhMhMhNwMhMhMhMhTQNwMhbzyXUzUzTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQTQBkIZBkBkzLcwTQyrTQHfHfHfFxJjTQdSsowZwZgIgIgITQTQOwTQGCLqphMhhRphMhMhMuNwmjbTTQMhMhmljUqvClMhMhMhMhFpMhMhCSMhMhLPLPNwMhCSMhMhNwzDNwMhTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQTQjYUuUujYuaBETQyrTQTQTQTQTQrGTQTQdSimwZsowZwZOwLqphTQTQTQMuTQTQTQTQTQTQoPNEoPTQMhtLTQTQTQTQrJTQTQTQTQTQTQTQMhMhMhMhhRMhTQTQTQTQTQTQMhHtTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQhtUxUxUxUxuaZJTQyrTQQWJqQWTQaNXGTQTQTQTQrDTQTQTQMhMhMhLKMhMhMhMjNwLKNwyEMhMhMhhKMhNwJOTQaINXkKGUTQHeNyUmTQumMhMkovwnTQMhazTQQWJqQWTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQYhbMLgLgbMDpXjTQyrTQsXGAtWYmMhMhTQrydHlYwZwZPBTQMhMhNwFpMhMhQgLPVESUMhGRMhMhMhhKMhNwILTQjKIktkGUTQsXGAtWYmGMMhMkqLFMTQMhzEYmqQkyfQTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQhtELELELELuaXjGPyrTQhNCZdzTQMhMhTQrywZsowZQLTQTQCSCSTQTQrTTQTQTQTQTQTQTQrTTQTQTQMhMhVCTQqHaIkKGUTQKhwSAqTQGMMhMkcqORTQMhxNTQhNCZdzTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQhtUxUxUxUxuaZJTQyrTQQWJqQWTQaNXGTQTQTQTQrDTQTQTQMhMhMhLKMhMhMhMjNwLKNwyEMhMhMhhKMhNwJOTQaINXkKGUTQTQHeNyUmTQWrMkovwnTQMhazTQQWJqQWTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQYhbMLgLgbMDpXjTQyrTQsXGAtWYmMhMhTQrydHlYwZwZPBTQMhMhNwFpMhMhQgLPVESUMhGRMhMhMhhKMhNwILTQjKIktkGUTQTQumGAtWYmGMMkqLFMTQMhzEYmqQkyfQTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQhtELELELELuaXjGPyrTQhNCZdzTQMhMhTQrywZsowZQLTQTQCSCSTQTQrTTQTQTQTQTQTQTQrTTQTQTQMhMhVCTQqHaIkKGUTQTQKhwSAqTQGMMkcqORTQMhxNTQhNCZdzTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQTQjYUuUujYuaXzTQTQTQTQTQTQTQMhMhTQryaLuUFUFUTQMjMhNwTQdbQATQQreGtnJfTQGSMhQnJOTQMhtLTQTQTQTQfoTQTQTQTQTQTQTQMhMhMhMhLKMhTQTQTQTQTQTQMhLXTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQTQLLEeLLLLhMjQTQLqNwMhMhMhMhMhMhTQTQTQTQTQTQTQMhMhLqTQdbMhTQQHwvwvwvCSMhNwQnJOTQNwMhxKfyqvMAMhMhMhMhLKMhMhCSNwMhLPLPMhMhCSMhMhMhhRMhLqTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQTQTQTQTQBEagkdoIMhLqMhMhMhMhMhMhMhMhMhNwMhMhMhMhMhTQTQTQCSTQTQqwwvXxTQSrMRQnKTTQMhMhmljUqvMhMhMhMhMhMhMhMhTQMhMhMhYtUzpZTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
@@ -464,7 +465,7 @@ PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQ
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-iBPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 "}
 (1,1,2) = {"
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
@@ -477,7 +478,7 @@ PCPCPCPCPCPCPCPCPCPCPCPCAPAPAPAPhjixixixixixixixljYSwUvXvXvXvXvXvXvXvXeEeEeEvXvX
 PCPCPCPCPCPCPCPCPCAPAPAPhjixixixRWSoSoSoSoSoSoKCoZufKmzdzdnCzdzdzdzdzdzdZhzdzdzdzdzdzdnCzdzdzdzdzdzdKmeEeEEEEEEEEEEEEEEEEEEEEEEEWYNDQfQfQfxSAPAPAPAPAPAPAPPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCAPhjixixRWRWsWSoSoSoSoSoSoSoSoKCoZlAzdzdzdHKHKHKHKNPHKHKHKvFHKHKHKHKHKHKvFwJvFwJvFwJzdRWRWBmBmBmCeiLiLiLiLiLBmXOIPNDzqyTatRWQfQfQfQfQfQfPdAPPCPCAPPCPCAPPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCnbhjRWRWRWRWRWsWSoSoSoOXOXOXSoSoKCoZlAzdzdHKHKluEJHKljHKFElXSVHKdTZrZrNrHKroTKmFfBuevFwJTVRWRWRWRWRWRWmamamaRWRWAxIPNDOUMFzaRWRWmamamaRWRWRhxHqeqeZqqeqebNAPAPAPAPPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCPCnbtTYEefipVkRWsWSoSokGHKHKHKBSSoKCoZlAzdIGHKlWljyfHKAIHKhuljvIHKZrZrZrZrHKAaljFWljDqODvFTfYEefipVkRWgYHKHKHKjBRWAxIPKFRWywFwRWgYHKHKHKjBRWRhZetAqefttAqeQTQfQfQfxSAPAPAPPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCnbtTYEefipVkRWsWSoSokGHKHKHKBSSoKCoZlAzdIGHKlWljyfHKAIHKhuljvIHKZrZrZrZrHKAaljFWljDqODvFTfYEefipVkRWgYHKHKHKjBRWAxIPKFRWywFwRWgYHKHKHKjBRWRhZetAqefttAqeOgQfQfQfxSAPAPAPPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCnbtTUDirirnuRWsWSobmHKVOYFtHPkmQKCoZlAzdzdHKBTljIlHKljHKHKNPHKHKZrmTqgIHHKSiljYZljzzbewJTfUDirirnudFHKVOlItHfVDoAxzCpKRWRWRWdFHKleTeOZHKrmHGcxeEeEVgeEeEbdrdKcCLUhQfQfxShxPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCnbtTjIZWZWSPRWsWSomoHKplkHwhHKssKCoZlAzdzdWeFiljljNPljNPljljljgqZrlalaZrgqljljljMYeubevFTfjTZWZWSPdFHKplkHwhHKrmAxzCpKRWRWRWdFHKplkHrXsHrmAxOsRWRWRWRWRWOssWSoKClxRWVXrlhxPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCnbtTUDirirnuRWsWSobmHKUjOMajEYmQKCoZlAzdzdHKkUljyHHKdsHKHKNPHKHKZrKQiqIHHKSiljYZljlBbewJTfUDirirnudFHKUjoAajTIDoAxzCpKRWRWRWdFHKjiOMCDHKrmHGiPvLvLUevLvLbddwMNLDUhTqTqWshxPCPCPCPCPCPCPCPC

@@ -190,10 +190,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						ship_size = .
 					else if (faction == 1)
 						faction = 2
-						battle_ships.load_map(lowertext(.), "south")
+						battle_ships.load_map(lowertext(replacetext(., " ", "_")), "south")
 					else if (faction == 2)
 						faction = 3
-						battle_ships.load_map(lowertext(.), "north")
+						battle_ships.load_map(lowertext(replacetext(., " ", "_")), "north")
 		return .
 
 	proc/submit_vote(var/ckey, var/vote)
@@ -294,10 +294,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					var/list/options = list()
 					
 					var/list/small_ships = list(
-						"Patrol_boat" = 0,
+						"Patrol boat" = 0,
 					)
 					var/list/destroyers = list(
 						"Indomitable" = 0,
+						"Azula" = 0
 					)
 					var/list/battle_ships = list(
 						"Kurama" = 0,
@@ -307,7 +308,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						options = list(
 						"Small Ships" = 0,
 						"Destroyers" = 10,
-						//"Battle Ships" = 20,
+						"Battle Ships (OUT OF ROTATION)" = 999,
 						)
 						default = "Small Ships"
 
@@ -320,7 +321,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						switch (ship_size)
 							if ("Small Ships")
 								options = small_ships
-								default = "Patrol_boat"
+								default = "Patrol boat"
 							if ("Destroyers")
 								options = destroyers
 								default = "Indomitable"

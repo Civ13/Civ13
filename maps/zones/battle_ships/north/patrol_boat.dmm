@@ -29,7 +29,6 @@
 "ip" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/obj/effect/floor_decal/industrial/warning{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/engine)
 "iq" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/obj/structure/table/modern,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "ir" = (/obj/covers/steelplating,/obj/structure/sign/flag/medical{pixel_y = 32},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
-"iB" = (/obj/map_metadata/battle_ships,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
 "iL" = (/obj/covers/road,/obj/structure/railing/steel{dir = 1},/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "iP" = (/obj/covers/steelplating,/obj/effect/landmark{name = "JoinLateBlue"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "jd" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/faction2/ship/upper)
@@ -77,7 +76,7 @@
 "ug" = (/obj/covers/cement_wall,/obj/covers/steelplating,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "um" = (/obj/covers/steelplating,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/closet/crate/ww2,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/storage)
 "uU" = (/obj/covers/road,/obj/structure/railing/steel,/obj/structure/railing/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
-"vI" = (/obj/covers/road,/obj/structure/boat_spawn_lever/west,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
+"vI" = (/obj/covers/road,/obj/structure/boat_spawn_lever/south,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "vL" = (/obj/structure/railing/steel,/obj/effect/floor_decal/corner_steel_grid/full{dir = 4},/obj/structure/mine_support/stone/concrete,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"; pixel_x = 0},/obj/covers/road,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "wh" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 4},/obj/structure/lamp/lamp_big/alwayson/white{dir = 4},/obj/structure/bed/chair/steel{dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "wi" = (/obj/covers/steelplating,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
@@ -216,7 +215,7 @@ PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-iBPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 "}
 (1,1,2) = {"
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC

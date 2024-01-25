@@ -319,6 +319,14 @@
 /area/caribbean/sea/bottom/roofed
 	location = AREA_INSIDE
 
+/area/caribbean/sea/middle
+	name = "sea"
+	base_turf = /turf/floor/beach/water/deep/saltwater
+	icon_state = "blue3"
+
+/area/caribbean/sea/middle/roofed
+	location = AREA_INSIDE
+
 /area/caribbean/sea/beach
 	name = "Beach"
 	base_turf = /turf/floor/beach/sand
@@ -1250,10 +1258,9 @@
 	icon_state = "red2"
 
 /area/caribbean/faction1/ship/upper
-	base_turf =/turf/floor/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/faction1/ship/upper/inside
-	base_turf =/turf/floor/broken_floor
 	location = AREA_INSIDE
 
 
@@ -1283,10 +1290,9 @@
 	icon_state = "blue2"
 
 /area/caribbean/faction2/ship/upper
-	base_turf =/turf/floor/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/faction2/ship/upper/inside
-	base_turf =/turf/floor/broken_floor
 	location = AREA_INSIDE
 
 

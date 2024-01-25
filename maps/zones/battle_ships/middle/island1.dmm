@@ -1,0 +1,116 @@
+"a" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/middle)
+"b" = (/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"c" = (/obj/structure/wild/burnedbush,/obj/structure/wild/palm,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"d" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"e" = (/obj/structure/wild/jungle,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"f" = (/obj/structure/wild/burnedbush,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"g" = (/obj/structure/wild/bush,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"h" = (/obj/structure/wild/bush,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"i" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"j" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"l" = (/obj/structure/wild/flowers,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"m" = (/obj/structure/wild/rock,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"n" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/middle)
+"o" = (/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"p" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"q" = (/obj/structure/wild/smallbush,/obj/structure/wild/largejungle,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"r" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"s" = (/obj/structure/wild/palm,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"u" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"v" = (/obj/structure/wild/largejungle,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"w" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"y" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"z" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"A" = (/obj/item/weapon/reagent_containers/food/snacks/grown/coconut,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"B" = (/turf/wall/rockwall,/area/caribbean/sea/middle)
+"C" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"D" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"F" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"G" = (/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"H" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"I" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"J" = (/turf/floor/beach/water,/area/caribbean/sea/middle)
+"K" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"L" = (/obj/structure/wild/flowers,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"N" = (/obj/structure/wild/berrybush/amar,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"O" = (/turf/floor/grass/jungle/savanna,/area/caribbean/sea/middle)
+"P" = (/obj/structure/wild/largejungle,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"Q" = (/obj/structure/wild/largejungle,/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"R" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"S" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand/dark,/area/caribbean/sea/middle)
+"T" = (/obj/structure/wild/palm,/turf/floor/beach/sand,/area/caribbean/sea/middle)
+"U" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"V" = (/obj/structure/wild/flowers,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"W" = (/obj/structure/wild/jungle,/turf/floor/dirt/dust,/area/caribbean/sea/middle)
+"X" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"Y" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+"Z" = (/turf/floor/grass/jungle,/area/caribbean/sea/middle)
+
+(1,1,1) = {"
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+"}
+(1,1,2) = {"
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddddddddddddddddddddddddnndddddddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddddddddddddddddddddndnnnonddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddnnnnnnnnndnnnndnnnoooonnnnddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddnnnnnnnnoonnnnonnnooooooononddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddnnnoooooooooooonooooooooooooonndddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddnnowoooooooowoooooooooToowooonndddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddnnnnoooooooobooooRbsSoooooooooonddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddnonoooowobobbboobbIbbboooooooonnddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddnooooToooobbbbbbGbbOObGRsboooonndddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddnnnooooooooTfbbebbAbOOObbHZDooonnddddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddnooooobooobGZbrbGsbOOabbbZZboooonnnndddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddnnooooobbboGGbbbGUbbOabbGmbbbbboooonnnndddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddnooooobbRbbbmbybSbOObvbGRbGeObbboooooondddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddnooowoobbGZbbbuZhbbbbGKgRbOOOARbbooooonnnnddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddnnoooobvbbbebbZZRbUbGGbZbbOOJbqbbooToooonnddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddnnooooobbbZLbbObZXbbebRZuOaOJJGGbbGoooowonnndddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddnnwooobOObbRbveZZlGmZSGZOOJJJObGGbUGbbooooonnddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddnnooTobOaObZZbbbcbbbZZZZOOJJOOZYbbbbbbbooooonddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnnoooobbbOOZZZbbpbbbZGZZOOJJOObbZubZLZvbooToonddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnooooobGbOOeCZZZbbbZzZZOOJJOOObZZbbZUZAbooooonddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnToooojGbbbZuZWPbebRZbZOJJOabbbzZbZNDXroooooonddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnoowooooToFFZZVGIbbbbZCOJJOGbibbbrZZZfuboToonnddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddnnoooooooobGGoQbGooobyZbOJOOZbbZbooZbGbZZoooondddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddnnnoooooooooooooooowobbbbbbZZoTooooobboowooonndddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddnnnooooooooooowTooooooooooooooooooowooooooonnddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddnnnoooooooooooooooooooooToowonnnnnnoooooonnndddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnnnoooooooonnnnnnnoooonnnnnnnnnnnnnnnnnnnnddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddnnnnooooonnndddnnnnnnnnnnndddddddddnnnnnddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddnnoooonnddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddnnnnnndddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+"}
