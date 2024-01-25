@@ -584,7 +584,7 @@
 
 ////////////////////////////WW1///////////////////////
 /datum/job/french/ww1captain
-	title = "Capitaine de le Armee"
+	title = "Capitaine de l'Armee"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Cap."
 
@@ -636,7 +636,7 @@
 	return TRUE
 
 /datum/job/french/ww1lieutenant
-	title = "Lieutenant de le Armee"
+	title = "Lieutenant de l'Armee"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "Lt."
 
@@ -644,7 +644,6 @@
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -687,7 +686,7 @@
 
 
 /datum/job/french/ww1second_lieutenant
-	title = "Sous-Lieutenant de le Armee"
+	title = "Sous-Lieutenant de l'Armee"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "Slt."
 
@@ -695,7 +694,6 @@
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -738,12 +736,12 @@
 
 
 /datum/job/french/ww1sergeant
-	title = "Sergeant de le Armee"
+	title = "Sergent de l'Armee"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRN"
-	is_officer = TRUE
+	
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww1 = TRUE
@@ -786,7 +784,7 @@
 	return TRUE
 
 /datum/job/french/ww1doctor
-	title = "Docteur de le Armee"
+	title = "Docteur de l'Armee"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Dr."
 
@@ -831,7 +829,7 @@
 
 /datum/job/french/ww1shocktroop
 	title = "Chasseur Leger"
-	en_meaning = "Shock Troop"
+	en_meaning = "Shock Trooper"
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRN" //for testing!
@@ -875,7 +873,7 @@
 	return TRUE
 
 /datum/job/french/ww1infantry
-	title = "Soldat de infanterie"
+	title = "Soldat d'infanterie"
 	en_meaning = "Private"
 	rank_abbreviation = ""
 

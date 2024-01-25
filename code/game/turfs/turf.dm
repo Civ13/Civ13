@@ -366,7 +366,7 @@ var/const/enterloopsanity = 100
 
 			//Shoe sounds
 			if (type == /turf/floor/plating)
-				footstepsound = "platingfootsteps"
+				footstepsound = "erikafootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			else if (istype(src, /turf/floor/winter))
@@ -378,7 +378,15 @@ var/const/enterloopsanity = 100
 					footstepsound = "icefootsteps"
 			else	if (istype(src, /turf/floor/beach/sand))
 				footstepsound = "sandfootsteps"
-			else 	if (istype(src, /turf/floor/wood))
+			else	if (istype(src, /turf/floor/plating/road))
+				footstepsound = "roadfootsteps"
+			else	if (istype(src, /obj/covers))
+				footstepsound = "erikafootsteps"
+			else	if (istype(src, /turf/floor/plating/tiled/woodv))
+				footstepsound = "woodfootsteps"
+			else	if (istype(src, /turf/floor/plating/tiled))
+				footstepsound = "woodfootsteps"
+			else	if (istype(src, /turf/floor/wood))
 				footstepsound = "woodfootsteps"
 			else 	if (istype(src, /turf/floor/carpet))
 				footstepsound = "carpetfootsteps"
@@ -393,7 +401,7 @@ var/const/enterloopsanity = 100
 				footstepsound = "erikafootsteps"
 
 			for(var/obj/structure/multiz/ladder/ww2/LADDER in src)
-				footstepsound = "woodfootsteps"
+				footstepsound = "platingfootsteps"
 				break
 			for(var/obj/covers/CV in src)
 				if (istype(CV, /obj/covers/carpet))

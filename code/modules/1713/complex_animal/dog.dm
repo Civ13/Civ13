@@ -96,7 +96,7 @@
 				name = sanitize(_name, 50)
 				return
 		else
-			usr << "You can't name this [src], as it does not belong to you or your faction."
+			to_chat(usr, "You can't name this [src], as it does not belong to you or your faction.")
 			return
 	else
 		if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile) && !istype(src, /mob/living/simple_animal/mosquito))

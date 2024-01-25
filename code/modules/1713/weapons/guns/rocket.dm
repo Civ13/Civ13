@@ -8,6 +8,7 @@
 	var/release_force = 0
 	var/firing_range = 18
 	fire_sound_text = "a launcher firing"
+	var/datum/effect/effect/system/smoke_spread/puff
 
 /obj/item/weapon/gun/launcher/rocket/New()
 	..()
@@ -72,7 +73,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/bang.ogg'
+	fire_sound = 'sound/effects/rpg_fire.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	var/caliber = "rocket"
@@ -83,33 +84,35 @@
 	load_delay = 18
 
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
-	..()
-	if (max_rockets > 1)
-		user << SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>")
-	else
-		if (rockets.len)
-			user << SPAN_NOTICE("<b>LOADED</B>")
-		else
-			user << SPAN_NOTICE("<b>UNLOADED</B>")
+    ..()
+    if (!istype(src, /obj/item/weapon/gun/launcher/rocket/single_shot)) // Check if not single_shot or its subtypes
+        if (max_rockets > 1)
+            to_chat(user, SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>"))
+        else
+            if (rockets.len)
+                to_chat(user, SPAN_NOTICE("<b>LOADED</B>"))
+            else
+                to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			user << "You put the rocket in \the [src]."
+			to_chat(user, "You put the rocket in \the [src].")
 			update_icon()
 		else
-			user << "\The [src] cannot hold more rockets."
+			to_chat(user, "\The [src] cannot hold more rockets.")
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
 		rockets.len--
+		update_icon()
 		user.put_in_hands(G)
 		user.visible_message("\The [user] removes \a [G] from [src].", SPAN_NOTICE("You remove \a [G] from \the [src]."))
-		update_icon()
 	else
 		user << SPAN_WARNING("\The [src] is empty.")
 
@@ -130,7 +133,23 @@
 		return M
 	return null
 
+/obj/item/weapon/gun/launcher/New()
+	..()
+	puff = new /datum/effect/effect/system/smoke_spread()
+	puff.attach(src)
+	update_icon()
+
 /obj/item/weapon/gun/launcher/rocket/handle_post_fire(mob/user, atom/target)
+	sleep(1)
+	var/smoke_dir = user.dir
+	if(user)
+		switch(smoke_dir) //We want the opposite of their direction.
+			if(2,8)
+				smoke_dir /= 2
+			if(1,4)
+				smoke_dir *= 2
+	puff.set_up(1,,,smoke_dir)
+	puff.start()
 	message_admins("[key_name_admin(user)] fired a rocket from a rocket launcher ([src.name]) at [target].", key_name_admin(user))
 	log_game("[key_name_admin(user)] used a rocket launcher ([src.name]) at [target].")
 	update_icon()
@@ -144,7 +163,7 @@
 	item_state = "rpg7"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	load_delay = 45
+	load_delay = 45 // note that the rpgreload.ogg cuts before this cooldown is finished TO-DO: extend the sound file or replace it entirely with a better one
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/loaded/New()
 	..()
@@ -365,6 +384,7 @@
 	release_force = 12
 	firing_range = 10
 	var/rocket_path
+	var/is_used = FALSE
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/New()
 	..()
@@ -393,6 +413,19 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)
 	..()
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/handle_post_fire(mob/user, atom/target)
+	..()
+	is_used = TRUE
+	update_icon()
+
+/obj/item/weapon/gun/launcher/rocket/single_shot/examine(mob/user)
+    ..()
+    if (is_used)
+        to_chat(user, SPAN_NOTICE("<b>USED</B>"))
+    else
+        to_chat(user, SPAN_NOTICE("<b>UNUSED</B>"))
+
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust
 	name = "Panzerfaust 60"

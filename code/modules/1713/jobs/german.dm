@@ -8,6 +8,7 @@
 		H.h_style = pick("Bald","Crewcut","Undercut","Short Hair","Cut Hair","Skinhead","Average Joe","Fade","Combover","Father")
 	if(H.f_style != "Goatee" && H.f_style != "Selleck Mustache" && H.f_style != "Shaved" && H.f_style != "Short Facial Hair")
 		H.f_style = pick("Full Beard","Goatee","Selleck Mustache","Shaved", "Short Facial Hair")
+
 /datum/job/german/captain
 	title = "Heer Hauptmann"
 	en_meaning = "Army Captain"
@@ -65,7 +66,6 @@
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -112,7 +112,6 @@
 	spawn_location = "JoinLateGECap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -312,14 +311,8 @@
 	var/obj/item/clothing/accessory/storage/webbing/ww1/german/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german(null)
 	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
+	for (var/i=1, i<=8, i++)
+		fullwebbing.attackby(new/obj/item/ammo_magazine/gewehr98, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Imperial German Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

@@ -217,7 +217,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
-	desc = "Officialy the M1873 Colt Single Action Army Revolver."
+	desc = "Officially the M1873 Colt Single Action Army Revolver."
 	icon_state = "coltsaa"
 	base_icon = "peacemaker"
 	w_class = ITEM_SIZE_SMALL
@@ -234,7 +234,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
 	name = "Colt Peacemaker Ivory"
-	desc = "Officialy the M1873 Colt Single Action Army Revolver with an Ivory grip."
+	desc = "Officially the M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_ivory"
 	base_icon = "peacemaker"
 	w_class = ITEM_SIZE_SMALL
@@ -251,7 +251,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper
 	name = "Colt Storekeeper"
-	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver."
+	desc = "Officially a variant of M1873 Colt Single Action Army Revolver."
 	icon_state = "coltsaa_storekeeper"
 	base_icon = "peacemaker"
 	w_class = ITEM_SIZE_SMALL
@@ -268,7 +268,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker/ivory
 	name = "Colt Storekeeper Ivory"
-	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	desc = "Officially a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_bankerspecial"
 	base_icon = "peacemaker"
 	w_class = ITEM_SIZE_SMALL
@@ -285,7 +285,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peace Ivory"
-	desc = "Officialy a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
+	desc = "Officially a variant of M1873 Colt Single Action Army Revolver with an Ivory grip."
 	icon_state = "coltsaa_artillery"
 	base_icon = "peacemaker"
 	w_class = ITEM_SIZE_SMALL
@@ -302,7 +302,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/colt1892
 	name = "Colt M1892"
-	desc = "Officialy the M1892 Colt Single Action Army Revolver."
+	desc = "Officially the M1892 Colt Single Action Army Revolver."
 	icon_state = "colt1892"
 	base_icon = "colt1892"
 	w_class = ITEM_SIZE_SMALL
@@ -396,7 +396,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/frontier
 	name = "Colt Frontier"
-	desc = "Officialy the M1873 Colt Single Action Army Revolver. This one uses .44 Winchester ammuniton."
+	desc = "Officially the M1873 Colt Single Action Army Revolver. This one uses .44 Winchester ammuniton."
 	icon_state = "peacemaker2"
 	base_icon = "peacemaker2"
 	w_class = ITEM_SIZE_SMALL
@@ -561,7 +561,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/derringer
 	name = "Derringer M95 pistol"
-	desc = "Officialy the Remington Model 95, this small pistol has two barrels."
+	desc = "Officially the Remington Model 95, this small pistol has two barrels."
 	icon_state = "derringer"
 	item_state = "pistol"
 	w_class = ITEM_SIZE_TINY
@@ -851,7 +851,7 @@
 
 /obj/item/weapon/gun/projectile/revolving/colt
 	name = "Colt Revolving Rifle"
-	desc = "Officialy the M1855 Colt Single Action Revolving Carbine."
+	desc = "Officially the M1855 Colt Single Action Revolving Carbine."
 	icon_state = "revolving"
 	item_state = "revolving"
 	w_class = ITEM_SIZE_SMALL
@@ -1038,7 +1038,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/dragoon
 	name = "Colt Dragoon M1848"
-	desc = "Officialy the M1848 Colt Percussion Cap Revolver."
+	desc = "Officially the M1848 Colt Percussion Cap Revolver."
 	icon_state = "colt_dragoon1848"
 	base_icon = "dragoon"
 	w_class = ITEM_SIZE_SMALL
@@ -1055,7 +1055,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/babydragoon
 	name = "Colt Baby Dragoon M1848"
-	desc = "Officialy the Baby M1848 Colt Percussion Cap Revolver."
+	desc = "Officially the Baby M1848 Colt Percussion Cap Revolver."
 	icon_state = "dragoon"
 	base_icon = "colt_babydragoon1848"
 	w_class = ITEM_SIZE_SMALL
@@ -1072,7 +1072,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/pocketpistol
 	name = "Colt Pocket-Pistol M1849"
-	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol."
+	desc = "Officially the M1849 Colt Percussion Cap Pocket-Pistol."
 	icon_state = "dragoon"
 	base_icon = "colt_pocketmodel1849"
 	w_class = ITEM_SIZE_SMALL
@@ -1089,7 +1089,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/walker
 	name = "Colt Walker M1846"
-	desc = "Officialy the M1846 Colt Percussion Cap Walker."
+	desc = "Officially the M1846 Colt Percussion Cap Walker."
 	icon_state = "peacemaker2"
 	base_icon = "colt_walker1846"
 	w_class = ITEM_SIZE_SMALL
@@ -1106,7 +1106,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/pocketm1849
 	name = "Colt Police Pocket-Pistol M1849"
-	desc = "Officialy the M1849 Colt Percussion Cap Pocket-Pistol used by police."
+	desc = "Officially the M1849 Colt Percussion Cap Pocket-Pistol used by police."
 	icon_state = "peacemaker2"
 	base_icon = "colt_pocketpolice1849"
 	w_class = ITEM_SIZE_SMALL
@@ -1123,7 +1123,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/navym1851
 	name = "Colt Navy Revolver M1851"
-	desc = "Officialy the M1851 Colt Navy Percussion Cap Revolver."
+	desc = "Officially the M1851 Colt Navy Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_navy1851"
 	w_class = ITEM_SIZE_SMALL
@@ -1140,7 +1140,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/navym1861
 	name = "Colt Navy Revolver M1861"
-	desc = "Officialy the M1861 Colt Navy Percussion Cap Revolver."
+	desc = "Officially the M1861 Colt Navy Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_navy1861"
 	w_class = ITEM_SIZE_SMALL
@@ -1157,7 +1157,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/
 	name = "Colt Army Revolver M1860"
-	desc = "Officialy the M1860 Colt Army Percussion Cap Revolver."
+	desc = "Officially the M1860 Colt Army Percussion Cap Revolver."
 	icon_state = "peacemaker2"
 	base_icon = "colt_army1860"
 	w_class = ITEM_SIZE_SMALL

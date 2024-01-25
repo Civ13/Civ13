@@ -167,7 +167,7 @@
 			ANCH.dir = src.dir
 			return
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
+		to_chat(user, "You hit the wall uselessly!")
 	..()
 
 /obj/structure/gate/blast
@@ -199,7 +199,7 @@
 
 /obj/structure/gate/blast/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"
+		to_chat(user, "You hit the wall uselessly!")
 		..()
 
 /obj/structure/gate/blast/garage
@@ -229,9 +229,9 @@
 
 /obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
-		user << "You hit the [src] uselessly!"
+		to_chat(user, "You hit the [src] uselessly!")
 	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
-		user << "<span class='notice'>You start cutting through the [src]...</span>"
+		to_chat(user, SPAN_NOTICE("You start cutting through the [src]..."))
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 		if (do_after(user, 5 SECONDS, src))
 			qdel(src)
@@ -266,7 +266,7 @@
 
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the doors uselessly!"//sucker
+		to_chat(user, "You hit the doors uselessly!")
 	else
 		..()
 

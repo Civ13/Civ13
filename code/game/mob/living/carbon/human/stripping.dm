@@ -4,7 +4,7 @@
 		return
 
 	if (user.incapacitated()  || !user.Adjacent(src))
-		user << browse(null, text("window=mob[name]"))
+		to_chat(user, browse(null, text("window=mob[name]")))
 		return
 
 	var/obj/item/target_slot = get_equipped_item(text2num(slot_to_strip))
@@ -55,7 +55,7 @@
 		if (!istype(target_slot))  // They aren't holding anything valid and there's nothing to remove, why are we even here?
 			return
 		if (!target_slot.canremove)
-			user << "<span class='warning'>You cannot remove \the [src]'s [target_slot.name].</span>"
+			to_chat(user, SPAN_WARNING("You cannot remove \the [src]'s [target_slot.name]."))
 			return
 		stripping = TRUE
 
@@ -81,13 +81,13 @@
 // Empty out everything in the target's pockets.
 /mob/living/human/proc/empty_pockets(var/mob/living/user)
 	if (!r_store && !l_store)
-		user << "<span class='warning'>\The [src] has nothing in their pockets.</span>"
+		to_chat(user, SPAN_WARNING("\The [src] has nothing in their pockets."))
 		return
 	if (r_store)
 		unEquip(r_store)
 	if (l_store)
 		unEquip(l_store)
-	visible_message("<span class='danger'>\The [user] empties \the [src]'s pockets!</span>")
+	visible_message(SPAN_DANGER("\The [user] empties \the [src]'s pockets!"))
 
 // Remove all splints.
 /mob/living/human/proc/remove_splints(var/mob/living/user)
@@ -106,4 +106,4 @@
 		if (removed_splint)
 			visible_message("<span class='danger'>\The [user] removes \the [src]'s splints!</span>")
 		else
-			user << "<span class='warning'>\The [src] has no splints to remove.</span>"
+			to_chat(user, SPAN_WARNING("\The [src] has no splints to remove."))

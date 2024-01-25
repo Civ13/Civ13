@@ -818,21 +818,21 @@ proc/is_complete_print(var/print)
 /obj/machinery/dnaforensics/attack_hand(mob/user as mob)
 	if(scanning)
 		scanning = 0
-		usr << SPAN_NOTICE("You abort the scan.")
+		to_chat(usr, SPAN_NOTICE("You abort the scan."))
 		update_icon()
 	else
 		if(bloodsamp && bloodsamp.loc == src)
 			if(closed == 1)
 				scanning = 1
-				usr << SPAN_NOTICE("Scan initiated. Please wait.")
+				to_chat(usr, SPAN_NOTICE("Scan initiated. Please wait."))
 				update_icon()
 				spawn(900)
-					usr << SPAN_NOTICE("Scan finished.")
+					to_chat(usr, SPAN_NOTICE("Scan finished."))
 					complete_scan()
 			else
-				usr << SPAN_NOTICE("Please close sample lid before initiating scan.")
+				to_chat(usr, SPAN_NOTICE("Please close sample lid before initiating scan."))
 		else
-			usr << SPAN_WARNING("Insert an item to scan.")
+			to_chat(usr, SPAN_WARNING("Insert an item to scan."))
 			scanning = 0
 
 /obj/machinery/dnaforensics/verb/toggle_lid()
@@ -844,7 +844,7 @@ proc/is_complete_print(var/print)
 		return
 
 	if(scanning)
-		usr << SPAN_WARNING("You can't do that while [src] is scanning!")
+		to_chat(usr, SPAN_WARNING("You can't do that while [src] is scanning!"))
 		return
 
 	closed = !closed
@@ -858,18 +858,18 @@ proc/is_complete_print(var/print)
 	if(usr.stat || !isliving(usr))
 		return
 	if(scanning)
-		usr << SPAN_WARNING("You can't do that while \the [src] is scanning!")
+		to_chat(usr, SPAN_WARNING("You can't do that while \the [src] is scanning!"))
 		return
 	else
 		if (closed)
-			usr << SPAN_WARNING("You can't do that while the lid is closed!")
+			to_chat(usr, SPAN_WARNING("You can't do that while the lid is closed!"))
 			return
 		else
 			if(bloodsamp)
 				bloodsamp.forceMove(src.loc)
 				bloodsamp = null
 			else
-				usr << SPAN_WARNING("There's no sample in the scanner!")
+				to_chat(usr, SPAN_WARNING("There's no sample in the scanner!"))
 				return
 
 /obj/machinery/dnaforensics/update_icon()

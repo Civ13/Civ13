@@ -52,7 +52,7 @@
 	set src in range(1, usr)
 
 	if (!anchored)
-		usr << "Place it first."
+		to_chat(usr, "Place it first.")
 		return
 
 	if (tilepos == "over")

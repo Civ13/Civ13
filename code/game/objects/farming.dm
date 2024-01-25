@@ -973,15 +973,15 @@
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
 		if (stage < readyStageMin) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
+			to_chat(user, SPAN_WARNING("You uproot the [name]."))
 			qdel(src)
 		else if (readyHarvest()) // harvest
 			spawn_seeds()
 			spawn_produce()
-			user << "<span class = 'notice'>You [harvest_verb] the [name].</span>"
+			to_chat(user, SPAN_NOTICE("You [harvest_verb] the [name]."))
 			qdel(src)
 		else // destroy
-			user << "<span class = 'bad'>You uproot the dead [name].</span>"
+			to_chat(user, SPAN_WARNING("You uproot the dead [name]."))
 			qdel(src)
 
 /obj/structure/farming/plant/proc/soil_nutrition_proc()
@@ -1059,10 +1059,10 @@
 					water_desc = "dry"
 				if (water/max_water < 0.33)
 					water_desc = "wilted"
-			user << "\The [src] seems <b>[water_desc]</b>."
+			to_chat(user, "\The [src] seems <b>[water_desc]</b>.")
 		else if (H.getStatCoeff("farming") >= 2.2)
-			user << "[src]'s water level is at <b>[water]/[max_water]</b>."
-			user << "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>."
+			to_chat(user, "[src]'s water level is at <b>[water]/[max_water]</b>.")
+			to_chat(user, "[src]'s nutrition level is at <b>[plant_nutrition]/[max_plant_nutrition]</b>.")
 		if (H.getStatCoeff("farming")>= 1.3)
 			if (plant_nutrition > 80)
-				user << "The plant looks good and healthy, it may give extra crops."
+				to_chat(user, "The plant looks good and healthy, it may give extra crops.")

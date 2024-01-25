@@ -53,7 +53,7 @@
 
 /obj/proc/user_buckle_mob(mob/living/M, mob/user)
 	if (!ticker)
-		user << "<span class='warning'>You can't buckle anyone in before the game starts.</span>"
+		to_chat(user, SPAN_WARNING("You can't buckle anyone in before the game starts."))
 	if (!user.Adjacent(M) || user.restrained() || user.lying || user.stat)
 		return
 	if (M == buckled_mob)

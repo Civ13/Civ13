@@ -43,13 +43,13 @@
 		else if ("Stone")
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				return
 			else
 				//Damage the wall.
 		else if ("Metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				return
 			else
 				//Damage the wall.
@@ -212,15 +212,15 @@
 		return
 	if (istype(W, /obj/item/weapon/hammer))
 		if (!wall)
-			user << "You start removing \the [src]..."
+			to_chat(user, "You start removing \the [src]...")
 			if (do_after(user, 50, src))
-				user << "You removed \the [src] from the floor."
+				to_chat(user, "You removed \the [src] from the floor.")
 				qdel(src)
 				return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (istype(W, /obj/item/weapon/poster/religious))
-			user << "You start placing the [W] on the [src]..."
+			to_chat(user, "You start placing the [W] on the [src]...")
 			if (do_after(user, 70, src))
 				visible_message("[user] places the [W] on the [src].")
 				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
@@ -233,7 +233,7 @@
 				qdel(W)
 				return
 		if (istype(W, /obj/item/weapon/poster/faction))
-			user << "You start placing the [W] on the [src]..."
+			to_chat(user, "You start placing the [W] on the [src]...")
 			if (do_after(user, 70, src))
 				visible_message("[user] places the [W] on the [src].")
 				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
