@@ -177,6 +177,7 @@ var/list/admin_verbs_debug = list(
 	/datum/admins/proc/redirect_all_players,
 	/client/proc/ticklag,
 	/client/proc/load_voyage_event,
+	/client/proc/load_battle_ship,
 	/client/proc/debug_variables_map,
 	)
 
