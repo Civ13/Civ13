@@ -308,7 +308,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						options = list(
 						"Small Ships" = 0,
 						"Destroyers" = 10,
-						//"Battle Ships" = 20,
+						"Battle Ships (OUT OF ROTATION)" = 999,
 						)
 						default = "Small Ships"
 
