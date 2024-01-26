@@ -260,20 +260,32 @@
 	var/cooldown = 60 SECONDS
 	var/facing_dir = NORTH
 
+	var/x_offset = 0
+	var/y_offset = 0
+
 /obj/structure/boat_spawn_lever/attack_hand(var/mob/user as mob)
 	if (world.time < next_activation)
 		user << SPAN_NOTICE("This boat spawner is cooling down, try again in a bit.")
 		return
 	else
 		next_activation = world.time + cooldown
-		var/obj/structure/vehicle/boat/rhib/premade/premade = new /obj/structure/vehicle/boat/rhib/premade(locate(src.x,src.y-2,src.z))
+		var/obj/structure/vehicle/boat/rhib/premade/premade = new /obj/structure/vehicle/boat/rhib/premade(locate(src.x + x_offset, src.y + y_offset, src.z))
 		premade.dir = facing_dir
 		icon_state = pushed_state
 		spawn (5)
 			icon_state = none_state
 		return
 
+/obj/structure/boat_spawn_lever/north
+	facing_dir = NORTH
+	y_offset = 1
+/obj/structure/boat_spawn_lever/south
+	facing_dir = SOUTH
+	y_offset = -2
+
 /obj/structure/boat_spawn_lever/east
 	facing_dir = EAST
+	x_offset = 1
 /obj/structure/boat_spawn_lever/west
 	facing_dir = WEST
+	x_offset = -2
