@@ -1478,7 +1478,7 @@ var/global/redirect_all_players = null
 				extra_span = "<b><font size=3>"
 				end_extra_span = "</font></b><br>"
 			else if (job.is_squad_leader)
-				extra_span = "<br><b><font size=1.5>"
+				extra_span = "<br><b><font size=2>"
 				end_extra_span = "</font></b><br>"
 
 			if (!job.en_meaning)
