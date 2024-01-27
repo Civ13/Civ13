@@ -1,4 +1,3 @@
-
 /obj/map_metadata/vitebsk
 	ID = MAP_VITEBSK
 	title = "Vitebsk"
@@ -6,7 +5,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 	no_hardcore = FALSE
-
 	faction_organization = list(
 		GERMAN,
 		RUSSIAN)
@@ -18,7 +16,7 @@
 	age = "1944"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.4, RUSSIAN = 0.6)
-	battle_name = "battle of Vitebsk"
+	battle_name = "Battle of Vitebsk"
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br></font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
@@ -29,25 +27,7 @@
 
 /obj/map_metadata/vitebsk/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE && J.is_tanker == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/schutze_soldaten) || istype(J, /datum/job/russian/soldier_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/german/machine_gunner) || istype(J, /datum/job/russian/machinegunner_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/russian/nkvd_soviet) || istype(J, /datum/job/german/oberleutnant))
-		. = TRUE
-	else if (istype(J, /datum/job/german/hauptmann) || istype(J, /datum/job/russian/captain_soviet))
-		. = TRUE
-	else if (J.is_ss_panzer == TRUE)
-		. = TRUE
-	else if (istype(J, /datum/job/german/mediziner) || istype(J, /datum/job/russian/doctor_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/russian/sniper_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/russian/antitank_soldier_soviet) || istype(J, /datum/job/russian/antitank_assistant_soldier_soviet))
-		. = TRUE
-	else if (istype(J, /datum/job/german/german_antitank) || istype(J, /datum/job/german/german_antitankassitant))
+	if (J.is_ww2 && !J.is_occupation && !J.is_reichstag && !J.is_bordersov)
 		. = TRUE
 	else
 		. = FALSE
