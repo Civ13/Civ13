@@ -131,7 +131,6 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			decon_time /= 1.5*H.getStatCoeff("crafting")
-			world << "Debug: [decon_time]"
 		if (do_after(user, decon_time, src))
 			visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
 			var/turf = get_turf(src)
