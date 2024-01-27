@@ -599,7 +599,7 @@
 	return TRUE
 
 /datum/job/russian/machinegunner_assistant_sov
-	title = "K.A. Pomoshchnik Pulemetchika"
+	title = "K.A. Pomoshnik Pulemetchika"
 	en_meaning = "Red Army Machinegunner Assistant"
 	rank_abbreviation = ""
 
@@ -837,10 +837,8 @@
 	H.setStat("pistol", STAT_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
+	
 	return TRUE
-
 
 /datum/job/russian/sniper_soviet
 	title = "K.A. Snaiper"
