@@ -133,7 +133,7 @@
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
-		
+
 	else if (istype(C, /obj/item/weapon/reagent_containers/food/drinks))
 		if (user.a_intent == I_HARM)
 			if (istype(C, /obj/item/weapon/reagent_containers/food/drinks/bottle))
@@ -312,18 +312,23 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a sandbag wall [dir2text(user.dir)] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
-				if (do_after(user, sandbag_time, user.loc))
-					var/progress = bag.sand_amount
-					qdel(C)
-					var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
-					sb.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
-					if (ishuman(user))
-						var/mob/living/human/H = user
-						H.adaptStat("crafting", 3)
-				return
+			for(var/obj/O in src) // Checking if there's another dense object
+				if(O.density)
+					if(O.flags & ON_BORDER)
+						if(O.dir == user.dir)
+							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+							return
+			visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
+				sb.progress = progress
+				visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
 
 	else if (istype(C, /obj/item/weapon/barrier))
 
@@ -335,19 +340,24 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a dirt barricade [dir2text(user.dir)] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
-				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/barrier/bag = C
-					var/progress = bag.sand_amount
-					qdel(C)
-					var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
-					sandbag.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
-					if (ishuman(user))
-						var/mob/living/human/H = user
-						H.adaptStat("crafting", 3)
-				return
+			for(var/obj/O in src) // Checking if there's another dense object
+				if(O.density)
+					if(O.flags & ON_BORDER)
+						if(O.dir == user.dir)
+							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+							return
+			visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				var/obj/item/weapon/barrier/bag = C
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
+				sandbag.progress = progress
+				visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
 
 	else if (istype(C, /obj/item/weapon/snowwall))
 		var/sandbag_time = 50
@@ -358,19 +368,24 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a snow barricade [dir2text(user.dir)] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
-				if (do_after(user, sandbag_time, user.loc))
-					var/obj/item/weapon/snowwall/bag = C
-					var/progress = bag.sand_amount
-					qdel(C)
-					var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
-					sandbag.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
-					if (ishuman(user))
-						var/mob/living/human/H = user
-						H.adaptStat("crafting", 3)
-				return
+			for(var/obj/O in src) // Checking if there's another dense object
+				if(O.density)
+					if(O.flags & ON_BORDER)
+						if(O.dir == user.dir)
+							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+							return
+			visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				var/obj/item/weapon/snowwall/bag = C
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
+				sandbag.progress = progress
+				visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
 	else if (istype(C, /obj/item/stack/farming/seeds) || istype(C, /obj/item/stack/medical/advanced/herbs))
 		var/mob/living/human/H = user
 		var/obj/item/stack/farming/seeds/TS
@@ -689,7 +704,7 @@
 					if (H)
 						H.adaptStat("strength", 1)
 					return
-	/*					
+	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
 						mineral.amount = rand(4,12)
@@ -701,7 +716,7 @@
 						if (H)
 							H.adaptStat("strength", 3)
 						return
-	
+
 					else
 						var/obj/item/stack/ore/mercury/mineral = new/obj/item/stack/ore/mercury(src)
 						mineral.amount = 4
