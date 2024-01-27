@@ -1314,6 +1314,10 @@ var/global/list/damage_icon_parts = list()
 
 		overlays_standing[R_HAND_LAYER] = standing
 
+		if (istype(r_hand, /obj/item/weapon/soviet_flag))
+			var/image/top = image('icons/mob/items/righthand.dmi',"sov_flag_top", pixel_y = 32)
+			standing.overlays += top
+
 		if (handcuffed) drop_r_hand() //this should be moved out of icon code
 	else
 		overlays_standing[R_HAND_LAYER] = null
@@ -1353,6 +1357,10 @@ var/global/list/damage_icon_parts = list()
 		standing.color = l_hand.color
 
 		overlays_standing[L_HAND_LAYER] = standing
+
+		if (istype(l_hand, /obj/item/weapon/soviet_flag))
+			var/image/top = image('icons/mob/items/lefthand.dmi',"sov_flag_top", pixel_y = 32)
+			standing.overlays += top
 
 		if (handcuffed) drop_l_hand() //This probably should not be here
 	else
