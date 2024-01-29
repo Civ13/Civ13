@@ -622,6 +622,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 	desc = "A pouch containing 18 .44 pistol rounds."
 
+/obj/item/ammo_magazine/c357
+	name = "bullet pouch (.357 magnum)"
+	desc = "a pouch of .357 magnum bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a357
+	caliber = "a357"
+	max_ammo = 30
+	weight = 1.1
+	multiple_sprites = TRUE
+
+	pouch = TRUE
+
 /obj/item/ammo_magazine/shellbox
 	name = "shotgun buckshot box (.12 gauge)"
 	icon_state = "shellbox"

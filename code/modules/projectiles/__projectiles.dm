@@ -508,7 +508,7 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
-	
+
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	..()
 	damage = (damage)/2
@@ -679,6 +679,11 @@
 	penetrating = 5
 	armor_penetration = 42
 
+/obj/item/projectile/bullet/rifle/a357
+	damage = DAMAGE_HIGH+30
+	penetrating = 2
+	armor_penetration = 12
+
 // Shotguns
 
 /obj/item/projectile/bullet/pellet/buckshot
@@ -698,7 +703,7 @@
 	armor_penetration = 0
 	agony = 60
 	check_armor = "melee"
-	
+
 	embed = FALSE
 	sharp = FALSE
 
@@ -706,7 +711,7 @@
 	name = "breaching slug"
 	damage = DAMAGE_LOW + 5
 	armor_penetration = 10
-	
+
 	embed = FALSE
 	sharp = FALSE
 
@@ -731,7 +736,7 @@
 
 /obj/item/projectile/bullet/autocannon/frag/on_impact(var/atom/A)
 	impact_effect(effect_transform)
-	
+
 	var/turf/T = get_turf(A)
 	explosion(T, 0, 0, 1, 1)
 	if (incendiary)
@@ -770,4 +775,3 @@
 	var/turf/T = get_turf(A)
 	explosion(T, 0, 0, 1, 1)
 	..()
-	
