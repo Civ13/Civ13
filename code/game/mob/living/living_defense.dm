@@ -99,7 +99,8 @@
 			instadeath = 5
 		if (instadeath > 0)
 			if (prob(instadeath))
-				death()
+				adjustBrainLoss(rand(30,60))
+				H.instadeath_check()
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, absorb, P, sharp=proj_sharp, edge=proj_edge)
 

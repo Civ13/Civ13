@@ -223,11 +223,51 @@ obj/structure/closet/crate/loottreasurechest/New()
 
 /obj/structure/closet/crate/sandbags
 	name = "sandbag crate"
-	icon_state = "wood_crate"
-	icon_opened = "wood_crate_opened"
-	icon_closed = "wood_crate"
+	icon_state = "sandbag_crate_full"
+	icon_opened = "sandbag_crate_empty"
+	icon_closed = "sandbag_crate_full"
 	paths = list(/obj/item/weapon/barrier/sandbag = 20)
 	cratevalue = 90
+	storagecap = 20
+
+/obj/structure/closet/crate/sandbags/close() //Shitcode workaround before the sandbag overhaul
+	if (!opened)
+		return FALSE
+	if (!can_close())
+		return FALSE
+
+	playsound(loc, 'sound/effects/rustle1.ogg', 15, TRUE, -3)
+	for (var/obj/item/weapon/barrier/sandbag/O in get_turf(src))
+		O.forceMove(src)
+	update_icon()
+	opened = FALSE
+	return TRUE
+
+/obj/structure/closet/crate/open() // Shitcode workaround
+	if (opened)
+		return FALSE
+	if (!can_open())
+		return FALSE
+
+	playsound(loc, 'sound/effects/rustle1.ogg', 15, TRUE, -3)
+	for (var/obj/O in src)
+		O.forceMove(get_turf(src))
+	icon_state = icon_opened
+	opened = TRUE
+
+	if (climbable)
+		structure_shaken()
+	return TRUE
+
+/obj/structure/closet/crate/sandbags/update_icon() // More shitcode workaround
+	if (contents.len == 0)
+		icon_state = "sandbag_crate_empty"
+	else if (contents.len <= Floor(storagecap/3))
+		icon_state = "sandbag_crate_33"
+	else if (contents.len == storagecap)
+		icon_state = "sandbag_crate_full"
+	else
+		icon_state = "sandbag_crate_50"
 
 /obj/structure/closet/crate/wood
 	name = "wood planks crate"

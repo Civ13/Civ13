@@ -1193,6 +1193,16 @@
 	caliber = "a75"
 	value = 8
 
+/obj/item/ammo_casing/a357
+	name = ".357 Magnum cartridge"
+	desc = "A brass .357 Magnum rifle casing."
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
+	weight = 0.09
+	projectile_type = /obj/item/projectile/bullet/rifle/a357
+	caliber = "a357"
+	value = 2
+
 
 // Shotguns
 

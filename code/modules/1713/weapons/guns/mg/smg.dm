@@ -60,7 +60,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.50
-	KD_chance = KD_CHANCE_HIGH+3
+	KD_chance = KD_CHANCE_LOW
 	stat = "machinegun"
 	w_class = ITEM_SIZE_NORMAL
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS

@@ -39,7 +39,7 @@
 	..()
 	if (J.is_reds)
 		if (J.title == "US Army Lieutenant" || J.title == "US Army Captain")
-			if (world.time < us_reinforcements_time)
+			if (processes.ticker.playtime_elapsed  < us_reinforcements_time)
 				. = FALSE
 			else
 				. = TRUE
@@ -184,7 +184,7 @@
 // Map-specific objects and mechanics //
 
 /obj/map_metadata/red_menace/proc/handle_reinforcements()
-	if (world.time >= us_reinforcements_time && !reinforcements_called)
+	if (processes.ticker.playtime_elapsed  >= us_reinforcements_time && !reinforcements_called)
 		us_reinforcements()
 		reinforcements_called = TRUE
 		return
