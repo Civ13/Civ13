@@ -523,8 +523,6 @@
 		selected_target[2] = params
 		while (selected_target[1] && mob && !mob.lying && mob.stat == CONSCIOUS)
 			if (mob.using_object && istype(mob.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-				var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = mob.using_object
-
 				Click(selected_target[1], location, control, selected_target[2])
 			else
 				var/obj/item/weapon/gun/G = mob.get_active_hand()
