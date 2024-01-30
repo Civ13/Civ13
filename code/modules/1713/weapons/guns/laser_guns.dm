@@ -271,9 +271,11 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
+	full_auto = TRUE
+	
 /obj/item/weapon/gun/projectile/automatic/stationary/laser/update_icon()
 	if (ammo_magazine)
 		icon_state = base_icon
@@ -296,7 +298,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -310,7 +312,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 

@@ -22,7 +22,7 @@
 	
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	firemodes = list(
-		list(name = "automatic", burst=6, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
 	slot_flags = FALSE
 	full_auto = TRUE
@@ -216,10 +216,12 @@
 
 	if (!istype(usr, /mob/living))
 		return
+	if (usr == used_by_mob)
+		to_chat(usr, SPAN_WARNING("You cannot turn \the [src] while on it."))
 	if (can_turn)
 		set_dir(turn(dir, 90))
 	else
-		usr << SPAN_WARNING("\The [src] is incapable of turning.")
+		to_chat(usr, SPAN_WARNING("\The [src] is incapable of turning."))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/verb/rotate_right()
@@ -229,10 +231,12 @@
 
 	if (!istype(usr, /mob/living))
 		return
+	if (usr == used_by_mob)
+		to_chat(usr, SPAN_WARNING("You cannot turn \the [src] while on it."))
 	if (can_turn)
 		set_dir(turn(dir, -90))
 	else
-		usr << SPAN_WARNING("\The [src] is incapable of turning.")
+		to_chat(usr, SPAN_WARNING("\The [src] is incapable of turning."))
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/MouseDrop_T(mob/target, mob/user)

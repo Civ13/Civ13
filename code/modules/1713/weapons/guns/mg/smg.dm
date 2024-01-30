@@ -316,7 +316,7 @@
 	weight = 4.12
 	equiptimer = 10
 	firemodes = list(
-		list(name = "automatic",    burst=1.2, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
+		list(name = "automatic",    burst=1, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
 		)
 	sel_mode = 1
 	effectiveness_mod = 0.90
@@ -350,7 +350,7 @@
 	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
 	magazine_type = /obj/item/ammo_magazine/fg42
 	good_mags = list(/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small)
-	full_auto = TRUE
+	full_auto = FALSE
 	equiptimer = 12
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
@@ -574,7 +574,7 @@
 	base_icon = "ppsh"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = TRUE
+	full_auto = FALSE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.63
@@ -619,7 +619,7 @@
 	base_icon = "ppd"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = TRUE
+	full_auto = FALSE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.7

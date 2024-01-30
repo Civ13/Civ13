@@ -154,7 +154,12 @@
 	if(using_object)
 		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) || using_object != A)
 			var/obj/item/weapon/gun/projectile/automatic/stationary/M = using_object
-			M.Fire(A, src)
+			if (M.full_auto)
+				var/datum/firemode/F = M.firemodes[M.sel_mode]
+				spawn(F.burst_delay)
+					M.afterattack(A, src, FALSE, params)
+			else
+				M.afterattack(A, src, FALSE, params)
 			return TRUE
 
 	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
@@ -509,24 +514,32 @@
 ///////////////////////////
 /////AUTOMATIC CLICKS//////
 ///////////////////////////
-var/dispersion_modifyer = 0 //while(automatic) dispersion_mod++; dispersion = 0.1 + dispersion_mod;
-
 /client/MouseDown(object, location, control, params)
+	if (object == mob)
+		return ..(object, location, control, params)
 	var/delay = mob.CanMobAutoclick(object, location, params)
-	if(delay)
+	if (delay)
 		selected_target[1] = object
 		selected_target[2] = params
-		while(selected_target[1])
-			dispersion_modifyer += 0.04
-			Click(selected_target[1], location, control, selected_target[2])
+		while (selected_target[1] && mob && !mob.lying && mob.stat == CONSCIOUS)
+			if (mob.using_object && istype(mob.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+				var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = mob.using_object
+
+				Click(selected_target[1], location, control, selected_target[2])
+			else
+				var/obj/item/weapon/gun/G = mob.get_active_hand()
+				if (G && istype(G))
+					G.next_fire_time = 0 // no 'you can't fire' spam
+					Click(selected_target[1], location, control, selected_target[2])
 			sleep(delay)
-		dispersion_modifyer = 0
+	else
+		return ..(object, location, control, params)
 
 /client/MouseUp(object, location, control, params)
 	selected_target[1] = null
 
 /client/MouseDrag(src_object,atom/over_object,src_location,over_location,src_control,over_control,params)
-	if(selected_target[1] && over_object.IsAutoclickable())
+	if (selected_target[1] && over_object && over_object.IsAutoclickable())
 		selected_target[1] = over_object
 		selected_target[2] = params
 
@@ -534,11 +547,17 @@ var/dispersion_modifyer = 0 //while(automatic) dispersion_mod++; dispersion = 0.
 	return
 
 /mob/living/human/CanMobAutoclick(atom/object, location, params)
-	if(!object.IsAutoclickable())
-		return
-	var/obj/item/h = get_active_hand()
-	if(h)
-		. = h.CanItemAutoclick(object, location, params)
+	if (object)
+		if (!object.IsAutoclickable())
+			return
+	if (using_object)
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		if (HMG.used_by_mob == src)
+			return HMG.CanItemAutoclick(object, location, params)
+	else
+		var/obj/item/H = get_active_hand()
+		if (H)
+			return H.CanItemAutoclick(object, location, params)
 
 /obj/item/proc/CanItemAutoclick(object, location, params)
 	return
@@ -551,10 +570,10 @@ var/dispersion_modifyer = 0 //while(automatic) dispersion_mod++; dispersion = 0.
 		return FALSE
 
 /atom/proc/IsAutoclickable()
-	. = TRUE
+	return TRUE
 
 /obj/screen/IsAutoclickable()
-	. = FALSE
+	return FALSE
 
 /obj/screen/click_catcher/IsAutoclickable()
-	. = TRUE
+	return TRUE

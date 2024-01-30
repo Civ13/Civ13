@@ -566,14 +566,14 @@
 		var/datum/firemode/current_mode = firemodes[sel_mode]
 		user.visible_message("The fire selector is set to [current_mode.name].")
 	if (safetyon)
-		user << "<span class='notice'><b>The safety is on.</b></span>"
+		to_chat(user, SPAN_NOTICE("<b>The safety is on.</b>"))
 
 /obj/item/weapon/gun/proc/switch_firemodes(mob/user=null)
 	sel_mode++
 	if (sel_mode > firemodes.len)
 		sel_mode = 1
 	var/datum/firemode/new_mode = firemodes[sel_mode]
-	user << "<span class='notice'>\The [src] is now set to [new_mode.name].</span>"
+	to_chat(user, SPAN_NOTICE("\The [src] is now set to [new_mode.name]."))
 	if (new_mode.name == "automatic")
 		full_auto = TRUE
 	else

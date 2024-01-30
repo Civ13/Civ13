@@ -111,7 +111,7 @@
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/mk18
 	good_mags = list(/obj/item/ammo_magazine/mk18)
-	full_auto = TRUE
+	full_auto = FALSE
 	equiptimer = 12
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
@@ -132,7 +132,7 @@
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
-	full_auto = TRUE
+	full_auto = FALSE
 	equiptimer = 12
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
