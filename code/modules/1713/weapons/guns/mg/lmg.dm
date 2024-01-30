@@ -69,7 +69,7 @@
 	full_auto = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.2), recoil = 0),)
+		list(name = "automatic", burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.2), recoil = 0))
 
 	var/jammed_until = -1
 	var/jamcheck = 0
@@ -157,7 +157,7 @@
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0))
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"
@@ -190,7 +190,7 @@
 	weight = 8.8
 	effectiveness_mod = 1.02
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
 
 ///////////////////////////M1919A6//////////////////////
@@ -305,7 +305,7 @@
 	effectiveness_mod = 1.0
 	load_delay = 12
 	firemodes = list(
-		list(name = "full auto", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.7, 0.8, 1.0, 1.2, 1.4), recoil = 0),)
+		list(name = "automatic", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.7, 0.8, 1.0, 1.2, 1.4), recoil = 0))
 	var/cover_open = FALSE
 	var/cover_open_sound = 'sound/weapons/guns/interact/breda30_open.ogg'
 	var/cover_close_sound = 'sound/weapons/guns/interact/breda30_close.ogg'
@@ -362,7 +362,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 10.5
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 1
@@ -382,7 +382,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 7.1
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	equiptimer = 25
 	load_delay = 50
@@ -403,7 +403,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 7.47
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	equiptimer = 25
 	load_delay = 50
@@ -427,7 +427,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	weight = 7.5
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 25
 	load_delay = 50
@@ -446,7 +446,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x39
 	weight = 7.4
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 22
 	load_delay = 40
@@ -464,7 +464,7 @@
 	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74)
 	weight = 5.1
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 20
 	load_delay = 30
@@ -499,7 +499,7 @@
 	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
 	weight = 5.7
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 21
 	load_delay = 26
@@ -542,7 +542,7 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 8
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 25
 	load_delay = 50
@@ -581,7 +581,7 @@
 	weight = 9
 	heavy = TRUE
 	firemodes = list(
-		list(name = "full auto",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 21
 	load_delay = 21

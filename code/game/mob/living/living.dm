@@ -595,6 +595,9 @@ default behaviour is:
 			process_resist()
 
 /mob/living/proc/process_resist()
+	if(using_object)
+		var/obj/item/weapon/gun/projectile/automatic/stationary/M = using_object
+		M.stopped_using(src)
 
 	//unbuckling yourself
 	if (buckled)
