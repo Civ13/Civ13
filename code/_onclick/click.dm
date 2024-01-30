@@ -29,27 +29,34 @@
 	/*if (client.buildmode)  //unused now
 		build_click(src, client.buildmode, params, A)
 		return*/
+
 	var/list/modifiers = params2list(params)
 	var/icon_x = text2num(modifiers["icon-x"])
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
 		CtrlShiftClickOn(A)
 		return
+
 	if (modifiers["shift"] && modifiers["middle"])
 		ShiftMiddleClickOn(A)
 		return 
+		
 	if (modifiers["middle"])
 		MiddleClickOn(A)
 		return 
+
 	if (modifiers["shift"])
 		ShiftClickOn(A)
 		return 
+
 	if (modifiers["alt"])
 		AltClickOn(A)
 		return 
+
 	if (modifiers["ctrl"])
 		CtrlClickOn(A)
 		return 
+
 	if (ishuman(src)) //src is user who is click and human
 		var/mob/living/human/H = src
 		if (istype(H.shoes, /obj/item/clothing/shoes/football)) //TODO TO DO: move it to football.dm
@@ -111,15 +118,19 @@
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/P = H.get_active_hand()
 			P.rangecheck(H,A)
 			H.RangedAttack(A)
+
 	for (var/obj/structure/noose/N in get_turf(src)) // can't click on anything when we're hanged
 		if (N.hanging == src)
 			return
+
 	if (lying && istype(A, /turf/floor))
 		if (A.Adjacent(src))
 			scramble(A)
 			return
+
 	if (stat || paralysis || stunned || weakened)
 		return
+
 	if (!prone)
 		face_atom(A) // change direction to face what you clicked on
 	else
@@ -136,8 +147,16 @@
 			M.Turn(90)
 			M.Translate(1,-6)
 			transform = M
+
 	if (!canClick()) // in the year 2000...
 		return
+
+	if(using_object)
+		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) || using_object != A)
+			var/obj/item/weapon/gun/projectile/automatic/stationary/M = using_object
+			M.Fire(A, src)
+			return TRUE
+
 	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
 		var/mob/living/human/H = src
 		if (istype(H) && H.laddervision)
@@ -155,40 +174,6 @@
 		throw_mode_off()
 
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
-	if (!W)
-		if (using_MG) //TO DO TODO: move to mg.dm
-			if (istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
-				var/obj/item/weapon/gun/projectile/automatic/stationary/G = using_MG
-				var/can_fire = FALSE
-				switch (G.dir)
-					if (EAST)
-						if (A.x > G.x)
-							can_fire = TRUE
-						else
-							can_fire = FALSE
-					if (WEST)
-						if (A.x < G.x)
-							can_fire = TRUE
-						else
-							can_fire = FALSE
-					if (NORTH, NORTHEAST, NORTHWEST)
-						if (A.y > G.y)
-							can_fire = TRUE
-						else
-							can_fire = FALSE
-					if (SOUTH, SOUTHEAST, SOUTHWEST)
-						if (A.y < G.y)
-							can_fire = TRUE
-						else
-							can_fire = FALSE
-				if (can_fire)
-					if (G.full_auto)
-						var/datum/firemode/F = G.firemodes[G.sel_mode]
-						spawn(F.burst_delay)
-							G.afterattack(A, src, FALSE, params)
-					else
-						G.afterattack(A, src, FALSE, params)
-
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)
@@ -518,3 +503,58 @@
 			bite_act(M)
 		else
 			M.swap_hand()
+
+// AUTOMATIC CLICKS
+
+///////////////////////////
+/////AUTOMATIC CLICKS//////
+///////////////////////////
+var/dispersion_modifyer = 0 //while(automatic) dispersion_mod++; dispersion = 0.1 + dispersion_mod;
+
+/client/MouseDown(object, location, control, params)
+	var/delay = mob.CanMobAutoclick(object, location, params)
+	if(delay)
+		selected_target[1] = object
+		selected_target[2] = params
+		while(selected_target[1])
+			dispersion_modifyer += 0.04
+			Click(selected_target[1], location, control, selected_target[2])
+			sleep(delay)
+		dispersion_modifyer = 0
+
+/client/MouseUp(object, location, control, params)
+	selected_target[1] = null
+
+/client/MouseDrag(src_object,atom/over_object,src_location,over_location,src_control,over_control,params)
+	if(selected_target[1] && over_object.IsAutoclickable())
+		selected_target[1] = over_object
+		selected_target[2] = params
+
+/mob/proc/CanMobAutoclick(object, location, params)
+	return
+
+/mob/living/human/CanMobAutoclick(atom/object, location, params)
+	if(!object.IsAutoclickable())
+		return
+	var/obj/item/h = get_active_hand()
+	if(h)
+		. = h.CanItemAutoclick(object, location, params)
+
+/obj/item/proc/CanItemAutoclick(object, location, params)
+	return
+
+/obj/item/weapon/gun/CanItemAutoclick(object, location, params)
+	if (full_auto)
+		var/datum/firemode/F = firemodes[sel_mode]
+		return F.burst_delay
+	else
+		return FALSE
+
+/atom/proc/IsAutoclickable()
+	. = TRUE
+
+/obj/screen/IsAutoclickable()
+	. = FALSE
+
+/obj/screen/click_catcher/IsAutoclickable()
+	. = TRUE

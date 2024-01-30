@@ -132,7 +132,7 @@
 	else if (isturf(loc))
 		if (istype(src, /obj/item/weapon/gun/projectile/automatic/stationary))
 			for (var/mob/living/L in loc)
-				if (L.using_MG == src)
+				if (L.using_object == src)
 					firer = L
 					break
 		else
