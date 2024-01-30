@@ -549,9 +549,10 @@
 		if (!object.IsAutoclickable())
 			return
 	if (using_object)
-		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
-		if (HMG.used_by_mob == src)
-			return HMG.CanItemAutoclick(object, location, params)
+		if (istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+			var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+			if (HMG.used_by_mob == src)
+				return HMG.CanItemAutoclick(object, location, params)
 	else
 		var/obj/item/H = get_active_hand()
 		if (H)
