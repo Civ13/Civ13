@@ -155,7 +155,7 @@
 		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 			var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
 			if (HMG.full_auto)
-				var/datum/firemode/F = M.firemodes[HMG.sel_mode]
+				var/datum/firemode/F = HMG.firemodes[HMG.sel_mode]
 				spawn(F.burst_delay)
 					HMG.afterattack(A, src, FALSE, params)
 			else
