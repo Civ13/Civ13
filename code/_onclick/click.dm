@@ -152,14 +152,14 @@
 		return
 
 	if(using_object)
-		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) || using_object != A)
-			var/obj/item/weapon/gun/projectile/automatic/stationary/M = using_object
-			if (M.full_auto)
-				var/datum/firemode/F = M.firemodes[M.sel_mode]
+		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+			var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+			if (HMG.full_auto)
+				var/datum/firemode/F = HMG.firemodes[HMG.sel_mode]
 				spawn(F.burst_delay)
-					M.afterattack(A, src, FALSE, params)
+					HMG.afterattack(A, src, FALSE, params)
 			else
-				M.afterattack(A, src, FALSE, params)
+				HMG.afterattack(A, src, FALSE, params)
 			return TRUE
 
 	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
