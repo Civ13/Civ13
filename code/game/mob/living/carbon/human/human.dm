@@ -1074,7 +1074,7 @@ var/list/coefflist = list()
 		reagents.add_reagent("adrenaline", amount)
 
 /mob/living/human/proc/using_look() //May not be nessecary
-	if(using_object)
+	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		return TRUE
 	if(stat == CONSCIOUS)
 		if (client && actions.len)
@@ -1135,7 +1135,7 @@ var/list/coefflist = list()
 	var/obj/item/weapon/attachment/scope/adjustable/W = null
 	var/obj/item/weapon/gun/G = null
 	var/obj/item/weapon/gun/projectile/automatic/stationary/S = null
-	if(user.using_object)
+	if(user.using_object && istype(user.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		S = user.using_object
 		look_amount = S.zoom_amount
 	else if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
