@@ -181,6 +181,15 @@
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
+	switch(dir)
+		if (NORTH)
+			degree = 90
+		if (SOUTH)
+			degree = 270
+		if (WEST)
+			degree = 180
+		if (EAST)
+			degree = 0
 
 
 /obj/structure/cannon/Destroy()
@@ -937,13 +946,13 @@
 
 /obj/structure/cannon/proc/rotate_to(var/new_dir)
 	if (new_dir == NORTH)
-		degree = 0
-	else if (new_dir == WEST)
 		degree = 90
-	else if (new_dir == SOUTH)
+	else if (new_dir == WEST)
 		degree = 180
-	else
+	else if (new_dir == SOUTH)
 		degree = 270
+	else
+		degree = 0
 	dir = new_dir
 	target_coords()
 	update_scope()
@@ -985,7 +994,7 @@
 		switch(dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -993,7 +1002,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1001,7 +1010,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1009,7 +1018,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1033,7 +1042,7 @@
 		switch (dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1050,7 +1059,7 @@
 						src.y += 3
 			if (WEST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1067,7 +1076,7 @@
 						src.y -= 3
 			if (NORTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1084,7 +1093,7 @@
 						src.y -= 1
 			if (SOUTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1134,7 +1143,7 @@
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1142,7 +1151,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1150,7 +1159,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1158,7 +1167,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1182,7 +1191,7 @@
 		switch (dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1199,7 +1208,7 @@
 						src.y -= 1
 			if (WEST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1216,7 +1225,7 @@
 						src.y += 1
 			if (NORTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1233,7 +1242,7 @@
 						src.y -= 3
 			if (SOUTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")

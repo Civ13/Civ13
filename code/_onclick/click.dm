@@ -151,16 +151,15 @@
 	if (!canClick()) // in the year 2000...
 		return
 
-	if(using_object)
-		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-			var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
-			if (HMG.full_auto)
-				var/datum/firemode/F = HMG.firemodes[HMG.sel_mode]
-				spawn(F.burst_delay)
-					HMG.afterattack(A, src, FALSE, params)
-			else
+	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		if (HMG.full_auto)
+			var/datum/firemode/F = HMG.firemodes[HMG.sel_mode]
+			spawn(F.burst_delay)
 				HMG.afterattack(A, src, FALSE, params)
-			return TRUE
+		else
+			HMG.afterattack(A, src, FALSE, params)
+		return TRUE
 
 	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
 		var/mob/living/human/H = src
@@ -548,11 +547,10 @@
 	if (object)
 		if (!object.IsAutoclickable())
 			return
-	if (using_object)
-		if (istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-			var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
-			if (HMG.used_by_mob == src)
-				return HMG.CanItemAutoclick(object, location, params)
+	if (using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		if (HMG.used_by_mob == src)
+			return HMG.CanItemAutoclick(object, location, params)
 	else
 		var/obj/item/H = get_active_hand()
 		if (H)

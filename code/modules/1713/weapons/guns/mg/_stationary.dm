@@ -160,7 +160,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/user as mob, var/need_message = TRUE)
 	if(need_message)
-		user.visible_message(SPAN_NOTICE("[user.name] handeled \the [src]."), SPAN_NOTICE("You handeled \the [src]."))
+		user.visible_message(SPAN_NOTICE("[user.name] handels \the [src]."), SPAN_NOTICE("You handel \the [src]."))
 	used_by_mob = user
 	user.using_object = src
 	user.update_canmove()
@@ -191,12 +191,10 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/stopped_using(mob/user as mob, var/need_message = TRUE)
 	if(need_message)
-		user.visible_message(SPAN_NOTICE("[user.name] released \the [src]."), SPAN_NOTICE("You released \the [src]."))
+		user.visible_message(SPAN_NOTICE("[user.name] releases \the [src]."), SPAN_NOTICE("You release \the [src]."))
 	used_by_mob = null
 	user.using_object = null
 	user.update_canmove()
-	var/grip_dir = reverse_direction(dir)
-	step(user, grip_dir)
 	animate(user, pixel_x=user_old_x, pixel_y=user_old_y, 4, 1)
 	user_old_x = 0
 	user_old_y = 0
@@ -318,10 +316,9 @@
 // helpers
 
 /mob/living/human/Move()
-	if(using_object)
-		if(istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-			var/obj/item/weapon/gun/projectile/automatic/stationary/M = using_object
-			M.stopped_using(src)
+	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		HMG.stopped_using(src)
 	..()
 
 /obj/item/weapon/gun/projectile/automatic/stationary/update_icon()
