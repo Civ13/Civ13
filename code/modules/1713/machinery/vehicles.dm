@@ -499,7 +499,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m4
-	name = "M-4 Sherman"
+	name = "M4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
@@ -511,11 +511,24 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
-	name = "M-48A1 Patton"
+	name = "M48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
 	turret_type = "m48a1_turret"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m60a3
+	name = "M60A3 Patton"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	color = "#4B4D40"
+	turret_type = "m60a3_turret"
 	reg_number = ""
 	New()
 		..()

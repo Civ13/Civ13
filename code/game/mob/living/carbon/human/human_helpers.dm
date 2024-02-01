@@ -266,15 +266,15 @@
 	for (var/image/tmpimg in client.images)
 		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi')
 			client.images.Remove(tmpimg)
-	for (var/obj/structure/vehicleparts/frame/FRL in loc)
+	for (var/obj/structure/vehicleparts/frame/FRL in loc) // Check if we're standing a frame
 		found = FRL
-	for (var/obj/structure/vehicleparts/frame/FR in view(client))
+	for (var/obj/structure/vehicleparts/frame/FR in view(client)) // If the axis of the frame is not the same as our frame draw a roof
 		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
 				if (FR.roof_turret)
 					client.images += FR.roof_turret
-			else
+			else // Else don't draw the roof (we are inside)
 				client.images -= FR.roof
 				if (FR.roof_turret)
 					client.images -= FR.roof_turret

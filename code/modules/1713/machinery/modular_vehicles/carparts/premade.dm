@@ -656,7 +656,7 @@
 	)
 
 /obj/effects/premadevehicles/tank/panzervi
-	name = "Panzer VI"
+	name = "Panzer VI Tiger"
 	icon_state = "4x4"
 	custom_color = "#585A5C"
 	axis = /obj/structure/vehicleparts/axis/heavy/panzervi
