@@ -639,11 +639,11 @@
 	axis = /obj/structure/vehicleparts/axis/heavy/m4
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/m4/rf,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/ammo_magazine/browning,/obj/item/weapon/gun/projectile/automatic/stationary/browning),
-	"2,1" = list(/obj/structure/vehicleparts/frame/m4/front,/obj/item/weapon/storage/toolbox/emergency),
+	"2,1" = list(/obj/structure/vehicleparts/frame/m4/front),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/m4/lf, /obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/m4/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/m4,/obj/structure/shellrack/full75/american),
+	"2,2" = list(/obj/structure/vehicleparts/frame/m4, /obj/structure/cannon/modern/tank/american75),
 	"3,2" = list(/obj/structure/vehicleparts/frame/m4/left, /obj/structure/bed/chair/gunner),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/m4/right/door),
@@ -651,7 +651,7 @@
 	"3,3" = list(/obj/structure/vehicleparts/frame/m4/left/door,),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m4/rb, /obj/structure/engine/internal/diesel/premade/chiha),
-	"2,4" = list(/obj/structure/vehicleparts/frame/m4/back, /obj/structure/shellrack/full76),
+	"2,4" = list(/obj/structure/vehicleparts/frame/m4/back, /obj/structure/shellrack/full75/american),
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m4/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
