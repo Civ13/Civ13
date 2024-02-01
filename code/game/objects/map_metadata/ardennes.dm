@@ -18,10 +18,10 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.6, AMERICAN = 0.4)
 	battle_name = "Ardennes Offensive"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!<br>The Americans will win if they hold out for <b>45 minutes</b>. The Germans will win if they manage to reach the <b>HQ</b> in the middle of the city.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br>The Americans will win if they hold out for <b>45 minutes</b>. The Germans will win if they manage to reach the <b>HQ</b> in the middle of the city.</font>"
 	faction1 = AMERICAN
 	faction2 = GERMAN
-	grace_wall_timer = 3000
+	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
 		"Woody Guthrine - Tear the Fascists Down:1" = "sound/music/tearthefascists.ogg",)
