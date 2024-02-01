@@ -37,6 +37,8 @@
 	else if (istype(J, /datum/job/american))
 		if (J.is_ardennes)
 			. = TRUE
+			if (istype(J, /datum/job/american/tanker_ww2))
+				J.spawn_location = "JoinLateRN2" // Doing this because changing the spawn_loc in the job file will bust other maps
 		else
 			. = FALSE
 	else
@@ -67,7 +69,29 @@
 
 /obj/map_metadata/ardennes/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>Both teams may now cross the invisible wall!</font>"
+		for (var/datum/job/J in job_master.occupations)
+			if (J.is_ardennes)
+				switch (J.title)
+					if ("US Lieutenant")
+						J.spawn_location = "JoinLateRNBoatswain2"
+					if ("US Sergeant")
+						J.spawn_location = "JoinLateRN2"
+					if ("US Field Medic")
+						J.spawn_location = "JoinLateRNSurgeon2"
+					if ("US Doctor")
+						J.spawn_location = "JoinLateRNSurgeon2"
+					if ("US Sniper")
+						J.spawn_location = "JoinLateRN2"
+					if ("US Machine Gunner")
+						J.spawn_location = "JoinLateRN2"
+					if ("Ammo Bearer")
+						J.spawn_location = "JoinLateRN2"
+					if ("US Rifleman")
+						J.spawn_location = "JoinLateRN2"
+					if ("US Military Police")
+						J.spawn_location = "JoinLateRNMidshipman2"
+					
+		return "<font size = 4>The German assault has begun!</font>"
 	else if (faction == GERMAN)
 		return ""
 	else
@@ -75,7 +99,7 @@
 
 /obj/map_metadata/ardennes/reverse_cross_message(faction)
 	if (faction == AMERICAN)
-		return "<span class = 'userdanger'>Both teams may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The Germans have halted their assault!</span>"
 	else if (faction == GERMAN)
 		return ""
 	else
