@@ -488,14 +488,16 @@
 
 	if (ismob(firer) && (istype(get_turf(firer), /turf/floor/trench) && firer.prone)) // If the firer is inside a trench and prone
 		if (!istype(T, /turf/floor/trench) && get_dist(T, firer) >= 3) // If the target is 3 tiles or more away block the shot
-			T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
-			qdel(src)
-			return
+			if (!istype(src, /obj/item/cannon_ball))
+				T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
+				qdel(src)
+				return
 	if (ismob(firer) && !(istype(get_turf(firer), /turf/floor/trench))) // If the firer is inside a trench
 		if (istype(T, /turf/floor/trench) && get_dist(T, firer) > 10) // If the shooter is more than 10 tiles away block the shot
-			T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
-			qdel(src)
-			return
+			if (!istype(src, /obj/item/cannon_ball))
+				T.visible_message(SPAN_WARNING("The [name] hits the trench wall!"))
+				qdel(src)
+				return
 
 	if (can_hit_in_trench)
 		if (kill_count < (initial(kill_count) - 1))
