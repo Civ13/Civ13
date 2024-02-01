@@ -289,6 +289,7 @@
 	base_icon = "type92hmg"
 	caliber = "a65x52"
 	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
+	reload_sound = 'sound/weapons/guns/interact/breda30_clip.ogg'
 	magazine_type = /obj/item/ammo_magazine/breda30
 	good_mags = list(/obj/item/ammo_magazine/breda30)
 	firemodes = list(
