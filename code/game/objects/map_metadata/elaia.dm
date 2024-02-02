@@ -22,7 +22,7 @@
 	faction2 = ITALIAN
 	ordinal_age = 5
 	songs = list(
-		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
+		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
 	gamemode = "Siege"
 
 /obj/map_metadata/elaia/faction1_can_cross_blocks()
