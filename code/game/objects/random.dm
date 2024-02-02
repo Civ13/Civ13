@@ -41,11 +41,11 @@ Example for later use:
 		return
 
 	var/build_path = pickweight(spawn_choices())
-
-	var/atom/A = new build_path(src.loc)
-	if(pixel_x || pixel_y)
-		A.pixel_x = pixel_x
-		A.pixel_y = pixel_y
+	if (build_path)
+		var/atom/A = new build_path(src.loc)
+		if(pixel_x || pixel_y)
+			A.pixel_x = pixel_x
+			A.pixel_y = pixel_y
 
 // Returns an associative list in format path:weight
 /obj/random/proc/spawn_choices()
@@ -79,26 +79,26 @@ Example for later use:
 	name = "random ak47"
 	icon_state = "ak_old"
 /obj/random/gun/ak47/spawn_choices()
-	return list(/obj/item/weapon/gun/projectile/submachinegun/ak47,
-				/obj/item/weapon/gun/projectile/submachinegun/ak47/akms)
+	return list(/obj/item/weapon/gun/projectile/submachinegun/ak47 = 1,
+				/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 1)
 
 /obj/random/gun/ak74
 	name = "random ak74"
 	icon_state = "ak_old"
 /obj/random/gun/ak74/spawn_choices()
-	return list(/obj/item/weapon/gun/projectile/submachinegun/ak74,
-				/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74,
-                /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u,
-                /obj/item/weapon/gun/projectile/submachinegun/ak74m)
+	return list(/obj/item/weapon/gun/projectile/submachinegun/ak74 = 1,
+				/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 1,
+                /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 1,
+                /obj/item/weapon/gun/projectile/submachinegun/ak74m = 1)
 
 /obj/random/gun/ak_modern
 	name = "random modern ak"
 	icon_state = "ak_modern"
 /obj/random/gun/ak_modern/spawn_choices()
-	return list(/obj/item/weapon/gun/projectile/submachinegun/ak101,
-				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak102,
-				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104,
-				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak105)
+	return list(/obj/item/weapon/gun/projectile/submachinegun/ak101 = 1,
+				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak102 = 1,
+				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104 = 1,
+				/obj/item/weapon/gun/projectile/submachinegun/ak101/ak105 = 1)
 
 
 ////////////////Magazines////////////////
@@ -111,15 +111,15 @@ Example for later use:
     name = "random ak magazine"
     icon_state = "magazine"
 /obj/random/magazine/ak47/spawn_choices()
-	return list(/obj/item/ammo_magazine/ak47,
-                /obj/item/ammo_magazine/ak47/drum)
+	return list(/obj/item/ammo_magazine/ak47 = 1,
+                /obj/item/ammo_magazine/ak47/drum = 1)
 
 /obj/random/magazine/ak74
     name = "random ak magazine"
     icon_state = "magazine"
 /obj/random/magazine/ak74/spawn_choices()
-	return list(/obj/item/ammo_magazine/ak74,
-                /obj/item/ammo_magazine/ak74/drum)
+	return list(/obj/item/ammo_magazine/ak74 = 1,
+                /obj/item/ammo_magazine/ak74/drum = 1)
 
 		
 ////////////////Medical////////////////
@@ -147,22 +147,17 @@ Example for later use:
 	icon_state = "bandage"
 	spawn_nothing_percentage = 10
 /obj/random/medical/bandage/spawn_choices()
-	return list(/obj/item/stack/medical/advanced/sulfa/small = rand(1,2),
-                /obj/item/stack/medical/advanced/herbs/small = rand(1,3),
-                /obj/item/stack/medical/bruise_pack/bint/small = rand(1,2))
+	return list(/obj/item/stack/medical/advanced/sulfa/small = 1,
+                /obj/item/stack/medical/advanced/herbs/small = 1,
+                /obj/item/stack/medical/bruise_pack/bint/small = 1)
 
 /obj/random/medical/drugs
 	name = "Medical Drugs"
 	icon_state = "drug"
 	spawn_nothing_percentage = 18
 /obj/random/medical/drugs/spawn_choices()
-	return list(/obj/item/weapon/reagent_containers/syringe/morphine,
-				/obj/item/weapon/reagent_containers/syringe/morphine,
-				/obj/item/weapon/reagent_containers/syringe/morphine,
-                /obj/item/weapon/reagent_containers/syringe/adrenaline,
-				/obj/item/weapon/reagent_containers/syringe/adrenaline,
-				/obj/item/weapon/reagent_containers/syringe/adrenaline,
-                /obj/item/weapon/reagent_containers/syringe/thc)
+	return list(/obj/item/weapon/reagent_containers/syringe/morphine = 1,
+                /obj/item/weapon/reagent_containers/syringe/thc = 1)
 
 ////////////////Barricades, Mines & Trees////////////////
 /obj/random/mine/ap
@@ -170,73 +165,73 @@ Example for later use:
 	icon_state = "mine"
 	spawn_nothing_percentage = 70
 /obj/random/mine/ap/spawn_choices()
-	return list(/obj/item/mine/ap/armed)
+	return list(/obj/item/mine/ap/armed = 1)
 
 /obj/random/mine/booby
 	name = "Anti Personnel Mine"
 	icon_state = "mine"
 	spawn_nothing_percentage = 70
 /obj/random/mine/booby/spawn_choices()
-	return list(/obj/item/mine/boobytrap)
+	return list(/obj/item/mine/boobytrap = 1)
 
 /obj/random/barricade/random
 	name = "Random Barricade"
 	icon_state = "barricade"
 	spawn_nothing_percentage = 50
 /obj/random/barricade/random/spawn_choices()
-	return list(/obj/structure/barricade/antitank,
-				/obj/structure/barricade/horizontal,
-				/obj/structure/barricade/vertical)
+	return list(/obj/structure/barricade/antitank = 1,
+				/obj/structure/barricade/horizontal = 1,
+				/obj/structure/barricade/vertical = 1)
 
 /obj/random/plants/tree
 	name = "Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
 /obj/random/plants/tree/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree,
-				/obj/structure/wild/tallgrass,
-				/obj/structure/wild/rock,
+	return list(/obj/structure/wild/tree/live_tree = 1,
+				/obj/structure/wild/tallgrass = 1,
+				/obj/structure/wild/rock = 1,
 				/obj/structure/wild/rock/basalt,
-				/obj/structure/wild/tree_stump,
-				/obj/structure/wild/bush,
-				/obj/structure/wild/smallbush,
-				/obj/structure/wild/tallgrass)
+				/obj/structure/wild/tree_stump = 1,
+				/obj/structure/wild/bush = 1,
+				/obj/structure/wild/smallbush = 1,
+				/obj/structure/wild/tallgrass = 1)
 
 /obj/random/plants/tree_lowchance
 	name = "Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 75
 /obj/random/plants/tree/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree,
-				/obj/structure/wild/tallgrass,
-				/obj/structure/wild/rock,
-				/obj/structure/wild/rock/basalt,
-				/obj/structure/wild/tree_stump,
-				/obj/structure/wild/bush,
-				/obj/structure/wild/smallbush,
-				/obj/structure/wild/tallgrass)
+	return list(/obj/structure/wild/tree/live_tree = 1,
+				/obj/structure/wild/tallgrass = 1,
+				/obj/structure/wild/rock = 1,
+				/obj/structure/wild/rock/basalt = 1,
+				/obj/structure/wild/tree_stump = 1,
+				/obj/structure/wild/bush = 1,
+				/obj/structure/wild/smallbush = 1,
+				/obj/structure/wild/tallgrass = 1)
 
 /obj/random/plants/tree_snow
 	name = "Snowy Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
 /obj/random/plants/snow/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree/snow,
-				/obj/structure/wild/rock,
-				/obj/structure/wild/rock/basalt,
-				/obj/structure/wild/tree_stump,
-				/obj/structure/wild/smallbush/winter)
+	return list(/obj/structure/wild/tree/live_tree/snow = 1,
+				/obj/structure/wild/rock = 1,
+				/obj/structure/wild/rock/basalt = 1,
+				/obj/structure/wild/tree_stump = 1,
+				/obj/structure/wild/smallbush/winter = 1)
 
 /obj/random/plants/tree_snow_lowchance
 	name = "Snowy Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
 /obj/random/plants/snow/spawn_choices()
-	return list(/obj/structure/wild/tree/live_tree/snow,
-				/obj/structure/wild/rock,
-				/obj/structure/wild/rock/basalt,
-				/obj/structure/wild/tree_stump,
-				/obj/structure/wild/smallbush/winter)
+	return list(/obj/structure/wild/tree/live_tree/snow = 1,
+				/obj/structure/wild/rock = 1,
+				/obj/structure/wild/rock/basalt = 1,
+				/obj/structure/wild/tree_stump = 1,
+				/obj/structure/wild/smallbush/winter = 1)
 
 /obj/item/weapon/hiddenstash
 	name = "Hidden Stach"

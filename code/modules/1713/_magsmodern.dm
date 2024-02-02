@@ -847,7 +847,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/a30mm_ap
-	name = "AP-T ammo belt"
+	name = "AP-T ammo belt (30mm)"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -866,7 +866,7 @@
 	max_ammo = 10
 
 /obj/item/ammo_magazine/a30mm_he
-	name = "HE-T ammo belt"
+	name = "HE-T ammo belt (30mm)"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -886,7 +886,7 @@
 
 
 /obj/item/ammo_magazine/a35mm_fap
-	name = "FAP ammo belt"
+	name = "FAP ammo belt (35mm)"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -899,7 +899,7 @@
 	belt = TRUE
 
 /obj/item/ammo_magazine/a35mm_hei
-	name = "HEI-T ammo belt"
+	name = "HEI-T ammo belt (35mm)"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE
@@ -912,7 +912,7 @@
 	belt = TRUE
 
 /obj/item/ammo_magazine/a73mm
-	name = "73mm PG-15V rocket grenade belt"
+	name = "PG-15V rocket grenade belt (73mm)"
 	icon_state = "maximbelt"
 	worn_state = "maximbelt"
 	mag_type = MAGAZINE

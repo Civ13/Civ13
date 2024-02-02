@@ -402,6 +402,14 @@
 	color = "#D79E57"
 	turret_type = ""
 
+/obj/structure/vehicleparts/axis/heavy/l3cc
+	name = "L3/33 CC"
+	speeds = 4
+	speedlist = list(1=10,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#D79E57"
+	turret_type = ""
+
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
 	speeds = 4

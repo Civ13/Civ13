@@ -112,6 +112,10 @@ var/global/list/vehicle_walls = list( \
 	w_front = list("c_armoredfront",FALSE,TRUE,14,14,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 	override_roof_icon = "l3_barrel"
+/obj/structure/vehicleparts/frame/l3/lf/cc
+	w_front = list("c_armoredfront",FALSE,TRUE,14,14,FALSE,FALSE)
+	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
+	override_roof_icon = "l3cc_barrel"
 /obj/structure/vehicleparts/frame/l3/rf
 	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
 	w_right = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)

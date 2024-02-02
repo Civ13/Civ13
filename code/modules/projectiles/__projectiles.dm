@@ -744,6 +744,12 @@
 
 	fragmentate(T, num_fragments, spread_range, fragment_type)
 
+/obj/item/projectile/bullet/autocannon/a20mm_aphe
+	damage = DAMAGE_OH_GOD + 12
+	penetrating = 36
+	armor_penetration = 36
+	heavy_armor_penetration = 36
+
 /obj/item/projectile/bullet/autocannon/a30mm_ap
 	damage = DAMAGE_OH_GOD + 12
 	penetrating = 30

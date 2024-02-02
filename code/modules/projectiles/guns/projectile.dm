@@ -216,7 +216,7 @@
 						user.remove_from_mob(AM)
 					
 						var/mob/living/human/H = user
-						if (prob(clamp((H.getStatCoeff("[stat]") - 80), 0, 100)))
+						if (prob(clamp(((H.getStatCoeff("[stat]")*100) - 80), 0, 100)))
 							AM.loc = src
 							ammo_magazine = AM
 
@@ -224,7 +224,7 @@
 							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 							cock_gun(user)
 						else
-							AM.loc = get_turf(src)
+							AM.forceMove(get_turf(src))
 
 							to_chat(user, SPAN_DANGER("<big>You clumsily drop both magazines while reloading your [src]!</big>"))
 					else
