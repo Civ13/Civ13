@@ -88,6 +88,16 @@
 	max_ammo = 20
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/a20mm_aphe
+	name = "APHE clip (20mm)"
+	icon_state = "breda30"
+	mag_type = SPEEDLOADER
+	clip = TRUE
+	caliber = "a20"
+	ammo_type = /obj/item/ammo_casing/a20mm_aphe
+	max_ammo = 10
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/sten2
 	name = "Sten Magazine (9x19mm)"
 	icon_state = "sten2"

@@ -1143,6 +1143,16 @@
 	caliber = "a58x42"
 	value = 2
 
+/obj/item/ammo_casing/a20mm_aphe
+	name = "20mm APHE cartridge"
+	desc = "An Amour Piercing High-Explosive cartridge."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 2
+	projectile_type = /obj/item/projectile/bullet/autocannon/a20mm_ap
+	caliber = "a30"
+	value = 2
+
 /obj/item/ammo_casing/a30mm_ap
 	name = "30mm AP-T cartridge"
 	desc = "An Amour Piercing-Tracer cartridge."
@@ -1155,7 +1165,7 @@
 
 /obj/item/ammo_casing/frag/a30mm_he
 	name = "30mm HE-T cartridge"
-	desc = "A High Explosive-Tracer cartridge."
+	desc = "A High-Explosive-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
@@ -1175,7 +1185,7 @@
 
 /obj/item/ammo_casing/frag/a35mm_hei
 	name = "30mm HEI-T cartridge"
-	desc = "A High Explosive Incendiary-Tracer cartridge."
+	desc = "A High-Explosive Incendiary-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
