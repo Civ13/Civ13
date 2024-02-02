@@ -293,7 +293,7 @@
 	magazine_type = /obj/item/ammo_magazine/breda30
 	good_mags = list(/obj/item/ammo_magazine/breda30)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2.5, fire_delay=1.0, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=3.0, fire_delay=1.0, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a65x52
 	load_method = SINGLE_CASING | SPEEDLOADER
