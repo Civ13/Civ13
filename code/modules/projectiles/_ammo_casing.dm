@@ -1150,7 +1150,7 @@
 	spent_icon = "huge-casing"
 	weight = 2
 	projectile_type = /obj/item/projectile/bullet/autocannon/a20mm_aphe
-	caliber = "a30"
+	caliber = "a20"
 	value = 2
 
 /obj/item/ammo_casing/a30mm_ap

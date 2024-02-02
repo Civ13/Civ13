@@ -315,12 +315,13 @@
 	icon_state = "type92hmg"
 	base_icon = "type92hmg"
 	caliber = "a20"
+	handle_casings = EJECT_CASINGS
 	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
 	reload_sound = 'sound/weapons/guns/interact/breda30_clip.ogg'
 	magazine_type = /obj/item/ammo_magazine/a20mm_aphe
 	good_mags = list(/obj/item/ammo_magazine/a20mm_aphe)
 	firemodes = list(
-		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=7.0, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
+		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=70, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a20mm_aphe
 	load_method = SINGLE_CASING | SPEEDLOADER
