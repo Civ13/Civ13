@@ -305,7 +305,7 @@
 	effectiveness_mod = 1.0
 	load_delay = 12
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3.5, move_delay=8, dispersion = list(0.2, 0.3, 0.5, 0.8, 1.2), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=3.0, move_delay=8, dispersion = list(0.2, 0.3, 0.5, 0.8, 0.6), recoil = 0))
 	var/cover_open = FALSE
 	var/cover_open_sound = 'sound/weapons/guns/interact/breda30_open.ogg'
 	var/cover_close_sound = 'sound/weapons/guns/interact/breda30_close.ogg'

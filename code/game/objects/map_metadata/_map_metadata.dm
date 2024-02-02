@@ -735,6 +735,7 @@ var/civmax_research = list(230,230,230)
 		INDIANS = 0,
 		PIRATES = 0,
 		DUTCH = 0,
+		ITALIAN = 0,
 		ROMAN = 0,
 		GREEK = 0,
 		ARAB = 0,
@@ -750,8 +751,7 @@ var/civmax_research = list(230,230,230)
 		AMERICAN = 0,
 		VIETNAMESE = 0,
 		CHINESE = 0,
-		FILIPINO = 0,
-		ITALIAN = 0,)
+		FILIPINO = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -844,6 +844,8 @@ var/civmax_research = list(230,230,230)
 			return "Spanish"
 		if (DUTCH)
 			return "Dutch"
+		if (ITALIAN)
+			return "Italian"
 		if (ROMAN)
 			if(map.ID == MAP_WHITERUN)
 				return "Empire"
@@ -879,8 +881,6 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if (POLISH)
 			return "Polish"
-		if (ITALIAN)
-			return "Italian"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -911,6 +911,8 @@ var/civmax_research = list(230,230,230)
 			return "Spanish Empire"
 		if (DUTCH)
 			return "Dutch Republic"
+		if (ITALIAN)
+			return "Italian Royal Army"
 		if (ROMAN)
 			if (map.ID == MAP_WHITERUN)
 				return "Imperial Army"
@@ -946,8 +948,7 @@ var/civmax_research = list(230,230,230)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
 			return "Polish Home Army"
-		if (ITALIAN)
-			return "Italian Royal Army"
+
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -970,6 +971,8 @@ var/civmax_research = list(230,230,230)
 			return "Spanish"
 		if ("Dutch Republic")
 			return "Dutch"
+		if ("Italian Royal Army")
+			return "Italian"
 		if ("Roman Republic")
 			return "Roman"
 		if ("Imperial Army")
@@ -994,8 +997,6 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if ("Polish Home Army")
 			return "Polish"
-		if ("Italian Royal Army")
-			return "Italian"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
