@@ -112,6 +112,7 @@ var/list/sky_drop_map = list()
 				L << "<span class = 'good'>You land softly onto the ground.</span>"
 			else
 				var/mob/living/human/H = mover
+				var/client/C = H.client
 				if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
 					if (prob(10))
 						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
@@ -126,7 +127,7 @@ var/list/sky_drop_map = list()
 					H.updatehealth()
 				else
 					spawn (5)
-						H.client.canmove = FALSE
+						C.canmove = FALSE
 						var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
 						I.pixel_x = -16
 						I.pixel_y = 16
@@ -143,7 +144,7 @@ var/list/sky_drop_map = list()
 								
 								playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
 								shake_camera(H, 2)
-								H.client.canmove = TRUE
+								C.canmove = TRUE
 
 		// make sure we have the right ambience for our new location
 		spawn (1)
