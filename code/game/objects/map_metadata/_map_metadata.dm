@@ -750,7 +750,8 @@ var/civmax_research = list(230,230,230)
 		AMERICAN = 0,
 		VIETNAMESE = 0,
 		CHINESE = 0,
-		FILIPINO = 0,)
+		FILIPINO = 0,
+		ITALIAN = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -878,6 +879,8 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if (POLISH)
 			return "Polish"
+		if (ITALIAN)
+			return "Italian"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -943,6 +946,8 @@ var/civmax_research = list(230,230,230)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
 			return "Polish Home Army"
+		if (ITALIAN)
+			return "Italian Royal Army"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -989,6 +994,8 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if ("Polish Home Army")
 			return "Polish"
+		if ("Italian Royal Army")
+			return "Italian"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

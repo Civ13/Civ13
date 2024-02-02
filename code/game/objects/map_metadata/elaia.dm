@@ -24,6 +24,7 @@
 	songs = list(
 		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
 	gamemode = "Siege"
+	var/no_loop_elaia = FALSE
 
 /obj/map_metadata/elaia/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
@@ -72,7 +73,7 @@
 		if (GREEK)
 			return "Hellenic Army"
 		if (ITALIAN)
-			return "Japanese Army"
+			return "Italian Royal Army"
 /obj/map_metadata/elaia/army2name(army)
 	..()
 	switch (army)
@@ -108,13 +109,13 @@
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_arth == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_elaia == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Italians</b> have captured Elaia! The Battle of Elaia-Kalamas is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_arth = TRUE
+		no_loop_elaia = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
