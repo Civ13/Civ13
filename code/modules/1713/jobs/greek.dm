@@ -178,6 +178,7 @@
 
 	spawn_location = "JoinLateGR"
 	is_squad_leader = TRUE
+	is_ww2 = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -222,6 +223,7 @@
 	spawn_location = "JoinLateGR"
 
 	uses_squads = TRUE
+	is_ww2 = TRUE
 
 	min_positions = 1
 	max_positions = 999
@@ -265,6 +267,60 @@
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Hellenic Army. Follow your <b>Dekaneas'</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/greek/medic_ww2
+	title = "Midikí"
+	en_meaning = "Medic"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateGRDoc"
+
+	is_medic = TRUE
+	uses_squads = TRUE
+	is_ww2 = TRUE
+
+	min_positions = 1
+	max_positions = 16
+
+/datum/job/greek/medic_ww2/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/italian(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/m33_medic(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+
+	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a medic of the Hellenic Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
