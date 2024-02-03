@@ -89,7 +89,7 @@ var/list/sky_drop_map = list()
 					mover.forceMove(T)
 		else
 			if (A.allow_area_subtypes)
-				var/area/AA = locate(A.landing_area)
+				var/area/AA = A.landing_area
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
 						var/turf/newloc = pick((AA.get_turfs()))
@@ -99,7 +99,7 @@ var/list/sky_drop_map = list()
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
-				var/area/AA = locate(A.landing_area)
+				var/area/AA = A.landing_area
 				var/turf/newloc = pick((AA.get_turfs()))
 				mover.x = newloc.x
 				mover.y = newloc.y
@@ -134,8 +134,8 @@ var/list/sky_drop_map = list()
 
 						H.overlays += I
 						H.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-						animate(H, time = 20, pixel_y = 0, easing = SINE_EASING | EASE_OUT)
-						spawn (20)
+						animate(H, time = 30, pixel_y = 0, easing = QUAD_EASING | EASE_OUT)
+						spawn (30)
 							flick("closing", I)
 							spawn (5) // closing animation is over now
 								H.overlays -= I
