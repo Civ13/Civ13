@@ -8,6 +8,7 @@
 	pixel_y = 0
 
 	firedelay = 1
+	minrange = 20
 	maxrange = 80
 	w_class = ITEM_SIZE_GARGANTUAN
 
@@ -19,6 +20,7 @@
 	ammotype = /obj/item/cannon_ball/shell/naval
 	spritemod = FALSE
 	firedelay = 1
+	minrange = 20
 	maxrange = 200
 	anchored = TRUE
 	density = TRUE
@@ -107,13 +109,14 @@
 
 /obj/structure/cannon/modern/tank
 	name = "tank cannon"
-	desc = "a barebones cannon made to be carried by vehicles."
+	desc = "A barebones cannon made to be carried by vehicles."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "tank_cannon"
 	ammotype = /obj/item/cannon_ball/shell/tank
 	layer = MOB_LAYER + 1 //just above mobs
 	spritemod = FALSE
 	firedelay = 1
+	minrange = 5
 	maxrange = 25
 	anchored = TRUE
 	bound_height = 32
@@ -126,7 +129,7 @@
 
 /obj/structure/cannon/modern/tank/autoloader
 	name = "tank cannon with autoloader"
-	desc = "a barebones cannon made to be carried by vehicles."
+	desc = "A barebones cannon made to be carried by vehicles."
 	autoloader = TRUE
 
 /obj/structure/cannon/modern/tank/voyage
@@ -229,24 +232,37 @@
 
 /obj/structure/cannon/modern/tank/german75
 	name = "7.5cm KwK 40"
-	desc = "a 75mm german tank-based cannon."
+	desc = "A 75mm German tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/field75
+	name = "75mm M1916 field cannon"
+	desc = "A 75mm American anti-tank cannon."
+	icon_state = "feldkanone18"
+	icon = 'icons/obj/cannon.dmi'
+	maxrange = 30
+	assembled = FALSE
+	can_assemble = TRUE
+	New()
+		..()
+		loader_chair = new /obj/structure/bed/chair/loader(src)
+		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
 /obj/structure/cannon/modern/tank/american75
 	name = "75mm M3 gun"
-	desc = "a 75mm american tank-based cannon."
+	desc = "A 75mm american tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25
 	caliber = 75
 
 /obj/structure/cannon/modern/tank/russian76/americanfield
 	name = "76.2mm M5 gun"
-	desc = "a 76.2mm american Anti-tank cannon."
+	desc = "A 76.2mm american anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxrange = 27
+	maxrange = 30
 	assembled = FALSE
 	can_assemble = TRUE
 	New()
@@ -256,42 +272,42 @@
 
 /obj/structure/cannon/modern/tank/japanese57
 	name = "Type 90 Cannon"
-	desc = "a 57mm japanese tank-based cannon."
+	desc = "A 57mm Japanese tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25
 	caliber = 57
 
 /obj/structure/cannon/modern/tank/german88
 	name = "8.8 cm KwK 36"
-	desc = "an 88mm german tank-based cannon."
+	desc = "A 88mm German tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 88
 
 /obj/structure/cannon/modern/tank/omwtc10
 	name = "OMW-TC 100mm"
-	desc = "a 100mm Redmenian tank-based cannon."
+	desc = "A 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 100
 
 /obj/structure/cannon/modern/tank/autoloader/omwtc10
 	name = "OMW-TC 100mm"
-	desc = "a 100mm Redmenian tank-based cannon."
+	desc = "A 100mm Redmenian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 100
 
 /obj/structure/cannon/modern/tank/autoloader/t90a
 	name = "2A46 125mm"
-	desc = "a 125mm Russian tank-based cannon."
+	desc = "A 125mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 125
 
 /obj/structure/cannon/modern/tank/leopard
 	name = "Rheinmetall 120 mm L/55"
-	desc = "a 120 mm German tank-based cannon."
+	desc = "A 120 mm German tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 35
 	caliber = 120
@@ -312,14 +328,14 @@
 
 /obj/structure/cannon/modern/tank/baftkn75
 	name = "BAF TKN 75mm"
-	desc = "a 75mm Blugoslavian tank-based cannon."
+	desc = "A 75mm Blugoslavian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 30
 	caliber = 75
 
 /obj/structure/cannon/modern/tank/german88/field
 	name = "8.8 cm Pak 43 cannon"
-	desc = "a 88mm German anti-tank cannon."
+	desc = "A 88mm German anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxrange = 38
@@ -332,21 +348,21 @@
 
 /obj/structure/cannon/modern/tank/russian122
 	name = "122mm M1943 D-25T"
-	desc = "a 122mm Russian tank-based cannon."
+	desc = "A 122mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 27
 	caliber = 122
 
 /obj/structure/cannon/modern/tank/russian76
 	name = "76mm M1940 F-34"
-	desc = "a 76.2 mm Russian tank-based cannon."
+	desc = "A 76.2 mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 27
 	caliber = 76.2
 
 /obj/structure/cannon/modern/tank/russian45 //low cal but fires fast
 	name = "45mm M1932 20-K"
-	desc = "a 45mm Russian tank-based fast firing cannon."
+	desc = "A 45mm Russian tank-based fast firing cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25
 	caliber = 45
@@ -354,11 +370,11 @@
 	firedelay = 1
 
 /obj/structure/cannon/modern/tank/russian45/field
-	name = "45mm anti-tank gun model 1932"
+	name = "45mm M1932 field cannon"
 	desc = "A 45mm fast firing anti-tank cannon."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
-	maxrange = 31
+	maxrange = 30
 	firedelay = 1
 	assembled = FALSE
 	can_assemble = TRUE
@@ -369,18 +385,18 @@
 
 /obj/structure/cannon/modern/tank/russian85
 	name = "85mm M1939 D5-T"
-	desc = "a 85mm Russian tank-based cannon."
+	desc = "A 85mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 33
 	caliber = 85
 	anchored = TRUE
 
 /obj/structure/cannon/modern/tank/russian85/course
-	desc = "a 85mm SU-85 Russian course cannon."
+	desc = "A 85mm SU-85 Russian course cannon."
 	course = TRUE
 
 /obj/structure/cannon/modern/tank/russian85/su85
-	desc = "a 85mm SU-85 Russian tank-based cannon."
+	desc = "A 85mm SU-85 Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	firedelay = 1
 	maxrange = 35
@@ -391,7 +407,7 @@
 
 /obj/structure/cannon/modern/tank/russian85/field
 	name = "85mm M1939 52-K cannon"
-	desc = "a 85mm Russian anti-air cannon converted for anti-tank use."
+	desc = "A 85mm Russian anti-air cannon converted for anti-tank use."
 	icon_state = "feldkanone18"
 	icon = 'icons/obj/cannon.dmi'
 	maxrange = 38
@@ -404,14 +420,14 @@
 
 /obj/structure/cannon/modern/tank/russian100
 	name = "100mm D10S"
-	desc = "a 100mm Russian tank-based cannon."
+	desc = "A 100mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
 
 /obj/structure/cannon/modern/tank/russian100/course
-	desc = "a 100mm SU-100 Russian course cannon."
+	desc = "A 100mm SU-100 Russian course cannon."
 	course = TRUE
 
 /obj/structure/cannon/mortar
@@ -431,6 +447,7 @@
 	spritemod = FALSE //if true, uses 32x64
 	explosion = TRUE
 	reagent_payload = "none"
+	minrange = 10
 	maxrange = 40
 	firedelay = 12
 	w_class = ITEM_SIZE_HUGE
@@ -531,6 +548,7 @@
 	bound_height = 32
 	bound_width = 32
 	firedelay = 12
+	minrange = 15
 	maxrange = 60
 	max_loaded = 12
 	w_class = ITEM_SIZE_GARGANTUAN
