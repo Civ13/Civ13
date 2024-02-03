@@ -24,6 +24,7 @@
 	var/incendiary = FALSE
 	var/nuclear = FALSE
 	var/reagent_payload = "none"
+	var/minrange = 5
 	var/maxrange = 50
 
 	var/firedelay = 20
@@ -391,22 +392,22 @@
 					return
 
 	if (href_list["set_distance"])
-		distance = input(user, "Set Distance? (From [5] to [maxrange] meters)") as num
-		distance = clamp(distance, 5, max_distance)
+		distance = input(user, "Set Distance? (From [minrange] to [maxrange] meters)") as num
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["distance_1minus"])
-		distance = distance - 1
-		distance = clamp(distance, 5, max_distance)
+		distance -= 1
+		distance = clamp(distance, minrange, max_distance)
 	if (href_list["distance_10minus"])
-		distance = distance - 10
-		distance = clamp(distance, 5, max_distance)
+		distance -= 10
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["distance_1plus"])
-		distance = distance + 1
-		distance = clamp(distance, 5, max_distance)
+		distance += 1
+		distance = clamp(distance, minrange, max_distance)
 	if (href_list["distance_10plus"])
-		distance = distance + 10
-		distance = clamp(distance, 5, max_distance)
+		distance += 10
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["set_degree"])
 		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
@@ -916,7 +917,7 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
+		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
 		Increase/Decrease <b>azimuth</b>: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: [has_scope ? ("<a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a>") : "This weapon has no scope" ] <br><br>
 		<br>
