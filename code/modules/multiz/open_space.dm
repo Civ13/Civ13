@@ -134,8 +134,8 @@ var/list/sky_drop_map = list()
 
 						H.overlays += I
 						H.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-						animate(H, time = 30, pixel_y = 0, easing = QUAD_EASING | EASE_OUT)
-						spawn (30)
+						animate(H, time = 25, pixel_y = 0, easing = QUAD_EASING | EASE_OUT)
+						spawn (20)
 							flick("closing", I)
 							spawn (5) // closing animation is over now
 								H.overlays -= I
