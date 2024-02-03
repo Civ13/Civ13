@@ -133,7 +133,7 @@ var/global/list/vehicle_walls = list( \
 	w_back = list("c_wall",TRUE,TRUE,8,8,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/l3/rb
 	w_right = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
-	w_back = list("c_wall",TRUE,TRUE,8,8,FALSE,FALSE)=
+	w_back = list("c_wall",TRUE,TRUE,8,8,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/front
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
