@@ -16,8 +16,8 @@
 		)
 	age = "1940"
 	faction_distribution_coeffs = list(GREEK = 0.5, ITALIAN = 0.5)
-	battle_name = "Battle of Elaia-Kalamas"
-	mission_start_message = "<font size=3>The <b>Royal Italian Army</b> and the <b>Hellenic Army</b> are battling for the control of Port Arthur! The Greeks will win if they hold the line for <b>30 minutes</b> The Italians will win if the manage to hold the line for <b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	battle_name = "Battle of Elaia river line"
+	mission_start_message = "<font size=3>The <b>Royal Italian Army</b> and the <b>Hellenic Army</b> are battling for the control of Elaia river line! The Greeks will win if they hold the line for <b>30 minutes</b> The Italians will win if the manage to hold the line for <b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = GREEK
 	faction2 = ITALIAN
 	ordinal_age = 5
@@ -25,6 +25,34 @@
 		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
 	gamemode = "Siege"
 	var/no_loop_elaia = FALSE
+	var/it_reinforcements_time = 15 MINUTES
+	var/reinforcements_called = FALSE
+
+/obj/map_metadata/elaia/New()
+	..()
+	spawn(1800)
+		handle_reinforcements()
+
+/obj/map_metadata/elaia/proc/handle_reinforcements()
+	if (processes.ticker.playtime_elapsed  >= it_reinforcements_time && !reinforcements_called)
+		it_reinforcements()
+		reinforcements_called = TRUE
+		return
+	spawn(100)
+		handle_reinforcements()
+
+/obj/map_metadata/elaia/proc/it_reinforcements()
+	for (var/obj/effect/spawner/objspawner/m13/T in world)
+		T.activated = TRUE
+		spawn(15)
+			T.activated = FALSE
+	for (var/datum/job/J in job_master.occupations)
+		if (istype(J, /datum/job/italian))
+			if (J.is_ww2)
+				if (J.title == "Cisterna")
+					J.max_positions = 12
+					J.total_positions = 12
+	world << SPAN_NOTICE("<big>Italian reinforcements have arrived!</big>")
 
 /obj/map_metadata/elaia/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
@@ -179,3 +207,11 @@
 		else
 			return !faction2_can_cross_blocks()
 	return FALSE
+
+/obj/effect/spawner/objspawner/m13
+	name = "M13/40 spawner"
+	max_range = 0
+	max_number = 1
+	timer = 10
+	activated = FALSE
+	create_path = /obj/effects/premadevehicles/tank/m13

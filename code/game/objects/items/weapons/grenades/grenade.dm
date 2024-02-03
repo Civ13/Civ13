@@ -365,7 +365,6 @@
 	num_fragments = 6
 	fragment_damage = 20
 	damage_step = 1
-	spread_range = 7
 
 /obj/item/weapon/grenade/modern/thermaldetonator
 	name = "Thermal Detonator"
@@ -591,6 +590,7 @@
 	desc = "An impact grenade that explodes when hitting the ground after being thrown."
 	icon_state = "rgo"
 	throw_range = 12
+	spread_range = 6
 	secondary_action = FALSE
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)

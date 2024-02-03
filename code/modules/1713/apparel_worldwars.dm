@@ -105,10 +105,17 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/greek
 	name = "Greek M15 Adrian helmet"
-	desc = "A typical Greek Adrian helmet."
+	desc = "A M15 Greek Adrian helmet."
 	icon_state = "adrian_greek"
 	item_state = "adrian_greek"
 	worn_state = "adrian_greek"
+
+/obj/item/clothing/head/helmet/ww/adrian/greekmedic
+	name = "Medic M15 Adrian helmet"
+	desc = "A M15 Greek Adrian helmet, this one for medics"
+	icon_state = "m26_medic"
+	item_state = "m26_medic"
+	worn_state = "m26_medic"
 
 /obj/item/clothing/head/helmet/ww/adrian/soviet
 	name = "Russian M15 Adrian helmet"
@@ -119,7 +126,7 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/medic
 	name = "Medic M15 Adrian helmet"
-	desc = "A Typical M15 Adrian helmet, this one for medics"
+	desc = "A M15 Adrian helmet, this one for medics"
 	icon_state = "m15_adrian_m"
 	item_state = "m15_adrian_m"
 	worn_state = "m15_adrian_m"
@@ -129,14 +136,14 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/m26
 	name = "M26 Adrian helmet"
-	desc = "A Typical M26 Adrian Helmet"
+	desc = "A M26 Adrian Helmet"
 	icon_state = "m26_adrian"
 	item_state = "m26_adrian"
 	worn_state = "m26_adrian"
 
 /obj/item/clothing/head/helmet/ww/adrian/m26medic
 	name = "Medic M26 Adrian helmet"
-	desc = "A Typical M26 Adrian helmet, this one for medics"
+	desc = "A M26 Adrian helmet, this one for medics"
 	icon_state = "m26_medic"
 	item_state = "m26_medic"
 	worn_state = "m26_medic"

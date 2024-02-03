@@ -303,7 +303,7 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
-/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull
 	name = "vehicle mounted Breda 30 machine gun"
 	anchored = TRUE
 	density = FALSE
@@ -321,12 +321,12 @@
 	magazine_type = /obj/item/ammo_magazine/a20mm_aphe
 	good_mags = list(/obj/item/ammo_magazine/a20mm_aphe)
 	firemodes = list(
-		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=70, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
+		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=6.0, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a20mm_aphe
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 10
-	load_delay = 12
+	load_delay = 60
 
 /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"

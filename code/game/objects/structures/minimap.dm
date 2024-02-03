@@ -190,7 +190,8 @@
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/structure/sign/map_board/examine(mob/living/human/user)
-	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	if (img)
+		user << browse(getFlatIcon(img),"window=popup;size=630x630")
 	if (map.ID == MAP_OPERATION_FALCON)
 		var/friendly_fob = FALSE
 		var/dat = "<h1>FOB COORDINATES</h1>"
