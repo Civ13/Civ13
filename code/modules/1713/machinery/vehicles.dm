@@ -21,7 +21,7 @@
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
-	var/maxpower = 50
+	var/maxpower = 100
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
 	var/obj/structure/engine/engine = null
@@ -48,7 +48,7 @@
 	name = "motorcycle axis"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 10
+	maxpower = 20
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
@@ -68,7 +68,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -77,7 +77,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 4
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=6,2=5,3=3,4=2)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -88,7 +88,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 2500
+	maxpower = 5000
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
 
@@ -550,7 +550,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
+	maxpower = 1000
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
 	vehicle_type = "car"

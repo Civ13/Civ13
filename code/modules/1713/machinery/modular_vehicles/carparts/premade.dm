@@ -531,14 +531,14 @@
 	custom_color = "#D79E57"
 	axis = /obj/structure/vehicleparts/axis/heavy/l3
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf,/obj/structure/vehicleparts/movement/tracks),
-	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf,/obj/structure/vehicleparts/movement/tracks),
+	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf,/obj/structure/vehicleparts/movement/tracks/right),
+	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf,/obj/structure/vehicleparts/movement/tracks/left),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc,/obj/structure/bed/chair/drivers/tank{anchored = 1}),
 	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30,/obj/item/ammo_magazine/breda30),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
-	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
+	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
+	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
 	)
 
 /obj/effects/premadevehicles/tank/l3/antitank
@@ -547,14 +547,14 @@
 	custom_color = "#D79E57"
 	axis = /obj/structure/vehicleparts/axis/heavy/l3cc
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf,/obj/structure/vehicleparts/movement/tracks),
-	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf/cc,/obj/structure/vehicleparts/movement/tracks),
+	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf,/obj/structure/vehicleparts/movement/tracks/right),
+	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf/cc,/obj/structure/vehicleparts/movement/tracks/left),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc,/obj/structure/bed/chair/drivers/tank{anchored = 1}),
 	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc,/obj/structure/bed/chair/office/dark{anchored = 1},/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary,/obj/item/ammo_magazine/a20mm_aphe,/obj/item/ammo_magazine/a20mm_aphe,/obj/item/ammo_magazine/a20mm_aphe,/obj/item/ammo_magazine/a20mm_aphe,/obj/item/ammo_magazine/a20mm_aphe),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
-	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
+	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb,/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/engine/internal/gasoline/premade/l3),
+	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb,/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline{density = 0}),
 	)
 
 /obj/effects/premadevehicles/tank/t34
