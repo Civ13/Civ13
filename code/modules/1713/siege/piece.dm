@@ -1125,6 +1125,9 @@
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
 
+	for (var/obj/structure/vehicleparts/frame/F in loc)
+		F.update_icon()
+
 	target_coords()
 	update_scope()
 	return
