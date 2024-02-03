@@ -156,7 +156,7 @@
 	return TRUE
 
 /datum/job/italian/medic
-	title = "Medico "
+	title = "Medico dell Esercito"
 	en_meaning = "Medic"
 	rank_abbreviation = ""
 
