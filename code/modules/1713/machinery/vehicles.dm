@@ -397,18 +397,26 @@
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=9,2=5,3=3,4=2)
 	reg_number = ""
-	color = "#D79E57"
+	color = "#c4a567"
 	turret_type = ""
 
 /obj/structure/vehicleparts/axis/heavy/l3cc
 	name = "L3/33 CC"
 	speeds = 4
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=9,2=5,3=3,4=2)
 	reg_number = ""
-	color = "#D79E57"
+	color = "#c4a567"
 	turret_type = ""
+
+/obj/structure/vehicleparts/axis/heavy/m13
+	name = "M13/40"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#778687"
+	turret_type = "tank_turret"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"

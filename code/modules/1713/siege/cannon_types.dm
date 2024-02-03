@@ -360,14 +360,13 @@
 	maxrange = 27
 	caliber = 76.2
 
-/obj/structure/cannon/modern/tank/russian45 //low cal but fires fast
+/obj/structure/cannon/modern/tank/russian45
 	name = "45mm M1932 20-K"
-	desc = "A 45mm Russian tank-based fast firing cannon."
+	desc = "A 45mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25
 	caliber = 45
 	anchored = TRUE
-	firedelay = 1
 
 /obj/structure/cannon/modern/tank/russian45/field
 	name = "45mm M1932 field cannon"
@@ -382,6 +381,14 @@
 		..()
 		loader_chair = new /obj/structure/bed/chair/loader(src)
 		gunner_chair = new /obj/structure/bed/chair/gunner(src)
+
+/obj/structure/cannon/modern/tank/italian47
+	name = "47mm 47/32 mod.35"
+	desc = "An 45mm Italian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxrange = 25
+	caliber = 47
+	anchored = TRUE
 
 /obj/structure/cannon/modern/tank/russian85
 	name = "85mm M1939 D5-T"

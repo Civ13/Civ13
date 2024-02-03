@@ -983,7 +983,7 @@
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
 	set name = "Rotate Left"
-	set src in range(2, usr)
+	set src in range(1, usr)
 
 	if (!istype(usr, /mob/living))
 		return
@@ -1135,7 +1135,7 @@
 /obj/structure/cannon/verb/rotate_right()
 	set category = null
 	set name = "Rotate Right"
-	set src in range(2, usr)
+	set src in range(1, usr)
 
 	if (!istype(usr, /mob/living))
 		return
