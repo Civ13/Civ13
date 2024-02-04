@@ -117,10 +117,10 @@
 		return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_layer()
-	if(dir == NORTH || SOUTH)
+	if(dir == NORTH)
 		layer = OBJ_LAYER + 0.1
 	else
-		layer = OBJ_LAYER + 0.2
+		layer = FLY_LAYER
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/check_direction(mob/user, atom/A)
 	if (get_turf(A) == loc)

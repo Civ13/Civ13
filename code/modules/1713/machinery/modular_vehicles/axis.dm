@@ -282,6 +282,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
+			if(ML.using_object && istype(ML.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+				var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = ML.using_object
+				HMG.update_pixels(ML)
 	for (var/obj/F in components)
 		F.dir = dir
 		F.forceMove(get_step(F.loc, m_dir))

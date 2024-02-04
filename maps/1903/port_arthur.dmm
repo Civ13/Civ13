@@ -236,7 +236,6 @@
 "eC" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "5"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eD" = (/obj/structure/wild/burnedtree{icon_state = "burnedbush8"},/obj/structure/wild/burnedtree{icon_state = "burnedtree5"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eE" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "6"},/turf/floor/dirt/winter{icon_state = "grass2"},/area/caribbean)
-"eF" = (/obj/structure/wild/tree/dead_tree/destroyed{icon_state = "8"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eG" = (/obj/structure/wild/rock,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eH" = (/obj/structure/wild/burnedtree{icon_state = "burnedtree5"},/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "eI" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/winter{icon_state = "grass3X"},/area/caribbean)
@@ -359,7 +358,6 @@
 "gW" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/advsmall,/obj/item/weapon/doctor_handbook,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "gX" = (/obj/structure/closet/crate,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "gY" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/bronze,/turf/floor/carpet/redcarpet{icon_state = "carpet14-10"},/area/caribbean/russian/land/inside/command)
-"gZ" = (/obj/structure/table/wood,/obj/item/weapon/globe,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "ha" = (/obj/structure/bed/chair/wood/red,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "hb" = (/obj/structure/table/wood,/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/paper{step_x = 0; step_y = 0},/obj/item/weapon/material/ashtray/glass,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
 "hc" = (/obj/structure/lamp/lamp_small/alwayson,/obj/structure/mine_support/stone/concrete,/obj/structure/closet/crate/rations/biscuits,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
@@ -370,8 +368,6 @@
 "hi" = (/obj/structure/window/barrier/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter{icon_state = "grass1"},/area/caribbean)
 "hj" = (/obj/structure/table/wood/flipped,/turf/floor/dirt/winter{icon_state = "snowgrass"},/area/caribbean)
 "hk" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/covers/carpet/redcarpet,/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside/command)
-"hm" = (/obj/item/weapon/globe,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
-"hn" = (/obj/item/weapon/globe,/mob/living/human/corpse/japanese,/turf/floor/dirt/winter{icon_state = ""},/area/caribbean)
 "hx" = (/obj/item/weapon/gun/projectile/automatic/stationary/maxim,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/russian/land/inside)
 "il" = (/obj/structure/closet/crate/ww2/artillery_shells/HE75,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/russian/land/inside)
 "jD" = (/obj/covers/wood/stairs,/turf/floor/trench,/area/caribbean)
@@ -427,7 +423,7 @@
 
 (1,1,1) = {"
 abababababababababababababacdIdLdLdLdIaedLacadaFdRdRafaxbkdDdIdIaWbdacdIdpdWdWdWacananaGanapaqanacdWdWatdWdWacauazaAaoaLciaOdFeaaOgLdHdHdHcicibhacdLdUdIdLdLdIdIacababababababababababababababababababab
-abababababababababababababaceqdKdKdVdIdUdLacgVdIdIagdIdIdIdIagdIdIdIacagdIdIdIdIacdIdIdIdIdIdIdIacdWdWdIdIdkacaRgUgYaogZcicihahbcicicicicicicibhacdLdVdIaeebdIgQacababababababababababababababababababab
+abababababababababababababaceqdKdKdVdIdUdLacgVdIdIagdIdIdIdIagdIdIdIacagdIdIdIdIacdIdIdIdIdIdIdIacdWdWdIdIdkacaRgUgYaodFcicihahbcicicicicicicibhacdLdVdIaeebdIgQacababababababababababababababababababab
 ababababababasasasababababbndsdIdIdIdIdKdEacdIdIdIbidIdIaFdNgWbidIgXacdIdIdWdWdXacananhcandIdIanacdWdWhddIdkacaTaBavaocicihedFhfcidecicidedlcidqacdLdKdIagdIdIgQgSabababababababababababababaEababababab
 abababababababababababababbneqdIaNaMdIdVdLaccadIcaagcadIdIdIagdIdIdIacagdkacacacacacacacbabcbcbaacacacacbcacacaSaCaUgOcicicidecicicicicidOdodPciacdLdVdIaNaMdIgQgSaEaEabababababababababababababababaEab
 abasasababababababababababaceqdIaMaNdIdVdLaccadIcadIcadIdIdIdIdIaWbdacdIdkacdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIdIacaVaDawaohkhgcicicicicicidZdTdYdTdFacdLdKdIaMaNdIgQacabababababahabababababaEababababababab
@@ -458,10 +454,10 @@ aEababababababaQaQaQaQaQaIaEababbYbwcebAbZdabqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbqbq
 ewababababababababababababaQaQabbTbGbGbHbGbAbAbBbBbBbAbAbAcecebBbAbAbAcececececececechbubqbqbqbqbrcbcececececececececececfcfcfcfbAbAbAbAcjcjbAbAbAbAbNbNabababababababababababababababababexabababababab
 aEabaQababababababababaEaEabababaQababababbGbGbGbGbGbGbGbGbGbGbGbGbGbHbHbGbGbGbGbGbGckceclcececececmbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbNbNbNbNbNbNbNababababcnabababababababababababababababbFbFbFbFbFbF
 ababaQababababababaEabababababababaEabababababababababaEaEbNbNbNbNcocobNbNbNbNbNbNbNcpbGbGbGbGbGbGcqbNbNcocobNcocococococoaEabaEababababababababababababababcncnababezabababababababeAabmNababeBabababab
-ababaQaEaEaEaEaQaEaQaEabeCababaEabaEaEabababababaQababababaEaEaEababababababababababblbNbNbNbNbNbNblaEababhmababababababababababababababababababababababababababababababababababababmNababababababababab
+ababaQaEaEaEaEaQaEaQaEabeCababaEabaEaEabababababaQababababaEaEaEababababababababababblbNbNbNbNbNbNblaEabababababababababababababababababababababababababababababababababababababababmNababababababababab
 ababaQaQaEaEaQaQabababaEaEaEaEaEababaEaQaQaQaQaQezababaEababababababababababababababababababcrabababaEababeCabababababababababaEabababababababababeDababababababababababbFbFbFbFbFbFabababababababababab
-abababaiabababaEaEaQaQaEaEabababaEaEaEabaEababaEaEaEeEaEababababababababaJababababababababababababababababhnhmhmhmabababababaEaEabababababababababcncnababababmNababeBabababababababababababababbFbFbFbF
-abababababababababababababaEabababababababababababababababababababeAababababababababababababababababababhmhmabababababababababeFabababcncnbFbFbFbFababababababmNcnababababababababababababbFbFbFabababab
+abababaiabababaEaEaQaQaEaEabababaEaEaEabaEababaEaEaEeEaEababababababababaJababababababababababababababababaJababababababababaEaEabababababababababcncnababababmNababeBabababababababababababababbFbFbFbF
+abababababababababababababaEabababababababababababababababababababeAabababababababababababababababababababababababababababababababababcncnbFbFbFbFababababababmNcnababababababababababababbFbFbFabababab
 abeGababababababababababababababababababababababababababababababababababababababababababababababababababababeybFbFbFeyababababababababmNeAabababababbFbFbFbFbFabcnabababababcncnabababababababababababab
 ababababababbFbFbFbFbFababababababababababababababababababababababeHababababababababababababababababababababmNababababbFbFbFbFbFbFbFbFababababababababababababababababababHKbFHKbFbFabababababababababab
 bFbFbFbFbFabababezabababababababababaiababababababababababababababababababababababaJabababababababababaJababmNababababababababababababababababababababababababababababababababababababababababababababab

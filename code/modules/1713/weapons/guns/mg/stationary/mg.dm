@@ -289,10 +289,11 @@
 	base_icon = "type92hmg"
 	caliber = "a65x52"
 	fire_sound = 'sound/weapons/guns/fire/Type92.ogg'
+	reload_sound = 'sound/weapons/guns/interact/breda30_clip.ogg'
 	magazine_type = /obj/item/ammo_magazine/breda30
 	good_mags = list(/obj/item/ammo_magazine/breda30)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2.5, fire_delay=1.0, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=3.0, fire_delay=1.0, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a65x52
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -302,8 +303,40 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
-/obj/item/weapon/gun/projectile/automatic/stationary/breda30/stationary
+/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull
 	name = "vehicle mounted Breda 30 machine gun"
+	anchored = TRUE
+	density = FALSE
+	can_turn = FALSE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/solothurn
+	name = "Solothurn S-18/1000"
+	desc = "The Solothurn S18/1000 20mm is a Swiss anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant recoil, which was problematic for the gunner, and its size made portability difficult."
+	icon_state = "type92hmg"
+	base_icon = "type92hmg"
+	caliber = "a20"
+	handle_casings = EJECT_CASINGS
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
+	reload_sound = 'sound/weapons/guns/interact/breda30_clip.ogg'
+	magazine_type = /obj/item/ammo_magazine/a20mm_aphe
+	good_mags = list(/obj/item/ammo_magazine/a20mm_aphe)
+	firemodes = list(
+		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=6.0, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a20mm_aphe
+	load_method = SINGLE_CASING | SPEEDLOADER
+	max_shells = 10
+	load_delay = 60
+
+/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/update_icon()
+	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
+
+/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian
+	name = "Fucile Controcarri S Mod.39"
+	desc = "An Italian variant of the Swiss Solothurn S18/1000 20mm anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant recoil, which was problematic for the gunner, and its size made portability difficult."
+
+/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary
+	name = "vehicle mounted Fucile Controcarri S Mod.39"
 	anchored = TRUE
 	density = FALSE
 	can_turn = FALSE

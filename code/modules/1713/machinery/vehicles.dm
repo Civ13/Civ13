@@ -21,7 +21,7 @@
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
-	var/maxpower = 50
+	var/maxpower = 100
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
 	var/obj/structure/engine/engine = null
@@ -48,7 +48,7 @@
 	name = "motorcycle axis"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 10
+	maxpower = 20
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
@@ -68,7 +68,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -77,7 +77,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 4
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=6,2=5,3=3,4=2)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -88,7 +88,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 2500
+	maxpower = 5000
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
 
@@ -397,10 +397,26 @@
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=9,2=5,3=3,4=2)
 	reg_number = ""
-	color = "#D79E57"
+	color = "#c4a567"
 	turret_type = ""
+
+/obj/structure/vehicleparts/axis/heavy/l3cc
+	name = "L3/33 CC"
+	speeds = 4
+	speedlist = list(1=9,2=5,3=3,4=2)
+	reg_number = ""
+	color = "#c4a567"
+	turret_type = ""
+
+/obj/structure/vehicleparts/axis/heavy/m13
+	name = "M13/40"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#778687"
+	turret_type = "tank_turret"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
@@ -499,7 +515,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m4
-	name = "M-4 Sherman"
+	name = "M4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
@@ -511,11 +527,24 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
-	name = "M-48A1 Patton"
+	name = "M48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
 	turret_type = "m48a1_turret"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m60a3
+	name = "M60A3 Patton"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	color = "#4B4D40"
+	turret_type = "m60a3_turret"
 	reg_number = ""
 	New()
 		..()
@@ -529,7 +558,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
+	maxpower = 1000
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
 	vehicle_type = "car"

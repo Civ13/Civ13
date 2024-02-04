@@ -133,6 +133,22 @@
 	heavy_armor_penetration = 60
 	damage = 90
 
+/obj/item/cannon_ball/shell/tank/HE47
+	atype = "HE"
+	caliber = 47
+	heavy_armor_penetration = 8
+	damage = 290
+/obj/item/cannon_ball/shell/tank/AP47
+	atype = "AP"
+	caliber = 47
+	heavy_armor_penetration = 40
+	damage = 75
+/obj/item/cannon_ball/shell/tank/APCR47
+	atype = "APCR"
+	caliber = 47
+	heavy_armor_penetration = 60
+	damage = 90
+
 /obj/item/cannon_ball/shell/tank/HE57
 	atype = "HE"
 	caliber = 57
@@ -534,6 +550,16 @@
 		new /obj/item/cannon_ball/shell/tank/AP45(storage)
 	for (var/i=1, i<=5, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR45(storage)
+	update_icon()
+
+/obj/structure/shellrack/full47/New()
+	..()
+	for (var/i=1, i<=6, i++)
+		new /obj/item/cannon_ball/shell/tank/HE47(storage)
+	for (var/i=1, i<=5, i++)
+		new /obj/item/cannon_ball/shell/tank/AP47(storage)
+	for (var/i=1, i<=5, i++)
+		new /obj/item/cannon_ball/shell/tank/APCR47(storage)
 	update_icon()
 
 /obj/structure/shellrack/full75/New()
