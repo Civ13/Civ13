@@ -23,6 +23,7 @@
 #include "code\setup.dm"
 #include "code\stylesheet.dm"
 #include "code\world.dm"
+#include "code\__global_defines.dm"
 #include "code\__defines\_globals.dm"
 #include "code\__defines\_planes+layers.dm"
 #include "code\__defines\admin.dm"
