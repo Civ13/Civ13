@@ -9,11 +9,7 @@
 	src:Topic(href, href_list)
 	return null
 
-/proc/get_area(O)
-	var/turf/loc = get_turf(O)
-	if (loc)
-		return loc.loc
-	return null
+#define get_area(AM) (get_turf(AM):loc)
 
 /proc/get_area_name(N) //get area by its name
 	for (var/area/A in area_list)
