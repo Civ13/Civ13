@@ -692,7 +692,7 @@
 
 /obj/item/projectile/process()
 	//plot the initial trajectory
-
+	var/A = get_area(src)
 	var/firstmove = FALSE
 
 	if (!trajectory)
@@ -707,7 +707,7 @@
 			on_impact(loc) //for any final impact behaviours
 			qdel(src)
 			return
-		if (map && firer && map.check_caribbean_block(firer, loc) && !map.allow_bullets_through_blocks.Find(get_area(src):type))
+		if (map && firer && map.check_caribbean_block(firer, loc) && !map.allow_bullets_through_blocks.Find(A:type))
 			qdel(src)
 			return
 		if ((!( current ) || loc == current))

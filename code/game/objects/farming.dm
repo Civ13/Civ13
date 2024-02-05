@@ -1036,7 +1036,7 @@
 			return
 
 	// Decrease water level based on climate and heat wave
-	var/climate = get_area(src).climate
+	var/climate = A.climate
 	if (!(climate in list("desert", "savanna", "semiarid")))
 		water -= 15
 	else

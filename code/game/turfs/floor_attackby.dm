@@ -6,7 +6,8 @@
 
 /turf/floor/dirt/underground/collapse_check()
 	spawn(50)
-		if (get_area(src).location == AREA_INSIDE)
+		var/area/A1 = get_area(src)
+		if (A1.location == AREA_INSIDE)
 			//check for supports
 			var/supportfound = FALSE
 			var/supportcount = 0
@@ -18,7 +19,8 @@
 				supportfound = TRUE
 
 			for (var/turf/TT in range(1))
-				if (get_area(TT).location == AREA_OUTSIDE)
+				var/area/A2 = get_area(TT)
+				if (A2.location == AREA_OUTSIDE)
 					supportfound = TRUE
 
 			for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))

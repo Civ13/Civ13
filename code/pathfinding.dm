@@ -180,10 +180,11 @@
 		// follow the path
 		found_path.Cut(1, 2)
 		var/turf/next = null
+		var/A = get_turf(target_obj)
 		if(found_path.len >= 1)
 			next = src.found_path[1]
 		else
-			next = get_turf(target_obj)
+			next = A
 		walk_to(src, next, TRUE, move_to_delay)
 		spawn(move_to_delay)
 			do_movement()

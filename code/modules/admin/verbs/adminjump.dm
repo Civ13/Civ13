@@ -133,6 +133,7 @@
 var/turf/default_adminzone_turf = null
 
 /client/proc/goto_adminzone()
+	var/area/A = get_area(default_adminzone_turf)
 	set category = "Admin"
 	set name = "Go To The Admin Zone"
 
@@ -153,7 +154,7 @@ var/turf/default_adminzone_turf = null
 		default_adminzone_turf = locate(90, 92, 3)
 
 	if (default_adminzone_turf)
-		if (get_area(default_adminzone_turf).type == /area/caribbean/admin)
+		if (A.type == /area/caribbean/admin)
 			mob.loc = default_adminzone_turf
 			return TRUE
 

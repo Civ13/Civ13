@@ -263,12 +263,13 @@
 	spawn (23)
 		for (var/turf/floor/beach/water/G in water_turf_list)
 			G.rad_act(severity /3)
-	spawn(26)
+	spawn(26) // THIS CODE IS EVIL, REPLACE IT AT ANY COST
 		for(var/atom/T)
+			var/area/A = get_area(T)
 			if (T.z == epicenter.z && (istype(T, /mob/living) || istype(T, /obj)))
 				var/cseverity=severity/3
 				if (ismob(T))
-					if (get_area(T).location == 0)
+					if (A.location == 0)
 						cseverity = severity/100
 					else
 						cseverity = severity/30

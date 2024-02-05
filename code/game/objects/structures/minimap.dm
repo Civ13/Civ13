@@ -133,8 +133,8 @@
 	..()
 	var/turf/our_turf = get_turf(src)
 	img.overlays.Cut()
-	playerloc.pixel_x = min(600,ceil(our_turf(src).x*2.72))
-	playerloc.pixel_y = min(600,ceil(our_turf(src).y*2.72))
+	playerloc.pixel_x = min(600,ceil(our_turf.x*2.72))
+	playerloc.pixel_y = min(600,ceil(our_turf.y*2.72))
 	img.overlays += playerloc
 
 /obj/item/weapon/map/attack_self(mob/user)

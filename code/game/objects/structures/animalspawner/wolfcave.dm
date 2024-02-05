@@ -16,7 +16,8 @@
 	..()
 
 /obj/structure/animalspawner/wolfcave/proc/set_cavetype()
-	var/current_climate = get_area(src).climate
+	var/area/our_area = get_area(src)
+	var/current_climate = our_area.climate
 	if(current_climate == "jungle")
 		icon_state += "-bamboo" + pick("", "2")
 		src.t_climate = "grey"

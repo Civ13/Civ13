@@ -9,18 +9,13 @@
 	src:Topic(href, href_list)
 	return null
 
-#define get_area(AM) (get_turf(AM):loc)
+#define get_area(target) (get_step(target, 0):loc)
 
 /proc/get_area_name(N) //get area by its name
 	for (var/area/A in area_list)
 		if (A.name == N)
 			return A
 	return FALSE
-
-/proc/get_area_master(const/O)
-	var/area/A = get_area(O)
-	if (isarea(A))
-		return A
 
 /proc/in_range(source, user)
 	if (get_dist(source, user) <= 1)
