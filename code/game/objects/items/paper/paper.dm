@@ -94,11 +94,10 @@
 			desc = "A blank paper sheet."
 
 /obj/item/weapon/paper/verb/airplane()
+	set name = "Make Paper Airplane"
+	set category = null
 	var/done = FALSE
 	if (!done)
-		set name = "Make Paper Airplane"
-		set category = null
-		set src in usr
 		src.icon_state = "paper_plane"
 		src.throw_range = 14
 		src.name = "paper airplane - \"[src.name]\""
@@ -139,7 +138,7 @@
 /obj/item/weapon/paper/examine(mob/user)
 	..()
 	if (in_range(user, src) || isghost(user))
-		show_content(usr)
+		show_content(user)
 	else
 		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
 	return
@@ -155,7 +154,6 @@
 /obj/item/weapon/paper/verb/rename()
 	set name = "Rename paper"
 	set category = null
-	set src in usr
 	playsound(src,'sound/effects/pen.ogg',40,1)
 
 	var/n_name = sanitizeSafe(input(usr, "What would you like to label the paper?", "Paper Labelling", null)  as text, MAX_NAME_LEN)
@@ -366,15 +364,15 @@
 
 /obj/item/weapon/paper/Topic(href, href_list)
 	..()
-	if (!usr || (usr.stat || usr.restrained()))
+	if (!uesr || (user.stat || user.restrained()))
 		return
 
 	if (href_list["write"])
 		var/id = href_list["write"]
-		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
+		//var/t = strip_html_simple(input(user, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
 
 		if (free_space <= 0)
-			to_chat(usr, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
+			to_chat(user, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
 			return
 
 		var/t =  sanitize(input("Enter what you want to write:", "Write", null, null) as message, free_space, extra = FALSE)
@@ -382,7 +380,7 @@
 		if (!t)
 			return
 
-		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
+		var/obj/item/i = user.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
 		var/iscrayon = FALSE
 		if (!istype(i, /obj/item/weapon/pen))
 			return
@@ -391,8 +389,8 @@
 			iscrayon = TRUE
 
 
-		// if paper is not in usr, then it must be near them, or in a clipboard or folder, which must be in or near usr
-		if (loc != usr && !Adjacent(usr) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == usr || loc.Adjacent(usr)) ) )
+		// if paper is not in user, then it must be near them, or in a clipboard or folder, which must be in or near user
+		if (loc != user && !Adjacent(user) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == user || loc.Adjacent(user)) ) )
 			return
 /*
 		t = checkhtml(t)
@@ -400,9 +398,9 @@
 		// check for exploits
 		for (var/bad in paper_blacklist)
 			if (findtext(t,bad))
-				usr << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
-				log_admin("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].")
-				message_admins("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
+				user << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
+				log_admin("PAPER: [user] ([user.ckey]) tried to use forbidden word in [src]: [bad].")
+				message_admins("PAPER: [user] ([user.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
 				return
 */
 
@@ -410,11 +408,11 @@
 
 		//t = html_encode(t)
 		t = replacetext(t, "\n", "<BR>")
-		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
+		t = parsepencode(t, i, user, iscrayon) // Encode everything from pencode to html
 
 
 		if (fields > 50)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
-			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
+			to_chat(user, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			fields = last_fields_value
 			return
 
@@ -426,7 +424,7 @@
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		update_space(t)
 
-		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
 
 		update_icon()
 
@@ -477,7 +475,7 @@
 
 	else if (istype(P, /obj/item/weapon/pen))
 		if (icon_state == "scrap")
-			to_chat(usr, SPAN_WARNING("\The [src] is too crumpled to write on."))
+			to_chat(user, SPAN_WARNING("\The [src] is too crumpled to write on."))
 			return
 /*
 		var/obj/item/weapon/pen/robopen/RP = P
@@ -488,7 +486,7 @@
 		return
 
 	else if ((istype(P, /obj/item/weapon/stamp) && !(istype(P, /obj/item/weapon/stamp/mail))))
-		if ((!in_range(src, usr) && loc != user && !(istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
+		if ((!in_range(src, user) && loc != user && !(istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
 			return
 		
 
