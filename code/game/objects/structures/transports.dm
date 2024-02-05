@@ -918,7 +918,7 @@
 			visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 	if (T.density)
 		blocked = 1
-		visible_message("<span class='warning'>\The [src] hits \the [T(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [T(get_step(src,driver.dir))]!</span>")
+		visible_message("<span class='warning'>You hit \the [T]!</span>")")
 	for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
 		if (CV.density == TRUE)
 			blocked = 1
@@ -994,7 +994,7 @@
 	for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 		if (CVV.density == FALSE)
 			canpass = TRUE
-	if ((!istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& T(get_step(src,driver.dir)).density == FALSE  || istype(T(get_step(src,driver.dir)), /turf/floor/trench/flooded))
+	if ((!istype(T, /turf/floor/beach/water/deep) ||  istype(T, /turf/floor/beach/water/deep) && canpass == TRUE)&& T.density == FALSE  || istype(T, /turf/floor/trench/flooded))
 		if (driver in src.loc)
 			return TRUE
 		else
@@ -1872,6 +1872,7 @@
 /obj/structure/vehicle/carriage/do_vehicle_check()
 	var/turf/t1 = null
 	var/turf/t2 = null
+	var/turf/T = get_turf(get_step(src,driver.dir))
 	switch (dir)
 		if (SOUTH)
 			t1 = get_turf(get_step(locate(x, y, z),driver.dir))
@@ -1993,7 +1994,7 @@
 	for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 		if (CVV.density == FALSE)
 			canpass = TRUE
-	if ((!istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& T(get_step(src,driver.dir)).density == FALSE  || istype(T(get_step(src,driver.dir)), /turf/floor/trench/flooded))
+	if ((!istype(T, /turf/floor/beach/water/deep) ||  istype(T, /turf/floor/beach/water/deep) && canpass == TRUE)&& T.density == FALSE  || istype(T, /turf/floor/trench/flooded))
 		if (driver in src.loc)
 			return TRUE
 		else
