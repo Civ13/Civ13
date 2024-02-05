@@ -154,18 +154,17 @@
 /obj/item/weapon/paper/verb/rename()
 	set name = "Rename paper"
 	set category = null
-	playsound(src,'sound/effects/pen.ogg',40,1)
+	var/turf/our_turf = get_turf(src)
+	playsound(our_turf, 'sound/effects/pen.ogg', 40, TRUE)
 
-	var/n_name = sanitizeSafe(input(usr, "What would you like to label the paper?", "Paper Labelling", null)  as text, MAX_NAME_LEN)
+	var/new_name = sanitizeSafe(input(usr, "What would you like to label the paper?", "Paper Labelling", null) as text, MAX_NAME_LEN)
 
-	// We check loc one level up, so we can rename in clipboards and such. See also: /obj/item/weapon/photo/rename()
-	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE && n_name)
-		name = n_name
-		if (n_name != "paper")
-			desc = "This is a paper titled '" + name + "'."
+	if(get_turf(usr) == our_turf && !usr.stat && new_name)
+		name = new_name
+		if(new_name != "paper")
+			desc = "This is a paper titled '[new_name]'."
 
 		add_fingerprint(usr)
-	return
 
 /obj/item/weapon/paper/attack_self(mob/living/user as mob)
 	if (user.a_intent == I_HARM)
