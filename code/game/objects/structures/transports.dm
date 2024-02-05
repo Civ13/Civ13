@@ -916,9 +916,9 @@
 		if (O.density == TRUE)
 			blocked = 1
 			visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
-	if (get_turf(get_step(src,driver.dir)).density == TRUE)
+	if (T.density)
 		blocked = 1
-		visible_message("<span class='warning'>\The [src] hits \the [get_turf(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [get_turf(get_step(src,driver.dir))]!</span>")
+		visible_message("<span class='warning'>\The [src] hits \the [T(get_step(src,driver.dir))]!</span>","<span class='warning'>You hit \the [T(get_step(src,driver.dir))]!</span>")
 	for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
 		if (CV.density == TRUE)
 			blocked = 1
