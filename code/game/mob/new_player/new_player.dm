@@ -1046,7 +1046,6 @@ var/global/redirect_all_players = null
 
 	if (character.mind)
 		ticker.minds += character.mind
-	character.lastarea = get_area(loc)
 	qdel(src)
 	return TRUE
 
