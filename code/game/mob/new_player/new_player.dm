@@ -1570,7 +1570,8 @@ var/global/redirect_all_players = null
 		new_character = new mobtype(loc)
 
 	new_character.stopDumbDamage = TRUE
-	new_character.lastarea = get_area(loc)
+	if(loc)
+		new_character.lastarea = get_area(loc)
 
 	if (client)
 		if (ticker.random_players)
