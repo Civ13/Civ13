@@ -994,7 +994,7 @@
 	for (var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 		if (CVV.density == FALSE)
 			canpass = TRUE
-	if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
+	if ((!istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(T(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& T(get_step(src,driver.dir)).density == FALSE  || istype(T(get_step(src,driver.dir)), /turf/floor/trench/flooded))
 		if (driver in src.loc)
 			return TRUE
 		else
