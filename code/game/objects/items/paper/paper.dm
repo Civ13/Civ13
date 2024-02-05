@@ -364,7 +364,7 @@
 
 /obj/item/weapon/paper/Topic(href, href_list)
 	..()
-	if (!user || (user.stat || user.restrained()))
+	if (!usr || (usr.stat || usr.restrained()))
 		return
 
 	if (href_list["write"])
@@ -372,7 +372,7 @@
 		//var/t = strip_html_simple(input(user, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
 
 		if (free_space <= 0)
-			to_chat(user, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
+			to_chat(usr, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
 			return
 
 		var/t =  sanitize(input("Enter what you want to write:", "Write", null, null) as message, free_space, extra = FALSE)
@@ -380,7 +380,7 @@
 		if (!t)
 			return
 
-		var/obj/item/i = user.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
+		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
 		var/iscrayon = FALSE
 		if (!istype(i, /obj/item/weapon/pen))
 			return
@@ -390,7 +390,7 @@
 
 
 		// if paper is not in user, then it must be near them, or in a clipboard or folder, which must be in or near user
-		if (loc != user && !Adjacent(user) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == user || loc.Adjacent(user)) ) )
+		if (loc != usr && !Adjacent(usr) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == usr || loc.Adjacent(usr)) ) )
 			return
 /*
 		t = checkhtml(t)
@@ -398,7 +398,7 @@
 		// check for exploits
 		for (var/bad in paper_blacklist)
 			if (findtext(t,bad))
-				user << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
+				usr << "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>"
 				log_admin("PAPER: [user] ([user.ckey]) tried to use forbidden word in [src]: [bad].")
 				message_admins("PAPER: [user] ([user.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
 				return
@@ -408,11 +408,11 @@
 
 		//t = html_encode(t)
 		t = replacetext(t, "\n", "<BR>")
-		t = parsepencode(t, i, user, iscrayon) // Encode everything from pencode to html
+		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
 
 
 		if (fields > 50)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
-			to_chat(user, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
+			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			fields = last_fields_value
 			return
 
@@ -424,7 +424,7 @@
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		update_space(t)
 
-		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
 
 		update_icon()
 
