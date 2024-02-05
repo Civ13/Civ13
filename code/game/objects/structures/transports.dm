@@ -918,7 +918,7 @@
 			visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 	if (T.density)
 		blocked = 1
-		visible_message("<span class='warning'>You hit \the [T]!</span>")")
+		visible_message("<span class='warning'>You hit \the [T]!</span>")
 	for (var/obj/covers/CV in get_turf(get_step(src,driver.dir)))
 		if (CV.density == TRUE)
 			blocked = 1
