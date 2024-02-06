@@ -71,7 +71,7 @@
 	else
 		if (choice == "Pepelsibirsk 1 (MIL)")
 			if (mil_relations <= 25 )
-				atom_say("Get the fuck off our radio frequency before we wipe you off the face of the Earth, you dishonourable, thieving bastards.")
+				src.say("Get the fuck off our radio frequency before we wipe you off the face of the Earth, you dishonourable, thieving bastards.")
 				user << "Your relations with this faction are too low!"
 			else
 				var/list/choicename = splittext(choice, " - ")
@@ -83,7 +83,7 @@
 			return
 		else if (choice == "Narodnyygorod (CIV)")
 			if (civ_relations <= 25 )
-				atom_say("Chert voz'mi! Go fuck yourselves.")
+				src.say("Chert voz'mi! Go fuck yourselves.")
 				user << "Your relations with this faction are too low!"
 			else
 				var/list/choicename = splittext(choice, " - ")
@@ -121,7 +121,7 @@
 			user << "Uh oh - something went wrong! Ping an admin!"
 			return
 		money -= final_cost
-		atom_say("Order received. Have a good day, comrades.")
+		src.say("Order received. Have a good day, comrades.")
 		user << "Your crate will arrive soon at the far northern parking lot."
 		spawn(600)
 			var/list/turfs = list()
@@ -196,6 +196,6 @@
 					done = FALSE
 					return
 		else
-			atom_say("Oh god, not you again... Kindly, fuck off. We don't want your business anymore.")
+			src.say("Oh god, not you again... Kindly, fuck off. We don't want your business anymore.")
 			user << "Your relations with this faction are too low!"
 			return
