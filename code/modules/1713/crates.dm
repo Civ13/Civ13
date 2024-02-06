@@ -1067,9 +1067,9 @@ obj/structure/closet/crate/airdrops/weapons
 
 /obj/structure/closet/crate/pepelsibirsk/sov_uniforms
 	name = "afghanka uniforms crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/clothing/under/afghanka = 5,
 				/obj/item/clothing/shoes/jackboots/soviet = 5,
 				/obj/item/clothing/suit/storage/jacket/afghanka = 5,
@@ -1077,33 +1077,33 @@ obj/structure/closet/crate/airdrops/weapons
 
 /obj/structure/closet/crate/pepelsibirsk/sks
 	name = "sks crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/gun/projectile/semiautomatic/sks = 5,
 				/obj/item/ammo_magazine/sks = 20)
 
 /obj/structure/closet/crate/pepelsibirsk/akm
 	name = "akm crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/gun/projectile/submachinegun/ak47 = 5,
 				/obj/item/ammo_magazine/ak47 = 10)
 
 /obj/structure/closet/crate/pepelsibirsk/ak74
 	name = "ak-74 crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/gun/projectile/submachinegun/ak74 = 5,
 				/obj/item/ammo_magazine/ak74 = 10)
 
 /obj/structure/closet/crate/pepelsibirsk/svd
 	name = "svd crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
 				/obj/item/ammo_magazine/svd = 8)
 
@@ -1126,24 +1126,24 @@ obj/structure/closet/crate/airdrops/weapons
 
 /obj/structure/closet/crate/pepelsibirsk/makarov
 	name = "makarov crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 				/obj/item/ammo_magazine/makarov = 15)
 
 /obj/structure/closet/crate/pepelsibirsk/ninex18mm
 	name = "9x18mm crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/ammo_magazine/makarov/box = 4)
 
 /obj/structure/closet/crate/pepelsibirsk/seven62x39mm
 	name = "7.62x39mm crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/ammo_magazine/ak47 = 10)
 
 /obj/structure/closet/crate/pepelsibirsk/seven62x54mmr
@@ -1155,23 +1155,23 @@ obj/structure/closet/crate/airdrops/weapons
 
 /obj/structure/closet/crate/pepelsibirsk/rgd5
 	name = "frag grenade crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/grenade/coldwar/rgd5 = 12)
 
 /obj/structure/closet/crate/pepelsibirsk/sixb1
 	name = "6B1 vest crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/clothing/accessory/armor/coldwar/flakjacket/b1 = 5)
 
 /obj/structure/closet/crate/pepelsibirsk/sixb2
 	name = "6B2 vest crate"
-	icon_state = "mil_crate"
+	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate"
+	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/clothing/accessory/armor/coldwar/plates/b2 = 5)
 
 #undef DYNAMIC_AMT

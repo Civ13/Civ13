@@ -28,6 +28,7 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Cold War"
+	var/real_season = "WINTER" // for seasons
 
 	//Trader spawnpoint
 	var/trader_spawnpoint = "TraderArrivals"
@@ -120,17 +121,14 @@
 		turfs = latejoin_turfs[trader_spawnpoint]
 		spawnpoint = pick(turfs)
 		if (china_relations >= 26)
+			// spawn a trader from the PRC
 
-			else
-				return
 		if (soviet_relations >= 26)
+			// spawn a trader from the USSR
 
-			else
-				return
 		if (pacific_relations >= 26)
+			// spawn a trader from the USP
 
-			else
-				return
 		
 	spawn (6000) //Deletes all the traders after 10 minutes
 		
