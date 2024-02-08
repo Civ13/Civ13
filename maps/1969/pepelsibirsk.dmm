@@ -50,6 +50,7 @@
 	icon_state = "railing0";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "af" = (
@@ -65,6 +66,7 @@
 /obj/effect/floor_decal/carpet/corners{
 	dir = 5
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "ah" = (
@@ -344,6 +346,7 @@
 /obj/effect/floor_decal/spline/plain{
 	dir = 10
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "aR" = (
@@ -395,6 +398,7 @@
 /obj/structure/sign/portrait/lenin{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "aX" = (
@@ -406,6 +410,15 @@
 /obj/structure/simple_door/key_door/custom/jail/steeljail/police,
 /obj/roof/concrete,
 /turf/floor/plating/concrete,
+/area/caribbean)
+"aZ" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/item/weapon/telephone/wireless{
+	name = "financial services telephone"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "ba" = (
 /obj/structure/simple_door/wood,
@@ -579,6 +592,16 @@
 	},
 /turf/floor/wood,
 /area/caribbean)
+"bx" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet{
+	dir = 8
+	},
+/obj/covers/carpet,
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "by" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 8;
@@ -715,6 +738,16 @@
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
 /area/caribbean)
+"bN" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet{
+	dir = 1
+	},
+/obj/covers/carpet,
+/obj/structure/bed/chair/office/dark,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "bO" = (
 /obj/structure/rails/turn,
 /obj/roof/concrete,
@@ -742,6 +775,7 @@
 /obj/item/weapon/key/civ/mechanic{
 	name = "Car Factory key"
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "bQ" = (
@@ -897,6 +931,7 @@
 	dir = 10
 	},
 /obj/structure/filingcabinet,
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "ck" = (
@@ -914,6 +949,7 @@
 /obj/effect/floor_decal/spline/plain{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "co" = (
@@ -955,6 +991,12 @@
 	},
 /obj/roof/concrete,
 /turf/floor/plating/steel,
+/area/caribbean)
+"ct" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/office/dark,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "cu" = (
 /obj/structure/closet/crate/bin,
@@ -1300,6 +1342,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 9
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "dl" = (
@@ -1392,6 +1435,12 @@
 	desc = "A bunch of bricks, can be used as a cover.";
 	dir = 8
 	},
+/turf/floor/broken_floor,
+/area/caribbean)
+"dv" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/sofa/left,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "dw" = (
@@ -1598,6 +1647,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "dX" = (
@@ -1661,6 +1711,15 @@
 	},
 /obj/roof/concrete,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
+"ei" = (
+/obj/covers/wood,
+/obj/structure/potted_plant{
+	dir = 9;
+	icon_state = "potted_plant"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "ej" = (
 /obj/structure/bed/chair/wood/bleacher/r{
@@ -1775,6 +1834,7 @@
 /obj/structure/railing/steel{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "eA" = (
@@ -2224,6 +2284,7 @@
 /obj/structure/sign/portrait/lenin{
 	pixel_y = 28
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "fM" = (
@@ -2345,6 +2406,27 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"ge" = (
+/obj/covers/cobblestone,
+/obj/structure/window/classic/brickfull,
+/obj/structure/curtain/open/bed,
+/obj/covers/jail,
+/obj/structure/barbwire,
+/obj/structure/barbwire,
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire,
+/obj/structure/barbwire,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "gf" = (
 /obj/structure/bed/chair/wood/bleacher{
 	name = "wood bench";
@@ -2442,6 +2524,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 6
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "gs" = (
@@ -2784,11 +2867,13 @@
 	icon_state = "tube";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "hl" = (
+/obj/covers/wood,
+/obj/roof/clay,
 /obj/structure/roof_support,
-/obj/covers/brick_wall,
 /turf/floor/broken_floor,
 /area/caribbean)
 "hm" = (
@@ -3011,6 +3096,7 @@
 /obj/structure/sign/flag/sov{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "hN" = (
@@ -3057,6 +3143,7 @@
 /obj/structure/sign/flag/sov{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "hT" = (
@@ -3185,6 +3272,7 @@
 /obj/covers/wood,
 /obj/structure/piano,
 /obj/covers/carpet/redcarpet,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "im" = (
@@ -3346,6 +3434,7 @@
 	dir = 8
 	},
 /obj/effect/floor_decal/spline/fancy/wood,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "iG" = (
@@ -3363,6 +3452,10 @@
 /obj/item/clothing/shoes/leatherboots,
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean)
+"iI" = (
+/obj/item/weapon/material/shovel/steel,
+/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "iJ" = (
 /obj/structure/table/modern/retable,
@@ -3410,6 +3503,13 @@
 /obj/roof/concrete,
 /turf/floor/wood,
 /area/caribbean)
+"iO" = (
+/obj/structure/window/barrier/snowwall{
+	dir = 8;
+	pixel_x = -8
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "iP" = (
 /obj/structure/window/barrier/railing/brick,
 /obj/structure/railing{
@@ -3430,6 +3530,7 @@
 	icon_state = "railing0";
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "iR" = (
@@ -3526,8 +3627,23 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "jf" = (
-/obj/covers/wood,
-/obj/structure/simple_door/key_door/anyone/wood,
+/obj/covers/steelplating,
+/obj/effect/floor_decal/corner_steel_grid/diagonal,
+/obj/effect/floor_decal/corner_steel_grid/diagonal{
+	dir = 4
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 8;
+	icon_state = "danger"
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 4;
+	icon_state = "danger"
+	},
+/obj/structure/window/clean/reinforced/metal,
+/obj/covers/jail/steeljail,
+/obj/structure/barricade/steel,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "jg" = (
@@ -3556,6 +3672,12 @@
 /obj/structure/wild/tree/dead_tree,
 /turf/floor/dirt/winter,
 /area/caribbean)
+"jj" = (
+/obj/covers/wood,
+/obj/structure/potted_plant,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "jl" = (
 /obj/roof,
 /turf/floor/wood,
@@ -3579,6 +3701,22 @@
 	},
 /obj/structure/wild/smallbush/winter,
 /turf/floor/dirt/winter,
+/area/caribbean)
+"jq" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet{
+	dir = 1
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 8
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 9
+	},
+/obj/covers/carpet,
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "jr" = (
 /obj/structure/roof_support,
@@ -3800,6 +3938,7 @@
 	icon_state = "railing0";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "jU" = (
@@ -3814,7 +3953,13 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "jW" = (
-/obj/covers/brick_wall,
+/obj/covers/steelplating,
+/obj/structure/barricade/steel,
+/obj/effect/floor_decal/corner_steel_grid/diagonal,
+/obj/effect/floor_decal/corner_steel_grid/diagonal{
+	dir = 4
+	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "jX" = (
@@ -4103,6 +4248,7 @@
 	name = "Car Factory door";
 	unique_door_name = "Car Factory Door"
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "kE" = (
@@ -4180,6 +4326,7 @@
 	icon_state = "bleacher_l";
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "kQ" = (
@@ -4265,6 +4412,7 @@
 /obj/structure/lamp/lamp_big{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "lf" = (
@@ -4370,6 +4518,7 @@
 /obj/structure/railing/steel{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "lq" = (
@@ -4496,6 +4645,13 @@
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
 /area/caribbean)
+"lH" = (
+/obj/covers/wood,
+/obj/covers/carpet,
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "lI" = (
 /obj/structure/table/modern,
 /obj/roof/concrete,
@@ -4577,6 +4733,7 @@
 "lU" = (
 /obj/covers/wood,
 /obj/covers/carpet/redcarpet,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "lV" = (
@@ -4764,6 +4921,7 @@
 	icon_state = "railing0";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "mu" = (
@@ -4840,6 +4998,15 @@
 /obj/roof,
 /turf/floor/wood/alt,
 /area/caribbean)
+"mC" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/office/light{
+	dir = 4;
+	icon_state = "officechair_white"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "mD" = (
 /obj/structure/filingcabinet/chestdrawer,
 /turf/floor/wood,
@@ -4894,6 +5061,7 @@
 /obj/structure/sign/flag/sov{
 	pixel_y = 32
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "mL" = (
@@ -5168,6 +5336,7 @@
 "nw" = (
 /obj/structure/window/classic/brickfull,
 /obj/covers/jail/steeljail,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "nx" = (
@@ -5291,6 +5460,7 @@
 	icon_state = "railing0"
 	},
 /obj/covers/cobblestone/stairs,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "nP" = (
@@ -5465,6 +5635,11 @@
 /obj/roof/concrete,
 /turf/floor/plating/white,
 /area/caribbean)
+"ot" = (
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/turf/floor/plating/road,
+/area/caribbean)
 "ou" = (
 /obj/structure/table/rack/shelf,
 /obj/structure/railing/steel{
@@ -5609,6 +5784,21 @@
 /obj/structure/window_frame/metal,
 /obj/roof/concrete,
 /turf/floor/plating/tiled/dark,
+/area/caribbean)
+"oK" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/item/weapon/newspaper,
+/obj/structure/railing{
+	icon_state = "railing0";
+	dir = 8
+	},
+/obj/structure/railing{
+	dir = 1;
+	icon_state = "railing0"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "oL" = (
 /obj/structure/bookcase,
@@ -5773,6 +5963,7 @@
 /area/caribbean)
 "pn" = (
 /obj/structure/gate/blast/garage,
+/obj/roof/clay,
 /turf/floor/plating/steel,
 /area/caribbean)
 "po" = (
@@ -5841,6 +6032,18 @@
 /obj/structure/simple_door/key_door/anyone/wood,
 /obj/roof/concrete,
 /turf/floor/plating/steel,
+/area/caribbean)
+"px" = (
+/obj/covers/wood,
+/obj/structure/closet,
+/obj/item/clothing/shoes/heavyboots/wrappedboots,
+/obj/item/clothing/under/civf3,
+/obj/item/clothing/head/flatcap1,
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "pz" = (
 /obj/covers/wood/stairs,
@@ -5938,6 +6141,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 6
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "pO" = (
@@ -5967,6 +6171,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 5
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "pS" = (
@@ -6153,6 +6358,13 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"qr" = (
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/obj/structure/bed/hammock,
+/turf/floor/plating/stone_old,
+/area/caribbean)
 "qs" = (
 /obj/structure/props/car_wreck/van{
 	dir = 8
@@ -6195,6 +6407,7 @@
 	dir = 8
 	},
 /obj/structure/railing,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "qy" = (
@@ -6270,6 +6483,15 @@
 /obj/covers/carpet/greencarpet,
 /obj/roof/clay/black,
 /turf/floor/wood,
+/area/caribbean)
+"qJ" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/structure/bed/chair/sofa/right,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "qK" = (
 /obj/structure/table/modern,
@@ -6748,6 +6970,7 @@
 	dir = 8;
 	icon_state = "rampup"
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "rV" = (
@@ -6791,6 +7014,7 @@
 "sb" = (
 /obj/structure/window/classic/brickfull,
 /obj/covers/cobblestone,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "sc" = (
@@ -6878,6 +7102,23 @@
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
 /area/caribbean)
+"sj" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet,
+/obj/effect/floor_decal/carpet{
+	dir = 4
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 6
+	},
+/obj/covers/carpet,
+/obj/structure/bed/chair/office/light{
+	dir = 1;
+	icon_state = "officechair_white"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "sk" = (
 /obj/structure/window/barrier/railing/brick,
 /obj/covers/repairedfloor/ship{
@@ -6947,6 +7188,20 @@
 /obj/structure/simple_door/key_door/civ/paramedics,
 /obj/roof/concrete,
 /turf/floor/plating/white,
+/area/caribbean)
+"sv" = (
+/obj/covers/wood,
+/obj/structure/table/fancy,
+/obj/structure/potted_plant{
+	dir = 5;
+	icon_state = "potted_plant"
+	},
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/broken_floor,
 /area/caribbean)
 "sw" = (
 /obj/effect/floor_decal/spline/fancy/wood{
@@ -7067,6 +7322,7 @@
 /obj/covers/wood,
 /obj/item/violin,
 /obj/covers/carpet/redcarpet,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "sR" = (
@@ -7370,6 +7626,15 @@
 /obj/roof/concrete,
 /turf/floor/broken_floor,
 /area/caribbean)
+"tC" = (
+/obj/structure/sign/traffic/side{
+	pixel_y = 16
+	},
+/obj/effect/landmark{
+	name = "trader_spawnpoint"
+	},
+/turf/floor/plating/road,
+/area/caribbean)
 "tD" = (
 /obj/structure/props/barrel,
 /obj/roof/concrete,
@@ -7448,6 +7713,18 @@
 /obj/covers/wood,
 /obj/covers/carpet/redcarpet,
 /obj/structure/roof_support,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
+"tO" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet,
+/obj/covers/carpet,
+/obj/structure/bed/chair/office/light{
+	dir = 1;
+	icon_state = "officechair_white"
+	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "tP" = (
@@ -7577,6 +7854,7 @@
 	distance = 6
 	},
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "ug" = (
@@ -7724,6 +8002,7 @@
 /obj/item/stack/material/steel{
 	amount = 100
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "uB" = (
@@ -7867,6 +8146,7 @@
 	dir = 8;
 	pixel_y = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "uW" = (
@@ -7961,6 +8241,7 @@
 /area/caribbean)
 "vg" = (
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "vh" = (
@@ -7974,6 +8255,7 @@
 	icon_state = "railing0";
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "vi" = (
@@ -7988,6 +8270,7 @@
 /obj/covers/wood,
 /obj/covers/carpet/redcarpet,
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "vl" = (
@@ -8040,6 +8323,7 @@
 /obj/structure/roof_support{
 	icon_state = "support_v"
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "vq" = (
@@ -8056,6 +8340,16 @@
 	},
 /obj/roof/concrete,
 /turf/floor/dirt/winter,
+/area/caribbean)
+"vr" = (
+/obj/covers/wood,
+/obj/structure/table/fancy,
+/obj/structure/potted_plant{
+	dir = 5;
+	icon_state = "potted_plant"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "vs" = (
 /obj/structure/window/barrier/railing/brick,
@@ -8161,6 +8455,7 @@
 "vF" = (
 /obj/structure/table/fancy,
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "vG" = (
@@ -8308,6 +8603,15 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"vX" = (
+/obj/covers/wood,
+/obj/structure/simple_door/key_door/civ/mechanic{
+	name = "Car Factory door";
+	unique_door_name = "Car Factory Door"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "vY" = (
 /obj/roof/wood,
 /turf/floor/dirt/winter,
@@ -8367,6 +8671,7 @@
 /obj/effect/floor_decal/spline/plain{
 	dir = 5
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "wh" = (
@@ -8771,6 +9076,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "xh" = (
@@ -8904,6 +9210,7 @@
 /obj/structure/sign/portrait/stalin{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "xz" = (
@@ -9013,6 +9320,15 @@
 /obj/roof/clay,
 /turf/floor/plating/steel,
 /area/caribbean)
+"xN" = (
+/obj/covers/steelplating,
+/obj/structure/closet/crate/lead,
+/obj/item/stack/money/rubles{
+	amount = 50
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "xO" = (
 /obj/structure/window/classic/metal,
 /obj/structure/curtain/open/bed,
@@ -9104,6 +9420,7 @@
 	dir = 4
 	},
 /obj/structure/railing/steel,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "xV" = (
@@ -9116,6 +9433,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "xX" = (
@@ -9275,6 +9593,7 @@
 /obj/structure/sign/portrait/lenin{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "yq" = (
@@ -9306,6 +9625,7 @@
 	icon_state = "railing0";
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "yt" = (
@@ -9572,6 +9892,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "zb" = (
@@ -9599,6 +9920,7 @@
 	icon_state = "rampup"
 	},
 /obj/structure/railing/steel,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "zf" = (
@@ -9714,6 +10036,7 @@
 	icon_state = "tube";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "zn" = (
@@ -9791,6 +10114,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "zy" = (
@@ -9841,6 +10165,7 @@
 /obj/effect/floor_decal/spline/fancy/wood/corner{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "zG" = (
@@ -9899,6 +10224,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 9
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "zO" = (
@@ -10011,6 +10337,7 @@
 	icon_state = "tube";
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Ad" = (
@@ -10046,6 +10373,21 @@
 "Af" = (
 /obj/covers/cobblestone,
 /obj/structure/window/classic/brickfull,
+/obj/structure/curtain/open/bed,
+/obj/covers/jail,
+/obj/structure/barbwire,
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire{
+	dir = 1
+	},
+/obj/structure/barbwire,
+/obj/structure/barbwire,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Ag" = (
@@ -10102,6 +10444,7 @@
 	dir = 1
 	},
 /obj/covers/carpet/redcarpet,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Am" = (
@@ -10173,6 +10516,7 @@
 	dir = 4
 	},
 /obj/structure/railing,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Au" = (
@@ -10205,6 +10549,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "Az" = (
@@ -10230,6 +10575,7 @@
 	name = "Car Factory door";
 	unique_door_name = "Car Factory Door"
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "AC" = (
@@ -10353,6 +10699,18 @@
 /obj/roof/concrete,
 /turf/floor/plating/tiled/woodh,
 /area/caribbean)
+"AQ" = (
+/obj/covers/wood,
+/obj/structure/simple_door/key_door/civ/bank{
+	name = "heavy-duty door";
+	desc = "This door looks tough!";
+	health = 40000;
+	initial_health = 40000;
+	unique_door_name = "heavy-duty door"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "AR" = (
 /obj/roof/concrete,
 /turf/floor/dirt/winter,
@@ -10408,6 +10766,12 @@
 	},
 /turf/floor/plating/road,
 /area/caribbean)
+"AZ" = (
+/obj/covers/steelplating,
+/obj/structure/table/rack/shelf,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Ba" = (
 /obj/structure/roof_support{
 	icon_state = "support_v"
@@ -10441,6 +10805,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/spline/fancy/wood/corner,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Bf" = (
@@ -10546,6 +10911,7 @@
 "Bq" = (
 /obj/covers/wood,
 /obj/structure/railing,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Br" = (
@@ -10696,6 +11062,13 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean)
+"BJ" = (
+/obj/covers/steelplating,
+/obj/structure/closet/crate/lead,
+/obj/item/clothing/gloves/watch/goldwatch,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "BL" = (
 /obj/structure/closet/fridge/icecreamcooler{
 	powerneeded = 5;
@@ -10786,6 +11159,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
+"BW" = (
+/obj/covers/wood,
+/obj/item/weapon/newspaper,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "BY" = (
 /obj/covers/roads/dirt,
 /turf/floor/dirt/winter,
@@ -10828,6 +11207,7 @@
 /obj/effect/floor_decal/carpet/corners{
 	dir = 6
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Cf" = (
@@ -10957,6 +11337,14 @@
 	},
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean)
+"Cw" = (
+/obj/structure/simple_door/key_door/civ/mechanic{
+	name = "Car Factory door";
+	unique_door_name = "Car Factory Door"
+	},
+/obj/roof/clay,
+/turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "Cx" = (
 /obj/structure/window/barrier/railing/brick{
@@ -11248,13 +11636,15 @@
 /turf/floor/dirt,
 /area/caribbean)
 "Dg" = (
-/obj/structure/bed/chair/wood{
-	dir = 1
-	},
-/obj/structure/mirror{
-	pixel_x = -32
-	},
-/turf/floor/plating/stone_old,
+/obj/covers/steelplating,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
+"Dh" = (
+/obj/covers/wood,
+/obj/structure/filingcabinet,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Di" = (
 /obj/covers/cobblestone/stairs,
@@ -11378,6 +11768,12 @@
 /obj/roof/clay,
 /turf/floor/wood/fancywood,
 /area/caribbean)
+"Dx" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Dy" = (
 /obj/covers/cobblestone/stairs{
 	dir = 4;
@@ -11386,10 +11782,12 @@
 /obj/structure/railing/steel{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Dz" = (
 /obj/structure/table/rack/coatrack,
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "DA" = (
@@ -11533,6 +11931,7 @@
 /obj/structure/sign/portrait/stalin{
 	pixel_y = 28
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "DR" = (
@@ -11573,6 +11972,7 @@
 /obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "DX" = (
@@ -11646,8 +12046,12 @@
 /turf/floor/winter,
 /area/caribbean)
 "Ej" = (
-/obj/covers/wood,
-/obj/structure/table/wood,
+/obj/covers/steelplating,
+/obj/structure/closet/crate/lead,
+/obj/item/stack/money/rubles{
+	amount = 40
+	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Ek" = (
@@ -11656,6 +12060,12 @@
 	},
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean)
+"Em" = (
+/obj/effect/landmark{
+	name = "trader_spawnpoint"
+	},
+/turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "En" = (
 /obj/structure/closet/cabinet,
@@ -11674,6 +12084,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "Ep" = (
@@ -11717,6 +12128,7 @@
 /obj/structure/lamp/lamp_big{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Ew" = (
@@ -11736,6 +12148,19 @@
 	name = "KGB telephone"
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
+"Ey" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet,
+/obj/effect/floor_decal/carpet{
+	dir = 8
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 10
+	},
+/obj/covers/carpet,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Ez" = (
 /obj/structure/table/wood,
@@ -11779,6 +12204,14 @@
 /obj/covers/brick_wall,
 /obj/roof/clay/black,
 /turf/wall/brick,
+/area/caribbean)
+"EH" = (
+/obj/covers/wood,
+/obj/item/weapon/key/civ/bank{
+	name = "bank key"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "EI" = (
 /obj/structure/morgue,
@@ -11835,6 +12268,7 @@
 	icon_state = "railing0";
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "EP" = (
@@ -11842,6 +12276,8 @@
 /obj/item/clothing/under/industrial5,
 /obj/item/clothing/under/industrial5,
 /obj/item/clothing/under/industrial5,
+/obj/item/clothing/under/industrial5,
+/obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
@@ -12123,6 +12559,7 @@
 "Fu" = (
 /obj/structure/table/modern/retable,
 /obj/effect/floor_decal/spline/plain,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "Fv" = (
@@ -12187,6 +12624,7 @@
 "FA" = (
 /obj/structure/table/modern/table,
 /obj/covers/carpet,
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "FB" = (
@@ -12297,6 +12735,7 @@
 /obj/structure/sign/flag/sov{
 	pixel_y = 32
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "FS" = (
@@ -12450,7 +12889,15 @@
 	dir = 4;
 	icon_state = "rampup"
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
+"Gr" = (
+/obj/covers/steelplating,
+/obj/structure/table/rack/shelf,
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Gs" = (
 /obj/structure/table/rack/shelf/store,
@@ -12468,6 +12915,7 @@
 "Gu" = (
 /obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Gv" = (
@@ -12823,6 +13271,7 @@
 /obj/item/stack/material/steel{
 	amount = 100
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Hn" = (
@@ -12862,6 +13311,7 @@
 /obj/structure/sign/portrait/lenin{
 	pixel_y = 28
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Hu" = (
@@ -12937,6 +13387,14 @@
 /obj/structure/railing,
 /obj/roof/clay,
 /turf/floor/wood/fancywood,
+/area/caribbean)
+"HE" = (
+/obj/covers/wood,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "HF" = (
 /obj/structure/closet/crate/empty/large,
@@ -13058,6 +13516,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 5
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "HR" = (
@@ -13299,6 +13758,7 @@
 /obj/item/clothing/shoes/heavyboots/wrappedboots,
 /obj/item/clothing/under/civf3,
 /obj/item/clothing/head/flatcap1,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "IB" = (
@@ -13381,6 +13841,7 @@
 	dir = 8
 	},
 /obj/structure/table/rack/coatrack,
+/obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
@@ -13490,6 +13951,8 @@
 /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,
 /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,
 /obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,
+/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,
+/obj/structure/closet/crate/empty/large,
 /turf/floor/plating/road,
 /area/caribbean)
 "IY" = (
@@ -13524,6 +13987,9 @@
 	},
 /obj/structure/lamp/lamp_small{
 	dir = 4
+	},
+/obj/structure/mirror{
+	pixel_x = -32
 	},
 /turf/floor/plating/stone_old,
 /area/caribbean)
@@ -13619,6 +14085,15 @@
 /obj/roof/concrete,
 /turf/wall/cement,
 /area/caribbean)
+"Jp" = (
+/obj/structure/window/barrier/concrete{
+	dir = 1
+	},
+/obj/effect/landmark{
+	name = "trader_spawnpoint"
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean)
 "Jq" = (
 /obj/structure/closet/crate/empty/large,
 /obj/item/weapon/haircomb,
@@ -13706,6 +14181,7 @@
 /area/caribbean)
 "Jy" = (
 /obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Jz" = (
@@ -13782,6 +14258,18 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"JG" = (
+/obj/covers/steelplating,
+/obj/structure/simple_door/key_door/civ/bank{
+	name = "heavy-duty door";
+	desc = "This door looks tough!";
+	health = 40000;
+	initial_health = 40000;
+	unique_door_name = "heavy-duty door"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "JH" = (
 /obj/structure/table/modern,
 /obj/structure/curtain/open/privacy,
@@ -13826,6 +14314,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "JL" = (
@@ -13961,6 +14450,7 @@
 /obj/item/weapon/storage/toolbox/mechanical{
 	pixel_y = -6
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Kd" = (
@@ -14072,6 +14562,7 @@
 	dir = 4;
 	icon_state = "rampup"
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Ks" = (
@@ -14235,6 +14726,7 @@
 /area/caribbean)
 "KL" = (
 /obj/structure/closet/crate,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "KM" = (
@@ -14302,6 +14794,14 @@
 /obj/structure/simple_door/key_door/civ/police,
 /obj/roof/concrete,
 /turf/floor/wood,
+/area/caribbean)
+"KU" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "KV" = (
 /obj/structure/curtain/medical,
@@ -14599,6 +15099,12 @@
 /obj/roof/concrete,
 /turf/floor/broken_floor,
 /area/caribbean)
+"LN" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "LO" = (
 /obj/structure/simple_door/key_door/soviet,
 /obj/roof,
@@ -14797,6 +15303,7 @@
 /obj/structure/sign/portrait/lenin{
 	pixel_x = 26
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Ms" = (
@@ -15134,6 +15641,14 @@
 /obj/roof/clay,
 /turf/floor/carpet/greencarpet,
 /area/caribbean)
+"Nd" = (
+/obj/structure/lamp/lamp_big{
+	icon_state = "tube";
+	dir = 1
+	},
+/obj/roof/clay,
+/turf/floor/plating/road,
+/area/caribbean)
 "Ne" = (
 /obj/structure/table/modern/table,
 /obj/roof/concrete,
@@ -15294,6 +15809,22 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"NA" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet{
+	dir = 1
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 4
+	},
+/obj/effect/floor_decal/carpet{
+	dir = 5
+	},
+/obj/covers/carpet,
+/obj/structure/filingcabinet/chestdrawer,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "NB" = (
 /obj/covers/wood,
 /obj/structure/table/wood/flipped{
@@ -15312,6 +15843,23 @@
 	},
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean)
+"NF" = (
+/obj/covers/wood,
+/obj/structure/table/modern/retable,
+/obj/item/weapon/key/civ/bank{
+	name = "bank key"
+	},
+/obj/item/weapon/key/civ/bank{
+	name = "bank key"
+	},
+/obj/item/weapon/key/civ/bank{
+	name = "bank key"
+	},
+/obj/item/weapon/paper_bin,
+/obj/item/weapon/pen,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "NG" = (
 /obj/effect/floor_decal/steeldecal/steel_decals5{
@@ -15465,6 +16013,11 @@
 /area/caribbean)
 "Oc" = (
 /obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/structure/bed/chair/sofa/left,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Od" = (
@@ -15499,8 +16052,8 @@
 /turf/floor/wood,
 /area/caribbean)
 "Oh" = (
-/obj/covers/brick_wall,
-/turf/wall/brick,
+/obj/roof/clay,
+/turf/floor/plating/road,
 /area/caribbean)
 "Oi" = (
 /obj/structure/lamp/lamp_big{
@@ -15551,6 +16104,7 @@
 	name = "wood bench";
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Oq" = (
@@ -15637,6 +16191,7 @@
 /obj/effect/floor_decal/spline/plain{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "OC" = (
@@ -15717,6 +16272,7 @@
 /obj/structure/sign/flag/sov{
 	pixel_x = 32
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "ON" = (
@@ -15788,6 +16344,7 @@
 /obj/effect/floor_decal/carpet{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Pa" = (
@@ -15830,9 +16387,25 @@
 /obj/roof/clay/black,
 /turf/floor/wood/fancywood,
 /area/caribbean)
+"Ph" = (
+/obj/covers/wood,
+/obj/structure/filingcabinet/chestdrawer,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Pi" = (
 /obj/structure/wild/tallgrass,
 /turf/floor/winter,
+/area/caribbean)
+"Pj" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/office/dark{
+	icon_state = "officechair_dark";
+	dir = 1
+	},
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Pk" = (
 /obj/structure/bed/wood,
@@ -15977,6 +16550,7 @@
 	dir = 8;
 	icon_state = "railing0"
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "PB" = (
@@ -16040,6 +16614,7 @@
 /obj/structure/sign/portrait/stalin{
 	pixel_x = 26
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "PJ" = (
@@ -16322,6 +16897,7 @@
 /obj/structure/roof_support{
 	icon_state = "support_v"
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Qv" = (
@@ -16436,6 +17012,7 @@
 "QI" = (
 /obj/covers/wood,
 /obj/structure/roof_support,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "QK" = (
@@ -16669,6 +17246,15 @@
 /obj/item/weapon/paper_bin,
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
+/area/caribbean)
+"Rp" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/office/dark{
+	icon_state = "officechair_dark";
+	dir = 1
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Rt" = (
 /obj/roof/concrete,
@@ -16916,6 +17502,14 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean)
+"RS" = (
+/obj/covers/wood,
+/obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/broken_floor,
+/area/caribbean)
 "RT" = (
 /obj/structure/sink/kitchen{
 	dir = 4;
@@ -16957,6 +17551,7 @@
 	icon_state = "bleacher_r";
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "RZ" = (
@@ -17229,7 +17824,11 @@
 /turf/floor/wood,
 /area/caribbean)
 "SF" = (
-/obj/covers/stonebrickfloor,
+/obj/covers/cobblestone,
+/obj/structure/window/classic/brickfull,
+/obj/structure/curtain/open/bed,
+/obj/covers/jail,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "SG" = (
@@ -17243,6 +17842,7 @@
 /obj/structure/lamp/lamp_big{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "SI" = (
@@ -17465,6 +18065,18 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"Tk" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/structure/railing{
+	icon_state = "railing0";
+	dir = 8
+	},
+/obj/structure/railing,
+/obj/item/weapon/reagent_containers/food/drinks/tea,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Tl" = (
 /obj/structure/chem_master,
 /turf/floor/plating/steel,
@@ -17495,7 +18107,8 @@
 "Tq" = (
 /obj/structure/grille/chainlinkfence{
 	icon_state = "chainlinkfence";
-	dir = 4
+	dir = 4;
+	layer = 4.1
 	},
 /turf/floor/dirt/winter,
 /area/caribbean)
@@ -17572,12 +18185,24 @@
 /obj/effect/floor_decal/carpet{
 	dir = 8
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "TC" = (
 /obj/structure/table/modern/table,
 /obj/structure/radio/transmitter_receiver,
 /turf/floor/plating/road,
+/area/caribbean)
+"TD" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 4
+	},
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "TE" = (
 /obj/covers/carpet/greencarpet,
@@ -17670,6 +18295,16 @@
 /obj/covers/wood_wall/log,
 /obj/roof/wood,
 /turf/wall/wood,
+/area/caribbean)
+"TV" = (
+/obj/covers/wood,
+/obj/effect/floor_decal/carpet{
+	dir = 4
+	},
+/obj/covers/carpet,
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "TW" = (
 /obj/structure/gatecontrol/blastcontrol/garage{
@@ -17860,6 +18495,14 @@
 /obj/roof/concrete,
 /turf/floor/plating/concrete,
 /area/caribbean)
+"UB" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/item/weapon/paper_bin,
+/obj/item/weapon/pen,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "UC" = (
 /obj/structure/filingcabinet,
 /obj/roof/clay,
@@ -17922,6 +18565,12 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean)
+"UL" = (
+/obj/covers/wood,
+/obj/structure/printingpress,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "UM" = (
 /obj/structure/gate/blast/garage{
 	dir = 4
@@ -17971,6 +18620,7 @@
 /obj/item/stack/material/steel{
 	amount = 500
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "UU" = (
@@ -18334,6 +18984,7 @@
 /obj/effect/floor_decal/carpet/corners{
 	dir = 10
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "VG" = (
@@ -18364,6 +19015,7 @@
 /obj/structure/railing{
 	dir = 4
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "VL" = (
@@ -18421,9 +19073,11 @@
 	icon_state = "support_v"
 	},
 /obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "VV" = (
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "VW" = (
@@ -18517,6 +19171,28 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean)
+"Wi" = (
+/obj/covers/steelplating,
+/obj/effect/floor_decal/corner_steel_grid/diagonal,
+/obj/effect/floor_decal/corner_steel_grid/diagonal{
+	dir = 4
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 8;
+	icon_state = "danger"
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 4;
+	icon_state = "danger"
+	},
+/obj/structure/table/modern/retable,
+/obj/covers/jail/steeljail{
+	icon = 'icons/obj/structures.dmi';
+	icon_state = "bars_bank"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Wj" = (
 /obj/effect/floor_decal/corner/black/diagonal,
 /obj/effect/floor_decal/spline/fancy/wood{
@@ -18524,6 +19200,17 @@
 	},
 /obj/roof/clay,
 /turf/floor/plating/steel,
+/area/caribbean)
+"Wk" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 8
+	},
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Wl" = (
 /obj/structure/closet/anchored,
@@ -18541,6 +19228,7 @@
 /area/caribbean)
 "Wn" = (
 /obj/structure/lamp/lamp_big,
+/obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean)
 "Wo" = (
@@ -18593,10 +19281,10 @@
 /turf/floor/plating/white,
 /area/caribbean)
 "Wu" = (
-/obj/structure/props/stove/old,
 /obj/item/stack/ore/charcoal{
 	amount = 50
 	},
+/obj/structure/oven/stove/old,
 /turf/floor/plating/road,
 /area/caribbean)
 "Wv" = (
@@ -18607,6 +19295,12 @@
 	},
 /obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
+"Ww" = (
+/obj/covers/wood,
+/obj/structure/bed/chair/sofa/right,
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Wx" = (
 /obj/structure/window/barrier/railing/brick{
@@ -18742,6 +19436,7 @@
 /obj/item/clothing/shoes/heavyboots/wrappedboots,
 /obj/item/clothing/under/mechanic_outfit,
 /obj/item/clothing/head/flatcap1,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "WO" = (
@@ -18887,6 +19582,16 @@
 /obj/covers/cement_wall,
 /obj/roof/concrete,
 /turf/wall/cement,
+/area/caribbean)
+"Xf" = (
+/obj/covers/wood,
+/obj/structure/table/modern/table,
+/obj/structure/railing{
+	icon_state = "railing0";
+	dir = 8
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "Xg" = (
 /obj/structure/table/modern/table,
@@ -19104,6 +19809,7 @@
 /obj/structure/sign/portrait/stalin{
 	pixel_y = -30
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "XO" = (
@@ -19243,6 +19949,13 @@
 /obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
+"Yb" = (
+/obj/covers/wood,
+/obj/structure/table/wood,
+/obj/structure/lamp/lamp_big,
+/obj/roof/clay,
+/turf/floor/broken_floor,
+/area/caribbean)
 "Yc" = (
 /obj/covers/cobblestone/stairs{
 	dir = 4
@@ -19254,6 +19967,22 @@
 	},
 /obj/roof/clay/black,
 /turf/floor/wood/fancywood,
+/area/caribbean)
+"Yd" = (
+/obj/covers/wood,
+/obj/structure/table/fancy,
+/obj/structure/potted_plant{
+	dir = 5;
+	icon_state = "potted_plant"
+	},
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/broken_floor,
 /area/caribbean)
 "Ye" = (
 /obj/structure/table/rack/shelf,
@@ -19372,6 +20101,7 @@
 /obj/item/weapon/enginemaker,
 /obj/item/weapon/enginemaker,
 /obj/item/weapon/enginemaker,
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "Yt" = (
@@ -19414,6 +20144,7 @@
 /obj/structure/lamp/lamp_big{
 	dir = 1
 	},
+/obj/roof/clay,
 /turf/floor/wood/alt/two,
 /area/caribbean)
 "YA" = (
@@ -19454,6 +20185,7 @@
 /obj/item/stack/material/steel{
 	amount = 100
 	},
+/obj/roof/clay,
 /turf/floor/plating/road,
 /area/caribbean)
 "YG" = (
@@ -19727,6 +20459,7 @@
 /obj/structure/roof_support{
 	icon_state = "support_v"
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "Zu" = (
@@ -19776,6 +20509,7 @@
 /obj/structure/sign/portrait/stalin{
 	pixel_y = 28
 	},
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "ZC" = (
@@ -19826,6 +20560,21 @@
 /obj/structure/mine_support/stone/ionic/rock,
 /obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean)
+"ZJ" = (
+/obj/covers/wood,
+/obj/structure/lamp/lamp_big{
+	dir = 1
+	},
+/obj/structure/table/fancy,
+/obj/item/weapon/reagent_containers/food/drinks/tea{
+	pixel_x = 7
+	},
+/obj/item/weapon/reagent_containers/food/drinks/teapot/filled{
+	pixel_x = -6
+	},
+/obj/roof/clay,
+/turf/floor/broken_floor,
 /area/caribbean)
 "ZK" = (
 /obj/structure/potted_plant,
@@ -19916,6 +20665,7 @@
 	dir = 4
 	},
 /obj/structure/railing,
+/obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
 "ZV" = (
@@ -50809,7 +51559,7 @@ EP
 eN
 sT
 Iv
-Dg
+Uy
 xX
 Iv
 sT
@@ -51004,7 +51754,7 @@ Ld
 Ld
 Ld
 sT
-td
+qr
 gF
 gF
 td
@@ -51406,10 +52156,10 @@ Ld
 Ld
 Ld
 sT
-td
+qr
 gF
 gF
-td
+qr
 sT
 sT
 jE
@@ -51808,10 +52558,10 @@ Ld
 Ld
 Ld
 sT
-td
+qr
 gF
 gF
-td
+qr
 sT
 hO
 gF
@@ -52210,10 +52960,10 @@ Ld
 Ld
 Ld
 sT
-td
+qr
 bZ
 gF
-td
+qr
 sT
 lQ
 bZ
@@ -61730,19 +62480,19 @@ FN
 tE
 at
 tg
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
 tg
 ik
 ik
@@ -61931,19 +62681,19 @@ Au
 Tu
 tE
 tg
-Oh
+mb
 le
 VV
 VV
 VV
 vg
-Oh
-Oh
+mb
+mb
 KL
-eR
+Gc
 nO
 Wn
-Oh
+mb
 tg
 ik
 ik
@@ -62132,19 +62882,19 @@ fA
 DF
 tE
 tg
-Oh
+mb
 VV
 dk
 JK
 cj
 VV
-Oh
+mb
 xU
 OB
-eR
+Gc
 aQ
 Gq
-Oh
+mb
 tg
 ik
 ik
@@ -62333,19 +63083,19 @@ CQ
 CQ
 tE
 tg
-bd
+Ix
 VV
 Ay
 FA
 bP
 VV
-bd
+Ix
 Kr
 OB
-eR
+Gc
 Fu
 Dy
-bd
+Ix
 tg
 ik
 ik
@@ -62534,19 +63284,19 @@ Wb
 Py
 tE
 tg
-Oh
+mb
 VV
 HQ
 Eo
 gr
 VV
-Oh
+mb
 ze
 wg
-eR
+Gc
 Fu
 Dy
-Oh
+mb
 tg
 ik
 ik
@@ -62735,19 +63485,19 @@ at
 tE
 at
 tg
-Oh
+mb
 Yx
 VV
 Dz
 VV
 vF
-Oh
+mb
 zm
 lp
-eR
+Gc
 Fu
 ez
-Oh
+mb
 tg
 ik
 ik
@@ -62936,19 +63686,19 @@ ZZ
 ni
 tE
 tg
-bd
-bd
+Ix
+Ix
 kC
-bd
+Ix
 nw
 nw
-bd
-Oh
-bd
-eR
-bd
-Oh
-bd
+Ix
+mb
+Ix
+Cw
+Ix
+mb
+Ix
 tg
 ik
 ik
@@ -63137,19 +63887,19 @@ at
 tE
 at
 tg
-Oh
+mb
 Ac
-ik
-ik
-ik
-ik
+Oh
+Oh
+Oh
+Oh
 Ev
-ik
-ik
-ik
+Oh
+Oh
+Oh
 Jy
 Gu
-Oh
+mb
 tg
 ik
 ik
@@ -63338,19 +64088,19 @@ Fh
 Er
 tE
 tg
-Oh
+mb
 UT
 Qu
-ik
-ik
-ik
+Oh
+Oh
+Oh
 Qu
-ik
-ik
-ik
+Oh
+Oh
+Oh
 VS
 Jy
-Oh
+mb
 tg
 ik
 ik
@@ -63539,19 +64289,19 @@ CQ
 CQ
 tE
 tg
-bd
+Ix
 Hm
-ik
-ik
-ik
-ik
-ik
-ik
-ik
-ik
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
 Jy
 Jy
-bd
+Ix
 tg
 ik
 ik
@@ -63740,19 +64490,19 @@ WE
 DF
 tE
 tg
-bd
+Ix
 YF
-ik
-ik
-df
-df
-df
-df
-df
-ik
-ik
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Oh
 Jy
-bd
+Ix
 tg
 ik
 ik
@@ -63941,19 +64691,19 @@ ML
 pT
 tE
 tg
-Oh
+mb
 uA
 Qu
-ik
-df
-df
-df
-df
-df
-ik
-Qu
-ik
 Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Qu
+Oh
+mb
 tg
 ik
 ik
@@ -64142,19 +64892,19 @@ FN
 tE
 at
 tg
-Oh
-yb
+mb
+Nd
 Qu
-ik
-df
-df
-df
-df
-df
-ik
-Qu
-Xt
 Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Qu
+ot
+mb
 tg
 ik
 ik
@@ -64343,19 +65093,19 @@ tg
 tg
 tg
 tg
-bd
-ik
-ik
-ik
-df
-df
-df
-df
-df
-ik
-ik
-ik
-bd
+Ix
+Oh
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Oh
+Oh
+Ix
 tg
 ik
 ik
@@ -64544,19 +65294,19 @@ FN
 tE
 at
 tg
-bd
-ik
-ik
-ik
-df
-df
-df
-df
-df
-ik
-ik
-ik
-bd
+Ix
+Oh
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Oh
+Oh
+Ix
 tg
 ik
 ik
@@ -64745,19 +65495,19 @@ Au
 Tu
 tE
 tg
+mb
 Oh
-ik
 Ys
-ik
-df
-df
-df
-df
-df
-ik
-Qu
-ik
 Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Qu
+Oh
+mb
 tg
 ik
 ik
@@ -64946,19 +65696,19 @@ fA
 DF
 tE
 tg
+mb
 Oh
-ik
 Kc
-ik
-df
-df
-df
-df
-df
-ik
-Qu
-ik
 Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Qu
+Oh
+mb
 tg
 ik
 ik
@@ -65147,19 +65897,19 @@ CQ
 CQ
 tE
 tg
-bd
-yb
-ik
-ik
-df
-df
-df
-df
-df
-ik
-ik
+Ix
+Nd
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+Oh
+Oh
 uf
-bd
+Ix
 TW
 ik
 ik
@@ -65348,18 +66098,18 @@ Wb
 Py
 tE
 tg
+mb
 Oh
-ik
-ik
-ik
-df
-df
-df
-df
-df
-df
-df
-df
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+nP
+nP
+nP
 pn
 tg
 ik
@@ -65549,18 +66299,18 @@ at
 tE
 at
 tg
+mb
 Oh
-ik
 Qu
-ik
-df
-df
-df
-df
-df
-df
-df
-df
+Oh
+nP
+nP
+nP
+nP
+nP
+nP
+nP
+nP
 pn
 tg
 ik
@@ -65750,18 +66500,18 @@ ZZ
 ni
 tE
 tg
-bd
-ik
+Ix
+Oh
 Qu
-ik
-df
-df
-df
-df
-df
-df
-df
-df
+Oh
+nP
+nP
+nP
+nP
+nP
+nP
+nP
+nP
 pn
 tg
 ik
@@ -65951,18 +66701,18 @@ at
 tE
 at
 tg
+mb
 Oh
-ik
-ik
-ik
-df
-df
-df
-df
-df
-df
-df
-df
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+nP
+nP
+nP
 pn
 tg
 ik
@@ -66152,18 +66902,18 @@ Fh
 Er
 tE
 tg
+mb
 Oh
-ik
-ik
-ik
-df
-df
-df
-df
-df
-df
-df
-df
+Oh
+Oh
+nP
+nP
+nP
+nP
+nP
+nP
+nP
+nP
 pn
 tg
 ik
@@ -66353,19 +67103,19 @@ CQ
 CQ
 tE
 tg
-bd
-yb
+Ix
+Nd
 Qu
-ik
-ik
-ik
-ik
-ik
-ik
-ik
-ik
-Xt
-bd
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
+Oh
+ot
+Ix
 eu
 ik
 ik
@@ -66554,18 +67304,18 @@ WE
 DF
 tE
 tg
+mb
 Oh
-ik
 Qu
-ik
-ik
-ik
+Oh
+Oh
+Oh
 Qu
-ik
-ik
-ik
+Oh
+Oh
+Oh
 Qu
-ik
+Oh
 AB
 tg
 ik
@@ -66755,19 +67505,19 @@ ML
 pT
 tE
 tg
+mb
+Nd
 Oh
-yb
-ik
-ik
-ik
-ik
+Oh
+Oh
+Oh
 SH
-ik
-ik
-ik
-ik
-Xt
 Oh
+Oh
+Oh
+Oh
+ot
+mb
 tg
 ik
 ik
@@ -66956,19 +67706,19 @@ FN
 tE
 at
 tg
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
-Oh
-Oh
-bd
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
+mb
+mb
+Ix
 tg
 ik
 ik
@@ -69261,7 +70011,7 @@ DA
 pu
 pu
 Bo
-tg
+iI
 tg
 tg
 tg
@@ -76639,7 +77389,7 @@ tg
 tg
 tg
 tg
-tg
+Em
 bH
 ik
 ik
@@ -76647,7 +77397,7 @@ ik
 ik
 ik
 tg
-tg
+Em
 tg
 tg
 tg
@@ -77252,7 +78002,7 @@ ik
 rG
 ik
 ik
-CZ
+tC
 ik
 AY
 CZ
@@ -77444,7 +78194,7 @@ CZ
 ik
 ik
 CZ
-yR
+Jp
 ik
 ik
 ik
@@ -77635,17 +78385,17 @@ iW
 gR
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
-yR
+tC
+Jp
 ik
 ik
 ik
@@ -77657,10 +78407,10 @@ ik
 CZ
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 ik
 qm
@@ -77846,7 +78596,7 @@ CZ
 ik
 ik
 CZ
-yR
+Jp
 ik
 ik
 ik
@@ -79052,7 +79802,7 @@ CZ
 ik
 ik
 CZ
-yR
+Jp
 Fv
 Fv
 Fv
@@ -79243,17 +79993,17 @@ iW
 gR
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 qs
-CZ
-yR
+tC
+Jp
 Fv
 Fv
 Fv
@@ -79262,13 +80012,13 @@ Fv
 rG
 ik
 if
-CZ
+tC
 ik
 qs
-CZ
+tC
 ik
 ik
-CZ
+tC
 ik
 ik
 qm
@@ -79454,7 +80204,7 @@ CZ
 ik
 ik
 CZ
-yR
+Jp
 Fv
 Fv
 Fv
@@ -87377,7 +88127,7 @@ tg
 tg
 tg
 tg
-tg
+iO
 tg
 tg
 tg
@@ -101730,19 +102480,19 @@ Hi
 Hi
 uK
 JR
-hl
-jW
-jW
-hl
-jW
-jW
-hl
-jW
-jW
-hl
-jW
-jW
-hl
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
 JR
 JR
 JR
@@ -101931,19 +102681,19 @@ gN
 tI
 Hi
 JR
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
-SF
+Fx
+KU
+Cc
+Cc
+Cc
+Cc
+Fx
+iD
 VK
 VK
 za
-Oc
-jW
+Dx
+Fx
 JR
 JR
 JR
@@ -102133,17 +102883,17 @@ cC
 dq
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Cc
+Cc
+Cc
+Cc
+Cc
+Fx
 ZU
 zN
 xW
 zF
-Oc
+Cc
 sb
 JR
 JR
@@ -102334,17 +103084,17 @@ RM
 Hi
 JR
 sb
-Oc
-Oc
+Cc
+Cc
 QI
-Oc
-Oc
-jW
+Cc
+Cc
+Fx
 xW
 zF
 QI
-Oc
-Oc
+Cc
+Cc
 sb
 JR
 JR
@@ -102534,19 +103284,19 @@ Hi
 Hi
 uK
 JR
-hl
-Oc
-Oc
+Wy
+KU
+Cc
 QI
-Oc
-Oc
-jW
-Oc
-Oc
+Cc
+Cc
+Fx
+Cc
+Cc
 QI
-Oc
-Oc
-jW
+Cc
+Dx
+Fx
 JR
 JR
 JR
@@ -102736,17 +103486,17 @@ JV
 Hi
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Cc
+vX
+Cc
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -102937,17 +103687,17 @@ Za
 dq
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Cc
+Fx
+Cc
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -103137,19 +103887,19 @@ aX
 mN
 Hi
 JR
-hl
-jW
-hl
-Oc
-hl
-jW
-hl
-jW
-hl
-Oc
-hl
-jW
-hl
+Wy
+Fx
+Wy
+vX
+Wy
+Fx
+Wy
+Fx
+Wy
+vX
+Wy
+Fx
+Wy
 JR
 JR
 JR
@@ -103340,16 +104090,16 @@ uK
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -103541,16 +104291,16 @@ Hi
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -103740,19 +104490,19 @@ gN
 Yf
 dq
 JR
-hl
-IA
-Oc
+Wy
+px
+Cc
 QI
-Oc
-Ej
-hl
+Cc
+XE
+Wy
 WM
-Oc
+Cc
 QI
-Oc
-Ej
-hl
+Cc
+Yb
+Wy
 JR
 JR
 JR
@@ -103943,16 +104693,16 @@ Hi
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -104144,16 +104894,16 @@ uK
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -104343,19 +105093,19 @@ JR
 JR
 JR
 JR
-hl
-IA
-Oc
+Wy
+px
+Cc
 QI
-Oc
-Ej
-hl
+Cc
+XE
+Wy
 WM
-Oc
+Cc
 QI
-Oc
-Ej
-hl
+Cc
+Yb
+Wy
 JR
 JR
 JR
@@ -104546,16 +105296,16 @@ uK
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -104747,16 +105497,16 @@ Hi
 JR
 sb
 IA
-Oc
-Oc
-Oc
-Ej
-jW
+Cc
+Cc
+Cc
+XE
+Fx
 WM
-Oc
-Oc
-Oc
-Ej
+Cc
+Cc
+Cc
+XE
 sb
 JR
 JR
@@ -104946,19 +105696,19 @@ gN
 cC
 dq
 JR
-hl
-jW
-jW
-Oc
-jW
-jW
-hl
-jW
-hl
-Oc
-hl
-jW
-hl
+Wy
+Fx
+Fx
+vX
+Fx
+Fx
+Wy
+Fx
+Wy
+vX
+Wy
+Fx
+Wy
 JR
 JR
 JR
@@ -105148,17 +105898,17 @@ RM
 Hi
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Dh
+Fx
+Dh
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -105349,17 +106099,17 @@ Hi
 uK
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+jq
+bx
+Ey
+Cc
+Wy
+Cc
+ct
+LN
+LN
+Rp
 sb
 JR
 JR
@@ -105549,19 +106299,19 @@ zn
 JV
 Hi
 JR
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+KU
+bN
+lH
+tO
+Cc
+vX
+Cc
+ct
+LN
+LN
+Pj
+Wy
 JR
 JR
 JR
@@ -105751,17 +106501,17 @@ Za
 dq
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+NA
+TV
+sj
+Cc
+Wy
+Cc
+ct
+LN
+LN
+Rp
 sb
 JR
 JR
@@ -105952,17 +106702,17 @@ mN
 Hi
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Dh
+Fx
+Dh
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -106152,19 +106902,19 @@ Hi
 Hi
 uK
 JR
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+Fx
+Wy
+vX
+Wy
+Fx
+Wy
+Fx
+Wy
+vX
+Wy
+Fx
+Wy
 JR
 JR
 JR
@@ -106354,17 +107104,17 @@ tI
 Hi
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Cc
+Wy
+Cc
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -106555,17 +107305,17 @@ Yf
 dq
 JR
 sb
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
+Cc
+Cc
+vX
+Cc
+Cc
+Cc
+Cc
+Cc
 sb
 JR
 JR
@@ -106755,19 +107505,19 @@ gN
 tI
 Hi
 JR
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+KU
+Cc
+Cc
+Cc
+Cc
+Wy
+Cc
+Cc
+Cc
+Cc
+Dx
+Fx
 JR
 JR
 JR
@@ -106956,19 +107706,19 @@ Hi
 Hi
 uK
 JR
-hl
-jW
-jW
-hl
-jW
-jW
-hl
-jW
-jW
-hl
-jW
-jW
-hl
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
+Fx
+Fx
+Wy
 JR
 JR
 JR
@@ -117091,19 +117841,19 @@ JR
 JR
 JR
 bY
-hl
-jW
-jW
-jW
-hl
-jW
-jW
-jW
-hl
-jW
-jW
-jW
-hl
+Wy
+Fx
+Fx
+Fx
+Wy
+Fx
+Fx
+Fx
+Wy
+Fx
+Fx
+Fx
+Wy
 bY
 JR
 JR
@@ -117292,19 +118042,19 @@ JR
 JR
 JR
 bY
+Fx
 jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
 jW
+jW
+Fx
+ZJ
+Cc
+Cc
+Cc
+Cc
+Cc
+Dx
+Fx
 bY
 JR
 JR
@@ -117493,19 +118243,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+Ej
+Dg
+Dg
+JG
+Cc
+Cc
+Cc
+UB
+Cc
+UL
+Cc
+Fx
 bY
 JR
 JR
@@ -117694,19 +118444,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+xN
+Dg
+Gr
+Fx
+Cc
+Cc
+Cc
+UB
+Cc
+UL
+Cc
+Fx
 bY
 JR
 JR
@@ -117895,19 +118645,19 @@ JR
 JR
 JR
 bY
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+xN
+Dg
+AZ
+Fx
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Wy
 bY
 JR
 JR
@@ -118096,19 +118846,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+BJ
+Dg
+AZ
+Fx
+jf
+AQ
+jf
+Fx
+Cc
+Cc
+Cc
+Fx
 bY
 JR
 JR
@@ -118297,19 +119047,19 @@ JR
 JR
 JR
 bY
+Fx
 jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
 jW
+jW
+Fx
+Ph
+mC
+NF
+Fx
+Cc
+Cc
+Cc
+Fx
 bY
 JR
 JR
@@ -118498,19 +119248,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+Fx
+Wy
+Fx
+Wy
+jf
+Wi
+jf
+Wy
+Cc
+Cc
+Dx
+Fx
 bY
 JR
 JR
@@ -118699,19 +119449,19 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Af
+SF
+dv
+Cc
+Cc
+Wk
+Cc
+Cc
+Cc
+Fx
+Cc
+Cc
+Cc
+ge
 bY
 JR
 JR
@@ -118900,18 +119650,18 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+SF
+Ww
+Cc
+Cc
+HE
+Cc
+Cc
+EH
+Wy
+Cc
+Cc
+Cc
 Af
 bY
 JR
@@ -119101,19 +119851,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+vr
+Cc
+Cc
+HE
+Cc
+Cc
+Cc
+AQ
+Cc
+Cc
+UL
+Fx
 bY
 JR
 JR
@@ -119302,19 +120052,19 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+dv
+Cc
+Cc
+HE
+Cc
+Cc
+BW
+Wy
+UB
+mC
+Ph
+Fx
 bY
 JR
 JR
@@ -119503,19 +120253,19 @@ JR
 JR
 JR
 bY
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+Ww
+Cc
+Cc
+TD
+Cc
+Cc
+ei
+Fx
+LN
+aZ
+LN
+Wy
 bY
 JR
 JR
@@ -119704,19 +120454,19 @@ JR
 JR
 JR
 bY
-hl
-hl
-jW
-jW
-jW
-hl
-jf
-hl
-jW
-jW
-jW
-hl
-hl
+Wy
+Wy
+Fx
+Fx
+Fx
+Wy
+fw
+Wy
+Fx
+Fx
+Fx
+Wy
+Wy
 bY
 JR
 JR
@@ -119906,17 +120656,17 @@ JR
 JR
 bY
 bY
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+Yd
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+sv
+Wy
 bY
 bY
 JR
@@ -120107,17 +120857,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Af
+SF
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+SF
 bY
 JR
 JR
@@ -120308,17 +121058,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Af
+SF
+Cc
+hl
+Cc
+oK
+Xf
+Tk
+Cc
+hl
+Cc
+SF
 bY
 JR
 JR
@@ -120509,17 +121259,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Af
+SF
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+SF
 bY
 JR
 JR
@@ -120710,17 +121460,17 @@ JR
 JR
 JR
 bY
-hl
+Wy
 Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Cc
+Cc
+RS
+RS
+RS
+Cc
+Cc
+Dx
+Wy
 bY
 JR
 JR
@@ -120911,17 +121661,17 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+Ww
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Fx
 bY
 JR
 JR
@@ -121112,17 +121862,17 @@ JR
 JR
 JR
 bY
+Wy
+vr
 hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
+Cc
+jj
+Cc
+jj
+Cc
 hl
+Cc
+Wy
 bY
 JR
 JR
@@ -121313,17 +122063,17 @@ JR
 JR
 JR
 bY
-jW
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-jW
+Fx
+dv
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Fx
 bY
 JR
 JR
@@ -121514,17 +122264,17 @@ JR
 JR
 JR
 bY
-hl
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-hl
+Wy
+qJ
+Cc
+Cc
+RS
+RS
+RS
+Cc
+Cc
+Dx
+Wy
 bY
 JR
 JR
@@ -121715,17 +122465,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Oc
-Af
+SF
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+Cc
+SF
 bY
 JR
 JR
@@ -121916,17 +122666,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
+SF
+Cc
+hl
 Bq
 uV
 uV
 uV
 ae
-Oc
-Oc
-Af
+hl
+Cc
+SF
 bY
 JR
 JR
@@ -122117,17 +122867,17 @@ JR
 JR
 JR
 bY
-Af
-Oc
-Oc
+SF
+Cc
+Cc
 Bq
 rU
 rU
 rU
 ae
-Oc
-Oc
-Af
+Cc
+Cc
+SF
 bY
 JR
 JR
@@ -122318,17 +123068,17 @@ JR
 JR
 bY
 bY
-hl
-Oc
-Oc
-Oc
+Wy
+Yd
+Cc
+Cc
 PA
 PA
 PA
-Oc
-Oc
-Oc
-hl
+Cc
+Cc
+sv
+Wy
 bY
 bY
 JR
@@ -122518,19 +123268,19 @@ oH
 JR
 JR
 bY
-hl
-hl
-jW
-jW
-jW
-hl
-jf
-hl
-jW
-jW
-jW
-hl
-hl
+Wy
+Wy
+Fx
+Fx
+Fx
+Wy
+fw
+Wy
+Fx
+Fx
+Fx
+Wy
+Wy
 bY
 JR
 JR
@@ -122719,19 +123469,19 @@ oH
 JR
 JR
 bY
-hl
+Wy
 DQ
 mt
 Op
 RY
-Oc
+Cc
 dW
-Oc
+Cc
 kO
 Op
 At
 XN
-hl
+Wy
 bY
 JR
 JR
@@ -122920,19 +123670,19 @@ oH
 JR
 JR
 bY
-jW
+Fx
 FR
 jS
 ys
 iQ
-Oc
+Cc
 dW
-Oc
+Cc
 vh
 ys
 qx
 hM
-jW
+Fx
 bY
 JR
 JR
@@ -123121,19 +123871,19 @@ oH
 JR
 JR
 bY
-jW
+Fx
 fL
 jS
 ys
 iQ
-Oc
+Cc
 dW
-Oc
+Cc
 vh
 ys
 qx
 aW
-jW
+Fx
 bY
 JR
 JR
@@ -123322,7 +124072,7 @@ oH
 JR
 JR
 bY
-Af
+SF
 zx
 vp
 TB
@@ -123334,7 +124084,7 @@ vp
 TB
 vp
 zx
-Af
+SF
 bY
 JR
 JR
@@ -123523,7 +124273,7 @@ oH
 JR
 JR
 bY
-Af
+SF
 Ce
 Zt
 OZ
@@ -123535,7 +124285,7 @@ Zt
 OZ
 Zt
 ag
-Af
+SF
 bY
 JR
 JR
@@ -123724,19 +124474,19 @@ oH
 JR
 JR
 bY
-jW
+Fx
 ZB
 jS
 ys
 iQ
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
 vh
 ys
 qx
 xy
-jW
+Fx
 bY
 JR
 JR
@@ -123925,19 +124675,19 @@ oH
 JR
 JR
 bY
-jW
+Fx
 mK
 jS
 ys
 iQ
-Oc
-Oc
-Oc
+Cc
+Cc
+Cc
 vh
 ys
 qx
 hS
-jW
+Fx
 bY
 JR
 JR
@@ -124126,19 +124876,19 @@ oH
 JR
 JR
 bY
-jW
+Fx
 Ht
 jS
 ys
 iQ
-Oc
+Cc
 QI
-Oc
+Cc
 vh
 ys
 qx
 yp
-jW
+Fx
 bY
 JR
 JR
@@ -124327,7 +125077,7 @@ oH
 JR
 JR
 bY
-hl
+Wy
 Bd
 EO
 EO
@@ -124339,7 +125089,7 @@ EO
 EO
 EO
 Al
-hl
+Wy
 bY
 JR
 JR
@@ -124528,7 +125278,7 @@ oH
 JR
 JR
 bY
-jW
+Fx
 iF
 cm
 cm
@@ -124540,7 +125290,7 @@ cm
 cm
 cm
 xg
-jW
+Fx
 bY
 JR
 JR
@@ -124729,7 +125479,7 @@ oH
 JR
 JR
 bY
-jW
+Fx
 pN
 lU
 tN
@@ -124741,7 +125491,7 @@ sP
 tN
 lU
 pQ
-jW
+Fx
 bY
 JR
 JR
@@ -124930,7 +125680,7 @@ oH
 JR
 JR
 bY
-jW
+Fx
 lU
 lU
 lU
@@ -124942,7 +125692,7 @@ lU
 lU
 lU
 lU
-jW
+Fx
 bY
 JR
 JR
@@ -125131,7 +125881,7 @@ JR
 JR
 JR
 bY
-jW
+Fx
 hk
 lU
 lU
@@ -125143,7 +125893,7 @@ PI
 lU
 lU
 vk
-jW
+Fx
 bY
 JR
 JR
@@ -125332,19 +126082,19 @@ JR
 JR
 JR
 bY
-hl
-jW
-jW
-jW
-hl
-jW
-jW
-jW
-hl
-jW
-jW
-jW
-hl
+Wy
+Fx
+Fx
+Fx
+Wy
+Fx
+Fx
+Fx
+Wy
+Fx
+Fx
+Fx
+Wy
 bY
 JR
 JR
