@@ -1,3 +1,6 @@
+// large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+#define MAX_FIELDS 50
+
 /*
  * Paper
  * also scraps of paper
@@ -141,7 +144,7 @@
 	if (in_range(user, src) || isghost(user))
 		show_content(usr)
 	else
-		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
+		to_chat(user, SPAN_NOTICE("You have to go closer if you want to read it."))
 	return
 
 /obj/item/weapon/paper/proc/show_content(var/mob/user, var/forceshow=0)
@@ -212,10 +215,10 @@
 					H.update_body()
 
 /obj/item/weapon/paper/proc/addtofield(var/id, var/text, var/links = FALSE)
-	var/locid = FALSE
+	var/locid = 0
 	var/laststart = TRUE
 	var/textindex = TRUE
-	while (1) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
+	while (locid < MAX_FIELDS) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
 		var/istart = FALSE
 		if (links)
 			istart = findtext(info_links, "<span class=\"paper_field\">", laststart)
@@ -329,8 +332,8 @@
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
 
 //Count the fields
-	var/laststart = TRUE
-	while (1)
+	var/laststart = 1
+	while (fields < MAX_FIELDS)
 		var/i = findtext(t, "<span class=\"paper_field\">", laststart)	//</span>
 		if (i==0)
 			break
@@ -413,7 +416,7 @@
 		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
 
 
-		if (fields > 50)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+		if (fields > MAX_FIELDS)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
 			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			fields = last_fields_value
 			return
@@ -524,7 +527,7 @@
 	info = "For crimes against the crown, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/Court/pirates
-	name = "Ship udgement"
+	name = "Ship Judgement"
 	info = "For crimes against the crew, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/crumpled
