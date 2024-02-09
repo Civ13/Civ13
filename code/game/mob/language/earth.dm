@@ -67,7 +67,7 @@
 	colour = "English"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ENGLISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10)
+	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10,/datum/language/scots = 80,/datum/language/welsh = 80)
 
 /datum/language/french
 	name = "French"
@@ -523,7 +523,7 @@
 	colour = "Welsh"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = WELSH_SYLLABLES
-	mutual_intelligibility = list("")
+	mutual_intelligibility = list(/datum/language/english = 80)
 
 /datum/language/scots
 	name = "Scots"

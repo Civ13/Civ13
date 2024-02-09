@@ -774,8 +774,8 @@
 					default_language = A
 				name = species.get_random_welsh_name(gender)
 				real_name = name
-				add_note("Known Languages", "Welsh","English")
-				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				add_note("Known Languages", "Welsh")
+				possible_h_list = list("Light Brown","Dark brown","Black")
 				possible_e_list = list("Brown","Green")
 				possible_s_list = list(-15,-30)
 
