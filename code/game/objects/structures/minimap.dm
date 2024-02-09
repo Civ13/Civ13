@@ -132,8 +132,9 @@
 /obj/item/weapon/map/update_icon()
 	..()
 	img.overlays.Cut()
-	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72))
-	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72))
+	var/turf/T = get_turf(src)
+	playerloc.pixel_x = min(600,ceil(T.x*2.72))
+	playerloc.pixel_y = min(600,ceil(T.y*2.72))
 	img.overlays += playerloc
 
 /obj/item/weapon/map/attack_self(mob/user)

@@ -887,7 +887,7 @@
 		if (istype(S,/obj/effect/step_trigger))
 			S.Crossed(mob)
 
-	var/area/A = get_area_master(mob)
+	var/area/A = get_area(mob)
 	if (A)
 		A.Entered(mob)
 	if (isturf(mob.loc))
