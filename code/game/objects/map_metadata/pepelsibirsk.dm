@@ -325,3 +325,79 @@
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
 		/obj/item/weapon/plastique/c4 = 80,
 	)
+
+/obj/item/weapon/personal_documents
+	name = "Personal Documents"
+	desc = "The identification papers of a citizen."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = ITEM_SIZE_TINY
+	slot_flags = SLOT_ID | SLOT_POCKET
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/human/owner = null
+	var/document_name = ""
+	var/list/document_details = list()
+	var/list/guardnotes = list()
+	secondary_action = TRUE
+	flags = FALSE
+	New()
+		..()
+		spawn(20)
+			if (ishuman(loc))
+				var/mob/living/human/H = loc
+				document_name = H.real_name
+				owner = H
+				name = "[document_name]'s personal documents"
+				desc = "The identification papers of <b>[document_name]</b>."
+				var/job = "Working"
+				if (istype(H.original_job, /datum/job/civnomad))
+					var/datum/job/civilian/prisoner/P = H.original_job
+					switch(H.nationality)
+						if ("German")
+							job = "Citizen of the German Democratic Republic, expatriated and working [pick("in the Pepelsibirsk research facility","in the Pepelsibirsk hospital", "for the local KGB office", "in the Pepelsibirsk car factory")]."
+						if ("Ukrainian")
+							job = "Internal migrant from the Ukrainian SSR, working [pick("for the KGB","for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya")]."
+						if ("Polish")
+							job = "Citizen of the Polish Socialist Republic, expatriated and working in [pick("the Pepelsibirsk mine","the Pepelsibirsk car factory", "the collective farm in Pepelsibirsk", "the Pepelsibirsk power plant")]."
+						if ("Russian")
+							job = "Pepelsibirsk local, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya", "for the Soviet Armed Forces", "for the local Militsiya").]"
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, job, H.gender, client.prefs.age, ,P.original_eyes)
+
+/obj/item/weapon/personal_documents/examine(mob/user)
+	user << "<span class='info'>*---------*</span>"
+	..(user)
+	if (document_details.len >= 9)
+		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
+		if (document_details[6] == "male")
+			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
+		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
+		user << "<b><span class='info'>Employment and Citizenship Status:</b> [document_details[5]]</span>"
+		user << "<b><span class='info'>Age:</b> [document_details[7]] years</span>"
+	user << "<span class='info'>*---------*</span>"
+	if (guardnotes.len)
+		for(var/i in guardnotes)
+			user << "NOTE: [i]"
+	user << "<span class='info'>*---------*</span>"
+
+/obj/item/weapon/personal_documents/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (!ishuman(H))
+		return
+	if ((istype (istype(I, /obj/item/weapon/pen))))
+		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Personal Documents", "No", list("No","Yes"))
+		if (confirm == "No")
+			return
+		else
+			var/texttoadd = input(H, "What do you want to write? Up to 150 characters", "Notes", "") as text
+			texttoadd = sanitize(texttoadd, 150, FALSE)
+			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
+			guardnotes += texttoadd
+			return
+
+/obj/item/weapon/personal_documents/secondary_attack_self(mob/living/human/user)
+	showoff(user)
+	return
