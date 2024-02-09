@@ -245,7 +245,7 @@
 	name = "PRC Trader"
 	desc = "现在我有冰淇淋我很喜欢冰淇淋."
 	icon = 'icons/mob/npcs.dmi'
-	icon_state = "waltuh"
+	icon_state = "chinese_trader"
 	products = list(
 		//Weapons
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 5,
@@ -253,33 +253,33 @@
 		/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese = 5,
 
 		//Clothing
-		/obj/item/clothing/suit/storage/coat/chinese/officer = 10,
-		/obj/item/clothing/suit/storage/coat/chinese = 10,
+		/obj/item/clothing/suit/storage/coat/chinese/officer = 5,
+		/obj/item/clothing/suit/storage/coat/chinese = 80,
 		/obj/item/clothing/under/chinaguard = 80,
 		/obj/item/clothing/head/chinaguardcap = 80,
 		/obj/item/clothing/head/chinese_ushanka = 80,
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 80,
 	)
 	prices = list(
-		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
-		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
-		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 200,
-		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
-		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 150,
+		//Weapons
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 50,
+		/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese = 30,
+		/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese = 30,
 
-
-		/obj/item/ammo_magazine/m16 = 20,
-		/obj/item/ammo_magazine/m14 = 30,
-		/obj/item/ammo_casing/rocket/bazooka = 60,
-		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
-		/obj/item/weapon/plastique/c4 = 80,
+		//Clothing
+		/obj/item/clothing/suit/storage/coat/chinese/officer = 30,
+		/obj/item/clothing/suit/storage/coat/chinese = 25,
+		/obj/item/clothing/under/chinaguard = 25,
+		/obj/item/clothing/head/chinaguardcap = 15,
+		/obj/item/clothing/head/chinese_ushanka = 15,
+		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 35,
 	)
 
 /obj/structure/vending/sales/soviet_trader //not done/placeholder
 	name = "Soviet Trader"
 	desc = "Вы неправильно используете это программное обеспечение для перевода. Пожалуйста, проконсультируйтесь с руководством по программному обеспечению.."
 	icon = 'icons/mob/npcs.dmi'
-	icon_state = "slaver1"
+	icon_state = "soviet_trader"
 	products = list(
 		//Weapons
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 5,

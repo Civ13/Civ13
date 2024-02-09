@@ -6484,6 +6484,10 @@
 /obj/roof/clay/black,
 /turf/floor/wood,
 /area/caribbean)
+"qI" = (
+/obj/structure/vending/sales/pacific_trader,
+/turf/floor/plating/road,
+/area/caribbean)
 "qJ" = (
 /obj/covers/wood,
 /obj/structure/lamp/lamp_big{
@@ -10808,6 +10812,12 @@
 /obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean)
+"Be" = (
+/obj/map_metadata/pepelsibirsk,
+/turf/wall/indestructable/black{
+	layer = 6
+	},
+/area/caribbean/admin)
 "Bf" = (
 /obj/structure/window/barrier/railing/stone{
 	dir = 8;
@@ -13413,6 +13423,10 @@
 	},
 /obj/roof/concrete,
 /turf/floor/plating/steel,
+/area/caribbean)
+"HH" = (
+/obj/structure/vending/sales/soviet_trader,
+/turf/floor/plating/road,
 /area/caribbean)
 "HI" = (
 /obj/structure/window/barrier/railing/brick{
@@ -19153,6 +19167,10 @@
 /obj/roof,
 /turf/floor/broken_floor,
 /area/caribbean)
+"Wf" = (
+/obj/structure/vending/sales/chinese_trader,
+/turf/floor/plating/road,
+/area/caribbean)
 "Wg" = (
 /obj/structure/closet/anchored,
 /obj/item/clothing/glasses/pilot,
@@ -20892,7 +20910,7 @@ Ld
 yF
 yF
 xE
-xE
+Be
 "}
 (2,1,1) = {"
 Ld
@@ -77995,7 +78013,7 @@ FK
 CZ
 yR
 ik
-ik
+Wf
 ik
 ik
 ik
@@ -78196,7 +78214,7 @@ ik
 CZ
 Jp
 ik
-ik
+HH
 ik
 ik
 ik
@@ -78397,7 +78415,7 @@ ik
 tC
 Jp
 ik
-ik
+qI
 ik
 ik
 ik
