@@ -47,6 +47,9 @@
 #define FILIPINO "FILIPINO"
 #define POLISH "POLISH"
 #define MONGOLIAN "MONGOLIAN"
+#define SCOTS "SCOTS"
+#define SCOTTISHGAELIC "SCOTTISHGAELIC"
+#define WELSH "WELSH"
 
 /proc/faction_const2name(constant,age = 0)
 

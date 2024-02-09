@@ -617,6 +617,27 @@
 		else
 			return capitalize(pick(first_names_male_afrikaans)) + " " + capitalize(pick(last_names_afrikaans))
 
+/datum/species/proc/get_random_scots_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_scots)) + " " + capitalize(pick(last_names_scots))
+		else
+			return capitalize(pick(first_names_male_scots)) + " " + capitalize(pick(last_names_scots))
+
+/datum/species/proc/get_random_welsh_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_welsh)) + " " + capitalize(pick(last_names_welsh))
+		else
+			return capitalize(pick(first_names_male_welsh)) + " " + capitalize(pick(last_names_welsh))
+
+/datum/species/proc/get_random_scottishgaelic_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
+		else
+			return capitalize(pick(first_names_male_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
+
 /datum/species/proc/create_organs(var/mob/living/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

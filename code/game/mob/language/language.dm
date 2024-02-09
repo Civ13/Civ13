@@ -384,7 +384,37 @@
 	var/full_name = "Tyrone Jenkins"
 	return full_name
 
+/datum/language/proc/get_random_scottishgaelic_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
+		else
+			return capitalize(pick(first_names_male_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
 
+	var/full_name = "Ruariadh Stuibhart"
+	return full_name
+
+
+/datum/language/proc/random_welsh_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_welsh)) + " " + capitalize(pick(last_names_welsh))
+		else
+			return capitalize(pick(first_names_male_welsh)) + " " + capitalize(pick(last_names_welsh))
+
+	var/full_name = "Rhys Griffiths"
+	return full_name
+
+
+/datum/language/proc/random_scots_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_scots)) + " " + capitalize(pick(last_names_scots))
+		else
+			return capitalize(pick(first_names_male_scots)) + " " + capitalize(pick(last_names_scots))
+
+	var/full_name = "David Stewart"
+	return full_name
 
 /datum/language
 	var/list/scramble_cache = list()
@@ -723,6 +753,30 @@
 				var/mob/living/human/H = src
 				if (H.species && H.client)
 					H.real_name = H.species.get_random_mongolian_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/scottishgaelic))
+			if (ishuman(src))
+				var/mob/living/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_scottishgaelic_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/scots))
+			if (ishuman(src))
+				var/mob/living/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_scots_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/welsh))
+			if (ishuman(src))
+				var/mob/living/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_welsh_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 

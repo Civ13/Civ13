@@ -721,6 +721,94 @@
 		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
+
+	else if (map.ID == MAP_NOMADS_UK)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/area/mob_area = get_area(src)
+		switch (mob_area.climate)
+			if ("temperate")
+				for (var/datum/language/english/A in languages)
+					default_language = A
+				name = species.get_random_english_name(gender)
+				real_name = name
+				add_note("Known Languages", "English")
+				possible_h_list = list("Light Brown","Dark brown","Black", "Blond")
+				possible_e_list = list("Brown","Green","Blue")
+				possible_s_list = list(-15,-30)
+
+			if ("savanna")
+				add_language("Gaelic",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/gaelic/A in languages)
+					default_language = A
+				name = species.get_random_gaelic_name(gender)
+				real_name = name
+				add_note("Known Languages", "Gaelic")
+				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				possible_e_list = list("Brown","Green", "Blue")
+				possible_s_list = list(-15,-30)
+
+			if ("taiga")
+				add_language("Scottish Gaelic",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/scottishgaelic/A in languages)
+					default_language = A
+				name = species.get_random_scottishgaelic_name(gender)
+				real_name = name
+				add_note("Known Languages", "Scottish gaelic")
+				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				possible_e_list = list("Brown","Green", "Blue")
+				possible_s_list = list(-15,-30)
+
+			if ("sea")
+				add_language("Welsh",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/welsh/A in languages)	
+					default_language = A
+				name = species.get_random_welsh_name(gender)
+				real_name = name
+				add_note("Known Languages", "Welsh","English")
+				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				possible_e_list = list("Brown","Green")
+				possible_s_list = list(-15,-30)
+
+			if ("semiarid")
+				add_language("Scots",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/scots/A in languages)                          
+					default_language = A
+				name = species.get_random_scots_name(gender)
+				real_name = name
+				add_note("Known Languages","Scots")
+				possible_h_list = list("Orange","Light Brown","Red","Brown")
+				possible_e_list = list("Brown","Green")
+				possible_s_list = list(-15,-30)
+
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
+
+
 	else if (map.ID == MAP_NOMADS_MEDITERRANEAN)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"

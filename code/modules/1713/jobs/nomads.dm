@@ -846,6 +846,58 @@
 								real_name = input_name
 								return
 //////////////////////////////////////////////////////
+////////////////////////Nomads_UK/////////////////////
+//////////////////////////////////////////////////////
+		else if (map.ID == MAP_NOMADS_UK)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("temperate")
+						add_language("English",TRUE)
+						remove_language("")
+						for (var/datum/language/english/A in languages)
+							default_language = A
+						name = species.get_random_english_name(gender)
+						real_name = name
+						add_note("Known Languages", "English")
+						return
+					if ("taiga")
+						add_language("Scottish Gaelic",TRUE)
+						remove_language("English")
+						for (var/datum/language/scottishgaelic/A in languages)
+							default_language = A
+						name = species.get_random_scottishgaelic_name(gender)
+						real_name = name
+						add_note("Known Languages", "Scottish gaelic")
+						return
+					if ("savanna")
+						add_language("Gaelic",TRUE)
+						remove_language("English")
+						for (var/datum/language/gaelic/A in languages)
+							default_language = A
+						name = species.get_random_gaelic_name(gender)
+						real_name = name
+						add_note("Known Languages", "Gaelic")
+						return
+					if ("sea")
+						add_language("Welsh",TRUE)
+						remove_language("English")
+						for (var/datum/language/welsh/A in languages)
+							default_language = A
+						name = species.get_random_welsh_name(gender)
+						real_name = name
+						add_note("Known Languages", "Welsh")
+						return
+					if ("semiarid")
+						add_language("Scots",TRUE)
+						remove_language("English")
+						for (var/datum/language/scots/A in languages)
+							default_language = A
+						name = species.get_random_scots_name(gender)
+						real_name = name
+						add_note("Known Languages", "Scots")
+						return
+//////////////////////////////////////////////////////
 ////////////////////////Nomads_Asia///////////////////
 //////////////////////////////////////////////////////
 		else if (map.ID == MAP_NOMADS_ASIA)
