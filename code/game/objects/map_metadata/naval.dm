@@ -45,6 +45,8 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
 		. = FALSE
+	else if (J.is_twotribes)
+		. = FALSE
 	else
 		. = TRUE
 
