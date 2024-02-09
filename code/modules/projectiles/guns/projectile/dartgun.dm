@@ -78,9 +78,9 @@
 	var/dart_reagent_amount = 10
 	var/container_type = /obj/item/weapon/reagent_containers
 	var/list/starting_chems = null
-	move_delay=2
-	fire_delay=6
-	burst=1
+	move_delay = 2
+	fire_delay = 6
+	burst = 1
 	max_shells = 1
 	muzzle_flash = FALSE
 

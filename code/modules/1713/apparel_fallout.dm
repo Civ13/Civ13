@@ -50,10 +50,10 @@
 				return
 			else
 				flags_inv = HIDEFACE
-				worn_state = "ncr_fatigues_maskup_rolled"
-				item_state = "ncr_fatigues_maskup_rolled"
-				icon_state = "ncr_fatigues_maskup_rolled"
-				item_state_slots["w_uniform"] = "ncr_fatigues_maskup_rolled"
+				worn_state = "ncr_fatigues_rolled_maskup"
+				item_state = "ncr_fatigues_rolled_maskup"
+				icon_state = "ncr_fatigues_rolled_maskup"
+				item_state_slots["w_uniform"] = "ncr_fatigues_rolled_maskup"
 				usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 				rolled = TRUE
 				cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -179,6 +179,7 @@
 /obj/item/clothing/head/helmet/fallout/ncr/goggles/down/New()
 	..()
 	update_clothing_icon()
+	update_icon()
 
 /obj/item/weapon/storage/belt/fallout/ncr
 	name = "NCR Trooper belt"
@@ -212,3 +213,49 @@
 		new /obj/item/ammo_magazine/service_rifle(src)
 	new /obj/item/weapon/attachment/bayonet(src)
 	new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us(src)
+
+/obj/item/clothing/head/fallout/ncr
+	name = "NCR Officer Beret"
+	desc = "A green camo beret with a capbadge of the NCR's 2 headed bear."
+	icon_state = "ncr_beret"
+	item_state = "ncr_beret"
+	worn_state = "ncr_beret"
+
+/obj/item/clothing/head/fallout/ncr/recon
+	name = "NCR 1st Recon Beret"
+	desc = "A red beret with a capbadge of the NCR's 1st Recon."
+	icon_state = "ncr_beret_recon"
+	item_state = "ncr_beret_recon"
+	worn_state = "ncr_beret_recon"
+
+
+
+////////////////////////////////////////LEGION/////////////////////////////////////////////////
+/obj/item/clothing/under/fallout/legionaire
+	name = "Legionaire Armor"
+	desc = "A red T-shirt and dark skirt with leather armor overtop. Commonly worn by Caesar's Legion."
+	icon_state = "legionaire"
+	item_state = "legionaire"
+	worn_state = "legionaire"
+	armor = list(melee = 35, arrow = 33, gun = 8, energy = 15, bomb = 35, bio = 20, rad = FALSE)
+
+/obj/item/clothing/shoes/heavyboots/wrappedboots/legion
+	name = "Legionaire armored boots"
+	desc = "Black boots with armored plating attached."
+	icon_state = "legion_boots"
+	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 25, bomb = 10, bio = 10, rad = 40)
+
+/obj/item/clothing/gloves/fingerless/legionaire
+	name = "legionaire hand wraps"
+	icon_state = "legion_handwraps"
+	item_state = "legion_handwraps"
+
+/obj/item/clothing/head/helmet/fallout/legionaire
+	name = "Legionaire Cap"
+	desc = "A rather thin leather cap with ear protection."
+	icon_state = "legionaire"
+	item_state = "legionaire"
+	worn_state = "legionaire"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 10, arrow = 2, gun = 0, energy = 15, bomb = 10, bio = 20, rad = FALSE)

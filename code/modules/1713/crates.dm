@@ -243,7 +243,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 	opened = FALSE
 	return TRUE
 
-/obj/structure/closet/crate/open() // Shitcode workaround
+/obj/structure/closet/crate/sandbags/open() // Shitcode workaround
 	if (opened)
 		return FALSE
 	if (!can_open())

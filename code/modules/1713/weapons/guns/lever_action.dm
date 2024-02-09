@@ -263,3 +263,17 @@
 	value = 150
 	blackpowder = TRUE
 	load_delay = 3.5
+
+/obj/item/weapon/gun/projectile/leveraction/cowboy_repeater
+	name = "Cowboy Repeater"
+	desc = "A lever-action rifle with a 7-round tube, chambered in .357 Magnum rounds."
+	force = 9
+	icon_state = "cowboy_repeater"
+	caliber = "a357"
+	max_shells = 14
+	weight = 5.0
+	effectiveness_mod = 0.96
+	ammo_type = /obj/item/ammo_casing/a357
+	value = 150
+	blackpowder = TRUE
+	load_delay = 4

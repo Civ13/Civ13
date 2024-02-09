@@ -24,6 +24,7 @@
 	var/incendiary = FALSE
 	var/nuclear = FALSE
 	var/reagent_payload = "none"
+	var/minrange = 5
 	var/maxrange = 50
 
 	var/firedelay = 20
@@ -181,6 +182,15 @@
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
+	switch(dir)
+		if (NORTH)
+			degree = 90
+		if (SOUTH)
+			degree = 270
+		if (WEST)
+			degree = 180
+		if (EAST)
+			degree = 0
 
 
 /obj/structure/cannon/Destroy()
@@ -382,22 +392,22 @@
 					return
 
 	if (href_list["set_distance"])
-		distance = input(user, "Set Distance? (From [5] to [maxrange] meters)") as num
-		distance = clamp(distance, 5, max_distance)
+		distance = input(user, "Set Distance? (From [minrange] to [maxrange] meters)") as num
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["distance_1minus"])
-		distance = distance - 1
-		distance = clamp(distance, 5, max_distance)
+		distance -= 1
+		distance = clamp(distance, minrange, max_distance)
 	if (href_list["distance_10minus"])
-		distance = distance - 10
-		distance = clamp(distance, 5, max_distance)
+		distance -= 10
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["distance_1plus"])
-		distance = distance + 1
-		distance = clamp(distance, 5, max_distance)
+		distance += 1
+		distance = clamp(distance, minrange, max_distance)
 	if (href_list["distance_10plus"])
-		distance = distance + 10
-		distance = clamp(distance, 5, max_distance)
+		distance += 10
+		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["set_degree"])
 		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
@@ -907,7 +917,7 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
+		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
 		Increase/Decrease <b>azimuth</b>: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
 		Scope: [has_scope ? ("<a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a>") : "This weapon has no scope" ] <br><br>
 		<br>
@@ -937,13 +947,13 @@
 
 /obj/structure/cannon/proc/rotate_to(var/new_dir)
 	if (new_dir == NORTH)
-		degree = 0
-	else if (new_dir == WEST)
 		degree = 90
-	else if (new_dir == SOUTH)
+	else if (new_dir == WEST)
 		degree = 180
-	else
+	else if (new_dir == SOUTH)
 		degree = 270
+	else
+		degree = 0
 	dir = new_dir
 	target_coords()
 	update_scope()
@@ -973,7 +983,7 @@
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
 	set name = "Rotate Left"
-	set src in range(2, usr)
+	set src in range(1, usr)
 
 	if (!istype(usr, /mob/living))
 		return
@@ -985,7 +995,7 @@
 		switch(dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -993,7 +1003,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1001,7 +1011,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1009,7 +1019,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1033,7 +1043,7 @@
 		switch (dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1050,7 +1060,7 @@
 						src.y += 3
 			if (WEST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1067,7 +1077,7 @@
 						src.y -= 3
 			if (NORTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1084,7 +1094,7 @@
 						src.y -= 1
 			if (SOUTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1115,6 +1125,9 @@
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
 
+	for (var/obj/structure/vehicleparts/frame/F in loc)
+		F.update_icon()
+
 	target_coords()
 	update_scope()
 	return
@@ -1122,7 +1135,7 @@
 /obj/structure/cannon/verb/rotate_right()
 	set category = null
 	set name = "Rotate Right"
-	set src in range(2, usr)
+	set src in range(1, usr)
 
 	if (!istype(usr, /mob/living))
 		return
@@ -1134,7 +1147,7 @@
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1142,7 +1155,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1150,7 +1163,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1158,7 +1171,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1182,7 +1195,7 @@
 		switch (dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
+				degree = 270
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1199,7 +1212,7 @@
 						src.y -= 1
 			if (WEST)
 				dir = NORTH
-				degree = 0
+				degree = 90
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1216,7 +1229,7 @@
 						src.y += 1
 			if (NORTH)
 				dir = EAST
-				degree = 90
+				degree = 0
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1233,7 +1246,7 @@
 						src.y -= 3
 			if (SOUTH)
 				dir = WEST
-				degree = 270
+				degree = 180
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")

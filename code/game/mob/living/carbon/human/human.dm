@@ -1074,7 +1074,7 @@ var/list/coefflist = list()
 		reagents.add_reagent("adrenaline", amount)
 
 /mob/living/human/proc/using_look() //May not be nessecary
-	if(using_MG)
+	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		return TRUE
 	if(stat == CONSCIOUS)
 		if (client && actions.len)
@@ -1135,8 +1135,8 @@ var/list/coefflist = list()
 	var/obj/item/weapon/attachment/scope/adjustable/W = null
 	var/obj/item/weapon/gun/G = null
 	var/obj/item/weapon/gun/projectile/automatic/stationary/S = null
-	if(user.using_MG)
-		S = user.using_MG
+	if(user.using_object && istype(user.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		S = user.using_object
 		look_amount = S.zoom_amount
 	else if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
 		W = get_active_hand()
@@ -1296,10 +1296,10 @@ var/list/coefflist = list()
 			if(src.looking && m_intent=="run")
 				shake_camera(src, 2, rand(1,3))
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
-		if (M.last_user == src && loc != get_turf(M))
-			M.stopped_using(src)
-			M.last_user = null
+	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
+		if (HMG.used_by_mob == src && loc != get_turf(HMG))
+			HMG.stopped_using(src)
+			HMG.used_by_mob = null
 // reset all zooms - called from Life(), Weaken(), ghosting and more
 
 /mob/living/human/proc/handle_look_stuff(var/forced = FALSE)
@@ -1312,8 +1312,8 @@ var/list/coefflist = list()
 					H.look_into_distance(src, FALSE)
 					return
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
-		if (M.last_user == src && (loc != get_turf(M) || forced))
-			M.stopped_using(src)
-			M.last_user = null
+	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
+		if (HMG.used_by_mob == src && (loc != get_turf(HMG) || forced))
+			HMG.stopped_using(src)
+			HMG.used_by_mob = null
 			return

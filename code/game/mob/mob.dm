@@ -778,6 +778,9 @@
 
 //Updates canmove, lying and icons. Could perhaps do with a rename but I can't think of anything to describe it.
 /mob/proc/update_canmove()
+	if(cannot_stand() && using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		HMG.stopped_using(src)
 
 	var/gallows = FALSE
 	for (var/obj/structure/noose/N in get_turf(src))

@@ -105,10 +105,17 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/greek
 	name = "Greek M15 Adrian helmet"
-	desc = "A typical Greek Adrian helmet."
+	desc = "A M15 Greek Adrian helmet."
 	icon_state = "adrian_greek"
 	item_state = "adrian_greek"
 	worn_state = "adrian_greek"
+
+/obj/item/clothing/head/helmet/ww/adrian/greekmedic
+	name = "Medic M15 Adrian helmet"
+	desc = "A M15 Greek Adrian helmet, this one for medics"
+	icon_state = "m26_medic"
+	item_state = "m26_medic"
+	worn_state = "m26_medic"
 
 /obj/item/clothing/head/helmet/ww/adrian/soviet
 	name = "Russian M15 Adrian helmet"
@@ -119,7 +126,7 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/medic
 	name = "Medic M15 Adrian helmet"
-	desc = "A Typical M15 Adrian helmet, this one for medics"
+	desc = "A M15 Adrian helmet, this one for medics"
 	icon_state = "m15_adrian_m"
 	item_state = "m15_adrian_m"
 	worn_state = "m15_adrian_m"
@@ -129,14 +136,14 @@
 
 /obj/item/clothing/head/helmet/ww/adrian/m26
 	name = "M26 Adrian helmet"
-	desc = "A Typical M26 Adrian Helmet"
+	desc = "A M26 Adrian Helmet"
 	icon_state = "m26_adrian"
 	item_state = "m26_adrian"
 	worn_state = "m26_adrian"
 
 /obj/item/clothing/head/helmet/ww/adrian/m26medic
 	name = "Medic M26 Adrian helmet"
-	desc = "A Typical M26 Adrian helmet, this one for medics"
+	desc = "A M26 Adrian helmet, this one for medics"
 	icon_state = "m26_medic"
 	item_state = "m26_medic"
 	worn_state = "m26_medic"
@@ -2425,21 +2432,21 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/ww2/us_nco_cap
 	name = "us nco cap"
-	desc = "A cap worn by american NCO's."
+	desc = "A cap worn by American NCO's."
 	icon_state = "usnco_cap"
 	item_state = "usnco_cap"
 	worn_state = "usnco_cap"
 
 /obj/item/clothing/head/ww2/us_sailor_hat
 	name = "us sailor hat"
-	desc = "A hat worn by american sailors."
+	desc = "A hat worn by American sailors."
 	icon_state = "sailor_hat"
 	item_state = "sailor_hat"
 	worn_state = "sailor_hat"
 
 /obj/item/clothing/head/ww2/us_tanker
 	name = "US tanker cap"
-	desc = "A cap worn by american tankers."
+	desc = "A cap worn by American tankers."
 	icon_state = "ustanker"
 	item_state = "ustanker"
 	worn_state = "ustanker"
@@ -2449,7 +2456,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
-	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
+	desc = "A cap and radio headset worn by German tank crewmen of the Wehrmacht."
+	icon_state = "gertanker"
+	item_state = "gertanker"
+	worn_state = "gertanker"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 0, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/ww2/italian_tanker
+	name = "italian tanker headset"
+	desc = "A cap and radio headset worn by Italian tank crewmen."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
@@ -2459,7 +2476,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
-	desc = "A cap worn by soviet tank crewmen."
+	desc = "A cap worn by Soviet tank crewmen."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
@@ -2475,14 +2492,14 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/ww2/ger_officercap
 	name = "german officer cap"
-	desc = "A cap and worn by german officers the Wehrmacht."
+	desc = "A cap and worn by German officers the Wehrmacht."
 	icon_state = "ger_officercap"
 	item_state = "ger_officercap"
 	worn_state = "ger_officercap"
 
 /obj/item/clothing/head/ww2/ger_officercap_tanker
 	name = "german panzer officer cap"
-	desc = "A cap and worn by german officers the tank corps of the Wehrmacht."
+	desc = "A cap and worn by German officers the tank corps of the Wehrmacht."
 	icon_state = "ger_officercap_tanker"
 	item_state = "ger_officercap_tanker"
 	worn_state = "ger_officercap_tanker"
@@ -2709,6 +2726,17 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	icon_state = "m33_helm"
 	item_state = "m33_helm"
 	worn_state = "m33_helm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	weight = 1.2
+	armor = list(melee = 35, arrow = 25, gun = 9, energy = 15, bomb = 35, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/m33_medic
+	name = "M33 Medic Helmet"
+	desc = "The Elmetto Mod. 33 is a steel combat helmet designed in the 1930s in Italy. While not as good as the German Stahlhelm, the M33 was seen as a successful design, since it offered three times the resistance of the Adrian, and was relatively comfortable. This one is for medics"
+	icon_state = "m33_helm_med"
+	item_state = "m33_helm_med"
+	worn_state = "m33_helm_med"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	weight = 1.2

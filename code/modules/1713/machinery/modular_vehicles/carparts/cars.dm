@@ -717,6 +717,10 @@
 	name = "FIAT-SPA CV3"
 	enginesize = 4300
 
+/obj/structure/engine/internal/diesel/premade/m13
+	name = "SPA 8 T M40 11"
+	enginesize = 12500
+
 /obj/structure/engine/internal/diesel/premade/omw22_2
 	name = "OMW 15 liter diesel engine"
 	enginesize = 15000
