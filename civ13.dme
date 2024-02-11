@@ -506,6 +506,7 @@
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_persistence_beta.dm"
 #include "code\game\objects\map_metadata\nomads_stranded.dm"
+#include "code\game\objects\map_metadata\nomads_uk.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
 #include "code\game\objects\map_metadata\oasis.dm"
 #include "code\game\objects\map_metadata\occupation.dm"
@@ -1109,5 +1110,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\WIP\elaia.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE
