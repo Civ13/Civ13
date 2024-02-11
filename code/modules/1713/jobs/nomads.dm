@@ -868,7 +868,7 @@
 							default_language = A
 						name = species.get_random_scottishgaelic_name(gender)
 						real_name = name
-						add_note("Known Languages", "Scottish gaelic")
+						add_note("Known Languages", "Scottish Gaelic")
 						return
 					if ("savanna")
 						add_language("Gaelic",TRUE)
