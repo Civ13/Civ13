@@ -13,16 +13,14 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	var/year = "1975"
-	var/quarter = "Q4"
-	age = "[year] A.D. [quarter]"
+	age = "1975 A.D. Q4 (ROUND SETUP)"
 	ordinal_age = 7
 	civilizations = TRUE
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>Following a limited thermonuclear exchange which saw most central authorities in the northern hemisphere collapse, it appears Pepelsibirsk was left mostly untouched. You must bring the city to prosperity!</b>"
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
@@ -30,17 +28,18 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Cold War"
+	var/real_season = "WINTER"
+	var/quarter = "Q1"
+	var/year = 1976
 
 	//Trader spawnpoint
 	var/trader_spawnpoint = "TraderArrivals"
-	
+
 	// Variables defining starting faction relations
-	var/civ_relations = 50
-	var/mil_relations = 50
 	var/china_relations = 50
 	var/soviet_relations = 50
 	var/pacific_relations = 50
-	
+
 /obj/map_metadata/pepelsibirsk/New()
 	..()
 	for (var/obj/structure/wild/tree/live_tree/TREES)
@@ -145,13 +144,10 @@
 		return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
-	spawn(1)
-		world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
-		world << "<br><font size = 3><span class = 'notice'>Narodnyygorod: <b>[civ_relations]</b></span></font>"
-		world << "<br><font size = 3><span class = 'notice'>Pepelsibirsk 1: <b>[mil_relations]</b></span></font>"
-		world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[china_relations]</b></span></font>"
-		world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[soviet_relations]</b></span></font>"
-		world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pacific_relations]</b></span></font>"
+	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
+	world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[china_relations]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[soviet_relations]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pacific_relations]</b></span></font>"
 
 	spawn(3000)
 		check_relations_msg()
@@ -166,16 +162,15 @@
 		quarter = "Q4"
 	else if (quarter == "Q4")
 		quarter = "Q1"
+		year += 1
 	else
 		world << "Something went wrong with /obj/map_metadata/pepelsibirsk/proc/time_quarters(), please consult an administrator or ping Terrariola on Discord!"
-	spawn(18000)
-		time_quarters()
-		return
 
-/obj/map_metadata/pepelsibirsk/proc/time_years()
-	year += 1
-	spawn(72000)
-		time_years()
+/obj/map_metadata/pepelsibirsk/proc/time_update()
+	age = "[year] A.D. [quarter]"
+	spawn (18000)
+		time_quarters()
+		time_update()
 		return
 
 /obj/structure/vending/sales/pacific_trader
@@ -190,15 +185,15 @@
 		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 5,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 10,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 10
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 10
-		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 10
-		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10
-		/obj/item/weapon/attachment/under/foregrip = 10
-		/obj/item/weapon/attachment/silencer/pistol = 10
-		/obj/item/weapon/attachment/silencer/rifle = 10
-		/obj/item/weapon/attachment/silencer/shotgun = 10
-		/obj/item/weapon/attachment/silencer/smg = 10
+		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 10,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 10,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 10,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
+		/obj/item/weapon/attachment/under/foregrip = 10,
+		/obj/item/weapon/attachment/silencer/pistol = 10,
+		/obj/item/weapon/attachment/silencer/rifle = 10,
+		/obj/item/weapon/attachment/silencer/shotgun = 10,
+		/obj/item/weapon/attachment/silencer/smg = 10,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 80,
@@ -208,20 +203,20 @@
 		/obj/item/weapon/plastique/c4 = 10,
 
 		//Clothing
-		/obj/item/clothing/under/us_uni/us_camo_woodland = 30
-		/obj/item/clothing/accessory/storage/webbing/us_vest = 30
-		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 30
-		/obj/item/clothing/shoes/jackboots/modern = 30
-		/obj/item/clothing/accessory/armor/coldwar/pasgt = 10
-		/obj/item/clothing/head/helmet/modern/pasgt = 10
+		/obj/item/clothing/under/us_uni/us_camo_woodland = 30,
+		/obj/item/clothing/accessory/storage/webbing/us_vest = 30,
+		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 30,
+		/obj/item/clothing/shoes/jackboots/modern = 30,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt = 10,
+		/obj/item/clothing/head/helmet/modern/pasgt = 10,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/burger = 30
-		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 30
-		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 30
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 30
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 1
-		/obj/item/weapon/reagent_containers/food/snacks/applepie = 1
+		/obj/item/weapon/reagent_containers/food/snacks/burger = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 1,
+		/obj/item/weapon/reagent_containers/food/snacks/applepie = 1,
 	)
 	prices = list(
 		//Weapons
@@ -230,15 +225,15 @@
 		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 150,
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 150,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 200,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 100
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 100
-		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 100
-		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 100
-		/obj/item/weapon/attachment/under/foregrip = 100
-		/obj/item/weapon/attachment/silencer/pistol = 100
-		/obj/item/weapon/attachment/silencer/rifle = 100
-		/obj/item/weapon/attachment/silencer/shotgun = 100
-		/obj/item/weapon/attachment/silencer/smg = 100
+		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 100,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 100,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 100,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 100,
+		/obj/item/weapon/attachment/under/foregrip = 100,
+		/obj/item/weapon/attachment/silencer/pistol = 100,
+		/obj/item/weapon/attachment/silencer/rifle = 100,
+		/obj/item/weapon/attachment/silencer/shotgun = 100,
+		/obj/item/weapon/attachment/silencer/smg = 100,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 20,
@@ -248,20 +243,20 @@
 		/obj/item/weapon/plastique/c4 = 100,
 
 		//Clothing
-		/obj/item/clothing/under/us_uni/us_camo_woodland = 20
-		/obj/item/clothing/accessory/storage/webbing/us_vest = 20
-		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 30
-		/obj/item/clothing/shoes/jackboots/modern = 20
-		/obj/item/clothing/accessory/armor/coldwar/pasgt = 100
-		/obj/item/clothing/head/helmet/modern/pasgt = 100
+		/obj/item/clothing/under/us_uni/us_camo_woodland = 20,
+		/obj/item/clothing/accessory/storage/webbing/us_vest = 20,
+		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 30,
+		/obj/item/clothing/shoes/jackboots/modern = 20,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt = 100,
+		/obj/item/clothing/head/helmet/modern/pasgt = 100,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/burger = 5
-		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 5
-		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 5
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 10
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 20
-		/obj/item/weapon/reagent_containers/food/snacks/applepie = 20
+		/obj/item/weapon/reagent_containers/food/snacks/burger = 5,
+		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 5,
+		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 5,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 20,
+		/obj/item/weapon/reagent_containers/food/snacks/applepie = 20,
 	)
 
 /obj/structure/vending/sales/chinese_trader //not done/placeholder
@@ -319,20 +314,20 @@
 		/obj/item/weapon/plastique/russian = 10,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 50
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 50
-		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 8
-		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 8
-		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 8
-		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 1
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 50,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 50,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 8,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 8,
+		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 8,
+		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 1,
 
 		//Medicines
-		/obj/item/weapon/storage/pill_bottle/tramadol = 8
-		/obj/item/weapon/storage/pill_bottle/penicillin = 8
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 8
-		/obj/item/weapon/storage/pill_bottle/citalopram = 8
-		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 8
+		/obj/item/weapon/storage/pill_bottle/tramadol = 8,
+		/obj/item/weapon/storage/pill_bottle/penicillin = 8,
+		/obj/item/weapon/storage/pill_bottle/paracetamol = 8,
+		/obj/item/weapon/storage/pill_bottle/citalopram = 8,
+		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 8,
 	)
 	prices = list(
 		//Weapons
@@ -350,20 +345,20 @@
 		/obj/item/weapon/plastique/russian = 30,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 10
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 10
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 10
-		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 25
-		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 50
-		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 25
-		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 500
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 10,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 25,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 50,
+		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 25,
+		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 500,
 
 		//Medicines
-		/obj/item/weapon/storage/pill_bottle/tramadol = 150
-		/obj/item/weapon/storage/pill_bottle/penicillin = 150
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 150
-		/obj/item/weapon/storage/pill_bottle/citalopram = 150
-		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150
+		/obj/item/weapon/storage/pill_bottle/tramadol = 150,
+		/obj/item/weapon/storage/pill_bottle/penicillin = 150,
+		/obj/item/weapon/storage/pill_bottle/paracetamol = 150,
+		/obj/item/weapon/storage/pill_bottle/citalopram = 150,
+		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150,
 	)
 
 /obj/item/weapon/personal_documents
@@ -395,7 +390,7 @@
 				name = "[document_name]'s personal documents"
 				desc = "The identification papers of <b>[document_name]</b>."
 				var/job = "Working"
-				if (istype(H.original_job, /datum/job/civnomad))
+				if (istype(H.original_job, /datum/job/civilian/civnomad))
 					var/datum/job/civilian/prisoner/P = H.original_job
 					switch(H.nationality)
 						if ("German")
@@ -405,8 +400,8 @@
 						if ("Polish")
 							job = "Citizen of the Polish Socialist Republic, expatriated and working in [pick("the Pepelsibirsk mine","the Pepelsibirsk car factory", "the collective farm in Pepelsibirsk", "the Pepelsibirsk power plant")]."
 						if ("Russian")
-							job = "Pepelsibirsk local, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya", "for the Soviet Armed Forces", "for the local Militsiya").]"
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, job, H.gender, client.prefs.age, ,P.original_eyes)
+							job = "Pepelsibirsk local, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya", "for the Soviet Armed Forces", "for the local Militsiya")]."
+					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, job, H.gender, H.age, ,P.original_eyes)
 
 /obj/item/weapon/personal_documents/examine(mob/user)
 	user << "<span class='info'>*---------*</span>"
@@ -427,7 +422,7 @@
 /obj/item/weapon/personal_documents/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
 		return
-	if ((istype (istype(I, /obj/item/weapon/pen))))
+	if (istype(I, /obj/item/weapon/pen))
 		var/confirm = WWinput(H, "Do you want to add a note to these documents?", "Personal Documents", "No", list("No","Yes"))
 		if (confirm == "No")
 			return
@@ -441,3 +436,207 @@
 /obj/item/weapon/personal_documents/secondary_attack_self(mob/living/human/user)
 	showoff(user)
 	return
+
+/obj/structure/pepelsibirsk_radio
+	name = "If you see this, talk to an admin."
+	desc = "THIS SHOULD NOT EXIST. -Terrariola"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "supply_radio"
+	var/civ_relations = 50
+	var/mil_relations = 50
+
+/obj/structure/pepelsibirsk_radio/supply_radio
+	name = "long range supply radio"
+	desc = "Use this to request supplies to be delivered to the city."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "supply_radio"
+	var/money = 0
+	var/marketval = 0
+	density = TRUE
+	anchored = TRUE
+	var/factionarea = "SupplyRN"
+	var/import_tax_rate = 0
+	var/faction = "civilian"
+	var/faction_treasury = "TreasuryRN"
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/list/civ_catalogue = list( //type (governor/merchant/all), name, path, price
+		list("wood crate", /obj/structure/closet/crate/wood,50),
+		list("iron crate", /obj/structure/closet/crate/iron,50),
+		list("glass crate", /obj/structure/closet/crate/glass,50),
+		list("stone crate", /obj/structure/closet/crate/stone,50),
+		list("vegetables crate", /obj/structure/closet/crate/rations/vegetables,30),
+		list("fruits crate", /obj/structure/closet/crate/rations/fruits,30),
+		list("biscuits crate", /obj/structure/closet/crate/rations/biscuits,30),
+		list("beer crate", /obj/structure/closet/crate/rations/beer,30),
+		list("ale crate", /obj/structure/closet/crate/rations/ale,30),
+		list("cow", /mob/living/simple_animal/cattle/cow,150),
+		list("bull", /mob/living/simple_animal/cattle/bull,150),
+		list("sheep ram", /mob/living/simple_animal/sheep,80),
+		list("sheep ewe", /mob/living/simple_animal/sheep/female,80),
+		list("pig boar", /mob/living/simple_animal/pig_boar,100),
+		list("pig gilt", /mob/living/simple_animal/pig_gilt,100),
+		list("hen", /mob/living/simple_animal/chicken,50),
+		list("rooster", /mob/living/simple_animal/rooster,50),
+		list("horse", /mob/living/simple_animal/horse,200),
+		list("brick crate", /obj/structure/closet/crate/brick,100),
+		list("medical supplies", /obj/item/weapon/storage/firstaid/adv,50)
+	)
+	var/list/mil_catalogue = list(
+		list("gunpowder barrel", /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,25),
+		list("sks crate (5)", /obj/structure/closet/crate/pepelsibirsk/sks,500),
+		list("akm crate (5)", /obj/structure/closet/crate/pepelsibirsk/akm,1000),
+		list("ak-74 crate (5)", /obj/structure/closet/crate/pepelsibirsk/ak74,1200),
+		list("svd crate (2)", /obj/structure/closet/crate/pepelsibirsk/svd,1000),
+		list("mosin-nagant crate (10)", /obj/structure/closet/crate/pepelsibirsk/mosin,500),
+		list("PPSh-41 crate (2)", /obj/structure/closet/crate/pepelsibirsk/ppsh,400),
+		list("makarov crate (5)", /obj/structure/closet/crate/pepelsibirsk/makarov,150),
+		list("surplus red army uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/surplus_ww2,200),
+		list("afghanka uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/sov_uniforms,250),
+		list("frag grenade crate (12)", /obj/structure/closet/crate/pepelsibirsk/rgd5,800),
+		list("7.62x39mm ammunition crate (300)", /obj/structure/closet/crate/pepelsibirsk/seven62x39mm,100),
+		list("7.62x54mmR ammunition crate (200)", /obj/structure/closet/crate/pepelsibirsk/seven62x54mmr,100),
+		list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,50),
+		list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,300),
+		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000)
+	)
+
+/obj/structure/pepelsibirsk_radio/supply_radio/New()
+	src.import_tax_rate = global.global_import_tax
+	return ..()
+
+
+/obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
+	var/list/final_list = list()
+	var/list/display = list ()//The products to be displayed, includes name of crate and price
+	var/final_cost = (final_list[4])+((final_list[4]))
+	var/choice = WWinput(user, "Pick a supplier:", "Pepelsibirsk 1 (MIL)", "Narodnyygorod (CIV)", "Cancel", display)
+
+	if (choice == "Cancel")
+		return
+	else
+		if (choice == "Pepelsibirsk 1 (MIL)")
+			if (mil_relations <= 25 )
+				user << "Your relations with this faction are too low!"
+			else
+				var/list/choicename = splittext(choice, " - ")
+				for(var/list/i in mil_catalogue)
+					if (i[2]== choicename[1])
+						final_list = i
+						world.log << "[final_list], [final_list[1]], [final_list[2]]"
+						break
+			return
+		else if (choice == "Narodnyygorod (CIV)")
+			if (civ_relations <= 25 )
+				user << "Your relations with this faction are too low!"
+			else
+				var/list/choicename = splittext(choice, " - ")
+				for(var/list/i in civ_catalogue)
+					if (i[2]== choicename[1])
+						final_list = i
+						world.log << "[final_list], [final_list[1]], [final_list[2]]"
+						break
+			return
+		else
+			user << "Uh oh - something went wrong! Ping an admin!"
+			return
+
+	if (isemptylist(final_list))
+		user << "Uh oh - something went wrong! Ping an admin!"
+		return
+	if(final_list[4] > money)
+		user << "You don't have enough money to buy that crate!"
+// giving change back
+		if (money > 0)
+			if((round(money) >= 1))
+				new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+			if (((money) - round(money)) > 0)
+				new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+			money = 0
+			return
+	else if (final_cost <= money)
+		if (choice == "Pepelsibirsk 1 (MIL)")
+			mil_relations += final_cost*0.02
+			return
+		else if (choice == "Narodnyygorod (CIV)")
+			civ_relations += final_cost*0.02
+			return
+		else
+			user << "Uh oh - something went wrong! Ping an admin!"
+			return
+		money -= final_cost
+		user << "Your crate will arrive soon at the far northern parking lot."
+		spawn(600)
+			var/list/turfs = list()
+			if (faction_treasury != "craftable")
+				turfs = latejoin_turfs[factionarea]
+			else
+				turfs = list(get_turf(locate(x,y+1,z)))
+			var/spawnpoint
+			spawnpoint = pick(turfs)
+			var/tpath = final_list[3]
+			new tpath(get_turf(spawnpoint))
+			user << "A shipment has arrived."
+
+/obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+	if (W.amount && istype(W, /obj/item/stack/money))
+		money += W.value*W.amount
+		qdel(W)
+		return
+	else
+		H << "You need to use rubles."
+		return
+
+
+/obj/structure/pepelsibirsk_radio/export_radio
+	name = "long range export radio"
+	desc = "Use this to export resources."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "export_radio"
+	var/money = 0
+	var/marketval = 0
+	var/moneyin = 0
+	density = TRUE
+	anchored = TRUE
+	var/export_tax_rate = 0
+	var/faction = "civilian"
+	var/faction_treasury = "TreasuryRN"
+	var/done = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/pepelsibirsk_radio/export_radio/New()
+	src.export_tax_rate = global.global_export_tax
+	return ..()
+
+/obj/structure/pepelsibirsk_radio/export_radio/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	New() //Updating the export tax
+	if (W.value == 0)
+		H << "There is no demand for this item."
+		return
+	else
+		if (civ_relations >= 25)
+			if (istype(W) && done == FALSE)
+				done = TRUE
+				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
+				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
+				var/exportChoice
+				exportChoice = WWinput(H, "Sell the whole stack for [moneyin] rubles?", "Exporting", "Yes", list("Yes", "No"))
+				if (exportChoice == "Yes" && W)
+					if (W && marketval > 0)
+						if(round(moneyin) >= 1)
+							new/obj/item/stack/money/rubles(loc, round(moneyin))		// Rubles
+						if (((moneyin) - round(moneyin)) > 0)
+							new/obj/item/stack/money/cents(loc, round(((moneyin) - round(moneyin)), 0.01) * 100)  //copper coins, should never happen
+						else
+							return
+						qdel(W)
+						marketval = 0
+						done = FALSE
+						return
+				else
+					marketval = 0
+					done = FALSE
+					return
+		else
+			return
