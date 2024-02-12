@@ -13,7 +13,9 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "1976 A.D."
+	var/year = "1975"
+	var/quarter = "Q4"
+	age = "[year] A.D. [quarter]"
 	ordinal_age = 7
 	civilizations = TRUE
 	var/tribes_nr = 1
@@ -153,6 +155,27 @@
 
 	spawn(3000)
 		check_relations_msg()
+		return
+
+/obj/map_metadata/pepelsibirsk/proc/time_quarters()
+	if (quarter == "Q1")
+		quarter = "Q2"
+	else if (quarter == "Q2")
+		quarter = "Q3"
+	else if (quarter == "Q3")
+		quarter = "Q4"
+	else if (quarter == "Q4")
+		quarter = "Q1"
+	else
+		world << "Something went wrong with /obj/map_metadata/pepelsibirsk/proc/time_quarters(), please consult an administrator or ping Terrariola on Discord!"
+	spawn(18000)
+		time_quarters()
+		return
+
+/obj/map_metadata/pepelsibirsk/proc/time_years()
+	year += 1
+	spawn(72000)
+		time_years()
 		return
 
 /obj/structure/vending/sales/pacific_trader
@@ -312,18 +335,35 @@
 		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 8
 	)
 	prices = list(
-		/obj/item/weapon/gun/projectile/submachinegun/m16 = 100,
-		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 175,
-		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 200,
-		/obj/item/weapon/gun/launcher/rocket/bazooka = 220,
-		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 150,
+		//Weapons
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 200,
+		/obj/item/weapon/gun/projectile/shotgun/pump/ks23 = 150,
+		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 250,
+		/obj/item/weapon/gun/launcher/grenade/underslung/gp25 = 100,
+		/obj/item/weapon/gun/launcher/rocket/rpg7 = 100,
 
-
-		/obj/item/ammo_magazine/m16 = 20,
-		/obj/item/ammo_magazine/m14 = 30,
-		/obj/item/ammo_casing/rocket/bazooka = 60,
+		//Ammunition
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
-		/obj/item/weapon/plastique/c4 = 80,
+		/obj/item/ammo_casing/rocket/pg7v = 100,
+		/obj/item/ammo_casing/rocket/og7v = 100,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 40,
+		/obj/item/weapon/plastique/russian = 30,
+
+		//Food and Drink
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 10
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 10
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 10
+		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 25
+		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 50
+		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 25
+		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 500
+
+		//Medicines
+		/obj/item/weapon/storage/pill_bottle/tramadol = 150
+		/obj/item/weapon/storage/pill_bottle/penicillin = 150
+		/obj/item/weapon/storage/pill_bottle/paracetamol = 150
+		/obj/item/weapon/storage/pill_bottle/citalopram = 150
+		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150
 	)
 
 /obj/item/weapon/personal_documents
