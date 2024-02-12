@@ -943,7 +943,7 @@
 				t = get_turf(src)
 			if (t)
 				a = get_area(t)
-			
+
 			if (a && a.location == 0 && (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy)))
 				stageGrowth()
 			else if (a)
@@ -1036,7 +1036,7 @@
 			return
 
 	// Decrease water level based on climate and heat wave
-	var/climate = get_area(src).climate
+	var/climate = A.climate
 	if (!(climate in list("desert", "savanna", "semiarid")))
 		water -= 15
 	else

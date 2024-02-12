@@ -16,7 +16,8 @@
 	..()
 
 /obj/structure/animalspawner/bearcave/proc/set_cavetype()
-	var/current_climate = get_area(src).climate
+	var/area/A = get_area(src)
+	var/current_climate = A.climate
 	if(current_climate == "jungle")
 		icon_state += "-bamboo" + pick("", "2")
 		src.t_climate = "black"

@@ -1,6 +1,23 @@
 //#define Clamp(value, low, high) 	(value <= low ? low : (value >= high ? high : value))
 //#define CLAMP01(x) 		(Clamp(x, FALSE, TRUE))
 
+/*
+ Get the turf that `A` resides in, regardless of any containers.
+ 
+ Use in favor of `A.loc` or `src.loc` so that things work correctly when
+ stored inside an inventory, locker, or other container.
+ */
+
+#define get_turf(A) get_step(A,0)
+
+/*
+Get the ultimate area of `A`, similarly to [get_turf].
+
+ Use instead of `A.loc.loc`.
+ */
+
+#define get_area(A) (isarea(A) ? A : get_step(A, 0)?.loc)
+
 #define isdatum(A) istype(A, /datum)
 
 #define isimage(A) istype(A, /image)

@@ -220,52 +220,47 @@
 		return "too many areas closed"
 
 /obj/map_metadata/hunger_games/proc/warn_closing_areas(var/artc = null, var/time=30)
-	var/sound_to_play = null
-	switch(artc)
-		if ("one")
-			sound_to_play = 'sound/voice/battleroyale/close_nw.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("two")
-			sound_to_play = 'sound/voice/battleroyale/close_ne.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("three")
-			sound_to_play = 'sound/voice/battleroyale/close_w.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("four")
-			sound_to_play = 'sound/voice/battleroyale/close_e.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("five")
-			sound_to_play = 'sound/voice/battleroyale/close_sw.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("six")
-			sound_to_play = 'sound/voice/battleroyale/close_se.ogg'
-			for(var/mob/living/human/H in player_list)
-				if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six) || istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside) || (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area"))
-					playsound(H, sound_to_play, 100, FALSE, -1)
-					spawn(30)
-						playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
-		if ("none")
-			return
+	if (artc == "none") return
+
+	// Define corresponding sounds to the map parts
+	var/area_sound_map = list(
+		"one"   = 'sound/voice/battleroyale/close_nw.ogg',
+		"two"   = 'sound/voice/battleroyale/close_ne.ogg',
+		"three" = 'sound/voice/battleroyale/close_w.ogg',
+		"four"  = 'sound/voice/battleroyale/close_e.ogg',
+		"five"  = 'sound/voice/battleroyale/close_sw.ogg',
+		"six"   = 'sound/voice/battleroyale/close_se.ogg'
+		)
+
+	// Define corresponding area names to the map parts
+	var/area_name_map = list(
+		"one"   = "North-Western Area",
+		"two"   = "North-Eastern Area",
+		"three" = "Western Area",
+		"four"  = "Eastern Area",
+		"five"  = "South-Western Area",
+		"six"   = "South-Eastern Area"
+		)
+
+	var/sound_to_play = area_sound_map[artc]
+
+	for(var/mob/living/human/H in player_list)
+		var/area/A = get_area(get_turf(H))
+
+		// Dynamic path construction for checking area types
+		var/base_area_path = "/area/caribbean/no_mans_land/battleroyale/" + artc
+		var/inside_area_path = base_area_path + "/inside"
+
+		// Convert string paths to actual paths
+		var/base_area_type = text2path(base_area_path)
+		var/inside_area_type = text2path(inside_area_path)
+
+		// Check if the area matches any of the dynamic paths
+		if ((istype(A, base_area_type) || istype(A, inside_area_type)) || (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == area_name_map[artc]))
+			playsound(H, sound_to_play, 100, FALSE, -1)
+			spawn(time)
+				playsound(H, "sound/voice/battleroyale/close[time].ogg", 100, FALSE, -1)
+
 /obj/map_metadata/hunger_games/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
 		return
@@ -280,11 +275,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A, /area/caribbean/no_mans_land/battleroyale/one))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/one/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/one/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Western Area")
+					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "North-Western Area")
 						H.crush()
 			world << "<big>The <b>North-Western</b> Area has been closed!</big>"
 			closed_areas += list("one")
@@ -296,11 +292,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A, /area/caribbean/no_mans_land/battleroyale/two))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/two/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/two/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "North-Eastern Area")
+					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "North-Eastern Area")
 						H.crush()
 			world << "<big>The <b>North-Eastern</b> Area has been closed!</big>"
 			closed_areas += list("two")
@@ -312,11 +309,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A, /area/caribbean/no_mans_land/battleroyale/three))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/three/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/three/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Western Area")
+					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "Western Area")
 						H.crush()
 			world << "<big>The <b>Western</b> Area has been closed!</big>"
 			closed_areas += list("three")
@@ -328,11 +326,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A,/area/caribbean/no_mans_land/battleroyale/four))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/four/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/four/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "Eastern Area")
+					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "Eastern Area")
 						H.crush()
 			world << "<big>The <b>Eastern</b> Area has been closed!</big>"
 			closed_areas += list("four")
@@ -344,11 +343,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A, /area/caribbean/no_mans_land/battleroyale/five))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/five/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/five/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Western Area")
+					else if (istype(A,/area/caribbean/no_mans_land/invisible_wall) && A.name == "South-Western Area")
 						H.crush()
 			world << "<big>The <b>South-Western</b> Area has been closed!</big>"
 			closed_areas += list("five")
@@ -360,11 +360,12 @@
 				T.ChangeTurf(/turf/wall/indestructable/black)
 			spawn(20)
 				for(var/mob/living/human/H in player_list)
-					if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six))
+					var/area/A = get_area(get_turf(H))
+					if (istype(A, /area/caribbean/no_mans_land/battleroyale/six))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/battleroyale/six/inside))
+					else if (istype(A, /area/caribbean/no_mans_land/battleroyale/six/inside))
 						H.crush()
-					else if (istype(get_area(get_turf(H)),/area/caribbean/no_mans_land/invisible_wall) && get_area(get_turf(H)).name == "South-Eastern Area")
+					else if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && A.name == "South-Eastern Area")
 						H.crush()
 			world << "<big>The <b>South-Eastern</b> Area has been closed!</big>"
 			closed_areas += list("six")
