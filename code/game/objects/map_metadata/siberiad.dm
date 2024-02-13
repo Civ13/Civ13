@@ -15,10 +15,10 @@
 		list(AMERICAN) = /area/caribbean/no_mans_land/capturable/one,
 		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable/one,
 		)
-	age = "2049"
+	age = "2033"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siberian Conflict"
-	mission_start_message = "<font size=4>The remnants of the <font color = 'blue'>Coalition</font color> and the <font color = red><b>Soviet Army</b></font> are fighting for the control of an <b>Military Industrial Complex</b> in the <b>MIDDLE</b> of the area of operations.<br>In order to win, a side has to hold the <b>Control Room</b> for<b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The remnants of the <font color = 'blue'>Coalition</font color> and the <font color = red>Soviet Army</font> are fighting for the control of a <b>Military Industrial Complex</b> in the <b>MIDDLE</b> of the area of operations.<br>In order to win, a side has to hold the <b>Control Room</b> for<b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	ordinal_age = 7
@@ -85,9 +85,9 @@
 
 /obj/map_metadata/siberiad/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The <b><font color = blue>Coalition</b></font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = blue>Coalition</font color> may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
-		return "<font size = 4>The <b><font color = red>Soviets</b></font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = red>Soviet Army</font color> may now cross the invisible wall!</font>"
 	else
 		return ""
 

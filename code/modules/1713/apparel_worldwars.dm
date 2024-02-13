@@ -2411,7 +2411,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "soviet officer coat"
-	desc = "A soviet trenchcoat, worn by officers in the red army."
+	desc = "A soviet trenchcoat, worn by officers in the Red Army."
 	icon_state = "sov_offcoat"
 	item_state = "sov_offcoat"
 	worn_state = "sov_offcoat"
@@ -2419,6 +2419,11 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
+
+/obj/item/clothing/suit/storage/coat/ww2/soviet_officer/alt
+	icon_state = "sov_offcoat_alt"
+	item_state = "sov_offcoat_alt"
+	worn_state = "sov_offcoat_alt"
 
 /obj/item/clothing/head/helmet/ww2/us_mp
 	name = "us mp helmet"
