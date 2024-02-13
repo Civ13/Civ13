@@ -352,7 +352,7 @@
 	colour = "Scottish Gaelic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GAELIC_SYLLABLES
-	mutual_intelligibility = list(/datum/language/gaelic = 80)
+	mutual_intelligibility = list(/datum/language/gaelic = 80, /datum/language/scots = 70)
 
 /datum/language/italian
 	name = "Italian"
@@ -532,7 +532,7 @@
 	colour = "Scots"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SCOTS_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 80)
+	mutual_intelligibility = list(/datum/language/english = 80, /datum/language/scottishgaelic = 60)
 
 /datum/language/gaelic
 	name = "Gaelic"
