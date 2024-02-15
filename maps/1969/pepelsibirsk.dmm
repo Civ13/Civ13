@@ -6657,9 +6657,14 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "qI" = (
-/obj/structure/vending/sales/pacific_trader,
-/turf/floor/plating/road,
-/area/caribbean/nomads/taiga)
+/obj/structure/railing/steel{
+	dir = 1
+	},
+/obj/effect/floor_decal/spline/plain{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "qJ" = (
 /obj/covers/wood,
 /obj/structure/lamp/lamp_big{
@@ -9235,6 +9240,17 @@
 /obj/roof/concrete,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
+"wV" = (
+/obj/structure/lamp/lamp_small{
+	dir = 1
+	},
+/obj/roof/clay,
+/obj/effect/landmark{
+	icon_state = "x3";
+	name = "JoinLateCiv"
+	},
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
 "wW" = (
 /obj/structure/wild/rock,
 /turf/floor/dirt/winter,
@@ -10732,7 +10748,7 @@
 	dir = 4
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
-/area/caribbean/nomads/taiga)
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "Ao" = (
 /obj/structure/props/coatrack,
 /obj/item/clothing/under/civfr,
@@ -13758,8 +13774,13 @@
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "HH" = (
-/obj/structure/vending/sales/soviet_trader,
-/turf/floor/plating/road,
+/obj/structure/lamp/lamp_small,
+/obj/roof/clay,
+/obj/effect/landmark{
+	icon_state = "x3";
+	name = "JoinLateCiv"
+	},
+/turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "HI" = (
 /obj/structure/window/barrier/railing/brick{
@@ -15904,6 +15925,10 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
+"MP" = (
+/obj/structure/grille/ironfence,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "MQ" = (
 /obj/structure/vehicleparts/frame/car/van/rf,
 /obj/structure/vehicleparts/movement/reversed{
@@ -17076,6 +17101,17 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"PO" = (
+/obj/structure/railing/steel{
+	dir = 1
+	},
+/obj/structure/railing/steel,
+/obj/effect/floor_decal/spline/plain,
+/obj/effect/floor_decal/spline/plain{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "PP" = (
 /obj/structure/lamp/lamp_big{
 	icon_state = "tube";
@@ -17542,8 +17578,8 @@
 /area/caribbean/nomads/taiga)
 "QX" = (
 /obj/covers/carpet/redcarpet,
-/obj/structure/exportbook,
 /obj/roof/clay/black,
+/obj/structure/pepelsibirsk_radio/export_radio,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "QY" = (
@@ -17871,8 +17907,8 @@
 /area/caribbean/nomads/taiga)
 "RK" = (
 /obj/covers/carpet/redcarpet,
-/obj/structure/supplybook,
 /obj/roof/clay/black,
+/obj/structure/pepelsibirsk_radio/supply_radio,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "RL" = (
@@ -18748,6 +18784,14 @@
 "TQ" = (
 /obj/structure/bed/chair,
 /obj/roof/clay,
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
+"TR" = (
+/obj/roof/clay,
+/obj/effect/landmark{
+	icon_state = "x3";
+	name = "JoinLateCiv"
+	},
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "TS" = (
@@ -19646,9 +19690,8 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "Wf" = (
-/obj/structure/vending/sales/chinese_trader,
-/turf/floor/plating/road,
-/area/caribbean/nomads/taiga)
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "Wg" = (
 /obj/structure/closet/anchored,
 /obj/item/clothing/glasses/pilot,
@@ -20299,6 +20342,10 @@
 /obj/roof,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
+"XM" = (
+/obj/item/weapon/telephone/public,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "XN" = (
 /obj/covers/wood,
 /obj/structure/lamp/lamp_big,
@@ -20727,6 +20774,11 @@
 	name = "deep sewer water"
 	},
 /area/caribbean/void/caves)
+"YK" = (
+/obj/structure/railing/steel,
+/obj/effect/floor_decal/spline/plain,
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "YL" = (
 /obj/structure/grille/chainlinkfence{
 	dir = 4;
@@ -21036,7 +21088,7 @@
 	dir = 4
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
-/area/caribbean/nomads/taiga)
+/area/caribbean/no_mans_land/invisible_wall/taiga)
 "ZE" = (
 /obj/structure/mine_support/stone/concrete,
 /obj/covers/steelplating,
@@ -77943,41 +77995,41 @@ BP
 rq
 rq
 rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-cA
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+XM
 BP
 BP
 BP
@@ -78144,7 +78196,7 @@ mR
 jr
 rq
 rq
-rq
+Wf
 ng
 rA
 rA
@@ -78178,7 +78230,7 @@ mb
 mb
 Ix
 ao
-rq
+Wf
 Ld
 Ld
 Ld
@@ -78345,7 +78397,7 @@ UM
 jr
 rq
 rq
-rq
+Wf
 rA
 vc
 vc
@@ -78379,7 +78431,7 @@ tn
 tn
 mb
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -78519,7 +78571,7 @@ FK
 CZ
 yR
 Ld
-Wf
+Ld
 Ld
 Ld
 Ld
@@ -78546,7 +78598,7 @@ rH
 qV
 rq
 rq
-rq
+Wf
 rA
 rA
 rA
@@ -78580,7 +78632,7 @@ LG
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -78720,7 +78772,7 @@ Ld
 CZ
 Jp
 Ld
-HH
+Ld
 Ld
 Ld
 Ld
@@ -78747,7 +78799,7 @@ mR
 qV
 rq
 rq
-rq
+Wf
 ng
 jQ
 jQ
@@ -78781,7 +78833,7 @@ xn
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -78921,7 +78973,7 @@ Ld
 tC
 Jp
 Ld
-qI
+Ld
 Ld
 Ld
 Ld
@@ -78948,7 +79000,7 @@ mR
 jr
 rq
 rq
-rq
+Wf
 rA
 tP
 tP
@@ -78982,7 +79034,7 @@ LG
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -79149,7 +79201,7 @@ mR
 qV
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -79183,7 +79235,7 @@ LG
 eM
 Ix
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -79350,7 +79402,7 @@ mR
 qV
 rq
 rq
-rq
+Wf
 ng
 lP
 Yq
@@ -79384,7 +79436,7 @@ LG
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -79551,7 +79603,7 @@ qV
 jr
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -79585,7 +79637,7 @@ xn
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -79752,7 +79804,7 @@ CO
 jr
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -79786,7 +79838,7 @@ LG
 eM
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -79953,7 +80005,7 @@ uH
 do
 rq
 rq
-rq
+Wf
 ng
 Yq
 Yq
@@ -79987,7 +80039,7 @@ eM
 tn
 Ix
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -80154,7 +80206,7 @@ nt
 jr
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -80188,7 +80240,7 @@ tn
 tn
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -80355,7 +80407,7 @@ cJ
 jr
 rq
 rq
-rq
+Wf
 rA
 lP
 Yq
@@ -80389,7 +80441,7 @@ HR
 tn
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -80556,7 +80608,7 @@ uH
 VL
 rq
 rq
-rq
+Wf
 ng
 Yq
 Yq
@@ -80590,7 +80642,7 @@ tn
 tn
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -80757,7 +80809,7 @@ uH
 VL
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -80791,7 +80843,7 @@ LG
 LG
 mb
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -80958,7 +81010,7 @@ uH
 jr
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -80992,7 +81044,7 @@ mb
 mb
 Ix
 ao
-rq
+Wf
 Ld
 Ld
 Ld
@@ -81159,7 +81211,7 @@ vC
 qV
 rq
 rq
-rq
+Wf
 ng
 Yq
 Yq
@@ -81193,7 +81245,7 @@ tn
 Ix
 Wx
 ZI
-rq
+Wf
 Ld
 Ld
 Ck
@@ -81360,7 +81412,7 @@ qV
 jr
 rq
 rq
-rq
+Wf
 rA
 lP
 Yq
@@ -81383,18 +81435,18 @@ wA
 vs
 oY
 tn
-tn
+TR
 tn
 uW
 uW
 uW
 tn
-tn
+TR
 tn
 oY
 hz
 wA
-rq
+Wf
 Ld
 Ld
 Ld
@@ -81561,7 +81613,7 @@ zy
 OL
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -81584,18 +81636,18 @@ rq
 VH
 oY
 tn
-JY
+HH
 Hr
 ad
 kU
 ad
 IQ
-HR
+wV
 tn
 oY
 Wx
 jU
-rq
+Wf
 Ld
 Ld
 Ck
@@ -81762,7 +81814,7 @@ zy
 OL
 rq
 rq
-rq
+Wf
 rA
 Yq
 Yq
@@ -81785,18 +81837,18 @@ rq
 vs
 oY
 tn
-tn
+TR
 Lq
 fR
 fR
 fR
 II
-tn
+TR
 tn
 oY
 hz
 rq
-rq
+Wf
 Ld
 Ld
 Ld
@@ -81963,7 +82015,7 @@ rq
 tL
 rq
 rq
-rq
+Wf
 ng
 rA
 rA
@@ -81986,18 +82038,18 @@ rq
 iP
 mb
 tn
-tn
+TR
 Lq
 fR
 fR
 fR
 II
-tn
+TR
 tn
 mb
 Cg
 rq
-rq
+Wf
 Ld
 Ld
 Ck
@@ -82164,7 +82216,7 @@ rq
 my
 rq
 rq
-rq
+Wf
 gR
 rq
 rq
@@ -82187,18 +82239,18 @@ rq
 jV
 Ix
 tn
+TR
 tn
 tn
 tn
 tn
 tn
-tn
-tn
+TR
 tn
 Ix
 KZ
 rq
-rq
+Wf
 Ld
 Ld
 Ld
@@ -82365,7 +82417,7 @@ rq
 OL
 rq
 rq
-rq
+Wf
 gR
 rq
 rq
@@ -82388,18 +82440,18 @@ rq
 jV
 nD
 tn
-JY
+HH
 Ul
 in
 vJ
 oa
 uF
-HR
+wV
 tn
 nD
 VC
 rq
-rq
+Wf
 Ld
 Ld
 Ck
@@ -82566,7 +82618,7 @@ rq
 OL
 rq
 rq
-rq
+Wf
 gR
 rq
 rq
@@ -82589,18 +82641,18 @@ rq
 jV
 Ix
 tn
+TR
 tn
 tn
 tn
 tn
 tn
-tn
-tn
+TR
 tn
 Ix
 Qy
 rq
-rq
+Wf
 Ld
 Ld
 Ld
@@ -82767,7 +82819,7 @@ rq
 OL
 rq
 rq
-rq
+Wf
 jr
 qV
 qV
@@ -82790,18 +82842,18 @@ rq
 Wv
 mb
 tn
-tn
+TR
 Lq
 gw
 gw
 gw
 II
-tn
+TR
 tn
 mb
 AT
 rq
-rq
+Wf
 Ld
 Ld
 Ck
@@ -82968,7 +83020,7 @@ rq
 OL
 rq
 rq
-rq
+Wf
 qV
 FG
 vD
@@ -82991,18 +83043,18 @@ rq
 vs
 oY
 tn
-tn
+TR
 Lq
 gw
 gw
 gw
 II
-tn
+TR
 tn
 oY
 hz
 rq
-rq
+Wf
 Ld
 Ld
 Ld
@@ -83169,7 +83221,7 @@ tp
 my
 rq
 rq
-rq
+Wf
 qV
 KE
 vE
@@ -83192,18 +83244,18 @@ rq
 VH
 oY
 tn
-JY
+HH
 Hr
 yG
 yG
 yG
 IQ
-HR
+wV
 tn
 oY
 Wx
 rq
-rq
+Wf
 Ld
 Ld
 Ck
@@ -83370,7 +83422,7 @@ rq
 tL
 rq
 rq
-rq
+Wf
 qV
 Dl
 vE
@@ -83393,18 +83445,18 @@ wA
 vs
 oY
 tn
-tn
+TR
 tn
 gH
 gH
 gH
 tn
-tn
+TR
 tn
 oY
 hz
 wA
-rq
+Wf
 Ld
 Ld
 Ld
@@ -83571,7 +83623,7 @@ rq
 OL
 rq
 rq
-rq
+Wf
 jr
 RK
 vE
@@ -83605,7 +83657,7 @@ tn
 Ix
 Wx
 ZI
-rq
+Wf
 Ld
 Ld
 Ck
@@ -83772,7 +83824,7 @@ YL
 OL
 rq
 rq
-rq
+Wf
 qV
 QX
 vE
@@ -83806,7 +83858,7 @@ mb
 mb
 Ix
 ao
-rq
+Wf
 Ld
 Ld
 Ld
@@ -83973,7 +84025,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 Mz
 ky
@@ -84007,7 +84059,7 @@ lD
 Zu
 mb
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -84174,7 +84226,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 qV
 qV
@@ -84208,7 +84260,7 @@ Po
 lD
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -84375,7 +84427,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 wi
 wi
@@ -84409,7 +84461,7 @@ lD
 lD
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -84576,7 +84628,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 FG
 OD
@@ -84610,7 +84662,7 @@ al
 gO
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -84777,7 +84829,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 jd
 Of
@@ -84811,7 +84863,7 @@ mb
 mb
 Ix
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -84978,7 +85030,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 wd
 vE
@@ -85012,7 +85064,7 @@ DR
 gO
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -85179,7 +85231,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 sf
 wi
@@ -85213,7 +85265,7 @@ nX
 Po
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -85380,7 +85432,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 qV
 qV
@@ -85414,7 +85466,7 @@ DP
 Bj
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -85581,7 +85633,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 wi
 wi
@@ -85615,7 +85667,7 @@ mb
 mb
 Ix
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -85782,7 +85834,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 FG
 OD
@@ -85816,7 +85868,7 @@ al
 gO
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -85983,7 +86035,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 jd
 Of
@@ -86017,7 +86069,7 @@ lD
 lD
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ck
@@ -86184,7 +86236,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 wd
 vE
@@ -86218,7 +86270,7 @@ Po
 lD
 oY
 Wx
-rq
+Wf
 Ld
 Ld
 Ld
@@ -86385,7 +86437,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 qV
 sf
 wi
@@ -86419,7 +86471,7 @@ lD
 Zu
 mb
 hz
-rq
+Wf
 Ld
 Ld
 Ck
@@ -86586,7 +86638,7 @@ rM
 Id
 rq
 rq
-rq
+Wf
 jr
 qV
 qV
@@ -86620,7 +86672,7 @@ mb
 mb
 Ix
 ao
-rq
+Wf
 Ld
 Ld
 Ld
@@ -86787,41 +86839,41 @@ rM
 Id
 rq
 rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-rq
-gR
-rq
-fg
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+Wf
+MP
+Wf
+YK
 ZD
 An
 ZD
 An
-wF
+PO
 ZD
 An
 ZD
 An
-Ou
-rq
-gR
-rq
+qI
+Wf
+MP
+Wf
 Ld
 Ld
 Ck

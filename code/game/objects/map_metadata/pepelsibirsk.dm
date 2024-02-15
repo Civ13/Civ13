@@ -3,7 +3,7 @@
 	title = "Pepelsibirsk"
 	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 12000 // 2 minutes
 	has_hunger = TRUE
 
@@ -24,8 +24,8 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/toska.ogg",)
-	research_active = TRUE
+		"Molchat Doma - Toska:1" = "sound/music/toska.ogg",)
+	research_active = FALSE
 	nomads = TRUE
 	gamemode = "Cold War"
 	var/real_season = "WINTER"
@@ -35,13 +35,16 @@
 	//Trader spawnpoint
 	var/trader_spawnpoint = "TraderArrivals"
 
-	// Variables defining starting faction relations
+	// Variables defining starting faction relations of trader factions
 	var/china_relations = 50
 	var/soviet_relations = 50
 	var/pacific_relations = 50
 
 /obj/map_metadata/pepelsibirsk/New()
 	..()
+	check_relations_msg()
+	send_traders()
+	time_update()
 	for (var/obj/structure/wild/tree/live_tree/TREES)
 		TREES.change_season()
 	spawn(9000)
@@ -106,42 +109,16 @@
 			seasons()
 
 /obj/map_metadata/pepelsibirsk/cross_message(faction)
-	return ""
+	return "<font size = 4><span class = 'notice'><b>The all-clear has been given. You may now leave the Soviet.</b></font></span>"
+
+/obj/map_metadata/pepelsibirsk/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/pepelsibirsk/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else
 		. = FALSE
-
-/obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
-	var/spawnpoint
-	var/list/turfs = list()
-	spawn (1)
-		turfs = latejoin_turfs[trader_spawnpoint]
-		spawnpoint = pick(turfs)
-		if (china_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/chinese_trader
-			var/gt = get_turf(spawnpoint)
-			new traderpath(gt)
-		if (soviet_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/soviet_trader
-			var/gt = get_turf(spawnpoint)
-			new traderpath(gt)
-		if (pacific_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/pacific_trader
-			var/gt = get_turf(spawnpoint)
-			new traderpath(gt)
-		
-	spawn (6000) //Deletes all the traders after 10 minutes
-		qdel(/obj/structure/vending/sales/chinese_trader)
-		qdel(/obj/structure/vending/sales/soviet_trader)
-		qdel(/obj/structure/vending/sales/pacific_trader)
-		return
-
-	spawn (18000)
-		send_traders()
-		return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
 	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
@@ -361,6 +338,48 @@
 		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150,
 	)
 
+/obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
+	var/spawnpoint
+	var/list/turfs = list()
+	spawn (1)
+		turfs = latejoin_turfs[trader_spawnpoint]
+		spawnpoint = pick(turfs)
+		if (china_relations >= 26)
+			var/traderpath = /obj/structure/vending/sales/chinese_trader
+			var/gt = get_turf(spawnpoint)
+			var/trader = new traderpath(gt)
+			spawn (6000)
+				qdel(trader)
+		if (soviet_relations >= 26)
+			var/traderpath = /obj/structure/vending/sales/soviet_trader
+			var/gt = get_turf(spawnpoint)
+			var/trader = new traderpath(gt)
+			spawn (6000)
+				qdel(trader)
+		if (pacific_relations >= 26)
+			var/traderpath = /obj/structure/vending/sales/pacific_trader
+			var/gt = get_turf(spawnpoint)
+			var/trader = new traderpath(gt)
+			spawn (6000)
+				qdel(trader)
+		return
+
+	var/traders = list()
+	if(china_relations >= 26)
+		traders += "the Chinese"
+	if(soviet_relations >= 26)
+		traders += "the Soviets"
+	if(pacific_relations >= 26)
+		traders += "the Pacificans"
+
+	if(length(traders) > 1)
+		traders[length(traders)] = "and [traders[length(traders)]]"
+		world <<  "<font size = 4><span class = 'notice'>[jointext(traders, ", ")] have arrived to trade.</b></font></span>"
+
+	spawn (18000) //30 minutes
+		send_traders()
+		return
+
 /obj/item/weapon/personal_documents
 	name = "Personal Documents"
 	desc = "The identification papers of a citizen."
@@ -480,7 +499,7 @@
 		list("rooster", /mob/living/simple_animal/rooster,50),
 		list("horse", /mob/living/simple_animal/horse,200),
 		list("brick crate", /obj/structure/closet/crate/brick,100),
-		list("medical supplies", /obj/item/weapon/storage/firstaid/adv,50)
+		list("medical supplies", /obj/item/weapon/storage/firstaid/adv,50),
 	)
 	var/list/mil_catalogue = list(
 		list("gunpowder barrel", /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,25),
@@ -498,19 +517,22 @@
 		list("7.62x54mmR ammunition crate (200)", /obj/structure/closet/crate/pepelsibirsk/seven62x54mmr,100),
 		list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,50),
 		list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,300),
-		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000)
+		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000),
 	)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/New()
 	src.import_tax_rate = global.global_import_tax
 	return ..()
 
-
 /obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
 	var/list/final_list = list()
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
-	var/final_cost = (final_list[4])+((final_list[4]))
-	var/choice = WWinput(user, "Pick a supplier:", "Pepelsibirsk 1 (MIL)", "Narodnyygorod (CIV)", "Cancel", display)
+	var/list/companies = list(
+		"Pepelsibirsk 1 (MIL)",
+		"Narodnyygorod (CIV)",
+		"Cancel",
+	)
+	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel", companies)
 
 	if (choice == "Cancel")
 		return
@@ -519,32 +541,38 @@
 			if (mil_relations <= 25 )
 				user << "Your relations with this faction are too low!"
 			else
+				for (var/list/i in mil_catalogue)
+					display += "[i[1]], [i[3]] rubles"
+				choice = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
 				var/list/choicename = splittext(choice, " - ")
-				for(var/list/i in mil_catalogue)
-					if (i[2]== choicename[1])
-						final_list = i
+				for(var/list/i2 in mil_catalogue)
+					if (i2[1] == choicename[1])
+						final_list = i2
 						world.log << "[final_list], [final_list[1]], [final_list[2]]"
 						break
-			return
 		else if (choice == "Narodnyygorod (CIV)")
 			if (civ_relations <= 25 )
 				user << "Your relations with this faction are too low!"
 			else
+				for (var/list/i in civ_catalogue)
+					display += "[i[1]], [i[3]] rubles"
+				choice = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
 				var/list/choicename = splittext(choice, " - ")
-				for(var/list/i in civ_catalogue)
-					if (i[2]== choicename[1])
-						final_list = i
+				for(var/list/i2 in civ_catalogue)
+					if (i2[1] == choicename[1])
+						final_list = i2
 						world.log << "[final_list], [final_list[1]], [final_list[2]]"
 						break
-			return
 		else
-			user << "Uh oh - something went wrong! Ping an admin!"
+			user << "Uh oh - something went wrong! Ping an admin! 'Error #1'"
 			return
 
+	var/final_cost = (final_list[3])
+
 	if (isemptylist(final_list))
-		user << "Uh oh - something went wrong! Ping an admin!"
+		user << "Uh oh - something went wrong! Ping an admin! 'Error #2'"
 		return
-	if(final_list[4] > money)
+	if(final_list[3] > money)
 		user << "You don't have enough money to buy that crate!"
 // giving change back
 		if (money > 0)
@@ -553,16 +581,13 @@
 			if (((money) - round(money)) > 0)
 				new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
 			money = 0
-			return
 	else if (final_cost <= money)
 		if (choice == "Pepelsibirsk 1 (MIL)")
 			mil_relations += final_cost*0.02
-			return
 		else if (choice == "Narodnyygorod (CIV)")
 			civ_relations += final_cost*0.02
-			return
 		else
-			user << "Uh oh - something went wrong! Ping an admin!"
+			user << "Uh oh - something went wrong! Ping an admin! 'Error #3'"
 			return
 		money -= final_cost
 		user << "Your crate will arrive soon at the far northern parking lot."
@@ -574,12 +599,12 @@
 				turfs = list(get_turf(locate(x,y+1,z)))
 			var/spawnpoint
 			spawnpoint = pick(turfs)
-			var/tpath = final_list[3]
+			var/tpath = final_list[2]
 			new tpath(get_turf(spawnpoint))
 			user << "A shipment has arrived."
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
-	if (W.amount && istype(W, /obj/item/stack/money))
+	if (W.amount && istype(W, /obj/item/stack/money/rubles))
 		money += W.value*W.amount
 		qdel(W)
 		return

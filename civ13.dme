@@ -1111,5 +1111,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\1969\pepelsibirsk.dmm"
 // END_INCLUDE
