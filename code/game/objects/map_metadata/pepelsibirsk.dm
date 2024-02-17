@@ -520,46 +520,29 @@
 		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000),
 	)
 
-/obj/structure/pepelsibirsk_radio/supply_radio/New()
-	src.import_tax_rate = global.global_import_tax
-	return ..()
-
 /obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user)
-	user << "proc called"
-	final_cost = (final_list[3])
-	user << "final_cost worked"
 	if (isemptylist(final_list))
 		user << "list is empty"
 		return
-	if(final_list[3] > money)
-	// giving change back
-		if (money > 0)
-			if((round(money) >= 1))
-				new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-			if (((money) - round(money)) > 0)
-				new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-			money = 0
-			user << "You don't have enough money for this item."
-	else if (final_cost <= money)
-		if (choice == "Pepelsibirsk 1 (MIL)")
-			mil_relations += final_cost*0.02
-		else if (choice == "Narodnyygorod (CIV)")
-			civ_relations += final_cost*0.02
+	if (choice == "Pepelsibirsk 1 (MIL)")
+		mil_relations += final_cost*0.02
+	else if (choice == "Narodnyygorod (CIV)")
+		civ_relations += final_cost*0.02
+	else
+		user << "choice var is missing a value"
+		return
+	user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
+	spawn(600)
+		var/list/turfs = list()
+		if (faction_treasury != "craftable")
+			turfs = latejoin_turfs[factionarea]
 		else
-			return
-		money -= final_cost
-		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [civ_relations += final_cost*0.02]."
-		spawn(600)
-			var/list/turfs = list()
-			if (faction_treasury != "craftable")
-				turfs = latejoin_turfs[factionarea]
-			else
-				turfs = list(get_turf(locate(x,y+1,z)))
-			var/spawnpoint
-			spawnpoint = pick(turfs)
-			var/tpath = final_list[2]
-			new tpath(get_turf(spawnpoint))
-			user << "Your [final_list[2]] has arrived."
+			turfs = list(get_turf(locate(x,y+1,z)))
+		var/spawnpoint
+		spawnpoint = pick(turfs)
+		var/tpath = final_list[2]
+		new tpath(get_turf(spawnpoint))
+		user << "Your [final_list[1]] has arrived."
 	return
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
@@ -572,8 +555,7 @@
 		"Cancel",
 	)
 	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel", companies)
-
-	if (choice == "Cancel")
+	if (choice == "Cancel") //idk why this doesn't work, so I just made the error section silent so it acts like a cancel
 		return
 	else
 		if (choice == "Pepelsibirsk 1 (MIL)")
@@ -582,39 +564,79 @@
 			else
 				for (var/list/i in mil_catalogue)
 					display += "[i[1]], [i[3]] rubles"
-				choice = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
-				var/list/choicename = splittext(choice, " - ")
-				for(var/list/i2 in mil_catalogue)
-					if (i2[1] == choicename[1])
-						final_list = i2
-						world.log << "[final_list], [final_list[1]], [final_list[2]]"
-						update_cost(final_list, final_cost, choice, user)
-						break
+				var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
+				if (choice2 == "Cancel")
+					return
+				else
+					var/list/choicename = splittext(choice2, ", ")
+					for(var/list/i2 in mil_catalogue)
+						if (i2[1]== choicename[1])
+							final_list = i2
+							world.log << "[final_list], [final_list[1]], [final_list[2]]"
+							final_cost = (final_list[3])
+							if(final_list[3] > money)
+								// giving change back
+								if (money > 0)
+									if((round(money) >= 1))
+										new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+									if (((money) - round(money)) > 0)
+										new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+									money = 0
+									user << "You don't have enough money for this item."
+							else if (final_cost <= money)
+								money -= final_cost
+								update_cost(final_list, final_cost, choice, user)
+								if((round(money) >= 1))
+									new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+								if (((money) - round(money)) > 0)
+									new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+								money = 0
+							break
+
 		else if (choice == "Narodnyygorod (CIV)")
 			if (civ_relations <= 25 )
 				user << "Your relations with this faction are too low!"
 			else
 				for (var/list/i in civ_catalogue)
 					display += "[i[1]], [i[3]] rubles"
-				choice = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
-				var/list/choicename = splittext(choice, " - ")
-				for(var/list/i2 in civ_catalogue)
-					if (i2[1] == choicename[1])
-						final_list = i2
-						world.log << "[final_list], [final_list[1]], [final_list[2]]"
-						update_cost(final_list, final_cost, choice, user)
-						break
+				var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
+				if (choice2 == "Cancel")
+					return
+				else
+					var/list/choicename = splittext(choice2, ", ")
+					for(var/list/i2 in civ_catalogue)
+						if (i2[1]== choicename[1])
+							final_list = i2
+							world.log << "[final_list], [final_list[1]], [final_list[2]]"
+							final_cost = (final_list[3])
+							if(final_list[3] > money)
+								// giving change back
+								if (money > 0)
+									if((round(money) >= 1))
+										new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+									if (((money) - round(money)) > 0)
+										new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+									money = 0
+									user << "You don't have enough money for this item."
+							else if (final_cost <= money)
+								money -= final_cost
+								update_cost(final_list, final_cost, choice, user)
+								if((round(money) >= 1))
+									new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+								if (((money) - round(money)) > 0)
+									new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+								money = 0
+							break
 		else
-			user << "Uh oh - something went wrong! Ping an admin! 'Error #1'"
 			return
 
-/obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+/obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/user as mob)
 	if (W.amount && istype(W, /obj/item/stack/money/rubles))
 		money += W.value*W.amount
 		qdel(W)
 		return
 	else
-		H << "You need to use rubles."
+		user << "You need to use rubles."
 		return
 
 
@@ -631,42 +653,28 @@
 	var/export_tax_rate = 0
 	var/faction = "civilian"
 	var/faction_treasury = "TreasuryRN"
-	var/done = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-/obj/structure/pepelsibirsk_radio/export_radio/New()
-	src.export_tax_rate = global.global_export_tax
-	return ..()
-
-/obj/structure/pepelsibirsk_radio/export_radio/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	New() //Updating the export tax
+/obj/structure/pepelsibirsk_radio/export_radio/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (W.value == 0)
-		H << "There is no demand for this item."
+		user << "There is no demand for this item."
 		return
 	else
 		if (civ_relations >= 25)
-			if (istype(W) && done == FALSE)
-				done = TRUE
+			if (istype(W))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
-				var/exportChoice
-				exportChoice = WWinput(H, "Sell the whole stack for [moneyin] rubles?", "Exporting", "Yes", list("Yes", "No"))
-				if (exportChoice == "Yes" && W)
+				var/exportChoice = WWinput(user, "Sell the whole stack for [moneyin] rubles?", "Exporting", "Yes", list("Yes", "No"))
+				if (exportChoice == "Yes")
 					if (W && marketval > 0)
-						if(round(moneyin) >= 1)
-							new/obj/item/stack/money/rubles(loc, round(moneyin))		// Rubles
-						if (((moneyin) - round(moneyin)) > 0)
-							new/obj/item/stack/money/cents(loc, round(((moneyin) - round(moneyin)), 0.01) * 100)  //copper coins, should never happen
-						else
-							return
+						new/obj/item/stack/money/rubles(loc, round(moneyin))	// Rubles
 						qdel(W)
 						marketval = 0
-						done = FALSE
 						return
-				else
-					marketval = 0
-					done = FALSE
-					return
+			else
+				marketval = 0
+				return
 		else
+			user << "Your relations with Narodnyygorod are too low!"
 			return
