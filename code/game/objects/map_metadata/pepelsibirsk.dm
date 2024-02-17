@@ -524,7 +524,46 @@
 	src.import_tax_rate = global.global_import_tax
 	return ..()
 
+/obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user)
+	user << "proc called"
+	final_cost = (final_list[3])
+	user << "final_cost worked"
+	if (isemptylist(final_list))
+		user << "list is empty"
+		return
+	if(final_list[3] > money)
+	// giving change back
+		if (money > 0)
+			if((round(money) >= 1))
+				new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+			if (((money) - round(money)) > 0)
+				new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+			money = 0
+			user << "You don't have enough money for this item."
+	else if (final_cost <= money)
+		if (choice == "Pepelsibirsk 1 (MIL)")
+			mil_relations += final_cost*0.02
+		else if (choice == "Narodnyygorod (CIV)")
+			civ_relations += final_cost*0.02
+		else
+			return
+		money -= final_cost
+		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [civ_relations += final_cost*0.02]."
+		spawn(600)
+			var/list/turfs = list()
+			if (faction_treasury != "craftable")
+				turfs = latejoin_turfs[factionarea]
+			else
+				turfs = list(get_turf(locate(x,y+1,z)))
+			var/spawnpoint
+			spawnpoint = pick(turfs)
+			var/tpath = final_list[2]
+			new tpath(get_turf(spawnpoint))
+			user << "Your [final_list[2]] has arrived."
+	return
+
 /obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
+	var/final_cost
 	var/list/final_list = list()
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	var/list/companies = list(
@@ -549,6 +588,7 @@
 					if (i2[1] == choicename[1])
 						final_list = i2
 						world.log << "[final_list], [final_list[1]], [final_list[2]]"
+						update_cost(final_list, final_cost, choice, user)
 						break
 		else if (choice == "Narodnyygorod (CIV)")
 			if (civ_relations <= 25 )
@@ -562,46 +602,11 @@
 					if (i2[1] == choicename[1])
 						final_list = i2
 						world.log << "[final_list], [final_list[1]], [final_list[2]]"
+						update_cost(final_list, final_cost, choice, user)
 						break
 		else
 			user << "Uh oh - something went wrong! Ping an admin! 'Error #1'"
 			return
-
-	var/final_cost = (final_list[3])
-
-	if (isemptylist(final_list))
-		user << "Uh oh - something went wrong! Ping an admin! 'Error #2'"
-		return
-	if(final_list[3] > money)
-		user << "You don't have enough money to buy that crate!"
-// giving change back
-		if (money > 0)
-			if((round(money) >= 1))
-				new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-			if (((money) - round(money)) > 0)
-				new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-			money = 0
-	else if (final_cost <= money)
-		if (choice == "Pepelsibirsk 1 (MIL)")
-			mil_relations += final_cost*0.02
-		else if (choice == "Narodnyygorod (CIV)")
-			civ_relations += final_cost*0.02
-		else
-			user << "Uh oh - something went wrong! Ping an admin! 'Error #3'"
-			return
-		money -= final_cost
-		user << "Your crate will arrive soon at the far northern parking lot."
-		spawn(600)
-			var/list/turfs = list()
-			if (faction_treasury != "craftable")
-				turfs = latejoin_turfs[factionarea]
-			else
-				turfs = list(get_turf(locate(x,y+1,z)))
-			var/spawnpoint
-			spawnpoint = pick(turfs)
-			var/tpath = final_list[2]
-			new tpath(get_turf(spawnpoint))
-			user << "A shipment has arrived."
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money/rubles))
