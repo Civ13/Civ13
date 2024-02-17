@@ -1070,6 +1070,87 @@
 		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 		change_eye_color(r_eyes, g_eyes, b_eyes)
 
+	else if (map.ID == MAP_PEPELSIBIRSK)
+		var/new_hair = "Black"
+		var/new_eyes = "Black"
+		var/list/possible_h_list = list("Black")
+		var/list/possible_e_list = list("Black")
+		var/list/possible_s_list = list(-10,-60)
+		var/randpick = rand(1,10)
+		spawn(5)
+			switch(randpick)
+				if (1)
+					add_note("Known Languages", "Polish", "Russian")
+					remove_note("Known Languages","English")
+					remove_language("English")
+					name = species.get_random_polish_name(gender)
+					real_name = name
+					add_language("Polish",TRUE)
+					add_language("Russian",TRUE)
+					for (var/datum/language/polish/A in languages)
+						default_language = A
+					return
+					nationality = "Polish"
+					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+					possible_e_list = list("Black","Brown","Green")
+					possible_s_list = list(-25,-60)
+				if (2 || 3 || 4 || 5 || 6)
+					add_note("Known Languages", "Russian")
+					remove_note("Known Languages","English")
+					remove_language("English")
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					for (var/datum/language/russian/A in languages)
+						default_language = A
+					nationality = "Russian"
+					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+					possible_e_list = list("Black","Brown","Green")
+					possible_s_list = list(-25,-60)
+				if (7)
+					add_note("Known Languages", "German", "Russian")
+					remove_note("Known Languages","English")
+					remove_language("English")
+					name = species.get_random_german_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					add_language("German,",TRUE)
+					for (var/datum/language/german/A in languages)
+						default_language = A
+					nationality = "German"
+					possible_h_list = list("Light Brown","Blond","Dirty Blond")
+					possible_e_list = list("Blue","Green")
+					possible_s_list = list(-15,-30)
+				if (8 || 9 || 10)
+					add_note("Known Languages", "Ukrainian", "Russian")
+					remove_note("Known Languages","English")
+					remove_language("English")
+					name = species.get_random_ukrainian_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					add_language("Ukrainian",TRUE)
+					nationality = "Ukrainian"
+					for (var/datum/language/ukrainian/A in languages)
+						default_language = A
+					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+					possible_e_list = list("Black","Brown","Green")
+					possible_s_list = list(-25,-60)
+		new_hair = pick(possible_h_list)
+		new_eyes = pick(possible_e_list)
+		s_tone = rand(possible_s_list[2],possible_s_list[1])
+		var/hex_hair = hair_colors[new_hair]
+		r_hair = hex2num(copytext(hex_hair, 2, 4))
+		g_hair = hex2num(copytext(hex_hair, 4, 6))
+		b_hair = hex2num(copytext(hex_hair, 6, 8))
+		r_facial = hex2num(copytext(hex_hair, 2, 4))
+		g_facial = hex2num(copytext(hex_hair, 4, 6))
+		b_facial = hex2num(copytext(hex_hair, 6, 8))
+		var/hex_eyes = eye_colors[new_eyes]
+		r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+		g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+		b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+		change_eye_color(r_eyes, g_eyes, b_eyes)
+
 	else if (map.ID == MAP_NATIONSRP)
 		var/new_hair = "Black"
 		var/new_eyes = "Black"

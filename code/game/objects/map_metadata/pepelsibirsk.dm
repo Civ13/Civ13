@@ -4,7 +4,7 @@
 	lobby_icon = "icons/lobby/civ13.gif"
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
-	respawn_delay = 12000 // 2 minutes
+	respawn_delay = 1200 // 2 minutes
 	has_hunger = TRUE
 
 	faction_organization = list(
@@ -25,15 +25,20 @@
 	availablefactions = list("Nomad")
 	songs = list(
 		"Molchat Doma - Toska:1" = "sound/music/toska.ogg",)
-	research_active = FALSE
-	nomads = TRUE
 	gamemode = "Cold War"
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = TRUE
+	age6_done = TRUE
+	age7_done = TRUE
 	var/real_season = "WINTER"
 	var/quarter = "Q1"
 	var/year = 1976
 
 	//Trader spawnpoint
-	var/trader_spawnpoint = "TraderArrivals"
+	var/trader_spawnpoint = "trader_spawnpoint"
 
 	// Variables defining starting faction relations of trader factions
 	var/china_relations = 50
@@ -42,9 +47,9 @@
 
 /obj/map_metadata/pepelsibirsk/New()
 	..()
-	check_relations_msg()
-	send_traders()
-	time_update()
+	check_relations_msg(soviet_relations, china_relations, pacific_relations)
+	send_traders(soviet_relations, china_relations, pacific_relations, trader_spawnpoint)
+	time_update(quarter, year)
 	for (var/obj/structure/wild/tree/live_tree/TREES)
 		TREES.change_season()
 	spawn(9000)
@@ -109,7 +114,7 @@
 			seasons()
 
 /obj/map_metadata/pepelsibirsk/cross_message(faction)
-	return "<font size = 4><span class = 'notice'><b>The all-clear has been given. You may now leave the Soviet.</b></font></span>"
+	return "<font size = 3><span class = 'notice'><b>The all-clear has been given. You may now leave the Soviet.</b></font></span>"
 
 /obj/map_metadata/pepelsibirsk/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
@@ -120,17 +125,17 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
+/obj/map_metadata/pepelsibirsk/proc/check_relations_msg(soviet_relations, china_relations, pacific_relations)
 	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
 	world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[china_relations]</b></span></font>"
 	world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[soviet_relations]</b></span></font>"
 	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pacific_relations]</b></span></font>"
 
 	spawn(3000)
-		check_relations_msg()
+		check_relations_msg(soviet_relations, china_relations, pacific_relations)
 		return
 
-/obj/map_metadata/pepelsibirsk/proc/time_quarters()
+/obj/map_metadata/pepelsibirsk/proc/time_quarters(quarter, year)
 	if (quarter == "Q1")
 		quarter = "Q2"
 	else if (quarter == "Q2")
@@ -142,13 +147,19 @@
 		year += 1
 	else
 		world << "Something went wrong with /obj/map_metadata/pepelsibirsk/proc/time_quarters(), please consult an administrator or ping Terrariola on Discord!"
+	world << "<font size = 3><span class = 'notice'><b>The quarter has advanced to [quarter].</b></font></span>"
+	if (quarter == "Q1")
+		world << "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>"
+	return
 
-/obj/map_metadata/pepelsibirsk/proc/time_update()
+/obj/map_metadata/pepelsibirsk/proc/time_update(quarter, year)
 	age = "[year] A.D. [quarter]"
 	spawn (18000)
-		time_quarters()
-		time_update()
+		time_quarters(quarter, year)
+		time_update(quarter, year)
 		return
+
+// All the traders
 
 /obj/structure/vending/sales/pacific_trader
 	name = "U.S.P Trader"
@@ -338,47 +349,59 @@
 		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150,
 	)
 
-/obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
-	var/spawnpoint
+/obj/map_metadata/pepelsibirsk/proc/send_traders(china_relations, soviet_relations, pacific_relations, trader_spawnpoint) //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
+	world.log << "send_traders has been triggered"
 	var/list/turfs = list()
-	spawn (1)
+	var/spawnpoint
+	spawn(1)
 		turfs = latejoin_turfs[trader_spawnpoint]
-		spawnpoint = pick(turfs)
 		if (china_relations >= 26)
 			var/traderpath = /obj/structure/vending/sales/chinese_trader
-			var/gt = get_turf(spawnpoint)
-			var/trader = new traderpath(gt)
-			spawn (6000)
+			spawnpoint = pick(turfs)
+			var/trader = new traderpath(get_turf(spawnpoint))
+			world.log << "[trader] has been spawned at with get_turf, example: [get_turf(spawnpoint)]."
+			spawn(6000) //10m
+				world.log << "[trader] has been deleted."
 				qdel(trader)
 		if (soviet_relations >= 26)
 			var/traderpath = /obj/structure/vending/sales/soviet_trader
-			var/gt = get_turf(spawnpoint)
-			var/trader = new traderpath(gt)
-			spawn (6000)
+			spawnpoint = pick(turfs)
+			var/trader = new traderpath(get_turf(spawnpoint))
+			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
+			spawn(6000) //10m
+				world.log << "[trader] has been deleted."
 				qdel(trader)
 		if (pacific_relations >= 26)
 			var/traderpath = /obj/structure/vending/sales/pacific_trader
-			var/gt = get_turf(spawnpoint)
-			var/trader = new traderpath(gt)
-			spawn (6000)
+			spawnpoint = pick(turfs)
+			var/trader = new traderpath(get_turf(spawnpoint))
+			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
+			spawn(6000) //10m
+				world.log << "[trader] has been deleted."
 				qdel(trader)
 		return
 
 	var/traders = list()
-	if(china_relations >= 26)
+	if (china_relations >= 26)
 		traders += "the Chinese"
-	if(soviet_relations >= 26)
+	if (soviet_relations >= 26)
 		traders += "the Soviets"
-	if(pacific_relations >= 26)
+	if (pacific_relations >= 26)
 		traders += "the Pacificans"
 
-	if(length(traders) > 1)
+	if (length(traders) > 1)
 		traders[length(traders)] = "and [traders[length(traders)]]"
 		world <<  "<font size = 4><span class = 'notice'>[jointext(traders, ", ")] have arrived to trade.</b></font></span>"
+		world.log << "[jointext(traders, ", ")] have arrived to trade."
+	else
+		world << "<font size = 4><span class = 'notice'>Due to poor relations, no one has arrived to trade.</b></font></span>"
+		world.log << "Due to poor relations, no one has arrived to trade."
 
-	spawn (18000) //30 minutes
-		send_traders()
+	spawn(18000) //30 minutes
+		send_traders(china_relations, soviet_relations, pacific_relations)
 		return
+
+// Everything below this are custom objects used by the map
 
 /obj/item/weapon/personal_documents
 	name = "Personal Documents"
@@ -401,7 +424,7 @@
 	flags = FALSE
 	New()
 		..()
-		spawn(20)
+		spawn(60)
 			if (ishuman(loc))
 				var/mob/living/human/H = loc
 				document_name = H.real_name
@@ -410,33 +433,29 @@
 				desc = "The identification papers of <b>[document_name]</b>."
 				var/job = "Working"
 				if (istype(H.original_job, /datum/job/civilian/civnomad))
-					var/datum/job/civilian/prisoner/P = H.original_job
 					switch(H.nationality)
 						if ("German")
 							job = "Citizen of the German Democratic Republic, expatriated and working [pick("in the Pepelsibirsk research facility","in the Pepelsibirsk hospital", "for the local KGB office", "in the Pepelsibirsk car factory")]."
 						if ("Ukrainian")
-							job = "Internal migrant from the Ukrainian SSR, working [pick("for the KGB","for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya")]."
+							job = "Internal migrant from the Ukrainian SSR, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya")]."
 						if ("Polish")
 							job = "Citizen of the Polish Socialist Republic, expatriated and working in [pick("the Pepelsibirsk mine","the Pepelsibirsk car factory", "the collective farm in Pepelsibirsk", "the Pepelsibirsk power plant")]."
 						if ("Russian")
-							job = "Pepelsibirsk local, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya", "for the Soviet Armed Forces", "for the local Militsiya")]."
-					document_details = list(H.h_style, P.original_hair, H.f_style, P.original_facial, job, H.gender, H.age, ,P.original_eyes)
+							job = "Pepelsibirsk local, working [pick("for the KGB", "for the city Soviet", "in the Pepelsibirsk mine", "in the Pepelsibirsk car factory", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk power plant", "at the collective farm in Pepelsibirsk", "in the Pepelsibirsk mine", "in the Pepelsibirsk research facility", "in the Pepelsibirsk hospital", "for the Soviet Armed Forces", "for the local Militsiya")]."
+					document_details = list(H.h_style, H.gender, H.age, job)
 
 /obj/item/weapon/personal_documents/examine(mob/user)
-	user << "<span class='info'>*---------*</span>"
 	..(user)
-	if (document_details.len >= 9)
-		user << "<b><span class='info'>Hair:</b> [document_details[1]], [document_details[2]] color</span>"
-		if (document_details[6] == "male")
-			user << "<b><span class='info'>Face:</b> [document_details[3]], [document_details[4]] color</span>"
-		user << "<b><span class='info'>Eyes:</b> [document_details[8]]</span>"
-		user << "<b><span class='info'>Employment and Citizenship Status:</b> [document_details[5]]</span>"
-		user << "<b><span class='info'>Age:</b> [document_details[7]] years</span>"
+	user << "<span class='info'>*---------*</span>"
+	user << "<b><span class='info'>Hair:</b> [document_details[1]]</span>"
+	user << "<b><span class='info'>Gender:</b> [document_details[2]]</span>"
+	user << "<b><span class='info'>Age:</b> [document_details[3]] years</span>"
+	user << "<b><span class='info'>Employment and Citizenship Status:</b> [document_details[4]]</span>"
 	user << "<span class='info'>*---------*</span>"
 	if (guardnotes.len)
 		for(var/i in guardnotes)
 			user << "NOTE: [i]"
-	user << "<span class='info'>*---------*</span>"
+		user << "<span class='info'>*---------*</span>"
 
 /obj/item/weapon/personal_documents/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))

@@ -7,6 +7,7 @@
 		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
 		equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
 		return
+
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
@@ -324,7 +325,6 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-
 		if (8)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
@@ -343,8 +343,8 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-
-
+	if (map.ID == MAP_PEPELSIBIRSK)
+		equip_to_slot_or_del(new /obj/item/weapon/personal_documents(src), slot_wear_id)
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
@@ -931,6 +931,57 @@
 						real_name = name
 						add_note("Known Languages", "Mongolian")
 						return
+//////////////////////////////////////////////////////
+////////////////////////Pepelsibirsk//////////////////
+//////////////////////////////////////////////////////
+		else if (map.ID == MAP_PEPELSIBIRSK)
+			var/randpick = rand(1,10)
+			spawn(5)
+				switch(randpick)
+					if (1)
+						add_note("Known Languages", "Polish", "Russian")
+						remove_language("English")
+						name = species.get_random_polish_name(gender)
+						real_name = name
+						add_language("Polish",TRUE)
+						add_language("Russian",TRUE)
+						src.nationality = "Polish"
+						for (var/datum/language/polish/A in languages)
+							default_language = A
+						return
+					if (2 || 3 || 4 || 5 || 6)
+						add_note("Known Languages", "Russian")
+						remove_language("English")
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						add_language("Russian",TRUE)
+						src.nationality = "Russian"
+						for (var/datum/language/polish/A in languages)
+							default_language = A
+						return
+					if (7)
+						add_note("Known Languages", "German", "Russian")
+						remove_language("English")
+						name = species.get_random_german_name(gender)
+						real_name = name
+						add_language("Russian",TRUE)
+						add_language("German,",TRUE)
+						src.nationality = "German"
+						for (var/datum/language/german/A in languages)
+							default_language = A
+						return
+					if (8 || 9 || 10)
+						add_note("Known Languages", "Ukrainian", "Russian")
+						remove_language("English")
+						name = species.get_random_ukrainian_name(gender)
+						real_name = name
+						add_language("Russian",TRUE)
+						add_language("Ukrainian",TRUE)
+						src.nationality = "Ukrainian"
+						for (var/datum/language/ukrainian/A in languages)
+							default_language = A
+						return
+				return
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa

@@ -274,7 +274,7 @@
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
 								qdel(D)
-						else if (map.ID == MAP_GULAG13)
+						else if (map.ID == MAP_GULAG13 || MAP_PEPELSIBIRSK)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
@@ -313,7 +313,7 @@
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
 					qdel(D)
-			else if (map.ID == MAP_GULAG13)
+			else if (map.ID == MAP_GULAG13 || MAP_PEPELSIBIRSK)
 				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)
