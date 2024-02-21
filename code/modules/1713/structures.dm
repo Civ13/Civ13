@@ -1203,7 +1203,7 @@
 				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
 	else
 		user << SPAN_WARNING("Long live [capitalize(icon_state)]!")
-	
+
 /obj/structure/flag/campaign/redmenia
 	icon_state = "redmenia"
 	name = "Redmenia Flag"
@@ -1315,7 +1315,7 @@
 	opacity = FALSE
 
 /obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/human/H)
-	if(istype(W, /obj/item/stack/material/wood))
+	if(istype(W, /obj/item/stack/material/woodplank))
 		var/input
 		var/display = list("Medieval Window - 4", "Medieval Wall - 6", "Medieval Crossbraced Wall (X) - 6", "Medieval Braced Wall (\\) - 6", "Medieval Braced Wall (/) - 6", "Cancel")
 		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)

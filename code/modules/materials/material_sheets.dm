@@ -52,6 +52,7 @@
 
 /obj/item/stack/material/use(var/used)
 	. = ..()
+	update_icon()
 	update_strings()
 	return
 
@@ -68,11 +69,13 @@
 
 /obj/item/stack/material/attack_self(var/mob/user)
 //	if (!material.build_windows(user, src))
+	update_icon()
 	..()
 
 /obj/item/stack/material/attackby(var/obj/item/W, var/mob/user)
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
+		update_icon()
 		return
 	..()
 
@@ -389,7 +392,7 @@
 
 /obj/item/stack/material/wood
 	name = "wooden plank"
-	icon_state = "sheet-wood"
+	icon_state = "logs"
 	default_type = "wood"
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
@@ -423,6 +426,61 @@
 				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
 				return
 	return ..()
+
+/obj/item/stack/material/woodplank
+	name = "wooden plank"
+	icon_state = "sheet-wood"
+	default_type = "woodplank"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 2
+	flammable = TRUE
+	max_amount = 200
+	var/base_icon = "sheet-wood"
+	var/onfire = FALSE
+	var/ash_production = FALSE
+
+/obj/item/stack/material/woodplank/twentyfive
+	amount = 25
+
+/obj/item/stack/material/woodplank/proc/start_fire()
+	var/burn_time = amount * 1
+	var/old_amount = amount
+	if (onfire)
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
+		spawn(burn_time)
+			for(var/i = 0, i < old_amount, i++)
+				new/obj/item/wood_ash(src.loc)
+			qdel(NF)
+			qdel(src)
+
+/obj/item/stack/material/woodplank/attackby(obj/item/T as obj, mob/user as mob)
+	if (istype(T, /obj/item/flashlight/torch))
+		var/obj/item/flashlight/torch/F = T
+		if(user.a_intent == "harm" && F.on && !onfire)
+			visible_message("<span class = 'red'>[user.name] tries to set the [src] on fire.</span>")
+			if(prob(30))
+				ash_production = 1
+				src.onfire = 1
+				start_fire()
+				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
+				return
+	return ..()
+
+/obj/item/stack/material/woodplank/update_icon()
+	if (amount >= 50)
+		icon_state = "[base_icon]-50"
+	else if (amount >= 100)
+		icon_state = "[base_icon]-100"
+	else if (amount >= 150)
+		icon_state = "[base_icon]-150"
+	else if (amount >= 200)
+		icon_state = "[base_icon]-200"
+	else
+		icon_state = "[base_icon]"
+
+/obj/item/stack/material/woodplank/New()
+	..()
+	update_icon()
 
 /obj/item/stack/material/bamboo
 	name = "bamboo bundle"

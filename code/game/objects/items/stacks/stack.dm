@@ -1426,7 +1426,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "grandfather clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1450,7 +1450,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "standing clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 6 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1474,7 +1474,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "wooden house door"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 5 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1888,7 +1888,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.caliber = inpt
 			T.name = "[T.caliber]mm cannon casing"
 			return
-		
+
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
@@ -1905,7 +1905,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			else
 				O.color = input
 				return
-				
+
 		if (istype(O, /obj/structure/closet/crate/wall_mailbox) && !istype(O, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")

@@ -13,7 +13,7 @@
 
 /obj/structure/largecrate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/crowbar))
-		new /obj/item/stack/material/wood(src)
+		new /obj/item/stack/material/woodplank(src)
 		var/turf/T = get_turf(src)
 		for (var/atom/movable/AM in contents)
 			if (AM.simulated) AM.forceMove(T)
