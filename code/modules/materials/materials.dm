@@ -585,8 +585,8 @@ var/list/name_to_material
 	door_icon_base = "wood"
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	destruction_desc = "splinters"
-	sheet_singular_name = "plank"
-	sheet_plural_name = "planks"
+	sheet_singular_name = "log"
+	sheet_plural_name = "logs"
 	hitsound = 'sound/effects/woodhit.ogg'
 	stack_type = /obj/item/stack/material/wood
 	resilience = 0.9
@@ -601,11 +601,17 @@ var/list/name_to_material
 	resilience = 1.1
 
 /material/wood/soft
-	name = "softwood"
+	name = "woodplank"
 	hardness = 90
 	integrity = 80
 	door_icon_base = "wood"
 	icon_colour = "#D2BA9C"
+	stack_type = /obj/item/stack/material/woodplank
+	door_icon_base = "wood"
+	dooropen_noise = 'sound/effects/doorcreaky.ogg'
+	destruction_desc = "splinters"
+	sheet_singular_name = "plank"
+	sheet_plural_name = "planks"
 	weight = 10
 	resilience = 0.6
 
