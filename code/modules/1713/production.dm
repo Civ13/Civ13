@@ -2182,7 +2182,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/sawmill
 	name = "Primitive Saw Mill"
-	desc = "A small saw mill, used to cut logs into planks."
+	desc = "A small saw mill, used to cut logs into planks. This crude machine only produces 1 plank per log."
 	icon = 'icons/obj/plankage.dmi'
 	icon_state = "primitive_sawmill"
 	anchored = TRUE
@@ -2195,6 +2195,13 @@
 	var/tmp/mob/living/human/current_user = null
 	var/tmp/work_time_amount = 0
 
+/obj/structure/sawmill/large
+	name = "Large Saw Mill"
+	desc = "A large saw mill, used to cut logs into planks. This one produces 2 planks per log."
+	icon = 'icons/obj/plankage_64.dmi'
+	icon_state = "sawmill"
+	bound_width = 64
+	bound_height = 32
 /obj/structure/sawmill/proc/finish_work()
 	if (current_work)
 		current_user.visible_message(
@@ -2228,20 +2235,30 @@
 	if (current_work)
 		H << "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>"
 		return
-	current_work = new P(null, W.amount * 2, FALSE) //in fact for information purpose only we really need new object
+	if (istype(src, /obj/structure/sawmill/large))
+		current_work = new P(null, W.amount * 2, FALSE) //in fact for information purpose only we really need new object
+		icon = 'icons/obj/plankage_64.dmi'
+		icon_state = "sawmill1"
+		work_time_amount = round(10000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+	else
+		current_work = new P(null, W.amount, FALSE) //in fact for information purpose only we really need new object
+		icon_state = "primitive_sawmill1"
+		work_time_amount = round(20000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	current_material = W
 	current_user = H
 	H.visible_message(
 		"<span class='notice'>You can see how [H.name] began to cut [W.name] on \a [src.name].</span>",
 		"<span class='notice'>You start to produce \the [current_work.name].</span>",
 		"<span class='notice'>You hear someone begin to cut on \the [src.name].</span>")
-	icon_state = "primitive_sawmill1"
-	work_time_amount = round(10000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
 	if (do_after(H, work_time_amount, src.loc))
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		finish_work()
 	else
-		icon_state = "primitive_sawmill"
+		if (istype(src, /obj/structure/sawmill/large))
+			icon_state = "sawmill"
+		else
+			icon_state = "primitive_sawmill"
 		//20% - with no penalty, 30% - little mood decreasing, 25% - mood decreasing,
 		//15% - to lose some material and mood decreasing, 10% to lose all material and great mood decreasing
 		switch (rand(1,100)) //here are another algorithm because we don't know how much work was really done
