@@ -27,7 +27,7 @@
 		return FALSE
 
 // TO DO TODO: Make this universal proc for all expirience gains
-/mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 5, EPIC_fail_chance = 0.5)
+/mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 0, EPIC_fail_chance = 0)
 	// returns 0 - nothing happens, 1 - breaktrough, 2 - EUREKA, -1 - fail, -2 - EPIC fail
 	// exp_skills_list - list of skills how it declared in human_defines.dm, f.e. list("swords","strength","dexterity","stamina") or empty list if you want simply generate chance
 	// exp_skills_percent - list of percent distribution of gain expirience, f.e. list(85,5,5,5) or empty list, if you want equal distribution in skills experience
