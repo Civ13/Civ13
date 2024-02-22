@@ -36,7 +36,7 @@
 	// no_emotes - set it to TRUE if no emotes when procedure work
 	// no_msg - set it to TRUE if no messages to user when procedure work
 	// change_mood_coefficient - set this multiplicator not 1 if you want greater or less effect to mood
-	// EUREKA_chance, breakthrough_chance, fail_chance, EPIC_fail_chance - in percents, by default they are 0.5, 5, 5 and 0.5
+	// EUREKA_chance, breakthrough_chance, fail_chance, EPIC_fail_chance - in percents, by default they are 0.5, 5, 5 and 0.5 ||Shinobi|| not anymore, no fails
 	var/equal_distribution = 0
 	var/exp_gain = work_amount/10/2 //1 exp for every 2 seconds of work
 	var/e_c = EUREKA_chance * 100
@@ -125,6 +125,9 @@
 
 //TO DO TODO: make this procedure global using
 /obj/structure/proc/wrench_action(var/mob/living/human/H)
+	if (powersource)
+		to_chat(H, SPAN_NOTICE("Remove the cables first."))
+		return
 	if(!not_movable)
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		H.visible_message(
@@ -2202,13 +2205,44 @@
 	icon_state = "sawmill"
 	bound_width = 64
 	bound_height = 32
+
+/obj/structure/sawmill/powered
+	name = "Powered Saw Mill"
+	desc = "A large powered saw mill, used to cut logs into planks. This one produces 4 planks per log."
+	icon = 'icons/obj/plankage_64.dmi'
+	bound_width = 64
+	bound_height = 32
+	icon_state = "sawmill_power"
+	powerneeded = 1
+
+/obj/structure/sawmill/proc/check_power()
+	if (!powersource || !powerneeded)
+		return FALSE
+	else
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!powered)
+				powersource.update_power(powerneeded,1)
+				powered = TRUE
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+				return TRUE
+		else
+			powered = FALSE
+			return
+
 /obj/structure/sawmill/proc/finish_work()
+	check_power()
 	if (current_work)
 		current_user.visible_message(
 			"<span class='notice'>You can see how [current_user.name] made [current_work.name] on \a [src.name].</span>",
 			"<span class='notice'>You finish producing \the [current_work.name].</span>",
 			"<span class='notice'>The sounds of \the [src.name] were gone.</span>")
-		icon_state = "primitive_sawmill"
+		if (istype(src, /obj/structure/sawmill/large))
+			icon_state = "sawmill"
+		else if (istype(src, /obj/structure/sawmill/powered))
+			icon_state = "sawmill_power"
+		else
+			icon_state = "primitive_sawmill"
 		qdel(current_material)
 		var/obj/item/stack/this_production = new current_work.type(null, current_work.amount, FALSE) //deleting and creating for sterilization effect (we need really new object)
 		current_user.put_in_active_hand(this_production)
@@ -2227,10 +2261,14 @@
 	work_time_amount = 0
 
 /obj/structure/sawmill/proc/produce(var/obj/item/stack/W, var/mob/living/human/H, var/obj/item/stack/P)
+	check_power()
 	if (!H.in_mood())
 		return
 	if(!anchored)
 		H << "<span class='warning'>\The [src] needs to be fixed in place before anything can be cut.</span>"
+		return
+	if(istype(src, /obj/structure/sawmill/powered) && powered == FALSE)
+		H << "<span class='warning'>\The [src] needs to be powered before anything can be cut.</span>"
 		return
 	if (current_work)
 		H << "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>"
@@ -2239,11 +2277,16 @@
 		current_work = new P(null, W.amount * 2, FALSE) //in fact for information purpose only we really need new object
 		icon = 'icons/obj/plankage_64.dmi'
 		icon_state = "sawmill1"
-		work_time_amount = round(10000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+		work_time_amount = round(0.1*(W.amount*8+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+	else if (istype(src, /obj/structure/sawmill/powered) && powered == TRUE)
+		current_work = new P(null, W.amount * 4, FALSE) //in fact for information purpose only we really need new object
+		icon = 'icons/obj/plankage_64.dmi'
+		icon_state = "sawmill_power1"
+		work_time_amount = round(0.1*(W.amount*4+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	else
 		current_work = new P(null, W.amount, FALSE) //in fact for information purpose only we really need new object
 		icon_state = "primitive_sawmill1"
-		work_time_amount = round(20000/(W.amount*3+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+		work_time_amount = round(0.1*(W.amount*12+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	current_material = W
 	current_user = H
 	H.visible_message(
@@ -2257,6 +2300,8 @@
 	else
 		if (istype(src, /obj/structure/sawmill/large))
 			icon_state = "sawmill"
+		else if (istype(src, /obj/structure/sawmill/powered))
+			icon_state = "sawmill_power"
 		else
 			icon_state = "primitive_sawmill"
 		//20% - with no penalty, 30% - little mood decreasing, 25% - mood decreasing,
@@ -2326,7 +2371,8 @@
 		current_material = null
 		current_user = null
 
-/obj/structure/sawmill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+/obj/structure/sawmill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob, var/obj/item/I)
+	check_power()
 	if (istype(W, /obj/item/stack/material/wood))
 		produce(W, H, /obj/item/stack/material/woodplank)
 		return
@@ -2336,6 +2382,43 @@
 	if (istype(W,/obj/item/weapon/hammer))
 		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
 		return
+	if (istype(W, /obj/item/stack/cable_coil))
+		if (powersource)
+			H << "There's already a cable connected here! Split it further from the [src]."
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
+		if (!powersource)
+			return
+		powersource.connections += src
+		var/opdir1 = 0
+		var/opdir2 = 0
+		if (powersource.tiledir == "horizontal")
+			opdir1 = 4
+			opdir2 = 8
+		else if  (powersource.tiledir == "vertical")
+			opdir1 = 1
+			opdir2 = 2
+		powersource.update_icon()
+
+		if (opdir1 != 0 && opdir2 != 0)
+			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
+				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
+					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						NCOO.connections += powersource
+					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						powersource.connections += NCOO
+					H << "You connect the two cables."
+
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
+					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						NCOC.connections += powersource
+					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						powersource.connections += NCOC
+		H << "You connect the cable to the [src]."
+	else
+		..()
 	..(W, H)
 
 /obj/structure/sawmill/initialize()
