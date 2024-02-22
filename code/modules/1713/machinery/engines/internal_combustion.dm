@@ -182,6 +182,22 @@
 	running_snd = 'sound/machines/gasoline_loop.ogg'
 	ending_snd = 'sound/machines/gasoline_ending.ogg'
 
+/obj/structure/engine/internal/gasoline/efficient
+	name = "efficient four-stroke gasoline engine"
+	desc = "A relatively expensive but efficient four-stroke gasoline engine."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "gasoline_static"
+	engineclass = "gasoline"
+
+	maxpower = 100
+	torque = 1.2
+	fuelefficiency = 0.003
+	fuels = list("gasoline")
+
+	starting_snd = 'sound/machines/gasoline_starting.ogg'
+	running_snd = 'sound/machines/gasoline_loop.ogg'
+	ending_snd = 'sound/machines/gasoline_ending.ogg'
+
 /obj/structure/engine/internal/gasoline/twostroke
 	name = "two-stroke gasoline engine"
 	desc = "A cheap and simple two-stroke gasoline engine."

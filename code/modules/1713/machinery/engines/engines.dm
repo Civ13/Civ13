@@ -266,7 +266,7 @@
 		if (steelamt == 0)
 			return
 
-		var/display = list("Turbine Engine (73 sheets per 1000 cc)","Hot Bulb Engine (33 sheets per 1000 cc)","4-Stroke Gasoline Engine (50 sheets per 1000 cc)","4-Stroke Ethanol-Gasoline Engine (60 sheets per 1000 cc)","2-Stroke Gasoline Engine (40 sheets per 1000 cc)","Diesel Engine (40 sheets per 1000 cc)","Biodiesel Engine (45 sheets per 1000 cc)","Hesselman Engine (43 sheets per 1000 cc)", "Cancel")
+		var/display = list("Turbine Engine (73 sheets per 1000 cc)","Hot Bulb Engine (33 sheets per 1000 cc)","4-Stroke Gasoline Engine (50 sheets per 1000 cc)","High Efficiency 4-Stroke Gasoline Engine (100 sheets per 1000 cc)","4-Stroke Ethanol-Gasoline Engine (60 sheets per 1000 cc)","2-Stroke Gasoline Engine (40 sheets per 1000 cc)","Diesel Engine (40 sheets per 1000 cc)","Biodiesel Engine (45 sheets per 1000 cc)","Hesselman Engine (43 sheets per 1000 cc)", "Cancel")
 		var/choice = WWinput(H, "What engine do you want to make?", "Engines", "Cancel", display)
 		if (choice == "Cancel")
 			return
@@ -369,6 +369,33 @@
 						var/obj/structure/engine/internal/gasoline/NEN = new/obj/structure/engine/internal/gasoline(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
+						NEN.name = "[NEN.enginesize]cc 4-S gasoline engine"
+						NEN.maxpower *= (NEN.enginesize/1000)
+						NEN.fuelefficiency *= (NEN.enginesize/1000)
+						H << "You finish building the engine."
+						done = FALSE
+						return
+				else
+					done = FALSE
+					return
+		else if (choice == "High Efficiency 4-Stroke Gasoline Engine (100 sheets per 1000 cc)")
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 100, maximum 30000)") as num
+			enginesize = Clamp(enginesize, 100, 30000)
+			if ((enginesize/1000)*100 > steelamt)
+				H << "You don't have enough steel. You need [(enginesize/1000)*100] and you have [steelamt]. Try building a smaller engine."
+				return
+			else
+				H << "You start building the engine..."
+				done = TRUE
+				if (do_after(H,200,src))
+					if (done)
+						if (istype(H.l_hand, /obj/item/stack/material/steel))
+							H.l_hand.amount -= (enginesize/1000)*100
+						else if (istype(H.r_hand, /obj/item/stack/material/steel))
+							H.r_hand.amount -= (enginesize/1000)*100
+						var/obj/structure/engine/internal/gasoline/efficient/NEN = new/obj/structure/engine/internal/gasoline/efficient(get_turf(H))
+						NEN.enginesize = enginesize
+						NEN.weight = 40*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc 4-S gasoline engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
