@@ -1990,10 +1990,9 @@ RECIPE: /material/wood/soft/,oil well,/obj/structure/oilwell,40,270,1,1,economy 
 RECIPE: /material/wood/soft/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/soft/,gunsmithing bench,/obj/structure/gunbench,13,180,1,1,economy & production,118,0,0,8,null
 RECIPE: /material/wood/soft/,ethanol distillery,/obj/structure/distillery,15,180,1,1,economy & production,45,0,0,8,null
+RECIPE: /material/wood/soft/,large saw mill,/obj/structure/sawmill/large,100,60,1,1,economy & production,45,0,0,8,null
+RECIPE: /material/wood/soft/,powered saw mill,/obj/structure/sawmill/powered,200,60,1,1,economy & production,100,0,0,8,null
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
-RECIPE: /material/wood/soft,large saw mill,/obj/structure/sawmill/large,100,60,1,1,economy & production,45,0,0,8,null
-RECIPE: /material/wood/soft,powered saw mill,/obj/structure/sawmill/powered,200,60,1,1,economy & production,100,0,0,8,null
-
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
