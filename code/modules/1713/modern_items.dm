@@ -1057,7 +1057,7 @@
 	)
 	var/active = FALSE
 	var/next_spawn = -1
-	powerneeded = 500
+	powerneeded = 150
 
 /obj/structure/drill/proc/check_power()
 	if (!powersource || !powerneeded)
@@ -1153,7 +1153,7 @@
 		playsound(loc, 'sound/machines/drill.ogg', 100, FALSE)
 		if (next_spawn == 0)
 			var/picked = pick(ore_types)
-			
+
 			var/obj/item/stack/tospawn = new picked(null)
 			tospawn.amount = rand(10,30)
 			for (var/obj/item/stack/S in get_turf(src))
@@ -1166,7 +1166,7 @@
 				tospawn.loc = get_turf(src)
 			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
 			next_spawn = 30
-		
+
 		update_icon()
 		spawn (2 SECONDS)
 			next_spawn--

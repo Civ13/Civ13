@@ -189,9 +189,9 @@
 	icon_state = "gasoline_static"
 	engineclass = "gasoline"
 
-	maxpower = 100
-	torque = 1.2
-	fuelefficiency = 0.003
+	maxpower = 500
+	torque = 5
+	fuelefficiency = 0.001
 	fuels = list("gasoline")
 
 	starting_snd = 'sound/machines/gasoline_starting.ogg'
