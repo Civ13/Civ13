@@ -1,7 +1,7 @@
 /obj/map_metadata/red_menace
 	ID = MAP_RED_MENACE
 	title = "The Red Menace"
-	lobby_icon = "icons/lobby/redmenace.png"
+	lobby_icon = 'icons/lobby/redmenace.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 1200
 	no_hardcore = TRUE

@@ -1,7 +1,7 @@
 /obj/map_metadata/osowiec
 	ID = MAP_OSOWIEC
 	title = "Osowiec"
-	lobby_icon = "icons/lobby/ww1.png"
+	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	no_hardcore = FALSE

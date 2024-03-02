@@ -1,7 +1,7 @@
 /obj/map_metadata/warsaw
 	ID = MAP_WARSAW
 	title = "Warsaw Uprising"
-	lobby_icon = "icons/lobby/warsawup.png"
+	lobby_icon = 'icons/lobby/warsawup.png'
 	no_winner = "The battle for the city of Warsaw is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200

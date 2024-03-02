@@ -2,7 +2,7 @@
 /obj/map_metadata/vadso_city
 	ID = MAP_VADSO_CITY
 	title = "Vadso City"
-	lobby_icon = "icons/lobby/operation_falcon.png"
+	lobby_icon = 'icons/lobby/operation_falcon.png'
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 600

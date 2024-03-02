@@ -1,7 +1,7 @@
 /obj/map_metadata/rotstadt
 	ID = MAP_ROTSTADT
 	title = "Rotstadt Counter Insurgency"
-	lobby_icon = "icons/lobby/rotstadt.png"
+	lobby_icon = 'icons/lobby/rotstadt.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is still going on."

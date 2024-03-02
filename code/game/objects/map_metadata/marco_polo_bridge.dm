@@ -1,7 +1,7 @@
 /obj/map_metadata/marco_polo_bridge
 	ID = MAP_MARCO_POLO_BRIDGE
 	title = "Marco Polo Bridge"
-	lobby_icon = "icons/lobby/china.png"
+	lobby_icon = 'icons/lobby/china.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 
