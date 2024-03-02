@@ -1,7 +1,7 @@
 /obj/map_metadata/hunger_games
 	ID = MAP_HUNGERGAMES
 	title = "Hunger Games (need staff)"
-	lobby_icon = "icons/lobby/battleroyale.png"
+	lobby_icon = 'icons/lobby/battleroyale.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 0
 	is_singlefaction = TRUE

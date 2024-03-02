@@ -1,7 +1,7 @@
 /obj/map_metadata/bank_robbery
 	ID = MAP_BANK_ROBBERY
 	title = "The Goldstein Bank Heist"
-	lobby_icon = "icons/lobby/bank_robbery.png"
+	lobby_icon = 'icons/lobby/bank_robbery.png'
 	no_winner ="The robbery is still underway."
 	caribbean_blocking_area_types = list(
 		/area/caribbean/no_mans_land/invisible_wall,

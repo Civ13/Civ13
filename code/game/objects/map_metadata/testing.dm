@@ -3,7 +3,7 @@
 	ID = MAP_TESTING
 	title = "Test Map"
 	no_winner ="The round is proceeding normally."
-	lobby_icon = "icons/lobby/civ13.gif"
+	lobby_icon = 'icons/lobby/civ13.gif'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 

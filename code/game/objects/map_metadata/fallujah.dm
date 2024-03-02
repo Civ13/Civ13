@@ -1,7 +1,7 @@
 /obj/map_metadata/fallujah
 	ID = MAP_FALLUJAH
 	title = "Fallujah"
-	lobby_icon = "icons/lobby/fallujah.png"
+	lobby_icon = 'icons/lobby/fallujah.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."

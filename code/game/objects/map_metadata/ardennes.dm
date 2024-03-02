@@ -1,7 +1,7 @@
 /obj/map_metadata/ardennes
 	ID = MAP_ARDENNES
 	title = "Ardennes Offensive"
-	lobby_icon = "icons/lobby/ardennes.png"
+	lobby_icon = 'icons/lobby/ardennes.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/three,/area/caribbean/no_mans_land/invisible_wall/tundra/two,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
 	respawn_delay = 1200
 	no_winner = "The HQ stays under American control, stalling the German offense."

@@ -1,7 +1,7 @@
 /obj/map_metadata/eft_factory
 	ID = MAP_EFT_FACTORY
 	title = "Factory"
-	lobby_icon = "icons/lobby/battleroyale.png"
+	lobby_icon = 'icons/lobby/battleroyale.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3000
 

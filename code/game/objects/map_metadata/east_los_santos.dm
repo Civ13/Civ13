@@ -1,7 +1,7 @@
 /obj/map_metadata/east_los_santos
 	ID = MAP_EAST_LOS_SANTOS
 	title = "East Los Santos"
-	lobby_icon = "icons/lobby/east_los_santos.png"
+	lobby_icon = 'icons/lobby/east_los_santos.png'
 	no_winner = "The fight for the hood is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0

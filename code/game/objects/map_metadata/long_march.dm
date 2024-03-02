@@ -1,7 +1,7 @@
 /obj/map_metadata/long_march
 	ID = MAP_LONG_MARCH
 	title = "The Long March"
-	lobby_icon = "icons/lobby/longmarch.png"
+	lobby_icon = 'icons/lobby/longmarch.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/inside,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE
 	respawn_delay = 1200

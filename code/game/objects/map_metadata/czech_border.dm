@@ -1,8 +1,8 @@
 
 /obj/map_metadata/czech_border
-	ID = MAP_czech_border
+	ID = MAP_CZECH_BORDER
 	title = "Battle On the Czech border"
-	lobby_icon = "icons/lobby/ "
+	lobby_icon = 'icons/lobby/modern.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate,/area/caribbean/no_mans_land/invisible_wall/temperate/one,/area/caribbean/no_mans_land/invisible_wall/temperate/one)
 	respawn_delay = 1200
 	no_winner ="The Village is under Czech control."

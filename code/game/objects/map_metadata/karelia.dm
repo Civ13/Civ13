@@ -1,7 +1,7 @@
 /obj/map_metadata/karelia
 	ID = MAP_KARELIA
 	title = "Karelia"
-	lobby_icon = "icons/lobby/karelia.png"
+	lobby_icon = 'icons/lobby/karelia.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 1200
 	no_hardcore = TRUE
