@@ -114,70 +114,79 @@
 	if (istype(proj, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = proj
 		if (S.atype == "HE")
-			if (prob(90))
-				visible_message("<span class = 'warning'>\The [src] blows up!</span>")
+			if (prob(70))
+				visible_message(SPAN_WARNING("\The [src] gets wrecked!"))
+				broken = TRUE
+			else
+				visible_message(SPAN_WARNING("\The [src] blows up!"))
 				qdel(src)
 		else
 			if (prob(25))
-				visible_message("<span class = 'warning'>\The [src] blows up!</span>")
-				qdel(src)
+				visible_message(SPAN_WARNING("\The [src] gets wrecked!"))
+				broken = TRUE
+		return
 
 /obj/structure/cannon/modern/tank/attackby(obj/item/W as obj, mob/M as mob)
-	if (broken && istype(W, /obj/item/weapon/weldingtool))
-		visible_message("[M] starts repairing the [src]...")
-		if (do_after(M, 200, src))
-			visible_message("[M] sucessfully repairs the [src].")
-			broken = FALSE
-			return
-	if (istype(W, ammotype))
-		var/obj/item/cannon_ball/TS = W
-		if (caliber != TS.caliber && caliber != null && caliber != 0)
-			M << "<span class = 'warning'>\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.</span>"
-			return
-		if (loaded.len >= max_loaded)
-			M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
-			return
-		// load first and only slot
-		var/found_loader = FALSE
-		for (var/obj/structure/bed/chair/loader/L in M.loc)
-			found_loader = TRUE
-		if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-			M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
-			return FALSE
-
-		var/loadtime = caliber*0.5
-		if (istype(src,/obj/structure/cannon/modern/naval))
-			loadtime = caliber*0.25
-
-		if (do_after(M, loadtime, M, can_move = TRUE))
-			if (M && (locate(M) in range(1,src)))
-				found_loader = FALSE
-				for (var/obj/structure/bed/chair/loader/L in M.loc)
-					found_loader = TRUE
-				if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-					M << "<span class = 'warning'>You need to be at the loader's position to load \the [src].</span>"
-					return FALSE
-				M.remove_from_mob(W)
-				W.loc = src
-				loaded += W
-				M << SPAN_NOTICE("You load \the [src].")
-				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+	if (!broken)
+		if (istype(W, ammotype))
+			var/obj/item/cannon_ball/TS = W
+			if (caliber != TS.caliber && caliber != null && caliber != 0)
+				to_chat(M, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon."))
 				return
-	else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-		M << (anchored ? "<span class='notice'>You start unfastening \the [src] from the floor.</span>" : "<span class='notice'>You start securing \the [src] to the floor.</span>")
-		if (do_after(M, 3 SECONDS, src))
-			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-			M << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-			anchored = !anchored
-	else if (can_assemble && assembled)
-		if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
-			M.remove_from_mob(W)
-			gunner_chair = W
-			W.anchored = TRUE
-		else if (!loader_chair && istype(W, /obj/structure/bed/chair/loader))
-			M.remove_from_mob(W)
-			loader_chair = W
-			W.anchored = TRUE
+			if (loaded.len >= max_loaded)
+				to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+				return
+			// load first and only slot
+			var/found_loader = FALSE
+			for (var/obj/structure/bed/chair/loader/L in M.loc)
+				found_loader = TRUE
+			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+				to_chat(M, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
+				return FALSE
+
+			var/loadtime = caliber*0.5
+			if (istype(src,/obj/structure/cannon/modern/naval))
+				loadtime = caliber*0.25
+
+			if (do_after(M, loadtime, M, can_move = TRUE))
+				if (M && (locate(M) in range(1,src)))
+					found_loader = FALSE
+					for (var/obj/structure/bed/chair/loader/L in M.loc)
+						found_loader = TRUE
+					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+						to_chat(M, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
+						return FALSE
+					M.remove_from_mob(W)
+					W.loc = src
+					loaded += W
+					to_chat(M, SPAN_NOTICE("You load \the [src]."))
+					playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+					return
+		else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
+			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE(">You start securing \the [src] to the floor.")))
+			if (do_after(M, 3 SECONDS, src))
+				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+				anchored = !anchored
+		else if (can_assemble && assembled)
+			if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
+				M.remove_from_mob(W)
+				gunner_chair = W
+				W.anchored = TRUE
+			else if (!loader_chair && istype(W, /obj/structure/bed/chair/loader))
+				M.remove_from_mob(W)
+				loader_chair = W
+				W.anchored = TRUE
+	else
+		if (istype(W, /obj/item/weapon/weldingtool))
+			visible_message("[M] starts repairing the [src]...")
+			if (do_after(M, 200, src))
+				visible_message("[M] sucessfully repairs the [src].")
+				broken = FALSE
+				return
+			return
+		else
+			to_chat(M, SPAN_WARNING("\The [src] is broken! Repair it first."))
 
 /obj/structure/cannon/New()
 	..()
@@ -191,7 +200,6 @@
 			degree = 180
 		if (EAST)
 			degree = 0
-
 
 /obj/structure/cannon/Destroy()
 	cannon_piece_list -= src
