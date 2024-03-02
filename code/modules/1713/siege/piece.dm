@@ -189,6 +189,18 @@
 					F.update_icon()
 				return
 			return
+		else if (istype(W, /obj/item/stack/material/steel)) // Repair at the cost of 10 steel and slower
+			var/obj/item/stack/material/MAT = W
+			if (MAT.amount >= 10)
+				visible_message("[M] starts repairing the [src]...")
+				if (do_after(M, 300, src))
+					visible_message("[M] sucessfully repairs the [src].")
+					MAT.amount -= 10
+					broken = FALSE
+					return
+			else
+				to_chat(M, "You need 10 [MAT] to repair \the [src].")
+			return
 		else
 			to_chat(M, SPAN_DANGER("\The [src] is broken! Repair it first."))
 
@@ -266,7 +278,7 @@
 				broken = FALSE
 				return
 			return
-		if (istype(W, /obj/item/stack/material/steel)) // Repair at the cost of 10 steel and slower
+		else if (istype(W, /obj/item/stack/material/steel)) // Repair at the cost of 10 steel and slower
 			var/obj/item/stack/material/MAT = W
 			if (MAT.amount >= 10)
 				visible_message("[M] starts repairing the [src]...")
