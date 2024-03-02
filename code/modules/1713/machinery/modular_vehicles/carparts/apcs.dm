@@ -5,6 +5,7 @@
 /obj/structure/vehicleparts/frame/mtlb
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 
@@ -49,6 +50,7 @@
 /obj/structure/vehicleparts/frame/m113
 	icon = 'icons/obj/vehicles/apcparts.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts.dmi'
 
 /obj/structure/vehicleparts/frame/m113/lf
 	icon_state = "m113_frame_steel_front_left"
@@ -105,7 +107,7 @@
 /obj/structure/vehicleparts/frame/bmd2
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	// broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 
@@ -180,7 +182,7 @@
 /obj/structure/vehicleparts/frame/btr80
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	// broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	pixel_x = -32
 	pixel_y = -32
 
