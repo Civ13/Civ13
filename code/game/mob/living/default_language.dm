@@ -37,6 +37,6 @@
 	set category = "IC"
 
 	if (default_language)
-        to_chat(src, SPAN_NOTICE("You are currently speaking [default_language] by default."))
-    else
-        to_chat(src, SPAN_NOTICE("Your current default language is your species or mob type default."))
+		to_chat(src, SPAN_NOTICE("You are currently speaking [default_language] by default."))
+	else
+		to_chat(src, SPAN_NOTICE("Your current default language is your species or mob type default."))
