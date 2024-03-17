@@ -475,3 +475,141 @@ var/const/enterloopsanity = 100
 
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE
+
+/turf/proc/try_airstrike(var/ckey, var/faction_text, var/direction = "NORTH", var/payload = "Rockets")
+	var/turf/T = src
+
+	message_admins("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
+	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+	
+	switch(faction_text)
+		if (DUTCH)
+			faction1_airstrikes_remaining--
+		if (GERMAN)
+			faction1_airstrikes_remaining--
+		if (AMERICAN)
+			faction1_airstrikes_remaining--
+		if (BRITISH)
+			faction1_airstrikes_remaining--
+		
+		if (RUSSIAN)
+			faction2_airstrikes_remaining--
+
+	var/aircraft_name
+	switch(faction_text)
+		if (DUTCH)
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			aircraft_name = "F-16"
+		if (GERMAN)
+			new /obj/effect/plane_flyby/ju87_no_message(T)
+			aircraft_name = "Ju 87 Stuka"
+		if (AMERICAN)
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			aircraft_name = "F-16"
+		if (RUSSIAN)
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			aircraft_name = "Su-25"
+			
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
+	
+	var/anti_air_in_range = FALSE
+	for (var/obj/structure/milsim/anti_air/AA in range(60, T)) // Check if there's anti air within 60 tiles
+		if (AA.faction_text != faction_text)
+			anti_air_in_range++
+
+	if (anti_air_in_range) // If there's anti air nearby try to shoot down the jet
+		spawn(3 SECONDS)
+			var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 780)
+			sam_sound.priority = 250
+
+			for (var/mob/M in player_list)
+				if (!new_player_mob_list.Find(M))
+					to_chat(M, SPAN_DANGER("<big>A SAM site fires at \the [aircraft_name]!</big>"))
+					M.client << sam_sound
+
+			spawn(5 SECONDS)
+				if (prob(95)) // Shoot down the jet
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+					uploaded_sound.priority = 250
+
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							to_chat(M, SPAN_DANGER("<big>The SAM directly hits \the [aircraft_name], shooting it down!</big>"))
+							if (M.client)
+								M.client << uploaded_sound
+					
+					switch (faction_text)
+						if (DUTCH)
+							faction1_aircraft_remaining--
+						if (GERMAN)
+							faction1_aircraft_remaining--
+						if (AMERICAN)
+							faction1_aircraft_remaining--
+						if (BRITISH)
+							faction1_aircraft_remaining--
+
+						if (RUSSIAN)
+							faction2_aircraft_remaining--
+					message_admins("[map.roundend_condition_def2name(faction_text)] Aircraft [aircraft_name] has been shot down.")
+					log_game("Aircraft [aircraft_name] has been shot down.")
+					return
+
+				else // Evade the Anti-Air
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+					uploaded_sound.priority = 250
+
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							to_chat(M, SPAN_NOTICE("<big><b>The [aircraft_name] evades the SAM!</b></big>"))
+							if (M.client)
+								M.client << uploaded_sound
+					airstrike(direction)
+	else
+		spawn(3 SECONDS)
+			airstrike(direction)
+	return
+
+/turf/proc/airstrike(var/direction = "NORTH", var/payload = "Rockets")
+	var/turf/T = src
+
+	var/strikenum = 5
+
+	var/xoffset = 0
+	var/yoffset = 0
+
+	var/direction_xoffset = 0
+	var/direction_yoffset = 0
+	switch (payload)
+		if ("Rockets")
+			strikenum = 5
+			to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
+			
+			spawn(2 SECONDS)
+				for (var/i = 1, i <= strikenum, i++)
+					switch (direction)
+						if ("NORTH")
+							direction_yoffset += 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("EAST")
+							direction_xoffset += 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+						if ("SOUTH")
+							direction_yoffset -= 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+						if ("WEST")
+							direction_xoffset -= 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+					spawn(i*8)
+						explosion(locate((T.x + xoffset + direction_xoffset), (T.y + yoffset + direction_yoffset), T.z), 0, 1, 5, 3, sound='sound/weapons/Explosives/FragGrenade.ogg')
+		if ("Bomb")
+			strikenum = 1
+			xoffset = rand(-2,2)
+			yoffset = rand(-2,2)
+
+			spawn(3 SECONDS)
+				for (var/i = 1, i <= strikenum, i++)
+					explosion(locate((T.x + xoffset), (T.y + yoffset), T.z), 2, 3, 4, 4, sound='sound/weapons/Explosives/FragGrenade.ogg')

@@ -615,6 +615,15 @@ steam.start() -- spawns the effect
 				M << SPAN_NOTICE("<font size=3>The air vibrates as a Junkers Ju 87 'Stuka' flies overhead.</font>")
 				M.client << uploaded_sound
 
+/obj/effect/plane_flyby/ju87_no_message/New()
+	..()
+	spawn(10)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/ju87.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		uploaded_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				M.client << uploaded_sound
+
 /obj/effect/plane_flyby/p47/New()
 	..()
 	spawn(10)

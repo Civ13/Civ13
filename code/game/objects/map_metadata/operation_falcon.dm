@@ -90,7 +90,7 @@
 /obj/map_metadata/operation_falcon/cross_message(faction)
 	switch (faction)
 		if (DUTCH)
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 			for (var/mob/M in player_list)
 				if (M.client)
 					M.client << warning_sound
