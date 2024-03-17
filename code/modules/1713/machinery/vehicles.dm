@@ -519,6 +519,7 @@
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
+	turret_type = "m4_turret"
 	reg_number = ""
 	New()
 		..()
