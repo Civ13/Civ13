@@ -192,14 +192,14 @@
 						if (AA.faction_text != user.faction_text)
 							anti_air_in_range++
 					if (anti_air_in_range)
-						var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+						var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 780)
 						sam_sound.priority = 250
 						for (var/mob/M in player_list)
 							if (!new_player_mob_list.Find(M))
 								to_chat(M, SPAN_DANGER("<big>A SAM site fires at the [helicopter_name]!</big>"))
 								M.client << sam_sound
 						spawn(5 SECONDS)
-							var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+							var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
 							uploaded_sound.priority = 250
 							for (var/mob/M in player_list)
 								if (!new_player_mob_list.Find(M))

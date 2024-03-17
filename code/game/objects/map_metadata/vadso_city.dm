@@ -89,7 +89,7 @@
 
 
 /obj/map_metadata/vadso_city/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 
