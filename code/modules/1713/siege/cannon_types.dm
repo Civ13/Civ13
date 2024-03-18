@@ -483,7 +483,7 @@
 	firedelay = 12
 	path = /obj/item/weapon/foldable/generic
 
-/obj/structure/cannon/mortar/foldable/verb/Retrieve()
+/obj/structure/cannon/mortar/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
@@ -500,6 +500,10 @@
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message(SPAN_WARNING("[usr] retrieves \the [src] from the ground."))
+
+/obj/structure/cannon/mortar/foldable/AltClick(mob/user)
+	retrieve()
+	return
 
 /obj/structure/cannon/mortar/foldable/attackby(obj/item/I as obj, mob/M as mob)
 	if (istype(I, ammotype))

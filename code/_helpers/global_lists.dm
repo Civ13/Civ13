@@ -110,11 +110,14 @@ var/global/faction1_supply_points = 1600
 var/global/faction2_supply_points = 1600
 
 //Aircraft Stuff
-var/global/faction1_aircraft_remaining = 3
-var/global/faction2_aircraft_remaining = 3
+var/global/faction1_aircraft_cooldown = 0
+var/global/faction2_aircraft_cooldown = 0
 
-var/global/faction1_airstrikes_remaining = 12
-var/global/faction2_airstrikes_remaining = 12
+var/global/faction1_aircraft_rearming = 0
+var/global/faction2_aircraft_rearming = 0
+
+var/global/faction1_airstrikes_remaining = 10
+var/global/faction2_airstrikes_remaining = 10
 
 // for mass deletion
 var/global/list/bullet_casings = list()

@@ -481,35 +481,47 @@ var/const/enterloopsanity = 100
 
 	message_admins("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
 	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
-	
-	switch(faction_text)
-		if (DUTCH)
-			faction1_airstrikes_remaining--
-		if (GERMAN)
-			faction1_airstrikes_remaining--
-		if (AMERICAN)
-			faction1_airstrikes_remaining--
-		if (BRITISH)
-			faction1_airstrikes_remaining--
-		
-		if (RUSSIAN)
-			faction2_airstrikes_remaining--
 
 	var/aircraft_name
-	switch(faction_text)
+	var/drop_delay = 3 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
+	switch(faction_text) // Check what faction has called in the airstrike and select an aircraft.
 		if (DUTCH)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			aircraft_name = "F-16"
+			drop_delay = 3 SECONDS
 		if (GERMAN)
-			new /obj/effect/plane_flyby/ju87_no_message(T)
-			aircraft_name = "Ju 87 Stuka"
+			if (map.ordinal_age == 6)
+				new /obj/effect/plane_flyby/ju87_no_message(T)
+				aircraft_name = "Ju 87 Stuka"
+				drop_delay = 18 SECONDS
+			else
+				new /obj/effect/plane_flyby/ju87_no_message(T)
+				aircraft_name = "Ju 87 Stuka"
+				drop_delay = 3 SECONDS
 		if (AMERICAN)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			aircraft_name = "F-16"
+			drop_delay = 3 SECONDS
 		if (RUSSIAN)
-			new /obj/effect/plane_flyby/su25_no_message(T)
-			aircraft_name = "Su-25"
-			
+			if (map.ordinal_age == 6)
+				return // No aircraft for the Russians in WW2 yet
+			else
+				new /obj/effect/plane_flyby/su25_no_message(T)
+				aircraft_name = "Su-25"
+				drop_delay = 3 SECONDS
+	
+	var/faction_num
+	if (map.faction1 == faction_text) // Check how many airstrikes a faction has left
+		faction_num = 1
+	else
+		faction_num = 2
+	
+	switch (faction_num)
+		if (1)
+			faction1_airstrikes_remaining--
+		if (2)
+			faction2_airstrikes_remaining--
+
 	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
 	
 	var/anti_air_in_range = FALSE
@@ -538,18 +550,14 @@ var/const/enterloopsanity = 100
 							if (M.client)
 								M.client << uploaded_sound
 					
-					switch (faction_text)
-						if (DUTCH)
-							faction1_aircraft_remaining--
-						if (GERMAN)
-							faction1_aircraft_remaining--
-						if (AMERICAN)
-							faction1_aircraft_remaining--
-						if (BRITISH)
-							faction1_aircraft_remaining--
-
-						if (RUSSIAN)
-							faction2_aircraft_remaining--
+					switch (faction_num)
+						if (1)
+							faction1_aircraft_rearming = TRUE
+							faction1_aircraft_cooldown = world.time + 6 MINUTES
+						if (2)
+							faction2_aircraft_rearming = TRUE
+							faction2_aircraft_cooldown = world.time + 6 MINUTES
+				
 					message_admins("[map.roundend_condition_def2name(faction_text)] Aircraft [aircraft_name] has been shot down.")
 					log_game("Aircraft [aircraft_name] has been shot down.")
 					return
@@ -563,13 +571,13 @@ var/const/enterloopsanity = 100
 							to_chat(M, SPAN_NOTICE("<big><b>The [aircraft_name] evades the SAM!</b></big>"))
 							if (M.client)
 								M.client << uploaded_sound
-					airstrike(direction)
+					airstrike(direction, payload, drop_delay)
 	else
 		spawn(3 SECONDS)
-			airstrike(direction)
+			airstrike(direction, payload, drop_delay)
 	return
 
-/turf/proc/airstrike(var/direction = "NORTH", var/payload = "Rockets")
+/turf/proc/airstrike(var/direction = "NORTH", var/payload = "Rockets", var/drop_delay = 3 SECONDS)
 	var/turf/T = src
 
 	var/strikenum = 5
@@ -584,7 +592,7 @@ var/const/enterloopsanity = 100
 			strikenum = 5
 			to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
 			
-			spawn(2 SECONDS)
+			spawn(drop_delay)
 				for (var/i = 1, i <= strikenum, i++)
 					switch (direction)
 						if ("NORTH")
@@ -603,13 +611,24 @@ var/const/enterloopsanity = 100
 							direction_xoffset -= 3
 							xoffset = rand(0,1)
 							yoffset = rand(-2,2)
-					spawn(i*8)
+					spawn(i*5)
 						explosion(locate((T.x + xoffset + direction_xoffset), (T.y + yoffset + direction_yoffset), T.z), 0, 1, 5, 3, sound='sound/weapons/Explosives/FragGrenade.ogg')
 		if ("Bomb")
 			strikenum = 1
-			xoffset = rand(-2,2)
-			yoffset = rand(-2,2)
+			xoffset = rand(-3,3)
+			yoffset = rand(-3,3)
 
-			spawn(3 SECONDS)
+			spawn(drop_delay)
 				for (var/i = 1, i <= strikenum, i++)
-					explosion(locate((T.x + xoffset), (T.y + yoffset), T.z), 2, 3, 4, 4, sound='sound/weapons/Explosives/FragGrenade.ogg')
+					var/obj/structure/bomb/B = new /obj/structure/bomb(locate((T.x + xoffset), (T.y + yoffset), T.z))
+					playsound(get_turf(B), 'sound/effects/bang.ogg', 70)
+					switch (direction)
+						if ("NORTH")
+							B.dir = NORTH
+						if ("EAST")
+							B.dir = EAST
+						if ("SOUTH")
+							B.dir = SOUTH
+						if ("WEST")
+							B.dir = WEST
+					B.explode()
