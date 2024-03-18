@@ -1108,8 +1108,8 @@
 /obj/structure/bomb/kg150
 	name = "150 kg bomb"
 
-	var/num_fragments = 50
-	var/fragment_damage = 30
+	num_fragments = 50
+	fragment_damage = 30
 
 /obj/structure/bomb/kg150/explode()
 	spawn(timer)
