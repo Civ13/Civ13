@@ -483,6 +483,7 @@ var/const/enterloopsanity = 100
 	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 
 	var/aircraft_name
+	var/dive_text = "cuts through"
 	var/drop_delay = 1 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
 	switch(faction_text) // Check what faction has called in the airstrike and select an aircraft.
 		if (DUTCH)
@@ -493,11 +494,13 @@ var/const/enterloopsanity = 100
 			if (map.ordinal_age == 6)
 				new /obj/effect/plane_flyby/ju87_no_message(T)
 				aircraft_name = "Ju 87 Stuka"
+				dive_text = "dives down"
 				drop_delay = 18 SECONDS
 			else
 				new /obj/effect/plane_flyby/ju87_no_message(T)
 				aircraft_name = "Ju 87 Stuka"
-				drop_delay = 1 SECONDS
+				dive_text = "dives down"
+				drop_delay = 18 SECONDS
 		if (AMERICAN)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			aircraft_name = "F-16"
@@ -522,7 +525,7 @@ var/const/enterloopsanity = 100
 		if (2)
 			faction2_airstrikes_remaining--
 
-	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] [dive_text].</font>"))
 	
 	var/anti_air_in_range = FALSE
 	for (var/obj/structure/milsim/anti_air/AA in range(60, T)) // Check if there's anti air within 60 tiles
