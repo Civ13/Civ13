@@ -128,7 +128,7 @@ Parts of code courtesy of Super3222
 
 	var/airstrikes_remaining
 	
-	var/call_in_time = 1 SECOND
+	var/call_in_time = 3 SECONDS
 	var/cooldown = 30 SECONDS
 	var/debounce = FALSE
 
@@ -138,7 +138,8 @@ Parts of code courtesy of Super3222
 	icon_state = "binoculars"
 
 	call_in_time = 5 SECONDS
-	payload_list = list("Bomb")
+	cooldown = 1 MINUTE
+	payload_list = list("50kg Bomb")
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
@@ -147,7 +148,7 @@ Parts of code courtesy of Super3222
 		var/faction_num
 		if (map.faction1 == H.faction_text) // Check which faction is using the designator
 			faction_num = 1
-		else if (map.faction1 == H.faction_text)
+		else if (map.faction2 == H.faction_text)
 			faction_num = 2
 		
 		if (faction_num)
@@ -182,7 +183,7 @@ Parts of code courtesy of Super3222
 			var/faction_num
 			if (map.faction1 == H.faction_text) // Check which faction is using the designator
 				faction_num = 1
-			else if (map.faction1 == H.faction_text)
+			else if (map.faction2 == H.faction_text)
 				faction_num = 2
 
 			if (faction_num)
@@ -200,8 +201,10 @@ Parts of code courtesy of Super3222
 							switch (faction_num)
 								if (1)
 									faction1_aircraft_rearming = FALSE
+									faction1_airstrikes_remaining = faction1_airstrikes_max
 								if (2)
 									faction2_aircraft_rearming = FALSE
+									faction2_airstrikes_remaining = faction2_airstrikes_max
 							checking = TRUE
 							var/distcon = max(abs(H.x-target.x),abs(H.y-target.y))
 							var/gdir = get_dir(H, target)

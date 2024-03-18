@@ -895,6 +895,7 @@
 	name = "anti-tank grenade"
 	desc = "A powerful grenade, useful against armored vehicles."
 	icon_state = "rpg40"
+	explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 	det_time = 50
 	throw_range = 5
 	heavy_armor_penetration = 22
@@ -1056,14 +1057,119 @@
 /obj/structure/bomb
 	name = "50 kg bomb"
 	desc = "Uhm..."
-	icon = 'icons/obj/cannon_ball.dmi'
-	icon_state = "bomb"
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "aircraft_bomb"
 	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
 	var/timer = 1 SECOND
 
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 30
+	var/fragment_damage = 15
+	var/damage_step = 2
+	var/spread_range = 7
+
+/obj/structure/bomb/proc/drop()
+	density = FALSE
+	spawn(15)
+		var/turf/T = get_turf(src)
+		playsound(T, 'sound/effects/bang.ogg', 80)
+		density = TRUE
+		for (var/mob/living/L in T)
+			L.gib()
+		explode()
+	return
+
 /obj/structure/bomb/proc/explode()
 	spawn(timer)
-		explosion(get_turf(src), 2, 3, 4, 4, sound='sound/weapons/Explosives/FragGrenade.ogg')
+		if (prob(99))
+			var/turf/T = get_turf(src)
+			explosion(T, 2, 3, 5, 4)
+			if (!ismob(loc))
+				var/list/target_turfs = getcircle(T, spread_range)
+				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+				for (var/turf/TT in target_turfs)
+					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+					P.damage = fragment_damage
+					P.pellets = fragments_per_projectile
+					P.range_step = damage_step
+					P.shot_from = name
+					P.launch_fragment(TT)
+					P.firer_loc = get_turf(src)
+			qdel(src)
+	return
+
+/obj/structure/bomb/attackby(obj/item/W as obj, mob/user as mob)
+	explode()
+	return
+
+/obj/structure/bomb/kg150
+	name = "150 kg bomb"
+
+	num_fragments = 50
+	fragment_damage = 30
+
+/obj/structure/bomb/kg150/explode()
+	spawn(timer)
+		if (prob(99))
+			var/turf/T = get_turf(src)
+			explosion(T, 3, 5, 8, 5)
+			if (!ismob(loc))
+				var/list/target_turfs = getcircle(T, spread_range)
+				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+				for (var/turf/TT in target_turfs)
+					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+					P.damage = fragment_damage
+					P.pellets = fragments_per_projectile
+					P.range_step = damage_step
+					P.shot_from = name
+					P.launch_fragment(TT)
+					P.firer_loc = get_turf(src)
+			qdel(src)
+	return
+
+/obj/structure/missile
+	name = "missile"
+	desc = "Uhm..."
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "aircraft_missile"
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 30
+	var/fragment_damage = 15
+	var/damage_step = 2
+	var/spread_range = 7
+
+/obj/structure/missile/proc/drop()
+	density = FALSE
+	spawn(15)
+		explode()
+	return
+
+/obj/structure/missile/proc/explode()
+	var/turf/T = get_turf(src)
+	explosion(T, 0, 1, 5, 3, sound='sound/weapons/Explosives/FragGrenade.ogg')
+	if (!ismob(loc))
+		var/list/target_turfs = getcircle(T, spread_range)
+		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+		for (var/turf/TT in target_turfs)
+			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+			P.damage = fragment_damage
+			P.pellets = fragments_per_projectile
+			P.range_step = damage_step
+			P.shot_from = name
+			P.launch_fragment(TT)
+			P.firer_loc = get_turf(src)
+
+			// any mob on the source turf, lying or not, absorbs 100% of shrapnel
+			for (var/mob/living/L in T)
+				P.attack_mob(L, 0, 0)
+	qdel(src)
 	return
