@@ -399,7 +399,7 @@ BLIND	 // can't see anything
 		I.forceMove(src)
 		holding = I
 		user.visible_message("<span class='notice'>\The [user] shoves \a [I] into \the [src].</span>")
-		verbs |= /obj/item/clothing/shoes/proc/draw_knife
+		//verbs |= /obj/item/clothing/shoes/proc/draw_knife
 		update_icon()
 	else
 		return ..()
