@@ -239,11 +239,11 @@ Parts of code courtesy of Super3222
 						switch (faction_num) // Switch CAS to re-arms
 							if (1)
 								faction1_aircraft_rearming = TRUE
-								faction1_aircraft_cooldown = world.time + 2 MINUTES
+								faction1_aircraft_cooldown = world.time + 5 MINUTES
 								to_chat(H, SPAN_DANGER("<big><b><font color='#ADD8E6'>CAS now re-arming, it'll be back in [(faction1_aircraft_cooldown - world.time)/10] seconds.</font></b></big>"))
 							if (2)
 								faction2_aircraft_rearming = TRUE
-								faction2_aircraft_cooldown = world.time + 2 MINUTES
+								faction2_aircraft_cooldown = world.time + 5 MINUTES
 								to_chat(H, SPAN_DANGER("<big><b><font color='#ADD8E6'>CAS now re-arming, it'll be back in [(faction2_aircraft_cooldown - world.time)/10] seconds.</font></b></big>"))
 			else
 				to_chat(H, SPAN_DANGER("<big><b>There's no friendly CAS that you can call in.</b></big>"))

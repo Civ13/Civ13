@@ -553,10 +553,10 @@ var/const/enterloopsanity = 100
 					switch (faction_num)
 						if (1)
 							faction1_aircraft_rearming = TRUE
-							faction1_aircraft_cooldown = world.time + 6 MINUTES
+							faction1_aircraft_cooldown = world.time + 5 MINUTES
 						if (2)
 							faction2_aircraft_rearming = TRUE
-							faction2_aircraft_cooldown = world.time + 6 MINUTES
+							faction2_aircraft_cooldown = world.time + 5 MINUTES
 				
 					message_admins("[map.roundend_condition_def2name(faction_text)] Aircraft [aircraft_name] has been shot down.")
 					log_game("Aircraft [aircraft_name] has been shot down.")
