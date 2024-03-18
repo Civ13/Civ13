@@ -84,7 +84,7 @@
 	anchored = TRUE
 	var/path
 
-/obj/item/weapon/gun/projectile/automatic/stationary/foldable/verb/Retrieve()
+/obj/item/weapon/gun/projectile/automatic/stationary/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)
@@ -869,7 +869,7 @@
 	base_icon = "foldable_atgm"
 	var/path = /obj/item/weapon/foldable/atgm
 
-/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/Retrieve()
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1, usr)

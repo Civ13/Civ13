@@ -1053,3 +1053,18 @@
 		if (firer)
 			firer.awards["tank"]+=(heavy_armor_penetration/200)
 	qdel(src)
+
+/obj/structure/bomb
+	name = "50 kg bomb"
+	desc = "Uhm..."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "bomb"
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	var/timer = 1 SECOND
+
+/obj/structure/bomb/proc/explode()
+	spawn(timer)
+		explosion(get_turf(src), 2, 3, 4, 4, sound='sound/weapons/Explosives/FragGrenade.ogg')
+	return

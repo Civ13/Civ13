@@ -24,7 +24,7 @@
 	ordinal_age = 7
 	songs = list(
 		"Audio - Emissions:1" = "sound/music/emissions.ogg")
-	gamemode = "King of the Hill"
+	gamemode = "Extraction"
 
 /obj/map_metadata/siberiad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)

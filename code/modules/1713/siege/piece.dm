@@ -513,6 +513,8 @@
 		dir = WEST
 	else
 		dir = NORTH
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
+		F.update_icon()
 
 	if (href_list["toggle_scope"])
 		if (scope_mod == "Enabled")
@@ -1177,7 +1179,7 @@
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
 
-	for (var/obj/structure/vehicleparts/frame/F in loc)
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
 		F.update_icon()
 
 	target_coords()
@@ -1328,6 +1330,9 @@
 			chair_found.dir = src.dir
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
+
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
+		F.update_icon()
 
 	target_coords()
 	update_scope()
