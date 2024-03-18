@@ -139,7 +139,7 @@ Parts of code courtesy of Super3222
 
 	call_in_time = 5 SECONDS
 	cooldown = 1 MINUTE
-	payload_list = list("Bomb")
+	payload_list = list("50kg Bomb")
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
