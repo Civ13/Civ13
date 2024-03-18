@@ -496,6 +496,7 @@ var/const/enterloopsanity = 100
 			faction2_airstrikes_remaining--
 
 	var/aircraft_name
+	var/incoming_text = "cuts through"
 	switch(faction_text)
 		if (DUTCH)
 			new /obj/effect/plane_flyby/f16_no_message(T)
@@ -503,6 +504,7 @@ var/const/enterloopsanity = 100
 		if (GERMAN)
 			new /obj/effect/plane_flyby/ju87_no_message(T)
 			aircraft_name = "Ju 87 Stuka"
+			incoming_text = "dives down"
 		if (AMERICAN)
 			new /obj/effect/plane_flyby/f16_no_message(T)
 			aircraft_name = "F-16"
@@ -510,7 +512,7 @@ var/const/enterloopsanity = 100
 			new /obj/effect/plane_flyby/su25_no_message(T)
 			aircraft_name = "Su-25"
 			
-	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] [incoming_text].</font>"))
 	
 	var/anti_air_in_range = FALSE
 	for (var/obj/structure/milsim/anti_air/AA in range(60, T)) // Check if there's anti air within 60 tiles
@@ -612,4 +614,4 @@ var/const/enterloopsanity = 100
 
 			spawn(3 SECONDS)
 				for (var/i = 1, i <= strikenum, i++)
-					explosion(locate((T.x + xoffset), (T.y + yoffset), T.z), 2, 3, 4, 4, sound='sound/weapons/Explosives/FragGrenade.ogg')
+					explosion(locate((T.x + xoffset), (T.y + yoffset), T.z), 2, 3, 4, 4)
