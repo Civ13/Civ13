@@ -895,6 +895,7 @@
 	name = "anti-tank grenade"
 	desc = "A powerful grenade, useful against armored vehicles."
 	icon_state = "rpg40"
+	explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 	det_time = 50
 	throw_range = 5
 	heavy_armor_penetration = 22
