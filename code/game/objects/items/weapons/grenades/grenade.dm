@@ -1105,13 +1105,13 @@
 	explode()
 	return
 
-/obj/structure/bomb/kg150
-	name = "150 kg bomb"
+/obj/structure/bomb/kg250
+	name = "250 kg bomb"
 
 	num_fragments = 50
 	fragment_damage = 30
 
-/obj/structure/bomb/kg150/explode()
+/obj/structure/bomb/kg250/explode()
 	spawn(timer)
 		if (prob(99))
 			var/turf/T = get_turf(src)

@@ -118,7 +118,13 @@
 					return
 				else
 					var/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/P = H.get_active_hand()
-					P.rangecheck(H,A)
+					if (P.needs_instruments)
+						if (istype(H.get_inactive_hand(), /obj/item/weapon/compass))
+							P.rangecheck(H,A)
+						else
+							to_chat(H, SPAN_DANGER("You need to have a compass in your other hand to this!"))
+					else
+						P.rangecheck(H,A)
 			else
 				to_chat(H, SPAN_DANGER("You need to have a radio to use this!"))
 				return
