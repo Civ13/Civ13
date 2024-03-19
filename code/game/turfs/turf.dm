@@ -630,7 +630,7 @@ var/const/enterloopsanity = 100
 
 			spawn(drop_delay)
 				for (var/i = 1, i <= strikenum, i++)
-					var/obj/structure/bomb/B = new /obj/structure/bomb(null)
+					var/obj/structure/bomb/B = new /obj/structure/bomb/kg50(null)
 					switch (direction)
 						if ("NORTH")
 							xoffset = rand(-2,2)

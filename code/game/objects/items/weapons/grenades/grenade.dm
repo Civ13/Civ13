@@ -1055,20 +1055,26 @@
 	qdel(src)
 
 /obj/structure/bomb
-	name = "50 kg bomb"
+	name = "100 kg bomb"
 	desc = "Uhm..."
 	icon = 'icons/obj/grenade.dmi'
 	icon_state = "aircraft_bomb"
 	anchored = TRUE
 	density = TRUE
 	opacity = FALSE
+	var/scale = 1
 	var/timer = 1 SECOND
 
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 30
+	var/num_fragments = 40
 	var/fragment_damage = 15
 	var/damage_step = 2
 	var/spread_range = 7
+
+/obj/structure/bomb/New()
+	var/matrix/M = matrix()
+	M.Scale(scale, scale)
+	src.transform = M
 
 /obj/structure/bomb/proc/drop()
 	density = FALSE
@@ -1085,7 +1091,7 @@
 	spawn(timer)
 		if (prob(99))
 			var/turf/T = get_turf(src)
-			explosion(T, 2, 3, 5, 4)
+			explosion(T, 2, 4, 7, 8)
 			if (!ismob(loc))
 				var/list/target_turfs = getcircle(T, spread_range)
 				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
@@ -1105,6 +1111,33 @@
 	explode()
 	return
 
+/obj/structure/bomb/kg50
+	name = "50 kg bomb"
+
+	scale = 0.6
+	num_fragments = 30
+	fragment_damage = 20
+
+/obj/structure/bomb/kg50/explode()
+	spawn(timer)
+		if (prob(99))
+			var/turf/T = get_turf(src)
+			explosion(T, 2, 3, 5, 4)
+			if (!ismob(loc))
+				var/list/target_turfs = getcircle(T, spread_range)
+				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+				for (var/turf/TT in target_turfs)
+					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+					P.damage = fragment_damage
+					P.pellets = fragments_per_projectile
+					P.range_step = damage_step
+					P.shot_from = name
+					P.launch_fragment(TT)
+					P.firer_loc = get_turf(src)
+			qdel(src)
+	return
+
 /obj/structure/bomb/kg250
 	name = "250 kg bomb"
 
@@ -1115,7 +1148,7 @@
 	spawn(timer)
 		if (prob(99))
 			var/turf/T = get_turf(src)
-			explosion(T, 3, 5, 8, 5)
+			explosion(T, 3, 5, 8, 10)
 			if (!ismob(loc))
 				var/list/target_turfs = getcircle(T, spread_range)
 				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
