@@ -631,7 +631,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a Junkers Ju 87 'Stuka' flies overhead.</font>")
+				M << SPAN_NOTICE("<font size=3>The air vibrates as a IL-2 flies overhead.</font>")
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/il2_no_message/New()
