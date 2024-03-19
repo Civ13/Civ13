@@ -476,42 +476,29 @@ var/const/enterloopsanity = 100
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE
 
-/turf/proc/try_airstrike(var/ckey, var/faction_text, var/direction = "NORTH", var/payload = "Rockets")
+/turf/proc/try_airstrike(var/ckey, var/faction_text, var/aircraft_name, var/direction = "NORTH", var/payload = "Rockets")
 	var/turf/T = src
 
 	message_admins("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
 	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 
-	var/aircraft_name
 	var/dive_text = "cuts through"
 	var/drop_delay = 1 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
-	switch(faction_text) // Check what faction has called in the airstrike and select an aircraft.
-		if (DUTCH)
+	if (aircraft_name)	switch(aircraft_name) // Check what faction has called in the airstrike and select an aircraft.
+		if ("F-16")
 			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
 			drop_delay = 1 SECONDS
-		if (GERMAN)
-			if (map.ordinal_age == 6)
-				new /obj/effect/plane_flyby/ju87_no_message(T)
-				aircraft_name = "Ju 87 Stuka"
-				dive_text = "dives down"
-				drop_delay = 18 SECONDS
-			else
-				new /obj/effect/plane_flyby/ju87_no_message(T)
-				aircraft_name = "Ju 87 Stuka"
-				dive_text = "dives down"
-				drop_delay = 18 SECONDS
-		if (AMERICAN)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
+		if ("Su-25")
+			new /obj/effect/plane_flyby/su25_no_message(T)
 			drop_delay = 1 SECONDS
-		if (RUSSIAN)
-			if (map.ordinal_age == 6)
-				return // No aircraft for the Russians in WW2 yet
-			else
-				new /obj/effect/plane_flyby/su25_no_message(T)
-				aircraft_name = "Su-25"
-				drop_delay = 1 SECONDS
+		if ("Ju 87 Stuka")
+			new /obj/effect/plane_flyby/ju87_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 18 SECONDS
+		if ("IL-2")
+			new /obj/effect/plane_flyby/il2_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 6 SECONDS
 	
 	var/faction_num
 	if (map.faction1 == faction_text) // Check how many airstrikes a faction has left

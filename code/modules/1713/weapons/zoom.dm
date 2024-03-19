@@ -141,17 +141,37 @@ Parts of code courtesy of Super3222
 	cooldown = 1 MINUTE
 	payload_list = list("50kg Bomb")
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_faction_aircraft(var/mob/living/human/H)
+	var/aircraft_name
+	switch (faction_text) // Check what faction has called in the airstrike and select an aircraft.
+		if (DUTCH)
+			aircraft_name = "F-16"
+		if (GERMAN)
+			if (map.ordinal_age == 6)
+				aircraft_name = "Ju 87 Stuka"
+			else
+				return
+		if (AMERICAN)
+			aircraft_name = "F-16"
+		if (RUSSIAN)
+			if (map.ordinal_age == 6)
+				aircraft_name = "IL-2"
+			else
+				aircraft_name = "Su-25"
+	return aircraft_name
+
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
 	if (ishuman(user))
 		var/mob/living/human/H = user
+
 		var/faction_num
 		if (map.faction1 == H.faction_text) // Check which faction is using the designator
 			faction_num = 1
 		else if (map.faction2 == H.faction_text)
 			faction_num = 2
 		
-		if (faction_num)
+		if (faction_num && get_faction_aircraft(H))
 			switch (faction_num) // Check how much jets and airstrikes they have left
 				if (1)
 					airstrikes_remaining = faction1_airstrikes_remaining
@@ -174,21 +194,22 @@ Parts of code courtesy of Super3222
 	return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
-	if (!ishuman(H))	return
-	if (map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
+	if(!ishuman(H))	return
+	if(map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
 		to_chat(H, "You don't know how to use this.")
 		return
 	else
 		if (!checking)
+
 			var/faction_num
 			if (map.faction1 == H.faction_text) // Check which faction is using the designator
 				faction_num = 1
 			else if (map.faction2 == H.faction_text)
 				faction_num = 2
 
-			if (faction_num)
+			if (faction_num && get_faction_aircraft(H))
 				switch (faction_num) // Check how long the cooldown is and how many airstrikes the faction has left
-					if (1)
+					if(1)
 						debounce = faction1_aircraft_cooldown
 						airstrikes_remaining = faction1_airstrikes_remaining
 					if (2)
@@ -197,7 +218,7 @@ Parts of code courtesy of Super3222
 				
 				if (airstrikes_remaining > 0)
 					if (payload)
-						if (debounce <= world.time) // Check if time is further than the cooldown
+						if(debounce <= world.time) // Check if time is further than the cooldown
 							switch (faction_num)
 								if (1)
 									faction1_aircraft_rearming = FALSE
@@ -215,7 +236,7 @@ Parts of code courtesy of Super3222
 								checking = FALSE
 
 								var/turf/T = locate(target.x, target.y, target.z)
-								T.try_airstrike(H.ckey, H.faction_text, attack_direction, payload)
+								T.try_airstrike(H.ckey, H.faction_text, get_faction_aircraft(H), attack_direction, payload)
 
 								switch (faction_num) // Apply cooldown
 									if (1)
