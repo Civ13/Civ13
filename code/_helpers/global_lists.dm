@@ -116,10 +116,10 @@ var/global/faction2_aircraft_cooldown = 0
 var/global/faction1_aircraft_rearming = 0
 var/global/faction2_aircraft_rearming = 0
 
-var/global/faction1_airstrikes_max = 10
-var/global/faction2_airstrikes_max = 10
-var/global/faction1_airstrikes_remaining = 10
-var/global/faction2_airstrikes_remaining = 10
+var/global/faction1_airstrikes_max = list(10, 4, 1) // Airstrikes size: light , medium, large
+var/global/faction2_airstrikes_max = list(10, 4, 1) // Airstrikes size: light , medium, large
+var/global/faction1_airstrikes_remaining = list(10, 4, 1)
+var/global/faction2_airstrikes_remaining = list(10, 4, 1)
 
 // for mass deletion
 var/global/list/bullet_casings = list()

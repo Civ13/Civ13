@@ -476,54 +476,41 @@ var/const/enterloopsanity = 100
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE
 
-/turf/proc/try_airstrike(var/ckey, var/faction_text, var/direction = "NORTH", var/payload = "Rockets")
+/turf/proc/try_airstrike(var/ckey, var/faction_text, var/aircraft_name, var/direction = "NORTH", var/payload = "Rockets", var/payload_class = 1)
 	var/turf/T = src
 
 	message_admins("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
 	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
 
-	var/aircraft_name
 	var/dive_text = "cuts through"
 	var/drop_delay = 1 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
-	switch(faction_text) // Check what faction has called in the airstrike and select an aircraft.
-		if (DUTCH)
+	if (aircraft_name)	switch(aircraft_name) // Check what faction has called in the airstrike and select an aircraft.
+		if ("F-16")
 			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
 			drop_delay = 1 SECONDS
-		if (GERMAN)
-			if (map.ordinal_age == 6)
-				new /obj/effect/plane_flyby/ju87_no_message(T)
-				aircraft_name = "Ju 87 Stuka"
-				dive_text = "dives down"
-				drop_delay = 18 SECONDS
-			else
-				new /obj/effect/plane_flyby/ju87_no_message(T)
-				aircraft_name = "Ju 87 Stuka"
-				dive_text = "dives down"
-				drop_delay = 18 SECONDS
-		if (AMERICAN)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
+		if ("Su-25")
+			new /obj/effect/plane_flyby/su25_no_message(T)
 			drop_delay = 1 SECONDS
-		if (RUSSIAN)
-			if (map.ordinal_age == 6)
-				return // No aircraft for the Russians in WW2 yet
-			else
-				new /obj/effect/plane_flyby/su25_no_message(T)
-				aircraft_name = "Su-25"
-				drop_delay = 1 SECONDS
+		if ("Ju 87 Stuka")
+			new /obj/effect/plane_flyby/ju87_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 18 SECONDS
+		if ("IL-2")
+			new /obj/effect/plane_flyby/il2_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 5 SECONDS
 	
 	var/faction_num
-	if (map.faction1 == faction_text) // Check how many airstrikes a faction has left
+	if (map.faction1 == faction_text) // Check which faction is using the airstrike
 		faction_num = 1
 	else if (map.faction2 == faction_text)
 		faction_num = 2
 	
 	switch (faction_num)
 		if (1)
-			faction1_airstrikes_remaining--
+			faction1_airstrikes_remaining[payload_class]--
 		if (2)
-			faction2_airstrikes_remaining--
+			faction2_airstrikes_remaining[payload_class]--
 
 	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] [dive_text].</font>"))
 	
@@ -553,7 +540,7 @@ var/const/enterloopsanity = 100
 							if (M.client)
 								M.client << uploaded_sound
 					
-					switch (faction_num)
+					switch (faction_num) // Send the jet to re-arm, it is unavailible for 5 minutes
 						if (1)
 							faction1_aircraft_rearming = TRUE
 							faction1_aircraft_cooldown = world.time + 5 MINUTES
@@ -613,7 +600,7 @@ var/const/enterloopsanity = 100
 
 							M.dir = EAST
 							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							M.pixel_x = -12*32 // 8 tiles and 32 pixels per tile
+							M.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
 							animate(M, transform = turn(matrix(), 20), time = 10, easing = LINEAR_EASING)
 						if ("SOUTH")
 							direction_yoffset -= 3
@@ -629,7 +616,7 @@ var/const/enterloopsanity = 100
 
 							M.dir = WEST
 							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							M.pixel_x = 12*32 // 8 tiles and 32 pixels per tile
+							M.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
 							animate(M, transform = turn(matrix(), -20), time = 10, easing = LINEAR_EASING)
 					spawn(i*5)
 						M.loc = locate((T.x + xoffset + direction_xoffset), (T.y + yoffset + direction_yoffset), T.z)
@@ -638,32 +625,85 @@ var/const/enterloopsanity = 100
 						M.drop()
 						
 			return
-		if ("50kg Bomb")
+		if ("50 kg Bomb")
 			strikenum = 1
-			xoffset = rand(-3,3)
-			yoffset = rand(-3,3)
 
 			spawn(drop_delay)
 				for (var/i = 1, i <= strikenum, i++)
-					var/obj/structure/bomb/B = new /obj/structure/bomb(null)
+					var/obj/structure/bomb/B = new /obj/structure/bomb/kg50(null)
 					switch (direction)
 						if ("NORTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-1,3)
+
 							B.dir = NORTH
-							B.pixel_y = -12*32 // 8 tiles and 32 pixels per tile
+							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
 							animate(B, transform = turn(matrix(), -45), time = 10)
 						if ("EAST")
+							xoffset = rand(-1,3)
+							yoffset = rand(-2,2)
+
 							B.dir = EAST
 							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = -12*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
 							animate(B, transform = turn(matrix(), 45), time = 10)
 						if ("SOUTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-3,1)
+
 							B.dir = SOUTH
-							B.pixel_y = 12*32 // 8 tiles and 32 pixels per tile
+							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
 							animate(B, transform = turn(matrix(), 45), time = 10)
 						if ("WEST")
+							xoffset = rand(-3,1)
+							yoffset = rand(-2,2)
+							
 							B.dir = WEST
 							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = 12*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+
+					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
+					animate(B, time = 15, pixel_y = 0, easing = SINE_EASING | EASE_IN)
+					animate(B, time = 15, pixel_x = 0, easing = SINE_EASING | EASE_IN)
+					B.drop()
+			return
+		if ("250 kg Bomb")
+			strikenum = 1
+
+			spawn(drop_delay)
+				for (var/i = 1, i <= strikenum, i++)
+					var/obj/structure/bomb/B = new /obj/structure/bomb/kg250(null)
+					switch (direction)
+						if ("NORTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-1,3)
+
+							B.dir = NORTH
+							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+						if ("EAST")
+							xoffset = rand(-1,3)
+							yoffset = rand(-2,2)
+
+							B.dir = EAST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("SOUTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-3,1)
+
+							B.dir = SOUTH
+							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("WEST")
+							xoffset = rand(-3,1)
+							yoffset = rand(-2,2)
+
+							B.dir = WEST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
 							animate(B, transform = turn(matrix(), -45), time = 10)
 
 					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
