@@ -571,143 +571,104 @@ var/const/enterloopsanity = 100
 	var/turf/T = src
 
 	var/strikenum = 5
+	var/interval = 5
+	var/min_length_offset = 0
+	var/max_length_offset = 0
 
-	var/xoffset = 0
-	var/yoffset = 0
+	var/min_sway_offset = 0
+	var/max_sway_offset = 0
 
-	var/direction_xoffset = 0
-	var/direction_yoffset = 0
+	var/direction_offset = 0
+	var/turn_degree = 45
+	var/easing_type = SINE_EASING | EASE_IN
+	var/to_spawn
 	switch (payload)
 		if ("Rockets")
+			to_spawn = /obj/structure/payload/missile
 			strikenum = 5
+
+			min_length_offset = 0
+			max_length_offset = 1
+			min_sway_offset = -2
+			max_sway_offset = 2
+
+			direction_offset = 3
+
+			easing_type = LINEAR_EASING
+			turn_degree = 20
+
 			to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
-			
-			spawn(drop_delay)
-				for (var/i = 1, i <= strikenum, i++)
-					var/obj/structure/missile/M = new /obj/structure/missile(null)
-					switch (direction)
-						if ("NORTH")
-							direction_yoffset += 3
-							xoffset = rand(-2,2)
-							yoffset = rand(0,1)
-
-							M.dir = NORTH
-							M.pixel_y = -8*32 // 8 tiles and 32 pixels per tile
-						if ("EAST")
-							direction_xoffset += 3
-							xoffset = rand(0,1)
-							yoffset = rand(-2,2)
-
-							M.dir = EAST
-							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							M.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
-							animate(M, transform = turn(matrix(), 20), time = 10, easing = LINEAR_EASING)
-						if ("SOUTH")
-							direction_yoffset -= 3
-							xoffset = rand(-2,2)
-							yoffset = rand(0,1)
-
-							M.dir = SOUTH
-							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-						if ("WEST")
-							direction_xoffset -= 3
-							xoffset = rand(0,1)
-							yoffset = rand(-2,2)
-
-							M.dir = WEST
-							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							M.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
-							animate(M, transform = turn(matrix(), -20), time = 10, easing = LINEAR_EASING)
-					spawn(i*5)
-						M.loc = locate((T.x + xoffset + direction_xoffset), (T.y + yoffset + direction_yoffset), T.z)
-						animate(M, time = 15, pixel_y = 0, easing = LINEAR_EASING)
-						animate(M, time = 15, pixel_x = 0, easing = LINEAR_EASING)
-						M.drop()
-						
-			return
 		if ("50 kg Bomb")
+			to_spawn = /obj/structure/payload/bomb/kg50
 			strikenum = 1
 
-			spawn(drop_delay)
-				for (var/i = 1, i <= strikenum, i++)
-					var/obj/structure/bomb/B = new /obj/structure/bomb/kg50(null)
-					switch (direction)
-						if ("NORTH")
-							xoffset = rand(-2,2)
-							yoffset = rand(-1,3)
+			min_length_offset = -1
+			max_length_offset = 3
+			min_sway_offset = -2
+			max_sway_offset = 2
 
-							B.dir = NORTH
-							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), -45), time = 10)
-						if ("EAST")
-							xoffset = rand(-1,3)
-							yoffset = rand(-2,2)
+			direction_offset = 0
 
-							B.dir = EAST
-							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), 45), time = 10)
-						if ("SOUTH")
-							xoffset = rand(-2,2)
-							yoffset = rand(-3,1)
-
-							B.dir = SOUTH
-							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), 45), time = 10)
-						if ("WEST")
-							xoffset = rand(-3,1)
-							yoffset = rand(-2,2)
-							
-							B.dir = WEST
-							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), -45), time = 10)
-
-					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
-					animate(B, time = 15, pixel_y = 0, easing = SINE_EASING | EASE_IN)
-					animate(B, time = 15, pixel_x = 0, easing = SINE_EASING | EASE_IN)
-					B.drop()
-			return
+			easing_type = SINE_EASING | EASE_IN
+			turn_degree = 45
 		if ("250 kg Bomb")
+			to_spawn = /obj/structure/payload/bomb/kg250
 			strikenum = 1
 
-			spawn(drop_delay)
-				for (var/i = 1, i <= strikenum, i++)
-					var/obj/structure/bomb/B = new /obj/structure/bomb/kg250(null)
-					switch (direction)
-						if ("NORTH")
-							xoffset = rand(-2,2)
-							yoffset = rand(-1,3)
+			min_length_offset = -1
+			max_length_offset = 3
+			min_sway_offset = -2
+			max_sway_offset = 2
 
-							B.dir = NORTH
-							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), -45), time = 10)
-						if ("EAST")
-							xoffset = rand(-1,3)
-							yoffset = rand(-2,2)
+			direction_offset = 0
 
-							B.dir = EAST
-							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), 45), time = 10)
-						if ("SOUTH")
-							xoffset = rand(-2,2)
-							yoffset = rand(-3,1)
+			easing_type = SINE_EASING | EASE_IN
+			turn_degree = 45
 
-							B.dir = SOUTH
-							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), 45), time = 10)
-						if ("WEST")
-							xoffset = rand(-3,1)
-							yoffset = rand(-2,2)
+	spawn(drop_delay)
+		var/cur_xdirection_offset = 0
+		var/cur_ydirection_offset = 0
+		for (var/i = 1, i <= strikenum, i++)
+			var/obj/structure/payload/P = new to_spawn(T)
+			
+			var/xoffset
+			var/yoffset
+			switch (direction)
+				if ("NORTH")
+					cur_ydirection_offset += direction_offset
+					xoffset = rand(min_sway_offset, max_sway_offset)
+					yoffset = rand(min_length_offset, max_length_offset)
 
-							B.dir = WEST
-							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
-							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
-							animate(B, transform = turn(matrix(), -45), time = 10)
+					P.dir = NORTH
+					P.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
+				if ("EAST")
+					cur_xdirection_offset += direction_offset
+					xoffset = rand(min_length_offset, max_length_offset)
+					yoffset = rand(min_sway_offset, max_sway_offset)
 
-					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
-					animate(B, time = 15, pixel_y = 0, easing = SINE_EASING | EASE_IN)
-					animate(B, time = 15, pixel_x = 0, easing = SINE_EASING | EASE_IN)
-					B.drop()
-			return
+					P.dir = EAST
+					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+					P.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+					animate(P, transform = turn(matrix(), turn_degree), time = 10)
+				if ("SOUTH")
+					cur_ydirection_offset -= direction_offset
+					xoffset = -rand(min_sway_offset, max_sway_offset)
+					yoffset = -rand(min_length_offset, max_length_offset)
+
+					P.dir = SOUTH
+					P.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
+				if ("WEST")
+					cur_xdirection_offset -= direction_offset
+					xoffset = -rand(min_length_offset, max_length_offset)
+					yoffset = -rand(min_sway_offset, max_sway_offset)
+					
+					P.dir = WEST
+					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+					P.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+					animate(P, transform = turn(matrix(), -turn_degree), time = 10)
+
+			spawn(i*interval)
+				P.loc = locate((T.x + xoffset + cur_xdirection_offset), (T.y + yoffset + cur_ydirection_offset), T.z)
+				animate(P, time = 15, pixel_y = 0, easing = easing_type)
+				animate(P, time = 15, pixel_x = 0, easing = easing_type)
+				P.drop()
