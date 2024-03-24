@@ -1577,7 +1577,7 @@
 		pixel_y = 32
 	else
 		pixel_y = 0
-	if (storage.contents.len > 0)
+	if (storage && storage.contents.len > 0)
 		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
 			if (TOR.on == TRUE)
 				icon_state = "torch_stand1_on"
