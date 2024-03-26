@@ -425,10 +425,21 @@
 				start_fire()
 				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
 				return
+	if (istype(T, /obj/item/weapon/material/hatchet))
+		if (src.amount < 2)
+			user << "You dont have enough material to try..."
+		else
+			user << "You start carving a log into a plank..."
+			playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+			if (do_after(user, 80, src))
+				user << "You carve a plank from the [src]!"
+				src.use(2)
+				new/obj/item/stack/material/woodplank(get_turf(user))
+
 	return ..()
 
 /obj/item/stack/material/woodplank
-	name = "wooden plank"
+	name = "soft"
 	icon_state = "sheet-wood"
 	default_type = "woodplank"
 	dropsound = 'sound/effects/drop_wood.ogg'
