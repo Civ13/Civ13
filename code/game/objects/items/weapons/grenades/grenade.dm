@@ -14,7 +14,7 @@
 	var/loadable = TRUE
 	flammable = TRUE
 	value = 5
-	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
+	var/explosion_sound = "explosion"
 	var/mob/living/human/firer = null
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
@@ -168,7 +168,7 @@
 	throw_range = 2
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
-	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
+	explosion_sound = "explosion"
 /obj/item/weapon/grenade/bomb/New()
 	..()
 	det_time = rand(80,120)
@@ -189,7 +189,7 @@
 	desc = "Light it and run."
 	icon_state = "dynamite0"
 	det_time = 40
-	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
+	explosion_sound = "explosion"
 	var/explosion_size = 2
 	var/state = 0
 
