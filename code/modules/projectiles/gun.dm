@@ -197,18 +197,70 @@
 
 			var/obj/item/weapon/attachment/bayonet/a = bayonet
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-
+			///////////////////////////////////////////////////////////I have made true spaghetti code, this would probably be better if we made the bayoneting action a proc that gets called instead of relisting the same code, but I am lazy today. Someone else can optimize it on their civilian time.- Kenobi/////////
 			if (L)
-				if (user != L)
-					if(L.attempt_dodge()) //Trying to dodge it before they even have the chance to miss us.
-						return
-					else
-						visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
-						playsound(get_turf(src), a.attack_sound, rand(90,100))
-						L.apply_damage(a.mounted_dmg, BRUTE, def_zone)
-						if (ishuman(L))
-							if (L.stat == CONSCIOUS && prob(50))
-								L.emote("painscream")
+				if (ishuman(L))
+					if (user != L)
+						if(L.attempt_dodge()) //Trying to dodge it before they even have the chance to miss us.
+							return
+
+						else
+							H = L
+							//chest armor? no? get fucked
+							if (user.targeted_organ == "chest")
+								if (H.wear_suit && istype(H.wear_suit, /obj/item/clothing/suit/armor))
+									visible_message("<span class = 'danger'>[user]'s bayonet bounces off [H]'s [H.wear_suit]!</span>")
+									return
+								else
+									visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
+									playsound(get_turf(src), a.attack_sound, rand(90,100))
+									H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
+									if (L.stat == CONSCIOUS && prob(50))
+										H.emote("painscream")
+							//Helmet? no? kinda hard to hit
+							else if (user.targeted_organ == "head")
+								if (H.head && istype(H.head, /obj/item/clothing/head/helmet))
+									visible_message("<span class = 'danger'>[user]'s bayonet bounces off [H]'s [H.head]!</span>")
+									return
+								else
+									if(prob(90))
+										visible_message("<span class = 'danger'>[user]'s bayonet narrowly misses [H]!</span>")
+									else
+										visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
+										playsound(get_turf(src), a.attack_sound, rand(90,100))
+										H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
+										if (L.stat == CONSCIOUS && prob(50))
+											H.emote("painscream")
+							//mouth armor? no? you're honestly safe
+							if (user.targeted_organ == "mouth")
+								if (H.wear_mask)
+									if (istype(H.wear_mask, /obj/item/clothing/mask/samurai) || istype(H.wear_mask, /obj/item/clothing/mask/stone) || istype(H.wear_mask, /obj/item/clothing/mask/wooden))
+										visible_message("<span class = 'danger'>[user]'s bayonet bounces off [H]'s [H.wear_suit]!</span>")
+										return
+								else
+									if (prob(95))
+										visible_message("<span class = 'danger'>[user]'s bayonet narrowly misses [H]!</span>")
+									else
+										visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
+										playsound(get_turf(src), a.attack_sound, rand(90,100))
+										H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
+										if (L.stat == CONSCIOUS && prob(50))
+											H.emote("painscream")
+							//your limbs are still only a 25% chance to hit, which makes the chest the best option. if they're armored then you're simply better off shooting them.
+							else
+								if (user.targeted_organ != "chest" && user.targeted_organ != "groin" && user.targeted_organ != "head")
+									if(prob(75))
+										visible_message("<span class = 'danger'>[user]'s bayonet narrowly misses [H]!</span>")
+									else
+										visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
+										playsound(get_turf(src), a.attack_sound, rand(90,100))
+										H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
+										if (L.stat == CONSCIOUS && prob(50))
+											H.emote("painscream")
+				else //if its a mob like a bear or turkey
+					visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
+					playsound(get_turf(src), a.attack_sound, rand(90,100))
+					L.apply_damage(a.mounted_dmg, BRUTE, def_zone)
 		else
 			..() //Pistolwhipping - now help intent only (or when the gun is empty)
 
