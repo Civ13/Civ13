@@ -140,7 +140,7 @@ Parts of code courtesy of Super3222
 	needs_instruments = TRUE
 
 	call_in_time = 5 SECONDS
-	cooldown = 1 MINUTE
+	cooldown = 1 MINUTES
 	payload_list = list("50 kg Bomb", "250 kg Bomb")
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_faction_aircraft(var/mob/living/human/H)

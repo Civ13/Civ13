@@ -479,7 +479,7 @@
 	// A bit of sanity.
 	var/brain_damage = between(H.getBrainLoss(), damage_calc, brain.max_damage)
 	H.setBrainLoss(brain_damage)
-
+	
 /obj/item/weapon/shockpaddles/proc/make_announcement(var/message, var/msg_class)
 	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.")
 

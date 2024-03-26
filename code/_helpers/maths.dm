@@ -1,5 +1,3 @@
-#define CEILING(x, y) ( -round(-(x) / (y)) * (y) )
-
 // random decimals
 /proc/random_decimal(var/low, var/high)
 	return (rand(smart_round(low*100), smart_round(high*100)))/100

@@ -577,7 +577,7 @@
 	set category = null
 	set src in range(1, usr)
 	if (debounce <= world.time)
-		debounce = world.time + 1 SECOND
+		debounce = world.time + 1 SECONDS
 		switch (firing_mode)
 			if (0) // Switch to ATGM
 				playsound(get_turf(src), 'sound/machines/click.ogg', 60)

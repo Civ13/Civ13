@@ -16,6 +16,10 @@ var/global/list/faction_list_red = list()
 var/global/list/faction_list_blue = list()
 var/global/list/craftlist_lists = list("global" = list())
 var/global/list/dictionary_list = list()
+
+#define DIRECT_OUTPUT(A, B) A << B
+#define SEND_TEXT(target, text) DIRECT_OUTPUT(target, text)
+
 /*
 	Pre-map initialization stuff should go here.
 */
@@ -247,6 +251,9 @@ var/world_topic_spam_protect_time = world.timeofday
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
 
+/proc/log_world(text)
+	SEND_TEXT(world.log, text)
+
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
 	return TRUE
@@ -442,3 +449,30 @@ var/global/nextsave = 0
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
 		sleep(10)
+
+/world/proc/on_tickrate_change()
+	SStimer.reset_buckets()
+
+/world/proc/change_fps(new_value = 20)
+	if(new_value <= 0)
+		CRASH("change_fps() called with [new_value] new_value.")
+	if(fps == new_value)
+		return //No change required.
+
+	fps = new_value
+	on_tickrate_change()
+
+/world/proc/init_byond_tracy()
+	var/library
+
+	switch (system_type)
+		if (MS_WINDOWS)
+			library = "prof.dll"
+		if (UNIX)
+			library = "libprof.so"
+		else
+			CRASH("Unsupported platform: [system_type]")
+	var/init_result = LIBCALL(library, "init")()
+	if (init_result != "0")
+		CRASH("Error initializing byond-tracy: [init_result]")
+

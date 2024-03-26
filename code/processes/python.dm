@@ -3,7 +3,7 @@
 /process/python/setup()
 	name = "python"
 	schedule_interval = 5 SECONDS
-	start_delay = 1 SECOND
+	start_delay = 1 SECONDS
 	fires_at_gamestates = list()
 	priority = PROCESS_PRIORITY_IRRELEVANT
 	processes.python = src

@@ -3,7 +3,7 @@
 /process/cleanables/setup()
 	name = "cleanable decals removal process"
 	schedule_interval = 0.5 MINUTES
-	start_delay = 1 SECOND
+	start_delay = 1 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH
 	processes.cleanables = src
