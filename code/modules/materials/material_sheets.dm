@@ -37,7 +37,7 @@
 /obj/item/stack/material/get_material()
 	return material
 
-/obj/item/stack/material/proc/update_strings()
+/obj/item/stack/material/update_strings()
 	// Update from material datum.
 	if (material)
 		singular_name = material.sheet_singular_name
