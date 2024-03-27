@@ -153,7 +153,7 @@
 	icon_state = "ironsand[rand(1,15)]"
 
 /turf/floor/grass/jungle
-	name = "jungle grass"
+	name = "jungle grass patch"
 	overlay_priority = 0
 	is_diggable = TRUE
 	may_become_muddy = TRUE
