@@ -42,7 +42,7 @@
 					message_admins("[turf] failed to return a ref!")
 				savefile.cd = "/map/[turf.z]/[turf.y]"
 				savefile["[turf.x]"] << ref
-				TICK_CHECK
+				ALT_TICK_CHECK
 		log_startup_progress("	Saved z-level [A].")
 	log_startup_progress("Finished saving.")
 	return 1

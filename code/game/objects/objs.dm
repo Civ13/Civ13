@@ -131,9 +131,6 @@
 	ui_interact(user)
 	..()
 
-/obj/proc/interact(mob/user)
-	return
-
 /obj/proc/update_icon()
 	return
 

@@ -1,5 +1,14 @@
 //print an error message to world.log
 
+//wrapper macros for easier grepping
+#define DIRECT_INPUT(A, B) A >> B
+#define SEND_IMAGE(target, image) DIRECT_OUTPUT(target, image)
+#define SEND_SOUND(target, sound) DIRECT_OUTPUT(target, sound)
+#define WRITE_FILE(file, text) DIRECT_OUTPUT(file, text)
+#define READ_FILE(file, text) DIRECT_INPUT(file, text)
+//This is an external call, "true" and "false" are how rust parses out booleans
+#define WRITE_LOG(log, text) rustg_log_write(log, text, "true")
+#define WRITE_LOG_NO_FORMAT(log, text) rustg_log_write(log, text, "false")
 
 // On Linux/Unix systems the line endings are LF, on windows it's CRLF, admins that don't use notepad++
 // will get logs that are one big line if the system is Linux and they are using notepad.  This solves it by adding CR to every line ending
@@ -18,12 +27,12 @@
 /proc/warning(msg)
 	webhook_send_runtime("## WARNING: [msg][log_end]")
 	world.log << "## WARNING: [msg][log_end]"
-
+/*
 //print a testing-mode debug message to world.log
 /proc/testing(msg)
 	webhook_send_runtime("## TESTING: [msg][log_end]")
 	world.log << "## TESTING: [msg][log_end]"
-
+*/
 /proc/game_log(category, text)
 	diary << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
@@ -52,8 +61,6 @@
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
-		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]")
-	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) ADMINPM TO **[aname]**:**__ **[name]** [text]")
 
 /proc/discord_admin_ban(banner,banned,duration,reason)
 	var/admindiary = file("admin.log")

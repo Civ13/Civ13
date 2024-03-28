@@ -1063,7 +1063,7 @@
 	density = TRUE
 	opacity = FALSE
 	var/scale = 1
-	var/timer = 1 SECOND
+	var/timer = 1 SECONDS
 
 	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
 	var/num_fragments = 40

@@ -3,7 +3,7 @@
 /process/lighting_overlays/setup()
 	name = "lighting overlays process"
 	schedule_interval = 0.1 SECONDS
-	start_delay = 1 SECOND
+	start_delay = 1 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH
 	always_runs = TRUE // hacky stuff, but this is a very expensive process and it needs this

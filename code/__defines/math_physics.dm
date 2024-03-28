@@ -7,6 +7,15 @@
 #define ONE_ATMOSPHERE			 101.325 // kPa.
 #define IDEAL_GAS_ENTROPY_CONSTANT 1164	// (mol^3 * s^3) / (kg^3 * L).
 
+#define TICK_DELTA_TO_MS(percent_of_tick_used) ((percent_of_tick_used) * world.tick_lag)
+#define TICK_USAGE_TO_MS(starting_tickusage) (TICK_DELTA_TO_MS(world.tick_usage-starting_tickusage))
+
+// The highest number supported is a signed 32-bit floating point number.
+// Integers beyond the 24 bit range are represented as single-precision floating points, and thus will lose accuracy beyond the range of +/- 16777216
+#define SHORT_REAL_LIMIT 16777216
+
+#define CEILING(x, y) ( -round(-(x) / (y)) * (y) )
+
 // Radiation constants.
 #define STEFAN_BOLTZMANN_CONSTANT	5.6704e-8 // W/(m^2*K^4).
 #define COSMIC_RADIATION_TEMPERATURE 3.15	  // K.
@@ -81,6 +90,9 @@
 #define IsPowerOfTwo(val) ((val & (val-1)) == 0)
 
 #define RoundUpToPowerOfTwo(val) (2 ** -round(-log(2,val)))
+
+// Returns true if val is from min to max, inclusive.
+#define ISINRANGE(val, min, max) (min <= val && val <= max)
 
 // Performs a linear interpolation between a and b.
 // Note that amount=0 returns a, amount=1 returns b, and

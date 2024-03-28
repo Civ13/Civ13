@@ -149,7 +149,3 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define SPAN_ALERT(X) SPAN("alert", X)
 #define SPAN_DEADSAY(X) SPAN("deadsay", X)
 #define SPAN_INFO(X) SPAN("info", X)
-
-#define DIRECT_OUTPUT(A, B) A << B
-#define SEND_IMAGE(target, image) DIRECT_OUTPUT(target, image)
-#define SEND_SOUND(target, sound) DIRECT_OUTPUT(target, sound)

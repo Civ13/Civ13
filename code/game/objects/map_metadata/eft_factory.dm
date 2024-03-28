@@ -107,7 +107,7 @@
 	if (extractees.len)
 		to_chat(world, "<big><b>Extracted:</b></big>")
 		to_chat(world, "<big>[jointext(extractees[1],"\n")]</big>")
-	spawn(1 MINUTE)
+	spawn(1 MINUTES)
 	show_extractees()
 
 /area/caribbean/extract/Entered(var/atom/movable/A)

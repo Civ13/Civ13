@@ -77,11 +77,6 @@
 	else
 		return null
 
-//return flags that should be added to the viewer's sight var.
-//Otherwise return a negative number to indicate that the view should be cancelled.
-/atom/proc/check_eye(user as mob)
-	return -1
-
 /atom/proc/on_reagent_change()
 	return
 
@@ -421,7 +416,7 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 /atom/proc/visible_message(var/message, var/blind_message)
 
-	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
+	var/list/see = get_mobs_or_objects_in_view(7,src, TRUE, FALSE) | viewers(get_turf(src), null)
 
 	for (var/I in see)
 		if (isobj(I))

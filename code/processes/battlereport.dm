@@ -7,7 +7,7 @@
 
 /process/battle_report/setup()
 	name = "Battle Report"
-	schedule_interval = 1 SECOND
+	schedule_interval = 1 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_IRRELEVANT
 	processes.battle_report = src

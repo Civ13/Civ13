@@ -1,6 +1,6 @@
 /map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
     try
-        TICK_CHECK
+        ALT_TICK_CHECK
         var/nextContents
         if(nocontents)
             nextContents = 2
@@ -89,7 +89,7 @@
                 savefile.cd = "/entries/[ind]"
                 object.vars[v] = savefile[v]
             savefile.cd = "/entries/[ind]"
-            TICK_CHECK
+            ALT_TICK_CHECK
         savefile.cd = ".."
         if (ishuman(object))
             var/mob/living/human/H = object
@@ -109,7 +109,7 @@
                 continue
             var/savefile/savefile = new("map_saves/[B].sav")
             savefile.cd = "/map"
-            TICK_CHECK
+            ALT_TICK_CHECK
             for(var/z in savefile.dir)
                 savefile.cd = "/map/[z]"
                 for(var/y in savefile.dir)
@@ -122,7 +122,7 @@
                         var/turf/old_turf = locate(text2num(x), text2num(y), text2num(z))
                         Load_Entry(savefile, turf_ref, old_turf)
                         savefile.cd = "/map/[z]/[y]"
-                        TICK_CHECK
+                        ALT_TICK_CHECK
             for(var/i in 1 to all_loaded.len)
                 var/datum/ob = all_loaded[i]
                 if (ob)
