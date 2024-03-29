@@ -23,7 +23,7 @@
 /datum/reagent/anti_toxin
 	name = "Anti-toxin"
 	id = "anti_toxin"
-	description = "A broad-spectrum antitoxin preparation."
+	description = "A broad-spectrum preparation used to counteract various toxins."
 	taste_description = "a roll of gauze"
 	reagent_state = LIQUID
 	color = "#00A000"
@@ -37,7 +37,7 @@
 /datum/reagent/charcoal
 	name = "Charcoal"
 	id = "charcoal"
-	description = "A black powdery byproduct."
+	description = "A black powdery byproduct used to absorb toxins and impurities."
 	taste_description = "charcoal"
 	reagent_state = LIQUID
 	color = "#36454f"
@@ -50,7 +50,7 @@
 /datum/reagent/tricordrazine
 	name = "Tricordrazine"
 	id = "tricordrazine"
-	description = "Tricordrazine is a highly potent stimulant, originally derived from cordrazine. Can be used to treat a wide range of injuries."
+	description = "A highly potent stimulant, originally derived from cordrazine. It is effective for treating various injuries."
 	taste_description = "grossness"
 	reagent_state = LIQUID
 	color = "#8040FF"
@@ -63,7 +63,7 @@
 
 /datum/reagent/salbutamol
 	name = "Salbutamol"
-	description = "A potent short-acting bronchodilator. Helps patients who have their airways obstructed in breathing."
+	description = "A potent short-acting bronchodilator used to relieve airway obstruction and improve breathing."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#cddfeb"
@@ -87,7 +87,7 @@
 /datum/reagent/paracetamol
 	name = "Paracetamol"
 	id = "paracetamol"
-	description = "Also known as acetaminophen. A mild, simple painkiller."
+	description = "Paracetamol, also known as acetaminophen, is a mild painkiller commonly used to reduce fever and alleviate mild to moderate pain."
 	taste_description = "sickness"
 	reagent_state = LIQUID
 	color = "#C8A5DC"
@@ -145,7 +145,7 @@
 /datum/reagent/oxycodone
 	name = "Oxycodone"
 	id = "oxycodone"
-	description = "An effective and very addictive painkiller."
+	description = "An effective and highly addictive pain reliever."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#800080"
@@ -165,7 +165,7 @@
 /datum/reagent/synaptizine
 	name = "Synaptizine"
 	id = "synaptizine"
-	description = "Synaptizine is used to treat various diseases."
+	description = "A versatile treatment for various ailments including drowsyness, paralysis and hallucinations."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#99CCFF"
@@ -186,7 +186,7 @@
 /datum/reagent/alkysine
 	name = "Alkysine"
 	id = "alkysine"
-	description = "Alkysine is a drug used to lessen the damage to neurological tissue after a catastrophic injury. Can heal brain tissue."
+	description = "Alkysine is a medication to aid neurological tissue recovery."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#FFFF66"
@@ -201,7 +201,7 @@
 /datum/reagent/imidazoline
 	name = "Imidazoline"
 	id = "imidazoline"
-	description = "Heals eye damage."
+	description = "A remedy for healing eye damage."
 	taste_description = "dull toxin"
 	reagent_state = LIQUID
 	color = "#C8A5DC"
@@ -221,7 +221,7 @@
 /datum/reagent/peridaxon
 	name = "Peridaxon"
 	id = "peridaxon"
-	description = "Used to encourage recovery of internal organs and nervous systems. Medicate cautiously."
+	description = "Promotes internal organ and nervous system recovery. Medicate cautiously."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#561EC3"
@@ -239,7 +239,7 @@
 /datum/reagent/hyperzine
 	name = "Hyperzine"
 	id = "hyperzine"
-	description = "Hyperzine is a highly effective, long lasting, muscle stimulant."
+	description = "A potent and long-lasting muscle stimulant"
 	taste_description = "acid"
 	reagent_state = LIQUID
 	color = "#FF3300"
@@ -272,7 +272,7 @@
 /datum/reagent/penicillin
 	name = "penicillin"
 	id = "penicillin"
-	description = "An all-purpose antibiotic agent."
+	description = "A versatile antibiotic agent."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#C1C1C1"
@@ -371,7 +371,7 @@
 /datum/reagent/ketamine
 	name = "Ketamine"
 	id = "ketamine"
-	description = "Cures depressant vibes."
+	description = "Counter-acts depressive states."
 	taste_description = "biterness"
 	reagent_state = LIQUID
 	color = "#BF80BF"
@@ -433,7 +433,7 @@
 /datum/reagent/opium
 	name = "Opium"
 	id = "opium"
-	description = "A powerful sedative and painkiller."
+	description = "A potent sedative and painkiller."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#000067"
@@ -465,6 +465,7 @@
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
 	M.mood += removed*30
+
 /datum/reagent/cocaine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.make_dizzy(6)
@@ -576,6 +577,7 @@
 		M.adjustBruteLoss(-0.5*REM) //But only a quarter as effective for more minor ones
 	..()
 	return
+
 /datum/reagent/sal_acid/overdose(mob/living/M)
 	if(M.getBruteLoss()) //It only makes existing bruises worse
 		M.adjustBruteLoss(4.5*REM) // it's going to be healing either 4 or 0.5
@@ -585,11 +587,11 @@
 /datum/reagent/diclofenac
 	name = "Diclofenac"
 	id = "diclofenac"
-	description = "Diclofenac is a medicine that reduces swelling,pain and helps with recorvery, overdosing will cause heavy brute damage."
+	description = "Diclofenac is a medicine that reduces swelling, pain and helps with recovery. Overdosing will cause heavy brute damage."
 	reagent_state = LIQUID
 	color = "#EEDC82"
 	metabolism = 1
-	overdose = 65
+	overdose = 65	
 
 /datum/reagent/diclofenac/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 40)
@@ -615,7 +617,7 @@
 /datum/reagent/procrit
 	name = "Procrit"
 	id = "procrit"
-	description = "Procrit is a man-made medicine that helps your body produce red blood cells, overdosing will weaken a person and cause hallucinations."
+	description = "Procrit is a man-made medicine that helps your body produce red blood cells. Overdosing can induce mild paralysis and hallucinations."
 	reagent_state = LIQUID
 	color = "#3D2022"
 	metabolism = REM * 0.55
