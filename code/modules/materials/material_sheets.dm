@@ -31,7 +31,6 @@
 			flags |= CONDUCT
 		*/
 		matter = material.get_matter()
-	update_strings()
 	return TRUE
 
 /obj/item/stack/material/get_material()
