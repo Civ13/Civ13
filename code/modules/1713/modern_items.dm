@@ -378,7 +378,7 @@
 			return
 		else
 			if (volume >= maxvolume)
-				H << "<span class = 'notice'>The refinery is full.</span>"
+				to_chat(H, SPAN_NOTICE("The refinery is full."))
 				return
 			var/obj/item/weapon/reagent_containers/glass/barrel/C = W
 			if (C.reagents.has_reagent("petroleum",1))
@@ -386,19 +386,19 @@
 				if (barrelamt < (maxvolume-volume))
 					C.reagents.remove_reagent("petroleum",barrelamt)
 					volume += barrelamt
-					visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
 					if (volume > maxvolume)
 						volume = maxvolume
 					return
 				else
 					C.reagents.remove_reagent("petroleum",(maxvolume-volume))
 					volume += (maxvolume-volume)
-					visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of petroleum from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [maxvolume-volume] units of petroleum from \the [W] into \the [src].")
 					if (volume > maxvolume)
 						volume = maxvolume
 					return
 			else
-				H << "<span class = 'notice'>This [W] has no crude petroleum in it!</span>"
+				to_chat(H, SPAN_NOTICE("This [W] has no crude petroleum in it!"))
 				return
 	else if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(H,W)
@@ -413,12 +413,12 @@
 	set src in range(1, usr)
 
 	if (active)
-		usr << "<span class = 'notice'>You need to shut the refinery down first!</span>"
+		to_chat(usr, SPAN_NOTICE("You need to shut the refinery down first!"))
 		return
 	if (!isemptylist(barrel))
-		usr << "You start taking \the [barrel[1]] from \the [src]..."
+		to_chat(usr, "You start taking \the [barrel[1]] from \the [src]...")
 		if (do_after(usr,35,src))
-			visible_message("You remove \the [barrel[1]].","[usr] removes \the [barrel[1]] from \the [src].")
+			usr.visible_message("[usr] removes \the [barrel[1]] from \the [src].", "You remove \the [barrel[1]] from \the [src].")
 		for(var/obj/item/weapon/reagent_containers/glass/barrel/B in barrel)
 			B.loc = get_turf(src)
 			barrel -= B
@@ -426,7 +426,7 @@
 			powered = FALSE
 			return
 	else
-		usr << "<span class = 'notice'>There is no barrel to remove from \the [src].</span>"
+		to_chat(usr, SPAN_NOTICE("There is no barrel to remove from \the [src]."))
 		return
 
 /obj/structure/refinery/verb/set_product()
@@ -435,7 +435,7 @@
 	set src in range(1, usr)
 
 	if (active)
-		usr << "<span class = 'notice'>You need to shut the refinery down first!</span>"
+		to_chat(usr, SPAN_NOTICE("You need to shut the refinery down first!"))
 		return
 	else
 		var/prod = WWinput(usr, "What to produce?", "Refinery", "Cancel", list("Gasoline","Diesel","Cancel"))
@@ -443,11 +443,11 @@
 			return
 		else if (prod == "Gasoline")
 			product = "gasoline"
-			usr << "This refinery will now produce <b>Gasoline</b>."
+			to_chat(usr, "This refinery will now produce <b>Gasoline</b>.")
 			return
 		else if (prod == "Diesel")
 			product = "diesel"
-			usr << "This refinery will now produce <b>Diesel</b>."
+			to_chat(usr, "This refinery will now produce <b>Diesel</b>.")
 			return
 /obj/structure/refinery/attack_hand(var/mob/living/human/H)
 	if (active)
@@ -456,17 +456,17 @@
 		powersource.update_power(powerneeded,1)
 		powersource.currentflow -= powerneeded
 		powersource.lastupdate2 = world.time
-		H << "You power off the refinery."
+		to_chat(H, "You power off the refinery.")
 		return
 	if (isemptylist(barrel))
-		H << "<span class = 'notice'>There is no barrel to collect the refined products.</span>"
+		to_chat(H, SPAN_NOTICE("There is no barrel to collect the refined products."))
 		return
 	if (volume <= 0 && volume_di <= 0 && volume_et <= 0)
-		H << "<span class = 'notice'>The refinery is empty! Put some precursors in first.</span>"
+		to_chat(H, SPAN_NOTICE("The refinery is empty! Put some precursors in first."))
 		return
 
 	if (!active && powersource && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
+		to_chat(H, SPAN_NOTICE("There is not enough power to start the refinery."))
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
 		active = TRUE
@@ -475,11 +475,12 @@
 		powersource.currentflow += powerneeded
 		powersource.lastupdate2 = world.time
 		power_on()
-		H << "You power the refinery."
+		to_chat(H, "You power the refinery.")
 		return
 	else
-		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
+		to_chat(H, SPAN_NOTICE("There is not enough power to start the refinery."))
 		return
+
 /obj/structure/refinery/proc/power_on()
 	if (active)
 		update_icon()
@@ -541,11 +542,11 @@
 			barrel += W
 			H.drop_from_inventory(W)
 			W.forceMove(locate(0,0,0))
-			visible_message("[H] puts \the [W] in \the [src].","You put \the [W] in \the [src].")
+			H.visible_message("[H] puts \the [W] in \the [src].", "You put \the [W] in \the [src].")
 			return
 		else
 			if (volume_et+volume_di >= maxvolume)
-				H << "<span class = 'notice'>The refinery is full.</span>"
+				to_chat(H, SPAN_NOTICE("The refinery is full."))
 				return
 			var/obj/item/weapon/reagent_containers/glass/barrel/C = W
 			if (C.reagents.has_reagent("olive_oil",1))
@@ -553,14 +554,14 @@
 				if (barrelamt < (maxvolume-volume_di))
 					C.reagents.remove_reagent("olive_oil",barrelamt)
 					volume_di += barrelamt
-					visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
 					if (volume_di+volume_et > maxvolume)
 						volume_di = maxvolume-volume_et
 					return
 				else
 					C.reagents.remove_reagent("olive_oil",(maxvolume-volume_di))
 					volume_di += (maxvolume-volume_di)
-					visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
 					if (volume_di+volume_et > maxvolume)
 						volume_di = maxvolume-volume_et
 					return
@@ -573,13 +574,13 @@
 						maxetvol += E.volume
 						strength += E.volume*E.strength
 					if (maxetvol <= 0)
-						H << "<span class = 'notice'>This [W] has no biofuel percursors in it!</span>"
+						to_chat(H, SPAN_NOTICE("This [W] has no biofuel percursors in it!"))
 						return
 					strength /= maxetvol
 					strength = 1-(strength/100)
 					C.reagents.remove_reagent("ethanol",barrelamt)
 					volume_et += barrelamt*strength
-					visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of unpurified ethanol from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of unpurified ethanol from \the [W] into \the [src].")
 					if (volume_di+volume_et > maxvolume)
 						volume_di = maxvolume-volume_di
 					return
@@ -595,19 +596,19 @@
 				if (barrelamt < (maxvolume-volume_di))
 					C.reagents.remove_reagent("fat_oil",barrelamt)
 					volume_di += barrelamt
-					visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
 					if (volume_di+volume_et > maxvolume)
 						volume_di = maxvolume-volume_et
 					return
 				else
 					C.reagents.remove_reagent("fat_oil",(maxvolume-volume_di))
 					volume_di += (maxvolume-volume_di)
-					visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
+					H.visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
 					if (volume_di+volume_et > maxvolume)
 						volume_di = maxvolume-volume_et
 					return
 			else
-				H << "<span class = 'notice'>This [W] has no biofuel percursors in it!</span>"
+				to_chat(H, SPAN_NOTICE("This [W] has no biofuel percursors in it!"))
 				return
 	else if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(H,W)
@@ -621,7 +622,7 @@
 	set src in range(1, usr)
 
 	if (active)
-		usr << "<span class = 'notice'>You need to shut the refinery down first!</span>"
+		to_chat(usr, "You need to shut the refinery down first!")
 		return
 	else
 		var/prod = WWinput(usr, "What to produce?", "Refinery", "Cancel", list("Ethanol","Biodiesel","Cancel"))
@@ -629,11 +630,11 @@
 			return
 		else if (prod == "Ethanol")
 			product = "ethanol"
-			usr << "This refinery will now produce <b>Ethanol</b>."
+			to_chat(usr, "This refinery will now produce <b>Ethanol</b>.")
 			return
 		else if (prod == "Biodiesel")
 			product = "biodiesel"
-			usr << "This refinery will now produce <b>Biodiesel</b>."
+			to_chat(usr, "This refinery will now produce <b>Biodiesel</b>.")
 			return
 
 
@@ -699,11 +700,11 @@
 			var/barrelamt = C.reagents.get_reagent_amount("petroleum")
 			C.reagents.remove_reagent("petroleum",barrelamt)
 			volume += barrelamt
-			visible_message("[H] pours \the [W] into \the [src].","You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
+			H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
 			desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
 			return
 		else
-			H << "<span class = 'notice'>This [W] has no crude petroleum in it!</span>"
+			to_chat(H, SPAN_NOTICE("This [W] has no crude petroleum in it!"))
 			return
 	else if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(H,W)
@@ -718,15 +719,15 @@
 		powersource.update_power(powerneeded,1)
 		powersource.currentflow -= powerneeded
 		powersource.lastupdate2 = world.time
-		H << "You power off the [src]."
+		to_chat(H, "You power off the [src].")
 		update_icon()
 		return
 	if (volume < 1)
-		H << "<span class = 'notice'>The bakelizer is empty! Put some crude petroleum in first.</span>"
+		to_chat(H, SPAN_NOTICE("The bakelizer is empty! Put some crude petroleum in first."))
 		return
 
 	if (!active && !powersource.powered)
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, SPAN_NOTICE("There is not enough power to start the [src]."))
 		update_icon()
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
@@ -736,11 +737,11 @@
 		powersource.currentflow += powerneeded
 		powersource.lastupdate2 = world.time
 		power_on()
-		H << "You power the [src]."
+		to_chat(H, "You power the [src].")
 		update_icon()
 		return
 	else
-		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		to_chat(H, SPAN_NOTICE("There is not enough power to start the [src]."))
 		return
 /obj/structure/bakelizer/proc/power_on()
 	if (powered && active)
@@ -772,7 +773,7 @@
 	set src in range(1, usr)
 
 	if (!plastic)
-		usr << "Theres no finished plastic in the [src]."
+		to_chat(usr, "Theres no finished plastic in the [src].")
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and 0 plastic sheets inside."
 		return
 	else if (plastic <= 0)
@@ -1018,17 +1019,17 @@
 			icon_state = "metal_detector1"
 			set_light(2, 0.5, "#62cc53")
 
-	attack_hand(mob)
-		if (!ishuman(mob))
+	attack_hand(mob/M)
+		if (!ishuman(M))
 			return
 		if(!on)
 			on = TRUE
-			visible_message("[mob] turns the metal detector on.","You turn the metal detector on.")
+			M.visible_message("[M] turns the metal detector on.", "You turn the metal detector on.")
 			set_light(2, 0.5, "#62cc53")
 		else
-			visible_message("<span class='warning'>[mob] is trying to turn the metal detector off!</span>","You start turning the metal detector off...")
-			if(do_after(mob, 50, src))
-				visible_message("<span class='warning'>[mob] turns the metal detector off.</span>","You turn the metal detector off.")
+			M.visible_message("<span class='warning'>[M] is trying to turn the metal detector off!</span>", "You start turning the metal detector off...")
+			if(do_after(M, 50, src))
+				M.visible_message("<span class='warning'>[M] turns the metal detector off.</span>", "You turn the metal detector off.")
 				on = FALSE
 				set_light(0)
 
@@ -1092,7 +1093,7 @@
 	..()
 
 	if (!anchored)
-		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 
 	if (istype(W, /obj/item/stack/cable_coil))
@@ -1101,10 +1102,10 @@
 
 /obj/structure/drill/attack_hand(var/mob/living/human/H)
 	if (!anchored)
-		H << SPAN_NOTICE("Fix \the [src] in place with a wrench first.")
+		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	else if (!check_power())
-		H << SPAN_WARNING("\The [src] doesn't have any power!")
+		to_chat(H, SPAN_WARNING("\The [src] doesn't have any power!"))
 		update_icon()
 		return
 	else if (!active && powered)
@@ -1112,13 +1113,13 @@
 		active = TRUE
 		process_machine()
 		update_icon()
-		H << "You power up \the [src]."
+		to_chat(H, "You power up \the [src].")
 		return
 	else if (active)
 		next_spawn = -1
 		active = FALSE
 		update_icon()
-		H << "You power off \the [src]."
+		to_chat(H, "You power off \the [src].")
 		return
 
 /obj/structure/drill/proc/process_machine()
