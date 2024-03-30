@@ -16,9 +16,9 @@
 		new parts(loc)
 	..()
 
-/obj/structure/attack_hand(mob/mob, icon_x, icon_y)
-	if (climbers.len && !(mob in climbers))
-		mob.visible_message("<span class='warning'>[mob] shakes \the [src].</span>", \
+/obj/structure/attack_hand(mob/M, icon_x, icon_y)
+	if (climbers.len && !(M in climbers))
+		mob.visible_message("<span class='warning'>[M] shakes \the [src].</span>", \
 					"<span class='notice'>You shake \the [src].</span>")
 		structure_shaken()
 
