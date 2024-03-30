@@ -1024,7 +1024,7 @@
 			return
 		if(!on)
 			on = TRUE
-			mob.visible_message("[M] turns the metal detector on.", "You turn the metal detector on.")
+			M.visible_message("[M] turns the metal detector on.", "You turn the metal detector on.")
 			set_light(2, 0.5, "#62cc53")
 		else
 			M.visible_message("<span class='warning'>[M] is trying to turn the metal detector off!</span>", "You start turning the metal detector off...")
