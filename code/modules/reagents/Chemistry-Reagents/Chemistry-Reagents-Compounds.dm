@@ -276,7 +276,7 @@
 /datum/reagent/cocaine
 	name = "Cocaine"
 	id = "cocaine"
-	description = "A recreational drug made from coca leaves, tastes like a bitter metal."
+	description = "A recreational drug made from coca leaves, tastes bitter and metallic."
 	taste_description = "very powdery and sweet"
 	reagent_state = SOLID
 	color = "#FFFFFF"
