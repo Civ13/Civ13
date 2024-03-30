@@ -25,6 +25,11 @@
 	songs = list(
 		"Audio - Emissions:1" = "sound/music/emissions.ogg")
 	gamemode = "Extraction"
+	var/activation_code = 0
+
+/obj/map_metadata/siberiad/New()
+	..()
+	activation_code = rand(1000,9999) // Lazy way for now.
 
 /obj/map_metadata/siberiad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
@@ -100,7 +105,6 @@
 		return ""
 
 /obj/map_metadata/siberiad/update_win_condition()
-
 	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
@@ -109,16 +113,23 @@
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] were victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		if (current_winner == "Americans")
-			for (var/obj/structure/nuclear_missile/nuke in world)
-				nuke.activate()
+		for (var/obj/structure/props/computerprops/tracking/siberiad/TS in world)
+			if (TS.active)
+				for (var/obj/structure/nuclear_missile/nuke in world)
+					nuke.activate()
+				switch (TS.destination)
+					if (1)
+						world << "<big> A nuclear missile is heading towards Seattle. The Coalition's capitol is about to turn to dust.</big>"
+					if (2)
+						world << "<big> A nuclear missile is heading towards Novosibirsk. The remnants of the Soviet Union are to be extinct.</big>"
+
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Control Room! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -127,7 +138,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Control Room! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -136,7 +147,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have secured the Control Room! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -145,7 +156,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have secured the Control Room! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -153,7 +164,7 @@
 
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] have lost control of the Industrial Complex!</font>"
+			world << "<font size = 3>The [current_winner] have lost control of the Control Room!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -176,3 +187,30 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+// MAP SPECIFIC OBJECTS //
+
+/obj/structure/props/computerprops/tracking/siberiad
+	var/active = FALSE
+	var/destination = 1
+
+/obj/structure/props/computerprops/tracking/siberiad/attack_hand(var/mob/living/human/H as mob)
+	if (map && map.ID == MAP_SIBERIAD)
+		var/obj/map_metadata/siberiad/SD = map
+		if (src.active)
+			to_chat(H, SPAN_WARNING("The nuclear missile has already been activated."))
+			return
+		var/code = input(H, "Enter the activation code:") as num
+		if (code == SD.activation_code)
+			src.visible_message(SPAN_NOTICE("\icon[src] Initiliazing protocols... Please wait."))
+			spawn(100)
+				src.active = TRUE
+				src.visible_message(SPAN_WARNING("\icon[src] Nuclear missile activated."))
+				if (H.faction_text == RUSSIAN)
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: SEATTLE (LAT: 47.608013, LONG: -122.335167)."))
+					destination = 1
+				else
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: NOVOSIBIRSK (LAT: 55.018803, LONG: 82.933952)."))
+					destination = 2
+		else
+			to_chat(H, SPAN_WARNING("Wrong password."))
