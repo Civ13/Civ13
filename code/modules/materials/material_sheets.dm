@@ -458,13 +458,6 @@ var/splitting_in_progress = null  // Initialize the variable outside of the scop
 
 	return ..()
 
-
-
-/*
-				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
-					visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
-					H.adaptStat("strength", 1)*/
-
 /obj/item/stack/material/woodplank
 	name = "soft"
 	icon_state = "sheet-wood"
