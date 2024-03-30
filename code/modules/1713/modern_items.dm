@@ -1019,17 +1019,17 @@
 			icon_state = "metal_detector1"
 			set_light(2, 0.5, "#62cc53")
 
-	attack_hand(mob/mob) // proc has mob/mob, this has mob/VARIABLE but the variable in this case is mob/mob. (if that makes sense)
-		if (!ishuman(mob))
+	attack_hand(mob/M)
+		if (!ishuman(M))
 			return
 		if(!on)
 			on = TRUE
-			mob.visible_message("[mob] turns the metal detector on.", "You turn the metal detector on.")
+			mob.visible_message("[M] turns the metal detector on.", "You turn the metal detector on.")
 			set_light(2, 0.5, "#62cc53")
 		else
-			mob.visible_message("<span class='warning'>[mob] is trying to turn the metal detector off!</span>", "You start turning the metal detector off...")
-			if(do_after(mob, 50, src))
-				mob.visible_message("<span class='warning'>[mob] turns the metal detector off.</span>", "You turn the metal detector off.")
+			M.visible_message("<span class='warning'>[M] is trying to turn the metal detector off!</span>", "You start turning the metal detector off...")
+			if(do_after(M, 50, src))
+				M.visible_message("<span class='warning'>[M] turns the metal detector off.</span>", "You turn the metal detector off.")
 				on = FALSE
 				set_light(0)
 
