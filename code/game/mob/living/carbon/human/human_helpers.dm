@@ -158,7 +158,7 @@
 		return
 	else
 		sleeping = 66
-		spawn(600)
+		spawn(600) // 1 minute
 			sleep_update()
 			return
 

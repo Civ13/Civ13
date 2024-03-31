@@ -484,7 +484,7 @@
 /obj/structure/refinery/proc/power_on()
 	if (active)
 		update_icon()
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 	else
 		update_icon()
@@ -517,7 +517,7 @@
 		else // default to diesel
 			volume -= amt
 			barrel[1].reagents.add_reagent("diesel",0.7*amt)
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 	else
@@ -670,7 +670,7 @@
 				amt = volume_di
 			volume_di -= amt
 			barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 	else
@@ -746,7 +746,7 @@
 /obj/structure/bakelizer/proc/power_on()
 	if (powered && active)
 		update_icon()
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 	else
 		update_icon()
@@ -764,7 +764,7 @@
 		volume-=5
 		plastic+=1
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 /obj/structure/bakelizer/verb/empty()

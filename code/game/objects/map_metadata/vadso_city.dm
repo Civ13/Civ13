@@ -253,7 +253,7 @@
 			world << "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a5_name]</b>: Nobody</big>"
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"

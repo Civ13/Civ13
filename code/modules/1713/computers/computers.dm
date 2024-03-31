@@ -260,7 +260,7 @@
 		P.origin = src
 		if (P.does_checks)
 			P.does_checks_proc()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (src)
 			program_checker()
 			return
