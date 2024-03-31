@@ -95,7 +95,7 @@
 			flash_protection = initial(flash_protection)
 			tint = initial(tint)
 			icon_state = base_state
-			usr << "You flip the [src] down to protect your eyes."
+			usr.visible_message("<span class = 'notice'>[usr] flips the [src] down.</span>", "<span class = 'notice'>You flip the [src] down to protect your eyes.") // Only the user would know why they flipped the welding mask down, niche for biche.
 		else
 			up = !up
 			body_parts_covered &= ~(EYES|FACE)
@@ -103,6 +103,6 @@
 			tint = TINT_NONE
 			flags_inv &= ~(HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE)
 			icon_state = "[base_state]up"
-			usr << "You push the [src] up out of your face."
+			usr.visible_message("<span class = 'notice'>[usr] flips the [src] up.</span>", "<span class = 'notice'>You flip the [src] up.") // Visual + Textual confirmation would make this no reason to be long, as conversation will move on.
 		update_clothing_icon()	//so our mob-overlays
 		usr.update_action_buttons()

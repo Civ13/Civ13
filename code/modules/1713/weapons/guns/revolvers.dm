@@ -84,14 +84,16 @@
 			icon_state = "[base_icon]_cocked"
 		else
 			icon_state = base_icon
+
 /obj/item/weapon/gun/projectile/revolver/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
+	set src in usr
 	set category = null
 
 	chamber_offset = FALSE
-	visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
-	"<span class='notice'>You hear something metallic spin and click.</span>")
+	usr.visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
+						"<span class='notice'>You spin the cylinder of \the [src].</span>")
 	playsound(loc, 'sound/weapons/guns/interact/revolver_spin.ogg', 100, TRUE)
 	loaded = shuffle(loaded)
 	if (rand(1,max_shells) > loaded.len)
@@ -117,12 +119,12 @@
 	if (single_action)
 		if (!cocked)
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='warning'>[user] cocks the [src]!</span>","<span class='warning'>You cock the [src]!</span>")
+			user.visible_message("<span class='warning'>[user] cocks \the [src]!</span>","<span class='warning'>You cock \the [src]!</span>")
 			cocked = TRUE
 			update_icon()
 		else
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='notice'>[user] uncocks the [src].</span>","<span class='notice'>You uncock the [src].</span>")
+			user.visible_message("<span class='notice'>[user] uncocks \the [src].</span>","<span class='notice'>You uncock \the [src].</span>")
 			cocked = FALSE
 			update_icon()
 
@@ -764,11 +766,12 @@
 /obj/item/weapon/gun/projectile/revolving/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
+	set src in usr
 	set category = null
 
 	chamber_offset = FALSE
-	visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
-	"<span class='notice'>You hear something metallic spin and click.</span>")
+	usr.visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
+						"<span class='notice'>You spin the cylinder of \the [src].</span>")
 	playsound(loc, 'sound/weapons/guns/interact/revolver_spin.ogg', 100, TRUE)
 	loaded = shuffle(loaded)
 	if (rand(1,max_shells) > loaded.len)
@@ -790,15 +793,16 @@
 		unload_ammo(user, allow_dump=0)
 	else
 		return ..()
+
 /obj/item/weapon/gun/projectile/revolving/attack_self(mob/user)
 	if (single_action)
 		if (!cocked)
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='warning'>[user] cocks the [src]!</span>","<span class='warning'>You cock the [src]!</span>")
+			user.visible_message("<span class='warning'>[user] cocks \the [src]!</span>","<span class='warning'>You cock \the [src]!</span>")
 			cocked = TRUE
 		else
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='notice'>[user] uncocks the [src].</span>","<span class='notice'>You uncock the [src].</span>")
+			user.visible_message("<span class='notice'>[user] uncocks \the [src].</span>","<span class='notice'>You uncock \the [src].</span>")
 			cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
@@ -833,20 +837,19 @@
 					count++
 				loaded.Cut()
 			if (count)
-				visible_message("[user] unloads [src].", "<span class='notice'>You unload [count] round\s from [src].</span>")
+				user.visible_message("[user] unloads [src].", "<span class='notice'>You unload [count] round\s from [src].</span>")
 				if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 		else if (load_method & SINGLE_CASING)
 			var/obj/item/ammo_casing/C = loaded[loaded.len]
 			loaded.len--
 			user.put_in_hands(C)
-			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			user.visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
 			if (istype(src, /obj/item/weapon/gun/projectile/boltaction))
 				var/obj/item/weapon/gun/projectile/boltaction/B = src
 				if (B.bolt_safety && !B.loaded.len)
 					B.check_bolt_lock++
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
-	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/revolving/colt
@@ -949,14 +952,16 @@
 			icon_state = "[base_icon]_cocked"
 		else
 			icon_state = base_icon
+
 /obj/item/weapon/gun/projectile/capnball/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
+	set src in usr
 	set category = null
 
 	chamber_offset = FALSE
-	visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
-	"<span class='notice'>You hear something metallic spin and click.</span>")
+	usr.visible_message("<span class='warning'>\The [usr] spins the cylinder of \the [src]!</span>", \
+						"<span class='notice'>You spin the cylinder of \the [src].</span>")
 	playsound(loc, 'sound/weapons/guns/interact/revolver_spin.ogg', 100, TRUE)
 	loaded = shuffle(loaded)
 	if (rand(1,max_shells) > loaded.len)
@@ -978,16 +983,17 @@
 		unload_ammo(user, allow_dump=0)
 	else
 		return ..()
+
 /obj/item/weapon/gun/projectile/capnball/attack_self(mob/user)
 	if (single_action)
 		if (!cocked)
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='warning'>[user] cocks the [src]!</span>","<span class='warning'>You cock the [src]!</span>")
+			user.visible_message("<span class='warning'>[user] cocks \the [src]!</span>","<span class='warning'>You cock \the [src]!</span>")
 			cocked = TRUE
 			update_icon()
 		else
 			playsound(loc, cocked_sound, 50, TRUE)
-			visible_message("<span class='notice'>[user] uncocks the [src].</span>","<span class='notice'>You uncock the [src].</span>")
+			user.visible_message("<span class='notice'>[user] uncocks \the [src].</span>","<span class='notice'>You uncock \the [src].</span>")
 			cocked = FALSE
 			update_icon()
 
