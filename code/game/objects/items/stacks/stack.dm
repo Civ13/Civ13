@@ -165,7 +165,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		var/obj/item/stack/S = W
 		merge(S)
 		S.update_icon()
+		S.update_strings()
 		src.update_icon()
+		src.update_strings()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 		if (S && usr.using_object == S)
 			S.interact(usr)
@@ -195,14 +197,20 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			return
 		else
 			change_stack(user, stackmaterial)
+			update_strings(stackmaterial)
 			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
+
+/obj/item/stack/proc/update_strings()
+    return
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
 	if (F)
 		user.put_in_hands(F)
 		F.update_icon()
+		F.update_strings()
 		src.update_icon()
+		src.update_strings()
 		add_fingerprint(user)
 		F.add_fingerprint(user)
 		spawn(0)

@@ -1853,7 +1853,7 @@ RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,produ
 
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
-RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,production,90,0,0,8,null
+RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,production,120,0,0,8,null
 RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_bath,12,200,1,1,production,175,0,180,8,null
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null

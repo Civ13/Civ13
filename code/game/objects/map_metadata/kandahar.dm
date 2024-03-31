@@ -327,7 +327,7 @@
 						if ("Mujahideen Group Leader")
 							sov_points += 2
 							world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>"
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(300)
 			world << "<big><b>Current Points:</big></b>"

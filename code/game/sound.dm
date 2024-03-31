@@ -338,6 +338,30 @@ var/list/charge_sounds_ballas = list(
 	'sound/effects/emotes/ballas_vsgrov2.ogg',
 	'sound/effects/emotes/ballas_vsgrov3.ogg',
 	'sound/effects/emotes/ballas_vsgrov4.ogg',)
+// generic charge sounds from cm
+var/list/charge_sounds_generic_male = list(
+	'sound/effects/emotes/male_generic_warcry1.ogg',
+	'sound/effects/emotes/male_generic_warcry2.ogg',
+	'sound/effects/emotes/male_generic_warcry3.ogg',
+	'sound/effects/emotes/male_generic_warcry4.ogg',
+	'sound/effects/emotes/male_generic_warcry5.ogg',
+	'sound/effects/emotes/male_generic_warcry6.ogg',
+	'sound/effects/emotes/male_generic_warcry7.ogg',
+	'sound/effects/emotes/male_generic_warcry8.ogg',
+	'sound/effects/emotes/male_generic_warcry9.ogg',
+	'sound/effects/emotes/male_generic_warcry10.ogg',
+	'sound/effects/emotes/male_generic_warcry11.ogg',
+	'sound/effects/emotes/male_generic_warcry12.ogg',
+	'sound/effects/emotes/male_generic_warcry13.ogg',
+)
+var/list/charge_sounds_generic_female = list(
+	'sound/effects/emotes/female_generic_warcry1.ogg',
+	'sound/effects/emotes/female_generic_warcry2.ogg',
+	'sound/effects/emotes/female_generic_warcry3.ogg',
+	'sound/effects/emotes/female_generic_warcry4.ogg',
+	'sound/effects/emotes/female_generic_warcry5.ogg',
+	'sound/effects/emotes/female_generic_warcry6.ogg',
+)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -604,4 +628,9 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_grove)
 			if ("charge_BALLAS")
 				soundin = pick(charge_sounds_ballas)
+			// generic charges from cm
+			if ("charge_GENERIC_male")
+				soundin = pick(charge_sounds_generic_male)
+			if ("charge_GENERIC_female")
+				soundin = pick(charge_sounds_generic_female)
 	return soundin

@@ -179,7 +179,7 @@
 		if (done == FALSE)
 			new/obj/structure/ants(FD.loc)
 			done = TRUE
-	spawn(600)
+	spawn(600) // 1 minute 
 		check_food()
 /obj/structure/anthill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/branch))
@@ -205,7 +205,7 @@
 /obj/structure/ants/New()
 	..()
 	check_food()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (src)
 			qdel(src)
 

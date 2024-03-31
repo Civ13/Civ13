@@ -195,7 +195,7 @@
 	else if (final_cost <= money)
 		money -= final_cost
 		user << "You have successfully purchased the crate. It will arrive soon."
-		spawn(600)
+		spawn(600) // 1 minute
 			var/list/turfs = list()
 			if (faction_treasury != "craftable")
 				turfs = latejoin_turfs[factionarea]

@@ -271,7 +271,7 @@
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "white"
 
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"
