@@ -22,6 +22,7 @@ Current Defines (_defines/attachment.dm)
 	var/attachable = TRUE
 	var/attachment_type // Use the 'ATTACH_' defines above (should only use one for this)
 	var/A_attached = FALSE // Is attached?
+	dropsound = 'sound/effects/drop_default.ogg'
 	w_class = ITEM_SIZE_SMALL
 	var/list/fits = list("pistol", "smg", "rifle", "shotgun", "mg") // What does it fit on?
 
