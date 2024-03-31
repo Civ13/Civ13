@@ -53,8 +53,8 @@
 	H.setStat("rifle", STAT_HIGH)
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_NORMAL)
 	give_random_name(H)
 
@@ -130,22 +130,22 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh(H), slot_back)
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Take orders from your Operation Leader and lead your squad towards victory!")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	give_random_name(H)
 
 	return TRUE
 
-/datum/job/american/siberiad/heavy
-	title = "Coalition Heavy Weapons Specialist"
-	rank_abbreviation = "Cpl."
+/datum/job/american/siberiad/spec
+	title = "Coalition Weapons Specialist"
+	rank_abbreviation = "Spc."
 	spawn_location = "JoinLateFAR"
 
 	is_siberiad = TRUE
@@ -157,7 +157,7 @@
 	max_positions = 8
 	selection_color = "#153043"
 
-/datum/job/american/siberiad/heavy/equip(var/mob/living/human/H)
+/datum/job/american/siberiad/spec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
@@ -202,19 +202,81 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_r_store)
 
 	H.civilization = "Coalition"
-	H.add_note("Role", "You are a <b>[title]</b>.As a heavy infantryman You Provide Firepower and Suppresive fire for your squad!")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_MEDIUM_LOW)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.add_note("Role", "You are a <b>[title]</b>. Provide assistance to your squad sing your weapon expertise!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	give_random_name(H)
 
 	return TRUE
+
+/datum/job/american/siberiad/medic
+	title = "Coalition Corpsman"
+	rank_abbreviation = "Cpl."
+	spawn_location = "JoinLateFAR"
+
+	is_siberiad = TRUE
+
+	is_medic = TRUE
+
+	additional_languages = list("Russian" = 10)
+	min_positions = 1
+	max_positions = 4
+	selection_color = "#153043"
+
+/datum/job/american/siberiad/medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
+	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
+	uniform.attackby(armour2, H)
+//gun
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5(H), slot_shoulder)
+//helmet
+	var/rand_helmet = rand(1,4)
+	switch(rand_helmet)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two(H), slot_head)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt(H), slot_head)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
+//gloves
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+//suit
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+
+	H.civilization = "Coalition"
+	H.add_note("Role", "You are a <b>[title]</b>. Keep your squadmates alive!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_HIGH)
+	H.setStat("machinegun", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
 
 /datum/job/american/siberiad/infantry
 	title = "Coalition Rifleman"
@@ -277,15 +339,15 @@
 
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
-	H.setStat("strength", STAT_MEDIUM_LOW)
+	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	H.setStat("medical", STAT_LOW)
+	H.setStat("machinegun", STAT_MEDIUM_LOW)
 	give_random_name(H)
 
 	return TRUE
