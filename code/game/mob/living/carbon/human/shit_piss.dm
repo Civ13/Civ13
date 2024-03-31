@@ -91,7 +91,7 @@
 	spawn(800)
 		dried = 1
 		name = "dried urine stain"
-		desc = "That's a dried crusty urine stain. Fucking janitors."
+		desc = "That's a dried crusty urine stain."
 
 /obj/effect/decal/cleanable/urine/Destroy()
 	..()

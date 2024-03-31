@@ -172,7 +172,7 @@
 	may_become_muddy = FALSE
 
 /turf/floor/grass/jungle/savanna
-	name = "dry grass"
+	name = "dry grass patch"
 	icon_state = "dry_grass"
 	initial_flooring = null
 
@@ -193,7 +193,7 @@
 	return
 
 /turf/floor/winter/grass
-	name = "snowy grass"
+	name = "snowy grass patch"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "grass2"
 	is_diggable = TRUE
