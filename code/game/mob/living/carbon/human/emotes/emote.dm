@@ -174,6 +174,7 @@ var/list/vocal_emotes = list(
 				if (!restrained())
 					message = "claps."
 					m_type = 2
+					playsound(get_turf(src), "sound/effects/emotes/clap.ogg", 100)
 					if (miming)
 						m_type = 1
 			if ("flap")
@@ -391,6 +392,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_IRANIAN", 100)
 									else if (original_job.is_heist && original_job.is_law)
 										playsound(get_turf(src), "charge_POLICE", 100)
+									else // we default to generic charges if there's no appropriate civilian charge
+										playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
 								if (PIRATES)
 									if (original_job.is_event)
 										playsound(get_turf(src), "charge_REDMENIA", 100)
@@ -461,6 +464,8 @@ var/list/vocal_emotes = list(
 									playsound(get_turf(src), "charge_VIETNAMESE", 100)
 								if (FILIPINO)
 									playsound(get_turf(src), "charge_FILIPINO", 100)
+								else // if no corresponding faction is found we'll default to generic charges
+									playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2
