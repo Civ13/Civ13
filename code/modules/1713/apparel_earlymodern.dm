@@ -1039,26 +1039,31 @@
 	block_chance = 22
 	cooldownw = 7
 	value = 60
+
 /obj/item/clothing/head/ww/cheka
 	name = "Cheka cap"
 	desc = "A black leather cap worn by Cheka agents."
 	icon_state = "cheka"
 	item_state = "cheka"
+
 /obj/item/clothing/head/ww/papakha
 	name = "papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha"
 	item_state = "papakha"
+
 /obj/item/clothing/head/ww/papakha/white
 	name = "white papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha_white"
 	item_state = "papakha_white"
+
 /obj/item/clothing/head/ww/papakha/kuban
 	name = "Kuban papakha"
 	desc = "A traditional Kuban Cossak papakha, black with a red crown."
 	icon_state = "papakha_kuban"
 	item_state = "papakha_kuban"
+
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
 	desc = "A typical pointed helmet."
@@ -1068,11 +1073,13 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/ww/budenovka
 	name = "budenovka"
 	desc = "A Soviet budenovka hat."
 	icon_state = "budenovka"
 	item_state = "budenovka"
+
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "M1935 stahlhelm"
 	desc = "A typical german helmet."
