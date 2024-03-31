@@ -253,7 +253,7 @@
 		set_light(5)
 		update_icon()
 		fire_loop()
-		spawn(600)
+		spawn(600) // 1 minute
 			keep_fire_on()
 	else
 		on = FALSE

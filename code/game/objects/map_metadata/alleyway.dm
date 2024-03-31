@@ -27,7 +27,7 @@
 	)
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute 
 			points_check()
 /obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
 	..()

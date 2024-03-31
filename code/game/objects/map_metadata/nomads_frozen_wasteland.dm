@@ -77,7 +77,7 @@
 			log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 			return
 	else
-		spawn(600)
+		spawn(600) // 1 minute
 			nuke_proc(timer)
 	return
 

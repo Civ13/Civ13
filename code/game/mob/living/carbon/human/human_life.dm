@@ -1778,7 +1778,7 @@
 /mob/living/human/proc/do_rotting()
 	if (map && istype(src, /mob/living/human/corpse))
 		return
-	spawn(600)
+	spawn(600) // 1 minute 
 		if (stat == DEAD)
 			spawn(30000)
 				if (stat == DEAD)

@@ -351,7 +351,7 @@
 		storedvalue += BB.reagents.get_reagent_amount("petroleum")
 	if (faction)
 		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
-	spawn(600)
+	spawn(600) // 1 minute 
 		check_value()
 
 /obj/structure/oil_deposits/attack_hand(mob/living/human/user as mob)

@@ -748,7 +748,7 @@ var/list/vocal_emotes = list(
 						if (r_hand) unEquip(r_hand)
 						next_emote["surrender"] = world.time + 600
 						surrendered = TRUE
-						spawn(600)
+						spawn(600) // 1 minute 
 							surrendered = FALSE
 					else
 						message = "surrenders!"
@@ -757,7 +757,7 @@ var/list/vocal_emotes = list(
 						if (r_hand) unEquip(r_hand)
 						next_emote["surrender"] = world.time + 600
 						surrendered = TRUE
-						spawn(600)
+						spawn(600) // 1 minute
 							surrendered = FALSE
 
 			if ("pee")
