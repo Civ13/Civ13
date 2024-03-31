@@ -783,6 +783,7 @@
 #include "code\modules\1713\jobs\ruhr_uprising.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\samurai.dm"
+#include "code\modules\1713\jobs\siberiad.dm"
 #include "code\modules\1713\jobs\skyrim.dm"
 #include "code\modules\1713\jobs\sovafghan.dm"
 #include "code\modules\1713\jobs\spanish.dm"

@@ -424,6 +424,15 @@
 	item_state = "pasgt_white"
 	worn_state = "pasgt_white"
 
+/obj/item/clothing/head/helmet/modern/pasgt/white/alt
+	icon_state = "pasgt_white_alt"
+	item_state = "pasgt_white_alt"
+	worn_state = "pasgt_white_alt"
+/obj/item/clothing/head/helmet/modern/pasgt/white/alt/two
+	icon_state = "pasgt_white_alt_2"
+	item_state = "pasgt_white_alt_2"
+	worn_state = "pasgt_white_alt_2"
+	
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))

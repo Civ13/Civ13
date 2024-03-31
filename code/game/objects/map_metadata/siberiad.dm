@@ -15,7 +15,7 @@
 		list(AMERICAN) = /area/caribbean/no_mans_land/capturable/one,
 		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable/one,
 		)
-	age = "2033"
+	age = "1992"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siberian Conflict"
 	mission_start_message = "<font size=4>The remnants of the <font color = 'blue'>Coalition</font color> and the <font color = red>Soviet Army</font> are fighting for the control of a <b>Military Industrial Complex</b> in the <b>MIDDLE</b> of the area of operations.<br>In order to win, a side has to hold the <b>Control Room</b> for<b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"

@@ -1346,6 +1346,19 @@
 	..()
 	var/obj/item/weapon/gun/launcher/grenade/underslung/m203/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/m203(src)
 	GL.attached(null,src,TRUE)
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/att/New()
+	..()
+	var/scope_type = rand(1,2)
+	switch(scope_type)
+		if (1)
+			var/obj/item/weapon/attachment/scope/adjustable/advanced/reddot/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+			SP.attached(null,src,TRUE)
+		if (2)
+			var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+			SP.attached(null,src,TRUE)
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4
 	name = "M16A4"
