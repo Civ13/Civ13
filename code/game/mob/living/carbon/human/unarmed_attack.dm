@@ -105,8 +105,8 @@ var/global/list/sparring_attack_cache = list()
 	var/obj/item/organ/eyes/eyes = target.internal_organs_by_name["eyes"]
 	eyes.take_damage(rand(3,4), TRUE)
 
-	user.visible_message("<span class='danger'>[user] presses \his [eye_attack_text] into [target]'s [eyes.name]!</span>", "<span class = 'danger'>You press your [eye_attack_text] into [target]'s [eye.name]!</span>")
-	target << "<span class='danger'>You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel" ] [eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]</span>"
+	user.visible_message("<span class='danger'>[user] presses \his [eye_attack_text] into [target]'s [eyes.name]!</span>", "<span class = 'danger'>You press your [eye_attack_text] into [target]'s [eyes.name]!</span>")
+	target << "<span class='danger'>You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel "][eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]</span>"
 
 /datum/unarmed_attack/bite
 	attack_verb = list("bit")
