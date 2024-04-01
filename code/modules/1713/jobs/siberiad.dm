@@ -238,8 +238,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
-	uniform.attackby(red, H)
+	var/obj/item/clothing/accessory/armband/redcross/armband  = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard/armour2 = new /obj/item/clothing/accessory/armor/coldwar/pasgt/blizzard(null)
 	uniform.attackby(armour2, H)
 //gun
@@ -256,7 +256,7 @@
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_beanie(H), slot_head)
 //gloves
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/sterile/nitrile(H), slot_gloves)
 //suit
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/m05(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
@@ -558,6 +558,64 @@
 
 	return TRUE
 
+/datum/job/russian/siberiad/medic
+	title = "Soviet Army Corpsman"
+	rank_abbreviation = "Efr."
+	spawn_location = "JoinLateRU"
+
+	is_siberiad = TRUE
+
+	is_medic = TRUE
+
+	additional_languages = list("English" = 5)
+	min_positions = 1
+	max_positions = 4
+	selection_color = "#CC0000"
+
+/datum/job/russian/siberiad/medic/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
+//armor
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/armband  = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour2 = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
+	uniform.attackby(armour2, H)
+//gun
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u(H), slot_shoulder)
+	var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
+	uniform.attackby(webbing, H)
+//helmet
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
+//gloves
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/sterile(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+
+	H.civilization = "Soviet Army"
+	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_HIGH)
+	H.setStat("machinegun", STAT_LOW)
+	give_random_name(H)
+
+	return TRUE
+
 /datum/job/russian/siberiad/infantry
 	title = "Soviet Army Rifleman"
 	rank_abbreviation = "Ryad."
@@ -600,9 +658,21 @@
 	var/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74(null)
 	uniform.attackby(webbing, H)
 //helmet
-	if (prob(45))
+	if (prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
-//glove
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/sov_ushanka_new(H), slot_head)
+//masks
+	if (prob(50))
+		var/rand_mask = rand(1,3)
+		switch(rand_mask)
+			if (1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)
+			if (2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
+			if (3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/green(H), slot_wear_mask)
+//gloves
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 
 	H.civilization = "Soviet Army"

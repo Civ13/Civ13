@@ -876,6 +876,18 @@
 	update_icon(projectile)
 	return TRUE
 
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/kornet
+	name = "9K135 Kornet"
+	desc = "A highly accurate, Russian laser-guided anti-tank missile system with long-range capabilities and advanced armor penetration, designed for modern battlefield engagements."
+	icon_state = "kornet_atgm"
+	base_icon = "kornet_atgm"
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/bgm_tow
+	name = "BGM-71 TOW"
+	desc = "A wire-guided anti-tank missile, known for its effectiveness against armored vehicles at long distances."
+	icon_state = "bgm71_tow_atgm"
+	base_icon = "bgm71_tow_atgm"
+
 // Foldable ATGMs
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
@@ -901,3 +913,17 @@
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message(SPAN_WARNING("[usr] retrieves the [src] from the ground."))
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/kornet
+	name = "9K135 Kornet"
+	desc = "A highly accurate, Russian laser-guided anti-tank missile system with long-range capabilities and advanced armor penetration, designed for modern battlefield engagements."
+	icon_state = "kornet_atgm"
+	base_icon = "kornet_atgm"
+	path = /obj/item/weapon/foldable/atgm/kornet
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/bgm_tow
+	name = "BGM-71 TOW"
+	desc = "A wire-guided anti-tank missile, known for its effectiveness against armored vehicles at long distances."
+	icon_state = "bgm71_tow_atgm"
+	base_icon = "bgm71_tow_atgm"
+	path = /obj/item/weapon/foldable/atgm/bgm_tow
