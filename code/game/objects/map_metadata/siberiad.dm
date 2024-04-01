@@ -191,6 +191,8 @@
 // MAP SPECIFIC OBJECTS //
 
 /obj/structure/props/computerprops/tracking/siberiad
+	name = "launch terminal"
+	desc = "A terminal used to control the missile silo."
 	var/active = FALSE
 	var/destination = 1
 
@@ -200,17 +202,17 @@
 		if (src.active)
 			to_chat(H, SPAN_WARNING("The nuclear missile has already been activated."))
 			return
-		var/code = input(H, "Enter the activation code:") as num
+		var/code = input(H, "Enter the activation code:", "Access Termninal")
 		if (code == SD.activation_code)
 			src.visible_message(SPAN_NOTICE("\icon[src] Initiliazing protocols... Please wait."))
 			spawn(100)
 				src.active = TRUE
 				src.visible_message(SPAN_WARNING("\icon[src] Nuclear missile activated."))
 				if (H.faction_text == RUSSIAN)
-					src.visible_message(SPAN_WARNING("\icon[src] Target destination: SEATTLE (LAT: 47.608013, LONG: -122.335167)."))
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: SEATTLE <br>(LAT: 47.608013, LONG: -122.335167)."))
 					destination = 1
 				else
-					src.visible_message(SPAN_WARNING("\icon[src] Target destination: NOVOSIBIRSK (LAT: 55.018803, LONG: 82.933952)."))
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: NOVOSIBIRSK <br>(LAT: 55.018803, LONG: 82.933952)."))
 					destination = 2
 		else
-			to_chat(H, SPAN_WARNING("Wrong password."))
+			to_chat(H, SPAN_WARNING("\icon[src] Wrong password."))
