@@ -468,7 +468,7 @@
 		visible_message("The elevator door closes.")
 		open = FALSE
 		flick("elevator_doorclosing",src)
-		spawn(10)
+		spawn(6)
 			icon_state = "elevator_door"
 			density = TRUE
 			opacity = TRUE
@@ -478,7 +478,7 @@
 		visible_message("The elevator door opens.")
 		open = TRUE
 		flick("elevator_dooropening",src)
-		spawn(10)
+		spawn(6)
 			icon_state = "elevator_dooropen"
 			density = FALSE
 			opacity = FALSE
