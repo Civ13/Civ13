@@ -858,9 +858,6 @@
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
 	var/max_storage = 3
-	New()
-		..()
-		storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 
 /obj/structure/katana_stand/update_icon()
 	if (storage.contents.len > 0)
@@ -875,6 +872,7 @@
 	storage.storage_slots = 1
 	storage.max_w_class = 3
 	storage.max_storage_space = max_storage*3
+	storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 	update_icon()
 
 /obj/structure/katana_stand/Destroy()
