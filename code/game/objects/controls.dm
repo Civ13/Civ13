@@ -455,7 +455,6 @@
 	S.icon = null
 	S.verbs.Cut()
 	opacity_objects += S
-	autoclose()
 
 /obj/structure/gate/elevator_door/Destroy()
 	for(var/atom/movable/S in opacity_objects)
@@ -484,13 +483,14 @@
 			opacity = FALSE
 			for(var/atom/movable/S in opacity_objects)
 				S.set_opacity(FALSE)
+	autoclose()
+	return
 
 /obj/structure/gate/elevator_door/proc/autoclose()
-	if (src.open)
-		spawn(80)
+	spawn(10 SECONDS)
+		if (src.open)
 			src.toggle()
 			return
-	autoclose()
 
 /obj/structure/gatecontrol/elevator_door
 	name = "elevator door button"
@@ -536,7 +536,7 @@
 						M.z = 2
 					else if (M.z == 2)
 						M.z = 1
-					M << "The elevator has arrived!"
+					to_chat(M, "The elevator has arrived!")
 				for (var/obj/O in range(1, src))
 					if (!istype(O, /obj/structure/elevator_button/) && !istype (O, /obj/covers/))
 						if (O.z == 1)
