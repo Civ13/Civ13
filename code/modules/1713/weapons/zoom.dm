@@ -237,11 +237,12 @@ Parts of code courtesy of Super3222
 								if (faction1_aircraft_rearming)
 									faction1_aircraft_rearming = FALSE
 									faction1_airstrikes_remaining = faction1_airstrikes_max
+									payload_remaining = faction1_airstrikes_remaining[payload_class]
 							if (2)
 								if (faction2_aircraft_rearming)
 									faction2_aircraft_rearming = FALSE
 									faction2_airstrikes_remaining = faction2_airstrikes_max
-						payload_remaining = faction1_airstrikes_remaining[payload_class]
+									payload_remaining = faction2_airstrikes_remaining[payload_class]
 									
 						if (payload_remaining > 0) // If they have payloads remaining continue, otherwise make them re-arm
 							checking = TRUE

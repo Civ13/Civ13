@@ -202,7 +202,7 @@
 		if (src.active)
 			to_chat(H, SPAN_WARNING("The nuclear missile has already been activated."))
 			return
-		var/code = input(H, "Enter the activation code:", "Access Termninal")
+		var/code = input(H, "Enter the activation code:", "Access Termninal") as num
 		if (code == SD.activation_code)
 			src.visible_message(SPAN_NOTICE("\icon[src] Initiliazing protocols... Please wait."))
 			spawn(100)

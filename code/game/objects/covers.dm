@@ -124,7 +124,8 @@
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
-			new current_area_type(get_turf(src))
+			if (!map.ID == MAP_BATTLE_SHIPS)
+				new current_area_type(get_turf(src))
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level

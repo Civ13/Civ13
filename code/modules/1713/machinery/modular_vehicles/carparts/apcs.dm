@@ -291,17 +291,17 @@
 
 /obj/structure/vehicleparts/frame/bradley/lfc
 	icon_state = "bradley_frame_steel_middle_front_left"
-	w_left = list("bradley_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE,TRUE)
+	w_left = list("bradley_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bradley/rfc
 	icon_state = "bradley_frame_steel_middle_front_right"
 	w_right = list("bradley_middle_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/bradley/lbc
 	icon_state = "bradley_frame_steel_middle_back_left"
-	w_left = list("bradley_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE,TRUE)
+	w_left = list("bradley_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bradley/rbc
 	icon_state = "bradley_frame_steel_middle_back_right"
-	w_right = list("bradley_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE,TRUE)
+	w_right = list("bradley_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/bradley/lb
 	icon_state = "bradley_frame_steel_back_left"
