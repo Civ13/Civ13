@@ -76,6 +76,20 @@
 	item_state = "atgm"
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
 
+/obj/item/weapon/foldable/atgm/kornet
+	name = "Foldable 9K135 Kornet"
+	desc = "A highly accurate, Russian laser-guided anti-tank missile system with long-range capabilities and advanced armor penetration, designed for modern battlefield engagements."
+	icon_state = "kornet_atgm"
+	item_state = "kornet_atgm"
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/kornet
+
+/obj/item/weapon/foldable/atgm/bgm_tow
+	name = "Foldable BGM-71 TOW"
+	desc = "A wire-guided anti-tank missile, known for its effectiveness against armored vehicles at long distances."
+	icon_state = "bgm71_tow_atgm"
+	item_state = "bgm71_tow_atgm"
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/bgm_tow
+
 /obj/item/weapon/foldable/pkm
 	name = "Foldable PKM machine gun"
 	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
