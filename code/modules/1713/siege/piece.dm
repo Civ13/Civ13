@@ -496,11 +496,11 @@
 			degree = clamp(degree, 135, 224)
 		else if (dir == WEST)
 			degree = clamp(degree, 225, 315)
-		else
-			if (degree >= 45)
-				degree = 44
-			if (degree < 315)
-				degree = 315
+		else if (dir == NORTH)
+			if (degree > 180)
+				degree = clamp(degree, 315, 360)
+			else
+				degree = clamp(degree, 0, 44)
 
 	target_coords()
 	update_scope()
@@ -511,7 +511,7 @@
 		dir = SOUTH
 	else if (degree >= 225 && degree < 315)
 		dir = WEST
-	else
+	else if (degree >= 315 || degree < 45)
 		dir = NORTH
 	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
 		F.update_icon()
