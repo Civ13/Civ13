@@ -997,3 +997,25 @@
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/cv90/rb,/obj/structure/engine/internal/diesel/premade/btr80,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
 	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/right/reversed,/obj/structure/vehicleparts/frame/cv90/lb),
 	)
+
+/obj/effects/premadevehicles/apc/bradley
+	name = "M2 Bradley"
+	icon_state = "4x4"
+	custom_color = "#CCC0A6"
+	axis = /obj/structure/vehicleparts/axis/heavy/bradley
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/bradley/right_front,/obj/structure/vehicleparts/frame/bradley/rf,/obj/structure/engine/internal/diesel/premade/m113,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
+	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/bradley/left_front,/obj/structure/vehicleparts/frame/bradley/lf,/obj/structure/bed/chair/drivers/tank),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/bradley/rfc),
+	"2,2" = list(/obj/structure/vehicleparts/frame/bradley/lfc),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/bradley/rbc,/obj/item/ammo_magazine/a25mm_ap/bradley,/obj/item/ammo_magazine/a25mm_ap/bradley,/obj/item/ammo_magazine/a25mm_he/bradley,/obj/item/ammo_magazine/a25mm_he/bradley, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster/bradley),
+	"2,3" = list(/obj/structure/vehicleparts/frame/bradley/lbc,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249),
+
+	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/bradley/right_back,/obj/structure/vehicleparts/frame/bradley/rb,/obj/item/weapon/storage/toolbox/emergency),
+	"2,4" = list(/obj/structure/vehicleparts/movement/tracks/bradley/left_back,/obj/structure/vehicleparts/frame/bradley/lb),
+	)
+
+/obj/effects/premadevehicles/apc/bradley/green
+	custom_color = "#313831"

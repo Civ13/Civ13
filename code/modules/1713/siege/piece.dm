@@ -293,31 +293,53 @@
 		else
 			to_chat(M, SPAN_DANGER("\The [src] is broken! Repair it first."))
 
-/obj/structure/cannon/interact(var/mob/m)
+/obj/structure/cannon/interact(var/mob/M)
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
 	restart
 	var/found_gunner = FALSE
-	for (var/obj/structure/bed/chair/gunner/G in m.loc)
+	for (var/obj/structure/bed/chair/gunner/G in M.loc)
 		found_gunner = TRUE
 	if (!found_gunner && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-		m << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
+		to_chat(M, SPAN_WARNING("You need to be at the gunner's position to operate \the [src]."))
 		user = null
 		return
 	if (!anchored)
-		m << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
+		to_chat(M, SPAN_WARNING("You need to fix \the [src] to the floor to operate it."))
 		user = null
 		return
-	if (user && user != m)
+	if (user && user != M)
 		if (user.client)
 			return
 		else
 			user = null
 			goto restart
 	else
-		user = m
+		user = M
+		user.use_cannon(src)
+		update_scope()
 		do_html(user)
+
+
+/mob/var/obj/structure/cannon/using_cannon = null
+
+/mob/proc/use_cannon(var/obj/O)
+	if (!O || !istype(O, /obj/structure/cannon))
+		using_cannon = null
+	else
+		using_cannon = O
+
+/mob/proc/stop_using_cannon()
+	if (using_cannon)
+		using_cannon.delete_scope_image()
+		src << browse(null, "window=artillery_window")
+		using_cannon.scope_mod = "Disabled"
+		using_cannon = null
+
+/mob/living/human/Move()
+	stop_using_cannon()
+	..()
 
 /obj/structure/cannon/Topic(href, href_list, hsrc)
 
@@ -1019,20 +1041,21 @@
 			user.client.images.Remove(img)
 
 /obj/structure/cannon/proc/update_scope()
-	if (scope_mod == "Enabled")
-		delete_scope_image()
-		var/image/targeted_image
-		target_coords()
-		var/azimuth = degree - 90
-		var/i
-		for(i = 1, i <= distance, i++)
-			var/point_x = round(abs(i * cos(-azimuth))) * sign(cos(-azimuth))
-			var/point_y = round(abs(i * sin(-azimuth))) * sign(sin(-azimuth))
-			if (point_x != 0 || point_y != 0)
-				targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
-				usr.client.images += targeted_image
-		targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
-		usr.client.images += targeted_image
+	if (scope_mod != "Enabled")
+		return
+	delete_scope_image()
+	var/image/targeted_image
+	target_coords()
+	var/azimuth = degree - 90
+	var/i
+	for(i = 1, i <= distance, i++)
+		var/point_x = round(abs(i * cos(-azimuth))) * sign(cos(-azimuth))
+		var/point_y = round(abs(i * sin(-azimuth))) * sign(sin(-azimuth))
+		if (point_x != 0 || point_y != 0)
+			targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
+			usr.client.images += targeted_image
+	targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
+	usr.client.images += targeted_image
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
