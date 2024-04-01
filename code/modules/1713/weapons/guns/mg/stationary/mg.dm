@@ -531,7 +531,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster/bradley
 	name = "M242 'Bushmaster' 25mm autocannon"
-	desc = "An electrically driven, chain-fed gun used for engaging various targets.
+	desc = "An electrically driven, chain-fed gun used for engaging various targets."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
 	caliber = "a25"
