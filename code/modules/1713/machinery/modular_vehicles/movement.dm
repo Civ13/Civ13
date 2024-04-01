@@ -138,6 +138,27 @@
 	base_icon = "bmd2new_tracks_right_back"
 	movement_icon = "bmd2new_tracks_right_back_m"
 
+/obj/structure/vehicleparts/movement/tracks/bradley/left_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bradley_tracks_left_front"
+	base_icon = "bradley_tracks_left_front"
+	movement_icon = "bradley_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/bradley/right_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bradley_tracks_right_front"
+	base_icon = "bradley_tracks_right_front"
+	movement_icon = "bradley_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/bradley/left_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bradley_tracks_left_back"
+	base_icon = "bradley_tracks_left_back"
+	movement_icon = "bradley_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/bradley/right_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "bradley_tracks_right_back"
+	base_icon = "bradley_tracks_right_back"
+	movement_icon = "bradley_tracks_right_back_m"
+
 /obj/structure/vehicleparts/movement/tracks/m113/left
 	icon = 'icons/obj/vehicles/apcparts.dmi'
 	icon_state = "m113_tracks_end_left"

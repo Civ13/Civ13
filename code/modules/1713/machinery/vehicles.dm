@@ -266,8 +266,20 @@
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
 	turret_type = "btr_atgm_turret"
 
+/obj/structure/vehicleparts/axis/heavy/bradley
+	name = "Bradley"
+	speeds = 5
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	reg_number = ""
+	color = "#787859"
+	turret_type = "bradley_turret"
+	tile_size = "96x96"
+	vehicle_type = "apc"
+	turret_x = 8
+	turret_y = 31
+
 /obj/structure/vehicleparts/axis/heavy/cv90
-	name = "BTR-80"
+	name = "CV-90"
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
