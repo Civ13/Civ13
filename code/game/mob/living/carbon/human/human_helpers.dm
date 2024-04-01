@@ -261,32 +261,53 @@
 /mob/living/human/proc/process_roofs()
 	if (!client)
 		return
-	var/obj/structure/vehicleparts/frame/found = null
+
+	var/view_dist = client.view + 4 // Some extra so people can't peek in while moving
+
+	var/view_x_offset = 0
+	var/view_y_offset = 0
+
+	if (client.pixel_x > 0)
+		view_x_offset = client.view
+	else if (client.pixel_x < 0)
+		view_x_offset = -client.view
+
+	if (client.pixel_y > 0)
+		view_y_offset = client.view
+	else if (client.pixel_y < 0)
+		view_y_offset = -client.view
+
+	var/view_loc = locate(x + view_x_offset, y + view_y_offset, z)
 
 	for (var/image/tmpimg in client.images)
 		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicleparts_damaged.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi'  || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicleparts64x64.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles256x256.dmi')
-			client.images.Remove(tmpimg)
-	for (var/obj/structure/vehicleparts/frame/FRL in loc) // Check if we're standing a frame
-		found = FRL
-	for (var/obj/structure/vehicleparts/frame/FR in view(client)) // If the axis of the frame is not the same as our frame draw a roof
-		if (found)
-			if (FR.axis != found.axis && FR != found)
-				client.images += FR.roof
-				if (FR.roof_turret)
-					client.images += FR.roof_turret
-			else // Else don't draw the roof (we are inside)
+			if (get_dist(tmpimg, view_loc) < view_dist)
+				client.images.Remove(tmpimg)
+
+	for (var/obj/structure/vehicleparts/frame/FR in view(view_dist, view_loc))
+		client.images += FR.roof
+		if (FR.roof_turret)
+			client.images += FR.roof_turret
+
+	for (var/obj/structure/vehicleparts/frame/FR in view(view_dist, view_loc))
+
+		var/obj/structure/vehicleparts/frame/frame_vehicle
+		var/obj/structure/vehicleparts/frame/client_vehicle
+
+		for (var/obj/structure/vehicleparts/frame/FRL in FR.loc)
+			frame_vehicle = FRL
+		for (var/obj/structure/vehicleparts/frame/FRL in loc)
+			client_vehicle = FRL
+
+		if (frame_vehicle && client_vehicle)
+			if (frame_vehicle.axis == client_vehicle.axis)
 				client.images -= FR.roof
 				if (FR.roof_turret)
 					client.images -= FR.roof_turret
-		else
-			if (locate(FR) in view(client))
-				client.images += FR.roof
-				if (FR.roof_turret)
-					client.images += FR.roof_turret
-			else
-				client.images -= FR.roof
-				if (FR.roof_turret)
-					client.images -= FR.roof_turret
+		else if (!frame_vehicle && !client_vehicle)
+			client.images -= FR.roof
+			if (FR.roof_turret)
+				client.images -= FR.roof_turret
 
 /mob/living/human
 	var/roofs_removed = TRUE
