@@ -807,7 +807,7 @@ obj/structure/religious/monument
 		return
 
 /obj/structure/religious/totem/offerings/proc/check_power()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (reltype == "tribal")
 			if (tribe == "goose")
 				for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)

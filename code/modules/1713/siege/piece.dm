@@ -37,7 +37,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 270
+	var/degree = 180
 	var/distance = 5
 	var/has_scope = TRUE
 	var/scope_mod = "Disabled"
@@ -209,13 +209,13 @@
 	cannon_piece_list += src
 	switch(dir)
 		if (NORTH)
-			degree = 90
-		if (SOUTH)
-			degree = 270
-		if (WEST)
-			degree = 180
-		if (EAST)
 			degree = 0
+		if (SOUTH)
+			degree = 180
+		if (WEST)
+			degree = 270
+		if (EAST)
+			degree = 90
 
 /obj/structure/cannon/Destroy()
 	cannon_piece_list -= src
@@ -460,8 +460,7 @@
 		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["set_degree"])
-		var/azimuth = input(user, "Set the Azimuth to what? (From [0] to [359] degrees - N = 0, W = 90, S = 180, E = 270)") as num
-		degree = azimuth + 90
+		degree = input(user, "What to set the degree to? (From [0] to [359] degrees - N = 0, E = 90, S = 180, W = 270)") as num
 		if (degree < 0)
 			degree += 360
 		if (degree >= 360)
@@ -491,11 +490,11 @@
 	// 270 east
 
 	if (course)
-		if (dir == NORTH)
+		if (dir == EAST)
 			degree = clamp(degree, 45, 134)
-		else if (dir == WEST)
-			degree = clamp(degree, 135, 224)
 		else if (dir == SOUTH)
+			degree = clamp(degree, 135, 224)
+		else if (dir == WEST)
 			degree = clamp(degree, 225, 315)
 		else
 			if (degree >= 45)
@@ -507,13 +506,15 @@
 	update_scope()
 
 	if (degree >= 45 && degree < 135)
-		dir = NORTH
-	else if (degree >= 135 && degree < 225)
-		dir = WEST
-	else if (degree >= 225 && degree < 315)
-		dir = SOUTH
-	else
 		dir = EAST
+	else if (degree >= 135 && degree < 225)
+		dir = SOUTH
+	else if (degree >= 225 && degree < 315)
+		dir = WEST
+	else
+		dir = NORTH
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
+		F.update_icon()
 
 	if (href_list["toggle_scope"])
 		if (scope_mod == "Enabled")
@@ -939,11 +940,10 @@
 /obj/structure/cannon/proc/do_html(var/mob/M)
 
 	if (M)
-		var/azimuth = degree - 90
-		if (azimuth < 0)
-			azimuth += 360
-		if (azimuth >= 360)
-			azimuth -= 360
+		if (degree < 0)
+			degree += 360
+		if (degree >= 360)
+			degree -= 360
 		max_distance = maxrange
 
 		M << browse({"
@@ -970,7 +970,7 @@
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
 		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
-		Increase/Decrease <b>azimuth</b>: <a href='?src=\ref[src];degree_10plus=10'>+10</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];set_degree=1'>[azimuth] degrees</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];degree_10minus=1'>-10</a><br><br>
+		Increase/Decrease <b>degree</b>: <a href='?src=\ref[src];degree_10minus=10'>-10</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];set_degree=1'>[degree] degrees</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];degree_10plus=1'>+10</a><br><br>
 		Scope: [has_scope ? ("<a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a>") : "This weapon has no scope" ] <br><br>
 		<br>
 		<center>
@@ -984,8 +984,9 @@
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/cannon/proc/target_coords()
-	target_x = round(abs(distance * cos(degree))) * sign(cos(degree))
-	target_y = round(abs(distance * sin(degree))) * sign(sin(degree))
+	var/azimuth = degree - 90
+	target_x = round(abs(distance * cos(-azimuth))) * sign(cos(-azimuth))
+	target_y = round(abs(distance * sin(-azimuth))) * sign(sin(-azimuth))
 
 /obj/structure/cannon/proc/sway()
 	if (degree > 315 || degree < 45)
@@ -999,13 +1000,13 @@
 
 /obj/structure/cannon/proc/rotate_to(var/new_dir)
 	if (new_dir == NORTH)
-		degree = 90
-	else if (new_dir == WEST)
-		degree = 180
-	else if (new_dir == SOUTH)
-		degree = 270
-	else
 		degree = 0
+	else if (new_dir == EAST)
+		degree = 90
+	else if (new_dir == SOUTH)
+		degree = 180
+	else
+		degree = 270
 	dir = new_dir
 	target_coords()
 	update_scope()
@@ -1022,10 +1023,11 @@
 		delete_scope_image()
 		var/image/targeted_image
 		target_coords()
+		var/azimuth = degree - 90
 		var/i
 		for(i = 1, i <= distance, i++)
-			var/point_x = round(abs(i * cos(degree))) * sign(cos(degree))
-			var/point_y = round(abs(i * sin(degree))) * sign(sin(degree))
+			var/point_x = round(abs(i * cos(-azimuth))) * sign(cos(-azimuth))
+			var/point_y = round(abs(i * sin(-azimuth))) * sign(sin(-azimuth))
 			if (point_x != 0 || point_y != 0)
 				targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
 				usr.client.images += targeted_image
@@ -1047,7 +1049,7 @@
 		switch(dir)
 			if (EAST)
 				dir = NORTH
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1055,7 +1057,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = SOUTH
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1063,7 +1065,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = WEST
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1071,7 +1073,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = EAST
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1095,7 +1097,7 @@
 		switch (dir)
 			if (EAST)
 				dir = NORTH
-				degree = 90
+				degree = 0
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1112,7 +1114,7 @@
 						src.y += 3
 			if (WEST)
 				dir = SOUTH
-				degree = 270
+				degree = 180
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1129,7 +1131,7 @@
 						src.y -= 3
 			if (NORTH)
 				dir = WEST
-				degree = 180
+				degree = 270
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1146,7 +1148,7 @@
 						src.y -= 1
 			if (SOUTH)
 				dir = EAST
-				degree = 0
+				degree = 90
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1177,7 +1179,7 @@
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
 
-	for (var/obj/structure/vehicleparts/frame/F in loc)
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
 		F.update_icon()
 
 	target_coords()
@@ -1199,7 +1201,7 @@
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 270
+				degree = 180
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1207,7 +1209,7 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				degree = 90
+				degree = 0
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1215,7 +1217,7 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				degree = 0
+				degree = 90
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1223,7 +1225,7 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				degree = 180
+				degree = 270
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1247,7 +1249,7 @@
 		switch (dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 270
+				degree = 180
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1264,7 +1266,7 @@
 						src.y -= 1
 			if (WEST)
 				dir = NORTH
-				degree = 90
+				degree = 0
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1281,7 +1283,7 @@
 						src.y += 1
 			if (NORTH)
 				dir = EAST
-				degree = 0
+				degree = 90
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1298,7 +1300,7 @@
 						src.y -= 3
 			if (SOUTH)
 				dir = WEST
-				degree = 180
+				degree = 270
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1328,6 +1330,9 @@
 			chair_found.dir = src.dir
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
+
+	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
+		F.update_icon()
 
 	target_coords()
 	update_scope()

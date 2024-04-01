@@ -158,6 +158,8 @@ var/list/gamemode_cache = list()
 	var/webhook_address = null
 	var/webhook_key = null
 	
+	//language
+	var/game_language = "english"
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist
 
 	var/list/Lines = file2list(filename)
@@ -460,7 +462,8 @@ var/list/gamemode_cache = list()
 					config.webhook_address = value
 				if ("webhook_key")
 					config.webhook_key = value
-
+				if ("language")
+					config.game_language = value
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 

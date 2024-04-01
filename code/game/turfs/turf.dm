@@ -475,3 +475,239 @@ var/const/enterloopsanity = 100
 
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE
+
+/turf/proc/try_airstrike(var/ckey, var/faction_text, var/aircraft_name, var/direction = "NORTH", var/payload = "Rockets", var/payload_class = 1)
+	var/turf/T = src
+
+	message_admins("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
+	log_game("[ckey] ([faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+
+	var/dive_text = "cuts through"
+	var/drop_delay = 1 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
+	if (aircraft_name)	switch(aircraft_name) // Check what faction has called in the airstrike and select an aircraft.
+		if ("F-16")
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			drop_delay = 1 SECONDS
+		if ("Su-25")
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			drop_delay = 1 SECONDS
+		if ("Ju 87 Stuka")
+			new /obj/effect/plane_flyby/ju87_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 18 SECONDS
+		if ("IL-2")
+			new /obj/effect/plane_flyby/il2_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 5 SECONDS
+	
+	var/faction_num
+	if (map.faction1 == faction_text) // Check which faction is using the airstrike
+		faction_num = 1
+	else if (map.faction2 == faction_text)
+		faction_num = 2
+	
+	switch (faction_num)
+		if (1)
+			faction1_airstrikes_remaining[payload_class]--
+		if (2)
+			faction2_airstrikes_remaining[payload_class]--
+
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] [dive_text].</font>"))
+	
+	var/anti_air_in_range = FALSE
+	for (var/obj/structure/milsim/anti_air/AA in range(60, T)) // Check if there's anti air within 60 tiles
+		if (AA.faction_text != faction_text)
+			anti_air_in_range++
+
+	if (anti_air_in_range) // If there's anti air nearby try to shoot down the jet
+		spawn(3 SECONDS)
+			var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 780)
+			sam_sound.priority = 250
+
+			for (var/mob/M in player_list)
+				if (!new_player_mob_list.Find(M))
+					to_chat(M, SPAN_DANGER("<big>A SAM site fires at \the [aircraft_name]!</big>"))
+					M.client << sam_sound
+
+			spawn(5 SECONDS)
+				if (prob(95)) // Shoot down the jet
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+					uploaded_sound.priority = 250
+
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							to_chat(M, SPAN_DANGER("<big>The SAM directly hits \the [aircraft_name], shooting it down!</big>"))
+							if (M.client)
+								M.client << uploaded_sound
+					
+					switch (faction_num) // Send the jet to re-arm, it is unavailible for 5 minutes
+						if (1)
+							faction1_aircraft_rearming = TRUE
+							faction1_aircraft_cooldown = world.time + 5 MINUTES
+						if (2)
+							faction2_aircraft_rearming = TRUE
+							faction2_aircraft_cooldown = world.time + 5 MINUTES
+				
+					message_admins("[map.roundend_condition_def2name(faction_text)] Aircraft [aircraft_name] has been shot down.")
+					log_game("Aircraft [aircraft_name] has been shot down.")
+					return
+
+				else // Evade the Anti-Air
+					var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+					uploaded_sound.priority = 250
+
+					for (var/mob/M in player_list)
+						if (!new_player_mob_list.Find(M))
+							to_chat(M, SPAN_NOTICE("<big><b>The [aircraft_name] evades the SAM!</b></big>"))
+							if (M.client)
+								M.client << uploaded_sound
+					airstrike(direction, payload, drop_delay)
+	else
+		spawn(3 SECONDS)
+			airstrike(direction, payload, drop_delay)
+	return
+
+/turf/proc/airstrike(var/direction = "NORTH", var/payload = "Rockets", var/drop_delay = 3 SECONDS)
+	var/turf/T = src
+
+	var/strikenum = 5
+
+	var/xoffset = 0
+	var/yoffset = 0
+
+	var/direction_xoffset = 0
+	var/direction_yoffset = 0
+	switch (payload)
+		if ("Rockets")
+			strikenum = 5
+			to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
+			
+			spawn(drop_delay)
+				for (var/i = 1, i <= strikenum, i++)
+					var/obj/structure/missile/M = new /obj/structure/missile(null)
+					switch (direction)
+						if ("NORTH")
+							direction_yoffset += 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+
+							M.dir = NORTH
+							M.pixel_y = -8*32 // 8 tiles and 32 pixels per tile
+						if ("EAST")
+							direction_xoffset += 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+
+							M.dir = EAST
+							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							M.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+							animate(M, transform = turn(matrix(), 20), time = 10, easing = LINEAR_EASING)
+						if ("SOUTH")
+							direction_yoffset -= 3
+							xoffset = rand(-2,2)
+							yoffset = rand(0,1)
+
+							M.dir = SOUTH
+							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+						if ("WEST")
+							direction_xoffset -= 3
+							xoffset = rand(0,1)
+							yoffset = rand(-2,2)
+
+							M.dir = WEST
+							M.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							M.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+							animate(M, transform = turn(matrix(), -20), time = 10, easing = LINEAR_EASING)
+					spawn(i*5)
+						M.loc = locate((T.x + xoffset + direction_xoffset), (T.y + yoffset + direction_yoffset), T.z)
+						animate(M, time = 15, pixel_y = 0, easing = LINEAR_EASING)
+						animate(M, time = 15, pixel_x = 0, easing = LINEAR_EASING)
+						M.drop()
+						
+			return
+		if ("50 kg Bomb")
+			strikenum = 1
+
+			spawn(drop_delay)
+				for (var/i = 1, i <= strikenum, i++)
+					var/obj/structure/bomb/B = new /obj/structure/bomb/kg50(null)
+					switch (direction)
+						if ("NORTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-1,3)
+
+							B.dir = NORTH
+							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+						if ("EAST")
+							xoffset = rand(-1,3)
+							yoffset = rand(-2,2)
+
+							B.dir = EAST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("SOUTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-3,1)
+
+							B.dir = SOUTH
+							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("WEST")
+							xoffset = rand(-3,1)
+							yoffset = rand(-2,2)
+							
+							B.dir = WEST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+
+					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
+					animate(B, time = 15, pixel_y = 0, easing = SINE_EASING | EASE_IN)
+					animate(B, time = 15, pixel_x = 0, easing = SINE_EASING | EASE_IN)
+					B.drop()
+			return
+		if ("250 kg Bomb")
+			strikenum = 1
+
+			spawn(drop_delay)
+				for (var/i = 1, i <= strikenum, i++)
+					var/obj/structure/bomb/B = new /obj/structure/bomb/kg250(null)
+					switch (direction)
+						if ("NORTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-1,3)
+
+							B.dir = NORTH
+							B.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+						if ("EAST")
+							xoffset = rand(-1,3)
+							yoffset = rand(-2,2)
+
+							B.dir = EAST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("SOUTH")
+							xoffset = rand(-2,2)
+							yoffset = rand(-3,1)
+
+							B.dir = SOUTH
+							B.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), 45), time = 10)
+						if ("WEST")
+							xoffset = rand(-3,1)
+							yoffset = rand(-2,2)
+
+							B.dir = WEST
+							B.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+							B.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+							animate(B, transform = turn(matrix(), -45), time = 10)
+
+					B.loc = locate((T.x + xoffset), (T.y + yoffset), T.z)
+					animate(B, time = 15, pixel_y = 0, easing = SINE_EASING | EASE_IN)
+					animate(B, time = 15, pixel_x = 0, easing = SINE_EASING | EASE_IN)
+					B.drop()
+			return
