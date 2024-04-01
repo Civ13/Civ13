@@ -529,6 +529,22 @@
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = TRUE
 
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster/bradley
+	name = "M242 'Bushmaster' 25mm autocannon"
+	desc = "An electrically driven, chain-fed gun used for engaging various targets.
+	icon_state = "autocannon"
+	base_icon = "autocannon"
+	caliber = "a25"
+	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a25mm_ap/bradley
+	good_mags = list(/obj/item/ammo_magazine/a25mm_ap/bradley, /obj/item/ammo_magazine/a25mm_he/bradley)
+	firemodes = list(
+		list(name = "full auto", burst=3, burst_delay=2, fire_delay=3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a25mm_ap
+
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/red
 	name = "30mm autocannon"
 	desc = "An autocannon capable of firing 20 rounds per minute."
