@@ -267,7 +267,7 @@
 	turret_type = "btr_atgm_turret"
 
 /obj/structure/vehicleparts/axis/heavy/bradley
-	name = "Bradley"
+	name = "M2 Bradley"
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
@@ -275,8 +275,13 @@
 	turret_type = "bradley_turret"
 	tile_size = "96x96"
 	vehicle_type = "apc"
-	turret_x = 8
-	turret_y = 31
+	turret_x = 16
+	turret_y = 0
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/cv90
 	name = "CV-90"
