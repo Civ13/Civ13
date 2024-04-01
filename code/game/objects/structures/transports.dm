@@ -745,6 +745,11 @@
 
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
+	if (!driver)
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+		
 	var/turf/T = get_turf(get_step(src,driver.dir))
 	var/area/A = get_area(T)
 	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
@@ -772,7 +777,7 @@
 		ontop -= driver
 		driver = null
 
-	if (istype(get_turf(get_step(src, driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src, driver.dir)), /turf/floor/trench/flooded))
+	if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
 		if (driver in get_turf(src))
 			return TRUE
 		else
@@ -787,6 +792,7 @@
 			update_icon()
 			ontop -= driver
 			driver = null
+			return FALSE
 	else
 		moving = FALSE
 		axis.currentspeed = 0
