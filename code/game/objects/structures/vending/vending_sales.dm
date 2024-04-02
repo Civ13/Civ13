@@ -264,6 +264,11 @@
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
+						if (map.ID == MAP_PEPELSIBIRSK)
+							var/obj/structure/vending/sales/pepelsibirsk/faction_trader = src
+							if (istype(faction_trader))
+								pepel_factions.pepelsibirsk_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
+								usr << "Relations have increased by [price_with_tax*inp*0.02]."
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
 							map.custom_company_value[owner] += price_with_tax*inp
@@ -274,7 +279,12 @@
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
 								qdel(D)
-						else if (map.ID == MAP_GULAG13 || MAP_PEPELSIBIRSK)
+						else if (map.ID == MAP_GULAG13)
+							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
+						else if (map.ID == MAP_PEPELSIBIRSK)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)

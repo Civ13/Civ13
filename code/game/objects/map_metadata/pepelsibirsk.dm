@@ -1,3 +1,15 @@
+// Diplomatic variables, very important
+/datum/pepelsibirsk_relations
+	var/list/pepelsibirsk_relations = list(
+		"china_relations" = 50,
+		"soviet_relations" = 50,
+		"pacific_relations" = 50,
+		"civ_relations" = 50,
+		"mil_relations" = 50,
+	)
+
+var/global/datum/pepelsibirsk_relations/pepel_factions = new()
+
 /obj/map_metadata/pepelsibirsk
 	ID = MAP_PEPELSIBIRSK
 	title = "Pepelsibirsk"
@@ -16,10 +28,11 @@
 	age = "1975 A.D. Q4 (ROUND SETUP)"
 	ordinal_age = 7
 	civilizations = TRUE
+	nomads = TRUE
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>Following a limited thermonuclear exchange which saw most central authorities in the northern hemisphere collapse, it appears Pepelsibirsk was left mostly untouched. You must bring the city to prosperity!</b>"
+	mission_start_message = "<big><b>Following a limited thermonuclear exchange which saw most central authorities in the northern hemisphere collapse, it appears Pepelsibirsk was left mostly untouched. You must bring the city to prosperity!</b></big>"
 	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
@@ -34,22 +47,16 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	var/real_season = "WINTER"
-	var/quarter = "Q1"
+	var/quarter = 1
 	var/year = 1976
-
 	//Trader spawnpoint
 	var/trader_spawnpoint = "trader_spawnpoint"
 
-	// Variables defining starting faction relations of trader factions
-	var/china_relations = 50
-	var/soviet_relations = 50
-	var/pacific_relations = 50
-
 /obj/map_metadata/pepelsibirsk/New()
 	..()
-	check_relations_msg(soviet_relations, china_relations, pacific_relations)
-	send_traders(soviet_relations, china_relations, pacific_relations, trader_spawnpoint)
-	time_update(quarter, year)
+	relations_subsystem()
+	send_traders()
+	time_update(age, quarter, year)
 	for (var/obj/structure/wild/tree/live_tree/TREES)
 		TREES.change_season()
 	spawn(9000)
@@ -125,84 +132,118 @@
 	else
 		. = FALSE
 
-/obj/map_metadata/pepelsibirsk/proc/check_relations_msg(soviet_relations, china_relations, pacific_relations)
+////// DIPLOMATIC RELATIONS MANAGEMENT //////
+
+/obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
+	spawn(30) // 3 seconds
+		for(var/i in 1 to length(pepel_factions.pepelsibirsk_relations))
+			if (pepel_factions.pepelsibirsk_relations[i] > 100)
+				pepel_factions.pepelsibirsk_relations[i] = 100
+			else if (pepel_factions.pepelsibirsk_relations[i] < 0)
+				pepel_factions.pepelsibirsk_relations[i] = 0
+		relations_subsystem()
+
+/obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
 	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
-	world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[china_relations]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[soviet_relations]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pacific_relations]</b></span></font>"
-
-	spawn(3000)
-		check_relations_msg(soviet_relations, china_relations, pacific_relations)
-		return
-
-/obj/map_metadata/pepelsibirsk/proc/time_quarters(quarter, year)
-	if (quarter == "Q1")
-		quarter = "Q2"
-	else if (quarter == "Q2")
-		quarter = "Q3"
-	else if (quarter == "Q3")
-		quarter = "Q4"
-	else if (quarter == "Q4")
-		quarter = "Q1"
-		year += 1
-	else
-		world << "Something went wrong with /obj/map_metadata/pepelsibirsk/proc/time_quarters(), please consult an administrator or ping Terrariola on Discord!"
-	world << "<font size = 3><span class = 'notice'><b>The quarter has advanced to [quarter].</b></font></span>"
-	if (quarter == "Q1")
-		world << "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>"
+	world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[pepel_factions.pepelsibirsk_relations["china_relations"]]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[pepel_factions.pepelsibirsk_relations["soviet_relations"]]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pepel_factions.pepelsibirsk_relations["pacific_relations"]]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[pepel_factions.pepelsibirsk_relations["civ_relations"]]</b></span></font>"
+	world << "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[pepel_factions.pepelsibirsk_relations["mil_relations"]]</b></span></font>"
+	spawn(3000) // 5 minutes
+		check_relations_msg()
 	return
 
-/obj/map_metadata/pepelsibirsk/proc/time_update(quarter, year)
-	age = "[year] A.D. [quarter]"
+////// TIME CODE ////// (thanks malt)
+
+/obj/map_metadata/pepelsibirsk/proc/time_quarters()
+	quarter++
+	if(quarter >=5)
+		quarter = 1
+		year++
+		world << "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>"
+	else
+		world << "<font size = 3><span class = 'notice'><b>The quarter has advanced to Q[quarter].</b></font></span>"
+
+/obj/map_metadata/pepelsibirsk/proc/time_update()
+	age = "[year] A.D. Q[quarter]"
+	world.log << "Time_update has been triggered, the date is now [year] A.D. Q[quarter]."
 	spawn (18000)
-		time_quarters(quarter, year)
-		time_update(quarter, year)
+		time_quarters()
+		time_update()
 		return
 
-// All the traders
+////// PEPELSIBIRSK TRAVELING MERCHANTS //////
+/obj/structure/vending/sales/pepelsibirsk
+	var/faction_relations
 
-/obj/structure/vending/sales/pacific_trader
+/obj/structure/vending/sales/pepelsibirsk/proc/dropwares()
+	return
+
+/obj/structure/vending/sales/pepelsibirsk/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			dropwares()
+			qdel(src)
+			return
+		if (2.0)
+			dropwares()
+			qdel(src)
+			return
+		if (3.0)
+			dropwares()
+			qdel(src)
+		else
+	return
+
+/obj/structure/vending/sales/pepelsibirsk/bullet_act()
+	dropwares()
+	qdel(src)
+	return
+
+/obj/structure/vending/sales/pepelsibirsk/pacific_trader
 	name = "U.S.P Trader"
 	desc = "The United States of the Pacific has come to trade."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "afghcia"
+	faction_relations = "pacific_relations"
 	products = list(
 		//Weapons
-		/obj/item/weapon/gun/projectile/submachinegun/m16/commando = 5,
-		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 15,
-		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 5,
-		/obj/item/weapon/gun/launcher/rocket/bazooka = 10,
-		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 10,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 10,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 10,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 10,
-		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 10,
-		/obj/item/weapon/attachment/under/foregrip = 10,
-		/obj/item/weapon/attachment/silencer/pistol = 10,
-		/obj/item/weapon/attachment/silencer/rifle = 10,
-		/obj/item/weapon/attachment/silencer/shotgun = 10,
-		/obj/item/weapon/attachment/silencer/smg = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/commando = 2,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2 = 5,
+		/obj/item/weapon/gun/launcher/grenade/standalone/m79 = 2,
+		/obj/item/weapon/gun/launcher/rocket/bazooka = 2,
+		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 1,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 2,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 2,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 2,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 2,
+		/obj/item/weapon/attachment/under/foregrip = 2,
+		/obj/item/weapon/attachment/silencer/pistol = 2,
+		/obj/item/weapon/attachment/silencer/rifle = 2,
+		/obj/item/weapon/attachment/silencer/shotgun = 2,
+		/obj/item/weapon/attachment/silencer/smg = 2,
 
 		//Ammunition
-		/obj/item/ammo_magazine/m16 = 80,
-		/obj/item/ammo_magazine/m14 = 30,
-		/obj/item/ammo_casing/rocket/bazooka = 20,
-		/obj/item/weapon/grenade/frag/ugl/shell40mm = 30,
-		/obj/item/weapon/plastique/c4 = 10,
+		/obj/item/ammo_magazine/m16 = 8,
+		/obj/item/ammo_magazine/m14 = 3,
+		/obj/item/ammo_casing/rocket/bazooka = 2,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
+		/obj/item/weapon/plastique/c4 = 2,
 
 		//Clothing
-		/obj/item/clothing/under/us_uni/us_camo_woodland = 30,
-		/obj/item/clothing/accessory/storage/webbing/us_vest = 30,
-		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 30,
-		/obj/item/clothing/shoes/jackboots/modern = 30,
-		/obj/item/clothing/accessory/armor/coldwar/pasgt = 10,
-		/obj/item/clothing/head/helmet/modern/pasgt = 10,
+		/obj/item/clothing/under/us_uni/us_camo_woodland = 8,
+		/obj/item/clothing/accessory/storage/webbing/us_vest = 8,
+		/obj/item/clothing/suit/storage/coat/ww2/us_coat = 8,
+		/obj/item/clothing/shoes/jackboots/modern = 8,
+		/obj/item/clothing/accessory/armor/coldwar/pasgt = 2,
+		/obj/item/clothing/head/helmet/modern/pasgt = 2,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/burger = 30,
-		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 30,
-		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 30,
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/burger = 4,
+		/obj/item/weapon/reagent_containers/food/snacks/cheeseburger = 4,
+		/obj/item/weapon/reagent_containers/food/snacks/hotdog = 4,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 3,
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 1,
 		/obj/item/weapon/reagent_containers/food/snacks/applepie = 1,
 	)
@@ -247,24 +288,33 @@
 		/obj/item/weapon/reagent_containers/food/snacks/applepie = 20,
 	)
 
-/obj/structure/vending/sales/chinese_trader //not done/placeholder
+/obj/structure/vending/sales/pepelsibirsk/pacific_trader/dropwares()
+	for(var/product_key in products)
+		for(var/i in 1 to products[product_key])
+			new product_key(get_turf(src))
+	new /mob/living/human/corpse(get_turf(src))
+	pepel_factions.pepelsibirsk_relations["pacific_relations"] -= rand(10, 25)
+	world << "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>"
+
+/obj/structure/vending/sales/pepelsibirsk/chinese_trader
 	name = "PRC Trader"
 	desc = "现在我有冰淇淋我很喜欢冰淇淋."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "chinese_trader"
+	faction_relations = "china_relations"
 	products = list(
 		//Weapons
-		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 5,
-		/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese = 5,
-		/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese = 5,
+		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 3,
+		/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese = 3,
+		/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese = 3,
 
 		//Clothing
-		/obj/item/clothing/suit/storage/coat/chinese/officer = 5,
-		/obj/item/clothing/suit/storage/coat/chinese = 80,
-		/obj/item/clothing/under/chinaguard = 80,
-		/obj/item/clothing/head/chinaguardcap = 80,
-		/obj/item/clothing/head/chinese_ushanka = 80,
-		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 80,
+		/obj/item/clothing/suit/storage/coat/chinese/officer = 2,
+		/obj/item/clothing/suit/storage/coat/chinese = 8,
+		/obj/item/clothing/under/chinaguard = 8,
+		/obj/item/clothing/head/chinaguardcap = 8,
+		/obj/item/clothing/head/chinese_ushanka = 8,
+		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 8,
 	)
 	prices = list(
 		//Weapons
@@ -281,41 +331,50 @@
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 35,
 	)
 
-/obj/structure/vending/sales/soviet_trader //not done/placeholder
+/obj/structure/vending/sales/pepelsibirsk/chinese_trader/dropwares()
+	for(var/product_key in products)
+		for(var/i in 1 to products[product_key])
+			new product_key(get_turf(src))
+	new /mob/living/human/corpse(get_turf(src))
+	pepel_factions.pepelsibirsk_relations["china_relations"] -= rand(10, 25)
+	world << "<font size = 3><span class = 'notice'><b>A Chinese trader has died. Relations with the People's Republic of China have dropped to [pepel_factions.pepelsibirsk_relations["china_relations"]]!</b></font></span>"
+
+/obj/structure/vending/sales/pepelsibirsk/soviet_trader
 	name = "Soviet Trader"
 	desc = "Вы неправильно используете это программное обеспечение для перевода. Пожалуйста, проконсультируйтесь с руководством по программному обеспечению.."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "soviet_trader"
+	faction_relations = "soviet_relations"
 	products = list(
 		//Weapons
-		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 5,
-		/obj/item/weapon/gun/projectile/shotgun/pump/ks23 = 10,
-		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 10,
-		/obj/item/weapon/gun/launcher/grenade/underslung/gp25 = 10,
-		/obj/item/weapon/gun/launcher/rocket/rpg7 = 10,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 1,
+		/obj/item/weapon/gun/projectile/shotgun/pump/ks23 = 1,
+		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 2,
+		/obj/item/weapon/gun/launcher/grenade/underslung/gp25 = 2,
+		/obj/item/weapon/gun/launcher/rocket/rpg7 = 1,
 
 		//Ammunition
-		/obj/item/weapon/grenade/frag/ugl/shell40mm = 30,
-		/obj/item/ammo_casing/rocket/pg7v = 20,
-		/obj/item/ammo_casing/rocket/og7v = 20,
-		/obj/item/weapon/grenade/frag/ugl/shell40mm = 30,
-		/obj/item/weapon/plastique/russian = 10,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
+		/obj/item/ammo_casing/rocket/pg7v = 2,
+		/obj/item/ammo_casing/rocket/og7v = 2,
+		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
+		/obj/item/weapon/plastique/russian = 1,
 
 		//Food and Drink
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 50,
-		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 50,
-		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 8,
-		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 8,
-		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 8,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 5,
+		/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka = 5,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/barflask = 3,
+		/obj/item/weapon/reagent_containers/food/drinks/flask/officer = 3,
+		/obj/item/weapon/reagent_containers/food/drinks/teapot/filled = 3,
 		/obj/item/weapon/reagent_containers/food/drinks/golden_cup = 1,
 
 		//Medicines
-		/obj/item/weapon/storage/pill_bottle/tramadol = 8,
-		/obj/item/weapon/storage/pill_bottle/penicillin = 8,
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 8,
-		/obj/item/weapon/storage/pill_bottle/citalopram = 8,
-		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 8,
+		/obj/item/weapon/storage/pill_bottle/tramadol = 4,
+		/obj/item/weapon/storage/pill_bottle/penicillin = 4,
+		/obj/item/weapon/storage/pill_bottle/paracetamol = 4,
+		/obj/item/weapon/storage/pill_bottle/citalopram = 4,
+		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 4,
 	)
 	prices = list(
 		//Weapons
@@ -349,44 +408,53 @@
 		/obj/item/weapon/storage/pill_bottle/potassium_iodide = 150,
 	)
 
-/obj/map_metadata/pepelsibirsk/proc/send_traders(china_relations, soviet_relations, pacific_relations, trader_spawnpoint) //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
+/obj/structure/vending/sales/pepelsibirsk/soviet_trader/dropwares()
+	for(var/product_key in products)
+		for(var/i in 1 to products[product_key])
+			new product_key(get_turf(src))
+	new /mob/living/human/corpse(get_turf(src))
+	pepel_factions.pepelsibirsk_relations["soviet_relations"] -= rand(10, 25)
+	world << "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [pepel_factions.pepelsibirsk_relations["soviet_relations"]]!</b></font></span>"
+
+////// TRAVELING MERCHANTS MANAGEMENT //////
+/obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
 	world.log << "send_traders has been triggered"
 	var/list/turfs = list()
 	var/spawnpoint
 	spawn(1)
 		turfs = latejoin_turfs[trader_spawnpoint]
-		if (china_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/chinese_trader
+		if (pepel_factions.pepelsibirsk_relations["china_relations"] >= 26)
+			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/chinese_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned at with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10m
+			spawn(6000) //10 minutes
 				world.log << "[trader] has been deleted."
 				qdel(trader)
-		if (soviet_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/soviet_trader
+		if (pepel_factions.pepelsibirsk_relations["soviet_relations"] >= 26)
+			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/soviet_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10m
+			spawn(6000) //10 minutes
 				world.log << "[trader] has been deleted."
 				qdel(trader)
-		if (pacific_relations >= 26)
-			var/traderpath = /obj/structure/vending/sales/pacific_trader
+		if (pepel_factions.pepelsibirsk_relations["pacific_relations"] >= 26)
+			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/pacific_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10m
+			spawn(6000) //10 minutes
 				world.log << "[trader] has been deleted."
 				qdel(trader)
 		return
 
 	var/traders = list()
-	if (china_relations >= 26)
+	if (pepel_factions.pepelsibirsk_relations["china_relations"] >= 26)
 		traders += "the Chinese"
-	if (soviet_relations >= 26)
+	if (pepel_factions.pepelsibirsk_relations["soviet_relations"] >= 26)
 		traders += "the Soviets"
-	if (pacific_relations >= 26)
+	if (pepel_factions.pepelsibirsk_relations["pacific_relations"] >= 26)
 		traders += "the Pacificans"
 
 	if (length(traders) > 1)
@@ -398,11 +466,10 @@
 		world.log << "Due to poor relations, no one has arrived to trade."
 
 	spawn(18000) //30 minutes
-		send_traders(china_relations, soviet_relations, pacific_relations)
+		send_traders(trader_spawnpoint)
 		return
 
-// Everything below this are custom objects used by the map
-
+////// PEPELSIBIRSK PERSONAL DOCUMENTS //////
 /obj/item/weapon/personal_documents
 	name = "Personal Documents"
 	desc = "The identification papers of a citizen."
@@ -424,7 +491,7 @@
 	flags = FALSE
 	New()
 		..()
-		spawn(60)
+		spawn(20)
 			if (ishuman(loc))
 				var/mob/living/human/H = loc
 				document_name = H.real_name
@@ -475,13 +542,12 @@
 	showoff(user)
 	return
 
-/obj/structure/pepelsibirsk_radio
+////// TRADING CODE ////// (it's my magnum opus -Terrariola)
+/obj/structure/pepelsibirsk_radio //does nothing too important, ignore
 	name = "If you see this, talk to an admin."
 	desc = "THIS SHOULD NOT EXIST. -Terrariola"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supply_radio"
-	var/civ_relations = 50
-	var/mil_relations = 50
 
 /obj/structure/pepelsibirsk_radio/supply_radio
 	name = "long range supply radio"
@@ -498,7 +564,7 @@
 	var/faction_treasury = "TreasuryRN"
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	var/list/civ_catalogue = list( //type (governor/merchant/all), name, path, price
+	var/list/civ_catalogue = list( //type name, path, price
 		list("wood crate", /obj/structure/closet/crate/wood,50),
 		list("iron crate", /obj/structure/closet/crate/iron,50),
 		list("glass crate", /obj/structure/closet/crate/glass,50),
@@ -539,18 +605,25 @@
 		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000),
 	)
 
-/obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user)
+/obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, scambool, user)
 	if (isemptylist(final_list))
 		user << "list is empty"
 		return
-	if (choice == "Pepelsibirsk 1 (MIL)")
-		mil_relations += final_cost*0.02
-	else if (choice == "Narodnyygorod (CIV)")
-		civ_relations += final_cost*0.02
+	if (choice == "Pepelsibirsk 1 (MIL)" && scambool == FALSE)
+		pepel_factions.pepelsibirsk_relations["mil_relations"] += final_cost*0.02
+	else if (choice == "Narodnyygorod (CIV)" && scambool == FALSE)
+		pepel_factions.pepelsibirsk_relations["civ_relations"] += final_cost*0.02
+	else if (choice == "Narodnyygorod (CIV)" && scambool == TRUE)
+		pepel_factions.pepelsibirsk_relations["civ_relations"] -= final_cost*0.08
+	else if (choice == "Pepelsibirsk 1 (MIL)" && scambool == TRUE)
+		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
 	else
-		user << "choice var is missing a value"
+		user << "scam or choice var is missing a value"
 		return
-	user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
+	if (scambool == FALSE)
+		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
+	else if (scambool == TRUE)
+		user << "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08]."
 	spawn(600)
 		var/list/turfs = list()
 		if (faction_treasury != "craftable")
@@ -569,85 +642,69 @@
 	var/list/final_list = list()
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	var/list/companies = list(
+		"Cancel Purchase",
 		"Pepelsibirsk 1 (MIL)",
 		"Narodnyygorod (CIV)",
-		"Cancel",
 	)
-	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel", companies)
-	if (choice == "Cancel") //idk why this doesn't work, so I just made the error section silent so it acts like a cancel
+	var/list/scamornot = list (
+		"No, we're honest.",
+		"Yes, scam them!",
+	)
+	var/catalogue = list()
+	var/scambool
+	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel Purchase", companies)
+	if (choice == "Cancel Purchase")
+		if((round(money) >= 1))
+			new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+		if (((money) - round(money)) > 0)
+			new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+		money = 0
 		return
-	else
-		if (choice == "Pepelsibirsk 1 (MIL)")
-			if (mil_relations <= 25 )
-				user << "Your relations with this faction are too low!"
-			else
-				for (var/list/i in mil_catalogue)
-					display += "[i[1]], [i[3]] rubles"
-				var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
-				if (choice2 == "Cancel")
-					return
-				else
-					var/list/choicename = splittext(choice2, ", ")
-					for(var/list/i2 in mil_catalogue)
-						if (i2[1]== choicename[1])
-							final_list = i2
-							world.log << "[final_list], [final_list[1]], [final_list[2]]"
-							final_cost = (final_list[3])
-							if(final_list[3] > money)
-								// giving change back
-								if (money > 0)
-									if((round(money) >= 1))
-										new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-									if (((money) - round(money)) > 0)
-										new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-									money = 0
-									user << "You don't have enough money for this item."
-							else if (final_cost <= money)
-								money -= final_cost
-								update_cost(final_list, final_cost, choice, user)
-								if((round(money) >= 1))
-									new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-								if (((money) - round(money)) > 0)
-									new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-								money = 0
-							break
-
-		else if (choice == "Narodnyygorod (CIV)")
-			if (civ_relations <= 25 )
-				user << "Your relations with this faction are too low!"
-			else
-				for (var/list/i in civ_catalogue)
-					display += "[i[1]], [i[3]] rubles"
-				var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel", display)
-				if (choice2 == "Cancel")
-					return
-				else
-					var/list/choicename = splittext(choice2, ", ")
-					for(var/list/i2 in civ_catalogue)
-						if (i2[1]== choicename[1])
-							final_list = i2
-							world.log << "[final_list], [final_list[1]], [final_list[2]]"
-							final_cost = (final_list[3])
-							if(final_list[3] > money)
-								// giving change back
-								if (money > 0)
-									if((round(money) >= 1))
-										new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-									if (((money) - round(money)) > 0)
-										new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-									money = 0
-									user << "You don't have enough money for this item."
-							else if (final_cost <= money)
-								money -= final_cost
-								update_cost(final_list, final_cost, choice, user)
-								if((round(money) >= 1))
-									new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-								if (((money) - round(money)) > 0)
-									new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-								money = 0
-							break
-		else
+	if (choice == "Narodnyygorod (CIV)")
+		catalogue = civ_catalogue
+		if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 25 )
+			user << "Your relations with this faction are too low!"
 			return
+	else if (choice == "Pepelsibirsk 1 (MIL)")
+		catalogue = mil_catalogue
+		if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 25 )
+			user << "Your relations with this faction are too low!"
+			return
+	for (var/list/i in catalogue)
+		display += "[i[1]], [i[3]] rubles"
+		display += "Cancel Purchase"
+	var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel Purchase", display)
+	if (choice2 != "Cancel Purchase")
+		var/list/choicename = splittext(choice2, ", ")
+		for(var/list/i2 in catalogue)
+			if (i2[1]== choicename[1])
+				final_list = i2
+				world.log << "A purchase has been made: [final_list[1]], [final_list[2]], [final_list[3]]"
+				final_cost = (final_list[3])
+				if (final_list[3] <= money) // you can afford the item
+					money -= final_cost
+					scambool = FALSE
+					update_cost(final_list, final_cost, choice, user, scambool)
+				else // you're broke or want to scam
+					var/scam = WWinput(user, "Current Rubles: [money]", "You don't have enough money. Shall we scam them?", "No, we're honest.", scamornot)
+					if (scam == "Yes, scam them!")
+						scambool = TRUE
+						update_cost(final_list, final_cost, choice, user, scambool)
+					else
+						user << "You don't have enough money for this item."
+				if((round(money) >= 1))
+					new/obj/item/stack/money/rubles(loc, round(money))
+				if (((money) - round(money)) > 0)
+					new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
+				money = 0
+				break
+	else if (choice2 == "Cancel Purchase")
+		if((round(money) >= 1)) //giving money back
+			new/obj/item/stack/money/rubles(loc, round(money))
+		if (((money) - round(money)) > 0)
+			new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
+		money = 0
+		return
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/user as mob)
 	if (W.amount && istype(W, /obj/item/stack/money/rubles))
@@ -680,7 +737,7 @@
 		user << "There is no demand for this item."
 		return
 	else
-		if (civ_relations >= 25)
+		if (pepel_factions.pepelsibirsk_relations["civ_relations"] >= 25)
 			if (istype(W))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
