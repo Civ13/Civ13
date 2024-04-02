@@ -1076,65 +1076,65 @@
 		var/list/possible_h_list = list("Black")
 		var/list/possible_e_list = list("Black")
 		var/list/possible_s_list = list(-10,-60)
-		var/randpick = rand(1,10)
+		var/randpick
 		spawn(5)
-			switch(randpick)
-				if (1)
-					add_note("Known Languages", "Polish", "Russian")
-					remove_note("Known Languages","English")
-					remove_language("English")
-					name = species.get_random_polish_name(gender)
-					real_name = name
-					add_language("Polish",TRUE)
-					add_language("Russian",TRUE)
-					for (var/datum/language/polish/A in languages)
-						default_language = A
-					return
-					src.nationality = "Polish"
-					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
-					possible_e_list = list("Black","Brown","Green")
-					possible_s_list = list(-25,-60)
-				if (2 || 3 || 4 || 5 || 6)
-					add_note("Known Languages", "Russian")
-					remove_note("Known Languages","English")
-					remove_language("English")
-					name = species.get_random_russian_name(gender)
-					real_name = name
-					add_language("Russian",TRUE)
-					for (var/datum/language/russian/A in languages)
-						default_language = A
-					src.nationality = "Russian"
-					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
-					possible_e_list = list("Black","Brown","Green")
-					possible_s_list = list(-25,-60)
-				if (7)
-					add_note("Known Languages", "German", "Russian")
-					remove_note("Known Languages","English")
-					remove_language("English")
-					name = species.get_random_german_name(gender)
-					real_name = name
-					add_language("Russian",TRUE)
-					add_language("German,",TRUE)
-					for (var/datum/language/german/A in languages)
-						default_language = A
-					src.nationality = "German"
-					possible_h_list = list("Light Brown","Blond","Dirty Blond")
-					possible_e_list = list("Blue","Green")
-					possible_s_list = list(-15,-30)
-				if (8 || 9 || 10)
-					add_note("Known Languages", "Ukrainian", "Russian")
-					remove_note("Known Languages","English")
-					remove_language("English")
-					name = species.get_random_ukrainian_name(gender)
-					real_name = name
-					add_language("Russian",TRUE)
-					add_language("Ukrainian",TRUE)
-					src.nationality = "Ukrainian"
-					for (var/datum/language/ukrainian/A in languages)
-						default_language = A
-					possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
-					possible_e_list = list("Black","Brown","Green")
-					possible_s_list = list(-25,-60)
+			randpick = rand(1,10)
+			if (randpick == 1)
+				add_note("Known Languages", "Polish", "Russian")
+				remove_note("Known Languages","English")
+				remove_language("English")
+				name = species.get_random_polish_name(gender)
+				real_name = name
+				add_language("Polish",TRUE)
+				add_language("Russian",TRUE)
+				for (var/datum/language/polish/A in languages)
+					default_language = A
+				return
+				src.nationality = "Polish"
+				possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+				possible_e_list = list("Black","Brown","Green")
+				possible_s_list = list(-25,-60)
+			if (randpick == 2 || randpick == 3 || randpick == 4 || randpick == 5 || randpick == 6)
+				add_note("Known Languages", "Russian")
+				remove_note("Known Languages","English")
+				remove_language("English")
+				name = species.get_random_russian_name(gender)
+				real_name = name
+				add_language("Russian",TRUE)
+				for (var/datum/language/russian/A in languages)
+					default_language = A
+				src.nationality = "Russian"
+				possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+				possible_e_list = list("Black","Brown","Green")
+				possible_s_list = list(-25,-60)
+			if (randpick == 7)
+				add_note("Known Languages", "German", "Russian")
+				remove_note("Known Languages","English")
+				remove_language("English")
+				name = species.get_random_german_name(gender)
+				real_name = name
+				add_language("Russian",TRUE)
+				add_language("German,",TRUE)
+				for (var/datum/language/german/A in languages)
+					default_language = A
+				src.nationality = "German"
+				possible_h_list = list("Light Brown","Blond","Dirty Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_list = list(-15,-30)
+			if (randpick == 8 || randpick == 9 || randpick == 10)
+				add_note("Known Languages", "Ukrainian", "Russian")
+				remove_note("Known Languages","English")
+				remove_language("English")
+				name = species.get_random_ukrainian_name(gender)
+				real_name = name
+				add_language("Russian",TRUE)
+				add_language("Ukrainian",TRUE)
+				src.nationality = "Ukrainian"
+				for (var/datum/language/ukrainian/A in languages)
+					default_language = A
+				possible_h_list = list("Black", "Dark Brown","Light Brown","Red")
+				possible_e_list = list("Black","Brown","Green")
+				possible_s_list = list(-25,-60)
 		new_hair = pick(possible_h_list)
 		new_eyes = pick(possible_e_list)
 		s_tone = rand(possible_s_list[2],possible_s_list[1])

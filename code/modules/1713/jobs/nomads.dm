@@ -935,55 +935,52 @@
 ////////////////////////Pepelsibirsk//////////////////
 //////////////////////////////////////////////////////
 		else if (map.ID == MAP_PEPELSIBIRSK)
-			var/randpick = rand(1,10)
+			var/randpick
 			spawn(5)
-				var/area/mob_area = get_area(src)
-				switch (mob_area.climate)
-					if ("taiga")
-						switch(randpick)
-							if (1)
-								add_note("Known Languages", "Polish", "Russian")
-								remove_language("English")
-								name = species.get_random_polish_name(gender)
-								real_name = name
-								add_language("Polish",TRUE)
-								add_language("Russian",TRUE)
-								src.nationality = "Polish"
-								for (var/datum/language/polish/A in languages)
-									default_language = A
-								return
-							if (2 || 3 || 4 || 5 || 6)
-								add_note("Known Languages", "Russian")
-								remove_language("English")
-								name = species.get_random_russian_name(gender)
-								real_name = name
-								add_language("Russian",TRUE)
-								src.nationality = "Russian"
-								for (var/datum/language/polish/A in languages)
-									default_language = A
-								return
-							if (7)
-								add_note("Known Languages", "German", "Russian")
-								remove_language("English")
-								name = species.get_random_german_name(gender)
-								real_name = name
-								add_language("Russian",TRUE)
-								add_language("German,",TRUE)
-								src.nationality = "German"
-								for (var/datum/language/german/A in languages)
-									default_language = A
-								return
-							if (8 || 9 || 10)
-								add_note("Known Languages", "Ukrainian", "Russian")
-								remove_language("English")
-								name = species.get_random_ukrainian_name(gender)
-								real_name = name
-								add_language("Russian",TRUE)
-								add_language("Ukrainian",TRUE)
-								src.nationality = "Ukrainian"
-								for (var/datum/language/ukrainian/A in languages)
-									default_language = A
-								return
+				randpick = rand(1,10)
+				if (randpick == 1)
+					add_note("Known Languages", "Polish", "Russian")
+					remove_language("English")
+					name = species.get_random_polish_name(gender)
+					real_name = name
+					add_language("Polish",TRUE)
+					add_language("Russian",TRUE)
+					src.nationality = "Polish"
+					for (var/datum/language/polish/A in languages)
+						default_language = A
+					return
+				if (randpick == 2 || randpick == 3 || randpick == 4 || randpick == 5 || randpick == 6)
+					add_note("Known Languages", "Russian")
+					remove_language("English")
+					name = species.get_random_russian_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					src.nationality = "Russian"
+					for (var/datum/language/polish/A in languages)
+						default_language = A
+					return
+				if (randpick == 7)
+					add_note("Known Languages", "German", "Russian")
+					remove_language("English")
+					name = species.get_random_german_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					add_language("German,",TRUE)
+					src.nationality = "German"
+					for (var/datum/language/german/A in languages)
+						default_language = A
+					return
+				if (randpick == 8 || randpick == 9 || randpick == 10)
+					add_note("Known Languages", "Ukrainian", "Russian")
+					remove_language("English")
+					name = species.get_random_ukrainian_name(gender)
+					real_name = name
+					add_language("Russian",TRUE)
+					add_language("Ukrainian",TRUE)
+					src.nationality = "Ukrainian"
+					for (var/datum/language/ukrainian/A in languages)
+						default_language = A
+					return
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa

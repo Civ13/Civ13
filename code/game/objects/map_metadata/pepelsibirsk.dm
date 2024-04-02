@@ -46,6 +46,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	var/real_season = "WINTER"
 	var/quarter = 1
 	var/year = 1976
@@ -57,6 +58,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	relations_subsystem()
 	send_traders()
 	time_update(age, quarter, year)
+	enemy_attacks()
+	recover_relations()
+	check_relations_msg()
 	for (var/obj/structure/wild/tree/live_tree/TREES)
 		TREES.change_season()
 	spawn(9000)
@@ -81,9 +85,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			var/area/A = get_area(G)
 			if  (A.location != AREA_INSIDE)
 				G.ChangeTurf(/turf/floor/winter/grass)
-		spawn(100)
-			change_weather(WEATHER_WET)
-		spawn(800)
+		change_weather(WEATHER_WET)
 		for (var/turf/floor/beach/water/shallowsaltwater/W)
 			W.ChangeTurf(/turf/floor/beach/water/ice/salty)
 		real_season = "WINTER"
@@ -105,20 +107,13 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		for (var/turf/floor/dirt/burned/B)
 			if (prob(60))
 				B.ChangeTurf(/turf/floor/grass)
-		spawn(150)
-			change_weather(WEATHER_NONE)
-		spawn(1500)
+		change_weather(WEATHER_NONE)
 		for (var/turf/floor/beach/water/ice/salty/W)
 			if (prob(65) && W.water_level >= 50)
 				W.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
 		real_season = "SUMMER"
-
-	if (real_season == "SUMMER")
-		spawn(9000)
-			seasons()
-	else if (real_season == "WINTER")
-		spawn(27000)
-			seasons()
+	spawn(30 MINUTES)
+		seasons()
 
 /obj/map_metadata/pepelsibirsk/cross_message(faction)
 	return "<font size = 3><span class = 'notice'><b>The all-clear has been given. You may now leave the Soviet.</b></font></span>"
@@ -142,6 +137,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			else if (pepel_factions.pepelsibirsk_relations[relation] < 0)
 				pepel_factions.pepelsibirsk_relations[relation] = 0
 		relations_subsystem()
+	return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
 	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
@@ -150,8 +146,17 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pepel_factions.pepelsibirsk_relations["pacific_relations"]]</b></span></font>"
 	world << "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[pepel_factions.pepelsibirsk_relations["civ_relations"]]</b></span></font>"
 	world << "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[pepel_factions.pepelsibirsk_relations["mil_relations"]]</b></span></font>"
-	spawn(3000) // 5 minutes
+	spawn(5 MINUTES)
 		check_relations_msg()
+	return
+
+/obj/map_metadata/pepelsibirsk/proc/recover_relations()
+	if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 26)
+		pepel_factions.pepelsibirsk_relations["civ_relations"] += 0.02
+	if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 26)
+		pepel_factions.pepelsibirsk_relations["mil_relations"] += 0.02
+	spawn(20 MINUTES)
+		recover_relations()
 	return
 
 ////// TIME CODE ////// (thanks malt)
@@ -164,14 +169,15 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		world << "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>"
 	else
 		world << "<font size = 3><span class = 'notice'><b>The quarter has advanced to Q[quarter].</b></font></span>"
+	return
 
 /obj/map_metadata/pepelsibirsk/proc/time_update()
 	age = "[year] A.D. Q[quarter]"
 	world.log << "Time_update has been triggered, the date is now [year] A.D. Q[quarter]."
-	spawn (18000)
+	spawn (30 MINUTES)
 		time_quarters()
 		time_update()
-		return
+	return
 
 ////// PEPELSIBIRSK TRAVELING MERCHANTS //////
 /obj/structure/vending/sales/pepelsibirsk
@@ -428,7 +434,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned at with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10 minutes
+			spawn(10 MINUTES)
 				world.log << "[trader] has been deleted."
 				qdel(trader)
 		if (pepel_factions.pepelsibirsk_relations["soviet_relations"] >= 26)
@@ -436,7 +442,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10 minutes
+			spawn(10 MINUTES)
 				world.log << "[trader] has been deleted."
 				qdel(trader)
 		if (pepel_factions.pepelsibirsk_relations["pacific_relations"] >= 26)
@@ -444,7 +450,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
 			world.log << "[trader] has been spawned with get_turf, example: [get_turf(spawnpoint)]."
-			spawn(6000) //10 minutes
+			spawn(10 MINUTES)
 				world.log << "[trader] has been deleted."
 				qdel(trader)
 		return
@@ -465,7 +471,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		world << "<font size = 4><span class = 'notice'>Due to poor relations, no one has arrived to trade.</b></font></span>"
 		world.log << "Due to poor relations, no one has arrived to trade."
 
-	spawn(18000) //30 minutes
+	spawn(30 MINUTES)
 		send_traders(trader_spawnpoint)
 		return
 
@@ -622,7 +628,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
 	else if (scam == "Yes, scam them!")
 		user << "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08]."
-	spawn(600)
+	spawn(1 MINUTE)
 		var/list/turfs = list()
 		if (faction_treasury != "craftable")
 			turfs = latejoin_turfs[factionarea]
@@ -755,3 +761,109 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		else
 			user << "Your relations with Narodnyygorod are too low!"
 			return
+
+
+////// ENEMY AIR BOMBING //////
+
+/obj/map_metadata/pepelsibirsk/proc/bombing(var/turf/T, direction, aircraft_name)
+	var/strikenum = rand(1, 10)
+	var/xoffset = 0
+	var/yoffset = 0
+	var/direction_xoffset = 0
+	var/direction_yoffset = 0
+
+	to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</fnt>"))
+	
+	spawn(15)
+		for (var/i = 1, i <= strikenum, i++)
+			switch (direction)
+				if (1)
+					direction_yoffset += 3
+					xoffset = rand(-2,2)
+					yoffset = rand(0,1)
+				if (2)
+					direction_xoffset += 3
+					xoffset = rand(0,1)
+					yoffset = rand(-2,2)
+				if (3)
+					direction_yoffset -= 3
+					xoffset = rand(-2,2)
+					yoffset = rand(0,1)
+				if (4)
+					direction_xoffset -= 3
+					xoffset = rand(0,1)
+					yoffset = rand(-2,2)
+			spawn(i*8)
+				explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+
+/obj/map_metadata/pepelsibirsk/proc/try_shoot_down_aircraft(var/turf/T, direction, aircraft_name)
+	spawn(8 SECONDS)
+		var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+		sam_sound.priority = 250
+		for (var/mob/M in player_list)
+			if (!new_player_mob_list.Find(M))
+				to_chat(M, SPAN_DANGER("<big>A SAM site fires at the [aircraft_name]!</big>"))
+				M.client << sam_sound
+		spawn(5 SECONDS)
+			if (prob(95)) // Shoot down the jet
+				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						to_chat(M, SPAN_DANGER("<big>The SAM directly hits the [aircraft_name], shooting it down!</big>"))
+						if (M.client)
+							M.client << uploaded_sound
+				log_game("Aircraft [aircraft_name] has been shot down.")
+				return
+			else // Evade the Anti-Air
+				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+				uploaded_sound.priority = 250
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						to_chat(M, SPAN_NOTICE("<big><b>The SAM misses the [aircraft_name]!</b></big>"))
+						if (M.client)
+							M.client << uploaded_sound
+				bombing(T, direction, aircraft_name)
+
+/obj/map_metadata/pepelsibirsk/proc/try_bombing(var/turf/T, direction, faction)
+	var/aircraft_name
+	switch(faction)
+		if ("CHINA")
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			aircraft_name = "Xi'an H-6"
+		if ("SOVIET")
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			aircraft_name = "MiG-27"
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
+	
+	var/anti_air_in_range = FALSE
+	for (var/obj/structure/milsim/anti_air/AA in range(60, T))
+		anti_air_in_range++
+	if (anti_air_in_range)
+		try_shoot_down_aircraft(T, direction, aircraft_name)
+	else
+		bombing(T, direction, aircraft_name)
+	return
+
+/obj/map_metadata/pepelsibirsk/proc/bombing_location(faction)
+	var/direction = rand(1, 4)
+	var/turf/T = locate(rand(1, 255),rand(1, 255),2)
+	try_bombing(T, direction, faction)
+
+/obj/map_metadata/pepelsibirsk/proc/enemy_attacks()
+	var/faction
+	var/next_bombing_1 = rand(30 SECONDS, 30 MINUTES)
+	var/next_bombing_2 = rand(30 SECONDS, 5 MINUTES)
+	message_admins("The initial stage of the enemy_attacks() proc will be triggered in [next_bombing_1] deciseconds. The second stage will be triggered [next_bombing_2] deciseconds after that.")
+	world.log << "The initial stage of the enemy_attacks() proc will be triggered in [next_bombing_1] deciseconds. The second stage will be triggered [next_bombing_2] deciseconds after that."
+	spawn(next_bombing_1)
+		if (pepel_factions.pepelsibirsk_relations["china_relations"] <= 25)
+			faction = "CHINA"
+			bombing_location(faction)
+			pepel_factions.pepelsibirsk_relations["china_relations"] += 0.5
+		spawn(next_bombing_2)
+			if (pepel_factions.pepelsibirsk_relations["soviet_relations"] <= 25)
+				faction = "SOVIET"
+				bombing_location(faction)
+				pepel_factions.pepelsibirsk_relations["soviet_relations"] += 0.5
+			enemy_attacks()

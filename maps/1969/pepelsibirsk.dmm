@@ -6064,6 +6064,12 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"pd" = (
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/nomads/taiga)
 "pe" = (
 /obj/effect/floor_decal/spline/fancy/wood/corner{
 	dir = 1
@@ -8606,6 +8612,9 @@
 	dir = 1
 	},
 /obj/roof/clay/black,
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "vv" = (
@@ -81942,7 +81951,7 @@ rA
 rA
 ng
 rA
-rq
+pd
 rq
 rq
 rq
@@ -82748,7 +82757,7 @@ jr
 qV
 rq
 rq
-rq
+pd
 rq
 Wv
 mb
