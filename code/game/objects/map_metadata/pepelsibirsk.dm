@@ -612,7 +612,6 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user, scam)
-	user << "[final_list], [final_cost], [choice], [user], [scam] in update_cost"
 	if (choice == "Pepelsibirsk 1 (MIL)" && scam == "No, we're honest.")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] += final_cost*0.02
 	else if (choice == "Narodnyygorod (CIV)" && scam == "No, we're honest.")
@@ -621,9 +620,6 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		pepel_factions.pepelsibirsk_relations["civ_relations"] -= final_cost*0.08
 	else if (choice == "Pepelsibirsk 1 (MIL)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
-	else
-		user << "scam or choice var is missing a value"
-		return
 	if (scam == "No, we're honest.")
 		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
 	else if (scam == "Yes, scam them!")
@@ -678,7 +674,6 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		display += "Cancel Purchase"
 	var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel Purchase", display)
 	var/scam = WWinput(user, "Current Rubles: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
-	user << scam
 	if (choice2 != "Cancel Purchase")
 		var/list/choicename = splittext(choice2, ", ")
 		for(var/list/i2 in catalogue)
@@ -689,9 +684,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				if (final_list[3] <= money || scam == "Yes, scam them!" ) // you can afford the item or you're scamming
 					if (scam == "No, we're honest.")
 						money -= final_cost
-						user << "Money subtracted"
 					update_cost(final_list, final_cost, choice, user, scam)
-					user << "[final_list], [final_cost], [choice], [user], [scam] in attack_hand"
 					if((round(money) >= 1))
 						new/obj/item/stack/money/rubles(loc, round(money))
 					if (((money) - round(money)) > 0)
