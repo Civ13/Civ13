@@ -136,11 +136,11 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
 	spawn(30) // 3 seconds
-		for(var/i in 1 to length(pepel_factions.pepelsibirsk_relations))
-			if (pepel_factions.pepelsibirsk_relations[i] > 100)
-				pepel_factions.pepelsibirsk_relations[i] = 100
-			else if (pepel_factions.pepelsibirsk_relations[i] < 0)
-				pepel_factions.pepelsibirsk_relations[i] = 0
+		for(var/relation in pepel_factions.pepelsibirsk_relations)
+			if (pepel_factions.pepelsibirsk_relations[relation] > 100)
+				pepel_factions.pepelsibirsk_relations[relation] = 100
+			else if (pepel_factions.pepelsibirsk_relations[relation] < 0)
+				pepel_factions.pepelsibirsk_relations[relation] = 0
 		relations_subsystem()
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
@@ -605,24 +605,22 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000),
 	)
 
-/obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, scambool, user)
-	if (isemptylist(final_list))
-		user << "list is empty"
-		return
-	if (choice == "Pepelsibirsk 1 (MIL)" && scambool == FALSE)
+/obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user, scam)
+	user << "[final_list], [final_cost], [choice], [user], [scam] in update_cost"
+	if (choice == "Pepelsibirsk 1 (MIL)" && scam == "No, we're honest.")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] += final_cost*0.02
-	else if (choice == "Narodnyygorod (CIV)" && scambool == FALSE)
+	else if (choice == "Narodnyygorod (CIV)" && scam == "No, we're honest.")
 		pepel_factions.pepelsibirsk_relations["civ_relations"] += final_cost*0.02
-	else if (choice == "Narodnyygorod (CIV)" && scambool == TRUE)
+	else if (choice == "Narodnyygorod (CIV)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["civ_relations"] -= final_cost*0.08
-	else if (choice == "Pepelsibirsk 1 (MIL)" && scambool == TRUE)
+	else if (choice == "Pepelsibirsk 1 (MIL)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
 	else
 		user << "scam or choice var is missing a value"
 		return
-	if (scambool == FALSE)
+	if (scam == "No, we're honest.")
 		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
-	else if (scambool == TRUE)
+	else if (scam == "Yes, scam them!")
 		user << "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08]."
 	spawn(600)
 		var/list/turfs = list()
@@ -651,7 +649,6 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		"Yes, scam them!",
 	)
 	var/catalogue = list()
-	var/scambool
 	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel Purchase", companies)
 	if (choice == "Cancel Purchase")
 		if((round(money) >= 1))
@@ -674,6 +671,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		display += "[i[1]], [i[3]] rubles"
 		display += "Cancel Purchase"
 	var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel Purchase", display)
+	var/scam = WWinput(user, "Current Rubles: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
+	user << scam
 	if (choice2 != "Cancel Purchase")
 		var/list/choicename = splittext(choice2, ", ")
 		for(var/list/i2 in catalogue)
@@ -681,24 +680,26 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				final_list = i2
 				world.log << "A purchase has been made: [final_list[1]], [final_list[2]], [final_list[3]]"
 				final_cost = (final_list[3])
-				if (final_list[3] <= money) // you can afford the item
-					money -= final_cost
-					scambool = FALSE
-					update_cost(final_list, final_cost, choice, user, scambool)
-				else // you're broke or want to scam
-					var/scam = WWinput(user, "Current Rubles: [money]", "You don't have enough money. Shall we scam them?", "No, we're honest.", scamornot)
-					if (scam == "Yes, scam them!")
-						scambool = TRUE
-						update_cost(final_list, final_cost, choice, user, scambool)
-					else
-						user << "You don't have enough money for this item."
-				if((round(money) >= 1))
-					new/obj/item/stack/money/rubles(loc, round(money))
-				if (((money) - round(money)) > 0)
-					new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
-				money = 0
+				if (final_list[3] <= money || scam == "Yes, scam them!" ) // you can afford the item or you're scamming
+					if (scam == "No, we're honest.")
+						money -= final_cost
+						user << "Money subtracted"
+					update_cost(final_list, final_cost, choice, user, scam)
+					user << "[final_list], [final_cost], [choice], [user], [scam] in attack_hand"
+					if((round(money) >= 1))
+						new/obj/item/stack/money/rubles(loc, round(money))
+					if (((money) - round(money)) > 0)
+						new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
+					money = 0
+				else // you're broke
+					if((round(money) >= 1))
+						new/obj/item/stack/money/rubles(loc, round(money))
+					if (((money) - round(money)) > 0)
+						new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
+					money = 0
+					user << "You don't have enough money for this item."
 				break
-	else if (choice2 == "Cancel Purchase")
+	else
 		if((round(money) >= 1)) //giving money back
 			new/obj/item/stack/money/rubles(loc, round(money))
 		if (((money) - round(money)) > 0)
