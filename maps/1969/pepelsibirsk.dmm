@@ -2438,6 +2438,12 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
+"gb" = (
+/obj/item/weapon/reagent_containers/glass/barrel/modern/ethanol,
+/obj/roof/concrete,
+/obj/structure/roof_support/admin,
+/turf/floor/plating,
+/area/caribbean/nomads/taiga)
 "gc" = (
 /obj/structure/rails,
 /obj/structure/trains/storage/miningcart,
@@ -6063,12 +6069,6 @@
 	},
 /obj/roof/clay,
 /turf/floor/wood,
-/area/caribbean/nomads/taiga)
-"pd" = (
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "pe" = (
 /obj/effect/floor_decal/spline/fancy/wood/corner{
@@ -14771,6 +14771,12 @@
 	},
 /turf/floor/plating/concrete,
 /area/caribbean/roofed)
+"Kb" = (
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/nomads/taiga)
 "Kc" = (
 /obj/structure/roof_support{
 	icon_state = "support_v"
@@ -16379,6 +16385,12 @@
 	},
 /obj/structure/table/modern/retable,
 /turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
+"Ob" = (
+/obj/item/weapon/reagent_containers/glass/barrel/modern/oil,
+/obj/roof/concrete,
+/obj/structure/roof_support/admin,
+/turf/floor/plating,
 /area/caribbean/nomads/taiga)
 "Oc" = (
 /obj/covers/wood,
@@ -20606,6 +20618,12 @@
 	},
 /obj/roof/clay,
 /turf/floor/wood/alt/two,
+/area/caribbean/nomads/taiga)
+"Yy" = (
+/obj/item/weapon/reagent_containers/glass/barrel/modern/sterilizine,
+/obj/roof/concrete,
+/obj/structure/roof_support/admin,
+/turf/floor/plating,
 /area/caribbean/nomads/taiga)
 "Yz" = (
 /obj/structure/bed/chair/steel/alt,
@@ -81951,7 +81969,7 @@ rA
 rA
 ng
 rA
-pd
+Kb
 rq
 rq
 rq
@@ -82501,8 +82519,8 @@ MH
 nL
 nL
 nL
-nL
-nL
+Yy
+Yy
 nL
 nL
 nL
@@ -82514,8 +82532,8 @@ SU
 ml
 ml
 ml
-ml
-ml
+gb
+gb
 ml
 ml
 ml
@@ -82527,8 +82545,8 @@ md
 rY
 rY
 rY
-rY
-rY
+Ob
+Ob
 rY
 rY
 rY
@@ -82702,8 +82720,8 @@ MH
 nL
 nL
 nL
-nL
-nL
+Yy
+Yy
 nL
 nL
 nL
@@ -82715,8 +82733,8 @@ SU
 ml
 ml
 ml
-ml
-ml
+gb
+gb
 ml
 ml
 ml
@@ -82728,8 +82746,8 @@ md
 rY
 rY
 rY
-rY
-rY
+Ob
+Ob
 rY
 rY
 rY
@@ -82757,7 +82775,7 @@ jr
 qV
 rq
 rq
-pd
+Kb
 rq
 Wv
 mb

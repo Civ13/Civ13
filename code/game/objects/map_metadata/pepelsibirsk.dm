@@ -252,6 +252,10 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 3,
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 1,
 		/obj/item/weapon/reagent_containers/food/snacks/applepie = 1,
+
+		//Miscellaneous
+		/obj/item/weapon/telephone/mobile = 2,
+		/obj/structure/anti_air_crate = 1,
 	)
 	prices = list(
 		//Weapons
@@ -292,6 +296,10 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 10,
 		/obj/item/weapon/reagent_containers/food/snacks/sliceable/pumpkinpie = 20,
 		/obj/item/weapon/reagent_containers/food/snacks/applepie = 20,
+
+		//Miscellaneous
+		/obj/item/weapon/telephone/mobile = 500,
+		/obj/structure/anti_air_crate = 1000,
 	)
 
 /obj/structure/vending/sales/pepelsibirsk/pacific_trader/dropwares()
@@ -860,3 +868,58 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				bombing_location(faction)
 				pepel_factions.pepelsibirsk_relations["soviet_relations"] += 0.5
 			enemy_attacks()
+
+/obj/structure/anti_air_crate
+	name = "anti-air crate"
+	desc = "A supply crate used to make SAM sites."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "supply_crate"
+	anchored = FALSE
+	flammable = FALSE
+	w_class = ITEM_SIZE_LARGE
+	opacity = FALSE
+	density = TRUE
+	var/health = 250
+
+/obj/structure/anti_air_crate/New()
+	..()
+	overlays += image(icon = 'icons/obj/junk.dmi', icon_state = "o-ru")
+
+/obj/structure/anti_air_crate/proc/try_destroy()
+	if (health <= 0)
+		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
+		explosion(get_turf(src),0,1,1,1)
+		qdel(src)
+		return
+
+/obj/structure/anti_air_crate/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 600
+		if (2.0)
+			health -= 200
+		if (3.0)
+			health -= 100
+	try_destroy()
+
+/obj/structure/anti_air_crate/bullet_act(var/obj/item/projectile/proj)
+	health -= proj.damage/3
+	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	try_destroy()
+
+/obj/structure/anti_air_crate/attack_hand(mob/living/human/H as mob)
+	var/AA_in_range = 0
+	for (var/obj/structure/milsim/anti_air/AA in range(10, src)) // Check if there are friendly Anti-Air within 10 tiles, if so block the build
+		AA_in_range++
+	if (AA_in_range)
+		to_chat(H, SPAN_WARNING("<big>You cannot build Anti-Air so close to another, consider moving away.</big>"))
+		return
+	else
+		to_chat(H, SPAN_NOTICE("You starting building an Anti-Air with \the [src]."))
+		if (do_after(H, 30 SECONDS, src))
+			to_chat(H, SPAN("good", "<big>You build an Anti-Air with \the [src].</big>"))
+			var/obj/structure/milsim/anti_air/AA = new/obj/structure/milsim/anti_air(get_turf(src))
+			AA.attack_hand(H)
+			qdel(src)
+			return
+	return
