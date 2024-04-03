@@ -129,7 +129,7 @@
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
 					I.reagents.del_reagent("cholera")
-					visible_message("<span class = 'notice'>The [name] finishes boiling.</span>")
+					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
 						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
@@ -248,6 +248,12 @@
 	light_power = 0.75
 	light_color = "#E38F46"
 
+/obj/structure/oven/fireplace/proc/keep_sound_on()
+    if (on && looping && fuel > 0)
+        playsound(src, "sound/effects/campfire_cackling.ogg", 65, 20, 0, 25)
+        spawn(50) // 6 seconds
+            keep_sound_on()
+
 /obj/structure/oven/fireplace/proc/keep_fire_on()
 	if (on && looping && fuel > 0)
 		set_light(5)
@@ -265,6 +271,7 @@
 		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
 		on = TRUE
 		keep_fire_on()
+		keep_sound_on()
 	else if (on)
 		visible_message("<span class = 'notice'>[H] puts off \the [name].</span>")
 		on = FALSE
