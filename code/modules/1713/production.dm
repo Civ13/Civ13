@@ -180,7 +180,7 @@
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] stops dismantling \the [src].</span>",
 				"<span class='notice'>You stops dismantling \the [src].</span>",
-				"<span class='notice'>Dismantling sounds are gone.</span>")
+				"<span class='notice'>The ratchetting sounds are gone.</span>")
 	else
 		H << "<span class='warning'>\The [src] is not dissasemblable.</span>"
 
