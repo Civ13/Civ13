@@ -113,6 +113,11 @@
 		mood = 150
 	else if (mood < 0)
 		mood = 0
+	//mood natural balancing to neutral
+	if (mood > 60) //moves to 60 if more than 60.
+		mood -= 0.10
+	else if (mood < 50) //moves to 50 if below 50
+		mood += 0.10
 	if(istype(buckled, /obj/structure/cross))
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
