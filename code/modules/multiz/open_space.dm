@@ -217,7 +217,7 @@ var/list/sky_drop_map = list()
 				H.updatehealth()
 
 		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/effect) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid) || istype(A, /obj/structure/cannon/modern/naval))
 				return
 			else
 				if(push_dir)

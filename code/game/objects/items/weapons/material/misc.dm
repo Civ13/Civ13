@@ -1022,7 +1022,7 @@
 	desc = "A very sharp stone axe blade upon a long wood handle. Not great at chopping wood but excellent at chopping limbs."
 
 /obj/item/weapon/material/scepter
-	name = "gold scepter"
+	name = "scepter" // corrects to gold scepter because of the default_material
 	sharp = FALSE
 	edge = FALSE
 	desc = "An old golden staff, doesn't do too much damage but its fast at blocking and hitting"

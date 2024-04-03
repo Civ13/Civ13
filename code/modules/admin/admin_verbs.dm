@@ -146,6 +146,7 @@ var/list/admin_verbs_server = list(
 var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
+	/datum/admins/proc/view_runtimes,
 	/client/proc/toggle_gc_helper,
 	/client/proc/run_gc_helper,
 	/client/proc/check_null_atoms,

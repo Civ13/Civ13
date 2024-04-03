@@ -44,3 +44,13 @@
 	M.ckey = ckey
 	if (isghost(adminmob))
 		qdel(adminmob)
+
+/datum/admins/proc/view_runtimes()
+	set category = "Debug"
+	set name = "View Runtimes"
+	set desc = "Open the Runtime Viewer"
+
+	if(!check_rights(R_DEBUG))
+		return
+
+	error_cache.showTo(usr)

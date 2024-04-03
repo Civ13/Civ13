@@ -1153,6 +1153,26 @@
 	caliber = "a20"
 	value = 2
 
+/obj/item/ammo_casing/a25mm_ap
+	name = "25mm AP cartridge"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/a25mm_ap
+	caliber = "a25"
+	value = 2
+
+/obj/item/ammo_casing/a25mm_he
+	name = "25mm HE cartridge"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a25mm_he
+	caliber = "a25"
+	value = 2
+
 /obj/item/ammo_casing/a30mm_ap
 	name = "30mm AP-T cartridge"
 	desc = "An Amour Piercing-Tracer cartridge."

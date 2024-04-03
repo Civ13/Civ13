@@ -253,7 +253,7 @@
 	food_decay()
 
 /obj/item/stack/material/leaf/proc/food_decay()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (decay == 0)
 			return
 		if (istype(loc, /obj/structure/vending))

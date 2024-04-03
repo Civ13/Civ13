@@ -569,8 +569,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	volume = 160
 
 /obj/item/weapon/reagent_containers/glass/small_pot/clay
-	desc = "A primitive clay pot, specifically designed and used for boiling water and holding liquids."
 	name = "clay cooking pot"
+	desc = "A primitive clay pot, specifically designed and used for boiling water and holding liquids."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "cookingpot"
 	item_state = "bucket" //TODO: need be checked

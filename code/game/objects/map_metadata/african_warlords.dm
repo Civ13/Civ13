@@ -30,7 +30,7 @@
 	)
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute 
 			points_check()
 
 /obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)

@@ -484,7 +484,7 @@
 /obj/structure/refinery/proc/power_on()
 	if (active)
 		update_icon()
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 	else
 		update_icon()
@@ -517,7 +517,7 @@
 		else // default to diesel
 			volume -= amt
 			barrel[1].reagents.add_reagent("diesel",0.7*amt)
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 	else
@@ -670,7 +670,7 @@
 				amt = volume_di
 			volume_di -= amt
 			barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 	else
@@ -746,7 +746,7 @@
 /obj/structure/bakelizer/proc/power_on()
 	if (powered && active)
 		update_icon()
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 	else
 		update_icon()
@@ -764,7 +764,7 @@
 		volume-=5
 		plastic+=1
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
-		spawn(600)
+		spawn(600) // 1 minute
 			refine()
 		return
 /obj/structure/bakelizer/verb/empty()
@@ -858,9 +858,6 @@
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
 	var/max_storage = 3
-	New()
-		..()
-		storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 
 /obj/structure/katana_stand/update_icon()
 	if (storage.contents.len > 0)
@@ -875,6 +872,7 @@
 	storage.storage_slots = 1
 	storage.max_w_class = 3
 	storage.max_storage_space = max_storage*3
+	storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 	update_icon()
 
 /obj/structure/katana_stand/Destroy()
@@ -1044,15 +1042,39 @@
 	density = TRUE
 	var/ore_types = list(
 		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
 		/obj/item/stack/ore/gold,
 		/obj/item/stack/ore/glass,
 		/obj/item/stack/ore/silver,
 		/obj/item/stack/ore/copper,
 		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/saltpeter,
+		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/sulphur,
+		/obj/item/stack/ore/sulphur,
 		/obj/item/stack/ore/sulphur,
 		/obj/item/stack/ore/lead,
+		/obj/item/stack/ore/lead,
+		/obj/item/stack/ore/lead,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
 		/obj/item/stack/material/stone,
 		/obj/item/weapon/barrier,
 	)
@@ -1156,7 +1178,7 @@
 			var/picked = pick(ore_types)
 
 			var/obj/item/stack/tospawn = new picked(null)
-			tospawn.amount = rand(10,30)
+			tospawn.amount = rand(2,5)
 			for (var/obj/item/stack/S in get_turf(src))
 				if (S.type == tospawn.type)
 					S.amount += tospawn.amount
@@ -1166,7 +1188,7 @@
 			if (tospawn)
 				tospawn.loc = get_turf(src)
 			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
-			next_spawn = 30
+			next_spawn = 60
 
 		update_icon()
 		spawn (2 SECONDS)
