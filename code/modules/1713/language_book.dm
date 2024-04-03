@@ -56,7 +56,7 @@
 		langcopy.Remove(language1)
 		var/datum/language/language2 = WWinput(user, "What will your 2nd language to translate be?", "Writing Translations", "text", langcopy)
 		user.visible_message("<span class='notice'>[user] begins to write in the [src].</span>", "<span class='notice'>You begin writing translations in the [src]. This will take around 2 minutes, and you need to stand or sit still.</span>")
-		if(do_after(user, 1200, src))
+		if(do_after(user, 1800, src))
 			user.visible_message("<span class='notice'>[user] finishes writing in the [src].</span>", "<span class='notice'>You finish writing translations in the [src].</span>")
 			src.name = "[language1.name] to [language2.name] language book"
 			src.desc = "A book that allows translation between two languages. It looks like it translates between [language1] and [language2]."
