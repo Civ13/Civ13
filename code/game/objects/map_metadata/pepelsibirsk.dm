@@ -304,7 +304,6 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		if (3.0)
 			dropwares()
 			qdel(src)
-		else
 	return
 
 /obj/structure/vending/sales/pepelsibirsk/bullet_act()
