@@ -773,7 +773,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	var/direction_xoffset = 0
 	var/direction_yoffset = 0
 
-	to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</fnt>"))
+	to_chat(world, SPAN_DANGER("<font size=4>And drops a barrage of bombs!</fnt>"))
 	
 	spawn(15)
 		for (var/i = 1, i <= strikenum, i++)
