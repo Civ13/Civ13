@@ -936,50 +936,37 @@
 //////////////////////////////////////////////////////
 		else if (map.ID == MAP_PEPELSIBIRSK)
 			spawn(5)
-				var/randpick = rand(1,10)
-				switch(randpick)
-					if (1)
-						add_note("Known Languages", "Polish", "Russian")
+				switch(nationality)
+					if ("Polish")
+						add_language("Polish",TRUE)
+						add_language("Russian",TRUE)
 						remove_language("English")
 						name = species.get_random_polish_name(gender)
 						real_name = name
-						add_language("Polish",TRUE)
-						add_language("Russian",TRUE)
-						src.nationality = "Polish"
-						for (var/datum/language/polish/A in languages)
-							default_language = A
+						add_note("Known Languages", "Polish", "Russian")
 						return
-					if (2 to 6)
-						add_note("Known Languages", "Russian")
+					if ("Russian")
+						add_language("Russian",TRUE)
 						remove_language("English")
 						name = species.get_random_russian_name(gender)
 						real_name = name
-						add_language("Russian",TRUE)
-						src.nationality = "Russian"
-						for (var/datum/language/polish/A in languages)
-							default_language = A
+						add_note("Known Languages", "Polish")
 						return
-					if (7)
-						add_note("Known Languages", "German", "Russian")
+					if ("German")
+						add_language("German",TRUE)
+						add_language("Russian",TRUE)
 						remove_language("English")
 						name = species.get_random_german_name(gender)
 						real_name = name
-						add_language("Russian",TRUE)
-						add_language("German,",TRUE)
-						src.nationality = "German"
-						for (var/datum/language/german/A in languages)
-							default_language = A
+						add_note("Known Languages", "German", "Russian")
 						return
-					if (8 to 10)
-						add_note("Known Languages", "Ukrainian", "Russian")
+					if ("Ukrainian")
+						add_language("Ukrainian",TRUE)
+						add_language("Russian",TRUE)
 						remove_language("English")
 						name = species.get_random_ukrainian_name(gender)
 						real_name = name
-						add_language("Russian",TRUE)
-						add_language("Ukrainian",TRUE)
-						src.nationality = "Ukrainian"
-						for (var/datum/language/ukrainian/A in languages)
-							default_language = A
+						add_note("Known Languages", "Ukrainian", "Russian")
 						return
 /////////////////////////CIVS////////////////////////
 
