@@ -537,7 +537,7 @@
 
 /mob/living/simple_animal/boar_boar
 	name = "boar"
-	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small, wooly mammal with a stocky body, long snout, and small eyes. They are a member of the Suidae family."
 	icon_state = "boar_boar"
 	icon_living = "boar_boar"
 	icon_dead = "boar_dead"
@@ -571,7 +571,7 @@
 
 /mob/living/simple_animal/boar_gilt
 	name = "boar gilt"
-	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small, wooly mammal with a stocky body, long snout, and small eyes. They are a member of the Suidae family."
 	icon_state = "boar_gilt"
 	icon_living = "boar_gilt"
 	icon_dead = "boar_dead"
