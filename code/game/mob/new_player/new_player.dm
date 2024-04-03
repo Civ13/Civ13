@@ -47,6 +47,10 @@ var/global/redirect_all_players = null
 			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
 			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Gulag_13\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
 			src << browse(htmlfile,"window=wiki;size=820x650")
+		if (map && map.ID == MAP_PEPELSIBIRSK)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Pepelsibirsk\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
 
 /mob/new_player/Destroy()
 	new_player_mob_list -= src

@@ -516,6 +516,7 @@
 #include "code\game\objects\map_metadata\operation_falcon.dm"
 #include "code\game\objects\map_metadata\osowiec.dm"
 #include "code\game\objects\map_metadata\pavlov_house.dm"
+#include "code\game\objects\map_metadata\pepelsibirsk.dm"
 #include "code\game\objects\map_metadata\pioneers.dm"
 #include "code\game\objects\map_metadata\port_arthur.dm"
 #include "code\game\objects\map_metadata\recife.dm"
@@ -783,7 +784,6 @@
 #include "code\modules\1713\jobs\ruhr_uprising.dm"
 #include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\samurai.dm"
-#include "code\modules\1713\jobs\siberiad.dm"
 #include "code\modules\1713\jobs\skyrim.dm"
 #include "code\modules\1713\jobs\sovafghan.dm"
 #include "code\modules\1713\jobs\spanish.dm"
@@ -1112,5 +1112,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\battle_ships.dmm"
+#include "maps\1969\pepelsibirsk.dmm"
 // END_INCLUDE
