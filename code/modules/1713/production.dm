@@ -218,7 +218,7 @@
 		if (current_user.give_exp(list("crafting","dexterity"), list(67,33), work_time_amount) == -2)
 			var/newamount = clamp(ceil(this_production.amount/2+rand(1,ceil(this_production.amount/2))),ceil(this_production.amount/2),this_production.amount)
 			if (newamount < this_production.amount)
-				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>"
+				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name].</span>"
 				this_production.amount = newamount
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33
