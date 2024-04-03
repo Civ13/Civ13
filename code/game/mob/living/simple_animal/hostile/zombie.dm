@@ -59,7 +59,10 @@
 		else
 			bodyparts -= "l_leg_s"
 			bodyparts -= "l_foot_s"
-	maxHealth = rand(60,120)
+	if (map.ID == MAP_SIBERIAD)
+		maxHealth = rand(100,200)
+	else	
+		maxHealth = rand(60,120)
 	health = maxHealth
 	limb_updates()
 	update_icons()

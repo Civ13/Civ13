@@ -1,6 +1,6 @@
 //wall format (w_type var): type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
 
-//MT-LB
+/// MT-LB
 
 /obj/structure/vehicleparts/frame/mtlb
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
@@ -45,7 +45,7 @@
 	w_back = list("mtlb_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
 
-//M113
+/// M113
 
 /obj/structure/vehicleparts/frame/m113
 	icon = 'icons/obj/vehicles/apcparts.dmi'
@@ -102,7 +102,7 @@
 	icon_state = "m113_frame_steel_back"
 	w_back = list("m113_front_middle_frame",TRUE,TRUE,40,50,TRUE,TRUE)
 
-//BMD-2 96x96
+/// BMD-2 96x96
 
 /obj/structure/vehicleparts/frame/bmd2
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
@@ -139,7 +139,7 @@
 	w_back = list("bmd2new_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
 
-//Campaign 96x96
+/// Campaign 96x96
 
 /obj/structure/vehicleparts/frame/adrian
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
@@ -222,7 +222,7 @@
 	w_back = list("btr80_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
 	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
 
-
+/// CV90
 
 /obj/structure/vehicleparts/frame/cv90
 	icon = 'icons/obj/vehicles/tankparts.dmi'
@@ -271,3 +271,43 @@
 	w_right = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_back_right_roof"
 	override_frame_icon = "mt_back_right_frame"
+
+/// M2 Bradley
+
+/obj/structure/vehicleparts/frame/bradley
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	pixel_x = -32
+	pixel_y = -32
+
+/obj/structure/vehicleparts/frame/bradley/lf
+	icon_state = "bradley_frame_steel_front_left"
+	w_front = list("bradley_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bradley/rf
+	icon_state = "bradley_frame_steel_front_right"
+	w_front = list("bradley_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bradley/lfc
+	icon_state = "bradley_frame_steel_middle_front_left"
+	w_left = list("bradley_middle_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bradley/rfc
+	icon_state = "bradley_frame_steel_middle_front_right"
+	w_right = list("bradley_middle_front_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bradley/lbc
+	icon_state = "bradley_frame_steel_middle_back_left"
+	w_left = list("bradley_middle_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bradley/rbc
+	icon_state = "bradley_frame_steel_middle_back_right"
+	w_right = list("bradley_middle_back_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bradley/lb
+	icon_state = "bradley_frame_steel_back_left"
+	w_back = list("bradley_back_left_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_left = list("none",TRUE,TRUE,35,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bradley/rb
+	icon_state = "bradley_frame_steel_back_right"
+	w_back = list("bradley_back_right_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_right = list("none",TRUE,TRUE,35,50,FALSE,FALSE,TRUE)

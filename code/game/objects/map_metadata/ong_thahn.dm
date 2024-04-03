@@ -144,7 +144,7 @@ var/spam_check3 = FALSE
 			spam_check3 = TRUE
 			world << "<big><font color='red'>The NVA has captured BOTH outposts! <br>The US Army retreats back to their FOB!</font></big>"
 			viet_supplies()
-	spawn(600)
+	spawn(600) // 1 minute
 		outpost_check()
 
 /obj/map_metadata/ong_thahn/proc/outpost_status()

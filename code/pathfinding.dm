@@ -166,6 +166,8 @@
 	return L
 
 /mob/living/simple_animal/hostile/human/proc/do_movement(var/atom/tgt = null)
+	if (stat == 2)
+		return FALSE
 	if (tgt)
 		target_obj = tgt
 	if (!target_obj)

@@ -72,9 +72,10 @@
 	else
 		user << "<span class='notice'>You cannot [actiontext] this with a [src.name]!</span>"
 		return
+
 /obj/structure/repair/grindstone
 	name = "grindstone"
-	desc = "for sharpening blades."
+	desc = "For sharpening blades and refining metalwork."
 	icon_state = "grindstone"
 	idlesprite = "grindstone"
 	activesprite = "grindstone_on"
@@ -96,7 +97,7 @@
 
 /obj/structure/repair/workbench
 	name = "armor repair workbench"
-	desc = "for repairing pieces of armor."
+	desc = "A sturdy workbench specifically designed for repairing various pieces of armor."
 	icon_state = "workbench"
 	idlesprite = "workbench"
 	activesprite = "workbench"

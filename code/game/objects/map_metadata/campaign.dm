@@ -139,7 +139,7 @@
 				if(CVL.stat != DEAD)
 					qdel(CVL)
 					civilians_evacuated["Redmenia"]++
-	spawn(600)
+	spawn(600) // 1 minute
 		civ_collector()
 	return "[ctb],[ctr]"
 

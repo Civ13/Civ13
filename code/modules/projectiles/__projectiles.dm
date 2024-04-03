@@ -750,6 +750,18 @@
 	armor_penetration = 36
 	heavy_armor_penetration = 36
 
+/obj/item/projectile/bullet/autocannon/a25mm_ap
+	damage = DAMAGE_VERY_HIGH + 10
+	penetrating = 20
+	armor_penetration = 40
+	heavy_armor_penetration = 20
+
+/obj/item/projectile/bullet/autocannon/frag/a25mm_he
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 0
+	heavy_armor_penetration = 0
+
 /obj/item/projectile/bullet/autocannon/a30mm_ap
 	damage = DAMAGE_OH_GOD + 12
 	penetrating = 30

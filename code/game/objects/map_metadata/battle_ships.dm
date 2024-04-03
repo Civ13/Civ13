@@ -160,7 +160,7 @@
 		check_roundend_conditions()
 
 /obj/map_metadata/battle_ships/proc/announce_sink_status()
-	spawn(600)
+	spawn(600) // 1 minute 
 		var/ship_status_faction1 = "The <b><font color='red'>Redmenian</font> [ship_faction1]</b> has been flooded for <b>[get_sink_faction1() / get_sinkable_amount_faction1() * 100]/100%</b>"
 		if (faction1_engine_amount > 0)
 			pump_faction1()
