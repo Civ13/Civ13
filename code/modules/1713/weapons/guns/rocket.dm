@@ -523,6 +523,11 @@
 	else
 		icon_state = "fatman_empty"
 
+/obj/item/weapon/gun/launcher/rocket/fatman/loaded/New()
+	..()
+	rockets += new /obj/item/ammo_casing/rocket/nuclear(src)
+	update_icon()
+
 /obj/item/weapon/gun/launcher/rocket/piat
 	name = "PIAT MK1"
 	desc = "A reusable 83mm anti-tank weapon developed by Britain during World War II."

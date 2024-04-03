@@ -29,8 +29,6 @@
 	var/list/closed_areas = list()
 
 /obj/map_metadata/hunger_games/job_enabled_specialcheck(var/datum/job/J)
-
-	..()
 	if (J.is_event_role == TRUE)
 		J.total_positions = 40
 		J.min_positions = 40

@@ -27,7 +27,7 @@
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/indians))
-		if (J.is_1713)
+		if (J.is_1713 && !J.is_deathmatch)
 			. = TRUE
 		else
 			. = FALSE

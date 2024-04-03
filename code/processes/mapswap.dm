@@ -111,9 +111,7 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
-		. = FALSE
-	else if (ready)
+	if (ready)
 		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
@@ -339,9 +337,7 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
-		. = FALSE
-	else if (ready)
+	if (ready)
 		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)

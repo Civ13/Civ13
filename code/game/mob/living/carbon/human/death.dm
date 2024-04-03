@@ -428,6 +428,14 @@
 			if (map.ID == MAP_CAMPAIGN)
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)
 				client.respawn_count++
+			else if (map.ID == MAP_BATTLE_SHIPS)
+				var/obj/map_metadata/battle_ships/BS = map
+				if (faction_text == map.faction1)
+					client.next_normal_respawn = world.realtime + (BS.faction1_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
+				else if (faction_text == map.faction2)
+					client.next_normal_respawn = world.realtime + (BS.faction2_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
+				else
+					client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 			else
 				client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 			client << RESPAWN_MESSAGE

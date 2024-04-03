@@ -335,6 +335,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					for (var/cur_option in options)
 						if (clients.len < options[cur_option])
 							disabled[cur_option] = "[options[cur_option]] players needed"
+						if (cur_option == "Small Ships" && (clients.len > 20))
+							disabled[cur_option] = "20 players maximum"
 
 				else
 					return FALSE

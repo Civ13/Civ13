@@ -27,23 +27,23 @@
 	faction2 = SPANISH
 	grace_wall_timer = 7200
 
-obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_RP == TRUE)
+	if (J.is_RP)
 		. = FALSE
-	else if (J.is_warlords == TRUE)
+	else if (J.is_warlords)
 		. = FALSE
-	else if (J.is_army == TRUE)
+	else if (J.is_army)
 		. = FALSE
-	else if (J.is_medieval == TRUE)
+	else if (J.is_medieval)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
 		. = FALSE
-	else if (J.is_gta == TRUE)
+	else if (J.is_gta)
 		. = FALSE
-	else if (J.is_blugi == TRUE)
+	else if (J.is_blugi)
 		. = FALSE
 	else
 		. = TRUE

@@ -18,7 +18,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(PIRATES = 1)
 	battle_name = "The hunting"
-	mission_start_message = "<font size=4>You and several others are being hunted. Only one can survive. You cannot harm your persuers, only run. <b>Last standing player wins!</b></font>"
+	mission_start_message = "<font size=4>You and several others are being hunted. Only one can survive. You cannot harm your persuers, only run. <b>Last player standing wins!</b></font>"
 	faction1 = PIRATES
 	gamemode = "Hunt"
 	required_players = 9

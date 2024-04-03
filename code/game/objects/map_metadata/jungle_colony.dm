@@ -35,7 +35,7 @@
 	gamemode = "Colony Building RP"
 obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_1713 == TRUE)
+	if (J.is_1713 && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE
