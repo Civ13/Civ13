@@ -291,15 +291,7 @@
 
 			if (I_DISARM)
 				if (M == src)
-					var/rand_o
-					for (var/i = 1 to rand(1, 5))
-						rand_o += "o"
-					var/rand_nope = "N" + rand_o + "pe." // Define rand_nope within this scope
-					to_chat(M, SPAN_DANGER(pick(
-						85; "I can't manage to shove myself.", 
-						10; "It still won't work.", 
-						5; rand_nope)))
-					rand_o = null // Reset it so we don't get exponential o's..
+					to_chat(M, SPAN_DANGER("I can't manage to shove myself."))
 					return FALSE
 
 				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Disarmed [name] ([ckey])</font>")
