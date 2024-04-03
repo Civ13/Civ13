@@ -1,7 +1,7 @@
 /obj/map_metadata/rotstadt
 	ID = MAP_ROTSTADT
 	title = "Rotstadt Counter Insurgency"
-	lobby_icon = "icons/lobby/rotstadt.png"
+	lobby_icon = 'icons/lobby/rotstadt.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is still going on."
@@ -148,7 +148,7 @@ var/no_loop_cm2 = FALSE
 		mrl_strike(5,97,105,34,73,2)
 
 /obj/map_metadata/rotstadt/proc/mrl_strike(var/strikenum = 18, var/xoffsetmin, var/xoffsetmax, var/yoffsetmin, var/yoffsetmax, var/inputz)
-	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 	uploaded_sound.priority = 250
 	for (var/mob/M in player_list)
 		if (!new_player_mob_list.Find(M))

@@ -19,7 +19,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 		for (var/obj/effect/area_teleporter/AT)
 			world << "<big>A ship will arrive at the island in 1 minute!</big>"
 			do_once = TRUE
-			spawn(600)
+			spawn(600) // 1 minute
 				AT.Simple_Down()
 				do_once = FALSE
 				return TRUE
@@ -45,7 +45,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 		for (var/obj/effect/area_teleporter/AT)
 			world << "<big>A ship will arrive at the island in 1 minute!</big>"
 			do_once = TRUE
-			spawn(600)
+			spawn(600) // 1 minute
 				AT.Simple_Up()
 				do_once = FALSE
 				return TRUE

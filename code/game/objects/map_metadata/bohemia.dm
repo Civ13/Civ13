@@ -1,7 +1,7 @@
 /obj/map_metadata/bohemia
 	ID = MAP_BOHEMIA
 	title = "Bohemia"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
@@ -33,7 +33,7 @@
 
 /obj/map_metadata/bohemia/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if ((istype(J, /datum/job/german)) && (J.is_medieval == TRUE) && (J.is_rp == TRUE))
+	if ((istype(J, /datum/job/german)) && J.is_medieval && J.is_rp)
 		. = TRUE
 	else
 		. = FALSE

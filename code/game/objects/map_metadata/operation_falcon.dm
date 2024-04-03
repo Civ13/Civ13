@@ -2,7 +2,7 @@
 /obj/map_metadata/operation_falcon
 	ID = MAP_OPERATION_FALCON
 	title = "Operation Falcon"
-	lobby_icon = "icons/lobby/operation_falcon.png"
+	lobby_icon = 'icons/lobby/operation_falcon.png'
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 90 SECONDS
@@ -90,7 +90,7 @@
 /obj/map_metadata/operation_falcon/cross_message(faction)
 	switch (faction)
 		if (DUTCH)
-			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 			for (var/mob/M in player_list)
 				if (M.client)
 					M.client << warning_sound
@@ -271,7 +271,7 @@
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "white"
 
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"

@@ -1203,7 +1203,7 @@
 				user << "You succesfully hoist your own flag! <br><font size = 5><span class = 'good'>Long live [capitalize(icon_state)]!</span></font>"
 	else
 		user << SPAN_WARNING("Long live [capitalize(icon_state)]!")
-	
+
 /obj/structure/flag/campaign/redmenia
 	icon_state = "redmenia"
 	name = "Redmenia Flag"
@@ -1315,9 +1315,9 @@
 	opacity = FALSE
 
 /obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/human/H)
-	if(istype(W, /obj/item/stack/material/wood))
+	if(istype(W, /obj/item/stack/material/clay))
 		var/input
-		var/display = list("Medieval Window - 4", "Medieval Wall - 6", "Medieval Crossbraced Wall (X) - 6", "Medieval Braced Wall (\\) - 6", "Medieval Braced Wall (/) - 6", "Cancel")
+		var/display = list("Medieval Window - 4", "Medieval Wall - 6","Cancel")
 		input =  WWinput(H, "What wall would you like to make?", "Building", "Cancel", display)
 		playsound(src.loc,'sound/items/ratchet.ogg',40) //rip_pack.ogg
 		if (input == "Cancel")
@@ -1332,24 +1332,6 @@
 			if(W.amount >= 6)
 				if (do_after(H, 41, src))
 					new/obj/covers/wood_wall/medieval(src.loc)
-					qdel(src)
-					W.amount -= 6
-		else if(input == "Medieval Crossbraced Wall (X) - 6")
-			if(W.amount >= 6)
-				if (do_after(H, 43, src))
-					new/obj/covers/wood_wall/medieval/x(src.loc)
-					qdel(src)
-					W.amount -= 6
-		else if(input == "Medieval Braced Wall (\\) - 6")
-			if(W.amount >= 6)
-				if (do_after(H, 42, src))
-					new/obj/covers/wood_wall/medieval/y/r(src.loc)
-					qdel(src)
-					W.amount -= 6
-		else if(input == "Medieval Braced Wall (/) - 6")
-			if(W.amount >= 6)
-				if (do_after(H, 42, src))
-					new/obj/covers/wood_wall/medieval/y/l(src.loc)
 					qdel(src)
 					W.amount -= 6
 		else
@@ -1416,6 +1398,15 @@
 					W.amount -= 2
 		else
 			H << "<span class='notice'>That does not exist!</span>"
+	else if(istype(W, /obj/item/stack/material/woodplank))
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE) //rip_pack.ogg
+		if(W.amount >= 10)
+			if (do_after(H, 40, src))
+				new/obj/covers/wood_wall/adjustable(src.loc)
+				qdel(src)
+				W.amount -= 10
+		else
+			H << "<span class='notice'>You need 10 planks to build the wall!</span>"
 
 /* Bamboo Wall-Frame*/
 
@@ -1586,7 +1577,7 @@
 		pixel_y = 32
 	else
 		pixel_y = 0
-	if (storage.contents.len > 0)
+	if (storage && storage.contents.len > 0)
 		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
 			if (TOR.on == TRUE)
 				icon_state = "torch_stand1_on"

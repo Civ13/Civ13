@@ -2,7 +2,7 @@
 	ID = MAP_MAGISTRAL
 	title = "Operation Magistral"
 	no_winner = "The compound is still under the Mujahideen's control."
-	lobby_icon = "icons/lobby/magistral.png"
+	lobby_icon = 'icons/lobby/magistral.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600 // 1 minute
 	victory_time = 21000

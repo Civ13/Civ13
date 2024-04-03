@@ -149,7 +149,7 @@
 			for(var/obj/structure/cannon/modern/tank/C in T)
 				if (C.course && C.dir != src.dir)
 					C.rotate_to(src.dir)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][C.broken]", layer=11.1, dir=C.dir)
 
 				if (roof_turret && axis.color)
 					roof_turret.color = axis.color
@@ -170,7 +170,7 @@
 				roof_turret.pixel_y = roof_turret_y
 
 			for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
+				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]0", layer=11.1, dir=C.dir)
 
 				if (roof_turret && axis && axis.color)
 					roof_turret.color = axis.color

@@ -27,7 +27,7 @@
 	if (!active)
 		active = TRUE
 		update_icon()
-		var/sound/uploaded_sound = sound('sound/effects/aircraft/effects/missile_big.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		var/sound/uploaded_sound = sound('sound/effects/aircraft/effects/missile_big.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))

@@ -12,7 +12,7 @@ var/civmax_research = list(230,230,230)
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
-	var/lobby_icon = "icons/lobby/civ13.gif"
+	var/lobby_icon = 'icons/lobby/civ13.gif'
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
@@ -160,7 +160,7 @@ var/civmax_research = list(230,230,230)
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
-	var/autoresearch_mult = 0.4 // the amount research goes up per minute. Can be edited by admins.
+	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be editted by admins.
 	var/resourceresearch = FALSE
 
 	var/age1_lim = 75
@@ -416,7 +416,7 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/autoresearch_proc()
 	if (autoresearch && default_research < 230)
-		spawn(600) //1 minute = 0.4 points (by default)
+		spawn(600) //1 minute = 0.03 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
 				civa_research = list(default_research,default_research,default_research,null,0)

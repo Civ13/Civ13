@@ -136,7 +136,7 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>[translate("Join Game!")]</a></p>"
 
 	var/height = 250
 	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)

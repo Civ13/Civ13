@@ -895,6 +895,7 @@
 	name = "anti-tank grenade"
 	desc = "A powerful grenade, useful against armored vehicles."
 	icon_state = "rpg40"
+	explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 	det_time = 50
 	throw_range = 5
 	heavy_armor_penetration = 22
@@ -1052,3 +1053,112 @@
 		if (firer)
 			firer.awards["tank"]+=(heavy_armor_penetration/200)
 	qdel(src)
+
+/obj/structure/payload
+	name = "Payload"
+	desc = "If you see this report it to a developer"
+	icon = 'icons/obj/grenade.dmi'
+	anchored = TRUE
+	density = TRUE
+	opacity = FALSE
+	var/scale = 1
+	var/heavy = TRUE
+	var/explosion_timer = 1 SECOND
+	var/reliability = 100
+
+	var/devastation_range = 2
+	var/heavy_impact_range = 4
+	var/light_impact_range = 7
+	var/flash_range = 8
+	var/explosion_sound = "explosion"
+
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 40
+	var/fragment_damage = 15
+	var/damage_step = 2
+	var/spread_range = 7
+
+/obj/structure/payload/New()
+	..()
+	var/matrix/M = matrix()
+	M.Scale(scale, scale)
+	src.transform = M
+
+/obj/structure/payload/proc/drop()
+	density = FALSE
+	spawn(15)
+		var/turf/T = get_turf(src)
+		if (heavy)
+			playsound(T, 'sound/effects/bang.ogg', 80)
+			density = TRUE
+			for (var/mob/living/L in T)
+				L.gib()
+		explode()
+	return
+
+/obj/structure/payload/proc/explode()
+	spawn(explosion_timer)
+		if (prob(reliability))
+			var/turf/T = get_turf(src)
+			explosion(T, devastation_range, heavy_impact_range, light_impact_range, flash_range, sound = explosion_sound)
+			if (!ismob(loc))
+				var/list/target_turfs = getcircle(T, spread_range)
+				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+				for (var/turf/TT in target_turfs)
+					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+					P.damage = fragment_damage
+					P.pellets = fragments_per_projectile
+					P.range_step = damage_step
+					P.shot_from = name
+					P.launch_fragment(TT)
+					P.firer_loc = get_turf(src)
+			qdel(src)
+	return
+
+/obj/structure/payload/attackby(obj/item/W as obj, mob/user as mob)
+	if (density)
+		explode()
+	return
+
+/obj/structure/payload/bomb
+	name = "100 kg bomb"
+	desc = "Uhm..."
+	icon_state = "aircraft_bomb"
+	reliability = 99
+	heavy = TRUE
+
+/obj/structure/payload/bomb/kg50
+	name = "50 kg bomb"
+
+	scale = 0.7
+	devastation_range = 2
+	heavy_impact_range = 3
+	light_impact_range = 5
+	flash_range = 5
+
+	num_fragments = 30
+	fragment_damage = 20
+
+/obj/structure/payload/bomb/kg250
+	name = "250 kg bomb"
+
+	devastation_range = 3
+	heavy_impact_range = 5
+	light_impact_range = 8
+	flash_range = 10
+
+	num_fragments = 50
+	fragment_damage = 30
+
+/obj/structure/payload/missile
+	name = "missile"
+	icon_state = "aircraft_missile"
+	explosion_timer = 0
+	heavy = FALSE
+
+	devastation_range = 0
+	heavy_impact_range = 1
+	light_impact_range = 5
+	flash_range = 5
+	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'

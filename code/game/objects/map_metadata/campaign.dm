@@ -2,7 +2,7 @@
 /obj/map_metadata/campaign
 	ID = MAP_CAMPAIGN
 	title = "Campaign"
-	lobby_icon = "icons/lobby/campaign.png"
+	lobby_icon = 'icons/lobby/campaign.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1800
 	no_winner = "The battle is going on."
@@ -139,7 +139,7 @@
 				if(CVL.stat != DEAD)
 					qdel(CVL)
 					civilians_evacuated["Redmenia"]++
-	spawn(600)
+	spawn(600) // 1 minute
 		civ_collector()
 	return "[ctb],[ctr]"
 
@@ -547,7 +547,7 @@ var/no_loop_cm = FALSE
 		mrl_strike(5,97,105,34,73,2)
 
 /obj/map_metadata/campaign/proc/mrl_strike(var/strikenum = 18, var/xoffsetmin, var/xoffsetmax, var/yoffsetmin, var/yoffsetmax, var/inputz)
-	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/sound/uploaded_sound = sound('sound/weapons/Explosives/mrls.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 	uploaded_sound.priority = 250
 	for (var/mob/M in player_list)
 		if (!new_player_mob_list.Find(M))

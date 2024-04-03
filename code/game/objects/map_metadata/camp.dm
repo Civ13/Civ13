@@ -1,7 +1,7 @@
 /obj/map_metadata/camp
 	ID = MAP_CAMP
 	title = "Camp"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	victory_time = 15000
@@ -27,13 +27,13 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 2400
-obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_medieval == TRUE)
+	if (J.is_medieval && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE
-	if (J.is_crusader == TRUE)
+	if (J.is_crusader)
 		. = FALSE
 
 /obj/map_metadata/camp/short_win_time(faction)

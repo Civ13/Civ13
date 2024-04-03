@@ -120,6 +120,7 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/game_panel,
 	/client/proc/respawn_character,
 	/client/proc/drop_bomb,
+	/client/proc/drop_airstrike,
 	/client/proc/radiation_emission,
 	/client/proc/nuke,
 	/client/proc/create_crate,
@@ -146,6 +147,7 @@ var/list/admin_verbs_server = list(
 var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
+	/datum/admins/proc/view_runtimes,
 	/client/proc/toggle_gc_helper,
 	/client/proc/run_gc_helper,
 	/client/proc/check_null_atoms,
@@ -222,6 +224,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
+	/client/proc/drop_airstrike,
 	/client/proc/nuke,
 	/datum/admins/proc/get_world_values,
 	/datum/admins/proc/set_radiation,
@@ -552,6 +555,39 @@ var/list/admin_verbs_host = list(
 					return
 			explosion(epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range)
 	message_admins("[key] creating an admin explosion at [epicenter.loc].", key)
+
+/client/proc/drop_airstrike()
+	set category = "Special"
+	set name = "Drop Airstrike"
+	set desc = "Cause an airstrike of varying strength at your location."
+	if (!check_rights(R_SPAWN))
+		return
+	if (!mob || !mob.loc)
+		src << "<span class = 'warning'>You can't drop an airstrike here.</span>"
+		return
+
+	if (!processes.explosion || !processes.explosion.fires_at_gamestates.Find(ticker.current_state))
+		src << "<span class = 'warning'>You can't drop an airstrike right now.</span>"
+		return
+
+	var/turf/epicenter = mob.loc
+
+	var/list/aircrafts = list("Cancel", "F-16", "Su-25", "Ju 87 Stuka", "IL-2")
+	var/aircraft = WWinput(src, "What kind of aircraft should use the airstrike", "Drop Airstrike", aircrafts[1], aircrafts)
+	if (aircraft == "Cancel")
+		return
+
+	var/list/payloads = list("Cancel", "Rockets", "50 kg Bomb", "250 kg Bomb")
+	var/payload = WWinput(src, "What kind of airstrike do you want to call in?", "Drop Airstrike", payloads[1], payloads)
+	if (payload == "Cancel")
+		return
+
+	var/list/directions = list("Cancel", "NORTH", "EAST", "SOUTH", "WEST")
+	var/direction = WWinput(src, "What direction do you want the airstrike to go?", "Drop Airstrike", directions[1], directions)
+	if (direction == "Cancel")
+		return
+
+	epicenter.try_airstrike(key_name_admin(usr), null, aircraft, direction, payload, null, TRUE)
 
 /client/proc/make_sound(var/obj/O in range(7)) // -- TLE
 	set category = "Special"

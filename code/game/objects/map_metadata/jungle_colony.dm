@@ -3,7 +3,7 @@
 	ID = MAP_JUNGLE_COLONY
 	title = "Jungle Colony"
 	no_winner ="The round is proceeding normally."
-	lobby_icon = "icons/lobby/imperial.png"
+	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	has_hunger = TRUE
@@ -35,7 +35,7 @@
 	gamemode = "Colony Building RP"
 obj/map_metadata/jungle_colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_1713 == TRUE)
+	if (J.is_1713 && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE

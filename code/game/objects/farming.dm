@@ -936,7 +936,7 @@
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
-		spawn(600)
+		spawn(600) // 1 minute 
 			var/turf/t = null
 			var/area/a = null
 			if (src)

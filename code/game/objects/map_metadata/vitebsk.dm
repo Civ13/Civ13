@@ -1,7 +1,7 @@
 /obj/map_metadata/vitebsk
 	ID = MAP_VITEBSK
 	title = "Vitebsk"
-	lobby_icon = "icons/lobby/vitebsk.png"
+	lobby_icon = 'icons/lobby/vitebsk.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 1200
 	no_hardcore = FALSE

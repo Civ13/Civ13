@@ -2,7 +2,7 @@
 	ID = MAP_KANDAHAR
 	title = "Soviet-Afghan War"
 	no_winner ="The region of Kandahar is still contested."
-	lobby_icon = "icons/lobby/sovafghan.png"
+	lobby_icon = 'icons/lobby/sovafghan.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	has_hunger = TRUE
@@ -327,7 +327,7 @@
 						if ("Mujahideen Group Leader")
 							sov_points += 2
 							world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>"
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(300)
 			world << "<big><b>Current Points:</big></b>"

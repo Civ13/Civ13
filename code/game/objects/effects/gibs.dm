@@ -1,5 +1,3 @@
-// gibs that don't use DNA - Kachnov
-
 /proc/gibs(atom/location, gibber_type = /obj/effect/gibspawner/generic, var/fleshcolor, var/bloodcolor)
 	new gibber_type(location,fleshcolor,bloodcolor)
 

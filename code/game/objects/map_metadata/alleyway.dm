@@ -1,7 +1,7 @@
 /obj/map_metadata/alleyway
 	ID = MAP_ALLEYWAY
 	title = "Alleyway"
-	lobby_icon = "icons/lobby/alleyway.png"
+	lobby_icon = 'icons/lobby/alleyway.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
 	respawn_delay = 300
 	no_winner ="The fighting for the street is still going on."
@@ -27,7 +27,7 @@
 	)
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute 
 			points_check()
 /obj/map_metadata/alleyway/job_enabled_specialcheck(var/datum/job/J)
 	..()

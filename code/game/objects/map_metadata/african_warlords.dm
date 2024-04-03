@@ -2,7 +2,7 @@
 /obj/map_metadata/african_warlords
 	ID = MAP_AFRICAN_WARLORDS
 	title = "African Warlords"
-	lobby_icon = "icons/lobby/africanwarlords.png"
+	lobby_icon = 'icons/lobby/africanwarlords.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one,/area/caribbean/no_mans_land/invisible_wall/jungle/two,/area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	respawn_delay = 300
 	no_winner ="No warband has won yet."
@@ -30,7 +30,7 @@
 	)
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute 
 			points_check()
 
 /obj/map_metadata/african_warlords/job_enabled_specialcheck(var/datum/job/J)

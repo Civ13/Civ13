@@ -489,6 +489,49 @@
 /obj/structure/window_frame/abashiri/Destroy()
 	check_relatives(0,1)
 	..()
+
+
+/obj/structure/window_frame/medieval
+	icon_state = "medieval0"
+	var/base_icon_state = "medieval"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
+/obj/structure/window_frame/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/atom/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+/obj/structure/window_frame/medieval/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
+/obj/structure/window_frame/medieval/update_icon()
+	..()
+	check_relatives(1,1)
+/obj/structure/window_frame/medieval/New()
+	..()
+	check_relatives(1,1)
+
+/obj/structure/window_frame/medieval/Destroy()
+	check_relatives(0,1)
+	..()
+
 /obj/structure/window_frame/shoji
 	icon_state = "shoji_windownew_frame"
 	name = "shoji window frame"
@@ -515,7 +558,7 @@
 	flammable = FALSE
 	stucco_window = FALSE
 
-/obj/structure/window_frame/medieval
+/obj/structure/window_frame/medieval_old
 	icon_state = "medieval_windownew_frame"
 	name = "medieval window frame"
 	desc = "A dark ages window, minus the window."
@@ -807,7 +850,7 @@
 	damage_per_fire_tick = 1.0
 	maxhealth = 300.0
 
-/obj/structure/window/classic/medieval
+/obj/structure/window/classic/medieval_old
 	icon_state = "medieval_windownew"
 	basestate = "medieval_windownew"
 	name = "medieval window"
@@ -1060,3 +1103,53 @@
 	//player-constructed windows
 	if (constructed)
 		state = FALSE
+
+
+/obj/structure/window/classic/medieval
+	icon_state = "medieval_glass0"
+	name = "window"
+	desc = "A window set inside a wall."
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	health = 200
+	flammable = FALSE
+	var/base_icon_state = "medieval_glass"
+	var/adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
+/obj/structure/window/classic/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
+	if (!adjusts)
+		return
+	var/junction
+	if (update_self)
+		junction = FALSE
+	for (var/checkdir in cardinal)
+		var/turf/T = get_step(src, checkdir)
+		for(var/atom/CV in T)
+			if (!can_join_with(CV))
+				continue
+			if (update_self)
+				if (can_join_with(CV))
+					junction |= get_dir(src,CV)
+			if (update_others)
+				CV.check_relatives(1,0)
+	if (!isnull(junction))
+		icon_state = "[base_icon_state][junction]"
+	return
+
+/obj/structure/window/classic/medieval/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
+	return FALSE
+/obj/structure/window/classic/medieval/update_icon()
+	..()
+	check_relatives(1,1)
+/obj/structure/window/classic/medieval/New()
+	..()
+	check_relatives(1,1)
+
+/obj/structure/window/classic/medieval/Destroy()
+	check_relatives(0,1)
+	..()

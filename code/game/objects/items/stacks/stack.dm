@@ -165,7 +165,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		var/obj/item/stack/S = W
 		merge(S)
 		S.update_icon()
+		S.update_strings()
 		src.update_icon()
+		src.update_strings()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 		if (S && usr.using_object == S)
 			S.interact(usr)
@@ -195,14 +197,20 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			return
 		else
 			change_stack(user, stackmaterial)
+			update_strings(stackmaterial)
 			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
+
+/obj/item/stack/proc/update_strings()
+    return
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
 	if (F)
 		user.put_in_hands(F)
 		F.update_icon()
+		F.update_strings()
 		src.update_icon()
+		src.update_strings()
 		add_fingerprint(user)
 		F.add_fingerprint(user)
 		spawn(0)
@@ -782,6 +790,24 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
 			var/obj/item/stack/material/electronics/NR = H.r_hand
 			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.r_hand, H)
+
+	else if (recipe.result_type == /obj/structure/sawmill/powered)
+		if (H.getStatCoeff("crafting") < 2.2)
+			H << SPAN_DANGER("This is too complex for your skill level.")
+			return
+		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
+			user << SPAN_WARNING("You need to have electronic circuits in the other hand to craft the powered saw mill.")
+			return
+		if (istype(H.l_hand, /obj/item/stack/material/woodplank))
+			var/obj/item/stack/material/woodplank/NR = H.l_hand
+			NR.amount -= 200
+			if (NR.amount <= 0)
+				qdelHandReturn(H.l_hand, H)
+		else if (istype(H.r_hand, /obj/item/stack/material/woodplank))
+			var/obj/item/stack/material/woodplank/NR = H.r_hand
+			NR.amount -= 200
 			if (NR.amount <= 0)
 				qdelHandReturn(H.r_hand, H)
 
@@ -1426,7 +1452,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "grandfather clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1450,7 +1476,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "standing clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 6 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1474,7 +1500,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "wooden house door"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 5 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1888,7 +1914,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.caliber = inpt
 			T.name = "[T.caliber]mm cannon casing"
 			return
-		
+
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
@@ -1905,7 +1931,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			else
 				O.color = input
 				return
-				
+
 		if (istype(O, /obj/structure/closet/crate/wall_mailbox) && !istype(O, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")

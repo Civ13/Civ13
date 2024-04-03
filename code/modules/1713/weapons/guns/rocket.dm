@@ -331,7 +331,7 @@
 					playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
 						visible_message(SPAN_NOTICE("A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location."))
-				spawn(600)
+				spawn(600) // 1 minute
 					supplydrop_turfs -= fired_from
 				return
 
@@ -522,6 +522,11 @@
 		icon_state = "fatman"
 	else
 		icon_state = "fatman_empty"
+
+/obj/item/weapon/gun/launcher/rocket/fatman/loaded/New()
+	..()
+	rockets += new /obj/item/ammo_casing/rocket/nuclear(src)
+	update_icon()
 
 /obj/item/weapon/gun/launcher/rocket/piat
 	name = "PIAT MK1"

@@ -38,7 +38,7 @@ var/list/flooring_types
 	var/can_paint
 
 /decl/flooring/grass
-	name = "grass"
+	name = "grass patch"
 	desc = "Simple grass."
 	icon = 'icons/turf/floors.dmi'
 	icon_base = "grass"
@@ -47,7 +47,7 @@ var/list/flooring_types
 //	flags = TURF_HAS_EDGES
 
 /decl/flooring/dirt
-	name = "dirt"
+	name = "dirt patch"
 	desc = "Simple dirt."
 	icon = 'icons/turf/floors.dmi'
 	icon_base = "dirt"
@@ -65,7 +65,7 @@ var/list/flooring_types
 //	flags = TURF_HAS_EDGES
 
 /decl/flooring/dust
-	name = "dry dirt"
+	name = "dry dirt patch"
 	desc = "Simple dry dirt."
 	icon = 'icons/turf/floors.dmi'
 	icon_base = "dust"
@@ -74,7 +74,7 @@ var/list/flooring_types
 //	flags = TURF_HAS_EDGES
 
 /decl/flooring/flooded
-	name = "flooded plains dirt"
+	name = "flooded plains dirt patch"
 	desc = "The dirt left after a flood recesses."
 	icon = 'icons/turf/floors.dmi'
 	icon_base = "flood_dirt"

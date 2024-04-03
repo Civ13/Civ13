@@ -266,8 +266,25 @@
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
 	turret_type = "btr_atgm_turret"
 
+/obj/structure/vehicleparts/axis/heavy/bradley
+	name = "M2 Bradley"
+	speeds = 5
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	reg_number = ""
+	color = "#787859"
+	turret_type = "bradley_turret"
+	tile_size = "96x96"
+	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 0
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/cv90
-	name = "BTR-80"
+	name = "CV-90"
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
@@ -519,6 +536,7 @@
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
+	turret_type = "m4_turret"
 	reg_number = ""
 	New()
 		..()

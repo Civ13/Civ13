@@ -1,7 +1,7 @@
 /obj/map_metadata/capitol_hill
 	ID = MAP_CAPITOL_HILL
 	title = "Capitol Hill"
-	lobby_icon = "icons/lobby/capitol.png"
+	lobby_icon = 'icons/lobby/capitol.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
@@ -305,7 +305,7 @@ var/no_loop_capitol = FALSE
 /obj/map_metadata/capitol_hill/pla_offensive
 	ID = MAP_CAPITOL_HILL_PLA
 	title = "PLA Offensive on the Capitol Hill"
-	lobby_icon = "icons/lobby/capitolchina.png"
+	lobby_icon = 'icons/lobby/capitolchina.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	no_winner = "The operation is still underway."

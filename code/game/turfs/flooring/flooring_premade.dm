@@ -324,7 +324,7 @@
 	initial_flooring = null
 
 /turf/floor/dirt/burned
-	name = "burned ground"
+	name = "burnt ground"
 	icon_state = "burned_dirt"
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE

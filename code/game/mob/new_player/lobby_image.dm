@@ -15,7 +15,7 @@
 
 /obj/effect/lobby_image/New()
 	..()
-	spawn(600)
+	spawn(600) // 1 minute 
 		if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 			update_icon_proc()
 
