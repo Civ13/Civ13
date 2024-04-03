@@ -143,6 +143,7 @@
 	filling_color = "#7a378b"
 	satisfaction = 4
 	decay = 12*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/olives
 	name = "bunch of olives"
 	icon_state = "olives"
