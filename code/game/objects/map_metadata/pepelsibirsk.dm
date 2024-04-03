@@ -69,7 +69,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 /obj/map_metadata/pepelsibirsk/seasons()
 	if (real_season == "SUMMER")
 		season = "WINTER"
-		world << "<big>It's getting very cold. <b>Winter</b> has started.</big>"
+		to_chat(world, "<big>It's getting very cold. <b>Winter</b> has started.</big>")
 		change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.change_season()
@@ -91,7 +91,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		real_season = "WINTER"
 	else
 		season = "SUMMER"
-		world << "<big>The weather gets warmer. <b>Summer</b> has started.</big>"
+		to_chat(world,"<big>The weather gets warmer. <b>Summer</b> has started.</big>")
 		change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.change_season()
@@ -140,12 +140,12 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
-	world << "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>"
-	world << "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[pepel_factions.pepelsibirsk_relations["china_relations"]]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[pepel_factions.pepelsibirsk_relations["soviet_relations"]]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pepel_factions.pepelsibirsk_relations["pacific_relations"]]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[pepel_factions.pepelsibirsk_relations["civ_relations"]]</b></span></font>"
-	world << "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[pepel_factions.pepelsibirsk_relations["mil_relations"]]</b></span></font>"
+	to_chat(world, "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[pepel_factions.pepelsibirsk_relations["china_relations"]]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[pepel_factions.pepelsibirsk_relations["soviet_relations"]]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pepel_factions.pepelsibirsk_relations["pacific_relations"]]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[pepel_factions.pepelsibirsk_relations["civ_relations"]]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[pepel_factions.pepelsibirsk_relations["mil_relations"]]</b></span></font>")
 	spawn(5 MINUTES)
 		check_relations_msg()
 	return
@@ -166,9 +166,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	if(quarter >=5)
 		quarter = 1
 		year++
-		world << "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>"
+		to_chat(world, "<font size = 3><span class = 'notice'><b>The year has advanced to [year].</b></font></span>")
 	else
-		world << "<font size = 3><span class = 'notice'><b>The quarter has advanced to Q[quarter].</b></font></span>"
+		to_chat(world, "<font size = 3><span class = 'notice'><b>The quarter has advanced to Q[quarter].</b></font></span>")
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/time_update()
@@ -308,7 +308,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	pepel_factions.pepelsibirsk_relations["pacific_relations"] -= rand(10, 25)
-	world << "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>"
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>")
 
 /obj/structure/vending/sales/pepelsibirsk/chinese_trader
 	name = "PRC Trader"
@@ -351,11 +351,11 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	pepel_factions.pepelsibirsk_relations["china_relations"] -= rand(10, 25)
-	world << "<font size = 3><span class = 'notice'><b>A Chinese trader has died. Relations with the People's Republic of China have dropped to [pepel_factions.pepelsibirsk_relations["china_relations"]]!</b></font></span>"
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Chinese trader has died. Relations with the People's Republic of China have dropped to [pepel_factions.pepelsibirsk_relations["china_relations"]]!</b></font></span>")
 
 /obj/structure/vending/sales/pepelsibirsk/soviet_trader
 	name = "Soviet Trader"
-	desc = "Вы неправильно используете это программное обеспечение для перевода. Пожалуйста, проконсультируйтесь с руководством по программному обеспечению.."
+	desc = "Вы неправильно используете это программное обеспечение для перевода. Пожалуйста, проконсультируйтесь с руководством по программному обеспечению."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "soviet_trader"
 	faction_relations = "soviet_relations"
@@ -428,7 +428,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	pepel_factions.pepelsibirsk_relations["soviet_relations"] -= rand(10, 25)
-	world << "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [pepel_factions.pepelsibirsk_relations["soviet_relations"]]!</b></font></span>"
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [pepel_factions.pepelsibirsk_relations["soviet_relations"]]!</b></font></span>")
 
 ////// TRAVELING MERCHANTS MANAGEMENT //////
 /obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
@@ -473,10 +473,10 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 	if (length(traders) > 1)
 		traders[length(traders)] = "and [traders[length(traders)]]"
-		world <<  "<font size = 4><span class = 'notice'>[jointext(traders, ", ")] have arrived to trade.</b></font></span>"
+		to_chat(world, "<font size = 4><span class = 'notice'>[jointext(traders, ", ")] have arrived to trade.</b></font></span>")
 		world.log << "[jointext(traders, ", ")] have arrived to trade."
 	else
-		world << "<font size = 4><span class = 'notice'>Due to poor relations, no one has arrived to trade.</b></font></span>"
+		to_chat(world, "<font size = 4><span class = 'notice'>Due to poor relations, no one has arrived to trade.</b></font></span>")
 		world.log << "Due to poor relations, no one has arrived to trade."
 
 	spawn(30 MINUTES)
@@ -527,16 +527,16 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/item/weapon/personal_documents/examine(mob/user)
 	..(user)
-	user << "<span class='info'>*---------*</span>"
-	user << "<b><span class='info'>Hair:</b> [document_details[1]]</span>"
-	user << "<b><span class='info'>Gender:</b> [document_details[2]]</span>"
-	user << "<b><span class='info'>Age:</b> [document_details[3]] years</span>"
-	user << "<b><span class='info'>Employment and Citizenship Status:</b> [document_details[4]]</span>"
-	user << "<span class='info'>*---------*</span>"
+	to_chat(user, "<span class='info'>*---------*</span>")
+	to_chat(user, "<b><span class='info'>Hair:</b> [document_details[1]]</span>")
+	to_chat(user, "<b><span class='info'>Gender:</b> [document_details[2]]</span>")
+	to_chat(user, "<b><span class='info'>Age:</b> [document_details[3]] years</span>")
+	to_chat(user, "<b><span class='info'>Employment and Citizenship Status:</b> [document_details[4]]</span>")
+	to_chat(user, "<span class='info'>*---------*</span>")
 	if (guardnotes.len)
 		for(var/i in guardnotes)
-			user << "NOTE: [i]"
-		user << "<span class='info'>*---------*</span>"
+			to_chat(user, "NOTE: [i]")
+		to_chat(user, "<span class='info'>*---------*</span>")
 
 /obj/item/weapon/personal_documents/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!ishuman(H))
@@ -629,9 +629,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	else if (choice == "Pepelsibirsk 1 (MIL)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
 	if (scam == "No, we're honest.")
-		user << "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02]."
+		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02].")
 	else if (scam == "Yes, scam them!")
-		user << "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08]."
+		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08].")
 	spawn(1 MINUTE)
 		var/list/turfs = list()
 		if (faction_treasury != "craftable")
@@ -642,7 +642,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		spawnpoint = pick(turfs)
 		var/tpath = final_list[2]
 		new tpath(get_turf(spawnpoint))
-		user << "Your [final_list[1]] has arrived."
+		to_chat(user, "Your [final_list[1]] has arrived.")
 	return
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
@@ -670,12 +670,12 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	if (choice == "Narodnyygorod (CIV)")
 		catalogue = civ_catalogue
 		if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 25 )
-			user << "Your relations with this faction are too low!"
+			to_chat(user, "Your relations with this faction are too low!")
 			return
 	else if (choice == "Pepelsibirsk 1 (MIL)")
 		catalogue = mil_catalogue
 		if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 25 )
-			user << "Your relations with this faction are too low!"
+			to_chat(user, "Your relations with this faction are too low!")
 			return
 	for (var/list/i in catalogue)
 		display += "[i[1]], [i[3]] rubles"
@@ -704,7 +704,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 					if (((money) - round(money)) > 0)
 						new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
 					money = 0
-					user << "You don't have enough money for this item."
+					to_chat(user, "You don't have enough money for this item.")
 				break
 	else
 		if((round(money) >= 1)) //giving money back
@@ -720,7 +720,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		qdel(W)
 		return
 	else
-		user << "You need to use rubles."
+		to_chat(user, "You need to use rubles.")
 		return
 
 
@@ -742,7 +742,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/structure/pepelsibirsk_radio/export_radio/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (W.value == 0)
-		user << "There is no demand for this item."
+		to_chat(user, "There is no demand for this item.")
 		return
 	else
 		if (pepel_factions.pepelsibirsk_relations["civ_relations"] >= 25)
@@ -760,7 +760,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				marketval = 0
 				return
 		else
-			user << "Your relations with Narodnyygorod are too low!"
+			to_chat(user, "Your relations with Narodnyygorod are too low!")
 			return
 
 
