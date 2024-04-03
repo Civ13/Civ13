@@ -211,7 +211,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				return FALSE
 			for(var/obj/covers/CV in T)
 				if (CV.density)
-					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>", "<span class='warning'>You hit \the [CV]!</span>")
+					visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>", "<span class='warning'>You hit \the [CV]!</span>")
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
