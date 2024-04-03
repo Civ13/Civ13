@@ -858,9 +858,6 @@
 	opacity = FALSE
 	var/obj/item/weapon/storage/internal/storage
 	var/max_storage = 3
-	New()
-		..()
-		storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 
 /obj/structure/katana_stand/update_icon()
 	if (storage.contents.len > 0)
@@ -875,6 +872,7 @@
 	storage.storage_slots = 1
 	storage.max_w_class = 3
 	storage.max_storage_space = max_storage*3
+	storage.can_hold = list(/obj/item/clothing/accessory/storage/sheath/katana, /obj/item/clothing/accessory/storage/sheath/katana/full, /obj/item/weapon/material/sword/katana)
 	update_icon()
 
 /obj/structure/katana_stand/Destroy()
@@ -1044,15 +1042,39 @@
 	density = TRUE
 	var/ore_types = list(
 		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
+		/obj/item/stack/ore/iron,
 		/obj/item/stack/ore/gold,
 		/obj/item/stack/ore/glass,
 		/obj/item/stack/ore/silver,
 		/obj/item/stack/ore/copper,
 		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/saltpeter,
+		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/coal,
+		/obj/item/stack/ore/sulphur,
+		/obj/item/stack/ore/sulphur,
 		/obj/item/stack/ore/sulphur,
 		/obj/item/stack/ore/lead,
+		/obj/item/stack/ore/lead,
+		/obj/item/stack/ore/lead,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
+		/obj/item/stack/material/stone,
 		/obj/item/stack/material/stone,
 		/obj/item/weapon/barrier,
 	)
@@ -1156,7 +1178,7 @@
 			var/picked = pick(ore_types)
 
 			var/obj/item/stack/tospawn = new picked(null)
-			tospawn.amount = rand(10,30)
+			tospawn.amount = rand(2,5)
 			for (var/obj/item/stack/S in get_turf(src))
 				if (S.type == tospawn.type)
 					S.amount += tospawn.amount
@@ -1166,7 +1188,7 @@
 			if (tospawn)
 				tospawn.loc = get_turf(src)
 			visible_message(SPAN_NOTICE("\The [src] drills up [tospawn.name]."))
-			next_spawn = 30
+			next_spawn = 60
 
 		update_icon()
 		spawn (2 SECONDS)

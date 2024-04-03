@@ -32,7 +32,7 @@
 /obj/map_metadata/skullisland/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/pirates))
-		if (J.is_1713)
+		if (J.is_1713 && !J.is_deathmatch)
 			. = TRUE
 		else
 			. = FALSE

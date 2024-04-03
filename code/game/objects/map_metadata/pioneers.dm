@@ -46,7 +46,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 	else if (istype(J, /datum/job/indians))
-		if (J.is_1713 == TRUE)
+		if (J.is_1713 && !J.is_deathmatch)
 			. = TRUE
 		else
 			. = FALSE

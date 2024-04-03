@@ -25,7 +25,7 @@
 	faction2 = PIRATES
 	grace_wall_timer = 3000
 
-obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
@@ -35,7 +35,7 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_coldwar == TRUE)
 		. = FALSE
-	else if (J.is_medieval == TRUE)
+	else if (J.is_medieval)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE

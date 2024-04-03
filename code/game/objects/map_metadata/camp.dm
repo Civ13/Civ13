@@ -27,13 +27,13 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 2400
-obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_medieval == TRUE)
+	if (J.is_medieval && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE
-	if (J.is_crusader == TRUE)
+	if (J.is_crusader)
 		. = FALSE
 
 /obj/map_metadata/camp/short_win_time(faction)
