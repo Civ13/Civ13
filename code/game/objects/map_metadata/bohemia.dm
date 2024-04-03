@@ -33,7 +33,7 @@
 
 /obj/map_metadata/bohemia/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if ((istype(J, /datum/job/german)) && (J.is_medieval == TRUE) && (J.is_rp == TRUE))
+	if ((istype(J, /datum/job/german)) && J.is_medieval && J.is_rp)
 		. = TRUE
 	else
 		. = FALSE

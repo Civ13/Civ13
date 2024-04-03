@@ -1079,10 +1079,10 @@
 	var/spread_range = 7
 
 /obj/structure/payload/New()
+	..()
 	var/matrix/M = matrix()
 	M.Scale(scale, scale)
 	src.transform = M
-	..()
 
 /obj/structure/payload/proc/drop()
 	density = FALSE
@@ -1131,7 +1131,7 @@
 /obj/structure/payload/bomb/kg50
 	name = "50 kg bomb"
 
-	scale = 0.6
+	scale = 0.7
 	devastation_range = 2
 	heavy_impact_range = 3
 	light_impact_range = 5

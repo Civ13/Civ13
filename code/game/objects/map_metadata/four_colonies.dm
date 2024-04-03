@@ -53,7 +53,7 @@
 		score()
 /obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_1713 == TRUE)
+	if (J.is_1713 && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE
