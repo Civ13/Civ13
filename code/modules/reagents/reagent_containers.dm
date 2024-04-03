@@ -185,10 +185,10 @@
 	return TRUE
 
 /obj/item/weapon/reagent_containers/proc/self_feed_message(var/mob/user)
-	user << "<span class='notice'>You eat \the [src]</span>"
+	user.visible_message("span class='notice'[user] eats \the [src].</span>", "<span class='notice'>You eat \the [src].</span>")
 
 /obj/item/weapon/reagent_containers/proc/other_feed_message_start(var/mob/user, var/mob/target)
-	user.visible_message("<span class='warning'>[user] is trying to feed [target] \the [src]!</span>")
+	user.visible_message("<span class='warning'>[user] is trying to feed [target] \the [src]!</span>", "<span class='warning'>You try to feed [target] \the [src]!</span>")
 
 /obj/item/weapon/reagent_containers/proc/other_feed_message_finish(var/mob/user, var/mob/target)
 	user.visible_message("<span class='warning'>[user] has fed [target] \the [src]!</span>")
