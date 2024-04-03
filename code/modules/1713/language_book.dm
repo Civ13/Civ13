@@ -36,7 +36,7 @@
 			if (known1)
 				langtolearn = lang2
 			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin reading translations for [langtolearn.name] in the [src]. This will take around 2 minutes, and you need to stand or sit still.</span>")
-			if(do_after(user, 1200, src))
+			if(do_after(user, 800, src))
 				H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish reading translations in the [src]. You can now understand and speak [langtolearn.name]!</span>")
 				H.add_language(langtolearn.name, FALSE)
 				H.add_note("Known Languages", "[langtolearn.name]")
