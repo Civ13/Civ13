@@ -109,8 +109,8 @@
 		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
 			gib()
 */
-	if (mood > 100)
-		mood = 100
+	if (mood > 150)
+		mood = 150
 	else if (mood < 0)
 		mood = 0
 	if(istype(buckled, /obj/structure/cross))
@@ -211,7 +211,7 @@
 				if (ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -221,7 +221,7 @@
 				if (!ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		if (!inducedSSD)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
