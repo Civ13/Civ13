@@ -25,8 +25,15 @@
 	var/ship_faction1 = null
 	var/ship_faction2 = null
 	var/island = null
-	var/faction1_engine_amount = 6
-	var/faction2_engine_amount = 6
+
+	var/faction1_engines_killed = FALSE
+	var/faction1_initial_engine_amount = null
+	var/faction1_engine_amount = null
+
+	var/faction2_engines_killed = FALSE
+	var/faction2_initial_engine_amount = null
+	var/faction2_engine_amount = null
+
 	var/roundend_msg = "The round has ended in a stalemate!"
 	var/no_spam = FALSE
 
@@ -59,29 +66,19 @@
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction1/ship/lower))
 		amount_of_turfs++
-	amount_of_turfs = Floor(amount_of_turfs * 0.6)
 	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction1()
 	var/t_level = 0
-	for (var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower))
-		t_level += F.flood_level*2
+	for (var/turf/T in get_area_all_atoms(/area/caribbean/faction1/ship/lower))
+		var/found_cover = FALSE
+		for (var/obj/covers/C in T)
+			found_cover = TRUE
+		if (!found_cover)
+			t_level += 5
+	if (((faction1_engine_amount / faction1_initial_engine_amount) * 100) < 25)
+		t_level += 50
 	return t_level
-
-/obj/map_metadata/battle_ships/proc/pump_faction1()
-	check_engines_faction1()
-	if (faction1_engine_amount > 0)
-		for(var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction1/ship/lower))
-			F.flood_level--
-			if (F.flood_level <= 0)
-				qdel(F)
-	else
-		var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-		uploaded_sound.priority = 250
-		for (var/mob/M in get_area_turfs(/area/caribbean/faction1/ship))
-			M << SPAN_DANGER("<font size=4>The ship grumbles as the water pumps shut down.</font>")
-			if (M.client)
-				M.client << uploaded_sound
 
 /obj/map_metadata/battle_ships/proc/check_engines_faction1()
 	var/amount_of_engines = 0
@@ -89,43 +86,50 @@
 		amount_of_engines++
 	faction1_engine_amount = amount_of_engines
 
-
+	if (!faction1_engines_killed)
+		if (faction1_engine_amount <= 0)
+			faction1_engines_killed = TRUE
+			var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			uploaded_sound.priority = 250
+			for (var/mob/living/human/M in get_area_all_atoms(/area/caribbean/faction1/ship))
+				to_chat(M, SPAN_DANGER("<font size=4>The ship grumbles as the last engine shut down.</font><br><font size=5>RESPAWNS ARE NOW DELAYED</font>"))
+				if (M.client)
+					M.client << uploaded_sound
 
 ////////////////////////// Faction 2 procs //////////////////////////
 /obj/map_metadata/battle_ships/proc/get_sinkable_amount_faction2()
 	var/amount_of_turfs = 0
 	for (var/turf/T in get_area_turfs(/area/caribbean/faction2/ship/lower))
 		amount_of_turfs++
-	amount_of_turfs = Floor(amount_of_turfs * 0.6)
 	return amount_of_turfs
 
 /obj/map_metadata/battle_ships/proc/get_sink_faction2()
 	var/t_level = 0
-	for (var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower))
-		t_level += F.flood_level*2
+	for (var/turf/T in get_area_all_atoms(/area/caribbean/faction2/ship/lower))
+		var/found_cover = FALSE
+		for (var/obj/covers/C in T)
+			found_cover = TRUE
+		if (!found_cover)
+			t_level += 5
+	if (((faction2_engine_amount / faction2_initial_engine_amount) * 100) < 25)
+		t_level += 50
 	return t_level
-
-/obj/map_metadata/battle_ships/proc/pump_faction2()
-	check_engines_faction2()
-	if (faction2_engine_amount > 0)
-		for (var/obj/effect/flooding/F in get_area_all_atoms(/area/caribbean/faction2/ship/lower))
-			F.flood_level--
-			if (F.flood_level <= 0)
-				qdel(F)
-	else
-		var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-		uploaded_sound.priority = 250
-		for (var/mob/M in get_area_turfs(/area/caribbean/faction2/ship))
-			M << SPAN_DANGER("<font size=4>The ship grumbles as the water pumps shut down.</font>")
-			if (M.client)
-				M.client << uploaded_sound
 
 /obj/map_metadata/battle_ships/proc/check_engines_faction2()
 	var/amount_of_engines = 0
 	for(var/obj/structure/engine/E in get_area_all_atoms(/area/caribbean/faction2/ship/lower/engine))
 		amount_of_engines++
 	faction2_engine_amount = amount_of_engines
-
+	
+	if (!faction2_engines_killed)
+		if (faction2_engine_amount <= 0)
+			faction2_engines_killed = TRUE
+			var/sound/uploaded_sound = sound('sound/machines/atomic_turbine_exterior_ending.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+			uploaded_sound.priority = 250
+			for (var/mob/living/human/M in get_area_all_atoms(/area/caribbean/faction2/ship))
+				to_chat(M, SPAN_DANGER("<font size=4>The ship grumbles as the last engine shut down.<br><font size=5>RESPAWNS ARE NOW DELAYED</font>"))
+				if (M.client)
+					M.client << uploaded_sound
 
 ////////////////////////// Round control //////////////////////////
 /obj/map_metadata/battle_ships/proc/check_roundend_conditions()
@@ -161,12 +165,12 @@
 
 /obj/map_metadata/battle_ships/proc/announce_sink_status()
 	spawn(600) // 1 minute 
+		check_engines_faction1()
 		var/ship_status_faction1 = "The <b><font color='red'>Redmenian</font> [ship_faction1]</b> has been flooded for <b>[get_sink_faction1() / get_sinkable_amount_faction1() * 100]/100%</b>"
-		if (faction1_engine_amount > 0)
-			pump_faction1()
+		
+		check_engines_faction2()
 		var/ship_status_faction2 = "The <b><font color='blue'>Blugoslavian</font> [ship_faction2]</b> has been flooded for <b>[get_sink_faction2() / get_sinkable_amount_faction2() * 100]/100%</b>"
-		if (faction2_engine_amount > 0)
-			pump_faction2()
+
 		to_chat(world, "<font size=4>[ship_status_faction1]</font>")
 		to_chat(world, "<font size=4>[ship_status_faction2]</font>")
 		announce_sink_status()
@@ -202,11 +206,15 @@
 
 	switch (location)
 		if ("south")
+			check_engines_faction1()
+			faction1_initial_engine_amount = faction1_engine_amount
 			ship_faction1 = capitalize(replacetext(mapname, "_", " "))
 			to_chat(world, "<font size=4 color='red'>The Redmenian ship in this battle is the <b>[ship_faction1]</b>.</font>")
 		if ("middle")
 			island = mapname
 		if ("north")
+			check_engines_faction2()
+			faction2_initial_engine_amount = faction2_engine_amount
 			ship_faction2 = capitalize(replacetext(mapname, "_", " "))
 			to_chat(world, "<font size=4 color='blue'>The Blugoslavian ship in this battle is the <b>[ship_faction2]</b>.</font>")
 
