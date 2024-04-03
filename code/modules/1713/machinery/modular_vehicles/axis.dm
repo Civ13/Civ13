@@ -181,6 +181,8 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 								SA.crush()
 
 			for(var/obj/structure/O in T)
+				if(istype(O, /obj/structure/lamp/lamppost_small/alwayson))
+					qdel(O)
 				var/done = FALSE
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
 					done = TRUE
@@ -203,17 +205,16 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							qdel(O)
 
 			if (T.density == TRUE)
-				visible_message("<span class='warning'>\The [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+				visible_message("<span class='warning'>\The [src] hits \the [T]!</span>", "<span class='warning'>You hit \the [T]!</span>")
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in TT && !(CV in transporting))
-				if (current_weight < 600)
-					if (CV.density || CV.wall)
-						visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-						moving = FALSE
-						stopmovementloop()
-						return FALSE
+			for(var/obj/covers/CV in T)
+				if (CV.density)
+					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>", "<span class='warning'>You hit \the [CV]!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
 			for(var/obj/item/ammo_casing/AC in T)
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
