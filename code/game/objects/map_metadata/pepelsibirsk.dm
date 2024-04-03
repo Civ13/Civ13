@@ -292,18 +292,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	return
 
 /obj/structure/vending/sales/pepelsibirsk/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			dropwares()
-			qdel(src)
-			return
-		if (2.0)
-			dropwares()
-			qdel(src)
-			return
-		if (3.0)
-			dropwares()
-			qdel(src)
+	dropwares()
+	qdel(src)
 	return
 
 /obj/structure/vending/sales/pepelsibirsk/bullet_act()
