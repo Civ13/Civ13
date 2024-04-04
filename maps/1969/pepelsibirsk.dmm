@@ -184,7 +184,7 @@
 /turf/wall/wood,
 /area/caribbean/nomads/taiga)
 "av" = (
-/obj/structure/multiz/ladder/ww2/up/manhole/chech,
+/obj/structure/multiz/ladder/ww2/up/manhole,
 /obj/covers/catwalk,
 /turf/floor/beach/water/deep/swamp{
 	name = "deep sewer water"
@@ -7758,7 +7758,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/nomads/taiga)
 "tp" = (
-/obj/structure/multiz/ladder/ww2/manhole/chech,
+/obj/structure/multiz/ladder/ww2/manhole,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "tq" = (
