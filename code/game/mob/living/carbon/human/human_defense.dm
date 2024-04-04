@@ -704,7 +704,7 @@ bullet_act
 					affecting.droplimb(0, DROPLIMB_EDGE)
 					for(var/mob/living/human/NB in view(6,src))
 						if (!NB.orc)
-							NB.mood -= 5
+							NB.mood -= 10
 							//NB.ptsd += 1
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
