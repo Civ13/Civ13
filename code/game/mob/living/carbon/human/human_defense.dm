@@ -861,7 +861,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-20)
-				mood -= 15
+				mood -= 8
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -871,7 +871,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-5)
-				mood -= 5
+				mood -= 3
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -881,7 +881,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-3)
-				mood -= 3
+				mood -= 2
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")

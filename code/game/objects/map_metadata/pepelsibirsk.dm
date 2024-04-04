@@ -13,8 +13,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 /obj/map_metadata/pepelsibirsk
 	ID = MAP_PEPELSIBIRSK
 	title = "Pepelsibirsk"
-	lobby_icon = "icons/lobby/civ13.gif"
-	no_winner ="The round is proceeding normally."
+	lobby_icon = "icons/lobby/pepelsibirsk.png"
+	no_winner = "The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 1200 // 2 minutes
 	has_hunger = TRUE
