@@ -2639,6 +2639,9 @@
 /obj/structure/bed/chair/drivers/tank{
 	anchored = 1
 	},
+/obj/structure/vehicleparts/axis/heavy/t72{
+	color = "#494C45"
+	},
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "gy" = (
@@ -5774,6 +5777,16 @@
 /obj/covers/cement_wall/vertical,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
+"om" = (
+/obj/item/weapon/storage/firstaid/adv,
+/obj/item/weapon/storage/firstaid/combat,
+/obj/structure/vehicleparts/frame/car/van/rb,
+/obj/structure/vehicleparts/movement/reversed{
+	dir = 1;
+	icon_state = "wheel_t_dark"
+	},
+/turf/floor/plating/road,
+/area/caribbean/nomads/taiga)
 "on" = (
 /obj/structure/filingcabinet,
 /turf/floor/wood,
@@ -7723,6 +7736,22 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
+"ti" = (
+/obj/structure/lamp/lamp_small/tank/red/police{
+	dir = 8;
+	icon_state = "bulb"
+	},
+/obj/structure/bed/chair/carseat/right{
+	dir = 1;
+	icon_state = "carseat_right"
+	},
+/obj/structure/vehicleparts/frame/car/van/rfc{
+	doorcode = 12443;
+	override_color = "#7F0000"
+	},
+/obj/item/weapon/telephone/mobile/police,
+/turf/floor/plating/road,
+/area/caribbean/nomads/taiga)
 "tj" = (
 /obj/structure/table/wood,
 /obj/roof,
@@ -9420,9 +9449,6 @@
 /area/caribbean/nomads/taiga)
 "xq" = (
 /obj/structure/vehicleparts/frame/t72/front,
-/obj/structure/vehicleparts/axis/heavy/t72{
-	color = "#494C45"
-	},
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "xr" = (
@@ -10081,6 +10107,18 @@
 /obj/structure/lamp/lamp_big,
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
+/area/caribbean/nomads/taiga)
+"yI" = (
+/obj/structure/vehicleparts/frame/car/van/lb,
+/obj/structure/vehicleparts/movement/reversed{
+	dir = 1;
+	icon_state = "wheel_t_dark"
+	},
+/obj/structure/vehicleparts/license_plate/us/centered{
+	dir = 1;
+	icon_state = "license_plate_us"
+	},
+/turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "yJ" = (
 /obj/covers/cobblestone/stairs{
@@ -87996,7 +88034,7 @@ Ld
 BB
 lm
 Qb
-zG
+yI
 Ld
 Ld
 DL
@@ -88195,9 +88233,9 @@ Ld
 Ld
 Ld
 MQ
-VY
+ti
 yT
-Ku
+om
 Ld
 Ld
 DL
