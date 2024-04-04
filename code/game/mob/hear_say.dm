@@ -91,7 +91,7 @@
 	if (language && ishuman(src))
 		var/mob/living/human/H = src
 		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
-			src.next_language_learn = world.time + 60 // Cooldown is 60 ticks seconds = 6 seconds
+			src.next_language_learn = world.time + 10 // Cooldown is 10 ticks seconds = 1 seconds
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
 			if (H.partial_languages[lname] >= language.difficulty)
