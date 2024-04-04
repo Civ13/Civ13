@@ -207,13 +207,12 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in TT && !(CV in transporting))
-				if (current_weight < 600)
-					if (CV.density || CV.wall)
-						visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-						moving = FALSE
-						stopmovementloop()
-						return FALSE
+			for(var/obj/covers/CV in T)
+				if (CV.density)
+					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
 			for(var/obj/item/ammo_casing/AC in T)
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
@@ -508,24 +507,45 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		check_matrix()
 	matrix_current_locs = list()
 
-	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
+	var/turf/axis_turf = get_turf(loc)
+	var/dx=1
+	var/dy=1
+	switch(dir)
+		if(NORTH)
+			dy = -1
+		if(SOUTH)
+			dx = -1
+		if(EAST)
+			dx = -1
+			dy = -1
+
+	var/i = 0
+	var/j = 0
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			if (matrix[loc2textv][1])
-				var/turf/currloc = get_turf(matrix[loc2textv][1])
-				var/list/tmplist = list()
-				for (var/atom/movable/MV in currloc)
-					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
-						tmplist += MV
-				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+			var/turf/currloc = locate(axis_turf.x + i, axis_turf.y+j, axis_turf.z)
+			var/list/tmplist = list()
+			for (var/atom/movable/MV in currloc)
+				if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
+					tmplist += MV
+			matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+			if(dir == NORTH || dir == SOUTH)
+				i+=dx
+			else
+				j+=dy
+
+		if(dir == NORTH || dir == SOUTH)
+			j+=dy
+			i = 0
+		else
+			i+=dx
+			j = 0
 
 	//check if there are no other vehicles/obstacles in the destination areas
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			if (!matrix_current_locs[loc2textv] || !matrix_current_locs[loc2textv].len)
-				continue
 			var/dlocfinding
 			switch(maxdist)
 				if (1)
@@ -538,25 +558,34 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
-			if (!dlocfinding)
-				continue
 			var/turf/T = matrix_current_locs[dlocfinding][1]
+			if (!T)
+				continue
 			var/list/todestroy = list()
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
-				if (user)
-					user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-				return FALSE
-				if (!T || T.density)
-					if (user)
-						user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-					return FALSE
 			for (var/obj/O in T)
 				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in wheels))
+					if (istype(O, /obj/structure/vehicleparts/frame/ship))
+						var/obj/structure/vehicleparts/frame/ship/FRM = O
+						if (FRM.axis != src)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+							return FALSE
 					if (istype(O, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/FRM = O
 						if (FRM.axis != src)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+							return FALSE
+					else if (istype(O, /obj/structure/barricade))
+						var/obj/structure/barricade/B = O
+						if(B.density > 0 && B.health > 600)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [B]!</span>"
+							return FALSE
+					else if (istype(O, /obj/covers))
+						if(O.density)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [O]!</span>"
 							return FALSE
 					else
 						todestroy += O
@@ -584,8 +613,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
-				return FALSE
 //			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])

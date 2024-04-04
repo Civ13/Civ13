@@ -35,12 +35,12 @@
 			usr << "You activate the optics on the [src]."
 			if (overtype == "nvg")
 				user.nvg = TRUE
-				restricts_view = 2
+				restricts_view = 1
 				blocks_scope = TRUE
 				user.handle_vision()
 			else if (overtype == "thermal")
 				user.thermal = TRUE
-				restricts_view = 2
+				restricts_view = 1
 				blocks_scope = TRUE
 				user.handle_vision()
 		else

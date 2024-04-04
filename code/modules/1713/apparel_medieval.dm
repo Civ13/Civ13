@@ -1031,7 +1031,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1243,7 +1243,7 @@
 	worn_state = "crusader"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1268,7 +1268,7 @@
 	icon_state = "new_knight_templar"
 	item_state = "new_knight_templar"
 	worn_state = "new_knight_templar"
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1295,7 +1295,7 @@
 	worn_state = "crusader_king"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1323,7 +1323,7 @@
 	worn_state = "baltic_crusader"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1349,7 +1349,7 @@
 	worn_state = "baltic_crusader_grandmaster"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1375,7 +1375,7 @@
 	worn_state = "baltic_crusader_king"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -1403,7 +1403,7 @@
 	worn_state = "templar_priest"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 60, arrow = 70, gun = 5, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 35
 	slowdown = 0.20
 
@@ -1429,7 +1429,7 @@
 	worn_state = "baltic_priest"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 60, arrow = 70, gun = 5, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 35
 	slowdown = 0.20
 
@@ -1578,7 +1578,7 @@
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -2296,7 +2296,7 @@ obj/item/clothing/head/helmet/samurai/black
 	worn_state = "penlianal_whitestrake"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 	slowdown = 0.10
 
@@ -2308,7 +2308,7 @@ obj/item/clothing/head/helmet/samurai/black
 	worn_state = "hell_champion"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 	slowdown = 0.10
 
@@ -2320,7 +2320,7 @@ obj/item/clothing/head/helmet/samurai/black
 	worn_state = "crusader_saint"
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 	slowdown = 0.10
 
@@ -2386,7 +2386,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 80
 	slowdown = 0.10
 
@@ -2473,7 +2473,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 50, arrow = 30, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 	slowdown = 0.05
 
@@ -2486,7 +2486,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 35, arrow = 20, gun = 10, energy = 15, bomb = 20, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 60
 	slowdown = 0.01
 
@@ -2499,7 +2499,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 45, arrow = 30, gun = 15, energy = 25, bomb = 30, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 100
 	slowdown = 0.02
 
@@ -2538,7 +2538,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 60, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 80
 	slowdown = 0.05
 
@@ -2563,7 +2563,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 45, arrow = 40, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 80
 	slowdown = 0.01
 
@@ -2576,7 +2576,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, arrow = 50, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 80
 	slowdown = 0.03
 
