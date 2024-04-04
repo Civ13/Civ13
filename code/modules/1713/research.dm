@@ -191,7 +191,7 @@
 					return
 
 		var/current_tribesmen = 0
-		var/studytime = 300*k_level
+		var/studytime = 150*k_level
 		var/modif = 1
 		if (user.religion_check() == "Knowledge")
 			modif += 0.25
