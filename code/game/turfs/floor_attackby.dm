@@ -278,7 +278,7 @@
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
+			if (do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					var/turf/floor/dirt/underground/empty/TT = src
@@ -625,7 +625,7 @@
 	if (prob(20))
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-			mineral.amount = rand(8,12)
+			mineral.amount = rand(12,24)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			if (H)
@@ -636,7 +636,7 @@
 			return
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-			mineral.amount = rand(8,12)
+			mineral.amount = rand(12,24)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 				if (H)
@@ -647,7 +647,7 @@
 			return
 	if (prob(40) && map.ordinal_age >= 1)
 		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-		mineral.amount = rand(8,12)
+		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 			if (H)
@@ -662,7 +662,7 @@
 			switch (pickperc)
 				if (1)
 					var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-					mineral.amount = rand(12,16)
+					mineral.amount = rand(24,32)
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
@@ -673,7 +673,7 @@
 					return
 				if (2)
 					var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
-					mineral.amount = 4
+					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
@@ -684,7 +684,7 @@
 					return
 				if (3)
 					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
-					mineral.amount = 4
+					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (mineral && mineral.get_material())
@@ -697,7 +697,7 @@
 				if (4)
 					// if (prob(50))
 					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
-					mineral.amount = 4
+					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
@@ -788,14 +788,14 @@
 				return
 	if(istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
-		mineral.amount = rand(8,16)
+		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
 			H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
 	if(prob(20) && (map.ID != MAP_NOMADS_PANGEA || map.ID != MAP_NOMADS_CONTINENTAL || map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
-		mineral.amount = rand(8,12)
+		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
@@ -806,21 +806,21 @@
 		return
 	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
 		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
-		mineral.amount = rand(8,12)
+		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
 			H << "<span class='danger'>You found some <font color=#060606><b>obsidian</font> rocks</b>!</span>"
 	else if(prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
-		mineral.amount = rand(8,12)
+		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
 			H << "<span class='danger'>You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!</span>"
 	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-		mineral.amount = rand(8,16)
+		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
@@ -862,7 +862,7 @@
 						H.shoveling = TRUE
 						visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
+						if (do_after(user, rand(25,30)))
 							visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -884,7 +884,7 @@
 						H.shoveling = TRUE
 						visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
+						if (do_after(user, rand(25,30)))
 							visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -899,7 +899,7 @@
 						H.shoveling = TRUE
 						visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
+						if (do_after(user, rand(25,30)))
 							visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
