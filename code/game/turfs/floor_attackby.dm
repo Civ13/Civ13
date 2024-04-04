@@ -880,7 +880,7 @@
 						H.shoveling = TRUE
 						visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(25,30)))
+						if (do_after(user, rand(15,30)))
 							visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
