@@ -61,7 +61,7 @@
 
 	make_blood()
 	if (map)
-		if (map.civilizations == TRUE)
+		if (map.civilizations == TRUE && map.ID != MAP_PEPELSIBIRSK)
 			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
 			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
 		if (map.ID == MAP_GULAG13)
@@ -72,6 +72,9 @@
 				else
 					nutrition = max_nutrition
 					water = max_water
+		if (map.ID == MAP_PEPELSIBIRSK)
+			nutrition = max_nutrition
+			water = max_water
 	else
 		nutrition = max_nutrition
 		water = max_water

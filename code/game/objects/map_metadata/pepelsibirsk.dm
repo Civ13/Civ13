@@ -46,6 +46,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	default_research = 180
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	var/real_season = "FALL"
 	var/quarter = 1
@@ -323,13 +324,16 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/attachment/silencer/rifle = 2,
 		/obj/item/weapon/attachment/silencer/shotgun = 2,
 		/obj/item/weapon/attachment/silencer/smg = 2,
+		/obj/item/weapon/foldable/atgm/bgm_tow = 1,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 8,
 		/obj/item/ammo_magazine/m14 = 3,
-		/obj/item/ammo_casing/rocket/bazooka = 2,
+		/obj/item/ammo_casing/rocket/bazooka = 4,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
 		/obj/item/weapon/plastique/c4 = 2,
+		/obj/item/ammo_casing/rocket/atgm/apcr = 4,
+		/obj/item/ammo_casing/rocket/atgm/he = 4,
 
 		//Clothing
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 8,
@@ -367,6 +371,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/attachment/silencer/rifle = 100,
 		/obj/item/weapon/attachment/silencer/shotgun = 100,
 		/obj/item/weapon/attachment/silencer/smg = 100,
+		/obj/item/weapon/foldable/atgm/bgm_tow = 1000,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 20,
@@ -374,6 +379,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/ammo_casing/rocket/bazooka = 200,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 80,
 		/obj/item/weapon/plastique/c4 = 100,
+		/obj/item/ammo_casing/rocket/atgm/apcr = 150,
+		/obj/item/ammo_casing/rocket/atgm/he = 150,
 
 		//Clothing
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 20,
@@ -399,7 +406,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 /obj/structure/vending/sales/pepelsibirsk/pacific_trader/dropwares()
 	for(var/product_key in products)
 		for(var/i in 1 to products[product_key])
-			new product_key(get_turf(src))
+			if (prob(25))
+				new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	pepel_factions.pepelsibirsk_relations["pacific_relations"] -= rand(10, 25)
 	to_chat(world, "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>")
@@ -423,6 +431,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/clothing/head/chinaguardcap = 8,
 		/obj/item/clothing/head/chinese_ushanka = 8,
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 8,
+
+		//Food and Drink
+		/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle = 8,
 	)
 	prices = list(
 		//Weapons
@@ -437,6 +448,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/clothing/head/chinaguardcap = 15,
 		/obj/item/clothing/head/chinese_ushanka = 15,
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 35,
+
+		//Food and Drink
+		/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle = 5,
 	)
 
 /obj/structure/vending/sales/pepelsibirsk/chinese_trader/dropwares()

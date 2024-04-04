@@ -15,10 +15,31 @@ obj/structure/bell_stand
 		playsound(loc, 'sound/effects/bell_stand.ogg', 200, FALSE, 5)
 		visible_message("<span class='warning'>[H] rings the bell!</span>")
 		cooldown_bell_stand = TRUE
-		spawn(15)
+		spawn(10 SECONDS)
 			cooldown_bell_stand = FALSE
 			icon_state = "bell_stand"
-		return
+	else
+		to_chat(H, "You have to wait at least 10 seconds.")
+	return
+
+/obj/structure/bell_stand
+	name = "church bell"
+	desc = "A church bell. It looks like it could be <b>extremely</b> loud."
+
+/obj/structure/bell_stand/church/attack_hand(var/mob/living/human/H)
+	if (cooldown_bell_stand == FALSE)
+		cooldown_bell_stand = TRUE
+		icon_state = "bell_stand_ringing"
+		world << sound('sound/effects/bell_stand.ogg', repeat = TRUE, wait = TRUE, channel = 777)
+		visible_message("<span class='warning'>[H] rings the church bell!</span>")
+		to_chat(world, "\icon[src] The church bell is ringing.")
+		spawn(5 MINUTES)
+			world << sound(null, channel = 777)
+			icon_state = "bell_stand"
+			cooldown_bell_stand = FALSE
+	else
+		to_chat(H, "You have to wait at least 5 minutes.")
+	return
 
 obj/structure/bell_stand/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
