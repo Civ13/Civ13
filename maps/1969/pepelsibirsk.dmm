@@ -161,7 +161,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "ar" = (
@@ -176,7 +175,6 @@
 /obj/structure/closet/crate/empty/large,
 /obj/item/stack/material/steel/twentyfive,
 /obj/item/stack/material/steel/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "at" = (
@@ -333,7 +331,6 @@
 /obj/item/weapon/storage/firstaid/advsmall,
 /obj/item/weapon/storage/firstaid/advsmall,
 /obj/item/weapon/storage/firstaid/advsmall,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "aO" = (
@@ -472,7 +469,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "bh" = (
@@ -525,12 +521,10 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "bo" = (
-/obj/roof,
-/obj/structure/voyage/quartermaster_book{
-	pixel_y = 8;
-	name = "warehouse inventory"
-	},
 /obj/structure/table/wood,
+/obj/structure/warehouse_book{
+	pixel_y = 9
+	},
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "bp" = (
@@ -1237,7 +1231,6 @@
 /obj/item/stack/material/leather{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "cU" = (
@@ -2235,7 +2228,6 @@
 /obj/item/weapon/storage/box/bodybags,
 /obj/item/weapon/storage/box/bodybags,
 /obj/item/weapon/storage/box/bodybags,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "fs" = (
@@ -2646,7 +2638,18 @@
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "gy" = (
-/obj/structure/simple_door/key_door/civ/police,
+/obj/structure/grille/chainlinkfence{
+	icon_state = "chainlinkfence";
+	dir = 8
+	},
+/obj/structure/window/barrier/concrete{
+	dir = 4
+	},
+/obj/structure/barbwire{
+	icon_state = "barbwire";
+	dir = 8;
+	pixel_x = -5
+	},
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/taiga)
 "gz" = (
@@ -2696,7 +2699,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "gF" = (
@@ -3784,7 +3786,6 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "jl" = (
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "jm" = (
@@ -4598,7 +4599,6 @@
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "lj" = (
@@ -4760,7 +4760,6 @@
 /obj/item/weapon/lipstick/random,
 /obj/item/weapon/lipstick/random,
 /obj/item/weapon/lipstick/random,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "lD" = (
@@ -5095,7 +5094,6 @@
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "mv" = (
@@ -5184,7 +5182,6 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "mG" = (
-/obj/roof,
 /obj/structure/simple_door/key_door/anyone/doubledoor/wood,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
@@ -5945,7 +5942,6 @@
 /obj/item/stack/material/iron/twentyfive,
 /obj/item/stack/material/iron/twentyfive,
 /obj/item/stack/material/iron/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "oH" = (
@@ -6185,7 +6181,6 @@
 /obj/item/weapon/storage/box/wineglasses,
 /obj/item/weapon/storage/box/wineglasses,
 /obj/item/weapon/storage/box/wineglasses,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "ps" = (
@@ -6297,7 +6292,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "pJ" = (
@@ -6960,7 +6954,6 @@
 "rv" = (
 /obj/structure/roof_support,
 /obj/covers/wood_wall/adjustable,
-/obj/roof,
 /turf/wall/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "rw" = (
@@ -7066,7 +7059,6 @@
 /obj/item/weapon/storage/firstaid/combat/modern{
 	name = "medicine kit"
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "rG" = (
@@ -7353,6 +7345,9 @@
 	},
 /obj/structure/closet/fridge/icebox,
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "sm" = (
@@ -7434,7 +7429,6 @@
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "sy" = (
@@ -7538,6 +7532,9 @@
 	amount = 50
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "sJ" = (
@@ -7938,7 +7935,6 @@
 /obj/item/stack/material/cloth{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "tL" = (
@@ -8499,6 +8495,9 @@
 	icon_state = "railing0"
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "vg" = (
@@ -8570,7 +8569,6 @@
 /obj/item/stack/material/bronze{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "vp" = (
@@ -8809,7 +8807,6 @@
 /obj/item/stack/material/sandstone{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "vR" = (
@@ -8996,7 +8993,6 @@
 /area/caribbean/nomads/taiga)
 "wp" = (
 /obj/structure/lamp/lamp_small,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "wq" = (
@@ -9091,7 +9087,6 @@
 /obj/item/weapon/storage/box/canned,
 /obj/item/weapon/storage/box/canned,
 /obj/item/weapon/storage/box/canned,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "wx" = (
@@ -9652,7 +9647,6 @@
 /obj/item/weapon/hammer/modern,
 /obj/item/weapon/hammer/modern,
 /obj/item/weapon/hammer/modern,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "xR" = (
@@ -10570,6 +10564,9 @@
 "zR" = (
 /obj/structure/table/wood,
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "zS" = (
@@ -10793,7 +10790,6 @@
 /obj/item/stack/material/lead{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Aq" = (
@@ -10882,7 +10878,6 @@
 /obj/item/clothing/under/modern2,
 /obj/item/clothing/under/modern2,
 /obj/item/clothing/under/modern2,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AB" = (
@@ -10998,7 +10993,6 @@
 /obj/item/stack/material/stone{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AO" = (
@@ -11050,7 +11044,6 @@
 /obj/item/stack/material/woolcloth{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AV" = (
@@ -11461,7 +11454,6 @@
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "BS" = (
@@ -12100,7 +12092,6 @@
 /obj/item/stack/material/glass{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Dw" = (
@@ -12699,7 +12690,6 @@
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "EW" = (
@@ -13339,7 +13329,6 @@
 /obj/item/weapon/reagent_containers/spray/cleaner,
 /obj/item/weapon/reagent_containers/spray/cleaner,
 /obj/item/weapon/reagent_containers/spray/cleaner,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "GA" = (
@@ -13789,7 +13778,6 @@
 /obj/structure/closet/crate/empty/large,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "HG" = (
@@ -14175,7 +14163,6 @@
 /area/caribbean/nomads/taiga)
 "ID" = (
 /obj/structure/roof_support,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "IE" = (
@@ -14214,6 +14201,9 @@
 	icon_state = "railing0"
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "II" = (
@@ -14525,7 +14515,6 @@
 /obj/item/weapon/haircomb,
 /obj/item/weapon/haircomb,
 /obj/item/weapon/haircomb,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Jr" = (
@@ -15340,7 +15329,6 @@
 "Ll" = (
 /obj/structure/window/classic,
 /obj/structure/barricade,
-/obj/roof,
 /turf/floor/wood/ship,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Lm" = (
@@ -15651,7 +15639,6 @@
 /obj/item/stack/material/marble{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Mg" = (
@@ -15711,7 +15698,6 @@
 /obj/item/clothing/head/sov_ushanka_new,
 /obj/item/clothing/head/sov_ushanka_new,
 /obj/item/clothing/head/sov_ushanka_new,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Mo" = (
@@ -15933,7 +15919,6 @@
 /area/caribbean/nomads/taiga)
 "MM" = (
 /obj/covers/wood_wall/adjustable,
-/obj/roof,
 /turf/wall/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "MN" = (
@@ -16925,7 +16910,6 @@
 /obj/item/clothing/shoes/leatherboots,
 /obj/item/clothing/shoes/leatherboots,
 /obj/item/clothing/shoes/leatherboots,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Po" = (
@@ -17150,7 +17134,6 @@
 /obj/item/stack/material/electronics{
 	amount = 20
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PS" = (
@@ -17164,7 +17147,6 @@
 /obj/item/stack/material/rope{
 	amount = 30
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PT" = (
@@ -17178,7 +17160,6 @@
 /obj/item/stack/material/plastic{
 	amount = 15
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PU" = (
@@ -17201,6 +17182,9 @@
 	amount = 50
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "PY" = (
@@ -17509,6 +17493,11 @@
 /obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
+"QJ" = (
+/obj/roof/concrete,
+/obj/structure/mine_support/stone/concrete,
+/turf/floor/plating/steel,
+/area/caribbean/nomads/taiga)
 "QK" = (
 /obj/structure/wild/rock{
 	icon_state = "basalt1"
@@ -17684,7 +17673,6 @@
 /obj/item/stack/material/obsidian{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Rh" = (
@@ -17821,7 +17809,6 @@
 /obj/item/stack/material/tobacco{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Rz" = (
@@ -17839,7 +17826,6 @@
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "RB" = (
@@ -18172,7 +18158,6 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/nomads/taiga)
 "Sp" = (
-/obj/roof,
 /obj/structure/table/wood,
 /obj/item/weapon/telephone/mobile/faction{
 	name = "warehouse telephone";
@@ -18608,7 +18593,6 @@
 /obj/item/weapon/storage/box/drinkingglasses,
 /obj/item/weapon/storage/box/drinkingglasses,
 /obj/item/weapon/storage/box/drinkingglasses,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Tp" = (
@@ -19759,6 +19743,9 @@
 	dir = 4
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "Wk" = (
@@ -20069,7 +20056,6 @@
 /obj/item/stack/material/tin{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "WX" = (
@@ -20201,6 +20187,12 @@
 /obj/structure/railing,
 /obj/roof/clay,
 /turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
+"Xl" = (
+/obj/structure/table/modern,
+/obj/roof/concrete,
+/obj/structure/mine_support/stone/concrete,
+/turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "Xm" = (
 /obj/structure/lamp/lamp_small{
@@ -20381,6 +20373,15 @@
 /obj/effect/spawner/mobspawner/sheep_m,
 /turf/floor/winter,
 /area/caribbean/nomads/taiga)
+"XJ" = (
+/obj/structure/window/barrier/concrete{
+	dir = 1
+	},
+/obj/structure/pepelsibirsk_radio/supply_radio/no_scam{
+	layer = 7
+	},
+/turf/floor/plating/cobblestone/vertical,
+/area/caribbean/nomads/taiga)
 "XK" = (
 /obj/structure/potted_plant{
 	dir = 9;
@@ -20550,7 +20551,6 @@
 /obj/structure/lamp/lamp_small{
 	dir = 1
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Yb" = (
@@ -66367,7 +66367,7 @@ Kc
 Oh
 nP
 nP
-nP
+Eu
 nP
 nP
 Oh
@@ -74608,7 +74608,7 @@ Rt
 oi
 Rt
 Rt
-Rt
+QJ
 Rt
 Rt
 oi
@@ -78658,7 +78658,7 @@ CZ
 Ld
 FK
 CZ
-yR
+XJ
 Ld
 Ld
 Ld
@@ -79422,7 +79422,7 @@ Rt
 Rt
 Rt
 yM
-oo
+Xe
 ak
 Rt
 Rt
@@ -79628,7 +79628,7 @@ lL
 kK
 Cb
 hW
-hW
+Xl
 oM
 SC
 lL
@@ -79824,7 +79824,7 @@ Rt
 Rt
 Rt
 yM
-oo
+Xe
 ak
 kK
 Rt
@@ -97672,29 +97672,29 @@ TT
 Pe
 Pe
 TT
-UP
-UP
-UP
-UP
-UP
-UP
+gy
+gy
+gy
+gy
+gy
+gy
 TT
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
 TT
 rq
 Ld
@@ -97879,7 +97879,7 @@ Ui
 Ui
 Ui
 Ui
-gy
+Pe
 Ui
 Ui
 Ui
@@ -98080,7 +98080,7 @@ Ui
 Ui
 Ui
 Ui
-gy
+Pe
 Ui
 sm
 sm
@@ -98451,7 +98451,7 @@ Wx
 rq
 rq
 rq
-oo
+Xe
 na
 UN
 UN
