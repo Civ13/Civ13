@@ -452,7 +452,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 65, arrow = 50, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
