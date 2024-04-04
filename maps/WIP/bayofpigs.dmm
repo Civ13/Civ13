@@ -27,8 +27,8 @@
 "aA" = (/obj/structure/vehicleparts/frame/t34/left,/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/turf/floor/plating/road,/area/caribbean)
 "aB" = (/turf/floor/plating/road,/area/caribbean)
 "aC" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/plating/road,/area/caribbean)
-"aD" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean)
-"aE" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/plating/road,/area/caribbean)
+"aD" = (/obj/structure/vehicleparts/frame/t34/front,/turf/floor/plating/road,/area/caribbean)
+"aE" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean)
 "aF" = (/obj/structure/window/classic/portholefull,/obj/structure/barricade/steel,/obj/structure/curtain/leather,/turf/floor/plating/steel,/area/caribbean/roofed)
 "aG" = (/obj/covers/cement_wall,/turf/floor/plating/steel,/area/caribbean)
 "aH" = (/obj/structure/window/classic/portholefull,/obj/structure/barricade/steel,/obj/structure/curtain/leather,/obj/structure/barricade/horizontal,/turf/floor/plating/steel,/area/caribbean/roofed)
@@ -218,9 +218,9 @@
 "ej" = (/obj/structure/vehicleparts/frame/car/right/armored,/turf/floor/plating/steel,/area/caribbean)
 "ek" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning{dir = 4},/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/obj/item/ammo_magazine/a50cal_can,/turf/floor/plating/steel,/area/caribbean)
 "el" = (/obj/structure/bed/chair/office/dark,/obj/item/weapon/storage/toolbox/mechanical,/obj/structure/vehicleparts/frame/car/rf/truck/armored,/turf/floor/plating/steel,/area/caribbean)
-"em" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#293822"; name = "GMC M35 Truck"},/obj/structure/vehicleparts/frame/car/lf/truck/armored,/turf/floor/plating/steel,/area/caribbean)
+"em" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck/armored,/turf/floor/plating/steel,/area/caribbean)
 "en" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf/armored,/obj/structure/vehicleparts/movement/tracks,/turf/floor/plating/steel,/area/caribbean)
-"eo" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/tracks,/turf/floor/plating/steel,/area/caribbean)
+"eo" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf/armored,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/axis/car{color = "#293822"; name = "GMC M35 Truck"},/turf/floor/plating/steel,/area/caribbean)
 "ep" = (/obj/item/ammo_magazine/ptrd_box,/obj/item/ammo_magazine/ptrd_box/ap,/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd,/turf/floor/plating/steel,/area/caribbean)
 "eq" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{dir = 8},/turf/floor/plating/steel,/area/caribbean/roofed)
 "er" = (/obj/structure/table/wood,/turf/floor/plating/steel,/area/caribbean/roofed)
@@ -365,8 +365,8 @@
 "ha" = (/obj/structure/vehicleparts/frame/su100/fc,/obj/structure/bed/chair/loader,/turf/floor/plating/road,/area/caribbean)
 "hb" = (/obj/structure/vehicleparts/frame/su100/lfc,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean)
 "hc" = (/obj/structure/vehicleparts/frame/su100/rf,/obj/structure/vehicleparts/movement/tracks/su100/right_front,/obj/structure/bed/chair/gunner,/turf/floor/plating/road,/area/caribbean)
-"hd" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/vehicleparts/axis/heavy/su100,/obj/structure/cannon/modern/tank/russian100/course,/turf/floor/plating/road,/area/caribbean)
-"he" = (/obj/structure/vehicleparts/frame/su100/lf,/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/plating/road,/area/caribbean)
+"hd" = (/obj/structure/vehicleparts/frame/su100/front,/obj/structure/cannon/modern/tank/russian100/course,/turf/floor/plating/road,/area/caribbean)
+"he" = (/obj/structure/vehicleparts/frame/su100/lf,/obj/structure/vehicleparts/movement/tracks/su100/left_front,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/axis/heavy/su100,/turf/floor/plating/road,/area/caribbean)
 
 (1,1,1) = {"
 djdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjdjaxaxaxakaIaBaBaBaBaBaBaBaBaBaBaBaBaB
@@ -558,7 +558,6 @@ avavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavav
 avavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavav
 avavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavavav
 "}
-
 (1,1,2) = {"
 dedededededededededededededededededededededededededededededededededededededededededeabababababababababababababababababab
 dededededededeaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTaTdfaTaTaTaTaTdfdeaTdeaTaTdfananandededeabababababababababababababababababab

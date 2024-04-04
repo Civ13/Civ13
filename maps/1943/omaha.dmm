@@ -339,7 +339,7 @@
 "gC" = (/obj/structure/table/wood,/obj/item/weapon/paper_bin,/obj/item/weapon/pen,/turf/floor/trench,/area/caribbean/german/inside)
 "gD" = (/obj/structure/window/barrier/railing/stone{dir = 4; icon_state = "stone"},/turf/floor/beach/water,/area/caribbean/forest)
 "gE" = (/obj/structure/bed/chair/office/dark,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 1; layer = 4},/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 1},/turf/floor/plating/road,/area/caribbean/forest)
-"gF" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Kubelwagen"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/road,/area/caribbean/forest)
+"gF" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/road,/area/caribbean/forest)
 "gG" = (/obj/structure/barbwire,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
 "gH" = (/turf/wall/iron,/area/caribbean/german/inside/objective)
 "gI" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/forest)
@@ -459,7 +459,7 @@
 "iT" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "iU" = (/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
 "iV" = (/obj/structure/closet/cabinet,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/wood,/area/caribbean/houses)
-"iW" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/turf/floor/plating/road,/area/caribbean/forest)
+"iW" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"},/turf/floor/plating/road,/area/caribbean/forest)
 "iX" = (/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/houses)
 "iY" = (/obj/item/mine/boobytrap,/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/forest)
 "iZ" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/houses)
@@ -567,7 +567,7 @@
 "lb" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/forest)
 "lc" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/forest)
 "ld" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/forest)
-"le" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/forest)
+"le" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/forest)
 "lf" = (/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "lg" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
 "lh" = (/obj/structure/window/barrier/sandbag,/obj/structure/sign/traffic/central{dir = 8; icon_state = "centralline"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/road,/area/caribbean/forest)
@@ -822,6 +822,7 @@
 "qe" = (/obj/structure/barricade/wood_pole,/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/two)
 "qf" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall/two)
 "qg" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/german/objective)
+"NB" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Kubelwagen"},/turf/floor/plating/road,/area/caribbean/forest)
 
 (1,1,1) = {"
 opeueueueueueueueueueueueueueueueuaaaaaaaaaaaaaaaaopaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaa
@@ -845,7 +846,7 @@ aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbCeNbpaYhyhyhyhykEkxhyhyhyhyhyhy
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbHbHaYhyhyhykwhykDkDhyhyhyhyhyhyhyhyhyhyhyiiiiiihLhLhLhLhLhLhLhLhLhLiA
 aNaNaNaWfGfXfZaYaYaWaNaNaNaNaNaNaNaWaNaNaNaNaNaNaNaNaNaNgmhyhyhyhyhyhyhyhyichyhyhyhyhyhyhyichyhyhyhLhLhLiehLhLhLhLhLhLiC
 aaaaaaaNaYgEgFaYaYaNaaaaaaaaaraaaaaaaraaaaaaaraaaaaaaaaagliDiDhyiDhyiEhyiFhyiGhyiHhyiIhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhw
-aaaraaaNaYgIiWaYaYaNaaaaaaaaaaaaaraaaaaaaraaaaaaaraaaraaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhL
+aaaraaaNaYgINBaYaYaNaaaaaaaaaaaaaraaaaaaaraaaaaaaraaaraaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhL
 aaaaaaaNaYaYaYaYaYaNaaaaaaaraaaaaaaaaaaaaaaaaaaaaaaaaaaagliDiDhyiDhyiEhyiFhyiGhyiJhyiEhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhL
 aaaaaaaNaYaYaYaYaYaNaafYaaaaaaaahnaaaaaahnaaaaaahnaaaaaagliKhyhyhyhyhyhyhyiKhyhyhyhyhyhyhyhyhyhyhyhLhLhLiNhLhLhLhLhLhLiO
 aaaaabaWaYaYaYaYaYaWabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaglgmglglglglglglglgmglglglglglglglgmglglglgHgHgHhpgHgHgHgHgHgHhp
@@ -854,7 +855,7 @@ aaaaaaaNpApApApApAaNfYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafYaaaaaa
 aaaraaaNpApApApApAaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaaaraaaahnaaaaaaaaaaaahnaaaaaaaaaaaraaaaaaaaaahnaahnaraaaa
 aaaaaaaWfGfXfZaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaWaaaaaaaaaaaaaaaaaraaaaaaaaaaaaaaaaaaaaaaaahnaaaaaaaaaaaaaa
 hnaafYaNaYgEgFaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaaaaaaaaabaafYaaaaaaaaaraaaafYaaaaaaaaaaaaaaaaabaaaaaaaa
-aaabaaaNaYgIiWaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaQjzaYaNaaaraaaaaaaahnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafYaaaraa
+aaabaaaNaYgINBaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaQjzaYaNaaaraaaaaaaahnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafYaaaraa
 aaaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYfGkbkMaYaNaaaaaaaaaaaaaaaahnaaaaaaaaaaaaabaaaafYaaaaaraaaaaaaaaaaaaa
 aaaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYldleaYaNaaaaaaaafYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaraaaWaNaNaNaNaNaWaNaNaNaNaNaNaWaNaNaNaNaNaNaNaWaYaYgIiWaYaWaaaaaahnaaaaaraaaaaaabfYaaaaaaaaaaaraaaaaaaaaafYaaaaaaaaaa

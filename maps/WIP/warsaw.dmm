@@ -238,7 +238,7 @@
 "eD" = (/obj/structure/lamp/lamp_big/broken,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/wood,/area/caribbean/nomads)
 "eE" = (/obj/item/weapon/wrench,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/plating/road,/area/caribbean/nomads)
 "eF" = (/obj/structure/closet/coffin,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/wood,/area/caribbean/nomads)
-"eG" = (/obj/structure/vehicleparts/frame/t20/leftm,/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/axis/car/t20komsomoletstractor{name = "Armored Transport tractor"},/turf/floor/plating/road,/area/caribbean/nomads)
+"eG" = (/obj/structure/vehicleparts/frame/t20/leftm,/obj/structure/bed/chair/drivers/tank{anchored = 1},/turf/floor/plating/road,/area/caribbean/nomads)
 "eH" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barricade/vertical,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
 "eI" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/barricade/vertical,/obj/structure/barricade/antitank,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
 "eJ" = (/obj/structure/barricade/steel,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/sign/flag/nazi,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
@@ -344,13 +344,13 @@
 "gF" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/engine/internal/gasoline/premade/panzeriv{desc = "A relatively cheap six-stroke gasoline engine."; name = "six-stroke gasoline engine"},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/turf/floor/plating/road,/area/caribbean/nomads)
 "gG" = (/obj/covers/brick_wall,/obj/structure/sign/flag/nazi,/turf/wall/brick,/area/caribbean/nomads)
 "gH" = (/obj/covers/brick_wall,/obj/structure/sign/portrait/hitler,/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/roofed/temperate)
-"gI" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/frame/panzervi/rf,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"gI" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/rf,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 0; layer = 4},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "gJ" = (/obj/covers/brick_wall,/obj/structure/window/barrier/railing/brick,/obj/structure/mirror,/turf/wall/brick,/area/caribbean/roofed/temperate)
 "gK" = (/obj/structure/closet/cabinet,/obj/item/violin,/turf/floor/carpet/redcarpet,/area/caribbean/roofed/temperate)
 "gL" = (/obj/structure/window/barrier/sandbag/incomplete{dir = 4; icon_state = "sandbag_66%"},/turf/floor/plating/road,/area/caribbean/nomads)
 "gM" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel,/obj/structure/window/barrier/sandbag,/obj/structure/barricade/horizontal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "gN" = (/obj/item/weapon/storage/toolbox/emergency,/obj/structure/vehicleparts/frame/sdfkzfront/right/door,/turf/floor/plating/road,/area/caribbean/nomads)
-"gO" = (/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"; vehicle_size = "2x4"},/obj/structure/vehicleparts/frame/car/left/metalreinforced,/turf/floor/plating/road,/area/caribbean/nomads)
+"gO" = (/obj/structure/vehicleparts/frame/car/left/metalreinforced,/turf/floor/plating/road,/area/caribbean/nomads)
 "gP" = (/obj/structure/barricade/antitank,/turf/floor/beach/water/swamp,/area/caribbean/roofed)
 "gQ" = (/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 1; layer = 4},/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34,/obj/structure/vehicleparts/frame/sdfkzfront/rf,/turf/floor/plating/road,/area/caribbean/nomads)
 "gR" = (/obj/item/weapon/gun/launcher/rocket/piat,/obj/item/weapon/storage/backpack/piatpack/filledearly,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
@@ -451,7 +451,7 @@
 "iI" = (/obj/structure/window/classic/metal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iJ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iK" = (/obj/structure/table/modern/flipped{dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iL" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/turf/floor/plating/road,/area/caribbean/nomads)
+"iL" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"; vehicle_size = "2x4"},/turf/floor/plating/road,/area/caribbean/nomads)
 "iM" = (/obj/structure/table/modern/table,/obj/item/weapon/grenade/ww2/rgd33,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iO" = (/obj/structure/table/modern/table,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
@@ -694,7 +694,7 @@
 "nu" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/nomads)
 "nv" = (/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
 "nw" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed)
-"nx" = (/obj/structure/vehicleparts/frame/t20/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/turf/floor/plating/road,/area/caribbean/nomads)
+"nx" = (/obj/structure/vehicleparts/frame/t20/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/axis/car/t20komsomoletstractor{name = "Armored Transport tractor"},/turf/floor/plating/road,/area/caribbean/nomads)
 "ny" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/barbwire{dir = 4; icon_state = "barbwire"},/obj/structure/barbwire{dir = 8; icon_state = "barbwire"},/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads)
 "nz" = (/obj/structure/closet/cabinet,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "nA" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
@@ -1005,9 +1005,9 @@
 "tt" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 8},/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "tu" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/structure/window/barrier/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "tv" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"tw" = (/obj/structure/vehicleparts/frame/panzervi/front,/obj/structure/vehicleparts/axis/heavy/panzervi,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"tw" = (/obj/structure/vehicleparts/frame/panzervi/front,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "tx" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"ty" = (/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 0; layer = 4},/obj/structure/bed/chair/office/light{name = "machinegunner's seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/vehicleparts/frame/panzervi/lf,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"ty" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/axis/heavy/panzervi,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "tz" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/one{name = "Central Polish HQ Hallway"})
 "tA" = (/obj/structure/window/barrier/sandbag{dir = 1},/turf/floor/plating/steel,/area/caribbean/no_mans_land/capturable/one{name = "Central Polish HQ Hallway"})
 "tB" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
@@ -1577,8 +1577,8 @@
 "Et" = (/obj/map_metadata/warsaw,/turf/wall/indestructable,/area/caribbean/roofed)
 "Eu" = (/obj/structure/bed/chair/gunner{icon_state = "officechair_white"; dir = 8},/obj/structure/vehicleparts/frame/panzeriv/left,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "Ev" = (/obj/item/weapon/gun/projectile/automatic/stationary/mg34{anchored = 0; layer = 4},/obj/structure/bed/chair/office/light{name = "machinegunner seat"},/obj/structure/vehicleparts/movement/tracks,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/structure/vehicleparts/frame/panzeriv/rf,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
-"Ew" = (/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/axis/heavy/panzeriv,/obj/structure/vehicleparts/frame/panzeriv/front,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
-"Ex" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"Ew" = (/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/panzeriv/front,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
+"Ex" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf,/obj/structure/vehicleparts/axis/heavy/panzeriv,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/roofed/temperate)
 "Ey" = (/obj/covers/cement_wall,/obj/structure/cell_tower,/turf/wall/cement,/area/caribbean/roofed/temperate)
 "Ez" = (/obj/structure/barricade/debris,/turf/floor/grass,/area/caribbean/nomads)
 "EA" = (/obj/structure/barricade,/turf/floor/grass,/area/caribbean/nomads)
@@ -1896,7 +1896,6 @@ EDEDEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 EDEDEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 EDEtEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 "}
-
 (1,1,2) = {"
 aCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaaaaaaaaaGaGbkbkbkbkbkbkaGaGahahahahvuvuvuvuvuiGvdxFxGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGDWDXwdiGvcxNxOwdiMvlvhvfvmvnvoiMDZDZahahaGaGbkbkbkbkbkbkaGaGaaaaaaaanpaaaafMfMaaaaaaaaaaaaaaaaacadadaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaaaaaaaaaGaGbkbkbkDbbkDbaGaGahahahahvuvuiGiGiGiGiGiGiGiGiGiGiGiGahiGiGiGiGiGiGiGiGiGiGiGiGiGDWDZEYiGiGiGiGiGiGiGiGiGiGiGiGvfDZDZahahaGaGbkbkbkbkbkbksuaGaaaaaaaaaaaaajaayqnpaaaaalfMaaaaaaacadadaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
