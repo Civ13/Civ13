@@ -109,10 +109,15 @@
 		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
 			gib()
 */
-	if (mood > 100)
-		mood = 100
+	if (mood > 120)
+		mood = 120
 	else if (mood < 0)
 		mood = 0
+	//mood natural balancing to neutral
+	if (mood > 50) //moves to 50 if more than 50.
+		mood -= 0.05
+	else if (mood < 40) //moves to 40 if below 40
+		mood += 0.05
 	if(istype(buckled, /obj/structure/cross))
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
@@ -211,7 +216,7 @@
 				if (ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -221,7 +226,7 @@
 				if (!ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		if (!inducedSSD)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
