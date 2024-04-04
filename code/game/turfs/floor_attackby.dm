@@ -625,6 +625,8 @@
 	if (prob(20))
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
+			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+			bonusstone.amount = rand(8,12)
 			mineral.amount = rand(12,24)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
@@ -636,6 +638,8 @@
 			return
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
+			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+			bonusstone.amount = rand(8,12)
 			mineral.amount = rand(12,24)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
@@ -647,6 +651,8 @@
 			return
 	if (prob(40) && map.ordinal_age >= 1)
 		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
@@ -662,6 +668,8 @@
 			switch (pickperc)
 				if (1)
 					var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
 					mineral.amount = rand(24,32)
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
@@ -673,6 +681,8 @@
 					return
 				if (2)
 					var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
 					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
@@ -684,6 +694,8 @@
 					return
 				if (3)
 					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
 					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
@@ -697,6 +709,8 @@
 				if (4)
 					// if (prob(50))
 					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
 					mineral.amount = 8
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
@@ -795,6 +809,8 @@
 			H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
 	if(prob(20) && (map.ID != MAP_NOMADS_PANGEA || map.ID != MAP_NOMADS_CONTINENTAL || map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
@@ -806,6 +822,8 @@
 		return
 	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
 		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
