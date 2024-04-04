@@ -35,9 +35,11 @@
 					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
 	if (newdir == "left")
-		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir)
+		if (!control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir))
+			return FALSE
 	else
-		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir)
+		if (!control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir))
+			return FALSE
 	return TRUE
 
 /obj/structure/bed/chair/drivers/ex_act(severity)
