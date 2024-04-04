@@ -1807,6 +1807,10 @@
 /obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
+"ep" = (
+/obj/structure/sink/puddle,
+/turf/floor/winter/grass,
+/area/caribbean/nomads/taiga)
 "eq" = (
 /obj/item/stack/ore/silver,
 /turf/floor/dirt/winter,
@@ -6229,6 +6233,10 @@
 	},
 /obj/roof/clay,
 /turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
+"py" = (
+/obj/structure/oil_spring,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "pz" = (
 /obj/covers/wood/stairs,
@@ -13204,6 +13212,10 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed)
+"Gj" = (
+/obj/structure/oil_spring,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
 "Gk" = (
 /obj/structure/railing/steel{
 	dir = 4;
@@ -84703,7 +84715,7 @@ zZ
 zZ
 zZ
 rM
-rM
+Gj
 rM
 rM
 Tw
@@ -86118,7 +86130,7 @@ rM
 rM
 Tw
 oh
-rM
+Gj
 rM
 rM
 Id
@@ -90120,7 +90132,7 @@ JR
 JR
 rM
 Tw
-Tw
+py
 rM
 Xe
 FP
@@ -91368,7 +91380,7 @@ rM
 rM
 rM
 rM
-rM
+Gj
 Tw
 Tw
 Un
@@ -92300,7 +92312,7 @@ Tw
 Un
 Un
 Tw
-Tw
+py
 Tw
 sm
 sJ
@@ -92690,7 +92702,7 @@ sK
 sm
 sm
 sm
-sm
+ep
 sm
 jT
 uh
@@ -93590,7 +93602,7 @@ zZ
 Rk
 rM
 rM
-Tw
+py
 pX
 Tw
 rM
@@ -99933,7 +99945,7 @@ Tw
 jT
 Tw
 Tw
-Tw
+Vq
 Tw
 Tw
 Tw
@@ -100321,7 +100333,7 @@ sm
 Tw
 Tw
 Tw
-Tw
+py
 Tw
 jT
 uh
