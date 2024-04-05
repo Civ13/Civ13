@@ -2560,7 +2560,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	worn_state = "ushanka_plain"
 
 /obj/item/clothing/head/ww2/sov_ushanka/nomads/attack_self(mob/user as mob)
-	if (icon_state == "ushanka")
+	if (icon_state == "ushanka_plain")
 		icon_state = "ushanka_plain_up"
 		item_state = "ushanka_plain_up"
 		user << "You raise the ear flaps on the ushanka."
