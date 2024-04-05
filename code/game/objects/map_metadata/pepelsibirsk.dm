@@ -46,6 +46,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	age5_done = TRUE
 	age6_done = TRUE
 	age7_done = TRUE
+	default_research = 180
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	var/real_season = "FALL"
 	var/quarter = 1
@@ -323,13 +324,16 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/attachment/silencer/rifle = 2,
 		/obj/item/weapon/attachment/silencer/shotgun = 2,
 		/obj/item/weapon/attachment/silencer/smg = 2,
+		/obj/item/weapon/foldable/atgm/bgm_tow = 1,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 8,
 		/obj/item/ammo_magazine/m14 = 3,
-		/obj/item/ammo_casing/rocket/bazooka = 2,
+		/obj/item/ammo_casing/rocket/bazooka = 4,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
 		/obj/item/weapon/plastique/c4 = 2,
+		/obj/item/ammo_casing/rocket/atgm/apcr = 4,
+		/obj/item/ammo_casing/rocket/atgm/he = 4,
 
 		//Clothing
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 8,
@@ -367,6 +371,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/attachment/silencer/rifle = 100,
 		/obj/item/weapon/attachment/silencer/shotgun = 100,
 		/obj/item/weapon/attachment/silencer/smg = 100,
+		/obj/item/weapon/foldable/atgm/bgm_tow = 1000,
 
 		//Ammunition
 		/obj/item/ammo_magazine/m16 = 20,
@@ -374,6 +379,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/ammo_casing/rocket/bazooka = 200,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 80,
 		/obj/item/weapon/plastique/c4 = 100,
+		/obj/item/ammo_casing/rocket/atgm/apcr = 150,
+		/obj/item/ammo_casing/rocket/atgm/he = 150,
 
 		//Clothing
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 20,
@@ -399,7 +406,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 /obj/structure/vending/sales/pepelsibirsk/pacific_trader/dropwares()
 	for(var/product_key in products)
 		for(var/i in 1 to products[product_key])
-			new product_key(get_turf(src))
+			if (prob(25))
+				new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
 	pepel_factions.pepelsibirsk_relations["pacific_relations"] -= rand(10, 25)
 	to_chat(world, "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>")
@@ -423,6 +431,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/clothing/head/chinaguardcap = 8,
 		/obj/item/clothing/head/chinese_ushanka = 8,
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 8,
+
+		//Food and Drink
+		/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle = 8,
 	)
 	prices = list(
 		//Weapons
@@ -437,6 +448,9 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/clothing/head/chinaguardcap = 15,
 		/obj/item/clothing/head/chinese_ushanka = 15,
 		/obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized = 35,
+
+		//Food and Drink
+		/obj/item/weapon/reagent_containers/food/snacks/ssicle/osicle = 5,
 	)
 
 /obj/structure/vending/sales/pepelsibirsk/chinese_trader/dropwares()
@@ -713,16 +727,20 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,1000),
 	)
 
+/obj/structure/pepelsibirsk_radio/supply_radio/no_scam
+	name = "long range high-sensitivity supply radio"
+	desc = "Use this to request supplies to be delivered to the city. It appears like the microphone on it is set to much too high sensitivity for you to safely arrange a scam."
+
 /obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user, scam)
-	if (choice == "Pepelsibirsk 1 (MIL)" && scam == "No, we're honest.")
+	if (choice == "Pepelsibirsk 1 (MIL)" && scam != "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] += final_cost*0.02
-	else if (choice == "Narodnyygorod (CIV)" && scam == "No, we're honest.")
+	else if (choice == "Narodnyygorod (CIV)" && scam != "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["civ_relations"] += final_cost*0.02
 	else if (choice == "Narodnyygorod (CIV)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["civ_relations"] -= final_cost*0.08
 	else if (choice == "Pepelsibirsk 1 (MIL)" && scam == "Yes, scam them!")
 		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
-	if (scam == "No, we're honest.")
+	if (scam != "Yes, scam them!")
 		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02].")
 	else if (scam == "Yes, scam them!")
 		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have decreased by [final_cost*0.08].")
@@ -739,52 +757,37 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		to_chat(user, "Your [final_list[1]] has arrived.")
 	return
 
-/obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
-	var/final_cost
-	var/list/final_list = list()
-	var/list/display = list ()//The products to be displayed, includes name of crate and price
-	var/list/companies = list(
-		"Cancel Purchase",
-		"Pepelsibirsk 1 (MIL)",
-		"Narodnyygorod (CIV)",
-	)
+/obj/structure/pepelsibirsk_radio/supply_radio/proc/purchase(user, choice, catalogue)
+	///VARS///
+	var/final_cost //The final cost of the purchased product
+	var/list/final_list = list() //The details for the product to be purchased
+	var/list/display = list() //The products to be displayed, includes name of crate and price
 	var/list/scamornot = list (
 		"No, we're honest.",
 		"Yes, scam them!",
 	)
-	var/catalogue = list()
-	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel Purchase", companies)
-	if (choice == "Cancel Purchase")
-		if((round(money) >= 1))
-			new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
-		if (((money) - round(money)) > 0)
-			new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
-		money = 0
-		return
-	if (choice == "Narodnyygorod (CIV)")
-		catalogue = civ_catalogue
-		if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 25 )
-			to_chat(user, "Your relations with this faction are too low!")
-			return
-	else if (choice == "Pepelsibirsk 1 (MIL)")
-		catalogue = mil_catalogue
-		if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 25 )
-			to_chat(user, "Your relations with this faction are too low!")
-			return
+	var/scam
+
+	///Display the menu asking for what you want to purchase
 	for (var/list/i in catalogue)
 		display += "[i[1]], [i[3]] rubles"
 		display += "Cancel Purchase"
 	var/choice2 = WWinput(user, "Current Rubles: [money]", "Order a crate", "Cancel Purchase", display)
-	var/scam = WWinput(user, "Current Rubles: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
+	if(istype(src, /obj/structure/pepelsibirsk_radio/supply_radio/no_scam))
+		scam = "No, we're honest."
+	else
+		scam = WWinput(user, "Current Rubles: [money]", "Shall we scam them?", "No, we're honest.", scamornot)
+	var/list/choicename = splittext(choice2, ", ")
+
+	///ACTUAL PURCHASING LOGIC///
 	if (choice2 != "Cancel Purchase")
-		var/list/choicename = splittext(choice2, ", ")
-		for(var/list/i2 in catalogue)
-			if (i2[1]== choicename[1])
-				final_list = i2
+		for(var/list/i2 in catalogue) //Goes through everything in the chosen catalogue
+			if (i2[1]== choicename[1]) //Checks if each item it goes through is the correct item
+				final_list = i2 //If it is, set that to final_list
 				world.log << "A purchase has been made: [final_list[1]], [final_list[2]], [final_list[3]]"
-				final_cost = (final_list[3])
-				if (final_list[3] <= money || scam == "Yes, scam them!" ) // you can afford the item or you're scamming
-					if (scam == "No, we're honest.")
+				final_cost = (final_list[3]) //Set the cost of the item based on the cost value in the list
+				if (final_list[3] <= money || scam == "Yes, scam them!" )
+					if (scam != "Yes, scam them!")
 						money -= final_cost
 					update_cost(final_list, final_cost, choice, user, scam)
 					if((round(money) >= 1))
@@ -807,6 +810,42 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)	//This should never happen, but just in case
 		money = 0
 		return
+
+/obj/structure/pepelsibirsk_radio/supply_radio/proc/company(user)
+	///VARS///
+	var/catalogue = list()
+	var/list/companies = list(
+		"Cancel Purchase",
+		"Pepelsibirsk 1 (MIL)",
+		"Narodnyygorod (CIV)",
+	)
+
+	///PURCHASING LOGIC///
+	var/choice = WWinput(user, "Pick a supplier:", "Supplier", "Cancel Purchase", companies) //Dialog box
+	if (choice == "Cancel Purchase")
+		///Giving your money back///
+		if((round(money) >= 1))
+			new/obj/item/stack/money/rubles(loc, round(money))		//Rubles
+		if (((money) - round(money)) > 0)
+			new/obj/item/stack/money/coppercoin(loc, round(((money) - round(money)), 0.01) * 100)  //This should never happen, but just in case
+		money = 0
+		return
+	if (choice == "Narodnyygorod (CIV)")
+		catalogue = civ_catalogue
+		if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 25 )
+			to_chat(user, "Your relations with this faction are too low!")
+			return
+	else if (choice == "Pepelsibirsk 1 (MIL)")
+		catalogue = mil_catalogue
+		if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 25 )
+			to_chat(user, "Your relations with this faction are too low!")
+			return
+	purchase(user, choice, catalogue)
+	return
+
+/obj/structure/pepelsibirsk_radio/supply_radio/attack_hand(var/mob/living/human/user as mob)
+	company(user)
+	return
 
 /obj/structure/pepelsibirsk_radio/supply_radio/attackby(var/obj/item/stack/W as obj, var/mob/living/human/user as mob)
 	if (W.amount && istype(W, /obj/item/stack/money/rubles))
@@ -1017,3 +1056,32 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			qdel(src)
 			return
 	return
+
+/obj/structure/warehouse_book
+	name = "warehouse inventory"
+	desc = "A document containing a list of all goods in the warehouse."
+	icon = 'icons/obj/library.dmi'
+	icon_state = "book_qm"
+	layer = 3.2
+	anchored = TRUE
+
+	attack_hand(mob/living/human/H)
+		var/list/supplies = get_supplies()
+		var/dat = "<center><h2>Warehouse Contents</h2></center>"
+		var/i2 = 1
+		for(var/i in supplies)
+			dat += "<b>[supplies[i2]]:</b> [supplies[i]]<br>" //example: Cloth: 50
+			i2++
+		H << browse(dat, "window=Warehouse Contents")
+
+/obj/structure/warehouse_book/proc/get_supplies()
+	var/list/supplies = list()
+	var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage)
+	for(var/turf/sel_turf in t_turfs)
+		for(var/obj/structure/closet/crate/S in sel_turf)
+			for(var/obj/item/I in S)
+				if (supplies[I.name])
+					supplies[I.name] += I.amount
+				else
+					supplies[I.name] = I.amount
+	return supplies

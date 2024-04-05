@@ -134,6 +134,7 @@
 /area/caribbean/nomads/taiga)
 "ao" = (
 /obj/roof/clay,
+/obj/covers/brick_wall,
 /turf/wall/brick,
 /area/caribbean/nomads/taiga)
 "ap" = (
@@ -160,7 +161,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/claypot,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "ar" = (
@@ -175,7 +175,6 @@
 /obj/structure/closet/crate/empty/large,
 /obj/item/stack/material/steel/twentyfive,
 /obj/item/stack/material/steel/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "at" = (
@@ -185,7 +184,7 @@
 /turf/wall/wood,
 /area/caribbean/nomads/taiga)
 "av" = (
-/obj/structure/multiz/ladder/ww2/up/manhole/chech,
+/obj/structure/multiz/ladder/ww2/up/manhole,
 /obj/covers/catwalk,
 /turf/floor/beach/water/deep/swamp{
 	name = "deep sewer water"
@@ -271,6 +270,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
+"aF" = (
+/obj/structure/simple_door/key_door/civ/hall{
+	name = "City Soviet"
+	},
+/turf/floor/wood,
+/area/caribbean/roofed)
 "aG" = (
 /obj/covers/wood,
 /obj/structure/table/wood,
@@ -326,7 +331,6 @@
 /obj/item/weapon/storage/firstaid/advsmall,
 /obj/item/weapon/storage/firstaid/advsmall,
 /obj/item/weapon/storage/firstaid/advsmall,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "aO" = (
@@ -414,7 +418,7 @@
 "aZ" = (
 /obj/covers/wood,
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "financial services telephone"
 	},
 /obj/roof/clay,
@@ -465,7 +469,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "bh" = (
@@ -518,12 +521,10 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "bo" = (
-/obj/roof,
-/obj/structure/voyage/quartermaster_book{
-	pixel_y = 8;
-	name = "warehouse inventory"
-	},
 /obj/structure/table/wood,
+/obj/structure/warehouse_book{
+	pixel_y = 9
+	},
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "bp" = (
@@ -586,7 +587,7 @@
 	dir = 4
 	},
 /obj/roof/clay/black,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "fire department telephone";
 	phonenumber = 2225
 	},
@@ -1230,7 +1231,6 @@
 /obj/item/stack/material/leather{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "cU" = (
@@ -1362,7 +1362,7 @@
 /area/caribbean/nomads/taiga)
 "dk" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "car factory manager's telephone";
 	phonenumber = 3331
 	},
@@ -1423,9 +1423,7 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "dp" = (
-/obj/structure/engine/internal/diesel/premade/omw22_2{
-	name = "V12 diesel engine"
-	},
+/obj/structure/engine/internal/diesel/premade/v12,
 /obj/structure/vehicleparts/movement/tracks/left/reversed,
 /obj/structure/vehicleparts/frame/t72/rb,
 /turf/floor/plating/road,
@@ -1808,6 +1806,10 @@
 	},
 /obj/roof/clay,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/taiga)
+"ep" = (
+/obj/structure/sink/puddle,
+/turf/floor/winter/grass,
 /area/caribbean/nomads/taiga)
 "eq" = (
 /obj/item/stack/ore/silver,
@@ -2230,7 +2232,6 @@
 /obj/item/weapon/storage/box/bodybags,
 /obj/item/weapon/storage/box/bodybags,
 /obj/item/weapon/storage/box/bodybags,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "fs" = (
@@ -2269,6 +2270,12 @@
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
+"fy" = (
+/obj/effect/floor_decal/spline/fancy/wood/corner{
+	dir = 8
+	},
+/turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
 "fA" = (
 /obj/structure/props/coatrack,
 /obj/item/clothing/under/ww2/civ1,
@@ -2299,7 +2306,7 @@
 	},
 /obj/structure/table/modern/table,
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "police telephone";
 	phonenumber = 2224
 	},
@@ -2347,6 +2354,12 @@
 /obj/structure/mine_support/stone/ionic,
 /obj/roof/clay/black,
 /turf/floor/plating/marble,
+/area/caribbean/nomads/taiga)
+"fO" = (
+/obj/effect/floor_decal/spline/fancy/wood/corner{
+	dir = 1
+	},
+/turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
 "fQ" = (
 /obj/effect/floor_decal/spline/plain{
@@ -2626,10 +2639,24 @@
 /obj/structure/bed/chair/drivers/tank{
 	anchored = 1
 	},
+/obj/structure/vehicleparts/axis/heavy/t72{
+	color = "#494C45"
+	},
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "gy" = (
-/obj/structure/simple_door/key_door/civ/police,
+/obj/structure/grille/chainlinkfence{
+	icon_state = "chainlinkfence";
+	dir = 8
+	},
+/obj/structure/window/barrier/concrete{
+	dir = 4
+	},
+/obj/structure/barbwire{
+	icon_state = "barbwire";
+	dir = 8;
+	pixel_x = -5
+	},
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/taiga)
 "gz" = (
@@ -2679,7 +2706,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
 /obj/item/weapon/material/kitchen/utensil/knife/butcher,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "gF" = (
@@ -2733,6 +2759,12 @@
 	},
 /obj/roof/concrete,
 /turf/floor/plating/steel,
+/area/caribbean/nomads/taiga)
+"gL" = (
+/obj/effect/floor_decal/spline/fancy/wood/corner{
+	dir = 4
+	},
+/turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
 "gN" = (
 /obj/covers/wood,
@@ -3363,27 +3395,15 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "in" = (
+/obj/covers/wood,
 /obj/structure/table/modern/table,
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
-/obj/item/weapon/key/civ/hall{
-	name = "City Soviet Key"
-	},
+/obj/item/weapon/paper_bin,
+/obj/item/weapon/pen,
 /obj/roof/clay,
-/turf/floor/wood,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "io" = (
 /obj/structure/bed/chair/sofa/left,
@@ -3773,7 +3793,6 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "jl" = (
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "jm" = (
@@ -3819,7 +3838,10 @@
 /turf/wall/brick,
 /area/caribbean/nomads/taiga)
 "js" = (
-/obj/structure/window/barrier/railing/stone,
+/obj/effect/floor_decal/spline/fancy/wood/corner,
+/obj/effect/floor_decal/spline/fancy/wood/corner{
+	dir = 8
+	},
 /turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
 "ju" = (
@@ -4041,6 +4063,10 @@
 /area/caribbean/nomads/taiga)
 "jU" = (
 /obj/effect/decal/cleanable/generic,
+/obj/effect/landmark{
+	icon_state = "x3";
+	name = "JoinLateCiv"
+	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "jV" = (
@@ -4563,7 +4589,7 @@
 /obj/structure/table/modern,
 /obj/structure/curtain/open/privacy,
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "hospital telephone";
 	phonenumber = 2223
 	},
@@ -4580,7 +4606,6 @@
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "lj" = (
@@ -4742,7 +4767,6 @@
 /obj/item/weapon/lipstick/random,
 /obj/item/weapon/lipstick/random,
 /obj/item/weapon/lipstick/random,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "lD" = (
@@ -5077,7 +5101,6 @@
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
 /obj/item/clothing/suit/storage/coat/japcoat2/brown,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "mv" = (
@@ -5166,7 +5189,6 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "mG" = (
-/obj/roof,
 /obj/structure/simple_door/key_door/anyone/doubledoor/wood,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
@@ -5510,7 +5532,7 @@
 /area/caribbean/nomads/taiga)
 "nz" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1116;
 	name = "city soviet telephone"
 	},
@@ -5724,7 +5746,7 @@
 "og" = (
 /obj/structure/table/modern/table,
 /obj/structure/lamp/lamp_small,
-/obj/item/weapon/telephone,
+/obj/item/weapon/telephone/mobile/faction,
 /obj/covers/carpet/redcarpet,
 /obj/roof/concrete,
 /turf/floor/wood,
@@ -5754,6 +5776,16 @@
 "ol" = (
 /obj/covers/cement_wall/vertical,
 /turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
+"om" = (
+/obj/item/weapon/storage/firstaid/adv,
+/obj/item/weapon/storage/firstaid/combat,
+/obj/structure/vehicleparts/frame/car/van/rb,
+/obj/structure/vehicleparts/movement/reversed{
+	dir = 1;
+	icon_state = "wheel_t_dark"
+	},
+/turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "on" = (
 /obj/structure/filingcabinet,
@@ -5876,7 +5908,7 @@
 "oB" = (
 /obj/covers/carpet/greencarpet,
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1111;
 	name = "local leadership telephone"
 	},
@@ -5927,7 +5959,6 @@
 /obj/item/stack/material/iron/twentyfive,
 /obj/item/stack/material/iron/twentyfive,
 /obj/item/stack/material/iron/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "oH" = (
@@ -5988,7 +6019,7 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "oO" = (
-/obj/structure/window/barrier/railing/stone{
+/obj/effect/floor_decal/spline/fancy/wood{
 	dir = 1
 	},
 /turf/floor/beach/water/ice,
@@ -6167,7 +6198,6 @@
 /obj/item/weapon/storage/box/wineglasses,
 /obj/item/weapon/storage/box/wineglasses,
 /obj/item/weapon/storage/box/wineglasses,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "ps" = (
@@ -6216,6 +6246,10 @@
 	},
 /obj/roof/clay,
 /turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
+"py" = (
+/obj/structure/oil_spring,
+/turf/floor/winter,
 /area/caribbean/nomads/taiga)
 "pz" = (
 /obj/covers/wood/stairs,
@@ -6279,7 +6313,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
 /obj/item/weapon/reagent_containers/food/drinks/clay/bigclaypot,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "pJ" = (
@@ -6363,7 +6396,9 @@
 /area/caribbean/nomads/taiga)
 "pV" = (
 /obj/covers/carpet/redcarpet,
-/obj/structure/simple_door/key_door/civ/room1,
+/obj/structure/simple_door/key_door/civ/room1{
+	unique_door_name = "Economic Ministry"
+	},
 /obj/roof/clay/black,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
@@ -6940,7 +6975,6 @@
 "rv" = (
 /obj/structure/roof_support,
 /obj/covers/wood_wall/adjustable,
-/obj/roof,
 /turf/wall/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "rw" = (
@@ -7046,7 +7080,6 @@
 /obj/item/weapon/storage/firstaid/combat/modern{
 	name = "medicine kit"
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "rG" = (
@@ -7114,6 +7147,10 @@
 /obj/structure/closet/cabinet,
 /obj/roof/concrete,
 /turf/floor/wood,
+/area/caribbean/nomads/taiga)
+"rP" = (
+/obj/item/weapon/key/civ/police,
+/turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "rQ" = (
 /obj/structure/lamp/lamp_small,
@@ -7329,6 +7366,9 @@
 	},
 /obj/structure/closet/fridge/icebox,
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "sm" = (
@@ -7410,7 +7450,6 @@
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "sy" = (
@@ -7462,7 +7501,7 @@
 /obj/covers/carpet/greencarpet,
 /obj/structure/table/modern/table,
 /obj/roof/clay/black,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1115;
 	name = "misc ministry telephone"
 	},
@@ -7514,6 +7553,9 @@
 	amount = 50
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "sJ" = (
@@ -7694,6 +7736,22 @@
 /obj/roof/concrete,
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
+"ti" = (
+/obj/structure/lamp/lamp_small/tank/red/police{
+	dir = 8;
+	icon_state = "bulb"
+	},
+/obj/structure/bed/chair/carseat/right{
+	dir = 1;
+	icon_state = "carseat_right"
+	},
+/obj/structure/vehicleparts/frame/car/van/rfc{
+	doorcode = 12443;
+	override_color = "#7F0000"
+	},
+/obj/item/weapon/telephone/mobile/police,
+/turf/floor/plating/road,
+/area/caribbean/nomads/taiga)
 "tj" = (
 /obj/structure/table/wood,
 /obj/roof,
@@ -7737,7 +7795,7 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/nomads/taiga)
 "tp" = (
-/obj/structure/multiz/ladder/ww2/manhole/chech,
+/obj/structure/multiz/ladder/ww2/manhole,
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "tq" = (
@@ -7914,7 +7972,6 @@
 /obj/item/stack/material/cloth{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "tL" = (
@@ -8459,9 +8516,8 @@
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "ve" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 8;
-	icon_state = "stone"
+/obj/effect/floor_decal/spline/fancy/wood{
+	dir = 8
 	},
 /turf/floor/beach/water/ice,
 /area/caribbean/nomads/taiga)
@@ -8476,6 +8532,9 @@
 	icon_state = "railing0"
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "vg" = (
@@ -8547,7 +8606,6 @@
 /obj/item/stack/material/bronze{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "vp" = (
@@ -8747,7 +8805,7 @@
 /area/caribbean/nomads/taiga)
 "vM" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless,
+/obj/item/weapon/telephone/mobile/faction,
 /turf/floor/plating/road,
 /area/caribbean/roofed)
 "vO" = (
@@ -8786,7 +8844,6 @@
 /obj/item/stack/material/sandstone{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "vR" = (
@@ -8973,7 +9030,6 @@
 /area/caribbean/nomads/taiga)
 "wp" = (
 /obj/structure/lamp/lamp_small,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "wq" = (
@@ -9068,7 +9124,6 @@
 /obj/item/weapon/storage/box/canned,
 /obj/item/weapon/storage/box/canned,
 /obj/item/weapon/storage/box/canned,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "wx" = (
@@ -9236,6 +9291,10 @@
 /obj/roof/concrete,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
+"wV" = (
+/obj/effect/floor_decal/spline/fancy/wood/corner,
+/turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
 "wW" = (
 /obj/structure/wild/rock,
 /turf/floor/dirt/winter,
@@ -9390,9 +9449,6 @@
 /area/caribbean/nomads/taiga)
 "xq" = (
 /obj/structure/vehicleparts/frame/t72/front,
-/obj/structure/vehicleparts/axis/heavy/t72{
-	color = "#494C45"
-	},
 /turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "xr" = (
@@ -9543,6 +9599,20 @@
 /obj/roof,
 /turf/floor/wood/alt,
 /area/caribbean/nomads/taiga)
+"xI" = (
+/obj/structure/table/modern/table,
+/obj/roof/clay,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/obj/item/weapon/storage/belt/leather,
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
 "xJ" = (
 /obj/structure/lamp/lamp_big{
 	dir = 8
@@ -9562,6 +9632,13 @@
 /obj/item/weapon/handcuffs,
 /turf/floor/wood,
 /area/caribbean/roofed)
+"xL" = (
+/obj/roof/clay/black,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/wood/fancywood,
+/area/caribbean/nomads/taiga)
 "xM" = (
 /obj/structure/table/modern,
 /obj/structure/meat_grinder,
@@ -9604,7 +9681,6 @@
 /obj/item/weapon/hammer/modern,
 /obj/item/weapon/hammer/modern,
 /obj/item/weapon/hammer/modern,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "xR" = (
@@ -10031,6 +10107,18 @@
 /obj/structure/lamp/lamp_big,
 /obj/roof/clay,
 /turf/floor/plating/tiled/woodh,
+/area/caribbean/nomads/taiga)
+"yI" = (
+/obj/structure/vehicleparts/frame/car/van/lb,
+/obj/structure/vehicleparts/movement/reversed{
+	dir = 1;
+	icon_state = "wheel_t_dark"
+	},
+/obj/structure/vehicleparts/license_plate/us/centered{
+	dir = 1;
+	icon_state = "license_plate_us"
+	},
+/turf/floor/plating/road,
 /area/caribbean/nomads/taiga)
 "yJ" = (
 /obj/covers/cobblestone/stairs{
@@ -10522,6 +10610,9 @@
 "zR" = (
 /obj/structure/table/wood,
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "zS" = (
@@ -10745,7 +10836,6 @@
 /obj/item/stack/material/lead{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Aq" = (
@@ -10834,7 +10924,6 @@
 /obj/item/clothing/under/modern2,
 /obj/item/clothing/under/modern2,
 /obj/item/clothing/under/modern2,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AB" = (
@@ -10950,7 +11039,6 @@
 /obj/item/stack/material/stone{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AO" = (
@@ -11002,7 +11090,6 @@
 /obj/item/stack/material/woolcloth{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "AV" = (
@@ -11413,7 +11500,6 @@
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
 /obj/item/clothing/shoes/leather,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "BS" = (
@@ -11480,9 +11566,21 @@
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "Cd" = (
-/obj/roof/clay,
+/obj/structure/table/modern/table,
 /obj/roof/concrete,
-/turf/floor/plating/tiled/woodh,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/obj/item/weapon/key/civ/police,
+/turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "Ce" = (
 /obj/covers/wood,
@@ -11607,7 +11705,7 @@
 /obj/structure/table/modern/table,
 /obj/covers/carpet/greencarpet,
 /obj/roof/clay,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "court telephone";
 	phonenumber = 2226
 	},
@@ -12040,7 +12138,6 @@
 /obj/item/stack/material/glass{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Dw" = (
@@ -12109,7 +12206,7 @@
 /obj/covers/wood,
 /obj/covers/carpet,
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1113;
 	name = "KGB telephone"
 	},
@@ -12226,6 +12323,15 @@
 /obj/covers/carpet,
 /obj/roof/clay,
 /turf/floor/wood,
+/area/caribbean/nomads/taiga)
+"DS" = (
+/obj/structure/window/barrier/concrete{
+	dir = 1
+	},
+/obj/structure/pepelsibirsk_radio/export_radio{
+	layer = 7
+	},
+/turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "DT" = (
 /obj/structure/table/wood,
@@ -12441,7 +12547,7 @@
 /area/caribbean/nomads/taiga)
 "Ex" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1113;
 	name = "KGB telephone"
 	},
@@ -12630,7 +12736,6 @@
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
 /obj/item/clothing/suit/storage/coat/ww2/sovcoat2,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "EW" = (
@@ -12914,7 +13019,7 @@
 	name = "Collective Farm Key"
 	},
 /obj/roof,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 3333;
 	name = "collective farm telephone"
 	},
@@ -13145,6 +13250,10 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed)
+"Gj" = (
+/obj/structure/oil_spring,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
 "Gk" = (
 /obj/structure/railing/steel{
 	dir = 4;
@@ -13270,7 +13379,6 @@
 /obj/item/weapon/reagent_containers/spray/cleaner,
 /obj/item/weapon/reagent_containers/spray/cleaner,
 /obj/item/weapon/reagent_containers/spray/cleaner,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "GA" = (
@@ -13542,7 +13650,7 @@
 	unique_door_name = "Hospital"
 	},
 /obj/roof/concrete,
-/turf/floor/dirt,
+/turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "Hi" = (
 /obj/covers/wood_wall/adjustable,
@@ -13720,7 +13828,6 @@
 /obj/structure/closet/crate/empty/large,
 /obj/item/stack/material/wood/twentyfive,
 /obj/item/stack/material/wood/twentyfive,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "HG" = (
@@ -13902,13 +14009,13 @@
 /area/caribbean/nomads/taiga)
 "Ia" = (
 /obj/covers/stonebrickfloor,
-/obj/structure/bell_stand,
 /obj/roof/clay/black,
+/obj/structure/bell_stand/church,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "Ib" = (
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 3334;
 	name = "steel mill telephone"
 	},
@@ -14043,7 +14150,7 @@
 /obj/structure/table/modern/table,
 /obj/covers/wood,
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1113;
 	name = "KGB telephone"
 	},
@@ -14106,7 +14213,6 @@
 /area/caribbean/nomads/taiga)
 "ID" = (
 /obj/structure/roof_support,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "IE" = (
@@ -14145,6 +14251,9 @@
 	icon_state = "railing0"
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "II" = (
@@ -14456,7 +14565,6 @@
 /obj/item/weapon/haircomb,
 /obj/item/weapon/haircomb,
 /obj/item/weapon/haircomb,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Jr" = (
@@ -14979,6 +15087,14 @@
 /obj/roof/concrete,
 /turf/floor/plating/white,
 /area/caribbean/nomads/taiga)
+"Ky" = (
+/obj/covers/wood,
+/obj/roof/clay,
+/obj/structure/railing{
+	dir = 4
+	},
+/turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
 "Kz" = (
 /obj/structure/bed/chair/office/light{
 	dir = 1
@@ -15098,6 +15214,9 @@
 	dir = 8
 	},
 /obj/roof/clay/black,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/wood/fancywood,
 /area/caribbean/nomads/taiga)
 "KN" = (
@@ -15240,7 +15359,7 @@
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "Li" = (
-/obj/structure/window/barrier/railing/stone{
+/obj/effect/floor_decal/spline/fancy/wood{
 	dir = 4
 	},
 /turf/floor/beach/water/ice,
@@ -15260,12 +15379,13 @@
 "Ll" = (
 /obj/structure/window/classic,
 /obj/structure/barricade,
-/obj/roof,
 /turf/floor/wood/ship,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Lm" = (
 /obj/covers/carpet/redcarpet,
-/obj/structure/simple_door/key_door/civ/gov,
+/obj/structure/simple_door/key_door/civ/gov{
+	unique_door_name = "Leader's Office"
+	},
 /obj/roof/clay/black,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
@@ -15539,6 +15659,10 @@
 /obj/roof/concrete,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"Mc" = (
+/obj/effect/spawner/mobspawner/rabbits,
+/turf/floor/dirt/winter,
+/area/caribbean/nomads/taiga)
 "Md" = (
 /obj/structure/roof_support,
 /obj/structure/railing{
@@ -15565,7 +15689,6 @@
 /obj/item/stack/material/marble{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Mg" = (
@@ -15608,7 +15731,7 @@
 "Mm" = (
 /obj/structure/table/modern/table,
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1113;
 	name = "KGB telephone"
 	},
@@ -15625,7 +15748,6 @@
 /obj/item/clothing/head/sov_ushanka_new,
 /obj/item/clothing/head/sov_ushanka_new,
 /obj/item/clothing/head/sov_ushanka_new,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Mo" = (
@@ -15847,7 +15969,6 @@
 /area/caribbean/nomads/taiga)
 "MM" = (
 /obj/covers/wood_wall/adjustable,
-/obj/roof,
 /turf/wall/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "MN" = (
@@ -16020,7 +16141,7 @@
 	icon_state = "railing0"
 	},
 /obj/structure/table/modern/retable,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 3336;
 	name = "research and development telephone"
 	},
@@ -16379,7 +16500,7 @@
 /area/caribbean/nomads/taiga)
 "Oa" = (
 /obj/roof/concrete,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 3335;
 	name = "mine telephone"
 	},
@@ -16839,12 +16960,11 @@
 /obj/item/clothing/shoes/leatherboots,
 /obj/item/clothing/shoes/leatherboots,
 /obj/item/clothing/shoes/leatherboots,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Po" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless,
+/obj/item/weapon/telephone/mobile/faction,
 /obj/covers/carpet,
 /obj/roof/clay,
 /turf/floor/wood,
@@ -16935,11 +17055,11 @@
 /area/caribbean/nomads/taiga)
 "PA" = (
 /obj/covers/wood,
-/obj/structure/railing{
-	dir = 8;
-	icon_state = "railing0"
-	},
+/obj/structure/printingpress,
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "PB" = (
@@ -17064,7 +17184,6 @@
 /obj/item/stack/material/electronics{
 	amount = 20
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PS" = (
@@ -17078,7 +17197,6 @@
 /obj/item/stack/material/rope{
 	amount = 30
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PT" = (
@@ -17092,7 +17210,6 @@
 /obj/item/stack/material/plastic{
 	amount = 15
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "PU" = (
@@ -17115,6 +17232,9 @@
 	amount = 50
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/nomads/taiga)
 "PY" = (
@@ -17423,6 +17543,11 @@
 /obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
+"QJ" = (
+/obj/roof/concrete,
+/obj/structure/mine_support/stone/concrete,
+/turf/floor/plating/steel,
+/area/caribbean/nomads/taiga)
 "QK" = (
 /obj/structure/wild/rock{
 	icon_state = "basalt1"
@@ -17455,6 +17580,12 @@
 /area/caribbean/roofed)
 "QO" = (
 /turf/floor/beach/water/ice,
+/area/caribbean/nomads/taiga)
+"QP" = (
+/obj/covers/wood,
+/obj/roof/clay,
+/obj/structure/pepelsibirsk_radio/export_radio,
+/turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
 "QQ" = (
 /obj/structure/bed/chair{
@@ -17592,7 +17723,6 @@
 /obj/item/stack/material/obsidian{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Rh" = (
@@ -17606,7 +17736,7 @@
 /area/caribbean/nomads/taiga)
 "Rj" = (
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1112;
 	name = "military command telephone"
 	},
@@ -17729,7 +17859,6 @@
 /obj/item/stack/material/tobacco{
 	amount = 50
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Rz" = (
@@ -17747,7 +17876,6 @@
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
 /obj/item/clothing/suit/storage/coat/ruscoat/grey,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "RB" = (
@@ -18080,9 +18208,8 @@
 /turf/floor/wood/fancywood,
 /area/caribbean/nomads/taiga)
 "Sp" = (
-/obj/roof,
 /obj/structure/table/wood,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "warehouse telephone";
 	phonenumber = 2222
 	},
@@ -18516,7 +18643,6 @@
 /obj/item/weapon/storage/box/drinkingglasses,
 /obj/item/weapon/storage/box/drinkingglasses,
 /obj/item/weapon/storage/box/drinkingglasses,
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Tp" = (
@@ -18823,7 +18949,7 @@
 "Ug" = (
 /obj/covers/carpet/redcarpet,
 /obj/structure/table/modern/table,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	name = "lead editor's telephone";
 	phonenumber = 2222
 	},
@@ -19632,7 +19758,7 @@
 /area/caribbean/nomads/taiga)
 "Wh" = (
 /obj/structure/table/modern,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 3332;
 	name = "pepelsibirsk power plant telephone"
 	},
@@ -19667,6 +19793,9 @@
 	dir = 4
 	},
 /obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
 /turf/floor/plating/steel,
 /area/caribbean/nomads/taiga)
 "Wk" = (
@@ -19977,7 +20106,6 @@
 /obj/item/stack/material/tin{
 	amount = 25
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "WX" = (
@@ -20045,6 +20173,17 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
+"Xc" = (
+/obj/structure/window/classic/brickfull,
+/obj/structure/railing/steel{
+	dir = 1
+	},
+/obj/roof/clay,
+/obj/structure/roof_support{
+	icon_state = "support_v"
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/taiga)
 "Xe" = (
 /obj/structure/mine_support/stone/concrete,
 /obj/covers/cement_wall,
@@ -20099,6 +20238,12 @@
 /obj/roof/clay,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
+"Xl" = (
+/obj/structure/table/modern,
+/obj/roof/concrete,
+/obj/structure/mine_support/stone/concrete,
+/turf/floor/plating/steel,
+/area/caribbean/nomads/taiga)
 "Xm" = (
 /obj/structure/lamp/lamp_small{
 	dir = 1
@@ -20131,7 +20276,7 @@
 /obj/covers/carpet/greencarpet,
 /obj/structure/table/modern/table,
 /obj/roof/clay/black,
-/obj/item/weapon/telephone/wireless{
+/obj/item/weapon/telephone/mobile/faction{
 	phonenumber = 1114;
 	name = "economic ministry telephone"
 	},
@@ -20179,6 +20324,35 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug,
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug,
 /obj/roof/concrete,
+/turf/floor/wood,
+/area/caribbean/nomads/taiga)
+"Xy" = (
+/obj/structure/table/wood,
+/obj/roof/clay,
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
+/obj/item/weapon/key/civ/hall{
+	name = "City Soviet Key"
+	},
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "Xz" = (
@@ -20248,6 +20422,15 @@
 /obj/structure/wild/smallbush/winter,
 /obj/effect/spawner/mobspawner/sheep_m,
 /turf/floor/winter,
+/area/caribbean/nomads/taiga)
+"XJ" = (
+/obj/structure/window/barrier/concrete{
+	dir = 1
+	},
+/obj/structure/pepelsibirsk_radio/supply_radio/no_scam{
+	layer = 7
+	},
+/turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
 "XK" = (
 /obj/structure/potted_plant{
@@ -20418,7 +20601,6 @@
 /obj/structure/lamp/lamp_small{
 	dir = 1
 	},
-/obj/roof,
 /turf/floor/wood,
 /area/caribbean/pirates/ship/voyage/lower/storage)
 "Yb" = (
@@ -20499,6 +20681,23 @@
 	},
 /obj/roof/concrete,
 /turf/floor/plating/white,
+/area/caribbean/nomads/taiga)
+"Yj" = (
+/obj/structure/table/wood,
+/obj/roof/clay,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/obj/item/weapon/pen,
+/turf/floor/wood,
 /area/caribbean/nomads/taiga)
 "Yk" = (
 /obj/structure/simple_door/key_door/civ/mckellen{
@@ -20838,7 +21037,9 @@
 /area/caribbean/nomads/taiga)
 "Zc" = (
 /obj/covers/carpet/redcarpet,
-/obj/structure/simple_door/key_door/civ/room2,
+/obj/structure/simple_door/key_door/civ/room2{
+	unique_door_name = "Miscellaneous Ministry"
+	},
 /obj/roof/clay/black,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
@@ -41775,13 +41976,13 @@ Df
 Df
 Kp
 Kp
-zq
+aF
 Kp
 Kp
 Kp
 Kp
 Kp
-zq
+aF
 Kp
 Kp
 Df
@@ -66216,7 +66417,7 @@ Kc
 Oh
 nP
 nP
-nP
+Eu
 nP
 nP
 Oh
@@ -66581,7 +66782,7 @@ gR
 rq
 mb
 Br
-Cd
+Qn
 Qn
 Qn
 Qn
@@ -73022,7 +73223,7 @@ YE
 YE
 YE
 YE
-Nh
+Xc
 rq
 Ld
 Ld
@@ -73424,7 +73625,7 @@ Nf
 Fz
 YE
 YE
-Nh
+Xc
 rq
 Ld
 Ld
@@ -74325,7 +74526,7 @@ LZ
 tE
 rq
 rM
-rM
+Mc
 rM
 wr
 Ny
@@ -74457,7 +74658,7 @@ Rt
 oi
 Rt
 Rt
-Rt
+QJ
 Rt
 Rt
 oi
@@ -75141,7 +75342,7 @@ pu
 Ok
 KM
 Ok
-Ok
+xL
 Ok
 pu
 sU
@@ -78306,7 +78507,7 @@ Uc
 UI
 UI
 Uc
-yR
+DS
 Ld
 Ld
 Ld
@@ -78507,7 +78708,7 @@ CZ
 Ld
 FK
 CZ
-yR
+XJ
 Ld
 Ld
 Ld
@@ -79271,7 +79472,7 @@ Rt
 Rt
 Rt
 yM
-oo
+Xe
 ak
 Rt
 Rt
@@ -79477,7 +79678,7 @@ lL
 kK
 Cb
 hW
-hW
+Xl
 oM
 SC
 lL
@@ -79673,7 +79874,7 @@ Rt
 Rt
 Rt
 yM
-oo
+Xe
 ak
 kK
 Rt
@@ -80771,8 +80972,8 @@ mb
 ur
 Ii
 Ii
-LG
-LG
+Xy
+Yj
 tn
 LG
 LG
@@ -81785,7 +81986,7 @@ tn
 tn
 oY
 hz
-rq
+sA
 Wf
 Ld
 Ld
@@ -81986,7 +82187,7 @@ tn
 tn
 mb
 Cg
-rq
+sA
 Wf
 Ld
 Ld
@@ -82171,8 +82372,8 @@ rq
 rq
 rq
 rq
-sA
-sA
+rq
+rq
 rq
 jV
 Ix
@@ -82187,7 +82388,7 @@ tn
 tn
 Ix
 KZ
-rq
+sA
 Wf
 Ld
 Ld
@@ -82372,23 +82573,23 @@ rq
 rq
 rq
 rq
-sA
-sA
+rq
+rq
 rq
 jV
 nD
 tn
 JY
 Ul
-in
-vJ
 oa
+vJ
+xI
 uF
 HR
 tn
 nD
 VC
-rq
+sA
 Wf
 Ld
 Ld
@@ -82573,8 +82774,8 @@ rq
 rq
 rq
 rq
-sA
-sA
+rq
+rq
 rq
 jV
 Ix
@@ -82589,7 +82790,7 @@ tn
 tn
 Ix
 Qy
-rq
+sA
 Wf
 Ld
 Ld
@@ -82790,7 +82991,7 @@ tn
 tn
 mb
 AT
-rq
+sA
 Wf
 Ld
 Ld
@@ -82991,7 +83192,7 @@ tn
 tn
 oY
 hz
-rq
+sA
 Wf
 Ld
 Ld
@@ -83192,7 +83393,7 @@ HR
 tn
 oY
 Wx
-rq
+sA
 Wf
 Ld
 Ld
@@ -84552,7 +84753,7 @@ zZ
 zZ
 zZ
 rM
-rM
+Gj
 rM
 rM
 Tw
@@ -85967,7 +86168,7 @@ rM
 rM
 Tw
 oh
-rM
+Gj
 rM
 rM
 Id
@@ -87833,7 +88034,7 @@ Ld
 BB
 lm
 Qb
-zG
+yI
 Ld
 Ld
 DL
@@ -88008,9 +88209,9 @@ rq
 rq
 Il
 UU
-QO
+wV
 Li
-QO
+fO
 ns
 aE
 rq
@@ -88032,9 +88233,9 @@ Ld
 Ld
 Ld
 MQ
-VY
+ti
 yT
-Ku
+om
 Ld
 Ld
 DL
@@ -88410,9 +88611,9 @@ rq
 rq
 Il
 hX
-QO
+fy
 ve
-QO
+gL
 ic
 aE
 rq
@@ -89969,7 +90170,7 @@ JR
 JR
 rM
 Tw
-Tw
+py
 rM
 Xe
 FP
@@ -91217,7 +91418,7 @@ rM
 rM
 rM
 rM
-rM
+Gj
 Tw
 Tw
 Un
@@ -91676,7 +91877,7 @@ bC
 Yq
 Yq
 Xe
-Ld
+rP
 Ld
 Ld
 Ld
@@ -92149,7 +92350,7 @@ Tw
 Un
 Un
 Tw
-Tw
+py
 Tw
 sm
 sJ
@@ -92539,7 +92740,7 @@ sK
 sm
 sm
 sm
-sm
+ep
 sm
 jT
 uh
@@ -93439,7 +93640,7 @@ zZ
 Rk
 rM
 rM
-Tw
+py
 pX
 Tw
 rM
@@ -97521,29 +97722,29 @@ TT
 Pe
 Pe
 TT
-UP
-UP
-UP
-UP
-UP
-UP
+gy
+gy
+gy
+gy
+gy
+gy
 TT
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
-UP
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
+gy
 TT
 rq
 Ld
@@ -97728,7 +97929,7 @@ Ui
 Ui
 Ui
 Ui
-gy
+Pe
 Ui
 Ui
 Ui
@@ -97929,7 +98130,7 @@ Ui
 Ui
 Ui
 Ui
-gy
+Pe
 Ui
 sm
 sm
@@ -98268,7 +98469,7 @@ rM
 rM
 rM
 aA
-rq
+cA
 Ld
 Ld
 Ld
@@ -98300,7 +98501,7 @@ Wx
 rq
 rq
 rq
-oo
+Xe
 na
 UN
 UN
@@ -99314,7 +99515,7 @@ Ne
 Ne
 Yq
 oo
-Ld
+rP
 Ld
 Ld
 Ld
@@ -99708,7 +99909,7 @@ rq
 rq
 rq
 oo
-Ne
+Cd
 Yq
 Yq
 Yq
@@ -99782,7 +99983,7 @@ Tw
 jT
 Tw
 Tw
-Tw
+Vq
 Tw
 Tw
 Tw
@@ -100170,7 +100371,7 @@ sm
 Tw
 Tw
 Tw
-Tw
+py
 Tw
 jT
 uh
@@ -118763,11 +118964,11 @@ Dg
 Dg
 JG
 Cc
+RS
 Cc
+in
 Cc
-UB
-Cc
-UL
+PA
 Cc
 Fx
 bY
@@ -118964,11 +119165,11 @@ Dg
 Gr
 Fx
 Cc
+RS
 Cc
+in
 Cc
-UB
-Cc
-UL
+PA
 Cc
 Fx
 bY
@@ -119164,7 +119365,7 @@ xN
 Dg
 AZ
 Fx
-Cc
+QP
 Cc
 Cc
 Cc
@@ -119370,7 +119571,7 @@ AQ
 jf
 Fx
 Cc
-Cc
+RS
 Cc
 Fx
 bY
@@ -119571,7 +119772,7 @@ mC
 NF
 Fx
 Cc
-Cc
+RS
 Cc
 Fx
 bY
@@ -119973,7 +120174,7 @@ Cc
 Cc
 Fx
 Cc
-Cc
+RS
 Cc
 ge
 bY
@@ -120174,7 +120375,7 @@ Cc
 EH
 Wy
 Cc
-Cc
+RS
 Cc
 Af
 bY
@@ -122983,9 +123184,9 @@ SF
 Cc
 Cc
 Cc
-Cc
-Cc
-Cc
+Ky
+Ky
+Ky
 Cc
 Cc
 Cc
@@ -123586,9 +123787,9 @@ Wy
 Yd
 Cc
 Cc
-PA
-PA
-PA
+Cc
+Cc
+Cc
 Cc
 Cc
 sv
