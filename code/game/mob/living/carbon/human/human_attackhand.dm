@@ -17,7 +17,7 @@
 		if (H.hand)
 			temp = H.organs_by_name["l_hand"]
 		if (!temp || !temp.is_usable())
-			H << "<span class = 'red'>You can't use your hand.</span>"
+			to_chat(H, SPAN_RED("You can't use your hand."))
 			return
 	var/tgt = H.targeted_organ
 	if (H.targeted_organ == "random")
@@ -61,14 +61,14 @@
 					spawn(30)
 						cpr_time = TRUE
 
-					H.visible_message("<span class='danger'>\The [H] is trying perform CPR on \the [src]!</span>")
+					H.visible_message("<span class='danger'>\The [H] is trying perform CPR on \the [src]!</span>", "<span class ='notice'>You try to perform CPR on \the [src]!</span>", "You hear pumping.")
 
 					if (!do_after(H, 30, src))
 						return
 
 					adjustOxyLoss(-(min(getOxyLoss(), 5)))
 					updatehealth()
-					H.visible_message("<span class='danger'>\The [H] performs CPR on \the [src]!</span>")
+					H.visible_message("<span class='danger'>\The [H] performs CPR on \the [src]!</span>", "<span class ='notice'>You perform CPR on \the [src]! Repeat at least every <big>7</big> seconds.</span>", "You hear a gust of air going down a narrow tube.")
 					if (stat != DEAD)
 						to_chat(src, SPAN_NOTICE("You feel a breath of fresh air enter your lungs. It feels good."))
 					to_chat(H, SPAN_WARNING("Repeat at least every 7 seconds."))
@@ -133,14 +133,14 @@
 						return
 				for (var/obj/item/weapon/grab/G in grabbed_by)
 					if (G.assailant == M)
-						M << "<span class='notice'>You already grabbed [src].</span>"
+						to_chat(M, SPAN_NOTICE("You already grabbed [src]."))
 						return
 				if (w_uniform)
 					w_uniform.add_fingerprint(M)
 
 				var/obj/item/weapon/grab/G = new /obj/item/weapon/grab(M, src)
 				if (buckled)
-					M << "<span class='notice'>You cannot grab [src], \he is buckled in!</span>"
+					to_chat(M, SPAN_NOTICE("You cannot grab [src], \he is buckled in!"))
 				if (!G)	//the grab will delete itself in New if affecting is anchored
 					return
 				M.put_in_active_hand(G)
@@ -149,7 +149,7 @@
 
 				H.do_attack_animation(src)
 				playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
-				visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>")
+				M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
 				return TRUE
 			if (I_HARM)
 				var/tgtm = M.targeted_organ
@@ -158,11 +158,11 @@
 				if (tgtm == "mouth" && wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 					var/obj/item/weapon/grenade/G = wear_mask
 					if (!G.active)
-						visible_message("<span class='danger'>\The [M] pulls the pin from \the [src]'s [G.name]!</span>")
+						M.visible_message("<span class='danger'>\The [M] <big>pulls the pin</big> from \the [src]'s [G.name]!</span>", "<span class='danger'>You <big>pull the pin</big> from \the [src]'s [G.name]!</span>", "You hear the distinct sound of a pin being pulled.")
 						G.activate(M)
 						update_inv_wear_mask()
 					else
-						M << "<span class='warning'>\The [G] is already primed! Run!</span>"
+						to_chat(M, SPAN_WARNING("\The [G] is already primed! Run!"))
 					return
 
 				if (!istype(H))
@@ -179,7 +179,7 @@
 				var/obj/item/organ/external/affecting = get_organ(hit_zone)
 
 				if (!affecting || affecting.is_stump())
-					M << "<span class='danger'>They are missing that limb!</span>"
+					to_chat(M, SPAN_DANGER("They are missing that limb!"))
 					return TRUE
 
 				switch(a_intent)
