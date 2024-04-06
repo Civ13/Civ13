@@ -14,8 +14,8 @@ var/global/list/sparring_attack_cache = list()
 	var/deal_halloss
 	var/sparring_variant_type = /datum/unarmed_attack/light_strike
 
-	var/eye_attack_text = "fingers"
-	var/eye_attack_text_victim = "digits"
+	var/eye_attack_text = "fingers" // We put this here because if we were to initialize the variable as "fingers" in unarmed_attack/punch, it would turn into unarmed_attack/stomp, if the target is laying. So we define it here and over-write it on other things such as unarmed_attack/claws.
+	var/eye_attack_text_victim = "digits" // Same here, default for HUMANS. (ONLY used if the species can kill-grab and its probably from when there used to be more species and races that were removed from "AVAbattlegrounds"), shouldn't be a problem for GORILLAS.
 
 /datum/unarmed_attack/proc/get_sparring_variant()
 	if (sparring_variant_type)
@@ -103,10 +103,10 @@ var/global/list/sparring_attack_cache = list()
 
 /datum/unarmed_attack/proc/handle_eye_attack(var/mob/living/human/user, var/mob/living/human/target)
 	var/obj/item/organ/eyes/eyes = target.internal_organs_by_name["eyes"]
-	eyes.take_damage(rand(3,4), TRUE)
+	eyes.take_damage(rand(3,4), TRUE) // Roughly 4 eye_attacks to radial blind.
 
 	user.visible_message("<span class='danger'>[user] presses \his [eye_attack_text] into [target]'s [eyes.name]!</span>", "<span class = 'danger'>You press your [eye_attack_text] into [target]'s [eyes.name]!</span>")
-	target << "<span class='danger'>You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel "][eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]</span>"
+	to_chat(target, SPAN_DANGER("You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel "][eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]"))
 
 /datum/unarmed_attack/bite
 	attack_verb = list("bit")
