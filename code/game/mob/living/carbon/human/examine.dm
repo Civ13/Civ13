@@ -440,9 +440,9 @@
 		var/v = href_list["remove_embedded"]
 		var/user = hsrc
 		var/obj/embedded_obj = embedded[v]
-		visible_message("<span class = 'danger'>[user] starts to pull [embedded_obj] out of [src].</span>")
+		visible_message("<span class = 'danger'>[user] starts to pull \the [embedded_obj] out of [src].</span>")
 		if (do_after(user, 15 * embedded_obj.w_class, src))
-			visible_message("<span class = 'danger'>[user] pulls [embedded_obj] out of [src]!</span>")
+			visible_message("<span class = 'danger'>[user] pulls \the [embedded_obj] out of [src]!</span>")
 			emote("painscream")
 			adjustBruteLoss(rand(10,15))
 		embedded -= embedded_obj

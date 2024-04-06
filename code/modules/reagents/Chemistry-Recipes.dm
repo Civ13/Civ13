@@ -221,7 +221,8 @@ datum/admins/proc/print_chemical_reactions()
 //this is called just before reactants are removed.
 /datum/chemical_reaction/proc/send_data(var/datum/reagents/holder, var/reaction_limit)
 	return null
-/* aLL new chemicals will be added from the top going down starting from */
+
+/* all new chemicals will be added from the top going down starting from */
 // https://discord.com/channels/468979034571931648/1127619013447520266/1127644788502564864
 /* Common reactions */
 
@@ -391,16 +392,16 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 4, "hydrogen" = 8)
 	result_amount = 5
 
-/* We can just make isobutylene
+// Also known as 2-methyl-1-propanol, is an alcohol commonly used as a solvent in various industries, including paints, coatings, and printing inks. It is also used as a fuel additive and in the production of chemicals like esters and plasticizers.
 /datum/chemical_reaction/isobutanol
 	name = "Isobutanol"
 	id = "isobutanol"
 	result = "isobutanol"
 	required_reagents = list("carbon" = 4, "hydrogen" = 10, "oxygen" = 1)
 	result_amount = 5
-*/
 
 // Mostly used for butyl rubber production, refrigeration, adhesives, polymers, fuel and fuel additive
+// Also known as 2-methylpropene, is an alkene primarily used in the production of polymers such as polyethylene and polypropylene. It is also used in the synthesis of various chemicals, including methyl tert-butyl ether (MTBE) and what is listed above.
 /datum/chemical_reaction/isobutylene
 	name = "Isobutylene"
 	id = "isobutylene"

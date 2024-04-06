@@ -1836,10 +1836,6 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/nomads/taiga)
-"ev" = (
-/obj/structure/wild/smallbush/winter,
-/turf/floor/winter/grass,
-/area/caribbean)
 "ew" = (
 /obj/effect/floor_decal/steeldecal/steel_decals5,
 /obj/roof/concrete,
@@ -3375,9 +3371,6 @@
 	},
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
-"ik" = (
-/turf/floor/plating/road,
-/area/caribbean)
 "il" = (
 /obj/covers/wood,
 /obj/structure/piano,
@@ -3665,9 +3658,6 @@
 /obj/structure/wild/tree/live_tree/snow,
 /turf/floor/dirt/winter,
 /area/caribbean/nomads/taiga)
-"iW" = (
-/turf/floor/dirt/dust,
-/area/caribbean)
 "iX" = (
 /obj/structure/railing/steel{
 	dir = 8;
@@ -7720,9 +7710,6 @@
 /obj/roof/clay,
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
-"tg" = (
-/turf/floor/plating/cobblestone/vertical,
-/area/caribbean)
 "th" = (
 /obj/structure/closet/anchored,
 /obj/item/clothing/under/industrial5,
@@ -14034,10 +14021,6 @@
 /obj/structure/grille/chainlinkfence,
 /turf/floor/dirt/winter,
 /area/caribbean/nomads/taiga)
-"Ie" = (
-/obj/structure/wild/tree/live_tree/pine/snow,
-/turf/floor/winter,
-/area/caribbean)
 "Ig" = (
 /obj/structure/table/modern/table,
 /obj/covers/carpet/greencarpet,
@@ -15114,13 +15097,6 @@
 /obj/roof/concrete,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
-"KB" = (
-/obj/structure/grille/chainlinkfence{
-	icon_state = "chainlinkfence";
-	dir = 8
-	},
-/turf/floor/dirt/winter,
-/area/caribbean)
 "KC" = (
 /obj/structure/railing{
 	icon_state = "railing0";
@@ -18580,13 +18556,6 @@
 /obj/structure/multiz/ladder/ww2,
 /turf/floor/broken_floor,
 /area/caribbean/nomads/taiga)
-"Th" = (
-/obj/structure/sign/traffic/central{
-	dir = 4;
-	pixel_x = -16
-	},
-/turf/floor/plating/road,
-/area/caribbean)
 "Ti" = (
 /obj/structure/closet/crate/empty/large,
 /obj/item/weapon/reagent_containers/food/condiment/flour,
@@ -20282,9 +20251,6 @@
 	},
 /turf/floor/wood,
 /area/caribbean/nomads/taiga)
-"Xq" = (
-/turf/floor/winter,
-/area/caribbean)
 "Xr" = (
 /obj/structure/lamp/lamp_big{
 	dir = 8
@@ -20669,9 +20635,6 @@
 /obj/roof/concrete,
 /turf/floor/plating/tiled/woodv,
 /area/caribbean/nomads/taiga)
-"Yh" = (
-/turf/floor/winter/grass,
-/area/caribbean)
 "Yi" = (
 /obj/effect/floor_decal/corner/green/border{
 	dir = 1
@@ -85928,7 +85891,7 @@ rq
 rq
 rq
 rq
-tg
+rq
 "}
 (123,1,2) = {"
 JR
@@ -86129,7 +86092,7 @@ rq
 rq
 rq
 rq
-tg
+rq
 "}
 (124,1,2) = {"
 rM
@@ -86330,7 +86293,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (125,1,2) = {"
 zZ
@@ -86531,7 +86494,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (126,1,2) = {"
 zZ
@@ -86732,7 +86695,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (127,1,2) = {"
 zZ
@@ -86933,7 +86896,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (128,1,2) = {"
 zZ
@@ -87134,7 +87097,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (129,1,2) = {"
 zZ
@@ -87335,7 +87298,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (130,1,2) = {"
 zZ
@@ -87536,7 +87499,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (131,1,2) = {"
 zZ
@@ -87737,7 +87700,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (132,1,2) = {"
 zZ
@@ -87938,7 +87901,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (133,1,2) = {"
 zZ
@@ -88139,7 +88102,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (134,1,2) = {"
 zZ
@@ -88340,7 +88303,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (135,1,2) = {"
 zZ
@@ -88541,7 +88504,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (136,1,2) = {"
 zZ
@@ -88742,7 +88705,7 @@ Ui
 Ui
 Ui
 Ui
-iW
+Ui
 "}
 (137,1,2) = {"
 zZ
@@ -88943,7 +88906,7 @@ rq
 rq
 rq
 rq
-tg
+rq
 "}
 (138,1,2) = {"
 zZ
@@ -89144,7 +89107,7 @@ Ld
 Ld
 Ld
 Ld
-ik
+Ld
 "}
 (139,1,2) = {"
 zZ
@@ -89345,7 +89308,7 @@ Ld
 Ld
 Ld
 Ld
-ik
+Ld
 "}
 (140,1,2) = {"
 zZ
@@ -89546,7 +89509,7 @@ BK
 Ld
 BK
 Ld
-Th
+BK
 "}
 (141,1,2) = {"
 zZ
@@ -89747,7 +89710,7 @@ Ld
 Ld
 Ld
 Ld
-ik
+Ld
 "}
 (142,1,2) = {"
 zZ
@@ -89948,7 +89911,7 @@ Ld
 Ld
 Ld
 Ld
-ik
+Ld
 "}
 (143,1,2) = {"
 zZ
@@ -90149,7 +90112,7 @@ rq
 rq
 rq
 rq
-tg
+rq
 "}
 (144,1,2) = {"
 zZ
@@ -90350,7 +90313,7 @@ ls
 ls
 ls
 ls
-KB
+ls
 "}
 (145,1,2) = {"
 zZ
@@ -90551,7 +90514,7 @@ sm
 jT
 uh
 Pi
-Ie
+uh
 "}
 (146,1,2) = {"
 zZ
@@ -90752,7 +90715,7 @@ sm
 sm
 sm
 sm
-ev
+jT
 "}
 (147,1,2) = {"
 zZ
@@ -90953,7 +90916,7 @@ sm
 Ei
 sm
 sm
-Ie
+uh
 "}
 (148,1,2) = {"
 zZ
@@ -91154,7 +91117,7 @@ Tw
 uh
 sK
 sm
-Yh
+sm
 "}
 (149,1,2) = {"
 zZ
@@ -91355,7 +91318,7 @@ Tw
 Tw
 Tw
 jT
-Xq
+Tw
 "}
 (150,1,2) = {"
 zZ
@@ -91556,7 +91519,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (151,1,2) = {"
 zZ
@@ -91757,7 +91720,7 @@ Tw
 uh
 Tw
 Tw
-Xq
+Tw
 "}
 (152,1,2) = {"
 zZ
@@ -91958,7 +91921,7 @@ uh
 Pi
 uh
 sm
-LR
+rM
 "}
 (153,1,2) = {"
 zZ
@@ -92159,7 +92122,7 @@ sm
 sm
 jT
 sJ
-Yh
+sm
 "}
 (154,1,2) = {"
 zZ
@@ -92360,7 +92323,7 @@ sm
 sm
 uh
 sm
-Yh
+sm
 "}
 (155,1,2) = {"
 zZ
@@ -92561,7 +92524,7 @@ sK
 sm
 sm
 sm
-Yh
+sm
 "}
 (156,1,2) = {"
 zZ
@@ -92762,7 +92725,7 @@ Tw
 jT
 Tw
 sJ
-Yh
+sm
 "}
 (157,1,2) = {"
 zZ
@@ -92963,7 +92926,7 @@ Tw
 uh
 Tw
 Un
-Xq
+Tw
 "}
 (158,1,2) = {"
 zZ
@@ -93164,7 +93127,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (159,1,2) = {"
 zZ
@@ -93365,7 +93328,7 @@ Tw
 uh
 Tw
 Tw
-Ie
+uh
 "}
 (160,1,2) = {"
 zZ
@@ -93566,7 +93529,7 @@ uh
 Tw
 uh
 Tw
-Xq
+Tw
 "}
 (161,1,2) = {"
 zZ
@@ -93767,7 +93730,7 @@ Tw
 uh
 Tw
 uh
-Ie
+uh
 "}
 (162,1,2) = {"
 zZ
@@ -93968,7 +93931,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (163,1,2) = {"
 zZ
@@ -94169,7 +94132,7 @@ uh
 Pi
 uh
 Tw
-Xq
+Tw
 "}
 (164,1,2) = {"
 zZ
@@ -94370,7 +94333,7 @@ sm
 sm
 jT
 uh
-Ie
+uh
 "}
 (165,1,2) = {"
 rM
@@ -94571,7 +94534,7 @@ sm
 sm
 uh
 Tw
-Xq
+Tw
 "}
 (166,1,2) = {"
 JR
@@ -94772,7 +94735,7 @@ sK
 sm
 sm
 Tw
-LR
+rM
 "}
 (167,1,2) = {"
 JR
@@ -94973,7 +94936,7 @@ Tw
 jT
 Tw
 Tw
-Yh
+sm
 "}
 (168,1,2) = {"
 JR
@@ -95174,7 +95137,7 @@ Tw
 uh
 Tw
 uh
-Yh
+sm
 "}
 (169,1,2) = {"
 JR
@@ -95375,7 +95338,7 @@ Tw
 Tw
 Tw
 Tw
-Yh
+sm
 "}
 (170,1,2) = {"
 wW
@@ -95576,7 +95539,7 @@ Tw
 Tw
 Tw
 uh
-Yh
+sm
 "}
 (171,1,2) = {"
 rM
@@ -95777,7 +95740,7 @@ uh
 Tw
 uh
 Tw
-Xq
+Tw
 "}
 (172,1,2) = {"
 zZ
@@ -95978,7 +95941,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (173,1,2) = {"
 zZ
@@ -96179,7 +96142,7 @@ Tw
 uh
 Tw
 Tw
-Ie
+uh
 "}
 (174,1,2) = {"
 zZ
@@ -96380,7 +96343,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (175,1,2) = {"
 zZ
@@ -96581,7 +96544,7 @@ Tw
 Tw
 Tw
 uh
-Ie
+uh
 "}
 (176,1,2) = {"
 zZ
@@ -96782,7 +96745,7 @@ uh
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (177,1,2) = {"
 zZ
@@ -96983,7 +96946,7 @@ sm
 Ei
 sm
 sm
-Ie
+uh
 "}
 (178,1,2) = {"
 Eq
@@ -97184,7 +97147,7 @@ Tw
 uh
 sK
 sm
-Yh
+sm
 "}
 (179,1,2) = {"
 rM
@@ -97385,7 +97348,7 @@ Tw
 Tw
 Tw
 jT
-Xq
+Tw
 "}
 (180,1,2) = {"
 rM
@@ -97586,7 +97549,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (181,1,2) = {"
 rM
@@ -97787,7 +97750,7 @@ Tw
 uh
 Tw
 Tw
-Xq
+Tw
 "}
 (182,1,2) = {"
 rM
@@ -97988,7 +97951,7 @@ Tw
 Tw
 sm
 sm
-LR
+rM
 "}
 (183,1,2) = {"
 rM
@@ -98189,7 +98152,7 @@ uh
 Pi
 sm
 sJ
-Yh
+sm
 "}
 (184,1,2) = {"
 rM
@@ -98390,7 +98353,7 @@ sm
 sm
 sm
 sm
-Yh
+sm
 "}
 (185,1,2) = {"
 rM
@@ -98591,7 +98554,7 @@ sm
 sm
 sm
 sm
-Yh
+sm
 "}
 (186,1,2) = {"
 Ui
@@ -98792,7 +98755,7 @@ sK
 Mh
 sm
 sJ
-Yh
+sm
 "}
 (187,1,2) = {"
 Ui
@@ -98993,7 +98956,7 @@ Tw
 jT
 Un
 Un
-Xq
+Tw
 "}
 (188,1,2) = {"
 Ui
@@ -99194,7 +99157,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (189,1,2) = {"
 Ui
@@ -99395,7 +99358,7 @@ Tw
 uh
 Tw
 Tw
-Ie
+uh
 "}
 (190,1,2) = {"
 Ui
@@ -99596,7 +99559,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (191,1,2) = {"
 Ui
@@ -99797,7 +99760,7 @@ Tw
 Tw
 Tw
 uh
-Ie
+uh
 "}
 (192,1,2) = {"
 Ui
@@ -99998,7 +99961,7 @@ uh
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (193,1,2) = {"
 Ui
@@ -100199,7 +100162,7 @@ Tw
 uh
 Tw
 Tw
-Ie
+uh
 "}
 (194,1,2) = {"
 Ui
@@ -100400,7 +100363,7 @@ Tw
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (195,1,2) = {"
 Ui
@@ -100601,7 +100564,7 @@ Tw
 Tw
 Tw
 uh
-Ie
+uh
 "}
 (196,1,2) = {"
 Ui
@@ -100802,7 +100765,7 @@ uh
 Tw
 Tw
 Tw
-Xq
+Tw
 "}
 (197,1,2) = {"
 Ui
@@ -101003,7 +100966,7 @@ Tw
 Tw
 Tw
 rM
-LR
+rM
 "}
 (198,1,2) = {"
 Ui
@@ -101204,7 +101167,7 @@ rM
 rM
 rM
 rM
-LR
+rM
 "}
 (199,1,2) = {"
 Ui
