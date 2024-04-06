@@ -61,6 +61,7 @@
 	..()
 	overlay = global_hud.thermal
 
+
 /obj/item/clothing/glasses/thermal/modern
 	name = "Modern Thermal Vision Goggles"
 	desc = "Modern Set of thermal vision goggles which also allow you to see in the dark."
