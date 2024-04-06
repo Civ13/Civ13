@@ -105,7 +105,7 @@
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			to_chat(user, "You put the [I] in the [src].") // We don't include \the here as all of the rockets are proper-nouned, so it would output badly, e.g: "You put PG-7V rocket in RPG-7.".
+			to_chat(user, "You put the [I] into the [src].") // We don't include \the here as all of the rockets are proper-nouned, so it would output badly, e.g: "You put PG-7V rocket in RPG-7.".
 			update_icon()
 		else
 			to_chat(user, "\The [src] cannot hold more rockets.")
@@ -629,7 +629,7 @@
 
 /obj/item/ammo_casing/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
-	name = "Nuclear Warhead"
+	name = "Nuclear warhead"
 	desc = "A nuclear fucking warhead, you might want to step back a bit..."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "nuclear"
