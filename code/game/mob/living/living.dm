@@ -688,7 +688,7 @@ default behaviour is:
 		return FALSE
 
 	if (ckey || client)
-		to_chat(possesor, SPAN_WARNING("\The [src] already has a player."))
+		to_chat(possessor, SPAN_WARNING("\The [src] already has a player."))
 		return FALSE
 
 	message_admins("<span class='adminnotice'>[key_name_admin(possessor)] has taken control of \the [src].</span>", key_name_admin(possessor))
