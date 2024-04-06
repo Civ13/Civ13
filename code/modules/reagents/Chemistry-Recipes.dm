@@ -976,12 +976,12 @@ datum/admins/proc/print_chemical_reactions()
 		new /obj/item/weapon/reagent_containers/food/snacks/meatball(location)
 	return
 
-/datum/chemical_reaction/dough
+/* /datum/chemical_reaction/dough
 	name = "Dough"
 	id = "dough"
 	result = null
 	required_reagents = list("water" = 5, "flour" = 10)
-	result_amount = 1
+	result_amount = 1 */
 
 /datum/chemical_reaction/sweetdough
 	name = "Sweet Dough"
