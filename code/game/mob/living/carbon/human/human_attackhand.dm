@@ -68,9 +68,9 @@
 
 					adjustOxyLoss(-(min(getOxyLoss(), 5)))
 					updatehealth()
-					H.visible_message("<span class='danger'>\The [H] performs CPR on \the [src]!</span>")
+					H.visible_message("<span class='danger'>\The [H] performs CPR on \the [src]!</span>", "<span class ='notice'>You perform CPR on \the [src]! Repeat at least every <big>7</big> seconds.</span>", "You hear a gust of air going down a narrow tube.")
 					if (stat != DEAD)
-						to_chat(src, SPAN_NOTICE("You feel a breath of fresh air enter your lungs. It feels good.", "<span class ='notice'>You perform CPR on \the [src]!</span>", "You hear a gust of air going down a narrow tube.")))
+						to_chat(src, SPAN_NOTICE("You feel a breath of fresh air enter your lungs. It feels good."))
 					to_chat(H, SPAN_WARNING("Repeat at least every 7 seconds."))
 					if(is_asystole())
 						if(prob(5/H.getStatCoeff("medical")))
