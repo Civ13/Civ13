@@ -428,7 +428,7 @@
 
 /obj/item/ammo_magazine/aps
 	name = "Stechkin APS magazine (9x18mm)"
-	icon_state = "m1911" //temporary, to be changed
+	icon_state = "m1911" //temporary, to be changed.
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x18
 	caliber = "a9x18"
@@ -448,7 +448,7 @@
 	weight = 0.33
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/glock17/vector
+/obj/item/ammo_magazine/glock17/victor //temporary, to be changed.
 	name = "Kriss Vector magazine (9x19mm)"
 	icon_state = "glock17"
 	mag_type = MAGAZINE
