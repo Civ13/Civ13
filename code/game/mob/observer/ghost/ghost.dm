@@ -162,7 +162,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	// remove ambient sounds
 	stop_ambience(src)
 	if (map && map.battleroyale)
-		world << "<big><font color='red'><b>[client.ckey]</b> has died at ([x],[y])! <b>[alive_n_of_side(PIRATES)]</b> remaining.</font></big>"
+		to_chat(world, "<big><font color='red'><b>[client.ckey]</b> has died at ([x],[y])! <b>[alive_n_of_side(PIRATES)]</b> remaining.</font></big>")
 	if (key)
 		var/mob/observer/ghost/ghost = new(src)	//Transfer safety to observer spawning proc.
 		ghost.can_reenter_corpse = can_reenter_corpse

@@ -1,7 +1,7 @@
 /obj/map_metadata/port_arthur
 	ID = MAP_PORT_ARTHUR
 	title = "Port Arthur"
-	lobby_icon = "icons/lobby/ww1.png"
+	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	no_hardcore = TRUE
@@ -24,6 +24,8 @@
 	songs = list(
 		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg")
 	gamemode = "Siege"
+	var/no_loop_arth = FALSE
+	
 /obj/map_metadata/port_arthur/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
@@ -96,7 +98,7 @@
 	else
 		return ""
 
-var/no_loop_arth = FALSE
+
 /obj/map_metadata/port_arthur/update_win_condition()
 
 	if (world.time >= 18000)

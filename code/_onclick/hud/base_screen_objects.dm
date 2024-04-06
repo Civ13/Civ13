@@ -474,11 +474,19 @@
 	update_icon()
 
 /obj/screen/inventory/hand/Click()
-	var/mob/living/human/C = parentmob
-	if (slot_id == slot_l_hand)
-		C.activate_hand("l")
-	else
-		C.activate_hand("r")
+	if (!(findtext(icon_state, "act_")))
+		if (name == "Left Hand")
+			if (istype(parentmob.r_hand, /obj/item/ammo_casing) && istype(parentmob.l_hand, /obj/item/weapon/gun/projectile))
+				var/obj/item/weapon/gun/projectile/gun = parentmob.l_hand
+				gun.load_ammo(parentmob.r_hand, parentmob)
+			else
+				parentmob.swap_hand()
+		else if (name == "Right Hand")
+			if (istype(parentmob.l_hand, /obj/item/ammo_casing) && istype(parentmob.r_hand, /obj/item/weapon/gun/projectile))
+				var/obj/item/weapon/gun/projectile/gun = parentmob.r_hand
+				gun.load_ammo(parentmob.l_hand, parentmob)
+			else
+				parentmob.swap_hand()
 
 /obj/screen/inventory/hand/update_icon()
 	if (slot_id == (parentmob.hand ? slot_l_hand : slot_r_hand)) //���e aa���e ������� o�aa ���a�a�a�� ��a��
@@ -1219,7 +1227,7 @@ obj/screen/tactic
 		underlays |= list(blind_icon)
 //	else
 //		underlays.Remove(list(blind_icon))
-//	world << underlays.len
+//	to_chat(world, underlays.len)
 
 /obj/screen/frippery
 	name = ""

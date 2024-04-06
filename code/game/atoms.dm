@@ -174,8 +174,8 @@
 			f_name += "oil-stained [name][infix]."
 	if (!isobserver(user))
 		user.visible_message("<font size=1>[user.name] looks at [src].</font>")
-	user << "\icon[src] That's [f_name] [suffix]"
-	user << desc
+	to_chat(user, "\icon[src] That's [f_name] [suffix]")
+	to_chat(user, desc)
 
 	return distance == -1 || (get_dist(src, user) <= distance)
 
@@ -477,8 +477,8 @@
 		return
 
 	if(user.handcuffed && prob(45) && !user.incapacitated(INCAPACITATION_FORCELYING))//User can fail to kick smbd if cuffed
-		user.visible_message("<span class='danger'>[user.name] loses \his balance while trying to kick \the [src].</span>", \
-					"<span class='warning'> You lost your balance.</span>")
+		user.visible_message(SPAN_DANGER("[user.name] loses \his balance while trying to kick \the [src]."), \
+                    " You lost your balance.")
 		user.Weaken(1)
 		return
 
@@ -505,7 +505,7 @@
 		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm") || user.werewolf)
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
-				user << "<span class='notice'>[src] is missing that body part.</span>"
+				to_chat(user, SPAN_NOTICE("[src] is missing that body part."))
 				return FALSE
 			else
 				visible_message("<span class='danger'>[user] bites the [src]'s [affecting.name]!</span>","<span class='danger'>You bite the [src]'s [affecting.name]!</span>")
@@ -532,7 +532,7 @@
 							target.visible_message("<span class='danger'>[target] drops \the [target.r_hand]!</span>")
 							target.drop_r_hand()
 		else
-			user << "<span class='notice'>You cannot bite that part of the body, it's too far away!</span>"
+			to_chat(user, SPAN_NOTICE("You cannot bite that part of the body, it's too far away!"))
 			return FALSE
 
 		user.setClickCooldown(25)
@@ -565,7 +565,7 @@
 			return
 	for (var/obj/O in get_turf(target))
 		if (O.density)
-			user << "<span class='danger'>You hit the [O]!</span>"
+			to_chat(user, SPAN_DANGER("You hit the [O]!"))
 			user.adjustBruteLoss(rand(2,7))
 			user.Weaken(2)
 			user.setClickCooldown(22)
@@ -576,7 +576,7 @@
 		var/dir_to_tgt = get_dir(user,target)
 		for(var/obj/O in range(1,user))
 			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/barrier/railing)))
-				user << "<span class='danger'>You hit the [O]!</span>"
+				to_chat(user, SPAN_DANGER("You hit the [O]!"))
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
 				user.setClickCooldown(22)
@@ -584,7 +584,7 @@
 			if (istype(O, /obj/structure/vehicleparts/frame))
 				var/obj/structure/vehicleparts/frame/F = O
 				if (!F.CanPass())
-					user << "<span class='danger'>You hit the [F.axis]!</span>"
+					to_chat(user, SPAN_DANGER("You hit the [F.axis]!"))
 					user.adjustBruteLoss(rand(2,7))
 					user.Weaken(2)
 					user.setClickCooldown(22)
@@ -592,7 +592,7 @@
 
 		for(var/turf/T in range(1,user))
 			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
-				user << "<span class='danger'>You hit the [T]!</span>"
+				to_chat(user, SPAN_DANGER("You hit the [T]!"))
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
 				user.setClickCooldown(22)
@@ -601,14 +601,14 @@
 		var/dir_to_tgt = get_dir(user,target)
 		for(var/obj/O in range(2,user))
 			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/barrier/railing)))
-				user << "<span class='danger'>You hit the [O]!</span>"
+				to_chat(user, SPAN_DANGER("You hit the [O]!"))
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
 				user.setClickCooldown(22)
 				return
 		for(var/turf/T in range(2,user))
 			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
-				user << "<span class='danger'>You hit the [T]!</span>"
+				to_chat(user, SPAN_DANGER("You hit the [T]!"))
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
 				user.setClickCooldown(22)

@@ -14,7 +14,7 @@
 
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute 
 			if(faction != PIRATES && behaviour == "hostile")
 				charge()
 

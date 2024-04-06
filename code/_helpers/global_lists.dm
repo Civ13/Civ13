@@ -110,11 +110,16 @@ var/global/faction1_supply_points = 1600
 var/global/faction2_supply_points = 1600
 
 //Aircraft Stuff
-var/global/faction1_aircraft_remaining = 3
-var/global/faction2_aircraft_remaining = 3
+var/global/faction1_aircraft_cooldown = 0
+var/global/faction2_aircraft_cooldown = 0
 
-var/global/faction1_airstrikes_remaining = 12
-var/global/faction2_airstrikes_remaining = 12
+var/global/faction1_aircraft_rearming = 0
+var/global/faction2_aircraft_rearming = 0
+
+var/global/faction1_airstrikes_max = list(10, 4, 1) // Airstrikes size: light , medium, large
+var/global/faction2_airstrikes_max = list(10, 4, 1) // Airstrikes size: light , medium, large
+var/global/faction1_airstrikes_remaining = list(10, 4, 1)
+var/global/faction2_airstrikes_remaining = list(10, 4, 1)
 
 // for mass deletion
 var/global/list/bullet_casings = list()
@@ -296,5 +301,5 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 			var/list/L = chemical_reactions_list[reaction]
 			for (var/t in L)
 				. += "	has: [t]\n"
-	world << .
+	to_chat(world, .)
 */

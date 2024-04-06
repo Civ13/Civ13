@@ -19,12 +19,12 @@ bullet_act
 			grabbed_by_user = TRUE
 	if (user.a_intent == I_HELP && gender == MALE && istype(W,/obj/item/weapon/material/kitchen/utensil/knife/circumcision))
 		if (circumcised)
-			user << "<span class = 'notice'>[src]is already circumcised!</span>"
+			to_chat(user, SPAN_NOTICE("[src]is already circumcised!</span>"))
 			return
 		else
-			visible_message("<span class = 'notice'>[user] starts to circumcise [src]...</span>")
+			visible_message(SPAN_NOTICE("[user] starts to circumcise [src]..."))
 			if (do_after(user, 90, src) && !circumcised)
-				visible_message("<span class = 'notice'>[user] successfully circumcises [src].</span>")
+				visible_message(SPAN_NOTICE("[user] successfully circumcises [src]."))
 				circumcised = TRUE
 				return
 
@@ -34,11 +34,11 @@ bullet_act
 			var/mob/living/human/H = user
 			if (istype(H))
 				if (map && map.ID == MAP_THE_ART_OF_THE_DEAL && H.civilization != "Professional")
-					user << "<span class = 'warning'>You're not sure about this, better call a professional...</span>"
+					to_chat(user, SPAN_WARNING("You're not sure about this, better call a professional..."))
 				else
-					user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+					user.visible_message(SPAN_NOTICE("[user] starts to butcher [src]."))
 					if (do_after(user, 1200, src))
-						user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+						user.visible_message(SPAN_NOTICE("[user] butchers [src] into a few meat slabs."))
 						if (!crab)
 							for(var/i=1;i<=4;i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
@@ -599,7 +599,7 @@ bullet_act
 
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting || affecting.is_stump())
-		user << "<span class='danger'>They are missing that limb!</span>"
+		to_chat(user, SPAN_DANGER("They are missing that limb!"))
 		return null
 
 	return hit_zone
@@ -861,7 +861,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-20)
-				mood -= 15
+				mood -= 8
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -871,7 +871,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-5)
-				mood -= 5
+				mood -= 3
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -881,7 +881,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-3)
-				mood -= 3
+				mood -= 2
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -1032,7 +1032,7 @@ bullet_act
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())
-		user << "<span class='danger'>They are missing that limb!</span>"
+		to_chat(user, SPAN_DANGER("They are missing that limb!"))
 		return
 
 	var/armour = run_armor_check(hit_zone, "melee")
@@ -1049,7 +1049,7 @@ bullet_act
 						break
 				src.throw_at(target, rand(1,3), src.throw_speed)
 			if(user.lying)
-				user << "[too_high_message]"
+				to_chat(user, "[too_high_message]")
 				return
 
 		if("mouth")//If we aim for the mouth then we kick their teeth out.
@@ -1058,12 +1058,12 @@ bullet_act
 					var/obj/item/organ/external/head/U = affecting
 					U.knock_out_teeth(get_dir(user, src), rand(1,3))//Knocking out one tooth at a time.
 			else
-				user << "[too_high_message]"
+				to_chat(user, "[too_high_message]")
 				return
 
 		if("head")
 			if(!lying)
-				user << "[too_high_message]"
+				to_chat(user, "[too_high_message]")
 				return
 
 	var/kickdam = rand(0,15)

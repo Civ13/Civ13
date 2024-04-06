@@ -136,10 +136,12 @@
 	New()
 		..()
 		reagents.add_reagent("batrachotoxin",15)
-/obj/item/projectile/arrow/arrow/fire/on_impact(mob/living/human/M as mob)
-	if (prob(10))
-		M.fire_stacks += 1
-	if (M)
+
+/obj/item/projectile/arrow/arrow/fire/on_impact(var/atom/A)
+	if (A && ishuman(A))
+		var/mob/living/M = A
+		if (prob(10))
+			M.fire_stacks += 1
 		M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
@@ -218,14 +220,17 @@
 	gibs = TRUE
 	crushes = TRUE
 
-/obj/item/projectile/arrow/bolt/fire/on_impact(mob/living/human/M as mob)
-	if (prob(10))
-		M.fire_stacks += 1
-	if (M)
-		M.IgniteMob()
+/obj/item/projectile/arrow/bolt/fire/on_impact(var/atom/A)
+	if (A && isliving(A))
+		var/mob/living/M = A
+		if (prob(10))
+			M.fire_stacks += 1
+		if (M)
+			M.IgniteMob()
 	spawn (0.01)
 		qdel(src)
 	..()
+
 
 /obj/item/projectile/arrow/bolt/vial
 	damage = DAMAGE_MEDIUM
@@ -234,7 +239,7 @@
 	icon_state = "bolt_vial"
 	volume = 15
 
-/obj/item/projectile/arrow/on_impact(var/atom/A as mob)
+/obj/item/projectile/arrow/on_impact(var/atom/A)
 	if (istype(src, /obj/item/projectile/arrow/bolt/vial) || istype(src, /obj/item/projectile/arrow/arrow/vial))
 		if (reagents)
 			if (ishuman(A))
@@ -503,7 +508,7 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
-	
+
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	..()
 	damage = (damage)/2
@@ -674,6 +679,11 @@
 	penetrating = 5
 	armor_penetration = 42
 
+/obj/item/projectile/bullet/rifle/a357
+	damage = DAMAGE_HIGH+30
+	penetrating = 2
+	armor_penetration = 12
+
 // Shotguns
 
 /obj/item/projectile/bullet/pellet/buckshot
@@ -693,7 +703,7 @@
 	armor_penetration = 0
 	agony = 60
 	check_armor = "melee"
-	
+
 	embed = FALSE
 	sharp = FALSE
 
@@ -701,7 +711,7 @@
 	name = "breaching slug"
 	damage = DAMAGE_LOW + 5
 	armor_penetration = 10
-	
+
 	embed = FALSE
 	sharp = FALSE
 
@@ -726,13 +736,31 @@
 
 /obj/item/projectile/bullet/autocannon/frag/on_impact(var/atom/A)
 	impact_effect(effect_transform)
-	
+
 	var/turf/T = get_turf(A)
 	explosion(T, 0, 0, 1, 1)
 	if (incendiary)
 		ignite_turf(T,8,40)
 
 	fragmentate(T, num_fragments, spread_range, fragment_type)
+
+/obj/item/projectile/bullet/autocannon/a20mm_aphe
+	damage = DAMAGE_OH_GOD + 12
+	penetrating = 36
+	armor_penetration = 36
+	heavy_armor_penetration = 36
+
+/obj/item/projectile/bullet/autocannon/a25mm_ap
+	damage = DAMAGE_VERY_HIGH + 10
+	penetrating = 20
+	armor_penetration = 40
+	heavy_armor_penetration = 20
+
+/obj/item/projectile/bullet/autocannon/frag/a25mm_he
+	damage = DAMAGE_MEDIUM
+	penetrating = 0
+	armor_penetration = 0
+	heavy_armor_penetration = 0
 
 /obj/item/projectile/bullet/autocannon/a30mm_ap
 	damage = DAMAGE_OH_GOD + 12
@@ -765,4 +793,3 @@
 	var/turf/T = get_turf(A)
 	explosion(T, 0, 0, 1, 1)
 	..()
-	

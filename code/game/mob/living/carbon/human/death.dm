@@ -88,13 +88,13 @@
 					if (civilization == "Yamaguchi-Gumi")
 						if (original_job && original_job.title == "Yama Wakagashira")
 							map.scores["Ichiwa-Kai"] += 10
-							world << "<font color='red' size=3>The <b>Yamaguchi-Gumi</b> underboss has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>The <b>Yamaguchi-Gumi</b> underboss has been killed!</font>")
 						else
 							map.scores["Ichiwa-Kai"] += 1
 					else
 						if (original_job && original_job.title == "Ichi Wakagashira")
 							map.scores["Yamaguchi-Gumi"] += 10
-							world << "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>The <b>Ichiwa-Kai</b> underboss has been killed!</font>")
 						else
 							map.scores["Yamaguchi-Gumi"] += 1
 
@@ -103,10 +103,10 @@
 					if (civilization == "Russian Army")
 						if (original_job && original_job.title == "Russian Army Sergeant")
 							map.scores["Militia"] += 5
-							world << "<font color='red' size=3>A <b>Russian Army</b> Sergeant has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>A <b>Russian Army</b> Sergeant has been killed!</font>")
 						else if (original_job && original_job.title == "Russian Army Lieutenant")
 							map.scores["Militia"] += 10
-							world << "<font color='red' size=3>The <b>Russian Army</b> Lieutenant has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>The <b>Russian Army</b> Lieutenant has been killed!</font>")
 						else
 							map.scores["Militia"] += 1
 					else
@@ -116,9 +116,9 @@
 				if (original_job.is_commander)
 					switch (faction_text)
 						if (RUSSIAN)
-							world << "<font color='red' size=4>The <b>Russian Army</b> Commander played has been killed!</font>"
+							to_chat(world, "<font color='red' size=4>The <b>Russian Army</b> Commander has been killed!</font>")
 						if (DUTCH)
-							world << "<font color='red' size=4>The <b>Dutch Army</b> Commander played has been killed!</font>"
+							to_chat(world, "<font color='red' size=4>The <b>Dutch Army</b> Commander has been killed!</font>")
 			
 			if (MAP_CAPITOL_HILL)
 				if (civilization && civilization in map.scores)
@@ -127,47 +127,47 @@
 					else
 						map.scores["National Guard"] += 1
 				if(original_job && original_job.title == "President of the USA")
-					world << "<font color='red' size=3>The <b>President</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>President</b> has been killed!</font>")
 				else if(original_job && original_job.title == "Vice-President of the USA")
-					world << "<font color='red' size=3>The <b>Vice-President</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>Vice-President</b> has been killed!</font>")
 				else if(original_job && original_job.title == "Speaker of the House")
-					world << "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>")
 
 
 			if (MAP_KANDAHAR)
 				var/obj/map_metadata/kandahar/MP = map
 				if (faction_text == RUSSIAN && original_job.title == "Soviet Army Captain")
 					MP.muj_points += 15
-					world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>")
 				if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
 					MP.muj_points += 12
-					world << "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>")
 				else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Sergeant")
 					MP.muj_points += 5
 				else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Radio Operator")
 					MP.muj_points += 3
 				else if (faction_text == CIVILIAN && original_job.title == "DRA Governor")
 					MP.muj_points += 15
-					world << "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>")
 				else if (faction_text == CIVILIAN && original_job.title == "DRA Lieutenant")
-					world << "<font color='red' size=3>A <b>DRA Lieutenant</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>A <b>DRA Lieutenant</b> has been killed!</font>")
 					MP.muj_points += 10
 				else if (faction_text == CIVILIAN && original_job.title == "DRA Sergeant")
-					world << "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>")
 					MP.muj_points += 5
 				else if (faction_text == ARAB && original_job.title == "Mujahideen Warchief")
 					MP.sov_points += 15
-					world << "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>")
 				else if (faction_text == ARAB && original_job.title == "Mujahideen Group Leader")
 					MP.sov_points += 5
-					world << "<font color='red' size=3>The <b>Mujahideen Group Leader</b> has been killed!</font>"
+					to_chat(world, "<font color='red' size=3>The <b>Mujahideen Group Leader</b> has been killed!</font>")
 
 			if (MAP_SEKIGAHARA)
 				if (civilization && civilization in map.scores)
 					if (civilization == "Eastern Army")
 						if (original_job && original_job.title == "Azuma no Daimyo")
 							map.scores["Western Army"] += 10
-							world << "<font color='red' size=3>The <b>Eastern Army</b> daimyo has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>The <b>Eastern Army</b> daimyo has been killed!</font>")
 						else if (original_job && original_job.title == "Tobu no Samurai")
 							map.scores["Western Army"] += 5
 						else
@@ -175,7 +175,7 @@
 					else
 						if (original_job && original_job.title == "Sei no Daimyo")
 							map.scores["Eastern Army"] += 10
-							world << "<font color='red' size=3>The <b>Western Army</b> daimyo has been killed!</font>"
+							to_chat(world, "<font color='red' size=3>The <b>Western Army</b> daimyo has been killed!</font>")
 						else if (original_job && original_job.title == "Sei no Samurai")
 							map.scores["Eastern Army"] += 5
 						else
@@ -186,24 +186,24 @@
 					var/mob/living/human/killer = last_harmed
 					if (ishuman(killer))
 						map.scores[killer.nationality] -= 12
-						world << "<b><big>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>"
+						to_chat(world, "<b><big>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>")
 						killer.nationality = "Exiled"
 				if (faction_text == CIVILIAN && original_job_title == "United Nations Engineer")
 					var/mob/living/human/killer = last_harmed
 					if (ishuman(killer))
 						map.scores[killer.nationality] -= 10
 						killer.nationality = "Exiled"
-						world << "<b><big>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>"
+						to_chat(world, "<b><big>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>")
 				if (faction_text == CIVILIAN && original_job_title == "United Nations Soldier")
 					map.scores["Blugisi"] -= 4
 					map.scores["Yellowagwana"] -= 4
 					map.scores["Redkantu"] -= 4
-					world << "<b><big>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>"
+					to_chat(world, "<b><big>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>")
 				if (faction_text == CIVILIAN && original_job_title == "Local Policeman")
 					map.scores["Blugisi"] -= 4
 					map.scores["Yellowagwana"] -= 4
 					map.scores["Redkantu"] -= 4
-					world << "<b><big>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>"
+					to_chat(world, "<b><big>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>")
 		*/
 			if (MAP_THE_ART_OF_THE_DEAL)
 				if (civilization && civilization in map.scores)
@@ -428,6 +428,14 @@
 			if (map.ID == MAP_CAMPAIGN)
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)
 				client.respawn_count++
+			else if (map.ID == MAP_BATTLE_SHIPS)
+				var/obj/map_metadata/battle_ships/BS = map
+				if (faction_text == map.faction1)
+					client.next_normal_respawn = world.realtime + (BS.faction1_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
+				else if (faction_text == map.faction2)
+					client.next_normal_respawn = world.realtime + (BS.faction2_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
+				else
+					client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 			else
 				client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 			client << RESPAWN_MESSAGE

@@ -27,7 +27,6 @@
 		"Fiction" = 0,
 	)
 	var/ready = TRUE
-	var/admin_triggered = FALSE
 	var/restart_triggered = FALSE
 	var/finished_at = -1
 
@@ -112,10 +111,8 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
-		. = FALSE
-	else if (ready)
-		if (admin_triggered || restart_triggered)
+	if (ready)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -133,7 +130,7 @@
 	var/list/maps = list(MAP_KARAK = 0,)
 	var/epoch = "Imperial Age (1650-1780)"
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 	var/next_map_title = "TBD"
 	var/done = FALSE
@@ -261,8 +258,8 @@
 				)
 			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
 				maps = list(
-					MAP_HUNT = 6,
-					MAP_FOOTBALL = 6,
+//					MAP_HUNT = 6,
+//					MAP_FOOTBALL = 6,
 					MAP_GULAG13 = 6,
 //					MAP_ABASHIRI = 6,
 //					MAP_RIVER_KWAI = 0,
@@ -311,6 +308,7 @@
 					MAP_NOMADS_KARAFUTO = 0,
 					MAP_NOMADS_EUROPE = 10,
 					MAP_NOMADS_ASIA = 10,
+//					MAP_NOMADS_UK = 10,
 				)
 			if ("Civilization 13 (Colony & Pioneers)")
 				maps = list(
@@ -339,10 +337,8 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
-	if (map && map.battleroyale)
-		. = FALSE
-	else if (ready)
-		if (admin_triggered)
+	if (ready)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)
@@ -362,7 +358,7 @@
 
 /process/gamemode
 	var/ready = TRUE
-	var/admin_triggered = FALSE
+	var/restart_triggered = FALSE
 	var/finished_at = -1
 
 /process/gamemode/setup()
@@ -382,7 +378,7 @@
 	. = FALSE
 
 	if (ready)
-		if (admin_triggered)
+		if (restart_triggered)
 			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.admins_triggered_roundend)

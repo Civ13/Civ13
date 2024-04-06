@@ -152,7 +152,7 @@
 	out += "<hr>"
 	out += "</table><hr>"
 
-	usr << browse(out, "window=edit_memory[src]")
+	to_chat(usr, browse(out, "window=edit_memory[src]"))
 
 /datum/mind/Topic(href, href_list)
 	if (!check_rights(R_ADMIN))	return

@@ -3,7 +3,7 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-	lobby_icon = "icons/lobby/imperial.png"
+	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	faction_organization = list(PIRATES)
 	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)
@@ -125,7 +125,7 @@
 							else
 								for(var/obj/structure/voyage/anchor_capstan/AC in world)
 									AC.lower_anchor()
-	spawn(600)
+	spawn(600) // 1 minute
 		nav()
 //checks for ships when the player ship arrives in new coordinate
 /obj/map_metadata/voyage/proc/check_ships()
@@ -321,11 +321,11 @@
 	var/y_offset = 0 //for north maps
 	if (location == "north")
 		y_offset = 51
-	var/dmm_file = "maps/zones/[location]/[mapname].dmm"
+	var/dmm_file = "maps/zones/voyage/[location]/[mapname].dmm"
 	if(!isfile(file(dmm_file)))
 		var/newName_p1 = splittext(mapname,"_")
 		var/newName = newName_p1[1]
-		dmm_file = "maps/zones/[location]/[newName].dmm"
+		dmm_file = "maps/zones/voyage/[location]/[newName].dmm"
 	var/dmm_text = file2text(dmm_file)
 	var/dmm_suite/suite = new()
 	suite.read_map(dmm_text, 1, y_offset, 1)
@@ -708,13 +708,14 @@
 
 	examine(mob/H)
 		..()
-		var/obj/map_metadata/voyage/nmap = map
-		if (nmap)
-			H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
-			H << "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>"
-			H << "Sinking progress: <b>[nmap.get_sink()]%</b>"
-			if(nmap.ship_anchored)
-				H << "The ship is <font color='red'><b>anchored</b></font>."
+		if (map.ID == MAP_VOYAGE)
+			var/obj/map_metadata/voyage/nmap = map
+			if (nmap)
+				H << "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W."
+				H << "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>"
+				H << "Sinking progress: <b>[nmap.get_sink()]%</b>"
+				if(nmap.ship_anchored)
+					H << "The ship is <font color='red'><b>anchored</b></font>."
 
 /obj/structure/voyage/shipbell
 	name = "ship's bell"
@@ -811,7 +812,7 @@
 						return
 					else
 						world << "<font size=4 color='yellow'>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
-						spawn(600)
+						spawn(600) // 1 minute
 							world << "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
 							raise_anchor()
@@ -998,7 +999,7 @@
 	desc = "The water seems to be about 50cm deep."
 	icon = 'icons/misc/beach.dmi'
 	icon_state = "flood_overlay1"
-	layer = 2
+	layer = 2.3
 	density = FALSE
 	anchored = TRUE
 	var/flood_level = 1
@@ -1023,16 +1024,16 @@
 	attackby(obj/item/I, mob/living/human/user)
 		if(istype(I, /obj/item/weapon/reagent_containers/glass))
 			if (I.reagents.get_free_space() >= 50)
-				user << "You start filling \the [I]..."
-				if (do_after(user,40,src))
+				to_chat(user, "You start filling \the [I]...")
+				if (do_after(user, 15, src))
 					if (I.reagents.get_free_space() >= 50)
 						I.reagents.add_reagent("sodiumchloride", 8)
 						I.reagents.add_reagent("water", 42)
-						user << "You fill \the [I]."
+						user.visible_message(SPAN_NOTICE("[user] fills \the [I] with water."), SPAN_NOTICE("You fill \the [I] with water."))
 						playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 						flood_level--
 						if (flood_level <= 0)
 							qdel(src)
 			else
-				user << "<span class='warning'>There is not enough free capacity in \the [I] to fill it.</span>"
+				to_chat(user, SPAN_WARNING("There is not enough free capacity in \the [I] to fill it."))
 		return TRUE

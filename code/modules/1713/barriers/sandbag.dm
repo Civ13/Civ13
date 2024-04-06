@@ -35,25 +35,24 @@
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
+	dismantlable = FALSE
 	maxhealth = 900
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
-		if (dismantlable)
-			if (WWinput(user, "Dismantle this [src]?", "Dismantle [src]", "Yes", list("Yes", "No")) == "Yes")
-				visible_message("<span class='danger'>[user] starts dismantling the [src].</span>", "<span class='danger'>You start dismantling the [src].</span>")
-				if (do_after(user, 200, src))
-					visible_message("<span class='danger'>[user] finishes dismantling the [src].</span>", "<span class='danger'>You finish dismantling the [src].</span>")
-					var/turf = get_turf(src)
-
-					if (!istype(src, /obj/structure/window/barrier/incomplete))
-						for (var/v in TRUE to rand(4,6))
-							new /obj/item/weapon/barrier(turf)
-					else
-						var/obj/structure/window/barrier/incomplete/I = src
-						for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-							new /obj/item/weapon/barrier(turf)
-					qdel(src)
+		if (dismantlable && user.a_intent == I_HARM)
+			visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
+			if (do_after(user, 200, src))
+				visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
+				var/turf = get_turf(src)
+				if (!istype(src, /obj/structure/window/barrier/incomplete))
+					for (var/v in TRUE to rand(4,6))
+						new /obj/item/weapon/barrier(turf)
+				else
+					var/obj/structure/window/barrier/incomplete/I = src
+					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
+						new /obj/item/weapon/barrier(turf)
+				qdel(src)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -82,7 +81,7 @@
 
 	switch (dir)
 		if (NORTH)
-			layer = MOB_LAYER - 1.01
+			layer = MOB_LAYER - 2.01
 			pixel_y = FALSE
 		if (SOUTH)
 			layer = MOB_LAYER + 2
@@ -126,6 +125,17 @@
 				qdel(src)
 			visible_message("<span class='danger'>[user] puts the sandbag into \the [src].</span>")
 			qdel(O)
+	else if (istype(O, /obj/item/weapon/material/shovel))
+		visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING ("You start dismantling the [src] using the [O.name]."))
+		var/decon_time = 200
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			decon_time /= 1.5*H.getStatCoeff("crafting")
+		if (do_after(user, decon_time, src))
+			visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
+			var/turf = get_turf(src)
+			new /obj/item/weapon/barrier/sandbag(turf)
+			qdel(src)
 	else
 		return
 
@@ -143,7 +153,7 @@
 				icon_state = "dirt_wall"
 				new/obj/structure/window/barrier(loc, dir)
 				qdel(src)
-			visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
+			visible_message(SPAN_DANGER("[user] shovels dirt into [src].</span>"))
 			qdel(O)
 	else
 		return
@@ -232,6 +242,12 @@
 			return TRUE //resolving attack
 
 /obj/item/weapon/barrier/attack_self(mob/user)
+	for(var/obj/O in user.loc) // Checking if there's another dense object to prevent stacking barricades
+		if(O.density)
+			if(O.flags & ON_BORDER)
+				if(O.dir == user.dir)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
 	user << "You start building the dirt blocks wall..."
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the dirt blocks wall foundation."
@@ -294,19 +310,14 @@
 
 /obj/item/weapon/barrier/sandbag/attack_self(mob/user)
 	if (sand_amount <= 0)
-		user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
-	var/your_dir = "NORTH"
-
-	switch (user.dir)
-		if (NORTH)
-			your_dir = "NORTH"
-		if (SOUTH)
-			your_dir = "SOUTH"
-		if (EAST)
-			your_dir = "EAST"
-		if (WEST)
-			your_dir = "WEST"
-
+		to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
+		return
+	for(var/obj/O in user.loc) // Checking if there's another dense object to prevent stacking barricades
+		if(O.density)
+			if(O.flags & ON_BORDER)
+				if(O.dir == user.dir)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
 	var/sandbag_time = 50
 
 	if (ishuman(user))
@@ -314,41 +325,41 @@
 		sandbag_time /= H.getStatCoeff("strength")
 		sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
-	if (src == get_step(user, user.dir))
-		if (WWinput(user, "This will start building a sandbag wall [your_dir] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
-			visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
-			if (do_after(user, sandbag_time, user.loc))
-				var/progress = sand_amount
-				qdel(src)
-				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
-				sb.progress = progress
-				visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
-				if (ishuman(user))
-					var/mob/living/human/H = user
-					H.adaptStat("crafting", 3)
-			return
+	visible_message(SPAN_NOTICE("[user] starts constructing the base of a sandbag wall."), SPAN_NOTICE("You start constructing the base of a sandbag wall."))
+	if (do_after(user, sandbag_time, user.loc))
+		var/progress = sand_amount
+		qdel(src)
+		var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(user.loc)
+		sb.progress = progress
+		sb.dir = user.dir
+		if (sb.dir == NORTH)
+			sb.layer = MOB_LAYER - 2.01
+		visible_message(SPAN_NOTICE("[user] finishes constructing the base of a sandbag wall. Anyone can now add to it."))
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			H.adaptStat("crafting", 3) // Needs to be rebalanced
+	return
 
 
 /obj/structure/window/barrier/sandbag/attack_hand(var/mob/user as mob)
-	if (locate(src) in get_step(user, user.dir))
-		if (WWinput(user, "Dismantle this sandbag wall?", "Dismantle sandbag wall", "Yes", list("Yes", "No")) == "Yes")
-			visible_message("<span class='danger'>[user] starts dismantling the sandbag wall.</span>", "<span class='danger'>You start dismantling the sandbag wall.</span>")
-			if (do_after(user, 200, src))
-				visible_message("<span class='danger'>[user] finishes dismantling the sandbag wall.</span>", "<span class='danger'>You finish dismantling the sandbag wall.</span>")
-				var/turf = get_turf(src)
-				new /obj/item/weapon/barrier/sandbag(turf)
-				qdel(src)
-
+	if (user.a_intent == I_HARM)
+		user.dir = get_dir(user, src)
+		visible_message(SPAN_DANGER("[user] starts dismantling the sandbag wall."), SPAN_DANGER("You start dismantling the sandbag wall."))
+		if (do_after(user, 200, src))
+			visible_message(SPAN_DANGER("[user] finishes dismantling the sandbag wall"), SPAN_DANGER("You finish dismantling the sandbag wall."))
+			var/turf = get_turf(src)
+			new /obj/item/weapon/barrier/sandbag(turf)
+			qdel(src)
 
 /obj/structure/window/barrier/rock/attack_hand(var/mob/user as mob)
-	if (locate(src) in get_step(user, user.dir))
-		if (WWinput(user, "Dismantle this rock wall?", "Dismantle rock wall", "Yes", list("Yes", "No")) == "Yes")
-			visible_message("<span class='danger'>[user] starts dismantling the rock wall.</span>", "<span class='danger'>You start dismantling the rock wall.</span>")
-			if (do_after(user, 200, src))
-				visible_message("<span class='danger'>[user] finishes dismantling the rock wall.</span>", "<span class='danger'>You finish dismantling the rock wall.</span>")
-				var/turf = get_turf(src)
-				new /obj/item/stack/material/stone(turf)
-				qdel(src)
+	if (user.a_intent == I_HARM)
+		user.dir = get_dir(user, src)
+		visible_message(SPAN_DANGER("[user] starts dismantling the rock wall."), SPAN_DANGER("You start dismantling the rock wall."))
+		if (do_after(user, 200, src))
+			visible_message(SPAN_DANGER("[user] finishes dismantling the rock wall"), SPAN_DANGER("You finish dismantling the rock wall."))
+			var/turf = get_turf(src)
+			new /obj/item/stack/material/stone(turf)
+			qdel(src)
 
 /obj/structure/window/barrier/railing
 	name = "railing"
@@ -390,9 +401,15 @@
 	desc = "Barrier employed to separate lanes of traffic."
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
-	maxhealth = 80
+	maxhealth = 200
 	dismantlable = FALSE
 
 /obj/structure/window/barrier/jersey/New()
 	..()
-	icon_state = "jerseybarrier[rand(1,2)]"
+	icon_state = "jerseybarrier[rand(1,5)]"
+
+/obj/structure/window/barrier/jersey/alt
+	icon_state = "jerseybarrier_alt1"
+	New()
+		..()
+		icon_state = "jerseybarrier_alt[rand(1,2)]"

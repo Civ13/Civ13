@@ -200,7 +200,7 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -212,7 +212,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 80, arrow = 80, gun = 90, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	ripable = FALSE
@@ -1368,7 +1368,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/m14
 /obj/item/weapon/storage/belt/smallpouches/green/m14/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1573,6 +1573,12 @@
 		for (var/i=1, i<= 3, i++)
 			new/obj/item/ammo_magazine/m16(hold)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47
+	New()
+		..()
+		for (var/i=1, i<= 3, i++)
+			new/obj/item/ammo_magazine/ak47(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
 	New()
 		..()
@@ -1595,7 +1601,7 @@
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/mosin(hold)
+			new/obj/item/ammo_magazine/m24(hold)
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"

@@ -56,34 +56,34 @@
 	return FALSE
 
 /obj/item/clothing/examine(mob/user)
-	..(user)
-	var/healthp = (health/initial(health))*100
-	switch (healthp)
-		if (-100 to 30)
-			user << "<font color='#7f0000'>Is pratically falling apart!</font>"
-		if (31 to 55)
-			user << "<font color='#a74510'>Seems to be in very bad condition.</font>"
-		if (56 to 75)
-			user << "<font color='#cccc00'>Seems to be in a rough condition.</font>"
-		if (76 to 90)
-			user << "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>"
-		if (91 to 1000)
-			user << "<font color='#245319'>Seems to be in very good condition.</font>"
-	switch (dirtyness)
-		if (-100 to 29)
-			user << "Looks clean."
-		if (30 to 49)
-			user << "Looks a bit dirty."
-		if (50 to 70)
-			user << "Looks very dirty!"
-		if (71 to 200)
-			user << "Looks extremely dirty!"
-	if (fleas)
-		user << "<b>\The [src] is infested with fleas!</b>"
+    ..(user)
+    var/healthp = (health/initial(health))*100
+    switch (healthp)
+        if (-100 to 30)
+            to_chat(user, "<font color='#7f0000'>Seems to be practically falling apart!</font>")
+        if (31 to 55)
+            to_chat(user, "<font color='#a74510'>Seems to be in very bad condition.</font>")
+        if (56 to 75)
+            to_chat(user, "<font color='#cccc00'>Seems to be in a rough condition.</font>")
+        if (76 to 90)
+            to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
+        if (91 to 1000)
+            to_chat(user, "<font color='#245319'>Seems to be in very good condition.</font>")
+    switch (dirtyness)
+        if (-100 to 29)
+            to_chat(user, "Looks clean.")
+        if (30 to 49)
+            to_chat(user, "Looks a bit dirty.")
+        if (50 to 70)
+            to_chat(user, "Looks very dirty!")
+        if (71 to 200)
+            to_chat(user, "Looks extremely dirty!")
+    if (fleas)
+        to_chat(user, "<b>\The [src] is infested with fleas!</b>")
 ///////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/head/helmet
-	restricts_view = 1
+	restricts_view = 0
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE
@@ -225,19 +225,22 @@ BLIND	 // can't see anything
 	return FALSE // return TRUE to cancel attack_hand()
 
 /obj/item/clothing/gloves/attackby(obj/item/weapon/W, mob/user)
-	if (istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/surgery/scalpel))
-		if (clipped)
-			user << "<span class='notice'>The [src] have already been clipped!</span>"
-			update_icon()
-			return
+    if (istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/surgery/scalpel))
+        if (clipped)
+            to_chat(user, SPAN_NOTICE("\The [src] have already been clipped!"))
+            update_icon()
+            return
 
-		playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
-		user.visible_message("<span class = 'red'>[user] cuts the fingertips off of the [src].</span>","<span class = 'red'>You cut the fingertips off of the [src].</span>")
+        playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
+        user.visible_message("<span class='red'>[user] cuts the fingertips off of the [src].</span>",
+                             "<span class='red'>You cut the fingertips off of the [src].</span>")
 
-		clipped = TRUE
-		name = "modified [name]"
-		desc = "[desc]<br>They have had the fingertips cut off of them."
-		return
+        clipped = TRUE
+        name = "modified [name]"
+        desc = "[desc]<br>They have had the fingertips cut off of them."
+        return
+
+
 
 ///////////////////////////////////////////////////////////////////////
 //Head
@@ -263,10 +266,10 @@ BLIND	 // can't see anything
 /obj/item/clothing/head/attack_self(mob/user)
 	if (brightness_on)
 		if (!isturf(user.loc))
-			user << "You cannot turn the light on while in this [user.loc]"
+			to_chat(user, "You cannot turn the light on while in this [user.loc]")
 			return
 		on = !on
-		user << "You [on ? "enable" : "disable"] the helmet light."
+		to_chat(user, "You [on ? "enable" : "disable"] the helmet light.")
 		update_flashlight(user)
 	else
 		return ..(user)
@@ -364,11 +367,6 @@ BLIND	 // can't see anything
 	else return ..(M)
 
 /obj/item/clothing/shoes/proc/draw_knife()
-	set name = "Draw Hidden Weapon"
-	set desc = "Pull out your boot knife or small pistol."
-	set category = "IC"
-	set src in usr
-
 	if (!holding)
 		return FALSE
 
@@ -378,17 +376,15 @@ BLIND	 // can't see anything
 	holding.forceMove(get_turf(usr))
 
 	if (usr.put_in_hands(holding))
-		usr.visible_message("<span class='danger'>\The [usr] pulls a [holding] out of their boot!</span>")
+		visible_message(SPAN_DANGER("\The [usr] pulls \a [holding] out of their boot!"))
 		holding = null
 	else
-		usr << "<span class='warning'>Your need an empty, unbroken hand to do that.</span>"
+		to_chat(usr, SPAN_WARNING("You must not be holding anything to do that."))
 		holding.forceMove(src)
-
-	if (!holding)
-		verbs -= /obj/item/clothing/shoes/proc/draw_knife
 
 	update_icon()
 	return TRUE
+
 
 
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
@@ -403,7 +399,7 @@ BLIND	 // can't see anything
 		I.forceMove(src)
 		holding = I
 		user.visible_message("<span class='notice'>\The [user] shoves \a [I] into \the [src].</span>")
-		verbs |= /obj/item/clothing/shoes/proc/draw_knife
+		//verbs |= /obj/item/clothing/shoes/proc/draw_knife
 		update_icon()
 	else
 		return ..()

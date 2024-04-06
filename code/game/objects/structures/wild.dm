@@ -261,6 +261,7 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = rand(4,7)
+		dropwood.update_strings()
 		qdel(src)
 		return
 
@@ -312,7 +313,6 @@ var/list/seed_list_jungle
 		icon = current_icon
 
 /obj/structure/wild/tree/live_tree/proc/change_season()
-	..()
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
@@ -334,10 +334,11 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
+		dropwood.update_strings()
 		if (leaves>0)
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
+			var/obj/item/stack/material/leaf/dropleaves = new /obj/item/stack/material/leaf(get_turf(src))
+			dropleaves.amount = 3
+			dropleaves.update_strings()
 		qdel(src)
 		return
 
@@ -491,6 +492,7 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 4
+		dropwood.update_strings()
 		qdel(src)
 		return
 
@@ -499,9 +501,10 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
-		new/obj/item/stack/material/leaf/palm(get_turf(src))
-		new/obj/item/stack/material/leaf/palm(get_turf(src))
-		new/obj/item/stack/material/leaf/palm(get_turf(src))
+		dropwood.update_strings()
+		var/obj/item/stack/material/leaf/palm/dropleaves = new /obj/item/stack/material/leaf/palm(get_turf(src))
+		dropleaves.amount = 3
+		dropleaves.update_strings()
 		qdel(src)
 		return
 
@@ -909,14 +912,15 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
+		dropwood.update_strings()
 		if (leaves>0)
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
+			var/obj/item/stack/material/leaf/dropleaves = new /obj/item/stack/material/leaf(get_turf(src))
+			dropleaves.amount = 2
+			dropleaves.update_strings()
 		if (leaves>=3) //give extra leaves
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
-			new/obj/item/stack/material/leaf(get_turf(src))
+			var/obj/item/stack/material/leaf/dropleaves = new /obj/item/stack/material/leaf(get_turf(src))
+			dropleaves.amount = 4
+			dropleaves.update_strings()
 		qdel(src)
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
@@ -1023,8 +1027,9 @@ var/list/seed_list_jungle
 			if (do_after(user, 80, src))
 				if (src && leaves >= 1)
 					H << "You collect some edible leaves."
-					new /obj/item/stack/material/leaf(get_turf(src))
-					new /obj/item/stack/material/leaf(get_turf(src))
+					var/obj/item/stack/material/leaf/dropleaves = new /obj/item/stack/material/leaf(get_turf(src))
+					dropleaves.amount = 2
+					dropleaves.update_strings()
 					leaves--
 					if (leaves <= 0 && istype(src,/obj/structure/wild/tree/live_tree))
 						icon = 'icons/obj/flora/deadtrees.dmi'
@@ -1113,4 +1118,5 @@ var/list/seed_list_jungle
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/bamboo(get_turf(src))
 		dropwood.amount = 5
+		dropwood.update_strings()
 		qdel(src)

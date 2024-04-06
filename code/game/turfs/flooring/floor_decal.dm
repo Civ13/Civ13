@@ -10,6 +10,7 @@ var/list/floor_decals = list()
 	name = "floor decal"
 	icon = 'icons/turf/flooring/decals.dmi'
 	layer = TURF_LAYER + 0.2
+	anchored = TRUE
 	var/supplied_dir
 
 /obj/effect/floor_decal/New(var/newloc, var/newdir, var/newcolour)
@@ -55,6 +56,24 @@ var/list/floor_decals = list()
 		T.decals.Cut()
 		T.update_icon()
 	qdel(src)
+	return
+
+/obj/effect/floor_decal/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			qdel(src)
+			return
+		if (2.0)
+			qdel(src)
+			return
+		if (3.0)
+			if (prob(75))
+				qdel(src)
+			return
+		else
+	return
+
+/obj/effect/floor_decal/attackby(obj/item/W, mob/user)
 	return
 
 /obj/effect/floor_decal/corner
@@ -1188,3 +1207,10 @@ var/list/floor_decals = list()
 
 /obj/effect/floor_decal/tatami/cee
 	icon_state = "tatami_frame_cee"
+
+/* ship water line*/
+/obj/effect/floor_decal/shipline
+	name = "deep saltwater"
+	icon_state = "ship_line"
+	plane = FLOOR_PLANE
+	mouse_opacity = FALSE

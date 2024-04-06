@@ -7,7 +7,7 @@
 "ag" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "ah" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "ai" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean)
-"aj" = (/turf/floor/grass,/obj/structure/window/barrier/sandbag,/turf/floor/trench,/area/caribbean)
+"aj" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/turf/floor/trench,/area/caribbean)
 "ak" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/forest)
 "al" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
 "am" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
@@ -571,7 +571,7 @@
 "kY" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/dirt,/area/caribbean/russian/land/inside)
 "kZ" = (/obj/structure/iv_drip,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "la" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"lb" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf,/turf/floor/plating/road,/area/caribbean/german)
+"lb" = (/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf,/obj/structure/vehicleparts/axis/heavy/panzeriv{speedlist = list(10,6,3)},/turf/floor/plating/road,/area/caribbean/german)
 "lc" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/structure/lamp/lamp_small/alwayson,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ld" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/russian/land/inside)
 "le" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2{dir = 1; icon_state = "maxim_ww2"},/turf/floor/dirt,/area/caribbean/russian/land/inside)
@@ -613,17 +613,16 @@
 "lO" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/trench,/area/caribbean)
 "lP" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/bed/chair/gunner,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/plating/road,/area/caribbean)
 "lQ" = (/obj/structure/closet/crate/footlocker,/obj/structure/lamp/lamp_big/alwayson,/obj/structure/radio/receiver/loudspeaker/faction1{icon_state = "loudspeaker"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/german/inside/objective)
-"lR" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/plating/road,/area/caribbean)
+"lR" = (/obj/structure/vehicleparts/frame/t34/front,/turf/floor/plating/road,/area/caribbean)
 "lS" = (/obj/structure/radio/receiver/loudspeaker/faction1{icon_state = "loudspeaker"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/german/inside/objective)
 "lT" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean)
 "lU" = (/obj/structure/closet/crate/ww2/artillery_shells/AP76,/turf/floor/plating/road,/area/caribbean)
 "lV" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean)
-"lW" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/bed/chair/drivers/tank,/turf/floor/plating/road,/area/caribbean)
+"lW" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/axis/heavy/t34,/turf/floor/plating/road,/area/caribbean)
 "lX" = (/obj/structure/barricade,/obj/structure/window/barrier/sandbag,/obj/structure/barbwire{dir = 1; icon_state = "barbwire"},/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean)
 "lY" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/closet/crate/ww2/artillery_shells/AP85,/turf/floor/trench,/area/caribbean/forest)
 "lZ" = (/obj/structure/vehicleparts/frame/t34/back,/obj/structure/shellrack/full85,/turf/floor/plating/road,/area/caribbean)
 "ma" = (/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85{anchored = 1},/turf/floor/plating/road,/area/caribbean)
-"mb" = (/obj/structure/vehicleparts/frame/t34/front,/obj/structure/vehicleparts/axis/heavy/t3485,/turf/floor/plating/road,/area/caribbean)
 "mc" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "md" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
 "me" = (/obj/structure/closet/crate/ww2/artillery_shells,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
@@ -710,9 +709,9 @@
 "nH" = (/obj/structure/bed/padded,/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "nI" = (/obj/structure/iv_drip,/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "nJ" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/german)
-"nK" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"; speedlist = list(7,5,3.8,2.4,1.4)},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/german)
+"nK" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/german)
 "nL" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/german)
-"nM" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/turf/floor/plating/road,/area/caribbean/german)
+"nM" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"; speedlist = list(7,5,3.8,2.4,1.4)},/turf/floor/plating/road,/area/caribbean/german)
 "nN" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "nO" = (/obj/structure/radio/receiver/loudspeaker/faction1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/german)
 "nP" = (/obj/structure/closet/crate/rations/beer,/turf/floor/plating/tiled,/area/caribbean/german/inside)
@@ -790,7 +789,7 @@
 "pj" = (/obj/structure/wild/burnedtree,/turf/floor/grass,/area/caribbean/forest)
 "pk" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean)
 "pl" = (/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean)
-"pm" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/turf/floor/plating/road,/area/caribbean)
+"pm" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean)
 "pn" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean)
 "po" = (/turf/floor/beach/water/deep/swamp,/area/caribbean/no_mans_land/invisible_wall)
 "pp" = (/obj/structure/bed/roller,/turf/floor/wood,/area/caribbean/russian/land/inside)
@@ -800,9 +799,9 @@
 "pt" = (/obj/structure/iv_drip,/obj/structure/vehicleparts/frame/car/right/armored,/turf/floor/dirt/winter,/area/caribbean)
 "pu" = (/obj/structure/bed/roller,/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/dirt/winter,/area/caribbean)
 "pv" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean)
-"pw" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#3d5931"; name = "ZIS-5"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean)
+"pw" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean)
 "px" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean)
-"py" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/turf/floor/plating/road,/area/caribbean)
+"py" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{dir = 1; icon_state = "wheel_t_dark"},/obj/structure/vehicleparts/axis/car{color = "#3d5931"; name = "ZIS-5"},/turf/floor/plating/road,/area/caribbean)
 "pz" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean)
 "pA" = (/obj/structure/wild/smallbush,/obj/structure/wild/burnedtree,/turf/floor/grass,/area/caribbean)
 "pB" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/forest)
@@ -822,7 +821,6 @@
 "pP" = (/obj/structure/vehicleparts/frame/car/left/armored,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/dirt/winter,/area/caribbean)
 "pQ" = (/obj/structure/vehicleparts/frame/car/right/armored,/turf/floor/dirt/winter,/area/caribbean)
 "pR" = (/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/dirt/winter,/area/caribbean)
-"pS" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/obj/structure/vehicleparts/axis/car{color = "#636351"; name = "Opel Blitz"; speedlist = list(7,5,3.8,2.4,1.4)},/turf/floor/plating/road,/area/caribbean/german)
 "pT" = (/obj/structure/railing{dir = 8; icon_state = "railing0"},/turf/floor/dirt/dust,/area/caribbean)
 "pU" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean)
 "pV" = (/obj/structure/rails/regular,/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean)
@@ -835,7 +833,7 @@
 "qc" = (/obj/structure/table/modern/table,/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/reagent_containers/food/snacks/beetsoup,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/plating/tiled,/area/caribbean/roofed)
 "qd" = (/obj/structure/wild/largejungle,/turf/floor/grass,/area/caribbean/forest)
 "qe" = (/obj/structure/closet/crate/ww2,/obj/item/cannon_ball/shell/tank/APCR85,/obj/item/cannon_ball/shell/tank/APCR85,/obj/item/cannon_ball/shell/tank/APCR85,/obj/item/cannon_ball/shell/tank/APCR85,/obj/item/cannon_ball/shell/tank/APCR85,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean)
-"qf" = (/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/axis/heavy/panzeriv{speedlist = list(10,6,3)},/obj/structure/vehicleparts/frame/panzeriv/front,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/german)
+"qf" = (/obj/structure/lamp/lamp_small/tank/red,/obj/structure/vehicleparts/frame/panzeriv/front,/obj/item/weapon/storage/toolbox/emergency,/turf/floor/plating/road,/area/caribbean/german)
 "qg" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean)
 "qh" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean)
 "qi" = (/obj/structure/wild/rock,/obj/structure/wild/junglebush,/turf/floor/grass,/area/caribbean)
@@ -1275,7 +1273,6 @@ ababababababababababjsknkYknjuabababababababababjskSkZkSkTkSkThLlalahKkJlckLjujs
 ababababababababababjsknknknjuabababababababababjpjIjIjIjIjIjIjIjIjIabjIjIjIjpjpjIjIjIjIjIjIjpababababababababababjsknknknjuabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 oJabababababababababjpjIjIjIjpababababababababababababababababababababababababababababababababababababababababababjpjIjIjIjpabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
 "}
-
 (1,1,2) = {"
 hpgTgTgTgTgTgTgTgTgThphphpfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjfjhphphpfkfkfkfkfmfkfkfkfkfkfkfkfmfkfkfkfkfofqfofqfofkfkfkfkfkfkfkfkfkfkhpauapaprJrJrJrJrJrJapaprEblrErErEblrErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErErE
 hpgTftfvfvfvfvfvftgThphphpfjfwkXfzfzfzfzfzkXfzfAlGfCfDfEfEfzkXfFfjhphphpfkfmfkfkfkfHfkfmfkfkfkfHfHfkfHfkfkfofqfofqfofmfkfkfmfkfkfkfmfkfkhpfNapaprJrJrJrJrJOjDBaprEHASSrErErErEblrErErErEblrErErErErErErErErErEblrErErErErEblrErErErErErErErErErErErEblrErErErErErEblrErErErEblrErEblrErErEblrEblrErErErEblrE
@@ -1302,7 +1299,7 @@ fjmSmSfzfzfzfzfzmTfjhpoxoxhFopgKgKgKgKgKhphphphImUhRhRmUgThRhRhRgTmRhRhRhRmVgToO
 fjmSmSfzfzfzfziahYfjhphhhhhhhpgKgKgKgKgKnZophpgThRhRhRhRgTmWhRmXgTmRhRmRmRmRgToOoOoOhphmhmhmhmhmhmhmhmhmhmhmhDhphDhmnsnthmhmhmhmnsnthmhphpfGapaprJrJrJrJrJrJapaprEqFoirEqFrErErEblrErErErErErErErErErErErErErErErEblrErErErErErErErErErEblrErErErErErErErErErErErErErErEblrErErEdqrErErErErErErEblrEblrErErE
 fjnunvfzfzfzfznwnxfjhphphphphphphphpgKgKnZowoxgTrchRhRhRnAhRhRhRnBhRhRhRhRhRgThphphphphmhmikilimhmhmhmhmhmhmhDhphDhmnCnDhmhmhmhmnCnDhmhphpfrapaprJrJrJrJrJrJapaprErErErErErEqFrErErErEblrErErErEFtrErErErErErErErErErErErErErErEblrErErErErErEblrErErErErErErErEblrErErErEqErErEgGrErErErErEnjrErErErErErErE
 fjfjfjfjfjfjfjfjfjfjhphphphphphphphpgKgKhphhhhhIhRhRhRhRhRhRhRhRgTmRhRmRmRmRgThphphphphmhmosiqovhmhmhmhmhmhmhDhphDnEnCnDhmhmhmnEnCnDhmhphpfGapaprJrJrJrJrJrJapaprErEoirErErErErErErErEblrErErErErErEdqrErErErEgGrErErErErErErErErErErErEaqrErEblrErErErErErErErErEblrErErErErErErEdqgGrErErErErErEdqrEblrErE
-hphphphphphphphphphphphphphphphphphpgKgKhphphphInFnGnHnGnHnGnHnIgTmRhRhRhRmVgThphphphphmhmiyiLiThmhmhmhmhmhmhDhphDhmnJnKhmhmhmhmnJpShmhphpfGapaprJrJrJrJrJrJapapbloirEoiqFrErErErErErErErEblrErErErEblrErEqErEblrErErErErErErErErEaqaqaqaqaqaqaqrErErErErErErErErErErErErErErErErErEblrErErErErErEdqrEblrErE
+hphphphphphphphphphphphphphphphphphpgKgKhphphphInFnGnHnGnHnGnHnIgTmRhRhRhRmVgThphphphphmhmiyiLiThmhmhmhmhmhmhDhphDhmnJnKhmhmhmhmnJnKhmhphpfGapaprJrJrJrJrJrJapapbloirEoiqFrErErErErErErErEblrErErErEblrErEqErEblrErErErErErErErErEaqaqaqaqaqaqaqrErErErErErErErErErErErErErErErErErEblrErErErErErEdqrEblrErE
 gTgTgTgTgThIhIgTgThIhIgTgTgThphphphpgKgKhphphpgTnHnGnHnGnHnGnHnGgTmRhRmRmRmRgThphphphphmhmjkqflbhmhmhmhmhmhmhDhphDhmnLnMhmhmhmhmnLnMhmhphpfrapaprJrJrJrJrJrJapaprErErErErEblrErErErErErErErErEblrErErErErErEgGrErErErEblrEaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqrEblrErErErErErEblblrErErErErErErErErErErEblrErErE
 gTnNrdnNnPhRhRnQnQnQnQrenQgThphphphpgKgKhphphpgTgTgTgTgTgTgTgTgTgTgTgTgTgTgTgThphphphohphphphphphphphphphphphDhohDhphphphphphphphphphphonZfYapaprJrJrJrJrJrJapaprEoioirErErErErEblrErErErErErErErErErErEqErErErErErErErEaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqrErErErErErErErEblblrErErErErEbnrErErEblrEblrErErE
 gTnShRhRhRhRhRhUhUnThUnUhUhIhphphphpgKgKhphphphppfmcmcmcgKgKgKgKgKgKgKmdophphphphphphphphphphphphphphphphphphDhphDhphphphphphphphphphphpnZfYapaprJrJrJrJrJrJapaprErEblrErErErErEqErEbXrErErErErErEblrErErErErErErErErErEaqaqaEaEaEaEaEaEaEaEaEaEaEaEaEaEaqaqrErErEblrErErErErErErErErErEFtrErErErErErErErErE
@@ -1551,7 +1548,7 @@ acacacacacacacacacacacacacacacacqxacacacacacacacacacacacacacayacacacacqHacacacac
 acacfhacacacacfhacacacacacacacacacacayacacqxacacacazazqHacacacacacacacacacacacacayacacacacacacfhacacacacqxacacacacacrErErErErErErErErErErErEapaprJrJrJrJrJrJapapapaprJgrlZgDrJlIlJlIrJgrgtgDrJapaprErErErErEblacacfhazacacacacacacacazacacfhacacfhfhacacfhacacacacfhacacacacacaAacacacacacfhacacacacacacacac
 acacacacfhacacacacacacacfhacacacacacacacacacacacacacacacacacacayacacacacacacacacacacacacqGacacazacacacacacacacacqxacrErErErErEblblrErErErErEapaprJrJrJrJrJrJapapapqerJlElFlHrJlIlJlIrJlElFlHrJapaprEqFrErErErEfhacacfhpBacfhacacacacayacacacacacacacacacacacacacacacacacacacacaAacacacacacacacacacacacacacac
 acacacacacfhacacacacfhacacacacacacacacqxacacacacayazacacacacacacacacacacacacqHacacacacayacacacacacacacacacacacfhacacrErErErErErEblrErErErErEapaprJrJrJrJrJrJapapaprirJlKmalMrJlTlUlVrJlKlLlMrJapaprErErEqFrErEacacacacacacacacacacacacaAacacacacacacacacacacacacfhacacacfhacacacacacacacacacacacacacacacacac
-acacacacacacacacacacacacacacacacacacacacacfhacacacacacacazacacacacacfhacacacacacacacacacacacacacacacacacacacacacacqxrErErErErErErErErErErErEapaprJrJrJrJrJrJapapaprjrJlPmbpmrJlTlUlVrJlPlRlWrJapaprErErErErErEacpBacacacacacacfhfhacacacacacacacacacacfhacacacacazacacacacacacacacacacacacacacacaAacacacacac
+acacacacacacacacacacacacacacacacacacacacacfhacacacacacacazacacacacacfhacacacacacacacacacacacacacacacacacacacacacacqxrErErErErErErErErErErErEapaprJrJrJrJrJrJapapaprjrJlPlRpmrJlTlUlVrJlPlRlWrJapaprErErErErErEacpBacacacacacacfhfhacacacacacacacacacacfhacacacacazacacacacacacacacacacacacacacacaAacacacacac
 acacacacacacacfhacacacacacacacacacqxacacaAacacacacqlacacaAcbacacacacayacacacacacacacqHacacacacacacacacacacacacacacacblrErErErErErErErErErErEapaprJrJrJrJrJrJapVEapaprJrJrJrJrJrJrJrJrJrJrJrJrJapaprErErErErErEacacacacacpBacacacacacacacacacacacacacacacacaAazacacacacacacacacacacacacacaAacacacacacfhacacac
 acacacacacacacacacacacacacacfhacacacacacaAacaAacacacacacacacaAacacacqGaAacacacacacacacacacacacacacacqxacacacacfhacacrErErErErErErErErErErErEapaprJrJrJrJrJrJapapapaprJrJpOpPrJrJrJrJrJrJrJrJrJapaprErEqFrErErEacacacacacacacacacacacacacacacacacfhacacacacacacacacacaAacacacacacacacacacacacacacacacacacacac
 acacacacfhacacacfhacacacfhacacacacacacacacaAacacacacacacacfhacacacacaAacblrErErErEacacacacacazacacacacacacacacfhacacrErErErErErEblrEblrErErEapaprJrJrJrJrJrJrJrJrJrJrJrJpQpRrJrJrJrJrJrJpqprrJapaprErErErErErEfheYacacacpBacacpBpBpBacacacacfhaAaAacacacacacacacacacacacacacacacfhacacacacfhacacacacacacacac

@@ -119,6 +119,7 @@
 	icon_state = "svt"
 	item_state = "svt"
 	base_icon = "svt"
+	cliploader = TRUE
 	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
@@ -126,11 +127,11 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/svt
-	good_mags = list(/obj/item/ammo_magazine/svt)
+	good_mags = list(/obj/item/ammo_magazine/svt, /obj/item/ammo_magazine/mosin)
 	weight = 3.85
 	load_delay = 8
 	firemodes = list(
-		list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
+		list(name = "single shot",burst=1, move_delay=2, fire_delay=2)
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -157,7 +158,7 @@
 	load_delay = 8
 	firemodes = list(
 		list(name = "single shot",	burst=1, burst_delay=0.8, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
-		list(name = "full auto",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
+		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.2, 1.3)),
 		)
 
 	gun_type = GUN_TYPE_RIFLE
@@ -230,6 +231,7 @@
 	magazine_type = /obj/item/ammo_magazine/sksm
 	good_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/ak47)
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	cliploader = TRUE
 /obj/item/weapon/gun/projectile/semiautomatic/svd
 	name = "SVD"
 	desc = "Soviet designated marksman's rifle, feeding from detachable 10-round magazines. Chambered in 7.62x54mmR."
@@ -247,6 +249,7 @@
 	magazine_type = /obj/item/ammo_magazine/svd
 	good_mags = list(/obj/item/ammo_magazine/svd)
 	weight = 3.85
+	cliploader = TRUE
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=8)
 		)
@@ -307,6 +310,7 @@
 	base_icon = "g43"
 	w_class = ITEM_SIZE_LARGE
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	cliploader = TRUE
 	max_shells = 10
 	load_delay = 8
 	caliber = "a792x57"
@@ -326,7 +330,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/vg5
 	name = "Volkssturmkarabiner 98"
-	desc = "A very simple german semi automatic chambered in 7.92x33mm Kurz."
+	desc = "A very simple german semiautomatic chambered in 7.92x33mm Kurz."
 	icon_state = "vg5"
 	item_state = "vg5"
 	base_icon = "vg5"
@@ -341,6 +345,7 @@
 	ammo_type = /obj/item/ammo_casing/a792x33
 	magazine_type = /obj/item/ammo_magazine/stg
 	good_mags = list(/obj/item/ammo_magazine/stg, /obj/item/ammo_magazine/vgclip)
+	cliploader = TRUE
 	weight = 4.6
 	firemodes = list(
 		list(name = "single shot",burst=1, move_delay=2, fire_delay=5)

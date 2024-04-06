@@ -2,7 +2,7 @@
 	ID = MAP_ABASHIRI
 	title = "Abashiri Prison"
 	no_winner ="The round is proceeding normally."
-	lobby_icon = "icons/lobby/abashiri.png"
+	lobby_icon = 'icons/lobby/abashiri.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3600
 	has_hunger = TRUE
@@ -131,15 +131,15 @@
 /obj/map_metadata/abashiri/proc/check_points_msg()
 	check_points()
 	spawn(1)
-		world << "<font size = 4><span class = 'notice'><b>Current Score:</b></font></span>"
+		to_chat(world, SPAN_NOTICE("<font size = 4><b>Current Score:</b></font>"))
 		for (var/i=1,i<=points.len,i++)
-			world << "<br><font size = 3><span class = 'notice'>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></span></font>"
+			to_chat(world, SPAN_NOTICE("<br><font size = 3>[points[i][1]]: <b>[points[i][2]+points[i][3]]</b></font>"))
 		var/donecheck = FALSE
 		for(var/mob/living/human/H in player_list)
 			if(H.stat!=DEAD && H.original_job && istype(H.original_job, /datum/job/civilian/abashiri/prisoner) && !donecheck)
 				var/area/A = get_area(H)
 				if (istype(A, /area/caribbean/nomads/ice/target))
-					world << "<br><font size = 3><span class = 'warning'>There are prisoners currently escaping!</span></font>"
+					to_chat(world, SPAN_WARNING("<br><font size = 3>)There are prisoners currently escaping!</font>"))
 					donecheck = TRUE
 
 	spawn(2400)
@@ -165,7 +165,7 @@
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
-		world << "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>"
+		to_chat(world, "<font size=3 color='red'><center><b>ALARM</b><br>The alarm is still on!</center></font>")
 
 		spawn(285)
 			if (siren)

@@ -132,8 +132,9 @@
 /obj/item/weapon/map/update_icon()
 	..()
 	img.overlays.Cut()
-	playerloc.pixel_x = min(600,ceil(get_turf(src).x*2.72))
-	playerloc.pixel_y = min(600,ceil(get_turf(src).y*2.72))
+	var/turf/T = get_turf(src)
+	playerloc.pixel_x = min(600,ceil(T.x*2.72))
+	playerloc.pixel_y = min(600,ceil(T.y*2.72))
 	img.overlays += playerloc
 
 /obj/item/weapon/map/attack_self(mob/user)
@@ -190,7 +191,8 @@
 			img = image(icon = 'icons/minimaps.dmi', icon_state = "operation_falcon_map")
 
 /obj/structure/sign/map_board/examine(mob/living/human/user)
-	user << browse(getFlatIcon(img),"window=popup;size=630x630")
+	if (img)
+		user << browse(getFlatIcon(img),"window=popup;size=630x630")
 	if (map.ID == MAP_OPERATION_FALCON)
 		var/friendly_fob = FALSE
 		var/dat = "<h1>FOB COORDINATES</h1>"

@@ -109,10 +109,15 @@
 		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
 			gib()
 */
-	if (mood > 100)
-		mood = 100
+	if (mood > 120)
+		mood = 120
 	else if (mood < 0)
 		mood = 0
+	//mood natural balancing to neutral
+	if (mood > 50) //moves to 50 if more than 50.
+		mood -= 0.05
+	else if (mood < 40) //moves to 40 if below 40
+		mood += 0.05
 	if(istype(buckled, /obj/structure/cross))
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
@@ -211,7 +216,7 @@
 				if (ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -221,7 +226,7 @@
 				if (!ct)
 					mood += 0.12
 				else
-					mood -= 0.8
+					mood -= 0.4
 		if (!inducedSSD)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
@@ -986,11 +991,15 @@
 		if (resting)
 			dizziness = max(0, dizziness - 15)
 			jitteriness = max(0, jitteriness - 15)
-			adjustHalLoss(-3)
+			//adjustHalLoss(-3)
+			if (halloss >= 3)
+				halloss -= 3
 		else
 			dizziness = max(0, dizziness - 3)
 			jitteriness = max(0, jitteriness - 3)
-			adjustHalLoss(-1)
+			//adjustHalLoss(-1)
+			if (halloss >= 1)
+				halloss -= 1
 
 		//Other
 		handle_statuses()
@@ -1340,7 +1349,6 @@
 					Weaken(15)
 
 /mob/living/human/proc/handle_shock()
-	..()
 	if(status_flags & GODMODE)	return FALSE	//godmode
 	if(!can_feel_pain())
 		shock_stage = 0
@@ -1421,7 +1429,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS)
 						holder2.icon_state = "redmenia"
 					else if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
@@ -1570,7 +1578,7 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS)
 						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
@@ -1634,7 +1642,7 @@
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 				else
-					if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+					if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
 						if(squad == 4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
 							holder2.overlays += icon(holder2.icon,"i_cpl")
@@ -1668,7 +1676,7 @@
 							holder2.overlays += icon(holder2.icon,"i_cpl")
 					else
 						holder2.overlays += icon(holder2.icon,"squad_[squad]")
-			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT)
+			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT && map.ID != MAP_BATTLE_SHIPS)
 				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer) || original_job.is_vip)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 						holder2.icon_state = ""
@@ -1686,7 +1694,7 @@
 						holder2.overlays += icon(holder2.icon,"nco")
 			if (map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
-					world << "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>"
+					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)
 				holder2.overlays += icon(holder2.icon,"medic")
 			hud_list[BASE_FACTION] = holder2
@@ -1775,7 +1783,7 @@
 /mob/living/human/proc/do_rotting()
 	if (map && istype(src, /mob/living/human/corpse))
 		return
-	spawn(600)
+	spawn(600) // 1 minute 
 		if (stat == DEAD)
 			spawn(30000)
 				if (stat == DEAD)

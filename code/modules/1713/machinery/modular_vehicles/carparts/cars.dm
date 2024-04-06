@@ -35,6 +35,10 @@
 	icon_state = "carseat_right_type95"
 	applies_material_colour = FALSE
 	material = null
+/obj/structure/bed/chair/carseat/left/type94
+	icon_state = "carseat_left_type94"
+	applies_material_colour = FALSE
+	material = null
 /obj/structure/bed/chair/drivers/car/lion
 	material = "lionpelt"
 /obj/structure/bed/chair/carseat/left/lion
@@ -45,6 +49,8 @@
 	material = "lionpelt"
 /obj/structure/bed/chair/drivers/car/type95
 	icon_state = "carseat_driver_right_type95"
+/obj/structure/bed/chair/drivers/car/type94
+	icon_state = "carseat_driver_right_type94"
 /obj/structure/bed/chair/drivers/car/dark
 	material = "darkleather"
 /obj/structure/bed/chair/carseat/left/dark
@@ -389,6 +395,30 @@
 	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
 	hasoverlay = "type95windshielddoor_right"
 	icon_state = "frame_steel_corner_crf_type95"
+///////////////TYPE 94 TRUCK//////////////////////////////////////////////////////////
+/////////////////////TYPE95 Kurogane////////////
+/obj/structure/vehicleparts/frame/car/type94/lf
+	w_front = list("type94front_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type94front_left"
+	icon_state = "frame_steel_corner_lf_type95"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/type94/rf
+	w_front = list("type94front_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "type94front_right"
+	icon_state = "frame_steel_corner_rf_type95"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/type94/lc
+	w_front = list("type94windshielddoor_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "type94windshielddoor_left"
+	icon_state = "frame_steel_corner_clf_type95"
+/obj/structure/vehicleparts/frame/car/type94/rc
+	w_front = list("type94windshielddoor_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "type94windshielddoor_right"
+	icon_state = "frame_steel_corner_crf_type95"
 ///////////////axis///////////////
 /obj/structure/vehicleparts/axis/car/piccolino
 	name = "ASNO Piccolino"
@@ -494,6 +524,16 @@
 	maxpower = 800
 	speedlist = list(1=5,2=4,3=2.5,4=1.5,5=1)
 	turntimer = 4
+
+/obj/structure/vehicleparts/axis/car/type94
+	name = "Isuzu Type 94"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	speeds = 5
+	maxpower = 800
+	speedlist = list(1=5,2=4,3=2.5,4=1.5,5=1)
+	turntimer = 5
 
 /obj/structure/vehicleparts/axis/car/falcon/police
 	name = "SMC Falcon Police Interceptor"
@@ -663,6 +703,10 @@
 /obj/structure/engine/internal/gasoline/premade/type95
 	enginesize = 3800
 
+/obj/structure/engine/internal/gasoline/premade/type94
+	enginesize = 4400
+	fuelefficiency = 0.1
+
 /obj/structure/engine/internal/gasoline/premade/panzeriv
 	enginesize = 12000
 
@@ -672,6 +716,10 @@
 /obj/structure/engine/internal/gasoline/premade/l3
 	name = "FIAT-SPA CV3"
 	enginesize = 4300
+
+/obj/structure/engine/internal/diesel/premade/m13
+	name = "SPA 8 T M40 11"
+	enginesize = 12500
 
 /obj/structure/engine/internal/diesel/premade/omw22_2
 	name = "OMW 15 liter diesel engine"
@@ -771,7 +819,7 @@
 /obj/structure/emergency_lights/proc/check_sound()
 	if (world.realtime >= lastsoundcheck)
 		if (on)
-			if (map.ID != MAP_DRUG_BUST || map.ID != MAP_BANK_ROBBERY)
+			if (map.ID != MAP_DRUG_BUST && map.ID != MAP_BANK_ROBBERY)
 				playsound(loc,'sound/machines/police_siren.ogg',100,FALSE,15)
 				lastsoundcheck = world.realtime+55
 				spawn(55)

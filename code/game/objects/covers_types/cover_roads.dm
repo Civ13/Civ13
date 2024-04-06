@@ -162,105 +162,105 @@
 /obj/covers/roads/modern/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,65,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,45,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
 /obj/covers/roads/dirt/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O, /obj/item/weapon/material/shovel/bone))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
-		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin filling over in the earth of \the [src]."))
 		if (do_after(user,60,src))
-			user << "<span class='notice'>You finish filling over \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You finish filling over \the [src]."))
 			qdel(src)
 	else if (istype(O, /obj/item/weapon/material/shovel))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
-		user << "<span class='notice'>You begin filling over in the earth of \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin filling over in the earth of \the [src]."))
 		if (do_after(user,30,src))
-			user << "<span class='notice'>You finish filling over \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You finish filling over \the [src]."))
 			qdel(src)
 
 /obj/covers/roads/roman/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,65,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,45,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
 /obj/covers/roads/cobble/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,65,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,45,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/stone(loc)
 			qdel(src)
 
 /obj/covers/roads/sandstone/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/material/pickaxe/bone))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,65,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,45,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)
 	else if (istype(O,/obj/item/weapon/material/pickaxe/jackhammer))
 		playsound(src, 'sound/effects/pickaxe.ogg', 85, 1)
-		user << "<span class='notice'>You begin breaking apart \the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You begin breaking apart \the [src]."))
 		if (do_after(user,25,src))
-			user << "<span class='notice'>You break apart \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You break apart \the [src]."))
 			new /obj/item/stack/material/sandstone(loc)
 			qdel(src)

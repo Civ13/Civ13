@@ -2,7 +2,7 @@
 /obj/map_metadata/naval
 	ID = MAP_NAVAL
 	title = "Naval Battle"
-	lobby_icon = "icons/lobby/imperial.png"
+	lobby_icon = 'icons/lobby/imperial.png'
 	no_winner ="No ship has been captured."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
@@ -25,7 +25,7 @@
 	faction2 = PIRATES
 	grace_wall_timer = 3000
 
-obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
@@ -35,7 +35,7 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_coldwar == TRUE)
 		. = FALSE
-	else if (J.is_medieval == TRUE)
+	else if (J.is_medieval)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE
@@ -44,6 +44,8 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
+	else if (J.is_twotribes)
 		. = FALSE
 	else
 		. = TRUE

@@ -38,9 +38,9 @@
 			return
 	if (istype(W, /obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "You start removing \the [src]..."
+		to_chat(user, "You start removing \the [src]...")
 		if (do_after(user, 60, src) && src)
-			user << "You removed \the [src]."
+			to_chat(user, "You removed \the [src].")
 			qdel(src)
 			return
 	else
@@ -366,10 +366,10 @@
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	var/area/currentarea = get_area(get_step(user, user.dir))
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
-		user << "You cannot build a roof here."
+		to_chat(user, "You cannot build a roof here.")
 		return
 	for (var/obj/roof/RF in get_step(user, user.dir))
-		user << "That area is already roofed!"
+		to_chat(user, "That area is already roofed!")
 		return
 	var/confirm = FALSE
 	for(var/obj/structure/roof_support/RS in range(2, get_step(user, user.dir)))
@@ -380,17 +380,19 @@
 		if (CV.wall)
 			confirm = TRUE
 	if (!confirm)
-		user << "This area doesn't have a support for the roof! Build one first!"
+		to_chat(user, "This area doesn't have a support for the roof! Build one first!")
 		return
 	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
-		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
+		visible_message(SPAN_DANGER("[user] starts building the roof."))
+		visible_message(user, SPAN_DANGER("You start building the roof."))
 		if (do_after(user, covers_time, user.loc) && src && !done)
 			for (var/obj/roof/RF in get_step(user, user.dir))
-				user << "That area is already roofed!"
+				to_chat(user, "That area is already roofed!")
 				return
 			done = TRUE
 			new target_type(get_step(user, user.dir), user)
-			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
+			visible_message(SPAN_DANGER("[user] finishes building the roof."))
+
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				H.adaptStat("crafting", 1)

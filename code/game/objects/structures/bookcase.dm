@@ -151,7 +151,7 @@
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,25,src))
 			user << "<span class='notice'>You dismantle \the [src].</span>"
-			new /obj/item/stack/material/wood(get_turf(src))
+			new /obj/item/stack/material/woodplank(get_turf(src))
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))
 			qdel(src)
@@ -195,7 +195,7 @@
 				if (world.time < map.age8_timer && ( (map.custom_civs[user.civilization][1] >= map.age7_top) || (map.custom_civs[user.civilization][2] >= map.age7_top) || (map.custom_civs[user.civilization][3] >= map.age7_top)) )
 					user << "You are too advanced in one of these research types or are too fast. You can research again in [(map.age8_timer-world.time)/600] minutes."
 					return
-		
+
 		var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
 		if (map.nomads == TRUE)
 			if (alive_civilians.len <= 12)
@@ -213,7 +213,7 @@
 		if (user.religious_clergy == "Monks")
 			modif += 0.3
 		user << SPAN_NOTICE("Studying these documents... This will take [displaytime] to finish.")
-		
+
 		if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
 			if (user.civilization != null && user.civilization != "none")
 				if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
@@ -228,7 +228,7 @@
 			else
 				user << "You don't belong to any faction."
 				return
-			
+
 			if (user.civilization == civname_a)
 				if(anti_abuse(user, map.civa_research[1], map.civa_research[2], map.civa_research[3], sum_i, sum_m, sum_h))
 					sum_i = null  //Throwing the unused sum away

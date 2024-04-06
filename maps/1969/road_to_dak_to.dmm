@@ -43,7 +43,7 @@
 "aQ" = (/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "aR" = (/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "aS" = (/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"aT" = (/obj/structure/bed/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"aT" = (/obj/structure/bed/bedroll,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "aU" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "aV" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "aW" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
@@ -80,15 +80,15 @@
 "bB" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/obj/item/weapon/reagent_containers/glass/rag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bC" = (/obj/structure/table/wood,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/obj/item/weapon/matchbox,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bD" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"bE" = (/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"bE" = (/obj/structure/table/wood,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bF" = (/obj/structure/closet/crate/rations/meat,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bG" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bH" = (/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bI" = (/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"bJ" = (/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"bJ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/weapon/gun/projectile/automatic/stationary/browning{icon_state = "browning"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "bK" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/structure/table/wood,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bL" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"bM" = (/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"bM" = (/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "bN" = (/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bO" = (/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bP" = (/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
@@ -98,7 +98,7 @@
 "bT" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "bU" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "bV" = (/obj/structure/wild/palm,/obj/structure/wild/tallgrass,/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"bW" = (/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"bW" = (/obj/item/weapon/foldable/pkm,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "bX" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "bY" = (/obj/structure/barricade,/obj/structure/sign/flag/vietcong,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"; climate = "jungle"})
 "ca" = (/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
@@ -114,9 +114,9 @@
 "cl" = (/obj/structure/barbwire,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "cm" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/obj/item/kitchen/plate,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "cn" = (/obj/structure/window/barrier{dir = 4; icon_state = "dirt_wall"},/obj/structure/wild/tallgrass,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"co" = (/obj/item/weapon/gun/projectile/automatic/stationary/browning{icon_state = "browning"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"cp" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"cq" = (/obj/item/weapon/gun/projectile/automatic/stationary/browning{icon_state = "browning"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"co" = (/obj/item/weapon/gun/projectile/automatic/stationary/browning{icon_state = "browning"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"cp" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/item/ammo_magazine/browning,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"cq" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/floodlight/on{layer = 6},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "cr" = (/obj/structure/window/barrier{dir = 4; icon_state = "dirt_wall"},/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "cs" = (/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ct" = (/obj/structure/barbwire,/obj/structure/window/barrier/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{climate = "jungle"})
@@ -149,7 +149,7 @@
 "cU" = (/obj/covers/wood_ship,/obj/structure/oven,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "cV" = (/obj/covers/wood_ship,/obj/structure/table/wood,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "cW" = (/obj/structure/sink/well,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"cX" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"cX" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/floodlight/on{layer = 6},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "cY" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "cZ" = (/mob/living/simple_animal/monkey,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "da" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -197,9 +197,9 @@
 "dQ" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "dR" = (/obj/structure/barricade/stone_h,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dS" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
-"dT" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"dU" = (/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"dV" = (/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dT" = (/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/obj/item/weapon/barrier/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dU" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dV" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "dX" = (/obj/structure/window/barrier/sandbag,/obj/structure/barbwire,/turf/floor/dirt/jungledirt,/area/caribbean/british/land/outside{climate = "jungle"})
 "dY" = (/obj/structure/barricade/horizontal,/obj/structure/camonet{alpha = 150},/obj/structure/sign/flag/usa{layer = 6.3; pixel_y = 0},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 0.1},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "dZ" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
@@ -243,7 +243,7 @@
 "eM" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "eN" = (/obj/structure/sign/flag/firstcav{layer = 6.3; pixel_y = 10},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 0.1},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "eO" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"eP" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"eP" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "eQ" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "eR" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "eS" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"; climate = "jungle"})
@@ -326,17 +326,17 @@
 "gr" = (/obj/structure/wild/smallbush,/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "gs" = (/obj/structure/wild/jungle,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gt" = (/obj/structure/window/barrier{dir = 4; icon_state = "dirt_wall"},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gu" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gv" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gw" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gx" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gy" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gz" = (/obj/structure/wild/tree/anchored,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"gu" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"gv" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"gw" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"gx" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"gy" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/floodlight/on{layer = 6},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
+"gz" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "gA" = (/obj/structure/barbwire,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "gB" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gC" = (/obj/structure/window/barrier{dir = 8; icon_state = "dirt_wall"},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gD" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gE" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"gE" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "gF" = (/obj/structure/camonet{alpha = 150},/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
 "gG" = (/obj/structure/wild/smallbush,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "gH" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -374,7 +374,7 @@
 "ho" = (/obj/structure/window/barrier/sandbag/incomplete,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "hp" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "hq" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
-"hr" = (/obj/structure/closet/crate/coldwar/m18,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"hr" = (/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "hs" = (/obj/structure/table/wood,/obj/item/weapon/storage/box/drinkingglasses,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ht" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "hu" = (/obj/structure/table/wood,/obj/structure/camonet{alpha = 150},/obj/item/weapon/storage/bible,/mob/living/simple_animal/parrot{name = "Roland"},/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
@@ -404,7 +404,7 @@
 "hT" = (/obj/structure/camonet{alpha = 150},/obj/effect/landmark{name = "JoinLateRNMed"},/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
 "hU" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/camonet{alpha = 150},/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
 "hV" = (/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
-"hW" = (/obj/structure/camonet{alpha = 150},/obj/item/weapon/storage/fancy/cigarettes/luckystrike,/obj/item/weapon/flame/lighter,/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
+"hW" = (/obj/structure/camonet{alpha = 150},/obj/item/weapon/storage/fancy/cigarettes/luckystrike,/obj/item/weapon/flame/lighter/zippo,/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
 "hX" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/obj/structure/roof_support{layer = 6.2; pixel_x = -2},/obj/structure/camonet{alpha = 150},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "hY" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"; layer = 6.2},/obj/structure/vending/usa_apparel_coldwar{layer = 6.11},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
 "hZ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/toilet/outhouse,/turf/floor/dirt/dust,/area/caribbean/british/land/outside{climate = "jungle"})
@@ -453,31 +453,40 @@
 "iQ" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/obj/item/weapon/gun/projectile/semiautomatic/sks,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "iR" = (/obj/structure/table/wood,/obj/item/weapon/matchbox,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "iS" = (/obj/structure/table/wood,/obj/structure/camonet{alpha = 150},/obj/item/weapon/paper,/obj/item/weapon/pen/fancy,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/grenade/smokebomb/signal,/turf/floor/trench,/area/caribbean/british/land/outside{climate = "jungle"})
+"mY" = (/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"ou" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"oQ" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"tF" = (/obj/item/weapon/gun/projectile/automatic/stationary/browning{icon_state = "browning"; dir = 1},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"; layer = 3},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"uK" = (/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"wy" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"Bi" = (/obj/structure/table/wood,/obj/item/weapon/grenade/smokebomb/rdg1,/obj/item/weapon/grenade/smokebomb/rdg2,/obj/item/weapon/grenade/smokebomb/rdg2,/obj/item/weapon/grenade/smokebomb/rdg2,/obj/item/weapon/grenade/smokebomb/rdg1,/obj/item/weapon/grenade/smokebomb/rdg1,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"Gk" = (/obj/structure/window/barrier/sandbag{dir = 4; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"Ko" = (/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/obj/structure/window/barrier/sandbag{dir = 8; icon_state = "sandbag"},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahahahahahaeaeaeaeaeaeaeaeaeae
 ahahahahahahaiahahahahahahahahahahahahahahahahahahaMaMaMahahahahahahahahaeaeaeae
 ahahahahahaQaRbzbAahahahahahahahahahahahahaTaMaTaMaTaMaTaMahahahahahahahaeaeaeae
-ahahahaUaMaMaMaMaMaMaMahaiahahahahahahahahaVaMaVaMaVaMaVaMahahahahahahahaeaeaeae
+ahahahaUaMaMaMaMaMePbWahaiahahahahahahahahaVaMaVaMaVaMaVaMahahahahahahahaeaeaeae
 ahahaWaMaMaMaMaMaMaMaMaMaMaMaMahahahahahahaTaMaTaMaTaMaTaMahahahahahahahaeaeaeae
 ahbBaMaMaMbCahahaMaMaMaMaMaMaMaMahahahahaMaVaMaVaMaVaMaVaMahahahahahahahaeaeaeae
-ahahidiIiJahahaMaMahahahaMaMaMaMahahahaXaMaTaMaTaMaTahaTaMahahahahahahahaeaeaeae
-ahahahahahahaYaMaMaiahahahaMaMaMaMahaiaMaMiKaiiKiLahahiMiNahahahahahahahaeaeaeae
-ahahbDaMbDaMaMaMaMaMahahahaMaMaMaMaMaMaMaMahahahahahahahahahahahahahahahaeaeaeae
-ahbEaMbDbDaMahaMaVaMaVahahahaMaMaMaMaMaMbFahahahahahahahahahahahahahahahaeaeaeae
-ahbGbDbDiOahbHaMaMaMaMaiahahahahaMaMaMaMahahahahahahahahahahahahahahahahaeaeaeae
-ahbIbDaMiPahbJaMaVaMaVaMiQahahahahaMaMaMahahahahahahahahahahahahahahahahaeaeaeae
-ahahaMaiahahbOaMaMaMaMaMbMahahahahahaMaMahahahahahahahahaiahahahahahahahaeaeaeae
-ahahaMbNahahbLaMaVaMaVaMbWahahahahaiaMaMahahahahahahbFbFbFbFbFahahahahahaeaeaeae
-ahbKaMcsahahahaMaMaMbFahahahahahahahaMaMahahahahahaMaMaMaMaMaMaMaMcWahahaeaeaeae
-ahaMaMcXahahaiaMaVddaVahahahahahahahaMaMahahahahaMdededededeaMaMaMeOeOahaeaeaeae
-ahaMaMePaYaMeQaMaMaMaMaiahahahahahahaMaMeTahaiaMaMaSaSaSiRaSaMaMgZaMhaahaeaeaeae
-ahaMaMaMaMaMaMaMaVaMaVahahahahahahahaMaMaMaMaMaMaMhqhqhqhqhqaMaMaSaMhaaiaeaeaeae
+ahahidiIBiahahaMaMahahahaMaMaMaMahahahaXaMaTaMaTaMaTahaTaMahahahahahahahaeaeaeae
+ahaiahahahahaYaMaMaiahahahaMaMaMaMahaiaMaMiKaiiKiLahahiMiNahahahahahahahaeaeaeae
+bHaMcsbKbNaMaMaMaMaMahahahaMaMaMaMaMaMaMaMahahahahahahahahahahahahahahahaeaeaeae
+iJaMaMaMaMaMaMaMaVaMaVahahahaMaMaMaMaMaMbFahahahahahahahahahahahahahahahaeaeaeae
+iOaMaMaMaMaMahahaMaMaMaiahahahahaMaMaMaMahahahahahahahahahahahahahahahahaeaeaeae
+bLaMbDaMiQahahahaVaMaVahahahahahahaMaMaMahahahahahahahahahahahahahahahahaeaeaeae
+bGaMbDaMiPahahahaMaMaMahahahahahahahaMaMahahahahahahahahaiahahahahahahahaeaeaeae
+bOaMbDaMgEahahahaVaMaVahaMahahahahaiaMaMahahahahahahbFbFbFbFbFahahahahahaeaeaeae
+bIaMaMaMbEahaiahaMaMaMahahahahahahahaMaMahahahahahaMaMaMaMaMaMaMaMcWahahaeaeaeae
+hraMaMaMaiaheQahaVddaVahahahahahahahaMaMahahahahaMdededededeaMaMaMeOeOahaeaeaeae
+mYaMaMaMahahaMaMaMaMaMaiahahahahahahaMaMeTahaiaMaMaSaSaSiRaSaMaMgZaMhaahaeaeaeae
+aiaMaMaMaYahaMaMaVaMaVahahahahahahahaMaMaMaMaMaMaMhqhqhqhqhqaMaMaSaMhaaiaeaeaeae
 ahahaMaMaMaMaMaMaMaMaMahahahahahahaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaSaMhaahaeaeaeae
-ahahaMaMaMhrhraMaVaMaVahahahahahaMaMaMaMaMahaMaMaMdededededeaMaMhsaMhaahaeaeaeae
-ahahaiaMaMaMaMaMaMaMaMaMaMaMaiaMaMaMaMahahahahaMaMiRaSaSaSaSaMaMaMeOeOahaeaeaeae
+ahahahaMaMaMaMaMaVaMaVahahahahahaMaMaMaMaMahaMaMaMdededededeaMaMhsaMhaahaeaeaeae
+ahahahaiaMaMaMaMaMaMaMaMaMaMaiaMaMaMaMahahahahaMaMiRaSaSaSaSaMaMaMeOeOahaeaeaeae
 ahahahahahahahahahaMaMaMaMaMaMaMaMaMahahahahahahaMhqhqhqhqhqaMaMaMcWahahaeaeaeae
-ahahahahahahahahahahaMaMaMaMaMeQahahahahahahahahaMaMaMaMaMaMaMaMaMahahahaeaeaeae
+ahahahahahahahahahahaMaMaMaMaMeQahahahahahahahahaMaMaMaMaMaMaMaMbFahahahaeaeaeae
 ahahahahahahahahahahahahahahahahahahahahahahahahahahahhAhChEhFaMaMahahahaeaeaeae
 ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahaiahaMaMahahahaeaeaeae
 ahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahaheQahahahaeaeaeae
@@ -622,8 +631,8 @@ aqaqauajabababcucucDcNcucDcucuadabaneSaEaEaEaBaBaDaDaDaDaBaBfqaBaEaEamamabajabab
 aqaqauauabagabcucOdjftdwfrdxdyadafanfbaEaEaEaBaBaDaDaDaDaBaBaBaEaEbiamamamababab
 awaqamauamababdzdAdBeIfteJftcDadabaneSaEaEaEaBaBaDaDaDaDaBaBaBaEaHaEaxamamabafab
 awaqaqamayabacdDftftfteIdCdxcuababanfcbibjbkbkbkbxemaDemenbkbkbkbjbjaxamambpabab
-awaqaqamamababdDcDcudEdEcucDcuabaqaqazavaAaOaOaNclaGaGaGaGclclaPabamamamamabbnad
-awawaqaCambnhDaFamaGaGaGaGaGaGaGamamaqabababaPamamaGaGaGaGamamabamamamamabbnbnad
+awaqaqamamabhDdDcDcudEdEcucDcuabaqaqazavaAaOaOaNclaGaGaGaGclclaPabamamamamabbnad
+awawaqaCambnabaFamaGaGaGaGaGaGaGamamaqabababaPamamaGaGaGaGamamabamamamamabbnbnad
 awawaqaCamamamaGaKaGaGaGamamaKaGaGaGamadajabababamamaGaGaGamamamamamamababbnabab
 awawaqaqamamamaGaGaGaNaNabaNaNaGaGaGamababagababamamaGaGaGamamamamamamababbnabac
 awawaqaqauamabaOaOaOaPaPabaPaPamamaGamabababababamamaGaGaGamamamamamababaZabbpab
@@ -701,7 +710,7 @@ amaqgeggggggggawawaqamamacabajababgngnababamamaGaGamamabagafababadacababababadab
 amaqaqgeggggggawawaqaqamamagabababapajgaadamamaGaGamamabadabajabababababbsababab
 amamaqaqggggggawawawaCamamababababababababamdhdidmamamabadabababadababacafbpabab
 gbauamaqggggggawawawaqamasamajabababfPfPambhdmdndmamfPfPauababacabababababababab
-amauauaqgeggggawawawaqaqamamauamamfPfPfPambhbdbedmamfPfPfPasamababajababababajab
+amauauaqgeggggawawawaqaqamamauamamfPfPfPambhgzuKdmamfPfPfPasamababajababababajab
 abamauaCaqgeggawawawaqaqaqaqaCaufSfSaNaNdPeDeEeEhbdPaNaNfSfSamamamcYamambaababac
 ababamamaqeHgggggggggggggegegegfgegegegeghdMdNdNdMghgegegegegegegegegdgkgdgdgdgc
 ababamamaqeUgWgggggggggggggggggggggggggggleAeAdNdNghgegegegegegegegegegegegdgdgd
@@ -714,11 +723,11 @@ abajabamamababamamamamaFamamaCaqaqaqaqaqdQhphphphpdQaqawawawawawawawawawawawawaw
 abababbnamabafababamamcYamamgngnauaqaqaqdQhphphphpdQaqaqaqaqaqaqawawawawawawawaw
 ababababamabapabbnabababamamauauamamaNaNdRaGdSdSamdraNaNamaFayaqaqaqaqawawawawaw
 abajabamamgmafababbpababadbnadababamclclclamcFcFamclclclamamamamamaqaqaqawawawaw
-bpababamababababababacabadadabafababadabamaGaGaGamababababacabamamamamaqaqawawaw
-abajabauaCaCcHabalababababadbpabababadabdTdVdVdVbcabajababababajabamamaqaqawawaw
-abbnabamabaCaqababababababamauamababaddUdVfPfPfPdVdUafabafadababadamamamaqaqawaw
-abababamamadababababajabamamaqamamababfPfPfPfPfPfPfPababgnabbnabababauamaqaqaqaw
-ababababamababajadadabamaqdZaqaqamababfPfPfPfPfPfPfPadacababababbpabamamamaCaCaq
+bpababamababababababacabadadabafababadabamaGaGaGamababajabacabamamamamaqaqawawaw
+abajabauaCaCcHabalababababadbpabababadabdTdVdVdVdVamabababababajabamamaqaqawawaw
+abbnabamabaCaqababababababamauamababadbMGkKoououwydUbMababadafabadamamamaqaqawaw
+abababamamadababababajabamamaqamamababgxgvfPfPfPfPgvgwabafabbnabababauamaqaqaqaw
+ababababamababajadadabamaqdZaqaqamababfPfPfPfPfPfPfPfPadababababbpabamamamaCaCaq
 ababababamabababadababamaqaqaqamasababbpamgngnaGamababcSabadbpetadabadabamamaCaq
 abajabacamabajabadajafabamaqaqcYababgoabamamaGaGaGambbeyadadadabbpadadababamauaC
 abgpababamamabadadabababamamamabababababbnamaGaGaGambbeyababababadagabadadamamau
@@ -729,30 +738,30 @@ geasamabafabauadcYabababajbpababbpabamamamaGaGamamabgnababbpabababadaqaqaqaqaqab
 gegeamamababamauamabafbnadabababajabamamaGaGamambpababbnabgoadabacabaqaqaqaCabab
 gegegeasamababamamabgoabadababababamamaGaGamamababafababbpababbpalabaqadabababad
 gegegegeamababamamabacabadajababamamaGaGamamabababababababababababababadadadagab
-amgegegeasamabamamamababadabamaGaGaGaGamamababadabajababadajbnabababababababacab
-amasgdgegeheamamamamamamamaGaGaGaGamamababajababajabafababababababajababadababab
-abamamamgegeamamamamamauaGaGaGaGamamabababababapabababbpabababababababajabacabab
-gcgcgdgdgdgegsgegegegecngdgdgdgdgugdgcgvgwgcgcgcgcgcgcgcgcgxgygcgcgcgzgcgcgvgcgc
-gcgvgcgkgBgBgfgegegfgfgCgegegegtgfgkgdgdgcgcgcgcgcgcgcgcgcgcgDgcgvgcgcgygEgcgzgc
+amgegegegkamabamamamababadabamaGaGaGaGamamababadabajababadajbnabababababababacab
+amasamgegeheamamamamamamamaGaGaGaGamamababajababajabafababababababajababadababab
+abamamamgegegdamamamamauaGaGaGaGamamabababababapabababbpabababababababajabacabab
+ababamamamgegsgegegegecnamamamamguamabajapababababababababagbpabababacababajabab
+abajabasauaugfgegegfgfgCgegegegtgfasamamababababababababababgnabajababbpadabacab
 abafabadaugbamauauaucrgegegegeeggfgegegdamamasasasababadafababbnabbnbnabadababab
-abagabababababamauauaGaGaGaGaGaueCgegfhggdgdgegeamamamamamabababababadabababajab
+abagabababababamauauaGaGaGaGaGaueCgegfhggdgdgegegdgdgdamamabababababadabababajab
 ababadajabadajabgnaGaGaGaGgnamamauamgfgfgegegegegegfgfgegdamabababadadababababab
 ajabababababadgngnaGaGaGgngnabadabadamauauamasamauaugegegegdauajabadabajabababab
-ababbpadgnabbngnaGaGaGaGgnadabababababababamababauamgBgfgegegBauamauabababbpajbn
-ababababajadabgnaGaGaGamgnababadababadalabadapabadafamaugfgfgegegeauaualbnababab
-abajabacadabgnaGaGaGaGamadabbnababababeFeFeFababadababamamaugfgfgfgfauamabababab
-abalababababgnaGaGcbccfseFeFeFapabababdhcocpbnabababababafamamgBgfgfgfgdamamabab
-adabbpajabajgnaGaGcfcgckcqerdieFababadabamagabababajababababamamauaugegfgegdamam
+ababbpadgnabbngnaGaGaGaGgnadabababababababamababauamaugfgegegBauamauabababbpajbn
+ababababajadabgnaGaGaGamgnababadababadalabadapabadafamaugfgfgegegegBaualbnababab
+abajabacadabgnaGaGcbccfsaPeFeFeWapabakeFaPeFeWabadababamamaugfgfgfgfauamabababab
+abalababababgnaGaGcfcgcktFerdieWababakoQcocpeWabababababafamamaugfgfgfgdamamabab
+adabbpajabajgnaGaGaGaGaGaGaGaGamababadabamababababajabagababamamauaugegfgegdamam
 abagabababbnamaGaGaGaGaGaGaGaGamabbnababababababbpababbnababababamamamgfgegegege
 gnabbnababadadgnaGaGaGaGaGinctctcvcvcvcvcvcvcvcwababbpabababababbnabasamamgegege
 ababcxajababababgngnaGaGaGirchcAcPhXdYieieedimeeamabababababadbpababadamamamasam
 grabefebebebecebebebebiHcaiFfecaczhHfmiofmioipeeamamabagabajababababababamamamam
-goabekeMcyhYeNcBgYeZijfecaeRiqcaczeKgFgFgFhWipeeamamadabababababababababadababab
-agbpekfeczcCcaeacacaeldleueucacaczisfmgFgFitiucEdXfedXcwababbnabgnajababababajab
-ababhIfeczcQcacaeicaejeMeReRiqcacaeReRcacaeRiveMcyfeehesajabababgoabbpabababajab
-bpamhIfeczcRcacaepeYeXfecacacacacacacacacacacziBiCfefdesababagabbpabababajababab
-abamhIfecacacacacacacacacacacacaeueueueueueueueveweuhtesababababababababababajab
-abgbhIfecaeueucaeucacacacacacacafjfYcieLeVgXhvhihQhQhQcwajabbnababalajababababab
+goabekcXehhYeNcBgYeZijfecaeRiqcaczeKgFgFgFhWipeeamamadabababababababababadababab
+agbpekfefdcCcaeacacaeldleueucacaczisfmgFgFitiucEdXcadXdXcwabbnabgnajababababajab
+ababhIfeczcQcacaeicaejeMcqeRiqcacaeReRcacaeRiveMcyfebJgyesabababgoabbpabababajab
+bpamhIfeczcRcacaepeYeXfecacacacacacacacacacacziBiCfecafdesabagabbpabababajababab
+abamhIfecacacacacacacacacacacacaeueueueueueueueveweueuhtesabababababababababajab
+abgbhIfecaeueucaeucacacacacacacafjfYcieLeVgXhvhihQhQhQhQcwabbnababalajababababab
 goamhIfeczhJgFhPhRiwcacaiEcacacahSgFgFhThTgFhUeeamamabababadabababadgnbnbpajabab
 abamhIfeczffiShuhGhzcaiDifiDcacahZiahKhKhKhKhMeeamamababgnababababababababababgo
 bnbphIfeczibichLhGhVcaiDiGiDcacaigihgFihhNgFhOeeamabajababababajabababababababab

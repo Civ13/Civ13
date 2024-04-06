@@ -21,7 +21,7 @@
 			if (istype(A, D))
 				accept = TRUE
 		if (!accept)
-			user << "[A] doesn't fit into \the [src]."
+			to_chat(user, "[A] doesn't fit into \the [src].")
 			return
 		var/mob/L = A
 		user.visible_message("<span class='notice'>[user] scoops [L] into \the [src].</span>", "<span class='notice'>You scoop [L] into \the [src].</span>")
@@ -35,7 +35,7 @@
 		if (1)
 			for (var/obj/O in src)
 				O.loc = user.loc
-			user << "<span class='notice'>You take money out of \the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You take money out of \the [src]."))
 			contains = FALSE
 			update_icon()
 			return

@@ -7,6 +7,7 @@
 		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
 		equip_to_slot_or_del(new /obj/item/clothing/under/leaves_skirt(src), slot_w_uniform)
 		return
+
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
@@ -324,7 +325,6 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-
 		if (8)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
@@ -343,8 +343,8 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-
-
+	if (map.ID == MAP_PEPELSIBIRSK)
+		equip_to_slot_or_del(new /obj/item/weapon/personal_documents(src), slot_wear_id)
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
@@ -846,6 +846,58 @@
 								real_name = input_name
 								return
 //////////////////////////////////////////////////////
+////////////////////////Nomads_UK/////////////////////
+//////////////////////////////////////////////////////
+		else if (map.ID == MAP_NOMADS_UK)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("temperate")
+						add_language("English",TRUE)
+						remove_language("")
+						for (var/datum/language/english/A in languages)
+							default_language = A
+						name = species.get_random_english_name(gender)
+						real_name = name
+						add_note("Known Languages", "English")
+						return
+					if ("taiga")
+						add_language("Scottish Gaelic",TRUE)
+						remove_language("English")
+						for (var/datum/language/scottishgaelic/A in languages)
+							default_language = A
+						name = species.get_random_scottishgaelic_name(gender)
+						real_name = name
+						add_note("Known Languages", "Scottish Gaelic")
+						return
+					if ("savanna")
+						add_language("Gaelic",TRUE)
+						remove_language("English")
+						for (var/datum/language/gaelic/A in languages)
+							default_language = A
+						name = species.get_random_gaelic_name(gender)
+						real_name = name
+						add_note("Known Languages", "Gaelic")
+						return
+					if ("sea")
+						add_language("Welsh",TRUE)
+						remove_language("English")
+						for (var/datum/language/welsh/A in languages)
+							default_language = A
+						name = species.get_random_welsh_name(gender)
+						real_name = name
+						add_note("Known Languages", "Welsh")
+						return
+					if ("semiarid")
+						add_language("Scots",TRUE)
+						remove_language("English")
+						for (var/datum/language/scots/A in languages)
+							default_language = A
+						name = species.get_random_scots_name(gender)
+						real_name = name
+						add_note("Known Languages", "Scots")
+						return
+//////////////////////////////////////////////////////
 ////////////////////////Nomads_Asia///////////////////
 //////////////////////////////////////////////////////
 		else if (map.ID == MAP_NOMADS_ASIA)
@@ -878,6 +930,43 @@
 						name = species.get_random_mongolian_name(gender)
 						real_name = name
 						add_note("Known Languages", "Mongolian")
+						return
+//////////////////////////////////////////////////////
+////////////////////////Pepelsibirsk//////////////////
+//////////////////////////////////////////////////////
+		else if (map.ID == MAP_PEPELSIBIRSK)
+			spawn(5)
+				switch(nationality)
+					if ("Polish")
+						add_language("Polish",TRUE)
+						add_language("Russian",TRUE)
+						remove_language("English")
+						name = species.get_random_polish_name(gender)
+						real_name = name
+						add_note("Known Languages", "Polish", "Russian")
+						return
+					if ("Russian")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						add_note("Known Languages", "Polish")
+						return
+					if ("German")
+						add_language("German",TRUE)
+						add_language("Russian",TRUE)
+						remove_language("English")
+						name = species.get_random_german_name(gender)
+						real_name = name
+						add_note("Known Languages", "German", "Russian")
+						return
+					if ("Ukrainian")
+						add_language("Ukrainian",TRUE)
+						add_language("Russian",TRUE)
+						remove_language("English")
+						name = species.get_random_ukrainian_name(gender)
+						real_name = name
+						add_note("Known Languages", "Ukrainian", "Russian")
 						return
 /////////////////////////CIVS////////////////////////
 

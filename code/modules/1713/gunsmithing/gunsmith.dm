@@ -18,7 +18,7 @@
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
-	if (istype(P, /obj/item/stack/material/wood))
+	if (istype(P, /obj/item/stack/material/woodplank))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
@@ -135,7 +135,7 @@
 				if ("6.5x50mm small rifle")
 					P.caliber = "a65x50"
 					P.ammo_type = /obj/item/ammo_casing/a65x50
-					
+
 				if (".45 Colt")
 					P.caliber = "a45"
 					P.ammo_type = /obj/item/ammo_casing/a45
@@ -203,7 +203,7 @@
 	if (!found)
 		user << "You don't have enough money to make a new blueprint! You need 50 gold coins or equivalent in one of your hands."
 		return FALSE
-		
+
 ////////////////STOCK///////////////////////////////
 	var/list/display = list("Cancel")
 	if (map.ordinal_age == 5)
@@ -212,7 +212,7 @@
 		display = list("Rifle Wooden Stock","Carbine Wooden Stock", "Pistol Grip", "Steel Stock", "Cancel")
 	else if (map.ordinal_age >= 7)
 		display = list("Rifle Wooden Stock","Carbine Wooden Stock", "Pistol Grip", "Steel Stock", "Folding Stock", "Cancel")
-	
+
 	var/choice_stock = WWinput(user, "Choose the Stock:", "Gunsmith - [steel_amt] steel, [wood_amt] wood", "Cancel", display)
 	current_gun = new /obj/item/weapon/gun/projectile/custom(src)
 	switch (choice_stock)
@@ -308,7 +308,7 @@
 	if (choice_receiver == "Open-Bolt (large)" && map.ordinal_age >= 6)
 		display3 = list("Internal Magazine", "External Magazine", "Large External Magazine", "Open (Belt-Fed)")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine", "Large External Magazine")	
+		display3 = list("Internal Magazine", "Tubular", "External Magazine", "Large External Magazine")
 	display3 += "Cancel"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	switch (choice_feeding)
@@ -400,7 +400,7 @@
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 				caliberlist = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
-			
+
 			if ("Open-Bolt (large)")
 				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
 
@@ -424,7 +424,7 @@
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
 				caliberlist = list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
-			
+
 			if ("Open-Bolt (large)")
 				caliberlist = list("7.62x39mm intermediate rifle", "5.56x45mm intermediate rifle")
 
@@ -536,7 +536,7 @@
 			if ("Triple Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
-				
+
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
 			current_gun.override_sprite = dst
@@ -1031,7 +1031,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine,/obj/item/ammo_magazine/emptymagazine/rifle)
 			firemodes = list(
-				list(name = "full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
+				list(name = "automatic",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
 				)
 			load_method = MAGAZINE
 			load_delay = 8
@@ -1094,7 +1094,7 @@
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
-				list(name = "full auto",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
 				)
 			weight = 10
 			slot_flags = 0
@@ -1169,8 +1169,8 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name = "semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name = "full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1236,9 +1236,9 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name = "semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name = "burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-				list(name = "full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+				list(name = "3-round bursts",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 				)
 			sel_mode = 1
 			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1400,7 +1400,7 @@
 						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle,/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled)
 					else if (caliber == "a762x39")
 						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle,/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled)
-					else 
+					else
 						good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
 		if ("Large External Magazine")
 			load_method = MAGAZINE
@@ -1486,7 +1486,7 @@
 				stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
 			else
 				stock_img = image("icon" = src.icon, "icon_state" = "none")
-				
+
 		if (!bolt_open)
 			receiver_img = image("icon" = src.icon, "icon_state" = "[src.receiver_type]")
 		else

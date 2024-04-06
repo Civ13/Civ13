@@ -93,7 +93,7 @@ Parts of code courtesy of Super3222
 	name = "periscope"
 	desc = "A solid metal periscope."
 	icon_state = "periscope"
-	max_zoom = ZOOM_CONSTANT*4
+	max_zoom = 75
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
@@ -120,195 +120,178 @@ Parts of code courtesy of Super3222
 	value = 15
 	w_class = ITEM_SIZE_SMALL
 	var/checking = FALSE
-	var/aircraft_remaining
-	var/airstrikes_remaining
+	var/needs_instruments = FALSE
+
+	var/attack_direction = "NORTH"
+
+	var/payload = null
+	var/payload_list = list("Rockets")
+
+	var/payload_remaining
 	
-	var/delay = 20 SECONDS
+	var/call_in_time = 3 SECONDS
+	var/cooldown = 30 SECONDS
 	var/debounce = FALSE
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/binoculars
+	name = "binocular designator"
+	desc = "A pair of binoculars for calling in airstrikes."
+	icon_state = "binoculars"
+	needs_instruments = TRUE
+
+	call_in_time = 5 SECONDS
+	cooldown = 1 MINUTE
+	payload_list = list("50 kg Bomb", "250 kg Bomb")
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_faction_aircraft(var/mob/living/human/H)
+	var/aircraft_name
+	switch (H.faction_text) // Check what faction has called in the airstrike and select an aircraft.
+		if (DUTCH)
+			aircraft_name = "F-16"
+		if (GERMAN)
+			if (map.ordinal_age == 6)
+				aircraft_name = "Ju 87 Stuka"
+			else
+				return
+		if (AMERICAN)
+			aircraft_name = "F-16"
+		if (RUSSIAN)
+			if (map.ordinal_age == 6)
+				aircraft_name = "IL-2"
+			else
+				aircraft_name = "Su-25"
+	return aircraft_name
+
+// Check which faction is using the designator
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_faction_num(var/mob/living/human/H)
+	var/faction_num
+	if (map.faction1 == H.faction_text) 
+		faction_num = 1
+	else if (map.faction2 == H.faction_text)
+		faction_num = 2
+	return faction_num
+
+// Payload class defines how many times this payload can be used before it needs to re-arm. See global_lists.dm for details
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_payload_class()
+	var/payload_class
+	switch (payload)
+		if ("Rockets")
+			payload_class = 1
+		if ("50 kg Bomb")
+			payload_class = 2
+		if ("250 kg Bomb")
+			payload_class = 3
+	return payload_class
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/examine(mob/user)
 	..()
 	if (ishuman(user))
 		var/mob/living/human/H = user
-		switch (H.faction_text) // Check how much jets and airstrikes they have left
-			if (DUTCH)
-				aircraft_remaining = faction1_aircraft_remaining
-				airstrikes_remaining = faction1_airstrikes_remaining
-			if (RUSSIAN)
-				aircraft_remaining = faction2_aircraft_remaining
-				airstrikes_remaining = faction2_airstrikes_remaining
-			if (AMERICAN)
-				aircraft_remaining = faction1_aircraft_remaining
-				airstrikes_remaining = faction1_airstrikes_remaining
-			if (BRITISH)
-				aircraft_remaining = faction1_aircraft_remaining
-				airstrikes_remaining = faction1_airstrikes_remaining
-		to_chat(user, "<b>There are [aircraft_remaining] aircraft in your Area of Operations.</b>")
-		to_chat(user, "<b>You have [airstrikes_remaining] airstrikes remaining.</b>")
+		if (get_faction_num(H) && get_faction_aircraft(H))
+			if (payload)
+				switch (get_faction_num(H)) // Check how much jets and airstrikes they have left
+					if (1)
+						payload_remaining = faction1_airstrikes_remaining[get_payload_class()]
+					if (2)
+						payload_remaining = faction2_airstrikes_remaining[get_payload_class()]
+			
+			to_chat(H, "<b>Attack direction: <red>[attack_direction ? attack_direction : "None selected"]</red></b>")
+			to_chat(H, "<b>Payload type: <red>[payload ? payload : "None selected"]</red></b>")
+			to_chat(H, "<b>Payload type remaining: <red>[payload ? payload_remaining : "None selected"]</red></b>")
+		else // Failsafe for if a faction that does not have a jet or a faction which is not defined uses a designator
+			to_chat(H, SPAN_DANGER("<b>There's no friendly CAS that you can call in.</b>"))
+
+/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/attack_self(var/mob/living/human/H)
+	var/selection_type = WWinput(H, "What do you want to change?", "Category selection", "Attack direction", list("Attack direction", "Payload type"))
+	var/selection_list
+	switch (selection_type)
+		if ("Attack direction")
+			selection_list = list("NORTH", "EAST", "SOUTH", "WEST", "Cancel")
+			attack_direction = WWinput(H, "Set attack direction", "Close Air Support", "Cancel", selection_list)
+		if ("Payload type")
+			selection_list = payload_list + "Cancel"
+			payload = WWinput(H, "Set payload", "Close Air Support", "Cancel", selection_list)
+	return
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/rangecheck(var/mob/living/human/H, var/atom/target)
-	if (map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
+	if(!ishuman(H))	return
+	if(map.ID == MAP_SYRIA && H.original_job.title != "Delta Force Operator")
 		to_chat(H, "You don't know how to use this.")
 		return
 	else
 		if (!checking)
-			switch (H.faction_text) // Check how much jets and airstrikes they have left
-				if (DUTCH)
-					aircraft_remaining = faction1_aircraft_remaining
-					airstrikes_remaining = faction1_airstrikes_remaining
-				if (RUSSIAN)
-					aircraft_remaining = faction2_aircraft_remaining
-					airstrikes_remaining = faction2_airstrikes_remaining
-				if (AMERICAN)
-					aircraft_remaining = faction1_aircraft_remaining
-					airstrikes_remaining = faction1_airstrikes_remaining
-				if (BRITISH)
-					aircraft_remaining = faction1_aircraft_remaining
-					airstrikes_remaining = faction1_airstrikes_remaining
-			if (aircraft_remaining > 0)
-				if (airstrikes_remaining > 0)
-					if (debounce <= world.time) // Cooldown
-						checking = TRUE
-						var/dist1 = abs(H.x-target.x)
-						var/dist2 = abs(H.y-target.y)
-						var/distcon = max(dist1,dist2)
-						var/gdir = get_dir(H, target)
-						to_chat(H, SPAN_DANGER("<big>You lasing the target, stay still...</big>"))
-						var/input = WWinput(H, "Strafe in what direction?", "Close Air Support", "Cancel", list("Cancel", "NORTH", "EAST", "SOUTH", "WEST"))
-						if (input != "Cancel")
-							if (do_after(H, 1.5 SECONDS, src, can_move = FALSE))
+			if (get_faction_num(H) && get_faction_aircraft(H))
+				if (payload)
+					var/payload_class = get_payload_class()
+					switch (get_faction_num(H)) // Check how long the cooldown is and how many airstrikes the faction has left
+						if(1)
+							debounce = faction1_aircraft_cooldown
+							payload_remaining = faction1_airstrikes_remaining[payload_class]
+						if (2)
+							debounce = faction2_aircraft_cooldown
+							payload_remaining = faction2_airstrikes_remaining[payload_class]
+
+					if(debounce <= world.time) // Check if time is further than the cooldown
+						switch (get_faction_num(H)) // Re-arm the jet if it was re-arming and came off cooldown
+							if (1)
+								if (faction1_aircraft_rearming)
+									faction1_aircraft_rearming = FALSE
+									faction1_airstrikes_remaining = faction1_airstrikes_max
+									payload_remaining = faction1_airstrikes_remaining[payload_class]
+							if (2)
+								if (faction2_aircraft_rearming)
+									faction2_aircraft_rearming = FALSE
+									faction2_airstrikes_remaining = faction2_airstrikes_max
+									payload_remaining = faction2_airstrikes_remaining[payload_class]
+									
+						if (payload_remaining > 0) // If they have payloads remaining continue, otherwise make them re-arm
+							checking = TRUE
+							var/distcon = max(abs(H.x-target.x),abs(H.y-target.y))
+							var/gdir = get_dir(H, target)
+							to_chat(H, SPAN_DANGER("<big>You begin calling in the target, stay still...</big>"))
+
+							if (do_after(H, call_in_time, src, can_move = FALSE))
 								to_chat(H, "<big><b><font color='#ADD8E6'>Calling in airstrike: [distcon] meters [dir2text(gdir)].</font></b></big>")
 								checking = FALSE
 
-								var/turf/T = locate(target.x,target.y,target.z)
-								try_airstrike(T, H, input)
-								debounce = world.time + delay
+								var/turf/T = locate(target.x, target.y, target.z)
+								T.try_airstrike(H.ckey, H.faction_text, get_faction_aircraft(H), attack_direction, payload, get_payload_class())
+
+								switch (get_faction_num(H)) // Apply cooldown
+									if (1)
+										faction1_aircraft_cooldown = world.time + cooldown
+									if (2)
+										faction2_aircraft_cooldown = world.time + cooldown					
 							else
 								to_chat(H, "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>")
 								checking = FALSE
 								return
 						else
-							to_chat(H, "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>")
-							checking = FALSE
-							return
+							to_chat(H, SPAN_WARNING("<big><b>Calling CAS to re-arm, stay still...</b></big>"))
+							if (do_after(H, 5 SECONDS, src, can_move = FALSE))
+								switch (get_faction_num(H)) // Switch CAS to re-arms
+									if (1)
+										faction1_aircraft_rearming = TRUE
+										faction1_aircraft_cooldown = world.time + 5 MINUTES
+										to_chat(H, "<big><b><font color='#ADD8E6'>CAS now re-arming, it'll be back in [ceil((faction1_aircraft_cooldown - world.time)/10)/60] minutes.</font></b></big>")
+									if (2)
+										faction2_aircraft_rearming = TRUE
+										faction2_aircraft_cooldown = world.time + 5 MINUTES
+										to_chat(H, "<big><b><font color='#ADD8E6'>CAS now re-arming, it'll be back in [ceil((faction2_aircraft_cooldown - world.time)/10)/60] minutes.</font></b></big>")
+						return
 					else
-						to_chat(H, "<big><b><font color='#ADD8E6'>Close Air Support is making their way back around, try again in [(debounce - world.time)/10] seconds.</font></b></big>")
+						switch (get_faction_num(H))
+							if (1)
+								to_chat(H, "<big><b><font color='#ADD8E6'>CAS is [faction1_aircraft_rearming ? "re-arming" : "making their way back around"], try again in [ceil((faction1_aircraft_cooldown - world.time)/10)] seconds.</font></b></big>")
+							if (2)
+								to_chat(H, "<big><b><font color='#ADD8E6'>CAS is [faction2_aircraft_rearming ? "re-arming" : "making their way back around"], try again in [ceil((faction2_aircraft_cooldown - world.time)/10)] seconds.</font></b></big>")
 						return
 				else
-					to_chat(H, SPAN_DANGER("<big><b>All avaliable aircraft are out of ammunition.</big></b>"))
+					to_chat(H, SPAN_DANGER("<big><b>Select a payload first.</b></big>"))
 					return
 			else
-				to_chat(H, SPAN_DANGER("<big><b>There are no more avaliable aircraft in your Area of Operations.</big></b>"))
+				to_chat(H, SPAN_DANGER("<big><b>There's no friendly CAS that you can call in.</b></big>"))
 				return
-
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/try_shoot_down_aircraft(var/turf/T, mob/living/human/user as mob, var/direction, var/aircraft_name = "Unknown Aircraft")
-	spawn(8 SECONDS)
-		var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
-		sam_sound.priority = 250
-		for (var/mob/M in player_list)
-			if (!new_player_mob_list.Find(M))
-				to_chat(M, SPAN_DANGER("<big>A SAM site fires at the [aircraft_name]!</big>"))
-				M.client << sam_sound
-		spawn(5 SECONDS)
-			if (prob(95)) // Shoot down the jet
-				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
-				uploaded_sound.priority = 250
-				for (var/mob/M in player_list)
-					if (!new_player_mob_list.Find(M))
-						to_chat(M, SPAN_DANGER("<big>The SAM directly hits the [aircraft_name], shooting it down!</big>"))
-						if (M.client)
-							M.client << uploaded_sound
-				
-				switch (user.faction_text)
-					if (DUTCH)
-						faction1_aircraft_remaining--
-					if (RUSSIAN)
-						faction2_aircraft_remaining--
-					if (AMERICAN)
-						faction1_aircraft_remaining--
-					if (BRITISH)
-						faction1_aircraft_remaining--
-				message_admins("[map.roundend_condition_def2name(user.faction_text)] Aircraft [aircraft_name] has been shot down.")
-				log_game("Aircraft [aircraft_name] has been shot down.")
-				return
-			else // Evade the Anti-Air
-				var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
-				uploaded_sound.priority = 250
-				for (var/mob/M in player_list)
-					if (!new_player_mob_list.Find(M))
-						to_chat(M, SPAN_NOTICE("<big><b>The SAM misses the [aircraft_name]!</b></big>"))
-						if (M.client)
-							M.client << uploaded_sound
-				airstrike(T, user, direction, aircraft_name)
-
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/try_airstrike(var/turf/T, mob/living/human/user as mob, var/direction)
-	message_admins("[user.ckey] ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", user.ckey)
-	log_game("[user.ckey] ([user.faction_text]) called in an airstrike with \the [src] at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
-	switch (user.faction_text)
-		if (DUTCH)
-			faction1_airstrikes_remaining--
-		if (RUSSIAN)
-			faction2_airstrikes_remaining--
-		if (AMERICAN)
-			faction1_airstrikes_remaining--
-		if (BRITISH)
-			faction1_airstrikes_remaining--
-
-	var/aircraft_name
-	switch(user.faction_text)
-		if (DUTCH)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
-		if (RUSSIAN)
-			new /obj/effect/plane_flyby/su25_no_message(T)
-			aircraft_name = "Su-25"
-		if (AMERICAN)
-			new /obj/effect/plane_flyby/f16_no_message(T)
-			aircraft_name = "F-16"
-	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] cuts through.</font>"))
-	
-	var/anti_air_in_range = FALSE
-	for (var/obj/structure/milsim/anti_air/AA in range(60, T))
-		if (AA.faction_text != user.faction_text)
-			anti_air_in_range++
-	if (anti_air_in_range)
-		try_shoot_down_aircraft(T, user, direction, aircraft_name)
-	else
-		airstrike(T, user, direction, aircraft_name)
-	return
-
-/obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/airstrike(var/turf/T, mob/living/human/user as mob, var/direction, var/aircraft_name = "Unknown Aircraft")
-	var/strikenum = 5
-
-	var/xoffset = 0
-	var/yoffset = 0
-
-	var/direction_xoffset = 0
-	var/direction_yoffset = 0
-
-	to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
-	
-	spawn(15)
-		for (var/i = 1, i <= strikenum, i++)
-			switch (direction)
-				if ("NORTH")
-					direction_yoffset += 3
-					xoffset = rand(-2,2)
-					yoffset = rand(0,1)
-				if ("EAST")
-					direction_xoffset += 3
-					xoffset = rand(0,1)
-					yoffset = rand(-2,2)
-				if ("SOUTH")
-					direction_yoffset -= 3
-					xoffset = rand(-2,2)
-					yoffset = rand(0,1)
-				if ("WEST")
-					direction_xoffset -= 3
-					xoffset = rand(0,1)
-					yoffset = rand(-2,2)
-			spawn(i*8)
-				explosion(locate((T.x + xoffset + direction_xoffset),(T.y + yoffset + direction_yoffset),T.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
 
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"

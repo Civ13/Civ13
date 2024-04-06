@@ -512,8 +512,8 @@
 	icon_state = "woodtable"
 	flipped_icon = "woodtable-flipped"
 	frame = /obj/structure/table_frame/wood
-	framestack = /obj/item/stack/material/wood
-	buildstack = /obj/item/stack/material/wood
+	framestack = /obj/item/stack/material/woodplank
+	buildstack = /obj/item/stack/material/woodplank
 	flammable = TRUE
 
 /obj/structure/table/modern/table/flipped
@@ -546,7 +546,7 @@
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "billard"
 	frame = /obj/structure/table_frame/wood
-	framestack = /obj/item/stack/material/wood
+	framestack = /obj/item/stack/material/woodplank
 	buildstack = /obj/item/stack/material/cloth
 	flammable = TRUE
 	flipped = FALSE

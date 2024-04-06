@@ -37,7 +37,7 @@
 /obj/item/stack/material/get_material()
 	return material
 
-/obj/item/stack/material/proc/update_strings()
+/obj/item/stack/material/update_strings()
 	// Update from material datum.
 	if (material)
 		singular_name = material.sheet_singular_name
@@ -52,6 +52,7 @@
 
 /obj/item/stack/material/use(var/used)
 	. = ..()
+	update_icon()
 	update_strings()
 	return
 
@@ -68,11 +69,13 @@
 
 /obj/item/stack/material/attack_self(var/mob/user)
 //	if (!material.build_windows(user, src))
+	update_icon()
 	..()
 
 /obj/item/stack/material/attackby(var/obj/item/W, var/mob/user)
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
+		update_icon()
 		return
 	..()
 
@@ -250,7 +253,7 @@
 	food_decay()
 
 /obj/item/stack/material/leaf/proc/food_decay()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (decay == 0)
 			return
 		if (istype(loc, /obj/structure/vending))
@@ -389,7 +392,7 @@
 
 /obj/item/stack/material/wood
 	name = "wooden plank"
-	icon_state = "sheet-wood"
+	icon_state = "logs"
 	default_type = "wood"
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
@@ -411,7 +414,77 @@
 			qdel(NF)
 			qdel(src)
 
-/obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/user as mob)
+var/splitting_in_progress = null  // Initialize the variable outside of the scopes and procedure attackby()
+/obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/living/human/user as mob)
+	if (istype(T, /obj/item/flashlight/torch))
+		var/obj/item/flashlight/torch/F = T
+		if(user.a_intent == "harm" && F.on && !onfire)
+			user.visible_message("<span class = 'red'>[user.name] tries to set \the [src] on fire!</span>", "<span class = 'red'>You try to set \the [src] on fire!</span>")
+			if(prob(30))
+				ash_production = 1
+				src.onfire = 1
+				start_fire()
+				user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
+				return
+	if (istype(T, /obj/item/weapon/material/hatchet))
+		// var/obj/item/weapon/material/hatchet/SH = T
+		// Check if there's enough material
+		if (src.amount < 2)
+			to_chat(user, "You don't have enough material to try.")
+		else
+			// Check if splitting process is already in progress
+			if (splitting_in_progress)
+				to_chat(user, SPAN_DANGER("You are already splitting \the [src]."))
+				return
+			// Set splitting_in_progress to TRUE to indicate the process has started
+			splitting_in_progress = TRUE
+
+			// Start the splitting process
+			user.visible_message("[user.name] starts carving \the [src] into a plank using \the [T].", "You start carving \the [src] into a plank.")
+			playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+			
+			// Set a delay for the splitting process
+			if (do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
+				// Finish the splitting process
+				user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
+				src.use(2)
+				var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
+				dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
+				dropwood.update_strings() 
+				splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
+			else
+				splitting_in_progress = FALSE // In case we abort mid-way.
+				return
+
+	return ..()
+
+/obj/item/stack/material/woodplank
+	name = "soft"
+	icon_state = "sheet-wood"
+	default_type = "woodplank"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 2
+	flammable = TRUE
+	max_amount = 200
+	var/base_icon = "sheet-wood"
+	var/onfire = FALSE
+	var/ash_production = FALSE
+
+/obj/item/stack/material/woodplank/twentyfive
+	amount = 25
+
+/obj/item/stack/material/woodplank/proc/start_fire()
+	var/burn_time = amount * 1
+	var/old_amount = amount
+	if (onfire)
+		var/obj/effect/fire/NF = new/obj/effect/fire(src.loc)
+		spawn(burn_time)
+			for(var/i = 0, i < old_amount, i++)
+				new/obj/item/wood_ash(src.loc)
+			qdel(NF)
+			qdel(src)
+
+/obj/item/stack/material/woodplank/attackby(obj/item/T as obj, mob/user as mob)
 	if (istype(T, /obj/item/flashlight/torch))
 		var/obj/item/flashlight/torch/F = T
 		if(user.a_intent == "harm" && F.on && !onfire)
@@ -423,6 +496,22 @@
 				visible_message("<span class = 'red'>[user.name] sets the [src] on fire.</span>")
 				return
 	return ..()
+
+/obj/item/stack/material/woodplank/update_icon()
+	if (amount >= 50)
+		icon_state = "[base_icon]-50"
+	else if (amount >= 100)
+		icon_state = "[base_icon]-100"
+	else if (amount >= 150)
+		icon_state = "[base_icon]-150"
+	else if (amount >= 200)
+		icon_state = "[base_icon]-200"
+	else
+		icon_state = "[base_icon]"
+
+/obj/item/stack/material/woodplank/New()
+	..()
+	update_icon()
 
 /obj/item/stack/material/bamboo
 	name = "bamboo bundle"

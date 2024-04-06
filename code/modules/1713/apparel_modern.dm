@@ -424,6 +424,15 @@
 	item_state = "pasgt_white"
 	worn_state = "pasgt_white"
 
+/obj/item/clothing/head/helmet/modern/pasgt/white/alt
+	icon_state = "pasgt_white_alt"
+	item_state = "pasgt_white_alt"
+	worn_state = "pasgt_white_alt"
+/obj/item/clothing/head/helmet/modern/pasgt/white/alt/two
+	icon_state = "pasgt_white_alt_2"
+	item_state = "pasgt_white_alt_2"
+	worn_state = "pasgt_white_alt_2"
+	
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))
@@ -774,7 +783,7 @@
 	worn_state = "a6b47"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 100, gun = 86, energy = 27, bomb = 76, bio = 30, rad = FALSE)
+	armor = list(melee = 62, arrow = 75, gun = 55, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/a6b47/emr
 	icon_state = "6b47_emr"
@@ -1052,7 +1061,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 73, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 90
 
 /* Motorist*/
@@ -1064,7 +1072,6 @@
 	item_state = "motorcycle"
 	worn_state = "motorcycle"
 	body_parts_covered = FACE|EYES|HEAD
-	restricts_view = 1
 	flags_inv = HIDEMASK|BLOCKHAIR|BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 65, gun = 5, energy = 35, bomb = 35, bio = 30, rad = FALSE)
 
@@ -1175,7 +1182,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 95, gun = 85, energy = 27, bomb = 64, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 90
 
 /obj/item/clothing/head/helmet/swat_new
@@ -1187,7 +1193,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 85, arrow = 95, gun = 85, energy = 27, bomb = 70, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 100
 
 	/* Emergency Services Clothing*/
@@ -1429,8 +1434,8 @@
 	..()
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs/zip(src)
+	new /obj/item/weapon/handcuffs/zip(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/ammo_magazine/m16(src)
@@ -1466,8 +1471,8 @@
 	..()
 	new /obj/item/flashlight/modern(src)
 	new /obj/item/stack/medical/bruise_pack/bint(src)
-	new /obj/item/weapon/handcuffs(src)
-	new /obj/item/weapon/handcuffs(src)
+	new /obj/item/weapon/handcuffs/zip(src)
+	new /obj/item/weapon/handcuffs/zip(src)
 	new /obj/item/ammo_magazine/glock17(src)
 	new /obj/item/ammo_magazine/mp40/mp5(src)
 	new /obj/item/ammo_magazine/mp40/mp5(src)
@@ -1549,7 +1554,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 75, arrow = 95, gun = 93, energy = 22, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 90
 
 /obj/item/clothing/under/trackpants
@@ -1743,7 +1747,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 95, arrow = 100, gun = 110, energy = 50, bomb = 90, bio = 45, rad = FALSE)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 200
 
 /obj/item/clothing/head/helmet/iogmask1 //too broad, this is meant to be some sort of extreme sports armorwear or something.
@@ -1755,7 +1758,6 @@
 	body_parts_covered = HEAD
 	armor = list(melee = 95, arrow = 100, gun = 100, energy = 50, bomb = 90, bio = 45, rad = 100)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 200
 
 	/* Scrap Armor*/
@@ -1781,7 +1783,6 @@
 	body_parts_covered = HEAD|FACE
 	armor = list(melee = 70, arrow = 85, gun = 20, energy = 20, bomb = 50, bio = 10, rad = 40)
 	flags_inv = BLOCKHAIR
-	restricts_view = 1
 	health = 60
 
 
@@ -2083,6 +2084,16 @@
 	stripped = FALSE
 	base_icon = "cad_pat_arid"
 
+/obj/item/clothing/under/caf/winter
+	name = "cadpat uniform"
+	desc = "A canadian pattern uniform"
+	icon_state = "cad_pat_winter"
+	item_state = "cad_pat_winter"
+	worn_state = "cad_pat_winter"
+	rolled = FALSE
+	stripped = FALSE
+	base_icon = "cad_pat_winter"
+
 /obj/item/clothing/under/caf/verb/roll_sleeves()
 	set category = null
 	set src in usr
@@ -2134,7 +2145,7 @@
 /obj/item/clothing/under/caf/verb/strip()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/ww2/japuni)
+	if (type != /obj/item/clothing/under/caf)
 		return
 	else
 		if (stripped)
@@ -2202,6 +2213,11 @@
 	item_state = "cg634_arid"
 	worn_state = "cg634_arid"
 
+/obj/item/clothing/head/helmet/modern/cg634/winter
+	icon_state = "cg634_winter"
+	item_state = "cg634_winter"
+	worn_state = "cg634_winter"
+
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest
 	name = "CAF Tacvest"
 	desc = "A large webbing with several pouches."
@@ -2214,6 +2230,29 @@
 
 /obj/item/clothing/accessory/storage/webbing/caf_tacvest/arid
 	icon_state = "caf_tacvest_arid"
+	worn_state = "caf_tacvest_arid"
+
+/obj/item/clothing/accessory/storage/webbing/caf_tacvest/winter
+	icon_state = "caf_tacvest_winter"
+	worn_state = "caf_tacvest_winter"
+
+/obj/item/clothing/head/jungle_hat/caf
+	name = "cadpat tilly"
+	desc = "A wide brim, soft sun hat."
+	icon_state = "tilly_cadpat"
+	item_state = "tilly_cadpat"
+	worn_state = "tilly_cadpat"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/jungle_hat/caf/arid
+	icon_state = "tilly_cadpat_arid"
+	item_state = "tilly_cadpat_arid"
+	worn_state = "tilly_cadpat_arid"
+
+/obj/item/clothing/head/jungle_hat/caf/winter
+	icon_state = "tilly_cadpat_winter"
+	item_state = "tilly_cadpat_winter"
+	worn_state = "tilly_cadpat_winter"
 
 /obj/item/clothing/head/helmet/modern/mechanical
 	name = "Mechanical Helmet"

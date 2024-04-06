@@ -128,3 +128,11 @@
 	icon_state = "orange_bandana"
 	body_parts_covered = FALSE
 
+/obj/item/clothing/head/dunce_cap
+	name = "dunce cap"
+	desc = "A pointed white cap often worn by dummies who should feel ashamed."
+	icon_state = "dunce_cap"
+	item_state = "dunce_cap"
+	worn_state = "dunce_cap"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHAIR

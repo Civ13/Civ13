@@ -164,7 +164,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "venus_top", layer=3.2)
+		top = image(icon='icons/obj/statue.dmi', icon_state = "venus_top", layer= 6.0)
 		top.pixel_y = 32
 		update_icon()
 
@@ -172,6 +172,14 @@ obj/structure/religious/monument
 		..()
 		overlays.Cut()
 		overlays += top
+
+/obj/structure/religious/monument/liberty
+	name = "statue of liberty"
+	desc = "A figure of Libertas."
+	icon = 'icons/obj/decals_wider.dmi'
+	icon_state = "liberty"
+	bound_height = 64
+	layer = 5.0
 
 /obj/structure/religious/monument/karl_marx
 	name = "monumental bronze statue of karl marx"
@@ -799,7 +807,7 @@ obj/structure/religious/monument
 		return
 
 /obj/structure/religious/totem/offerings/proc/check_power()
-	spawn(600)
+	spawn(600) // 1 minute
 		if (reltype == "tribal")
 			if (tribe == "goose")
 				for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)

@@ -14,10 +14,11 @@
 	good_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	equiptimer = 15
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0, 0.1, 0.2)),
-		list(name = "full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.2, 1.3, 1.4)),
+		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0, 0.1, 0.2)),
+		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.2, 1.3, 1.4)),
 		)
 	sel_mode = 1
+	has_ak_reload = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	accuracy_list = list(
 
@@ -127,6 +128,7 @@
 	magazine_type = /obj/item/ammo_magazine/ak101
 	good_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	equiptimer = 12
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103
 	name = "AK-103"
@@ -140,6 +142,7 @@
 	magazine_type = /obj/item/ammo_magazine/ak47
 	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
 	equiptimer = 15
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/campaign
 	name = "AK-103"
@@ -153,6 +156,7 @@
 	magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled
 	good_mags = list(/obj/item/ammo_magazine/emptymagazine, /obj/item/ammo_magazine/emptymagazine/rifle, /obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled)
 	equiptimer = 15
+	has_ak_reload = FALSE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104
 	name = "AK-104"
@@ -163,6 +167,7 @@
 	weight = 3.2
 	effectiveness_mod = 1.07
 	equiptimer = 12
+	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak101/ak105
 	name = "AK-105"
@@ -176,4 +181,4 @@
 	equiptimer = 12
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
-
+	has_ak_reload = TRUE

@@ -131,7 +131,7 @@ var/list/global/floor_cache = list()
 				return TRUE //prevent afterattack 
 	else if (istype(C, /obj/item/clothing) && !busy)
 		var/obj/item/clothing/CL = C
-		usr << "<span class='notice'>You start washing \the [C].</span>"
+		to_chat(usr, SPAN_NOTICE("You start washing \the [C]."))
 		var/turf/location = user.loc
 
 		busy = TRUE
@@ -178,6 +178,8 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	if(locate(/obj/structure/vehicleparts/frame) in contents)
+		return ..()
 	if(locate(/obj/structure/vehicleparts/frame/ship) in contents)
 		return ..()
 	for (var/obj/OB in src)
@@ -192,9 +194,6 @@ var/list/global/floor_cache = list()
 			return 1
 		if(!istype(oldloc, /turf/floor/trench))
 			if(locate(/obj/covers/repairedfloor) in contents)
-				L.forceMove(src)
-				return 1
-			if(locate(/obj/structure/vehicleparts/frame) in contents)
 				L.forceMove(src)
 				return 1
 			if(L.grabbed_by && L.grabbed_by.len)
@@ -308,15 +307,18 @@ var/list/global/floor_cache = list()
 					L.forceMove(newloc)
 				return TRUE
 		if(istype(newloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, newloc) && !locate(/obj/structure/vehicleparts/frame, usr.loc))
+			for(var/obj/structure/vehicleparts/frame/F in newloc)
+				if(F.CanPass(L) == 0)
+					return FALSE
 			if(world.time > message_cooldown + 30)
 				visible_message("<span class = 'notice'>[L] starts to climb on a frame.</span>")
 				message_cooldown = world.time
 			if (!do_after(L, 20, src, needhand = FALSE))
 				return FALSE
 			if(..())
-				visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
 				var/turf/T = newloc
 				if(T.Enter(O, src))
+					visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
 					L.forceMove(newloc)
 				return TRUE
 	return ..()
@@ -462,7 +464,7 @@ var/list/global/floor_cache = list()
 			H.water += 75
 			H.bladder += 75
 			H << "You drink some water."
-			playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+			playsound(H.loc, "drink", rand(10, 50), TRUE)
 			return
 		else
 			return
@@ -544,7 +546,7 @@ var/list/global/floor_cache = list()
 				H.water += 75
 				H.bladder += 75
 				H << "You drink some water."
-				playsound(H.loc, 'sound/items/drink.ogg', rand(10, 50), TRUE)
+				playsound(H.loc, "drink", rand(10, 50), TRUE)
 				return
 			else
 				return

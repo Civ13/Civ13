@@ -39,6 +39,8 @@
 #define FARSI_SYLLABLES list("ka", "ki", "ku", "ke", "ko", "ma", "mi", "mu", "me", "mo", "ba", "bi", "bu", "be", "bo", "ra", "ri", "ru", "re", "ro", "sa", "si", "su", "se", "so", "ta", "ti", "tu", "te", "to", "za", "zi", "zu", "ze", "zo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "da", "di", "du", "de", "do", "ja", "ji", "ju", "je", "jo", "pa", "pi", "pu", "pe", "po", "kha", "khi", "khu", "khe", "kho", "sha", "shi", "shu", "she", "sho", "qa", "qi", "qu", "qe", "qo", "ha", "hi", "hu", "he", "ho", "la", "li", "lu", "le", "lo", "ma", "mi", "mu", "me", "mo", "ya", "yi", "yu", "ye", "yo", "na", "ni", "nu", "ne", "no", "va", "vi", "vu", "ve", "vo", "za", "zi", "zu", "ze", "zo", "fa", "fi", "fu", "fe", "fo", "xa", "xi", "xu", "xe", "xo")
 #define MONGOLIAN_SYLLABLES list("ba", "baa", "be", "bee", "bi", "bii", "bo", "boo", "bu", "buu", "da", "daa", "de", "dee", "di", "dii", "do", "doo", "du", "duu", "ga", "gaa", "ge", "gee", "gi", "gii", "go", "goo", "gu", "guu", "ha", "haa", "he", "hee", "hi", "hii", "ho", "hoo", "hu", "huu", "ka", "kaa", "ke", "kee", "ki", "kii", "ko", "koo", "ku", "kuu", "la", "laa", "le", "lee", "li", "lii", "lo", "loo", "lu", "luu", "ma", "maa", "me", "mee", "mi", "mii", "mo", "moo", "mu", "muu", "na", "naa", "ne", "nee", "ni", "nii", "no", "noo", "nu", "nuu", "pa", "paa", "pe", "pee", "pi", "pii", "po", "poo", "pu", "puu", "qa", "qaa", "qe", "qee", "qi", "qii", "qo", "qoo", "qu", "quu", "ra", "raa", "re", "ree", "ri", "rii", "ro", "roo", "ru", "ruu", "sa", "saa", "se", "see", "si", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
 #define AFRIKAANS_SYLLABLES list("ek", "yk", "my", "eek", "ag", "van", "en", "heid", "al", "oei", "oek", "uur", "er", "net", "het", "hoe", "wat", "en", "alle", "aard", "eer", "nee", "ont", "nee", "yk", "sy", "hy", "sal", "mal", "eyer", "nie", "ja", "ee", "ad", "een", "ol", "ier", "oor", "de", "aar", "aal", "mit", "em", "ie", "alle", "daag", "se", "aer", "ae", "eed")
+#define WELSH_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "d'o", "d'u", "fa", "fe", "fi", "fo", "fu", "ga", "ge", "gi", "go", "gu", "ha", "he", "hi", "ho", "hu", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va")
+#define SCOTS_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -65,7 +67,7 @@
 	colour = "English"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ENGLISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10)
+	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10,/datum/language/scots = 80,/datum/language/welsh = 80)
 
 /datum/language/french
 	name = "French"
@@ -343,14 +345,14 @@
 	syllables = CRAB_SYLLABLES
 	mutual_intelligibility = list()
 
-/datum/language/gaelic
-	name = "Gaelic"
-	desc = "Drunken ramblings!"
-	key = "ga"
-	colour = "Gaelic"
+/datum/language/scottishgaelic
+	name = "Scottish Gaelic"
+	desc = "Alba gu brath!"
+	key = "sg"
+	colour = "Scottish Gaelic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GAELIC_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/gaelic = 80, /datum/language/scots = 70)
 
 /datum/language/italian
 	name = "Italian"
@@ -514,3 +516,29 @@
 	syllables = CHECHEN_SYLLABLES
 	mutual_intelligibility = list()
 
+/datum/language/welsh
+	name = "Welsh"
+	desc = "Cymru am byth!"
+	key = "we"
+	colour = "Welsh"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = WELSH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/english = 80)
+
+/datum/language/scots
+	name = "Scots"
+	desc = "It may sound like giberrish, but it makes perfect sense!"
+	key = "sc"
+	colour = "Scots"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = SCOTS_SYLLABLES
+	mutual_intelligibility = list(/datum/language/english = 80, /datum/language/scottishgaelic = 60)
+
+/datum/language/gaelic
+	name = "Gaelic"
+	desc = "Drunken ramblings!"
+	key = "ga"
+	colour = "Gaelic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = GAELIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/scottishgaelic = 80)

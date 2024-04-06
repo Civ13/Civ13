@@ -2,10 +2,10 @@
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
 	title = "Reichstag"
-	lobby_icon = "icons/lobby/reichstag.png"
+	lobby_icon = 'icons/lobby/reichstag.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
-	no_winner ="The reichstag is under German control."
+	no_winner = "The Reichstag is still under German control."
 	no_hardcore = TRUE
 	faction_organization = list(
 		GERMAN,
@@ -18,12 +18,12 @@
 	age = "1945"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
-	battle_name = "battle of the Reichstag"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach the top of the Reichstag.</font>"
+	battle_name = "Battle for the Reichstag"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach the top of the Reichstag.</font>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
-	grace_wall_timer = 6000
+	grace_wall_timer = 3600 // 6 minutes
 	songs = list(
 		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
 	gamemode = "Siege"

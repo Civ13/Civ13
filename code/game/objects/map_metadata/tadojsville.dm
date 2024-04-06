@@ -1,7 +1,7 @@
 /obj/map_metadata/tadojsville
 	ID = MAP_TADOJSVILLE
 	title = "Tadojsville Siege"
-	lobby_icon = "icons/lobby/tadojsville.png"
+	lobby_icon = 'icons/lobby/tadojsville.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
 	respawn_delay = 300
 	no_winner ="No warband has captured the clinic yet."

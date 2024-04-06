@@ -387,3 +387,22 @@
 		generate_blood_overlay(TRUE) // Force recheck.
 		overlays.Cut()
 		overlays += blood_overlay
+
+/obj/item/weapon/soviet_flag // To be placed elsewhere in the code
+	desc = "The Soviet flag."
+	name = "soviet flag"
+	icon = 'icons/obj/flags.dmi'
+	icon_state = "sov_flag_object"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand.dmi',
+		)
+	item_state = "sov_flag"
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 3
+	w_class = ITEM_SIZE_GARGANTUAN
+	attack_verb = list("poked", "bashed", "bludgeoned", "whacked")
+	flammable = TRUE
+	slot_flags = null

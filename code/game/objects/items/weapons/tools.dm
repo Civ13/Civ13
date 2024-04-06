@@ -362,7 +362,7 @@
 			anchored = FALSE
 			deployed = FALSE
 			icon_state = initial(icon_state)
-			for (var/obj/structure/barricade/ST in get_turf(src))
+			for (var/obj/structure/ST in get_turf(src))
 				ST.climbable = FALSE
 			user.put_in_any_hand_if_possible(src, prioritize_active_hand = TRUE)
 	else

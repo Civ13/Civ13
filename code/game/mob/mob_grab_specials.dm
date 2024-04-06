@@ -4,46 +4,46 @@
 	var/obj/item/organ/external/E = H.get_organ(target_zone)
 
 	if (!E || E.is_stump())
-		user << "<span class='notice'>[H] is missing that bodypart.</span>"
+		to_chat(user, SPAN_NOTICE("[H] is missing that bodypart."))
 		return
 
 	user.visible_message("<span class='notice'>[user] starts inspecting [affecting]'s [E.name] carefully.</span>")
 	if (!do_mob(user,H, 10))
-		user << "<span class='notice'>You must stand still to inspect [E] for wounds.</span>"
+		to_chat(user, SPAN_NOTICE("You must stand still to inspect [E] for wounds."))
 	else if (E.wounds.len)
-		user << "<span class='warning'>You find [E.get_wounds_desc()]</span>"
+		to_chat(user, SPAN_WARNING("You find [E.get_wounds_desc()]."))
 	else
-		user << "<span class='notice'>You find no visible wounds.</span>"
+		to_chat(user, SPAN_NOTICE("You find no visible wounds."))
 
-	user << "<span class='notice'>Checking bones now...</span>"
+	to_chat(user, SPAN_NOTICE("Checking bones now..."))
 	if (!do_mob(user, H, 20))
-		user << "<span class='notice'>You must stand still to feel [E] for fractures.</span>"
+		to_chat(user, SPAN_NOTICE("You must stand still to feel [E] for fractures."))
 	else if (E.status & ORGAN_BROKEN)
-		user << "<span class='warning'>The bone in the [E.name] moves slightly when you poke it!</span>"
+		to_chat(user, SPAN_WARNING("The bone is in the [E.name] and moves slightly when you poke it!"))
 		H.custom_pain("Your [E.name] hurts where it's poked.", 10)
 	else
-		user << "<span class='notice'>The bones in the [E.name] seem to be fine.</span>"
+		to_chat(user, SPAN_NOTICE("The bones in the [E.name] seem to be fine."))
 
-	user << "<span class='notice'>Checking skin now...</span>"
+	to_chat(user, SPAN_NOTICE("Checking skin now..."))
 	if (!do_mob(user, H, 10))
-		user << "<span class='notice'>You must stand still to check [H]'s skin for abnormalities.</span>"
+		to_chat(user, SPAN_NOTICE("You must stand still to check [H]'s skin for abnormalities."))
 	else
 		var/bad = FALSE
 		if (H.getToxLoss() >= 40)
-			user << "<span class='warning'>[H] has an unhealthy skin discoloration.</span>"
+			to_chat(user, SPAN_WARNING("[H] has an unhealthy skin discoloration."))
 			bad = TRUE
 		if (H.getOxyLoss() >= 20)
-			user << "<span class='warning'>[H]'s skin is unusaly pale.</span>"
+			to_chat(user, SPAN_WARNING("[H]'s skin is unusually pale."))
 			bad = TRUE
 		if (E.status & ORGAN_DEAD)
-			user << "<span class='warning'>[E] is decaying!</span>"
+			to_chat(user, SPAN_WARNING("[E] is decaying!"))
 			bad = TRUE
 		if (!bad)
-			user << "<span class='notice'>[H]'s skin is normal.</span>"
+			to_chat(user, SPAN_NOTICE("[H]'s skin is normal."))
 
 /obj/item/weapon/grab/proc/jointlock(mob/living/human/target, mob/attacker, var/target_zone)
 	if (state < GRAB_AGGRESSIVE)
-		attacker << "<span class='warning'>You require a better grab to do this.</span>"
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
 		return
 
 	var/obj/item/organ/external/organ = target.get_organ(check_zone(target_zone))
@@ -53,7 +53,7 @@
 	attacker.visible_message("<span class='danger'>[attacker] [pick("bent", "twisted")] [target]'s [organ.name] into a jointlock!</span>")
 	var/armor = target.run_armor_check(target, "melee")
 	if (armor < 2)
-		target << "<span class='danger'>You feel extreme pain!</span>"
+		to_chat(target, SPAN_DANGER("You feel extreme pain!"))
 		affecting.adjustHalLoss(Clamp(0, 60-affecting.halloss, 30)) //up to 60 halloss
 
 /obj/item/weapon/grab/proc/attack_eye(mob/living/human/target, mob/living/human/attacker)
@@ -65,14 +65,14 @@
 	if (!attack)
 		return
 	if (state < GRAB_NECK)
-		attacker << "<span class='warning'>You require a better grab to do this.</span>"
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
 		return
 	for (var/obj/item/protection in list(target.head, target.wear_mask))
 		if (protection && (protection.body_parts_covered & EYES))
-			attacker << "<span class='danger'>You're going to need to remove the eye covering first.</span>"
+			to_chat(attacker, SPAN_DANGER("You're going to need to remove the eye covering first."))
 			return
 	if (!target.has_eyes())
-		attacker << "<span class='danger'>You cannot locate any eyes on [target]!</span>"
+		to_chat(attacker, SPAN_DANGER("You cannot locate any eyes on [target]!"))
 		return
 
 	attacker.attack_log += text("\[[time_stamp()]\] <font color='red'>Attacked [target.name]'s eyes using grab ([target.ckey])</font>")
@@ -113,7 +113,7 @@
 
 /obj/item/weapon/grab/proc/dislocate(mob/living/human/target, mob/living/attacker, var/target_zone)
 	if (state < GRAB_NECK)
-		attacker << "<span class='warning'>You require a better grab to do this.</span>"
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
 		return
 	if (target.grab_joint(attacker, target_zone))
 		playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
@@ -121,10 +121,10 @@
 
 /obj/item/weapon/grab/proc/pin_down(mob/target, mob/attacker)
 	if (state < GRAB_AGGRESSIVE)
-		attacker << "<span class='warning'>You require a better grab to do this.</span>"
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
 		return
 	if (force_down)
-		attacker << "<span class='warning'>You are already pinning [target] to the ground.</span>"
+		to_chat(attacker, SPAN_WARNING("You are already pinning [target] to the ground."))
 
 	attacker.visible_message("<span class='danger'>[attacker] starts forcing [target] to the ground!</span>")
 	if (do_after(attacker, 20, progress=0) && target)
@@ -154,12 +154,12 @@
 
 	if (can_eat)
 		var/mob/living/human/attacker = user
-		user.visible_message("<span class='danger'>[user] is attempting to devour [target]!</span>")
+		user.visible_message(SPAN_DANGER("[user] devours [target]!"))
 		if (can_eat == 2)
 			if (!do_mob(user, target, 30)) return
 		else
 			if (!do_mob(user, target, 100)) return
-		user.visible_message("<span class='danger'>[user] devours [target]!</span>")
+		user.visible_message(SPAN_DANGER("[user] devours [target]!"))
 		admin_attack_log(attacker, target, "Devoured.", "Was devoured by.", "devoured")
 		target.loc = user
 		attacker.stomach_contents.Add(target)

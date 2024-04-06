@@ -88,6 +88,58 @@ proc/random_english_name(gender, species = "Human")
 	else
 		return current_species.get_random_english_name(gender)
 
+proc/random_gaelic_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+		else
+			return capitalize(pick(first_names_male_gaelic)) + " " + capitalize(pick(last_names_gaelic))
+	else
+		return current_species.get_random_gaelic_name(gender)
+
+proc/random_welsh_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_welsh)) + " " + capitalize(pick(last_names_welsh))
+		else
+			return capitalize(pick(first_names_male_welsh)) + " " + capitalize(pick(last_names_welsh))
+	else
+		return current_species.get_random_welsh_name(gender)
+
+proc/random_scots_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_scots)) + " " + capitalize(pick(last_names_scots))
+		else
+			return capitalize(pick(first_names_male_scots)) + " " + capitalize(pick(last_names_scots))
+	else
+		return current_species.get_random_scots_name(gender)
+
+proc/random_scottishgaelic_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
+		else
+			return capitalize(pick(first_names_male_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
+	else
+		return current_species.get_random_scottishgaelic_name(gender)
+
 proc/random_spanish_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)

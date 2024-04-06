@@ -43,13 +43,13 @@
 		else if ("Stone")
 			//Swords no work on stone, unga dunga no knify wifey the wall.
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				return
 			else
 				//Damage the wall.
 		else if ("Metal" || "steel")
 			if(!istype(W, /obj/item/weapon/sledgehammer) && !istype(W, /obj/item/projectile))
-				user << "Your [W.name] glances off the [src.name]!"
+				to_chat(user, "Your [W.name] glances off the [src.name]!")
 				return
 			else
 				//Damage the wall.
@@ -104,12 +104,12 @@
 		T.move_delay = 0
 	return TRUE
 
-
-/obj/covers/Destroy()
+/obj/covers/Destroy()			
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
-			new current_area_type(get_turf(src))
+			if (!map.ID == MAP_BATTLE_SHIPS)
+				new current_area_type(get_turf(src))
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level
@@ -132,7 +132,7 @@
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			if (map && map.ID != MAP_CAMPAIGN)
+			if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
 				visible_message("<span class='notice'>You can't build here!</span>")
 				return
 		var/mob/living/human/H = user
@@ -197,15 +197,15 @@
 		return
 	if (istype(W, /obj/item/weapon/hammer))
 		if (!wall)
-			user << "You start removing \the [src]..."
+			to_chat(user, "You start removing \the [src]...")
 			if (do_after(user, 50, src))
-				user << "You removed \the [src] from the floor."
+				to_chat(user, "You removed \the [src] from the floor.")
 				qdel(src)
 				return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (istype(W, /obj/item/weapon/poster/religious))
-			user << "You start placing the [W] on the [src]..."
+			to_chat(user, "You start placing the [W] on the [src]...")
 			if (do_after(user, 70, src))
 				visible_message("[user] places the [W] on the [src].")
 				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
@@ -218,7 +218,7 @@
 				qdel(W)
 				return
 		if (istype(W, /obj/item/weapon/poster/faction))
-			user << "You start placing the [W] on the [src]..."
+			to_chat(user, "You start placing the [W] on the [src]...")
 			if (do_after(user, 70, src))
 				visible_message("[user] places the [W] on the [src].")
 				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))

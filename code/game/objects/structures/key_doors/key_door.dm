@@ -160,10 +160,11 @@ var/list/nonbreaking_types = list(
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
 				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
-				if (istype(material, /material/wood))
+				if (istype(material, /material/wood || /material/wood/soft))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				else
 					playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+
 				update_damage(-W.force)
 				spawn (7)
 					user.hitting_key_door = FALSE
@@ -228,7 +229,7 @@ var/list/nonbreaking_types = list(
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
 				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
-				if (istype(material, /material/wood))
+				if (istype(material, /material/wood || /material/wood/soft))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				if (istype(material, /material/paper))
 					playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
@@ -270,7 +271,7 @@ var/list/nonbreaking_types = list(
 			playsound(get_turf(src), "doorknock", 100, TRUE)
 		else
 			user.visible_message(SPAN_DANGER("[user] kicks the door!"))
-			if (istype(material, /material/wood))
+			if (istype(material, /material/wood || /material/wood/soft))
 				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 			else
 				playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
@@ -299,7 +300,7 @@ var/list/nonbreaking_types = list(
 				playsound(get_turf(src), "doorknock", 100, TRUE)
 			else
 				user.visible_message(SPAN_DANGER("[user] kicks the door!"))
-				if (istype(material, /material/wood))
+				if (istype(material, /material/wood) || istype(material, /material/wood/soft))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				if (istype(material, /material/paper))
 					playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
@@ -328,10 +329,15 @@ var/list/nonbreaking_types = list(
 	if (health <= 0)
 		if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 			visible_message(SPAN_DANGER("The shoji door is torn apart!"))
-		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/wood || /obj/structure/simple_door/key_door/anyone/nordic || /obj/structure/simple_door/key_door/anyone/wood || /obj/structure/simple_door/key_door/anyone/rustic || /obj/structure/simple_door/key_door/anyone/aztec|| /obj/structure/simple_door/key_door/anyone/singledoor/privacy || /obj/structure/simple_door/key_door/anyone/singledoor/housedoor))
+		else if (istype(src,  /obj/structure/simple_door/key_door/anyone/nordic || /obj/structure/simple_door/key_door/anyone/wood || /obj/structure/simple_door/key_door/anyone/rustic || /obj/structure/simple_door/key_door/anyone/aztec|| /obj/structure/simple_door/key_door/anyone/singledoor/privacy || /obj/structure/simple_door/key_door/anyone/singledoor/housedoor))
 			visible_message(SPAN_DANGER("[src] collapses into a pile of wood splinters!"))
 			new /obj/item/stack/material/wood(loc)
 			new /obj/item/stack/material/wood(loc)
+			qdel(src)
+		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/wood || /obj/structure/simple_door/key_door/anyone/nordic || /obj/structure/simple_door/key_door/anyone/wood || /obj/structure/simple_door/key_door/anyone/rustic || /obj/structure/simple_door/key_door/anyone/aztec|| /obj/structure/simple_door/key_door/anyone/singledoor/privacy || /obj/structure/simple_door/key_door/anyone/singledoor/housedoor))
+			visible_message(SPAN_DANGER("[src] collapses into a pile of wood splinters!"))
+			new /obj/item/stack/material/woodplank(loc)
+			new /obj/item/stack/material/woodplank(loc)
 			qdel(src)
 		else if (istype(src, /obj/structure/simple_door/key_door/anyone/doubledoor/bamboo))
 			visible_message(SPAN_DANGER("[src] collapses into a pile of bamboo splinters!"))

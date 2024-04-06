@@ -1,7 +1,7 @@
-var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein")
-var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom")
-var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go")
-var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader")
+var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teufel", "Charlotte", "Hundertmark", "Tigerkind", "Eisenschwein","Sturmgeist","Schattenblitz","Ritter","Blitzwachter")
+var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom","Gvozdika","Tyulpan","Krokodil","Grach","Bereza","Zhuravl","Topol","Bogatyr","Yenot","Orel","Natasha","Molodets","Rusalka","Volga","Molot","Serp","Zubr","Kazak")
+var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go","Bushido","Hinomaru","Shuriken")
+var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
 
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
@@ -127,7 +127,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					MAT.trigger(FR)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
 			for (var/obj/item/mine/boobytrap/MAT in T)
 				if (MAT.anchored)
 					qdel(MAT)
@@ -155,7 +155,7 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					protec = TRUE
 				if (!protec)
 					if (current_weight >= 800)
-						visible_message("<span class='warning'>\the [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						visible_message("<span class='warning'>\The [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
 						for(var/obj/item/I in L)
 							qdel(I)
 						L.crush()
@@ -166,16 +166,16 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							var/mob/living/human/HH = L
 							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							HH.Weaken(rand(2,5))
-							visible_message("<span class='warning'>\the [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+							visible_message("<span class='warning'>\The [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
 							L.forceMove(get_turf(get_step(TT,dir)))
 						else if (istype(L,/mob/living/simple_animal))
 							var/mob/living/simple_animal/SA = L
 							SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							if (SA.mob_size >= 30)
-								visible_message("<span class='warning'>\the [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+								visible_message("<span class='warning'>\The [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
 								L.forceMove(get_turf(get_step(TT,dir)))
 							else
-								visible_message("<span class='warning'>\the [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								visible_message("<span class='warning'>\The [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
 								for(var/obj/item/I in SA)
 									qdel(I)
 								SA.crush()
@@ -185,17 +185,17 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
 					done = TRUE
 					if (FM.axis != src)
-						visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+						visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
 				if (!done)
 					if (O.density == TRUE && !(O in transporting))
 						if (current_weight >= 400 && !istype(O, /obj/structure/redmailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/billboard))
-							visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+							visible_message("<span class='warning'>\The [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
 						else
-							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+							visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
 					else if (O.density == FALSE && !(O in transporting))
 						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/cable) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/lamp/lamppost_small/) && !istype(O, /obj/structure/lamp/lamp_big/alwayson) && !istype(O, /obj/structure/lamp/lamp_small/alwayson))
@@ -203,17 +203,16 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							qdel(O)
 
 			if (T.density == TRUE)
-				visible_message("<span class='warning'>\the [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+				visible_message("<span class='warning'>\The [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
-			for(var/obj/covers/CV in TT && !(CV in transporting))
-				if (current_weight < 600)
-					if (CV.density || CV.wall)
-						visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
-						moving = FALSE
-						stopmovementloop()
-						return FALSE
+			for(var/obj/covers/CV in T)
+				if (CV.density)
+					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+					moving = FALSE
+					stopmovementloop()
+					return FALSE
 			for(var/obj/item/ammo_casing/AC in T)
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
@@ -282,6 +281,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
 			ML.forceMove(get_step(ML.loc, m_dir))
+			if(ML.using_object && istype(ML.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+				var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = ML.using_object
+				HMG.update_pixels(ML)
 	for (var/obj/F in components)
 		F.dir = dir
 		F.forceMove(get_step(F.loc, m_dir))
@@ -302,17 +304,17 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					MAT.trigger(F)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
 			if (istype(M, /obj/item/mine/boobytrap))
 				var/obj/item/mine/boobytrap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if (istype(M, /obj/item/mine/ap))
 				var/obj/item/mine/ap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\the [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
 					transporting += M
@@ -505,24 +507,45 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 		check_matrix()
 	matrix_current_locs = list()
 
-	//first we need to generate the matrix of the current locations, based on our frame matrix, so we dont teleport stuff on top of other stuff.
+	var/turf/axis_turf = get_turf(loc)
+	var/dx=1
+	var/dy=1
+	switch(dir)
+		if(NORTH)
+			dy = -1
+		if(SOUTH)
+			dx = -1
+		if(EAST)
+			dx = -1
+			dy = -1
+
+	var/i = 0
+	var/j = 0
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			if (matrix[loc2textv][1])
-				var/turf/currloc = get_turf(matrix[loc2textv][1])
-				var/list/tmplist = list()
-				for (var/atom/movable/MV in currloc)
-					if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
-						tmplist += MV
-				matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+			var/turf/currloc = locate(axis_turf.x + i, axis_turf.y+j, axis_turf.z)
+			var/list/tmplist = list()
+			for (var/atom/movable/MV in currloc)
+				if ((istype(MV, /mob/living) || istype(MV, /obj/structure) || istype(MV, /obj/item) || istype(MV, /obj/effect/pseudovehicle)))
+					tmplist += MV
+			matrix_current_locs += list(matrix[loc2textv][4] = list(currloc,tmplist, matrix[loc2textv][4]))
+			if(dir == NORTH || dir == SOUTH)
+				i+=dx
+			else
+				j+=dy
+
+		if(dir == NORTH || dir == SOUTH)
+			j+=dy
+			i = 0
+		else
+			i+=dx
+			j = 0
 
 	//check if there are no other vehicles/obstacles in the destination areas
 	for (var/locx=1; locx<=maxdist; locx++)
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
-			if (!matrix_current_locs[loc2textv] || !matrix_current_locs[loc2textv].len)
-				continue
 			var/dlocfinding
 			switch(maxdist)
 				if (1)
@@ -535,25 +558,34 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
-			if (!dlocfinding)
-				continue
 			var/turf/T = matrix_current_locs[dlocfinding][1]
+			if (!T)
+				continue
 			var/list/todestroy = list()
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfinding][1])
-				if (user)
-					user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-				return FALSE
-				if (!T || T.density)
-					if (user)
-						user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
-					return FALSE
 			for (var/obj/O in T)
 				if ((!locate(O) in transporting) && (!locate(O) in components) && (!locate(O) in wheels))
+					if (istype(O, /obj/structure/vehicleparts/frame/ship))
+						var/obj/structure/vehicleparts/frame/ship/FRM = O
+						if (FRM.axis != src)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+							return FALSE
 					if (istype(O, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/FRM = O
 						if (FRM.axis != src)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+							return FALSE
+					else if (istype(O, /obj/structure/barricade))
+						var/obj/structure/barricade/B = O
+						if(B.density > 0 && B.health > 600)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [B]!</span>"
+							return FALSE
+					else if (istype(O, /obj/covers))
+						if(O.density)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [O]!</span>"
 							return FALSE
 					else
 						todestroy += O
@@ -581,8 +613,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 					dlocfind = rotation_matrixes4[tdir][loc2textv][1]
 				if (5)
 					dlocfind = rotation_matrixes5[tdir][loc2textv][1]
-			if (!matrix_current_locs[loc2textv][1] || !matrix_current_locs[dlocfind][1])
-				return FALSE
 //			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])"
 			if (islist(matrix_current_locs[loc2textv][2]))
 				for (var/obj/effect/pseudovehicle/PV in matrix_current_locs[dlocfind][1])

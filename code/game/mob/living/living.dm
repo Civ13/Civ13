@@ -202,7 +202,7 @@ default behaviour is:
 //sort of a legacy burn method for /electrocute, /shock, and the e_chair
 /mob/living/proc/burn_skin(burn_amount)
 	if (istype(src, /mob/living/human))
-		//world << "DEBUG: burn_skin(), mutations=[mutations]"
+		//to_chat(world, "DEBUG: burn_skin(), mutations=[mutations]")
 		var/mob/living/human/H = src	//make this damage method divide the damage to be done among all the body parts, then burn each body part for that much damage. will have better effect then just randomly picking a body part
 		var/divided_damage = (burn_amount)/(H.organs.len)
 		var/extradam = FALSE	//added to when organ is at max dam
@@ -230,7 +230,7 @@ default behaviour is:
 		if (actual < desired)
 			temperature = desired
 //	if (istype(src, /mob/living/human))
-//		world << "[src] ~ [bodytemperature] ~ [temperature]"
+//		to_chat(world, "[src] ~ [bodytemperature] ~ [temperature]")
 	return temperature
 
 
@@ -595,6 +595,9 @@ default behaviour is:
 			process_resist()
 
 /mob/living/proc/process_resist()
+	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		HMG.stopped_using(src)
 
 	//unbuckling yourself
 	if (buckled)

@@ -223,11 +223,51 @@ obj/structure/closet/crate/loottreasurechest/New()
 
 /obj/structure/closet/crate/sandbags
 	name = "sandbag crate"
-	icon_state = "wood_crate"
-	icon_opened = "wood_crate_opened"
-	icon_closed = "wood_crate"
+	icon_state = "sandbag_crate_full"
+	icon_opened = "sandbag_crate_empty"
+	icon_closed = "sandbag_crate_full"
 	paths = list(/obj/item/weapon/barrier/sandbag = 20)
 	cratevalue = 90
+	storagecap = 20
+
+/obj/structure/closet/crate/sandbags/close() //Shitcode workaround before the sandbag overhaul
+	if (!opened)
+		return FALSE
+	if (!can_close())
+		return FALSE
+
+	playsound(loc, 'sound/effects/rustle1.ogg', 15, TRUE, -3)
+	for (var/obj/item/weapon/barrier/sandbag/O in get_turf(src))
+		O.forceMove(src)
+	update_icon()
+	opened = FALSE
+	return TRUE
+
+/obj/structure/closet/crate/sandbags/open() // Shitcode workaround
+	if (opened)
+		return FALSE
+	if (!can_open())
+		return FALSE
+
+	playsound(loc, 'sound/effects/rustle1.ogg', 15, TRUE, -3)
+	for (var/obj/O in src)
+		O.forceMove(get_turf(src))
+	icon_state = icon_opened
+	opened = TRUE
+
+	if (climbable)
+		structure_shaken()
+	return TRUE
+
+/obj/structure/closet/crate/sandbags/update_icon() // More shitcode workaround
+	if (contents.len == 0)
+		icon_state = "sandbag_crate_empty"
+	else if (contents.len <= Floor(storagecap/3))
+		icon_state = "sandbag_crate_33"
+	else if (contents.len == storagecap)
+		icon_state = "sandbag_crate_full"
+	else
+		icon_state = "sandbag_crate_50"
 
 /obj/structure/closet/crate/wood
 	name = "wood planks crate"
@@ -509,21 +549,21 @@ obj/structure/closet/crate/loottreasurechest/New()
 	paths = list(/obj/item/weapon/gun/projectile/revolver/t26_revolver = 10,)
 	cratevalue = 60 //50 base
 ////WW1////////
-obj/structure/closet/crate/ww1/grenades_french
+/obj/structure/closet/crate/ww1/grenades_french
 	name = "F1 grenade crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/grenade/modern/f1 = 10)
 
-obj/structure/closet/crate/ww1/grenades_german
+/obj/structure/closet/crate/ww1/grenades_german
 	name = "stg 1915 grenade crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/grenade/modern/stg1915 = 10)
 
-obj/structure/closet/crate/ww1/grenades_british
+/obj/structure/closet/crate/ww1/grenades_british
 	name = "Mills grenade crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
@@ -531,121 +571,121 @@ obj/structure/closet/crate/ww1/grenades_british
 	paths = list(/obj/item/weapon/grenade/modern/mills = 10)
 
 
-obj/structure/closet/crate/ww1/ammo_hotchkiss
+/obj/structure/closet/crate/ww1/ammo_hotchkiss
 	name = "Hotchkiss belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/hotchkiss = 10)
 
-obj/structure/closet/crate/ww1/ammo_type3
+/obj/structure/closet/crate/ww1/ammo_type3
 	name = "Type 3 belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/type3 = 10)
 
-obj/structure/closet/crate/ww1/ammo_vickers
+/obj/structure/closet/crate/ww1/ammo_vickers
 	name = "Vickers belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/vickers = 10)
 
-obj/structure/closet/crate/ww1/ammo_mg08
+/obj/structure/closet/crate/ww1/ammo_mg08
 	name = "MG08 belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/mg08 = 10)
-obj/structure/closet/crate/ww1/ammo_maxim
+/obj/structure/closet/crate/ww1/ammo_maxim
 	name = "Maxim belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/maxim = 10)
 
-obj/structure/closet/crate/ww2
+/obj/structure/closet/crate/ww2
 	icon_state = "mil_crate_closed"
 	icon_opened = "mil_crate_opened"
 	icon_closed = "mil_crate_closed"
 	name = "military crate"
 
-obj/structure/closet/crate/ww2/mk2
+/obj/structure/closet/crate/ww2/mk2
 	name = "Mk2 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/mk2 = 10)
 
-obj/structure/closet/crate/ww2/rgd33
+/obj/structure/closet/crate/ww2/rgd33
 	name = "RGD33 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/rgd33 = 10)
 
-obj/structure/closet/crate/ww2/stg1924
+/obj/structure/closet/crate/ww2/stg1924
 	name = "stg 1924 grenade crate"
 	paths = list(/obj/item/weapon/grenade/ww2/stg1924 = 10)
 
-obj/structure/closet/crate/ww2/ammo_mg34
+/obj/structure/closet/crate/ww2/ammo_mg34
 	name = "MG34 belts crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/mg34belt = 10)
-obj/structure/closet/crate/ww2/panzerfaust
+/obj/structure/closet/crate/ww2/panzerfaust
 	name = "Panzerfaust crate"
 	paths = list(/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust = 6)
 
-obj/structure/closet/crate/ww2/atmines
+/obj/structure/closet/crate/ww2/atmines
 	name = "anti-tank mines crate"
 	paths = list(/obj/item/mine/at = 5)
 
-obj/structure/closet/crate/ww2/rpg40
+/obj/structure/closet/crate/ww2/rpg40
 	name = "RPG-40 AT grenade crate"
 	paths = list(/obj/item/weapon/grenade/antitank/rpg40 = 6)
 
-obj/structure/closet/crate/ww2/g43
+/obj/structure/closet/crate/ww2/g43
 	name = "G43 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/g43 = 10)
 
-obj/structure/closet/crate/ww2/mp40
+/obj/structure/closet/crate/ww2/mp40
 	name = "MP40 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/mp40 = 8)
 
-obj/structure/closet/crate/ww2/mosin_ammo
+/obj/structure/closet/crate/ww2/mosin_ammo
 	name = "Mosin ammunition crate"
 	paths = list(/obj/item/ammo_magazine/mosin = 25)
 
-obj/structure/closet/crate/ww2/mosin
+/obj/structure/closet/crate/ww2/mosin
 	name = "Mosin 1891/30 crate"
 	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 20)
 
-obj/structure/closet/crate/ww2/mosin_old
+/obj/structure/closet/crate/ww2/mosin_old
 	name = "Mosin 1891 crate"
 	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin = 20)
 
-obj/structure/closet/crate/ww2/stg
+/obj/structure/closet/crate/ww2/stg
 	name = "StG44 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/stg = 8)
 
-obj/structure/closet/crate/ww2/svt
+/obj/structure/closet/crate/ww2/svt
 	name = "SVT-40 ammunition crate"
 	paths = list(/obj/item/ammo_magazine/svt = 10)
 
-obj/structure/closet/crate/ww2/ppsh
+/obj/structure/closet/crate/ww2/ppsh
 	name = "PPSH ammunition crate"
 	paths = list(/obj/item/ammo_magazine/c762x25_ppsh = 8)
 
-obj/structure/closet/crate/ww2/pps
+/obj/structure/closet/crate/ww2/pps
 	name = "PPS ammunition crate"
 	paths = list(/obj/item/ammo_magazine/c762x25_pps = 8)
 
-obj/structure/closet/crate/coldwar/m26
+/obj/structure/closet/crate/coldwar/m26
 	name = "M26 grenade crate"
 	paths = list(/obj/item/weapon/grenade/coldwar/m26 = 10)
 
-obj/structure/closet/crate/coldwar/m18
+/obj/structure/closet/crate/coldwar/m18
 	name = "M18 smoke grenade crate"
 	paths = list(/obj/item/weapon/grenade/smokebomb/m18smoke = 10)
 
-obj/structure/closet/crate/ww2/vietnam/us_ammo
+/obj/structure/closet/crate/ww2/vietnam/us_ammo
 	name = "US Army ammo"
 	paths = list(/obj/item/ammo_magazine/m16 = 16,
 				/obj/item/ammo_magazine/b762 = 4,
@@ -653,7 +693,7 @@ obj/structure/closet/crate/ww2/vietnam/us_ammo
 				/obj/item/ammo_magazine/m14 = 4,
 				)
 
-obj/structure/closet/crate/ww2/vietnam/us_medical
+/obj/structure/closet/crate/ww2/vietnam/us_medical
 	name = "US Army medical supplies"
 	paths = list(/obj/item/weapon/storage/firstaid/combat/modern = 1,
 				/obj/item/weapon/storage/firstaid/adv = 1,
@@ -661,7 +701,7 @@ obj/structure/closet/crate/ww2/vietnam/us_medical
 				/obj/item/weapon/reagent_containers/blood/OMinus = 1,
 				)
 
-obj/structure/closet/crate/ww2/vietnam/us_explosives
+/obj/structure/closet/crate/ww2/vietnam/us_explosives
 	name = "US Army explosives"
 	paths = list(/obj/item/weapon/grenade/coldwar/m67 = 4,
 				/obj/item/weapon/grenade/incendiary/anm14 = 2,
@@ -670,7 +710,7 @@ obj/structure/closet/crate/ww2/vietnam/us_explosives
 				/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 2,
 				)
 
-obj/structure/closet/crate/ww2/vietnam/us_engineering
+/obj/structure/closet/crate/ww2/vietnam/us_engineering
 	name = "US Army engineering supplies"
 	paths = list(/obj/item/weapon/barrier/sandbag = 30,
 				/obj/item/stack/material/barbwire/ten = 2,
@@ -680,7 +720,7 @@ obj/structure/closet/crate/ww2/vietnam/us_engineering
 				/obj/item/weapon/wirecutters/boltcutters = 1,
 				)
 
-obj/structure/closet/crate/ww2/vietnam/us_ap_mines
+/obj/structure/closet/crate/ww2/vietnam/us_ap_mines
 	name = "US Army AP mines"
 	paths = list(/obj/item/mine/ap = 15,
 				/obj/item/weapon/wirecutters/boltcutters = 2,
@@ -1014,4 +1054,124 @@ obj/structure/closet/crate/airdrops/weapons
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_casing/bolt/iron = 20)
+
+/obj/structure/closet/crate/pepelsibirsk/surplus_ww2
+	name = "red army surplus uniforms crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/clothing/under/ww2/soviet = 5,
+				/obj/item/clothing/shoes/heavyboots/wrappedboots = 5,
+				/obj/item/clothing/suit/storage/coat/ww2/sovcoat = 5,
+				/obj/item/clothing/head/helmet/ww2/soviet = 5)
+
+/obj/structure/closet/crate/pepelsibirsk/sov_uniforms
+	name = "afghanka uniforms crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/clothing/under/afghanka = 5,
+				/obj/item/clothing/shoes/jackboots/soviet = 5,
+				/obj/item/clothing/suit/storage/jacket/afghanka = 5,
+				/obj/item/clothing/head/helmet/modern/ssh_68 = 5)
+
+/obj/structure/closet/crate/pepelsibirsk/sks
+	name = "sks crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/gun/projectile/semiautomatic/sks = 5,
+				/obj/item/ammo_magazine/sks = 20)
+
+/obj/structure/closet/crate/pepelsibirsk/akm
+	name = "akm crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/ak47 = 5,
+				/obj/item/ammo_magazine/ak47 = 10)
+
+/obj/structure/closet/crate/pepelsibirsk/ak74
+	name = "ak-74 crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/ak74 = 5,
+				/obj/item/ammo_magazine/ak74 = 10)
+
+/obj/structure/closet/crate/pepelsibirsk/svd
+	name = "svd crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
+				/obj/item/ammo_magazine/svd = 8)
+
+/obj/structure/closet/crate/pepelsibirsk/mosin
+	name = "mosin-nagant crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 10,
+				/obj/item/ammo_magazine/mosin = 40,
+				/obj/item/ammo_magazine/mosinbox = 10)
+
+/obj/structure/closet/crate/pepelsibirsk/ppsh
+	name = "ak-74 crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/submachinegun/ppsh = 2,
+				/obj/item/ammo_magazine/c762x25_ppsh = 8)
+
+/obj/structure/closet/crate/pepelsibirsk/makarov
+	name = "makarov crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/gun/projectile/pistol/makarov = 5,
+				/obj/item/ammo_magazine/makarov = 15)
+
+/obj/structure/closet/crate/pepelsibirsk/ninex18mm
+	name = "9x18mm crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/ammo_magazine/makarov/box = 4)
+
+/obj/structure/closet/crate/pepelsibirsk/seven62x39mm
+	name = "7.62x39mm crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/ammo_magazine/ak47 = 10)
+
+/obj/structure/closet/crate/pepelsibirsk/seven62x54mmr
+	name = "7.62x54mmR crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/mosinbox = 4)
+
+/obj/structure/closet/crate/pepelsibirsk/rgd5
+	name = "frag grenade crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/grenade/coldwar/rgd5 = 12)
+
+/obj/structure/closet/crate/pepelsibirsk/sixb1
+	name = "6B1 vest crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/clothing/accessory/armor/coldwar/flakjacket/b1 = 5)
+
+/obj/structure/closet/crate/pepelsibirsk/sixb2
+	name = "6B2 vest crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/clothing/accessory/armor/coldwar/plates/b2 = 5)
+
 #undef DYNAMIC_AMT

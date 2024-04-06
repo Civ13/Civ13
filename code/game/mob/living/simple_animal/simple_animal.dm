@@ -443,13 +443,13 @@
 			if (eggsleft != FALSE && eggsleft < maxeggs)
 				eggsleft++
 			else if (simplehunger >= 800)
-				user << "<span class = 'red'>\The [src] is not hungry.</span>"
+				to_chat(user, SPAN_RED("\The [src] is not hungry."))
 				return
 			if (mob_size >= MOB_MEDIUM)
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 			simplehunger += 500
 			adjustBruteLoss(-4)
-			user.visible_message("<span class='notice'>[user] feeds [src] \the [S].</span>")
+			user.visible_message(SPAN_NOTICE("[user] feeds [src] \the [S]."))
 			if(S.amount >= 2)
 				S.amount -= 1
 			else
@@ -457,13 +457,13 @@
 		if (herbivore && istype(O, GRAIN))
 			var/obj/item/weapon/reagent_containers/food/snacks/grown/G = O
 			if (simplehunger >= 800)
-				user << "<span class = 'red'>\The [src] is not hungry.</span>"
+				to_chat(user, SPAN_RED("\The [src] is not hungry."))
 				return
 			if (mob_size >= MOB_MEDIUM)
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/animal(src.loc)
 			simplehunger += 550
 			adjustBruteLoss(-4)
-			user.visible_message("<span class='notice'>[user] feeds [src] \the [G].</span>")
+			user.visible_message(SPAN_NOTICE("[user] feeds [src] \the [G].</span>"))
 			qdel(G)
 	return
 
@@ -478,13 +478,13 @@
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
 			L.S1 = src
-			user << "You tie \the [src] with the leash."
+			to_chat(user, "You tie \the [src] with the leash.")
 			L.onedefined = TRUE
 			return
 		else if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
 			L.S2.following_mob = L.S1
-			user << "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1]."
+			to_chat(user, "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1].")
 			qdel(L)
 			return
 	else if (istype(O, /obj/item/stack/farming/seeds))
@@ -507,7 +507,7 @@
 							M.show_message("<span class='notice'>[user] applies the [MED] on [src].</span>")
 					return TRUE
 		else
-			user << "<span class='notice'>\The [src] is dead, medical items won't bring \him back to life.</span>"
+			to_chat(user, SPAN_NOTICE("\The [src] is dead, medical items won't bring \him back to life."))
 			return TRUE
 	else if (!O.sharp || istype(O, /obj/item/weapon/macuahuitl))
 		if (!O.force && !istype(O, /obj/item/stack/medical/bruise_pack))
@@ -772,7 +772,7 @@
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
 
 	if (O.force <= resistance)
-		user << "<span class='danger'>This weapon is ineffective, it does no damage.</span>"
+		to_chat(user, SPAN_DANGER("This weapon is ineffective, it does no damage."))
 		return 2
 
 	var/damage = O.force
@@ -1158,6 +1158,5 @@
 /mob/living/simple_animal/proc/mutate()
 	if(mutation_variants == null)
 		return
-	..()
 
 #undef GRAIN

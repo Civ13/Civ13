@@ -1,7 +1,7 @@
 /obj/map_metadata/football
 	ID = MAP_FOOTBALL
 	title = "Football Match"
-	lobby_icon = "icons/lobby/football.png"
+	lobby_icon = 'icons/lobby/football.png'
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."
@@ -39,7 +39,7 @@
 	New()
 		..()
 		load_teams()
-		spawn(600)
+		spawn(600) // 1 minute
 			points_check()
 			for (var/obj/structure/banner/faction/team/team1/T1 in world)
 				T1.team = team1
@@ -329,7 +329,7 @@
 /obj/map_metadata/football_campaign
 	ID = MAP_FOOTBALL_CAMPAIGN
 	title = "Football Match"
-	lobby_icon = "icons/lobby/football.png"
+	lobby_icon = 'icons/lobby/football.png'
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)
 	respawn_delay = 0
 	no_winner ="The game is still going on."
@@ -366,7 +366,7 @@
 	var/list/player_count_blue = list(1,2,3,4,5,6,7,8,9,10,11)
 	New()
 		..()
-		spawn(600)
+		spawn(600) // 1 minute
 			points_check()
 			for (var/obj/structure/banner/faction/team/team1/T1 in world)
 				T1.team = team1

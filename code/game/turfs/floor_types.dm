@@ -153,7 +153,7 @@
 	icon_state = "ironsand[rand(1,15)]"
 
 /turf/floor/grass/jungle
-	name = "jungle grass"
+	name = "jungle grass patch"
 	overlay_priority = 0
 	is_diggable = TRUE
 	may_become_muddy = TRUE
@@ -172,7 +172,7 @@
 	may_become_muddy = FALSE
 
 /turf/floor/grass/jungle/savanna
-	name = "dry grass"
+	name = "dry grass patch"
 	icon_state = "dry_grass"
 	initial_flooring = null
 
@@ -193,7 +193,7 @@
 	return
 
 /turf/floor/winter/grass
-	name = "snowy grass"
+	name = "snowy grass patch"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "grass2"
 	is_diggable = TRUE
@@ -320,7 +320,7 @@
 	if(iscovered())
 		return
 	if (A)
-		if (!istype(A, /mob) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
+		if (!istype(A, /mob) && !istype(A,/obj/structure/vehicleparts/axis) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 			spawn(60)
 				if (isobj(A))
 					var/obj/O = A

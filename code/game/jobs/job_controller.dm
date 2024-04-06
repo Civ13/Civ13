@@ -72,14 +72,14 @@ var/global/datum/controller/occupations/job_master
 			var/b = pick(randomfaction-a)
 			var/c = pick(randomfaction-a-b)
 			map.availablefactions = list(a,b,c)
-//			world << "Three tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")]</b>."
+//			to_chat(world, "Three tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")]</b>.")
 		else
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
 			var/c = pick(randomfaction-a-b)
 			var/d = pick(randomfaction-a-b-c)
 			map.availablefactions = list(a,b,c,d)
-//			world << "Four tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")], [replacetext(d, " tribesman", "")]</b>."
+//			to_chat(world, "Four tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")], [replacetext(d, " tribesman", "")]</b>.")
 */
 	map.availablefactions_run = FALSE
 	return
@@ -89,22 +89,22 @@ var/global/datum/controller/occupations/job_master
 	if (map.availablefactions_run == TRUE)
 		if (autobalance_nr <= 8)
 			map.availablefactions = list("Civilization A Citizen")
-			world << "Only one civilization is enabled: <b>[civname_a]</b>."
+			to_chat(world, "Only one civilization is enabled: <b>[civname_a]</b>.")
 		else if (autobalance_nr > 8 && autobalance_nr <= 16)
 			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen")
-			world << "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>."
+			to_chat(world, "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>.")
 		else if (autobalance_nr > 16 && autobalance_nr <= 24)
 			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen")
-			world << "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>."
+			to_chat(world, "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>.")
 		else if (autobalance_nr > 24 && autobalance_nr <= 30)
 			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen")
-			world << "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>."
+			to_chat(world, "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>.")
 		else if (autobalance_nr > 30 && autobalance_nr <= 36)
 			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen")
-			world << "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>."
+			to_chat(world, "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>.")
 		else if (autobalance_nr > 36)
 			map.availablefactions = randomfaction
-			world << "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>."
+			to_chat(world, "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>.")
 
 	map.availablefactions_run = FALSE
 	return
@@ -162,17 +162,17 @@ var/global/datum/controller/occupations/job_master
 		civilians_forceEnabled = TRUE
 
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
-		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 3><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></font>"))
 		indians_toggled = FALSE
 		pirates_toggled = FALSE
 		spanish_toggled = FALSE
 		civilians_forceEnabled = TRUE
 	if (map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_PIONEERS || map.ID == MAP_PIONEERS_WASTELAND_2))
-		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Pioneers</b> start disabled by default. Admins can enable them.</i></span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 3><i>All factions besides <b>Pioneers</b> start disabled by default. Admins can enable them.</i></font>"))
 		indians_toggled = FALSE
 		civilians_forceEnabled = TRUE
 	if (map && map.faction_organization.Find(CIVILIAN) && (map.ID == MAP_FOREST))
-		world << "<font size = 3><span class = 'notice'><i>All factions besides <b>UPA</b> start enabled by default. Admins can enable the UPA.</i></span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 3><i>All factions besides <b>UPA</b> start disabled by default. Admins can enable them.</i></font>"))
 		civilians_toggled = FALSE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
@@ -315,21 +315,6 @@ var/global/datum/controller/occupations/job_master
 			var/area/H_area = get_area(H)
 			if (H_area)
 				H_area.play_ambience(H)
-		/*
-		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
-			new /obj/structure/vehicle/boat/rhib/premade/arrival(H.loc)
-			var/spawned = 0
-			for (var/obj/structure/vehicle/boat/rhib/premade/arrival/rhib in range(1,H))
-				if (spawned < 1)
-					if (H.faction_text == "PIRATES")
-						rhib.dir = EAST
-					else if (H.faction_text == "CIVILIAN")
-						rhib.dir = WEST
-					rhib.faststart(H)
-					spawned++
-				else
-					qdel(rhib)
-		*/
 
 /datum/controller/occupations/proc/SpawnAtFob(var/mob/living/human/H)
 	var/list/spawnable_points = list()
@@ -382,7 +367,7 @@ var/global/datum/controller/occupations/job_master
 	occupations = list()
 	var/list/all_jobs = typesof(/datum/job)
 	if (!all_jobs.len)
-		world << SPAN_DANGER("Error setting up jobs, no job datums found.")
+		to_chat(world, SPAN_DANGER("Error setting up jobs, no job datums found."))
 		return FALSE
 	for (var/J in all_jobs)
 		var/datum/job/job = new J()
@@ -500,7 +485,7 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
-		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
+		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
 			if(istype(job, /datum/job/pirates/redfaction))
 				H.remove_language("English")
 				H.add_language("Redmenian",FALSE)
@@ -651,7 +636,7 @@ var/global/datum/controller/occupations/job_master
 					H.stopDumbDamage = FALSE
 
 			spawn(12)
-				if(map.ID != MAP_CAMPAIGN)
+				if(map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
 					H.memory()
 
 			return H

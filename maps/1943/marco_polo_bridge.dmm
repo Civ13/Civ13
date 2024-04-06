@@ -19,7 +19,7 @@
 "as" = (/obj/covers/wood,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/item/ammo_magazine/madsen,/obj/structure/closet/crate/empty,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "at" = (/obj/covers/wood,/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/automatic/madsen,/obj/item/weapon/gun/projectile/automatic/madsen,/obj/item/weapon/gun/projectile/automatic/madsen,/obj/item/weapon/gun/projectile/automatic/madsen,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "au" = (/obj/covers/wood,/obj/structure/closet/crate/ww1/grenades_german,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"av" = (/obj/covers/wood,/obj/item/weapon/gun/projectile/automatic/stationary/vickers/type24{anchored = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
+"av" = (/obj/covers/wood,/obj/item/weapon/gun/projectile/automatic/stationary/vickers/type24{anchored = 0},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "aw" = (/obj/structure/window/classic,/obj/covers/wood,/obj/structure/barricade,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "ax" = (/obj/structure/iv_drip,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "ay" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
@@ -41,7 +41,7 @@
 "aO" = (/obj/structure/window/barrier/sandbag,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "aP" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "aQ" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRU"},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUSap"},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"aR" = (/obj/covers/wood,/obj/structure/cannon/mortar,/turf/floor/wood,/area/caribbean/roofed/temperate)
+"aR" = (/obj/structure/cannon/mortar/foldable/generic,/obj/covers/wood,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "aS" = (/obj/structure/sink/well,/obj/structure/mine_support,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "aT" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "aU" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/roofed/temperate)
@@ -64,16 +64,16 @@
 "bl" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "bm" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "bn" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/roofed/temperate)
-"bo" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/telephone/mobile/faction{contacts = list(list("Japanese Command",1945)); phonenumber = 1943},/turf/floor/wood,/area/caribbean/roofed/temperate)
+"bo" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/telephone/mobile/faction{contacts = list(list("Japanese  Command",1945)); phonenumber = 1943},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "bp" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{dir = 1; name = "chinese radio"; pixel_y = 12; transmitter_on = 0},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "bq" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/roofed/temperate)
 "br" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
-"bs" = (/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
+"bs" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/temperate)
 "bt" = (/turf/floor/broken_floor,/area/caribbean/no_mans_land/temperate)
 "bu" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
-"bv" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water,/area/caribbean/no_mans_land/temperate)
-"bw" = (/obj/covers/cobblestone,/turf/floor/beach/water,/area/caribbean/no_mans_land/temperate)
-"bx" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water,/area/caribbean/no_mans_land/temperate)
+"bv" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/temperate)
+"bw" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/temperate)
+"bx" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
 "by" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bz" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bA" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
@@ -83,9 +83,9 @@
 "bE" = (/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/two)
 "bF" = (/obj/structure/barricade/stone_v,/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/two)
 "bG" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/two)
-"bH" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/two)
-"bI" = (/obj/covers/cobblestone,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/two)
-"bJ" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/two)
+"bH" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
+"bI" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/one)
+"bJ" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
 "bK" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "bL" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
 "bM" = (/obj/structure/barricade/stone_v,/obj/structure/religious/monument/monk/quangshi,/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -93,12 +93,12 @@
 "bO" = (/obj/structure/barricade/stone_v,/obj/structure/religious/monument/monk/quangshi,/turf/floor/broken_floor,/area/caribbean/no_mans_land/temperate)
 "bP" = (/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall)
 "bQ" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall)
-"bR" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
-"bS" = (/obj/covers/cobblestone,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
-"bT" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
+"bR" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"bS" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall)
+"bT" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/island)
 "bU" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall)
-"bV" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
-"bW" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
+"bV" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/island)
+"bW" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/island)
 "bX" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bY" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "bZ" = (/turf/floor/dirt/dust,/area/caribbean/island)
@@ -106,9 +106,9 @@
 "cb" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass,/area/caribbean/island)
 "cc" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
 "cd" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
-"ce" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/island)
-"cf" = (/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/island)
-"cg" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass,/area/caribbean/island)
+"ce" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/two)
+"cf" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/two)
+"cg" = (/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall/two)
 "ch" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass,/area/caribbean/island)
 "ci" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/island)
 "cj" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/barrier/rock,/turf/floor/grass,/area/caribbean/island)
@@ -117,9 +117,9 @@
 "cm" = (/obj/structure/barricade/stone_v,/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/one)
 "cn" = (/obj/structure/barricade/stone_v,/obj/structure/religious/monument/monk/quangshi,/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/one)
 "co" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/one)
-"cp" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/one)
-"cq" = (/obj/covers/cobblestone,/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/one)
-"cr" = (/obj/covers/cobblestone,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall/one)
+"cp" = (/obj/structure/bed/chair/drivers/car/type94,/obj/structure/vehicleparts/frame/car/type94/rc,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
+"cq" = (/obj/structure/bed/chair/carseat/left/type94,/obj/structure/vehicleparts/frame/car/type94/lc,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
+"cr" = (/obj/structure/vehicleparts/movement,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/obj/structure/vehicleparts/frame/car/type94/rf,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "cs" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/broken_floor,/area/caribbean/no_mans_land/invisible_wall/two)
 "ct" = (/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "cu" = (/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
@@ -162,7 +162,7 @@
 "df" = (/obj/roof/thatch,/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/coat/ww2/japcoat_rain,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/ammo_magazine/c8mmnambu,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dg" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/item/weapon/radio/faction1{name = "japanese radio"},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dh" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
-"di" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/item/weapon/telephone/mobile/faction{contacts = list(list("Chinese Command",1943)); phonenumber = 1945},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
+"di" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/item/weapon/telephone/mobile/faction{contacts = list(list("Chinese  Command",1943)); phonenumber = 1945},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dj" = (/obj/structure/table/wood,/obj/roof/thatch,/obj/structure/radio/transmitter_receiver/nopower/faction1{anchored = 1; name = "japanese radio"; transmitter_on = 0},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dk" = (/obj/structure/vehicleparts/frame/car/right,/obj/structure/vehicleparts/movement,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dl" = (/obj/structure/vehicleparts/frame/car/left,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
@@ -182,13 +182,10 @@
 "dz" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dA" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dB" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
-"dC" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
-"dD" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{color = "#6A5A3D"; name = "Type-94 Isuzu"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
+"dC" = (/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/engine/internal/gasoline/premade/type94,/obj/structure/vehicleparts/frame/car/type94/lf,/obj/structure/vehicleparts/axis/car/type94,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dE" = (/obj/structure/table/wood,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dF" = (/obj/structure/oven,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dG" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
-"dH" = (/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
-"dI" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dJ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/barrier/sandbag,/obj/structure/roof_support,/obj/roof/thatch,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dK" = (/obj/structure/window/barrier/sandbag,/obj/roof/thatch,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "dL" = (/obj/structure/window/barrier/sandbag,/obj/roof/thatch,/obj/structure/roof_support/admin,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
@@ -251,6 +248,7 @@
 "eQ" = (/obj/structure/wild/tallgrass,/obj/structure/wild/tree/live_tree,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "eR" = (/obj/structure/wild/tallgrass2,/obj/structure/wild/tree/live_tree,/turf/floor/grass/jungle/savanna,/area/caribbean/no_mans_land/temperate)
 "eS" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/structure/closet/crate/empty,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
+"nO" = (/obj/structure/barricade/stone_v,/obj/structure/window/barrier/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/broken_floor,/area/caribbean/island)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -454,7 +452,6 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
-
 (1,1,2) = {"
 aeaeaeaeaeafafafafafafafafafafafafaeaeaeaeaeagahaiaeaeewaeaeaeaeaeaeccccccccccccccccccccaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeewaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeeuaeaeaeaeaeaeaeeuaeaeaeae
 euaeaeaeaeafajakalakakakakakakamafaeeuaeaeaeagahaeaeaeaeaeeGaeaeaeaeaeccccccccccccccccaeaeaeaeewaeaeaeaeaeaeafafalafafafafafafafafafafafafafafaeaeaeaeaeeuaeeAaeaeaeewaeaeaeaeaeaeaeaeaeewaeaeaeaeaeaeae
@@ -471,168 +468,168 @@ aeeAaeaeaeaeaeaeaeaeaeaeaeaeaeeuaeaeaebfaeaeaeaeeuaeaeaeaeaeaeaeaeaeaWbrbrbrbrbr
 aeaeeweGaeaeeuaeaeewaeaeeuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebfaeaeaeaeaeccccccccccccccccaeaeaeeubfaeaeewaeaeaeaeewaeaeeGaeaebfaeaeaeaeaebfaeaeaeaeeGaeaeaeaeewaeaeaeaeaeaeaeafaKblakakakafaDbmakakbnboawae
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeeuaeeGaeeuaeewaeaeaeaeaeeuaeaeaeaeaeaeaeccccccccccccccccaeaeaeaeaeaeaeaeaeeuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebfaeewaeeuafaDakaVakakafbpaKaDakaDbqafae
 aeaeaeaeeuaeewaeaeeuaeaebfaeaeaeaeaeaeaeaeaeaeaeaeaeewaeaeaeewaeaeeuaeetbsbsbsbsbsbsetaeaeaeaeaeaeaeaeaeaeewaeaeaeaeaeeuaeaeaeaeaeaeaeeAaeeuaeaeaeaeaeaeaeaeaeeuaeaeaeaeaeafafafafafafafafafafafafafafae
-aeaebfaeaeaeeuaeaeaeaeaeaeaeaeaeewaeaeeAaeaeaeaeaeaeaeaeaeaebtaeaeaeaebubvbwbwbwbwbxbyaeeAaeaebtbtaeaeaeaeaeaebfaeaeaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
-aeeuaeaeaeaeaeaeaeaeaeaebtaebtbtaebtbtbtbtaebtbtbtaebtbtbtbtaebtaeaeaebzbvbwbwbwbwbxbAaeaebtbtbtaebtbtbtaeaeaeaeaeaeaeaeaeaeaeaeaebtbtbtaeaeaeaeaeaeaeaeaeaeeAaeewaeaebfaeaeaeaeewaeaeaeaeeuaeaeeGaeaeae
-aeaeaeaeaeaeaeaebtbtbtbtbtbtbtbtbtaeaeaebtbtbtbtaebtaeaebtbtbtbtbtaeaebzbvbwbwbwbwbxbAaebBaebtbtaebtbtaebtaebtbtbtaeaeaebtbtbtbtbtbtbtbtbtaebtbtbtbtaebtbtaeaeaeaeaeaeaeaeaeaeeuaeaeaebfaeaeaeaeewaeaeae
-aeaeaeaebtbtbtbtaeaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebBaebzbvbwbwbwbwbxbAaebBbBaebtbtbtbtbtbtaeaebtbtbtaeaeaebtbtaeaebtbtbtaeaebtbtaeaebtbtbtbtbtbtaeaeaeaeaeaeaeaeaeaeaeaeaeeGaeaeeuaeaeae
-aebtaebtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbzbvbwbwbwbwbxbAbBbCbBbtbtbtbtbtbtbtbtbtaebtbtbtbtbtbtaebtbtbtbtbtbtbtaebtbtbtbtbtbtbtaeaebtbtaebtaeaeaebfaeaeewaeaeaeeAaeaeaebfae
-btaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbCbDbvbwbwbwbwbxbAbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtaebtaebtbtbtaeaeaebtbtaeaeaeaeaeaeaeae
-clclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclcmcmcmcocpcqcqcqcqcrbKcmcmcmclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclbLclclclclclbLclclclbLbLbLbLbL
-clclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclcmcmcncocpcqcqcqcqcrbKcncmcmclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclbLclclclcl
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-bPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbQbRbSbSbSbSbTbUbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbP
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBaeaebtaebtbtbtaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtaebBbBbBbDbvbwbwbwbwbxbAaeaeaebtbtaebtbtbtaebtaeaeaebtaebtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacaeCcbcecfcfcfcfcgchcaevcacacacacacacacacacacacacacacabtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaecacaevcacacicecfcfcfcfcgcjcacacaeCcacacacadRcacadReCcacacacaaeaeaebtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtcacacadRcacacadScfcfcfcfcfcfdScacacacacaeHevcacacacacacacacaevcacacacacacacacabtbtaebtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeeveCcaevcacaeJbZcabZbZbZbZbZbZcabZevcadRcacacaeCcacacaevcacacacacacaeHcacaevcacacacabtaeaebtbtbtbtbtbtbtbtbtaebtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtaecacacacacacaeHcacabZbZbZbZbZbZcacacacacacadTdTdTdTdTcacaeCeIcaeJevcacacacacacaeCcacacacabtbtbtbtbtbtbtbtbtbtbfaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaecacacacaeCcacacabZbZbZbZbZbZbZeKcacacadUdVdWdXdXdYdZeacacacaevcacacacacacacacacacacacacaaeaeaeaeaeaeaebtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbteuaeeJcaevcaevcaevcacabZbZbZbZbZbZbZcacaevebeccaeCcacacaedeecaeHcacaeCcacadRcacacacacacaevcaaeaeaeeuaeaeaeaeaeaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebfeveHcaeIcacacabZdRbZbZbZbZbZbZbZevcacaebefcacacacaevcacacacacacacacacaevcacacaevcacacadRaeaeaeewaeaeaeaeaeeuaeewaeaeaeaeaebtaebtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaecacacacaeCcacacabZbZbZbZbZbZbZcacaeCcaebeecaeHcacacacacacaevcacacacacacacacacacacaeHcacaaeaeaeaeaeaeaeeuaeaeaeaeaeaeeuaeaeaebtaebtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeeveveCcaevcaeHcabZbZbZbZbZbZbZcacacacaebeacaevcacacadVeecacacacacaevcacacacaeCcacacacacaeweuaeeGaeaeewaeaebfaeaebfaeaeaeaebtaeaeaeaebtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaecacacaeJcacaeCcabZbZbZbZbZbZbZcabZevcaegedehdTdTdTeieccacacacaeCcacacacaevcacacaevcacacaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebtbtaebtbtbtbtbtbtbtbtbtbtbt
+aeaebfaeaeaeeuaeaeaeaeaeaeaeaeaeewaeaeeAaeaeaeaeaeaeaeaeaeaebtaeaeaeaebubvbsbsbsbsbwbyaeeAaeaebtbtaeaeaeaeaeaebfaeaeaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeeuaeaeaeaeaeaeaeaeaeaebtaebtbtaebtbtbtbtaebtbtbtaebtbtbtbtaebtaeaeaebzbvbsbsbsbsbwbAaeaebtbtbtaebtbtbtaeaeaeaeaeaeaeaeaeaeaeaeaebtbtbtaeaeaeaeaeaeaeaeaeaeeAaeewaeaebfaeaeaeaeewaeaeaeaeeuaeaeeGaeaeae
+aeaeaeaeaeaeaeaebtbtbtbtbtbtbtbtbtaeaeaebtbtbtbtaebtaeaebtbtbtbtbtaeaebzbvbsbsbsbsbwbAaebBaebtbtaebtbtaebtaebtbtbtaeaeaebtbtbtbtbtbtbtbtbtaebtbtbtbtaebtbtaeaeaeaeaeaeaeaeaeaeeuaeaeaebfaeaeaeaeewaeaeae
+aeaeaeaebtbtbtbtaeaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebBaebzbvbsbsbsbsbwbAaebBbBaebtbtbtbtbtbtaeaebtbtbtaeaeaebtbtaeaebtbtbtaeaebtbtaeaebtbtbtbtbtbtaeaeaeaeaeaeaeaeaeaeaeaeaeeGaeaeeuaeaeae
+aebtaebtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbzbvbsbsbsbsbwbAbBbCbBbtbtbtbtbtbtbtbtbtaebtbtbtbtbtbtaebtbtbtbtbtbtbtaebtbtbtbtbtbtbtaeaebtbtaebtaeaeaebfaeaeewaeaeaeeAaeaeaebfae
+btaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbCbDbvbsbsbsbsbwbAbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtaebtaebtbtbtaeaeaebtbtaeaeaeaeaeaeaeae
+clclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclcmcmcmcobxbHbHbHbHbIbKcmcmcmclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclbLclclclclclbLclclclbLbLbLbLbL
+clclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclcmcmcncobxbHbHbHbHbIbKcncmcmclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclclbLclclclcl
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+bPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbQbJbRbRbRbRbSbUbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbP
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBaeaebtaebtbtbtcacacabtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtcacacacanObTbVbVbVbVbWchcacacabtbtcabtbtbtcabtcacacabtcabtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacaeCcbbTbVbVbVbVbWchcaevcacacacacacacacacacacacacacacabtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacaevcacacibTbVbVbVbVbWcjcacacaeCcacacacadRcacadReCcacacacacacacabtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcabtcacacadRcacacadSbVbVbVbVbVbVdScacacacacaeHevcacacacacacacacaevcacacacacacacacabtbtaebtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcaeveCcaevcacaeJbZcabZbZbZbZbZbZcabZevcadRcacacaeCcacacaevcacacacacacaeHcacaevcacacacabtaeaebtbtbtbtbtbtbtbtbtaebtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtcacacacacacacaeHcacabZbZbZbZbZbZcacacacacacadTdTdTdTdTcacaeCeIcaeJevcacacacacacaeCcacacacabtbtbtbtbtbtbtbtbtbtbfaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacacacaeCcacacabZbZbZbZbZbZbZeKcacacadUdVdWdXdXdYdZeacacacaevcacacacacacacacacacacacacaaeaeaeaeaeaeaebtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtevcaeJcaevcaevcaevcacabZbZbZbZbZbZbZcacaevebeccaeCcacacaedeecaeHcacaeCcacadRcacacacacacaevcaaeaeaeeuaeaeaeaeaeaeaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcadReveHcaeIcacacabZdRbZbZbZbZbZbZbZevcacaebefcacacacaevcacacacacacacacacaevcacacaevcacacadRaeaeaeewaeaeaeaeaeeuaeewaeaeaeaeaebtaebtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacacacaeCcacacabZbZbZbZbZbZbZcacaeCcaebeecaeHcacacacacacaevcacacacacacacacacacacaeHcacaaeaeaeaeaeaeaeeuaeaeaeaeaeaeeuaeaeaebtaebtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcaeveveCcaevcaeHcabZbZbZbZbZbZbZcacacacaebeacaevcacacadVeecacacacacaevcacacacaeCcacacacacaeweuaeeGaeaeewaeaebfaeaebfaeaeaeaebtaeaeaeaebtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacaeJcacaeCcabZbZbZbZbZbZbZcabZevcaegedehdTdTdTeieccacacacaeCcacacacaevcacacaevcacacaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebtbtaebtbtbtbtbtbtbtbtbtbtbt
 btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaebtcacacacadRcabZcacabZbZbZbZbZbZcacacaeJeHcadXdXdXdXdXcacaevcacacacacadRcacacaeJcacacacacaaeaeaeaeeuaeaebtbtbtbtaeaeaebtaebtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeevcacacacaeCejcfcfcfcfcfcfejcaeCcacacacacacacacacacaeCcacacacacaaeaebtbtbtbtaeaeaebtbtbtbtaebtbtbtaebtbtbtbtbtbtaebtaebtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaecacacacaevcaekcecfcfcfcfcgelcacaevcaeCcacaevcacaevcacacadRcacacaaeaeaeaeaebtbtbtbtaebtaeaeaeaebtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbtbtbtaeaeaebzbVbsbsbsbsbWbAaeaeaeaeaeaeaeaeaeaeaeaeeGaeaeaeaeaebtaeaebtbtbtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaebBbBbBbDbVbsbsbsbsbWbAaeeuaeaebfaeaeewaeaeaeaeaeaeaebtbtbtbtaebtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebBbBbDbvbwbwbwbwbxbAaeaeaeaeaeaeeAaebtaeaebtbtbtbtaebtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbsbWbNbBbBbBaebtbtbtbteLbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbwbwbwbwbxbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-bPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPckckckbQbRbSbSbSbSbTbUckckckbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbP
-bEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbFbFbMbGbHbIbIbIbIbJcsbMbFbFbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbE
-bEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbFbFbFbGbHbIbIbIbIbJcsbFbFbFbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbE
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbwbwbwbwbxbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-btbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbwbwbwbwbxbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
-aeaeaebtbtbtbtbtbtbtbtbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbtbtbtbtbtbtaeae
-aebfaeaebfaeaeaeaeaebtaebtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaeaeaebtbtbtbtbtaebtbtaebtbtbtaeaebtbtbtaeaebfae
-aeaeeuaeeGaeeuaeaeaeaeaeaebtbtbtbtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbwbwbwbwbxbNbCbBbCbtbtbtbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaeaeaeeuaebtbtbtbtaebtaebtbtbtaebtbtbtbtaeaeaeaeaeaeae
-aeaeaeeuaeaectaeaebfaeeAaeaeaeaebtbtaebtbtbtaebtbtbtbtaebtbtbtbtbBbBbBbDbvbwbsbsbsbWbAbBbBbBaebtbtbtbtbtbtbtaebtbtbtbtbtaebtbtbtbtaeaebtbtbtaeaeaeaebfaebtbtbtbtaeaebtbtbtbfaeaeaeaeaeaeaeaeaeaeeuaeeAae
-aectaeaeeuaeaeaeaeeuaeeuaeaeaeaeaeaeaeaeaeaebtaebfaebtbtaebtbtbtbBaeccbzbVbsbwbwbwbxbAccaeaebtbtbtaeaeaebfaebtbtbtaeaeaebtbtaebtbtbtaebtaeaeaeaeeuaeaebtbtbtaeaebtbtaeaeaeaeaeaeewaeaebfaeaeaeaeaeaeeuae
-aectctexctctctaeaeaeewaeeGctaeeuaeaebfaeeuewaeaeaeaeaeaeaeaeaeaeaeaeccbXbVbsbsbsbsbWbYccbfaeaeaeaeaeaeaeeuaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeeuaeaeaeaeaeaeaeaeaeaeeueuaeaeaeaeaeaeeuaeewaeaeaeaeae
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcaevcacacacaeCejcacacacacacaejcaeCcacacacacacacacacacaeCcacacacacacacabtbtbtbtcacacabtbtbtbtaebtbtbtaebtbtbtbtbtbtaebtaebtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacacaevcaekbTbVbVbVbVbWelcacaevcaeCcacaevcacaevcacacadRcacacacacacacacabtbtbtbtaebtaeaeaeaebtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbtbtcacacacacbbTbVbVbVbVbWchcacacacacacacacacacacacaeHcacacacacabtcacabtbtbtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacacacanObTbVbVbVbVbWchcaevcacadRcacaeCcacacacacacacabtbtbtbtcabtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtcacacanObTbVbVbVbVbWchcacacacacacaeJcabtcacabtbtbtbtaebtbtcacabtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBaebtbtbtbteLbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbObDbvbsbsbsbsbwbNbObBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+bPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPckckckbQbJbRbRbRbRbSbUckckckbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbPbP
+bEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbFbFbMbGcecfcfcfcfcgcsbMbFbFbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbE
+bEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbFbFbFbGcecfcfcfcfcgcsbFbFbFbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbEbE
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbDbvbsbsbsbsbwbNbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+btbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbDbvbsbsbsbsbwbNbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbt
+aeaeaebtbtbtbtbtbtbtbtbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaebtbtbtbtbtbtbtaeae
+aebfaeaebfaeaeaeaeaebtaebtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbBbBbBbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaeaeaebtbtbtbtbtaebtbtaebtbtbtaeaebtbtbtaeaebfae
+aeaeeuaeeGaeeuaeaeaeaeaeaebtbtbtbtbtbtaebtbtbtbtbtbtbtbtbtbtbtbtbBbBbBbDbvbsbsbsbsbwbNbCbBbCbtbtbtbtbtbtaeaebtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtbtaeaeaeaeeuaebtbtbtbtaebtaebtbtbtaebtbtbtbtaeaeaeaeaeaeae
+aeaeaeeuaeaectaeaebfaeeAaeaeaeaebtbtaebtbtbtaebtbtbtbtaebtbtbtbtbBbBbBbDbvbsbsbsbsbwbAbBbBbBaebtbtbtbtbtbtbtaebtbtbtbtbtaebtbtbtbtaeaebtbtbtaeaeaeaebfaebtbtbtbtaeaebtbtbtbfaeaeaeaeaeaeaeaeaeaeeuaeeAae
+aectaeaeeuaeaeaeaeeuaeeuaeaeaeaeaeaeaeaeaeaebtaebfaebtbtaebtbtbtbBaeccbzbvbsbsbsbsbwbAccaeaebtbtbtaeaeaebfaebtbtbtaeaeaebtbtaebtbtbtaebtaeaeaeaeeuaeaebtbtbtaeaebtbtaeaeaeaeaeaeewaeaebfaeaeaeaeaeaeeuae
+aectctexctctctaeaeaeewaeeGctaeeuaeaebfaeeuewaeaeaeaeaeaeaeaeaeaeaeaeccbXbvbsbsbsbsbwbYccbfaeaeaeaeaeaeaeeuaeaeaeaebfaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeeuaeaeaeaeaeaeaeaeaeaeeueuaeaeaeaeaeaeeuaeewaeaeaeaeae
 ctctctaecteycteyctexaeaeaeaeaeaeewaeaeaeaeaeaeaeaeaeaeeueGaeaeaeaeaecccdbsbsbsbsbsbscdccaeaeaeaeeGaeaeaeaeaeaeewaeaeaeeuaeaeaeaeeGaeeuaeaebfaeaeaeaeewaeeuaeaeaeaeaeeGaeaeeAaeeuaeaeaeaeaeaeaeaeeGeuaeae
 aeeuctctcteyexctctctctctctctctctaeaeeuaeaeaeeuaeaectaeaeaeeuaeeueAaeccccccccccccccccccaeaeeAaeeuaeaectaeaeeuaeaeaeaeaeaeaeeGaeewaeaeaeaeaeaeaectaeaeaeaeaeaebfaeaectaeeuaeaectaectaeeGaeeuaeaeaeaeaeaeae
 aecteyeyctexctexeMaeaeaeeuctctaeaeaecteGaeeuaeaeaeaeaeaeaeaeeGaeaeaeaeccccccccccccccaeaeaeewaeaeaeaeaeaeaeaeeGaeaectaeaeeuaeaeeAeuaeaeaeaeaectaeaectaeeGaeaeaeaeaeaeaeaectaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -652,8 +649,8 @@ aeeOeBctctexctctexctexctctctctexctcteycteyctaeeOctaectctctcteyctctctaecccccccccc
 ctcteyctcRctcRctcRctcRctcRctctexctctcteyctctctctctctctctaectctaectctccccccccccccccccctctctdkdlcTcPctexctctctctcteOctctctctctctctctaectaeaeaectctctctctctaecTdmdddddddndodddodpdddddddedaaectctctctctexct
 ctctexctctctctctctctctctctcteyexctexcteyeyctctctctexctaectaectctctccaeccccccccccccccaectctdqdrctctctexctcteyaectexaectctctaectctexctctctctctctaeexexctaectctdsdddddddsdddddddtdddudddvdactctaectcteMctct
 ctcteBctctctctctctcteyctctctexctctctctctctctexctctctctaectaectctaectaeccccccccccccccctccdwdxdyctctctcteyctctctexctctctctctaectctctaectaectaectaeexctctctctctdddddddddddddudddddudddddedactexctaectexctct
-ctexeQctcteyctctexcteyexctctctctdzdActctdBctctctctctctctctaeexeyeyctctccccccccccccccctctctdCdDctctexexcteyeycteRctctctctctctexctctctctcteyctaectctexexctctctdddudddddddddddddddddddddedactctctctcteyctct
-ctctctctexexexeyeyeyeyctexctctctdEctctctdFctctdGdGctctctctctctexexeyctccccccccccccccctexctdHdIctctctcteyctctcteyctexctctctctctctexeyctcteyctctctctcteyctctcTdJdKdKdKdLdKdKdKdLdKdKdKdMdacteyeOctctctctct
+ctexeQctcteyctctexcteyexctctctctdzdActctdBctctctctctctctctaeexeyeyctctccccccccccccccctctctcpcqctctexexcteyeycteRctctctctctctexctctctctcteyctaectctexexctctctdddudddddddddddddddddddddedactctctctcteyctct
+ctctctctexexexeyeyeyeyctexctctctdEctctctdFctctdGdGctctctctctctexexeyctccccccccccccccctexctcrdCctctctcteyctctcteyctexctctctctctctexeyctcteyctctctctcteyctctcTdJdKdKdKdLdKdKdKdLdKdKdKdMdacteyeOctctctctct
 ctctctexexctctctctctctctexctctctdNctctctdOctctdGdGctctctexexctexctexctctccccccccccccccctctexctctctctexexctcteyctctexctctctctexctctctexeOctctctctexctctctctctcMcMcMcMcMcMcMcMcMcMcMcMcMctexexctexctctctct
 eqctctctctctctctctctctctctctctctdPctctctdQctctctctctctctctctctctctctccctccccccccccccccctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctexctctctctctctctctctctctctctctctctexctctctctctct
 "}

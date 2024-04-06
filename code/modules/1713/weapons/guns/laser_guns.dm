@@ -271,9 +271,11 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "full auto", burst=3, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
+	full_auto = TRUE
+	
 /obj/item/weapon/gun/projectile/automatic/stationary/laser/update_icon()
 	if (ammo_magazine)
 		icon_state = base_icon
@@ -296,7 +298,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -310,7 +312,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "full auto", burst=5, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -425,8 +427,8 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/lasgun
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/lasgun)
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name = "full auto",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
 		)
 	weight = 3.08
 	force = 20

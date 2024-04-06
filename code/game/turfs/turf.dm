@@ -366,7 +366,7 @@ var/const/enterloopsanity = 100
 
 			//Shoe sounds
 			if (type == /turf/floor/plating)
-				footstepsound = "platingfootsteps"
+				footstepsound = "erikafootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			else if (istype(src, /turf/floor/winter))
@@ -378,7 +378,13 @@ var/const/enterloopsanity = 100
 					footstepsound = "icefootsteps"
 			else	if (istype(src, /turf/floor/beach/sand))
 				footstepsound = "sandfootsteps"
-			else 	if (istype(src, /turf/floor/wood))
+			else	if (istype(src, /turf/floor/plating/road))
+				footstepsound = "roadfootsteps"
+			else	if (istype(src, /turf/floor/plating/tiled/woodv))
+				footstepsound = "woodfootsteps"
+			else	if (istype(src, /turf/floor/plating/tiled))
+				footstepsound = "woodfootsteps"
+			else	if (istype(src, /turf/floor/wood))
 				footstepsound = "woodfootsteps"
 			else 	if (istype(src, /turf/floor/carpet))
 				footstepsound = "carpetfootsteps"
@@ -393,7 +399,7 @@ var/const/enterloopsanity = 100
 				footstepsound = "erikafootsteps"
 
 			for(var/obj/structure/multiz/ladder/ww2/LADDER in src)
-				footstepsound = "woodfootsteps"
+				footstepsound = "platingfootsteps"
 				break
 			for(var/obj/covers/CV in src)
 				if (istype(CV, /obj/covers/carpet))
@@ -406,7 +412,7 @@ var/const/enterloopsanity = 100
 						break
 					break
 				else
-					footstepsound = "platingfootsteps"
+					footstepsound = "erikafootsteps"
 					break
 
 			if (H.m_intent != "stealth" && H.m_intent != "proning")
@@ -469,3 +475,209 @@ var/const/enterloopsanity = 100
 
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE
+
+/turf/proc/try_airstrike(var/ckey, var/faction_text, var/aircraft_name, var/direction = "NORTH", var/payload = "Rockets", var/payload_class = 1, var/admin = FALSE)
+	var/turf/T = src
+
+	if (admin)
+		message_admins("ADMIN [ckey] called in an airstrike at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
+		log_game("ADMIN [ckey] called in an airstrike at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+	else
+		message_admins("[ckey] ([faction_text]) called in an airstrike at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP towards</a>)", ckey)
+		log_game("[ckey] ([faction_text]) called in an airstrike at ([T.x],[T.y],[T.z])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>JMP</a>)")
+
+	var/dive_text = "cuts through"
+	var/drop_delay = 1 SECONDS // Drop delay determines how long it takes for the payload to arive after the airstrike has been called .
+	if (aircraft_name)	switch(aircraft_name) // Check what faction has called in the airstrike and select an aircraft.
+		if ("F-16")
+			new /obj/effect/plane_flyby/f16_no_message(T)
+			drop_delay = 1 SECONDS
+		if ("Su-25")
+			new /obj/effect/plane_flyby/su25_no_message(T)
+			drop_delay = 1 SECONDS
+		if ("Ju 87 Stuka")
+			new /obj/effect/plane_flyby/ju87_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 18 SECONDS
+		if ("IL-2")
+			new /obj/effect/plane_flyby/il2_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 5 SECONDS
+	
+	to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a [aircraft_name] [dive_text].</font>"))
+
+	if (!admin)
+		var/faction_num
+		if (map.faction1 == faction_text) // Check which faction is using the airstrike
+			faction_num = 1
+		else if (map.faction2 == faction_text)
+			faction_num = 2
+		
+		switch (faction_num)
+			if (1)
+				faction1_airstrikes_remaining[payload_class]--
+			if (2)
+				faction2_airstrikes_remaining[payload_class]--
+
+		var/anti_air_in_range = FALSE
+		for (var/obj/structure/milsim/anti_air/AA in range(60, T)) // Check if there's anti air within 60 tiles
+			if (AA.faction_text != faction_text)
+				anti_air_in_range++
+
+		if (anti_air_in_range) // If there's anti air nearby try to shoot down the jet
+			spawn(3 SECONDS)
+				var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 780)
+				sam_sound.priority = 250
+
+				for (var/mob/M in player_list)
+					if (!new_player_mob_list.Find(M))
+						to_chat(M, SPAN_DANGER("<big>A SAM site fires at \the [aircraft_name]!</big>"))
+						M.client << sam_sound
+
+				spawn(5 SECONDS)
+					if (prob(95)) // Shoot down the jet
+						var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+						uploaded_sound.priority = 250
+
+						for (var/mob/M in player_list)
+							if (!new_player_mob_list.Find(M))
+								to_chat(M, SPAN_DANGER("<big>The SAM directly hits \the [aircraft_name], shooting it down!</big>"))
+								if (M.client)
+									M.client << uploaded_sound
+						
+						switch (faction_num) // Send the jet to re-arm, it is unavailible for 5 minutes
+							if (1)
+								faction1_aircraft_rearming = TRUE
+								faction1_aircraft_cooldown = world.time + 5 MINUTES
+							if (2)
+								faction2_aircraft_rearming = TRUE
+								faction2_aircraft_cooldown = world.time + 5 MINUTES
+					
+						message_admins("[map.roundend_condition_def2name(faction_text)] Aircraft [aircraft_name] has been shot down.")
+						log_game("Aircraft [aircraft_name] has been shot down.")
+						return
+
+					else // Evade the Anti-Air
+						var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
+						uploaded_sound.priority = 250
+
+						for (var/mob/M in player_list)
+							if (!new_player_mob_list.Find(M))
+								to_chat(M, SPAN_NOTICE("<big><b>The [aircraft_name] evades the SAM!</b></big>"))
+								if (M.client)
+									M.client << uploaded_sound
+						airstrike(direction, payload, drop_delay)
+		else
+			spawn(3 SECONDS)
+				airstrike(direction, payload, drop_delay)
+	else
+		spawn(3 SECONDS)
+			airstrike(direction, payload, drop_delay)
+	return
+
+/turf/proc/airstrike(var/direction = "NORTH", var/payload = "Rockets", var/drop_delay = 3 SECONDS, var/has_message = TRUE)
+	var/turf/T = src
+
+	var/strikenum = 5
+	var/interval = 5
+	var/min_length_offset = 0
+	var/max_length_offset = 0
+
+	var/min_sway_offset = 0
+	var/max_sway_offset = 0
+
+	var/direction_offset = 0
+	var/turn_degree = 45
+	var/easing_type = SINE_EASING | EASE_IN
+	var/to_spawn
+	switch (payload)
+		if ("Rockets")
+			to_spawn = /obj/structure/payload/missile
+			strikenum = 5
+
+			min_length_offset = 0
+			max_length_offset = 1
+			min_sway_offset = -2
+			max_sway_offset = 2
+
+			direction_offset = 3
+
+			easing_type = LINEAR_EASING
+			turn_degree = 20
+
+			if (has_message)
+				to_chat(world, SPAN_DANGER("<font size=4>And fires off a burst of rockets!</font>"))
+		if ("50 kg Bomb")
+			to_spawn = /obj/structure/payload/bomb/kg50
+			strikenum = 1
+
+			min_length_offset = -1
+			max_length_offset = 3
+			min_sway_offset = -2
+			max_sway_offset = 2
+
+			direction_offset = 0
+
+			easing_type = SINE_EASING | EASE_IN
+			turn_degree = 45
+		if ("250 kg Bomb")
+			to_spawn = /obj/structure/payload/bomb/kg250
+			strikenum = 1
+
+			min_length_offset = -1
+			max_length_offset = 3
+			min_sway_offset = -2
+			max_sway_offset = 2
+
+			direction_offset = 0
+
+			easing_type = SINE_EASING | EASE_IN
+			turn_degree = 45
+
+	spawn(drop_delay)
+		var/cur_xdirection_offset = 0
+		var/cur_ydirection_offset = 0
+		for (var/i = 1, i <= strikenum, i++)
+			var/obj/structure/payload/P = new to_spawn(T)
+			
+			var/xoffset
+			var/yoffset
+			switch (direction)
+				if ("NORTH")
+					cur_ydirection_offset += direction_offset
+					xoffset = rand(min_sway_offset, max_sway_offset)
+					yoffset = rand(min_length_offset, max_length_offset)
+
+					P.dir = NORTH
+					P.pixel_y = -12*32 // 12 tiles and 32 pixels per tile
+				if ("EAST")
+					cur_xdirection_offset += direction_offset
+					xoffset = rand(min_length_offset, max_length_offset)
+					yoffset = rand(min_sway_offset, max_sway_offset)
+
+					P.dir = EAST
+					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+					P.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
+					animate(P, transform = turn(matrix(), turn_degree), time = 10)
+				if ("SOUTH")
+					cur_ydirection_offset -= direction_offset
+					xoffset = -rand(min_sway_offset, max_sway_offset)
+					yoffset = -rand(min_length_offset, max_length_offset)
+
+					P.dir = SOUTH
+					P.pixel_y = 12*32 // 12 tiles and 32 pixels per tile
+				if ("WEST")
+					cur_xdirection_offset -= direction_offset
+					xoffset = -rand(min_length_offset, max_length_offset)
+					yoffset = -rand(min_sway_offset, max_sway_offset)
+					
+					P.dir = WEST
+					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+					P.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
+					animate(P, transform = turn(matrix(), -turn_degree), time = 10)
+
+			spawn(i*interval)
+				P.loc = locate((T.x + xoffset + cur_xdirection_offset), (T.y + yoffset + cur_ydirection_offset), T.z)
+				animate(P, time = 15, pixel_y = 0, easing = easing_type)
+				animate(P, time = 15, pixel_x = 0, easing = easing_type)
+				P.drop()

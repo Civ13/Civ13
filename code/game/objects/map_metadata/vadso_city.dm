@@ -2,7 +2,7 @@
 /obj/map_metadata/vadso_city
 	ID = MAP_VADSO_CITY
 	title = "Vadso City"
-	lobby_icon = "icons/lobby/operation_falcon.png"
+	lobby_icon = 'icons/lobby/operation_falcon.png'
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/sea,/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 600
@@ -89,7 +89,7 @@
 
 
 /obj/map_metadata/vadso_city/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 
@@ -253,7 +253,7 @@
 			world << "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>"
 		else
 			world << "<big><b>[a5_name]</b>: Nobody</big>"
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"

@@ -666,7 +666,6 @@
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -713,7 +712,6 @@
 	spawn_location = "JoinLateRNCap"
 	whitelisted = TRUE
 
-	is_commander = TRUE
 	is_officer = TRUE
 	is_ww1 = TRUE
 
@@ -757,7 +755,7 @@
 	rank_abbreviation = "Sgt."
 
 	spawn_location = "JoinLateRN"
-	is_officer = TRUE
+
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 	is_ww1 = TRUE
@@ -851,7 +849,6 @@
 
 	is_ww1 = TRUE
 
-
 	min_positions = 6
 	max_positions = 200
 
@@ -914,14 +911,8 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/british/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british(null)
 	uniform.attackby(fullwebbing, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
-	fullwebbing.attackby(new/obj/item/ammo_magazine/enfield, H)
+	for (var/i=1, i<=8, i++)
+		fullwebbing.attackby(new /obj/item/ammo_magazine/enfield, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Royal Army. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

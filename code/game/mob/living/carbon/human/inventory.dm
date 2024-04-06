@@ -486,7 +486,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			var/obj/item/clothing/under/uniform = w_uniform
 			uniform.attackby(W,src)
 		else
-			src << "<span class='danger'>You are trying to eqip this item to an unsupported inventory slot. If possible, please write a ticket with steps to reproduce. Slot was: [slot]</span>"
+			src << "<span class='danger'>You are trying to equip this item to an unsupported inventory slot. If possible, please write a ticket with steps to reproduce. Slot was: [slot]</span>"
 			return
 
 	if ((W == l_hand) && (slot != slot_l_hand))
@@ -517,10 +517,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if(wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
 				var/obj/item/clothing/suit/storage/coat/fur/COAT = wear_suit
 				if (COAT.hood)
-					user << "<span class='warning'>\The [COAT]'s hood is in the way.</span>"
+					to_chat(user, SPAN_WARNING("\The [COAT]'s hood is in the way."))
 					return FALSE
 	if (covering && (covering.body_parts_covered & (I.body_parts_covered|check_flags)))
-		user << "<span class='warning'>\The [covering] is in the way.</span>"
+		to_chat(user, SPAN_WARNING("\The [covering] is in the way."))
 		return FALSE
 	return TRUE
 

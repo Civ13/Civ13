@@ -106,6 +106,18 @@ var/list/first_names_male_gaelic = file2list("config/names/first_male_gaelic.txt
 var/list/first_names_female_gaelic  = file2list("config/names/first_female_gaelic.txt")
 var/list/last_names_gaelic  = file2list("config/names/last_gaelic.txt")
 
+var/list/first_names_male_scottishgaelic = file2list("config/names/first_male_scottishgaelic.txt")
+var/list/first_names_female_scottishgaelic  = file2list("config/names/first_female_scottishgaelic.txt")
+var/list/last_names_scottishgaelic  = file2list("config/names/last_scottishgaelic.txt")
+
+var/list/first_names_male_welsh = file2list("config/names/first_male_welsh.txt")
+var/list/first_names_female_welsh = file2list("config/names/first_female_welsh.txt")
+var/list/last_names_welsh  = file2list("config/names/last_welsh.txt")
+
+var/list/first_names_male_scots = file2list("config/names/first_male_scots.txt")
+var/list/first_names_female_scots  = file2list("config/names/first_female_scots.txt")
+var/list/last_names_scots  = file2list("config/names/last_scots.txt")
+
 var/list/first_names_male_italian = file2list("config/names/first_male_italian.txt")
 var/list/first_names_female_italian = file2list("config/names/first_female_italian.txt")
 var/list/last_names_italian  = file2list("config/names/last_italian.txt")
@@ -165,6 +177,9 @@ var/list/names_mongolian_female = file2list("config/names/mongolian_female.txt")
 var/list/first_names_male_afrikaans = file2list("config/names/first_male_afrikaans.txt")
 var/list/first_names_female_afrikaans = file2list("config/names/first_male_afrikaans.txt")
 var/list/last_names_afrikaans = file2list ("config/names/last_afrikaans.txt")
+
+var/list/first_names_male_afro_american = file2list("config/names/first_male_afro_american.txt")
+var/list/last_names_afro_american = file2list("config/names/last_afro_american.txt")
 
 var/list/country_names = file2list("config/names/countries.txt")
 /* NOT USED FOR NOW!

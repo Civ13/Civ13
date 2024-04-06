@@ -14,7 +14,7 @@
 	var/list/filtered_gases = list("plasma", "sleeping_agent, xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine", "zyklon_b", "phosgene_gas")
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
-	restricts_view = 2
+	restricts_view = 1
 	flags = CONDUCT
 	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
 
@@ -94,8 +94,8 @@
 	desc = "Compact combined mask designed in the late 1970s, used by Soviet and Russian Armed Forces."
 
 /obj/item/clothing/mask/gas/american
-	icon_state = "pmk1"
-	item_state = "pmk1"
+	icon_state = "m2"
+	item_state = "m2"
 	name = "M2 gas mask"
 	desc = "Compact combined mask designed in 1939, used by the US army."
 

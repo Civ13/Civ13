@@ -47,6 +47,10 @@ var/global/redirect_all_players = null
 			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
 			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Gulag_13\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
 			src << browse(htmlfile,"window=wiki;size=820x650")
+		if (map && map.ID == MAP_PEPELSIBIRSK)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Pepelsibirsk\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
 
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
@@ -132,7 +136,7 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>[translate("Join Game!")]</a></p>"
 
 	var/height = 250
 	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)
@@ -618,7 +622,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES && map.ID != MAP_BATTLE_SHIPS && map.ID != MAP_NANKOU && map.ID != MAP_MARCO_POLO_BRIDGE)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -1046,7 +1050,8 @@ var/global/redirect_all_players = null
 
 	if (character.mind)
 		ticker.minds += character.mind
-	character.lastarea = get_area(loc)
+	if (loc)
+		character.lastarea = get_area(loc)
 	qdel(src)
 	return TRUE
 
@@ -1393,7 +1398,7 @@ var/global/redirect_all_players = null
 								temp_name = "Mujahideen"
 							else if (temp_name == "Civilian")
 								temp_name = "DRA and Civilians"
-						
+
 						if (MAP_RED_MENACE)
 							if (temp_name == "Russian")
 								temp_name = "Soviets"
@@ -1454,6 +1459,11 @@ var/global/redirect_all_players = null
 								temp_name = "Blugoslavian Armed Forces"
 							if (temp_name == "Pirates")
 								temp_name = "Rotstadt People's Republic"
+						if (MAP_BATTLE_SHIPS)
+							if (temp_name == "Civilian")
+								temp_name = "Blugoslavia"
+							if (temp_name == "Pirates")
+								temp_name = "Redmenia"
 						if (MAP_HOLDMADRID)
 							if (temp_name == "Civilian")
 								temp_name = "Republican"
@@ -1470,8 +1480,11 @@ var/global/redirect_all_players = null
 				extra_span = "<b><font size=2>"
 				end_extra_span = "</font></b><br>"
 			else if (job.is_commander)
-				extra_span = "<font size=3>"
-				end_extra_span = "</font></b><br><br>"
+				extra_span = "<b><font size=3>"
+				end_extra_span = "</font></b><br>"
+			else if (job.is_squad_leader)
+				extra_span = "<br><b><font size=2>"
+				end_extra_span = "</font></b><br>"
 
 			if (!job.en_meaning)
 				if (job_is_available)

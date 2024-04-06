@@ -1,5 +1,3 @@
-// gibs that don't use DNA - Kachnov
-
 /proc/gibs(atom/location, gibber_type = /obj/effect/gibspawner/generic, var/fleshcolor, var/bloodcolor)
 	new gibber_type(location,fleshcolor,bloodcolor)
 
@@ -20,7 +18,7 @@
 
 	proc/Gib(atom/location)
 		if (gibtypes.len != gibamounts.len || gibamounts.len != gibdirections.len)
-			world << "<span class='warning'>Gib list length mismatch!</span>"
+			to_chat(world, SPAN_WARNING("Gib list length mismatch!"))
 			return
 
 		if (sparks)

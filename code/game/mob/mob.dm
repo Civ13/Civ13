@@ -419,7 +419,7 @@
 /mob/proc/update_flavor_text()
 	set src in usr
 	if (usr != src)
-		usr << "No."
+		to_chat(usr, "No.")
 	var/msg = sanitize(input(usr,"Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.","Flavor Text",html_decode(flavor_text)) as message|null, extra = FALSE)
 
 	if (msg != null)
@@ -446,21 +446,21 @@
 	set category = "IC"
 
 	if (!( config.abandon_allowed ))
-		usr << "<span class='notice'>Respawn is disabled.</span>"
+		to_chat(usr, SPAN_NOTICE("Respawn is disabled."))
 		return
 
 	if ((stat != DEAD || !( ticker )))
-		usr << "<span class='notice'><b>You must be dead to use this!</b></span>"
+		to_chat(usr, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
-	src << browse(null, "window=memory")
+	to_chat(src, browse(null, "window=memory"))
 
-	src << "You can respawn now, enjoy your new life!"
+	to_chat(src, "You can respawn now, enjoy your new life!")
 	stop_ambience(usr)
 
 	log_game("[name]/[key] used abandon mob.")
 
-	usr << "<span class='notice'><b>Make sure to play a different character, and please roleplay correctly!</b></span>"
+	to_chat(usr, SPAN_NOTICE("<b>Make sure to play a different character, and please roleplay correctly!</b>"))
 
 	if (!client)
 		log_game("[key] AM failed due to disconnect.")
@@ -491,7 +491,7 @@
 	if (client.holder && (client.holder.rights & R_ADMIN))
 		is_admin = TRUE
 	else if (stat != DEAD || istype(src, /mob/new_player))
-		usr << "<span class = 'notice'>You must be observing to use this!</span>"
+		to_chat(usr, SPAN_NOTICE("You must be observing to use this!"))
 		return
 
 	if (is_admin && stat == DEAD)
@@ -535,11 +535,11 @@
 	if (href_list["mach_close"])
 		var/t1 = text("window=[href_list["mach_close"]]")
 		unset_using_object()
-		src << browse(null, t1)
+		to_chat(src, browse(null, t1))
 
 	if (href_list["flavor_more"])
 		if (src in view(usr))
-			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name))
+			to_chat(usr, browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name)))
 			onclose(usr, "[name]")
 	if (href_list["flavor_change"])
 		update_flavor_text()
@@ -778,6 +778,9 @@
 
 //Updates canmove, lying and icons. Could perhaps do with a rename but I can't think of anything to describe it.
 /mob/proc/update_canmove()
+	if(cannot_stand() && using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+		HMG.stopped_using(src)
 
 	var/gallows = FALSE
 	for (var/obj/structure/noose/N in get_turf(src))
@@ -927,11 +930,11 @@ mob/proc/yank_out_object()
 	usr.setClickCooldown(20)
 
 	if (usr.stat == TRUE)
-		usr << "You are unconcious and cannot do that!"
+		to_chat(usr, "You are unconscious and cannot do that!")
 		return
 
 	if (usr.restrained())
-		usr << "You are restrained and cannot do that!"
+		to_chat(usr, "You are restrained and cannot do that!")
 		return
 
 	var/mob/S = src
@@ -945,17 +948,17 @@ mob/proc/yank_out_object()
 	valid_objects = get_visible_implants(0)
 	if (!valid_objects.len)
 		if (self)
-			src << "You have nothing stuck in your body that is large enough to remove."
+			to_chat(src, "You have nothing stuck in your body that is large enough to remove.")
 		else
-			U << "[src] has nothing stuck in their wounds that is large enough to remove."
+			to_chat(U, "[src] has nothing stuck in their wounds that is large enough to remove.")
 		return
 
 	var/obj/item/weapon/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
 
 	if (self)
-		src << "<span class='warning'>You attempt to get a good grip on [selection] in your body.</span>"
+		to_chat(src, SPAN_WARNING("You attempt to get a good grip on [selection] in your body."))
 	else
-		U << "<span class='warning'>You attempt to get a good grip on [selection] in [S]'s body.</span>"
+		to_chat(U, SPAN_WARNING("You attempt to get a good grip on [selection] in [S]'s body."))
 
 	if (!do_mob(U, S, 30))
 		return
@@ -963,12 +966,14 @@ mob/proc/yank_out_object()
 		return
 
 	if (self)
-		visible_message("<span class='warning'><b>[src] rips [selection] out of their body.</b></span>","<span class='warning'><b>You rip [selection] out of your body.</b></span>")
+		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>"))
+		to_chat(usr, SPAN_WARNING("You rip [selection] out of your body."))
 	else
-		visible_message("<span class='warning'><b>[usr] rips [selection] out of [src]'s body.</b></span>","<span class='warning'><b>[usr] rips [selection] out of your body.</b></span>")
+		visible_message(SPAN_WARNING("<b>[usr] rips [selection] out of [src]'s body.</b></span>"))
+		to_chat(usr, SPAN_WARNING("[usr] rips [selection] out of your body."))
 	valid_objects = get_visible_implants(0)
 	if (valid_objects.len == TRUE) //Yanking out last object - removing verb.
-		verbs -= /mob/proc/yank_out_object
+		verbs -= /mob/proc/yank_out_object	
 
 	if (ishuman(src))
 		var/mob/living/human/H = src
@@ -1065,9 +1070,9 @@ mob/proc/yank_out_object()
 	set_face_dir()
 
 	if (!facing_dir)
-		usr << "You are no longer facing anything."
+		to_chat(usr, "You are no longer facing anything.")
 	else
-		usr << "You are now facing [dir2text(facing_dir)]."
+		to_chat(usr, "You are now facing [dir2text(facing_dir)].")
 	if (ishuman(src))
 		var/mob/living/human/H = src
 		if (H.HUDneed.Find("fixeye"))

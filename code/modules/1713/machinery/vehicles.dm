@@ -21,7 +21,7 @@
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
-	var/maxpower = 50
+	var/maxpower = 100
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
 	var/obj/structure/engine/engine = null
@@ -48,7 +48,7 @@
 	name = "motorcycle axis"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 10
+	maxpower = 20
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
@@ -68,7 +68,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -77,7 +77,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 4
-	maxpower = 40
+	maxpower = 60
 	speedlist = list(1=6,2=5,3=3,4=2)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -88,7 +88,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 2500
+	maxpower = 5000
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
 
@@ -121,6 +121,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t34/t3485
+	name = "T-34-85"
 	turret_type = "t3485_turret"
 	color = "#4a5243"
 
@@ -251,7 +252,7 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "btr_turret"
+	turret_type = "btr80_turret"
 	tile_size = "96x96"
 	vehicle_type = "apc"
 	turret_x = 16
@@ -265,8 +266,25 @@
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
 	turret_type = "btr_atgm_turret"
 
+/obj/structure/vehicleparts/axis/heavy/bradley
+	name = "M2 Bradley"
+	speeds = 5
+	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	reg_number = ""
+	color = "#787859"
+	turret_type = "bradley_turret"
+	tile_size = "96x96"
+	vehicle_type = "apc"
+	turret_x = 16
+	turret_y = 0
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/cv90
-	name = "BTR-80"
+	name = "CV-90"
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
@@ -396,10 +414,26 @@
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = list(1=10,2=6,3=4,4=3)
+	speedlist = list(1=9,2=5,3=3,4=2)
 	reg_number = ""
-	color = "#D79E57"
+	color = "#c4a567"
 	turret_type = ""
+
+/obj/structure/vehicleparts/axis/heavy/l3cc
+	name = "L3/33 CC"
+	speeds = 4
+	speedlist = list(1=9,2=5,3=3,4=2)
+	reg_number = ""
+	color = "#c4a567"
+	turret_type = ""
+
+/obj/structure/vehicleparts/axis/heavy/m13
+	name = "M13/40"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#778687"
+	turret_type = "tank_turret"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
@@ -458,6 +492,19 @@
 	color = "#CCC0A6"
 	turret_type = "challenger2_turret"
 
+/obj/structure/vehicleparts/axis/heavy/m1a1_abrams
+	name = "M1A1 Abrams"
+	speeds = 4
+	speedlist = list(1=9,2=6,3=4,4=3)
+	reg_number = ""
+	color = "#58564a"
+	turret_type = "m1a1_WIP2_turret"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
 	speeds = 4
@@ -485,10 +532,11 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m4
-	name = "M-4 Sherman"
+	name = "M4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
+	turret_type = "m4_turret"
 	reg_number = ""
 	New()
 		..()
@@ -497,11 +545,24 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
-	name = "M-48A1 Patton"
+	name = "M48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
 	turret_type = "m48a1_turret"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m60a3
+	name = "M60A3 Patton"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	color = "#4B4D40"
+	turret_type = "m60a3_turret"
 	reg_number = ""
 	New()
 		..()
@@ -515,7 +576,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
+	maxpower = 1000
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
 	vehicle_type = "car"
@@ -687,7 +748,7 @@
 				H.driver_vehicle.running_sound()
 		return
 	else if (H.driver_vehicle.fueltank.reagents.total_volume <= 0)
-		H << "There is not enough fuel!"
+		to_chat(H, "There is not enough fuel!")
 		return
 
 	if (H.driver_vehicle.axis.currentspeed <= 0)
@@ -701,11 +762,11 @@
 			if (H.driver_vehicle.axis.currentspeed == 1)
 				H.driver_vehicle.moving = TRUE
 				H.driver_vehicle.startmovementloop()
-				H << "You put on the first gear."
+				to_chat(H, "You put the vehicle into first gear.")
 		return
-	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
+	else if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
-		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
+		if (H.driver_vehicle.axis.currentspeed > H.driver_vehicle.axis.speedlist.len)
 			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
@@ -713,7 +774,7 @@
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
 			if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len+1)
-				H << "You increase the speed."
+				to_chat(H, "You increase the speed.")
 			return
 	else
 		return

@@ -89,7 +89,7 @@ var/list/sky_drop_map = list()
 					mover.forceMove(T)
 		else
 			if (A.allow_area_subtypes)
-				var/area/AA = locate(A.landing_area)
+				var/area/AA = A.landing_area
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
 						var/turf/newloc = pick((AA.get_turfs()))
@@ -99,7 +99,7 @@ var/list/sky_drop_map = list()
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
-				var/area/AA = locate(A.landing_area)
+				var/area/AA = A.landing_area
 				var/turf/newloc = pick((AA.get_turfs()))
 				mover.x = newloc.x
 				mover.y = newloc.y
@@ -112,6 +112,7 @@ var/list/sky_drop_map = list()
 				L << "<span class = 'good'>You land softly onto the ground.</span>"
 			else
 				var/mob/living/human/H = mover
+				var/client/C = H.client
 				if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack/paratrooper))
 					if (prob(10))
 						H << "<span class = 'userdanger'><b>You smack face first onto the ground, damn.</b></span>"
@@ -125,29 +126,25 @@ var/list/sky_drop_map = list()
 						affecting.fracture()
 					H.updatehealth()
 				else
-					H.pixel_y = 60
 					spawn (5)
-						H.client.canmove = FALSE
+						C.canmove = FALSE
 						var/image/I = image('icons/effects/parachute.dmi', H, layer = MOB_LAYER + 1.0)
 						I.pixel_x = -16
 						I.pixel_y = 16
 
 						H.overlays += I
-
-						for (var/v in 1 to 6)
-							spawn (5)
-								H.pixel_y -= 10
-
+						H.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
+						animate(H, time = 25, pixel_y = 0, easing = QUAD_EASING | EASE_OUT)
 						spawn (20)
 							flick("closing", I)
-							spawn (10) // animation is over now
+							spawn (5) // closing animation is over now
 								H.overlays -= I
 								H.pixel_y = 0
 								qdel(I)
 								
 								playsound(get_turf(H), 'sound/effects/thud.ogg', 80)
 								shake_camera(H, 2)
-								H.client.canmove = TRUE
+								C.canmove = TRUE
 
 		// make sure we have the right ambience for our new location
 		spawn (1)
@@ -220,7 +217,7 @@ var/list/sky_drop_map = list()
 				H.updatehealth()
 
 		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/effect) || istype(A, /obj/covers) || istype(A, /obj/structure/barricade/ship/mast) || istype(A, /obj/structure/voyage/grid) || istype(A, /obj/structure/cannon/modern/naval))
 				return
 			else
 				if(push_dir)

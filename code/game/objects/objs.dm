@@ -65,7 +65,7 @@
 /obj/CanUseTopic(var/mob/user, var/datum/topic_state/state)
 	if (user.CanUseObjTopic(src))
 		return ..()
-	user << "<span class='danger'>\icon[src]Access Denied!</span>"
+	to_chat(user, SPAN_DANGER("\icon[src]Access Denied!"))
 	return STATUS_CLOSE
 /obj/proc/updateturf()
 	return TRUE

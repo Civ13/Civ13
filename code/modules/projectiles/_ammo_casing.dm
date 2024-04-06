@@ -1143,6 +1143,36 @@
 	caliber = "a58x42"
 	value = 2
 
+/obj/item/ammo_casing/a20mm_aphe
+	name = "20mm APHE cartridge"
+	desc = "An Amour Piercing High-Explosive cartridge."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 2
+	projectile_type = /obj/item/projectile/bullet/autocannon/a20mm_aphe
+	caliber = "a20"
+	value = 2
+
+/obj/item/ammo_casing/a25mm_ap
+	name = "25mm AP cartridge"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/a25mm_ap
+	caliber = "a25"
+	value = 2
+
+/obj/item/ammo_casing/a25mm_he
+	name = "25mm HE cartridge"
+	desc = "A VERY big brass casing."
+	icon_state = "huge-bullet"
+	spent_icon = "huge-casing"
+	weight = 1
+	projectile_type = /obj/item/projectile/bullet/autocannon/frag/a25mm_he
+	caliber = "a25"
+	value = 2
+
 /obj/item/ammo_casing/a30mm_ap
 	name = "30mm AP-T cartridge"
 	desc = "An Amour Piercing-Tracer cartridge."
@@ -1155,7 +1185,7 @@
 
 /obj/item/ammo_casing/frag/a30mm_he
 	name = "30mm HE-T cartridge"
-	desc = "A High Explosive-Tracer cartridge."
+	desc = "A High-Explosive-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
@@ -1175,7 +1205,7 @@
 
 /obj/item/ammo_casing/frag/a35mm_hei
 	name = "30mm HEI-T cartridge"
-	desc = "A High Explosive Incendiary-Tracer cartridge."
+	desc = "A High-Explosive Incendiary-Tracer cartridge."
 	icon_state = "huge-bullet"
 	spent_icon = "huge-casing"
 	weight = 1
@@ -1192,6 +1222,16 @@
 	projectile_type = /obj/item/projectile/bullet/autocannon/a73mm
 	caliber = "a75"
 	value = 8
+
+/obj/item/ammo_casing/a357
+	name = ".357 Magnum cartridge"
+	desc = "A brass .357 Magnum rifle casing."
+	icon_state = "rifle-bullet"
+	spent_icon = "rifle-casing"
+	weight = 0.09
+	projectile_type = /obj/item/projectile/bullet/rifle/a357
+	caliber = "a357"
+	value = 2
 
 
 // Shotguns

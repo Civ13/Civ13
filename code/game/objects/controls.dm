@@ -161,13 +161,13 @@
 			user.remove_from_mob(ANCH)
 			ANCH.loc = src.loc
 			ANCH.anchored = TRUE
-			src.climbable = TRUE
+			climbable = TRUE
 			ANCH.deployed = TRUE
 			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir
 			return
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"//sucker
+		to_chat(user, "You hit the wall uselessly!")
 	..()
 
 /obj/structure/gate/blast
@@ -199,7 +199,7 @@
 
 /obj/structure/gate/blast/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the wall uselessly!"
+		to_chat(user, "You hit the wall uselessly!")
 		..()
 
 /obj/structure/gate/blast/garage
@@ -229,9 +229,9 @@
 
 /obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
-		user << "You hit the [src] uselessly!"
+		to_chat(user, "You hit the [src] uselessly!")
 	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
-		user << "<span class='notice'>You start cutting through the [src]...</span>"
+		to_chat(user, SPAN_NOTICE("You start cutting through the [src]..."))
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 		if (do_after(user, 5 SECONDS, src))
 			qdel(src)
@@ -266,7 +266,7 @@
 
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		user << "You hit the doors uselessly!"//sucker
+		to_chat(user, "You hit the doors uselessly!")
 	else
 		..()
 
@@ -455,7 +455,6 @@
 	S.icon = null
 	S.verbs.Cut()
 	opacity_objects += S
-	autoclose()
 
 /obj/structure/gate/elevator_door/Destroy()
 	for(var/atom/movable/S in opacity_objects)
@@ -468,7 +467,7 @@
 		visible_message("The elevator door closes.")
 		open = FALSE
 		flick("elevator_doorclosing",src)
-		spawn(10)
+		spawn(6)
 			icon_state = "elevator_door"
 			density = TRUE
 			opacity = TRUE
@@ -478,19 +477,20 @@
 		visible_message("The elevator door opens.")
 		open = TRUE
 		flick("elevator_dooropening",src)
-		spawn(10)
+		spawn(6)
 			icon_state = "elevator_dooropen"
 			density = FALSE
 			opacity = FALSE
 			for(var/atom/movable/S in opacity_objects)
 				S.set_opacity(FALSE)
+	autoclose()
+	return
 
 /obj/structure/gate/elevator_door/proc/autoclose()
-	if (src.open)
-		spawn(80)
+	spawn(10 SECONDS)
+		if (src.open)
 			src.toggle()
 			return
-	autoclose()
 
 /obj/structure/gatecontrol/elevator_door
 	name = "elevator door button"
@@ -536,7 +536,7 @@
 						M.z = 2
 					else if (M.z == 2)
 						M.z = 1
-					M << "The elevator has arrived!"
+					to_chat(M, "The elevator has arrived!")
 				for (var/obj/O in range(1, src))
 					if (!istype(O, /obj/structure/elevator_button/) && !istype (O, /obj/covers/))
 						if (O.z == 1)

@@ -15,12 +15,12 @@
 
 /obj/item/wood_ash/attackby(obj/item/weapon/reagent_containers/glass/C as obj, mob/user as  mob )
 	C.reagents.add_reagent("ash", 1)
-	user << "You collect ash into the [C.name]."
+	to_chat(user, "You collect ash into \the [C.name]")
 	qdel(src)
 	return
 
 /obj/item/wood_ash/attack_hand(mob/user as mob)
-	user << "<span class='notice'>[src] sifts through your fingers.</span>"
+	to_chat(user, SPAN_NOTICE("[src] sifts through your fingers."))
 	var/turf/floor/F = get_turf(src)
 	if (istype(F))
 		F.dirt += 4

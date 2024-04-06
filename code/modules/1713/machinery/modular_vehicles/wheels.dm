@@ -27,17 +27,19 @@
 		for(var/obj/structure/vehicleparts/frame/VP in O.loc)
 			if (VP.axis != control.axis)
 				if (mob)
-					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
 		for(var/obj/effect/pseudovehicle/PV in O.loc)
 			if (PV.link != control.axis)
 				if (mob)
-					mob << "<span class='warning'>You can't turn, something is in the way!</span>"
+					to_chat(mob, "<span class='warning'>You can't turn, something is in the way!</span>")
 				return FALSE
 	if (newdir == "left")
-		control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir)
+		if (!control.axis.do_matrix(dir,TURN_LEFT(control.axis.dir), newdir))
+			return FALSE
 	else
-		control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir)
+		if (!control.axis.do_matrix(dir,TURN_RIGHT(control.axis.dir), newdir))
+			return FALSE
 	return TRUE
 
 /obj/structure/bed/chair/drivers/ex_act(severity)
@@ -70,9 +72,14 @@
 		H.remove_from_mob(src)
 		src.forceMove(drivingchair)
 		return
-	if (!control.axis.engine || !control.axis.engine.fueltank)
+	if (!control.axis.engine)
 		return
-	if (!control.axis.engine.on && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents && control.axis.engine.fueltank.reagents.total_volume > 0)
+	if (!control.axis.engine.fueltank)
+		return
+	if (!control.axis.engine.fueltank.reagents)
+		to_chat(H, "There is not enough fuel!")
+		return
+	if (!control.axis.engine.on && control.axis.engine.fueltank.reagents.total_volume > 0)
 		control.axis.currentspeed = 0
 		control.axis.engine.turn_on(H)
 		if (isemptylist(control.axis.corners))
@@ -86,7 +93,7 @@
 		return
 	else if (control.axis.engine && control.axis.engine.fueltank)
 		if (control.axis && control.axis.engine && control.axis.engine.fueltank && control.axis.engine.fueltank.reagents.total_volume <= 0)
-			H << "There is not enough fuel!"
+			to_chat(H, "There is not enough fuel!")
 			return
 	if (control.axis.currentspeed < 0)
 		control.axis.currentspeed = 0
@@ -99,7 +106,7 @@
 		control.axis.vehicle_m_delay = spd
 		if (control.axis.currentspeed == 1 && !control.axis.moving)
 			control.axis.moving = TRUE
-			H << "You put on the first gear."
+			to_chat(H, "You put the vehicle into first gear.")
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			control.axis.add_transporting()
 			control.axis.startmovementloop()
@@ -108,7 +115,7 @@
 		else
 			control.axis.vehicle_m_delay = spd
 			if (control.axis.currentspeed < control.axis.speedlist.len+1)
-				H << "You increase the speed."
+				to_chat(H, "You increase the speed.")
 				playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			return
 
@@ -118,7 +125,7 @@
 		return
 	if (control && control.axis && control.axis.engine && control.axis.engine.fueltank && (control.axis.currentspeed <= 0 || control.axis.engine.fueltank.reagents.total_volume <= 0))
 		if (control.axis.engine.on)
-			user << "You turn off the [control.axis.engine]."
+			to_chat(user, "You turn off the [control.axis.engine].")
 			control.axis.engine.on = FALSE
 			control.axis.moving = FALSE
 			control.axis.currentspeed = 0
@@ -132,13 +139,13 @@
 		spd = control.axis.get_speed()
 		if (spd <= 0 || control.axis.currentspeed == 0)
 			control.axis.moving = FALSE
-			user << "You stop the [control.axis]."
+			to_chat(user, "You stop the [control.axis].")
 			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
 				W.update_icon()
 			return
 		else
 			control.axis.vehicle_m_delay = spd
-			user << "You reduce the speed."
+			to_chat(user, "You reduce the speed.")
 			playsound(loc, 'sound/effects/lever.ogg',40, TRUE)
 			return
 
@@ -159,6 +166,7 @@
 	name = "tank driver's seat"
 	icon_state = "driver_tank"
 	flammable = FALSE
+
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (axis)
@@ -183,7 +191,7 @@
 				wheel.control.axis.moving = FALSE
 				wheel.control.axis.currentspeed = 0
 				wheel.control.axis.engine.update_icon()
-				user << "You stop the [wheel.control.axis]."
+				to_chat(user, "You stop the [wheel.control.axis].")
 				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)
 					W.update_icon()
 	return M
@@ -195,7 +203,7 @@
 	if (axis)
 		axis.driver = buckled_mob
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
-		buckled_mob << "Your hands are full!"
+		to_chat(buckled_mob, "Your hands are full!")
 		return
 
 /obj/structure/bed/chair/drivers/attackby(var/obj/item/I, var/mob/living/human/H)
@@ -209,7 +217,7 @@
 /obj/structure/bed/chair/drivers/attack_hand( var/mob/living/human/H)
 	if (wheel && buckled_mob && H == buckled_mob && wheel.loc != H)
 		if (buckled_mob.put_in_active_hand(wheel))
-			H << "You grab the wheel."
+			to_chat(H, "You grab the wheel.")
 			if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 				if (H.stat != DEAD && H.civilization != "Sheriff Office" && H.civilization != "Paramedics" && H.civilization != "Government")
 					for(var/list/L in map.vehicle_registrations)
@@ -314,27 +322,29 @@
 
 /obj/structure/bed/chair/commander/nvg/post_buckle_mob()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-		buckled_mob << "Your hands are full!"
+		to_chat(buckled_mob, "Your hands are full!")
 		return
-	if(buckled_mob)
-		buckled_mob << "You activate the optics on the [src]."
-		if (overtype == "nvg")
-			buckled_mob.nvg = TRUE
-			buckled_mob.handle_vision()
-		else if (overtype == "thermal")
-			buckled_mob.thermal = TRUE
-			buckled_mob.handle_vision()
+	if (buckled_mob)
+		to_chat(buckled_mob, "You activate the optics on the [src].")
+		switch (overtype)
+			if ("nvg")
+				buckled_mob.nvg = TRUE
+				buckled_mob.handle_vision()
+			if ("thermal")
+				buckled_mob.thermal = TRUE
+				buckled_mob.handle_vision()
 		buckled_mob.update_action_buttons()
 
 /obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
-	if(buckled_mob)
-		buckled_mob << "You deactivate the optics on the [src]."
-		if (overtype == "nvg")
-			buckled_mob.nvg = FALSE
-			buckled_mob.handle_vision()
-		else if (overtype == "thermal")
-			buckled_mob.thermal = FALSE
-			buckled_mob.handle_vision()
+	if (buckled_mob)
+		to_chat(buckled_mob, "You deactivate the optics on the [src].")
+		switch (overtype)
+			if ("nvg")
+				buckled_mob.nvg = FALSE
+				buckled_mob.handle_vision()
+			if ("thermal")
+				buckled_mob.thermal = FALSE
+				buckled_mob.handle_vision()
 
 	var/mob/living/M = unbuckle_mob()
 	if (M)
@@ -379,7 +389,7 @@
 
 /obj/structure/bed/chair/commander/post_buckle_mob()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-		buckled_mob << "Your hands are full!"
+		to_chat(buckled_mob, "Your hands are full!")
 		return
 
 /obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/human/H)
@@ -393,7 +403,7 @@
 /obj/structure/bed/chair/commander/attack_hand( var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && periscope.loc != H)
 		if (buckled_mob.put_in_active_hand(periscope))
-			H << "You look through the periscope."
+			to_chat(H, "You look through the periscope.")
 			return
 	else
 		..()

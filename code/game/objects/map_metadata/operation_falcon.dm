@@ -2,7 +2,7 @@
 /obj/map_metadata/operation_falcon
 	ID = MAP_OPERATION_FALCON
 	title = "Operation Falcon"
-	lobby_icon = "icons/lobby/operation_falcon.png"
+	lobby_icon = 'icons/lobby/operation_falcon.png'
 	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 90 SECONDS
@@ -38,7 +38,7 @@
 	var/a1_name = "Radio Post"
 
 	var/a2_control = "nobody"
-	var/a2_name = "North City"
+	var/a2_name = "Central Town"
 
 	var/a3_control = "nobody"
 	var/a3_name = "Factory"
@@ -88,16 +88,15 @@
 			return "Russian"
 
 /obj/map_metadata/operation_falcon/cross_message(faction)
-	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
-	for (var/mob/M in player_list)
-		M.client << warning_sound
-
-	if (faction == DUTCH)
-		return "<font size = 4>Operation Falcon has begun!</font>"
-	else if (faction == RUSSIAN)
-		return "<font size = 4>Operation Falcon has begun!</font>"
-	else
-		return ""
+	switch (faction)
+		if (DUTCH)
+			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 780)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << warning_sound
+			return "<font size = 4>Operation Falcon has begun!</font>"
+		else
+			return ""
 
 /obj/map_metadata/operation_falcon/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 3000)
@@ -272,7 +271,7 @@
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "white"
 
-	spawn(600)
+	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
 			world << "<big><b>Current Points:</big></b>"
@@ -289,6 +288,12 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Russians</b> have reached [rus_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+
+			var/anthem = sound('sound/music/russian_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << anthem
+
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -298,6 +303,12 @@
 			ticker.finished = TRUE
 			var/message = "The <b>Dutch</b> have reached [dutch_points] points and claimed victory in Operation Falcon!"
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			
+			var/anthem = sound('sound/music/dutch_anthem.ogg', repeat = FALSE, wait = FALSE, volume = 100, channel = 775)
+			for (var/mob/M in player_list)
+				if (M.client)
+					M.client << anthem
+
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			return FALSE
@@ -639,7 +650,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	var/faction_text = null // To what faction does it belong?
 
 /obj/structure/milsim/anti_air/attack_hand(mob/living/human/H as mob)
-	if (!faction_text)
+	if (!faction_text && map.ID != MAP_PEPELSIBIRSK)
 		faction_text = H.faction_text
 		name = "[map.roundend_condition_def2name(faction_text)] [name]"
 		message_admins("[H.ckey] ([H.faction_text]) has built an Anti-Air at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)

@@ -143,9 +143,9 @@
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
 		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
 		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
+			to_chat(user, SPAN_RED("The [O] is full."))
 		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
 	else
 		..()
 

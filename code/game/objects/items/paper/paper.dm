@@ -1,3 +1,6 @@
+// large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+#define MAX_FIELDS 50
+
 /*
  * Paper
  * also scraps of paper
@@ -141,7 +144,7 @@
 	if (in_range(user, src) || isghost(user))
 		show_content(usr)
 	else
-		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
+		to_chat(user, SPAN_NOTICE("You have to go closer if you want to read it."))
 	return
 
 /obj/item/weapon/paper/proc/show_content(var/mob/user, var/forceshow=0)
@@ -191,31 +194,31 @@
 
 /obj/item/weapon/paper/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (user.targeted_organ == "eyes")
-		user.visible_message("<span class='notice'>You show the paper to [M]. </span>", \
-			"<span class='notice'> [user] holds up a paper and shows it to [M]. </span>")
+		user.visible_message(SPAN_NOTICE("You shoe the paper to [M]."))
+		visible_message(SPAN_NOTICE("[user] holds up a paper and shows it to [M]."))
 		M.examinate(src)
 
 	else if (user.targeted_organ == "mouth") // lipstick wiping
 		if (ishuman(M))
 			var/mob/living/human/H = M
 			if (H == user)
-				user << "<span class='notice'>You wipe off the lipstick with [src].</span>"
+				to_chat(user, SPAN_NOTICE("You wipe off the lipstick with [src]."))
 				H.lip_style = null
 				H.update_body()
 			else
-				user.visible_message("<span class='warning'>[user] begins to wipe [H]'s lipstick off with \the [src].</span>", \
-								 	 "<span class='notice'>You begin to wipe off [H]'s lipstick.</span>")
-				if (do_after(user, 10, H) && do_after(H, 10, needhand = FALSE))	//user needs to keep their active hand, H does not.
-					user.visible_message("<span class='notice'>[user] wipes [H]'s lipstick off with \the [src].</span>", \
-										 "<span class='notice'>You wipe off [H]'s lipstick.</span>")
+				visible_message(SPAN_WARNING("[user] begins to wipe [H]'s lipstick off with the [src]."))
+				user.visible_message(SPAN_NOTICE("You begin to wipe off [H]'s lipstick."))
+				if (do_after(user, 10, H) && do_after(H, 10, needhand = FALSE))    //user needs to keep their active hand, H does not.
+					visible_message(SPAN_NOTICE("[user] wipes [H]'s lipstick off with the [src]."))
+					user.visible_message(SPAN_NOTICE("You wipe off [H]'s lipstick."))
 					H.lip_style = null
 					H.update_body()
 
 /obj/item/weapon/paper/proc/addtofield(var/id, var/text, var/links = FALSE)
-	var/locid = FALSE
+	var/locid = 0
 	var/laststart = TRUE
 	var/textindex = TRUE
-	while (1) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
+	while (locid < MAX_FIELDS) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
 		var/istart = FALSE
 		if (links)
 			istart = findtext(info_links, "<span class=\"paper_field\">", laststart)
@@ -329,8 +332,8 @@
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
 
 //Count the fields
-	var/laststart = TRUE
-	while (1)
+	var/laststart = 1
+	while (fields < MAX_FIELDS)
 		var/i = findtext(t, "<span class=\"paper_field\">", laststart)	//</span>
 		if (i==0)
 			break
@@ -361,7 +364,7 @@
 				qdel(src)
 
 			else
-				user << "<span class = 'red'>You must hold \the [P] steady to burn \the [src].</span>"
+				to_chat(user, SPAN_RED("You must hold \the [P] steady to burn \the [src]."))
 
 
 /obj/item/weapon/paper/Topic(href, href_list)
@@ -374,7 +377,7 @@
 		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
 
 		if (free_space <= 0)
-			usr << "<span class='info'>There isn't enough space left on \the [src] to write anything.</span>"
+			to_chat(usr, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
 			return
 
 		var/t =  sanitize(input("Enter what you want to write:", "Write", null, null) as message, free_space, extra = FALSE)
@@ -413,8 +416,8 @@
 		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
 
 
-		if (fields > 50)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
-			usr << "<span class='warning'>Too many fields. Sorry, you can't do this.</span>"
+		if (fields > MAX_FIELDS)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			fields = last_fields_value
 			return
 
@@ -477,7 +480,7 @@
 
 	else if (istype(P, /obj/item/weapon/pen))
 		if (icon_state == "scrap")
-			usr << "<span class='warning'>\The [src] is too crumpled to write on.</span>"
+			to_chat(usr, SPAN_WARNING("\The [src] is too crumpled to write on."))
 			return
 /*
 		var/obj/item/weapon/pen/robopen/RP = P
@@ -524,7 +527,7 @@
 	info = "For crimes against the crown, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/Court/pirates
-	name = "Ship udgement"
+	name = "Ship Judgement"
 	info = "For crimes against the crew, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/crumpled
