@@ -260,7 +260,7 @@
 		hud.icon_state = "kill1"
 
 		state = GRAB_KILL
-		assailant.visible_message("<span class='danger'>[assailant] has tightened \his grip on [affecting]'s neck!</span>") // This makes it so that you can't resist out of a strangulation, view comment on line 272 to see that this doesn't really strangle.
+		assailant.visible_message("<span class='danger'>[assailant] has tightened \his grip on [affecting]'s neck!</span>") // This makes it so that you can't resist out of a strangulation, view comment on line 272 to see that this wasn't really strangling.
 		affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has been strangled (kill intent) by [assailant.name] ([assailant.ckey])</font>"
 		assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Strangled (kill intent) [affecting.name] ([affecting.ckey])([affecting.stat])</font>"
 		msg_admin_attack("[key_name(assailant)] strangled (kill intent) [key_name(affecting)]", key_name(assailant), key_name(affecting))
@@ -269,7 +269,7 @@
 		affecting.set_dir(WEST)
 		if (ishuman(affecting))
 			var/mob/living/human/C = affecting
-			C.losebreath += 1 // This isn't ACTUALLY strangling anything, infact if you use a doctor's book, the assailant/affecting will always have 1 unit of oxygen damage, this is because you recover 1 unit per tick, and it tries to deal 1 unit of oxygen loss per tick.
+			C.losebreath += 3.5 // This wasnt ACTUALLY strangling anything (value was 1), infact if you use a doctor's book, the assailant/affecting will always have 1 unit of oxygen damage, this is because you recover 1 unit per tick, and it tries to deal 1 unit of oxygen loss per tick. I've quick-fixed it by changing it to 1 --> 3.5, but needs refactoring.
 	adjust_position()
 
 //This is used to make sure the victim hasn't managed to yackety sax away before using the grab.

@@ -12,7 +12,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
 	name = "cinchona plant"
-	icon_state = "cinchona_inhand"
+	icon_state = "cinchona_inhand" // No icon_state exists for this, will be an ERROR.
 	desc = "Contains quinine."
 	nutriment_amt = 1
 	nutriment_desc = "bitter"
