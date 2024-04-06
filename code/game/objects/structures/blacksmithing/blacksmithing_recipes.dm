@@ -248,7 +248,7 @@ var/global/list/anvil_recipes = list(
 	"M1 Helmet" = list("M1 Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/usm1),
 	"Type 92 Helmet" = list("Type 92 Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww2/japhelm),
 	"Mk2 Brodie Helmet" = list("Mk2 Brodie Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww/mk2brodieog),
-	"M26 Adrian Helmet" = list("M26 Adrian Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrian/m26),
+	"M26 Adrian Helmet" = list("M26 Adrian Helmet","helmets",6,6,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrianm26),
 
 				/*Brodie Helmets*/
 	"Mk1 Brodie (Apple Green)" = list("Mk1 Brodie (Apple Green)","mk1 brodie",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/mk1brodieag),
@@ -256,7 +256,7 @@ var/global/list/anvil_recipes = list(
 
 				/*Adrian Helmets*/
 	"Standard M15 Adrian" = list("Standard M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrian),
-	"Russian M15 Adrian" = list("Russian M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrian/soviet),
+	"Russian M15 Adrian" = list("Russian M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adriansoviet),
 	"Greek M15 Adrian" = list("Greek M15 Adrian","m15 adrian",5,5,9,0,0,0,/obj/item/clothing/head/helmet/ww/adrian/greek),
 
 		/*Cold War to Modern Helmets*/

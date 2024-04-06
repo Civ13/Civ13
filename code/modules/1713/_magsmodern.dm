@@ -415,18 +415,6 @@
 	weight = 0.045
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/makarov
-	name = "PM Makarov magazine (9x18mm)"
-	icon_state = "m1911"
-	mag_type = MAGAZINE
-	ammo_type = /obj/item/ammo_casing/a9x18
-	caliber = "a9x18"
-	max_ammo = 8
-	multiple_sprites = TRUE
-/obj/item/ammo_magazine/makarov/empty/New()
-	..()
-	stored_ammo.Cut()
-
 /obj/item/ammo_magazine/makarov/box
 	name = "magazine box (9x18mm)"
 	icon_state = "9mm"
@@ -440,7 +428,7 @@
 
 /obj/item/ammo_magazine/aps
 	name = "Stechkin APS magazine (9x18mm)"
-	icon_state = "m1911" //temporary, to be changed
+	icon_state = "m1911" //temporary, to be changed.
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x18
 	caliber = "a9x18"
@@ -457,6 +445,16 @@
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/glock17/victor //temporary, to be changed.
+	name = "Kriss Vector magazine (9x19mm)"
+	icon_state = "glock17"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 33
 	weight = 0.33
 	multiple_sprites = TRUE
 
