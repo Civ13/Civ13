@@ -37,10 +37,8 @@
 	if (effective_dose > 15)
 		M.adjustToxLoss(removed)
 
-
 /datum/reagent/blood/affect_touch(var/mob/living/human/M, var/alien, var/removed)
 	return
-
 
 /datum/reagent/blood/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.inject_blood(src, volume)
