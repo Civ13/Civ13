@@ -179,10 +179,10 @@
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
 					if (T.available_snow > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
-							visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_snow -= 1
@@ -201,10 +201,10 @@
 				else if (istype(T, /turf/floor/dirt) && istype(H))
 					if (T.available_dirt > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
-							visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_dirt -= 1
@@ -216,10 +216,10 @@
 				else if (istype(T, /turf/floor/beach/sand) && istype(H))
 					if (T.available_sand > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
-							visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_sand -= 1
@@ -860,10 +860,10 @@
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
 					if (T.available_snow > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, rand(45,60)))
-							visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_snow -= 1
@@ -877,15 +877,15 @@
 						else
 							H.shoveling = FALSE
 					else
-						user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
+						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 
 				else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling)
 					if (T.available_dirt > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, rand(45,60)))
-							visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_dirt -= 1
@@ -897,10 +897,10 @@
 				else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling)
 					if (T.available_sand > 0)
 						H.shoveling = TRUE
-						visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
+						user.visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
 						if (do_after(user, rand(45,60)))
-							visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
+							user.visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_sand -= 1
@@ -932,24 +932,24 @@
 			var/turf/TB = locate(user.x,user.y,user.z+1)
 			for (var/obj/OB in TB)
 				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
-					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
+					to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
 					return
 			if (istype(TB, /turf/floor/beach/water) || istype(TB, /turf/floor/lava))
-				user << "<span class='notice'>You can't dig down here, there is something blocking the way!</span>"
+				to_chat(user, SPAN_NOTICE("You can't dig down here, there is something blocking the way!"))
 				return
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
-				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
+				to_chat(user, SPAN_NOTICE("You can't dig up on that type of floor!"))
 				return
 			var/digging_tunnel_time = 400
 			digging_tunnel_time /= user.getStatCoeff("strength")
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
-			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TB.is_diggable)
 					return
 				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
-				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+				user.visible_message("<span class='danger'>[user] finishes digging \the tunnel entrance.</span>", "<span class='danger'>You finish digging \the tunnel entrance.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
@@ -962,7 +962,7 @@
 			var/digging_tunnel_time = 200
 			digging_tunnel_time /= user.getStatCoeff("strength")
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
-			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TO.is_diggable)
 					return
@@ -971,7 +971,7 @@
 				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
 				if (istype(BL, /turf/floor/dirt/underground))
 					BL.ChangeTurf(/turf/floor/dirt)
-				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+				user.visible_message("<span class='danger'>[user] finishes digging \the tunnel entrance.</span>", "<span class='danger'>You finish digging \the tunnel entrance.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
@@ -989,9 +989,9 @@
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It´s probably not a good idea to drink saltwater.</span>"
+			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
 			return
-		H << "You start drinking some water from ground..."
+		to_chat(H, SPAN_NOTICE("You start drinking some water from the ground..."))
 		if (do_after(H,50,src))
 			var/watertype = "water"
 			if (radiation>0)
@@ -1013,7 +1013,7 @@
 				H.water += rand(40,50)
 			H.water += 75
 			H.bladder += 25
-			H << "You drink some water from."
+			to_chat(H, SPAN_NOTICE("You drink some water from \the [src]."))
 			playsound(H.loc, "drink", rand(10, 50), TRUE)
 			return
 		else

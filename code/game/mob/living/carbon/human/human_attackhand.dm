@@ -248,8 +248,8 @@
 				if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
 					var/obj/item/organ/external/head/U = affecting
 					if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
-						visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
-											"<span class='userdanger'>Some of [src]'s teeth sail off in an arc!</span>")
+						M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
+											"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				// See what attack they use
 				var/datum/unarmed_attack/attack = H.get_unarmed_attack(src, hit_zone)
@@ -290,6 +290,10 @@
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
 
 			if (I_DISARM)
+				if (M == src)
+					to_chat(M, SPAN_DANGER("I can't manage to shove myself."))
+					return FALSE
+
 				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Disarmed [name] ([ckey])</font>")
 				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been disarmed by [M.name] ([M.ckey])</font>")
 
@@ -322,9 +326,9 @@
 					apply_effect(3, WEAKEN, armor_check)
 					playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 					if (armor_check < 2)
-						visible_message("<span class='danger'>[M] has pushed [src]!</span>")
+						M.visible_message("<span class= 'danger'>[M] has pushed [src]!</span>", "<span class = 'danger'>You have pushed [src]!</span>")
 					else
-						visible_message("<span class='warning'>[M] attempted to push [src]!</span>")
+						M.visible_message("<span class='warning'>[M] attempted to push [src]!</span>", "<span class = 'danger'>You attempt to push [src]!</span>")
 					return
 
 				if (randn <= 60)
@@ -337,12 +341,12 @@
 					for (var/obj/item/I in holding)
 						if (I)
 							drop_from_inventory(I)
-							visible_message("<span class='danger'>[M] has disarmed [src]!</span>")
+							M.visible_message("<span class='danger'>[M] has disarmed [src]!</span>", "<span class='danger'>You have disarmed [src]!</span>")
 							playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 							return
 
 				playsound(loc, 'sound/weapons/punchmiss.ogg', 25, TRUE, -1)
-				visible_message("<span class = 'red'><b>[M] attempted to disarm [src]!</b></span>")
+				M.visible_message("<span class = 'red'><b>[M] attempted to disarm [src]!</b></span>", "<span class = 'red'><b>You attempt to disarm [src]!</b></span>")
 	return
 /mob/living/human/proc/resuscitate()
 	if(!is_asystole())
@@ -407,10 +411,10 @@
 	if (!organ || organ.is_dislocated() || organ.dislocated == -1)
 		return FALSE
 
-	user.visible_message("<span class='warning'>[user] begins to dislocate [src]'s [organ.joint]!</span>")
+	user.visible_message("<span class='danger'>[user] begins to dislocate [src]'s [organ.joint]!</span>", "<span class = 'danger'>You begin to dislocate [src]'s [organ.joint]!</span>")
 	if (do_after(user, 100, progress = FALSE))
 		organ.dislocate(1)
-		visible_message("<span class='danger'>[src]'s [organ.joint] [pick("gives way","caves in","crumbles","collapses")]!</span>")
+		user.visible_message("<span class='danger'>[src]'s [organ.joint] [pick("gives way","caves in","crumbles","collapses","dislocates")]!</span>", "<span class = 'danger'>You [pick("cave in","crumble","collapse","dislocate")] [src]'s [organ.joint]!</span>")
 		return TRUE
 	return FALSE
 
@@ -418,21 +422,27 @@
 /mob/living/human/proc/break_all_grabs(mob/living/human/user)
 	var/success = FALSE
 	if (pulling)
-		visible_message("<span class='danger'>[user] has broken [src]'s grip on [pulling]!</span>")
-		success = TRUE
-		stop_pulling()
+		if (pulling != user)
+			visible_message("<span class='danger'>[user] has broken [src]'s grip on [pulling]!</span>")
+			success = TRUE
+			stop_pulling()
+		else
+			user.visible_message("<span class = 'danger'>[user] has broken [src]'s grip on them!</span>", "<span class = 'danger'>You have broken [src]'s grip on you!</span>")
+			success = TRUE
+			stop_pulling()
 
 	if (istype(l_hand, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/lgrab = l_hand
 		if (lgrab.affecting)
-			visible_message("<span class='danger'>[user] has broken [src]'s grip on [lgrab.affecting]!</span>")
+			user.visible_message("<span class='danger'>[user] has broken [src]'s grip on [lgrab.affecting]!</span>", "<span class = 'danger'>You have broken [src]'s grip on [lgrab.affecting]!</span>")
 			success = TRUE
 		spawn(1)
 			qdel(lgrab)
+
 	if (istype(r_hand, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/rgrab = r_hand
 		if (rgrab.affecting)
-			visible_message("<span class='danger'>[user] has broken [src]'s grip on [rgrab.affecting]!</span>")
+			user.visible_message("<span class='danger'>[user] has broken [src]'s grip on [rgrab.affecting]!</span>", "<span class = 'danger'>You have broken [src]'s grip on [rgrab.affecting]!</span>")
 			success = TRUE
 		spawn(1)
 			qdel(rgrab)

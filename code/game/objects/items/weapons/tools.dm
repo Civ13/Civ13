@@ -16,7 +16,7 @@
  */
 /obj/item/weapon/wrench
 	name = "wrench"
-	desc = "A wrench with many common uses. Can be usually found in your hand."
+	desc = "A wrench with many common uses, usually held."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "wrench"
 	flags = CONDUCT
@@ -45,7 +45,7 @@
  */
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher
 	name = "fire extinguisher"
-	desc = "A fire extinguisher used to put out fires. You can fill it with water."
+	desc = "An extinguisher for putting out fires, with a refill port for water."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "fire_extinguisher"
 	flags = CONDUCT
@@ -72,7 +72,7 @@
 	if (world.time<=lastfire)
 		return
 	if (!H.has_empty_hand(both = FALSE))
-		H << "<span class='warning'>You need both hands to use \the [src]!</span>"
+		to_chat(H, SPAN_WARNING("You need both hands to use \the [src]!"))
 		return
 	if (!cdir)
 		cdir = H.dir
@@ -122,7 +122,7 @@
 
 			distance++
 	else
-		user << "<span class='warning'>\The [src] is empty.</span>"
+		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 		return
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2
@@ -138,7 +138,7 @@
  */
 /obj/item/weapon/screwdriver
 	name = "screwdriver"
-	desc = "Your archetypal flathead screwdriver, with a nice, heavy polymer handle."
+	desc = "Your archetypal flathead screwdriver, with a nice and heavy polymer handle."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "screwdriver"
 	item_state = "screwdriver"
