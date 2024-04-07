@@ -159,7 +159,6 @@
                     sleep(0.5)
                     do_html(user)
                     return
-                
         
 /obj/structure/banking/computer/atm/attackby(obj/item/O as obj, mob/living/human/user as buser, icon_x, icon_y)
     if (depositing == FALSE)
