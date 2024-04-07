@@ -4,6 +4,20 @@
  * SPONSORED by the Foreign Nations Alliance (FNA)!
  */
 
+/obj/structure
+	icon = 'icons/obj/structures.dmi'
+	w_class = 10
+
+	var/climbable = FALSE
+	var/breakable = FALSE
+	var/parts
+	var/list/climbers = list()
+	var/low = FALSE
+
+
+	var/not_movable = TRUE
+	var/not_disassemblable = TRUE
+
 /obj/structure/banking
     name = "banking"
     desc = "debug"
