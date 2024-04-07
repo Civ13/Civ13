@@ -89,18 +89,27 @@
     mainbody = ""
     if (href_list["atm"])
         if (href_list["atm"] == 2)
-        mainbody += "Please insert the cash into the ATM. Only paper banknotes are accepted"
-        playsound(loc, 'sound/machines/atm_deposit_open_1.ogg', 100, TRUE)
-        depositing = TRUE
+            if (user.bank_hold)
+                mainbody = "<font color ='red'><b>ACCESS DENIED</b></font> <br>"
+                mainbody += "<font color ='red'><b>DUE TO CERTAIN ISSUES, THIS ACCOUNT HAS BEEN PLACED ON HOLD UNTIL FURTHER NOTICE</b></font>"
+                playsound(loc, 'sound/machines/access_denied.ogg')
+                depositing = FALSE
+                return
+            else
+                mainbody += "Please insert the cash into the ATM. Only paper banknotes are accepted"
+                playsound(loc, 'sound/machines/atm_deposit_open_1.ogg', 100, TRUE)
+                depositing = TRUE
+                return
 
         if (href_list["atm"] == 3)
-        mainbody += "Please select currency to withdraw, you have $[user.bank_dollar] and [user.bank_rubles] rubles"
-        mainbody += " <a href='?src=\ref[src];atm=wdollar'>(Dollar)</a> <a href='?src=\ref[src];atm=wrubles'>(Rubles)</a><br>
+            mainbody += "Please select currency to withdraw, you have $[user.bank_dollar] and [user.bank_rubles] rubles"
+            mainbody += " <a href='?src=\ref[src];atm=wdollar'>(Dollar)</a> <a href='?src=\ref[src];atm=wrubles'>(Rubles)</a><br>
 
         if(findtext(href_list["atm"], "wdollar"))
             if (user.bank_hold)
                 mainbody += "<font color ='red'><b>ACCESS DENIED</b></font> <br>"
                 mainbody += "<font color ='red'><b>DUE TO CERTAIN ISSUES, THIS ACCOUNT HAS BEEN PLACED ON HOLD UNTIL FURTHER NOTICE</b></font>"
+                playsound(loc, 'sound/machines/access_denied.ogg')
                 sleep(0.5)
                 do_html(user)
                 return
@@ -127,6 +136,7 @@
             if (user.bank_hold)
                 mainbody = "<font color ='red'><b>ACCESS DENIED</b></font> <br>"
                 mainbody += "<font color ='red'><b>DUE TO CERTAIN ISSUES, THIS ACCOUNT HAS BEEN PLACED ON HOLD UNTIL FURTHER NOTICE</b></font>"
+                playsound(loc, 'sound/machines/access_denied.ogg')
                 sleep(0.5)
                 do_html(user)
                 return
@@ -164,6 +174,7 @@
                 mstack = user.l_hand
                 user.bank_dollar += mstack.value*mstack.amount
                 visible_message("[user.name] has deposited money into the ATM")
+                playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
@@ -172,6 +183,7 @@
                 mstack = user.r_hand
                 user.bank_dollar += mstack.value*mstack.amount
                 visible_message("[user.name] has deposited money into the ATM")
+                playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
@@ -180,6 +192,7 @@
                 mstack = user.l_hand
                 user.bank_rubles += mstack.amount
                 visible_message("[user.name] has deposited money into the ATM")
+                playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
@@ -188,6 +201,7 @@
                 mstack = user.r_hand
                 user.bank_rubles += mstack.amount
                 visible_message("[user.name] has deposited money into the ATM")
+                playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
