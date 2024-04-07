@@ -25,13 +25,13 @@
 
 /obj/structure/banking/computer/atm
     name = "ATM"
-    desc = "an Automatic Teller Machine (ATM), owned by the Foreign Nations Bank, founded by the Foreign Nations Alliance. This ATM allows for international banking and overall storing your money in a safe place."
+    desc = "an Automatic Teller Machine (ATM), owned by LARP Bank, founded by the Foreign Nations Alliance. This ATM allows for international banking and overall storing your money in a safe place."
     icon_state = "atm"
     not_movable = TRUE
 
 /datum/banking_program
     var/name = "banking program"
-	var/description = "a basic digital international banking program."
+    var/description = "a basic digital international banking program."
 	var/list/compatible_os = list("FNB OS 42-G7")
 	var/mainbody = "---"
 	var/mainmenu = "---"
@@ -103,7 +103,7 @@
 
         if (href_list["atm"] == 3)
             mainbody += "Please select currency to withdraw, you have $[user.bank_dollar] and [user.bank_rubles] rubles"
-            mainbody += " <a href='?src=\ref[src];atm=wdollar'>(Dollar)</a> <a href='?src=\ref[src];atm=wrubles'>(Rubles)</a><br>
+            mainbody += " <a href='?src=\ref[src];atm=wdollar'>(Dollar)</a> <a href='?src=\ref[src];atm=wrubles'>(Rubles)</a><br>"
 
         if(findtext(href_list["atm"], "wdollar"))
             if (user.bank_hold)
@@ -161,46 +161,46 @@
                     return
                 
         
-/obj/structure/banking/computer/atm/attackby(obj/item/O as obj, mob/living/human/user as user, icon_x, icon_y)
-    if depositing == FALSE
+/obj/structure/banking/computer/atm/attackby(obj/item/O as obj, mob/living/human/user as buser, icon_x, icon_y)
+    if (depositing == FALSE)
         return
     else
-        if (!istype(user.l_hand, /obj/stack/money) && !istype(user.r_hand, obj/item/stack/money))
+        if (!istype(buser.l_hand, /obj/stack/money) && !istype(buser.r_hand, obj/item/stack/money))
             return
         else 
             var/obj/item/stack/money/mstack = null
 
-            if (istype(user.l_hand, /obj/item/stack/money/dollar))
-                mstack = user.l_hand
-                user.bank_dollar += mstack.value*mstack.amount
-                visible_message("[user.name] has deposited money into the ATM")
+            if (istype(buser.l_hand, /obj/item/stack/money/dollar))
+                mstack = buser.l_hand
+                buser.bank_dollar += mstack.value*mstack.amount
+                visible_message("[buser.name] has deposited money into the ATM")
                 playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
                 
-            else if (istype(user.r_hand, /obj/item/stack/money/dollar))
-                mstack = user.r_hand
-                user.bank_dollar += mstack.value*mstack.amount
-                visible_message("[user.name] has deposited money into the ATM")
+            else if (istype(buser.r_hand, /obj/item/stack/money/dollar))
+                mstack = buser.r_hand
+                buser.bank_dollar += mstack.value*mstack.amount
+                visible_message("[buser.name] has deposited money into the ATM")
                 playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
             
-            else if (istype(user.l_hand, /obj/item/stack/money/rubles))
-                mstack = user.l_hand
-                user.bank_rubles += mstack.amount
-                visible_message("[user.name] has deposited money into the ATM")
+            else if (istype(buser.l_hand, /obj/item/stack/money/rubles))
+                mstack = buser.l_hand
+                buser.bank_rubles += mstack.amount
+                visible_message("[buser.name] has deposited money into the ATM")
                 playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
                 return
 
-            else if (istype(user.r_hand, /obj/item/stack/money/rubles))
-                mstack = user.r_hand
+            else if (istype(buser.r_hand, /obj/item/stack/money/rubles))
+                bmstack = buser.r_hand
                 user.bank_rubles += mstack.amount
-                visible_message("[user.name] has deposited money into the ATM")
+                visible_message("[buser.name] has deposited money into the ATM")
                 playsound(loc, "sound\machines\atm\atm_deposit.ogg")
                 qdel(mstack)
                 depositing = FALSE
