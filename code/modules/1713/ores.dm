@@ -5,7 +5,7 @@
 	icon_state = "ore2"
 	w_class = ITEM_SIZE_SMALL
 	amount = 1
-	max_amount = 100
+	max_amount = 50
 	can_stack = TRUE
 	value = 1
 	var/radioactive = FALSE
