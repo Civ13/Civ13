@@ -244,7 +244,7 @@
 	desc = "Paper bank note valued at one-hundred dollars"
 	icon_state = "100dollar"
 	value = 100
-	amoung = 1
+	amount = 1
 
 /obj/item/stack/money/dollar100/New()
 	if(amount < 50)
