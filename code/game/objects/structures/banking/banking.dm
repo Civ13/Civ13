@@ -5,7 +5,7 @@
  */
 
 /obj/structure
-	icon = 'icons/obj/structures.dmi'
+	icon = ''
 	w_class = 10
 
 	var/climbable = FALSE
