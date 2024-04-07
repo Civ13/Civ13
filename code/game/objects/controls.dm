@@ -27,7 +27,9 @@
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the blast doors!")
+				user.visible_message("<span class='warning'>[user] closes the blast doors!</span>",
+									"<span class='notice'>You close the blast doors.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 3 SECONDS
 				playsound(G.loc, 'sound/effects/rollermove.ogg', 100)
@@ -38,7 +40,9 @@
 					G.density = TRUE
 					G.opacity = TRUE
 			else
-				visible_message("[user] opens the blast doors!")
+				user.visible_message("<span class='warning'>[user] opens the blast doors!</span>",
+									"<span class='notice'>You open the blast doors.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 3 SECONDS
 				playsound(G.loc, 'sound/effects/lever.ogg', 100)
@@ -57,7 +61,9 @@
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/blast/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the shutters!")
+				user.visible_message("<span class='warning'>[user] closes the shutters!</span>",
+									"<span class='notice'>You close the shutters.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 6 SECONDS
 				flick("garage_closing",G)
@@ -67,7 +73,9 @@
 					G.density = TRUE
 					G.opacity = TRUE
 			else
-				visible_message("[user] opens the shutters!")
+				user.visible_message("<span class='warning'>[user] opens the shutters!</span>",
+									"<span class='notice'>You open the shutters.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 6 SECONDS
 				flick("garage_opening",G)
@@ -84,7 +92,9 @@
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the gates!")
+				user.visible_message("<span class='warning'>[user] closes the gates!</span>",
+									"<span class='notice'>You close the gates.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "gate")
@@ -94,7 +104,9 @@
 						G.icon_state = "gate0"
 						G.density = TRUE
 			else
-				visible_message("[user] opens the gates!")
+				user.visible_message("<span class='warning'>[user] opens the gates!</span>",
+									"<span class='notice'>You open the gates.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "gate")
@@ -108,7 +120,9 @@
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the gates!")
+				user.visible_message("<span class='warning'>[user] closes the gates!</span>",
+									"<span class='notice'>You close the gates.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 6 SECONDS
 				playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
@@ -117,7 +131,9 @@
 					G.icon_state = "s_gate0"
 					G.density = TRUE
 			else
-				visible_message("[user] opens the gates!")
+				user.visible_message("<span class='warning'>[user] opens the gates!</span>",
+									"<span class='notice'>You open the gates.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 6 SECONDS
 				playsound(G.loc, 'sound/effects/castle_gate.ogg', 100)
@@ -150,13 +166,13 @@
 
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
-		visible_message(
-			"<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
-			"<span class='danger'>You start deploying \the [W.name].</span>")
+		user.visible_message("<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
+							"<span class='notice'>You start deploying \the [W.name].</span>",
+							"You hear something being deployed.")
 		if (do_after(user, 8 SECONDS, src))
-			visible_message(
-				"<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
-				"<span class='danger'>You have deployed \the [W.name]!</span>")
+			user.visible_message("<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
+								"<span class='notice'>You have deployed \the [W.name]!</span>",
+								"You hear something being deployed.")
 			var/obj/item/weapon/siegeladder/ANCH = W
 			user.remove_from_mob(ANCH)
 			ANCH.loc = src.loc
@@ -167,7 +183,10 @@
 			ANCH.dir = src.dir
 			return
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		to_chat(user, "You hit the wall uselessly!")
+		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
+							"<span class='warning'>You hit \the [src] uselessly!</span>",
+							"You hear something being hit!")
+
 	..()
 
 /obj/structure/gate/blast
@@ -199,7 +218,9 @@
 
 /obj/structure/gate/blast/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		to_chat(user, "You hit the wall uselessly!")
+		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
+							"<span class='warning'>You hit \the [src] uselessly!</span>",
+							"You hear something being hit!")
 		..()
 
 /obj/structure/gate/blast/garage
@@ -229,9 +250,13 @@
 
 /obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
-		to_chat(user, "You hit the [src] uselessly!")
+		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
+							"<span class='warning'>You hit \the [src] uselessly!</span>",
+							"You hear something being hit!")
 	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
-		to_chat(user, SPAN_NOTICE("You start cutting through the [src]..."))
+		user.visible_message("<span class='warning'>[user] starts cutting through \the [src]...</span>",
+							"<span class='notice'>You start cutting through \the [src]...</span>",
+							"You hear something being cut.")
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 		if (do_after(user, 5 SECONDS, src))
 			qdel(src)
@@ -250,7 +275,7 @@
 	open = TRUE
 
 /obj/structure/gate/whiterun
-	name = "Whiterun gate"
+	name = "whiterun gate"
 	desc = "A large wooden double door"
 	icon = 'icons/obj/doors/gates_64x96.dmi'
 	icon_state = "whiterun1"
@@ -266,7 +291,9 @@
 
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
-		to_chat(user, "You hit the doors uselessly!")
+		user.visible_message("<span class='warning'>[user] hits the gate uselessly!</span>",
+							"<span class='warning'>You hit the gate uselessly!</span>",
+							"You hear something being hit!")
 	else
 		..()
 
@@ -308,7 +335,9 @@
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/whiterun/r/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the gates!")
+				user.visible_message("<span class='warning'>[user] closes the gates!</span>",
+									"<span class='notice'>You close the gates.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
@@ -318,7 +347,9 @@
 						G.icon_state = "whiterun2"
 						G.density = TRUE
 			else
-				visible_message("[user] opens the gates!")
+				user.visible_message("<span class='warning'>[user] opens the gates!</span>",
+									"<span class='notice'>You open the gates.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
@@ -330,7 +361,9 @@
 
 		for (var/obj/structure/gate/whiterun/l/G in range(distance,src.loc))
 			if (G.open)
-				visible_message("[user] closes the gates!")
+				user.visible_message("<span class='warning'>[user] closes the gates!</span>",
+									"<span class='notice'>You close the gates.</span>",
+									"You hear something closing.")
 				G.open = FALSE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
@@ -340,7 +373,9 @@
 						G.icon_state = "whiterun1"
 						G.density = TRUE
 			else
-				visible_message("[user] opens the gates!")
+				user.visible_message("<span class='warning'>[user] opens the gates!</span>",
+									"<span class='notice'>You open the gates.</span>",
+									"You hear something opening.")
 				G.open = TRUE
 				cooldown = world.time + 6 SECONDS
 				if (G.name == "Whiterun gate")
@@ -391,7 +426,9 @@
 /obj/structure/gate/barrier/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
 		if (open)
-			visible_message("[user] closes the barrier gate!")
+			user.visible_message("<span class='notice'>[user] closes the barrier gate!</span>",
+								"<span class='notice'>You close the barrier gate.</span>",
+								"You hear something closing.")
 			open = FALSE
 			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
@@ -399,7 +436,9 @@
 			density = TRUE
 			return
 		else
-			visible_message("[user] opens the barrier gate!")
+			user.visible_message("<span class='notice'>[user] opens the barrier gate!</span>",
+								"<span class='notice'>You open the barrier gate.</span>",
+								"You hear something opening.")
 			open = TRUE
 			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
@@ -410,7 +449,9 @@
 /obj/structure/gate/barrier/vertical/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
 		if (open)
-			visible_message("[user] closes the barrier gate!")
+			user.visible_message("<span class='notice'>[user] closes the barrier gate!</span>",
+								"<span class='notice'>You close the barrier gate.</span>",
+								"You hear something closing.")
 			open = FALSE
 			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)
@@ -418,7 +459,9 @@
 			density = TRUE
 			return
 		else
-			visible_message("[user] opens the barrier gate!")
+			user.visible_message("<span class='notice'>[user] opens the barrier gate!</span>",
+								"<span class='notice'>You open the barrier gate.</span>",
+								"You hear something opening.")
 			open = TRUE
 			cooldown = world.time + 2 SECONDS
 			playsound(loc, 'sound/effects/lever.ogg', 100)

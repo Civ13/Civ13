@@ -12,7 +12,6 @@
 
 /obj/structure/anvil/New()
 	..()
-	desc = "A heavy iron anvil. The blacksmith's main work tool."
 
 /obj/structure/anvil/update_icon()
 	if (in_use)

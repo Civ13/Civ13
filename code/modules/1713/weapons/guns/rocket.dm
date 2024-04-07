@@ -19,20 +19,24 @@
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
 	return TRUE
 
-//Override this to avoid a runtime with suicide handling.
+//Override this to avoid a runtime with suicide handling, called when directly aiming at the mouth.
 /obj/item/weapon/gun/launcher/handle_suicide(mob/living/user)
-	user << SPAN_WARNING("Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it.")
+	to_chat(user, SPAN_WARNING("You can't seem to manage this.")) // If we stated that "shooting ourselves with the [src] is pretty tricky.", we'd have to include checks to see if it is loaded in the first place, and this is really not worth the effort, so we concise it.
+	return
+
+//To prevent the launcher from unloading magically, without icon changing, or anything.... bug. - called when not aiming at the mouth but at a body-part.
+/obj/item/weapon/gun/launcher/handle_shoot_self(mob/living/human/user)
 	return
 
 /obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/human/user)
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
-			user << SPAN_NOTICE("You toggle \the [src]'s safety <b>OFF</b>.")
+			to_chat(user, SPAN_NOTICE("You toggle \the [src]'s safety <b>OFF</b>."))
 			return
 		else
 			safetyon = TRUE
-			user << SPAN_NOTICE("You toggle \the [src]'s safety <b>ON</b>.")
+			to_chat(user, SPAN_NOTICE("You toggle \the [src]'s safety <b>ON</b>."))
 			return
 
 
@@ -55,10 +59,10 @@
 
 /obj/item/weapon/gun/launcher/special_check(mob/user)
 	if (!user.has_empty_hand(both = FALSE))
-		user << SPAN_WARNING("You need both hands to fire \the [src]!")
+		to_chat(user, SPAN_WARNING("You need both hands to fire \the [src]!"))
 		return FALSE
 	if (gun_safety && safetyon)
-		user << SPAN_WARNING("You can't fire \the [src] while the safety is on!")
+		to_chat(user, SPAN_WARNING("You can't fire \the [src] while the safety is on!"))
 		return FALSE
 	return TRUE
 
@@ -101,7 +105,7 @@
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			to_chat(user, "You put the rocket in \the [src].")
+			to_chat(user, "You put the [I] into the [src].") // We don't include \the here as all of the rockets are proper-nouned, so it would output badly, e.g: "You put PG-7V rocket in RPG-7.".
 			update_icon()
 		else
 			to_chat(user, "\The [src] cannot hold more rockets.")
@@ -114,7 +118,7 @@
 		user.put_in_hands(G)
 		user.visible_message("\The [user] removes \a [G] from [src].", SPAN_NOTICE("You remove \a [G] from \the [src]."))
 	else
-		user << SPAN_WARNING("\The [src] is empty.")
+		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 
 /obj/item/weapon/gun/launcher/rocket/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src)
@@ -223,11 +227,11 @@
 	if (world.time >= recentpump + 5)
 		if (open)
 			open = FALSE
-			user << SPAN_NOTICE("You close \the [src].")
+			to_chat(user, SPAN_NOTICE("You close \the [src]."))
 			update_icon()
 		else
 			open = TRUE
-			user << SPAN_NOTICE("You break open \the [src].")
+			to_chat(user, SPAN_NOTICE("You break open \the [src]."))
 			update_icon()
 		recentpump = world.time
 
@@ -246,14 +250,14 @@
 				I.loc = src
 				flares += I
 				playsound(user, 'sound/weapons/guns/interact/shotgun_insert.ogg', 25, TRUE)
-				user.visible_message("[user] load \the [F] into \the [src].",SPAN_NOTICE("You load \the [F] into \the [src]."))
+				user.visible_message("[user] loads \the [F] into \the [src].", SPAN_NOTICE("You load \the [F] into \the [src]."))
 				update_icon()
 			else
-				user << SPAN_WARNING("\The [src] is already loaded!")
+				to_chat(user, SPAN_WARNING("\The [src] is already loaded!"))
 		else
-			user << SPAN_WARNING("That's not a flare!")
+			to_chat(user, SPAN_WARNING("That's not a flare!"))
 	else
-		user << SPAN_WARNING("\The [src] is closed!")
+		to_chat(user, SPAN_WARNING("\The [src] is closed!"))
 
 /obj/item/weapon/gun/launcher/flaregun/consume_next_projectile()
 	if(flares.len)
@@ -267,7 +271,7 @@
 
 /obj/item/weapon/gun/launcher/flaregun/special_check(mob/user)
 	if (open)
-		user << SPAN_WARNING("You can't fire \the [src] while it is break open!")
+		to_chat(user, SPAN_WARNING("You can't fire \the [src] while it is breeched!"))
 		return FALSE
 	return TRUE
 
@@ -450,7 +454,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/m72law
 	name = "M72 LAW"
-	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
+	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-vehicular weapon."
 	icon_state = "m72law"
 	item_state = "m72law"
 	force = 15
@@ -462,7 +466,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/rpg22
 	name = "RPG 22"
-	desc = "A light, Russian portable one-shot 72.5 mm (2.85 in) unguided anti-tank weapon."
+	desc = "A light, Russian portable one-shot 72.5 mm (2.85 in) unguided anti-vehicular weapon."
 	icon_state = "rpg22"
 	item_state = "rpg22"
 	force = 15
@@ -491,7 +495,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/rpb54
 	name = "Raketen-Panzerbüchse 54"
-	desc = "A reusable 88mm anti-tank rocket launcher developed by Germany during World War II."
+	desc = "A reusable 88mm anti-vehicular rocket launcher developed by Germany during World War II."
 	icon_state = "rpb54_empty"
 	item_state = "rpb54"
 	slot_flags = SLOT_SHOULDER
@@ -509,7 +513,7 @@
 //Fatman
 /obj/item/weapon/gun/launcher/rocket/fatman
 	name = "Fatman"
-	desc = "An American rocket launcher made for firing small nuclear rockets."
+	desc = "An American rocket launcher made for firing small nuclear warheads."
 	icon_state = "fatman_empty"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
@@ -530,7 +534,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/piat
 	name = "PIAT MK1"
-	desc = "A reusable 83mm anti-tank weapon developed by Britain during World War II."
+	desc = "A reusable 83mm anti-vehicular weapon developed by Britain during World War II."
 	icon_state = "piat_empty"
 	item_state = "piat_empty"
 	slot_flags = SLOT_SHOULDER
@@ -556,7 +560,7 @@
 
 /obj/item/ammo_casing/rocket
 	name = "RPG rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
+	desc = "A high-explosive warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "rocketshell"
 	projectile_type = /obj/item/missile/explosive
 	caliber = "rocket"
@@ -573,65 +577,65 @@
 
 /obj/item/ammo_casing/rocket/bazooka
 	name = "M6A1 HEAT rocket"
-	desc = "A high explosive anti tank warhead and propeller designed to be fired from a rocket launcher."
+	desc = "A high-explosive, anti-vehicular warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "m6a1"
 	projectile_type = /obj/item/missile/explosive
 	caliber = "bazooka"
 
 /obj/item/ammo_casing/rocket/rpb54
 	name = "RPzB. Gr. 4312"
-	desc = "A high explosive anti tank warhead and propeller designed to be fired from a Raketen-Panzerbüchse."
+	desc = "A high-explosive, anti-vehicular warhead and propeller designed to be fired from a Raketen-Panzerbüchse."
 	icon_state = "rpb54"
 	projectile_type = /obj/item/missile/explosive
 	caliber = "rpb54"
 
 /obj/item/ammo_casing/rocket/panzerfaust
-	name = "panzerfaust rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a panzerfaust launcher."
+	name = "Panzerfaust rocket"
+	desc = "A high-explosive warhead and propeller designed to be fired from a panzerfaust launcher."
 	icon_state = "panzerfaust"
 	projectile_type = /obj/item/missile/explosive/panzerfaust
 
 /obj/item/ammo_casing/rocket/m72law
 	name = "M72 LAW rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a M72 LAW launcher."
+	desc = "A high-explosive warhead and propeller designed to be fired from an M72-LAW launcher."
 	icon_state = "rocket"
 	projectile_type = /obj/item/missile/explosive/m72law
 
 /obj/item/ammo_casing/rocket/rpg22
-	name = "RPG 22 rocket"
-	desc = "A high explosive warhead and propeller designed to be fired from a RPG 22 launcher."
+	name = "RPG-22 rocket"
+	desc = "A high-explosive warhead and propeller designed to be fired from an RPG-22 launcher."
 	icon_state = "rocket"
 	projectile_type = /obj/item/missile/explosive/m72law
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
-	desc = "A High-Explosive Anti-Tank (HEAT) warhead and propeller designed to be fired from a RPG-7 launcher."
+	desc = "A high-explosive, anti-vehicular (HEAT) warhead and propeller designed to be fired from an RPG-7 launcher."
 	icon_state = "pg7v"
 	projectile_type = /obj/item/missile/explosive
 
 /obj/item/ammo_casing/rocket/og7v
 	name = "OG-7V rocket"
-	desc = "A fragmentation warhead and propeller designed to be fired from a RPG-7 launcher."
+	desc = "A fragmentation warhead and propeller designed to be fired from an RPG-7 launcher."
 	icon_state = "og7v"
 	projectile_type = /obj/item/missile/fragmentation
 
 /obj/item/ammo_casing/rocket/piat
 	name = "SrB. HEAT MK I"
-	desc = "A High-Explosive Anti-Tank warhead designed to disable enemy vehicles and destroy fortifications."
+	desc = "A high-explosive and anti-vehicular warhead designed to disable enemy vehicles and destroy fortifications."
 	icon_state = "piat"
 	projectile_type = /obj/item/missile/explosive/piat
 	caliber = "piat"
 
 /obj/item/ammo_casing/rocket/piat/mk3
 	name = "SrB. HEAT MK III"
-	desc = "A modernized High-Explosive Anti-Tank warhead designed to disable enemy vehicles and destroy fortifications."
+	desc = "A modernized high-explosive and anti-vehicular warhead designed to disable enemy vehicles and destroy fortifications."
 	icon_state = "piathe"
 	projectile_type = /obj/item/missile/explosive/piat44
 
 /obj/item/ammo_casing/rocket/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
-	name = "Nuclear Rocket"
-	desc = "A nuclear fucking rocket, you might want to step back a bit..."
+	name = "Nuclear warhead"
+	desc = "A nuclear fucking warhead, you might want to step back a bit..."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "nuclear"
 	projectile_type = /obj/item/missile/nuclear
@@ -646,13 +650,13 @@
 
 /obj/item/ammo_casing/rocket/atgm/apcr
 	name = "APCR ATGM rocket"
-	desc = "A Armor-piercing composite rigid (APCR) guided missile warhead and propeller designed to be fired from a ATGM system."
+	desc = "An armor-piercing composite rigid (APCR) guided missile warhead and propeller designed to be fired from an ATGM system."
 	icon_state = "atgmAPCR"
 	projectile_type = /obj/item/missile/explosive/atgm/apcr
 
 /obj/item/ammo_casing/rocket/atgm/he
 	name = "HEAT ATGM rocket"
-	desc = "A High-Explosive Anti-Tank (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
+	desc = "A high-hxplosive, anti-vehicular (HEAT) guided missile warhead and propeller designed to be fired from an ATGM system."
 	icon_state = "atgmHE"
 	projectile_type = /obj/item/missile/explosive/atgm_he
 

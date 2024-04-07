@@ -118,7 +118,7 @@
 			img_nasties.overlays += smell
 			mood -= 0.02
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
-		if (prob(3))
+		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
 				if (HM != src && !HM.orc)
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
