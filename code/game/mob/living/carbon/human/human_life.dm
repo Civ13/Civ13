@@ -227,6 +227,8 @@
 					mood += 0.12
 				else
 					mood -= 0.4
+		if (!inducedSSD)
+			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
