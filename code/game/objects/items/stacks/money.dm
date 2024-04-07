@@ -93,6 +93,33 @@
 	amount = 1
 	value = 1
 
+/obj/item/stack/money/rubles/New()
+	if(amount < 50)
+		icon_state = "ruble"
+	if(amount >= 50)
+		icon_state = "ruble50"
+	if(amount >= 100)
+		icon_state = "ruble100"
+	if(amount >= 250)
+		icon_state = "ruble250"
+	if(amount == 500)
+		icon_state = "ruble500"
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/rubles/update_icon()
+	if(amount < 50)
+		icon_state = "ruble"
+	if(amount >= 50)
+		icon_state = "ruble50"
+	if(amount >= 100)
+		icon_state = "ruble100"
+	if(amount >= 250)
+		icon_state = "ruble250"
+	if(amount == 500)
+		icon_state = "ruble500"
+	..()
+
 /obj/item/stack/money/yen
 	name = "yen"
 	desc = "A japanese 1 yen coin."
@@ -212,6 +239,40 @@
 		value = 4
 		return ..()
 
+/obj/item/stack/money/dollar100
+	name = "100 Dollar Bill"
+	desc = "Paper bank note valued at one-hundred dollars"
+	icon_state = "100dollar"
+	value = 100
+	amoung = 1
+
+/obj/item/stack/money/dollar100/New()
+	if(amount < 50)
+		icon_state = "100dollar"
+	if(amount >= 50)
+		icon_state = "100dollar50"
+	if(amount >= 100)
+		icon_state = "100dollar100"
+	if(amount >= 300)
+		icon_state = "100dollar300"
+	if(amount == 500)
+		icon_state = "100dollar500"
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/dollar100/update_icon()
+	if(amount < 50)
+		icon_state = "100dollar"
+	if(amount >= 50)
+		icon_state = "100dollar50"
+	if(amount >= 100)
+		icon_state = "100dollar100"
+	if(amount >= 300)
+		icon_state = "100dollar300"
+	if(amount == 500)
+		icon_state = "100dollar500"
+	..()
+
 /obj/item/stack/money/escudo
 	name = "spanish escudos"
 	desc = "A gold coin. Worth 16 reales."
@@ -245,7 +306,6 @@
 		icon_state = "goldcoin_pile"
 		value = 60
 		return ..()
-
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
 	desc = "A large gold coin, the largest in circulation. Worth 32 reales."
