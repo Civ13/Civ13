@@ -597,11 +597,11 @@
 		switch (firing_mode)
 			if (0) // Switch to ATGM
 				playsound(get_turf(src), 'sound/machines/click.ogg', 60)
-				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on \the [src]."), SPAN_NOTICE("You switch weapons to the ATGM."))
+				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on the autocannon."), SPAN_NOTICE("You switch weapons to the ATGM."))
 				firing_mode = 1
 			if (1) // Switch to autocannon
 				playsound(get_turf(src), 'sound/machines/click.ogg', 60)
-				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on \the [src]."), SPAN_NOTICE("You switch weapons to the autocannon."))
+				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on the autocannon."), SPAN_NOTICE("You switch weapons to the autocannon."))
 				firing_mode = 0
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/AltClick()
@@ -610,6 +610,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo)) // If our ammo type is correct start a delay and load our ammo
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.remove_from_mob(I)
 			I.loc = src
@@ -680,10 +681,8 @@
 		if (1) // ATGM
 			if (rockets.len)
 				var/obj/item/ammo_casing/rocket/I = rockets[1]
-				var/obj/item/missile/M = new I.projectile_type(src)
+				var/obj/item/projectile/shell/missile/M = new I.projectile_type(src)
 				playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
-				M.dir = src.dir
-				M.primed = 1
 				rockets -= I
 				return M
 			return null
@@ -748,17 +747,13 @@
 			return !P.launch(target, user, src, target_zone, x_offset, y_offset)
 		if (1) // ATGM
 			projectile.loc = get_turf(user)
-			projectile.throw_at(target, firing_range, release_force, user)
-			projectile.dir = get_dir(src.loc, target.loc)
-			if (ishuman(user) && istype(projectile, /obj/item/missile))
-				var/obj/item/missile/MS = projectile
-				MS.firer = user
-			if (istype(projectile, /obj/item/missile))
-				var/obj/item/missile/M = projectile
-				M.startingturf = get_turf(user)
-			update_icon(projectile)
-			return TRUE
+			if(istype(projectile, /obj/item/projectile/shell))
+				var/obj/item/projectile/shell/P = projectile
+				P.dir = SOUTH
+				P.launch(target, user, src, 0, 0)
+				return TRUE
 
+	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a42
 	name = "Shipunov 2A42 30mm autocannon with ATGM"
@@ -819,6 +814,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.remove_from_mob(I)
 			I.loc = src
@@ -850,10 +846,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/consume_next_projectile()
 	if (rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
-		var/obj/item/missile/M = new I.projectile_type(src)
+		var/obj/item/projectile/shell/missile/M = new I.projectile_type(src)
 		playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
-		M.dir = src.dir
-		M.primed = 1
 		rockets -= I
 		return M
 	return null
@@ -865,16 +859,13 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 	projectile.loc = get_turf(user)
-	projectile.throw_at(target, firing_range, release_force, user)
-	projectile.dir = get_dir(src.loc, target.loc)
-	if (ishuman(user) && istype(projectile, /obj/item/missile))
-		var/obj/item/missile/MS = projectile
-		MS.firer = user
-	if (istype(projectile, /obj/item/missile))
-		var/obj/item/missile/M = projectile
-		M.startingturf = get_turf(user)
-	update_icon(projectile)
-	return TRUE
+	if(istype(projectile, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/P = projectile
+		P.dir = SOUTH
+		P.launch(target, user, src, 0, 0)
+		return TRUE
+
+	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/kornet
 	name = "9K135 Kornet"

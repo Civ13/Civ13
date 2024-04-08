@@ -100,16 +100,16 @@
 					started_using(user)
 					return
 		else
-			to_chat(user, SPAN_WARNING("You need both hands to use a machinegun."))
+			to_chat(user, SPAN_WARNING("You need both hands to use \the [src]."))
 			return
-	if (user.loc == T)
+	if (user.loc == T || istype(src, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
 		if (user.has_empty_hand(both = TRUE))
 			if (!map || !map.check_caribbean_block(user, loc))
 				if (do_after(user, 15, src))
 					started_using(user)
 					return
 		else
-			to_chat(user, SPAN_WARNING("You need both hands to use a machinegun."))
+			to_chat(user, SPAN_WARNING("You need both hands to use \the [src]."))
 			return
 
 	else

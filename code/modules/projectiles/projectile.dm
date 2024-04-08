@@ -277,23 +277,10 @@
 	return launch(target, target_zone, x_offset, y_offset)
 
 //Used to change the direction of the projectile in flight.
-/obj/item/projectile/proc/redirect(var/new_x, var/new_y, var/turf/starting_loc, var/mob/new_firer=null)
-	var/turf/new_target = locate(new_x, new_y, z)
-	if (src)
-		starting = starting_loc
-		original = new_target
-		current = starting_loc
-		loc = starting_loc
+/obj/item/projectile/proc/redirect(var/turf/new_target, var/atom/starting_loc)
+	original = new_target
 
-		yo = new_target.y - starting_loc.y
-		xo = new_target.x - starting_loc.x
-
-		if (new_firer)
-			firer = get_turf(src)
-			firer_loc = get_turf(src)
-			firer_original_dir = get_dir(src.loc, new_target.loc)
-
-		setup_trajectory()
+	setup_trajectory(starting_loc, new_target)
 
 //Called when the projectile intercepts a mob. Returns TRUE if the projectile hit the mob, FALSE if it missed and should keep flying.
 /obj/item/projectile/proc/attack_mob(var/mob/living/target_mob, var/distance, var/miss_modifier=0)
@@ -696,7 +683,7 @@
 	var/firstmove = FALSE
 
 	if (!trajectory)
-		setup_trajectory()
+		setup_trajectory(loc)
 		firstmove = TRUE
 
 	if (src && loc)
@@ -789,16 +776,10 @@
 /obj/item/projectile/proc/before_move()
 	return FALSE
 
-/obj/item/projectile/proc/setup_trajectory()
-	// trajectory dispersion
-	var/offset = 0
-	if (dispersion)
-		var/radius = round(dispersion*9, TRUE)
-		offset = rand(-radius, radius)
-
+/obj/item/projectile/proc/setup_trajectory(var/turf/starting_loc)
 	// plot the initial trajectory
 	trajectory = new()
-	trajectory.setup(starting, original, pixel_x, pixel_y, angle_offset=offset)
+	trajectory.setup(starting_loc, original, pixel_x, pixel_y, dispersion)
 
 	// generate this now since all visual effects the projectile makes can use it
 	effect_transform = new()

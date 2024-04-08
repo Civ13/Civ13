@@ -310,7 +310,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/rpk74
-	name = "RPK-74 magazine (7.62x39)"
+	name = "RPK-74 magazine (5.45x39)"
 	icon_state = "rpk74mag"
 	mag_type = MAGAZINE
 	caliber = "a545x39"

@@ -1030,9 +1030,9 @@
 /obj/item/tank_system/aps/proc/explode_missiles()
 	if (src)
 		if (uses > 0)
-			for (var/obj/item/missile/M in range(6, src))
+			for (var/obj/item/projectile/shell/missile/M in range(6, src))
 				if (M)
-					M.throw_impact(get_turf(M))
+					M.initiate(get_turf(M))
 					--uses
 					for (var/mob/O in viewers(7, get_turf(src)))
 						to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))

@@ -75,7 +75,7 @@
 	stat = "rifle"
 	move_delay = 4
 	var/recentpump = FALSE // to prevent spammage
-	load_delay = 5
+	load_delay = 1
 
 /obj/item/weapon/gun/projectile/shotgun/pump/consume_next_projectile()
 	if (chambered)
@@ -120,12 +120,14 @@
 	move_delay = 4
 	var/open = FALSE
 	var/recentpump = FALSE // to prevent spammage
-	load_delay = 5
+	load_delay = 1
 	blackpowder = TRUE
+
 /obj/item/weapon/gun/projectile/shotgun/coachgun/consume_next_projectile()
 	if (chambered)
 		return chambered.BB
 	return null
+
 /obj/item/weapon/gun/projectile/shotgun/coachgun/update_icon()
 	..()
 	if (open)
@@ -192,7 +194,6 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	move_delay = 4
-	load_delay = 5
 
 /obj/item/weapon/gun/projectile/shotgun/pump/remington870/brown
 	icon_state = "remington870_brown"
@@ -210,7 +211,6 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	handle_casings = HOLD_CASINGS
 	move_delay = 4
-	load_delay = 5
 
 /obj/item/weapon/gun/projectile/shotgun/mts225
 	name = "MTS-225"
@@ -231,10 +231,12 @@
 	var/open = FALSE
 	var/recentpump = FALSE // to prevent spammage
 	load_delay = 3
+
 /obj/item/weapon/gun/projectile/shotgun/mts225/consume_next_projectile()
 	if (chambered)
 		return chambered.BB
 	return null
+	
 /obj/item/weapon/gun/projectile/shotgun/mts225/update_icon()
 	..()
 	if (open)
