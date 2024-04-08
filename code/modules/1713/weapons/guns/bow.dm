@@ -261,7 +261,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 		user.remove_from_mob(C)
 		C.loc = src
 		loaded.Insert(1, C) //add to the head of the list
-		user.visible_message("[user] inserts \a [C] into the [src].", "<span class='notice'>You insert \a [C] into the [src].</span>")
+		user.visible_message("[user] inserts \a [C] into \the [src].", "<span class='notice'>You insert \a [C] into \the [src].</span>")
 		icon_state = "[icotype]1"
 		load_arrow_overlay(C)
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
