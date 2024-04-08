@@ -694,6 +694,7 @@
 #include "code\modules\1713\custom_apparel.dm"
 #include "code\modules\1713\doctor_handbook.dm"
 #include "code\modules\1713\equip_box.dm"
+#include "code\modules\1713\fiatcurrency.dm"
 #include "code\modules\1713\flying_objects.dm"
 #include "code\modules\1713\forensics.dm"
 #include "code\modules\1713\helmet.dm"
@@ -1112,5 +1113,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\nomads\nomads_europe.dmm"
 // END_INCLUDE
