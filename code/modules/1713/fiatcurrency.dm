@@ -50,19 +50,28 @@ var/global/datum/currency_list/fiat = new()
 		if (src && usr.using_object == src)
 			interact(usr)
 	else
-		return ..()
+		return
 
-/obj/item/stack/money/fiat/split(var/_amount, fiat_id)
+/obj/item/stack/money/fiat/split(var/_amount)
 	if (!amount)
 		return null
 	if (_amount)
-		var/obj/item/stack/money/fiat/S = new(src.loc, _amount, fiat_id)
+		var/obj/item/stack/money/fiat/S = new(src.loc, _amount, src.fiat_id)
+		S.color = color
+		if (prob(_amount/amount * 100))
+			transfer_fingerprints_to(S)
+			if (blood_DNA)
+				S.blood_DNA |= blood_DNA
+		amount -= _amount
+		if (amount <= 0)
+			qdel(src)
 		return S
-	return FALSE
+	else
+		return FALSE
 
 /obj/structure/money_printer
 	name = "money printer"
-	desc = "Used to print money. It currently contains 0 cloth."
+	desc = "This prints money. It currently contains 0 cloth."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "printingpress0"
 	anchored = TRUE
@@ -82,7 +91,7 @@ var/global/datum/currency_list/fiat = new()
 			var/cloth_remaining = (cloth - num*0.01)
 			if (fiat_id && cloth_remaining >= 0)
 				cloth = cloth_remaining
-				desc = "Used to print money. It currently contains [cloth] cloth."
+				desc = "This prints money. It currently contains [cloth] cloth."
 				new/obj/item/stack/money/fiat(loc, num, fiat_id)
 				playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 				return
@@ -165,7 +174,7 @@ var/global/datum/currency_list/fiat = new()
 		playsound(user, 'sound/machines/button.ogg', 100, TRUE)
 		to_chat(user, "You insert [I.amount] cloth into the machine. It now contains [cloth] cloth.")
 		qdel(I)
-		desc = "Used to print money. It currently contains [cloth] cloth."
+		desc = "This prints money. It currently contains [cloth] cloth."
 		return
 	else
 		to_chat(user, "Banknotes are made of cloth, not [I.name].")
