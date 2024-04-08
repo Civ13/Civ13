@@ -317,7 +317,6 @@
 			P.range_step = damage_step
 			P.shot_from = name
 			P.launch_fragment(TT)
-			P.firer_loc = get_turf(src)
 
 			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
 			for (var/mob/living/L in T)
@@ -1112,7 +1111,6 @@
 					P.range_step = damage_step
 					P.shot_from = name
 					P.launch_fragment(TT)
-					P.firer_loc = get_turf(src)
 			qdel(src)
 	return
 
