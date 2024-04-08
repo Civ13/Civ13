@@ -276,13 +276,7 @@
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
-			if (in_progress)
-				to_chat(user, SPAN_WARNING("You are already breaking the rock with \the [C.name]."))
-				return
-
-			// Set in_progress to TRUE to indicate the process has started
-			in_progress = TRUE
-			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
+			visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
