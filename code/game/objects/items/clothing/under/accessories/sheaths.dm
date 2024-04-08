@@ -46,6 +46,7 @@
 
 	if (!H)
 		to_chat(usr, SPAN_WARNING("Something is very wrong."))
+		return
 
 	var/obj/item/weapon/currsword = null
 	for(var/obj/item/weapon/W in H.hold)
