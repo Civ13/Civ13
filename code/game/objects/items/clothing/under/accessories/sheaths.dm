@@ -45,7 +45,7 @@
 			H = locate() in S.accessories
 
 	if (!H)
-		usr << "<span class='warning'>Something is very wrong.</span>"
+		to_chat(usr, SPAN_WARNING("Something is very wrong."))
 
 	var/obj/item/weapon/currsword = null
 	for(var/obj/item/weapon/W in H.hold)
@@ -55,21 +55,21 @@
 		var/obj/item/W = usr.get_active_hand()
 		attackby(W, usr)
 		if (H.hold.contents.len >= 1)
-			visible_message("[usr] stores \the [W].")
+			usr.visible_message("<span class = 'notice'>[usr] stores \the [W].</span>", "<span class = 'notice'>You store \the [W].</span>")
 //			update_icon()
 			playsound(usr, 'sound/items/unholster_sword01.ogg', 50, 1)
 			return TRUE
 		else
-			usr << "<span class='warning'>That is not going to fit there.</span>"
+			to_chat(usr, SPAN_WARNING("That is not going to fit there."))
 			return FALSE
 
 	else
 		if (istype(usr.get_active_hand(),/obj) && istype(usr.get_inactive_hand(),/obj))
-			usr << "<span class='warning'>You need an empty hand to draw \the [currsword]!</span>"
+			to_chat(usr, SPAN_WARNING("You need an empty hand to draw \the [currsword]!"))
 			return FALSE
 		else
 			usr.put_in_hands(currsword)
-			visible_message("<span class='danger'>[usr] draws \the [currsword]!</span>")
+			usr.visible_message("<span class='danger'>[usr] draws \the [currsword]!</span>", "<span class='notice'>You draw \the [currsword].</span>")
 //			update_icon()
 			playsound(usr, 'sound/items/unholster_sword02.ogg', 80, 1)
 			return TRUE

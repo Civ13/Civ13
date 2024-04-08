@@ -1067,6 +1067,10 @@ mob/proc/yank_out_object()
 	set category = "IC"
 	set src = usr
 
+	if (!ishuman(usr)) // Prevents ghosts from using this verb, it doesn't even set their face_dir as a ghost, so it just leads to unexpec-bugs down the line.
+		to_chat(usr, SPAN_WARNING("You must be human to use this verb."))
+		return
+
 	set_face_dir()
 
 	if (!facing_dir)
