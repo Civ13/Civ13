@@ -64,7 +64,7 @@
 				else
 					ChangeTurf(/turf/floor/dirt)*/
 
-var/in_progress = null
+var/in_progress = null // Define the variable out of any scopes and the attackby() procedures.
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
 	if (!C || !user)
