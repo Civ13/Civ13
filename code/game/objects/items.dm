@@ -519,7 +519,7 @@ var/list/global/slot_flags_enumeration = list(
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
 		if (H != user)	
-			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src) // The following to line 529 is a gutted mob.visible_message(), consider updating the proc to have a list of ignored mobs as an argument.
+			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src) // The following to line 531 is a gutted mob.visible_message(), consider updating the proc to have a list of ignored mobs as an argument.
 
 			for (var/I in see)
 				if (ismob(I))
