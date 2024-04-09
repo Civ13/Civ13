@@ -430,7 +430,7 @@ var/list/coefflist = list()
 	if (species.has_fine_manipulation)
 		return TRUE
 	if (!silent)
-		src << "<span class='warning'>You don't have the dexterity to use that!</span>"
+		to_chat(src, SPAN_WARNING("You don't have the dexterity to use that!"))
 	return FALSE
 
 /mob/living/human/abiotic(var/full_body = FALSE)
