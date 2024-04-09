@@ -684,7 +684,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781]><b>saltpeter</font></b>!")) // no material
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 						H.adaptStat("strength", 1)
 				if (3)
 					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
