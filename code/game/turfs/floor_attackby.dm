@@ -1,6 +1,5 @@
 /turf/floor
 	var/busy = FALSE
-	var/mining_in_progress = FALSE
 
 /turf/floor/proc/collapse_check()
 	return
