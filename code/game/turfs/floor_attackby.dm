@@ -1,5 +1,6 @@
 /turf/floor
 	var/busy = FALSE
+	var/mining_in_progress = FALSE
 
 /turf/floor/proc/collapse_check()
 	return
@@ -64,7 +65,6 @@
 				else
 					ChangeTurf(/turf/floor/dirt)*/
 
-var/mining_in_progress = null // Define the variable out of any scopes and the attackby() procedures.
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
 	if (!C || !user)
@@ -276,16 +276,16 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
-			if (mining_in_progress)
-				to_chat(user, SPAN_WARNING("You are already breaking the rock with \the [C.name]."))
+			if (T.mining_in_progress)
+				to_chat(user, SPAN_WARNING("The rock is already being mined."))
 				return
 
 			// Set mining_in_progress to TRUE to indicate the process has started
-			mining_in_progress = TRUE
+			T.mining_in_progress = TRUE
 			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (!do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
-				mining_in_progress = FALSE // In case we abort mid-way.
+				T.mining_in_progress = FALSE // In case we abort mid-way.
 				return
 			collapse_check()
 			if (istype(src, /turf/floor/dirt/underground/empty))
@@ -293,7 +293,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				TT.mining_clear_debris()
 			else if (!istype(src, /turf/floor/dirt/underground/empty))
 				mining_proc(H)
-			mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
+			T.mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
 			return
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
@@ -303,7 +303,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
 			return
 		if (istype(H))
-			user.visible_message("<span class = 'notice'>[user] carefully examines \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			user.visible_message(SPAN_NOTICE("[user] carefully examines \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))
@@ -577,19 +577,19 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 	if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/mob/living/human/H = user
 		if (istype(H))
-			if(mining_in_progress)
+			if(src.mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor with \the [C.name]."))
 				return
 			// Set mining_in_progress to TRUE to indicate the process has started.
-			mining_in_progress = TRUE
+			src.mining_in_progress = TRUE
 			visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
 				mining_proc(H)
-				mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
+				src.mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
 			else
-				mining_in_progress = FALSE // In case we abort mid-way.
+				src.mining_in_progress = FALSE // In case we abort mid-way.
 			return ..(C, user)
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
@@ -826,15 +826,14 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
-			if(mining_in_progress)
+			if(src.mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
 				return
-			// Set mining_in_progress to TRUE to indicate the process has started.
-			mining_in_progress = TRUE
+			src.mining_in_progress = TRUE
 			visible_message(SPAN_NOTICE("[user] starts to break the rock with their hands..."), SPAN_NOTICE("You start to break the rock with the your hands..."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (!do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
-				mining_in_progress = FALSE // In case we abort mid-way.
+				src.mining_in_progress = FALSE // In case we abort mid-way.
 				return
 			U.collapse_check()
 			if (istype(src, /turf/floor/dirt/underground/empty))
@@ -842,7 +841,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				T.mining_clear_debris()
 			else if (!istype(src, /turf/floor/dirt/underground/empty))
 				mining_proc(H)
-				mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
+				src.mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
 			return TRUE
 		else
 			..()
@@ -854,59 +853,56 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		var/turf/floor/T = src
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
-			if (!H.shoveling)
-				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
-					if (T.available_snow > 0)
-						H.shoveling = TRUE
-						user.visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
-						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
-							user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
-							H.shoveling = FALSE
-							H.adaptStat("strength", 1)
-							T.available_snow -= 1
-							new /obj/item/weapon/snowwall(T)
-							if (T.available_snow <= 0)
-								if (istype(T, /turf/floor/winter/grass))
-									T.ChangeTurf(/turf/floor/grass)
-								else if (istype(T, /turf/floor/dirt/winter))
-									T.ChangeTurf(/turf/floor/dirt)
+			if (H.shoveling)
+				..()
+			if (T.icon == 'icons/turf/snow.dmi' && istype(H))
+				if (T.available_snow <= 0)
+					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
+					return
+				H.shoveling = TRUE
+				user.visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (!do_after(user, rand(45,60)))
+					H.shoveling = FALSE
+				user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
+				H.shoveling = FALSE
+				H.adaptStat("strength", 1)
+				T.available_snow -= 1
+				new /obj/item/weapon/snowwall(T)
+				if (T.available_snow <= 0)
+					if (istype(T, /turf/floor/winter/grass))
+						T.ChangeTurf(/turf/floor/grass)
+					else if (istype(T, /turf/floor/dirt/winter))
+						T.ChangeTurf(/turf/floor/dirt)
 
-						else
-							H.shoveling = FALSE
+			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling)
+				if (T.available_dirt > 0)
+					H.shoveling = TRUE
+					user.visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)))
+						user.visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
+						H.shoveling = FALSE
+						H.adaptStat("strength", 1)
+						T.available_dirt -= 1
+						new /obj/item/weapon/barrier(T)
 					else
-						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
-
-				else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling)
-					if (T.available_dirt > 0)
-						H.shoveling = TRUE
-						user.visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
-						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
-							user.visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
-							H.shoveling = FALSE
-							H.adaptStat("strength", 1)
-							T.available_dirt -= 1
-							new /obj/item/weapon/barrier(T)
-						else
-							H.shoveling = FALSE
-					else
-						user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
-				else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling)
-					if (T.available_sand > 0)
-						H.shoveling = TRUE
-						user.visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
-						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, rand(45,60)))
-							user.visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
-							H.shoveling = FALSE
-							H.adaptStat("strength", 1)
-							T.available_sand -= 1
-							new /obj/item/stack/ore/glass(T)
-						else
-							H.shoveling = FALSE
+						H.shoveling = FALSE
 				else
-					..()
+					user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling)
+				if (T.available_sand > 0)
+					H.shoveling = TRUE
+					user.visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)))
+						user.visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
+						H.shoveling = FALSE
+						H.adaptStat("strength", 1)
+						T.available_sand -= 1
+						new /obj/item/stack/ore/glass(T)
+					else
+						H.shoveling = FALSE
 			else
 				..()
 		else
@@ -990,31 +986,30 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
 			return
 		to_chat(H, SPAN_NOTICE("You start drinking some water from the ground..."))
-		if (do_after(H,50,src))
-			var/watertype = "water"
-			if (radiation>0)
-				watertype = "irradiated_water"
-			if (watertype == "irradiated_water")
-				H.rad_act(5)
-			else
-				var/dmod = 1
-				if (H.find_trait("Weak Immune System"))
-					dmod = 2
-				if (H.find_trait("Strong Immune System"))
-					dmod = 0.2
-				if (prob(sickness*15*dmod) && !H.orc && !H.crab)
-					if (H.disease == 0)
-						H.disease_progression = 0
-						H.disease_type ="cholera"
-						H.disease = 1
-			if (H.water < 0)
-				H.water += rand(40,50)
-			H.water += 75
-			H.bladder += 25
-			to_chat(H, SPAN_NOTICE("You drink some water from \the [src]."))
-			playsound(H.loc, "drink", rand(10, 50), TRUE)
+		if (!do_after(H,50,src))
 			return
+		var/watertype = "water"
+		if (radiation > 0)
+			watertype = "irradiated_water"
+		if (watertype == "irradiated_water")
+			H.rad_act(5)
 		else
-			return
+			var/dmod = 1
+			if (H.find_trait("Weak Immune System"))
+				dmod = 2
+			if (H.find_trait("Strong Immune System"))
+				dmod = 0.2
+			if (prob(sickness*15*dmod) && !H.orc && !H.crab)
+				if (H.disease == 0)
+					H.disease_progression = 0
+					H.disease_type ="cholera"
+					H.disease = 1
+		if (H.water < 0)
+			H.water += rand(40,50)
+		H.water += 75
+		H.bladder += 25
+		to_chat(H, SPAN_NOTICE("You drink some water from \the [src]."))
+		playsound(H.loc, "drink", rand(10, 50), TRUE)
+		return
 	else
 		..()

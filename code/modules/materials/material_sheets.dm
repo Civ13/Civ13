@@ -399,6 +399,7 @@
 	flammable = TRUE
 	var/onfire = FALSE
 	var/ash_production = FALSE
+	var/splitting_in_progress = FALSE
 
 /obj/item/stack/material/wood/twentyfive
 	amount = 25
@@ -414,27 +415,27 @@
 			qdel(NF)
 			qdel(src)
 
-var/splitting_in_progress = null  // Initialize the variable outside of the scopes and procedure attackby()
 /obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/living/human/user as mob)
 	if (istype(T, /obj/item/flashlight/torch))
 		var/obj/item/flashlight/torch/F = T
 		if(user.a_intent == "harm" && F.on && !onfire)
-			user.visible_message("<span class = 'red'>[user.name] tries to set \the [src] on fire!</span>", "<span class = 'red'>You try to set \the [src] on fire!</span>")
+			user.visible_message(SPAN_RED("[user.name] tries to set \the [src] on fire!"), SPAN_RED("You try to set \the [src] on fire!"))
 			if(prob(30))
 				ash_production = 1
 				src.onfire = 1
 				start_fire()
-				user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
+				user.visible_message(SPAN_RED("[user.name] sets \the [src] on fire!"), SPAN_RED("You set \the [src] on fire!"))
 				return
 	if (istype(T, /obj/item/weapon/material/hatchet))
 		// var/obj/item/weapon/material/hatchet/SH = T
 		// Check if there's enough material
 		if (src.amount < 2)
 			to_chat(user, "You don't have enough material to try.")
+			return
 		else
 			// Check if splitting process is already in progress
 			if (splitting_in_progress)
-				to_chat(user, SPAN_DANGER("You are already splitting \the [src]."))
+				to_chat(user, SPAN_DANGER("\The [src] is already being split."))
 				return
 			// Set splitting_in_progress to TRUE to indicate the process has started
 			splitting_in_progress = TRUE
@@ -444,17 +445,16 @@ var/splitting_in_progress = null  // Initialize the variable outside of the scop
 			playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 			
 			// Set a delay for the splitting process
-			if (do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
-				// Finish the splitting process
-				user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
-				src.use(2)
-				var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
-				dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
-				dropwood.update_strings() 
-				splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
-			else
+			if (!do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
 				splitting_in_progress = FALSE // In case we abort mid-way.
 				return
+			// Finish the splitting process
+			user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
+			src.use(2)
+			var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
+			dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
+			dropwood.update_strings() 
+			splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
 
 	return ..()
 
