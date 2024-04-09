@@ -153,6 +153,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 				return
 			else if (!istype(src, /turf/floor/dirt/underground/empty))
 				mining_proc(H)
+				mining_in_progress = FALSE
 			return TRUE
 
 	if (world.time >= user.next_push)
