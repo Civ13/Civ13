@@ -338,7 +338,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/solothurn
 	name = "Solothurn S-18/1000"
-	desc = "The Solothurn S18/1000 20mm is a Swiss anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant shake_strength, which was problematic for the gunner, and its size made portability difficult."
+	desc = "The Solothurn S18/1000 20mm is a Swiss anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant recoil, which was problematic for the gunner, and its size made portability difficult."
 	icon_state = "type92hmg"
 	base_icon = "type92hmg"
 	caliber = "a20"
@@ -362,7 +362,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian
 	name = "Fucile Controcarri S Mod.39"
-	desc = "An Italian variant of the Swiss Solothurn S18/1000 20mm anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant shake_strength, which was problematic for the gunner, and its size made portability difficult."
+	desc = "An Italian variant of the Swiss Solothurn S18/1000 20mm anti-tank rifle. It is a later variant of the S-18/100 with modifications for a higher muzzle velocity, as well as a larger cartridge size. The more powerful ammunition resulted in significant recoil, which was problematic for the gunner, and its size made portability difficult."
 
 /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary
 	name = "vehicle mounted Fucile Controcarri S Mod.39"
