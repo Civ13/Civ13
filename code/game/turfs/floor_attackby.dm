@@ -588,8 +588,8 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 			if (do_after(user, timera))
 				mining_proc(H)
 				in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
-		else
-			in_progress = FALSE // In case we abort mid-way.
+			else
+				in_progress = FALSE // In case we abort mid-way.
 			return ..(C, user)
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
