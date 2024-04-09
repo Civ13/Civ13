@@ -142,18 +142,18 @@ var/list/interior_areas = list(/area/caribbean/houses,
 			mining_in_progress = TRUE
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
-				U.collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/T = src
-					T.mining_clear_debris()
-					mining_in_progress = FALSE // Reset the variable after the process has finished.
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-				return TRUE
-			else
+			if (!do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
 				mining_in_progress = FALSE // In case we abort mid-way.
+			U.collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/T = src
+				T.mining_clear_debris()
+				mining_in_progress = FALSE // Reset the variable after the process has finished.
+				return
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+			return TRUE
+
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
 			var/mob/M = user.pulling
