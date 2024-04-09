@@ -232,10 +232,10 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 
 		else
 			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
-				visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
+				user.visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
 				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
-					visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
+					user.visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
 					H.adaptStat("strength", 1)
 					radiation *= 0.1
 					if (istype(src, /turf/floor/grass/jungle))
@@ -247,9 +247,9 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 			else
 				return ..(C, user)
 	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
-		user << "You start placing the [C] on the [src]..."
+		user.visible_message("<span class='notice'>[user] starts placing the [C] on the [src]...</span>", "<span class='notice'>You start placing the [C] on the [src]...</span>")
 		if (do_after(user, 70, src))
-			visible_message("[user] places the [C] on the [src].")
+			user.visible_message("<span class='notice'>[user] places the [C] on the [src].</span>", "<span class='notice'>You place the [C] on the [src].</span>")
 			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
 			var/obj/item/weapon/poster/religious/P = C
 			RP.religion = P.religion
@@ -260,9 +260,9 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 			qdel(C)
 			return
 	else if (istype(C, /obj/item/weapon/poster/faction) && istype(get_turf(src), /turf/floor/dirt/underground))
-		user << "You start placing the [C] on the [src]..."
+		user.visible_message("<span class='notice'>[user] starts placing the [C] on the [src]...</span>", "<span class='notice'>You start placing the [C] on the [src]...</span>")
 		if (do_after(user, 70, src))
-			visible_message("[user] places the [C] on the [src].")
+			user.visible_message("<span class='notice'>[user] places the [C] on the [src].</span>", "<span class='notice'>You place the [C] on the [src].</span>")
 			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
 			var/obj/item/weapon/poster/faction/P = C
 			RP.faction = P.faction
@@ -283,7 +283,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 
 			// Set in_progress to TRUE to indicate the process has started
 			in_progress = TRUE
-			visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
+			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				collapse_check()
@@ -300,10 +300,10 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
 		if (ET.reagents.total_volume > 0)
-			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
 			return
 		if (istype(H))
-			visible_message("<span class = 'notice'>[user] carefully examines \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			user.visible_message("<span class = 'notice'>[user] carefully examines \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))
@@ -314,7 +314,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 	else if (istype(C, /obj/item/weapon/barrier/sandbag))
 		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
-			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
+			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
 
 		var/sandbag_time = 50
 
@@ -330,13 +330,13 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 						if(O.dir == user.dir)
 							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 							return
-			visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
 			if (do_after(user, sandbag_time, user.loc))
 				var/progress = bag.sand_amount
 				qdel(C)
 				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
 				sb.progress = progress
-				visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)
@@ -358,14 +358,14 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 						if(O.dir == user.dir)
 							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 							return
-			visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 			if (do_after(user, sandbag_time, user.loc))
 				var/obj/item/weapon/barrier/bag = C
 				var/progress = bag.sand_amount
 				qdel(C)
 				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
 				sandbag.progress = progress
-				visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)
@@ -386,14 +386,14 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 						if(O.dir == user.dir)
 							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 							return
-			visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
 			if (do_after(user, sandbag_time, user.loc))
 				var/obj/item/weapon/snowwall/bag = C
 				var/progress = bag.sand_amount
 				qdel(C)
 				var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
 				sandbag.progress = progress
-				visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a snow barricade. Anyone can now add to it.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)
@@ -403,13 +403,13 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		var/obj/item/stack/farming/seeds/TS
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in src)
-				user << "<span class='warning'>There already is something planted here.</span>"
+				to_chat(user, SPAN_WARNING("There already is something planted here."))
 				return
 			if (ishuman(user))
 				H.adaptStat("farming", 1)
-			H.visible_message("<span class='notice'>[user] places some in the ploughed field.</span>",
-				"<span class='notice'>You place [C] in the ploughed field.</span>",
-				"<span class='notice'>Someone is poking around in dirt.</span>")
+			H.visible_message("<span class='notice'>[user] places some of \the [C] in the ploughed field.</span>",
+								"<span class='notice'>You place [C] in the ploughed field.</span>",
+								"<span class='notice'>Your hear something poking around in dirt.</span>")
 			if (istype(C, /obj/item/stack/medical/advanced/herbs))
 				TS = new /obj/item/stack/farming/seeds/herbs
 				TS.spawn_plant(src)
@@ -423,7 +423,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 				qdel(C)
 			return
 		else
-			user << "<span class='danger'>You can't plant here. Find a ploughed plot.</span>"
+			to_chat(user, SPAN_WARNING("You can't plant here. Find a ploughed plot."))
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/obj/item/weapon/plough/PL = C
@@ -431,11 +431,11 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		if (user.a_intent == I_DISARM)
 			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
 				for(var/obj/covers/CV in T)
-					user << "<span class='danger'>You can't make a dirt road here.</span>"
+					to_chat(user, SPAN_WARNING("You can't make a dirt road here."))
 					return
-				user << "You start making a dirt road..."
+				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
 				if (do_after(user, 50/PL.usespeed, user.loc))
-					user << "You finish the dirt road."
+					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
 					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
 						DR.vertical = TRUE
@@ -448,13 +448,13 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 					return
 		else
 			if (istype(T, /turf/floor/grass/jungle)) //whyyyyyyy????? don't know, seriously...
-				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
 				return
 			else if (istype(T, /turf/floor/dirt/burned))
-				user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
+				to_chat(user, SPAN_DANGER("This floor is burned! Wait for it to recover first."))
 				return
 			else if (istype(T, /turf/floor/dirt/jungledirt))
-				user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 				if (do_after(user, 50/PL.usespeed, user.loc))
@@ -469,7 +469,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 							H.adaptStat("farming", 2)
 						return
 					else if (istype(T, /turf/floor/dirt/underground))
-						user << "<span class='danger'>You can't plough this type of terrain.</span>"
+						to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
 						return
 					else
 						ChangeTurf(/turf/floor/dirt/ploughed)
@@ -478,7 +478,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 						return
 
 			else
-				user << "<span class='danger'>You can't plough this type of terrain.</span>"
+				to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
 				return
 
 	else if (istype(C, /obj/item/weapon/covers))
@@ -492,7 +492,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 
 			if (src == get_step(user, user.dir))
 				if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
-					visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
+					user.visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 					if (do_after(user, covers_time, user.loc))
 						if (!istype(src, /turf/floor/beach/water/deep/saltwater) || map.ID == MAP_VOYAGE)
 							qdel(C)
@@ -500,7 +500,7 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 								new/obj/covers/repairedfloor/ship(src, user)
 							else
 								new/obj/covers/repairedfloor(src, user)
-							visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+							user.visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>", "<span class = 'notice'>You finish placing the floor cover.</span>")
 							if (ishuman(user))
 								var/mob/living/human/H = user
 								H.adaptStat("crafting", 3)
@@ -510,13 +510,13 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 	if (flooring)
 		if (istype(C, /obj/item/weapon/crowbar))
 			if (broken || burnt)
-				user << "<span class='notice'>You remove the broken [flooring.descriptor].</span>"
+				to_chat(user, SPAN_NOTICE("You remove the broken [flooring.descriptor]."))
 				make_grass()
 			else if (flooring.flags & TURF_IS_FRAGILE)
-				user << "<span class='danger'>You forcefully pry off the [flooring.descriptor], destroying them in the process.</span>"
+				to_chat(user, SPAN_NOTICE("You forcefully pry off the [flooring.descriptor], destroying them in the process."))
 				make_grass()
 			else if (flooring.flags & TURF_REMOVE_CROWBAR)
-				user << "<span class='notice'>You lever off the [flooring.descriptor].</span>"
+				to_chat(user, SPAN_NOTICE("You lever off the [flooring.descriptor]."))
 				make_grass()
 			else
 				return
@@ -525,19 +525,19 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		else if (istype(C, /obj/item/weapon/hammer) && (flooring.flags & TURF_REMOVE_SCREWDRIVER))
 			if (broken || burnt || src.z > 1)
 				return
-			user << "<span class='notice'>You unscrew and remove the [flooring.descriptor].</span>"
+			to_chat(user, SPAN_NOTICE("You unscrew and remove the [flooring.descriptor]."))
 			make_grass()
 			playsound(src, 'sound/items/Screwdriver.ogg', 80, TRUE)
 			return
 		else if (istype(C, /obj/item/weapon/wrench) && (flooring.flags & TURF_REMOVE_WRENCH))
 			if (src.z > 1)
 				return
-			user << "<span class='notice'>You unwrench and remove the [flooring.descriptor].</span>"
+			to_chat(user, SPAN_NOTICE("You unwrench and remove the [flooring.descriptor]."))
 			make_grass()
 			playsound(src, 'sound/items/Ratchet.ogg', 80, TRUE)
 			return
 		else if (istype(C, /obj/item/weapon/material/shovel) && (flooring.flags & TURF_REMOVE_SHOVEL))
-			user << "<span class='notice'>You shovel off the [flooring.descriptor].</span>"
+			to_chat(user, SPAN_NOTICE("You shovel off the [flooring.descriptor]."))
 			make_grass()
 			playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
 			return

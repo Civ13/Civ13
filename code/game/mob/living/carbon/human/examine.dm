@@ -4,7 +4,7 @@
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (!H.next_look_at.Find(getRoundUID(TRUE)) || H.next_look_at[getRoundUID(TRUE)] <= world.time)
-			H.visible_message("<small>[user.name] looks at \the [src].</small>", "<small>You look at \the [src].</small")
+			H.visible_message("<small>[user.name] looks at \the [src].</small>", "<small>You look at \the [src].</small>")
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
 
 	var/skipgloves = FALSE
