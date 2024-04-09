@@ -12,7 +12,7 @@
 	max_shells = 1 //duh
 	slot_flags = SLOT_SHOULDER
 	caliber = "arrow"
-	recoil = 0 //no shaking
+	shake_strength = 0 //no shaking
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
 	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
@@ -20,7 +20,6 @@
 	load_shell_sound = 'sound/weapons/pull_bow.ogg'
 	bulletinsert_sound = 'sound/weapons/pull_bow.ogg'
 	//+2 accuracy over the LWAP because only one shot
-	accuracy = TRUE
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 3.00
@@ -36,53 +35,9 @@
 	var/icotype = "bow"
 	equiptimer = 20
 	gtype = "none"
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 90,
-			SHORT_RANGE_MOVING = 55,
-
-			MEDIUM_RANGE_STILL = 80,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 63,
-			LONG_RANGE_MOVING = 32,
-
-			VERY_LONG_RANGE_STILL = 50,
-			VERY_LONG_RANGE_MOVING = 25),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 95,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 79,
-			MEDIUM_RANGE_MOVING = 39,
-
-			LONG_RANGE_STILL = 68,
-			LONG_RANGE_MOVING = 34,
-
-			VERY_LONG_RANGE_STILL = 58,
-			VERY_LONG_RANGE_MOVING = 29),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 99,
-			SHORT_RANGE_MOVING = 54,
-
-			MEDIUM_RANGE_STILL = 83,
-			MEDIUM_RANGE_MOVING = 42,
-
-			LONG_RANGE_STILL = 73,
-			LONG_RANGE_MOVING = 37,
-
-			VERY_LONG_RANGE_STILL = 63,
-			VERY_LONG_RANGE_MOVING = 32),
-	)
-
 	load_delay = 30
 	aim_miss_chance_divider = 3.00
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/bow/shortbow
 	name = "shortbow"
@@ -98,7 +53,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "arrow"
 	ammo_type = /obj/item/ammo_casing/arrow
-	accuracy = TRUE
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 1.00
@@ -112,7 +66,7 @@
 	load_delay = 10
 	projtype = "arrow"
 	w_class = ITEM_SIZE_NORMAL
-
+	accuracy = 6
 
 /obj/item/weapon/gun/projectile/bow/longbow
 	name = "longbow"
@@ -128,7 +82,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "arrow"
 	ammo_type = /obj/item/ammo_casing/arrow
-	accuracy = TRUE
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 1.25
@@ -141,6 +94,8 @@
 	flammable = TRUE
 	load_delay = 12
 	projtype = "arrow"
+	recoil = 1
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/bow/compoundbow
 	name = "compound bow"
@@ -156,7 +111,6 @@
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "arrow"
 	ammo_type = /obj/item/ammo_casing/arrow
-	accuracy = TRUE
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 1.35
@@ -169,6 +123,7 @@
 	flammable = TRUE
 	load_delay = 8
 	projtype = "arrow"
+	accuracy = 1
 
 /obj/item/weapon/gun/projectile/bow/proc/remove_arrow_overlay()
 	src.overlays = null
@@ -198,7 +153,6 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "stone"
 	ammo_type = /obj/item/ammo_casing/stone
-	accuracy = TRUE
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 1.00
@@ -211,6 +165,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	flammable = TRUE
 	load_delay = 10
 	projtype = "stone"
+	accuracy = 10
 
 /obj/item/weapon/gun/projectile/bow/New()
 	..()

@@ -21,7 +21,7 @@
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
-	var/maxpower = 100
+	var/maxpower = 50
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
 	var/obj/structure/engine/engine = null
@@ -48,7 +48,7 @@
 	name = "motorcycle axis"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 20
+	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
@@ -68,7 +68,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 60
+	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -77,7 +77,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 4
-	maxpower = 60
+	maxpower = 40
 	speedlist = list(1=6,2=5,3=3,4=2)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -88,7 +88,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 5000
+	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
 
@@ -100,6 +100,7 @@
 	color = "#5C5C4C"
 	turret_type = "is3_turret"
 	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -114,6 +115,7 @@
 	color = "#3d5931"
 	turret_type = "t34_turret"
 	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -133,6 +135,7 @@
 	color = "#4a5243"
 	turret_type = "su100_turret"
 	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -216,6 +219,7 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "bmd1_turret"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	tile_size = "96x96"
 	vehicle_type = "apc"
 	turret_x = 16
@@ -233,6 +237,7 @@
 	reg_number = ""
 	color = "#787859"
 	turret_type = "bmd2_turret"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	tile_size = "96x96"
 	vehicle_type = "apc"
 	turret_x = 16
@@ -252,8 +257,9 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "btr80_turret"
+	turret_type = "btr_turret"
 	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	vehicle_type = "apc"
 	turret_x = 16
 	turret_y = 0
@@ -301,6 +307,38 @@
 	turret_type = "t72_turret"
 	reg_number = ""
 	color = "#5C5C4C"
+	turret_x = 0
+	turret_y = 16
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t72m1
+	name = "T-72M1"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t72m1_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_x = 0
+	turret_y = 16
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t72b3
+	name = "T-72B3"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	turret_type = "t72b3_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	turret_x = 0
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -314,6 +352,8 @@
 	turret_type = "t64bm_turret"
 	reg_number = ""
 	color = "#5C5C4C"
+	turret_x = 0
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -327,6 +367,8 @@
 	turret_type = "t64bv_turret"
 	reg_number = ""
 	color = "#5C5C4C"
+	turret_x = 0
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -414,9 +456,9 @@
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = list(1=9,2=5,3=3,4=2)
+	speedlist = list(1=10,2=6,3=4,4=3)
 	reg_number = ""
-	color = "#c4a567"
+	color = "#D79E57"
 	turret_type = ""
 
 /obj/structure/vehicleparts/axis/heavy/l3cc
@@ -470,6 +512,8 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	turret_type = "t90a_turret"
+	turret_x = 0
+	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -532,7 +576,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m4
-	name = "M4 Sherman"
+	name = "M-4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
@@ -545,7 +589,7 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
-	name = "M48A1 Patton"
+	name = "M-48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#293822"
@@ -576,7 +620,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 1000
+	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
 	vehicle_type = "car"
@@ -748,7 +792,7 @@
 				H.driver_vehicle.running_sound()
 		return
 	else if (H.driver_vehicle.fueltank.reagents.total_volume <= 0)
-		to_chat(H, "There is not enough fuel!")
+		H << "There is not enough fuel!"
 		return
 
 	if (H.driver_vehicle.axis.currentspeed <= 0)
@@ -762,11 +806,11 @@
 			if (H.driver_vehicle.axis.currentspeed == 1)
 				H.driver_vehicle.moving = TRUE
 				H.driver_vehicle.startmovementloop()
-				to_chat(H, "You put the vehicle into first gear.")
+				H << "You put on the first gear."
 		return
-	else if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len)
+	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
-		if (H.driver_vehicle.axis.currentspeed > H.driver_vehicle.axis.speedlist.len)
+		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
 			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
@@ -774,7 +818,7 @@
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
 			if (H.driver_vehicle.axis.currentspeed < H.driver_vehicle.axis.speedlist.len+1)
-				to_chat(H, "You increase the speed.")
+				H << "You increase the speed."
 			return
 	else
 		return
@@ -862,7 +906,7 @@
 	weight = 60
 	step = 1
 	maxstep = 3
-	targettype = /obj/structure/vehicle/boat/rhib
+	//targettype = /obj/structure/vehicle/boat/rhib // хуй знает че это потом надо будет исправить
 
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")

@@ -8,12 +8,6 @@
 	var/release_force = 0
 	var/firing_range = 18
 	fire_sound_text = "a launcher firing"
-	var/datum/effect/effect/system/smoke_spread/puff
-
-/obj/item/weapon/gun/launcher/rocket/New()
-	..()
-	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
-	spawn_add_attachment(A, src)
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
@@ -46,8 +40,8 @@
 		var/obj/item/projectile/shell/P = projectile
 		P.dir = SOUTH
 		P.launch(target, user, src, 0, 0)
+		update_icon()
 		return TRUE
-
 	return FALSE
 
 /obj/item/weapon/gun/launcher/special_check(mob/user)
@@ -63,14 +57,15 @@
 	name = "rocket launcher"
 	desc = "MAGGOT."
 	icon_state = "rocket"
+	var/base_icon = "rocket"
 	item_state = "rocket"
 	w_class = ITEM_SIZE_HUGE
 	throw_speed = 2
-	throw_range = 4
+	throw_range = 10
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/rpg_fire.ogg'
+	fire_sound = 'sound/effects/bang.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	var/caliber = "rocket"
@@ -80,36 +75,47 @@
 	equiptimer = 28
 	load_delay = 18
 
+/obj/item/weapon/gun/launcher/rocket/New()
+	..()
+	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
+	spawn_add_attachment(A, src)
+
+/obj/item/weapon/gun/launcher/rocket/update_icon()
+	..()
+	if(rockets.len > 0)
+		icon_state = "[base_icon]"
+		item_state = "[base_icon]"
+	else
+		icon_state = "[base_icon]_empty"
+		item_state = "[base_icon]_empty"
+	update_held_icon()
+
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
-    ..()
-    if (!istype(src, /obj/item/weapon/gun/launcher/rocket/single_shot)) // Check if not single_shot or its subtypes
-        if (max_rockets > 1)
-            to_chat(user, SPAN_NOTICE("<b>LOADED [rockets.len]/[max_rockets]</B>"))
-        else
-            if (rockets.len)
-                to_chat(user, SPAN_NOTICE("<b>LOADED</B>"))
-            else
-                to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
+	if(!..(user, 2))
+		return
+	if (rockets)
+		user << SPAN_NOTICE("<b>LOADED</B>")
+	else
+		user << SPAN_NOTICE("<b>UNLOADED</B>")
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
-		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
 			rockets += I
-			to_chat(user, "You put the rocket in \the [src].")
+			user << "You put the rocket in \the [src]."
 			update_icon()
 		else
-			to_chat(user, "\The [src] cannot hold more rockets.")
+			usr << "\The [src] cannot hold more rockets."
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
 		rockets.len--
-		update_icon()
 		user.put_in_hands(G)
 		user.visible_message("\The [user] removes \a [G] from [src].", SPAN_NOTICE("You remove \a [G] from \the [src]."))
+		update_icon()
 	else
 		user << SPAN_WARNING("\The [src] is empty.")
 
@@ -129,23 +135,7 @@
 		return M
 	return null
 
-/obj/item/weapon/gun/launcher/New()
-	..()
-	puff = new /datum/effect/effect/system/smoke_spread()
-	puff.attach(src)
-	update_icon()
-
 /obj/item/weapon/gun/launcher/rocket/handle_post_fire(mob/user, atom/target)
-	sleep(1)
-	var/smoke_dir = user.dir
-	if(user)
-		switch(smoke_dir) //We want the opposite of their direction.
-			if(2,8)
-				smoke_dir /= 2
-			if(1,4)
-				smoke_dir *= 2
-	puff.set_up(1,,,smoke_dir)
-	puff.start()
 	message_admins("[key_name_admin(user)] fired a rocket from a rocket launcher ([src.name]) at [target].", key_name_admin(user))
 	log_game("[key_name_admin(user)] used a rocket launcher ([src.name]) at [target].")
 	update_icon()
@@ -156,24 +146,16 @@
 	name = "RPG-7"
 	desc = "Russian multi-use rocket."
 	icon_state = "rpg7_empty"
+	base_icon = "rpg7"
 	item_state = "rpg7"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	load_delay = 45 // note that the rpgreload.ogg cuts before this cooldown is finished TO-DO: extend the sound file or replace it entirely with a better one
+	load_delay = 45
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/loaded/New()
 	..()
 	rockets += new /obj/item/ammo_casing/rocket/pg7v(src)
 	update_icon()
-
-/obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "rpg7"
-		item_state = "rpg7"
-	else
-		icon_state = "rpg7_empty"
-		item_state = "rpg7_empty"
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/makeshift
 	name = "RPG-7"
@@ -182,7 +164,7 @@
 	item_state = "rpg7"
 	slot_flags = null
 	force = 10
-	recoil = 2
+	shake_strength = 2
 	load_delay = 50
 
 // Flare gun
@@ -315,11 +297,11 @@
 					playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
 						visible_message(SPAN_NOTICE("A US Army UH-1B helicopter flies by and drops off a crate at the smoke's location."))
-				else if (user.faction_text == RUSSIAN)
+				else if (user.faction_text == "RUSSIAN")
 					playsound(get_turf(src), 'sound/effects/aircraft/mi8.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
 						visible_message(SPAN_NOTICE("A Russian Mil Mi-8 helicopter flies by and drops off a crate at the smoke's location."))
-				else if (user.faction_text == DUTCH)
+				else if (user.faction_text == "DUTCH")
 					playsound(get_turf(src), 'sound/effects/aircraft/ch47.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
 						visible_message(SPAN_NOTICE("A Boeing CH-47 Chinook flies by and drops off a crate at the smoke's location."))
@@ -327,7 +309,7 @@
 					playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 70)
 					spawn(200)
 						visible_message(SPAN_NOTICE("A UH-60 Blackhawk helicopter flies by and drops off a crate at the smoke's location."))
-				spawn(600) // 1 minute
+				spawn(600)
 					supplydrop_turfs -= fired_from
 				return
 
@@ -372,15 +354,15 @@
 	name = "Single Shot Launcher"
 	desc = "DONT USE THIS!"
 	icon_state = "panzerfaust"
+	base_icon = "panzerfaust"
 	item_state = "panzerfaust"
 	slot_flags = SLOT_SHOULDER | SLOT_BACK
 	force = 10
-	recoil = 2
+	shake_strength = 2
 	fire_delay = 12
 	release_force = 12
 	firing_range = 10
 	var/rocket_path
-	var/is_used = FALSE
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/New()
 	..()
@@ -391,13 +373,6 @@
 	if(istype(I, /obj/item/ammo_casing/rocket))
 		user << SPAN_WARNING("You can't reload a [src]!")
 		return
-
-/obj/item/weapon/gun/launcher/rocket/single_shot/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "[initial(icon_state)]"
-	else
-		icon_state = "[initial(icon_state)]"
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/unload(mob/user)
 	if(rockets.len)
@@ -410,47 +385,27 @@
 /obj/item/weapon/gun/launcher/rocket/single_shot/attack_hand(mob/user)
 	..()
 
-/obj/item/weapon/gun/launcher/rocket/single_shot/handle_post_fire(mob/user, atom/target)
-	..()
-	is_used = TRUE
-	update_icon()
-
-/obj/item/weapon/gun/launcher/rocket/single_shot/examine(mob/user)
-    ..()
-    if (is_used)
-        to_chat(user, SPAN_NOTICE("<b>USED</B>"))
-    else
-        to_chat(user, SPAN_NOTICE("<b>UNUSED</B>"))
-
-
 /obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust
 	name = "Panzerfaust 60"
 	desc = "German single-use rocket."
 	icon_state = "panzerfaust"
+	base_icon = "panzerfaust"
 	item_state = "panzerfaust"
 	force = 10
-	recoil = 2
+	shake_strength = 2
 	fire_delay = 12
 	release_force = 12
 	firing_range = 10
 	rocket_path = /obj/item/ammo_casing/rocket/panzerfaust
 
-/obj/item/weapon/gun/launcher/rocket/single_shot/panzerfaust/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "[initial(icon_state)]"
-		item_state = "[initial(item_state)]"
-	else
-		icon_state = "[initial(icon_state)]_empty"
-		item_state = "[initial(item_state)]_empty"
-
 /obj/item/weapon/gun/launcher/rocket/single_shot/m72law
 	name = "M72 LAW"
 	desc = "A light, portable one-shot 66 mm (2.6 in) unguided anti-tank weapon."
 	icon_state = "m72law"
+	base_icon = "m72law"
 	item_state = "m72law"
 	force = 15
-	recoil = 2
+	shake_strength = 2
 	fire_delay = 10
 	release_force = 15
 	firing_range = 18
@@ -460,9 +415,10 @@
 	name = "RPG 22"
 	desc = "A light, Russian portable one-shot 72.5 mm (2.85 in) unguided anti-tank weapon."
 	icon_state = "rpg22"
+	base_icon = "rpg22"
 	item_state = "rpg22"
 	force = 15
-	recoil = 2
+	shake_strength = 2
 	fire_delay = 10
 	release_force = 15
 	firing_range = 18
@@ -473,51 +429,33 @@
 	name = "M1A1 Bazooka"
 	desc = "An American rocket launcher made for cracking open fortified defenses and enemy armor."
 	icon_state = "bazooka_empty"
+	base_icon = "bazooka"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
 	force = 10
 	caliber = "bazooka"
 
-/obj/item/weapon/gun/launcher/rocket/bazooka/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "bazooka"
-	else
-		icon_state = "bazooka_empty"
-
 /obj/item/weapon/gun/launcher/rocket/rpb54
 	name = "Raketen-Panzerbüchse 54"
 	desc = "A reusable 88mm anti-tank rocket launcher developed by Germany during World War II."
 	icon_state = "rpb54_empty"
+	base_icon = "rpb54"
 	item_state = "rpb54"
 	slot_flags = SLOT_SHOULDER
 	force = 10
 	caliber = "rpb54"
 	fire_sound = 'sound/weapons/guns/fire/panzershreck.ogg'
 
-/obj/item/weapon/gun/launcher/rocket/rpb54/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "rpb54"
-	else
-		icon_state = "rpb54_empty"
-
 //Fatman
 /obj/item/weapon/gun/launcher/rocket/fatman
 	name = "Fatman"
 	desc = "An American rocket launcher made for firing small nuclear rockets."
 	icon_state = "fatman_empty"
+	base_icon = "fatman"
 	item_state = "bazooka"
 	slot_flags = SLOT_SHOULDER
 	force = 10
 	caliber = "nuclear"
-
-/obj/item/weapon/gun/launcher/rocket/fatman/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "fatman"
-	else
-		icon_state = "fatman_empty"
 
 /obj/item/weapon/gun/launcher/rocket/fatman/loaded/New()
 	..()
@@ -528,23 +466,13 @@
 	name = "PIAT MK1"
 	desc = "A reusable 83mm anti-tank weapon developed by Britain during World War II."
 	icon_state = "piat_empty"
+	base_icon = "piat"
 	item_state = "piat_empty"
 	slot_flags = SLOT_SHOULDER
 	force = 10
-	recoil = 4
+	shake_strength = 4
 	caliber = "piat"
 	fire_sound = 'sound/weapons/guns/fire/piatfire.ogg'
-
-/obj/item/weapon/gun/launcher/rocket/piat/update_icon()
-	..()
-	if(rockets.len)
-		icon_state = "piat"
-		item_state = "piat"
-	else
-		icon_state = "piat_empty"
-		item_state = "piat_empty"
-	update_held_icon()
-	return
 
 ////////////////////////////////////////AMMO///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -558,14 +486,6 @@
 	caliber = "rocket"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
-
-/obj/item/ammo_casing/rocket/fire_act(temperature)
-	var/turf/t = get_turf(src)
-	if (temperature > T0C+500)
-		if (prob(20))
-			visible_message(SPAN_DANGER("<big>\The [src] cooks-off and explodes!</big>"))
-			explosion(t,0,1,1,1)
-			qdel(src)
 
 /obj/item/ammo_casing/rocket/bazooka
 	name = "M6A1 HEAT rocket"
@@ -655,6 +575,9 @@
 	heavy_armor_penetration = 10
 	caliber = 90
 
+/obj/item/projectile/shell/missile/update_icon()
+	return
+
 /obj/item/projectile/shell/missile/heat
 	atype = "HEAT"
 	heavy_armor_penetration = 80
@@ -700,6 +623,43 @@
 	icon_state = "atgm_missile"
 	atype = "HE"
 	caliber = 120
+
+/obj/item/projectile/shell/missile/atgm/process()
+	if(permutated.len > 2 && firer && firer.client)
+		var/client/C = firer
+		var/mouse_x = C.mouse_x
+		var/mouse_y = C.mouse_y
+		var/mouse_turf = locate(mouse_x, mouse_y, z)
+		var/mouse_angle = round(Atan2(mouse_x - starting.x, mouse_y - starting.y))
+
+		if(get_dist(starting, loc) > get_dist(starting, mouse_turf))
+			initiate(loc)
+			return
+
+		if (mouse_angle < 0)
+			mouse_angle = 180 + (180 - abs(mouse_angle))
+
+		if(get_angle() < 90 && mouse_angle > 270)
+			mouse_angle -= 360
+		else if(mouse_angle < 90 && get_angle() > 270)
+			mouse_angle += 360
+
+		var/delta_angle = mouse_angle - get_angle()
+
+		var/new_angle = get_angle() 
+		if(abs(delta_angle) > 5)
+			new_angle += 1.25 * (delta_angle) / abs(delta_angle)
+		var/new_x = starting.x + ceil(cos(new_angle) * get_dist(starting, mouse_turf))
+		var/new_y = starting.y + ceil(sin(new_angle) * get_dist(starting, mouse_turf))
+		var/turf/new_target = locate(new_x, new_y, z)
+
+		transform = matrix()
+		trajectory = new()
+		trajectory.setup(loc, new_target)
+		trajectory.angle = new_angle
+		transform = turn(transform, -(trajectory.angle + 90))
+		new/obj/effect/effect/smoke/small/fast(loc)
+	..()
 
 /obj/item/projectile/shell/missile/atgm/he
 	atype = "HE"

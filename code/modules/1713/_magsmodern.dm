@@ -1,6 +1,7 @@
 /obj/item/ammo_magazine/ak47
 	name = "AK magazine (7.62x39mm)"
 	icon_state = "ak47"
+	attached_icon_state = "ak47_magak"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	ammo_type = /obj/item/ammo_casing/a762x39
@@ -16,6 +17,7 @@
 /obj/item/ammo_magazine/sksm
 	name = "SKS-M magazine (7.62x39mm)"
 	icon_state = "sksm"
+	attached_icon_state = "sksm_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	ammo_type = /obj/item/ammo_casing/a762x39
@@ -26,6 +28,7 @@
 /obj/item/ammo_magazine/ak74
 	name = "AK-74 magazine (5.45x39mm)"
 	icon_state = "ak74"
+	attached_icon_state = "ak74_magak"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 	ammo_type = /obj/item/ammo_casing/a545x39
@@ -62,6 +65,7 @@
 /obj/item/ammo_magazine/ak101
 	name = "AK-101 magazine (5.46x45mm)"
 	icon_state = "ak47"
+	attached_icon_state = "ak74m_magak"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	ammo_type = /obj/item/ammo_casing/a556x45
@@ -77,6 +81,7 @@
 /obj/item/ammo_magazine/ak74/ak74m
 	name = "AK-74M magazine (5.45x39mm)"
 	icon_state = "ak74m"
+	attached_icon_state = "ak74m_magak"
 
 /obj/item/ammo_magazine/ak74/ak74m/drum
 	name = "AK-74M Drum Mmgazine (5.45x39mm)"
@@ -96,6 +101,7 @@
 /obj/item/ammo_magazine/ak47/makeshift
 	name = "Makeshift AK-47 magazine (7.62x39mm)"
 	icon_state = "ak74"
+	attached_icon_state = "ak47_magmakeshift"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	ammo_type = /obj/item/ammo_casing/a762x39
@@ -106,11 +112,23 @@
 /obj/item/ammo_magazine/m16
 	name = "STANAG magazine (5.56x45mm)"
 	icon_state = "m16"
+	attached_icon_state = "m16_mag"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 30
 	weight = 0.5
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m16/mag5_60
+	name = "MAG5-60 STANAG (5.56x45mm)"
+	icon_state = "mag5_60"
+	attached_icon_state = "mag5_60_mag"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 60
+	weight = 1
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m16/box
@@ -127,6 +145,7 @@
 /obj/item/ammo_magazine/ar10
 	name = "AR-10 magazine (7.62x51mm)"
 	icon_state = "m16"
+	attached_icon_state = "ar10_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
@@ -137,6 +156,7 @@
 /obj/item/ammo_magazine/m14
 	name = "M14 magazine (7.62x51mm)"
 	icon_state = "m14"
+	attached_icon_state = "m14_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
@@ -158,6 +178,7 @@
 /obj/item/ammo_magazine/hk
 	name = "G3 magazine (7.62x51mm)"
 	icon_state = "hk"
+	attached_icon_state = "hk_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
@@ -168,6 +189,7 @@
 /obj/item/ammo_magazine/fal
 	name = "FN Fal magazine (7.62x51mm)"
 	icon_state = "fal"
+	attached_icon_state = "fal_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
@@ -178,6 +200,7 @@
 /obj/item/ammo_magazine/mk18
 	name = "MK18 magazine (5.56mm NATO)"
 	icon_state = "hk"
+	attached_icon_state = "m16_mag"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	ammo_type = /obj/item/ammo_casing/a556x45
@@ -188,6 +211,7 @@
 /obj/item/ammo_magazine/scarh
 	name = "SCAR-H magazine (7.62x51mm)"
 	icon_state = "scarh"
+	attached_icon_state = "scarh_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	ammo_type = /obj/item/ammo_casing/a762x51
@@ -198,6 +222,7 @@
 /obj/item/ammo_magazine/ar12
 	name = "AR-12 magazine (12gauge)"
 	icon_state = "scarh"
+	attached_icon_state = "ar12_mag"
 	mag_type = MAGAZINE
 	caliber = "12gauge"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
@@ -208,6 +233,7 @@
 /obj/item/ammo_magazine/saiga12
 	name = "Saiga-12K magazine (12gauge buckshot)"
 	icon_state = "type99redtape"
+	attached_icon_state = "saiga12_mag"
 	mag_type = MAGAZINE
 	caliber = "12gauge"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
@@ -224,6 +250,7 @@
 /obj/item/ammo_magazine/usas12
 	name = "USAS-12 magazine (buckshot)"
 	icon_state = "usas12"
+	attached_icon_state = "usas12_mag"
 	mag_type = MAGAZINE
 	caliber = "12gauge"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
@@ -234,12 +261,14 @@
 /obj/item/ammo_magazine/usas12/slug
 	name = "USAS-12 magazine (slug)"
 	icon_state = "usas12slug"
+	attached_icon_state = "usas12"
 	ammo_type = /obj/item/ammo_casing/shotgun/slug
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/usas12drum
 	name = "USAS-12 magazine (buckshot)"
 	icon_state = "usas12drum"
+	attached_icon_state = "usas12_drum"
 	mag_type = MAGAZINE
 	caliber = "12gauge"
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
@@ -256,6 +285,7 @@
 /obj/item/ammo_magazine/pkm
 	name = "PKM ammo belt (7.62x54mmR)"
 	icon_state = "maximbelt"
+	attached_icon_state = "belt_"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = ITEM_SIZE_LARGE
@@ -265,10 +295,10 @@
 	multiple_sprites = TRUE
 	belt = TRUE
 
-
 /obj/item/ammo_magazine/pkm/c100
 	name = "PKM ammo belt (7.62x54mmR)"
 	icon_state = "b762x54"
+	attached_icon_state = "pkm_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = ITEM_SIZE_NORMAL
@@ -280,6 +310,7 @@
 /obj/item/ammo_magazine/ammo127
 	name = "Ammo can (12.7x108mm)"
 	icon_state = "b127"
+	attached_icon_state = "pkm_mag"
 	mag_type = MAGAZINE
 	caliber = "a127"
 	w_class = ITEM_SIZE_NORMAL
@@ -301,6 +332,7 @@
 /obj/item/ammo_magazine/rpd
 	name = "RPD drum (7.62x39)"
 	icon_state = "rpd"
+	attached_icon_state = "rpd_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	w_class = ITEM_SIZE_NORMAL
@@ -312,6 +344,7 @@
 /obj/item/ammo_magazine/rpk74
 	name = "RPK-74 magazine (5.45x39)"
 	icon_state = "rpk74mag"
+	attached_icon_state = "rpk74_mag"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 
@@ -323,6 +356,7 @@
 /obj/item/ammo_magazine/rpk74/drum
 	name = "RPK-74 drum (5.45x39)"
 	icon_state = "rpk74"
+	attached_icon_state = "drum"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 	w_class = ITEM_SIZE_NORMAL
@@ -334,6 +368,7 @@
 /obj/item/ammo_magazine/rpk47
 	name = "RPK-47 magazine (7.62x39mm)"
 	icon_state = "rpk47mag"
+	attached_icon_state = "rpk47_mag"
 	mag_type = MAGAZINE
 
 	w_class = ITEM_SIZE_SMALL
@@ -345,6 +380,7 @@
 /obj/item/ammo_magazine/rpk47/drum
 	name = "RPK-47 drum (7.62x39mm)"
 	icon_state = "rpk47"
+	attached_icon_state = "drum"
 	mag_type = MAGAZINE
 	caliber = "a762x39"
 	ammo_type = /obj/item/ammo_casing/a762x39
@@ -387,6 +423,7 @@
 /obj/item/ammo_magazine/negev
 	name = "Negev Belt (5.56x45mm)"
 	icon_state = "b762"
+	attached_icon_state = "negev_mag"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	w_class = ITEM_SIZE_NORMAL
@@ -394,10 +431,21 @@
 	max_ammo = 150
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/m249
+	name = "belt (5.56x45mm)"
+	icon_state = "b762"
+	attached_icon_state = "m249_mag"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 100
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/m24
 	name = "clip (7.62x51mm)"
 	icon_state = "clip"
-
+	attached_icon_state = "none"
 	ammo_type = /obj/item/ammo_casing/a762x51
 	caliber = "a762x51"
 	max_ammo = 5
@@ -408,6 +456,7 @@
 /obj/item/ammo_magazine/p90
 	name = "P90 magazine (5.7x28mm)"
 	icon_state = "p90"
+	attached_icon_state = "p90_mag"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a57x28
 	caliber = "a57x28"
@@ -453,10 +502,22 @@
 /obj/item/ammo_magazine/glock17
 	name = "G17 Glock (9x19mm)"
 	icon_state = "glock17"
+	attached_icon_state = "victor_mag"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 17
+	weight = 0.33
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/glock17/vector
+	name = "Kriss Vector (9x19mm)"
+	icon_state = "glock17"
+	attached_icon_state = "victor_mag"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 33
 	weight = 0.33
 	multiple_sprites = TRUE
 
@@ -503,6 +564,7 @@
 /obj/item/ammo_magazine/uzi
 	name = "Uzi magazine (9x19mm Parabellum)"
 	icon_state = "uzi"
+	attached_icon_state = "uzi_mag"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x19
 	caliber = "a9x19"
@@ -513,6 +575,7 @@
 /obj/item/ammo_magazine/mac10
 	name = "MAC-10 magazine (.45 ACP)"
 	icon_state = "mac10"
+	attached_icon_state = "mac10_mag"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a45acp
 	caliber = "a45acp"
@@ -523,6 +586,7 @@
 /obj/item/ammo_magazine/tec9
 	name = "TEC-9 (9x19mm Parabellum)"
 	icon_state = "tec9"
+	attached_icon_state = "tec9_mag"
 	mag_type = MAGAZINE
 	caliber = "a9x19"
 	ammo_type = /obj/item/ammo_casing/a9x19
@@ -533,6 +597,7 @@
 /obj/item/ammo_magazine/skorpion
 	name = "Skorpion magazine (9x19mm Parabellum)"
 	icon_state = "skorpion"
+	attached_icon_state = "skorpion_mag"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x19
 	caliber = "a9x19"
@@ -553,6 +618,7 @@
 /obj/item/ammo_magazine/tommy
 	name = "thompson (.45 ACP)"
 	icon_state = "tommydrum"
+	attached_icon_state = "thompson_drum"
 	mag_type = MAGAZINE
 	caliber = "a45acp"
 	ammo_type = /obj/item/ammo_casing/a45acp
@@ -593,6 +659,7 @@
 /obj/item/ammo_magazine/ar15
 	name = "AR15 magazine (5.56x45mm)"
 	icon_state = "m16"
+	attached_icon_state = "m16_mag"
 	mag_type = MAGAZINE
 	caliber = "a556x45"
 	ammo_type = /obj/item/ammo_casing/a556x45
@@ -610,9 +677,20 @@
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/ptrs
+	name = "cli[] (14.5x114mm)"
+	icon_state = "clip"
+	caliber = "a145"
+	ammo_type = /obj/item/ammo_casing/a145_ap
+	max_ammo = 5
+	weight = 0.1
+	multiple_sprites = TRUE
+	clip = TRUE
+
 /obj/item/ammo_magazine/vintorez
 	name = "VSS Vintorez magazine (9x39mm)"
 	icon_state = "g43"
+	attached_icon_state = "vss_mag"
 	caliber = "a9x39"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x39
@@ -623,6 +701,7 @@
 /obj/item/ammo_magazine/srm
 	name = "SR-3 magazine (9x39mm)"
 	icon_state = "srm"
+	attached_icon_state = "srm_mag"
 	caliber = "a9x39"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x39
@@ -643,6 +722,7 @@
 /obj/item/ammo_magazine/srm/srms
 	name = "SR-3 small magazine (9x39mm)"
 	icon_state = "srms"
+	attached_icon_state = "srms_mag"
 	caliber = "a9x39"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x39
@@ -815,6 +895,7 @@
 /obj/item/ammo_magazine/c6belt
 	name = "C6 GPMG ammo belt"
 	icon_state = "maximbelt"
+	attached_icon_state = "belt_"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	w_class = ITEM_SIZE_LARGE
@@ -827,6 +908,7 @@
 /obj/item/ammo_magazine/c6can
 	name = "C6 GPMG ammo can"
 	icon_state = "b762x51"
+	attached_icon_state = "c6_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
 	w_class = ITEM_SIZE_LARGE

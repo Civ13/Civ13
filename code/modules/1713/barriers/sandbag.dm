@@ -182,6 +182,7 @@
 	health -= 0.05
 	if (health <= 0)
 		qdel(src)
+		
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)

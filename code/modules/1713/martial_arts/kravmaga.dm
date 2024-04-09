@@ -170,6 +170,6 @@
 		D.apply_damage(rand(10,15), STAMINA, affecting, armor_block)
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Stomped nonlethally by [A.name] ([A.ckey])</font>"
 	if(prob(D.getStaminaLoss()))
-		D.visible_message("<span class='warning'>[D] sputters and recoils in pain!</span>", "<span class='userdanger'>You recoil in pain as you are jabbed in a nerve!</span>")
+		D.visible_message("<span class='warning'>[D] sputters and recoils in pain!</span>", "<span class='userdanger'>You shake_strength in pain as you are jabbed in a nerve!</span>")
 		D.drop_all_held_items()
 	return TRUE

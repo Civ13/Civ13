@@ -22,11 +22,13 @@
 	
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	slot_flags = FALSE
 	full_auto = TRUE
-	fire_delay = 3
+	fire_delay = 0
+	recoil = 10 // Stationary weapons have virtually no recoil
+	accuracy = 3
 
 	var/climbers = list()
 	var/can_turn = TRUE // Used for fixed coaxial MGs (like the Breda 30)

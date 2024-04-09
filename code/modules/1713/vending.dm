@@ -620,7 +620,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/m1911 = 50,
 		/obj/item/ammo_magazine/m9beretta = 50,
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 15,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 15,
 		/obj/item/weapon/attachment/under/laser = 15,
@@ -727,7 +727,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 5,
+		/obj/item/weapon/gun/projectile/automatic/mg34 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 15,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 2,
@@ -744,7 +744,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 2,
+		/obj/item/weapon/gun/projectile/automatic/mg34 = 2,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 5,
@@ -1125,7 +1125,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/makarov = 15,
 		/obj/item/ammo_magazine/pkm = 8,
 		/obj/item/ammo_magazine/maxim = 8,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
 	)
@@ -1482,7 +1482,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74m = 4,
 		/obj/item/weapon/gun/projectile/automatic/pkm = 2,
-		/obj/item/weapon/gun/projectile/automatic/kord = 1,
+		/obj/item/weapon/gun/projectile/automatic/nsv_utes = 1,
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 15,
 		/obj/item/weapon/gun/projectile/pistol/mp443 = 15,

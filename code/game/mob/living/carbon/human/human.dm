@@ -1250,11 +1250,10 @@ var/list/coefflist = list()
 			if (looking)
 		/*		if (G.accuracy)
 					G.accuracy = G.scoped_accuracy + zoom_offset*/
-				if (G.recoil)
-					G.recoil = round(G.recoil*(W.zoom_amt/5)+1) //recoil is worse when looking through a scope
+				if (G.shake_strength)
+					G.shake_strength = round(G.shake_strength*(W.zoom_amt/5)+1) //shake_strength is worse when looking through a scope
 			else
-				G.accuracy = initial(G.accuracy)
-				G.recoil = initial(G.recoil)
+				G.shake_strength = initial(G.shake_strength)
 
 
 
