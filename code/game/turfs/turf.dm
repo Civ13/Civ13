@@ -135,25 +135,26 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
 		if (H.ant)
-			if(in_progress)
+			if(mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
 				return
-			// Set in_progress to TRUE to indicate the process has started.
-			in_progress = TRUE
+			// Set mining_in_progress to TRUE to indicate the process has started.
+			mining_in_progress = TRUE
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
-				U.collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/T = src
-					T.mining_clear_debris()
-					in_progress = FALSE // Reset the variable after the process has finished.
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-				return TRUE
-			else
-				in_progress = FALSE // In case we abort mid-way.
+			if (!do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
+				mining_in_progress = FALSE // In case we abort mid-way.
+				return
+			U.collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/T = src
+				T.mining_clear_debris()
+				mining_in_progress = FALSE // Reset the variable after the process has finished.
+				return
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+			return TRUE
+
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
 			var/mob/M = user.pulling

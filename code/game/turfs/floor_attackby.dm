@@ -64,7 +64,7 @@
 				else
 					ChangeTurf(/turf/floor/dirt)*/
 
-var/in_progress = null // Define the variable out of any scopes and the attackby() procedures.
+var/mining_in_progress = null // Define the variable out of any scopes and the attackby() procedures.
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
 	if (!C || !user)
@@ -277,25 +277,26 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
-			if (in_progress)
+			if (mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already breaking the rock with \the [C.name]."))
 				return
 
-			// Set in_progress to TRUE to indicate the process has started
-			in_progress = TRUE
+			// Set mining_in_progress to TRUE to indicate the process has started
+			mining_in_progress = TRUE
 			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
-				collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/TT = src
-					TT.mining_clear_debris()
-					in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-			else
-				in_progress = FALSE // In case we abort mid-way.
+			if (!do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
+				mining_in_progress = FALSE // In case we abort mid-way.
+				return
+			collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/TT = src
+				TT.mining_clear_debris()
+				mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
+				return
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
@@ -577,19 +578,19 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 	if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/mob/living/human/H = user
 		if (istype(H))
-			if(in_progress)
+			if(mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor with \the [C.name]."))
 				return
-			// Set in_progress to TRUE to indicate the process has started.
-			in_progress = TRUE
+			// Set mining_in_progress to TRUE to indicate the process has started.
+			mining_in_progress = TRUE
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with \the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
 				mining_proc(H)
-				in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
-		else
-			in_progress = FALSE // In case we abort mid-way.
+				mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
+			else
+				mining_in_progress = FALSE // In case we abort mid-way.
 			return ..(C, user)
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
@@ -852,11 +853,11 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
-			if(in_progress)
+			if(mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
 				return
-			// Set in_progress to TRUE to indicate the process has started.
-			in_progress = TRUE
+			// Set mining_in_progress to TRUE to indicate the process has started.
+			mining_in_progress = TRUE
 			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
@@ -864,13 +865,13 @@ var/in_progress = null // Define the variable out of any scopes and the attackby
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					var/turf/floor/dirt/underground/empty/T = src
 					T.mining_clear_debris()
-					in_progress = FALSE // Reset the in_progress variable after the process has finished.
+					mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
 					return TRUE
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
 				return TRUE
 			else
-				in_progress = FALSE // In case we abort mid-way.
+				mining_in_progress = FALSE // In case we abort mid-way.
 		else
 			..()
 	else
