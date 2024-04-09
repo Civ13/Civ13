@@ -287,6 +287,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (!do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				mining_in_progress = FALSE // In case we abort mid-way.
+				return
 			collapse_check()
 			if (istype(src, /turf/floor/dirt/underground/empty))
 				var/turf/floor/dirt/underground/empty/TT = src
