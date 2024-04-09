@@ -87,13 +87,13 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 					if (radiation > 0)
 						watertype = "irradiated_water"
 					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
-					user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+					user.visible_message(SPAN_NOTICE("[user] fills \the [RG] with water."), SPAN_NOTICE("You fill \the [RG] with water."))
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
 				return
 		if (istype(C, /obj/item/clothing) && !busy)
 			var/obj/item/clothing/CL = C
-			usr << "<span class='notice'>You start washing \the [C].</span>"
+			to_chat(usr, SPAN_NOTICE("You start washing \the [C]."))
 			var/turf/location = user.loc
 
 			busy = TRUE
@@ -109,16 +109,16 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			CL.dirtyness = 0
 			CL.fleas = FALSE
 			user.visible_message( \
-				"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
-				"<span class='notice'>You wash \a [C] using \the [src].</span>")
+				SPAN_NOTICE("[user] washes \a [C] using \the [src]."), \
+				SPAN_NOTICE("You wash \a [C] using \the [src]."))
 
 	if (istype(src, /turf/floor/dirt))
 		if (C.fertilizer_value > 0)
-			user << "You start fertilizing the dirt..."
+			to_chat(user,"You start fertilizing the dirt...")
 			var/mob/living/human/H = user
 			var/turf/floor/dirt/D = src
 			if (do_after(user, 60/H.getStatCoeff("farming"), src))
-				user << "You fertilize the dirt around this plot."
+				to_chat(user,"You fertilize the dirt around this plot.")
 				for (D in range(1,src))
 					if(D.soil_nutrition + C.fertilizer_value <= D.max_soil_nutrition) // Do not let players over fertilize the dirt
 						D.soil_nutrition += C.fertilizer_value
@@ -144,7 +144,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				if (B.rag)
 					return
 			if (C.reagents && C.reagents.total_volume > 0)
-				visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
+				visible_message(SPAN_NOTICE("\The [user] tips the contents of \the [C] on \the [src]."))
 				if (C.reagents.has_reagent("petroleum", 5))
 					new/obj/effect/decal/cleanable/blood/oil(user.loc)
 				if (C.reagents.has_reagent("gasoline", 5))
@@ -167,7 +167,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				C.update_icon()
 				C.reagents.del_reagent("cholera")
 			else
-				usr << "<span class='warning'>\The [C] is empty.</span>"
+				to_chat(usr, SPAN_WARNING("\The [C] is empty."))
 		return
 
 
@@ -178,26 +178,25 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
-					if (T.available_snow > 0)
-						H.shoveling = TRUE
-						user.visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
-						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
-							user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
-							H.shoveling = FALSE
-							H.adaptStat("strength", 1)
-							T.available_snow -= 1
-							new /obj/item/weapon/snowwall(T)
-							if (T.available_snow <= 0)
-								if (istype(T, /turf/floor/winter/grass))
-									T.ChangeTurf(/turf/floor/grass)
-								else if (istype(T, /turf/floor/dirt/winter))
-									T.ChangeTurf(/turf/floor/dirt)
-
-						else
-							H.shoveling = FALSE
-					else
-						user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
+					if (T.available_snow <= 0)
+						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
+						return
+					H.shoveling = TRUE
+					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (!do_after(user, (80/(H.getStatCoeff("strength"))/SH.usespeed)))
+						H.shoveling = FALSE
+						return
+					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+					H.shoveling = FALSE
+					H.adaptStat("strength", 1)
+					T.available_snow -= 1
+					new /obj/item/weapon/snowwall(T)
+					if (T.available_snow <= 0)
+						if (istype(T, /turf/floor/winter/grass))
+							T.ChangeTurf(/turf/floor/grass)
+						else if (istype(T, /turf/floor/dirt/winter))
+							T.ChangeTurf(/turf/floor/dirt)
 
 				else if (istype(T, /turf/floor/dirt) && istype(H))
 					if (T.available_dirt > 0)
@@ -292,10 +291,10 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			if (istype(src, /turf/floor/dirt/underground/empty))
 				var/turf/floor/dirt/underground/empty/TT = src
 				TT.mining_clear_debris()
-				mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
-				return
 			else if (!istype(src, /turf/floor/dirt/underground/empty))
 				mining_proc(H)
+			mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
+			return
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
@@ -583,7 +582,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				return
 			// Set mining_in_progress to TRUE to indicate the process has started.
 			mining_in_progress = TRUE
-			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with \the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with \the [C.name].</span>")
+			visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
@@ -596,10 +595,10 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
 		if (ET.reagents.total_volume > 0)
-			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
 			return
 		if (istype(H))
-			visible_message("<span class = 'notice'>[user] carefully examine \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			visible_message(SPAN_NOTICE("[user] carefully examines \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))
@@ -644,35 +643,28 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 			mineral.amount = rand(8,12)
-			if (istype(get_area(src), /area/caribbean/void/caves/special))
-				mineral.amount *= 2
 			if (H)
-				H << "<span class='danger'>You found some <font color=[get_material_by_name("copper").icon_colour]><b>copper</font></b> ore!</span>"
-			change_the_turf()
-			if (H)
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("copper").icon_colour]><b>copper</font></b> ore!"))
 				H.adaptStat("strength", 1)
-			return
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 			mineral.amount = rand(8,12)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
-				if (H)
-					H << "<span class='danger'>You found some <font color=[get_material_by_name("tin").icon_colour]><b>tin</font></b> ore!</span>"
-			change_the_turf()
 			if (H)
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("tin").icon_colour]><b>tin</font></b> ore!"))
 				H.adaptStat("strength", 1)
-			return
+		change_the_turf()
+		return
 	if (prob(40) && map.ordinal_age >= 1)
 		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 		mineral.amount = rand(8,12)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
-			if (H)
-				H << "<span class='danger'>You found some <font color=[get_material_by_name("iron").icon_colour]><b>iron</font></b> ore!</span>"
-		change_the_turf()
 		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("iron").icon_colour]><b>iron</font></b> ore!"))
 			H.adaptStat("strength", 1)
+		change_the_turf()
 		return
 	if (prob(25))
 		if (map.ordinal_age >= 2)
@@ -684,22 +676,16 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
-						H << "<span class='danger'>You found some <font color=#A9A9A9><b>coal</font></b>!</span>" // no material
-					change_the_turf()
-					if (H)
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
 						H.adaptStat("strength", 1)
-					return
 				if (2)
 					var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
 					mineral.amount = 4
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
-						H << "<span class='danger'>You found some <font color=#f3e781]><b>saltpeter</font></b>!</span>" // no material
-					change_the_turf()
-					if (H)
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 						H.adaptStat("strength", 1)
-					return
 				if (3)
 					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
 					mineral.amount = 4
@@ -707,11 +693,8 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 						mineral.amount *= 2
 					if (mineral && mineral.get_material())
 						if (H)
-							H << "<span class='danger'>You found some <font color=#fffa78><b>sulphur</font></b>!</span>" // no material
-					change_the_turf()
-					if (H)
-						H.adaptStat("strength", 1)
-					return
+							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
+							H.adaptStat("strength", 1)
 				if (4)
 					// if (prob(50))
 					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
@@ -719,11 +702,10 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
-						H << "<span class='danger'>You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!</span>"
-					change_the_turf()
-					if (H)
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!"))
 						H.adaptStat("strength", 1)
-					return
+			change_the_turf()
+			return
 	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
@@ -731,7 +713,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						if (H)
-							H << "<span class='danger'>You found some <font color=#325202><b>uranium</font></b>! Better clear the mine.</span>"
+							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#325202><b>uranium</font></b>! Better clear the mine."))
 						change_the_turf()
 						if (H)
 							H.adaptStat("strength", 3)
@@ -742,7 +724,7 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 						mineral.amount = 4
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
-						H << "<span class='danger'>You found some <font color=#882c1d><b>mercury</font></b>!</span>" // no material
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#882c1d><b>mercury</font></b>!"))// no material
 						change_the_turf()
 						H.adaptStat("strength", 1)
 						return
@@ -753,10 +735,9 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=[get_material_by_name("silver").icon_colour]><b>silver</font> ore</b>!</span>"
-		change_the_turf()
-		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("silver").icon_colour]><b>silver</font> ore</b>!"))
 			H.adaptStat("strength", 1)
+		change_the_turf()
 		return
 	if (prob(2))
 		var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
@@ -764,10 +745,9 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=[get_material_by_name("gold").icon_colour]><b>gold</font> ore</b>!</span>"
-		change_the_turf()
-		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("gold").icon_colour]><b>gold</font> ore</b>!"))
 			H.adaptStat("strength", 1)
+		change_the_turf()
 		return
 	if (prob(1))
 		var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
@@ -775,52 +755,40 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some raw <font color=[get_material_by_name("diamond").icon_colour]><b>diamonds</b></font>!</span>"
-		change_the_turf()
-		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[get_material_by_name("diamond").icon_colour]><b>diamonds</b></font>!"))
 			H.adaptStat("strength", 1)
+		change_the_turf()
 		return
 	if (istype(T, /turf/floor/dirt/underground/icy))
-		if (prob(3))
+		if (prob(2))
 			var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
 			mineral.amount = 1
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				new/obj/item/stack/material/fossil(src)
 			if (H)
-				H << "<span class='danger'>You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!</span>"
-			change_the_turf()
-			if (H)
+				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!"))
 				H.adaptStat("strength", 1)
+			change_the_turf()
 			return
-		else
-			if (prob(1))
-				var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
-				mineral.amount = 1
-				if (istype(get_area(src), /area/caribbean/void/caves/special))
-					new/obj/item/stack/material/fossil(src)
-				if (H)
-					H << "<span class='danger'>You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!</span>"
-				change_the_turf()
-				if (H)
-					H.adaptStat("strength", 1)
-				return
 	if(istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!</span>"
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
 	if(prob(20) && (map.ID != MAP_NOMADS_PANGEA || map.ID != MAP_NOMADS_CONTINENTAL || map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		mineral.amount = rand(8,12)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!</span>"
-		change_the_turf()
-		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!"))
 			H.adaptStat("strength", 1)
+		change_the_turf()
 		return
 	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
 		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
@@ -828,24 +796,29 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=#060606><b>obsidian</font> rocks</b>!</span>"
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#060606><b>obsidian</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
 	else if(prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		mineral.amount = rand(8,12)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!</span>"
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
 	else
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(8,16)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			H << "<span class='danger'>You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!</span>"
+			to_chat(H, SPAN_GREEN_BOLD("You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
 	change_the_turf()
-	if (H)
-		H.adaptStat("strength", 1)
 	return
 
 /turf/floor/dirt/underground/attack_hand(mob/user)
@@ -858,20 +831,19 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 				return
 			// Set mining_in_progress to TRUE to indicate the process has started.
 			mining_in_progress = TRUE
-			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
+			visible_message(SPAN_NOTICE("[user] starts to break the rock with their hands..."), SPAN_NOTICE("You start to break the rock with the your hands..."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
-				U.collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/T = src
-					T.mining_clear_debris()
-					mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
-					return TRUE
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-				return TRUE
-			else
+			if (!do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
 				mining_in_progress = FALSE // In case we abort mid-way.
+				return
+			U.collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/T = src
+				T.mining_clear_debris()
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+				mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
+			return TRUE
 		else
 			..()
 	else
