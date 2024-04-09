@@ -121,13 +121,13 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 		return
 
 	if (owner.incapacitated())
-		owner << "<span class='warning'>You cannot aim a gun in your current state.</span>"
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun in your current state."))
 		return
-	if (owner.lying && !owner.prone)
-		owner << "<span class='warning'>You cannot aim a gun while laying on the floor.</span>"
-		return
+	/*if (owner.lying && !owner.prone)
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun while lying on the floor."))
+		return*/
 	if (owner.restrained())
-		owner << "<span class='warning'>You cannot aim a gun while handcuffed.</span>"
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun while handcuffed."))
 		return
 
 	var/success = FALSE
@@ -149,7 +149,12 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 	if (success)
 		if (owner.client)
 			owner.client.add_gun_icons()
-		target << "<span class='danger'>You now have a gun pointed at you. No sudden moves!</span>"
+		if (istype(thing, /obj/item/weapon/gun/projectile/bow)) // All bows are lower-cased, so therefore not proper-nouns, and so we can use \a
+			to_chat(target, SPAN_DANGER("You now have \a [thing] pointed at you. <big>No sudden moves!</big>"))
+		else if (istype(thing, /obj/item/weapon/gun/projectile/pistol)) // Pistols are usually upper-cased, so therefore classed as proper-nouns, and so we have to specify.
+			to_chat(target, SPAN_DANGER("You now have a pistol pointed at you. <big>No sudden moves!</big>"))
+		else
+			to_chat(target, SPAN_DANGER("You now have a gun pointed at you. <big>No sudden moves!</big>"))
 		aiming_with = thing
 		aiming_at = target
 		if (istype(aiming_with, /obj/item/weapon/gun))

@@ -41,7 +41,9 @@
 	if (map && map.nomads)
 		verbs += /mob/proc/faction_list
 		verbs += /mob/proc/religion_list
-/////////////FACTIONS////////////////////////////
+
+/////////////   FACTIONS   /////////////
+
 /mob/living/human/proc/create_faction()
 	set name = "Create Faction"
 	set category = "Faction"
@@ -386,12 +388,13 @@
 
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		to_chat(user, ("You start ripping off the [src]..."))
+		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 130, src))
-			visible_message("[user] rips the [src]!")
+			user.visible_message("<span class ='warning'>[user] rips \the [src]!</span>", "<span class = 'warning'>You rip off \the [src]!</span>")
 			qdel(src)
 	else
 		..()
+
 /obj/structure/banner/faction/team
 	var/team = null
 	name = "team banner"
@@ -525,11 +528,12 @@
 			overlays += overs
 		update_icon()
 		invisibility = 0
+
 /obj/structure/poster/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		to_chat(user, ("You start ripping off the [src]..."))
+		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 70, src))
-			visible_message("[user] rips the [src]!")
+			user.visible_message("<span class ='warning'>[user] rips \the [src]!</span>", "<span class = 'warning'>You rip off \the [src]!</span>")
 			overlays.Cut()
 			icon_state = "poster_ripped"
 			color = color2

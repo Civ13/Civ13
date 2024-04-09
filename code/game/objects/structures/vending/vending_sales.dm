@@ -24,8 +24,15 @@
 /obj/structure/vending/sales/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/money))
 		var/obj/item/stack/money/M = W
-		moneyin += M.amount*M.value
-		if (map.ID == MAP_KANDAHAR)
+		if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
+			if (istype(W, /obj/item/stack/money/rubles))
+				moneyin += M.amount*M.value
+			else
+				to_chat(user, "Foreign traders only accept the Soviet ruble.")
+				return
+		else
+			moneyin += M.amount*M.value
+		if (map.ID == MAP_KANDAHAR || istype(src, /obj/structure/vending/sales/pepelsibirsk))
 			user << "You give \the [W] to the [src]."
 		else
 			user << "You put \the [W] in the [src]."
@@ -212,7 +219,7 @@
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
-		else if (map.ID == MAP_GULAG13)
+		else if (map.ID == MAP_GULAG13 || istype(src, /obj/structure/vending/sales/pepelsibirsk))
 			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 440, 600)
 		else if (map.ID == MAP_KANDAHAR)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
@@ -264,6 +271,11 @@
 						status_message = "Please insert money to pay for the item."
 						status_error = FALSE
 					else
+						if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
+							var/obj/structure/vending/sales/pepelsibirsk/faction_trader = src
+							if (istype(faction_trader))
+								pepel_factions.pepelsibirsk_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
+								to_chat(usr, "Relations have increased by [price_with_tax*inp*0.02].")
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
 							map.custom_company_value[owner] += price_with_tax*inp
@@ -275,6 +287,11 @@
 							if (D.amount == 0)
 								qdel(D)
 						else if (map.ID == MAP_GULAG13)
+							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+							D.amount = moneyin/D.value
+							if (D.amount == 0)
+								qdel(D)
+						else if (map.ID == MAP_PEPELSIBIRSK)
 							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 							D.amount = moneyin/D.value
 							if (D.amount == 0)
@@ -314,6 +331,11 @@
 				if (D.amount == 0)
 					qdel(D)
 			else if (map.ID == MAP_GULAG13)
+				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+				D.amount = moneyin/D.value
+				if (D.amount == 0)
+					qdel(D)
+			else if (map.ID == MAP_PEPELSIBIRSK)
 				var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
 				D.amount = moneyin/D.value
 				if (D.amount == 0)

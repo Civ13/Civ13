@@ -165,7 +165,7 @@
 					playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 					return
 		else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE(">You start securing \the [src] to the floor.")))
+			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
 				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
@@ -265,7 +265,7 @@
 					if (M == user)
 						do_html(M)
 		else if (istype(W,/obj/item/weapon/wrench))
-			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE(">You start securing \the [src] to the floor.")))
+			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
 				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))

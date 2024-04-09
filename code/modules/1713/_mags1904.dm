@@ -117,7 +117,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
-
 /obj/item/ammo_magazine/mauser1893box
 	name = "magazine box (7x53mm)"
 	icon_state = "ammo"

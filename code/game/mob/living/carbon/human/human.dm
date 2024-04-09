@@ -61,7 +61,7 @@
 
 	make_blood()
 	if (map)
-		if (map.civilizations == TRUE)
+		if (map.civilizations == TRUE && map.ID != MAP_PEPELSIBIRSK)
 			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
 			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
 		if (map.ID == MAP_GULAG13)
@@ -72,6 +72,9 @@
 				else
 					nutrition = max_nutrition
 					water = max_water
+		if (map.ID == MAP_PEPELSIBIRSK)
+			nutrition = max_nutrition
+			water = max_water
 	else
 		nutrition = max_nutrition
 		water = max_water
@@ -427,7 +430,7 @@ var/list/coefflist = list()
 	if (species.has_fine_manipulation)
 		return TRUE
 	if (!silent)
-		src << "<span class='warning'>You don't have the dexterity to use that!</span>"
+		to_chat(src, SPAN_WARNING("You don't have the dexterity to use that!"))
 	return FALSE
 
 /mob/living/human/abiotic(var/full_body = FALSE)
@@ -476,7 +479,7 @@ var/list/coefflist = list()
 				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
-				mood -= 5
+				mood -= 3
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
@@ -1195,7 +1198,7 @@ var/list/coefflist = list()
 				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
-			user.visible_message("[user] looks into the distance.")
+			user.visible_message("[user] looks into the distance.", "You look into the distance.")
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets

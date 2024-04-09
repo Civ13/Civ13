@@ -54,11 +54,11 @@
 	else return
 	if (!cocked)
 		playsound(loc, 'sound/weapons/guns/interact/bolt_open.ogg', 50, TRUE)
-		user << "<span class='notice'>You cock the [src]!</span>"
+		to_chat(user, SPAN_WARNING("You cock \the [src]!"))
 		cocked = TRUE
 	else
 		playsound(loc, 'sound/weapons/guns/interact/bolt_close.ogg', 50, TRUE)
-		user << "<span class='notice'>You uncock the [src].</span>"
+		to_chat(user, SPAN_NOTICE("You uncock \the [src]."))
 		cocked = FALSE
 	add_fingerprint(user)
 	update_icon()

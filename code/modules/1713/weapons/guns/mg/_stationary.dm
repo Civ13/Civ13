@@ -162,7 +162,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/user as mob, var/need_message = TRUE)
 	if(need_message)
-		user.visible_message(SPAN_NOTICE("[user.name] handels \the [src]."), SPAN_NOTICE("You handel \the [src]."))
+		user.visible_message(SPAN_NOTICE("[user.name] handles \the [src]."), SPAN_NOTICE("You handle \the [src]."))
 	used_by_mob = user
 	user.using_object = src
 	user.update_canmove()

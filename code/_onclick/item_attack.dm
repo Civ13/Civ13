@@ -55,7 +55,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 
 /atom/movable/attackby(obj/item/W, mob/user, icon_x, icon_y)
 	if (!(W.flags & NOBLUDGEON) && !(istype(W, /obj/item/weapon/covers)))
-		visible_message("<span class='danger'>[src] has been hit by [user] with [W].</span>")
+		user.visible_message("<span class='danger'>[src] has been hit by [user] with \the [W].</span>", "<span class = 'notice'>You hit the [src] with \the [W].</span>")
 	return
 
 /mob/living/attackby(obj/item/I, mob/user, icon_x, icon_y)
