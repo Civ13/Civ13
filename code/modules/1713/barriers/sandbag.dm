@@ -53,6 +53,11 @@
 					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
 						new /obj/item/weapon/barrier(turf)
 				qdel(src)
+		else if (user.a_intent == I_GRAB)
+			var/mob/living/H = user
+			if (istype(H) && can_climb(H))
+				user.dir = get_dir(user, src)
+				src.do_climb(user)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)

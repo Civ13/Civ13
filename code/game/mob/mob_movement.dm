@@ -759,7 +759,7 @@
 					else
 						for (var/mob/living/L in mob.loc)
 							if (L.lying && L != H)
-								H.visible_message("<span class = 'warning'>[H] steps over [L].</span>")
+								H.visible_message("<span class = 'warning'>[H] steps over \the [L].</span>", "<span class = 'warning'>You step over \the [L].</span>", "You hear a step.")
 
 			#undef STOMP_TIME
 
