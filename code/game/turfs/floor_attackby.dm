@@ -285,17 +285,17 @@ var/mining_in_progress = null // Define the variable out of any scopes and the a
 			mining_in_progress = TRUE
 			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
-				collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/TT = src
-					TT.mining_clear_debris()
-					mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-			else
+			if (!do_after(user, (320/(H.getStatCoeff("strength"))/SH.usespeed)))
 				mining_in_progress = FALSE // In case we abort mid-way.
+			collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/TT = src
+				TT.mining_clear_debris()
+				mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
+				return
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
 		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
