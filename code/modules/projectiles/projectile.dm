@@ -356,20 +356,19 @@
 	var/redirection_parts = target_mob.redirection_list[def_zone]
 	var/hit_zone = null
 	var/hitchance = target_mob.body_part_size[def_zone]
+	
+	var/distance_modifier = 10 / sqrt(distance)
 
-	var/distance_modifier = 0
-
-	if(distance_modifier > 0)
-		distance_modifier = 10 / sqrt(distance)
-
-	if(distance > 0 && distance <= 3)
+	if(distance <= 3)
 		hitchance = 100
 
-	if (prob(hitchance * distance_modifier))
+	hitchance = clamp(hitchance * distance_modifier, 0, 100)
+
+	if (prob(hitchance))
 		hit_zone = def_zone
 	else
 		for(var/part in redirection_parts)
-			hitchance = target_mob.body_part_size[def_zone]
+			hitchance = clamp(target_mob.body_part_size[def_zone], 0, 100)
 			if (prob(hitchance) && !hit_zone)
 				hit_zone = part
 	
