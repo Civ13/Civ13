@@ -144,6 +144,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (!do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
 				mining_in_progress = FALSE // In case we abort mid-way.
+				return
 			U.collapse_check()
 			if (istype(src, /turf/floor/dirt/underground/empty))
 				var/turf/floor/dirt/underground/empty/T = src
