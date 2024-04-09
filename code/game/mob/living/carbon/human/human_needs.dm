@@ -113,23 +113,23 @@
 //			img_nasties.overlays += null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
 //			overlays_standing[27] = null
-			mood -= 0.02
+			mood -= 0.01
 		if(0 to HYGIENE_LEVEL_DIRTY)
 			img_nasties.overlays += smell
-			mood -= 0.04
+			mood -= 0.02
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
-		if (prob(3))
+		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
 				if (HM != src && !HM.orc)
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
-					HM.mood -= 3
+					HM.mood -= 1.5
 	var/fleas_found = FALSE
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
 			if (C.blood_DNA)
-				C.dirtyness += 0.04
+				C.dirtyness += 0.02
 			else
-				C.dirtyness += 0.025
+				C.dirtyness += 0.015
 			if (C.dirtyness > 100)
 				C.dirtyness = 100
 			if (C.dirtyness > 90)
