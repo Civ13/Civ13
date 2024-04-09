@@ -1198,7 +1198,7 @@ var/list/coefflist = list()
 				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
-			user.visible_message("[user] looks into the distance.")
+			user.visible_message("[user] looks into the distance.", "You look into the distance.")
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets

@@ -250,7 +250,7 @@
 
 /obj/structure/oven/fireplace/proc/keep_sound_on()
     if (on && looping && fuel > 0)
-        playsound(src, "sound/effects/campfire_cackling.ogg", 65, 20, 0, 25)
+        playsound(get_turf(src), "sound/effects/campfire_cackling.ogg", 65, TRUE, -1)
         spawn(50) // 6 seconds
             keep_sound_on()
 
