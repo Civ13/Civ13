@@ -3,6 +3,7 @@
 	desc = "A gun that fires bullets."
 	icon_state = "musket"
 	w_class = ITEM_SIZE_NORMAL
+	var/base_icon = null
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
@@ -11,13 +12,12 @@
 	var/is_hmg = FALSE
 	var/is_laser_mg = FALSE
 	var/has_telescopic = FALSE
+
 	//gunporn stuff
 	var/unload_sound 	= 'sound/weapons/guns/interact/pistol_magout.ogg'
 	var/reload_sound 	= 'sound/weapons/guns/interact/pistol_magin.ogg'
 	var/cocked_sound 	= 'sound/weapons/guns/interact/pistol_cock.ogg'
 	var/bulletinsert_sound 	= 'sound/weapons/guns/interact/bullet_insert.ogg'
-	var/has_ak_reload = FALSE
-	var/cliploader = FALSE
 	//For SINGLE_CASING or SPEEDLOADER guns
 	var/max_shells = FALSE			//the number of casings that will fit inside
 	var/ammo_type = null		//the type of ammo that the gun comes preloaded with
@@ -31,14 +31,34 @@
 	var/auto_eject = FALSE			//if the magazine should automatically eject itself when empty.
 	var/auto_eject_sound = null
 	var/ammo_mag = "default" // magazines + gun itself. if set to default, then not used
+	var/image/mag_image = null
+	var/image/barrel_image = null
+	var/image/scope_image = null
+	var/image/under_image = null
+	var/image/launcher_image = null
+	var/mag_x_offset = 0
+	var/mag_y_offset = 0
+
+	var/barrel_x_offset = 16
+	var/barrel_y_offset = 16
+
+	var/scope_x_offset = 0
+	var/scope_y_offset = 0
+
+	var/under_x_offset = 0
+	var/under_y_offset = 0
+
 	//TODO generalize ammo icon states for guns
 	//var/magazine_states = FALSE
 	//var/list/icon_keys = list()		//keys
 	//var/list/ammo_states = list()	//values
 	var/magazine_based = TRUE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 
 	var/load_shell_sound = 'sound/weapons/empty.ogg'
+
+	var/cliploader = FALSE
+	var/can_tactical_reload = FALSE
 
 	var/executing = FALSE
 
@@ -49,10 +69,7 @@
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;chambered;ammo_magazine"
 
 /obj/item/weapon/gun/projectile/New()
-	if (serial != "0")
-		serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
-	else
-		serial = ""
+	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
 	..()
 	if (map && map.civilizations)
 		loaded = list()
@@ -64,20 +81,65 @@
 		if (ispath(ammo_type) && ((load_method & (SINGLE_CASING|SPEEDLOADER)) && !cliploader || istype(src, /obj/item/weapon/gun/projectile/shotgun)))
 			for (var/i in TRUE to max_shells)
 				loaded += new ammo_type(src)
-
 		if (ispath(magazine_type) && (load_method & MAGAZINE))
 			ammo_magazine = new magazine_type(src)
 
 	update_icon()
-	if (is_hmg == TRUE && has_telescopic == FALSE)
-		var/obj/item/weapon/attachment/scope/iron_sights/mg/A = new /obj/item/weapon/attachment/scope/iron_sights/mg(src)
-		spawn_add_attachment(A, src)
-	else if (has_telescopic == TRUE)
-		var/obj/item/weapon/attachment/scope/iron_sights/mg/type99/A = new /obj/item/weapon/attachment/scope/iron_sights/mg/type99(src)
+	if (has_telescopic)
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97/A = new /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97(src)
 		spawn_add_attachment(A, src)
 	else
 		var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
 		spawn_add_attachment(A, src)
+
+/obj/item/weapon/gun/projectile/proc/update_attachment_icon()
+	overlays -= mag_image
+	overlays -= scope_image
+	overlays -= barrel_image
+	overlays -= under_image
+	overlays -= launcher_image
+
+	var/part_icon = 'icons/obj/guns/parts.dmi'
+	var/part_icon_state
+
+	if (scope)
+		part_icon_state = scope.icon_state
+		scope_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = scope_x_offset, pixel_y = scope_y_offset)
+		overlays += scope_image
+
+	if (silencer)
+		part_icon_state = silencer.icon_state
+		barrel_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = barrel_x_offset, pixel_y = barrel_y_offset)
+		overlays += barrel_image
+
+	if (bayonet)
+		part_icon_state = bayonet.icon_state
+		barrel_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = barrel_x_offset, pixel_y = barrel_y_offset)
+		overlays += barrel_image
+
+	if (under)
+		part_icon_state = under.icon_state
+		under_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = under_x_offset, pixel_y = under_y_offset)
+		overlays += under_image
+
+	if (ammo_magazine)
+		part_icon_state = ammo_magazine.attached_icon_state
+		mag_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+		overlays += mag_image
+
+	if (launcher)
+		part_icon_state = launcher.icon_state
+		launcher_image = image(icon = part_icon, loc = src, icon_state = part_icon_state, pixel_x = under_x_offset, pixel_y = under_y_offset)
+		overlays += launcher_image
+
+/obj/item/weapon/gun/projectile/update_icon()
+	if(ammo_magazine)
+		item_state = "[base_icon]"
+	else
+		item_state = "[base_icon]_open"
+	update_attachment_icon()
+	update_held_icon()
+
 
 /obj/item/weapon/gun/projectile/proc/cock_gun(mob/user)
 	set waitfor = FALSE
@@ -207,29 +269,8 @@
 					to_chat(user, SPAN_WARNING("[src] requires another magazine.</span>")) //wrong magazine
 					return
 				if (ammo_magazine)
-					if (has_ak_reload && ishuman(user))
-						if (unload_sound) playsound(loc, unload_sound, 75, TRUE)
-						ammo_magazine.forceMove(get_turf(src))
-						ammo_magazine.update_icon()
-						ammo_magazine = null
-
-						user.remove_from_mob(AM)
-					
-						var/mob/living/human/H = user
-						if (prob(clamp(((H.getStatCoeff("[stat]")*100) - 80), 0, 100)))
-							AM.loc = src
-							ammo_magazine = AM
-
-							to_chat(user, SPAN_NOTICE("You tactically reload your [src] using the other magazine."))
-							if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
-							cock_gun(user)
-						else
-							AM.forceMove(get_turf(src))
-
-							to_chat(user, SPAN_DANGER("<big>You clumsily drop both magazines while reloading your [src]!</big>"))
-					else
-						to_chat(user, SPAN_DANGER("[src] already has a magazine loaded.")) //already a magazine here
-						return
+					user << "<span class='warning'>[src] already has a magazine loaded.</span>" //already a magazine here
+					return
 				user.remove_from_mob(AM)
 				if (src.is_laser_mg == TRUE)
 					AM.loc = user.back
@@ -241,7 +282,7 @@
 				if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 				cock_gun(user)
 			if (SPEEDLOADER)
-				if (cliploader == TRUE)
+				if (cliploader)
 					if (src.ammo_magazine)
 						if (loaded.len >= ammo_magazine.max_ammo)
 							user << "<span class='warning'>[src] is full!</span>"
@@ -334,6 +375,16 @@
 		user << "<span class='warning'>[src] is empty.</span>"
 	update_icon()
 
+/obj/item/weapon/gun/projectile/proc/tactical_reload(var/obj/item/A as obj, mob/user)
+	if(!can_tactical_reload)
+		return FALSE
+	if(!good_mags.Find(A.type))
+		return FALSE
+	if(ammo_magazine)
+		unload_ammo(user)
+	load_ammo(A, user)
+	return TRUE
+
 /obj/item/weapon/gun/projectile/attackby(var/obj/item/A as obj, mob/user)
 	..()
 	if(launcher && (istype(A, /obj/item/weapon/grenade)))//load check it for it's type
@@ -343,7 +394,8 @@
 		if (istype(A, /obj/item/ammo_magazine) && !magazine_type)
 			return
 		else
-			load_ammo(A, user)
+			if(!tactical_reload(A, user))
+				load_ammo(A, user)
 
 /obj/item/weapon/gun/projectile/attack_self(mob/user as mob)
 	if (firemodes.len > 1)
@@ -411,6 +463,7 @@
 			user << "<span class='warning'><b>The serial number has been filed out.</b></span>"
 		else
 			user << "<i>Serial no. <b>[serial]</b></i>"
+
 /obj/item/weapon/gun/projectile/proc/getAmmo()
 	var/bullets = FALSE
 	if (loaded)

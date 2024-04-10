@@ -225,7 +225,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/m249(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
@@ -1237,7 +1237,7 @@
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 		web.attackby(new/obj/item/ammo_magazine/svd, H)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/kord(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/nsv_utes(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/utes(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/ammo127, H)
@@ -1462,7 +1462,7 @@
 		web.attackby(new/obj/item/ammo_magazine/m16, H)
 		web.attackby(new/obj/item/ammo_magazine/m16, H)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_l_hand)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_l_hand)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249(H), slot_belt)
 		H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_r_store)
 		web.attackby(new/obj/item/ammo_magazine/m249, H)
@@ -1676,7 +1676,7 @@
 			web.attackby(new/obj/item/ammo_magazine/m24, H)
 			web.attackby(new/obj/item/ammo_magazine/m24, H)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249/acog(H), slot_l_hand)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249/acog(H), slot_l_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
 			H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke(H), slot_r_store)
 			web.attackby(new/obj/item/ammo_magazine/m249, H)

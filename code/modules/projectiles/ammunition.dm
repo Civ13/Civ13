@@ -96,6 +96,8 @@
 	var/list/icon_keys = list()		//keys
 	var/list/ammo_states = list()	//values
 
+	var/attached_icon_state = "none"
+
 	// are we an ammo box
 	var/is_box = FALSE
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;stored_ammo"
@@ -133,6 +135,7 @@
 	name = "clip (5)"
 	clip = TRUE
 	icon_state = "clip"
+	attached_icon_state = "none"
 	ammo_type = null
 	caliber = null
 	max_ammo = 5
@@ -253,12 +256,13 @@
 	name = "P90 magazine (50)"
 	mag_type = MAGAZINE
 	icon_state = "p90"
+	attached_icon_state = "p90_mag"
 	caliber = null
 	ammo_type = null
 	max_ammo = 15
 	weight = 0.2
 	multiple_sprites = TRUE
-	
+
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
 	set src in view(1)

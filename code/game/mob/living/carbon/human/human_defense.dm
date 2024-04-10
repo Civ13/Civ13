@@ -376,7 +376,7 @@ bullet_act
 		if (prob(P.KD_chance/2) && !KD_check && !(locate(/obj/structure/vehicleparts/frame) in get_turf(src)) && !istype(P, /obj/item/projectile/bullet/pellet/buckshot) && !istype(P, /obj/item/projectile/bullet/shotgun))
 			SpinAnimation(5,1)
 			// Get the turf behind by getting the dir from the firer to us
-			var/turf/behind = get_step(src, get_dir(P.firer_loc, src)) 
+			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir) 
 			if (behind)
 				if (behind.density || (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind))
 					var/turf/slammed_into = behind

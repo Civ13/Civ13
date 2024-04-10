@@ -317,7 +317,6 @@
 			P.range_step = damage_step
 			P.shot_from = name
 			P.launch_fragment(TT)
-			P.firer_loc = get_turf(src)
 
 			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
 			for (var/mob/living/L in T)
@@ -1079,10 +1078,10 @@
 	var/spread_range = 7
 
 /obj/structure/payload/New()
-	..()
 	var/matrix/M = matrix()
 	M.Scale(scale, scale)
 	src.transform = M
+	..()
 
 /obj/structure/payload/proc/drop()
 	density = FALSE
@@ -1112,7 +1111,6 @@
 					P.range_step = damage_step
 					P.shot_from = name
 					P.launch_fragment(TT)
-					P.firer_loc = get_turf(src)
 			qdel(src)
 	return
 
