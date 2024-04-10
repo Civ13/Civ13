@@ -420,8 +420,8 @@
 		..()
 		new/obj/item/ammo_casing/rocket/atgm(src)
 		new/obj/item/ammo_casing/rocket/atgm(src)
-		new/obj/item/ammo_casing/rocket/atgm/apcr(src)
-		new/obj/item/ammo_casing/rocket/atgm/apcr(src)
+		new/obj/item/ammo_casing/rocket/atgm(src)
+		new/obj/item/ammo_casing/rocket/atgm(src)
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
 		new/obj/item/ammo_casing/rocket/atgm/he(src)
 

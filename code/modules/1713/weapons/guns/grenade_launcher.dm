@@ -5,11 +5,11 @@
 	item_state = "grenade_launcher"
 	w_class = ITEM_SIZE_HUGE
 	force = 10
-	
+
 	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
 	fire_sound_text = "a metallic thunk"
-	recoil = 0
-	firing_range = 25
+	shake_strength = 0
+	firing_range = 40
 	release_force = 5
 	gun_safety = FALSE
 
@@ -30,7 +30,7 @@
 	projectile.loc = get_turf(user)
 	projectile.allow_spin = FALSE
 	projectile.throw_at(target, firing_range, release_force, user)
-	projectile.dir = get_dir(get_turf(src), get_turf(target))
+	projectile.dir = get_dir(src.loc, target.loc)
 	projectile.icon_state = "[initial(projectile.icon_state)]_active"
 	return TRUE
 
@@ -115,13 +115,10 @@
 	icon_state = "grenade_launcher"
 	w_class = ITEM_SIZE_NORMAL
 	force = 5
-	firing_range = 25
+	firing_range = 40
 	max_grenades = 0
 	var/A_attached = FALSE
-	var/image/ongun
-	New()
-		..()
-		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
+	var/mount = "none"
 
 /obj/item/weapon/gun/launcher/grenade/underslung/attack_self()
 	return
@@ -154,8 +151,9 @@
 /obj/item/weapon/gun/launcher/grenade/underslung/m203
 	name = "M203 grenade launcher"
 	release_force = 2
-	firing_range = 25
+	firing_range = 40
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
+	mount = "m203_mount"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
 		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
@@ -172,8 +170,9 @@
 /obj/item/weapon/gun/launcher/grenade/underslung/gp25
 	name = "GP-25 'Koster' grenade launcher"
 	release_force = 2
-	firing_range = 25
+	firing_range = 40
 	desc = "Not much more than a tube and a firing mechanism, this grenade launcher is designed to be fitted to a rifle."
+	mount = "gp25_mount"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25
@@ -193,20 +192,19 @@
 	icon_state = "hk69"
 	item_state = "hk69"
 	w_class = ITEM_SIZE_LARGE
-	throw_range = 4
 	max_grenades = 0
-	recoil = 1
+	shake_strength = 1
 	gun_safety = TRUE
 	release_force = 2
 	firing_range = 40
-	equiptimer = 30
-	slowdown = 0.8
+	equiptimer = 25
 	slot_flags =  SLOT_SHOULDER | SLOT_BACK
 	var/cover_opened = FALSE
 	whitelisted_grenades = list(
-		/obj/item/weapon/grenade/frag/ugl,
-		/obj/item/weapon/grenade/smokebomb/ugl,
-		/obj/item/weapon/grenade/chemical/ugl
+		/obj/item/weapon/grenade/frag/ugl/shell40mm,
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/frag/ugl/vog25,
+		/obj/item/weapon/grenade/smokebomb/ugl/vog25
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade,
@@ -283,8 +281,7 @@
 	item_state = "hk69"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
-		/obj/item/weapon/grenade/chemical/ugl,
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
@@ -301,8 +298,7 @@
 	item_state = "m79"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
-		/obj/item/weapon/grenade/chemical/ugl,
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,

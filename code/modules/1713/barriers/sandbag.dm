@@ -204,9 +204,9 @@ var/set_dir = null // Set the variable outside of any scopes
 	return FALSE
 
 /obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
-	health -= 0.05
 	if (health <= 0)
 		qdel(src)
+		
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)

@@ -435,7 +435,7 @@
 		else
 			// Check if splitting process is already in progress
 			if (splitting_in_progress)
-				to_chat(user, SPAN_DANGER("\The [src] is already being split."))
+				to_chat(user, SPAN_DANGER("\The [src] are already being split."))
 				return
 			// Set splitting_in_progress to TRUE to indicate the process has started
 			splitting_in_progress = TRUE

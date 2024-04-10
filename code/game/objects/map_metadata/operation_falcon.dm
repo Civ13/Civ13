@@ -528,7 +528,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	try_destroy()
 
 /obj/structure/supply_crate/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage * 0.01
 	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
 	try_destroy()
 

@@ -70,3 +70,7 @@
 //HUD element hidings flags
 #define F12_FLAG 1 // 0001
 #define TOGGLE_INVENTORY_FLAG 2 //0010
+
+//Fullscreen overlay resolution in tiles.
+#define FULLSCREEN_OVERLAY_RESOLUTION_X 11
+#define FULLSCREEN_OVERLAY_RESOLUTION_Y 11

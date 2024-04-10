@@ -33,15 +33,15 @@ obj/structure/bell_stand
 		world << sound('sound/effects/bell_stand.ogg', repeat = TRUE, wait = TRUE, channel = 777)
 		visible_message("<span class='warning'>[H] rings the church bell!</span>")
 		to_chat(world, "<font size = 5>\icon[src] <span class='warning'>The church bell is ringing.</span></font>")
-		spawn(2 MINUTES)
+		spawn(15 SECONDS)
 			world << sound(null, channel = 777)
 			icon_state = "bell_stand"
 			cooldown_bell_stand = FALSE
 	else
-		to_chat(H, "You have to wait at least 2 minutes.")
+		to_chat(H, "You have to wait at least 15 seconds.")
 	return
 
-obj/structure/bell_stand/attackby(var/obj/item/I, var/mob/living/human/H)
+/obj/structure/bell_stand/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)

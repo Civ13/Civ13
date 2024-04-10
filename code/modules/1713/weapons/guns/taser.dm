@@ -4,8 +4,8 @@
 	icon = 'icons/obj/guns/wip.dmi'
 	icon_state = "taser_new"
 	item_state = "taser_new"
-	var/base_icon = "taser_new"
-	fire_sound = 'sound/weapons/taser.ogg' //To be changed to taser.ogg when imported
+	base_icon = "taser_new"
+	fire_sound = 'sound/weapons/taser.ogg'
 	w_class = ITEM_SIZE_NORMAL
 	load_method = MAGAZINE
 	max_shells = 5
@@ -22,7 +22,6 @@
 	gun_type = GUN_TYPE_PISTOL
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 

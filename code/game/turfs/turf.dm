@@ -669,7 +669,7 @@ var/const/enterloopsanity = 100
 					P.dir = EAST
 					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
 					P.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
-					animate(P, transform = turn(matrix(), turn_degree), time = 10)
+					animate(P, transform = turn(P.transform, turn_degree), time = 10)
 				if ("SOUTH")
 					cur_ydirection_offset -= direction_offset
 					xoffset = -rand(min_sway_offset, max_sway_offset)
@@ -685,7 +685,7 @@ var/const/enterloopsanity = 100
 					P.dir = WEST
 					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
 					P.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
-					animate(P, transform = turn(matrix(), -turn_degree), time = 10)
+					animate(P, transform = turn(P.transform, -turn_degree), time = 10)
 
 			spawn(i*interval)
 				P.loc = locate((T.x + xoffset + cur_xdirection_offset), (T.y + yoffset + cur_ydirection_offset), T.z)

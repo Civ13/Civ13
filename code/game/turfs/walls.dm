@@ -22,7 +22,6 @@ var/list/global/wall_cache = list()
 	var/list/wall_connections = list("0", "0", "0", "0")
 	var/ref_state = "generic"
 	var/tank_destroyable = TRUE
-	var/ricochet_id = 0
 
 // Extracts ricochet angle's tan if ischance = 1.
 // In other case it just makes bullets and lazorz go where they're supposed to.
@@ -31,8 +30,6 @@ var/list/global/wall_cache = list()
 		var/turf/curloc = get_turf(src)
 		if (!curloc)
 			return
-		var/ricochet_temp_id = rand(1,1000)
-		if(!ischance) Proj.ricochet_id = ricochet_temp_id
 		if(!ischance && ((curloc.x == Proj.starting.x) || (curloc.y == Proj.starting.y)))
 			var/random_value = pick(-1, 0, 1)
 			var/critical_x = Proj.starting.x + random_value
@@ -76,17 +73,13 @@ var/list/global/wall_cache = list()
 			if (tempwall.x == curloc.x)
 				if (tempwall.y == (curloc.y - 1))
 					wallnorth = 1
-					if (!ischance) W.ricochet_id = ricochet_temp_id
 				else if (tempwall.y == (curloc.y + 1))
 					wallsouth = 1
-					if (!ischance) W.ricochet_id = ricochet_temp_id
 			if (tempwall.y == curloc.y)
 				if (tempwall.x == (curloc.x + 1))
 					walleast = 1
-					if (!ischance) W.ricochet_id = ricochet_temp_id
 				else if (tempwall.x == (curloc.x - 1))
 					wallwest = 1
-					if (!ischance) W.ricochet_id = ricochet_temp_id
 		if((wallnorth || wallsouth) && ((Proj.starting.y - curloc.y)*(wallsouth - wallnorth) >= 0))
 			if(!ischance)
 				Proj.redirect(round(check_x1 / 32), round((2 * check_y0 - check_y1)/32), curloc, src)
