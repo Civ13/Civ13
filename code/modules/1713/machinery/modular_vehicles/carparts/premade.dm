@@ -918,7 +918,7 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/bmd2/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a42),
 	"2,1" = list(/obj/structure/vehicleparts/frame/bmd2/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/apcr,/obj/item/ammo_casing/rocket/atgm/apcr),
+	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm,/obj/item/ammo_casing/rocket/atgm),
 	"2,2" = list(/obj/structure/vehicleparts/frame/bmd2/lc),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/bmd2/rb,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_back,/obj/structure/engine/internal/diesel/premade/bmd2,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
@@ -972,7 +972,7 @@
 	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72),
 	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/apcr,/obj/item/ammo_casing/rocket/atgm/apcr),
+	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm,/obj/item/ammo_casing/rocket/atgm),
 	"2,3" = list(/obj/structure/vehicleparts/frame/btr80/lbc),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/rb,/obj/structure/engine/internal/diesel/premade/btr80,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),

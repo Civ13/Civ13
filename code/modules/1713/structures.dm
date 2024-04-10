@@ -305,10 +305,16 @@
 /obj/structure/grille/chainlinkfence/door/proc/toggle(mob/user)
 	switch(open)
 		if(FALSE)
-			visible_message("<span class='notice'>\The [user] opens \the [src].</span>")
+			user.visible_message("<span class='warning'>\The [user] opens \the [src].</span>",
+								"<span class='notice'>You open \the [src].</span>",
+								"You hear something being opened.")
+
 			open = TRUE
 		if(TRUE)
-			visible_message("<span class='notice'>\The [user] closes \the [src].</span>")
+			user.visible_message("<span class='warning'>\The [user] closes \the [src].</span>",
+								"<span class='notice'>You close \the [src].</span>",
+								"You hear something being closed.")
+
 			open = FALSE
 
 	update_door_status()
@@ -339,7 +345,7 @@
 	anchored = TRUE
 /obj/structure/wallclock/examine(mob/user)
 	..()
-	user << "<big>It is now [clock_time()].</big>"
+	to_chat(user, "<big>It is now [clock_time()].</big>")
 
 /obj/structure/props/server
 	name = "server hub"

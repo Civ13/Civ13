@@ -18,7 +18,7 @@
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has [steel_amt] steel and [wood_amt] wood on it."
 
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/living/human/user as mob)
-	if (istype(P, /obj/item/stack/material/woodplank))
+	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
@@ -57,69 +57,72 @@
 		if (map.ID == MAP_NOMADS_KARAFUTO)
 			switch (PC.receiver_type)
 				if ("Pump-Action")
-					caliber_options = list("shotgun")
+					caliber_options = list("shotgun","Cancel")
 
 				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 
 				if ("Open-Bolt (large)")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt")
+					caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 
 				if ("Dual Selective Fire", "Triple Selective Fire")
-					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+					caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt")
+				caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 		else
 			switch (PC.receiver_type)
 				if ("Pump-Action")
-					caliber_options = list("shotgun")
+					caliber_options = list("shotgun","Cancel")
 
 				if ("Bolt-Action","Semi-Auto (large)")
-					caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+					caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 				if ("Open-Bolt (large)")
-					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 				if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-					caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
+					caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt","Cancel")
 
 				if ("Dual Selective Fire", "Triple Selective Fire")
-					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+					caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if (PC.feeding_type == "Internal Magazine (Removable)")
-				caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
+				caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt","Cancel")
 	//others
 	if (map.ID == MAP_NOMADS_KARAFUTO)
 		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
-			caliber_options = list("6.5x50mm arisaka","7.62x54mmR")
+			caliber_options = list("6.5x50mm arisaka","7.62x54mmR", "Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
-			caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt")
+			caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
-			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+			caliber_options = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR", "Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
-			caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt")
+			caliber_options = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
+		else
+			caliber_options = list("Cancel")
 	else
 		if (istype(P, /obj/item/weapon/gun/projectile/automatic))
-			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/boltaction))
-			caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+			caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/leveraction))
-			caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle")
+			caliber_options = list("6.5x50mm small rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/pistol) || istype(P, /obj/item/weapon/gun/projectile/revolver) || istype(P, /obj/item/weapon/gun/projectile/revolving))
-			caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
+			caliber_options = list("9x19 Parabellum","9x18 Makarov",".45 Colt","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/semiautomatic))
-			caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
+			caliber_options = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 		else if (istype(P, /obj/item/weapon/gun/projectile/special) || istype(P, /obj/item/weapon/gun/projectile/submachinegun))
-			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-	caliber_options += "Cancel"
+			caliber_options = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
+		else
+			caliber_options = list("Cancel")
 
 	var/choice = WWinput(H, "Which caliber do you want to convert \the [P] into? Be aware that this will permanently reduce accuracy by around 10%!", "Firearm Rechambering", "Cancel", caliber_options)
 	if (choice == "Cancel")
@@ -176,7 +179,6 @@
 					P.ammo_type = /obj/item/ammo_casing/a762x38
 
 			H << "You successfully convert \the [P]."
-			P.effectiveness_mod *= 0.9
 			if (!findtext(P.name,"(rechambered)"))
 				P.name = "[P.name] (rechambered)"
 			if (!findtext(P.desc,". Rechambered into"))
@@ -194,14 +196,14 @@
 	var/found = FALSE
 	if (istype(user.l_hand, /obj/item/stack/money))
 		var/obj/item/stack/money/M = user.l_hand
-		if (M.value*M.amount >= 20)
+		if (M.value*M.amount >= 5)
 			found = TRUE
 	else if (istype(user.r_hand, /obj/item/stack/money))
 		var/obj/item/stack/money/M = user.r_hand
-		if (M.value*M.amount >= 20)
+		if (M.value*M.amount >= 5)
 			found = TRUE
 	if (!found)
-		user << "You don't have enough money to make a new blueprint! You need 50 gold coins or equivalent in one of your hands."
+		user << "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands."
 		return FALSE
 
 ////////////////STOCK///////////////////////////////
@@ -212,7 +214,6 @@
 		display = list("Rifle Wooden Stock","Carbine Wooden Stock", "Pistol Grip", "Steel Stock", "Cancel")
 	else if (map.ordinal_age >= 7)
 		display = list("Rifle Wooden Stock","Carbine Wooden Stock", "Pistol Grip", "Steel Stock", "Folding Stock", "Cancel")
-
 	var/choice_stock = WWinput(user, "Choose the Stock:", "Gunsmith - [steel_amt] steel, [wood_amt] wood", "Cancel", display)
 	current_gun = new /obj/item/weapon/gun/projectile/custom(src)
 	switch (choice_stock)
@@ -248,12 +249,11 @@
 ////////////////RECEIVER///////////////////////////////
 	var/list/display2 = list("Cancel")
 	if (map.ordinal_age == 5)
-		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Pump-Action")
+		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Pump-Action", "Cancel")
 	else if (map.ordinal_age == 6)
-		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Semi-Auto (large)","Open-Bolt (small)", "Open-Bolt (large)","Pump-Action")
+		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Semi-Auto (large)","Open-Bolt (small)", "Open-Bolt (large)","Pump-Action", "Cancel")
 	else if (map.ordinal_age >= 7)
-		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Semi-Auto (large)","Open-Bolt (small)", "Open-Bolt (large)","Pump-Action", "Dual Selective Fire", "Triple Selective Fire")
-	display2 += "Cancel"
+		display2 = list("Bolt-Action","Revolver", "Semi-Auto (small)", "Semi-Auto (large)","Open-Bolt (small)", "Open-Bolt (large)","Pump-Action", "Dual Selective Fire", "Triple Selective Fire", "Cancel")
 	var/choice_receiver = WWinput(user, "Choose the receiver:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display2)
 	switch (choice_receiver)
 		if ("Cancel")
@@ -296,19 +296,19 @@
 ////////////////FEEDING/SYSTEM///////////////////////////////
 	var/list/display3 = list("Cancel")
 	if (map.ordinal_age == 5)
-		display3 = list("Internal Magazine", "Tubular")
+		display3 = list("Internal Magazine","Tubular")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine", "Large External Magazine", "Open (Belt-Fed)")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)")
 	if (choice_receiver == "Pump-Action")
 		display3 = list("Tubular")
 	if (choice_receiver == "Revolver")
 		display3 = list("Revolving")
-	if (choice_receiver == "Semi-Auto (small)")
+	if (choice_receiver =="Semi-Auto (small)")
 		display3 = list("Internal Magazine (Removable)")
 	if (choice_receiver == "Open-Bolt (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "External Magazine", "Large External Magazine", "Open (Belt-Fed)")
+		display3 = list("Internal Magazine", "External Magazine","Large External Magazine","Open (Belt-Fed)")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine", "Large External Magazine")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")
 	display3 += "Cancel"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	switch (choice_feeding)
@@ -348,14 +348,13 @@
 ////////////////BARREL///////////////////////////////
 	var/list/display4 = list("Cancel")
 	if (map.ordinal_age == 5)
-		display4 = list("Pistol Barrel","Rifle Barrel", "Long Rifle Barrel")
+		display4 = list("Pistol Barrel","Rifle Barrel", "Long Rifle Barrel", "Cancel")
 	else if (map.ordinal_age >= 6)
-		display4 = list("Pistol Barrel","Carbine Barrel","Rifle Barrel", "Long Rifle Barrel","Air-Cooled Barrel")
-	if (choice_receiver == "Semi-Auto (small)")
-		display4 = list("Pistol Barrel")
-	if (choice_receiver == "Open (Belt-Fed)")
-		display4 = list("Air-Cooled Barrel")
-	display4 += "Cancel"
+		display4 = list("Pistol Barrel","Carbine Barrel","Rifle Barrel", "Long Rifle Barrel","Air-Cooled Barrel", "Cancel")
+	if (choice_feeding == "Semi-Auto (small)")
+		display4 = list("Pistol Barrel","Cancel")
+	if (choice_feeding == "Open (Belt-Fed)")
+		display4 = list("Air-Cooled Barrel","Cancel")
 	var/choice_barrel = WWinput(user, "Choose the barrel:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display4)
 	switch (choice_barrel)
 		if ("Cancel")
@@ -390,50 +389,42 @@
 	if(map.ID == MAP_NOMADS_KARAFUTO)
 		switch (choice_receiver)
 			if ("Pump-Action")
-				caliberlist = list("shotgun")
+				caliberlist = list("shotgun","Cancel")
 
-			if ("Bolt-Action")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
-
-			if ("Semi-Auto (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata")
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","8x53mm murata","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-				caliberlist = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt")
+				caliberlist = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu","7.62x38mmR",".45 Colt","Cancel")
 
 			if ("Open-Bolt (large)")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR")
+				caliberlist = list("7.7x58mm arisaka","6.5x50mm arisaka","7.62x54mmR","Cancel")
 
 		if (choice_feeding == "Internal Magazine (Removable)")
-			caliberlist = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt")
+			caliberlist = list("9x19 Parabellum","9x18 Makarov","8x22mmB nambu","9x22mm nambu", "7.62x38mmR",".45 Colt","Cancel")
 	else
 		switch (choice_receiver)
 			if ("Pump-Action")
-				caliberlist = list("shotgun")
+				caliberlist = list("shotgun","Cancel")
 
-			if ("Bolt-Action")
-				caliberlist = list("7.92x57mm Mauser", "6.5x50mm small rifle", "7.62x39mm intermediate rifle","5.56x45mm intermediate rifle")
-
-			if ("Semi-Auto (large)")
-				caliberlist = list("7.92x57mm Mauser", "6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle", "shotgun")
-				if (map.ordinal_age >= 7)
-					caliberlist += "shotgun"
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliberlist = list("7.92x57mm Mauser","6.5x50mm small rifle","7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-				caliberlist = list("9x19 Parabellum", "9x18 Makarov", ".45 Colt")
+				caliberlist = list("9x19 Parabellum","9x18 Makarov",".45 Colt","Cancel")
 
 			if ("Open-Bolt (large)")
-				caliberlist = list("7.62x39mm intermediate rifle", "5.56x45mm intermediate rifle")
+				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliberlist = list("7.62x39mm intermediate rifle", "5.56x45mm intermediate rifle")
+				caliberlist = list("7.62x39mm intermediate rifle","5.56x45mm intermediate rifle","Cancel")
 
 		if (choice_feeding == "Internal Magazine (Removable)")
-			caliberlist = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
-	caliberlist += "Cancel"
+			caliberlist = list("9x19 Parabellum","9x18 Makarov",".45 Colt","Cancel")
+
 	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
 	switch (choice_caliber)
 		if ("Cancel")
@@ -504,7 +495,7 @@
 				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "gewehr71", "gewehr98", "lebel", "mosin", "murata", "enfield", "p14enfield", "carcano", "arisaka30", "arisaka35")
 				if (map.ordinal_age >= 6)
-					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfield_ww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
+					possible_list = list("Cancel", "gewehr71", "gewehr98", "kar98k", "lebel", "mosin", "mosin30", "murata", "enfield", "p14enfield", "carcano", "springfieldww2", "arisaka30", "arisaka35", "arisaka38", "arisaka99")
 			if("Semi-Auto (large)")
 				current_gun.override_icon = 'icons/obj/guns/rifles.dmi'
 				possible_list = list("Cancel", "svt", "g41", "g43", "m1garand")
@@ -536,7 +527,6 @@
 			if ("Triple Selective Fire")
 				current_gun.override_icon = 'icons/obj/guns/assault_rifles.dmi'
 				possible_list = list("Cancel", "m16","m16a2","m16a4","m4", "m4mws", "hk417", "scarl", "scarh", "ar15", "mk18", "mk18tan", "sigsauer")
-
 		var/dst = WWinput(user, "Choose the gun's look:", "Gunsmithing", "Cancel", possible_list)
 		if (dst != "Cancel" && dst != null)
 			current_gun.override_sprite = dst
@@ -558,16 +548,16 @@
 		var/foundm = FALSE
 		if (istype(user.l_hand, /obj/item/stack/money))
 			var/obj/item/stack/money/M = user.l_hand
-			if (M.value*M.amount >= 200)
+			if (M.value*M.amount >= 50)
 				foundm = TRUE
-				M.amount -= 200/M.value
+				M.amount -= 50/M.value
 				if (M.amount <= 0)
 					qdel(M)
 		else if (istype(user.r_hand, /obj/item/stack/money))
 			var/obj/item/stack/money/M = user.r_hand
-			if (M.value*M.amount >= 200)
+			if (M.value*M.amount >= 50)
 				foundm = TRUE
-				M.amount -= 200/M.value
+				M.amount -= 50/M.value
 				if (M.amount <= 0)
 					qdel(M)
 		if (foundm)
@@ -708,7 +698,7 @@
 	var/chamber_offset = FALSE //how many empty chambers in the cylinder until you hit a round
 	var/single_action = FALSE
 	var/cocked = FALSE
-	var/base_icon = null
+	base_icon = null
 	var/folded = FALSE
 
 	//shotgun
@@ -743,19 +733,20 @@
 	switch (stock_type)
 		if ("Rifle Wooden Stock")
 			equiptimer = 15
-			effectiveness_mod = 1.1
+			recoil *= 0.75
 		if ("Carbine Wooden Stock")
 			equiptimer = 12
-			effectiveness_mod = 1
+			recoil *= 0.85
 		if ("Pistol Grip")
 			equiptimer = 7
-			effectiveness_mod = 0.80
+			recoil *= 0.90
 		if ("Steel Stock")
 			equiptimer = 11
-			effectiveness_mod = 1
+			recoil *= 0.85
 		if ("Folding Stock")
 			equiptimer = 12
-			effectiveness_mod = 0.92
+			recoil *= 0.90
+
 
 	switch (receiver_type)
 		if ("Bolt-Action")
@@ -772,7 +763,7 @@
 			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
 			accuracy = TRUE
 			gun_type = GUN_TYPE_RIFLE
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 			accuracy_increase_mod = 2.00
 			accuracy_decrease_mod = 6.00
 			KD_chance = KD_CHANCE_HIGH
@@ -780,50 +771,6 @@
 			move_delay = 2
 			fire_delay = 2
 			good_mags = list(/obj/item/ammo_magazine/emptyclip)
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 87,
-					SHORT_RANGE_MOVING = 50,
-
-					MEDIUM_RANGE_STILL = 77,
-					MEDIUM_RANGE_MOVING = 47,
-
-					LONG_RANGE_STILL = 63,
-					LONG_RANGE_MOVING = 37,
-
-					VERY_LONG_RANGE_STILL = 56,
-					VERY_LONG_RANGE_MOVING = 30),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 88,
-					SHORT_RANGE_MOVING = 44,
-
-					MEDIUM_RANGE_STILL = 78,
-					MEDIUM_RANGE_MOVING = 39,
-
-					LONG_RANGE_STILL = 68,
-					LONG_RANGE_MOVING = 34,
-
-					VERY_LONG_RANGE_STILL = 58,
-					VERY_LONG_RANGE_MOVING = 29),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 98,
-					SHORT_RANGE_MOVING = 49,
-
-					MEDIUM_RANGE_STILL = 90,
-					MEDIUM_RANGE_MOVING = 50,
-
-					LONG_RANGE_STILL = 77,
-					LONG_RANGE_MOVING = 38,
-
-					VERY_LONG_RANGE_STILL = 69,
-					VERY_LONG_RANGE_MOVING = 31),
-			)
 
 			load_delay = 4
 			aim_miss_chance_divider = 3.00
@@ -845,49 +792,6 @@
 			equiptimer -= 1
 			slot_flags = SLOT_HOLSTER
 			good_mags = list(/obj/item/ammo_magazine/emptyspeedloader)
-			accuracy_list = list(
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 60,
-					SHORT_RANGE_MOVING = 40,
-
-					MEDIUM_RANGE_STILL = 53,
-					MEDIUM_RANGE_MOVING = 35,
-
-					LONG_RANGE_STILL = 45,
-					LONG_RANGE_MOVING = 30,
-
-					VERY_LONG_RANGE_STILL = 38,
-					VERY_LONG_RANGE_MOVING = 25),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 64,
-					SHORT_RANGE_MOVING = 42,
-
-					MEDIUM_RANGE_STILL = 56,
-					MEDIUM_RANGE_MOVING = 38,
-
-					LONG_RANGE_STILL = 49,
-					LONG_RANGE_MOVING = 32,
-
-					VERY_LONG_RANGE_STILL = 41,
-					VERY_LONG_RANGE_MOVING = 27),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 68,
-					SHORT_RANGE_MOVING = 44,
-
-					MEDIUM_RANGE_STILL = 60,
-					MEDIUM_RANGE_MOVING = 40,
-
-					LONG_RANGE_STILL = 53,
-					LONG_RANGE_MOVING = 35,
-
-					VERY_LONG_RANGE_STILL = 45,
-					VERY_LONG_RANGE_MOVING = 30),
-			)
 
 			accuracy_increase_mod = 1.50
 			accuracy_decrease_mod = 2.00
@@ -905,49 +809,7 @@
 			gun_type = GUN_TYPE_PISTOL
 			slot_flags = SLOT_BELT | SLOT_HOLSTER
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine/pistol)
-			accuracy_list = list(
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 60,
-					SHORT_RANGE_MOVING = 40,
 
-					MEDIUM_RANGE_STILL = 53,
-					MEDIUM_RANGE_MOVING = 35,
-
-					LONG_RANGE_STILL = 45,
-					LONG_RANGE_MOVING = 30,
-
-					VERY_LONG_RANGE_STILL = 38,
-					VERY_LONG_RANGE_MOVING = 25),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 64,
-					SHORT_RANGE_MOVING = 42,
-
-					MEDIUM_RANGE_STILL = 56,
-					MEDIUM_RANGE_MOVING = 38,
-
-					LONG_RANGE_STILL = 49,
-					LONG_RANGE_MOVING = 32,
-
-					VERY_LONG_RANGE_STILL = 41,
-					VERY_LONG_RANGE_MOVING = 27),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 68,
-					SHORT_RANGE_MOVING = 44,
-
-					MEDIUM_RANGE_STILL = 60,
-					MEDIUM_RANGE_MOVING = 40,
-
-					LONG_RANGE_STILL = 53,
-					LONG_RANGE_MOVING = 35,
-
-					VERY_LONG_RANGE_STILL = 45,
-					VERY_LONG_RANGE_MOVING = 30),
-			)
 			w_class = ITEM_SIZE_SMALL
 			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			accuracy_increase_mod = 1.50
@@ -961,50 +823,6 @@
 			w_class = ITEM_SIZE_LARGE
 			slot_flags = SLOT_SHOULDER
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine/rifle)
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 73,
-					SHORT_RANGE_MOVING = 48,
-
-					MEDIUM_RANGE_STILL = 63,
-					MEDIUM_RANGE_MOVING = 42,
-
-					LONG_RANGE_STILL = 53,
-					LONG_RANGE_MOVING = 35,
-
-					VERY_LONG_RANGE_STILL = 43,
-					VERY_LONG_RANGE_MOVING = 28),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 78,
-					SHORT_RANGE_MOVING = 51,
-
-					MEDIUM_RANGE_STILL = 68,
-					MEDIUM_RANGE_MOVING = 45,
-
-					LONG_RANGE_STILL = 58,
-					LONG_RANGE_MOVING = 38,
-
-					VERY_LONG_RANGE_STILL = 48,
-					VERY_LONG_RANGE_MOVING = 32),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 83,
-					SHORT_RANGE_MOVING = 55,
-
-					MEDIUM_RANGE_STILL = 73,
-					MEDIUM_RANGE_MOVING = 48,
-
-					LONG_RANGE_STILL = 63,
-					LONG_RANGE_MOVING = 42,
-
-					VERY_LONG_RANGE_STILL = 53,
-					VERY_LONG_RANGE_MOVING = 35),
-			)
 
 			accuracy_increase_mod = 2.00
 			accuracy_decrease_mod = 6.00
@@ -1028,59 +846,15 @@
 			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
 			full_auto = TRUE
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine,/obj/item/ammo_magazine/emptymagazine/rifle)
 			firemodes = list(
-				list(name = "automatic",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
-				)
+				list(name = "automatic",	burst=1, burst_delay=1, recoil=1, move_delay=5)
+			)
 			load_method = MAGAZINE
 			load_delay = 8
 			equiptimer -= 1
 			gun_type = GUN_TYPE_RIFLE
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 49,
-					SHORT_RANGE_MOVING = 39,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 14,
-					LONG_RANGE_MOVING = 11,
-
-					VERY_LONG_RANGE_STILL = 7,
-					VERY_LONG_RANGE_MOVING = 6),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 59,
-					SHORT_RANGE_MOVING = 47,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 16,
-					LONG_RANGE_MOVING = 13,
-
-					VERY_LONG_RANGE_STILL = 9,
-					VERY_LONG_RANGE_MOVING = 7),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 79,
-					SHORT_RANGE_MOVING = 63,
-
-					MEDIUM_RANGE_STILL = 59,
-					MEDIUM_RANGE_MOVING = 47,
-
-					LONG_RANGE_STILL = 39,
-					LONG_RANGE_MOVING = 31,
-
-					VERY_LONG_RANGE_STILL = 16,
-					VERY_LONG_RANGE_MOVING = 13),
-			)
 
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
@@ -1091,11 +865,11 @@
 			gtype = "mg"
 			w_class = ITEM_SIZE_HUGE
 			heavy = TRUE
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+			attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5)),
-				)
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8),
+			)
 			weight = 10
 			slot_flags = 0
 			force = 20
@@ -1105,51 +879,6 @@
 			load_delay = 50
 			slowdown = 1
 			load_delay = 12
-			// not accurate at all
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 30,
-					SHORT_RANGE_MOVING = 27,
-
-					MEDIUM_RANGE_STILL = 21,
-					MEDIUM_RANGE_MOVING = 19,
-
-					LONG_RANGE_STILL = 11,
-					LONG_RANGE_MOVING = 10,
-
-					VERY_LONG_RANGE_STILL = 8,
-					VERY_LONG_RANGE_MOVING = 7),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 38,
-					SHORT_RANGE_MOVING = 34,
-
-					MEDIUM_RANGE_STILL = 30,
-					MEDIUM_RANGE_MOVING = 27,
-
-					LONG_RANGE_STILL = 23,
-					LONG_RANGE_MOVING = 21,
-
-					VERY_LONG_RANGE_STILL = 11,
-					VERY_LONG_RANGE_MOVING = 10),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 45,
-					SHORT_RANGE_MOVING = 41,
-
-					MEDIUM_RANGE_STILL = 38,
-					MEDIUM_RANGE_MOVING = 34,
-
-					LONG_RANGE_STILL = 30,
-					LONG_RANGE_MOVING = 27,
-
-					VERY_LONG_RANGE_STILL = 15,
-					VERY_LONG_RANGE_MOVING = 14),
-			)
 
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
@@ -1169,57 +898,13 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2),
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 49,
-					SHORT_RANGE_MOVING = 39,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 14,
-					LONG_RANGE_MOVING = 11,
-
-					VERY_LONG_RANGE_STILL = 7,
-					VERY_LONG_RANGE_MOVING = 6),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 59,
-					SHORT_RANGE_MOVING = 47,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 16,
-					LONG_RANGE_MOVING = 13,
-
-					VERY_LONG_RANGE_STILL = 9,
-					VERY_LONG_RANGE_MOVING = 7),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 79,
-					SHORT_RANGE_MOVING = 63,
-
-					MEDIUM_RANGE_STILL = 59,
-					MEDIUM_RANGE_MOVING = 47,
-
-					LONG_RANGE_STILL = 39,
-					LONG_RANGE_MOVING = 31,
-
-					VERY_LONG_RANGE_STILL = 16,
-					VERY_LONG_RANGE_MOVING = 13),
-			)
 
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
@@ -1236,58 +921,14 @@
 			weight = 3.47
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
-				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-				list(name = "3-round bursts",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2),
+				list(name = "3-round-burst",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3),
+				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
 				)
 			sel_mode = 1
-			attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+			attachment_slots =ATTACH_IRONSIGHTS|ATTACH_BARREL
 			load_delay = 8
 			gun_type = GUN_TYPE_RIFLE
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 49,
-					SHORT_RANGE_MOVING = 39,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 14,
-					LONG_RANGE_MOVING = 11,
-
-					VERY_LONG_RANGE_STILL = 7,
-					VERY_LONG_RANGE_MOVING = 6),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 59,
-					SHORT_RANGE_MOVING = 47,
-
-					MEDIUM_RANGE_STILL = 39,
-					MEDIUM_RANGE_MOVING = 31,
-
-					LONG_RANGE_STILL = 16,
-					LONG_RANGE_MOVING = 13,
-
-					VERY_LONG_RANGE_STILL = 9,
-					VERY_LONG_RANGE_MOVING = 7),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 79,
-					SHORT_RANGE_MOVING = 63,
-
-					MEDIUM_RANGE_STILL = 59,
-					MEDIUM_RANGE_MOVING = 47,
-
-					LONG_RANGE_STILL = 39,
-					LONG_RANGE_MOVING = 31,
-
-					VERY_LONG_RANGE_STILL = 16,
-					VERY_LONG_RANGE_MOVING = 13),
-			)
 
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 2.00
@@ -1298,51 +939,6 @@
 			gtype = "shotgun"
 			gun_type = GUN_TYPE_SHOTGUN
 			fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
-			// 15% more accurate than SMGs
-			accuracy_list = list(
-
-				// small body parts: head, hand, feet
-				"small" = list(
-					SHORT_RANGE_STILL = 56,
-					SHORT_RANGE_MOVING = 45,
-
-					MEDIUM_RANGE_STILL = 45,
-					MEDIUM_RANGE_MOVING = 36,
-
-					LONG_RANGE_STILL = 16,
-					LONG_RANGE_MOVING = 13,
-
-					VERY_LONG_RANGE_STILL = 8,
-					VERY_LONG_RANGE_MOVING = 7),
-
-				// medium body parts: limbs
-				"medium" = list(
-					SHORT_RANGE_STILL = 68,
-					SHORT_RANGE_MOVING = 54,
-
-					MEDIUM_RANGE_STILL = 45,
-					MEDIUM_RANGE_MOVING = 36,
-
-					LONG_RANGE_STILL = 18,
-					LONG_RANGE_MOVING = 15,
-
-					VERY_LONG_RANGE_STILL = 10,
-					VERY_LONG_RANGE_MOVING = 8),
-
-				// large body parts: chest, groin
-				"large" = list(
-					SHORT_RANGE_STILL = 91,
-					SHORT_RANGE_MOVING = 72,
-
-					MEDIUM_RANGE_STILL = 68,
-					MEDIUM_RANGE_MOVING = 54,
-
-					LONG_RANGE_STILL = 45,
-					LONG_RANGE_MOVING = 36,
-
-					VERY_LONG_RANGE_STILL = 18,
-					VERY_LONG_RANGE_MOVING = 15),
-			)
 
 			accuracy_increase_mod = 1.00
 			accuracy_decrease_mod = 1.00
@@ -1414,26 +1010,26 @@
 
 	switch (barrel_type)
 		if ("Pistol Barrel")
-			effectiveness_mod *= 0.8
 			equiptimer -= 1
+			accuracy = 4
 		if ("Carbine Barrel")
-			effectiveness_mod *= 1
 			slot_flags &= ~SLOT_HOLSTER
+			accuracy = 3
 		if ("Rifle Barrel")
-			effectiveness_mod *=1.1
 			slot_flags &= ~SLOT_HOLSTER
 			slot_flags &= ~SLOT_BELT
 			equiptimer += 1
+			accuracy = 2
 		if ("Long Rifle Barrel")
-			effectiveness_mod *= 1.25
 			slot_flags &= ~SLOT_HOLSTER
 			slot_flags &= ~SLOT_BELT
 			equiptimer += 3
+			accuracy = 1
 		if ("Air-Cooled Barrel")
-			effectiveness_mod *= 1.05
 			slot_flags &= ~SLOT_HOLSTER
 			slot_flags &= ~SLOT_BELT
 			equiptimer += 5
+			accuracy = 3
 
 	var/tempdesc = ""
 	switch (caliber)
@@ -1813,8 +1409,5 @@
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod *= 0.92
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod /= 0.92
-

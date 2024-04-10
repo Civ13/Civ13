@@ -430,7 +430,7 @@ datum/job/indians/tribes/black
 			if (3)
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 			if (4)
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/rpd(H), slot_shoulder)
 	else
 		switch(randgun)
 			if (1)

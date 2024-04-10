@@ -198,7 +198,8 @@ steam.start() -- spawns the effect
 	pixel_x = 0
 	pixel_y = 0
 /obj/effect/effect/smoke/small/fast
-	time_to_live = 30
+	time_to_live = 1
+	opacity = 0
 
 /obj/effect/effect/smoke/purple
 	color = "#800080"

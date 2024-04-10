@@ -24,7 +24,7 @@
 			if (!M.can_eat(src))
 				return
 
-			M << "<span class='notice'>You swallow \the [src].</span>"
+			M.visible_message("<span class ='notice'>[M] swallows \the [src].</span>", "<span class='notice'>You swallow \the [src].</span>")
 			M.drop_from_inventory(src) //icon update
 			if (reagents.total_volume)
 				reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
@@ -35,14 +35,14 @@
 			if (!M.can_force_feed(user, src))
 				return
 
-			user.visible_message("<span class='warning'>[user] attempts to force [M] to swallow \the [src].</span>")
+			user.visible_message("<span class='warning'>[user] attempts to force [M] to swallow \the [src]!</span>", "<span class='warning'>You try and force [M] to swallow \the [src].")
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 			if (!do_mob(user, M))
 				return
 
 			user.drop_from_inventory(src) //icon update
-			user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>")
+			user.visible_message("<span class='warning'>[user] forces [M] to swallow \the [src].</span>!")
 
 			var/contained = reagentlist()
 			M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [key_name(user)] Reagents: [contained]</font>")

@@ -800,14 +800,14 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
 			user << SPAN_WARNING("You need to have electronic circuits in the other hand to craft the powered saw mill.")
 			return
-		if (istype(H.l_hand, /obj/item/stack/material/woodplank))
-			var/obj/item/stack/material/woodplank/NR = H.l_hand
-			NR.amount -= 200
+		if (istype(H.l_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.l_hand
+			NR.amount -= 1
 			if (NR.amount <= 0)
 				qdelHandReturn(H.l_hand, H)
-		else if (istype(H.r_hand, /obj/item/stack/material/woodplank))
-			var/obj/item/stack/material/woodplank/NR = H.r_hand
-			NR.amount -= 200
+		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.r_hand
+			NR.amount -= 1
 			if (NR.amount <= 0)
 				qdelHandReturn(H.r_hand, H)
 
