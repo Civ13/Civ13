@@ -171,7 +171,7 @@
     // Check if there's a barrier with opposite direction facing the climbing direction
     for (var/obj/I in T)
         if (I.dir == opposite_dir && istype(I, /obj/structure/window))  
-            to_chat(user, SPAN_WARNING("You can't vault this barrier. \a [I.name] is blocking the way."))
+            to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
             return
 
     // Check if the user is not directly in front of or behind the barrier
