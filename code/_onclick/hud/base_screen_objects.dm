@@ -1128,7 +1128,8 @@ obj/screen/tactic
 	name = "full_1_tile_overlay"
 	icon_state = "blank"
 	layer = 21
-	mouse_opacity = TRUE
+	mouse_opacity = FALSE
+
 /obj/screen/full_1_tile_overlay/process()
 	update_icon()
 	return
@@ -1142,7 +1143,6 @@ obj/screen/tactic
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
 	var/global/image/blind_icon = image('icons/mob/screen1_full.dmi', "blackimageoverlay")
-
 
 /obj/screen/damageoverlay/process()
 	update_for_view()
