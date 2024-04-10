@@ -127,7 +127,7 @@
 	if (can_damage)
 		switch(W.damtype)
 			if ("fire")
-				health -= W.force * TRUE
+				health -= W.force * 1
 			if ("brute")
 				health -= W.force * 0.75
 
@@ -183,7 +183,7 @@
 			return TRUE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage*0.05
 	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
 	try_destroy()
 

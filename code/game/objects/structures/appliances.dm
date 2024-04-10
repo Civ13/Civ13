@@ -90,7 +90,7 @@
 		return FALSE
 
 /obj/structure/TV/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage*0.05
 	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
 	try_destroy()
 
@@ -118,7 +118,7 @@
 		return FALSE
 
 /obj/structure/TV/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage*0.05
 	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
 	try_destroy()
 

@@ -45,7 +45,7 @@
 
 	if(!proj.firer)
 		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
-		health -= proj.damage * 0.1
+		health -= proj.damage * 0.05
 		bullet_act(proj)
 		return FALSE
 
@@ -65,7 +65,7 @@
 
 	if(prob(hitchance))
 		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
-		health -= proj.damage * 0.1
+		health -= proj.damage * 0.05
 		bullet_act(proj)
 		return FALSE
 	return TRUE
@@ -80,7 +80,7 @@
 
 	if(!proj.firer)
 		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
-		health -= proj.damage * 0.1
+		health -= proj.damage * 0.05
 		bullet_act(proj)
 		return FALSE
 
@@ -98,7 +98,7 @@
 
 	if(prob(hitchance))
 		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
-		health -= proj.damage * 0.1
+		health -= proj.damage * 0.05
 		bullet_act(proj)
 		return FALSE
 	return TRUE

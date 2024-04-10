@@ -569,6 +569,7 @@
 						loc = null
 						qdel(src)
 						return FALSE
+				else
 					O.visible_message(SPAN_WARNING("\The [src] flies over \the [O]!"))
 					break
 	

@@ -292,7 +292,7 @@
 			if (wall)
 				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
 					new_bullethole()
-				health -= proj.damage * 0.1
+				health -= proj.damage * 0.05
 				try_destroy()
 		return
 
