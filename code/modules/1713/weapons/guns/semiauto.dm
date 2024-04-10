@@ -82,6 +82,10 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/svt/update_icon()
 	..()
+	if (ammo_magazine)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
 	if (scope)
 		overlays -= scope_image
 		scope_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = "pu_svt", pixel_x = scope_x_offset, pixel_y = scope_y_offset)
@@ -293,6 +297,13 @@
 	barrel_x_offset = -1
 	accuracy = 2
 
+/obj/item/weapon/gun/projectile/semiautomatic/g41/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+
 /obj/item/weapon/gun/projectile/semiautomatic/g43
 	name = "Gewehr 43"
 	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round detachable magazine."
@@ -320,6 +331,13 @@
 	scope_mounts = list ("swept_back")
 	barrel_x_offset = -1
 	accuracy = 2
+
+/obj/item/weapon/gun/projectile/semiautomatic/g43/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
 
 /obj/item/weapon/gun/projectile/semiautomatic/vg5
 	name = "Volkssturmkarabiner 98"

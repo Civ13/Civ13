@@ -559,14 +559,14 @@
 	w_class = ITEM_SIZE_LARGE
 
 /obj/item/ammo_casing/rocket/atgm
-	name = "ATGM rocket"
-	desc = "A High-Explosive (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
+	name = "HEAT ATGM rocket"
+	desc = "A High-Explosive, anti-vehicular (HEAT) guided missile warhead and propeller designed to be fired from a ATGM system."
 	icon_state = "atgmAP"
 	projectile_type = /obj/item/projectile/shell/missile/atgm/heat
 
 /obj/item/ammo_casing/rocket/atgm/he
-	name = "HEAT ATGM rocket"
-	desc = "A high-hxplosive, anti-vehicular (HEAT) guided missile warhead and propeller designed to be fired from an ATGM system."
+	name = "HE ATGM rocket"
+	desc = "A High-Explosive (HE) guided missile warhead and propeller designed to be fired from an ATGM system."
 	icon_state = "atgmHE"
 	projectile_type = /obj/item/projectile/shell/missile/atgm/he
 

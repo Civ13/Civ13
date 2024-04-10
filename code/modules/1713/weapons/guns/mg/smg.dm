@@ -1725,6 +1725,8 @@
 		)
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	mag_x_offset = -2
+	mag_y_offset = -4
 
 /obj/item/weapon/gun/projectile/submachinegun/aug
 	name = "Steyr AUG"
@@ -1747,6 +1749,8 @@
 		)
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	mag_x_offset = -5
+	mag_y_offset = -3
 
 /////////////////////////////////*FALLOUT*////////////////////////////////////////////
 

@@ -666,7 +666,7 @@
 	clip = TRUE
 
 /obj/item/ammo_magazine/ptrs
-	name = "cli[] (14.5x114mm)"
+	name = "clip (14.5x114mm)"
 	icon_state = "clip"
 	caliber = "a145"
 	ammo_type = /obj/item/ammo_casing/a145_ap
