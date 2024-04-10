@@ -727,7 +727,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/mg34 = 5,
+		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 15,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 2,
@@ -744,7 +744,7 @@ obj/structure/vending/sofammo
 	icon_state = "modern_german"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
-		/obj/item/weapon/gun/projectile/automatic/mg34 = 2,
+		/obj/item/weapon/gun/projectile/automatic/manual/mg34 = 2,
 		/obj/item/weapon/gun/projectile/semiautomatic/g41 = 5,
 		/obj/item/weapon/gun/projectile/semiautomatic/g43 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/mp40 = 5,
@@ -1221,7 +1221,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
-		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
+		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 	)
 
@@ -1361,7 +1361,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 5,
 		/obj/item/ammo_magazine/ak47 = 25,
-		/obj/item/weapon/gun/projectile/automatic/rpd = 2,
+		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 2,
 		/obj/item/ammo_magazine/rpd = 10,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 		/obj/item/ammo_magazine/makarov = 25,
@@ -1564,7 +1564,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 7,
 		/obj/item/weapon/gun/projectile/submachinegun/greasegun  = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/sten  = 5,
-		/obj/item/weapon/gun/projectile/automatic/m249  = 3,
+		/obj/item/weapon/gun/projectile/automatic/manual/m249  = 3,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/coldwar/m67 = 15,

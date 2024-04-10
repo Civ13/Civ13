@@ -110,7 +110,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
 			uniform.attackby(webbing, H)
 		if (3)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/mg34(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/mg34(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/mg34(null)
 			uniform.attackby(webbing, H)
 
@@ -295,10 +295,10 @@
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/gewehr98(H), slot_r_hand)
 		if (4)
 			if (prob(75))
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/mg34(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/mg34(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mg34(H), slot_r_hand)
 			else
-				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/mg34(H), slot_l_hand)
+				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/mg34(H), slot_l_hand)
 				H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mg34belt(H), slot_r_hand)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

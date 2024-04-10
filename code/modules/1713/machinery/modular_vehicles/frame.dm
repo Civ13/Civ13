@@ -50,10 +50,10 @@
 /obj/structure/vehicleparts/frame/proc/total_weight()
 	var/tmpsum = 10
 	for (var/obj/O in loc)
-		if (!(istype(O, /obj/structure/rails)) && !istype(O, /obj/covers))
-			tmpsum += O.w_class * 2
+		if (!(istype(O, /obj/structure/rails)))
+			tmpsum += O.w_class*2
 	for(var/mob/living/L in loc)
-		tmpsum += L.mob_size * 2
+		tmpsum += L.mob_size*2
 	return tmpsum
 
 /obj/structure/vehicleparts/frame/examine(mob/user)
@@ -385,87 +385,76 @@
 		..()
 
 /obj/structure/vehicleparts/frame/proc/is_ambrasure(var/w_name)
-	var/list/wall = get_wall(w_name)
-	if(wall.len >= 8 && wall[8])
-		return TRUE
+	if (w_name == "front" && w_front.len >= 8)
+		return w_front[8]
+	else if (w_name == "back" && w_back.len >= 8)
+		return w_back[8]
+	else if (w_name == "left" && w_left.len >= 8)
+		return w_left[8]
+	else if (w_name == "right" && w_right.len >= 8)
+		return w_right[8]
+
+	if (w_name == "frontleft")
+		if(w_front.len >= 8 && w_front[8])
+			return TRUE
+		if(w_left.len >= 8 && w_left[8])
+			return TRUE
+	else if (w_name == "backleft")
+		if(w_back.len >= 8 && w_back[8])
+			return TRUE
+		if(w_left.len >= 8 && w_left[8])
+			return TRUE
+	else if (w_name == "frontright")
+		if(w_front.len >= 8 && w_front[8])
+			return TRUE
+		if(w_right.len >= 8 && w_right[8])
+			return TRUE
+	else if (w_name == "backright")
+		if(w_back.len >= 8 && w_back[8])
+			return TRUE
+		if(w_right.len >= 8 && w_right[8])
+			return TRUE
 	return FALSE
 
-/obj/structure/vehicleparts/frame/proc/get_wall(var/w_name)
-	if (w_name == "front")
-		return w_front
-	else if (w_name == "back")
-		return w_back
-	else if (w_name == "left")
-		return w_left
-	else if (w_name == "right")
-		return w_right
-	else if (w_name == "frontleft")
-		if(prob(50))
-			return w_front
-		else
-			return w_left
-	else if (w_name == "backleft")
-		if(prob(50))
-			return w_back
-		else
-			return w_left
-	else if (w_name == "frontright")
-		if(prob(50))
-			return w_front
-		else
-			return w_right
-	else if (w_name == "backright")
-		if(prob(50))
-			return w_back
-		else
-			return w_right
-	else
-		return null
-
-/obj/structure/vehicleparts/frame/proc/get_opposite_wall(var/w_name)
-	if (w_name == "front")
-		return "back"
-	else if (w_name == "back")
-		return "front"
-	else if (w_name == "left")
-		return "right"
-	else if (w_name == "right")
-		return "left"
-	else if (w_name == "frontleft")
-		return "backright"
-	else if (w_name == "backleft")
-		return "frontright"
-	else if (w_name == "frontright")
-		return "backleft"
-	else if (w_name == "backright")
-		return "frontleft"
-	return null
-
 /obj/structure/vehicleparts/frame/proc/get_wall_name(var/w_dir)
-	var/back = NORTH
-	var/front = SOUTH
-	var/left = EAST
-	switch (dir)
-		if (SOUTH)
-			back = SOUTH
-			front = NORTH
-			left = WEST
-		if (WEST)
-			back = WEST
-			front = EAST
-			left = NORTH
-		if (EAST)
-			back = EAST
-			front = WEST
-			left = SOUTH
-	if (w_dir == back)
-		return "back"
-	else if (w_dir == front)
-		return "front"
-	else if (w_dir == left)
-		return "left"
-	else
-		return "right"
+	var/w_dirs = list(NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST)
+	var/w_names = list("back", "backleft", "left", "frontleft", "front", "frontright", "right", "backright")
+	while (dir != w_dirs[1])
+		var/i = 8
+		var/buf = w_dirs[i];
+		for (, i > 1, i--)
+			w_dirs[i] = w_dirs[i - 1]
+		w_dirs[1] = buf
+	var/i
+	for (i = 1, i <= 8, i++)
+		if (w_dir == w_dirs[i])
+			return w_names[i]
+
+/obj/structure/vehicleparts/frame/proc/wall_hp(var/w_name)
+	var/walls_hp_list = list (
+		"front" = w_front[5],
+		"back" = w_back[5],
+		"left" = w_left[5],
+		"right" = w_right[5],
+		"frontleft" = w_front[5] + w_left[5],
+		"backleft" = w_back[5] + w_left[5],
+		"frontright" = w_front[5] + w_right[5],
+		"backright" = w_back[5] + w_right[5]
+	)
+	return walls_hp_list[w_name]
+
+/obj/structure/vehicleparts/frame/proc/wall_armor(var/w_name)
+	var/walls_armor_list = list (
+		"front" = w_front[4],
+		"back" = w_back[4],
+		"left" = w_left[4],
+		"right" = w_right[4],
+		"frontleft" = w_front[4] + w_left[4],
+		"backleft" = w_back[4] + w_left[4],
+		"frontright" = w_front[4] + w_right[4],
+		"backright" = w_back[4] + w_right[4]
+	)
+	return walls_armor_list[w_name]
 
 /obj/structure/vehicleparts/frame/proc/CheckPenLoc(var/obj/item/proj)
 	var/turf/startingturf = null
@@ -485,19 +474,20 @@
 		return "none"
 
 	var/incdir = get_dir(startingturf, get_turf(src))
-	
+
 	return get_wall_name(incdir)
 
 /obj/structure/vehicleparts/frame/proc/CheckPen(var/obj/item/projectile/proj, var/penloc = "front")
 	if (!penloc)
 		return FALSE
 	proj.throw_source = proj.starting
-	var/list/wall
 	var/firing_dist = get_dist(src.loc,proj.starting)
-	wall = get_wall(penloc)
-	if (wall[5] <= 0)
-		return TRUE
-	if (max(0,proj.heavy_armor_penetration-firing_dist) >= wall[4])
+	var/heavy_ap = proj.heavy_armor_penetration
+	if (wall_armor(penloc) > 0)
+		if (istype(proj, /obj/item/projectile/shell))
+			var/obj/item/projectile/shell/S = proj
+			S.initiated = TRUE
+	if (max(0,heavy_ap - firing_dist) >= wall_armor(penloc))
 		return TRUE
 
 	if (istype(proj, /obj/item/projectile/shell))
@@ -507,14 +497,6 @@
 	return FALSE
 
 /obj/structure/vehicleparts/frame/bullet_act(var/obj/item/projectile/proj, var/penloc = "front")
-	var/turf/tloc = null
-	if (proj.firer)
-		tloc = proj.firer.loc
-	else
-		tloc = get_turf(src)
-	for (var/obj/structure/vehicleparts/frame/F in tloc)
-		if (F.axis == axis)
-			return
 	if (mwheel && prob(30))
 		if (mwheel.ntype == "wheel")
 			mwheel.broken = TRUE
@@ -533,141 +515,83 @@
 				else if (mwheel.ntype == "track")
 					switch (PS.atype)
 						if ("HE")
-							for (var/mob/M in axis.transporting)
+							for (var/mob/M in loc)
 								shake_camera(M, 3, 3)
 							if (!mwheel.broken && prob(80))
 								mwheel.broken = TRUE
 								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-								//playsound(loc, "track_voice", 100, TRUE)
 								new/obj/effect/effect/smoke/small(loc)
 								update_icon()
 						if ("APCR")
 							if (!mwheel.broken && prob(60))
 								mwheel.broken = TRUE
 								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-								//playsound(loc, "track_voice", 100, TRUE)
 								new/obj/effect/effect/smoke/small(loc)
 								update_icon()
 						if ("AP")
 							if (!mwheel.broken && prob(70))
 								mwheel.broken = TRUE
 								visible_message("<span class='danger'>\The [mwheel.name] breaks down!</span>")
-								//playsound(loc, "track_voice", 100, TRUE)
 								new/obj/effect/effect/smoke/small(loc)
 								update_icon()
 			else
-				var/adjdam = 0
-				switch (PS.atype)
-					if ("HE")
-						for (var/mob/living/M in axis.transporting)
-							shake_camera(M, 3, 3)
-							if (M.loc == loc)
-								var/tprob = 80
-								if (M.lying || M.prone)
-									tprob = 35
-								if (prob(tprob))
-									M.adjustBruteLoss(PS.damage)
-									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
-									//playsound(loc, "pen_voice", 100, TRUE)
-						adjdam = proj.damage * 0.08
-					else if ("APCR")
-						for (var/mob/living/M in axis.transporting)
-							shake_camera(M, 1, 1)
-							if (M.loc == loc)
-								var/tprob = 80
-								if (M.lying || M.prone)
-									tprob = 35
-								if (prob(tprob))
-									M.adjustBruteLoss(PS.damage)
-									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
-									//playsound(loc, "pen_voice", 100, TRUE)
-						adjdam = proj.damage * 0.5
-					else if ("AP")
-						for (var/mob/living/M in axis.transporting)
-							shake_camera(M, 1, 1)
-							if (M.loc == loc)
-								var/tprob = 80
-								if (M.lying || M.prone)
-									tprob = 35
-								if (prob(tprob))
-									M.adjustBruteLoss(PS.damage)
-									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
-									//playsound(loc, "pen_voice", 100, TRUE)
-						adjdam = proj.damage * 0.3
-					else
-						for (var/mob/living/M in axis.transporting)
-							if (M.loc == loc)
-								var/tprob = 50
-								if (M.lying || M.prone)
-									tprob = 25
-								if (prob(tprob))
-									M.adjustBruteLoss(PS.damage)
-									visible_message("<span class='danger'>[M] is hit by the [PS]!</span>")
-						adjdam = proj.damage * 0.05
+				var/damage_modifier = proj.heavy_armor_penetration
+				if(wall_armor(penloc) > heavy_armor_penetration)
+					damage_modifier /= 2
 				switch(penloc)
 					if ("left")
-						w_left[5] -= adjdam
+						w_left[5] -= damage_modifier
 						visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
-						//playsound(loc, "pen_voice", 100, TRUE)
 					if ("right")
-						w_right[5] -= adjdam
+						w_right[5] -= damage_modifier
 						visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
-						//playsound(loc, "pen_voice", 100, TRUE)
 					if ("front")
-						w_front[5] -= adjdam
+						w_front[5] -= damage_modifier
 						visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
-						//playsound(loc, "pen_voice", 100, TRUE)
 					if ("back")
-						w_back[5] -= adjdam
+						w_back[5] -= damage_modifier
 						visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
-						//playsound(loc, "pen_voice", 100, TRUE)
 					if ("frontleft")
 						if (w_left[4] > w_front[4] && w_left[5]>0 && w_front[5]>0)
-							w_left[5] -= adjdam
+							w_left[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 						else
-							w_front[5] -= adjdam
+							w_front[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 					if ("frontright")
 						if (w_right[4] > w_front[4] && w_right[5]>0 && w_front[5]>0)
-							w_right[5] -= adjdam
+							w_right[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 						else
-							w_front[5] -= adjdam
+							w_front[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The front hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 					if ("backleft")
 						if (w_left[4] > w_back[4] && w_left[5]>0 && w_back[5]>0)
-							w_left[5] -= adjdam
+							w_left[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The left hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 						else
-							w_back[5] -= adjdam
+							w_back[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 					if ("backright")
 						if (w_right[4] > w_back[4] && w_right[5]>0 && w_back[5]>0)
-							w_right[5] -= adjdam
+							w_right[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The right hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 						else
-							w_back[5] -= adjdam
+							w_back[5] -= damage_modifier
 							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
-							//playsound(loc, "pen_voice", 100, TRUE)
 		else
+			var/damage_modifier = proj.heavy_armor_penetration
+			if(wall_armor(penloc) > heavy_armor_penetration)
+				damage_modifier /= 2
 			switch(penloc)
 				if ("left")
-					w_left[5] -= proj.damage * 0.01
+					w_left[5] -= damage_modifier
 				if ("right")
-					w_right[5] -= proj.damage * 0.01
+					w_right[5] -= damage_modifier
 				if ("front")
-					w_front[5] -= proj.damage * 0.01
+					w_front[5] -= damage_modifier
 				if ("back")
-					w_back[5] -= proj.damage * 0.01
-		visible_message("<span class = 'warning'>\The [proj] hits \the [src]!</span>")
+					w_back[5] -= damage_modifier
 		if (istype(proj, /obj/item/projectile/shell))
 			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
 			new/obj/effect/effect/smoke/small/fast(loc)

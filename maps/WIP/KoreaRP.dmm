@@ -1204,7 +1204,7 @@
 "xh" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/fries,/turf/floor/wood,/area/caribbean)
 "xi" = (/obj/structure/closet/crate/dumpster,/obj/item/ammo_magazine/mg34,/obj/item/ammo_magazine/mg34,/turf/floor/plating/cobblestone/vertical,/area/caribbean)
 "xj" = (/obj/covers/brick_wall,/obj/structure/noticeboard,/turf/wall/brick,/area/caribbean)
-"xk" = (/obj/structure/closet/crate/dumpster,/obj/item/weapon/gun/projectile/automatic/mg34,/turf/floor/grass,/area/caribbean)
+"xk" = (/obj/structure/closet/crate/dumpster,/obj/item/weapon/gun/projectile/automatic/manual/mg34,/turf/floor/grass,/area/caribbean)
 "xl" = (/obj/structure/cell_tower,/turf/floor/grass,/area/caribbean)
 "xm" = (/obj/covers/brick_wall,/obj/structure/sign/custom/metallic{desc = "industrial workers only!."; name = "port factory changwong"},/turf/wall/brick,/area/caribbean)
 "xn" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1},/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/plating/concrete,/area/caribbean)

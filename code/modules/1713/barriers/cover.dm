@@ -1,4 +1,3 @@
-
 #define SANDBAG_BLOCK_ITEMS_CHANCE 40
 
 /obj/structure/window/barrier/proc/check_cover(obj/item/projectile/P)
@@ -45,7 +44,7 @@
 	var/is_lying = FALSE
 
 	if(!proj.firer)
-		visible_message("<span class = 'warning'>[src] getting hit by [proj].</span>")
+		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
 		health -= proj.damage * 0.1
 		bullet_act(proj)
 		return FALSE
@@ -65,7 +64,7 @@
 		hitchance = 100
 
 	if(prob(hitchance))
-		visible_message("<span class = 'warning'>[src] getting hit by [proj].</span>")
+		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
 		health -= proj.damage * 0.1
 		bullet_act(proj)
 		return FALSE
@@ -80,7 +79,7 @@
 	var/is_lying = FALSE
 
 	if(!proj.firer)
-		visible_message("<span class = 'warning'>[src] getting hit by [proj].</span>")
+		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
 		health -= proj.damage * 0.1
 		bullet_act(proj)
 		return FALSE
@@ -98,7 +97,7 @@
 		hitchance = 100
 
 	if(prob(hitchance))
-		visible_message("<span class = 'warning'>[src] getting hit by [proj].</span>")
+		visible_message("<span class = 'warning'>[proj] hits the [src]!</span>")
 		health -= proj.damage * 0.1
 		bullet_act(proj)
 		return FALSE

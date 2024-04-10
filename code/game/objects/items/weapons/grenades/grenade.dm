@@ -1078,10 +1078,10 @@
 	var/spread_range = 7
 
 /obj/structure/payload/New()
-	..()
 	var/matrix/M = matrix()
 	M.Scale(scale, scale)
 	src.transform = M
+	..()
 
 /obj/structure/payload/proc/drop()
 	density = FALSE

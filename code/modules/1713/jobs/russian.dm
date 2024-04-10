@@ -3113,7 +3113,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/russian/guns/pkm/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/pkm(null)
 			uniform.attackby(webbing, H)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/rpd(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/white/rpd(H), slot_belt)
 			var/obj/item/clothing/accessory/storage/webbing/russian/guns/rpd/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/rpd(null)
 			uniform.attackby(webbing, H)

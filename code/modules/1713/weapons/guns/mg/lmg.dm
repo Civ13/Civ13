@@ -228,8 +228,60 @@
 	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
 	overlays += mag_image
 
-////////////////////////////MG34/////////////////////////////////////////
-/obj/item/weapon/gun/projectile/automatic/mg34
+////////////////////////////Manual Machine guns/////////////////////////////////////////
+/obj/item/weapon/gun/projectile/automatic/manual
+	var/cover_open = FALSE
+	var/cover_toggle_time = 2
+	var/cover_open_sound = 'sound/weapons/guns/interact/lmg_open.ogg'
+	var/cover_close_sound = 'sound/weapons/guns/interact/lmg_close.ogg'
+
+/obj/item/weapon/gun/projectile/automatic/manual/special_check(mob/user)
+	if (cover_open)
+		to_chat(user, SPAN_WARNING("\The [src]'s cover is open! Close it before firing!"))
+		return FALSE
+	return ..()
+
+/obj/item/weapon/gun/projectile/automatic/manual/proc/toggle_cover(mob/user)
+	if (do_after(user, cover_toggle_time, src, can_move = TRUE, needhand = FALSE))
+		cover_open ? playsound(loc, cover_close_sound, 100, TRUE) : playsound(loc, cover_open_sound, 100, TRUE)
+		cover_open = !cover_open
+		to_chat(user, SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s cover."))
+	update_icon()
+
+/obj/item/weapon/gun/projectile/automatic/manual/attack_self(mob/user as mob)
+	toggle_cover(user) //close the cover
+
+/obj/item/weapon/gun/projectile/automatic/manual/attack_hand(mob/user as mob)
+	if (!cover_open && user.get_inactive_hand() == src)
+		toggle_cover(user) //open the cover
+	else
+		return ..() //once open, behave like normal
+
+/obj/item/weapon/gun/projectile/automatic/manual/update_icon()
+	..()
+	if (cover_open)
+		icon_state = "[base_icon]_open"
+	else
+		icon_state = "[base_icon]"
+	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/mg34belt) || !istype(ammo_magazine, /obj/item/ammo_magazine/mg3belt))
+		return
+	overlays -= mag_image
+	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+	overlays += mag_image
+
+/obj/item/weapon/gun/projectile/automatic/manual/load_ammo(var/obj/item/A, mob/user)
+	if (!cover_open)
+		to_chat(user, SPAN_WARNING("You need to open the cover to load \the [src]."))
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/manual/unload_ammo(mob/user, var/allow_dump=1)
+	if (!cover_open)
+		to_chat(user, SPAN_WARNING("You need to open the cover to unload \the [src]."))
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/manual/mg34
 	name = "MG34"
 	desc = "German light machinegun chambered in 7.92x57mm Mauser. An utterly devastating support weapon."
 	icon_state = "mg34"
@@ -247,64 +299,63 @@
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound = 	'sound/weapons/guns/fire/mg34.ogg'
+	load_delay = 12
 	force = 20
 	throwforce = 30
-	var/cover_open = FALSE
 	recoil = 40
 	accuracy = 3
 	mag_x_offset = -5
 	mag_y_offset = -3
 
-/obj/item/weapon/gun/projectile/automatic/mg34/special_check(mob/user)
-	if (cover_open)
-		user << "<span class='warning'>[src]'s cover is open! Close it before firing!</span>"
-		return FALSE
-	return ..()
+/obj/item/weapon/gun/projectile/automatic/manual/m249
+	name = "M249 SAW"
+	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
+	icon_state = "m249"
+	item_state = "m249"
+	base_icon = "m249"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/minimi.ogg'
+	magazine_type = /obj/item/ammo_magazine/m249
+	good_mags = list(/obj/item/ammo_magazine/m249)
+	slot_flags = SLOT_SHOULDER
+	weight = 10
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=1.1),
+	)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 1
+	recoil = 30
+	accuracy = 2
+	scope_mounts = list ("picatinny")
+	scope_y_offset = -1
 
-/obj/item/weapon/gun/projectile/automatic/mg34/proc/toggle_cover(mob/user)
-	cover_open = !cover_open
-	user << "<span class='notice'>You [cover_open ? "open" : "close"] [src]'s cover.</span>"
-	update_icon()
-
-/obj/item/weapon/gun/projectile/automatic/mg34/attack_self(mob/user as mob)
-	if (cover_open)
-		toggle_cover(user) //close the cover
-		playsound(loc, 'sound/weapons/guns/interact/lmg_close.ogg', 100, TRUE)
-	else
-		return ..() //once closed, behave like normal
-
-/obj/item/weapon/gun/projectile/automatic/mg34/attack_hand(mob/user as mob)
-	if (!cover_open && user.get_inactive_hand() == src)
-		toggle_cover(user) //open the cover
-		playsound(loc, 'sound/weapons/guns/interact/lmg_open.ogg', 100, TRUE)
-	else
-		return ..() //once open, behave like normal
-
-/obj/item/weapon/gun/projectile/automatic/mg34/update_icon()
+/obj/item/weapon/gun/projectile/automatic/manual/m249/acog/New()
 	..()
-	if (cover_open)
-		icon_state = "[base_icon]_open"
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/manual/m249/suppressor/New()
+	..()
+	if(prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
+		SP.attached(null,src,TRUE)
 	else
-		icon_state = "[base_icon]"
-	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/mg34belt))
-		return
-	overlays -= mag_image
-	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
-	overlays += mag_image
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan(src)
+		SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/automatic/mg34/load_ammo(var/obj/item/A, mob/user)
-	if (!cover_open)
-		user << "<span class='warning'>You need to open the cover to load [src].</span>"
-		return
-	..()
+	if(prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/automatic/mg34/unload_ammo(mob/user, var/allow_dump=1)
-	if (!cover_open)
-		user << "<span class='warning'>You need to open the cover to unload [src].</span>"
-		return
-	..()
-
-/obj/item/weapon/gun/projectile/automatic/mg34/mg3
+/obj/item/weapon/gun/projectile/automatic/manual/mg34/mg3
 	name = "MG3"
 	desc = "Modern German light machinegun chambered in 7.62x51mm. An utterly devastating support weapon."
 	icon_state = "mg3"
@@ -314,6 +365,7 @@
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	load_delay = 12
 	recoil = 30
 	scope_mounts = list ("picatinny")
 	scope_x_offset = 7
@@ -322,19 +374,7 @@
 	under_x_offset = 7
 	under_y_offset = 4
 
-/obj/item/weapon/gun/projectile/automatic/mg34/mg3/update_icon()
-	..()
-	if (cover_open)
-		icon_state = "[base_icon]_open"
-	else
-		icon_state = "[base_icon]"
-	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/mg3belt))
-		return
-	overlays -= mag_image
-	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
-	overlays += mag_image
-
-/obj/item/weapon/gun/projectile/automatic/mg34/mg3/tactical/New()
+/obj/item/weapon/gun/projectile/automatic/manual/mg34/mg3/tactical/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
 	SP.attached(null,src,TRUE)
@@ -345,6 +385,35 @@
 	else
 		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
 		LS.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/manual/rpd
+	name = "RPD machine gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpd"
+	item_state = "rpd"
+	base_icon = "rpd"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpd
+	good_mags = list(/obj/item/ammo_magazine/rpd)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	weight = 7.4
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 22
+	load_delay = 40
+	slowdown = 0.6
+	recoil = 30
+	accuracy = 2
+	scope_x_offset = -4
+	scope_y_offset = -5
+	barrel_x_offset = 14
+	barrel_y_offset = 17
+	scope_mounts = list ("dovetail")
 
 ////////////////////////////Breda 30/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/breda30
@@ -367,6 +436,8 @@
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound 		= 'sound/weapons/guns/fire/Type92.ogg'
 	load_delay = 12
+	recoil = 40
+	accuracy = 3
 	firemodes = list(
 		list(name = "automatic", burst=1, burst_delay=3.0, move_delay=8, dispersion = list(0.2, 0.3, 0.5, 0.8, 0.6), recoil = 0))
 	var/cover_open = FALSE
@@ -435,61 +506,6 @@
 	recoil = 40
 	accuracy = 3
 
-/obj/item/weapon/gun/projectile/automatic/m249
-	name = "M249 SAW"
-	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
-	icon_state = "m249"
-	item_state = "m249"
-	base_icon = "m249"
-	caliber = "a556x45"
-	fire_sound = 'sound/weapons/guns/fire/minimi.ogg'
-	magazine_type = /obj/item/ammo_magazine/m249
-	good_mags = list(/obj/item/ammo_magazine/m249)
-	slot_flags = SLOT_SHOULDER
-	weight = 10
-	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.1),
-	)
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER
-	force = 20
-	nothrow = TRUE
-	throwforce = 30
-	equiptimer = 25
-	load_delay = 50
-	slowdown = 1
-	recoil = 40
-	accuracy = 3
-	scope_mounts = list ("picatinny")
-	scope_y_offset = -1
-
-/obj/item/weapon/gun/projectile/automatic/m249/update_icon()
-	..()
-	if (!ammo_magazine)
-		icon_state = "[base_icon]_open"
-	else
-		icon_state = "[base_icon]"
-
-/obj/item/weapon/gun/projectile/automatic/m249/acog/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
-	SP.attached(null,src,TRUE)
-
-/obj/item/weapon/gun/projectile/automatic/m249/suppressor/New()
-	..()
-	if(prob(50))
-		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
-		SP.attached(null,src,TRUE)
-	else
-		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan(src)
-		SP.attached(null,src,TRUE)
-
-	if(prob(50))
-		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
-		FP.attached(null,src,TRUE)
-	else
-		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
-		LS.attached(null,src,TRUE)
-
 /obj/item/weapon/gun/projectile/automatic/pkm
 	name = "PKM machine gun"
 	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
@@ -552,41 +568,7 @@
 		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
 		LS.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/automatic/rpd
-	name = "RPD machine gun"
-	desc = "A soviet machinegun chambered in 7.62x39 rounds."
-	icon_state = "rpd"
-	item_state = "rpd"
-	base_icon = "rpd"
-	caliber = "a762x39"
-	magazine_type = /obj/item/ammo_magazine/rpd
-	good_mags = list(/obj/item/ammo_magazine/rpd)
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
-	weight = 7.4
-	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.3),
-	)
-	slot_flags = SLOT_SHOULDER
-	force = 20
-	nothrow = TRUE
-	throwforce = 30
-	equiptimer = 22
-	load_delay = 40
-	slowdown = 0.6
-	recoil = 30
-	accuracy = 2
-	scope_x_offset = -4
-	scope_y_offset = -5
-	barrel_x_offset = 14
-	barrel_y_offset = 17
-	scope_mounts = list ("dovetail")
 
-/obj/item/weapon/gun/projectile/automatic/rpd/update_icon()
-	..()
-	if (!ammo_magazine)
-		icon_state = "[base_icon]_open"
-	else
-		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/automatic/rpk74
 	name = "RPK-74 machine gun"

@@ -86,7 +86,7 @@
 
 	switch (dir)
 		if (NORTH)
-			layer = MOB_LAYER - 2.01
+			layer = MOB_LAYER - 1.01
 			pixel_y = FALSE
 		if (SOUTH)
 			layer = MOB_LAYER + 2
@@ -184,7 +184,6 @@
 	return FALSE
 
 /obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
-	health -= 0.05
 	if (health <= 0)
 		qdel(src)
 		

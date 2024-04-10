@@ -735,7 +735,7 @@
 	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo, slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249, slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")

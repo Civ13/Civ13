@@ -516,7 +516,7 @@
 			if (!F.CheckPen(src,penloc))
 				F.bullet_act(src,penloc)
 				passthrough = FALSE
-				visible_message(SPAN_WARNING("The projectile fails to penetrate \the [penloc]"))
+				visible_message(SPAN_WARNING("The [src] fails to penetrate \the [penloc] wall"))
 				bumped = TRUE
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
@@ -539,7 +539,7 @@
 							permutated += T
 							S.initiate(T)
 					else
-						visible_message(SPAN_WARNING("A projectile penetrates \the [penloc]"))
+						visible_message(SPAN_DANGER("The [src] penetrates \the [penloc] wall!"))
 	
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
@@ -662,7 +662,6 @@
 			visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
 		else if (!F.CheckPen(src,penloc))
 			passthrough = FALSE
-			visible_message(SPAN_WARNING("A projectile ricochets off of \the [penloc]!</span>"))
 			T.visible_message(passthrough_message)
 			F.bullet_act(src,penloc)
 			bumped = TRUE

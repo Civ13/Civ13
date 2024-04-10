@@ -69,7 +69,7 @@
 	force = 5.0
 	flags =  CONDUCT
 	slot_flags = 0
-	fire_sound = 'sound/effects/bang.ogg'
+	fire_sound = 'sound/effects/rpg_fire.ogg'
 	var/max_rockets = 1
 	var/list/rockets = new/list()
 	var/caliber = "rocket"
@@ -104,6 +104,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
