@@ -76,6 +76,8 @@ h1.alert, h2.alert		{color: #ff0000;}
 .passive				{color: #660000;}
 
 .red					{color: #ff3737}
+.green					{color: #289120}
+.green_bold				{color: #289120; font-weight: bold;}
 .danger					{color: #ff3737; font-weight: bold;}
 .userdanger				{color: #ff3737; font-weight: bold; font-size: 2.0em;}
 .userdanger_yellow		{color: #ffff00; font-weight: bold; font-size: 2.5em;}
