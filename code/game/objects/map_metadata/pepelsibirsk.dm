@@ -1036,7 +1036,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	try_destroy()
 
 /obj/structure/anti_air_crate/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage * 0.01
 	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
 	try_destroy()
 

@@ -250,7 +250,7 @@
 
 /obj/item/ammo_magazine/dp
 	name = "DP pan (7.62x54mmR)"
-	icon_state = "dpdisk"
+	icon_state = "dp_disk"
 	attached_icon_state = "dp_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
