@@ -1110,7 +1110,7 @@
 					give_languages()
 				if (71 to 80)
 					add_language("Russian",TRUE)
-					add_language("German,",TRUE)
+					add_language("German",TRUE)
 					add_note("Known Languages", "German", "Russian")
 					remove_language("English")
 					remove_note("Known Languages","English")
