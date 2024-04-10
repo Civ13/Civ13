@@ -372,6 +372,9 @@ var/civmax_research = list(230,230,230)
 		change_weather(WEATHER_SMOG)
 		to_chat(world, SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>"))
 	if (global_pollution < 0)
+		if (weather == WEATHER_SMOG)
+			to_chat(world, SPAN_NOTICE("<font size = 3>The smog clears...</font>"))
+			weather = WEATHER_NONE
 		set_global_pollution(0)
 	else
 		change_global_pollution(-80)
