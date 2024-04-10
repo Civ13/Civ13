@@ -39,11 +39,11 @@
 	maxhealth = 900
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
-	if (locate(src) in get_step(user, user.dir))
+	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
 		if (dismantlable && user.a_intent == I_HARM)
-			visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
+			user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
 			if (do_after(user, 200, src))
-				visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
+				user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
 				var/turf = get_turf(src)
 				if (!istype(src, /obj/structure/window/barrier/incomplete))
 					for (var/v in TRUE to rand(4,6))
@@ -57,7 +57,8 @@
 			var/mob/living/H = user
 			if (istype(H) && can_climb(H))
 				user.dir = get_dir(user, src)
-				src.do_climb(user)
+				src.do_climb(user)	
+
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -72,31 +73,46 @@
 				return ex_act(2.0)
 	return
 
+var/set_dir = null // Set the variable outside of any scopes
+
 /obj/structure/window/barrier/New(location, var/mob/creator)
-	loc = location
-	flags |= ON_BORDER
+    loc = location
+    flags |= ON_BORDER
 
-	if (creator && ismob(creator))
-		dir = creator.dir
-	else
-		var/ndir = creator
-		dir = ndir
+    if (creator && ismob(creator))
+        set_dir = creator.dir
+    else
+        set_dir = null
 
-	set_dir(dir)
-
-	switch (dir)
-		if (NORTH)
-			layer = MOB_LAYER - 2.01
-			pixel_y = FALSE
-		if (SOUTH)
-			layer = MOB_LAYER + 2
-			pixel_y = FALSE
-		if (EAST)
-			layer = MOB_LAYER - 0.05
-			pixel_x = FALSE
-		if (WEST)
-			layer = MOB_LAYER - 0.05
-			pixel_x = FALSE
+    switch (set_dir)
+        if (NORTH)
+            layer = MOB_LAYER - 2.01
+            dir = NORTH
+            //The real dir for NORTH is 1
+        if (NORTHEAST)
+            dir = EAST
+            //The real dir for NORTHEAST is 5
+        if (EAST)
+            layer = MOB_LAYER - 0.05
+            dir = EAST
+            //The real dir for EAST is 4
+        if (SOUTHEAST)
+            dir = EAST
+            //The real dir for SOUTHEAST is 6
+        if (SOUTH)
+            layer = MOB_LAYER + 2
+            dir = SOUTH
+            //The real dir for SOUTH is 2
+        if (SOUTHWEST)
+            dir = WEST
+            //The real dir for SOUTHWEST is 10
+        if (WEST)
+            layer = MOB_LAYER - 0.05
+            dir = WEST
+            //The real dir for WEST is 8
+        if (NORTHWEST)
+            dir = WEST
+            //The real dir for NORTHWEST Is 9
 
 //incomplete sandbag structures
 /obj/structure/window/barrier/incomplete
@@ -118,7 +134,7 @@
 	if (istype(O, /obj/item/weapon/barrier/sandbag))
 		var/obj/item/weapon/barrier/sandbag/bag = O
 		if (bag.sand_amount <= 0)
-			user << "<span class = 'notice'>You need to fill the sandbag with sand first!</span>"
+			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
 			return
 		if (progress < 3)
 			progress += 1
@@ -128,16 +144,16 @@
 				icon_state = "sandbag"
 				new/obj/structure/window/barrier/sandbag(loc, dir)
 				qdel(src)
-			visible_message("<span class='danger'>[user] puts the sandbag into \the [src].</span>")
+			user.visible_message(SPAN_DANGER("[user] puts the sandbag onto \the [src]."), SPAN_DANGER("You put the sandbag onto \the [src]."))
 			qdel(O)
 	else if (istype(O, /obj/item/weapon/material/shovel))
-		visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING ("You start dismantling the [src] using the [O.name]."))
+		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING("You start dismantling the [src] using the [O.name]."))
 		var/decon_time = 200
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			decon_time /= 1.5*H.getStatCoeff("crafting")
 		if (do_after(user, decon_time, src))
-			visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
+			user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
 			var/turf = get_turf(src)
 			new /obj/item/weapon/barrier/sandbag(turf)
 			qdel(src)
@@ -147,7 +163,7 @@
 /obj/structure/window/barrier/incomplete/ex_act(severity)
 	qdel(src)
 
-/obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob) // Dirt Barrier Attackby()
 	user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/barrier))
 		if (progress < 3)
@@ -158,13 +174,17 @@
 				icon_state = "dirt_wall"
 				new/obj/structure/window/barrier(loc, dir)
 				qdel(src)
-			visible_message(SPAN_DANGER("[user] shovels dirt into [src].</span>"))
+			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_DANGER("You add dirt onto \the [src]."))
 			qdel(O)
 	else
 		return
 
+/*
+// This is being commented out to reduce proc-overhead and doing a switch in barrier/New() instead.
+
 /obj/structure/window/barrier/set_dir(direction)
 	dir = direction
+*/
 
 // sandbag window overrides
 

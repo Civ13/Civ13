@@ -101,23 +101,37 @@
 		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
 		return FALSE
 
-	var/obj/occupied = turf_is_crowded()
+	var/obj/occupied = turf_is_crowded(user)
+
 	if (occupied)
 		to_chat(user, SPAN_DANGER("There's \a [occupied] in the way."))
 		return FALSE
 	return TRUE
 
-/obj/structure/proc/turf_is_crowded()
-	var/turf/T = get_turf(src)
-	if (!T || !istype(T))
-		return FALSE
-	for (var/obj/O in T.contents)
-		if (istype(O,/obj/structure))
-			var/obj/structure/S = O
-			if (S.climbable) continue
-		if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-			return O
-	return FALSE
+/obj/structure/proc/turf_is_crowded(var/mob/living/user)
+    var/turf/T = get_step(get_turf(src), dir)
+    var/turf/TT = get_turf(src)
+    
+    // Check for climbable objects in the current turf
+    for (var/obj/O in T.contents)
+        if (istype(O, /obj/structure))
+            var/obj/structure/S = O
+            if (!S) continue  // Skip if S is not valid
+            if (S.climbable) continue  // Skip if the object is climbable
+            if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
+                return O
+    
+    // Check for climbable objects in the adjacent turf
+    for (var/obj/O in TT.contents)
+        if (istype(O, /obj/structure))
+            var/obj/structure/S = O
+            if (!S) continue  // Skip if S is not valid
+            if (S.climbable) continue  // Skip if the object is climbable
+            if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
+                return O
+    
+    // If no crowded object is found, return FALSE
+    return FALSE
 
 /obj/structure/proc/neighbor_turf_passable()
 	var/turf/T = get_step(src, dir)
@@ -134,51 +148,68 @@
 	return TRUE
 
 /obj/structure/proc/do_climb(var/mob/living/user)
-	if (!can_climb(user))
-		return
+    if (!can_climb(user))
+        return
+    if (map.check_caribbean_block(user, get_turf(src)))
+        return
 
-	user.face_atom(src)
+    var/turf/T = get_turf(src) // Target-Turf
+    if (src.flags & ON_BORDER)
+        T = get_step(get_turf(src), dir)
+        if (user.loc == T)
+            T = get_turf(src)
 
-	var/turf/target = null
+    user.face_atom(T)
 
-	if (istype(src, /obj/structure/window/barrier))
-		target = get_step(user, user.dir)
-	else
-		target = get_turf(src)
+    var/turf/U = get_turf(user) // Start-Turf
+    if (!istype(T) || !istype(U))
+        return FALSE
 
-	if (!target || target.density || (map && map.check_caribbean_block(user, target)))
-		return
+    var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
+    var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate looking in the opposite direction
 
-	for (var/obj/structure/S in target)
-		if (S != src && S.density)
-			return
+    // Check if there's a barrier with opposite direction facing the climbing direction
+    for (var/obj/I in T)
+        if (I.dir == opposite_dir && istype(I, /obj/structure/window))  
+            to_chat(user, SPAN_WARNING("You can't vault this barrier. \a [I.name] is blocking the way."))
+            return
 
-	usr.visible_message("<span class='warning'>[user] starts climbing onto \the [src]!</span>")
-	climbers |= user
+    // Check if the user is not directly in front of or behind the barrier
+    var/turf/next_turf = get_step(T, climb_dir)  
+    if (user.loc != next_turf)  
+        next_turf = get_step(T, opposite_dir)  
+        if (user.loc != next_turf)  
+            to_chat(user, SPAN_WARNING("You can't vault this barrier. You must be directly next to it."))
+            return
 
-	if (!do_after(user,(issmall(user) ? 20 : 34)))
-		climbers -= user
-		return
+    if (!T || T.density)
+        return
 
-	if (!can_climb(user, post_climb_check=1))
-		climbers -= user
-		return
+    visible_message("<span class='warning'>[user] starts climbing onto \the [src]!</span>")
+    climbers |= user
 
-	if (!target || target.density)
-		return
+    if (!do_after(user,(issmall(user) ? 20 : 34)))
+        climbers -= user
+        climb_dir = null  // Reset climb_dir to null
+        opposite_dir = null  // Reset opposite_dir to null
+        return
 
-	for (var/obj/structure/S in target)
-		if (S != src && S.density)
-			return
+    if (!can_climb(user, post_climb_check=1))
+        climb_dir = null  // Reset climb_dir to null
+        opposite_dir = null  // Reset opposite_dir to null
+        climbers -= user
+        return
 
-	usr.forceMove(target)
+    user.forceMove(T)
 
-	if (get_turf(user) == target)
-		usr.visible_message("<span class='warning'>[user] climbs onto \the [src]!</span>")
-		if (istype(src, /obj/structure/table/glass))
-			var/obj/structure/table/glass/G = src
-			G.shatter()
-	climbers -= user
+    if (get_turf(user) == T)
+        usr.visible_message("<span class='warning'>[user] climbs onto \the [src]!</span>")
+        if (istype(src, /obj/structure/table/glass))
+            var/obj/structure/table/glass/G = src
+            G.shatter()
+    climbers -= user
+    climb_dir = null  // Reset climb_dir to null
+    opposite_dir = null  // Reset opposite_dir to null
 
 /obj/structure/proc/structure_shaken()
 	for (var/mob/living/M in climbers)
