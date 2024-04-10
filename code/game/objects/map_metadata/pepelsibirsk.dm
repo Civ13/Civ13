@@ -236,7 +236,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 ////// DIPLOMATIC RELATIONS MANAGEMENT //////
 
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
-	spawn(30) // 3 seconds
+	spawn(3 SECONDS)
 		for(var/relation in pepel_factions.pepelsibirsk_relations)
 			if (pepel_factions.pepelsibirsk_relations[relation] > 100)
 				pepel_factions.pepelsibirsk_relations[relation] = 100
@@ -613,7 +613,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	flags = FALSE
 	New()
 		..()
-		spawn(20)
+		spawn(2 SECONDS)
 			if (ishuman(loc))
 				var/mob/living/human/H = loc
 				document_name = H.real_name
