@@ -178,7 +178,7 @@
 	mount = "gp25_mount"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
-		/obj/item/weapon/grenade/smokebomb/ugl/vog25
+		/obj/item/weapon/grenade/smokebomb/ugl/vog25,
 		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
