@@ -42,6 +42,10 @@
 		pump(user)
 		recentpump = world.time
 
+/obj/item/weapon/gun/projectile/shotgun/pump/update_icon()
+	..()
+	item_state = initial(item_state)
+
 /obj/item/weapon/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
 	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
@@ -171,6 +175,7 @@
 	desc = "A Russian 6-cylinder revolver shotgun, used by Russian hunters."
 	icon_state = "mts225"
 	item_state = "shotgun"
+	base_icon = "shotgun"
 	max_shells = 5
 	w_class = ITEM_SIZE_LARGE
 	force = 10

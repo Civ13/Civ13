@@ -6,16 +6,15 @@
 	w_class = ITEM_SIZE_HUGE
 	force = 10
 
-	fire_sound = 'sound/weapons/guns/fire/m79.ogg'
+	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
 	fire_sound_text = "a metallic thunk"
 	shake_strength = 0
 	firing_range = 40
 	release_force = 5
 	gun_safety = FALSE
 
-	var/obj/item/weapon/grenade/chambered
 	var/list/grenades = new/list()
-	var/max_grenades = 5 //holds this + one in the chamber
+	var/max_grenades = 5 // How many grenades can be loaded
 	var/whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/shell)
 
@@ -30,22 +29,20 @@
 	projectile.loc = get_turf(user)
 	projectile.allow_spin = FALSE
 	projectile.throw_at(target, firing_range, release_force, user)
-	projectile.dir = get_dir(src.loc, target.loc)
+	projectile.dir = get_dir(get_turf(src), get_turf(target))
 	projectile.icon_state = "[initial(projectile.icon_state)]_active"
+	playsound(get_turf(user), fire_sound, 100, TRUE,100)
 	return TRUE
 
 /obj/item/weapon/gun/launcher/grenade/examine(mob/user)
 	if (..(user, 2))
-		var/grenade_count = grenades.len + (chambered? 1 : 0)
-		to_chat(user, "Has [grenade_count] grenade\s remaining.")
-		if (chambered)
-			to_chat(user, "\A [chambered] is chambered.")
+		to_chat(user, "Has [grenades.len] grenade\s remaining.")
 
 /obj/item/weapon/gun/launcher/grenade/proc/load(obj/item/weapon/grenade/G, mob/user)
 	if (!can_load_grenade_type(G, user))
 		return
 	if (grenades.len >= max_grenades)
-		to_chat(user, "<span class='warning'>\The [src] is full.</span>")
+		to_chat(user, SPAN_WARNING("\The [src] is full."))
 		return
 
 	user.drop_from_inventory(G, src)
@@ -55,10 +52,10 @@
 /obj/item/weapon/gun/launcher/grenade/proc/unload(mob/user)
 	if (grenades.len)
 		var/obj/item/weapon/grenade/G = grenades[grenades.len]
-		grenades.len--
+		grenades -= G
 		user.put_in_hands(G)
 	else
-		to_chat(user, "<span class='warning'>\The [src] is empty.</span>")
+		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 
 /obj/item/weapon/gun/launcher/grenade/attackby(obj/item/I, mob/user)
 	if ((istype(I, /obj/item/weapon/grenade)))
@@ -74,16 +71,18 @@
 		..()
 
 /obj/item/weapon/gun/launcher/grenade/consume_next_projectile()
-	if (chambered)
-		chambered.dir = src.loc.dir
-		chambered.det_time = 15
-		chambered.activate(null)
-	return chambered
+	if (grenades.len)
+		var/obj/item/weapon/grenade/G = grenades[1]
+		G.dir = src.loc.dir
+		G.det_time = 15
+		G.activate(null)
+		grenades -= G
+		return G
+	return null
 
 /obj/item/weapon/gun/launcher/grenade/handle_post_fire(mob/user)
-	message_admins("[key_name_admin(user)] fired a grenade ([chambered.name]) from a grenade launcher ([src.name]).", key_name_admin(user))
-	log_game("[key_name_admin(user)] used a grenade ([chambered.name]) from a grenade launcher ([src.name]).")
-	chambered = null
+	message_admins("[key_name_admin(user)] fired a grenade launcher ([src.name]).", key_name_admin(user))
+	log_game("[key_name_admin(user)] fired a grenade launcher ([src.name]).")
 	..()
 
 /obj/item/weapon/gun/launcher/grenade/proc/can_load_grenade_type(obj/item/weapon/grenade/G, mob/user)
@@ -102,7 +101,6 @@
 		)
 
 	var/grenade_type = pickweight(grenade_types)
-	chambered = new grenade_type(src)
 	for(var/i in 1 to max_grenades)
 		grenade_type = pickweight(grenade_types)
 		grenades += new grenade_type(src)
@@ -116,31 +114,32 @@
 	w_class = ITEM_SIZE_NORMAL
 	force = 5
 	firing_range = 40
-	max_grenades = 0
+	max_grenades = 1
 	var/A_attached = FALSE
 	var/mount = "none"
 
 /obj/item/weapon/gun/launcher/grenade/underslung/attack_self()
 	return
 
-//load and unload directly into chambered
+//load and unload directly into grenades
 /obj/item/weapon/gun/launcher/grenade/underslung/load(obj/item/weapon/grenade/G, mob/user)
 	if (!can_load_grenade_type(G, user))
 		return
-	if (chambered)
-		to_chat(user, "<span class='warning'>\The [src] is already loaded.</span>")
+	if (grenades.len >= max_grenades)
+		to_chat(user, SPAN_WARNING("\The [src] is full."))
 		return
 
 	user.drop_from_inventory(G, src)
 	G.loc = src
-	chambered = G
+	grenades += G
 
 /obj/item/weapon/gun/launcher/grenade/underslung/unload(mob/user)
-	if (chambered)
-		user.put_in_hands(chambered)
-		chambered = null
+	if (grenades.len)
+		var/obj/item/weapon/grenade/G = grenades[grenades.len]
+		grenades -= G
+		user.put_in_hands(G)
 	else
-		to_chat(user, "<span class='warning'>\The [src] is empty.</span>")
+		to_chat(user, SPAN_WARNING("\The [src] is empty."))
 
 ///////////////////////////////////////
 /////LAUNCHERS/////////////////////////
@@ -192,7 +191,7 @@
 	icon_state = "hk69"
 	item_state = "hk69"
 	w_class = ITEM_SIZE_LARGE
-	max_grenades = 0
+	max_grenades = 1
 	shake_strength = 1
 	gun_safety = TRUE
 	release_force = 2
@@ -219,36 +218,40 @@
 
 /obj/item/weapon/gun/launcher/grenade/standalone/consume_next_projectile()
 	if (cover_opened)
-		return
-	if (chambered)
-		if (ishuman(src.loc))
-			chambered.dir = src.loc.dir
-		chambered.det_time = 15
-		chambered.activate(null)
-	return chambered
+		return null
+	if (grenades.len)
+		var/obj/item/weapon/grenade/G = grenades[1]
+		G.dir = src.loc.dir
+		G.det_time = 15
+		G.activate(null)
+		grenades -= G
+		return G
+	return null
 
-//load and unload directly into chambered
+//load and unload directly into grenades
 /obj/item/weapon/gun/launcher/grenade/standalone/load(obj/item/weapon/grenade/G, mob/user)
 	if (!can_load_grenade_type(G, user))
 		return
 	if (!cover_opened)
 		return
-	if (chambered)
+	if (grenades.len >= max_grenades)
+		to_chat(user, SPAN_WARNING("\The [src] is full."))
 		return
 
 	user.drop_from_inventory(G, src)
 	G.loc = src
-	chambered = G
+	grenades += G
 	playsound(src, 'sound/weapons/guns/interact/launcher_insertgrenade.ogg', 50, 1)
 	update_icon()
 
 /obj/item/weapon/gun/launcher/grenade/standalone/unload(mob/user)
 	if (cover_opened)
-		if (chambered)
-			user.put_in_hands(chambered)
-			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
-			chambered = null
+		if (grenades.len)
+			var/obj/item/weapon/grenade/G = grenades[grenades.len]
+			grenades -= G
+			user.put_in_hands(G)
 			update_icon()
+			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
 		else
 			to_chat(user, "<span class='warning'>\The [src] is empty.</span>")
 	else
@@ -265,7 +268,7 @@
 /obj/item/weapon/gun/launcher/grenade/standalone/update_icon()
 	..()
 	if (cover_opened)
-		if (chambered)
+		if (grenades.len)
 			icon_state = "[initial(icon_state)]_open"
 		else
 			icon_state = "[initial(icon_state)]_open_empty"

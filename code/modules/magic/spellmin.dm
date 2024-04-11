@@ -14,9 +14,13 @@ var/list/admin_verbs_magic = list(
 		return
 
 	var/dat = "<b><font size = 5>Spells</font></b><hr>"
-	for (var/datum/spell/S in all_spells)
-		dat += "<b>[S.name]</b> - <i>[S.school] [S.circle]</i><br/>[S.desc]<br/><br/>"
-	src << browse(dat, "window=checklanguage")
+	for (var/spell/S in all_spells)
+		dat += {"
+			<b>[S.name]</b> - <i>[S.school]</i><br>
+			[S.desc]<br><br>
+			</a>
+			"}
+	src << browse(dat, "window=listspells")
 	return
 
 /client/proc/addrem_spells()
@@ -39,16 +43,16 @@ var/list/admin_verbs_magic = list(
 		inp = WWinput(src, "Which Spell?", "Add/Rem Spells", "Cancel", all_spells)
 		if(inp == "Cancel")
 			return
-		var/datum/spell/spel = inp
+		var/spell/spell = inp
 
-		target.add_spell(spel)
+		target.add_spell(spell)
 	else if (inp == "Remove")
 		inp = WWinput(src, "Which Spell?", "Add/Rem Spells", "Cancel", target.spell_list)
 		if(inp == "Cancel")
 			return
-		var/datum/spell/spel = inp
+		var/spell/spell = inp
 
-		target.remove_spell(spel)
+		target.remove_spell(spell)
 	else if (inp == "Cancel")
 		return
 	else

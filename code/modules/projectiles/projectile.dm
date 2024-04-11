@@ -61,6 +61,9 @@
 	var/poisonous = FALSE
 	var/embed = FALSE							// whether or not the projectile can embed itself in the mob
 
+	var/hitscan = 0		// whether the projectile should be hitscan
+	var/step_delay = 0.25	// the delay between iterations if not a hitscan projectile
+
 	var/did_muzzle_effect = FALSE
 	var/firer_turf
 
@@ -95,9 +98,12 @@
 	should_save = 0
 	
 /obj/item/projectile/New()
-	..()
+	if(!hitscan)
+		animate_movement = SLIDE_STEPS
+	else animate_movement = NO_STEPS
 	damage *=global_damage_modifier
-
+	..()
+	
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -505,7 +511,7 @@
 		passed_trenches = 0
 
 	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
-		T.visible_message(SPAN_WARNING("The [name] hits the wall of the trench!"))
+		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return
 	
@@ -516,7 +522,7 @@
 			if (!F.CheckPen(src,penloc))
 				F.bullet_act(src,penloc)
 				passthrough = FALSE
-				visible_message(SPAN_WARNING("The [src] fails to penetrate \the [penloc] wall"))
+				visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
 				bumped = TRUE
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
@@ -539,7 +545,7 @@
 							permutated += T
 							S.initiate(T)
 					else
-						visible_message(SPAN_DANGER("The [src] penetrates \the [penloc] wall!"))
+						visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
 	
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
@@ -569,7 +575,7 @@
 						loc = null
 						qdel(src)
 						return FALSE
-					O.visible_message(SPAN_WARNING("\The [src] flies over \the [O]!"))
+					O.visible_message(SPAN_WARNING("\The [name] flies over \the [O]!"))
 					break
 	
 	for (var/atom/movable/AM in T.contents)
@@ -608,7 +614,7 @@
 						if (prob(hit_chace))
 							passthrough = !attack_mob(L, firer_dist)
 						else
-							visible_message(SPAN_WARNING("\The [src] flies over \the [AM]!"))
+							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 						def_zone = tmp_zone
 			else if (isobj(AM) && AM != firedfrom)
 				var/obj/O = AM
@@ -673,7 +679,7 @@
 	if (((T.density || istype(T, /obj/structure/window/barrier)) && penetrating > 0))
 		if (check_penetrate(T))
 			passthrough = TRUE
-			passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+			passthrough_message = SPAN_WARNING("\The [name] penetrates \the [T]!")
 		--penetrating
 
 	if (istype(src, /obj/item/projectile/shell))
@@ -794,6 +800,8 @@
 			muzzle_effect(effect_transform)
 		else if (!bumped)
 			tracer_effect(effect_transform)
+		if(!hitscan)
+			sleep(step_delay)	//add delay between movement iterations if it's not a hitscan weapon
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
