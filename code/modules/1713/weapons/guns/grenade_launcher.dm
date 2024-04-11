@@ -16,11 +16,14 @@
 	var/list/grenades = new/list()
 	var/max_grenades = 5 // How many grenades can be loaded
 	var/whitelisted_grenades = list(
-		/obj/item/weapon/grenade/frag/shell)
+		/obj/item/weapon/grenade/frag/shell,
+		/obj/item/weapon/grenade/chemical
+		)
 
 	var/blacklisted_grenades = list(
 		/obj/item/weapon/grenade,
-		/obj/item/weapon/grenade/frag)
+		/obj/item/weapon/grenade/frag
+		)
 
 	matter = list(DEFAULT_WALL_MATERIAL = 2000)
 
@@ -156,6 +159,7 @@
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
 		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 
 	blacklisted_grenades = list(
@@ -175,6 +179,7 @@
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
 		/obj/item/weapon/grenade/smokebomb/ugl/vog25
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
@@ -203,7 +208,8 @@
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
 		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
 		/obj/item/weapon/grenade/frag/ugl/vog25,
-		/obj/item/weapon/grenade/smokebomb/ugl/vog25
+		/obj/item/weapon/grenade/smokebomb/ugl/vog25,
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade,
@@ -284,7 +290,8 @@
 	item_state = "hk69"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
@@ -301,7 +308,8 @@
 	item_state = "m79"
 	whitelisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/shell40mm,
-		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm
+		/obj/item/weapon/grenade/smokebomb/ugl/shell40mm,
+		/obj/item/weapon/grenade/chemical/ugl
 		)
 	blacklisted_grenades = list(
 		/obj/item/weapon/grenade/frag/ugl/vog25,
