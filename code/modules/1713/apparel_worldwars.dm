@@ -2531,6 +2531,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	item_state = "ushanka_up"
 	worn_state = "ushanka_up"
 	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
 
 /obj/item/clothing/head/ww2/sov_ushanka/down
 	icon_state = "ushanka"

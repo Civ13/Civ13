@@ -676,6 +676,7 @@
 	icon_state = "chinese_ushanka_up"
 	item_state = "chinese_ushanka_up"
 	worn_state = "chinese_ushanka_up"
+	cold_protection = HEAD
 
 /obj/item/clothing/head/chinese_ushanka/down
 	icon_state = "chinese_ushanka"
@@ -743,6 +744,7 @@
 	item_state = "ushanka_new_up"
 	worn_state = "ushanka_new_up"
 	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
 
 /obj/item/clothing/head/sov_ushanka_new/down
 	icon_state = "ushanka_new"
@@ -780,6 +782,7 @@
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
 	body_parts_covered = HEAD
+	cold_protection = HEAD
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
