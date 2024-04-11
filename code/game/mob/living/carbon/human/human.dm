@@ -69,10 +69,7 @@
 				if (istype(original_job, /datum/job/civilian/prisoner))
 					nutrition = max_nutrition*0.1
 					water = max_water*0.2
-				else
-					nutrition = max_nutrition
-					water = max_water
-		if (map.ID == MAP_PEPELSIBIRSK)
+		else
 			nutrition = max_nutrition
 			water = max_water
 	else
