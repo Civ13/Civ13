@@ -797,8 +797,6 @@
 			muzzle_effect(effect_transform)
 		else if (!bumped)
 			tracer_effect(effect_transform)
-		if(!hitscan)
-			sleep(step_delay)	//add delay between movement iterations if it's not a hitscan weapon
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
