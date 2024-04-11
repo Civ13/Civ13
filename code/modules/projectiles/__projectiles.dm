@@ -685,10 +685,12 @@
 // Shotguns
 
 /obj/item/projectile/bullet/pellet/buckshot
-	name = "buckshot"
+	kill_count = 20
+	agony = 42
+	name = "buckshot pellet"
+	icon_state = "pellets"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 10
-	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"

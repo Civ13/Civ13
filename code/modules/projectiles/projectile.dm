@@ -505,7 +505,7 @@
 		passed_trenches = 0
 
 	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
-		T.visible_message(SPAN_WARNING("The [name] hits the wall of the trench!"))
+		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return
 	
@@ -516,7 +516,7 @@
 			if (!F.CheckPen(src,penloc))
 				F.bullet_act(src,penloc)
 				passthrough = FALSE
-				visible_message(SPAN_WARNING("The [src] fails to penetrate \the [penloc] wall"))
+				visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
 				bumped = TRUE
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
@@ -539,7 +539,7 @@
 							permutated += T
 							S.initiate(T)
 					else
-						visible_message(SPAN_DANGER("The [src] penetrates \the [penloc] wall!"))
+						visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
 	
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
@@ -569,7 +569,7 @@
 						loc = null
 						qdel(src)
 						return FALSE
-					O.visible_message(SPAN_WARNING("\The [src] flies over \the [O]!"))
+					O.visible_message(SPAN_WARNING("\The [name] flies over \the [O]!"))
 					break
 	
 	for (var/atom/movable/AM in T.contents)
@@ -608,7 +608,7 @@
 						if (prob(hit_chace))
 							passthrough = !attack_mob(L, firer_dist)
 						else
-							visible_message(SPAN_WARNING("\The [src] flies over \the [AM]!"))
+							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 						def_zone = tmp_zone
 			else if (isobj(AM) && AM != firedfrom)
 				var/obj/O = AM
@@ -673,7 +673,7 @@
 	if (((T.density || istype(T, /obj/structure/window/barrier)) && penetrating > 0))
 		if (check_penetrate(T))
 			passthrough = TRUE
-			passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+			passthrough_message = SPAN_WARNING("\The [name] penetrates \the [T]!")
 		--penetrating
 
 	if (istype(src, /obj/item/projectile/shell))
