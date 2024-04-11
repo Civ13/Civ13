@@ -61,6 +61,9 @@
 	var/poisonous = FALSE
 	var/embed = FALSE							// whether or not the projectile can embed itself in the mob
 
+	var/hitscan = 0		// whether the projectile should be hitscan
+	var/step_delay = 0.25	// the delay between iterations if not a hitscan projectile
+
 	var/did_muzzle_effect = FALSE
 	var/firer_turf
 
@@ -95,9 +98,12 @@
 	should_save = 0
 	
 /obj/item/projectile/New()
-	..()
+	if(!hitscan)
+		animate_movement = SLIDE_STEPS
+	else animate_movement = NO_STEPS
 	damage *=global_damage_modifier
-
+	..()
+	
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
 		damage *= 0.70
@@ -794,6 +800,8 @@
 			muzzle_effect(effect_transform)
 		else if (!bumped)
 			tracer_effect(effect_transform)
+		if(!hitscan)
+			sleep(step_delay)	//add delay between movement iterations if it's not a hitscan weapon
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
