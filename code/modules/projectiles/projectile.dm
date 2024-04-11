@@ -98,11 +98,8 @@
 	should_save = 0
 	
 /obj/item/projectile/New()
-	if(!hitscan)
-		animate_movement = SLIDE_STEPS
-	else animate_movement = NO_STEPS
-	damage *=global_damage_modifier
 	..()
+	damage *=global_damage_modifier
 	
 /obj/item/projectile/proc/checktype()
 	if (btype == "AP")
