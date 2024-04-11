@@ -13,9 +13,6 @@
 		var/F = file(map.lobby_icon)
 		if (F)
 			icon = F
-	if (world.view != 7)
-		screen_loc = "WEST+[world.view - 7],SOUTH"
-		update_for_view()
 
 /obj/effect/lobby_image/New()
 	..()
