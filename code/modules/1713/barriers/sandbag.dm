@@ -53,6 +53,11 @@
 					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
 						new /obj/item/weapon/barrier(turf)
 				qdel(src)
+		else if (user.a_intent == I_GRAB)
+			var/mob/living/H = user
+			if (istype(H) && can_climb(H))
+				user.dir = get_dir(user, src)
+				src.do_climb(user)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -81,7 +86,7 @@
 
 	switch (dir)
 		if (NORTH)
-			layer = MOB_LAYER - 2.01
+			layer = MOB_LAYER - 1.01
 			pixel_y = FALSE
 		if (SOUTH)
 			layer = MOB_LAYER + 2
@@ -179,9 +184,9 @@
 	return FALSE
 
 /obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
-	health -= 0.05
 	if (health <= 0)
 		qdel(src)
+		
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)

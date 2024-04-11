@@ -1432,7 +1432,8 @@
 	new /obj/item/ammo_magazine/sten2(src)
 	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-/* Cold War Balaclavas*/
+
+/* Cold War Balaclavas */
 
 /obj/item/clothing/mask/balaclava
 	name = "black balaclava"
@@ -1452,12 +1453,14 @@
 	icon_state = "snowclava"
 	item_state = "snowclava"
 	worn_state = "snowclava"
+
 /obj/item/clothing/mask/balaclava/green
 	name = "snow balaclava"
 	desc = "A green balaclava, covering the face."
 	icon_state = "swatclava"
 	item_state = "swatclava"
 	worn_state = "swatclava"
+
 /obj/item/clothing/mask/balaclava/skull
 	name = "skull face balaclava"
 	desc = "A balaclava with a skull imprint, covering the face."
@@ -1478,6 +1481,8 @@
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
 	flammable = TRUE
 	cold_protection = HEAD|FACE
+
+/* Headscarves */
 
 /obj/item/clothing/mask/headscarfgrey/asbestos
 	name = "Asbestos headscarf"

@@ -231,7 +231,6 @@
 		qdel(src)
 	..()
 
-
 /obj/item/projectile/arrow/bolt/vial
 	damage = DAMAGE_MEDIUM
 	penetrating = 1
@@ -288,9 +287,9 @@
 	armor_penetration = 10
 
 /obj/item/projectile/bullet/rifle/a65x52
-	damage = DAMAGE_VERY_HIGH + 10
+	damage = DAMAGE_VERY_HIGH
 	penetrating = 5
-	armor_penetration = 52
+	armor_penetration = 35
 
 /obj/item/projectile/bullet/rifle/a8x53
 	damage = DAMAGE_VERY_HIGH + 13
@@ -469,14 +468,14 @@
 	armor_penetration = 5
 
 /obj/item/projectile/bullet/pistol/a9x19
-	damage = DAMAGE_LOW + 1
+	damage = DAMAGE_LOW
 	penetrating = 2
 	armor_penetration = 8
 
 /obj/item/projectile/bullet/pistol/a9x18
 	damage = DAMAGE_LOW
 	penetrating = 2
-	armor_penetration = 10
+	armor_penetration = 9
 
 /obj/item/projectile/bullet/pistol/a792x33
 	damage = DAMAGE_HIGH + 5
@@ -497,7 +496,7 @@
 	armor_penetration = 30
 
 /obj/item/projectile/bullet/rifle/a545x39
-	damage = DAMAGE_HIGH - 3
+	damage = DAMAGE_MEDIUM_HIGH + 15
 	penetrating = 3
 	armor_penetration = 16
 
@@ -508,7 +507,6 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
-
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	..()
 	damage = (damage)/2
@@ -590,10 +588,10 @@
 		explosion(T, 1, 0, 2, 1)
 
 /obj/item/projectile/bullet/rifle/a127
-	damage = DAMAGE_HIGH
+	damage = DAMAGE_OH_GOD + 65
 	penetrating = 20
 	armor_penetration = 55
-	heavy_armor_penetration = 35
+	heavy_armor_penetration = 34
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = DAMAGE_OH_GOD + 90
@@ -655,19 +653,19 @@
 	damage = DAMAGE_OH_GOD + 80
 	penetrating = 25
 	armor_penetration = 85
-	heavy_armor_penetration = 50
+	heavy_armor_penetration = 45
 
 /obj/item/projectile/bullet/rifle/a792x94
 	damage = DAMAGE_OH_GOD + 85
 	penetrating = 20
 	armor_penetration = 60
-	heavy_armor_penetration = 45
+	heavy_armor_penetration = 30
 
 /obj/item/projectile/bullet/rifle/a792x94_ap
 	damage = DAMAGE_OH_GOD + 80
 	penetrating = 25
 	armor_penetration = 85
-	heavy_armor_penetration = 55
+	heavy_armor_penetration = 40
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20
@@ -688,13 +686,13 @@
 
 /obj/item/projectile/bullet/pellet/buckshot
 	name = "buckshot"
-	icon_state = "buckshot"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 10
+	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
-	damage = DAMAGE_VERY_HIGH + 67
+	damage = DAMAGE_MEDIUM_HIGH
 	armor_penetration = 33
 
 /obj/item/projectile/bullet/shotgun/beanbag
@@ -719,7 +717,6 @@
 	name = "incendiary slug"
 	damage = DAMAGE_LOW
 	armor_penetration = 5
-
 // Autocannon
 
 /obj/item/projectile/bullet/autocannon/frag

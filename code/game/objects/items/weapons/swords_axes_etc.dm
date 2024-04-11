@@ -293,7 +293,7 @@
 		update_icon()
 		garroting_process(user,target,GR)
 		next_garrote = world.time + 40
-		visible_message(
+		user.visible_message(
 			"<span class='danger'>[user] has grabbed \the [target] with \the [src]!</span>",\
 			"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
 			"You hear some struggling and muffled cries of surprise")

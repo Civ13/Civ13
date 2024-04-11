@@ -60,7 +60,7 @@
 	if (!istype(attacker))
 		return
 
-	var/datum/unarmed_attack/attack = attacker.get_unarmed_attack(target, "eyes")
+	var/datum/unarmed_attack/attack = attacker.get_unarmed_attack(target, "eyes") //get_unarmed_attack(var/mob/living/human/target, var/hit_zone)
 
 	if (!attack)
 		return

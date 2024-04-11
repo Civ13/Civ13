@@ -9,9 +9,6 @@
 		)
 	var/drawsound = null
 	var/warning_played = null
-	var/image/bayonet_ico
-	var/image/optics_ico
-	var/image/under_ico
 	var/training = FALSE
 	New()
 		maxhealth = health
@@ -39,11 +36,3 @@
 		warning_played = FALSE
 /obj/item/weapon/gun
 	var/gtype = "rifle"
-/obj/item/weapon/gun/projectile/New()
-	..()
-	bayonet_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "bayonet")
-	bayonet_ico.pixel_x = 6
-	bayonet_ico.pixel_y = 6
-	optics_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
-	under_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
-	silencer_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")

@@ -1248,7 +1248,7 @@
 	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/medic(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm15medic(H), slot_head)
 //other
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
@@ -1399,7 +1399,7 @@
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/down(H), slot_head)
 		if (4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 //weapon
@@ -2257,7 +2257,7 @@
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 		if (6)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/soviet(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adriansoviet(H), slot_head)
 		if (7)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet(H), slot_head)
 
@@ -2383,7 +2383,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2442,7 +2442,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2499,7 +2499,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2555,7 +2555,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2612,7 +2612,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_l_hand)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2670,7 +2670,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 	var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 	FP.attached(null,HGUN,TRUE)
@@ -2820,7 +2820,7 @@
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,HGUN,TRUE)
 
 	H.equip_to_slot_or_del(new /obj/item/gunbox/specialist(H), slot_l_hand)
@@ -3113,7 +3113,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/russian/guns/pkm/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/pkm(null)
 			uniform.attackby(webbing, H)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/rpd(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/white/rpd(H), slot_belt)
 			var/obj/item/clothing/accessory/storage/webbing/russian/guns/rpd/webbing = new /obj/item/clothing/accessory/storage/webbing/russian/guns/rpd(null)
 			uniform.attackby(webbing, H)

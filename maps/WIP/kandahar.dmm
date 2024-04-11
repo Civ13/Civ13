@@ -52,7 +52,7 @@
 "aZ" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/structure/closet/crate/empty,/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})
 "bb" = (/obj/structure/sign/flag/sov{pixel_y = 32},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/dirt/dust,/area/caribbean/desert)
 "bc" = (/obj/structure/vehicleparts/frame/car/right,/turf/floor/dirt/dust,/area/caribbean/russian)
-"bd" = (/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/structure/closet/crate/empty,/turf/floor/dirt/dust,/area/caribbean/desert)
+"bd" = (/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/weapon/gun/projectile/automatic/manual/rpd,/obj/item/weapon/gun/projectile/automatic/manual/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/structure/closet/crate/empty,/turf/floor/dirt/dust,/area/caribbean/desert)
 "be" = (/obj/effect/autoassembler,/obj/structure/railing/steel{dir = 4},/turf/floor/plating/road,/area/caribbean/russian)
 "bf" = (/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/obj/structure/table/modern/table,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
 "bg" = (/turf/floor/plating/road,/area/caribbean/desert/buildings{name = "Buildings"})

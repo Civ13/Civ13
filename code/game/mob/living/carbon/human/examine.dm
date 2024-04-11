@@ -4,7 +4,7 @@
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (!H.next_look_at.Find(getRoundUID(TRUE)) || H.next_look_at[getRoundUID(TRUE)] <= world.time)
-			H.visible_message("<small>[H] looks at [src].</small>")
+			H.visible_message("<small>[user.name] looks at \the [src].</small>", "<small>You look at \the [src].</small>")
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
 
 	var/skipgloves = FALSE
@@ -440,9 +440,9 @@
 		var/v = href_list["remove_embedded"]
 		var/user = hsrc
 		var/obj/embedded_obj = embedded[v]
-		visible_message("<span class = 'danger'>[user] starts to pull [embedded_obj] out of [src].</span>")
+		visible_message("<span class = 'danger'>[user] starts to pull \the [embedded_obj] out of [src].</span>")
 		if (do_after(user, 15 * embedded_obj.w_class, src))
-			visible_message("<span class = 'danger'>[user] pulls [embedded_obj] out of [src]!</span>")
+			visible_message("<span class = 'danger'>[user] pulls \the [embedded_obj] out of [src]!</span>")
 			emote("painscream")
 			adjustBruteLoss(rand(10,15))
 		embedded -= embedded_obj

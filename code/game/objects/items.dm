@@ -504,7 +504,14 @@ var/list/global/slot_flags_enumeration = list(
 
 	if (istype(H))
 		if (prob(80) && H != user)
-			visible_message(SPAN_NOTICE("[M] tried to stab [user] in the eyes with \the [src] but missed!"))
+			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src) // The following to line 529 is a gutted mob.visible_message(), consider updating the proc to have a list of ignored mobs as an argument.
+
+			for (var/I in see)
+				if (ismob(I))
+					if(I != M && I != user) // If we see M or user in the for loop, skip them.
+						var/mob/X = I
+						if (X.see_invisible >= invisibility) // Cannot view the invisible
+							X.show_message("[M] tried to stab [user] in the eyes with \the [src] but missed!", TRUE)
 			to_chat(M, SPAN_WARNING("[user] tried to stab you in the eyes with \the [src] but missed!"))
 			to_chat(user, SPAN_WARNING("You tried to stab [M] in the eyes with \the [src] but missed!"))
 			return
@@ -512,25 +519,31 @@ var/list/global/slot_flags_enumeration = list(
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
 		if (H != user)	
-			visible_message(SPAN_DANGER("[M] has been stabbed in the eye with \the [src] by [user]."))
-			to_chat(M, SPAN_DANGER("[user] stabs you in the eye with \the [src]!"))
-			to_chat(user, SPAN_DANGER("You stab [M] in the eye with \the [src]!"))
-		else
-			visible_message(SPAN_DANGER("[user] has stabbed themselves with \the [src]!"))
-			user.visible_message(SPAN_DANGER("You stab yourself in the eyes with \the [src]"))
+			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src) // The following to line 531 is a gutted mob.visible_message(), consider updating the proc to have a list of ignored mobs as an argument.
 
+			for (var/I in see)
+				if (ismob(I))
+					if(I != M && I != user) // If we see M or user in the for loop, skip them.
+						var/mob/Xx = I
+						if (Xx.see_invisible >= invisibility) // Cannot view the invisible
+							Xx.show_message("[M] has been stabbed in the eyes by [user] with \the [src]!", TRUE)
+			to_chat(M, SPAN_DANGER("[user] stabs you in the eyes with \the [src]!"))
+			to_chat(user, SPAN_DANGER("You stab [M] in the eyes with \the [src]!"))
+		else
+			user.visible_message("<span class = 'danger'>[user] has stabbed \himself in the eye with \the [src]!</span>", "<span class = 'danger'>You stab yourself in the eyes with \the [src]!</span>")
 		eyes.damage += rand(3,4)
 		if (eyes.damage >= eyes.min_bruised_damage)
 			if (prob(50))
 				if (M.stat != 2)
-					to_chat(M, SPAN_WARNING("You drop what you're holding and clutch at your eyes!"))
+					M.visible_message("[M] drops what they're holding and clutches at their eyes!", "You drop what you're holding and clutch at your eyes!")
 					M.drop_item()
 				M.eye_blurry += 10
 				M.Paralyse(1)
 				M.Weaken(3)
 			if (eyes.damage >= eyes.min_broken_damage)
 				if (M.stat != 2)
-					M << "<span class='warning'>You go blind!</span>"
+					to_chat(M, SPAN_WARNING("You go blind!"))
+					M.dizziness += 5
 		var/obj/item/organ/external/affecting = H.get_organ("head")
 		if (affecting.take_damage(7))
 			M:UpdateDamageIcon()

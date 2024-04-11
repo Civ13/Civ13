@@ -26,7 +26,7 @@
 		///////////////
 		//SOUND STUFF//
 		///////////////
-	var/ambience_playing= null
+	var/ambience_playing = null
 	var/played			= FALSE
 
 		////////////
@@ -64,5 +64,7 @@
 
 	var/fullscreen = FALSE
 
+	var/mouse_x = null
+	var/mouse_y = null
 
 /client/authenticate = FALSE

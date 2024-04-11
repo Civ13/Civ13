@@ -22,7 +22,7 @@
 
 /obj/item/clothing/glasses/nvg
 	name = "Night Vision Goggles"
-	desc = "Greatly enhances nighttime vision."
+	desc = "Enhances vision in low-light conditions, allowing you to see clearly in the dark."
 	icon_state = "nvg_off"
 	item_state = "nvg_off"
 	darkness_view = 7
@@ -60,6 +60,7 @@
 /obj/item/clothing/glasses/thermal/New()
 	..()
 	overlay = global_hud.thermal
+
 
 /obj/item/clothing/glasses/thermal/modern
 	name = "Modern Thermal Vision Goggles"
