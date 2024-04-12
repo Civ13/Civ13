@@ -44,6 +44,7 @@
 		var/obj/item/projectile/shell/P = projectile
 		P.dir = SOUTH
 		P.launch(target, user, src, 0, 0)
+		playsound(get_turf(user), fire_sound, 100, TRUE,100)
 		update_icon()
 		return TRUE
 	return FALSE

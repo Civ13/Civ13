@@ -19,7 +19,6 @@
 	magazine_based = FALSE
 	var/single_action = FALSE
 	var/cocked = FALSE
-	base_icon = null
 	equiptimer = 5
 	gun_type = GUN_TYPE_PISTOL
 	maxhealth = 55
@@ -38,6 +37,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/update_icon()
 	..()
+	item_state = initial(item_state)
 	if (base_icon)
 		if (cocked)
 			icon_state = "[base_icon]_cocked"

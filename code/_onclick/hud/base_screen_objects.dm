@@ -1064,7 +1064,6 @@ obj/screen/tactic
 
 
 /obj/screen/nvgoverlay/process()
-	update_for_view()
 	update_icon()
 
 /obj/screen/nvgoverlay/update_icon()
@@ -1073,7 +1072,6 @@ obj/screen/tactic
 		underlays += global_hud.nvg
 
 /obj/screen/thermaloverlay/process()
-	update_for_view()
 	update_icon()
 
 /obj/screen/thermaloverlay/update_icon()
@@ -1082,7 +1080,6 @@ obj/screen/tactic
 		underlays += global_hud.thermal
 
 /obj/screen/gasmask/process()
-	update_for_view()
 	update_icon()
 
 /obj/screen/gasmask/update_icon()
@@ -1104,7 +1101,6 @@ obj/screen/tactic
 //	var/global/image/blind_icon = image('icons/mob/screen1_full.dmi', "blackimageoverlay")
 
 /obj/screen/drugoverlay/process()
-	update_for_view()
 	update_icon()
 	return
 
@@ -1145,7 +1141,6 @@ obj/screen/tactic
 	var/global/image/blind_icon = image('icons/mob/screen1_full.dmi', "blackimageoverlay")
 
 /obj/screen/damageoverlay/process()
-	update_for_view()
 	update_icon()
 	return
 
@@ -1400,7 +1395,6 @@ obj/screen/tactic
 	process_flag = TRUE
 
 /obj/screen/fov/process()
-	update_for_view()
 	update_icon()
 
 /obj/screen/fov/update_icon()

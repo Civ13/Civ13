@@ -735,12 +735,12 @@ bullet_act
 			if (headcheck(hit_zone))
 				//Harder to score a stun but if you do it lasts a bit longer
 				if (prob(effective_force/8))
-					user.visible_message("<span class='danger'>[src] [species.knockout_message]</span>", "<span class='userdanger'>You are knocked out!</span>")
+					src.visible_message("<span class='danger'>[src] [species.knockout_message]</span>", "<span class='userdanger'>You are knocked out!</span>")
 					Paralyse(7/(blocked+1))
 			else
 				//Easier to score a stun but lasts less time
 				if (prob(effective_force/5))
-					user.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='userdanger'>You are knocked down!</span>")
+					src.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='userdanger'>You are knocked down!</span>")
 					apply_effect(1, WEAKEN, blocked)
 
 	if (prob(I.force * (hit_zone == "mouth" ? 5 : 0)) && O) //Will the teeth fly out?
@@ -775,11 +775,11 @@ bullet_act
 		if (istype(user, /mob/living/human))
 			var/mob/living/human/HH = user
 			if (prob(6*HH.getStatCoeff("dexterity")))
-				user.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='danger'><h4>You are knocked down!</h4></span>")
+				src.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='danger'><h4>You are knocked down!</h4></span>")
 				Weaken(2)
 		else
 			if (prob(6))
-				user.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='danger'><h4>You are knocked down!</h4></span>")
+				src.visible_message("<span class='danger'>[src] has been knocked down!</span>", "<span class='danger'><h4>You are knocked down!</h4></span>")
 				Weaken(2)
 	instadeath_check()
 
