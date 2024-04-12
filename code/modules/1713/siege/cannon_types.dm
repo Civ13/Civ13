@@ -29,9 +29,7 @@
 	caliber = 204
 	can_assemble = FALSE
 	is_naval = TRUE
-	course = TRUE
 	naval_position = "middle"
-	has_scope = FALSE
 
 /obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
 	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
@@ -186,7 +184,7 @@
 				W = new/obj/item/cannon_ball(src)
 			loaded = W
 			distance = 13+rand(-5,5)
-			target_coords()
+			get_target_coords()
 			target_x += rand(-5,5)
 			var/turf/TF = locate(src.x + target_x, src.y + target_y)
 			if (!TF)
@@ -398,18 +396,6 @@
 	caliber = 85
 	anchored = TRUE
 
-/obj/structure/cannon/modern/tank/russian85/course
-	desc = "A 85mm SU-85 Russian course cannon."
-	course = TRUE
-
-/obj/structure/cannon/modern/tank/russian85/su85
-	desc = "A 85mm SU-85 Russian tank-based cannon."
-	icon_state = "tank_cannon"
-	firedelay = 1
-	maxrange = 35
-	caliber = 85
-	anchored = TRUE
-
 /obj/structure/cannon/modern/tank/russian85/kv1
 
 /obj/structure/cannon/modern/tank/russian85/field
@@ -432,10 +418,6 @@
 	maxrange = 33
 	caliber = 100
 	anchored = TRUE
-
-/obj/structure/cannon/modern/tank/russian100/course
-	desc = "A 100mm SU-100 Russian course cannon."
-	course = TRUE
 
 /obj/structure/cannon/mortar
 	name = "mortar"
