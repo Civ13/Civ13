@@ -159,20 +159,12 @@
         if (user.loc == T)
             T = get_turf(src)
 
-    user.face_atom(T)
-
     var/turf/U = get_turf(user) // Start-Turf
     if (!istype(T) || !istype(U))
         return FALSE
 
     var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
-    var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate looking in the opposite direction
-
-    // Check if there's a barrier with opposite direction facing the climbing direction
-    for (var/obj/I in T)
-        if (I.dir == opposite_dir && istype(I, /obj/structure/window))  
-            to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
-            return
+    var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
 
     // Check if the user is not directly in front of or behind the barrier
     var/turf/next_turf = get_step(T, climb_dir)  
@@ -182,10 +174,17 @@
             to_chat(user, SPAN_WARNING("You can't vault this barrier. You must be directly next to it."))
             return
 
+    // Check if there's a barrier with opposite direction facing the climbing direction
+    for (var/obj/I in T)
+        if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))  
+            to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
+            return
+
     if (!T || T.density)
         return
 
-    visible_message("<span class='warning'>[user] starts climbing onto \the [src]!</span>")
+    user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
+    user.face_atom(T)
     climbers |= user
 
     if (!do_after(user,(issmall(user) ? 20 : 34)))
@@ -203,7 +202,7 @@
     user.forceMove(T)
 
     if (get_turf(user) == T)
-        usr.visible_message("<span class='warning'>[user] climbs onto \the [src]!</span>")
+        user.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"), SPAN_WARNING("You climb onto \the [src]!"))
         if (istype(src, /obj/structure/table/glass))
             var/obj/structure/table/glass/G = src
             G.shatter()

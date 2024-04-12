@@ -20,45 +20,28 @@
 		..()
 		health = maxhealth
 
-/obj/structure/window/barrier/sandbag
-	name = "sandbag wall"
-	desc = "That's a sandbag barricade."
-	icon_state = "sandbag"
-	layer = MOB_LAYER + 2 //just above mobs
-	anchored = TRUE
-	climbable = TRUE
-
-/obj/structure/window/barrier/concrete
-	icon = 'icons/obj/structures.dmi'
-	name = "concrete halfwall"
-	icon_state = "concrete"
-	layer = MOB_LAYER + 2 //just above mobs
-	anchored = TRUE
-	climbable = TRUE
-	dismantlable = FALSE
-	maxhealth = 900
-
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
-	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
-		if (dismantlable && user.a_intent == I_HARM)
-			user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
-			if (do_after(user, 200, src))
-				user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
-				var/turf = get_turf(src)
-				if (!istype(src, /obj/structure/window/barrier/incomplete))
-					for (var/v in TRUE to rand(4,6))
-						new /obj/item/weapon/barrier(turf)
-				else
-					var/obj/structure/window/barrier/incomplete/I = src
-					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-						new /obj/item/weapon/barrier(turf)
-				qdel(src)
-		else if (user.a_intent == I_GRAB)
-			var/mob/living/H = user
-			if (istype(H) && can_climb(H))
-				user.dir = get_dir(user, src)
-				src.do_climb(user)	
+    if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
+        if (dismantlable && user.a_intent == I_HARM)
+            user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
+            if (do_after(user, 200, src))
+                user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
+                var/turf = get_turf(src)
 
+                if (!istype(src, /obj/structure/window/barrier/incomplete))
+                    for (var/v in TRUE to rand(4,6))
+                        new /obj/item/weapon/barrier(turf)
+                else
+                    var/obj/structure/window/barrier/incomplete/I = src
+                    for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
+                        new /obj/item/weapon/barrier(turf)
+                qdel(src)
+
+        else if (user.a_intent == I_GRAB)
+            var/mob/living/H = user
+            if (istype(H) && can_climb(H))
+                H.dir = get_dir(H, src)
+                do_climb(H)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -75,52 +58,77 @@
 
 var/set_dir = null // Set the variable outside of any scopes
 
-/obj/structure/window/barrier/New(location, var/mob/creator)
+/obj/structure/window/barrier/New(location, var/mob/creator, direction)
     loc = location
     flags |= ON_BORDER
 
     if (creator && ismob(creator))
-        set_dir = creator.dir
-    else
-        set_dir = null
+        set_dir = direction
 
-    switch (set_dir)
+    // Adjust direction to cardinal directions if intermediate directions are given
+	// Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
+	// NORTH is 1 and EAST is 4, so NORTHEAST is 5
+
+	// Also much faster than a switch with if/else and OR
+
+    if (set_dir & EAST)
+        creator << "east triggered- setdir is [set_dir]"
+        dir = EAST
+    else if (set_dir & WEST)
+        creator << "west triggered- setdir is [set_dir]"
+        dir = WEST
+    else
+        creator << "else triggered- setdir is [set_dir]"
+        dir = set_dir
+
+    // Adjust layer and direction based on the final direction
+    switch (dir)
         if (NORTH)
             layer = MOB_LAYER - 2.01
-            dir = NORTH
-            //The real dir for NORTH is 1
+		/*
         if (NORTHEAST)
-            dir = EAST
-            //The real dir for NORTHEAST is 5
-        if (EAST)
+            layer = MOB_LAYER - 2.01*/
+        else if (EAST)
             layer = MOB_LAYER - 0.05
-            dir = EAST
-            //The real dir for EAST is 4
+		/*
         if (SOUTHEAST)
-            dir = EAST
-            //The real dir for SOUTHEAST is 6
-        if (SOUTH)
+            layer = MOB_LAYER - 0.05*/
+        else if (SOUTH)
             layer = MOB_LAYER + 2
-            dir = SOUTH
-            //The real dir for SOUTH is 2
+		/*
         if (SOUTHWEST)
-            dir = WEST
-            //The real dir for SOUTHWEST is 10
-        if (WEST)
+            layer = MOB_LAYER - 0.05*/
+        else if (WEST)
             layer = MOB_LAYER - 0.05
-            dir = WEST
-            //The real dir for WEST is 8
+		/*
         if (NORTHWEST)
-            dir = WEST
-            //The real dir for NORTHWEST Is 9
-
+            layer = MOB_LAYER - 2.01
+*/
 //incomplete sandbag structures
+/// Dirt-bags
 /obj/structure/window/barrier/incomplete
 	name = "incomplete dirt barricade"
 	desc = "This dirt barricade is unfinished. Add few more dirt."
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
 	incomplete = TRUE
+
+/obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob) // Dirt Barrier Attackby()
+	//user.dir = get_dir(user, src)
+	if (O.type == /obj/item/weapon/barrier)
+		if (progress < 3)
+			progress += 1
+			if (progress == 2)
+				icon_state = "dirt_wall_66%"
+			if (progress >= 3)
+				icon_state = "dirt_wall"
+				new/obj/structure/window/barrier(loc, dir)
+				qdel(src)
+			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_DANGER("You add dirt onto \the [src]."))
+			qdel(O)
+			return
+	..()
+/// Sand-bags
 
 /obj/structure/window/barrier/sandbag/incomplete
 	name = "incomplete sandbag wall"
@@ -160,25 +168,6 @@ var/set_dir = null // Set the variable outside of any scopes
 	else
 		return
 
-/obj/structure/window/barrier/incomplete/ex_act(severity)
-	qdel(src)
-
-/obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob) // Dirt Barrier Attackby()
-	user.dir = get_dir(user, src)
-	if (istype(O, /obj/item/weapon/barrier))
-		if (progress < 3)
-			progress += 1
-			if (progress == 2)
-				icon_state = "dirt_wall_66%"
-			if (progress >= 3)
-				icon_state = "dirt_wall"
-				new/obj/structure/window/barrier(loc, dir)
-				qdel(src)
-			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_DANGER("You add dirt onto \the [src]."))
-			qdel(O)
-	else
-		return
-
 /*
 // This is being commented out to reduce proc-overhead and doing a switch in barrier/New() instead.
 
@@ -186,8 +175,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	dir = direction
 */
 
-// sandbag window overrides
-
+// window procedure overrides.
 /obj/structure/window/barrier/attackby(obj/O as obj, mob/user as mob)
 	return FALSE
 
@@ -206,7 +194,10 @@ var/set_dir = null // Set the variable outside of any scopes
 /obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
 	if (health <= 0)
 		qdel(src)
-		
+
+/obj/structure/window/barrier/incomplete/ex_act(severity)
+	qdel(src)
+
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -254,14 +245,16 @@ var/set_dir = null // Set the variable outside of any scopes
 	icon = 'icons/obj/items.dmi'
 	w_class = ITEM_SIZE_TINY
 	var/sand_amount = FALSE
-	value = 0
+	//value = 0
+	flammable = FALSE
 	flags = FALSE
+
 
 /obj/item/weapon/barrier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		if (W.reagents.has_reagent("water", 10))
 			W.reagents.remove_reagent("water", 10)
-			user << "You mold the dirt and water into clay."
+			to_chat(user, SPAN_NOTICE("You mold the dirt and water into clay."))
 			new/obj/item/stack/material/clay(user.loc, 2)
 			qdel(src)
 			return TRUE //resolving attack
@@ -273,17 +266,36 @@ var/set_dir = null // Set the variable outside of any scopes
 				if(O.dir == user.dir)
 					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 					return
-	user << "You start building the dirt blocks wall..."
+	to_chat(user, SPAN_NOTICE("You start building the dirt blocks wall..."))
 	if (do_after(user, 25, src))
-		user << "You finish the placement of the dirt blocks wall foundation."
+		to_chat(user, SPAN_NOTICE("You finish the placement of the dirt blocks wall foundation."))
 		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)
 		return
+
+/obj/structure/window/barrier/sandbag
+	name = "sandbag wall"
+	desc = "That's a sandbag barricade."
+	icon_state = "sandbag"
+	//layer = MOB_LAYER + 2 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+
+/obj/structure/window/barrier/concrete
+	icon = 'icons/obj/structures.dmi'
+	name = "concrete halfwall"
+	icon_state = "concrete"
+	layer = MOB_LAYER + 2 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+	dismantlable = FALSE
+	maxhealth = 900
+
 /obj/structure/window/barrier/rock
 	name = "rock wall"
 	desc = "That's a barricade from rocks."
 	icon_state = "rock_barricade"
-	layer = MOB_LAYER + 0.01 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	maxhealth = 30
@@ -292,7 +304,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	name = "sandstone wall"
 	desc = "That's a barricade from sandstone."
 	icon_state = "sandstone_barricade"
-	layer = MOB_LAYER + 0.01 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	dismantlable = FALSE
@@ -352,13 +364,24 @@ var/set_dir = null // Set the variable outside of any scopes
 
 	visible_message(SPAN_NOTICE("[user] starts constructing the base of a sandbag wall."), SPAN_NOTICE("You start constructing the base of a sandbag wall."))
 	if (do_after(user, sandbag_time, user.loc))
+		var/current_direction = user.dir
+		if (current_direction & EAST)
+			current_direction = EAST
+		else if (current_direction & WEST)
+			current_direction = WEST
+		// Recheck user's direction before creating the sandbag/incomplete
+		for (var/obj/O in user.loc) // Checking user's direction again
+			if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+				to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+				return
 		var/progress = sand_amount
 		qdel(src)
-		var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(user.loc)
+		var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(user.loc, user, current_direction)
 		sb.progress = progress
+		/*
 		sb.dir = user.dir
 		if (sb.dir == NORTH)
-			sb.layer = MOB_LAYER - 2.01
+			sb.layer = MOB_LAYER - 2.01*/
 		visible_message(SPAN_NOTICE("[user] finishes constructing the base of a sandbag wall. Anyone can now add to it."))
 		if (ishuman(user))
 			var/mob/living/human/H = user
@@ -375,6 +398,11 @@ var/set_dir = null // Set the variable outside of any scopes
 			var/turf = get_turf(src)
 			new /obj/item/weapon/barrier/sandbag(turf)
 			qdel(src)
+	else if (user.a_intent == I_GRAB)
+		var/mob/living/H = user
+		if (istype(H) && can_climb(H))
+			H.dir = get_dir(H, src)
+			do_climb(H)
 
 /obj/structure/window/barrier/rock/attack_hand(var/mob/user as mob)
 	if (user.a_intent == I_HARM)
@@ -385,13 +413,18 @@ var/set_dir = null // Set the variable outside of any scopes
 			var/turf = get_turf(src)
 			new /obj/item/stack/material/stone(turf)
 			qdel(src)
+	else if (user.a_intent == I_GRAB)
+		var/mob/living/H = user
+		if (istype(H) && can_climb(H))
+			H.dir = get_dir(H, src)
+			do_climb(H)
 
 /obj/structure/window/barrier/railing
 	name = "railing"
 	desc = "It's a sandstone railing to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "sandstone"
-	layer = MOB_LAYER + 0.01 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	dismantlable = FALSE
@@ -402,7 +435,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	desc = "It's a stone railing to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "stone"
-	layer = MOB_LAYER + 0.01 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	maxhealth = 2500
@@ -412,7 +445,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	desc = "It's a railing from bricks to keep you from falling where you shouldn't."
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "brick"
-	layer = MOB_LAYER + 0.01 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 	maxhealth = 3500
