@@ -451,7 +451,7 @@
 "iI" = (/obj/structure/window/classic/metal,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iJ" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iK" = (/obj/structure/table/modern/flipped{dir = 4},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"iL" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"; vehicle_size = "2x4"},/turf/floor/plating/road,/area/caribbean/nomads)
+"iL" = (/obj/structure/bed/chair/drivers/tank{anchored = 1},/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/sdfkzfront/lf,/obj/structure/vehicleparts/axis/car{anchored = 1; color = "#505050"; name = "Sdkfz 251MG"},/turf/floor/plating/road,/area/caribbean/nomads)
 "iM" = (/obj/structure/table/modern/table,/obj/item/weapon/grenade/ww2/rgd33,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iN" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "iO" = (/obj/structure/table/modern/table,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
