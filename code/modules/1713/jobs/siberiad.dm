@@ -178,7 +178,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/us_vest/m60/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m60(null)
 			uniform.attackby(webbing, H)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_shoulder)
+			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/m249(H), slot_belt)
 			var/obj/item/clothing/accessory/storage/webbing/us_vest/m249/webbing = new /obj/item/clothing/accessory/storage/webbing/us_vest/m249(null)
 			uniform.attackby(webbing, H)

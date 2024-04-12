@@ -105,14 +105,14 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
 		for (var/turf/floor/dirt/DT in get_area_turfs(/area/caribbean/nomads/forest))
 			if (!istype(DT, /turf/floor/dirt/underground))
-				var/tmp/area/A = get_area(DT)
+				var/area/A = get_area(DT)
 				if (A.climate == "temperate")
 					if (prob(75))
 						DT.ChangeTurf(/turf/floor/dirt/winter)
 				else if (A.climate == "tundra" || A.climate == "taiga")
 					DT.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
-			var/tmp/area/A = get_area(GT)
+			var/area/A = get_area(GT)
 			if (A.climate == "temperate")
 				if (prob(80))
 					GT.ChangeTurf(/turf/floor/winter/grass)
@@ -145,11 +145,11 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			if (DF.z > 1)
 				DF.ChangeTurf(/turf/floor/dirt/flooded)
 		for (var/turf/floor/dirt/winter/DT in get_area_turfs(/area/caribbean/nomads/forest))
-			var/tmp/area/A = get_area(DT)
+			var/area/A = get_area(DT)
 			if (A.climate == "temperate")
 				DT.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/winter/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
-			var/tmp/area/A = get_area(GT)
+			var/area/A = get_area(GT)
 			if (A.climate == "temperate")
 				GT.ChangeTurf(/turf/floor/grass)
 		for (var/turf/floor/winter/WT in get_area_turfs(/area/caribbean/roofed))
@@ -199,14 +199,14 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 				BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
 		for (var/turf/floor/dirt/DT in get_area_turfs(/area/caribbean/nomads/forest))
 			if (!istype(DT, /turf/floor/dirt/underground))
-				var/tmp/area/A = get_area(DT)
+				var/area/A = get_area(DT)
 				if (A.climate == "temperate")
 					if (prob(75))
 						DT.ChangeTurf(/turf/floor/dirt/winter)
 				else if (A.climate == "tundra" || A.climate == "taiga")
 					DT.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
-			var/tmp/area/A = get_area(GT)
+			var/area/A = get_area(GT)
 			if (A.climate == "temperate")
 				if (prob(80))
 					GT.ChangeTurf(/turf/floor/winter/grass)
@@ -236,7 +236,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 ////// DIPLOMATIC RELATIONS MANAGEMENT //////
 
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
-	spawn(30) // 3 seconds
+	spawn(3 SECONDS)
 		for(var/relation in pepel_factions.pepelsibirsk_relations)
 			if (pepel_factions.pepelsibirsk_relations[relation] > 100)
 				pepel_factions.pepelsibirsk_relations[relation] = 100
@@ -316,7 +316,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 2,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 1,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 2,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 2,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 2,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 2,
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 2,
 		/obj/item/weapon/attachment/under/foregrip = 2,
@@ -332,7 +332,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/ammo_casing/rocket/bazooka = 4,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 3,
 		/obj/item/weapon/plastique/c4 = 2,
-		/obj/item/ammo_casing/rocket/atgm/apcr = 4,
+		/obj/item/ammo_casing/rocket/atgm = 4,
 		/obj/item/ammo_casing/rocket/atgm/he = 4,
 
 		//Clothing
@@ -363,7 +363,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/weapon/gun/launcher/rocket/bazooka = 150,
 		/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = 200,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 100,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 100,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 100,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 100,
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 100,
 		/obj/item/weapon/attachment/under/foregrip = 100,
@@ -379,7 +379,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		/obj/item/ammo_casing/rocket/bazooka = 200,
 		/obj/item/weapon/grenade/frag/ugl/shell40mm = 80,
 		/obj/item/weapon/plastique/c4 = 100,
-		/obj/item/ammo_casing/rocket/atgm/apcr = 150,
+		/obj/item/ammo_casing/rocket/atgm = 150,
 		/obj/item/ammo_casing/rocket/atgm/he = 150,
 
 		//Clothing
@@ -613,7 +613,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	flags = FALSE
 	New()
 		..()
-		spawn(20)
+		spawn(2 SECONDS)
 			if (ishuman(loc))
 				var/mob/living/human/H = loc
 				document_name = H.real_name
@@ -1036,7 +1036,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	try_destroy()
 
 /obj/structure/anti_air_crate/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
+	health -= proj.damage * 0.01
 	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
 	try_destroy()
 

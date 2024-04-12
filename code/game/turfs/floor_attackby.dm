@@ -543,7 +543,7 @@
 	else
 		if (istype(C, /obj/item/stack))
 			if (broken || burnt)
-				user << "<span class='warning'>This section is too damaged to support anything. Use a welder to fix the damage.</span>"
+				to_chat(user, SPAN_WARNING("This section is too damaged to support anything. Use a welder to fix the damage."))
 				return
 			var/obj/item/stack/S = C
 			var/decl/flooring/use_flooring
@@ -558,7 +558,7 @@
 				return
 			// Do we have enough?
 			if (use_flooring.build_cost && S.amount < use_flooring.build_cost)
-				user << "<span class='warning'>You require at least [use_flooring.build_cost] [S.name] to complete the [use_flooring.descriptor].</span>"
+				to_chat(user, SPAN_WARNING("You require at least [use_flooring.build_cost] [S.name] to complete the [use_flooring.descriptor]."))
 				return
 			// Stay still and focus...
 			if (use_flooring.build_time && !do_after(user, use_flooring.build_time, src))
@@ -581,7 +581,7 @@
 				return
 			// Set mining_in_progress to TRUE to indicate the process has started.
 			src.mining_in_progress = TRUE
-			visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
+			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
@@ -597,7 +597,7 @@
 			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
 			return
 		if (istype(H))
-			visible_message(SPAN_NOTICE("[user] carefully examines \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
+			user.visible_message(SPAN_NOTICE("[user] starts to carefully examine \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))

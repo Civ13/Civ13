@@ -56,3 +56,34 @@
 	var/tactic = "charge"
 	var/life_forced = FALSE
 	var/datum/language/default_language
+
+	var/body_part_size = list( // Size of body parts as a percentage of body size
+		"head" = 15,
+		"eyes" = 1,
+		"mouth" = 1,
+		"chest" = 25,
+		"groin" = 15,
+		"l_arm" = 15,
+		"l_hand" = 5,
+		"r_arm" = 15,
+		"r_hand" = 5,
+		"l_leg" = 20,
+		"l_foot" = 5,
+		"r_leg" = 20,
+		"r_foot" = 5
+	)
+	var/redirection_list = list(
+		"head" = list("eyes", "mouth", "chest", "l_arm", "r_arm"),
+		"eyes" = list("head", "mouth", "chest", "l_arm", "r_arm"),
+		"mouth" = list("head", "eyes", "chest", "l_arm", "r_arm"),
+		"chest" = list("eyes", "mouth", "head", "groin", "l_arm", "r_arm", "r_hand", "l_hand", "r_leg", "l_leg"),
+		"groin" = list("chest", "l_arm", "r_arm", "r_hand", "l_hand", "l_leg", "r_leg"),
+		"l_arm" = list("eyes", "mouth", "head", "chest", "groin", "l_hand", "l_leg"),
+		"l_hand" = list("chest", "groin", "l_arm", "l_leg", "l_foot"),
+		"r_arm" = list("eyes", "mouth", "head", "chest", "groin", "r_hand", "r_leg"),
+		"r_hand" = list("chest", "groin", "r_arm", "r_leg", "r_foot"),
+		"l_leg" = list("chest", "l_foot", "r_leg", "r_foot","groin", "l_arm", "l_hand"),
+		"l_foot" = list("l_leg", "r_leg", "r_foot","groin", "l_hand", "l_arm"),
+		"r_leg" = list("chest", "r_foot", "l_leg", "l_foot","groin", "r_arm", "r_hand"),
+		"r_foot" = list("r_leg", "l_leg", "l_foot","groin", "r_hand", "r_arm"),
+	)

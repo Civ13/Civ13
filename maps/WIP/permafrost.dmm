@@ -527,8 +527,8 @@
 "kg" = (/obj/item/ammo_magazine/ak74/box,/obj/item/ammo_magazine/ak74/box,/obj/item/ammo_magazine/ak74/box,/obj/item/ammo_magazine/ak74/box,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
 "kh" = (/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/ammo_magazine/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
 "ki" = (/obj/item/ammo_magazine/mosinbox,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
-"kj" = (/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/weapon/gun/projectile/automatic/rpd,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
-"kk" = (/obj/item/weapon/gun/projectile/automatic/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/turf/floor/dirt/dust,/area/caribbean/nomads/snow)
+"kj" = (/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/obj/item/weapon/gun/projectile/automatic/manual/rpd,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/one)
+"kk" = (/obj/item/weapon/gun/projectile/automatic/manual/rpd,/obj/item/ammo_magazine/rpd,/obj/item/ammo_magazine/rpd,/turf/floor/dirt/dust,/area/caribbean/nomads/snow)
 "kl" = (/obj/item/ammo_magazine/sten2,/obj/item/ammo_magazine/sten2,/obj/item/ammo_magazine/sten2,/obj/item/ammo_magazine/sten2,/obj/item/ammo_magazine/sten2,/obj/item/ammo_magazine/sten2,/obj/item/weapon/gun/projectile/submachinegun/sten,/turf/floor/winter,/area/caribbean/nomads/snow)
 "km" = (/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/obj/item/weapon/grenade/smokebomb,/turf/floor/dirt/dust,/area/caribbean/nomads/snow)
 

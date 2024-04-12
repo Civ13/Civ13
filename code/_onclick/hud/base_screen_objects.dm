@@ -684,7 +684,7 @@
 	name = "drop"
 
 	icon_state = "act_drop"
-	screen_loc = "15:-16,2"
+	screen_loc = "EAST:-16,2"
 
 /obj/screen/drop/Click()
 	if (usr.client)
@@ -813,7 +813,7 @@ obj/screen/tactic
 	name = "mood"
 
 	icon_state = "mood1"
-	screen_loc = "15,8"
+	screen_loc = "EAST-1:28,5:11"
 	process_flag = TRUE
 /obj/screen/mood/Click()
 	if (ishuman(parentmob))
@@ -1124,7 +1124,8 @@ obj/screen/tactic
 	name = "full_1_tile_overlay"
 	icon_state = "blank"
 	layer = 21
-	mouse_opacity = TRUE
+	mouse_opacity = FALSE
+
 /obj/screen/full_1_tile_overlay/process()
 	update_icon()
 	return
@@ -1138,7 +1139,6 @@ obj/screen/tactic
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
 	var/global/image/blind_icon = image('icons/mob/screen1_full.dmi', "blackimageoverlay")
-
 
 /obj/screen/damageoverlay/process()
 	update_icon()
@@ -1241,7 +1241,7 @@ obj/screen/tactic
 ////////////Screen effects/////////////////////////
 /obj/screen/noise
 	icon = 'icons/effects/static.dmi'
-	icon_state = "1 moderate"
+	icon_state = "1 light"
 	screen_loc = "WEST,SOUTH to EAST,NORTH"
 	layer = 17
 	alpha = 127
@@ -1347,7 +1347,6 @@ obj/screen/tactic
 	else
 		icon_state = "no_items1"
 //			owner.item_use_icon.name = "Disallow Item Use"
-
 //-----------------------Gun Mod End------------------------------
 
 //-----------------------toggle_inventory------------------------------

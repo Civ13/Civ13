@@ -11,6 +11,7 @@ Parts of code courtesy of Super3222
 	var/zoom_amt = 3
 	var/zoomed = FALSE
 	var/datum/action/toggle_scope/azoom
+	var/mount = "none"
 	flammable = FALSE
 	attachment_type = ATTACH_SCOPE
 	slot_flags = SLOT_POCKET|SLOT_BELT|SLOT_ID
