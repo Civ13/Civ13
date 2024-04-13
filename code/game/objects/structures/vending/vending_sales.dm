@@ -274,7 +274,7 @@
 						if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
 							var/obj/structure/vending/sales/pepelsibirsk/faction_trader = src
 							if (istype(faction_trader))
-								pepel_factions.pepelsibirsk_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
+								external_relations.npc_faction_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
 								to_chat(usr, "Relations have increased by [price_with_tax*inp*0.02].")
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
