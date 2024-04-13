@@ -70,10 +70,9 @@
 		firer_original_dir = dir
 	firedfrom = launcher
 
-	if(user.buckled)
-		for (var/obj/structure/vehicleparts/frame/F in curloc)
-			fired_from_axis = F.axis
-			layer = 11
+	for (var/obj/structure/vehicleparts/frame/F in curloc)
+		fired_from_axis = F.axis
+		layer = 11
 
 	original = target
 	loc = curloc
