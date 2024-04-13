@@ -901,9 +901,9 @@
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
 	
-	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src, check_for_repeats = TRUE))
+	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src))
 		dirty = FALSE
-		to_chat(user, "You clean the well.")
+		to_chat(user, "You clean \the [src].")
 		return
 
 	var/turf/location = user.loc
