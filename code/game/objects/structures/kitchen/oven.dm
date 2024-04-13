@@ -310,7 +310,7 @@
 	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
-		H.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))
+		M.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))
 
 /obj/structure/oven/fireplace/pit
 	name = "fire pit"
