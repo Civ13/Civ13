@@ -194,6 +194,10 @@
 			layer = 11
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
+	if(istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull) || istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary))
+		fired_from_turret = TRUE
+		for (var/obj/structure/vehicleparts/frame/F in curloc)
+			fired_from_axis = F.axis
 
 	firer = user
 	firer_original_dir = firer.dir
@@ -487,13 +491,13 @@
 		permutated += T
 		return TRUE
 
-	if ((bumped && !forced) || (permutated.Find(T)))
+	if ((bumped && !forced) || (permutated.len && (permutated.Find(T))))
 		return FALSE
 
 	var/direction = get_direction()
 
 	var/turf/previous_step = starting
-	if(T!= starting)
+	if(T!= starting && permutated.len)
 		previous_step = permutated[permutated.len]
 
 	var/passthrough = TRUE //if the projectile should continue flying
