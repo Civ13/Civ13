@@ -873,11 +873,9 @@
 				return TRUE
 			else
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
-					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
-						dirty = FALSE
-						if (PP)
-							if (!istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
-								dirty = TRUE
+					for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+						if (PP && !istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
+							dirty = TRUE
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
@@ -904,6 +902,7 @@
 	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src))
 		dirty = FALSE
 		to_chat(user, "You clean \the [src].")
+		qdel(O) // Whole soap bar is used, may need to change the reagents amount.
 		return
 
 	var/turf/location = user.loc
