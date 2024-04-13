@@ -171,6 +171,8 @@
 	give_random_name(H)
 	return TRUE
 
+/// WW2 ///
+
 /datum/job/greek/squad_leader_ww2
 	title = "Dekaneas"
 	en_meaning = "Squad Leader"
@@ -178,6 +180,7 @@
 
 	spawn_location = "JoinLateGR"
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 2
@@ -211,8 +214,6 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/greek/soldier_ww2
@@ -275,8 +276,6 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
 
 /datum/job/greek/medic_ww2
@@ -329,6 +328,4 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
-
 	return TRUE
