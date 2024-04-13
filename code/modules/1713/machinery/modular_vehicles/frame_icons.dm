@@ -136,61 +136,8 @@
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	if (!noroof)
-		if (axis)
-			var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
-			var/roof_turret_x = 0
-			var/roof_turret_y = 0
-			if (axis.tile_size == "32x32")
-				roof_turret_x = -112
-				roof_turret_y = -112
-			else if (axis.tile_size == "96x96")
-				roof_turret_x = -80
-				roof_turret_y = -80
-			for(var/obj/structure/cannon/modern/tank/C in T)
-				if (C.course && C.dir != src.dir)
-					C.rotate_to(src.dir)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][C.broken]", layer=11.1, dir=C.dir)
-
-				if (roof_turret && axis.color)
-					roof_turret.color = axis.color
-				if (dir == NORTH)
-					roof_turret_x -= axis.turret_x
-					roof_turret_y -= axis.turret_y
-				else if (dir == SOUTH)
-					roof_turret_x += axis.turret_x
-					roof_turret_y += axis.turret_y
-				else if (dir == WEST)
-					roof_turret_x += axis.turret_y
-					roof_turret_y -= axis.turret_x
-				else if (dir == EAST)
-					roof_turret_x -= axis.turret_y
-					roof_turret_y += axis.turret_x
-
-				roof_turret.pixel_x = roof_turret_x
-				roof_turret.pixel_y = roof_turret_y
-
-			for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type]0", layer=11.1, dir=C.dir)
-
-				if (roof_turret && axis && axis.color)
-					roof_turret.color = axis.color
-
-				if (dir == NORTH)
-					roof_turret_x -= axis.turret_x
-					roof_turret_y -= axis.turret_y
-				else if (dir == SOUTH)
-					roof_turret_x += axis.turret_x
-					roof_turret_y += axis.turret_y
-				else if (dir == WEST)
-					roof_turret_x += axis.turret_y
-					roof_turret_y -= axis.turret_x
-				else if (dir == EAST)
-					roof_turret_x -= axis.turret_y
-					roof_turret_y += axis.turret_x
-
-				roof_turret.pixel_x = roof_turret_x
-				roof_turret.pixel_y = roof_turret_y
-
+		for(var/obj/structure/turret/TR in T)
+			TR.update_icon()
 		for (var/obj/CC in T)
 			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
 				roof.icon_state = "roof_steel_hatch_driver"

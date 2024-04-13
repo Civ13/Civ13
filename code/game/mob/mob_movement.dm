@@ -955,6 +955,8 @@
 					H << "You switch into forward."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = FALSE
+			for(var/obj/item/turret_controls/C in H)
+				C.increase_distance(1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -994,6 +996,8 @@
 					H << "You switch into reverse."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = TRUE
+			for(var/obj/item/turret_controls/C in H)
+				C.increase_distance(-1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH
@@ -1028,6 +1032,8 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
+			for(var/obj/item/turret_controls/C in H)
+				C.start_rotation(-1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1062,6 +1068,8 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"left")
+			for(var/obj/item/turret_controls/C in H)
+				C.start_rotation(1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
@@ -1098,9 +1106,13 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
