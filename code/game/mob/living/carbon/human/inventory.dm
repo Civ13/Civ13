@@ -25,6 +25,19 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		src << "<span class = 'red'>You are unable to equip that.</span>"
 
+/client/verb/disactivation()
+	set name = "disactivation"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/human))
+		return
+	for(var/obj/item/turret_controls/C in mob)
+		C.stop_firing()
+	return
+
 //secondary Activate-Held-Object, when an object has more than a action possible (i.e. vehicle controls)
 /client/verb/secondary_activation()
 	set name = "secondary_activation"

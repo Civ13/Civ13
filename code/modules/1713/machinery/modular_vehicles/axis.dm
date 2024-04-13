@@ -732,7 +732,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			var/chooseturret = WWinput(H, "Choose this vehicle's turret type:", "Vehicle Turret", "tank", turrets)
 			if (chooseturret)
 				chooseturret += "_turret"
-				turret_type = chooseturret
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"
