@@ -425,7 +425,6 @@
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
-	..()
 
 	//admin logs
 	if (!no_attack_log)
@@ -502,7 +501,6 @@
 	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
 		for (var/obj/structure/vehicleparts/frame/F in T)
 			if(fired_from_axis && fired_from_axis == F.axis)
-				firer << "ABOBA"
 				forceMove(T)
 				permutated += T
 				return TRUE

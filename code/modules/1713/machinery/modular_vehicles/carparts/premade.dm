@@ -443,13 +443,13 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/panzeriv/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzeriv/lf, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/panzeriv/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/panzeriv,/obj/structure/cannon/modern/tank/german75),
-	"3,2" = list(/obj/structure/vehicleparts/frame/panzeriv/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/panzeriv/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/panzeriv, /obj/structure/turret/pziv),
+	"3,2" = list(/obj/structure/vehicleparts/frame/panzeriv/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/panzeriv/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/panzeriv, /obj/structure/bed/chair/loader),
-	"3,3" = list(/obj/structure/vehicleparts/frame/panzeriv/left/door,),
+	"2,3" = list(/obj/structure/vehicleparts/frame/panzeriv),
+	"3,3" = list(/obj/structure/vehicleparts/frame/panzeriv/left/door),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/rb, /obj/structure/engine/internal/gasoline/premade/panzeriv),
 	"2,4" = list(/obj/structure/vehicleparts/frame/panzeriv/back, /obj/structure/shellrack/full75),
@@ -590,12 +590,12 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian76),
-	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc, /obj/structure/turret/t34),
+	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/t34/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc, /obj/structure/bed/chair/loader),
+	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc),
 	"3,3" = list(/obj/structure/vehicleparts/frame/t34/left/door,),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
@@ -612,12 +612,12 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/t34/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc,/obj/structure/cannon/modern/tank/russian85/kv1),
-	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/t34/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc, /obj/structure/turret/t3485),
+	"3,2" = list(/obj/structure/vehicleparts/frame/t34/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/t34/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc, /obj/structure/bed/chair/loader),
+	"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc),
 	"3,3" = list(/obj/structure/vehicleparts/frame/t34/left/door,),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back,/obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
@@ -658,12 +658,12 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/kv1/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/kv1/lf, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/kv1/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/kv1,/obj/structure/cannon/modern/tank/russian85/kv1),
-	"3,2" = list(/obj/structure/vehicleparts/frame/kv1/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/kv1/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/kv1, /obj/structure/turret/kv1),
+	"3,2" = list(/obj/structure/vehicleparts/frame/kv1/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/kv1/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/kv1, /obj/structure/bed/chair/loader),
+	"2,3" = list(/obj/structure/vehicleparts/frame/kv1),
 	"3,3" = list(/obj/structure/vehicleparts/frame/kv1/left/door,),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/kv1/rb, /obj/structure/engine/internal/diesel/premade/chiha),
@@ -681,13 +681,13 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/m4/front),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/m4/lf, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/m4/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/m4, /obj/structure/cannon/modern/tank/american75),
-	"3,2" = list(/obj/structure/vehicleparts/frame/m4/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/m4/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/m4, /obj/structure/turret/sherman),
+	"3,2" = list(/obj/structure/vehicleparts/frame/m4/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/m4/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/m4, /obj/structure/bed/chair/loader),
-	"3,3" = list(/obj/structure/vehicleparts/frame/m4/left/door,),
+	"2,3" = list(/obj/structure/vehicleparts/frame/m4),
+	"3,3" = list(/obj/structure/vehicleparts/frame/m4/left/door),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/m4/rb, /obj/structure/engine/internal/diesel/premade/chiha),
 	"2,4" = list(/obj/structure/vehicleparts/frame/m4/back, /obj/structure/shellrack/full75/american),
@@ -704,12 +704,12 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/panzervi/front,/obj/item/weapon/storage/toolbox/emergency),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/lf,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg34),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/panzervi/right, /obj/structure/bed/chair/commander),
-	"2,2" = list(/obj/structure/vehicleparts/frame/panzervi,/obj/structure/cannon/modern/tank/german88),
-	"3,2" = list(/obj/structure/vehicleparts/frame/panzervi/left, /obj/structure/bed/chair/gunner),
+	"1,2" = list(/obj/structure/vehicleparts/frame/panzervi/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/panzervi, /obj/structure/turret/pzvi),
+	"3,2" = list(/obj/structure/vehicleparts/frame/panzervi/left, ),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/panzervi/right, /obj/structure/shellrack/full88),
-	"2,3" = list(/obj/structure/vehicleparts/frame/panzervi, /obj/structure/bed/chair/loader),
+	"2,3" = list(/obj/structure/vehicleparts/frame/panzervi, ),
 	"3,3" = list(/obj/structure/vehicleparts/frame/panzervi/left),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/panzeriv/rb, /obj/structure/engine/internal/gasoline/premade/panzeriv),
