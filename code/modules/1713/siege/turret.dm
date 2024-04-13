@@ -59,19 +59,23 @@
 
 	update_icon()
 
-/obj/structure/turret/proc/clear_aiming_line(var/mob/operator)
-	if(!operator)
+/obj/structure/turret/proc/clear_aiming_line(var/mob/user)
+	if(!user)
 		return
-	for (var/image/img in operator.client.images)
+	if(!user.client)
+		return
+	for (var/image/img in user.client.images)
 		if (img.icon_state == "point")
-			operator.client.images.Remove(img)
+			user.client.images.Remove(img)
 		if (img.icon_state == "cannon_target")
-			operator.client.images.Remove(img)
+			user.client.images.Remove(img)
 
-/obj/structure/turret/proc/draw_aiming_line(var/mob/operator)
-	if(!operator)
+/obj/structure/turret/proc/draw_aiming_line(var/mob/user)
+	if(!user)
 		return
-	clear_aiming_line(operator)
+	if(!user.client)
+		return
+	clear_aiming_line(user)
 	var/image/aiming_line
 	var/i = 0
 	var/point_x
@@ -83,9 +87,9 @@
 		if (point_x != 0 || point_y != 0)
 			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
 			aiming_line.alpha = 255 - (i / 4)
-			operator.client.images += aiming_line
+			user.client.images += aiming_line
 	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", pixel_x = point_x, pixel_y = point_y, layer = 14)
-	operator.client.images += aiming_line
+	user.client.images += aiming_line
 
 /obj/structure/turret/update_icon()
 	..()
