@@ -267,9 +267,18 @@
 	flammable = FALSE
 	var/obj/structure/turret/turret = null
 	var/obj/item/turret_controls/controls = null
-	New()
-		..()
-		controls = new/obj/item/turret_controls(src)
+
+/obj/structure/bed/chair/gunner/base/New()
+	..()
+	controls = new/obj/item/turret_controls/base(src)
+
+/obj/structure/bed/chair/gunner/ww2/New()
+	..()
+	controls = new/obj/item/turret_controls/ww2(src)
+
+/obj/structure/bed/chair/gunner/modern/New()
+	..()
+	controls = new/obj/item/turret_controls/modern(src)
 
 /obj/structure/bed/chair/gunner/proc/setup(var/obj/structure/turret/origin_turret)
 	turret = origin_turret
@@ -361,10 +370,25 @@
 	var/obj/structure/turret/turret = null
 	var/is_rotating = FALSE
 	var/rotating_dir = 0
-	New()
-		..()
-		optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
-		build_zooming()
+
+/obj/item/turret_controls/base/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	optics.zoom_amt = ZOOM_CONSTANT
+	build_zooming()
+
+/obj/structure/bed/chair/gunner/base/mtlb
+
+/obj/item/turret_controls/ww2/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	optics.zoom_amt = 10
+	build_zooming()
+
+/obj/item/turret_controls/modern/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	build_zooming()
 
 /obj/item/turret_controls/proc/get_zoom_amt()
 	if(!optics)
@@ -409,7 +433,7 @@
 		is_rotating = TRUE
 		rotate()
 
-/obj/structure/bed/chair/gunner/mtlb/update_icon()
+/obj/structure/bed/chair/gunner/base/mtlb/update_icon()
 	if(!turret)
 		return
 	dir = turret.dir
