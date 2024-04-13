@@ -67,6 +67,7 @@ proc/admin_notice(var/message, var/rights)
 		<A href='?src=\ref[src];boot2=\ref[M]'>Kick</A> |
 		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
 		<A href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</A>
+		<A href='?_src_=holder;CentCom=[M.ckey]'>CentCom ban database</A> |
 	"}
 
 // <A href='?src=\ref[src];newban=\ref[M]'>Ban</A> |

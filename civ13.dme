@@ -887,6 +887,7 @@
 #include "code\modules\admin\verbs\adminjump.dm"
 #include "code\modules\admin\verbs\adminpm.dm"
 #include "code\modules\admin\verbs\BrokenInhands.dm"
+#include "code\modules\admin\verbs\centcom.dm"
 #include "code\modules\admin\verbs\controllers.dm"
 #include "code\modules\admin\verbs\counting.dm"
 #include "code\modules\admin\verbs\create.dm"
