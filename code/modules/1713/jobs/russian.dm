@@ -2847,7 +2847,6 @@
 
 	is_operation_falcon = TRUE
 	is_paratrooper = TRUE
-	whitelisted = TRUE
 
 	min_positions = 1
 	max_positions = 6
