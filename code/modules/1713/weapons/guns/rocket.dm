@@ -632,7 +632,7 @@
 
 /obj/item/projectile/shell/missile/atgm/process()
 	if(permutated.len > 2 && firer && firer.client)
-		var/client/C = firer
+		var/client/C = firer.client
 		var/mouse_x = C.mouse_x
 		var/mouse_y = C.mouse_y
 		var/mouse_turf = locate(mouse_x, mouse_y, z)

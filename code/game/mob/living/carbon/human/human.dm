@@ -1144,10 +1144,10 @@ var/list/coefflist = list()
 	else if(istype(get_active_hand(), /obj/item/weapon/gun))
 		G = get_active_hand()
 		if(G.attachments && G.attachments.len)
-			var/list/LA = list()
+			var/list/AL = list()
 			for(var/obj/item/weapon/attachment/scope/A in G.attachments)//Looks through the attachments of the gun in hand
-				LA.Add(A.zoom_amt)
-			look_amount = max(LA)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
+				AL += A.zoom_amt
+			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
 
 	if(!user || !user.client)
 		return
@@ -1203,7 +1203,7 @@ var/list/coefflist = list()
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
 		user.client.view = world.view
-		look_amount = 3
+		look_amount = initial(look_amount)
 		handle_ui_visibility()
 		user.dizzycheck = FALSE
 
