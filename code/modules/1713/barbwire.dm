@@ -52,7 +52,7 @@
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
 	return ..()
 
-// Disabled until a fix is found
+// Disabled until a fix is found (the issue is that; Building a barbed wire on your src makes you get stuck in it too.)
 /*/obj/structure/barbwire/Uncross(AM as mob)
 	if(ismob(AM))
 		var/mob/M = AM
