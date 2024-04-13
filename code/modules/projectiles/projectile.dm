@@ -196,7 +196,8 @@
 			fired_from_axis = F.axis
 	if(istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull) || istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary))
 		fired_from_turret = TRUE
-		fired_from_axis = F.axis
+		for (var/obj/structure/vehicleparts/frame/F in curloc)
+			fired_from_axis = F.axis
 
 	firer = user
 	firer_original_dir = firer.dir
