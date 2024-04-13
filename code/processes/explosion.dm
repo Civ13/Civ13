@@ -127,8 +127,6 @@
 								if (1)
 									if (H)
 										H.maim()
-										H.maim()
-										H.adjustBurnLoss(rand(35,70))
 								if (2)
 									if (H)
 										if (prob(50))

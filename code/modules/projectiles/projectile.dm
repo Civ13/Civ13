@@ -490,13 +490,13 @@
 		permutated += T
 		return TRUE
 
-	if ((bumped && !forced) || (permutated.Find(T)))
+	if ((bumped && !forced) || (permutated.len && (permutated.Find(T))))
 		return FALSE
 
 	var/direction = get_direction()
 
 	var/turf/previous_step = starting
-	if(T!= starting)
+	if(T!= starting && permutated.len)
 		previous_step = permutated[permutated.len]
 
 	var/passthrough = TRUE //if the projectile should continue flying
