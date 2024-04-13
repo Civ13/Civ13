@@ -66,44 +66,34 @@ var/set_dir = null // Set the variable outside of any scopes
         set_dir = direction
 
     // Adjust direction to cardinal directions if intermediate directions are given
-	// Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
-	// NORTH is 1 and EAST is 4, so NORTHEAST is 5
+    // Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
+    // NORTH is 1 and EAST is 4, so NORTHEAST is 5
 
-	// Also much faster than a switch with if/else and OR
+    // Also much faster than a switch with if/else and OR
 
     if (set_dir & EAST)
-        creator << "east triggered- setdir is [set_dir]"
         dir = EAST
     else if (set_dir & WEST)
-        creator << "west triggered- setdir is [set_dir]"
         dir = WEST
     else
-        creator << "else triggered- setdir is [set_dir]"
         dir = set_dir
 
     // Adjust layer and direction based on the final direction
     switch (dir)
         if (NORTH)
-            layer = MOB_LAYER - 2.01
-		/*
-        if (NORTHEAST)
-            layer = MOB_LAYER - 2.01*/
-        else if (EAST)
-            layer = MOB_LAYER - 0.05
-		/*
-        if (SOUTHEAST)
-            layer = MOB_LAYER - 0.05*/
-        else if (SOUTH)
+            layer = MOB_LAYER - 1.01
+            pixel_y = FALSE
+        if (SOUTH)
             layer = MOB_LAYER + 2
-		/*
-        if (SOUTHWEST)
-            layer = MOB_LAYER - 0.05*/
-        else if (WEST)
+            pixel_y = FALSE
+        if (EAST)
             layer = MOB_LAYER - 0.05
-		/*
-        if (NORTHWEST)
-            layer = MOB_LAYER - 2.01
-*/
+            pixel_x = FALSE
+        if (WEST)
+            layer = MOB_LAYER - 0.05
+            pixel_x = FALSE
+
+
 //incomplete sandbag structures
 /// Dirt-bags
 /obj/structure/window/barrier/incomplete
@@ -122,7 +112,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				icon_state = "dirt_wall_66%"
 			if (progress >= 3)
 				icon_state = "dirt_wall"
-				new/obj/structure/window/barrier(loc, dir)
+				new/obj/structure/window/barrier(loc, user, dir)
 				qdel(src)
 			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_DANGER("You add dirt onto \the [src]."))
 			qdel(O)
@@ -138,7 +128,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	incomplete = TRUE
 
 /obj/structure/window/barrier/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
-	user.dir = get_dir(user, src)
+	//user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/barrier/sandbag))
 		var/obj/item/weapon/barrier/sandbag/bag = O
 		if (bag.sand_amount <= 0)
@@ -150,7 +140,7 @@ var/set_dir = null // Set the variable outside of any scopes
 				icon_state = "sandbag_66%"
 			if (progress >= 3)
 				icon_state = "sandbag"
-				new/obj/structure/window/barrier/sandbag(loc, dir)
+				new/obj/structure/window/barrier/sandbag(loc, user, dir)
 				qdel(src)
 			user.visible_message(SPAN_DANGER("[user] puts the sandbag onto \the [src]."), SPAN_DANGER("You put the sandbag onto \the [src]."))
 			qdel(O)
@@ -277,7 +267,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	name = "sandbag wall"
 	desc = "That's a sandbag barricade."
 	icon_state = "sandbag"
-	//layer = MOB_LAYER + 2 //just above mobs
+	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
 
