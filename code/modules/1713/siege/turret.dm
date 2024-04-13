@@ -148,7 +148,7 @@
 		mob_vehicle = F.axis
 
 	if(turret_vehicle != mob_vehicle)
-	to_chat(src, "You have to be in the same vehicle as the turret to get in it.")
+		to_chat(src, "You have to be in the same vehicle as the turret to get in it.")
 		return
 
 	if (M.buckled)
