@@ -7,6 +7,7 @@
 	desc = "A simple rifle using a lever-action mechanism."
 	icon_state = "winchester"
 	item_state = "shotgun"
+	base_icon = "shotgun"
 	w_class = ITEM_SIZE_LARGE
 	throw_range = 4
 	throw_speed = 2

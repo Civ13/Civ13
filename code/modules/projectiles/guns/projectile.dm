@@ -417,7 +417,7 @@
 /obj/item/weapon/gun/projectile/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
 	if(launcher && use_launcher)
 		launcher.Fire(target, user, clickparams, pointblank, reflex)
-		if(!launcher.chambered)
+		if(!launcher.grenades.len)
 			switch_firemodes() //switch back automatically
 			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
 	else

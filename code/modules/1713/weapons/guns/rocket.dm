@@ -44,6 +44,7 @@
 		var/obj/item/projectile/shell/P = projectile
 		P.dir = SOUTH
 		P.launch(target, user, src, 0, 0)
+		playsound(get_turf(user), fire_sound, 100, TRUE,100)
 		update_icon()
 		return TRUE
 	return FALSE
@@ -651,7 +652,7 @@
 
 		var/delta_angle = mouse_angle - get_angle()
 
-		var/new_angle = get_angle() 
+		var/new_angle = get_angle()
 		if(abs(delta_angle) > 5)
 			new_angle += 1.25 * (delta_angle) / abs(delta_angle)
 		var/new_x = starting.x + ceil(cos(new_angle) * get_dist(starting, mouse_turf))

@@ -71,6 +71,8 @@
 	firedfrom = launcher
 
 	if(user.buckled)
+		for (var/obj/structure/turret/T in curloc)
+			fired_from_turret = TRUE
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
 			layer = 11
@@ -118,8 +120,8 @@
 
 		var/num_fragments = 2 * caliber_modifier
 
-		var/target_x = round(cos(angle) * 6)
-		var/target_y = round(sin(angle) * 6)
+		var/target_x = round(cos(angle) * 8)
+		var/target_y = round(sin(angle) * 8)
 
 		var/i
 		for (i = 0, i < num_fragments, i++)
@@ -129,18 +131,22 @@
 				P.pellets = num_fragments
 				P.range_step = 2
 				P.shot_from = name
-				P.launch_fragment(locate(x + target_x + rand(-1,1), y + target_y + rand(-1,1), z))
+				P.launch_fragment(locate(x + target_x + rand(-4,4), y + target_y + rand(-4,4), z))
 				for (var/mob/living/L in T)
 					P.attack_mob(L, 0, 0)
 	else if (atype == "HEAT")
 		var/num_fragments = 3 * caliber_modifier
 		var/heat_range = clamp(round(caliber_modifier / 2), 1, 4)
-		explosion(T, heat_range, heat_range + 1, heat_range + 2, 3)
 
 		if(!initiated)
+			explosion(T, heat_range, heat_range + 1, heat_range + 2, 3)
 			loc = null
 			qdel(src)
 			return
+		if(permutated.len > 1)
+			explosion(permutated[permutated.len-1], heat_range, heat_range + 1, heat_range + 2, 3)
+		else
+			explosion(starting, heat_range, heat_range + 1, heat_range + 2, 3)
 
 		var/target_x = round(cos(angle) * 6)
 		var/target_y = round(sin(angle) * 6)
@@ -153,13 +159,11 @@
 				P.pellets = num_fragments
 				P.range_step = 2
 				P.shot_from = name
-				P.heavy_armor_penetration = src.heavy_armor_penetration / num_fragments * 2
-				P.launch_fragment(locate(x + target_x + rand(-2,1), y + target_y + rand(-2,2), z))
+				P.launch_fragment(locate(x + target_x + rand(-3,3), y + target_y + rand(-3,3), z))
 				for (var/mob/living/L in T)
 					P.attack_mob(L, 0, 0)
 		loc = null
 		qdel(src)
-		return
 
 //////////////////////////////////////////
 ////////////////CANNONBALL////////////////

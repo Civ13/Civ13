@@ -98,6 +98,10 @@
 	spawn (12)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
+/obj/item/weapon/gun/projectile/flintlock/update_icon()
+	..()
+	item_state = initial(item_state)
+
 /obj/item/weapon/gun/projectile/flintlock/musket
 	name = "flintlock musket"
 	desc = "A simple flintlock musket of the early XVIII century."

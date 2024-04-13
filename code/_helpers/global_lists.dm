@@ -256,9 +256,9 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 		joblist[J.title] = J
 
 	//Magic.
-	paths = typesof(/datum/spell)-/datum/spell
+	paths = typesof(/spell)-/spell
 	for (var/T in paths)
-		var/datum/spell/S = new T
+		var/spell/S = new T
 		all_spells += S
 
 	//Languages and species.

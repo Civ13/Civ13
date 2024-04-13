@@ -30,6 +30,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/update_icon()
 	..()
+	item_state = initial(item_state)
 	if (silencer && (!silencer.fits || (silencer.fits && !silencer.fits.Find("pistol"))))
 		overlays -= barrel_image
 		var/part_icon_state = "pistol_[silencer.icon_state]"

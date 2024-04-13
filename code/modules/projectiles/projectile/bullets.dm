@@ -69,12 +69,12 @@
 /obj/item/projectile/bullet/pellet
 	name = "shrapnel" //'shrapnel' sounds more dangerous (i.e. cooler) than 'pellet'
 	damage = 20
-	icon_state = "bullet" //TODO: would be nice to have it's own icon state
-	var/pellets = 4			//number of pellets
+	icon_state = "pellets" //TODO: would be nice to have it's own icon state
+	var/pellets = 10		//number of pellets
 	var/range_step = 2		//projectile will lose a fragment each time it travels this distance. Can be a non-integer.
 	var/base_spread = 90	//lower means the pellets spread more across body parts. If zero then this is considered a shrapnel explosion instead of a shrapnel cone
 	var/spread_step = 10	//higher means the pellets spread more across body parts with distance
-	kill_count = 6 // Range of 6 tiles
+	kill_count = 6 			// Range of 6 tiles
 
 /obj/item/projectile/bullet/pellet/Bumped()
 	. = ..()
@@ -150,14 +150,6 @@
 
 //Should do about 80 damage at 1 tile distance (adjacent), and 50 damage at 3 tiles distance.
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
-/obj/item/projectile/bullet/pellet/buckshot
-	name = "buckshot pellet"
-	damage = 10
-	pellets = 18
-	spread_step = 1
-	base_spread = 19
-	range_step = 3
-
 /obj/item/projectile/bullet/pellet/rubber
 	name = "rubbershot"
 	damage = 0
@@ -166,7 +158,7 @@
 	range_step = 3
 	agony = 8.5
 	embed = FALSE
-	icon_state = "buckshot"
+	icon_state = "pellets"
 
 /obj/item/projectile/bullet/pellet/rubberball
 	name = "rubber ball"
@@ -177,7 +169,7 @@
 	range_step = 3
 	agony = 13
 	embed = TRUE
-	icon_state = "buckshot"
+	icon_state = "pellets"
 
 /* "Rifle" rounds */
 
@@ -195,3 +187,4 @@
 	invisibility = 101
 	damage = TRUE
 	embed = FALSE
+	sharp = FALSE

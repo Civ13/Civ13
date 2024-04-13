@@ -31,6 +31,7 @@
 	var/launch_from_vehicle = FALSE
 	var/overcoming_trench = FALSE 				// If bullet flies out of trench, it will be more difficult to hit a target in another trench
 
+	var/fired_from_turret = FALSE
 	var/obj/structure/vehicleparts/axis/fired_from_axis = null
 
 	var/p_x = 16
@@ -60,6 +61,9 @@
 	var/agony = FALSE
 	var/poisonous = FALSE
 	var/embed = FALSE							// whether or not the projectile can embed itself in the mob
+
+	var/hitscan = 0		// whether the projectile should be hitscan
+	var/step_delay = 0.25	// the delay between iterations if not a hitscan projectile
 
 	var/did_muzzle_effect = FALSE
 	var/firer_turf
@@ -93,7 +97,7 @@
 	var/btype = "normal" 				// normal, AP (armor piercing) and HP (hollow point)
 	var/atype = "normal"
 	should_save = 0
-	
+
 /obj/item/projectile/New()
 	..()
 	damage *=global_damage_modifier
@@ -180,14 +184,16 @@
 	if (!istype(targloc) || !istype(curloc))
 		qdel(src)
 		return TRUE
-	
-	if(user.buckled || (user.using_object && istype(user.using_object, /obj/item/weapon/gun/projectile/automatic/stationary)))
-		for (var/obj/structure/vehicleparts/frame/F in curloc)
-			fired_from_axis = F.axis
-			layer = 11
 
 	if (istype(curloc, /turf/floor/trench))
 		launch_from_trench = TRUE
+
+	if(user.buckled)
+		for (var/obj/structure/turret/T in curloc)
+			fired_from_turret = TRUE
+		for (var/obj/structure/vehicleparts/frame/F in curloc)
+			fired_from_axis = F.axis
+			layer = 11
 
 	firer = user
 	firer_original_dir = firer.dir
@@ -217,12 +223,6 @@
 	original = target
 	loc = curloc
 	starting = curloc
-
-
-	original = target
-
-	
-	original = target
 
 	yo = targloc.y - curloc.y + y_offset
 	xo = targloc.x - curloc.x + x_offset
@@ -356,7 +356,7 @@
 	var/redirection_parts = target_mob.redirection_list[def_zone]
 	var/hit_zone = null
 	var/hitchance = target_mob.body_part_size[def_zone]
-	
+
 	var/distance_modifier = 10 / sqrt(distance)
 
 	if(distance <= 3)
@@ -371,7 +371,7 @@
 			hitchance = clamp(target_mob.body_part_size[def_zone], 0, 100)
 			if (prob(hitchance) && !hit_zone)
 				hit_zone = part
-	
+
 	if (hit_zone)
 		do_bullet_act(target_mob, hit_zone)
 
@@ -407,7 +407,7 @@
 				variation = damage - DAMAGE_OH_GOD
 		if (variation > 0)
 			damage += rand(-variation, variation)
-	
+
 	//hit messages
 	if (blockedhit == FALSE)
 		if (silenced)
@@ -424,7 +424,7 @@
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
 	..()
-	
+
 	//admin logs
 	if (!no_attack_log)
 		if (istype(firer, /mob))
@@ -475,9 +475,14 @@
 
 /obj/item/projectile/proc/handleTurf(var/turf/T, forced=0, var/list/untouchable = list())
 	if(atype == "NUCLEAR")
-		radiation_pulse(T, damage / 100, damage / 10, damage / 25, 0)
+		radiation_pulse(T, 	damage / 100, damage / 10, damage / 25, 0)
 	if (!T || !istype(T))
 		return FALSE
+
+	if(starting == T && fired_from_turret)
+		forceMove(T)
+		permutated += T
+		return TRUE
 
 	if ((bumped && !forced) || (permutated.Find(T)))
 		return FALSE
@@ -485,19 +490,22 @@
 	var/direction = get_direction()
 
 	var/turf/previous_step = starting
-	if(T != starting)
+	if(T!= starting)
 		previous_step = permutated[permutated.len]
 
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 	var/is_trench = istype(T, /turf/floor/trench)
 
-	if(fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
+	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
 		for (var/obj/structure/vehicleparts/frame/F in T)
-			if(fired_from_axis == F.axis)
+			if(fired_from_axis && fired_from_axis == F.axis)
+				firer << "ABOBA"
 				forceMove(T)
 				permutated += T
 				return TRUE
+			else
+				fired_from_turret = FALSE
 
 	if(is_trench)
 		passed_trenches += 1
@@ -505,10 +513,10 @@
 		passed_trenches = 0
 
 	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
-		T.visible_message(SPAN_WARNING("The [name] hits the wall of the trench!"))
+		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return
-	
+
 	// Checking for vehicle penetration
 	if (T != starting)
 		for (var/obj/structure/vehicleparts/frame/F in T.contents)
@@ -516,11 +524,16 @@
 			if (!F.CheckPen(src,penloc))
 				F.bullet_act(src,penloc)
 				passthrough = FALSE
-				visible_message(SPAN_WARNING("The [src] fails to penetrate \the [penloc] wall"))
+				visible_message(SPAN_WARNING("\The [name] fails to penetrate \the [penloc] wall"))
 				bumped = TRUE
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
-					S.initiate(previous_step)
+					if (!istype(src, /obj/item/projectile/shell/missile))
+						S.initiate(previous_step)
+					else
+						forceMove(T)
+						permutated += T
+						S.initiate(T)
 				else
 					loc = null
 					qdel(src)
@@ -529,21 +542,17 @@
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
 					if(S.initiated)
-						if(S.atype == "HEAT")
-							S.initiate(previous_step)
-							return FALSE
-						else
-							F.bullet_act(src,penloc)
-							passthrough = TRUE
-							forceMove(T)
-							permutated += T
-							S.initiate(T)
+						F.bullet_act(src,penloc)
+						passthrough = TRUE
+						forceMove(T)
+						permutated += T
+						S.initiate(T)
 					else
-						visible_message(SPAN_DANGER("The [src] penetrates \the [penloc] wall!"))
-	
+						visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
+
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
-	
+
 	if (T.density)
 		passthrough = FALSE
 	else
@@ -569,9 +578,8 @@
 						loc = null
 						qdel(src)
 						return FALSE
-					O.visible_message(SPAN_WARNING("\The [src] flies over \the [O]!"))
+					O.visible_message(SPAN_WARNING("\The [name] flies over \the [O]!"))
 					break
-	
 	for (var/atom/movable/AM in T.contents)
 		if (!untouchable.Find(AM))
 			if (isliving(AM) && AM != firer)
@@ -608,8 +616,9 @@
 						if (prob(hit_chace))
 							passthrough = !attack_mob(L, firer_dist)
 						else
-							visible_message(SPAN_WARNING("\The [src] flies over \the [AM]!"))
+							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 						def_zone = tmp_zone
+
 			else if (isobj(AM) && AM != firedfrom)
 				var/obj/O = AM
 				if (!(istype(O, /obj/structure/vehicleparts/frame) && O.loc == src.loc))
@@ -646,10 +655,11 @@
 							if (O.bullet_act(src, def_zone) != PROJECTILE_CONTINUE)
 								if (O && !O.gcDestroyed)
 									passthrough = FALSE
-	
+
 	for(var/obj/structure/window/barrier/S in T)
 		if (!S.CanPassOut(src))
 			passthrough = FALSE
+
 
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
@@ -658,8 +668,12 @@
 
 	for (var/obj/structure/vehicleparts/frame/F in loc)
 		var/penloc = F.get_wall_name(opposite_direction(direction))
-		if (F.is_ambrasure(penloc) && src.loc == starting)
-			visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
+		if (F.is_ambrasure(penloc) && loc == starting)
+			if(!istype(src, /obj/item/projectile/shell/missile))
+				visible_message(SPAN_WARNING("A bullet flies out of the embrasure"))
+			else
+				var/obj/item/projectile/shell/missile/M = src
+				M.initiate(T)
 		else if (!F.CheckPen(src,penloc))
 			passthrough = FALSE
 			T.visible_message(passthrough_message)
@@ -667,13 +681,13 @@
 			bumped = TRUE
 			loc = null
 			qdel(src)
-	
+
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
 	if (((T.density || istype(T, /obj/structure/window/barrier)) && penetrating > 0))
 		if (check_penetrate(T))
 			passthrough = TRUE
-			passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
+			passthrough_message = SPAN_WARNING("\The [name] penetrates \the [T]!")
 		--penetrating
 
 	if (istype(src, /obj/item/projectile/shell))
@@ -774,17 +788,6 @@
 					for (var/obj/covers/brick_wall/incomplete/B in src_loc)
 						if (get_dist(firer, B) == 1)
 							_untouchable += B
-							
-					if (istype(src, /obj/item/projectile/bullet/autocannon) ||  istype(src, /obj/item/projectile/bullet/rifle/a50cal/weak))
-						var/fired_from_axis = null
-						for (var/obj/structure/vehicleparts/frame/F in firer_turf)
-							if (F.axis)
-								fired_from_axis = F.axis
-						for (var/obj/structure/vehicleparts/frame/F in src_loc)
-							if (F.axis == fired_from_axis)
-								_untouchable += F
-								for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/FUEL in F.loc)
-									_untouchable += FUEL
 
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()
