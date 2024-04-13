@@ -129,7 +129,7 @@ Parts of code courtesy of Super3222
 	var/payload_list = list("Rockets")
 
 	var/payload_remaining
-	
+
 	var/call_in_time = 3 SECONDS
 	var/cooldown = 30 SECONDS
 	var/debounce = FALSE
@@ -166,7 +166,7 @@ Parts of code courtesy of Super3222
 // Check which faction is using the designator
 /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator/proc/get_faction_num(var/mob/living/human/H)
 	var/faction_num
-	if (map.faction1 == H.faction_text) 
+	if (map.faction1 == H.faction_text)
 		faction_num = 1
 	else if (map.faction2 == H.faction_text)
 		faction_num = 2
@@ -195,7 +195,7 @@ Parts of code courtesy of Super3222
 						payload_remaining = faction1_airstrikes_remaining[get_payload_class()]
 					if (2)
 						payload_remaining = faction2_airstrikes_remaining[get_payload_class()]
-			
+
 			to_chat(H, "<b>Attack direction: <red>[attack_direction ? attack_direction : "None selected"]</red></b>")
 			to_chat(H, "<b>Payload type: <red>[payload ? payload : "None selected"]</red></b>")
 			to_chat(H, "<b>Payload type remaining: <red>[payload ? payload_remaining : "None selected"]</red></b>")
@@ -244,7 +244,7 @@ Parts of code courtesy of Super3222
 									faction2_aircraft_rearming = FALSE
 									faction2_airstrikes_remaining = faction2_airstrikes_max
 									payload_remaining = faction2_airstrikes_remaining[payload_class]
-									
+
 						if (payload_remaining > 0) // If they have payloads remaining continue, otherwise make them re-arm
 							checking = TRUE
 							var/distcon = max(abs(H.x-target.x),abs(H.y-target.y))
@@ -262,7 +262,7 @@ Parts of code courtesy of Super3222
 									if (1)
 										faction1_aircraft_cooldown = world.time + cooldown
 									if (2)
-										faction2_aircraft_cooldown = world.time + cooldown					
+										faction2_aircraft_cooldown = world.time + cooldown
 							else
 								to_chat(H, "<big><b><font color='#ADD8E6'>Canceling airstrike.</font></b></big>")
 								checking = FALSE

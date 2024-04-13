@@ -191,13 +191,15 @@
 	if(user.buckled)
 		for (var/obj/structure/turret/T in curloc)
 			fired_from_turret = TRUE
+			layer = 11
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
-			layer = 11
 
 	firer = user
 	firer_original_dir = firer.dir
 	firedfrom = launcher
+
+	alpha = 0
 
 	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 		if (prob(80))
@@ -724,10 +726,12 @@
 	//plot the initial trajectory
 
 	var/firstmove = FALSE
+	alpha = 255
 
 	if (!trajectory)
 		setup_trajectory(loc)
 		firstmove = TRUE
+		alpha = 0
 
 	angle = get_angle()
 
