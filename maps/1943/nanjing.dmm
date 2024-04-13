@@ -642,6 +642,7 @@
 "mr" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barricade/antitank,/turf/floor/plating/road,/area/caribbean)
 "ms" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean)
 "mt" = (/obj/structure/vehicleparts/frame/i_go/left/door,/turf/floor/grass,/area/caribbean)
+"mu" = (/obj/structure/vehicleparts/frame/i_go/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/type98,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/grass,/area/caribbean)
 "mv" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mw" = (/obj/structure/wild/tallgrass,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/japanese/land/outside)
 "mx" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/japanese/land/outside)
@@ -1050,7 +1051,7 @@ aamJmKmKmKmKmKmKmKmLmJmMmMmHmHmMmMmHmMmMmHmMmMmMmNmOmPmQmRmBmyababababababababab
 aamJmKmSmTmKmKmKmKiKmJmHmMmMmNmHmVmWmXmXmYmZmZnamMmOmPmPnbmBmyababgWababababixididabieiLigababjhabjhkwkBlIlIlIlIlIlIlIlIlIkCkAababjhabababablZlZlZabbDjIababgWabjhabbrabababababababababababababjfjfabab
 aanckEneiRmKmKmKmKngnhmMmMmMmMmMmZmZmZmZmZmZnimZmMmOmPmPnbmBmyababababababababmnmoabmpiJmtabababjhabkwkDlIlIlIlIlIlIlIlIlIlMkAababababababjhlZjLlZabbDbDababababababababababababababjhababababjfjfjfabab
 mMmJnjmKmKmKmKmKnkkFmJmMmMmMmMnmmZmZnnmZmZnnnomZmMmOmPmPnbmBmyabababababjhababmnmoablPlQmqabababjhababjJlIlIlIlIlIlIlIlIlImCjhgWabababababbrlZlZlZabbDbDabgWababababgWabababababababababababababjfjfabab
-mMmJnpmKmKmKmKmKngngmJmMmMmMmMmMmZmZnqnononrnsmZmMmOmPmPntmBnuabjfababababababjhababnSjcnUababjhababababmCmCmCmCabababgWabababababababababablZlZlZjhbDbDabababjhababababababgWababababababababjfjfjfabab
+mMmJnpmKmKmKmKmKngngmJmMmMmMmMmMmZmZnqnononrnsmZmMmOmPmPntmBnuabjfababababababjhababmujcnUababjhababababmCmCmCmCabababgWabababababababababablZlZlZjhbDbDabababjhababababababgWababababababababjfjfjfabab
 mMmGnvnwnvnxnhnhnxnxmGmMmMmMmMmMnamZmZmZmZmZmZnamMmMnynymHmBnzababjsjsjsjTabababababababababababababababababababababababababjhjhababababjfjfawawlZabbDbDabababababjhababababababababababababjfjfabababab
 mMmMmMmMmMmMmMmMmMmMmMnAmMmMmMmMmMmMmMmMmMmMmMmMmMmMnymMmMmHnyjfjflXlXlYjmabababababababababababababababababababgWababababababababababababablZlZawjfbDbDabababababababjhabababababababababjfjfababjhjhgW
 mMmMmMmMmMmMmMmMmMmMmMmMmMmMmMmMmNmMmMmMmMmNmMmMmMnymMnynynynyabablIlIlMjUjfjfjfjfabjfjfjfabjfjfjfjfjfjfjfjfabababababababjfjfjfjfjfjfabjfjfawawawabaobDjfjfjfabjfabababababababababjfjfjfjfabababababab
