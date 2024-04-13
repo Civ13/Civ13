@@ -133,7 +133,7 @@
 /mob/proc/stop_using_turret()
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
-		to_chat(src, "you stopped using the [using_turret.name]")
+		to_chat(src, "You have stopped using the [using_turret.name]")
 		to_chat(src, browse(null, "window=artillery_window"))
 		using_turret = null
 
@@ -271,11 +271,11 @@
 
 	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic))
 		var/obj/item/weapon/gun/projectile/automatic/G = weapons[selected_weapon]
-		to_chat(M, "you start loading the [G.name].")
+		to_chat(M, "You start loading the [G.name].")
 		G.attackby(W, M)
 	else if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank))
 		var/obj/structure/cannon/modern/tank/C = weapons[selected_weapon]
-		to_chat(M, "you start loading the [C.name].")
+		to_chat(M, "You start loading the [C.name].")
 		C.attackby(W, M)
 
 	do_html(M)
