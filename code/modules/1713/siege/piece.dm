@@ -944,7 +944,7 @@
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
 		Increase/Decrease distance: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>+10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>+1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>-1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>-10</a><br><br>
+		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>-10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>+10</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
