@@ -19,7 +19,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(ROMAN = 0.4, RUSSIAN = 0.6)
 	battle_name = "Landing at Constantinopoli"
-	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the battle begins!<br>The Latin Empire will win if they hold out for <b>40 minutes</b>. The Russians will win if they manage to enter the city!</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the battle begins!<br>The Latin Empire will win if they hold out for <b>40 minutes</b>. The Russians will win if they manage to enter the city!</font>"
 	faction1 = ROMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
@@ -40,7 +40,7 @@
 		. = FALSE
 
 /obj/map_metadata/landing_at_constantinopoli/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/landing_at_constantinopoli/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 26000 || admin_ended_all_grace_periods)
