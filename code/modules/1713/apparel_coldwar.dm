@@ -1539,60 +1539,6 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new /obj/item/ammo_magazine/sksm(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new /obj/item/ammo_magazine/svd(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak74(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47/drum(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/nomads
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/m16(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
-
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
 	New()
 		..()

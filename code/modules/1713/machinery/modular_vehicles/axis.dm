@@ -722,9 +722,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 
 		var/colors // Colors you can make your vehicle
 		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-			if (H.faction_text == PIRATES)
+			if (H.faction_text == REDFACTION)
 				colors = list("redmenian red")
-			else if (H.faction_text == CIVILIAN)
+			else if (H.faction_text == BLUEFACTION)
 				colors = list("blugoslavian blue")
 		else
 			colors = list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab")

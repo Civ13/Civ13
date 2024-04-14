@@ -1168,7 +1168,7 @@
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
-					if (PIRATES)
+					if (REDFACTION)
 						icon_state = "redmenia"
 						name = "Redmenia Flag"
 						desc = "The flag of Redmenia."
@@ -1176,7 +1176,7 @@
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						world << "<font size = 5><b>REDMENIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
-					if (CIVILIAN)
+					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
 						desc = "The flag of Blugoslavia."
@@ -1190,7 +1190,7 @@
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
-					if (PIRATES)
+					if (REDFACTION)
 						icon_state = "redmenia"
 						name = "Redmenia Flag"
 						desc = "The flag of Redmenia."
@@ -1198,7 +1198,7 @@
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						world << "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>"
-					if (CIVILIAN)
+					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
 						desc = "The flag of Blugoslavia."
@@ -1214,15 +1214,15 @@
 	icon_state = "redmenia"
 	name = "Redmenia Flag"
 	desc = "The flag of Redmenia."
-	faction_text = PIRATES
-	original_faction = PIRATES
+	faction_text = REDFACTION
+	original_faction = REDFACTION
 
 /obj/structure/flag/campaign/blugoslavia
 	icon_state = "blugoslavia"
 	name = "Blugoslavia Flag"
 	desc = "The flag of Blugoslavia."
-	faction_text = CIVILIAN
-	original_faction = CIVILIAN
+	faction_text = BLUEFACTION
+	original_faction = BLUEFACTION
 
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))
