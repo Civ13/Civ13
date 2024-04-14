@@ -613,7 +613,7 @@ var/list/admin_verbs_host = list(
 			V.show_message("<b>[mob.control_object.name]</b> says: \"" + msg + "\"", 2)
 
 /client/proc/readmin_self()
-	set name = "Re-Admin self"
+	set name = "Readmin self"
 	set category = "Admin"
 
 	if (deadmin_holder)
@@ -621,15 +621,9 @@ var/list/admin_verbs_host = list(
 		log_admin("[src] re-admined themselves.")
 		message_admins("[src] re-admined themselves.", src)
 		verbs -= /client/proc/readmin_self
-		verbs -= /client/proc/readmin_alias
-
-/client/proc/readmin_alias()
-	set name = "readmin"
-	set category = "Admin"
-	readmin_self()
 
 /client/proc/deadmin_self()
-	set name = "De-admin self"
+	set name = "Deadmin self"
 	set category = "Admin"
 
 	if (holder)
@@ -638,12 +632,6 @@ var/list/admin_verbs_host = list(
 			message_admins("[src] deadmined themselves.")
 			deadmin()
 			verbs |= /client/proc/readmin_self
-			verbs |= /client/proc/readmin_alias
-
-/client/proc/deadmin_alias()
-	set name = "deadmin"
-	set category = "Admin"
-	deadmin_self()
 
 /client/proc/toggle_log_hrefs()
 	set name = "Toggle href logging"
