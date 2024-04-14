@@ -1,4 +1,3 @@
-
 /obj/structure/barbwire
 	name = "barbwire"
 	icon_state = "barbwire"
@@ -9,14 +8,13 @@
 	layer = 2.98
 
 /obj/structure/barbwire/ex_act(severity)
-	switch (severity)
-		if (3.0)
+	switch(severity)
+		if (3)
 			if (prob(50))
 				qdel(src)
-				return
 		else
 			qdel(src)
-			return
+	return
 
 /obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return TRUE
