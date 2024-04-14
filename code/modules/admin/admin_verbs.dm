@@ -618,9 +618,15 @@ var/list/admin_verbs_host = list(
 
 	if (deadmin_holder)
 		deadmin_holder.reassociate()
-		log_admin("[src] re-admined themself.")
-		message_admins("[src] re-admined themself.", src)
+		log_admin("[src] re-admined themselves.")
+		message_admins("[src] re-admined themselves.", src)
 		verbs -= /client/proc/readmin_self
+		verbs -= /client/proc/readmin_alias
+
+/client/proc/readmin_alias()
+	set name = "readmin"
+	set category = "Admin"
+	readmin_self()
 
 /client/proc/deadmin_self()
 	set name = "De-admin self"
@@ -628,10 +634,16 @@ var/list/admin_verbs_host = list(
 
 	if (holder)
 		if (WWinput(src, "Confirm self-deadmin for the round? You can re-admin yourself at any time.", "Deadmin Self", "Yes", list("Yes","No")) == "Yes")
-			log_admin("[src] deadmined themself.")
-			message_admins("[src] deadmined themself.")
+			log_admin("[src] deadmined themselves.")
+			message_admins("[src] deadmined themselves.")
 			deadmin()
 			verbs |= /client/proc/readmin_self
+			verbs |= /client/proc/readmin_alias
+
+/client/proc/deadmin_alias()
+	set name = "deadmin"
+	set category = "Admin"
+	deadmin_self()
 
 /client/proc/toggle_log_hrefs()
 	set name = "Toggle href logging"
