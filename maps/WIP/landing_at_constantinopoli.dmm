@@ -5961,6 +5961,10 @@
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "Zy" = (
+/obj/structure/lamp/lamp_big/alwayson{
+	dir = 1;
+	icon_state = "tube"
+	},
 /obj/structure/fob_spawnpoint{
 	faction_text = "RUSSIAN";
 	pickedname = "Apraksin";
@@ -30361,9 +30365,9 @@ Xf
 Fw
 ok
 Gy
-TK
-Zz
 Zy
+Zz
+Zz
 dX
 XA
 lY
@@ -37466,7 +37470,7 @@ Xf
 Fw
 ok
 BY
-Zz
+ZH
 Zz
 Zz
 Zz
@@ -37671,7 +37675,7 @@ Fw
 XA
 Zz
 Zz
-ZH
+Zz
 Zz
 XA
 lY
@@ -44571,9 +44575,9 @@ Xf
 Fw
 ok
 NE
-Zz
-Zz
 jW
+Zz
+Zz
 Zz
 XA
 lY
