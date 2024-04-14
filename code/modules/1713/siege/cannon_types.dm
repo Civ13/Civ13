@@ -255,6 +255,13 @@
 	maxrange = 25
 	caliber = 75
 
+/obj/structure/cannon/modern/tank/russian73
+	name = "73mm 2A28 Grom"
+	icon_state = "tank_cannon"
+	desc = "A 73mm russian tank cannon."
+	maxrange = 30
+	caliber = 73
+
 /obj/structure/cannon/modern/tank/russian76/americanfield
 	name = "76.2mm M5 gun"
 	desc = "A 76.2mm american anti-tank cannon."

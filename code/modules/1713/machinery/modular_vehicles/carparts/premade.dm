@@ -915,7 +915,7 @@
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/bmd2/atgm
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/bmd2/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a42),
+	"1,1" = list(/obj/structure/vehicleparts/frame/bmd2/rf,/obj/structure/vehicleparts/movement/tracks/bmd2new/right_front,),
 	"2,1" = list(/obj/structure/vehicleparts/frame/bmd2/lf,/obj/structure/vehicleparts/movement/tracks/bmd2new/left_front,/obj/structure/bed/chair/drivers/tank),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/bmd2/rc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm,/obj/item/ammo_casing/rocket/atgm),
@@ -969,7 +969,7 @@
 	"1,1" = list(/obj/structure/vehicleparts/movement/armored/btr,/obj/structure/vehicleparts/frame/btr80/rf),
 	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/reversed,/obj/structure/vehicleparts/frame/btr80/lf),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72),
+	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,),
 	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/structure/bed/chair/drivers/tank),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm/he,/obj/item/ammo_casing/rocket/atgm,/obj/item/ammo_casing/rocket/atgm),

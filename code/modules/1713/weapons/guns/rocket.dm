@@ -595,7 +595,11 @@
 
 /obj/item/projectile/shell/missile/heat/pg7v
 	heavy_armor_penetration = 300
-	caliber = 105
+	caliber = 85
+
+/obj/item/projectile/shell/missile/heat/pg15v
+	heavy_armor_penetration = 400
+	caliber = 73
 
 /obj/item/projectile/shell/missile/og7v
 	heavy_armor_penetration = 10

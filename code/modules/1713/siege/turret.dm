@@ -245,12 +245,18 @@
 	var/target_x = ceil(distance * cos(azimuth))
 	var/target_y = ceil(distance * sin(azimuth))
 
-	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic))
+	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
+		var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/A = weapons[selected_weapon]
+		A.loc = loc
+		A.dir = dir
+		A.Fire(locate(x + target_x, y + target_y, z),gunner)
+		A.forceMove(src)
+		next_shot_delay = A.firemodes[A.sel_mode].burst_delay
+	else if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic))
 		var/obj/item/weapon/gun/projectile/automatic/G = weapons[selected_weapon]
 		G.recoil = 1
 		G.dir = dir
 		G.Fire(locate(x + target_x, y + target_y, z),gunner)
-
 		next_shot_delay = G.firemodes[G.sel_mode].burst_delay
 	else if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank))
 		var/obj/structure/cannon/modern/tank/C = weapons[selected_weapon]
