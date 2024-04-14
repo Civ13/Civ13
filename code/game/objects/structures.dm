@@ -109,7 +109,7 @@
 	return TRUE
 
 /obj/structure/proc/turf_is_crowded(var/mob/living/user)
-    var/turf/T = get_step(get_turf(src), dir)
+    var/turf/T = get_step(get_turf(src), user.dir)
     var/turf/TT = get_turf(src)
     
     // Check for climbable objects in the current turf
@@ -163,6 +163,23 @@
     if (!istype(T) || !istype(U))
         return FALSE
 
+    // Check if the target turf is a table or a crate
+    if (istype(src, /obj/structure/table) || istype(src, /obj/structure/closet/crate))
+        if (!T || T.density)
+            return
+        user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
+        user.face_atom(T)
+        climbers |= user
+        if (!do_after(user,(issmall(user) ? 20 : 34)))
+            climbers -= user
+            return
+        if (!can_climb(user, post_climb_check=1))
+            climbers -= user
+            return
+        user.forceMove(T)
+        climbers -= user
+        return
+
     var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
     var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
 
@@ -176,7 +193,7 @@
 
     // Check if there's a barrier with opposite direction facing the climbing direction
     for (var/obj/I in T)
-        if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))  
+        if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
             to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
             return
 
@@ -209,6 +226,7 @@
     climbers -= user
     climb_dir = null  // Reset climb_dir to null
     opposite_dir = null  // Reset opposite_dir to null
+
 
 /obj/structure/proc/structure_shaken()
 	for (var/mob/living/M in climbers)
