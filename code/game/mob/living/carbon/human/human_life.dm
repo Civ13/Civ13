@@ -636,7 +636,8 @@
 			species.handle_npc(src)
 	else if (stat == DEAD)
 		handle_defib_timer()
-	process_roofs()
+	process_turret_roofs()
+	process_vehicle_roofs()
 	process_static_roofs()
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.

@@ -1134,6 +1134,7 @@ var/list/coefflist = list()
 /mob/living/human/proc/look_into_distance(mob/living/user, forced_look, var/bypass_can_look =  FALSE)//Largely copied from zoom.dm but made for zooming without weapons in hand
 	var/obj/item/weapon/attachment/scope/adjustable/W = null
 	var/obj/item/weapon/gun/G = null
+	var/obj/item/turret_controls/C = null
 	var/obj/item/weapon/gun/projectile/automatic/stationary/S = null
 	if(user.using_object && istype(user.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		S = user.using_object
@@ -1141,6 +1142,9 @@ var/list/coefflist = list()
 	else if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
 		W = get_active_hand()
 		look_amount = W.zoom_amt//May cause issues
+	else if(istype(get_active_hand(), /obj/item/turret_controls))
+		C = get_active_hand()
+		look_amount = C.get_zoom_amt()
 	else if(istype(get_active_hand(), /obj/item/weapon/gun))
 		G = get_active_hand()
 		if(G.attachments && G.attachments.len)
