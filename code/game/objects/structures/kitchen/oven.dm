@@ -268,7 +268,7 @@
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
-		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You put off \the [name]."))
+		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
 		keep_fire_on()
 		keep_sound_on()
