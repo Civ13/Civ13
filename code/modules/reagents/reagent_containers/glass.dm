@@ -780,6 +780,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		overlays += lid
 	else
 		var/image/filling = image(icon, src, "[icon_state]85")
+		if (!reagents)
+			return
 		var/percent = round((reagents.total_volume / volume) * 100)
 		switch(percent)
 			if (0 to 85)	filling.icon_state = "[icon_state]-85"

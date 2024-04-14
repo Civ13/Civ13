@@ -196,10 +196,11 @@
 	if (map.ID == MAP_OPERATION_FALCON)
 		var/friendly_fob = FALSE
 		var/dat = "<h1>FOB COORDINATES</h1>"
-		for (var/obj/structure/fob_spawnpoint/F in world)
-			if (F.faction_text == user.faction_text)
-				friendly_fob = TRUE
-				dat += "<b>[F.name]:</b> ([F.x];[F.y])<br>"
+		if (ishuman(user))
+			for (var/obj/structure/fob_spawnpoint/F in world)
+				if (F.faction_text == user.faction_text)
+					friendly_fob = TRUE
+					dat += "<b>[F.name]:</b> ([F.x];[F.y])<br>"
 		if (friendly_fob)
 			user << browse(dat, "window=FOB Coordinates")
 

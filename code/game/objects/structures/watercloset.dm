@@ -727,6 +727,7 @@
 	var/busy = FALSE 	//Something's being washed at the moment
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
+	var/dirty = FALSE
 	var/mosquito_count = 0
 	var/mosquito_limit = 1
 	var/volume = 2000
@@ -872,11 +873,9 @@
 				return TRUE
 			else
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
-					var/dirty = FALSE
-					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
-						if (PP)
-							if (!istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
-								dirty = TRUE
+					for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+						if (PP && !istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
+							dirty = TRUE
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
@@ -898,6 +897,12 @@
 		O.reagents.add_reagent(watertype, 5)
 		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
+		return
+	
+	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src))
+		dirty = FALSE
+		to_chat(user, "You clean \the [src].")
+		qdel(O) // Whole soap bar is used, may need to change the reagents amount.
 		return
 
 	var/turf/location = user.loc

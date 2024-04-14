@@ -191,13 +191,19 @@
 	if(user.buckled)
 		for (var/obj/structure/turret/T in curloc)
 			fired_from_turret = TRUE
+			layer = 11
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
-			layer = 11
+	if(istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull) || istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary))
+		fired_from_turret = TRUE
+		for (var/obj/structure/vehicleparts/frame/F in curloc)
+			fired_from_axis = F.axis
 
 	firer = user
 	firer_original_dir = firer.dir
 	firedfrom = launcher
+
+	alpha = 0
 
 	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 		if (prob(80))
@@ -357,7 +363,9 @@
 	var/hit_zone = null
 	var/hitchance = target_mob.body_part_size[def_zone]
 
-	var/distance_modifier = 10 / sqrt(distance)
+	var/distance_modifier = 10
+	if (distance != 0)
+		distance_modifier = 10 / sqrt(distance)
 
 	if(distance <= 3)
 		hitchance = 100
@@ -423,7 +431,6 @@
 	if (istype(target_mob, /mob/living/simple_animal/hostile/human) && target_mob.stat != DEAD && prob(33))
 		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
 		playsound(loc, pick(screamlist), 100, extrarange = 50)
-	..()
 
 	//admin logs
 	if (!no_attack_log)
@@ -484,13 +491,13 @@
 		permutated += T
 		return TRUE
 
-	if ((bumped && !forced) || (permutated.Find(T)))
+	if ((bumped && !forced) || (permutated.len && (permutated.Find(T))))
 		return FALSE
 
 	var/direction = get_direction()
 
 	var/turf/previous_step = starting
-	if(T!= starting)
+	if(T!= starting && permutated.len)
 		previous_step = permutated[permutated.len]
 
 	var/passthrough = TRUE //if the projectile should continue flying
@@ -500,7 +507,6 @@
 	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
 		for (var/obj/structure/vehicleparts/frame/F in T)
 			if(fired_from_axis && fired_from_axis == F.axis)
-				firer << "ABOBA"
 				forceMove(T)
 				permutated += T
 				return TRUE
@@ -724,10 +730,12 @@
 	//plot the initial trajectory
 
 	var/firstmove = FALSE
+	alpha = 255
 
 	if (!trajectory)
 		setup_trajectory(loc)
 		firstmove = TRUE
+		alpha = 0
 
 	angle = get_angle()
 

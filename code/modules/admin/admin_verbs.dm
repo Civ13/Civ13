@@ -275,7 +275,7 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/client/proc/dsay,
-	/datum/admins/proc/announce,		//priority announce something to all clients.,
+	/datum/admins/proc/announce,		//priority announce something to all clients,
 	/datum/admins/proc/show_player_panel,
 	/client/proc/cmd_admin_subtle_message, // send an message to somebody as a 'voice in their head',
 	/datum/admins/proc/paralyze_mob,
@@ -288,7 +288,6 @@ var/list/admin_verbs_mod = list(
 	/client/proc/show_battle_report,
 	/client/proc/quickBan_search,
 	/client/proc/quickBan_person,
-	/client/proc/set_teams,
 )
 
 var/list/admin_verbs_mentor = list(

@@ -1033,7 +1033,7 @@
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
 			for(var/obj/item/turret_controls/C in H)
-				C.start_rotation(-1)
+				C.start_rotation(1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1069,7 +1069,7 @@
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"left")
 			for(var/obj/item/turret_controls/C in H)
-				C.start_rotation(1)
+				C.start_rotation(-1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
