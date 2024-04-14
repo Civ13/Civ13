@@ -22,6 +22,8 @@
 	return TRUE
 
 /obj/structure/barbwire/Crossed(AM as mob|obj)
+	if (!src || !src.loc)
+		return
 	if (ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
