@@ -11,7 +11,7 @@
 ## +EVERYTHING (or +HOST or +ALL) = Simply gives you everything without having to type every flag
 
 Mentor +MENTOR
-Moderator +MOD +REJUV
+Moderator +@ +MOD +REJUV
 Developer +VAREDIT +DEBUG +SERVER +SPAWN +POSSESS +FUN +SOUNDS
 Admin +ADMIN +REJUV +VAREDIT +POSSESS +SERVER +FUN +STEALTH +SOUNDS +DEBUG +MOD +TRIALADMIN +SPAWN
 Supervisor +@ +PERMISSIONS
