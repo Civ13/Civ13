@@ -337,13 +337,13 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf39
 	name = "ZF-39"
-	desc = "You can attach this to Kar98 rifles"
+	desc = "You can attach this to Kar98 rifles."
 	icon_state = "zf39"
 	mount = "swept_back"
 	max_zoom = ZOOM_CONSTANT+3
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf4
 	name = "ZF-4"
-	desc = "You can attach this to FG42, StG44 and G42 rifles"
+	desc = "You can attach this to FG42, StG44 and G42 rifles."
 	icon_state = "zf4"
 	mount = "swept_back"
 	max_zoom = ZOOM_CONSTANT+2
@@ -352,19 +352,19 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/m84
 	name = "M84"
-	desc = "You can attach this to springfield sniper rifles"
+	desc = "You can attach this to Springfield sniper rifles."
 	icon_state = "m84"
 	mount = "picatinny"
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog
 	name = "ACOG"
-	desc = "You can attach this to any rifle with picatinny rail"
+	desc = "You can attach this to any rifle with a Picatinny rail."
 	icon_state = "acog"
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT+3
 	ergonomics = 1.25
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan
 	name = "Elcan"
-	desc = "You can attach this to any rifle with picatinny rail"
+	desc = "You can attach this to any rifle with Picatinny rail."
 	icon_state = "elcan"
 	mount = "picatinny"
 	max_zoom = ZOOM_CONSTANT+2
@@ -401,7 +401,7 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if(!G.scope_mounts.Find(src.mount))
-		user << "[src.name] can't be attached!"
+		to_chat(user, SPAN_WARNING("\The [src.name] can't be attached!"))
 		return
 	if (quick)
 		A_attached = TRUE
