@@ -346,7 +346,7 @@ var/global/datum/controller/occupations/job_master
 				valid_spawns += T
 
 		if (blocked)
-			H << SPAN_WARNING("<big>Cannot spawn at FOB because enemy is closeby.</big>")
+			H << SPAN_WARNING("<big>Cannot spawn at this FOB because an enemy is nearby.</big>")
 			SpawnAtFob(H)
 			return
 

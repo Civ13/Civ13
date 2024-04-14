@@ -122,6 +122,7 @@
 /datum/job/var/is_syria = FALSE
 /datum/job/var/is_rotstadt = FALSE
 /datum/job/var/is_twotribes = FALSE
+/datum/job/var/is_latin = FALSE
 
 /datum/job/var/can_get_coordinates = FALSE
 /datum/job/var/is_event = FALSE

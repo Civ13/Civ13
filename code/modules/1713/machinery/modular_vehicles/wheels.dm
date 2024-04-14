@@ -631,3 +631,13 @@
 			return
 	else
 		..()
+
+//////////NAVAL COMMANDER CHAIR/////////////
+/obj/structure/bed/chair/commander/naval
+	name = "spotter's seat"
+	desc = "The ship spotter's seat, with a perisope."
+	anchored = TRUE
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
+		periscope.commanderchair = src
