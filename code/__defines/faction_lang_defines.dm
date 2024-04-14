@@ -170,7 +170,7 @@
 		if (map.ID == "WHITERUN")
 			return "Imperial Army"
 		else if (map.ID == "CONSTANTINOPOLI")
-			return "Exercitus Latinus Imperialis "
+			return "Exercitus Latinus Imperialis"
 		else
 			return "Roman Republic"
 

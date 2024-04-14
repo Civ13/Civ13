@@ -1081,7 +1081,7 @@
 /area/caribbean)
 "jW" = (
 /obj/structure/fob_spawnpoint{
-	faction_text = RUSSIAN;
+	faction_text = "RUSSIAN";
 	pickedname = "Heiden";
 	name = "Landing Craft 'Heiden'"
 	},
@@ -5962,7 +5962,7 @@
 /area/caribbean)
 "Zy" = (
 /obj/structure/fob_spawnpoint{
-	faction_text = RUSSIAN;
+	faction_text = "RUSSIAN";
 	pickedname = "Apraksin";
 	name = "Landing Craft 'Apraksin'"
 	},
@@ -5992,7 +5992,7 @@
 /area/caribbean/roofed)
 "ZH" = (
 /obj/structure/fob_spawnpoint{
-	faction_text = RUSSIAN;
+	faction_text = "RUSSIAN";
 	pickedname = "Chichagov";
 	name = "Landing Craft 'Chichagov'"
 	},
