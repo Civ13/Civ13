@@ -151,9 +151,9 @@ var/global/civvies_killed = list()
 		var/obj/map_metadata/bank_robbery/BR = map
 
 		if (map.ID == MAP_CAMPAIGN && CM)
-			if (H.faction_text == PIRATES)
+			if (H.faction_text == REDFACTION)
 				harmer_factions["Redmenia"]++
-			else if (H.faction_text == CIVILIAN)
+			else if (H.faction_text == BLUEFACTION)
 				harmer_factions["Blugoslavia"]++
 
 		else if ( map.ID == MAP_KANDAHAR && SA)
@@ -186,9 +186,9 @@ var/global/civvies_killed = list()
 			else if (M.faction_text == ARAB)
 				harmer_factions["Mujahideen"]++
 		else
-			if(M.faction_text == PIRATES)
+			if(M.faction_text == REDFACTION)
 				harmer_factions["Redmenia"]++
-			else if(M.faction_text == CIVILIAN)
+			else if(M.faction_text == BLUEFACTION)
 				harmer_factions["Blugoslavia"]++
 	..()
 /mob/living/simple_animal/civilian/attackby(var/obj/item/O, var/mob/user)

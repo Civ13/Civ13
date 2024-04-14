@@ -728,11 +728,13 @@
 	else
 		..()
 
-//////////NAVAL COMMANDER CHAIR/////////////
 /obj/structure/bed/chair/commander/naval
 	name = "spotter's seat"
-	desc = "The ship spotter's seat, with a perisope."
+	desc = "A spotter's seat with a long-range periscope."
 	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+
 	New()
 		..()
 		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)

@@ -489,33 +489,6 @@
     syllables = FILIPINO_SYLLABLES
     mutual_intelligibility = list(/datum/language/spanish = 40)
 
-/datum/language/redmenian
-	name = "Redmenian"
-	desc = "The language of Redmenia."
-	key = "rd"
-	colour = "Redmenian"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = ARAB_SYLLABLES
-	mutual_intelligibility = list(/datum/language/blugoslavian = 10)
-
-/datum/language/blugoslavian
-	name = "Blugoslavian"
-	desc = "The language of Blugoslavia."
-	key = "bl"
-	colour = "Blugoslavian"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = RUSSIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/redmenian = 10)
-
-/datum/language/greenistani
-	name = "Greenistani"
-	desc = "The language of Greenistan."
-	key = "gn"
-	colour = "Greenistani"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = CHECHEN_SYLLABLES
-	mutual_intelligibility = list()
-
 /datum/language/welsh
 	name = "Welsh"
 	desc = "Cymru am byth!"
@@ -542,3 +515,30 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GAELIC_SYLLABLES
 	mutual_intelligibility = list(/datum/language/scottishgaelic = 80)
+
+/datum/language/redmenian
+	name = "Redmenian"
+	desc = "The language of Redmenia."
+	key = "red"
+	colour = "Redmenian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = JAPANESE_SYLLABLES
+	mutual_intelligibility = list(/datum/language/blugoslavian = 10)
+
+/datum/language/blugoslavian
+	name = "Blugoslavian"
+	desc = "The language of Blugoslavia."
+	key = "blue"
+	colour = "Blugoslavian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = RUSSIAN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/redmenian = 10)
+
+/datum/language/greenistani
+	name = "Greenistani"
+	desc = "The language of Greenistan."
+	key = "gn"
+	colour = "Greenistani"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CHECHEN_SYLLABLES
+	mutual_intelligibility = list()

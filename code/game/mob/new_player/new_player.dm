@@ -129,9 +129,9 @@ var/global/redirect_all_players = null
 	else
 		if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
-		else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+		else if (map.ID == MAP_CAMPAIGN)
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
-		else if (map.civilizations && !map.nomads && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
+		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
@@ -139,7 +139,7 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>[translate("Join Game!")]</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)
+	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -192,7 +192,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN) && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -438,7 +438,7 @@ var/global/redirect_all_players = null
 					factjob = "BAF"
 
 		if (factjob)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
 		else
 			if (config.discordurl)
@@ -1198,6 +1198,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_filipino.len] Filipino "
 	if (POLISH in map.faction_organization)
 		dat += "[alive_polish.len] Poles "
+	if (REDFACTION in map.faction_organization)
+		dat += "[alive_redfaction.len] Redmenians "
+	if (BLUEFACTION in map.faction_organization)
+		dat += "[alive_bluefaction.len] Blugoslavians "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1229,6 +1233,8 @@ var/global/redirect_all_players = null
 		VIETNAMESE = FALSE,
 		CHINESE = FALSE,
 		POLISH = FALSE,
+		REDFACTION = FALSE,
+		BLUEFACTION = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -1324,6 +1330,13 @@ var/global/redirect_all_players = null
 
 		if (istype(job, /datum/job/polish) && !polish_toggled)
 			job_is_available = FALSE
+		
+		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
+			job_is_available = FALSE
+		
+		if (istype(job, /datum/job/bluefaction) && !bluefaction_toggled)
+			job_is_available = FALSE
+
 		// check if the job is admin-locked or disabled codewise
 
 		if (!job.enabled)
@@ -1437,33 +1450,13 @@ var/global/redirect_all_players = null
 								temp_name = "Chinese Red Army"
 							if (temp_name == "Chinese")
 								temp_name = "Chinese National Army"
-
-						if (MAP_CAMPAIGN)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-						if (MAP_NOMADS_PERSISTENCE_BETA)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-						if (MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-
+						
 						if (MAP_ROTSTADT)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavian Armed Forces"
-							if (temp_name == "Pirates")
+							if (temp_name == "Redmenia")
 								temp_name = "Rotstadt People's Republic"
-						if (MAP_BATTLE_SHIPS)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
+							if (temp_name == "Blugoslavia")
+								temp_name = "Blugoslavian Armed Forces"
+							
 						if (MAP_HOLDMADRID)
 							if (temp_name == "Civilian")
 								temp_name = "Republican"

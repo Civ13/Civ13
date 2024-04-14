@@ -383,6 +383,9 @@
 	if (hit_zone)
 		do_bullet_act(target_mob, hit_zone)
 
+	if (!target_mob)
+		return
+
 	if (target_mob.takes_less_damage)
 		switch (damage)
 			if (DAMAGE_LOW-5 to DAMAGE_LOW+5)
