@@ -177,6 +177,11 @@
             climbers -= user
             return
         user.forceMove(T)
+		if (get_turf(user) == T)
+			user.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"), SPAN_WARNING("You climb onto \the [src]!"))
+			if (istype(src, /obj/structure/table/glass))
+				var/obj/structure/table/glass/G = src
+				G.shatter()
         climbers -= user
         return
 
