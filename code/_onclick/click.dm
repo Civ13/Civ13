@@ -257,11 +257,8 @@
 				if (!resolved && A && W)
 					if (istype(W, /obj/item/weapon/gun))
 						var/obj/item/weapon/gun/G = W
-						if (G.full_auto)
-							var/datum/firemode/F = G.firemodes[G.sel_mode]
-							spawn(F.burst_delay)
-								W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
-						else
+						var/dt = world.time - G.last_shot_time
+						if(dt > G.firemodes[G.sel_mode].burst_delay)
 							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 					else
 						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
@@ -274,11 +271,8 @@
 			if (W)
 				if (istype(W, /obj/item/weapon/gun))
 					var/obj/item/weapon/gun/G = W
-					if (G.full_auto)
-						var/datum/firemode/F = G.firemodes[G.sel_mode]
-						spawn(F.burst_delay)
-							W.afterattack(A, src, FALSE, params)
-					else
+					var/dt = world.time - G.last_shot_time
+					if(dt > G.firemodes[G.sel_mode].burst_delay)
 						W.afterattack(A, src, FALSE, params)
 				else
 					W.afterattack(A, src, FALSE, params)
