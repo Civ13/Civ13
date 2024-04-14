@@ -294,7 +294,7 @@
 	throwforce = 20
 	attachment_slots = ATTACH_SCOPE|ATTACH_IRONSIGHTS|ATTACH_BARREL
 	scope_mounts = list ("swept_back")
-	barrel_x_offset = -1
+	barrel_x_offset = 15
 	accuracy = 2
 
 /obj/item/weapon/gun/projectile/semiautomatic/g41/update_icon()
@@ -329,7 +329,7 @@
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	scope_mounts = list ("swept_back")
-	barrel_x_offset = -1
+	barrel_x_offset = 15
 	accuracy = 2
 
 /obj/item/weapon/gun/projectile/semiautomatic/g43/update_icon()

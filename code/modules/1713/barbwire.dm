@@ -1,4 +1,3 @@
-
 /obj/structure/barbwire
 	name = "barbwire"
 	icon_state = "barbwire"
@@ -9,19 +8,20 @@
 	layer = 2.98
 
 /obj/structure/barbwire/ex_act(severity)
-	switch (severity)
-		if (3.0)
+	switch(severity)
+		if (3)
 			if (prob(50))
 				qdel(src)
-				return
 		else
 			qdel(src)
-			return
+	return
 
 /obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	return TRUE
 
 /obj/structure/barbwire/Crossed(AM as mob|obj)
+	if (!src || !src.loc)
+		return
 	if (ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
@@ -52,7 +52,7 @@
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
 	return ..()
 
-// Disabled until a fix is found
+// Disabled until a fix is found (the issue is that; Building a barbed wire on your src makes you get stuck in it too.)
 /*/obj/structure/barbwire/Uncross(AM as mob)
 	if(ismob(AM))
 		var/mob/M = AM

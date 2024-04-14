@@ -88,7 +88,7 @@
 			var/internal = FALSE
 			var/open = FALSE
 			var/bleeding = FALSE
-			var/foreign = FALSE // sharpnel, implants, and etcera
+			var/foreign = FALSE // shrapnel, implants, and etcera
 
 			if (!e)
 				continue
@@ -135,7 +135,7 @@
 					inner += "signs of internal bleeding"
 					inner += " [foreign ? "and " : "in"]"
 				if (foreign)
-					inner += "likely sharpnel"
+					inner += "likely shrapnel"
 					inner += " in"
 				string += "[capitalize(inner)] [G.his] [e.name].</span>"
 				user.show_message("<b>[string]</b>")

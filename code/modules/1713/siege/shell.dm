@@ -165,6 +165,16 @@
 	heavy_armor_penetration = 75
 	damage = 115
 
+/obj/item/cannon_ball/shell/tank/HEAT73
+	icon_state = "pg15v"
+	atype = "HEAT"
+	caliber = 73
+	heavy_armor_penetration = 400
+	damage = 125
+
+/obj/item/cannon_ball/shell/tank/HEAT73/update_icon()
+	return
+
 /obj/item/cannon_ball/shell/tank/HE75
 	atype = "HE"
 	caliber = 75

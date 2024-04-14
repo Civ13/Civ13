@@ -124,9 +124,10 @@ Parts of code courtesy of Super3222
 	var/needs_instruments = FALSE
 
 	var/attack_direction = "NORTH"
+	var/list/attack_direction_list = list("NORTH", "EAST", "SOUTH", "WEST")
 
 	var/payload = null
-	var/payload_list = list("Rockets")
+	var/list/payload_list = list("Rockets")
 
 	var/payload_remaining
 
@@ -155,7 +156,10 @@ Parts of code courtesy of Super3222
 			else
 				return
 		if (AMERICAN)
-			aircraft_name = "F-16"
+			if (map.ordinal_age == 6)
+				aircraft_name = "P-47"
+			else
+				aircraft_name = "F-16"
 		if (RUSSIAN)
 			if (map.ordinal_age == 6)
 				aircraft_name = "IL-2"
@@ -207,7 +211,7 @@ Parts of code courtesy of Super3222
 	var/selection_list
 	switch (selection_type)
 		if ("Attack direction")
-			selection_list = list("NORTH", "EAST", "SOUTH", "WEST", "Cancel")
+			selection_list = attack_direction_list + "Cancel"
 			attack_direction = WWinput(H, "Set attack direction", "Close Air Support", "Cancel", selection_list)
 		if ("Payload type")
 			selection_list = payload_list + "Cancel"

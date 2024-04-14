@@ -141,16 +141,16 @@
 	is_singlefaction = FALSE
 	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
 	faction_organization = list(
-		PIRATES,
-		CIVILIAN)
+		REDFACTION,
+		BLUEFACTION)
 
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/japanese,
-		list(CIVILIAN) = /area/caribbean/british,
+		list(REDFACTION) = /area/caribbean/japanese,
+		list(BLUEFACTION) = /area/caribbean/british,
 		)
-	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	faction1 = PIRATES
-	faction2 = CIVILIAN
+	faction_distribution_coeffs = list(REDFACTION = 0.5, BLUEFACTION = 0.5)
+	faction1 = REDFACTION
+	faction2 = BLUEFACTION
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -178,10 +178,8 @@
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 
-	if (faction == PIRATES)
-		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
-	else if (faction == CIVILIAN)
-		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
+	if (faction == REDFACTION)
+		return SPAN_DANGER("<font size = 5>THE GRACE PERIOD HAS ENDED<br>REDMENIA AND BLUGOSLAVIA ARE AT WAR!</font>")
 	else
 		return ""
 

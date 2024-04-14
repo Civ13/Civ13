@@ -194,10 +194,6 @@
 			layer = 11
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
-	if(istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull) || istype(launcher,/obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary))
-		fired_from_turret = TRUE
-		for (var/obj/structure/vehicleparts/frame/F in curloc)
-			fired_from_axis = F.axis
 
 	firer = user
 	firer_original_dir = firer.dir
@@ -363,9 +359,9 @@
 	var/hit_zone = null
 	var/hitchance = target_mob.body_part_size[def_zone]
 
-	var/distance_modifier = 10
+	var/distance_modifier = 5
 	if (distance != 0)
-		distance_modifier = 10 / sqrt(distance)
+		distance_modifier = 5 / sqrt(distance)
 
 	if(distance <= 3)
 		hitchance = 100
@@ -382,6 +378,9 @@
 
 	if (hit_zone)
 		do_bullet_act(target_mob, hit_zone)
+
+	if (!target_mob)
+		return
 
 	if (target_mob.takes_less_damage)
 		switch (damage)

@@ -265,10 +265,10 @@
 	w_back = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/m13/rf
 	w_right = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
-	w_front = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_front = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/m13/rf/thin
 	w_right = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
-	w_front = list("c_armoredfront",TRUE,TRUE,2,2,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,2,2,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/m13/lf
 	w_left = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
 	w_front = list("c_wall",TRUE,TRUE,30,30,FALSE,FALSE)
@@ -369,8 +369,8 @@
 	w_left = list("c_wall",TRUE,TRUE,75,75,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,70,70,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/kv1/rf
-	w_right = list("c_wall",TRUE,TRUE,75,75,FALSE,FALSE,TRUE)
-	w_front = list("c_armoredfront",TRUE,TRUE,85,85,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,75,75,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,85,85,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/kv1/lf
 	w_left = list("c_wall",TRUE,TRUE,70,70,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,75,75,FALSE,FALSE)
@@ -399,8 +399,8 @@
 	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/i_go/rf
-	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE,TRUE)
-	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/i_go/lf
 	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,17,50,FALSE,FALSE)
@@ -428,8 +428,8 @@
 	w_left = list("c_wall",TRUE,TRUE,17,50,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,10,50,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/chi_ha/rf
-	w_right = list("c_wall",TRUE,TRUE,25,50,FALSE,FALSE,TRUE)
-	w_front = list("c_armoredfront",TRUE,TRUE,25,50,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,25,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,25,50,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/chi_ha/lf
 	w_left = list("c_wall",TRUE,TRUE,25,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,25,50,FALSE,FALSE)
@@ -457,8 +457,8 @@
 	w_left = list("c_wall",TRUE,TRUE,20,40,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,15,35,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/m4/rf
-	w_right = list("c_wall",TRUE,TRUE,30,50,FALSE,FALSE,TRUE)
-	w_front = list("c_armoredfront",TRUE,TRUE,30,50,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,30,50,FALSE,FALSE)
+	w_front = list("c_armoredfront",TRUE,TRUE,30,50,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/m4/lf
 	w_left = list("c_wall",TRUE,TRUE,30,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,30,50,FALSE,FALSE)

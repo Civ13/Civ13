@@ -925,7 +925,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a25mm_ap
-	max_ammo = 20
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -938,7 +938,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a25mm_he
-	max_ammo = 20
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -956,7 +956,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
-	max_ammo = 20
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -975,7 +975,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/frag/a30mm_he
-	max_ammo = 20
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -995,7 +995,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a35mm_fap
-	max_ammo = 70
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 
@@ -1008,20 +1008,7 @@
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BACK|SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/frag/a35mm_hei
-	max_ammo = 70
-	multiple_sprites = TRUE
-	belt = TRUE
-
-/obj/item/ammo_magazine/a73mm
-	name = "PG-15V rocket grenade belt (73mm)"
-	icon_state = "maximbelt"
-	worn_state = "maximbelt"
-	mag_type = MAGAZINE
-	caliber = "a30"
-	w_class = ITEM_SIZE_LARGE
-	slot_flags = SLOT_BACK|SLOT_SHOULDER
-	ammo_type = /obj/item/ammo_casing/a73mm
-	max_ammo = 40
+	max_ammo = 150
 	multiple_sprites = TRUE
 	belt = TRUE
 

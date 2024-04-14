@@ -506,6 +506,10 @@ var/const/enterloopsanity = 100
 		if ("Su-25")
 			new /obj/effect/plane_flyby/su25_no_message(T)
 			drop_delay = 1 SECONDS
+		if ("P-47 Thunderbolt")
+			new /obj/effect/plane_flyby/p47_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 8 SECONDS
 		if ("Ju 87 Stuka")
 			new /obj/effect/plane_flyby/ju87_no_message(T)
 			dive_text = "dives down"
