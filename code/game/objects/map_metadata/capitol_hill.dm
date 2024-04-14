@@ -392,7 +392,7 @@ var/no_loop_capitol = FALSE
 		current_win_condition = no_winner
 		win_condition.hash = 0
 		last_win_condition = win_condition.hash
-		message = "40 minutes have passed! The HVTs are now safe!"
+		message = "25 minutes have passed! The HVTs are now safe!"
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		win_condition_spam_check = TRUE
 		return FALSE
