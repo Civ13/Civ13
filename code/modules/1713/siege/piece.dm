@@ -37,7 +37,7 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/azimuth = 270
+	var/azimuth = 180
 	var/distance = 5
 	var/scope_mod = TRUE
 	var/target_x = 0
@@ -195,13 +195,13 @@
 	cannon_piece_list += src
 	distance = clamp(distance, minrange, maxrange)
 	switch(dir)
-		if(EAST)
-			azimuth = 0
 		if(NORTH)
+			azimuth = 0
+		if(EAST)
 			azimuth = 90
-		if(WEST)
-			azimuth = 180
 		if(SOUTH)
+			azimuth = 180
+		if(WEST)
 			azimuth = 270
 
 /obj/structure/cannon/Destroy()
@@ -496,13 +496,13 @@
 	draw_aiming_line(user)
 
 	if(azimuth >= 45 && azimuth < 135)
-		dir = NORTH
-	else if(azimuth >= 135 && azimuth < 225)
-		dir = WEST
-	else if(azimuth >= 225 && azimuth < 315)
-		dir = SOUTH
-	else
 		dir = EAST
+	else if(azimuth >= 135 && azimuth < 225)
+		dir = SOUTH
+	else if(azimuth >= 225 && azimuth < 315)
+		dir = WEST
+	else
+		dir = NORTH
 
 	if (href_list["fire"])
 		if (!broken)
@@ -943,8 +943,8 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease distance: <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a><br><br>
-		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10plus=1'>+10</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];azimuth_10minus=1'>-10</a><br><br>
+		Increase/Decrease distance: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
+		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>-10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>+10</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
@@ -956,11 +956,11 @@
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
 /obj/structure/cannon/proc/face_dir(var/new_dir)
-	if (new_dir == NORTH)
+	if (new_dir == EAST)
 		azimuth = 90
-	else if (new_dir == WEST)
-		azimuth = 180
 	else if (new_dir == SOUTH)
+		azimuth = 180
+	else if (new_dir == WEST)
 		azimuth = 270
 	else
 		azimuth = 0
@@ -969,8 +969,9 @@
 	draw_aiming_line(user)
 
 /obj/structure/cannon/proc/get_target_coords()
-	target_x = ceil(distance * cos(azimuth))
-	target_y = ceil(distance * sin(azimuth))
+	var/actual_azimuth = azimuth - 90
+	target_x = ceil(distance * cos(-actual_azimuth))
+	target_y = ceil(distance * sin(-actual_azimuth))
 
 /obj/structure/cannon/proc/sway()
 	if (azimuth > 315 || azimuth < 45)
@@ -982,46 +983,56 @@
 	else
 		return (-1 * target_y)
 
-/obj/structure/cannon/proc/clear_aiming_line(var/mob/operator)
-	for (var/image/img in usr.client.images)
-		if (img.icon_state == "point")
-			usr.client.images.Remove(img)
-		if (img.icon_state == "cannon_target")
-			usr.client.images.Remove(img)
-
-/obj/structure/cannon/proc/draw_aiming_line(var/mob/operator)
-	if(!operator)
+/obj/structure/cannon/proc/clear_aiming_line(var/mob/user)
+	if(!user)
 		return
-	clear_aiming_line(operator)
+	if(!user.client)
+		return
+	for (var/image/img in user.client.images)
+		if (img.icon_state == "point")
+			user.client.images.Remove(img)
+		if (img.icon_state == "cannon_target")
+			user.client.images.Remove(img)
+
+/obj/structure/cannon/proc/draw_aiming_line(var/mob/user)
+	if(!user)
+		return
+	if(!user.client)
+		return
+	clear_aiming_line(user)
 	var/image/aiming_line
 	var/i = 0
 	var/point_x
 	var/point_y
+	var/actual_azimuth = azimuth - 90
 	for(i = 0, i < 15 * 32, i+=32)
-		point_x = ceil(i * cos(azimuth))
-		point_y = ceil(i * sin(azimuth))
+		point_x = ceil(i * cos(-actual_azimuth))
+		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
 			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
 			aiming_line.alpha = 255 - (i / 1.15)
-			operator.client.images += aiming_line
+			user.client.images += aiming_line
 
-/obj/structure/cannon/modern/tank/draw_aiming_line(var/mob/operator)
-	if(!operator)
+/obj/structure/cannon/modern/tank/draw_aiming_line(var/mob/user)
+	if(!user)
 		return
-	clear_aiming_line(operator)
+	if(!user.client)
+		return
+	clear_aiming_line(user)
 	var/image/aiming_line
 	var/i = 0
 	var/point_x
 	var/point_y
+	var/actual_azimuth = azimuth - 90
 	for(i = 0, i < distance * 32, i+=32)
-		point_x = ceil(i * cos(azimuth))
-		point_y = ceil(i * sin(azimuth))
+		point_x = ceil(i * cos(-actual_azimuth))
+		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
 			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
 			aiming_line.alpha = 255 - (i / 4)
-			operator.client.images += aiming_line
+			user.client.images += aiming_line
 	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", pixel_x = point_x, pixel_y = point_y, layer = 14)
-	operator.client.images += aiming_line
+	user.client.images += aiming_line
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -1031,39 +1042,135 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	azimuth += 90
-	if (azimuth >= 360)
-		azimuth -= 360
+	azimuth -= 90
+	if (azimuth < 0)
+		azimuth += 360
 
-	switch(dir)
-		if (EAST)
-			dir = NORTH
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (WEST)
-			dir = SOUTH
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (NORTH)
-			dir = WEST
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (SOUTH)
-			dir = EAST
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
+	if (!is_naval)
+		switch(dir)
+			if (EAST)
+				dir = NORTH
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (WEST)
+				dir = SOUTH
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (NORTH)
+				dir = WEST
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (SOUTH)
+				dir = EAST
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+	else
+		var/turf/behind
+		switch (dir)
+			if (NORTH)
+				behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				behind = locate(src.x+1, src.y, src.z)
+		var/obj/structure/bed/chair/chair_found
+		for (var/obj/structure/bed/chair/chair in behind)
+			chair_found = chair
+		switch (dir)
+			if (EAST)
+				dir = NORTH
+				pixel_y = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x -= 2
+						src.y += 2
+					if ("left")
+						pixel_x = -20
+						src.x -= 3
+						src.y += 1
+					if ("right")
+						pixel_x = -44
+						src.x -= 1
+						src.y += 3
+			if (WEST)
+				dir = SOUTH
+				pixel_y = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x += 2
+						src.y -= 2
+					if ("left")
+						pixel_x = -44
+						src.x += 3
+						src.y -= 1
+					if ("right")
+						pixel_x = -20
+						src.x += 1
+						src.y -= 3
+			if (NORTH)
+				dir = WEST
+				pixel_x = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x -= 2
+						src.y -= 2
+					if ("left")
+						pixel_y = -20
+						src.x -= 1
+						src.y -= 3
+					if ("right")
+						pixel_y = -44
+						src.x -= 3
+						src.y -= 1
+			if (SOUTH)
+				dir = EAST
+				pixel_x = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x += 2
+						src.y += 2
+					if ("left")
+						pixel_y = -44
+						src.x += 3
+						src.y += 1
+					if ("right")
+						pixel_y = -20
+						src.x += 1
+						src.y += 3
+		var/turf/new_behind
+		switch (dir)
+			if (NORTH)
+				new_behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				new_behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				new_behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				new_behind = locate(src.x+1, src.y, src.z)
+		if (chair_found)
+			chair_found.loc = new_behind
+			chair_found.dir = src.dir
+			if (chair_found.buckled_mob)
+				chair_found.buckled_mob.loc = new_behind
+
 	get_target_coords()
 	draw_aiming_line(user)
 	return
@@ -1076,39 +1183,140 @@
 	if (!istype(usr, /mob/living))
 		return
 
-	azimuth -= 90
-	if (azimuth < 0)
-		azimuth += 360
+	azimuth += 90
+	if (azimuth >= 360)
+		azimuth -= 360
 
-	switch(dir)
-		if (EAST)
-			dir = SOUTH
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (WEST)
-			dir = NORTH
-			if (spritemod)
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (NORTH)
-			dir = EAST
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
-		if (SOUTH)
-			dir = WEST
-			if (spritemod)
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
+	if (!is_naval)
+		switch(dir)
+			if (EAST)
+				dir = SOUTH
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (WEST)
+				dir = NORTH
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (NORTH)
+				dir = EAST
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+			if (SOUTH)
+				dir = WEST
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon.dmi'
+					icon_state = "cannon"
+	else
+		var/turf/behind
+		switch (dir)
+			if (NORTH)
+				behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				behind = locate(src.x+1, src.y, src.z)
+		var/obj/structure/bed/chair/chair_found
+		for (var/obj/structure/bed/chair/chair in behind)
+			chair_found = chair
+
+		switch (dir)
+			if (EAST)
+				dir = SOUTH
+				azimuth = 180
+				pixel_y = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x -= 2
+						src.y -= 2
+					if ("left")
+						pixel_x = -44
+						src.x -= 1
+						src.y -= 3
+					if ("right")
+						pixel_x = -20
+						src.x -= 3
+						src.y -= 1
+			if (WEST)
+				dir = NORTH
+				azimuth = 0
+				pixel_y = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_x = -32
+						src.x += 2
+						src.y += 2
+					if ("left")
+						pixel_x = -20
+						src.x += 1
+						src.y += 3
+					if ("right")
+						pixel_x = -44
+						src.x += 3
+						src.y += 1
+			if (NORTH)
+				dir = EAST
+				azimuth = 90
+				pixel_x = 0
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x += 2
+						src.y -= 2
+					if ("left")
+						pixel_y = -44
+						src.x += 3
+						src.y -= 1
+					if ("right")
+						pixel_y = -20
+						src.x += 1
+						src.y -= 3
+			if (SOUTH)
+				dir = WEST
+				azimuth = 270
+				pixel_x = -64
+				switch (naval_position)
+					if ("middle")
+						pixel_y = -32
+						src.x -= 2
+						src.y += 2
+					if ("left")
+						pixel_y = -20
+						src.x -= 1
+						src.y += 3
+					if ("right")
+						pixel_y = -44
+						src.x -= 3
+						src.y += 1
+		var/turf/new_behind
+		switch (dir)
+			if (NORTH)
+				new_behind = locate(src.x, src.y-1, src.z)
+			if (SOUTH)
+				new_behind = locate(src.x, src.y+1, src.z)
+			if (EAST)
+				new_behind = locate(src.x-1, src.y, src.z)
+			if (WEST)
+				new_behind = locate(src.x+1, src.y, src.z)
+		if (chair_found)
+			chair_found.loc = new_behind
+			chair_found.dir = src.dir
+			if (chair_found.buckled_mob)
+				chair_found.buckled_mob.loc = new_behind
+	
 	get_target_coords()
 	draw_aiming_line(user)
 	return
