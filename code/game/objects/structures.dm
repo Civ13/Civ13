@@ -109,9 +109,9 @@
 	return TRUE
 
 /obj/structure/proc/turf_is_crowded(var/mob/living/user)
-    var/turf/T = get_step(get_turf(src), user.dir)
+    var/turf/T = get_step(get_turf(user), user.dir)
     var/turf/TT = get_turf(src)
-    
+
     // Check for climbable objects in the current turf
     for (var/obj/O in T.contents)
         if (istype(O, /obj/structure))
