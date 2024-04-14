@@ -734,6 +734,7 @@
 	anchored = TRUE
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "commanders_seat"
+
 	New()
 		..()
 		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)

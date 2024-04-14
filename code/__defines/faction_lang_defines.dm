@@ -150,6 +150,8 @@
 			return "Russian Army"
 		else if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
+		else if (map.ID == "CONSTANTINOPOLI")
+			return "Slavo-Russian Imperial Army"
 		else if (map.ID == "TSARITSYN")
 			return "White Army"
 		else if (map.ID == "BANK_ROBBERY")
@@ -169,6 +171,8 @@
 	if (constant == ROMAN)
 		if (map.ID == "WHITERUN")
 			return "Imperial Army"
+		else if (map.ID == "CONSTANTINOPOLI")
+			return "Exercitus Latinus Imperialis"
 		else
 			return "Roman Republic"
 
