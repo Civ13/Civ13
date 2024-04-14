@@ -329,8 +329,10 @@
 			ooc_style = "moderator"
 		if (holder.rights & R_DEBUG)
 			ooc_style = "developer"
-		if (holder.rights & R_PERMISSIONS)
+		if (holder.rights & R_ADMIN)
 			ooc_style = "admin"
+		if (holder.rights & R_PERMISSIONS)
+			ooc_style = "highstaff"
 
 	for (var/client/target in clients)
 		if (target.is_preference_enabled(/datum/client_preference/show_ooc))
