@@ -36,7 +36,7 @@
 			L.S2 = src
 			L.S1.following_mob = src
 			L.S1.stop_automated_movement = TRUE
-			user << "You tie \the [L.S1] to \the [src] with the leash."
+			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			qdel(L)
 			return
 	else
@@ -68,13 +68,13 @@
 			L.S2 = src
 			L.S1.following_mob = src
 			L.S1.stop_automated_movement = TRUE
-			user << "You tie \the [L.S1] to \the [src] with the leash."
+			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			attached = "animal"
 			qdel(L)
 			return
 	else if (istype(O, /obj/item/flashlight/lantern))
 		var/obj/item/flashlight/lantern/LT = O
-		user << "You tie \the [O] to \the [src]."
+		to_chat(user, SPAN_NOTICE("You tie \the [O] to \the [src]."))
 		LT.anchored = TRUE
 		LT.on = TRUE
 		LT.update_icon()
@@ -90,7 +90,7 @@
 	if (!isliving(user))
 		return
 	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
-		user << "You remove \the [attached_ob] from \the [src]."
+		to_chat(user, SPAN_NOTICE("You remove \the [attached_ob] from \the [src]."))
 		var/obj/item/flashlight/lantern/O = attached_ob
 		O.anchored = FALSE
 		O.forceMove(user.loc)
