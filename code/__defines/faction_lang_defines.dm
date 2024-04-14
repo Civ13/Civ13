@@ -148,7 +148,7 @@
 			return "Russian Army"
 		else if (map.ID == "GROZNY")
 			return "Russian Federal Forces"
-		else if (map.ID == "Constantinopoli")
+		else if (map.ID == "CONSTANTINOPOLI")
 			return "Slavo-Russian Imperial Army"
 		else if (map.ID == "TSARITSYN")
 			return "White Army"

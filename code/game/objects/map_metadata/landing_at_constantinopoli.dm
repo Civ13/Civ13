@@ -1,7 +1,7 @@
 /obj/map_metadata/landing_at_constantinopoli
 	ID = MAP_CONSTANTINOPOLI
 	title = "Landing at Constantinopoli"
-	lobby_icon = "icons/lobby/civ13.gif"
+	lobby_icon = "icons/lobby/ancient.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	no_hardcore = TRUE
