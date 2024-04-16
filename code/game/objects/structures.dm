@@ -164,26 +164,27 @@
 		return FALSE
 
 	// Check if the target turf is a table or a crate
-	if (istype(src, /obj/structure/table) || istype(src, /obj/structure/closet/crate))
-		if (!T || T.density)
-			return
-		user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
-		user.face_atom(T)
-		climbers |= user
-		if (!do_after(user,(issmall(user) ? 20 : 34)))
+	if (istype(src, /obj/structure/table) || istype(src, /obj/structure/closet/crate) || istype(src, /obj/structure/barricade)) // we check for barricades because [sand]stone walls are under this.
+		if(climbable) // necessary to check if the siege-ladder has changed the climbable value for [sand]stone walls (barricades), good check regardless.
+			if (!T || T.density)
+				return
+			user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
+			user.face_atom(T)
+			climbers |= user
+			if (!do_after(user,(issmall(user) ? 20 : 34)))
+				climbers -= user
+				return
+			if (!can_climb(user, post_climb_check=1))
+				climbers -= user
+				return
+			user.forceMove(T)
+			if (get_turf(user) == T)
+				user.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"), SPAN_WARNING("You climb onto \the [src]!"))
+				if (istype(src, /obj/structure/table/glass))
+					var/obj/structure/table/glass/G = src
+					G.shatter()
 			climbers -= user
 			return
-		if (!can_climb(user, post_climb_check=1))
-			climbers -= user
-			return
-		user.forceMove(T)
-		if (get_turf(user) == T)
-			user.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"), SPAN_WARNING("You climb onto \the [src]!"))
-			if (istype(src, /obj/structure/table/glass))
-				var/obj/structure/table/glass/G = src
-				G.shatter()
-		climbers -= user
-		return
 
 	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
 	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
