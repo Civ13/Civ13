@@ -460,7 +460,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/vintorez
 	name = "VSS Vintorez"
-	desc = "A marksman rifle featuring an integral supressor originating from the Soviet Union. Feeding from detachable 10-round magazines. Chambered in 9x39mm."
+	desc = "A marksman's rifle featuring an integral supressor originating from the Soviet Union. Feeding from detachable 10-round magazines. Chambered in 9x39mm."
 	icon_state = "vintorez"
 	item_state = "vintorez"
 	base_icon = "vintorez"
