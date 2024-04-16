@@ -10,6 +10,7 @@
 
 /obj/item/ammo_casing/stoneball
 	name = "stone ball projectile"
+	desc = "A round stone ball."
 	icon_state = "stoneball"
 	spent_icon = null
 	projectile_type = /obj/item/projectile/bullet/rifle/stoneball
