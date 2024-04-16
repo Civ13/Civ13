@@ -102,7 +102,6 @@
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
 		if(caliber < 37)
 			explosion(T, 0, 0, 1, 2)
-			fragmentate(T, 4, 7, fragment_types)
 		else
 			explosion(T, he_range, he_range + 1, he_range + 2, he_range + 3)
 			fragmentate(T, 12, 7, fragment_types)
@@ -111,10 +110,7 @@
 	else if (atype == "AP")
 		var/ap_range = clamp(round(caliber_modifier / 2), 0, 4)
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
-		if(caliber < 37)
-			explosion(T, 0, 0, 1, 2)
-			fragmentate(T, 4, 7, fragment_types)
-		else
+		if(caliber >= 37)
 			explosion(T, ap_range, ap_range + 1, ap_range + 2, 3)
 			fragmentate(T, 8, 7, fragment_types)
 		loc = null
