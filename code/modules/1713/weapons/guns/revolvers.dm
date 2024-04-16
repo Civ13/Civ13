@@ -126,13 +126,13 @@
 					count++
 				loaded.Cut()
 			if (count)
-				visible_message("[user] unloads [src].", "<span class='notice'>You unload [count] round\s from [src].</span>")
+				user.visible_message("[user] unloads \the [src].", "<span class='notice'>You unload [count] round\s from \the [src].</span>")
 				if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 		else if (load_method & SINGLE_CASING)
 			var/obj/item/ammo_casing/C = loaded[loaded.len]
 			loaded.len--
 			user.put_in_hands(C)
-			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			user.visible_message("[user] removes \a [C] from \the [src].", "<span class='notice'>You remove \a [C] from \the [src].</span>")
 			if (istype(src, /obj/item/weapon/gun/projectile/boltaction))
 				var/obj/item/weapon/gun/projectile/boltaction/B = src
 				if (B.bolt_safety && !B.loaded.len)

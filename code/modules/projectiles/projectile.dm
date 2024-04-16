@@ -517,7 +517,7 @@
 	else
 		passed_trenches = 0
 
-	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
+	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return

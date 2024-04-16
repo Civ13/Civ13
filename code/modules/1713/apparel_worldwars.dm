@@ -2840,7 +2840,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/helmet/ww2/roa_helmet1
 	name = "stalhelm ROA"
-	desc = "Обычный немецкий штальхельм, только он принадлежит Русской Освободительной Армии."
+	desc = "An ordinary German Stahlhelm, it most likely belongs to the Russian Liberation Army."
 	icon_state = "roa_helmet"
 	item_state = "roa_helmet"
 	worn_state = "roa_helmet"
@@ -2850,7 +2850,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/head/helmet/ww2/roa_helmet2
 	name = "german stalhelm ROA"
-	desc = "Обычный немецкий штальхельм, имеет опознавательные знаки Русской Освободительной Армии."
+	desc = "An ordinary German Stahlhelm, it has identification marks indicating it belongs to the Russian Liberation Army."
 	icon_state = "roa_helmet2"
 	item_state = "roa_helmet2"
 	worn_state = "roa_helmet2"

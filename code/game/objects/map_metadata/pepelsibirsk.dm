@@ -1043,7 +1043,7 @@ var/global/datum/external_relations/external_relations = new()
 
 /obj/structure/anti_air_crate/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage * 0.01
-	visible_message(SPAN_NOTICE("\The [src] is hit by \the [proj.name]!"))
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 /obj/structure/anti_air_crate/attack_hand(mob/living/human/H as mob)
