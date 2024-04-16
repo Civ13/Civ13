@@ -497,7 +497,7 @@
 
 /obj/structure/plant_pot/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage/3
-	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
+	visible_message("<span class='warning'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
 /obj/structure/plant_pot/proc/try_destroy()

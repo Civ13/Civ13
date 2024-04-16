@@ -109,26 +109,26 @@
 	return TRUE
 
 /obj/structure/proc/turf_is_crowded(var/mob/living/user)
-    var/turf/T = get_step(get_turf(user), user.dir)
-    var/turf/TT = get_turf(src)
+    var/turf/T = get_step(get_turf(user), src.dir) // Target-Turf
+    var/turf/TT = get_turf(src) // Start-Turf
 
     // Check for climbable objects in the current turf
     for (var/obj/O in T.contents)
         if (istype(O, /obj/structure))
             var/obj/structure/S = O
             if (!S) continue  // Skip if S is not valid
-            if (S.climbable) continue  // Skip if the object is climbable
+            if (S.climbable) continue  // Skip if the object is climbable	
             if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-                return O
+                return O // Return the dense object that blocks our way.
     
-    // Check for climbable objects in the adjacent turf
+    // Check for climbable objects in the target turf
     for (var/obj/O in TT.contents)
         if (istype(O, /obj/structure))
             var/obj/structure/S = O
             if (!S) continue  // Skip if S is not valid
             if (S.climbable) continue  // Skip if the object is climbable
             if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-                return O
+                return O //  Return the dense object that blocks our way.
     
     // If no crowded object is found, return FALSE
     return FALSE

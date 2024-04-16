@@ -337,7 +337,7 @@
 		do_bullet_act(target_mob, hit_zone)
 		if (blockedhit == FALSE)
 			if (silenced)
-				to_chat(target_mob, SPAN_DANGER("You've been hit in the [parse_zone(hit_zone)] by the shrapnel!"))
+				to_chat(target_mob, SPAN_DANGER("You've been hit in \the [parse_zone(hit_zone)] by the shrapnel!"))
 			else
 				visible_message(SPAN_DANGER("\The [target_mob] is hit by the shrapnel in the [parse_zone(hit_zone)]!"))
 		return FALSE
