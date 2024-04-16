@@ -127,7 +127,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bottle/antitoxin
 	name = "dylovene bottle"
-	desc = "A small bottle of dylovene. Counters poisons, and repairs damage. A wonder drug."
+	desc = "A small bottle. Contains dylovene - counters poisons."
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle-4"
 
@@ -138,7 +138,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bottle/mutagen
 	name = "unstable mutagen bottle"
-	desc = "A small bottle of unstable mutagen. Randomly changes the DNA structure of whoever comes in contact."
+	desc = "A small bottle. Contains unstable mutagen - randomly changes the DNA structure of whoever comes in contact."
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle-1"
 
@@ -204,7 +204,7 @@
 
 /obj/item/weapon/reagent_containers/glass/bottle/pacid
 	name = "Polytrinic Acid Bottle"
-	desc = "A small bottle. Contains a small amount of Polytrinic Acid"
+	desc = "A small bottle. Contains polytrinic acid"
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle-4"
 	New()

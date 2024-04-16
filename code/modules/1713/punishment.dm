@@ -20,7 +20,7 @@
 /obj/structure/noose/bullet_act(var/obj/item/projectile/P)
 	if (hanging)
 		hanging.bullet_act(P)
-		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+		visible_message("<span class = 'danger'>[hanging] is hit by \the [P.name]!</span>")
 	else
 		..()
 
@@ -126,7 +126,7 @@
 /obj/structure/gallows/bullet_act(var/obj/item/projectile/P)
 	if (hanging)
 		hanging.bullet_act(P)
-		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+		visible_message("<span class = 'danger'>[hanging] is hit by \the [P.name]!</span>")
 	else
 		..()
 
@@ -297,7 +297,7 @@
 /obj/structure/cross/bullet_act(var/obj/item/projectile/P)
 	if (hanging)
 		hanging.bullet_act(P)
-		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+		visible_message("<span class = 'danger'>[hanging] is hit by \the [P.name]!</span>")
 	else
 		..()
 
@@ -394,7 +394,7 @@
 /obj/structure/pillory/bullet_act(var/obj/item/projectile/P)
 	if (hanging && prob(30))
 		hanging.bullet_act(P)
-		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+		visible_message("<span class = 'danger'>[hanging] is hit by \the [P.name]!</span>")
 	else
 		..()
 
@@ -510,7 +510,7 @@
 /obj/structure/post_execution/bullet_act(var/obj/item/projectile/P)
 	if (hanging && prob(30))
 		hanging.bullet_act(P)
-		visible_message("<span class = 'danger'>[hanging] is hit by the [P.name]!</span>")
+		visible_message("<span class = 'danger'>[hanging] is hit by \the [P.name]!</span>")
 	else
 		..()
 
