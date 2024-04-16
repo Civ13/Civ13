@@ -479,7 +479,7 @@
 			for (var/obj/covers/CV in get_turf(F))
 				F.muddy = FALSE
 			var/snow_message = ""
-			var/snow_span = "notice"
+			var/snow_span = "warning"
 
 			if (F.icon == 'icons/turf/snow.dmi' && snow && !H.lizard)
 				standing_on_snow = 1
