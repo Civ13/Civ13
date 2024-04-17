@@ -29,7 +29,7 @@
 	var/buildstackamount = TRUE
 	var/framestackamount = 2
 	var/deconstructable = TRUE
-	var/flipped = FALSE // WIP? - 4.17.2024 - yes heavy WIP. TODO proper vaulting.
+	var/flipped = FALSE // WIP? - 4.17.2024 - yes heavy WIP.
 	var/health = 100
 	throwpass = TRUE
 	not_movable = FALSE
@@ -76,7 +76,7 @@
 				visible_message("<span class='warning'>[usr] flips the table!</span>")
 				if (istype(usr, /mob/living))
 					var/mob/living/L = usr
-					dir = L.dir // TODO actually make flipped tables a type of vaultable barrier.
+					dir = L.dir // Could be better than just setting dir, for vaulting sake.
 			else
 				visible_message("<span class='warning'>[usr] puts the table back up.</span>")
 				layer = 2.8
