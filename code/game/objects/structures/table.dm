@@ -29,7 +29,7 @@
 	var/buildstackamount = TRUE
 	var/framestackamount = 2
 	var/deconstructable = TRUE
-	var/flipped = FALSE // WIP?
+	var/flipped = FALSE // WIP? - 4.17.2024 - yes heavy WIP. TODO proper vaulting.
 	var/health = 100
 	throwpass = TRUE
 	not_movable = FALSE
@@ -62,22 +62,94 @@
 
 	if (!istype(usr, /mob/living))
 		return
+	if (src.type == /obj/structure/table/rack) // Check for direct type with src.type
+		to_chat(usr, SPAN_WARNING("You can't flip this."))
+		return
 	if (istype(src, /obj/structure/table/modern/billiard))
-		usr << "You can't flip the table, it's too heavy."
+		to_chat(usr, SPAN_WARNING("You can't flip the table, it's too heavy."))
 		return
 	else
-		usr << "You start flipping the table..."
+		to_chat(usr, SPAN_NOTICE("You start flipping the table..."))
 		if (do_after(usr, 12, src))
 			flipped = !flipped
 			if (flipped)
 				visible_message("<span class='warning'>[usr] flips the table!</span>")
 				if (istype(usr, /mob/living))
 					var/mob/living/L = usr
-					dir = L.dir
+					dir = L.dir // TODO actually make flipped tables a type of vaultable barrier.
 			else
-				visible_message("[usr] puts the table back up.")
+				visible_message("<span class='warning'>[usr] puts the table back up.</span>")
 				layer = 2.8
 			update_icon()
+
+/obj/structure/table/do_climb(var/mob/living/user)
+	if (!can_climb(user))
+		return
+	if (map.check_caribbean_block(user, get_turf(src)))
+		return
+
+	var/turf/T = get_step(get_turf(src), dir) // Target-Turf
+
+	var/climb_dir = src.dir  // Direction of the table that the user is trying to climb
+	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a table in the opposite direction facing towards us.
+
+	// Check if the user is not directly in front of or behind the barrier
+	var/turf/next_turf = get_step(src, climb_dir) 
+	if (flipped)  // If the table is flipped
+		if (user.loc != next_turf)  // If the user's location is not in front of the barrier
+			next_turf = get_turf(src)
+			if (user.loc != next_turf)  
+				to_chat(user, SPAN_WARNING("You can't vault this barrier. You must be directly next to it."))
+				return
+
+	// Check if there's a barrier with opposite direction facing the climbing direction
+	for (var/obj/I in T)
+		if(istype(I, /obj/structure/table))
+			var/obj/structure/table/table = I
+			if (table.flipped && table.dir == opposite_dir)
+				to_chat(user, SPAN_WARNING("You can't vault over this table. Another table is blocking the way."))
+				return
+
+	if (!neighbor_turf_passable())
+		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
+		climbers -= user
+		return
+
+	// Descriptive text for the visible_msgs.
+	var/climb_desc = null
+	if (flipped) // If the table is flipped, we climb over it.
+		climb_desc = "over"
+	else // Else, we climb "onto" it.
+		climb_desc = "onto"
+
+	// Display a message and mark the user as climbing
+	user.visible_message(SPAN_WARNING("[user] starts climbing [climb_desc] \the [src]!</span>"), SPAN_WARNING("You start climbing [climb_desc] \the [src]!"))
+	user.face_atom(T)
+	climbers |= user
+
+	if (!do_after(user,(issmall(user) ? 20 : 34)))
+		climbers -= user
+		return
+
+	if (!can_climb(user, post_climb_check=1))
+		climbers -= user
+		return
+
+	// Move the user to the appropriate turf based on whether the table is flipped
+	if(flipped)
+		if (get_turf(user) == get_turf(src))
+			user.forceMove(get_step(src, dir)) // move user to dir turf of table.
+		else
+			user.forceMove(get_turf(src)) // move user to turf of flipped table.
+	else
+		user.forceMove(get_turf(src)) // Climb onto it normally if it is not flipped.
+
+	if (get_turf(user) == T)
+		user.visible_message(SPAN_WARNING("[user] climbs [climb_desc] \the [src]!"), SPAN_WARNING("You climb [climb_desc] \the [src]!"))
+		if (istype(src, /obj/structure/table/glass))
+			var/obj/structure/table/glass/G = src
+			G.shatter()
+	climbers -= user
 
 /obj/structure/table/verb/rotate_left()
 	set name = "Rotate Left"
