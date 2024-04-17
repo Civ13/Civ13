@@ -134,9 +134,8 @@
 	//add arrow overlay
 	src.overlays += icon(A.icon,A.icon_state)
 
-obj/item/weapon/gun/projectile/bow/Fire()
-	..()
-	remove_arrow_overlay()
+/obj/item/weapon/gun/projectile/bow/Fire()
+    ..() // Call the parent proc first
 
 /obj/item/weapon/gun/projectile/bow/sling
 	name = "sling"
@@ -263,8 +262,10 @@ obj/item/weapon/gun/projectile/bow/Fire()
 /obj/item/weapon/gun/projectile/bow/special_check(mob/user)
 	if (!istype(src, /obj/item/weapon/gun/projectile/bow/sling))
 		if (!(user.has_empty_hand(both = FALSE)))
-			user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+			user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 			return FALSE
+		else
+			remove_arrow_overlay() // Remove the overlay only after we check if the other hand is empty.
 	return ..()
 
 /obj/item/weapon/gun/projectile/bow/attackby(obj/W as obj, mob/user as mob)
