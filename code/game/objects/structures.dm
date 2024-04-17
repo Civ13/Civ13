@@ -107,12 +107,12 @@
 		to_chat(user, SPAN_DANGER("There's \a [occupied] in the way."))
 		return FALSE
 	return TRUE
-
+	
 /obj/structure/proc/turf_is_crowded(var/mob/living/user)
     var/turf/T = get_step(get_turf(user), src.dir) // Target-Turf
     var/turf/TT = get_turf(src) // Start-Turf
 
-    // Check for climbable objects in the current turf
+    // Check for climbable objects in the target turf
     for (var/obj/O in T.contents)
         if (istype(O, /obj/structure))
             var/obj/structure/S = O
@@ -120,8 +120,8 @@
             if (S.climbable) continue  // Skip if the object is climbable	
             if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
                 return O // Return the dense object that blocks our way.
-    
-    // Check for climbable objects in the target turf
+
+    // Check for climbable objects in the start turf
     for (var/obj/O in TT.contents)
         if (istype(O, /obj/structure))
             var/obj/structure/S = O
@@ -134,18 +134,21 @@
     return FALSE
 
 /obj/structure/proc/neighbor_turf_passable()
-	var/turf/T = get_step(src, dir)
-	if (!T || !istype(T))
-		return FALSE
-	if (T.density == TRUE)
-		return FALSE
-	for (var/obj/O in T.contents)
-		if (istype(O,/obj/structure))
-			if (istype(O,/obj/structure/railing))
-				return TRUE
-			else if (O.density == TRUE)
-				return FALSE
-	return TRUE
+    var/turf/T = get_step(src, dir)
+    if (!T || !istype(T))
+        return FALSE
+    if (T.density == TRUE)
+        return FALSE
+    for (var/obj/O in T.contents)  // Iterate over all objects in the turf
+        // Check if the object has density
+        if (istype(O, /obj/structure/closet/crate))
+            continue // Allow us to climb onto crates
+        if (istype(O, /obj/structure/table))
+            continue // Allow us to climb onto other tables
+        if (O.density == TRUE)
+            return FALSE
+    return TRUE
+
 
 /obj/structure/proc/do_climb(var/mob/living/user)
 	if (!can_climb(user))
@@ -164,11 +167,14 @@
 		return FALSE
 
 	// Check if the target turf is a table or a crate
-	if (istype(src, /obj/structure/table) || istype(src, /obj/structure/closet/crate) || istype(src, /obj/structure/barricade)) // we check for barricades because [sand]stone walls are under this.
+	if (istype(src, /obj/structure/closet/crate) || istype(src, /obj/structure/barricade)) // we check for barricades because [sand]stone walls are under this.
+		if (user.loc == src.loc)
+			to_chat(user, SPAN_WARNING("You're already on this!"))
+			return
 		if(climbable) // necessary to check if the siege-ladder has changed the climbable value for [sand]stone walls (barricades), good check regardless.
 			if (!T || T.density)
 				return
-			user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
+			user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"), SPAN_WARNING("You start climbing onto \the [src]!"))
 			user.face_atom(T)
 			climbers |= user
 			if (!do_after(user,(issmall(user) ? 20 : 34)))
@@ -185,6 +191,7 @@
 					G.shatter()
 			climbers -= user
 			return
+	//else if (istype(src, /obj/structure/table))
 
 	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
 	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
@@ -203,10 +210,12 @@
 			to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
 			return
 
-	if (!T || T.density)
+	if (!neighbor_turf_passable())
+		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
+		climbers -= user
 		return
 
-	user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!</span>"), SPAN_WARNING("You start climbing onto \the [src]!"))
+	user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"), SPAN_WARNING("You start climbing onto \the [src]!"))
 	user.face_atom(T)
 	climbers |= user
 
