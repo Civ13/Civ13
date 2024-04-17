@@ -360,8 +360,6 @@
 						if (i[1]=="UPA")
 							i[2]-= 10*/
 
-	handle_piss()
-	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)
 		if (map && faction_text == map.faction1)
 			map.faction1_squads[squad] -= src
@@ -411,7 +409,6 @@
 	//Handle species-specific deaths.
 	species.handle_death(src)
 
-
 	callHook("death", list(src, gibbed))
 
 	if (l_hand) unEquip(l_hand)
@@ -444,6 +441,8 @@
 	. = ..(gibbed)//,species.death_message)
 	if (!gibbed)
 		handle_organs()
+		handle_piss()
+		handle_shit()
 		if (species.death_sound)
 			playsound(loc, species.death_sound, 80, TRUE, TRUE)
 	handle_hud_list()

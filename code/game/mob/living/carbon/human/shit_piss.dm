@@ -316,6 +316,8 @@
 		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
 		bowels -= rand(120,150)
 	else
+		if(stat == DEAD)
+			return
 		to_chat(src, "You don't have to shit.")
 		return
 	visible_message("[message]")
@@ -324,6 +326,8 @@
 /mob/living/human/proc/handle_piss()
 	var/message = null
 	if (bladder < 30)
+		if(stat == DEAD)
+			return
 		to_chat(src, "You don't have to piss.")
 		return
 	var/mob/living/M = locate() in src.loc
