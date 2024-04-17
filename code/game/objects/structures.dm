@@ -191,7 +191,6 @@
 					G.shatter()
 			climbers -= user
 			return
-	//else if (istype(src, /obj/structure/table))
 
 	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
 	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
