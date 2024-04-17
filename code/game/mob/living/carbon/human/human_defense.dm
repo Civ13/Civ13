@@ -553,6 +553,7 @@ bullet_act
 						AC.health -= dmg
 						AC.check_health()
 	return TRUE
+
 /mob/living/human/proc/check_head_coverage()
 	var/list/body_parts = list(head, wear_mask, wear_suit, w_uniform)
 	for (var/bp in body_parts)
