@@ -104,7 +104,10 @@
 
 	// Check if there's a barrier with opposite direction facing the climbing direction
 	for (var/obj/I in T)
-		if(istype(I, /obj/structure/table))
+		if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
+			to_chat(user, SPAN_WARNING("You can't vault this table. \A [I.name] is blocking the way."))
+			return
+		else if(istype(I, /obj/structure/table)) // You should be able to flip tables against sandbags, just not noclip thru the balance of opposite barriers.
 			var/obj/structure/table/table = I
 			if (table.flipped && table.dir == opposite_dir)
 				to_chat(user, SPAN_WARNING("You can't vault over this table. Another table is blocking the way."))
@@ -119,12 +122,13 @@
 	var/climb_desc = null
 	if (flipped) // If the table is flipped, we climb over it.
 		climb_desc = "over"
+		user.face_atom(T) // Face target-turf (movingto)
 	else // Else, we climb "onto" it.
 		climb_desc = "onto"
+		user.face_atom(src) //Face directly onto the table if not flipped on side.
 
 	// Display a message and mark the user as climbing
 	user.visible_message(SPAN_WARNING("[user] starts climbing [climb_desc] \the [src]!</span>"), SPAN_WARNING("You start climbing [climb_desc] \the [src]!"))
-	user.face_atom(T)
 	climbers |= user
 
 	if (!do_after(user,(issmall(user) ? 20 : 34)))

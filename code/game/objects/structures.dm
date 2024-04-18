@@ -104,6 +104,7 @@
 	var/obj/occupied = turf_is_crowded(user)
 
 	if (occupied)
+		user.face_atom(occupied)
 		to_chat(user, SPAN_DANGER("There's \a [occupied] in the way."))
 		return FALSE
 	return TRUE
@@ -134,20 +135,21 @@
     return FALSE
 
 /obj/structure/proc/neighbor_turf_passable()
-    var/turf/T = get_step(src, dir)
-    if (!T || !istype(T))
-        return FALSE
-    if (T.density == TRUE)
-        return FALSE
-    for (var/obj/O in T.contents)  // Iterate over all objects in the turf
-        if (O.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
-        if (istype(O, /obj/structure/closet/crate))
-            continue // Allow us to climb onto crates
-        if (istype(O, /obj/structure/table))
-            continue // Allow us to climb onto other tables (UNLESS they face our way (handled in obj/str/table/do_climb()))
-        if (O.density == TRUE) 
-            return FALSE
-    return TRUE
+	var/turf/T = get_step(src, dir)
+	if (!T || !istype(T))
+		return FALSE
+	if (T.density == TRUE)
+		return FALSE
+	for (var/obj/O in T.contents)  // Iterate over all objects in the turf
+		var/obj/structure/S = O
+		if (S.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
+		if (istype(O, /obj/structure/closet/crate))
+			continue // Allow us to climb onto crates
+		if (istype(O, /obj/structure/table))
+			continue // Allow us to climb onto other tables (UNLESS they face our way (handled in obj/str/table/do_climb()))
+		if (O.density == TRUE) 
+			return FALSE
+	return TRUE
 
 
 /obj/structure/proc/do_climb(var/mob/living/user)
@@ -171,7 +173,12 @@
 		if (user.loc == src.loc)
 			to_chat(user, SPAN_WARNING("You're already on this!"))
 			return
-		if(climbable) // necessary to check if the siege-ladder has changed the climbable value for [sand]stone walls (barricades), good check regardless.
+		if (istype(src, /obj/structure/closet/crate))
+			var/obj/structure/closet/crate/box = src
+			if(box.opened)
+				to_chat(user, SPAN_WARNING("You can't climb onto an opened crate."))
+				return
+		if(src.climbable) // necessary to check if the siege-ladder has changed the climbable value for [sand]stone walls (barricades), good check regardless.
 			if (!T || T.density)
 				return
 			user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"), SPAN_WARNING("You start climbing onto \the [src]!"))
@@ -191,6 +198,10 @@
 					G.shatter()
 			climbers -= user
 			return
+		else // If barricade is not climbable (and if this is somehow called on non-climbable structures, let them know.)
+			to_chat(user, SPAN_WARNING("This is not climbable."))
+			return
+
 
 	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
 	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
@@ -206,10 +217,12 @@
 	// Check if there's a barrier with opposite direction facing the climbing direction
 	for (var/obj/I in T)
 		if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
+			user.face_atom(T)
 			to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
 			return
 
 	if (!neighbor_turf_passable())
+		user.face_atom(T)
 		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
 		climbers -= user
 		return
