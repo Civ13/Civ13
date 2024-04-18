@@ -109,7 +109,7 @@
 	return TRUE
 	
 /obj/structure/proc/turf_is_crowded(var/mob/living/user)
-    var/turf/T = get_step(get_turf(user), src.dir) // Target-Turf
+    var/turf/T = get_step(get_turf(user), src.dir) // Target-Turf (movingto)
     var/turf/TT = get_turf(src) // Start-Turf
 
     // Check for climbable objects in the target turf
@@ -140,11 +140,11 @@
     if (T.density == TRUE)
         return FALSE
     for (var/obj/O in T.contents)  // Iterate over all objects in the turf
-		if (O.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
+        if (O.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
         if (istype(O, /obj/structure/closet/crate))
             continue // Allow us to climb onto crates
         if (istype(O, /obj/structure/table))
-            continue // Allow us to climb onto other tables
+            continue // Allow us to climb onto other tables (UNLESS they face our way (handled in obj/str/table/do_climb()))
         if (O.density == TRUE) 
             return FALSE
     return TRUE
