@@ -440,7 +440,7 @@
 
 	. = ..(gibbed)//,species.death_message)
 	if (!gibbed)
-		handle_organs()
+		handle_organs() // Handle the following only after we call the parent to get all the proper stat values and etcetra.
 		handle_piss()
 		handle_shit()
 		if (species.death_sound)

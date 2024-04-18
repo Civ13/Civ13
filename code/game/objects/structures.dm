@@ -104,7 +104,7 @@
     var/list/objects_blocked = turf_is_crowded(user)
     if (objects_blocked.len>0)
         var/blocked_list = english_list(objects_blocked, " nothing ", " and ")
-        to_chat(user, SPAN_DANGER("\The [blocked_list] blocks you from climbing over."))
+        to_chat(user, SPAN_DANGER("\The [blocked_list] blocks you from climbing over.")) // e.g; The wood barricade and the steel barricade blocks you from climbing over.
         return FALSE
     return TRUE
 
