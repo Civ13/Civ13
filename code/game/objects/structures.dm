@@ -140,12 +140,12 @@
     if (T.density == TRUE)
         return FALSE
     for (var/obj/O in T.contents)  // Iterate over all objects in the turf
-        // Check if the object has density
+		if (O.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
         if (istype(O, /obj/structure/closet/crate))
             continue // Allow us to climb onto crates
         if (istype(O, /obj/structure/table))
             continue // Allow us to climb onto other tables
-        if (O.density == TRUE)
+        if (O.density == TRUE) 
             return FALSE
     return TRUE
 
