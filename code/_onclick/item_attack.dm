@@ -74,6 +74,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 // Proximity_flag is TRUE if this afterattack was called on something adjacent, in your square, or on your person.
 // Click parameters is the params string from byond Click() code, see that documentation.
 /obj/item/proc/afterattack(atom/target, mob/user, proximity_flag, params)
+	if(!proximity_flag) return // afterattack needs to check proximity_flag, because afterattack runs if you click at range. This is to fix invisible wrenches/hammers, and a general check. Unlikely to break anything.
 	if (istype(target, /obj/structure/table))
 		var/list/click_params = params2list(params)
 		//Center the icon where the user clicked.

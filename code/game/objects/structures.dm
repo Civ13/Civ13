@@ -24,32 +24,36 @@
 
 	return ..()
 
-/obj/structure/attackby(obj/item/O as obj, mob/user as mob, icon_x, icon_y)
-	if (istype(O,/obj/item/weapon/wrench) && !not_movable)
-		if (powersource)
-			to_chat(user, SPAN_NOTICE("Remove the cables first."))
-			return
-		if (istype(src, /obj/structure/engine))
-			var/obj/structure/engine/EN = src
-			if (!isemptylist(EN.connections))
-				to_chat(user, SPAN_NOTICE("Remove the cables first."))
-				return
-		if (do_after(user,15,src))
-			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-			to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-			anchored = !anchored
-			return
-	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
-		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
-		if (do_after(user,25,src))
-			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
-			new /obj/item/stack/material/wood(get_turf(src))
-			for (var/obj/item/weapon/book/b in contents)
-				b.loc = (get_turf(src))
-			qdel(src)
-			return
-
+/obj/structure/attackby(var/obj/item/O as obj, mob/user as mob, icon_x, icon_y)
+    if (istype(O, /obj/item/weapon/wrench) && !not_movable)
+        if (powersource)
+            to_chat(user, SPAN_NOTICE("Remove the cables first."))
+            return
+        if (istype(src, /obj/structure/engine))
+            var/obj/structure/engine/EN = src
+            if (!isemptylist(EN.connections))
+                to_chat(user, SPAN_NOTICE("Remove the cables first."))
+                return
+        if (istype(src, /obj/structure/table)) // Convoluted way of not allowing to pull flipped tables onto other flipped tables to bypass barrier stacking checks during same turf flipping.
+            for (var/obj/structure/table/T in get_turf(src))
+                if (T != src && T.anchored)
+                    to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
+                    return
+            if (do_after(user, 15, src))
+                playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+                to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+                src.anchored = !src.anchored
+                return
+    else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
+        playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+        to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
+        if (do_after(user, 25, src))
+            to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
+            new /obj/item/stack/material/wood(get_turf(src))
+            for (var/obj/item/weapon/book/b in contents)
+                b.loc = (get_turf(src))
+            qdel(src)
+            return
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -86,6 +90,7 @@
 		do_climb(target)
 	else
 		return ..()
+
 /obj/structure/proc/can_climb(var/mob/living/user, post_climb_check=0)
     var/movingto = get_step(get_turf(src), dir)
     if (map && movingto && map.check_caribbean_block(user, movingto))
@@ -146,7 +151,7 @@
 
 
 /obj/structure/proc/neighbor_turf_passable()
-	var/turf/T = get_step(src, dir)
+	var/turf/T = get_step(get_turf(src), src.dir)
 	if (!T || !istype(T))
 		return FALSE
 	if (T.density == TRUE)
@@ -213,7 +218,6 @@
 			to_chat(user, SPAN_WARNING("This is not climbable."))
 			return
 
-
 	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
 	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
 
@@ -224,13 +228,26 @@
 		if (user.loc != next_turf)  
 			to_chat(user, SPAN_WARNING("You can't vault this barrier. You must be directly next to it."))
 			return
-
+/*
 	// Check if there's a barrier with opposite direction facing the climbing direction
 	for (var/obj/I in T)
 		if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
 			user.face_atom(T)
 			to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
 			return
+*/
+	// Check the next turf in the climbing direction for a barrier or table
+	var/turf/next_turf_climb = get_step(next_turf, climb_dir)
+	for (var/obj/I in next_turf_climb)
+		if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
+			user.face_atom(next_turf_climb)
+			to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
+			return
+		else if (istype(I, /obj/structure/table))
+			var/obj/structure/table/table = I
+			if (table.dir == climb_dir)
+				to_chat(user, SPAN_WARNING("You can't vault over this barrier. Another table is blocking the way."))
+				return
 
 	if (!neighbor_turf_passable())
 		user.face_atom(T)
