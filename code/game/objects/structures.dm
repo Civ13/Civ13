@@ -86,9 +86,7 @@
 		do_climb(target)
 	else
 		return ..()
-
 /obj/structure/proc/can_climb(var/mob/living/user, post_climb_check=0)
-
     var/movingto = get_step(get_turf(src), dir)
     if (map && movingto && map.check_caribbean_block(user, movingto))
         to_chat(user, SPAN_WARNING("You cannot pass the invisible wall until the <b>Grace Period</b> has ended."))
@@ -102,37 +100,50 @@
         return FALSE
 
     var/list/objects_blocked = turf_is_crowded(user)
-    if (objects_blocked.len>0)
-        var/blocked_list = english_list(objects_blocked, " nothing ", " and ")
+    if (objects_blocked.len > 0)
+        var/blocked_list = english_list(objects_blocked, " nothing ", " and \the ")
         to_chat(user, SPAN_DANGER("\The [blocked_list] blocks you from climbing over.")) // e.g; The wood barricade and the steel barricade blocks you from climbing over.
         return FALSE
+
+    var/list/objects_blocked_2 = turf_is_crowded(user, 1)
+    if (objects_blocked_2.len > 0)
+        var/blocked_list_2 = english_list(objects_blocked_2, " nothing ", " and \the ")
+        to_chat(user, SPAN_DANGER("\The [blocked_list_2] blocks you from climbing over.")) // e.g; The wood barricade and the steel barricade blocks you from climbing over.
+        return FALSE
+
     return TRUE
 
-/obj/structure/proc/turf_is_crowded(var/mob/living/user)
-    var/turf/T = get_step(get_turf(user), src.dir) // Target-Turf (movingto)
+/obj/structure/proc/turf_is_crowded(var/mob/living/user, second_turf=0)
+    var/turf/T = get_step(get_turf(src), src.dir) // Target-Turf (movingto)
     var/turf/TT = get_turf(src) // Start-Turf
     var/list/objects_blocked = list() // List to store all objects that block the way
+    var/list/objects_blocked_2 = list()
 
     // Check for climbable objects in the target turf
     for (var/obj/O in T.contents)
         if (istype(O, /obj/structure))
             var/obj/structure/S = O
             if (!S) continue  // Skip if S is not valid
-            if (S.climbable) continue  // Skip if the object is climbable	
+            if (S.climbable) continue  // Skip if the object is climbable   
             if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-                objects_blocked += O // Add the dense object to the list of objects that block the way.
+                objects_blocked += O.name // Add the dense object's name to the list of objects that block the way.
 
     // Check for climbable objects in the start turf
-    for (var/obj/O in TT.contents)
-        if (istype(O, /obj/structure))
-            var/obj/structure/S = O
-            if (!S) continue  // Skip if S is not valid
-            if (S.climbable) continue  // Skip if the object is climbable
-            if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-                objects_blocked += O // Add the dense object to the list of objects that block the way.
+    if (second_turf)
+        for (var/obj/O in TT.contents)
+            if (istype(O, /obj/structure))
+                var/obj/structure/S = O
+                if (!S) continue  // Skip if S is not valid
+                if (S.climbable) continue  // Skip if the object is climbable
+                if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
+                    objects_blocked_2 += O.name // Add the dense object's name to the list of objects that block the way.
     
     // If no crowded object is found, return an empty list
+    if (second_turf)
+        return objects_blocked_2
     return objects_blocked
+
+
 
 /obj/structure/proc/neighbor_turf_passable()
 	var/turf/T = get_step(src, dir)
