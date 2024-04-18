@@ -62,24 +62,39 @@
 
 	if (!istype(usr, /mob/living))
 		return
-	if (src.type == /obj/structure/table/rack) // Check for direct type with src.type
+	if (istype(src, /obj/structure/table/rack))
 		to_chat(usr, SPAN_WARNING("You can't flip this."))
 		return
 	if (istype(src, /obj/structure/table/modern/billiard))
 		to_chat(usr, SPAN_WARNING("You can't flip the table, it's too heavy."))
 		return
 	else
+		for (var/obj/I in get_turf(src))
+			if (istype(I, /obj/structure/table))
+				var/obj/structure/table/table = I
+				if (table != src) // Check to make sure we aren't trying to flip a table onto the same table in the same flip dir.
+					if (table.dir == usr.dir && table.flipped)
+						to_chat(usr, SPAN_WARNING("You can't flip the table towards this direction. \A [table] is already flipped that way."))
+						return
+
 		to_chat(usr, SPAN_NOTICE("You start flipping the table..."))
 		if (do_after(usr, 12, src))
+			for (var/obj/O in get_turf(src))
+				if (istype(O, /obj/structure/table))
+					var/obj/structure/table/table = O
+					if(table != src) // Re-check to make sure we aren't trying to flip a table onto the same table in the same flip dir.
+						if (table.dir == usr.dir && table.flipped)
+							to_chat(usr, SPAN_WARNING("You can't flip the table towards this direction. \A [table] is already flipped that way."))
+							return
 			flipped = !flipped
 			if (flipped)
 				visible_message("<span class='warning'>[usr] flips the table!</span>")
 				if (istype(usr, /mob/living))
 					var/mob/living/L = usr
-					dir = L.dir // Could be better than just setting dir, for vaulting sake.
+					dir = L.dir
 			else
-				visible_message("<span class='warning'>[usr] puts the table back up.</span>")
 				layer = 2.8
+				visible_message("<span class='warning'>[usr] puts the table back up.</span>")
 			update_icon()
 
 /obj/structure/table/do_climb(var/mob/living/user)
@@ -388,7 +403,6 @@
 			return TRUE
 	return TRUE
 
-
 /obj/structure/table/MouseDrop_T(atom/movable/O, mob/user)
 	..()
 	if ((!( istype(O, /obj/item/weapon) ) || user.get_active_hand() != O))
@@ -435,25 +449,31 @@
 		return TRUE
 	qdel(I)
 
-/obj/structure/table/attackby(var/obj/item/I, mob/user, params)
-	if (istype(I, /obj/item/weapon/grab))
-		tablepush(I, user)
-		return
+/obj/structure/table/attackby(obj/item/I as obj, mob/user as mob, params)
+    if (istype(I, /obj/item/weapon/grab))
+        tablepush(I, user)
+        return
 
-	if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/wrench))
-		..()
-		return
-	else
-		user.drop_item(loc)
-		playsound(loc, I.dropsound, 100, TRUE)
+    if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/wrench))
+        if (user.a_intent == I_HARM)
+            ..()
+            return TRUE // Resolves the attack so we don't get invisible wrenches/hammers.
+        else
+            user.drop_item(loc)
+            playsound(loc, I.dropsound, 100, TRUE)
+            return
 
-		//Center the icon where the user clicked if we can.
-		var/list/click_params = params2list(params)
-		if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
-			return
-		//Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
-		I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
-		I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+    user.drop_item(loc)
+    playsound(loc, I.dropsound, 100, TRUE)
+
+    // Center the icon where the user clicked if we can.
+    var/list/click_params = params2list(params)
+    if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
+        return 
+    // Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
+    I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
+    I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+
 
 /*
  * TABLE DESTRUCTION/DECONSTRUCTION
