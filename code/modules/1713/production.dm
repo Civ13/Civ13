@@ -722,7 +722,7 @@
 			return TRUE
 	if (!W.dried_type)
 		if (H)
-			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] cannot be dried."))
 		return TRUE//This can't be dryed
 	if (!W.dry_size)
 		return TRUE//ERROR
@@ -730,19 +730,19 @@
 		var/obj/item/weapon/reagent_containers/food/D = W
 		if (D.rotten)
 			if (H)
-				H << "<span class='warning'>\The [W.name] is rotten.</span>"
+				to_chat(H, SPAN_WARNING("\The [W.name] is rotten!"))
 			return TRUE
 	if (W.dry_size>15)
 		if (H)
-			H << "<span class='warning'>\The [W.name] not fit here!</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] does not fit here!"))
 		return TRUE
 	if (!hang_on(W))
 		if (H)
-			H << "<span class='warning'>Not enough room for one more [W.name]!</span>"
+			H << "<span class='warning'>There is not enough room for \the [W.name]!</span>"
 		return TRUE
 	if (H)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>",
+			"<span class='notice'>You can see how [H.name] hangs \a [normal_item_name(W)] to dry.</span>",
 			"<span class='notice'>You hang \a [normal_item_name(W)] to dry.")
 		return TRUE
 	..(W, H, icon_x, icon_y)
@@ -1665,7 +1665,7 @@
 
 	if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -1824,7 +1824,7 @@
 		return
 	if (istype(W, /obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		H << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 		return
 	if (istype(W, /obj/item/weapon/hammer))

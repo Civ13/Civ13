@@ -258,6 +258,78 @@
 	else
 		..()
 
+/obj/structure/bed/chair/mgunner
+	name = "machinegunner's seat"
+	desc = "a seat with a course machinegun."
+	icon_state = "officechair_white"
+	anchored = FALSE
+	flammable = FALSE
+	var/obj/item/weapon/gun/projectile/automatic/mg = null
+	New()
+		..()
+		if(mg)
+			mg.mount = src
+			mg.nothrow = TRUE
+			mg.nodrop = TRUE
+			mg.recoil = 1
+/obj/structure/bed/chair/mgunner/rotate_right()
+	return
+
+/obj/structure/bed/chair/mgunner/rotate_left()
+	return
+
+/obj/structure/bed/chair/mgunner/update_icon()
+	return
+
+/obj/structure/bed/chair/mgunner/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && mg)
+		if(buckled_mob.put_in_active_hand(mg) == FALSE)
+			buckled_mob << "Your hands are full!"
+			return
+
+/obj/structure/bed/chair/mgunner/dt28/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/dp28/dt28(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/dtm28/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/dp28/dt28/dtm28(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/mg34/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/manual/mg34(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/browning_lmg/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/browning_lmg(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/pkm/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/pkm(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/type99/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/type99(src)
+		..()
+
+/obj/structure/bed/chair/mgunner/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		if(mg)
+			M.remove_from_mob(mg)
+			mg.forceMove(src)
+	return M
+
 ////////GUNNER///////////
 /obj/structure/bed/chair/gunner
 	name = "gunner's seat"
@@ -267,9 +339,18 @@
 	flammable = FALSE
 	var/obj/structure/turret/turret = null
 	var/obj/item/turret_controls/controls = null
-	New()
-		..()
-		controls = new/obj/item/turret_controls(src)
+
+/obj/structure/bed/chair/gunner/base/New()
+	..()
+	controls = new/obj/item/turret_controls/base(src)
+
+/obj/structure/bed/chair/gunner/ww2/New()
+	..()
+	controls = new/obj/item/turret_controls/ww2(src)
+
+/obj/structure/bed/chair/gunner/modern/New()
+	..()
+	controls = new/obj/item/turret_controls/modern(src)
 
 /obj/structure/bed/chair/gunner/proc/setup(var/obj/structure/turret/origin_turret)
 	turret = origin_turret
@@ -361,10 +442,25 @@
 	var/obj/structure/turret/turret = null
 	var/is_rotating = FALSE
 	var/rotating_dir = 0
-	New()
-		..()
-		optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
-		build_zooming()
+
+/obj/item/turret_controls/base/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	optics.zoom_amt = ZOOM_CONSTANT
+	build_zooming()
+
+/obj/structure/bed/chair/gunner/base/mtlb
+
+/obj/item/turret_controls/ww2/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	optics.zoom_amt = 10
+	build_zooming()
+
+/obj/item/turret_controls/modern/New()
+	..()
+	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+	build_zooming()
 
 /obj/item/turret_controls/proc/get_zoom_amt()
 	if(!optics)
@@ -409,7 +505,7 @@
 		is_rotating = TRUE
 		rotate()
 
-/obj/structure/bed/chair/gunner/mtlb/update_icon()
+/obj/structure/bed/chair/gunner/base/mtlb/update_icon()
 	if(!turret)
 		return
 	dir = turret.dir
@@ -631,3 +727,15 @@
 			return
 	else
 		..()
+
+/obj/structure/bed/chair/commander/naval
+	name = "spotter's seat"
+	desc = "A spotter's seat with a long-range periscope."
+	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
+		periscope.commanderchair = src

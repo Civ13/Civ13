@@ -748,6 +748,9 @@
 
 			show_player_panel(M)
 
+	else if (href_list["CentCom"])
+		usr.client.CentCom(href_list["CentCom"])
+
 	// player info stuff
 
 	if (href_list["add_player_info"])

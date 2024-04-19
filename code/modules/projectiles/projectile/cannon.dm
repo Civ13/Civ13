@@ -56,7 +56,7 @@
 	return TRUE
 
 
-/obj/item/projectile/shell/launch(atom/target, mob/user, obj/structure/cannon/modern/tank/launcher, var/x_offset=0, var/y_offset=0)
+/obj/item/projectile/shell/launch(atom/target, mob/user, obj/structure/cannon/modern/tank/launcher)
 	targloc = get_turf(target)
 	var/turf/curloc = get_turf(launcher)
 	if (!istype(targloc) || !istype(curloc))
@@ -81,8 +81,8 @@
 	loc = curloc
 	starting = curloc
 
-	yo = targloc.y - curloc.y + y_offset
-	xo = targloc.x - curloc.x + x_offset
+	yo = targloc.y - curloc.y
+	xo = targloc.x - curloc.x
 	shot_from = launcher
 	silenced = FALSE
 
@@ -95,20 +95,24 @@
 /obj/item/projectile/shell/proc/initiate(var/turf/T)
 	if(!T)
 		return
-	var/caliber_modifier = clamp(round(caliber / 50), 1, 4)
+	var/caliber_modifier = clamp(round(caliber / 50), 0, 4)
 
 	if (atype == "HE")
 		var/he_range = caliber_modifier
-		explosion(T, he_range, he_range + 1, he_range + 2, 6)
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
-		fragmentate(T, 12, 7, fragment_types)
+		if(caliber < 37)
+			explosion(T, 0, 0, 1, 2)
+		else
+			explosion(T, he_range, he_range + 1, he_range + 2, he_range + 3)
+			fragmentate(T, 12, 7, fragment_types)
 		loc = null
 		qdel(src)
 	else if (atype == "AP")
-		var/ap_range = clamp(round(caliber_modifier / 2), 1, 4)
-		explosion(T, ap_range, ap_range + 1, ap_range + 2, 3)
+		var/ap_range = clamp(round(caliber_modifier / 2), 0, 4)
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
-		fragmentate(T, 8, 7, fragment_types)
+		if(caliber >= 37)
+			explosion(T, ap_range, ap_range + 1, ap_range + 2, 3)
+			fragmentate(T, 8, 7, fragment_types)
 		loc = null
 		qdel(src)
 	else if (atype == "APCR")
@@ -136,7 +140,7 @@
 					P.attack_mob(L, 0, 0)
 	else if (atype == "HEAT")
 		var/num_fragments = 3 * caliber_modifier
-		var/heat_range = clamp(round(caliber_modifier / 2), 1, 4)
+		var/heat_range = clamp(round(caliber_modifier / 2), 0, 4)
 
 		if(!initiated)
 			explosion(T, heat_range, heat_range + 1, heat_range + 2, 3)
@@ -164,6 +168,57 @@
 					P.attack_mob(L, 0, 0)
 		loc = null
 		qdel(src)
+	else if (atype == "HEI")
+		var/hei_range = clamp(round(caliber_modifier / 2), 0, 4)
+		explosion(T, hei_range, hei_range + 1, hei_range + 2, 3)
+		ignite_turf(T,8,40)
+		loc = null
+		qdel(src)
+
+//////////////////////////////////////////
+////////////////AUTOCANNON////////////////
+
+/obj/item/projectile/shell/autocannon
+	icon = 'icons/obj/projectiles.dmi'
+	icon_state = "bullet"
+
+/obj/item/projectile/shell/autocannon/update_icon()
+	return
+
+/obj/item/projectile/shell/autocannon/a20_aphe
+	atype = "AP"
+	heavy_armor_penetration = 32
+	caliber = 20
+
+/obj/item/projectile/shell/autocannon/a25_he
+	atype = "HE"
+	heavy_armor_penetration = 7
+	caliber = 25
+
+/obj/item/projectile/shell/autocannon/a25_ap
+	atype = "AP"
+	heavy_armor_penetration = 65
+	caliber = 25
+
+/obj/item/projectile/shell/autocannon/a30_he
+	atype = "HE"
+	heavy_armor_penetration = 8
+	caliber = 30
+
+/obj/item/projectile/shell/autocannon/a30_ap
+	atype = "AP"
+	heavy_armor_penetration = 82
+	caliber = 30
+
+/obj/item/projectile/shell/autocannon/a35_fap
+	atype = "APCR"
+	heavy_armor_penetration = 127
+	caliber = 35
+
+/obj/item/projectile/shell/autocannon/a35_hei
+	atype = "HEI"
+	heavy_armor_penetration = 11
+	caliber = 35
 
 //////////////////////////////////////////
 ////////////////CANNONBALL////////////////

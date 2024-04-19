@@ -91,12 +91,12 @@
 
 /obj/structure/TV/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage * 0.01
-	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
+	visible_message("<span class='danger'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
 /obj/structure/TV/fire_act(temperature)
 	if (prob(35 * (temperature/500)))
-		visible_message("<span class = 'warning'>[src] is damaged by the fire and breaks apart!.</span>")
+		visible_message("<span class = 'warning'>\The [src] is destroyed by the fire!</span>")
 		qdel(src)
 
 /obj/structure/TV/attackby(obj/item/W as obj, mob/user as mob)
@@ -119,7 +119,7 @@
 
 /obj/structure/TV/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage * 0.01
-	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
+	visible_message("<span class='danger'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
 /obj/structure/TV/proc/try_destroy()
@@ -150,7 +150,7 @@
 /obj/structure/TV/television/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -178,7 +178,7 @@
 /obj/structure/TV/grandfather/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)

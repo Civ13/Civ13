@@ -191,13 +191,15 @@
 	if(user.buckled)
 		for (var/obj/structure/turret/T in curloc)
 			fired_from_turret = TRUE
+			layer = 11
 		for (var/obj/structure/vehicleparts/frame/F in curloc)
 			fired_from_axis = F.axis
-			layer = 11
 
 	firer = user
 	firer_original_dir = firer.dir
 	firedfrom = launcher
+
+	alpha = 0
 
 	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 		if (prob(80))
@@ -335,7 +337,7 @@
 		do_bullet_act(target_mob, hit_zone)
 		if (blockedhit == FALSE)
 			if (silenced)
-				to_chat(target_mob, SPAN_DANGER("You've been hit in the [parse_zone(hit_zone)] by the shrapnel!"))
+				to_chat(target_mob, SPAN_DANGER("You've been hit in \the [parse_zone(hit_zone)] by the shrapnel!"))
 			else
 				visible_message(SPAN_DANGER("\The [target_mob] is hit by the shrapnel in the [parse_zone(hit_zone)]!"))
 		return FALSE
@@ -357,7 +359,9 @@
 	var/hit_zone = null
 	var/hitchance = target_mob.body_part_size[def_zone]
 
-	var/distance_modifier = 10 / sqrt(distance)
+	var/distance_modifier = 5
+	if (distance != 0)
+		distance_modifier = 5 / sqrt(distance)
 
 	if(distance <= 3)
 		hitchance = 100
@@ -374,6 +378,9 @@
 
 	if (hit_zone)
 		do_bullet_act(target_mob, hit_zone)
+
+	if (!target_mob)
+		return
 
 	if (target_mob.takes_less_damage)
 		switch (damage)
@@ -483,13 +490,13 @@
 		permutated += T
 		return TRUE
 
-	if ((bumped && !forced) || (permutated.Find(T)))
+	if ((bumped && !forced) || (permutated.len && (permutated.Find(T))))
 		return FALSE
 
 	var/direction = get_direction()
 
 	var/turf/previous_step = starting
-	if(T!= starting)
+	if(T!= starting && permutated.len)
 		previous_step = permutated[permutated.len]
 
 	var/passthrough = TRUE //if the projectile should continue flying
@@ -499,7 +506,6 @@
 	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
 		for (var/obj/structure/vehicleparts/frame/F in T)
 			if(fired_from_axis && fired_from_axis == F.axis)
-				firer << "ABOBA"
 				forceMove(T)
 				permutated += T
 				return TRUE
@@ -511,7 +517,7 @@
 	else
 		passed_trenches = 0
 
-	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
+	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return
@@ -723,10 +729,12 @@
 	//plot the initial trajectory
 
 	var/firstmove = FALSE
+	alpha = 255
 
 	if (!trajectory)
 		setup_trajectory(loc)
 		firstmove = TRUE
+		alpha = 0
 
 	angle = get_angle()
 

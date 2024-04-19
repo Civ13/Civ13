@@ -754,7 +754,10 @@ var/civmax_research = list(230,230,230)
 		AMERICAN = 0,
 		VIETNAMESE = 0,
 		CHINESE = 0,
-		FILIPINO = 0,)
+		FILIPINO = 0,
+		REDFACTION = 0,
+		BLUEFACTION = 0,
+		)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -830,12 +833,8 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-				return "Redmenian"
 			return "Pirate"
 		if (CIVILIAN)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-				return "Blugoslavian"
 			return "Colonist"
 		if (INDIANS)
 			return "Native"
@@ -884,6 +883,11 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if (POLISH)
 			return "Polish"
+		if (REDFACTION)
+			return "Redmenia"
+		if (BLUEFACTION)
+			return "Blugoslavia"
+
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -951,6 +955,13 @@ var/civmax_research = list(230,230,230)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
 			return "Polish Home Army"
+		if (REDFACTION)
+			if (map.ID == MAP_ROTSTADT)
+				return "Rotstadt People's Republic"
+			else
+				return "Redmenia Defence Force"
+		if (BLUEFACTION)
+			return "Blugoslavian Armed Forces"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -958,10 +969,6 @@ var/civmax_research = list(230,230,230)
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
-		if ("Redmenia Defence Force")
-			return "Redmenian"
-		if ("Blugoslavian Armed Forces")
-			return "Blugoslavian"
 		if ("Colonists")
 			return "Colonist"
 		if ("Native Tribe")
@@ -1000,6 +1007,11 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if ("Polish Home Army")
 			return "Polish"
+		if ("Redmenia Defence Force")
+			return "Redmenian"
+		if ("Blugoslavian Armed Forces")
+			return "Blugoslavian"
+
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

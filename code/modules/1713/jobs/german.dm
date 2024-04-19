@@ -1970,7 +1970,6 @@
 
 	uses_squads = TRUE
 	is_paratrooper = TRUE
-	whitelisted = TRUE
 
 	min_positions = 4
 	max_positions = 8

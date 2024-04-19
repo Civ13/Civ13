@@ -322,18 +322,35 @@
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
-		if (src == get_step(user, user.dir))
-			for(var/obj/O in src) // Checking if there's another dense object
-				if(O.density)
-					if(O.flags & ON_BORDER)
-						if(O.dir == user.dir)
-							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
-							return
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
 			user.visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
 			if (do_after(user, sandbag_time, user.loc))
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				// Recheck user's direction before creating the sandbag/incomplete
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
 				var/progress = bag.sand_amount
 				qdel(C)
-				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user)
+				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user, current_direction)
 				sb.progress = progress
 				user.visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a sandbag wall. Anyone can now add to it.</span>")
 				if (ishuman(user))
@@ -342,7 +359,6 @@
 			return
 
 	else if (istype(C, /obj/item/weapon/barrier))
-
 		var/sandbag_time = 50
 
 		if (ishuman(user))
@@ -350,19 +366,36 @@
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
-		if (src == get_step(user, user.dir))
-			for(var/obj/O in src) // Checking if there's another dense object
-				if(O.density)
-					if(O.flags & ON_BORDER)
-						if(O.dir == user.dir)
-							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
-							return
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
 			user.visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 			if (do_after(user, sandbag_time, user.loc))
+				// Recheck user's direction before creating the barrier
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
 				var/obj/item/weapon/barrier/bag = C
 				var/progress = bag.sand_amount
 				qdel(C)
-				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
+				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user, current_direction)
 				sandbag.progress = progress
 				user.visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 				if (ishuman(user))
@@ -378,25 +411,43 @@
 			sandbag_time /= H.getStatCoeff("strength")
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
-		if (src == get_step(user, user.dir))
-			for(var/obj/O in src) // Checking if there's another dense object
-				if(O.density)
-					if(O.flags & ON_BORDER)
-						if(O.dir == user.dir)
-							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
-							return
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
 			user.visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
 			if (do_after(user, sandbag_time, user.loc))
+				// Recheck user's direction before creating the snowwall
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
 				var/obj/item/weapon/snowwall/bag = C
 				var/progress = bag.sand_amount
 				qdel(C)
-				var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user)
+				var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user, current_direction)
 				sandbag.progress = progress
 				user.visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a snow barricade. Anyone can now add to it.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)
 			return
+
 	else if (istype(C, /obj/item/stack/farming/seeds) || istype(C, /obj/item/stack/medical/advanced/herbs))
 		var/mob/living/human/H = user
 		var/obj/item/stack/farming/seeds/TS

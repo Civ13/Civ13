@@ -79,7 +79,7 @@
 /* Armor Plates*/
 
 /obj/item/weapon/armorplates
-	name = "ballistic plates"
+	name = "ballistic plate"
 	desc = "Used to increase the protection of some body armors."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "plates"

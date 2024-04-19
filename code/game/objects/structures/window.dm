@@ -438,7 +438,7 @@
 		shatter()
 
 /obj/structure/window_frame
-	desc = "A good old window frame."
+	desc = "A window frame."
 	icon_state = "windownew_frame"
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE

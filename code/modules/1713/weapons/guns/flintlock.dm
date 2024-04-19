@@ -320,8 +320,8 @@
 	accuracy = 4
 
 /obj/item/weapon/gun/projectile/flintlock/duellingpistol
-	name = "Duelling Flintlock "
-	desc = "A typical Duelling Pistol. Used by gentlemen who take part in duels."
+	name = "Duelling Flintlock"
+	desc = "A typical flintlock. Used by gentlemen who take part in duels."
 	icon_state = "flintlock_duelingpistol"
 	item_state = "pistol"
 	shake_strength = 2.5

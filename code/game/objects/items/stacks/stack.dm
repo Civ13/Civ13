@@ -41,7 +41,7 @@
 	return
 
 //If a stack is pulled over another stack, this proc is called.
-obj/item/stack/Crossed(var/obj/item/stack/S)
+/obj/item/stack/Crossed(var/obj/item/stack/S)
 	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
 	if(istype(S, stacktype) && !S.throwing)
 		merge(S)
@@ -60,6 +60,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	S.amount += transfer
 	src.update_icon()
 	S.update_icon()
+	src.update_strings()
+	S.update_strings()
 	if(src.amount <= 0)
 		qdel(src)
 	return transfer
@@ -1918,9 +1920,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-				if (H.faction_text == PIRATES)
+				if (H.faction_text == REDFACTION)
 					T.icon_state = "m16"
-				else if (H.faction_text == CIVILIAN)
+				else if (H.faction_text == BLUEFACTION)
 					T.icon_state = "ak74"
 			return
 

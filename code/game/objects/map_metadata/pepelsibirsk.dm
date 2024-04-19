@@ -1,14 +1,14 @@
 // Diplomatic variables, very important
-/datum/pepelsibirsk_relations
-	var/list/pepelsibirsk_relations = list(
-		"china_relations" = 50,
-		"soviet_relations" = 50,
-		"pacific_relations" = 50,
-		"civ_relations" = 50,
-		"mil_relations" = 50,
+/datum/external_relations
+	var/list/npc_faction_relations = list(
+		"faction_1_relations" = 50,
+		"faction_2_relations" = 50,
+		"faction_3_relations" = 50,
+		"faction_4_relations" = 50,
+		"faction_5_relations" = 50,
 	)
 
-var/global/datum/pepelsibirsk_relations/pepel_factions = new()
+var/global/datum/external_relations/external_relations = new()
 
 /obj/map_metadata/pepelsibirsk
 	ID = MAP_PEPELSIBIRSK
@@ -53,6 +53,12 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	var/year = 1976
 	//Trader spawnpoint
 	var/trader_spawnpoint = "trader_spawnpoint"
+	
+	#define CHINA_RELATIONS external_relations.npc_faction_relations["faction_1_relations"]
+	#define SOVIET_RELATIONS external_relations.npc_faction_relations["faction_2_relations"]
+	#define PACIFIC_RELATIONS external_relations.npc_faction_relations["faction_3_relations"]
+	#define CIV_RELATIONS external_relations.npc_faction_relations["faction_4_relations"]
+	#define MIL_RELATIONS external_relations.npc_faction_relations["faction_5_relations"]
 
 /obj/map_metadata/pepelsibirsk/New()
 	..()
@@ -237,30 +243,30 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/map_metadata/pepelsibirsk/proc/relations_subsystem()
 	spawn(3 SECONDS)
-		for(var/relation in pepel_factions.pepelsibirsk_relations)
-			if (pepel_factions.pepelsibirsk_relations[relation] > 100)
-				pepel_factions.pepelsibirsk_relations[relation] = 100
-			else if (pepel_factions.pepelsibirsk_relations[relation] < 0)
-				pepel_factions.pepelsibirsk_relations[relation] = 0
+		for(var/relation in external_relations.npc_faction_relations)
+			if (external_relations.npc_faction_relations > 100)
+				external_relations.npc_faction_relations[relation] = 100
+			else if (external_relations.npc_faction_relations[relation] < 0)
+				external_relations.npc_faction_relations[relation] = 0
 		relations_subsystem()
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/check_relations_msg()
 	to_chat(world, "<font size = 4><span class = 'notice'><b>Diplomatic Relations:</b></font></span>")
-	to_chat(world, "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[pepel_factions.pepelsibirsk_relations["china_relations"]]</b></span></font>")
-	to_chat(world, "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[pepel_factions.pepelsibirsk_relations["soviet_relations"]]</b></span></font>")
-	to_chat(world, "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[pepel_factions.pepelsibirsk_relations["pacific_relations"]]</b></span></font>")
-	to_chat(world, "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[pepel_factions.pepelsibirsk_relations["civ_relations"]]</b></span></font>")
-	to_chat(world, "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[pepel_factions.pepelsibirsk_relations["mil_relations"]]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>People's Republic of China: <b>[CHINA_RELATIONS]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Union of Soviet Socialist Republics: <b>[SOVIET_RELATIONS]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>United States of the Pacific: <b>[PACIFIC_RELATIONS]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Naroddnygorod: <b>[CIV_RELATIONS]</b></span></font>")
+	to_chat(world, "<br><font size = 3><span class = 'notice'>Pepelsibirsk-1: <b>[MIL_RELATIONS]</b></span></font>")
 	spawn(5 MINUTES)
 		check_relations_msg()
 	return
 
 /obj/map_metadata/pepelsibirsk/proc/recover_relations()
-	if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 26)
-		pepel_factions.pepelsibirsk_relations["civ_relations"] += 0.02
-	if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 26)
-		pepel_factions.pepelsibirsk_relations["mil_relations"] += 0.02
+	if (CIV_RELATIONS <= 26)
+		CIV_RELATIONS += 0.02
+	if (MIL_RELATIONS <= 26)
+		MIL_RELATIONS += 0.02
 	spawn(20 MINUTES)
 		recover_relations()
 	return
@@ -307,7 +313,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	desc = "The United States of the Pacific has come to trade."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "afghcia"
-	faction_relations = "pacific_relations"
+	faction_relations = "faction_3_relations"
 	products = list(
 		//Weapons
 		/obj/item/weapon/gun/projectile/submachinegun/m16/commando = 2,
@@ -409,15 +415,15 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			if (prob(25))
 				new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
-	pepel_factions.pepelsibirsk_relations["pacific_relations"] -= rand(10, 25)
-	to_chat(world, "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [pepel_factions.pepelsibirsk_relations["pacific_relations"]]!</b></font></span>")
+	PACIFIC_RELATIONS -= rand(10, 25)
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Pacifician trader has died. Relations with the United States of the Pacific have dropped to [PACIFIC_RELATIONS]!</b></font></span>")
 
 /obj/structure/vending/sales/pepelsibirsk/chinese_trader
 	name = "PRC Trader"
 	desc = "现在我有冰淇淋我很喜欢冰淇淋."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "chinese_trader"
-	faction_relations = "china_relations"
+	faction_relations = "faction_1_relations"
 	products = list(
 		//Weapons
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/chinese = 3,
@@ -458,15 +464,15 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		for(var/i in 1 to products[product_key])
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
-	pepel_factions.pepelsibirsk_relations["china_relations"] -= rand(10, 25)
-	to_chat(world, "<font size = 3><span class = 'notice'><b>A Chinese trader has died. Relations with the People's Republic of China have dropped to [pepel_factions.pepelsibirsk_relations["china_relations"]]!</b></font></span>")
+	CHINA_RELATIONS -= rand(10, 25)
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Chinese trader has died. Relations with the People's Republic of China have dropped to [CHINA_RELATIONS]!</b></font></span>")
 
 /obj/structure/vending/sales/pepelsibirsk/soviet_trader
 	name = "Soviet Trader"
 	desc = "Вы неправильно используете это программное обеспечение для перевода. Пожалуйста, проконсультируйтесь с руководством по программному обеспечению."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "soviet_trader"
-	faction_relations = "soviet_relations"
+	faction_relations = "faction_2_relations"
 	products = list(
 		//Weapons
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 1,
@@ -535,8 +541,8 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		for(var/i in 1 to products[product_key])
 			new product_key(get_turf(src))
 	new /mob/living/human/corpse(get_turf(src))
-	pepel_factions.pepelsibirsk_relations["soviet_relations"] -= rand(10, 25)
-	to_chat(world, "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [pepel_factions.pepelsibirsk_relations["soviet_relations"]]!</b></font></span>")
+	SOVIET_RELATIONS -= rand(10, 25)
+	to_chat(world, "<font size = 3><span class = 'notice'><b>A Soviet trader has died. Relations with the Union of Soviet Socialist Republics have dropped to [MIL_RELATIONS]!</b></font></span>")
 
 ////// TRAVELING MERCHANTS MANAGEMENT //////
 /obj/map_metadata/pepelsibirsk/proc/send_traders() //Picks a turf from trader_spawnpoint and sends traders there if relations are high enough.
@@ -545,7 +551,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	var/spawnpoint
 	spawn(1)
 		turfs = latejoin_turfs[trader_spawnpoint]
-		if (pepel_factions.pepelsibirsk_relations["china_relations"] >= 26)
+		if (CHINA_RELATIONS >= 26)
 			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/chinese_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
@@ -553,7 +559,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			spawn(10 MINUTES)
 				world.log << "[trader] has been deleted."
 				qdel(trader)
-		if (pepel_factions.pepelsibirsk_relations["soviet_relations"] >= 26)
+		if (SOVIET_RELATIONS >= 26)
 			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/soviet_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
@@ -561,7 +567,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 			spawn(10 MINUTES)
 				world.log << "[trader] has been deleted."
 				qdel(trader)
-		if (pepel_factions.pepelsibirsk_relations["pacific_relations"] >= 26)
+		if (PACIFIC_RELATIONS >= 26)
 			var/traderpath = /obj/structure/vending/sales/pepelsibirsk/pacific_trader
 			spawnpoint = pick(turfs)
 			var/trader = new traderpath(get_turf(spawnpoint))
@@ -572,11 +578,11 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		return
 
 	var/traders = list()
-	if (pepel_factions.pepelsibirsk_relations["china_relations"] >= 26)
+	if (CHINA_RELATIONS >= 26)
 		traders += "the Chinese"
-	if (pepel_factions.pepelsibirsk_relations["soviet_relations"] >= 26)
+	if (SOVIET_RELATIONS >= 26)
 		traders += "the Soviets"
-	if (pepel_factions.pepelsibirsk_relations["pacific_relations"] >= 26)
+	if (PACIFIC_RELATIONS >= 26)
 		traders += "the Pacificans"
 
 	if (length(traders) > 1)
@@ -733,13 +739,13 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/structure/pepelsibirsk_radio/supply_radio/proc/update_cost(final_list, final_cost, choice, user, scam)
 	if (choice == "Pepelsibirsk 1 (MIL)" && scam != "Yes, scam them!")
-		pepel_factions.pepelsibirsk_relations["mil_relations"] += final_cost*0.02
+		MIL_RELATIONS += final_cost*0.02
 	else if (choice == "Narodnyygorod (CIV)" && scam != "Yes, scam them!")
-		pepel_factions.pepelsibirsk_relations["civ_relations"] += final_cost*0.02
+		CIV_RELATIONS += final_cost*0.02
 	else if (choice == "Narodnyygorod (CIV)" && scam == "Yes, scam them!")
-		pepel_factions.pepelsibirsk_relations["civ_relations"] -= final_cost*0.08
+		CIV_RELATIONS -= final_cost*0.08
 	else if (choice == "Pepelsibirsk 1 (MIL)" && scam == "Yes, scam them!")
-		pepel_factions.pepelsibirsk_relations["mil_relations"] -= final_cost*0.08
+		MIL_RELATIONS -= final_cost*0.08
 	if (scam != "Yes, scam them!")
 		to_chat(user, "Your item will arrive in 60 seconds. Relations with [choice] have increased by [final_cost*0.02].")
 	else if (scam == "Yes, scam them!")
@@ -832,12 +838,12 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		return
 	if (choice == "Narodnyygorod (CIV)")
 		catalogue = civ_catalogue
-		if (pepel_factions.pepelsibirsk_relations["civ_relations"] <= 25 )
+		if (CIV_RELATIONS <= 25 )
 			to_chat(user, "Your relations with this faction are too low!")
 			return
 	else if (choice == "Pepelsibirsk 1 (MIL)")
 		catalogue = mil_catalogue
-		if (pepel_factions.pepelsibirsk_relations["mil_relations"] <= 25 )
+		if (MIL_RELATIONS <= 25 )
 			to_chat(user, "Your relations with this faction are too low!")
 			return
 	purchase(user, choice, catalogue)
@@ -878,7 +884,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 		to_chat(user, "There is no demand for this item.")
 		return
 	else
-		if (pepel_factions.pepelsibirsk_relations["civ_relations"] >= 25)
+		if (CIV_RELATIONS >= 25)
 			if (istype(W))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
@@ -991,15 +997,15 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 	message_admins("The initial stage of the enemy_attacks() proc will be triggered in [next_bombing_1] deciseconds. The second stage will be triggered [next_bombing_2] deciseconds after that.")
 	world.log << "The initial stage of the enemy_attacks() proc will be triggered in [next_bombing_1] deciseconds. The second stage will be triggered [next_bombing_2] deciseconds after that."
 	spawn(next_bombing_1)
-		if (pepel_factions.pepelsibirsk_relations["china_relations"] <= 25)
+		if (CHINA_RELATIONS <= 25)
 			faction = "CHINA"
 			bombing_location(faction)
-			pepel_factions.pepelsibirsk_relations["china_relations"] += 0.5
+			CHINA_RELATIONS += 0.5
 		spawn(next_bombing_2)
-			if (pepel_factions.pepelsibirsk_relations["soviet_relations"] <= 25)
+			if (SOVIET_RELATIONS <= 25)
 				faction = "SOVIET"
 				bombing_location(faction)
-				pepel_factions.pepelsibirsk_relations["soviet_relations"] += 0.5
+				SOVIET_RELATIONS += 0.5
 			enemy_attacks()
 
 /obj/structure/anti_air_crate
@@ -1037,7 +1043,7 @@ var/global/datum/pepelsibirsk_relations/pepel_factions = new()
 
 /obj/structure/anti_air_crate/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage * 0.01
-	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 /obj/structure/anti_air_crate/attack_hand(mob/living/human/H as mob)

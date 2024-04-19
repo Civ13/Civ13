@@ -134,9 +134,9 @@
 	//add arrow overlay
 	src.overlays += icon(A.icon,A.icon_state)
 
-obj/item/weapon/gun/projectile/bow/Fire()
+/obj/item/weapon/gun/projectile/bow/Fire()
 	..()
-	remove_arrow_overlay()
+	remove_arrow_overlay() //Placement is fine, the empty arrow bug has to be dealt elsewhere but the special_check proc.
 
 /obj/item/weapon/gun/projectile/bow/sling
 	name = "sling"
@@ -196,6 +196,7 @@ obj/item/weapon/gun/projectile/bow/Fire()
 	..()
 	loaded = list()
 	chambered = null
+	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
 	if (world.time < user.next_load)
@@ -238,19 +239,17 @@ obj/item/weapon/gun/projectile/bow/Fire()
 			remove_arrow_overlay()
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(user, SPAN_WARNING("[src] is empty."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/update_icon()
-
 	if (chambered)
 		icon_state = "[icotype]1"
 		item_state = "[icotype]1"
-		return
 	else
 		icon_state = "[icotype]0"
 		item_state = "[icotype]0"
-		return
+	return
 
 /obj/item/weapon/gun/projectile/bow/handle_click_empty(mob/user)
 	if (user)
@@ -263,13 +262,13 @@ obj/item/weapon/gun/projectile/bow/Fire()
 /obj/item/weapon/gun/projectile/bow/special_check(mob/user)
 	if (!istype(src, /obj/item/weapon/gun/projectile/bow/sling))
 		if (!(user.has_empty_hand(both = FALSE)))
-			user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+			to_chat(user, SPAN_WARNING("You need both hands to fire \the [src]!"))
 			return FALSE
 	return ..()
 
 /obj/item/weapon/gun/projectile/bow/attackby(obj/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/attachment/bayonet))
-		user << "<span class = 'danger'>That won't fit on there.</span>"
+		to_chat(user, SPAN_WARNING("That won't fit on there."))
 		return FALSE
 	else
 		return ..()

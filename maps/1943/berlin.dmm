@@ -320,9 +320,7 @@
 "gh" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/concrete,/area/caribbean/german)
 "gi" = (/obj/structure/closet/crate/cart/steel,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/advsmall,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "gj" = (/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42/small,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42,/obj/item/weapon/gun/projectile/submachinegun/fg42,/obj/item/weapon/gun/projectile/submachinegun/fg42,/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical,/area/caribbean/german)
-"gk" = (/obj/structure/vehicleparts/frame/kv1/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/item/ammo_magazine/maxim,/turf/floor/plating/road,/area/caribbean/russian/land)
 "gl" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
-"gm" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/turf/floor/plating/road,/area/caribbean/russian/land)
 "gn" = (/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/wood/fancywood,/area/caribbean/german/inside)
 "go" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood/fancywood,/area/caribbean/german/inside)
 "gp" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood/fancywood,/area/caribbean/german/inside)
@@ -416,7 +414,7 @@
 "hZ" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "ia" = (/obj/structure/barricade/steel,/obj/structure/barbwire,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "ib" = (/obj/structure/barbwire,/obj/structure/barbwire{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
-"ic" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/rf,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/weapon/gun/projectile/automatic/stationary/mg34{layer = 4; anchored = 0},/turf/floor/plating/road,/area/caribbean/no_mans_land)
+"ic" = (/obj/structure/vehicleparts/frame/t34/rf,/obj/structure/vehicleparts/movement/tracks/t34/right_front,/obj/structure/bed/chair/mgunner/dtm28,/turf/floor/plating/road,/area/caribbean/russian/land)
 "id" = (/obj/structure/barricade/vertical,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "ie" = (/obj/structure/barricade/steel,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "if" = (/obj/structure/window/barrier/sandbag,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
@@ -472,6 +470,7 @@
 "jd" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/plating/tiled/darker,/area/caribbean/german/inside)
 "je" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/plating/tiled/darker,/area/caribbean/german/inside)
 "jf" = (/obj/structure/lamp/lamp_big/alwayson,/turf/floor/plating/tiled/darker,/area/caribbean/german/inside)
+"jg" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/rf,/obj/structure/bed/chair/mgunner/mg34,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "jh" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/plating/steel,/area/caribbean/german/inside)
 "ji" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/steel,/area/caribbean/german/inside)
 "jj" = (/turf/floor/plating/steel,/area/caribbean/german/inside)
@@ -487,12 +486,14 @@
 "jt" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/plating/tiled/darker,/area/caribbean/german/inside)
 "ju" = (/obj/structure/barricade/debris,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barricade/vertical,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jv" = (/obj/structure/barricade,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
+"jw" = (/obj/structure/vehicleparts/frame/panzervi/front,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/obj/item/ammo_magazine/mg34belt,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "jx" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/tiled/darker,/area/caribbean/german/inside)
 "jy" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jz" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jA" = (/obj/structure/barricade/steel,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barricade/vertical,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jB" = (/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jC" = (/obj/structure/barbwire,/obj/item/mine/at/armed,/obj/structure/barbwire{dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land)
+"jD" = (/obj/structure/vehicleparts/frame/t34/front,/obj/item/ammo_magazine/dp/dt,/obj/item/ammo_magazine/dp/dt,/obj/item/ammo_magazine/dp/dt,/obj/item/ammo_magazine/dp/dt,/obj/item/ammo_magazine/dp/dt,/obj/item/ammo_magazine/dp/dt,/turf/floor/plating/road,/area/caribbean/russian/land)
 "jE" = (/obj/structure/barricade/steel,/obj/structure/barricade/horizontal,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jF" = (/obj/item/mine/ap/armed,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "jG" = (/obj/structure/barricade/debris,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land)
@@ -973,7 +974,6 @@
 "tf" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tg" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/road,/area/caribbean/russian/land)
 "th" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/turf/floor/plating/road,/area/caribbean/russian/land)
-"tj" = (/obj/structure/vehicleparts/frame/t34/front,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tk" = (/obj/structure/vehicleparts/frame/t34/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/movement/tracks/t34/left_front,/obj/structure/vehicleparts/axis/heavy/t34/t3485,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tm" = (/turf/floor/wood_broken,/area/caribbean/houses)
 "to" = (/obj/structure/table/rack/shelf,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/diesel,/turf/floor/plating/road,/area/caribbean/russian/land)
@@ -989,8 +989,6 @@
 "ty" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tz" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tA" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/road,/area/caribbean/russian/land)
-"tC" = (/obj/structure/vehicleparts/frame/kv1/front,/turf/floor/plating/road,/area/caribbean/russian/land)
-"tD" = (/obj/structure/vehicleparts/frame/kv1/lf,/obj/structure/vehicleparts/movement/tracks,/obj/structure/bed/chair/drivers/tank,/obj/structure/vehicleparts/axis/heavy/kv1a,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tE" = (/obj/structure/table/rack/shelf,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tF" = (/obj/structure/window/barrier/sandbag,/turf/floor/plating/road,/area/caribbean/russian/land)
 "tG" = (/obj/structure/pot,/turf/floor/plating/road,/area/caribbean/russian/land)
@@ -1122,7 +1120,6 @@
 "we" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/vehicleparts/frame/panzervi/lb,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "wf" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land)
 "wi" = (/obj/structure/vehicleparts/frame/panzervi/left,/turf/floor/plating/road,/area/caribbean/no_mans_land)
-"wn" = (/obj/structure/vehicleparts/frame/panzervi/front,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "wo" = (/obj/structure/vehicleparts/movement/tracks,/obj/structure/vehicleparts/frame/panzervi/lf,/obj/structure/vehicleparts/axis/heavy/panzervi,/obj/structure/bed/chair/drivers/tank,/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "wp" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/item/mine/boobytrap,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/no_mans_land)
 "wq" = (/obj/effect/landmark{name = "JoinLateRU"; icon_state = "x1"},/turf/floor/plating/road,/area/caribbean/russian/land)
@@ -1874,9 +1871,9 @@ ARaeerabadabacacacacacacacacacoLoOababaeaeARaeARaeARaeARaeaeaeaeaeaeaeaeaeaeaeae
 ARaeaeaboRoRacwcwdweacacacacacoToWababaeaeARaeaeARczARaeaeaeaeczaeaeaeaeaeczaeaeaeaeaeczaeaeekaeaeczARaeaeaeaeczaeARARekARARARARARARaeaeaeaeaeaeaeaeaeaeabababacacacacacacacacacacacababababaebjoIoYogbjoCbjoIdGogbjoCbjogdGogdGogdGARaeARaeARae
 ARaeaeabpipiacfkgHwiacacacacacababababaeaeARczARaeARaeARaeaeekaeaeaeaeaeaeaeaeaeaeaeaeaeaeekaeaeaeARaeaeekekekaeaeARARARARczARARARaeaeaeaeejaeaeaeaeaeaeabababacacacacacacacacacacacababababaeaeASARczARaeARaeaeaeaeaeARaeaeaeaeaeaeekARaeARaeAR
 ARekaeabpvpvacgNgXhVacacacacacababababaeaeARaeaeARaeARaeARekARaeARaeARaeARaeARaeARaeARaeBGaeARaeARaeARaeARaeARaeARaeARARARARARARaeaeaeaeaeaeaeaeaeaeaeaeababpzacwcwdweacacacacacpLacababababaeaeaeaeaeaeaeaeaeaeaeaeaeaeARaeaeaeaeaeARczARaepOae
-ARekaeababpzacicwnwoacacacacacababababaeaeARaeARaeAVekARaeARaeARaeARaeARaeARaeARaeARaeARaeAVaeARaeARaeARaeARaeARaeARaeARaeARaeARepaeaeaeaeaeaeaeaeejaeaeaboRoRacfkgHwiacacacacoDoEoFababababaeaeaeaeaeaeaeARaeaeaeaeaeARaeaeaeaeaeaeaeARaeARaeAR
+ARekaeababpzacjgjwwoacacacacacababababaeaeARaeARaeAVekARaeARaeARaeARaeARaeARaeARaeARaeARaeAVaeARaeARaeARaeARaeARaeARaeARaeARaeARepaeaeaeaeaeaeaeaeejaeaeaboRoRacfkgHwiacacacacoDoEoFababababaeaeaeaeaeaeaeARaeaeaeaeaeARaeaeaeaeaeaeaeARaeARaeAR
 ASekaeabababacafacafacafacafacababababaeaeASczaeARaeARaeczaeARaeARaeczaeARaeARaeczaeARaeARaeczaeARaeARaeczaeARaeARaeARczARaeARASaeaeaeaeaeaeejaeaeaeaeaeabpipiacgNgXhVacacacacacpPoOababababaeaeaeaeaeaeaeaeaeaeaeaeaeaeARaeaeaeaeaeARARARaeARae
-ARekaeabababacafacafacafacafacababababaeaeARaeaeaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeaeARaeaeaeaeaeaeaeaeaeaeaeaeaeabpvpvacicwnwoacacacacacoToWababababaeaeaeaeaeaeaeARaeaeaeaeaeARaeaeaeaeaeaeaeARaeARaeAR
+ARekaeabababacafacafacafacafacababababaeaeARaeaeaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeARaeaeARaeaeaeaeaeaeaeaeaeaeaeaeaeabpvpvacjgjwwoacacacacacoToWababababaeaeaeaeaeaeaeARaeaeaeaeaeARaeaeaeaeaeaeaeARaeARaeAR
 ARaeaeabababacacacacacacacacacababababaeaeARaeaeARczARekARaeARczARaeARaeARczARaeARaeARczARaeARaeARczARaeARaeAVczARaeARaeekARaeaeaeaeaeaeaeaeaeaeaeaeaeaeabababacacacacacacacacacacacababababaeaeaeaeaeaeaeekARaeARabjFabababjFabababjFabjFabjFab
 ARaeaeabababacacacacacacacIhIiababababaeaeARczaeaeARaeAVaeaeaeaeaeaeaeaeaeaeaeaeaeekekaeaeaeaeaeaeARekAVaeARaeARaeARczaeaeARaeaeejaeaeaeaeaeaeaeaeaeaeaeabababacacacacacacacacacacacababababaeaeASARpQpRaeARaeARaejFabjFabababjFababetjFabjFabjF
 ARekaeabpioRacacacacacacoDIjIkababababaeaeARaeaeARaeARaeARaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeARaeARaeARaeARaeARaeaeaeARaeaeaeaeaeaeaeaeaeabababababababababacacacacacacacacacacacababababaepTpVpTpVpWpTpTpTpTARababaeARaeARaeARaeARaeARaeARae
@@ -2035,17 +2032,17 @@ sbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsfsfsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbwqsbsbsbsbsbsbsbwqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsQefsSsbsbsbsbsbsbsbsbwAsbsbsbsbsbufGOGPIKILIMufsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbwqsbsbsbsbsbsbwqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbwqsbsbsbsbsbuesbwqsbsfsfsgsbsbsbsbsbsbsbsbsbsbsbsbsbtabytcsbsbsbsbsbsbsbsbsbsbsbsbsbsbwMuOuvuxuQuRwMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbuesbsbsbsbsbsbsbsbsbsbsbsbsbsbsTsbsbsbsbsb
 sbsbsbtesbsbsbsbsbsbsbueuetfuesbsbsbsbsbsbsTsbsbsbsbsbsbsbsbsbsbsbelfOeGsbsbsbsEsbsnsbsbsbsbsbsbsbsbscwMufwMufwMscsbsbsbsbsbsbsbsbsbsbsbsbsbsnsbsbsbsbsbsbsbIqsgsbsbsbwwHBwxsbsbsbtesbsbsbsbsbsbsbueuetfuesbsbsbsbsnsbsbsbsbsbsbsbsbsbsbsbsbsbsb
-sbsbsbtptqtrtstttusbuetvtwuguesbsbsfsfsbsbsbsbsbsbsbsbsbsbsbsbsbsbgktCtDsbsbsbsbsbsbsbsbsbsbsbsbsbsgtXGRGRGRGRGRtXsgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbwwwwtosbsbsbtptqtrtstttusbuetvtwuguesbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
+sbsbsbtptqtrtstttusbuetvtwuguesbsbsfsfsbsbsbsbsbsbsbsbsbsbsbsbsbsbicjDtksbsbsbsbsbsbsbsbsbsbsbsbsbsgtXGRGRGRGRGRtXsgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbwwwwtosbsbsbtptqtrtstttusbuetvtwuguesbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbsbsbsbsbueueuesbsbsbsbHWsgsbsbsbsbsbsbsbwzGXGYsbsbsbsbsbsbsbsbsbsHsIsJsbsbtAsbsbsbsbtYGSGSGSGSGSGSGSudsbsbsbsbsbsbsbsbsbsbsHfnsJsbsbsbsbsbsbsbsbsbsbsbsbwwHCtEsbsbsbsbsbsbsbsbsbsbsbueueuesbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbustGtHtKtJsbsbsbsbsbsbsbsbsfsfsbsbsbsbsbsbsbsbbcbdbgsbsbsbwywAwAsbsbsbsNdHsPsbsbsbsbsbsbsbvgGSGTuDGSGUGVGSvjHZsbsbsbsbsbsbsbsbsbsNdHsPsbsbsbsbsbsbsbIqsgsbsbsbsbsbsbsbsbsbsbustGtHtKtJsbsbsbsbsbsbsbsbsbsbsbsbsbtAsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbtLtLtIsbsbsbsbsbwwHBtdsbsbsbsbsbsbsbsbsbsbJibtdcsbsbsbwAtTwAsbsbsbgbivizsbsbsbsbsbsbsbtYGSGTuDGWuDuDGWsbsbsbsbsbsbsbsbsbsbsbgbivizsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbtLtLtIsbsbsbsbsbsbsbsbsKsLsbsbsTsbsbsbsbsbsbsbsbsbsbsbsb
-sbsbsbsbsbsbsbsbsbsbsbsbsbwrwwwwtosfsfsgIgsbsbsbsbsbsbbDaHYMsbsbsbwAtTwAsbsbsbgmtjtksbsbsbsbsbsbsbvgGSGTuDGSuDuDGSvjsbsbsbsbsbsbsbsbsbsbgmtjtksbsbsbtVtAsbsbsbIgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsWsbsbsbsbsbsUsVsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
+sbsbsbsbsbsbsbsbsbsbsbsbsbwrwwwwtosfsfsgIgsbsbsbsbsbsbbDaHYMsbsbsbwAtTwAsbsbsbicjDtksbsbsbsbsbsbsbvgGSGTuDGSuDuDGSvjsbsbsbsbsbsbsbsbsbsbicjDtksbsbsbtVtAsbsbsbIgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsWsbsbsbsbsbsUsVsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbsbsbsbsbsbsbsbwwHCtEsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsEsbsbsbsbtYuWuWuWuWuWuWuWudsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsgHXsbsbsbsbsbsbsbwrsbwrsbwrsbwrsbsbsbsbsbsbsbsbtgthsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsKsLsbsbsMsbsMsbsbsbsbsbsbsbsbsbsfsfIbIqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbujujujujujujujsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsUsVsbsbsMsbsMsbsbsbsbsWsbsbsbsbsbHXsgIqsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguFuGuKuKuKuKuPuKuKuGuGuFsgsbsTwzGXGYsbsbsbsbsbsbsbsHfnsJsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbtgthsbsbsMsbsMsbsbsbsbsbsbsTsbsbsfsfsbsbsbsbsbsbsbsbJsJtJusbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbuXuYuZtgvavbvctxvdvevfuXsbsbsbbcbdbgsbsbwywAwAsbsbsNdHsPsbsbsbIuIvIvIvIvIvIvIvIvIvIwIYsbsbsbsbtztysbsbsMsbsMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbsbsbtytzsbsbsbsbsbsbsbsbsbsbsbsbsbtUsbsbJsJtJusbsbsbHaHbHcsbsbsbHaHbHcsbsbsbsbsbsbsbsbvkvkvkvkvkvkvkvksbsbsbsbsbJicgdcsbsbwAtTwAsbsbgbivizsbsbsbIxsbsbsbsbsbsbsbsbsbIysbsbsbsbsbtPtOsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
-sbsbsbtMsbuUsbsbsbtOtPsbsbsbsbsbsbsfsfsgsusbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguXsbsMsbsMsbsMsbsMsbsMuXsgsbsbdlaTJnsbsbwAtTwAsbsbgmtjtksbsbsbIxsbIzIzIzsbsbIzsbsbIysbsbsbsbsbtSsbsbsbsbuUsbsbtMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
+sbsbsbtMsbuUsbsbsbtOtPsbsbsbsbsbsbsfsfsgsusbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguXsbsMsbsMsbsMsbsMsbsMuXsgsbsbdlaTJnsbsbwAtTwAsbsbicjDtksbsbsbIxsbIzIzIzsbsbIzsbsbIysbsbsbsbsbtSsbsbsbsbuUsbsbtMsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbtAsbuVsbsbsbsbsbsbtSsbsbsbwrsbsbsbsbsbIHsbsbsbsbsbIZJasbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbuXvmsMsbsMvnsMsbsMvnsMuXsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIAsbsbsbsbsbIBsbsbsbICsbsbsbsbsbtosbsbsbtAsbsbsbuVsbsbsbsbsnsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbtUsbsbtosbsbsbsbsbsbsfsfsbsbsbsbsbsbsbGNGNsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsguFuGuKuKuKuKuKuKuKuKuGuFsgsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbIxIDsbsbsbsbsbsbsbsbICsbsbsbsbsbwBsbsbsbsbsbsbsbsbsbtUsbsbsbsbsbsbsbsbsbsbsbsbsbsb
 sbsbsbsbsbsbsbsbsbsbtWsbsbsbsbsbsbsbsbsgsbsbsbsbsbsbJbJbJcsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbHaHbHcsbsbHaHbHcsbsbHaHbHcsbsbsbIxsbIEIEsbIBsbsbsbsbIysbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsbsb

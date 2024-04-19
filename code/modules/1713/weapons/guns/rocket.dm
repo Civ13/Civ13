@@ -595,7 +595,11 @@
 
 /obj/item/projectile/shell/missile/heat/pg7v
 	heavy_armor_penetration = 300
-	caliber = 105
+	caliber = 85
+
+/obj/item/projectile/shell/missile/heat/pg15v
+	heavy_armor_penetration = 400
+	caliber = 73
 
 /obj/item/projectile/shell/missile/og7v
 	heavy_armor_penetration = 10
@@ -632,7 +636,7 @@
 
 /obj/item/projectile/shell/missile/atgm/process()
 	if(permutated.len > 2 && firer && firer.client)
-		var/client/C = firer
+		var/client/C = firer.client
 		var/mouse_x = C.mouse_x
 		var/mouse_y = C.mouse_y
 		var/mouse_turf = locate(mouse_x, mouse_y, z)

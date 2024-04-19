@@ -58,11 +58,11 @@
 	var/datum/language/default_language
 
 	var/body_part_size = list( // Size of body parts as a percentage of body size
-		"head" = 15,
+		"head" = 10,
 		"eyes" = 1,
 		"mouth" = 1,
 		"chest" = 25,
-		"groin" = 15,
+		"groin" = 20,
 		"l_arm" = 15,
 		"l_hand" = 5,
 		"r_arm" = 15,
