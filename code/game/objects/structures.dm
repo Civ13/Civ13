@@ -11,6 +11,7 @@
 
 	var/not_movable = TRUE
 	var/not_disassemblable = TRUE
+
 /obj/structure/Destroy()
 	if (parts)
 		new parts(loc)
@@ -18,42 +19,42 @@
 
 /obj/structure/attack_hand(mob/M, icon_x, icon_y)
 	if (climbers.len && !(M in climbers))
-		M.visible_message("<span class='warning'>[M] shakes \the [src].</span>", \
-					"<span class='notice'>You shake \the [src].</span>")
+		M.visible_message(SPAN_WARNING("[M] shakes \the [src]."), \
+					SPAN_NOTICE("You shake \the [src]."))
 		structure_shaken()
 
 	return ..()
 
 /obj/structure/attackby(var/obj/item/O as obj, mob/user as mob, icon_x, icon_y)
-    if (istype(O, /obj/item/weapon/wrench) && !not_movable)
-        if (powersource)
-            to_chat(user, SPAN_NOTICE("Remove the cables first."))
-            return
-        if (istype(src, /obj/structure/engine))
-            var/obj/structure/engine/EN = src
-            if (!isemptylist(EN.connections))
-                to_chat(user, SPAN_NOTICE("Remove the cables first."))
-                return
-        if (istype(src, /obj/structure/table)) // Convoluted way of not allowing to pull flipped tables onto other flipped tables to bypass barrier stacking checks during same turf flipping.
-            for (var/obj/structure/table/T in get_turf(src))
-                if (T != src && T.anchored)
-                    to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
-                    return
-            if (do_after(user, 15, src))
-                playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-                to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-                src.anchored = !src.anchored
-                return
-    else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
-        playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-        to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
-        if (do_after(user, 25, src))
-            to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
-            new /obj/item/stack/material/wood(get_turf(src))
-            for (var/obj/item/weapon/book/b in contents)
-                b.loc = (get_turf(src))
-            qdel(src)
-            return
+	if (istype(O, /obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+		    to_chat(user, SPAN_NOTICE("Remove the cables first."))
+		    return
+		if (istype(src, /obj/structure/engine))
+		    var/obj/structure/engine/EN = src
+		    if (!isemptylist(EN.connections))
+			to_chat(user, SPAN_NOTICE("Remove the cables first."))
+			return
+		if (istype(src, /obj/structure/table)) // Convoluted way of not allowing to pull flipped tables onto other flipped tables to bypass barrier stacking checks during same turf flipping.
+		    for (var/obj/structure/table/T in get_turf(src))
+			if (T != src && T.anchored)
+			    to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
+			    return
+		    if (do_after(user, 15, src))
+			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+			to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+			src.anchored = !src.anchored
+			return
+	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
+		if (do_after(user, 25, src))
+		    to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
+		    new /obj/item/stack/material/wood(get_turf(src))
+		    for (var/obj/item/weapon/book/b in contents)
+			b.loc = (get_turf(src))
+		    qdel(src)
+		    return
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -62,7 +63,7 @@
 		if (prob(66) && density)
 			return TRUE
 		else
-			visible_message("<span class = 'warning'>The [mover.name] riochetes off \the [src]!</span>")
+			visible_message(SPAN_WARNING("The [mover.name] ricochetes off \the [src]!"))
 			return FALSE
 	else
 		return ..()
@@ -285,21 +286,21 @@
 /obj/structure/proc/structure_shaken()
 	for (var/mob/living/M in climbers)
 		M.Weaken(1)
-		M << "<span class='danger'>You topple as you are shaken off \the [src]!</span>"
+		to_chat(M, SPAN_DANGER("You topple as you are shaken off \the [src]!"))
 		climbers.Cut(1,2)
 
 	for (var/mob/living/M in get_turf(src))
 		if (M.lying) return //No spamming this on people.
 
 		M.Weaken(3)
-		M << "<span class='danger'>You topple as \the [src] moves under you!</span>"
+		to_chat(M, SPAN_DANGER("You topple as \the [src] moves under you!"))
 
 		if (prob(25))
 
 			var/damage = rand(15,30)
 			var/mob/living/human/H = M
 			if (!istype(H))
-				H << "<span class='danger'>You land heavily!</span>"
+				to_chat(H, SPAN_DANGER("You land heavily!")
 				M.adjustBruteLoss(damage)
 				return
 
@@ -318,10 +319,10 @@
 					affecting = H.get_organ("head")
 
 			if (affecting)
-				M << "<span class='danger'>You land heavily on your [affecting.name]!</span>"
+				to_chat(M, SPAN_DANGER("You land heavily on your [affecting.name]!"))
 				affecting.take_damage(damage, FALSE)
 			else
-				H << "<span class='danger'>You land heavily!</span>"
+				to_chat(H, SPAN_DANGER("You land heavily!"))
 				H.adjustBruteLoss(damage)
 
 			H.UpdateDamageIcon()
@@ -343,7 +344,7 @@
 /obj/structure/attack_generic(var/mob/user, var/damage, var/attack_verb, var/wallbreaker)
 	if (!breakable || !damage || !wallbreaker)
 		return FALSE
-	visible_message("<span class='danger'>[user] [attack_verb] the [src] apart!</span>")
+	visible_message(SPAN_DANGER("[user] [attack_verb] the [src] apart!"))
 	attack_animation(user)
 	spawn(1) qdel(src)
 	return TRUE
