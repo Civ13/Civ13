@@ -248,7 +248,7 @@
 	if (map.check_caribbean_block(user, get_turf(src)))
 		return
 
-	usr.visible_message("<span class='warning'>[user] starts climbing onto \the [src]!</span>")
+	user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"), SPAN_WARNING("You start climbing onto \the [src]!"))
 	climbers |= user
 
 	if (!do_after(user,(issmall(user) ? 20 : 34), src))
@@ -260,7 +260,7 @@
 		return
 
 	if (!neighbor_turf_passable())
-		user << "<span class='danger'>You can't climb there, the way is blocked.</span>"
+		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
 		climbers -= user
 		return
 
@@ -269,6 +269,6 @@
 	else
 		usr.forceMove(get_turf(src))
 
-	usr.visible_message("<span class='warning'>[user] climbed over \the [src]!</span>")
+	user.visible_message(SPAN_WARNING("[user] climbs over \the [src]!</span>"), SPAN_WARNING("You climb over \the [src]!"))
 	if (!anchored)	take_damage(maxhealth) // Fatboy
 	climbers -= user

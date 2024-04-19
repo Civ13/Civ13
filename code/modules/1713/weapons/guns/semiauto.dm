@@ -306,7 +306,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/g43
 	name = "Gewehr 43"
-	desc = "A German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round detachable magazine."
+	desc = "A German semi-automatic rifle, the Gewehr 43, utilizes 7.92x57mm Mauser ammunition and features a 10-round detachable magazine."
 	icon_state = "g43"
 	item_state = "g43"
 	base_icon = "g43"
@@ -376,7 +376,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/m1garand
 	name = "M1 Garand"
-	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine."
+	desc = "An American semi-automatic rifle, the M1 Garand, utilizes .30-06 ammunition and features an 8-round internal magazine."
 	icon_state = "m1garand"
 	item_state = "m1garand"
 	base_icon = "m1garand"
@@ -460,7 +460,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/vintorez
 	name = "VSS Vintorez"
-	desc = "A Marksman rifle featuring an integral supressor originating from the Soviet Union. Feeding from detachable 10-round magazines. Chambered in 9x39mm."
+	desc = "A marksman's rifle featuring an integral supressor originating from the Soviet Union. Feeding from detachable 10-round magazines. Chambered in 9x39mm."
 	icon_state = "vintorez"
 	item_state = "vintorez"
 	base_icon = "vintorez"

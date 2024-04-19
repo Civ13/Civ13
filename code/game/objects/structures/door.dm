@@ -49,7 +49,7 @@
 /obj/structure/simple_door/bullet_act(var/obj/item/projectile/P)
 	var/damage = max(P.damage/2, 2)
 	health -= damage
-	visible_message("<span class = 'danger'>[src] is hit by the [P.name]!</span>")
+	visible_message("<span class = 'danger'>\The [src] is hit by \the [P.name]!</span>")
 	if (istype(src, /obj/structure/simple_door/key_door))
 		src:damage_display()
 	if (health <= 0)

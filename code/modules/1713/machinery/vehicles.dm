@@ -829,7 +829,7 @@
 	weight = 60
 	step = 1
 	maxstep = 3
-	//targettype = /obj/structure/vehicle/boat/rhib // хуй знает че это потом надо будет исправить
+	//targettype = /obj/structure/vehicle/boat/rhib // who knows what this will have to be fixed later [translated]
 
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")

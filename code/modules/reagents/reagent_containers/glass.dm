@@ -1034,7 +1034,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder/bullet_act(var/obj/item/projectile/proj)
 	if (proj && !proj.nodamage)
 		if (prob(30))
-			visible_message("<span class = 'warning'>\The [src] is hit by \the [proj] and explodes!</span>")
+			visible_message("<span class = 'danger'>\The [src] is hit by \the [proj] and explodes!</span>")
 			explode()
 			return TRUE
 	return FALSE

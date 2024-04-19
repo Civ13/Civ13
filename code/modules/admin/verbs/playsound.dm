@@ -13,9 +13,8 @@ var/list/sounds_cache = list()
 	if (WWinput(src, "Are you ready?\nSong: [S]\nNow you can also play this sound using \"Play Server Sound\".", "Confirmation request", "Play", list("Play", "Cancel")) == "Cancel")
 		return
 
-	log_admin("[key_name(src)] played sound [S]")
-	message_admins("[key_name_admin(src)] played sound [S]", key_name_admin(src))
-	world << "<span class = 'notice'><b>[key]</b> played a global sound.</span>"
+	log_admin("[key_name(src)] played a global sound [S]")
+	message_admins("[key_name_admin(src)] played a global sound; [S]", key_name_admin(src))
 
 	for (var/mob/M in player_list)
 		if (!new_player_mob_list.Find(M) || !M.is_preference_enabled(/datum/client_preference/play_lobby_music))

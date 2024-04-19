@@ -533,7 +533,7 @@ var/list/vocal_emotes = list(
 				else
 					message = "moans!"
 					m_type = 2
-
+/*
 			if ("johnny")
 				var/M
 				if (param)
@@ -547,7 +547,7 @@ var/list/vocal_emotes = list(
 					else
 						message = "says, \"[M], please. He had a family.\" [name] takes a drag from a cigarette and blows his name out in smoke."
 						m_type = 2
-
+*/
 			if ("point")
 				if (!restrained())
 					var/mob/M = null

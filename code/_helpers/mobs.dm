@@ -1017,7 +1017,6 @@ Proc for attack log creation, because really why not
 
 	return newmobs
 
-
 //Orders mobs by type then by name
 /proc/sortmobs()
 	var/list/moblist = list()

@@ -309,7 +309,7 @@
 /mob/living/human/proc/process_vehicle_roofs()
 	if (!client)
 		return
-	var/view_dist = client.view + 4 // + запас чтобы при передвижении не было видно прогрузку
+	var/view_dist = client.view + 4 // + reserve so that when moving the load is not visible [translated]
 
 	var/view_x_offset = 0
 	var/view_y_offset = 0
