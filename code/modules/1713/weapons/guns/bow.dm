@@ -239,7 +239,7 @@
 			remove_arrow_overlay()
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		to_chat(SPAN_WARNING("[src] is empty."))
+		to_chat(user, SPAN_WARNING("[src] is empty."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/update_icon()
@@ -268,7 +268,7 @@
 
 /obj/item/weapon/gun/projectile/bow/attackby(obj/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/attachment/bayonet))
-		to_chat(user, SPAN_WARNING("That won't fit on there.")
+		to_chat(user, SPAN_WARNING("That won't fit on there."))
 		return FALSE
 	else
 		return ..()
