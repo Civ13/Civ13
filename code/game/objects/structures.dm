@@ -37,14 +37,14 @@
 				return
 		if (istype(src, /obj/structure/table)) // Convoluted way of not allowing to pull flipped tables onto other flipped tables to bypass barrier stacking checks during same turf flipping.
 			for (var/obj/structure/table/T in get_turf(src))
-			if (T != src && T.anchored)
-				to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
-				return
-			if (do_after(user, 15, src))
-				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-				to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-				src.anchored = !src.anchored
-				return
+				if (T != src && T.anchored)
+					to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
+					return
+				if (do_after(user, 15, src))
+					playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+					to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+					src.anchored = !src.anchored
+					return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
@@ -52,7 +52,7 @@
 			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
 			new /obj/item/stack/material/wood(get_turf(src))
 			for (var/obj/item/weapon/book/b in contents)
-			b.loc = (get_turf(src))
+				b.loc = (get_turf(src))
 			qdel(src)
 			return
 
@@ -127,12 +127,12 @@
 	
 	// Check for climbable objects in the target turf
 	for (var/obj/O in T.contents)
-	if (istype(O, /obj/structure))
-		var/obj/structure/S = O
-		if (!S) continue  // Skip if S is not valid
-		if (S.climbable) continue  // Skip if the object is climbable   
-		if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-			objects_blocked += O.name // Add the dense object's name to the list of objects that block the way.
+		if (istype(O, /obj/structure))
+			var/obj/structure/S = O
+			if (!S) continue  // Skip if S is not valid
+			if (S.climbable) continue  // Skip if the object is climbable   
+			if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
+				objects_blocked += O.name // Add the dense object's name to the list of objects that block the way.
 	
 	// Check for climbable objects in the start turf
 	if (second_turf)
