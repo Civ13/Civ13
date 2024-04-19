@@ -28,33 +28,33 @@
 /obj/structure/attackby(var/obj/item/O as obj, mob/user as mob, icon_x, icon_y)
 	if (istype(O, /obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
-		    to_chat(user, SPAN_NOTICE("Remove the cables first."))
-		    return
-		if (istype(src, /obj/structure/engine))
-		    var/obj/structure/engine/EN = src
-		    if (!isemptylist(EN.connections))
 			to_chat(user, SPAN_NOTICE("Remove the cables first."))
 			return
+		if (istype(src, /obj/structure/engine))
+			var/obj/structure/engine/EN = src
+			if (!isemptylist(EN.connections))
+				to_chat(user, SPAN_NOTICE("Remove the cables first."))
+				return
 		if (istype(src, /obj/structure/table)) // Convoluted way of not allowing to pull flipped tables onto other flipped tables to bypass barrier stacking checks during same turf flipping.
-		    for (var/obj/structure/table/T in get_turf(src))
+			for (var/obj/structure/table/T in get_turf(src))
 			if (T != src && T.anchored)
-			    to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
-			    return
-		    if (do_after(user, 15, src))
-			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-			to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-			src.anchored = !src.anchored
-			return
+				to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
+				return
+			if (do_after(user, 15, src))
+				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+				to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+				src.anchored = !src.anchored
+				return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_after(user, 25, src))
-		    to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
-		    new /obj/item/stack/material/wood(get_turf(src))
-		    for (var/obj/item/weapon/book/b in contents)
+			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
+			new /obj/item/stack/material/wood(get_turf(src))
+			for (var/obj/item/weapon/book/b in contents)
 			b.loc = (get_turf(src))
-		    qdel(src)
-		    return
+			qdel(src)
+			return
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -142,7 +142,7 @@
 				if (!S) continue  // Skip if S is not valid
 				if (S.climbable) continue  // Skip if the object is climbable
 				if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
-			   		objects_blocked_2 += O.name // Add the dense object's name to the list of objects that block the way.
+					objects_blocked_2 += O.name // Add the dense object's name to the list of objects that block the way.
 		if(!isemptylist(objects_blocked_2))
 			return objects_blocked_2
 	return objects_blocked
@@ -297,7 +297,7 @@
 			var/damage = rand(15,30)
 			var/mob/living/human/H = M
 			if (!istype(H))
-				to_chat(H, SPAN_DANGER("You land heavily!")
+				to_chat(H, SPAN_DANGER("You land heavily!"))
 				M.adjustBruteLoss(damage)
 				return
 
