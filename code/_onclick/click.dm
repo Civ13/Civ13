@@ -13,7 +13,7 @@
 		usr.DblClickOn(src, params)
 
 /*	Standard mob ClickOn()
-	Handles exceptions: Buildmode, middle click, modified clicks, mech actions
+	Handles exceptions: Buildmode (unused), middle click, modified clicks, mech actions
 	  After that, mostly just check your state, check whether you're holding an item,
 	  check whether you're adjacent to the target, then pass off the click to whoever
 	  is recieving it.
@@ -238,16 +238,13 @@
 	// A is a turf or is on a turf, or in something on a turf (pen in a box); but not something in something on a turf (pen in a box in a backpack)
 	sdepth = A.storage_depth_turf()
 	if (isturf(A) || isturf(A.loc) || (sdepth != -1 && sdepth <= 1))
-		if (A.Adjacent(src) || (W && W == get_active_hand() && (istype(W, /obj/item/weapon/barrier))) && A.rangedAdjacent(src)) // see adjacent.dm
+		if (A.Adjacent(src)) // see adjacent.dm
 			dir = get_dir(src, A)
-			if (W && istype(W, /obj/item/weapon/barrier) && A.rangedAdjacent(src) && (isturf(A) || istype(A, /obj/structure/window/barrier/incomplete)))
+			if (W && A.rangedAdjacent(src))
 				if (get_active_hand() != W)
 					return
-				if (!istype(A, /obj/structure/window/barrier/incomplete))
-					A = get_turf(A)
-				else
-					if (!A.Adjacent(src)) // if we're adding to a sandbag wall, let us stand anywhere in range(1)
-						return
+				if (!A.Adjacent(src)) // if we're not adjacent.
+					return	
 				var/needs_to_be_in_front = istype(A, /turf)
 				if (needs_to_be_in_front) // but if we're making a new sandbag wall, we have to click right in front of us.
 					if (A != get_step(src, dir))

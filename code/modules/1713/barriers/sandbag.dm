@@ -239,7 +239,6 @@ var/set_dir = null // Set the variable outside of any scopes
 	flammable = FALSE
 	flags = FALSE
 
-
 /obj/item/weapon/barrier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		if (W.reagents.has_reagent("water", 10))

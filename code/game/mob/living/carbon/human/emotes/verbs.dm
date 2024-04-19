@@ -159,7 +159,6 @@
 	set category = "Emote"
 	emote("yawn")
 
-
 /mob/living/human/verb/charge()
 	set category = "Emote"
 	emote("charge")
