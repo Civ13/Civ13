@@ -280,54 +280,51 @@
 //Shitting
 /mob/living/human/proc/handle_shit()
 	var/message = null
-	if (src.bowels >= 30)
-		//Poo in the loo.
-		var/obj/structure/toilet/T = locate() in src.loc
-		var/mob/living/M = locate() in src.loc
-		if ((T && T.open) || (M.crap_inside))
-			if (M.crap_inside)
-				message = "<B>[src]</B> defecates into the hole."
-			else
-				message = "<B>[src]</B> defecates into \the [T]."
-			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
-			if(reagents)
-				reagents.trans_to(V, rand(1,5))
-			V.forceMove(T)
-		else if(w_uniform)
-			message = "<B>[src]</B> shits \his pants."
-			reagents.add_reagent("poo", 10)
-			adjust_hygiene(-25)
-			mood -= 25
-			w_uniform.shit_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="shit")
-			w_uniform.overlays += w_uniform.shit_overlay
-			w_uniform.update_icon()
-			update_icons()
-		//Poo on the face.
-		else if(M != src && M.lying) //Can only shit on them if they're lying down.
-			message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
-			if (M && M.reagents)
-				M.reagents.add_reagent("poo", 10)
-		//Poo on the floor.
-		else
-			message = "<B>[src]</B> [pick("shits", "craps", "poops")]."
-			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
-			if(reagents)
-				reagents.trans_to(V, rand(1,5))
-		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
-		bowels -= rand(120,150)
-	else
-		if(stat == DEAD)
-			return
-		to_chat(src, "You don't have to shit.")
+	if (src.bowels < 30)
+		if(stat != DEAD)
+			to_chat(src, "You don't have to shit.")
 		return
+	//Poo in the loo.
+	var/obj/structure/toilet/T = locate() in src.loc
+	var/mob/living/M = locate() in src.loc
+	if ((T && T.open) || (M.crap_inside))
+		if (M.crap_inside)
+			message = "<B>[src]</B> defecates into the hole."
+		else
+			message = "<B>[src]</B> defecates into \the [T]."
+		var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
+		if(reagents)
+			reagents.trans_to(V, rand(1,5))
+		V.forceMove(T)
+	else if(w_uniform)
+		message = "<B>[src]</B> shits \his pants."
+		reagents.add_reagent("poo", 10)
+		adjust_hygiene(-25)
+		mood -= 25
+		w_uniform.shit_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="shit")
+		w_uniform.overlays += w_uniform.shit_overlay
+		w_uniform.update_icon()
+		update_icons()
+	//Poo on the face.
+	else if(M != src && M.lying) //Can only shit on them if they're lying down.
+		message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
+		if (M && M.reagents)
+			M.reagents.add_reagent("poo", 10)
+	//Poo on the floor.
+	else
+		message = "<B>[src]</B> [pick("shits", "craps", "poops")]."
+		var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
+		if(reagents)
+			reagents.trans_to(V, rand(1,5))
+	playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
+	bowels -= rand(120,150)
 	visible_message("[message]")
 
 //Peeing
 /mob/living/human/proc/handle_piss()
 	var/message = null
 	if (bladder < 30)
-		if(stat == DEAD)
-			return
+		if(stat != DEAD)
 		to_chat(src, "You don't have to piss.")
 		return
 	var/mob/living/M = locate() in src.loc
