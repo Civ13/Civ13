@@ -450,30 +450,29 @@
 	qdel(I)
 
 /obj/structure/table/attackby(obj/item/I as obj, mob/user as mob, params)
-    if (istype(I, /obj/item/weapon/grab))
-        tablepush(I, user)
-        return
-
-    if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/wrench))
-        if (user.a_intent == I_HARM)
-            ..()
-            return TRUE // Resolves the attack so we don't get invisible wrenches/hammers.
-        else
-            user.drop_item(loc)
-            playsound(loc, I.dropsound, 100, TRUE)
-            return
-
-    user.drop_item(loc)
-    playsound(loc, I.dropsound, 100, TRUE)
-
-    // Center the icon where the user clicked if we can.
-    var/list/click_params = params2list(params)
-    if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
-        return 
-    // Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
-    I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
-    I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
-
+	if (istype(I, /obj/item/weapon/grab))
+		tablepush(I, user)
+		return
+	
+	if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/wrench))
+		if (user.a_intent == I_HARM)
+			..()
+			return TRUE // Resolves the attack so we don't get invisible wrenches/hammers.
+		else
+			user.drop_item(loc)
+			playsound(loc, I.dropsound, 100, TRUE)
+			return
+	
+	user.drop_item(loc)
+	playsound(loc, I.dropsound, 100, TRUE)
+	
+	// Center the icon where the user clicked if we can.
+	var/list/click_params = params2list(params)
+	if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
+		return 
+	// Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
+	I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
+	I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
 
 /*
  * TABLE DESTRUCTION/DECONSTRUCTION
