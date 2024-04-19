@@ -196,6 +196,7 @@
 	..()
 	loaded = list()
 	chambered = null
+	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
 	if (world.time < user.next_load)
@@ -238,19 +239,17 @@
 			remove_arrow_overlay()
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
-		user << "<span class='warning'>[src] is empty.</span>"
+		to_chat(SPAN_WARNING("[src] is empty."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/update_icon()
-
 	if (chambered)
 		icon_state = "[icotype]1"
 		item_state = "[icotype]1"
-		return
 	else
 		icon_state = "[icotype]0"
 		item_state = "[icotype]0"
-		return
+	return
 
 /obj/item/weapon/gun/projectile/bow/handle_click_empty(mob/user)
 	if (user)
@@ -269,7 +268,7 @@
 
 /obj/item/weapon/gun/projectile/bow/attackby(obj/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/attachment/bayonet))
-		user << "<span class = 'danger'>That won't fit on there.</span>"
+		to_chat(user, SPAN_WARNING("That won't fit on there.")
 		return FALSE
 	else
 		return ..()
