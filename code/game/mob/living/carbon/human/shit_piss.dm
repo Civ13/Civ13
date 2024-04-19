@@ -280,9 +280,8 @@
 //Shitting
 /mob/living/human/proc/handle_shit()
 	var/message = null
-	if (src.bowels < 30)
-		if(stat != DEAD)
-			to_chat(src, "You don't have to shit.")
+	if (src.bowels < 30 && stat != DEAD)
+		to_chat(src, "You don't have to shit.")
 		return
 	//Poo in the loo.
 	var/obj/structure/toilet/T = locate() in src.loc
@@ -323,8 +322,7 @@
 //Peeing
 /mob/living/human/proc/handle_piss()
 	var/message = null
-	if (bladder < 30)
-		if(stat != DEAD)
+	if (bladder < 30 && stat != DEAD)
 		to_chat(src, "You don't have to piss.")
 		return
 	var/mob/living/M = locate() in src.loc
