@@ -147,7 +147,6 @@
 			return objects_blocked_2
 	return objects_blocked
 
-
 /obj/structure/proc/neighbor_turf_passable()
 	var/turf/T = get_step(get_turf(src), src.dir)
 	if (!T || !istype(T))
@@ -155,16 +154,16 @@
 	if (T.density == TRUE)
 		return FALSE
 	for (var/obj/O in T.contents)  // Iterate over all objects in the turf
-		var/obj/structure/S = O
-		if (S.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
-		if (istype(O, /obj/structure/closet/crate))
-			continue // Allow us to climb onto crates
-		if (istype(O, /obj/structure/table))
-			continue // Allow us to climb onto other tables (UNLESS they face our way (handled in obj/str/table/do_climb()))
-		if (O.density == TRUE) 
-			return FALSE
+		if (istype(O, /obj/structure)) // Type-cast to the superclass which has `climbable` defined
+			var/obj/structure/S = O
+			if(S.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
+			if (istype(O, /obj/structure/closet/crate))
+				continue // Allow us to climb onto crates
+			if (istype(O, /obj/structure/table))
+				continue // Allow us to climb onto other tables (UNLESS they face our way (handled in obj/str/table/do_climb()))
+			if (O.density == TRUE) 
+				return FALSE
 	return TRUE
-
 
 /obj/structure/proc/do_climb(var/mob/living/user)
 	if (!can_climb(user))
