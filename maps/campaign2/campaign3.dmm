@@ -243,7 +243,7 @@
 "MY" = (/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/closet/crate/sandbags,/turf/floor/dirt/dust,/area/caribbean/forest)
 "Ns" = (/obj/structure/bed/chair/wood,/obj/structure/curtain/open/red{pixel_x = -32},/turf/floor/wood,/area/caribbean/british/land/inside{name = "Dewsbury"})
 "Nw" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/plating/cobblestone/vertical,/area/caribbean/british/land/outside{name = "Dewsbury"})
-"NP" = (/obj/effects/premadevehicles/apc/adrian,/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
+"NP" = (/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Dewsbury"})
 "NV" = (/obj/structure/window/barrier/sandbag,/turf/floor/dirt/dust,/area/caribbean/forest)
 "Oc" = (/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/forest)
 "Oh" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/forest)

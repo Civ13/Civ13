@@ -203,8 +203,6 @@
 		var/mob/living/human/H = user
 		if(istype(H) && !H.in_throw_mode)
 			H.throw_mode_on()
-		sleep(rand(80,120))
-		activate_signal(user)
 
 /obj/item/flashlight/flare/throw_impact(atom/hit_atom)
 	if (on)
@@ -212,9 +210,6 @@
 			var/mob/living/human/H = hit_atom
 			H.IgniteMob()
 	..()
-
-/obj/item/flashlight/flare/proc/activate_signal(mob/living/human/user as mob)
-	return
 
 /obj/item/flashlight/flare/on/New()
 	..()
@@ -239,53 +234,94 @@
 	desc = "A signal flare for signalling spot to aircraft above. There are instructions on the side reading 'pull cord, make light'. Lasts for about 2 minutes."
 	icon_state = "flareW"
 	flame_base_tint = "#07d800"
+	var/mob/living/human/caller = null
+	
+	var/attack_direction = "NORTH"
+	var/list/attack_direction_list = list("NORTH", "EAST", "SOUTH", "WEST")
 
-/obj/item/flashlight/flare/signal/activate_signal(mob/living/human/user as mob)
-	var/turf/target = get_turf(src)
-	var/strikenum = 4
-	var/xoffset
-	var/yoffset
-	switch(user.faction_text)
+	var/payload = null
+	var/list/payload_list = list("Rockets")
+
+	var/call_in_time = 10 SECONDS
+
+/obj/item/flashlight/flare/signal/attack_self(mob/living/user as mob)
+	if(!ishuman(user))
+		return
+	var/mob/living/human/H = user
+	if(!fuel)
+		to_chat(user, SPAN_NOTICE("It's out of fuel."))
+		return FALSE
+	if(on)
+		if(!do_after(user, 2 SECONDS, src))
+			return
+		if(!on)
+			return
+		user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
+		user.adjustBurnLoss(7)
+		burn_out()
+		//TODO: add snuff out sound
+		return
+
+	// All good, turn it on.
+	if(src)
+		caller = H
+		user.visible_message(SPAN_NOTICE("[user] activates the flare."), SPAN_NOTICE("You pull the cord on the flare, activating it!"))
+		playsound(src, turn_on_sound, 75, TRUE)
+		turn_on()
+		if(istype(H) && !H.in_throw_mode)
+			H.throw_mode_on()
+		var/call_in_time_offset = rand(-30,30)
+		sleep((call_in_time + call_in_time_offset))
+		activate_signal()
+
+/obj/item/flashlight/flare/signal/proc/get_faction_aircraft(var/mob/living/human/H)
+	var/aircraft_name
+	switch (H.faction_text) // Check what faction has called in the airstrike and select an aircraft.
 		if (DUTCH)
-			new /obj/effect/plane_flyby/f16_no_message(target)
-			to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a F-16 cuts through and fires off a burst of rockets!</font>"))
+			aircraft_name = "F-16"
+		if (GERMAN)
+			if (map.ordinal_age == 6)
+				aircraft_name = "Ju 87 Stuka"
+			else
+				return
+		if (AMERICAN)
+			aircraft_name = "F-16"
 		if (RUSSIAN)
-			new /obj/effect/plane_flyby/su25_no_message(target)
-			to_chat(world, SPAN_DANGER("<font size=4>The clouds open up as a Su-25 cuts through and fires off a burst of rockets!</font>"))
-	sleep(15)
-	for (var/i = 1, i <= strikenum, i++)
-		spawn(i*8)
-			xoffset = rand(-4,4)
-			yoffset = rand(-4,4)
-			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),0,1,5,3,sound='sound/weapons/Explosives/FragGrenade.ogg')
+			if (map.ordinal_age == 6)
+				aircraft_name = "IL-2"
+			else
+				aircraft_name = "Su-25"
+	return aircraft_name
+
+/obj/item/flashlight/flare/signal/proc/get_faction_num(var/mob/living/human/H)
+	var/faction_num
+	if (map.faction1 == H.faction_text)
+		faction_num = 1
+	else if (map.faction2 == H.faction_text)
+		faction_num = 2
+	return faction_num
+
+/obj/item/flashlight/flare/signal/proc/get_payload_class()
+	var/payload_class
+	switch (payload)
+		if ("Rockets")
+			payload_class = 1
+		if ("50 kg Bomb")
+			payload_class = 2
+		if ("250 kg Bomb")
+			payload_class = 3
+	return payload_class
+
+/obj/item/flashlight/flare/signal/proc/activate_signal()
+	anchored = TRUE
+	var/turf/T = get_turf(src)
+	payload = payload_list[1]
+	attack_direction = pick(attack_direction_list)
+
+	T.try_airstrike(caller.ckey, caller.faction_text, get_faction_aircraft(caller), attack_direction, payload, get_payload_class())
+	sleep(50)
 	qdel(src)
 
-//ww2 p-47 lighting CAS support, inaccurate and slow but saturates a area with 8 rockets
-/obj/item/flashlight/flare/signal/p47
-	name = "signal flare"
-	desc = "A signal flare for signalling to CAS where to shoot. There are instructions on the side reading 'pull cord, make light'. Lasts for about 2 minutes."
-	icon_state = "flareW"
-	flame_base_tint = "#07d800"
-
-/obj/item/flashlight/flare/signal/p47/activate_signal(mob/living/human/user as mob) ///fires off many rockets but is very inaccurate
-	var/turf/target = get_turf(src)
-	var/strikenum = 8
-	var/xoffset
-	var/yoffset
-	switch(user.faction_text)
-		if ("AMERICAN")
-			new /obj/effect/plane_flyby/p47(target)
-			to_chat(world, SPAN_DANGER("<font size=4>A P-47 thunderbolt flies above and fires off a burst of rockets!</font>"))
-		else
-			new /obj/effect/plane_flyby/p47_no_message(target)
-			to_chat(world, SPAN_DANGER("<font size=4>A Some kind of a plane flies through the clouds and fires off a burst of rockets!</font>"))
-	sleep(20)
-	for (var/i = 1, i <= strikenum, i++)
-		spawn(i*8)
-			xoffset = rand(-6,6)
-			yoffset = rand(-6,6)
-			explosion(locate((target.x + xoffset),(target.y + yoffset),target.z),1,3,6,8,sound='sound/weapons/Explosives/FragGrenade.ogg')
-	qdel(src)
 // Projectile
 /obj/item/projectile/flare
 	icon_state = "flare"

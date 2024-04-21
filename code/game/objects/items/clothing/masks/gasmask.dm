@@ -14,7 +14,7 @@
 	var/list/filtered_gases = list("plasma", "sleeping_agent, xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine", "zyklon_b", "phosgene_gas")
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
-	restricts_view = 2
+	restricts_view = 1
 	flags = CONDUCT
 	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
 

@@ -36,7 +36,7 @@ var/list/nonbreaking_types = list(
 			else if(state && !isSwitchingStates)
 				Close()
 		else
-			user.visible_message(SPAN_NOTICE("[H] knocks at the door."))
+			H.visible_message(SPAN_NOTICE("[H] knocks at the door."), SPAN_NOTICE("You knock at the door."))
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 
 /obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
@@ -47,7 +47,7 @@ var/list/nonbreaking_types = list(
 			if(!state && !isSwitchingStates)
 				Open()
 		else
-			user.visible_message(SPAN_NOTICE("[H] knocks at the door."))
+			H.visible_message(SPAN_NOTICE("[H] knocks at the door."), SPAN_NOTICE("You knock at the door."))
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 
 /obj/structure/simple_door/key_door/faction_door/Crossed(atom/user)
@@ -112,34 +112,34 @@ var/list/nonbreaking_types = list(
 		if (W.code == custom_code)
 			locked = !locked
 			if (locked == 1)
-				visible_message(SPAN_NOTICE("[user] locks the door."))
+				user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 			else if (locked == 0)
-				visible_message(SPAN_NOTICE("[user] unlocks the door."))
+				user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 				return
 		if (W.code != custom_code)
-			user << "This key does not match this lock!"
+			to_chat(user, SPAN_WARNING("This key does not match this lock!"))
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
 			if (KK.code == custom_code)
 				locked = !locked
 				if (locked == 1)
-					visible_message(SPAN_NOTICE("[user] locks the door."))
+					user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 				else if (locked == 0)
-					visible_message(SPAN_NOTICE("[user] unlocks the door."))
+					user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 					return
 		if (W.code != custom_code)
-			user << "None of the keys match this lock!"
+			to_chat(user, SPAN_WARNING("None of the keys match this lock!"))
 	else if (istype(W, /obj/item/weapon/lockpick))
 		if (src.locked == 1)
 			var/mob/living/human/H = user
 			if (H.getStatCoeff("dexterity") < 1.7)
-				user << "You don't have the skills to use this."
+				to_chat(user, SPAN_WARNING("You don't have the skills to use this.")) // I feel like this shouldn't only check for the skill, it should be based on a prob to successfully pick BASED on skill.
 				return
 			else
 				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
@@ -159,7 +159,7 @@ var/list/nonbreaking_types = list(
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
-				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
+				user.visible_message(SPAN_DANGER("[user] hits the door with \the [W]!"), SPAN_DANGER("You hit the door with \the [W]!"))
 				if (istype(material, /material/wood || /material/wood/soft))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				else
@@ -188,7 +188,7 @@ var/list/nonbreaking_types = list(
 		if (keyslot.locked)
 			var/mob/living/human/H = user
 			if (H.getStatCoeff("dexterity") < 1.7)
-				user << "You don't have the skills to use this."
+				to_chat(user, SPAN_WARNING("You don't have the skills to use this.")) // I feel like this shouldn't only check for the skill, it should be based on a prob to successfully pick BASED on skill.
 				return
 			else
 				visible_message(SPAN_DANGER("[user] starts picking the [src.name]'s lock with the [W]!"))
@@ -210,7 +210,7 @@ var/list/nonbreaking_types = list(
 		if (breachable && !state && (istype(pump.chambered, /obj/item/ammo_casing/shotgun/buckshot) || istype(pump.chambered, /obj/item/ammo_casing/shotgun/slug) || istype(pump.chambered, /obj/item/projectile/bullet/shotgun/breaching)) && pump.consume_next_projectile())
 			locked = FALSE
 			update_icon()
-			visible_message(SPAN_WARNING("[user] breaks the lock on the [src]!"))
+			user.visible_message(SPAN_WARNING("[user] breaks the lock on the [src]!"))
 			pump.Fire(src, user)
 			playsound(src.loc, 'sound/weapons/heavysmash.ogg', 50, 1)
 			density = FALSE
@@ -228,7 +228,7 @@ var/list/nonbreaking_types = list(
 		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HARM) && check_can_break_doors(W))
 			if (!user.hitting_key_door)
 				user.hitting_key_door = TRUE
-				visible_message(SPAN_DANGER("[user] hits the door with [W]!"))
+				user.visible_message(SPAN_DANGER("[user] hits the door with \the [W]!"), SPAN_DANGER("You hit the door with \the [W]!"))
 				if (istype(material, /material/wood || /material/wood/soft))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 				if (istype(material, /material/paper))
@@ -244,9 +244,9 @@ var/list/nonbreaking_types = list(
 
 	if (keyslot_original_locked != keyslot_locked)
 		if (keyslot_locked)
-			visible_message(SPAN_WARNING("[user] locks the door."))
+			user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
 		else
-			visible_message(SPAN_NOTICE("[user] unlocks the door."))
+			user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
 		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
 /obj/structure/simple_door/key_door/custom/attack_hand(mob/user as mob)
 
@@ -264,13 +264,13 @@ var/list/nonbreaking_types = list(
 					L << SPAN_NOTICE("You hear a knock at the door.")
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
-			user.visible_message(SPAN_WARNING("[user] bangs on the door."))
+			user.visible_message(SPAN_WARNING("[user] bangs on the door."), SPAN_WARNING("You bang on the door."))
 			for (var/mob/living/L in view(7, src))
 				if (!viewers(7, L).Find(user))
-					L << SPAN_NOTICE("You hear a knock at the door.")
+					to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
 			playsound(get_turf(src), "doorknock", 100, TRUE)
 		else
-			user.visible_message(SPAN_DANGER("[user] kicks the door!"))
+			user.visible_message(SPAN_DANGER("[user] kicks the door!"), SPAN_DANGER("You kick the door!"))
 			if (istype(material, /material/wood || /material/wood/soft))
 				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
 			else

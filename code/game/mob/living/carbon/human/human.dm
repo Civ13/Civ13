@@ -61,7 +61,7 @@
 
 	make_blood()
 	if (map)
-		if (map.civilizations == TRUE)
+		if (map.civilizations == TRUE && map.ID != MAP_PEPELSIBIRSK)
 			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
 			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
 		if (map.ID == MAP_GULAG13)
@@ -69,9 +69,9 @@
 				if (istype(original_job, /datum/job/civilian/prisoner))
 					nutrition = max_nutrition*0.1
 					water = max_water*0.2
-				else
-					nutrition = max_nutrition
-					water = max_water
+		else
+			nutrition = max_nutrition
+			water = max_water
 	else
 		nutrition = max_nutrition
 		water = max_water
@@ -427,7 +427,7 @@ var/list/coefflist = list()
 	if (species.has_fine_manipulation)
 		return TRUE
 	if (!silent)
-		src << "<span class='warning'>You don't have the dexterity to use that!</span>"
+		to_chat(src, SPAN_WARNING("You don't have the dexterity to use that!"))
 	return FALSE
 
 /mob/living/human/abiotic(var/full_body = FALSE)
@@ -1068,7 +1068,6 @@ var/list/coefflist = list()
 	else
 		return H.pulse
 
-
 /mob/living/human/proc/make_adrenaline(amount)
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
@@ -1134,6 +1133,7 @@ var/list/coefflist = list()
 /mob/living/human/proc/look_into_distance(mob/living/user, forced_look, var/bypass_can_look =  FALSE)//Largely copied from zoom.dm but made for zooming without weapons in hand
 	var/obj/item/weapon/attachment/scope/adjustable/W = null
 	var/obj/item/weapon/gun/G = null
+	var/obj/item/turret_controls/C = null
 	var/obj/item/weapon/gun/projectile/automatic/stationary/S = null
 	if(user.using_object && istype(user.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		S = user.using_object
@@ -1141,13 +1141,16 @@ var/list/coefflist = list()
 	else if(istype(get_active_hand(), /obj/item/weapon/attachment/scope/adjustable))
 		W = get_active_hand()
 		look_amount = W.zoom_amt//May cause issues
+	else if(istype(get_active_hand(), /obj/item/turret_controls))
+		C = get_active_hand()
+		look_amount = C.get_zoom_amt()
 	else if(istype(get_active_hand(), /obj/item/weapon/gun))
 		G = get_active_hand()
 		if(G.attachments && G.attachments.len)
-			var/list/LA = list()
+			var/list/AL = list()
 			for(var/obj/item/weapon/attachment/scope/A in G.attachments)//Looks through the attachments of the gun in hand
-				LA.Add(A.zoom_amt)
-			look_amount = max(LA)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
+				AL += A.zoom_amt
+			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
 
 	if(!user || !user.client)
 		return
@@ -1195,7 +1198,7 @@ var/list/coefflist = list()
 				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
-			user.visible_message("[user] looks into the distance.")
+			user.visible_message("[user] looks into the distance.", "You look into the distance.")
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets
@@ -1203,7 +1206,7 @@ var/list/coefflist = list()
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
 		user.client.view = world.view
-		look_amount = 3
+		look_amount = initial(look_amount)
 		handle_ui_visibility()
 		user.dizzycheck = FALSE
 
@@ -1250,11 +1253,10 @@ var/list/coefflist = list()
 			if (looking)
 		/*		if (G.accuracy)
 					G.accuracy = G.scoped_accuracy + zoom_offset*/
-				if (G.recoil)
-					G.recoil = round(G.recoil*(W.zoom_amt/5)+1) //recoil is worse when looking through a scope
+				if (G.shake_strength)
+					G.shake_strength = round(G.shake_strength*(W.zoom_amt/5)+1) //shake_strength is worse when looking through a scope
 			else
-				G.accuracy = initial(G.accuracy)
-				G.recoil = initial(G.recoil)
+				G.shake_strength = initial(G.shake_strength)
 
 
 

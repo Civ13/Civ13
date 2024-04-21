@@ -16,7 +16,7 @@
 /client/proc/start_epochswap_vote()
 	set category = "Server"
 	set name = "Start Epoch Vote"
-	if (!check_rights(R_TRIALADMIN)) //Temporary solution, change back to R_ADMIN when enough true "Knight" staff.
+	if (!check_rights(R_ADMIN))
 		return
 	if (processes.epochswap)
 		processes.epochswap.restart_triggered = TRUE

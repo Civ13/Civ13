@@ -21,15 +21,15 @@
 		user.examinate(src)
 		return
 	else
-		user << "This book is completely blank!"
+		to_chat(user, SPAN_WARNING("This book is completely blank!"))
 
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
 		if (!B.author && user.religious_clergy == "Monks")
-			user << "You start copying [src]..."
+			user << "You start copying \the [src]..."
 			if (do_after(user, 200, src))
-				user << "You finish copying [src]."
+				user << "You finish copying \the [src]."
 				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 					var/obj/item/weapon/book/NC = src
 					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))

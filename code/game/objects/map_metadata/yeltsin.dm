@@ -106,8 +106,8 @@
 				current_win_condition = no_winner
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
-				message = "25 minutes have passed! The HVT is now safe!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				message = "40 minutes have passed! The HVT is now safe!"
+				to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 				win_condition_spam_check = TRUE
 				return FALSE
 			if (processes.ticker.playtime_elapsed >= 3000)

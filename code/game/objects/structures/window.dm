@@ -210,13 +210,13 @@
 
 		playsound(loc, 'sound/effects/glassknock.ogg', 80, TRUE)
 		user.do_attack_animation(src)
-		usr.visible_message("<span class='danger'>\The [usr] bangs against \the [src]!</span>",
+		user.visible_message("<span class='danger'>\The [usr] bangs against \the [src]!</span>",
 							"<span class='danger'>You bang against \the [src]!</span>",
 							"You hear a banging sound.")
 	else
 		playsound(loc, 'sound/effects/glassknock.ogg', 80, TRUE)
-		usr.visible_message("[usr.name] knocks on the [name].",
-							"You knock on the [name].",
+		user.visible_message("[usr.name] knocks on \the [name].",
+							"You knock on \the [name].",
 							"You hear a knocking sound.")
 	return
 
@@ -227,10 +227,10 @@
 	if (!damage)
 		return
 	if (damage >= 10)
-		visible_message("<span class='danger'>[user] smashes into [src]!</span>")
+		user.visible_message("<span class='danger'>[user] smashes into \the [src]!</span>")
 		take_damage(damage)
 	else
-		visible_message("<span class='notice'>\The [user] bonks \the [src] harmlessly.</span>")
+		user.visible_message("<span class='notice'>\The [user] bonks \the [src] harmlessly.</span>")
 	return TRUE
 
 
@@ -438,7 +438,7 @@
 		shatter()
 
 /obj/structure/window_frame
-	desc = "A good old window frame."
+	desc = "A window frame."
 	icon_state = "windownew_frame"
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE

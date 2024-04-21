@@ -676,6 +676,7 @@
 	icon_state = "chinese_ushanka_up"
 	item_state = "chinese_ushanka_up"
 	worn_state = "chinese_ushanka_up"
+	cold_protection = HEAD
 
 /obj/item/clothing/head/chinese_ushanka/down
 	icon_state = "chinese_ushanka"
@@ -743,6 +744,7 @@
 	item_state = "ushanka_new_up"
 	worn_state = "ushanka_new_up"
 	flags_inv = BLOCKHEADHAIR
+	cold_protection = HEAD
 
 /obj/item/clothing/head/sov_ushanka_new/down
 	icon_state = "ushanka_new"
@@ -780,6 +782,7 @@
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
 	body_parts_covered = HEAD
+	cold_protection = HEAD
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
@@ -1429,7 +1432,8 @@
 	new /obj/item/ammo_magazine/sten2(src)
 	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-/* Cold War Balaclavas*/
+
+/* Cold War Balaclavas */
 
 /obj/item/clothing/mask/balaclava
 	name = "black balaclava"
@@ -1449,12 +1453,14 @@
 	icon_state = "snowclava"
 	item_state = "snowclava"
 	worn_state = "snowclava"
+
 /obj/item/clothing/mask/balaclava/green
 	name = "snow balaclava"
 	desc = "A green balaclava, covering the face."
 	icon_state = "swatclava"
 	item_state = "swatclava"
 	worn_state = "swatclava"
+
 /obj/item/clothing/mask/balaclava/skull
 	name = "skull face balaclava"
 	desc = "A balaclava with a skull imprint, covering the face."
@@ -1475,6 +1481,8 @@
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
 	flammable = TRUE
 	cold_protection = HEAD|FACE
+
+/* Headscarves */
 
 /obj/item/clothing/mask/headscarfgrey/asbestos
 	name = "Asbestos headscarf"
@@ -1530,60 +1538,6 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new /obj/item/ammo_magazine/sksm(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new /obj/item/ammo_magazine/svd(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak74(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47/drum(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/nomads
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/m16(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
-
-/obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
-	New()
-		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
 	New()

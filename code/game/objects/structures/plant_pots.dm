@@ -460,7 +460,7 @@
 /obj/structure/plant_pot/attackby(obj/O as obj, mob/living/human/user as mob)
 	if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer) || istype(O,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/weapons/smash.ogg', 75, 1)
@@ -497,7 +497,7 @@
 
 /obj/structure/plant_pot/bullet_act(var/obj/item/projectile/proj)
 	health -= proj.damage/3
-	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
+	visible_message("<span class='danger'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
 /obj/structure/plant_pot/proc/try_destroy()

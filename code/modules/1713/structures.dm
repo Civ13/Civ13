@@ -36,7 +36,7 @@
 			L.S2 = src
 			L.S1.following_mob = src
 			L.S1.stop_automated_movement = TRUE
-			user << "You tie \the [L.S1] to \the [src] with the leash."
+			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			qdel(L)
 			return
 	else
@@ -68,13 +68,13 @@
 			L.S2 = src
 			L.S1.following_mob = src
 			L.S1.stop_automated_movement = TRUE
-			user << "You tie \the [L.S1] to \the [src] with the leash."
+			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			attached = "animal"
 			qdel(L)
 			return
 	else if (istype(O, /obj/item/flashlight/lantern))
 		var/obj/item/flashlight/lantern/LT = O
-		user << "You tie \the [O] to \the [src]."
+		to_chat(user, SPAN_NOTICE("You tie \the [O] to \the [src]."))
 		LT.anchored = TRUE
 		LT.on = TRUE
 		LT.update_icon()
@@ -90,7 +90,7 @@
 	if (!isliving(user))
 		return
 	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
-		user << "You remove \the [attached_ob] from \the [src]."
+		to_chat(user, SPAN_NOTICE("You remove \the [attached_ob] from \the [src]."))
 		var/obj/item/flashlight/lantern/O = attached_ob
 		O.anchored = FALSE
 		O.forceMove(user.loc)
@@ -305,10 +305,16 @@
 /obj/structure/grille/chainlinkfence/door/proc/toggle(mob/user)
 	switch(open)
 		if(FALSE)
-			visible_message("<span class='notice'>\The [user] opens \the [src].</span>")
+			user.visible_message("<span class='warning'>\The [user] opens \the [src].</span>",
+								"<span class='notice'>You open \the [src].</span>",
+								"You hear something being opened.")
+
 			open = TRUE
 		if(TRUE)
-			visible_message("<span class='notice'>\The [user] closes \the [src].</span>")
+			user.visible_message("<span class='warning'>\The [user] closes \the [src].</span>",
+								"<span class='notice'>You close \the [src].</span>",
+								"You hear something being closed.")
+
 			open = FALSE
 
 	update_door_status()
@@ -339,7 +345,7 @@
 	anchored = TRUE
 /obj/structure/wallclock/examine(mob/user)
 	..()
-	user << "<big>It is now [clock_time()].</big>"
+	to_chat(user, "<big>It is now [clock_time()].</big>")
 
 /obj/structure/props/server
 	name = "server hub"
@@ -1162,7 +1168,7 @@
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
-					if (PIRATES)
+					if (REDFACTION)
 						icon_state = "redmenia"
 						name = "Redmenia Flag"
 						desc = "The flag of Redmenia."
@@ -1170,7 +1176,7 @@
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						world << "<font size = 5><b>REDMENIA HAS RECAPTURED THEIR CAPITAL.</b></font>"
-					if (CIVILIAN)
+					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
 						desc = "The flag of Blugoslavia."
@@ -1184,7 +1190,7 @@
 			if (do_after(user, 10 SECONDS, src))
 				faction_text = user.faction_text
 				switch(faction_text)
-					if (PIRATES)
+					if (REDFACTION)
 						icon_state = "redmenia"
 						name = "Redmenia Flag"
 						desc = "The flag of Redmenia."
@@ -1192,7 +1198,7 @@
 						for (var/mob/M in player_list)
 							M.client << warning_sound
 						world << "<font size = 5><b>REDMENIA HAS CAPTURED THE BLUGOSLAVIAN CAPITAL.</b></font>"
-					if (CIVILIAN)
+					if (BLUEFACTION)
 						icon_state = "blugoslavia"
 						name = "Blugoslavia Flag"
 						desc = "The flag of Blugoslavia."
@@ -1208,15 +1214,15 @@
 	icon_state = "redmenia"
 	name = "Redmenia Flag"
 	desc = "The flag of Redmenia."
-	faction_text = PIRATES
-	original_faction = PIRATES
+	faction_text = REDFACTION
+	original_faction = REDFACTION
 
 /obj/structure/flag/campaign/blugoslavia
 	icon_state = "blugoslavia"
 	name = "Blugoslavia Flag"
 	desc = "The flag of Blugoslavia."
-	faction_text = CIVILIAN
-	original_faction = CIVILIAN
+	faction_text = BLUEFACTION
+	original_faction = BLUEFACTION
 
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/cloth))

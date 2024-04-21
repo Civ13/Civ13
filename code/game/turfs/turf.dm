@@ -41,6 +41,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/is_diggable = FALSE //can be digged with a shovel?
 	var/is_plowed = FALSE // ready to be farmed?
 	var/is_mineable = FALSE //can be mined with a pickaxe?
+	var/mining_in_progress = FALSE //Is it being mined actually?
 	//Mining resources (for the large drills).
 //	var/has_resources
 //	var/list/resources
@@ -135,17 +136,27 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
 		if (H.ant)
-			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
+			if(src.mining_in_progress)
+				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
+				return
+			// Set mining_in_progress to TRUE to indicate the process has started.
+			src.mining_in_progress = TRUE
+			user.visible_message(SPAN_NOTICE("[user] starts to break the rock with their hands..."), SPAN_NOTICE("You start to break the rock with the your hands..."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
-				U.collapse_check()
-				if (istype(src, /turf/floor/dirt/underground/empty))
-					var/turf/floor/dirt/underground/empty/T = src
-					T.mining_clear_debris()
-					return
-				else if (!istype(src, /turf/floor/dirt/underground/empty))
-					mining_proc(H)
-				return TRUE
+			if (!do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
+				src.mining_in_progress = FALSE // In case we abort mid-way.
+				return
+			U.collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/T = src
+				T.mining_clear_debris()
+				src.mining_in_progress = FALSE // Reset the variable after the process has finished.
+				return
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+				src.mining_in_progress = FALSE
+			return TRUE
+
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
 			var/mob/M = user.pulling
@@ -495,6 +506,10 @@ var/const/enterloopsanity = 100
 		if ("Su-25")
 			new /obj/effect/plane_flyby/su25_no_message(T)
 			drop_delay = 1 SECONDS
+		if ("P-47 Thunderbolt")
+			new /obj/effect/plane_flyby/p47_no_message(T)
+			dive_text = "dives down"
+			drop_delay = 8 SECONDS
 		if ("Ju 87 Stuka")
 			new /obj/effect/plane_flyby/ju87_no_message(T)
 			dive_text = "dives down"
@@ -658,7 +673,7 @@ var/const/enterloopsanity = 100
 					P.dir = EAST
 					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
 					P.pixel_x = -12*32 // 12 tiles and 32 pixels per tile
-					animate(P, transform = turn(matrix(), turn_degree), time = 10)
+					animate(P, transform = turn(P.transform, turn_degree), time = 10)
 				if ("SOUTH")
 					cur_ydirection_offset -= direction_offset
 					xoffset = -rand(min_sway_offset, max_sway_offset)
@@ -674,7 +689,7 @@ var/const/enterloopsanity = 100
 					P.dir = WEST
 					P.pixel_y = 8*32 // 8 tiles and 32 pixels per tile
 					P.pixel_x = 12*32 // 12 tiles and 32 pixels per tile
-					animate(P, transform = turn(matrix(), -turn_degree), time = 10)
+					animate(P, transform = turn(P.transform, -turn_degree), time = 10)
 
 			spawn(i*interval)
 				P.loc = locate((T.x + xoffset + cur_xdirection_offset), (T.y + yoffset + cur_ydirection_offset), T.z)

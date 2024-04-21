@@ -394,11 +394,8 @@ var/list/vocal_emotes = list(
 										playsound(get_turf(src), "charge_POLICE", 100)
 									else // we default to generic charges if there's no appropriate civilian charge
 										playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
-								if (PIRATES)
-									if (original_job.is_event)
-										playsound(get_turf(src), "charge_REDMENIA", 100)
-									else
-										playsound(get_turf(src), "charge_PIRATES", 100)
+								if (PIRATES)								
+									playsound(get_turf(src), "charge_PIRATES", 100)
 								if (FINNISH)
 									playsound(get_turf(src), "charge_FINNISH", 100)
 								if (BRITISH)
@@ -464,6 +461,10 @@ var/list/vocal_emotes = list(
 									playsound(get_turf(src), "charge_VIETNAMESE", 100)
 								if (FILIPINO)
 									playsound(get_turf(src), "charge_FILIPINO", 100)
+								if (REDFACTION)
+									playsound(get_turf(src), "charge_REDFACTION", 100)
+								if (BLUEFACTION)
+									playsound(get_turf(src), "charge_BLUEFACTION", 100)
 								else // if no corresponding faction is found we'll default to generic charges
 									playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
 					else
@@ -532,7 +533,7 @@ var/list/vocal_emotes = list(
 				else
 					message = "moans!"
 					m_type = 2
-
+/*
 			if ("johnny")
 				var/M
 				if (param)
@@ -546,7 +547,7 @@ var/list/vocal_emotes = list(
 					else
 						message = "says, \"[M], please. He had a family.\" [name] takes a drag from a cigarette and blows his name out in smoke."
 						m_type = 2
-
+*/
 			if ("point")
 				if (!restrained())
 					var/mob/M = null

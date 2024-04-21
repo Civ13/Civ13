@@ -32,7 +32,7 @@
 				qdel(animation)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 					src << browse(null, "window=memory")
 					stop_ambience(src)
 					client.screen.Cut()
@@ -83,7 +83,7 @@
 				qdel(src)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 					src << browse(null, "window=memory")
 					stop_ambience(src)
 					client.screen.Cut()
@@ -100,7 +100,7 @@
 /mob/proc/maim()
 	crush()
 
-/mob/proc/death(gibbed,deathmessage="seizes up and falls limp...")
+/mob/proc/death(gibbed, deathmessage="seizes up and falls limp...")
 
 	if (stat == DEAD)
 		return FALSE
@@ -144,7 +144,7 @@
 
 	if (client)
 		client.movement_busy = FALSE
-		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 			src << browse(null, "window=memory")
 			stop_ambience(src)
 			client.screen.Cut()

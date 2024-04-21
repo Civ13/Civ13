@@ -61,7 +61,7 @@
 "gr" = (/turf/floor/plating/road/yellowline,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
 "gv" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "gF" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/plating/road,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
-"gK" = (/obj/effects/premadevehicles/apc/adrian,/turf/floor/dirt,/area/caribbean/forest)
+"gK" = (/turf/floor/dirt,/area/caribbean/forest)
 "gL" = (/obj/structure/wild/tallgrass,/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/forest)
 "gN" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
 "gT" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/dark,/area/caribbean/forest)

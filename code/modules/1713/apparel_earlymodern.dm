@@ -1043,26 +1043,31 @@
 	block_chance = 22
 	cooldownw = 7
 	value = 60
+
 /obj/item/clothing/head/ww/cheka
 	name = "Cheka cap"
 	desc = "A black leather cap worn by Cheka agents."
 	icon_state = "cheka"
 	item_state = "cheka"
+
 /obj/item/clothing/head/ww/papakha
 	name = "papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha"
 	item_state = "papakha"
+
 /obj/item/clothing/head/ww/papakha/white
 	name = "white papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha_white"
 	item_state = "papakha_white"
+
 /obj/item/clothing/head/ww/papakha/kuban
 	name = "Kuban papakha"
 	desc = "A traditional Kuban Cossak papakha, black with a red crown."
 	icon_state = "papakha_kuban"
 	item_state = "papakha_kuban"
+
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
 	desc = "A typical pointed helmet."
@@ -1072,11 +1077,13 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/ww/budenovka
 	name = "budenovka"
 	desc = "A Soviet budenovka hat."
 	icon_state = "budenovka"
 	item_state = "budenovka"
+
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "M1935 stahlhelm"
 	desc = "A typical german helmet."
@@ -1262,54 +1269,6 @@
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
 		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
-
-/obj/item/weapon/storage/belt/smallpouches/red
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
-	New()
-		..()
-		new /obj/item/clothing/mask/gas/swat_new(src)
-		new /obj/item/stack/medical/bruise_pack/gauze(src)
-		new /obj/item/ammo_magazine/ak47(src)
-		new /obj/item/weapon/attachment/bayonet(src)
-
-/obj/item/weapon/storage/belt/smallpouches/red/white
-	icon_state = "smallpouches_white"
-	item_state = "smallpouches_white"
-
-/obj/item/weapon/storage/belt/largepouches/redmg
-/obj/item/weapon/storage/belt/largepouches/redmg/New()
-	..()
-	new /obj/item/ammo_magazine/dp(src)
-	new /obj/item/ammo_magazine/dp(src)
-
-/obj/item/weapon/storage/belt/largepouches/redmg/white
-	icon_state = "largepouches_white"
-	item_state = "largepouches_white"
-
-/obj/item/weapon/storage/belt/smallpouches/blue
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
-	New()
-		..()
-		new /obj/item/clothing/mask/gas/swat_new(src)
-		new /obj/item/stack/medical/bruise_pack/gauze(src)
-		new /obj/item/ammo_magazine/ak47(src)
-		new /obj/item/weapon/attachment/bayonet(src)
-
-/obj/item/weapon/storage/belt/smallpouches/blue/white
-	icon_state = "smallpouches_white"
-	item_state = "smallpouches_white"
-
-/obj/item/weapon/storage/belt/largepouches/bluemg
-/obj/item/weapon/storage/belt/largepouches/bluemg/New()
-	..()
-	new /obj/item/ammo_magazine/rpk47/drum(src)
-	new /obj/item/ammo_magazine/rpk47/drum(src)
-
-/obj/item/weapon/storage/belt/largepouches/bluemg/white
-	icon_state = "largepouches_white"
-	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 	storage_slots = 6

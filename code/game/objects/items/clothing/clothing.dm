@@ -83,7 +83,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/head/helmet
-	restricts_view = 1
+	restricts_view = 0
 	health = 35
 // Ears: headsets, earmuffs and tiny objects
 	ripable = FALSE

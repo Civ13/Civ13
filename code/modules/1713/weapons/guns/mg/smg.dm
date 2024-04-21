@@ -4,7 +4,7 @@
 	fire_sound = 'sound/weapons/guns/fire/smg.ogg'
 	silencer_fire_sound = 'sound/weapons/guns/fire/Gyrza-SD.ogg'
 	icon = 'icons/obj/guns/automatic.dmi'
-	var/base_icon = "smg"
+	base_icon = "smg"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_SHOULDER|SLOT_BELT
@@ -13,63 +13,23 @@
 	load_delay = 8
 	gun_type = GUN_TYPE_RIFLE
 	gtype = "smg"
-	accuracy_list = list(
 
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 55,
-
-			MEDIUM_RANGE_STILL = 44,
-			MEDIUM_RANGE_MOVING = 39,
-
-			LONG_RANGE_STILL = 22,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 7,
-			VERY_LONG_RANGE_MOVING = 6),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 72,
-			SHORT_RANGE_MOVING = 62,
-
-			MEDIUM_RANGE_STILL = 54,
-			MEDIUM_RANGE_MOVING = 45,
-
-			LONG_RANGE_STILL = 34,
-			LONG_RANGE_MOVING = 21,
-
-			VERY_LONG_RANGE_STILL = 9,
-			VERY_LONG_RANGE_MOVING = 7),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 66,
-			MEDIUM_RANGE_MOVING = 57,
-
-			LONG_RANGE_STILL = 45,
-			LONG_RANGE_MOVING = 33,
-
-			VERY_LONG_RANGE_STILL = 16,
-			VERY_LONG_RANGE_MOVING = 13),
-	)
+	recoil = 8 // Compared to automatic machines, recoil is easier to control, but the spread is several times higher
+	accuracy = 10
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 1.50
-	KD_chance = KD_CHANCE_LOW
+	KD_chance = KD_CHANCE_HIGH+3
 	stat = "machinegun"
 	w_class = ITEM_SIZE_NORMAL
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_IRONSIGHTS
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
 	var/one_handed = FALSE
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
+	can_tactical_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/special_check(mob/user)
 	if (gun_safety && safetyon)
@@ -103,11 +63,13 @@
 	load_delay = 8
 	equiptimer = 15
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=1.5, move_delay=4, dispersion = list(1.2, 1.4, 1.4, 1.4, 1.7)),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=1.5),
 		)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
 	sel_mode = 1
+	scope_mounts = list ("swept_back")
 
 /obj/item/weapon/gun/projectile/submachinegun/handle_post_fire()
 	..()
@@ -123,24 +85,6 @@
 
 	last_fire = world.time
 
-/obj/item/weapon/gun/projectile/submachinegun/update_icon()
-	if (sniper_scope)
-		if (!ammo_magazine)
-			icon_state = "[base_icon]_scope_open"
-			return
-		else
-			icon_state = "[base_icon]_scope"
-			return
-	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
-		else
-			icon_state = "[base_icon]_open"
-			item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
 /obj/item/weapon/gun/projectile/submachinegun/spas
 	name = "Spas-12"
 	icon_state = "spas12"
@@ -154,11 +98,12 @@
 	ammo_type = /obj/item/ammo_casing/shotgun/buckshot
 	force = 15
 	throwforce = 30
+	shake_strength = 1
 	weight = 3.4
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
-		list(name = "semiauto",    burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name = "automatic",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semiauto",    burst=1, burst_delay=0.7),
+		list(name = "automatic",    burst=1, burst_delay=1.2),
 		)
 
 /obj/item/weapon/gun/projectile/submachinegun/spas/secondary_attack_self(mob/living/human/user)
@@ -176,40 +121,19 @@
 	magazine_type = /obj/item/ammo_magazine/usas12
 	load_method = MAGAZINE
 	good_mags = list(/obj/item/ammo_magazine/usas12, /obj/item/ammo_magazine/usas12/slug, /obj/item/ammo_magazine/usas12drum, /obj/item/ammo_magazine/usas12drum/slug)
-	recoil = 1
+	shake_strength = 1
 	force = 15
 	throwforce = 30
 	weight = 3.5
 	equiptimer = 15
-	effectiveness_mod = 1.46
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
-		list(name = "semiauto",    burst=1, burst_delay=0.7, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name = "automatic",    burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semiauto",    burst=1, burst_delay=0.7),
+		list(name = "automatic",    burst=1, burst_delay=1.2),
 		)
 
 /obj/item/weapon/gun/projectile/submachinegun/usas12/secondary_attack_self(mob/living/human/user)
 	switch_firemodes(user)
-
-/obj/item/weapon/gun/projectile/submachinegun/usas12/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12))
-			item_state = "[initial(icon_state)]"
-			icon_state = "[initial(icon_state)]"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12/slug))
-			item_state = "[initial(icon_state)]"
-			icon_state = "[initial(icon_state)]"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum))
-			icon_state = "[initial(icon_state)]_drum"
-			item_state = "[initial(icon_state)]_drum"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/usas12drum/slug))
-			icon_state = "[initial(icon_state)]_drum"
-			item_state = "[initial(icon_state)]_drum"
-	else
-		icon_state = "[initial(icon_state)]_open"
-		item_state = "[initial(icon_state)]_open"
-	update_held_icon()
-	return
 
 /obj/item/weapon/gun/projectile/submachinegun/saiga12
 	name = "Saiga-12K"
@@ -220,24 +144,44 @@
 	magazine_type = /obj/item/ammo_magazine/saiga12
 	weight = 3.5
 	equiptimer = 11
-	effectiveness_mod = 1.46
 	caliber = "12gauge"
 	slot_flags = SLOT_SHOULDER
 	handle_casings = EJECT_CASINGS
 	load_method = MAGAZINE
 	good_mags = list(/obj/item/ammo_magazine/saiga12, /obj/item/ammo_magazine/saiga12/slug)
-	recoil = 1
+	shake_strength = 1
 	force = 15
 	throwforce = 30
 	weight = 3.4
-	attachment_slots = ATTACH_BARREL
+	attachment_slots = ATTACH_UNDER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
-		list(name = "semiauto",    burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "semiauto",    burst=1, burst_delay=0.7),
 		)
-
+	recoil = 60
+	accuracy = 5
 	sel_mode = 1
-	gun_type = GUN_TYPE_RIFLE
+	scope_x_offset = -2
+	scope_y_offset = -3
+	scope_mounts = list ("dovetail", "picatinny")
+	under_mounts = list ("picatinny")
+
+/obj/item/weapon/gun/projectile/submachinegun/saiga12/breacher/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/reddot/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/reddot(src)
+		SP.attached(null,src,TRUE)
+
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40
 	name = "MP40"
@@ -253,11 +197,12 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.05
+	recoil = 25
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/mp38
 	name = "MP38"
@@ -266,26 +211,28 @@
 	full_auto = TRUE
 	equiptimer = 13
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 0.95
+	recoil = 30
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/modello38
 	name = "MAB 38"
 	desc = "The Moschetto Automatico Beretta Modello 1938 is a submachine gun of the Royal Italian Army introduced in 1938, chambered in 9mm Luger."
-	weight = 4.2
+	weight = 4.20
 	magazine_type = /obj/item/ammo_magazine/mp40/modello38
 	good_mags = list(/obj/item/ammo_magazine/mp40/modello38)
 	full_auto = TRUE
 	equiptimer = 13
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic", burst=1, burst_delay=1.1),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 0.98
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/submachinegun/ermaemp
 	name = "Erma-Emp"
@@ -301,11 +248,12 @@
 	full_auto = TRUE
 	equiptimer = 14
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.01
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica
 	name = "Blyskawica"
@@ -316,10 +264,18 @@
 	weight = 4.12
 	equiptimer = 10
 	firemodes = list(
-		list(name = "automatic",    burst=1, burst_delay=1.4, recoil=0, move_delay=4, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.6)),
+		list(name = "automatic",    burst=1.2, burst_delay=1.4),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.90
+	recoil = 25
+	accuracy = 4
+
+/obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica/update_icon()
+	..()
+	if (ammo_magazine)
+		overlays -= mag_image
+		mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = "blyskawica_mag", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+		overlays += mag_image
 
 /obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
 	name = "H&K MP5"
@@ -333,11 +289,13 @@
 	magazine_type = /obj/item/ammo_magazine/mp40/mp5
 	good_mags = list(/obj/item/ammo_magazine/mp40/mp5)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.08, recoil=0, move_delay=0.5, dispersion = list(0.1, 0.2, 0.1, 0.2, 0)),
-		list(name = "automatic",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "automatic",	burst=1, burst_delay=1),
 		)
 	sel_mode = 1
-	effectiveness_mod = 1.2
+	recoil = 20
+	accuracy = 3
+	scope_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/fg42
 	name = "FG42"
@@ -350,19 +308,24 @@
 	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
 	magazine_type = /obj/item/ammo_magazine/fg42
 	good_mags = list(/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small)
-	full_auto = FALSE
+	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=0.4, recoil=0, move_delay=3, dispersion = list(0.8, 1.3, 1.3, 1.4, 1.6)),
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "automatic",	burst=1, burst_delay=0.4),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.95
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+
+	recoil = 40
+	accuracy = 4
+
+	scope_mounts = list ("swept_back")
+	scope_x_offset = 2
 
 /obj/item/weapon/gun/projectile/submachinegun/fg42/scope/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/fg42/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/fg42(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf4/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf4(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/uzi
@@ -378,12 +341,13 @@
 	magazine_type = /obj/item/ammo_magazine/uzi
 	good_mags = list(/obj/item/ammo_magazine/uzi)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=0.9, recoil=0, move_delay=3, dispersion = list(1.3, 1.4, 1.5, 1.6, 1.7)),
+		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "automatic",	burst=1, burst_delay=0.9),
 		)
 	sel_mode = 1
-	effectiveness_mod = 1.05
 	one_handed = TRUE
+	recoil = 35
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/submachinegun/mac10
 	name = "MAC-10"
@@ -398,12 +362,13 @@
 	magazine_type = /obj/item/ammo_magazine/mac10
 	good_mags = list(/obj/item/ammo_magazine/mac10)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=0.5, recoil=0, move_delay=3, dispersion = list(1.5, 1.6, 1.7, 1.8, 1.9)),
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "automatic",	burst=1, burst_delay=0.5),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.9
 	one_handed = TRUE
+	recoil = 30
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/submachinegun/tec9
 	name = "TEC-9"
@@ -420,13 +385,14 @@
 	equiptimer = 8
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9)),
-		list(name = "automatic",	burst=1, burst_delay=0.3, move_delay=4, dispersion = list(1.6, 1.7, 1.8, 1.9, 2.0)),
+		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "automatic",	burst=1, burst_delay=0.3),
 		)
-	effectiveness_mod = 0.8
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS
 	one_handed = TRUE
+	recoil = 25
+	accuracy = 5
 
 /obj/item/weapon/gun/projectile/submachinegun/skorpion
 	name = "Skorpion"
@@ -441,12 +407,13 @@
 	magazine_type = /obj/item/ammo_magazine/skorpion
 	good_mags = list(/obj/item/ammo_magazine/skorpion)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=0.8, recoil=0, move_delay=3, dispersion = list(1.2, 1.3, 1.4, 1.5, 1.6)),
+		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "automatic",	burst=1, burst_delay=0.8),
 		)
 	sel_mode = 1
-	effectiveness_mod = 0.95
 	one_handed = TRUE
+	recoil = 30
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/submachinegun/greasegun
 	name = "M3A1 SMG"
@@ -463,11 +430,14 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 7
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.4, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.4),
 		)
+	recoil = 10
+	accuracy = 10 // дай бог ты попадешь хоть одной пулей
 
 	sel_mode = 1
-	effectiveness_mod = 1.05
+	recoil = 25
+	accuracy = 5
 
 /obj/item/weapon/gun/projectile/submachinegun/thompson
 	name = "Thompson M1A1"
@@ -484,11 +454,10 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic", burst=1, burst_delay=1.2),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.06
 
 /obj/item/weapon/gun/projectile/submachinegun/tommy
 	name = "Thompson M1928"
@@ -505,11 +474,10 @@
 	slot_flags = SLOT_BELT|SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.0, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic", burst=1, burst_delay=1.0),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/submachinegun/type100
 	name = "Type-100"
@@ -526,12 +494,12 @@
 	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.3),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.04
-
+	recoil = 35
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/submachinegun/sten
 	name = "Sten MK II"
@@ -549,11 +517,12 @@
 	slot_flags = SLOT_SHOULDER
 	equiptimer = 8
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.25, recoil=0, move_delay=2, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.4)),
+		list(name = "automatic",	burst=1, burst_delay=1.25),
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 0.85
+	recoil = 25
+	accuracy = 5
 
 /obj/item/weapon/gun/projectile/submachinegun/sten/stv
 	name = "Sten MK V"
@@ -562,9 +531,10 @@
 	item_state = "sten2"
 	base_icon = "sten2"
 	weight = 3.1
-	attachment_slots = ATTACH_SILENCER|ATTACH_BARREL|ATTACH_UNDER
+	attachment_slots = ATTACH_BARREL|ATTACH_UNDER
 	equiptimer = 6
-	effectiveness_mod = 0.98
+	recoil = 25
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -574,17 +544,23 @@
 	base_icon = "ppsh"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = FALSE
+	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.63
 	equiptimer = 14
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "semiauto",	burst=1, burst_delay=0.5),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 		)
-
 	sel_mode = 1
+	recoil = 20
+	accuracy = 4
+	barrel_x_offset = 12
+	barrel_y_offset = 14
+
+	mag_x_offset = -1
+	mag_y_offset = -1
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese
 	name = "Type 50"
@@ -606,10 +582,15 @@
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=3, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
 		)
-
+	recoil = 25
+	accuracy = 4
 	sel_mode = 1
+	mag_x_offset = 4
+	mag_y_offset = -2
+	barrel_y_offset = 15
+	barrel_y_offset = 16
 
 /obj/item/weapon/gun/projectile/submachinegun/ppd
 	name = "PPD-40"
@@ -619,35 +600,25 @@
 	base_icon = "ppd"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = FALSE
+	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.7
 	equiptimer = 15
-	effectiveness_mod = 0.84
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5, recoil=0, move_delay=1, dispersion = list(0.3, 0.4, 0.5, 0.5, 0.6)),
-		list(name = "automatic",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(0.8, 1.3, 1.4, 1.5, 1.6)),
+		list(name = "semiauto",	burst=1, burst_delay=0.5),
+		list(name = "automatic",	burst=1, burst_delay=1.3),
 		)
-
+	recoil = 20
+	accuracy = 4
 	sel_mode = 1
-/*
-/obj/item/weapon/gun/projectile/submachinegun/ppd/update_icon() //doesnt work, loading in a mag/drum makes the gun inhand sprite have no mag/drum, keeping it here though.
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/c762x25_ppsh))
-			icon_state = "[initial(icon_state)]"
-			item_state = "[initial(icon_state)]"
-			return
-		else
-			icon_state = "[initial(icon_state)]_mag"
-			item_state = "ppd"
-			return
-	else
-		icon_state = "[initial(icon_state)]_open"
-		item_state = "ppd_open"
-	update_held_icon()
-	return
-*/
+
+	barrel_x_offset = 14
+	barrel_y_offset = 16
+
+	mag_x_offset = 2
+	mag_y_offset = -1
+
 /obj/item/weapon/gun/projectile/submachinegun/ak47
 	name = "AKM"
 	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm."
@@ -658,63 +629,25 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
+	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 3.47
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2, recoil=0, move_delay=0.5, dispersion = list(0.1, 0.2, 0.1, 0, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "automatic",	burst=1, burst_delay=1.3),
 		)
 	stat = "rifle"
-	effectiveness_mod = 1
 	sel_mode = 1
-	has_ak_reload = TRUE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
-	)
+	attachment_slots = ATTACH_UNDER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	recoil = 40
+	accuracy = 2
+	scope_mounts = list ("dovetail")
+	under_mounts = list ("gp25_mount")
+	under_x_offset = 1
+	under_y_offset = 1
+	scope_x_offset = -2
+	scope_y_offset = -2
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/gold
 	name = "gold-plated AKM"
@@ -722,13 +655,10 @@
 	icon_state = "ak47gold"
 	item_state = "ak47gold"
 	base_icon = "ak47gold"
-	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/chinese
 	name = "Type 56 Assault Rifle"
 	desc = "Chinese 7.62x39mm rifle. It is a variant of the Soviet-designed AK-47."
-	has_ak_reload = TRUE
-
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
 	desc = "Iconic Soviet assault rifle, chambered in 7.62x39mm. This one has a wire underfolding stock."
@@ -738,22 +668,13 @@
 	base_icon = "akms"
 	var/folded = FALSE
 	weight = 3
-	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
+	..()
 	if (folded)
-		base_icon = "akms_folded"
+		icon_state = "akms_folded"
 	else
-		base_icon = "akms"
-	if (ammo_magazine)
-		icon_state = base_icon
-		item_state = base_icon
-	else
-		icon_state = "[base_icon]_open"
-		item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
+		icon_state = "akms"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/verb/fold()
 	set name = "Toggle Stock"
@@ -761,14 +682,16 @@
 	set src in usr
 	if (folded)
 		folded = FALSE
-		base_icon = "akms"
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
 		usr << "You extend the stock on \the [src]."
 		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
+		recoil /= 1.5
 		folded = TRUE
-		base_icon = "akms_folded"
+		icon_state = "[base_icon]"
 		usr << "You collapse the stock on \the [src]."
 		equiptimer = 7
 		set_stock()
@@ -777,10 +700,8 @@
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod = 0.84
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74
 	name = "AK-74"
@@ -792,63 +713,25 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/rubber, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/ak74m)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	stat = "rifle"
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1, recoil=0, move_delay=0.2, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semiauto",	burst=1, burst_delay=0.7),
+		list(name = "automatic",	burst=1, burst_delay=1.5),
 		)
-	effectiveness_mod = 1.07
 	sel_mode = 1
-	has_ak_reload = TRUE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
-	)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	recoil = 30
+	accuracy = 3
+	scope_mounts = list ("dovetail")
+	under_mounts = list ("gp25_mount")
+	under_x_offset = 1
+	under_y_offset = 1
+	scope_x_offset = -2
+	scope_y_offset = -2
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/grenade_launcher/New()
 	..()
@@ -857,7 +740,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/pso1/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/pso1(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
@@ -869,31 +752,13 @@
 	base_icon = "aks74"
 	var/folded = FALSE
 	weight = 2.95
-	effectiveness_mod = 1.05
-	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
+	..()
 	if (folded)
-		base_icon = "aks74_folded"
+		icon_state = "[base_icon]_folded"
 	else
-		base_icon = "aks74"
-	if (sniper_scope)
-		if (!ammo_magazine)
-			icon_state = "[base_icon]_scope_open"
-			return
-		else
-			icon_state = "[base_icon]_scope"
-			return
-	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
-		else
-			icon_state = "[base_icon]_open"
-			item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
+		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/verb/fold()
 	set name = "Toggle Stock"
@@ -901,14 +766,16 @@
 	set src in usr
 	if (folded)
 		folded = FALSE
-		base_icon = "aks74"
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
 		usr << "You extend the stock on \the [src]."
 		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
+		recoil /= 1.5
 		folded = TRUE
-		base_icon = "aks74_folded"
+		icon_state = "[base_icon]"
 		usr << "You collapse the stock on \the [src]."
 		equiptimer = 7
 		set_stock()
@@ -917,10 +784,8 @@
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod = 0.87
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u
 	name = "AKS-74U"
@@ -931,33 +796,23 @@
 	base_icon = "aks74u"
 	folded = FALSE
 	weight = 2.7
-	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
-	has_ak_reload = TRUE
+	recoil = 40
+	accuracy = 4
+
+	barrel_x_offset = 12
+	barrel_y_offset = 12
+
+	scope_x_offset = 1
+	under_mounts = list ()
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
+	..()
 	if (folded)
-		base_icon = "aks74u_folded"
+		icon_state = "[base_icon]_folded"
 	else
-		base_icon = "aks74u"
-	if (sniper_scope)
-		if (!ammo_magazine)
-			icon_state = "[base_icon]_scope_open"
-			return
-		else
-			icon_state = "[base_icon]_scope"
-			return
-	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
-		else
-			icon_state = "[base_icon]_open"
-			item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
+		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/fold()
 	set name = "Toggle Stock"
@@ -965,26 +820,26 @@
 	set src in usr
 	if (folded)
 		folded = FALSE
-		base_icon = "aks74u"
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
 		usr << "You extend the stock on \the [src]."
-		equiptimer = 12
+		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
+		recoil /= 1.5
 		folded = TRUE
-		base_icon = "aks74u_folded"
+		icon_state = "[base_icon]"
 		usr << "You collapse the stock on \the [src]."
-		equiptimer = 6
+		equiptimer = 7
 		set_stock()
 		update_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod = 0.84
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod = 1.02
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso
 	name = "AKS-74U SpecOps"
@@ -995,42 +850,27 @@
 	base_icon = "aks74uso"
 	folded = FALSE
 	weight = 2.65
-	effectiveness_mod = 1.02
 	damage_modifier = 0.95
 	equiptimer = 12
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
-	has_ak_reload = TRUE
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	scope_mounts = list ("dovetail", "picatinny")
+	under_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
+	..()
 	if (folded)
-		base_icon = "aks74uso_folded"
+		icon_state = "[base_icon]_folded"
 	else
-		base_icon = "aks74uso"
-	if (sniper_scope)
-		if (!ammo_magazine)
-			icon_state = "[base_icon]_scope_open"
-			return
-		else
-			icon_state = "[base_icon]_scope"
-			return
-	else
-		if (ammo_magazine)
-			icon_state = base_icon
-			item_state = base_icon
-		else
-			icon_state = "[base_icon]_open"
-			item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
+		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb
 	folded = TRUE
 	weight = 2.6
-	effectiveness_mod = 1.07
 	damage_modifier = 0.98
 	equiptimer = 10
-	has_ak_reload = TRUE
+	recoil = 30
+	accuracy = 3
+
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb/New()
 	..()
@@ -1052,19 +892,20 @@
 	set src in usr
 	if (folded)
 		folded = FALSE
-		base_icon = "aks74uso"
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
 		usr << "You extend the stock on \the [src]."
-		equiptimer = 12
+		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
+		recoil /= 1.5
 		folded = TRUE
-		base_icon = "aks74uso_folded"
+		icon_state = "[base_icon]"
 		usr << "You collapse the stock on \the [src]."
-		equiptimer = 5
+		equiptimer = 7
 		set_stock()
 		update_icon()
-
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74m
 	name = "AK-74M"
@@ -1076,63 +917,26 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74/ak74m
-	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum)
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/ak74m)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.15, 0.2, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.0, 1.15, 1.2, 1.3, 1.2)),
-		)
-	effectiveness_mod = 1.08
-	sel_mode = 1
-	has_ak_reload = TRUE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	stat = "rifle"
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	stat = "rifle"
+	recoil = 30
+	accuracy = 3
+	scope_mounts = list ("dovetail", "picatinny")
+	under_mounts = list ("picatinny", "gp25_mount")
+	under_x_offset = 1
+	under_y_offset = 1
+	scope_x_offset = -2
+	scope_y_offset = -2
+
 /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12
 	name = "AK-12"
 	desc = "A fifth generation Modern AK variant, chambered in 5.45x39mm."
@@ -1141,30 +945,33 @@
 	base_icon = "ak12"
 	caliber = "a545x39"
 	weight = 3.05
-	effectiveness_mod = 1.13
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/ak74/ak74m, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m/drum)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/ak74m)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
-	has_ak_reload = TRUE
+	recoil = 25
+	accuracy = 2
+	scope_x_offset = -2
+	barrel_x_offset = 15
+	barrel_y_offset = 17
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
 	name = "AK-15"
-	desc = "A fifth generation Modern AK variant, chambered in 7.62×39mm."
+	desc = "A fifth generation Modern AK variant, chambered in 7.62x39mm."
 	icon_state = "ak12"
 	item_state = "ak12"
 	base_icon = "ak12"
 	caliber = "a762x39"
 	weight = 3.07
-	effectiveness_mod = 1.13
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	sel_mode = 1
-	has_ak_reload = TRUE
+	recoil = 30
+	accuracy = 2
 
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16A1"
@@ -1176,63 +983,26 @@
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
-	good_mags = list(/obj/item/ammo_magazine/m16)
+	good_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.2, 0.1, 0.3, 0.1, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
-		)
-	effectiveness_mod = 1.07
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE
+	recoil = 30
+	accuracy = 3
+	barrel_x_offset = 16
+	barrel_y_offset = 16
+	scope_x_offset = -3
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("m203_mount")
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/ar15
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	name = "AR-15"
 	desc = "A civilian market version of ArmaLite's AR-15, single-fire only. Has railings for several attachments."
 	base_icon = "ar15"
@@ -1240,8 +1010,15 @@
 	item_state = "ar15"
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
-		)
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+	)
+	recoil = 30
+	accuracy = 3
+	scope_x_offset = 0
+	scope_y_offset = -1
+	mag_x_offset = 1
+	under_mounts = list ("picatinny")
+
 /obj/item/weapon/gun/projectile/submachinegun/ar10
 	name = "AR-10"
 	desc = "An ArmaLite battle rifle, chambered in 7.62x51mm."
@@ -1260,55 +1037,16 @@
 	slot_flags = SLOT_SHOULDER
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.1)),
-		)
-	effectiveness_mod = 1.03
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.5),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	recoil = 40
+	accuracy = 3
+	barrel_x_offset = 16
+	barrel_y_offset = 16
+	under_mounts = list ("picatinny", "m203_mount")
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando
 	name = "XM177E2"
 	desc = "A carbine version of the AR-15/M16, chambered in 5.56x45mm."
@@ -1320,32 +1058,37 @@
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
-	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 3.07
 	equiptimer = 9
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0, 0.1, 0, 0.1, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
-		)
-	effectiveness_mod = 1.08
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
+	)
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	barrel_x_offset = 13
+	barrel_y_offset = 15
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2
 	name = "M16A2"
 	base_icon = "m16"
 	icon_state = "m16"
-	desc = "A modernized version of the M16, with burst fire instead of full auto."
+	desc = "A modernized version of the M16, with burst fire instead of automatic."
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.1, 0.3, 0.2, 0.1, 0.1)),
-		list(name = "3-round bursts",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "burst fire",	burst=3, burst_delay=1.5),
+	)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	recoil = 25
+	under_mounts = list ("picatinny", "m203_mount")
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/grenade_launcher/New()
 	..()
 	var/obj/item/weapon/gun/launcher/grenade/underslung/m203/GL = new/obj/item/weapon/gun/launcher/grenade/underslung/m203(src)
 	GL.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/att/New()
 	..()
 	var/scope_type = rand(1,2)
@@ -1354,7 +1097,7 @@
 			var/obj/item/weapon/attachment/scope/adjustable/advanced/reddot/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
 			SP.attached(null,src,TRUE)
 		if (2)
-			var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+			var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
 			SP.attached(null,src,TRUE)
 	if (prob(50))
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
@@ -1367,10 +1110,14 @@
 	desc = "A modernized version of the M16, with a railed upper receiver and handguard."
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3, recoil=0, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0, 0.1)),
-		list(name = "3-round bursts",	burst=3, burst_delay=1.5, recoil=0, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "burst fire",	burst=3, burst_delay=1.5),
+	)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
+	recoil = 25
+	scope_x_offset = 0
+	scope_y_offset = 0
+	under_mounts = list ("picatinny", "m203_mount")
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/grenade_launcher/New()
 	..()
@@ -1383,26 +1130,25 @@
 		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
 		SP.attached(null,src,TRUE)
 	else
-		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
 		SP.attached(null,src,TRUE)
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4
 	name = "M4 Carbine"
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
-
-/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4/campaign
-	magazine_type = /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled
-	good_mags = list(/obj/item/ammo_magazine/emptymagazine, /obj/item/ammo_magazine/emptymagazine/rifle, /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	under_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
 	base_icon = "m4mws"
 	icon_state = "m4mws"
 	desc = "A version of the M4 carbine made to fit the Modular Weapon System."
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER|ATTACH_BARREL
-
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	under_mounts = list ("picatinny")
+	scope_x_offset = 0
+	scope_y_offset = 0
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att/New()
 	..()
@@ -1410,7 +1156,7 @@
 		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
 		SP.attached(null,src,TRUE)
 	else
-		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
 		SP.attached(null,src,TRUE)
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 		FP.attached(null,src,TRUE)
@@ -1427,7 +1173,7 @@
 
 	var/obj/item/weapon/attachment/silencer/SL = new/obj/item/weapon/attachment/silencer(src)
 	SL.attached(null,src,TRUE)
-
+	
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
 	desc = "An American battle rifle, chambered in 7.62x51mm."
@@ -1439,138 +1185,39 @@
 	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
 	good_mags = list(/obj/item/ammo_magazine/m14)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.1, 0, 0, 0.1, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
-		)
-	effectiveness_mod = 1.07
-	sel_mode = 1
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 63,
-			SHORT_RANGE_MOVING = 38,
-
-			MEDIUM_RANGE_STILL = 53,
-			MEDIUM_RANGE_MOVING = 32,
-
-			LONG_RANGE_STILL = 43,
-			LONG_RANGE_MOVING = 25,
-
-			VERY_LONG_RANGE_STILL = 33,
-			VERY_LONG_RANGE_MOVING = 18),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 78,
-			SHORT_RANGE_MOVING = 51,
-
-			MEDIUM_RANGE_STILL = 68,
-			MEDIUM_RANGE_MOVING = 45,
-
-			LONG_RANGE_STILL = 58,
-			LONG_RANGE_MOVING = 38,
-
-			VERY_LONG_RANGE_STILL = 48,
-			VERY_LONG_RANGE_MOVING = 32),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 83,
-			SHORT_RANGE_MOVING = 55,
-
-			MEDIUM_RANGE_STILL = 73,
-			MEDIUM_RANGE_MOVING = 48,
-
-			LONG_RANGE_STILL = 63,
-			LONG_RANGE_MOVING = 42,
-
-			VERY_LONG_RANGE_STILL = 53,
-			VERY_LONG_RANGE_MOVING = 35),
+		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
-
+	sel_mode = 1
+	recoil = 40
+	accuracy = 3
+	scope_x_offset = 0
+	scope_y_offset = -2
+	barrel_x_offset = 14
+	barrel_y_offset = 16
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
+	scope_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/m14/sniper/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/vortex_viper(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/semiautomatic/m21
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21
 	name = "M21 SWS"
 	desc = "An American sniper rifle, chambered in 7.62x51mm."
-	icon = 'icons/obj/guns/rifles.dmi'
-	icon_state = "m21"
-	item_state = "m21"
-	base_icon = "m21"
-	w_class = ITEM_SIZE_LARGE
-	caliber = "a762x51"
-	fire_sound = 'sound/weapons/guns/fire/M14Alt.ogg'
-	magazine_type = /obj/item/ammo_magazine/m14
-	good_mags = list(/obj/item/ammo_magazine/m14)
-	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
-	weight = 3.6
-	equiptimer = 15
-	gun_type = GUN_TYPE_RIFLE
-	slot_flags = SLOT_SHOULDER
-	effectiveness_mod = 1.12
+	sel_mode = 1
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name = "semiauto",	burst=1, burst_delay=0.6),
 		)
-	accuracy_list = list(
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 63,
-			SHORT_RANGE_MOVING = 38,
-
-			MEDIUM_RANGE_STILL = 53,
-			MEDIUM_RANGE_MOVING = 32,
-
-			LONG_RANGE_STILL = 43,
-			LONG_RANGE_MOVING = 25,
-
-			VERY_LONG_RANGE_STILL = 33,
-			VERY_LONG_RANGE_MOVING = 18),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 78,
-			SHORT_RANGE_MOVING = 51,
-
-			MEDIUM_RANGE_STILL = 68,
-			MEDIUM_RANGE_MOVING = 45,
-
-			LONG_RANGE_STILL = 58,
-			LONG_RANGE_MOVING = 38,
-
-			VERY_LONG_RANGE_STILL = 48,
-			VERY_LONG_RANGE_MOVING = 32),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 83,
-			SHORT_RANGE_MOVING = 55,
-
-			MEDIUM_RANGE_STILL = 73,
-			MEDIUM_RANGE_MOVING = 48,
-
-			LONG_RANGE_STILL = 63,
-			LONG_RANGE_MOVING = 42,
-
-			VERY_LONG_RANGE_STILL = 53,
-			VERY_LONG_RANGE_MOVING = 35),
-	)
-	New()
-		..()
-		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
-		SP.attached(null,src,TRUE)
+	recoil = 40
+	accuracy = 2
 
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
@@ -1583,60 +1230,21 @@
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/hk
 	good_mags = list(/obj/item/ammo_magazine/hk)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 4.2
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
-		)
-	effectiveness_mod = 1.03
-	sel_mode = 1
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.9),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	recoil = 50
+	accuracy = 3
+
+	mag_x_offset = 2
+	mag_y_offset = 3
+
 /obj/item/weapon/gun/projectile/submachinegun/fal
 	name = "FN Fal"
 	desc = "A Belgian battle rifle, chambered in 7.62×51mm."
@@ -1648,132 +1256,54 @@
 	fire_sound = 'sound/weapons/guns/fire/fnfal.ogg'
 	magazine_type = /obj/item/ammo_magazine/fal
 	good_mags = list(/obj/item/ammo_magazine/fal)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 3.8
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.9, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.8)),
-		)
-	effectiveness_mod = 1.07
-	sel_mode = 1
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.9),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	recoil = 45
+	accuracy = 3
+
 /obj/item/weapon/gun/projectile/submachinegun/scarl
 	name = "FN SCAR-L"
 	desc = "A Belgian assault rifle, chambered in 5.56x45mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
-	icon_state = "scarl"
-	item_state = "scarl"
-	base_icon = "scarl"
+	icon_state = "scar"
+	item_state = "scar"
+	base_icon = "scar"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	reload_sound = 'sound/weapons/guns/interact/AR15Reload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AR15Unload.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
-	good_mags = list(/obj/item/ammo_magazine/m16)
+	good_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15)
 	weight = 3
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.2, 0.1, 0.2, 0.3, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
-		)
-	effectiveness_mod = 1.08
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "automatic",	burst=1, burst_delay=1.3),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	recoil = 35
+	accuracy = 3
+	barrel_x_offset = 16
+	barrel_y_offset = 16
+	mag_x_offset = 2
+	mag_y_offset = 3
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("picatinny")
+
 /obj/item/weapon/gun/projectile/submachinegun/scarh
 	name = "FN SCAR-H"
-	icon_state = "scarh"
-	item_state = "scarh"
-	base_icon = "scarh"
+	icon_state = "scar"
+	item_state = "scar"
+	base_icon = "scar"
 	desc = "A Belgian-designed automatic rifle, chambered in 7.62x51mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	caliber = "a762x51"
@@ -1784,59 +1314,20 @@
 	good_mags = list(/obj/item/ammo_magazine/scarh)
 	weight = 3.5
 	equiptimer = 11
-	effectiveness_mod = 1.05
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2, move_delay=2, dispersion = list(0.2, 0.1, 0.3, 0.2, 0.3)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
-		)
-	effectiveness_mod = 1.06
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
+	recoil = 45
+	accuracy = 2
+	barrel_x_offset = 16
+	barrel_y_offset = 16
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("picatinny")
+
 /obj/item/weapon/gun/projectile/submachinegun/ar12
 	name = "AR-12"
 	icon_state = "ar12"
@@ -1845,65 +1336,29 @@
 	desc = "An AR-15 style magazine fed shotgun in 12 gauge."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	caliber = "12gauge"
-	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	magazine_type = /obj/item/ammo_magazine/ar12
 	good_mags = list(/obj/item/ammo_magazine/ar12)
+	shake_strength = 1
 	weight = 3.5
 	equiptimer = 11
-	effectiveness_mod = 1.46
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.2, 0.1, 0.2, 0.3, 0.2)),
-		list(name = "3-round bursts",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
-		)
-	effectiveness_mod = 1.60
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	recoil = 50
+	accuracy = 2
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS|ATTACH_UNDER
+	scope_mounts = list ("picatinny")
+	barrel_y_offset = 17
+	scope_x_offset = -1
+	scope_y_offset = 1
+	under_x_offset = 3
+	under_y_offset = 3
+
 /obj/item/weapon/gun/projectile/submachinegun/hk417
 	name = "HK417"
 	desc = "A modern German battle rifle, chambered in 7.62x51mm."
@@ -1915,61 +1370,24 @@
 	fire_sound = 'sound/weapons/guns/fire/battle_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/scarh
 	good_mags = list(/obj/item/ammo_magazine/scarh)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	weight = 3.8
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.1, 0.2, 0.1, 0.2, 0.3)),
-		list(name = "3-round bursts",	burst=3, burst_delay=1.5, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
-		)
-	effectiveness_mod = 1.08
-	sel_mode = 1
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	recoil = 35
+	accuracy = 3
+	mag_x_offset = -2
+	mag_y_offset = -3
+	barrel_x_offset = 15
+	scope_x_offset = 1
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("picatinny", "m203_mount")
 
 /obj/item/weapon/gun/projectile/submachinegun/hk417/att/New()
 	..()
@@ -1977,7 +1395,7 @@
 		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/HL = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
 		HL.attached(null,src,TRUE)
 	else
-		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/AC = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/AC = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
 		AC.attached(null,src,TRUE)
 	if (prob(50))
 		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
@@ -1996,18 +1414,27 @@
 	fire_sound = 'sound/weapons/guns/fire/PDW.ogg'
 	magazine_type = /obj/item/ammo_magazine/p90
 	good_mags = list(/obj/item/ammo_magazine/p90)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS|ATTACH_SCOPE
 	weight = 2.3
 	equiptimer = 8
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4, move_delay=1, dispersion = list(0.1, 0.3, 0.2, 0.2, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
-		)
-	effectiveness_mod = 1.15
+		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
+	)
 	sel_mode = 1
+	recoil = 10
+	accuracy = 2
 
-/obj/item/weapon/gun/projectile/submachinegun/victor
+	scope_mounts = list ("picatinny")
+
+	scope_x_offset = 6
+	scope_y_offset = 8
+
+	barrel_x_offset = 12
+	barrel_y_offset = 12
+
+/obj/item/weapon/gun/projectile/submachinegun/vector
 	name = "Kriss Vector"
 	desc = "A compact gun using an unconventional delayed blowback system combined with in-line design to reduce perceived recoil and muzzle climb. It's chambered in 9mm"
 	icon_state = "victor"
@@ -2016,18 +1443,25 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol.ogg'
 	magazine_type = /obj/item/ammo_magazine/glock17
-	good_mags = list(/obj/item/ammo_magazine/glock17)
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_ADV_SCOPE
+	good_mags = list(/obj/item/ammo_magazine/glock17, /obj/item/ammo_magazine/glock17/vector)
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS|ATTACH_UNDER|ATTACH_SCOPE
 	weight = 3
 	equiptimer = 4
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4, move_delay=1, dispersion = list(0.1, 0.2, 0.3, 0.3, 0.2)),
-		list(name = "3-round bursts",	burst=3, burst_delay=1.5, move_delay=2, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
-		list(name = "automatic",	burst=1, burst_delay=1.0, move_delay=3, dispersion = list(1, 1.2, 1.4, 1.6, 1.8)),
-		)
-	effectiveness_mod = 1.15
+		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
+	)
 	sel_mode = 1
+	recoil = 20
+	accuracy = 2
+	scope_x_offset = 6
+	scope_y_offset = 5
+	under_x_offset = 6
+	under_y_offset = 4
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/qbz95
 	name = "QBZ-95"
@@ -2044,58 +1478,17 @@
 	good_mags = list(/obj/item/ammo_magazine/qbz95)
 	weight = 3.5
 	equiptimer = 11
-	effectiveness_mod = 1.05
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6, move_delay=2, dispersion = list(0.1, 0.2, 0.3, 0.2, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
-		)
-	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 60,
-			SHORT_RANGE_MOVING = 50,
-
-			MEDIUM_RANGE_STILL = 50,
-			MEDIUM_RANGE_MOVING = 40,
-
-			LONG_RANGE_STILL = 30,
-			LONG_RANGE_MOVING = 15,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 82,
-			SHORT_RANGE_MOVING = 72,
-
-			MEDIUM_RANGE_STILL = 64,
-			MEDIUM_RANGE_MOVING = 55,
-
-			LONG_RANGE_STILL = 44,
-			LONG_RANGE_MOVING = 31,
-
-			VERY_LONG_RANGE_STILL = 10,
-			VERY_LONG_RANGE_MOVING = 5),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 91,
-			SHORT_RANGE_MOVING = 81,
-
-			MEDIUM_RANGE_STILL = 76,
-			MEDIUM_RANGE_MOVING = 67,
-
-			LONG_RANGE_STILL = 55,
-			LONG_RANGE_MOVING = 43,
-
-			VERY_LONG_RANGE_STILL = 36,
-			VERY_LONG_RANGE_MOVING = 23),
+		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
+	sel_mode = 1
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS|ATTACH_UNDER
+	recoil = 25
+	accuracy = 3
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("picatinny")
 
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
 	name = "Makeshift AK-47"
@@ -2107,16 +1500,18 @@
 	caliber = "a762x39"
 	fire_sound = 'sound/weapons/guns/fire/AKM.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47/makeshift
-	good_mags = list(/obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
+	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 3.8
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.7, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
-		)
-	effectiveness_mod = 0.85
+		list(name = "automatic",	burst=1, burst_delay=1.7),
+	)
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	recoil = 50
+	accuracy = 5
+	under_mounts = list ("gp25_mount")
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58
 	name = "VZ-58"
@@ -2130,18 +1525,20 @@
 	reload_sound = 'sound/weapons/guns/interact/AKReload.ogg'
 	unload_sound = 'sound/weapons/guns/interact/AKUnload.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
-	good_mags = list(/obj/item/ammo_magazine/ak47)
+	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
 	weight = 2.93
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.2, 0.1, 0.2, 0.3, 0.1)),
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
-		)
-	effectiveness_mod = 1.20
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=1.3),
+	)
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
-	has_ak_reload = TRUE
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	recoil = 40
+	accuracy = 2
+	mag_x_offset = 2
+	under_mounts = list ("gp25_mount")
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/white
 	name = "White VZ-58"
@@ -2150,7 +1547,6 @@
 	icon_state = "white_vz58"
 	item_state = "white_vz58"
 	base_icon = "white_vz58"
-	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/vz58/black
 	name = "Black VZ-58"
@@ -2159,7 +1555,6 @@
 	icon_state = "black_vz58"
 	item_state = "black_vz58"
 	base_icon = "black_vz58"
-	has_ak_reload = TRUE
 
 /obj/item/weapon/gun/projectile/submachinegun/c7
 	name = "C7"
@@ -2170,23 +1565,25 @@
 	base_icon = "c7"
 	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
-	stat = "rifle"
 	magazine_type = /obj/item/ammo_magazine/m16
 	good_mags = list(/obj/item/ammo_magazine/m16)
 	weight = 2.98
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.1, 0, 0.1, 0.2, 0)),
-		list(name = "automatic",	burst=1, burst_delay=1.3, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.2, 1.2, 1.7)),
-		)
-	effectiveness_mod = 1.20
+		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "automatic",	burst=1, burst_delay=1.1),
+	)
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
+	recoil = 30
+	accuracy = 2
+	scope_mounts = list ("picatinny")
+	under_mounts = list ("m203_mount")
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan(src)
 	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher/New()
@@ -2198,7 +1595,6 @@
 	name = "C8"
 	desc = "A Canadian Colt C8 assault rifle, chambered in 5.56x45mm."
 	equiptimer = 11
-	effectiveness_mod = 1.23
 	icon_state = "c8"
 	item_state = "c8"
 	base_icon = "c8"
@@ -2210,8 +1606,9 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/arid/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/arid(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/arid/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/arid(src)
 	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/c7/winter
 	icon_state = "c7_winter"
 	item_state = "c7_winter"
@@ -2219,30 +1616,30 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/c7/winter/New()
 	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/elcan/winter(src)
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/winter/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/winter(src)
 	SP.attached(null,src,TRUE)
+
 /obj/item/weapon/gun/projectile/submachinegun/m2carbine
 	name = "M2 carbine"
-	desc = "An American Selective fire carbine using 7.62×33mm (Rimless.30 Carbine) ammunition in a external magazine."
-	icon = 'icons/obj/guns/rifles.dmi'
+	desc = "An American Selective fire carbine using 7.62x33mm (Rimless.30 Carbine) ammunition in a external magazine."
 	icon_state = "mcar"
 	item_state = "mcar"
 	base_icon = "mcar"
 	caliber = "a762x33"
 	fire_sound = 'sound/weapons/guns/fire/Garand.ogg'
-	ammo_type = /obj/item/ammo_casing/a762x33
 	magazine_type = /obj/item/ammo_magazine/m1carbine
 	good_mags = list(/obj/item/ammo_magazine/m1carbine, /obj/item/ammo_magazine/m1carbine/big)
 	weight = 3.4
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=1, recoil=0, move_delay=3, dispersion = list(0.2, 0.4, 0.4, 0.3, 0.2)),
-		list(name = "automatic",	burst=1, burst_delay=2, recoil=0, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
-		)
-	effectiveness_mod = 1.07
+		list(name = "semiauto",	burst=1, burst_delay=1),
+		list(name = "automatic",	burst=1, burst_delay=2),
+	)
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	recoil = 35
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/submachinegun/srm
 	name = "SR-3"
@@ -2260,53 +1657,52 @@
 	var/folded = FALSE
 	weight = 2
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=1, recoil=0, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.4)),
-		list(name = "automatic",	burst=1, burst_delay=2, recoil=0, move_delay=3, dispersion = list(1, 1.2, 1.3, 1.4, 1.4)),
-		)
-	effectiveness_mod = 1.09
+		list(name = "semiauto",	burst=1, burst_delay=1),
+		list(name = "automatic", burst=1, burst_delay=2),
+	)
 	sel_mode = 1
+	recoil = 30
+	accuracy = 3
+	barrel_x_offset = 10
+	barrel_y_offset = 11
+	scope_x_offset = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	scope_mounts = list ("dovetail")
 
-/obj/item/weapon/gun/projectile/submachinegun/srm/update_icon()
-	if (folded)
-		base_icon = "srm_folded"
-	else
-		base_icon = "srm"
-	if (ammo_magazine)
-		icon_state = base_icon
-		item_state = base_icon
-	else
-		icon_state = "[base_icon]_open"
-		item_state = "[base_icon]_open"
-	update_held_icon()
-
-	return
+/obj/item/weapon/gun/projectile/submachinegun/srm/New()
+	..()
+	var/obj/item/weapon/attachment/silencer/rifle/srm/SL = new/obj/item/weapon/attachment/silencer/rifle/srm(src)
+	SL.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/srm/verb/fold()
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
 	if (folded)
 		folded = FALSE
-		base_icon = "srm"
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
 		usr << "You extend the stock on \the [src]."
-		equiptimer = 12
+		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
+		recoil /= 1.5
 		folded = TRUE
-		base_icon = "srm_folded"
+		icon_state = "[base_icon]"
 		usr << "You collapse the stock on \the [src]."
-		equiptimer = 5
+		equiptimer = 7
 		set_stock()
 		update_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/srm/proc/set_stock()
 	if (folded)
 		slot_flags = SLOT_SHOULDER|SLOT_BELT
-		effectiveness_mod = 0.95
 	else
 		slot_flags = SLOT_SHOULDER
-		effectiveness_mod = 1.09
 
 /obj/item/weapon/gun/projectile/submachinegun/l85a2
 	name = "L85A2"
@@ -2314,8 +1710,8 @@
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "l85a2"
 	item_state = "m16"
-	base_icon = "l85a2"
-	caliber = "a556x45"
+	base_icon = "m16"
+	caliber = "l85a2"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	stat = "rifle"
 	magazine_type = /obj/item/ammo_magazine/m16
@@ -2324,12 +1720,13 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.1, 0.1, 0.2, 0.3, 0.4)),
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.2, 1.4, 1.6)),
+		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "automatic", burst=1, burst_delay=1.1),
 		)
-	effectiveness_mod = 1.12
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
+	mag_x_offset = -2
+	mag_y_offset = -4
 
 /obj/item/weapon/gun/projectile/submachinegun/aug
 	name = "Steyr AUG"
@@ -2347,24 +1744,26 @@
 	equiptimer = 14
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1, recoil=0, move_delay=2, dispersion = list(0.1, 0.1, 0.3, 0.3, 0.5)),
-		list(name = "automatic",	burst=1, burst_delay=1.1, recoil=0, move_delay=4, dispersion = list(1, 1.1, 1.3, 1.4, 1.7)),
+		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "automatic", burst=1, burst_delay=1.1),
 		)
-	effectiveness_mod = 1.20
 	sel_mode = 1
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	mag_x_offset = -5
+	mag_y_offset = -3
 
 /////////////////////////////////*FALLOUT*////////////////////////////////////////////
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	name = "Service Rifle"
 	desc = "A pre-war rifle design employed as the standard arm of the New California Republic."
-	base_icon = "service_rifle"
 	icon_state = "service_rifle"
 	item_state = "service_rifle"
+	base_icon = "service_rifle"
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0, recoil=0, move_delay=0.1, dispersion = list(0.1, 0, 0.2, 0, 0.1)),
+		list(name = "semiauto",	burst=1, burst_delay=0),
 		)
 	magazine_type = /obj/item/ammo_magazine/service_rifle
 	good_mags = list(/obj/item/ammo_magazine/service_rifle, /obj/item/ammo_magazine/m16)
