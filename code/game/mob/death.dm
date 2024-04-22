@@ -100,7 +100,7 @@
 /mob/proc/maim()
 	crush()
 
-/mob/proc/death(gibbed,deathmessage="seizes up and falls limp...")
+/mob/proc/death(gibbed, deathmessage="seizes up and falls limp...")
 
 	if (stat == DEAD)
 		return FALSE

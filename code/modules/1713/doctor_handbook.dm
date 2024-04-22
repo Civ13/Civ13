@@ -73,8 +73,8 @@
 		if (!is_bad)
 			user.show_message("<span class='notice'>* No general health issues.</span>")
 
-		var/ecount = 0
-		var/icount = 0
+		var/ecount = 0 // external organs count
+		var/icount = 0 // internal organs count
 
 		var/list/unsplinted_limbs = list()
 		user.show_message("[victim] has:")

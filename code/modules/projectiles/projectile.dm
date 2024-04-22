@@ -337,7 +337,7 @@
 		do_bullet_act(target_mob, hit_zone)
 		if (blockedhit == FALSE)
 			if (silenced)
-				to_chat(target_mob, SPAN_DANGER("You've been hit in the [parse_zone(hit_zone)] by the shrapnel!"))
+				to_chat(target_mob, SPAN_DANGER("You've been hit in \the [parse_zone(hit_zone)] by the shrapnel!"))
 			else
 				visible_message(SPAN_DANGER("\The [target_mob] is hit by the shrapnel in the [parse_zone(hit_zone)]!"))
 		return FALSE
@@ -517,7 +517,7 @@
 	else
 		passed_trenches = 0
 
-	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // стрельба лежа из окопа в окоп невозможна
+	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
 		qdel(src)
 		return

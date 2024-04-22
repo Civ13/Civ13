@@ -648,7 +648,7 @@ Current Defines (_defines/attachment.dm)
 		var/obj/item/weapon/gun/projectile/P = G
 		if (caliber != "multicaliber")
 			if (P.caliber != caliber)
-				user << "[src.name] can't be attached!"
+				to_chat(user, SPAN_WARNING("\The [src.name] can't be attached!"))
 				return
 	if (quick)
 		A_attached = TRUE
@@ -671,7 +671,7 @@ Current Defines (_defines/attachment.dm)
 			G.attachments += src
 			G.update_attachment_actions(user)
 			G.ergonomics *= src.ergonomics
-			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			to_chat(user, SPAN_NOTICE("You attach \the [src] to the [G]."))
 			G.silencer = src
 			G.update_icon()
 		else
@@ -687,7 +687,7 @@ Current Defines (_defines/attachment.dm)
 		A_attached = FALSE
 		loc = get_turf(src)
 		G.ergonomics /= src.ergonomics
-		user << "You remove [src] from the [G]."
+		to_chat(user, SPAN_NOTICE("You remove \the [src] from the [G]."))
 		G.silencer = null
 		G.update_icon()
 	else
@@ -697,7 +697,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/plastic_bottle
 	name = "plastic bottle suppressor"
 	icon_state = "plastic_bottle_suppressor"
-	desc = "Не то чтобы этот глушитель хоть как-то работал. Надев его вы будете выглядеть как клоун"
+	desc = "This suppressor might not even work, but it's worth a try."
 	reduction = 5
 	fits = list("smg", "rifle")
 	ergonomics = 1

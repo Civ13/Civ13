@@ -103,7 +103,7 @@
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"
-	lobby_icon = 'icons/lobby/vietnam.png'
+	lobby_icon = 'icons/lobby/coldwar.png'
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>24 hours</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
@@ -202,7 +202,7 @@
 	ID = MAP_NATIONSRP_TRIPLE
 	title = "Triple Nations RP"
 	availablefactions = list("Civilization A Citizen", "Civilization B Citizen", "Civilization C Citizen")
-	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is a RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	default_research = 145
 	ordinal_age = 4
 	age1_done = TRUE
@@ -216,12 +216,12 @@
 
 /obj/map_metadata/nationsrp/triple/New()
 	..()
-	civname_a = "Latin Nation"
-	civname_b = "Gaelic Nation"
+	civname_a = "British Nation"
+	civname_b = "French Nation"
 	civname_c = "German Nation"
-	var/newnamea = list("Latin Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
-	var/newnameb = list("Gaelic Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
-	var/newnamec = list("German Nation" = list(default_research,default_research,default_research,null,0,"saltire","#0B5394","#B45F06"))
+	var/newnamea = list("British Nation" = list(default_research,default_research,default_research,null,0,"bigcross","#800101","#C0C0C0"))
+	var/newnameb = list("French Nation" = list(default_research,default_research,default_research,null,0,"saltire","#193798","#C0C0C0"))
+	var/newnamec = list("German Nation" = list(default_research,default_research,default_research,null,0,"cross","#FFCC1E","#111111"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec

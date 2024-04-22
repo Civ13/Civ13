@@ -19,7 +19,7 @@
 	age = "1992"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siberian Conflict"
-	mission_start_message = "<font size=4>The remnants of the Soviet Union are fighting the Coalition in a devastated Siberian town, home to a military research facility in the <b>MIDDLE</b>.<br>A helicopter transporting a high ranking officer has crashed in the <b>SOUTH-WEST</b> of the map.<br>Better retrieve the highly confidential documents in time before the enemy does...</font>"
+	mission_start_message = "<font size=4>The remnants of the <font color = red>Soviet Union</font color> are fighting the <font color = 'blue'>Coalition</font color> in a devastated Siberian town, home to a military research facility in the <b>MIDDLE</b>.<br>A helicopter transporting a high ranking officer has crashed in the <b>SOUTH-WEST</b> of the map.<br>Better retrieve the highly confidential documents in time before the enemy does...<br>The battle will start in roughly <b>5 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	ordinal_age = 7

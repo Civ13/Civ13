@@ -14,6 +14,7 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 4
+	buildstack = /obj/item/weapon/barrier
 
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
@@ -44,7 +45,7 @@
 			return TRUE
 
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/barrier))
+	if (W.type == /obj/item/weapon/barrier)
 		if (stage == 3)
 			user << "You start adding dirt to the wall..."
 			if (do_after(user, 20, src) && W)

@@ -1068,7 +1068,6 @@ var/list/coefflist = list()
 	else
 		return H.pulse
 
-
 /mob/living/human/proc/make_adrenaline(amount)
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)

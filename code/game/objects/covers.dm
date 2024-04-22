@@ -172,7 +172,7 @@
 
 /obj/covers/fire_act(temperature)
 	if (prob(20) && flammable)
-		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
 		qdel(src)
 
 /obj/covers/CanPass(var/atom/movable/mover)
