@@ -330,6 +330,8 @@ var/global/datum/controller/occupations/job_master
 				continue
 			if (T.density)
 				spawnable_turf = FALSE
+			if (istype(T, /turf/floor/beach/water/deep))
+				spawnable_turf = FALSE
 			if (spawnable_turf && !blocked)
 				valid_spawns += T
 
