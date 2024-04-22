@@ -144,6 +144,9 @@
 				loadtime /= 2
 
 			if (do_after(M, loadtime, M, can_move = TRUE))
+				if (loaded.len >= max_loaded)
+					to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+					return
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded += W
@@ -237,7 +240,7 @@
 	if (!broken)
 		if (istype(W, ammotype))
 			if (loaded.len >= max_loaded)
-				M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
+				to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
 				return
 			// load first and only slot
 			var/loadtime = caliber/2
@@ -245,6 +248,9 @@
 				loadtime = caliber
 			if (do_after(M, loadtime, src, can_move = TRUE))
 				if (M && (locate(M) in range(1,src)))
+					if (loaded.len >= max_loaded)
+						to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+						return
 					M.remove_from_mob(W)
 					W.loc = src
 					loaded += W
@@ -394,6 +400,9 @@
 						loadtime = caliber
 					if (do_after(user, loadtime, user, can_move = TRUE))
 						if (user && (locate(user) in range(1,src)))
+							if (loaded.len >= max_loaded)
+								to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+								return
 							user.remove_from_mob(M)
 							M.loc = src
 							loaded += M
