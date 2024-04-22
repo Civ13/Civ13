@@ -6,6 +6,7 @@
 	respawn_delay = 600
 	no_hardcore = FALSE
 	ambience = list('sound/ambience/winter.ogg')
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		AMERICAN,

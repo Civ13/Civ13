@@ -478,7 +478,6 @@
 #include "code\game\objects\map_metadata\kenobis_weeb_shit.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\kursk.dm"
-#include "code\game\objects\map_metadata\landing_at_constantinopoli.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\long_march.dm"
@@ -771,7 +770,6 @@
 #include "code\modules\1713\jobs\indians.dm"
 #include "code\modules\1713\jobs\italian.dm"
 #include "code\modules\1713\jobs\japanese.dm"
-#include "code\modules\1713\jobs\latin_empire.dm"
 #include "code\modules\1713\jobs\medieval.dm"
 #include "code\modules\1713\jobs\modern.dm"
 #include "code\modules\1713\jobs\nomads.dm"
@@ -1122,5 +1120,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\campaign\campaign1.dmm"
 // END_INCLUDE

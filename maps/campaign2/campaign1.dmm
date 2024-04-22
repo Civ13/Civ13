@@ -93,7 +93,7 @@
 "oy" = (/obj/effect/landmark{name = "JoinLateRed"},/turf/floor/dirt/dust,/area/caribbean)
 "oQ" = (/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/vehicleparts/frame/car/left/armored,/turf/floor/plating/road,/area/caribbean)
 "pa" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean)
-"pJ" = (/obj/map_metadata/campaign,/turf/floor/grass,/area/caribbean)
+"pJ" = (/turf/floor/grass,/area/caribbean)
 "pW" = (/obj/structure/railing/steel{dir = 1},/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean)
 "qt" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean)
 "qA" = (/turf/floor/plating/road/whiteline{dir = 8},/area/caribbean)

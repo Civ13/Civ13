@@ -208,17 +208,17 @@
 	male_tts_voice = "Jacek" //polish
 	female_tts_voice = "Maja" //polish
 
-/datum/job/redfaction
-	default_language = "Redmenian"
-	additional_languages = list("Blugoslavian" = 10)
-	male_tts_voice = "Takumi"
-	female_tts_voice = "Mizuki"
-
 /datum/job/bluefaction
 	default_language = "Blugoslavian"
 	additional_languages = list("Redmenian" = 10)
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
+
+/datum/job/redfaction
+	default_language = "Redmenian"
+	additional_languages = list("Blugoslavian" = 10)
+	male_tts_voice = "Takumi"
+	female_tts_voice = "Mizuki"
 
 /datum/job/update_character(var/mob/living/human/H)
 	. = ..()

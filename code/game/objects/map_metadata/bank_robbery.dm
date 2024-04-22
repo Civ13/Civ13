@@ -7,6 +7,7 @@
 		/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 600 // 1 minute
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		CIVILIAN,

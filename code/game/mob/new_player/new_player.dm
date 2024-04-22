@@ -139,7 +139,9 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>[translate("Join Game!")]</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)
+	if (client.holder)
+		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
+	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN )
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -423,19 +425,19 @@ var/global/redirect_all_players = null
 			return FALSE
 
 		var/factjob
-		for (var/i in faction_list_red)
+		for (var/i in faction_list_blue)
 			var/temp_ckey = lowertext(i)
 			temp_ckey = replacetext(temp_ckey," ", "")
 			temp_ckey = replacetext(temp_ckey,"_", "")
 			if (temp_ckey == client.ckey)
-				factjob = "RDF"
+				factjob = "BAF"
 		if (!factjob)
-			for (var/i in faction_list_blue)
+			for (var/i in faction_list_red)
 				var/temp_ckey = lowertext(i)
 				temp_ckey = replacetext(temp_ckey," ", "")
 				temp_ckey = replacetext(temp_ckey,"_", "")
 				if (temp_ckey == client.ckey)
-					factjob = "BAF"
+					factjob = "RDF"
 
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
@@ -622,7 +624,7 @@ var/global/redirect_all_players = null
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES && map.ID != MAP_BATTLE_SHIPS && map.ID != MAP_NANKOU && map.ID != MAP_MARCO_POLO_BRIDGE)
+		if (map && map.has_occupied_base(job_flag) && !map.can_spawn_on_base_capture)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -1198,10 +1200,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_filipino.len] Filipino "
 	if (POLISH in map.faction_organization)
 		dat += "[alive_polish.len] Poles "
-	if (REDFACTION in map.faction_organization)
-		dat += "[alive_redfaction.len] Redmenians "
 	if (BLUEFACTION in map.faction_organization)
 		dat += "[alive_bluefaction.len] Blugoslavians "
+	if (REDFACTION in map.faction_organization)
+		dat += "[alive_redfaction.len] Redmenians "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1233,8 +1235,8 @@ var/global/redirect_all_players = null
 		VIETNAMESE = FALSE,
 		CHINESE = FALSE,
 		POLISH = FALSE,
-		REDFACTION = FALSE,
 		BLUEFACTION = FALSE,
+		REDFACTION = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -1331,10 +1333,10 @@ var/global/redirect_all_players = null
 		if (istype(job, /datum/job/polish) && !polish_toggled)
 			job_is_available = FALSE
 		
-		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
+		if (istype(job, /datum/job/bluefaction) && !bluefaction_toggled)
 			job_is_available = FALSE
 		
-		if (istype(job, /datum/job/bluefaction) && !bluefaction_toggled)
+		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
 			job_is_available = FALSE
 
 		// check if the job is admin-locked or disabled codewise

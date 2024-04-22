@@ -44,8 +44,8 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FILIPINO]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[POLISH]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[REDFACTION]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BLUEFACTION]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[REDFACTION]
 	else
 		for (var/faction in map.faction_organization)
 			if (job_master)
@@ -549,10 +549,10 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateFP"
 				if (POLISH)
 					spawn_location = "JoinLatePOL"
-				if (REDFACTION)
-					spawn_location = "JoinLateRed"
 				if (BLUEFACTION)
 					spawn_location = "JoinLateBlue"
+				if (REDFACTION)
+					spawn_location = "JoinLateRed"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -642,8 +642,8 @@ var/global/datum/controller/occupations/job_master
 	var/chinese = alive_n_of_side(CHINESE)
 	var/filipino = alive_n_of_side(FILIPINO)
 	var/polish = alive_n_of_side(POLISH)
-	var/redfaction = alive_n_of_side(REDFACTION)
 	var/bluefaction = alive_n_of_side(BLUEFACTION)
+	var/redfaction = alive_n_of_side(REDFACTION)
 
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
@@ -671,8 +671,8 @@ var/global/datum/controller/occupations/job_master
 	var/max_chinese = INFINITY
 	var/max_filipino = INFINITY
 	var/max_polish = INFINITY
-	var/max_redfaction = INFINITY
 	var/max_bluefaction = INFINITY
+	var/max_redfaction = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -751,10 +751,10 @@ var/global/datum/controller/occupations/job_master
 			max_filipino = ceil(relevant_clients * map.faction_distribution_coeffs[FILIPINO])
 		if (map.faction_distribution_coeffs.Find(POLISH))
 			max_polish = ceil(relevant_clients * map.faction_distribution_coeffs[POLISH])
-		if (map.faction_distribution_coeffs.Find(REDFACTION))
-			max_redfaction = ceil(relevant_clients * map.faction_distribution_coeffs[REDFACTION])
 		if (map.faction_distribution_coeffs.Find(BLUEFACTION))
 			max_bluefaction = ceil(relevant_clients * map.faction_distribution_coeffs[BLUEFACTION])
+		if (map.faction_distribution_coeffs.Find(REDFACTION))
+			max_redfaction = ceil(relevant_clients * map.faction_distribution_coeffs[REDFACTION])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
@@ -903,14 +903,14 @@ var/global/datum/controller/occupations/job_master
 			if (polish >= max_polish)
 				return TRUE
 		
-		if (REDFACTION)
-			if (redfaction_forceEnabled)
-				return FALSE
-			if (redfaction >= max_redfaction)
-				return TRUE
 		if (BLUEFACTION)
 			if (bluefaction_forceEnabled)
 				return FALSE
 			if (bluefaction >= max_bluefaction)
+				return TRUE
+		if (REDFACTION)
+			if (redfaction_forceEnabled)
+				return FALSE
+			if (redfaction >= max_redfaction)
 				return TRUE
 	return FALSE

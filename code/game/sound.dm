@@ -288,13 +288,13 @@ var/list/charge_sounds_iranian = list(
 	'sound/effects/emotes/charge_iran1.ogg',
 	'sound/effects/emotes/charge_iran2.ogg',
 	'sound/effects/emotes/charge_iran3.ogg',)
+var/list/charge_sounds_bluefaction = list(
+	
+	)
 var/list/charge_sounds_redfaction = list(
 	'sound/effects/emotes/redmenia1.ogg',
 	'sound/effects/emotes/redmenia2.ogg',
 	'sound/effects/emotes/redmenia3.ogg',)
-var/list/charge_sounds_bluefaction = list(
-	
-	)
 var/list/charge_sounds_police = list(
 	'sound/effects/emotes/charge_police1.ogg',
 	'sound/effects/emotes/charge_police2.ogg',
@@ -616,10 +616,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_african)
 			if ("charge_IRANIAN")
 				soundin = pick(charge_sounds_iranian)
-			if ("charge_REDFACTION")
-				soundin = pick(charge_sounds_redfaction)
 			if ("charge_BLUEFACTION")
 				soundin = pick(charge_sounds_bluefaction)
+			if ("charge_REDFACTION")
+				soundin = pick(charge_sounds_redfaction)
 			if ("charge_POLICE")
 				soundin = pick(charge_sounds_police)
 			if ("charge_RUROBBERS")

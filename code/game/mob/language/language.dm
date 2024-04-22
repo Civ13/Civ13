@@ -416,7 +416,7 @@
 	var/full_name = "David Stewart"
 	return full_name
 
-/datum/language/proc/get_random_redfaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_bluefaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
@@ -426,7 +426,7 @@
 	var/full_name = "John Adams"
 	return full_name
 
-/datum/language/proc/get_random_bluefaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_redfaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
 			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))

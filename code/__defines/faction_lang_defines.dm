@@ -50,8 +50,8 @@
 #define SCOTS "SCOTS"
 #define SCOTTISHGAELIC "SCOTTISHGAELIC"
 #define WELSH "WELSH"
-#define REDFACTION "REDFACTION"
 #define BLUEFACTION "BLUEFACTION"
+#define REDFACTION "REDFACTION"
 
 /proc/faction_const2name(constant,age = 0)
 
@@ -267,9 +267,9 @@
 	if (constant == FILIPINO)
 		return "Filipino"
 	
-	if (constant == REDFACTION)
-		return "Redmenia"
-
 	if (constant == BLUEFACTION)
 		return "Blugoslavia"
+	
+	if (constant == REDFACTION)
+		return "Redmenia"
 

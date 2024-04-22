@@ -1920,10 +1920,10 @@
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-				if (H.faction_text == REDFACTION)
-					T.icon_state = "m16"
-				else if (H.faction_text == BLUEFACTION)
+				if (H.faction_text == BLUEFACTION)
 					T.icon_state = "ak74"
+				else if (H.faction_text == REDFACTION)
+					T.icon_state = "m16"
 			return
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))

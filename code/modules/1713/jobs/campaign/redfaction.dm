@@ -207,20 +207,27 @@
 
 	if (findtext(title, "Machinegunner"))
 		if(A.climate == "taiga" || A.climate == "tundra")
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/redmg/white(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/red/white/mg(H), slot_belt)
 		else
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/redmg(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/red/mg(H), slot_belt)
 	else if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.setStat("rifle", STAT_MEDIUM_HIGH)
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 		var/obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin(null)
 		if(A.climate == "taiga" || A.climate == "tundra")
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather/white(H), slot_gloves)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white/full(H), slot_belt)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/leather(H), slot_gloves)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
 		uniform.attackby(webbing, H)
+	else if  (findtext(title, "Des. Marksman"))
+		var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/svd(null)
+		uniform.attackby(webbing, H)
+		if(A.climate == "taiga" || A.climate == "tundra")
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white/full(H), slot_belt)
+		else
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/sapper, slot_belt)
 	else
@@ -241,9 +248,9 @@
 				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47(null)
 				uniform.attackby(webbing, H)
 		if(A.climate == "taiga" || A.climate == "tundra")
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white/full(H), slot_belt)
 		else
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
 	
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
@@ -366,7 +373,7 @@
 			if (findtext(title, "Marine"))
 				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47(null)
 				uniform.attackby(webbing, H)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
 		H.setStat("medical", STAT_NORMAL)
 	H.make_artillery_scout()
 	return TRUE
