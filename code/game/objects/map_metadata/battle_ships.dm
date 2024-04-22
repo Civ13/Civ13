@@ -3,6 +3,7 @@
 	title = "Battle Ships"
 	no_winner = "The battle is still going on."
 	lobby_icon = 'icons/lobby/battleships.png'
+	can_spawn_on_base_capture = TRUE
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
 		REDFACTION,

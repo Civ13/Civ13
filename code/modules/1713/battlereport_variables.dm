@@ -25,8 +25,8 @@ var/list/alive_chinese = list()
 var/list/alive_filipino = list()
 var/list/alive_polish = list()
 var/list/alive_italian = list()
-var/list/alive_redfaction = list()
 var/list/alive_bluefaction = list()
+var/list/alive_redfaction = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -53,8 +53,8 @@ var/list/heavily_injured_chinese = list()
 var/list/heavily_injured_filipino = list()
 var/list/heavily_injured_polish = list()
 var/list/heavily_injured_italian = list()
-var/list/heavily_injured_redfaction = list()
 var/list/heavily_injured_bluefaction = list()
+var/list/heavily_injured_redfaction = list()
 
 
 var/list/dead_british = list()
@@ -82,8 +82,8 @@ var/list/dead_chinese = list()
 var/list/dead_filipino = list()
 var/list/dead_polish = list()
 var/list/dead_italian = list()
-var/list/dead_redfaction = list()
 var/list/dead_bluefaction = list()
+var/list/dead_redfaction = list()
 
 var/list/recently_died = list()
 
@@ -194,14 +194,14 @@ var/list/recently_died = list()
 				dead = dead_italian
 				injured = heavily_injured_italian
 				alive = alive_italian
-			if (REDFACTION)
-				dead = dead_redfaction
-				injured = heavily_injured_redfaction
-				alive = alive_redfaction
 			if (BLUEFACTION)
 				dead = dead_bluefaction
 				injured = heavily_injured_bluefaction
 				alive = alive_bluefaction
+			if (REDFACTION)
+				dead = dead_redfaction
+				injured = heavily_injured_redfaction
+				alive = alive_redfaction
 	return list(alive, dead, injured)
 
 /mob/living/human/death()

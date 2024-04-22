@@ -16,6 +16,8 @@
 /obj/item/weapon/storage/belt/smallpouches/red
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"
+
+/obj/item/weapon/storage/belt/smallpouches/red/full
 	New()
 		..()
 		new /obj/item/clothing/mask/gas/swat_new(src)
@@ -26,20 +28,47 @@
 /obj/item/weapon/storage/belt/smallpouches/red/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
+/obj/item/weapon/storage/belt/smallpouches/red/white/full
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/ak47(src)
+		new /obj/item/weapon/attachment/bayonet(src)
 
-/obj/item/weapon/storage/belt/largepouches/redmg
-/obj/item/weapon/storage/belt/largepouches/redmg/New()
-	..()
-	new /obj/item/ammo_magazine/dp(src)
-	new /obj/item/ammo_magazine/dp(src)
+/obj/item/weapon/storage/belt/smallpouches/red/recon
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/mosin(src)
+		new /obj/item/ammo_magazine/mosin(src)
 
-/obj/item/weapon/storage/belt/largepouches/redmg/white
+/obj/item/weapon/storage/belt/largepouches/red
+	icon_state = "largepouches"
+	item_state = "largepouches"
+
+/obj/item/weapon/storage/belt/largepouches/red/mg
+	New()
+		..()
+		new /obj/item/ammo_magazine/dp(src)
+		new /obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/belt/largepouches/red/white
 	icon_state = "largepouches_white"
 	item_state = "largepouches_white"
+
+/obj/item/weapon/storage/belt/largepouches/red/white/mg
+	New()
+		..()
+		new /obj/item/ammo_magazine/dp(src)
+		new /obj/item/ammo_magazine/dp(src)
 
 /obj/item/weapon/storage/belt/smallpouches/blue
 	icon_state = "smallpouches_olive"
 	item_state = "smallpouches_olive"
+
+/obj/item/weapon/storage/belt/smallpouches/blue/full
 	New()
 		..()
 		new /obj/item/clothing/mask/gas/swat_new(src)
@@ -50,16 +79,41 @@
 /obj/item/weapon/storage/belt/smallpouches/blue/white
 	icon_state = "smallpouches_white"
 	item_state = "smallpouches_white"
+/obj/item/weapon/storage/belt/smallpouches/blue/white/full
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/ak47(src)
+		new /obj/item/weapon/attachment/bayonet(src)
 
-/obj/item/weapon/storage/belt/largepouches/bluemg
-/obj/item/weapon/storage/belt/largepouches/bluemg/New()
-	..()
-	new /obj/item/ammo_magazine/dp(src)
-	new /obj/item/ammo_magazine/dp(src)
+/obj/item/weapon/storage/belt/smallpouches/blue/recon
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/mosin(src)
+		new /obj/item/ammo_magazine/mosin(src)
 
-/obj/item/weapon/storage/belt/largepouches/bluemg/white
+/obj/item/weapon/storage/belt/largepouches/blue
+	icon_state = "largepouches"
+	item_state = "largepouches"
+
+/obj/item/weapon/storage/belt/largepouches/blue/mg
+	New()
+		..()
+		new /obj/item/ammo_magazine/dp(src)
+		new /obj/item/ammo_magazine/dp(src)
+
+/obj/item/weapon/storage/belt/largepouches/blue/white
 	icon_state = "largepouches_white"
 	item_state = "largepouches_white"
+
+/obj/item/weapon/storage/belt/largepouches/blue/white/mg
+	New()
+		..()
+		new /obj/item/ammo_magazine/dp(src)
+		new /obj/item/ammo_magazine/dp(src)
 
 
 ///////////////////// Webbings ///////////////////////
@@ -70,6 +124,13 @@
 	slots = 3
 	icon_state = "green_webbing"
 	item_state = "green_webbing"
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/mosin
+	New()
+		..()
+		for (var/i=1, i<= 2, i++)
+			new /obj/item/ammo_magazine/mosin(hold)
+		new /obj/item/ammo_magazine/mosinbox(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
 	New()
@@ -87,25 +148,25 @@
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
+			new /obj/item/ammo_magazine/ak47(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak74(hold)
+			new /obj/item/ammo_magazine/ak74(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47/drum(hold)
+			new /obj/item/ammo_magazine/ak47/drum(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/nomads
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
+			new /obj/item/ammo_magazine/emptymagazine/rifle/ak47/filled(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red
 	name = "Redmenian green chest webbing"
@@ -114,20 +175,33 @@
 	icon_state = "green_webbing"
 	item_state = "green_webbing"
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/mosin
+	New()
+		..()
+		for (var/i=1, i<= 2, i++)
+			new /obj/item/ammo_magazine/mosin(hold)
+		new /obj/item/ammo_magazine/mosinbox(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/m16(hold)
+			new /obj/item/ammo_magazine/m16(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/ak47
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
+			new /obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/svd
+	New()
+		..()
+		for (var/i=1, i<= 3, i++)
+			new /obj/item/ammo_magazine/svd(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/red/nomads
 	New()
 		..()
 		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)
+			new /obj/item/ammo_magazine/emptymagazine/rifle/m16/filled(hold)

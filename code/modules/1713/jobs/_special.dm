@@ -197,10 +197,10 @@
 		. = FILIPINO
 	else if (istype(src, /datum/job/polish))
 		. = POLISH
-	else if (istype(src, /datum/job/redfaction))
-		. = REDFACTION
 	else if (istype(src, /datum/job/bluefaction))
 		. = BLUEFACTION
+	else if (istype(src, /datum/job/redfaction))
+		. = REDFACTION
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -284,12 +284,12 @@
 	else if (istype(src, /datum/job/polish))
 		user.faction_text = "POLISH"
 		user.base_faction = new/datum/job/polish(user, src)
-	else if (istype(src, /datum/job/redfaction))
-		user.faction_text = "REDFACTION"
-		user.base_faction = new/datum/faction/redfaction(user, src)
 	else if (istype(src, /datum/job/bluefaction))
 		user.faction_text = "BLUEFACTION"
 		user.base_faction = new/datum/faction/bluefaction(user, src)
+	else if (istype(src, /datum/job/redfaction))
+		user.faction_text = "REDFACTION"
+		user.base_faction = new/datum/faction/redfaction(user, src)
 
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))

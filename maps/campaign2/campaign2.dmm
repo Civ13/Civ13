@@ -227,7 +227,7 @@
 "GH" = (/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/trench,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
 "GO" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/forest)
 "GV" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
-"GX" = (/obj/map_metadata/campaign,/turf/wall/rockwall,/area/caribbean/forest)
+"GX" = (/turf/wall/rockwall,/area/caribbean/forest)
 "Hc" = (/obj/structure/railing/steel,/obj/structure/barbwire{dir = 8},/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})
 "Hg" = (/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/turf/floor/dirt/dust,/area/caribbean/forest)
 "Hj" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land/outside{name = "Blugoslavian Command Post"; icon_state = "blue2"})

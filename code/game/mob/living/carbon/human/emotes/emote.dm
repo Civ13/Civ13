@@ -461,10 +461,10 @@ var/list/vocal_emotes = list(
 									playsound(get_turf(src), "charge_VIETNAMESE", 100)
 								if (FILIPINO)
 									playsound(get_turf(src), "charge_FILIPINO", 100)
-								if (REDFACTION)
-									playsound(get_turf(src), "charge_REDFACTION", 100)
 								if (BLUEFACTION)
 									playsound(get_turf(src), "charge_BLUEFACTION", 100)
+								if (REDFACTION)
+									playsound(get_turf(src), "charge_REDFACTION", 100)
 								else // if no corresponding faction is found we'll default to generic charges
 									playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
 					else

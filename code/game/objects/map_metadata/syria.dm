@@ -5,6 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		ARAB,

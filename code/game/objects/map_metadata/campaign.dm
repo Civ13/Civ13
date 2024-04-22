@@ -13,8 +13,8 @@
 		BLUEFACTION)
 
 	roundend_condition_sides = list(
-		list(REDFACTION) = /area/caribbean/british/land,
-		list(BLUEFACTION) = /area/caribbean/japanese,
+		list(REDFACTION) = /area/caribbean/faction1,
+		list(BLUEFACTION) = /area/caribbean/faction2,
 		)
 	age = "2024"
 	ordinal_age = 8
@@ -60,6 +60,14 @@
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
 	)
+	var/list/capturable_equipment = list(
+		/obj/structure/cannon/mortar,
+		/obj/structure/cannon/modern,
+		/obj/structure/cannon/rocket,
+		/obj/item/weapon/gun/projectile/automatic/stationary,
+	)
+	var/list/captured_equipment_red = list()
+	var/list/captured_equipment_blue = list()
 
 /obj/map_metadata/campaign/New()
 	..()
@@ -297,6 +305,7 @@
 	code = 932145
 	name = "Blugoslavian Key"
 
+// For a single objective that needs to be captured by both factions
 /*
 /obj/map_metadata/campaign/update_win_condition()
 	if (world.time >= victory_time)
@@ -373,35 +382,42 @@
 	return TRUE
 */
 
-
-var/no_loop_cm = FALSE
-
+// For capturing a base
 /obj/map_metadata/campaign/update_win_condition()
+	// Win when timer reaches zero
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
+		get_faction1_captured_equipment()
+		get_faction2_captured_equipment()
 		ticker.finished = TRUE
-		var/message = "The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : ""]! The Blugoslavians halted the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		var/message = "<font color='red'>The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font> The Blugoslavians halted the attack!"
+		world << SPAN_NOTICE("<font size = 4>[message]</font>")
+		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_cm == FALSE)
+	// Win when objective is captured
+	if (world.time >= next_win && next_win != -1)
+		if (win_condition_spam_check)
+			return FALSE
+		get_faction1_captured_equipment()
+		get_faction2_captured_equipment()
 		ticker.finished = TRUE
-		var/message = "The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = "<font color='blue'>The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font>"
+		world << SPAN_NOTICE("<font size = 4>[message]</font>")
+		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		no_loop_cm = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -409,8 +425,8 @@ var/no_loop_cm = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -419,7 +435,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -428,7 +444,7 @@ var/no_loop_cm = FALSE
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -473,6 +489,7 @@ var/no_loop_cm = FALSE
 				LS1.fire_stacks += rand(2,4)
 				LS1.IgniteMob()
 			new/obj/effect/fire(O)
+
 /obj/map_metadata/campaign/proc/precision_strike(var/inputx, var/inputy, var/inputz)
 	var/xoffsetmin = inputx-2
 	var/xoffsetmax = inputx+2
@@ -501,6 +518,26 @@ var/no_loop_cm = FALSE
 				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 				explosion(O,2,3,3,3)
 
+/area/caribbean/captured_equipment
+	name = "captured equipment zone"
+	icon_state = "green1"
+
+/area/caribbean/captured_equipment/faction1
+	name = "red captured equipment zone"
+	icon_state = "red3"
+/area/caribbean/captured_equipment/faction2
+	name = "blue captured equipment zone"
+	icon_state = "blue3"
+
+/obj/map_metadata/campaign/proc/get_faction1_captured_equipment()
+	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
+		if(capturable_equipment.Find(I))
+			captured_equipment_red += I
+
+/obj/map_metadata/campaign/proc/get_faction2_captured_equipment()
+	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
+		if(capturable_equipment.Find(I))
+			captured_equipment_blue += I
 
 ///////////Map Specific Objects///////////
 /obj/structure/altar/heads

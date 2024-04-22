@@ -1620,11 +1620,11 @@
 						holder2.icon_state = "civ6"
 					else
 						holder2.icon_state = ""
-				
-				if (REDFACTION)
-					holder2.icon_state = "redmenia"
+					
 				if (BLUEFACTION)
 					holder2.icon_state = "blugoslavia"
+				if (REDFACTION)
+					holder2.icon_state = "redmenia"
 			holder2.overlays.Cut()
 			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
 				switch(original_job_title)

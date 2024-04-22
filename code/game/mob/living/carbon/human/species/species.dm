@@ -638,14 +638,14 @@
 		else
 			return capitalize(pick(first_names_male_scottishgaelic)) + " " + capitalize(pick(last_names_scottishgaelic))
 
-/datum/species/proc/get_random_redfaction_name(var/gender)
+/datum/species/proc/get_random_bluefaction_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
 			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
 		else
 			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
 
-/datum/species/proc/get_random_bluefaction_name(var/gender)
+/datum/species/proc/get_random_redfaction_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
 			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))

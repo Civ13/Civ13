@@ -96,6 +96,7 @@ var/civmax_research = list(230,230,230)
 	var/current_loser = null
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
+	var/can_spawn_on_base_capture = FALSE
 	var/list/awards = list()
 	var/list/scores = list()
 	var/list/warrants = list()
@@ -755,8 +756,8 @@ var/civmax_research = list(230,230,230)
 		VIETNAMESE = 0,
 		CHINESE = 0,
 		FILIPINO = 0,
-		REDFACTION = 0,
 		BLUEFACTION = 0,
+		REDFACTION = 0,
 		)
 
 	if (!(side in soldiers))
@@ -883,10 +884,10 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if (POLISH)
 			return "Polish"
-		if (REDFACTION)
-			return "Redmenia"
 		if (BLUEFACTION)
 			return "Blugoslavia"
+		if (REDFACTION)
+			return "Redmenia"
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
@@ -955,13 +956,13 @@ var/civmax_research = list(230,230,230)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
 			return "Polish Home Army"
+		if (BLUEFACTION)
+			return "Blugoslavian Armed Forces"
 		if (REDFACTION)
 			if (map.ID == MAP_ROTSTADT)
 				return "Rotstadt People's Republic"
 			else
 				return "Redmenia Defence Force"
-		if (BLUEFACTION)
-			return "Blugoslavian Armed Forces"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -1007,10 +1008,10 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if ("Polish Home Army")
 			return "Polish"
-		if ("Redmenia Defence Force")
-			return "Redmenian"
 		if ("Blugoslavian Armed Forces")
 			return "Blugoslavian"
+		if ("Redmenia Defence Force")
+			return "Redmenian"
 
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE

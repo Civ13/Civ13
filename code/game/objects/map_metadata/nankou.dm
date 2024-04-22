@@ -4,6 +4,7 @@
 	lobby_icon = 'icons/lobby/china.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE
+	can_spawn_on_base_capture = TRUE
 	respawn_delay = 1200
 	faction_organization = list(
 		CHINESE,
