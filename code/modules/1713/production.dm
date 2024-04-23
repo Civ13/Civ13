@@ -1947,7 +1947,7 @@
 
 /obj/item/weapon/can/filled
 	var/list/randbrand = list(
-		"Master Taislin", "Metsobeshi", "Old Man", "Welmert",
+		"Master Singulo", "Metsobeshi", "Old Man", "Welmert",
 		"McDonohugh", "McKellen's Delight",	"Freeman", "Valithorento's Finest",
 		"Slowman", "Pajeet Special", "Toyoda", "Uma Delicia",
 		"Ooga's Cuisine", "Burner King", "Kenobi Kabosh"

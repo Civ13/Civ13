@@ -429,7 +429,7 @@
 	else if (input == "Tunnel")
 		/*if (!(locate(/obj/roof/, (user.x,user.y,user.z-1)))
 			user << "<span class='notice'>You try to dig, but something hard is underneath!</span>"
-			return*/ //TO DO TO STOP PEOPLE FROM DIGGING ITNO BUNKERS LATER, TAISLIN PLZ FIX K THX!
+			return*/ //Stop people from digging into bunkers, please fix
 		if (!(locate(/obj/structure/multiz/) in user.loc) && user.z == 1)
 			TB = locate(user.x,user.y,user.z+1)
 			for (var/obj/OB in TB)
