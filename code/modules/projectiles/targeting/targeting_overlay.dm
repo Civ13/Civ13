@@ -153,8 +153,10 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 			to_chat(target, SPAN_DANGER("You now have \a [thing] pointed at you. <big>No sudden moves!</big>"))
 		else if (istype(thing, /obj/item/weapon/gun/projectile/pistol)) // Pistols are usually upper-cased, so therefore classed as proper-nouns, and so we have to specify.
 			to_chat(target, SPAN_DANGER("You now have a pistol pointed at you. <big>No sudden moves!</big>"))
+		//else if (istype(thing, /obj/item/weapon/gun/projectile/submachinegun)) // This is not really correct; calling it a submachine gun (SMG) since, by definition, an SMG fires a pistol-caliber cartridge. And we have ak7
+			//to_chat(target, SPAN_DANGER("You now have a submachinegun pointed at you. <big>No sudden moves!</big>"))
 		else
-			to_chat(target, SPAN_DANGER("You now have a gun pointed at you. <big>No sudden moves!</big>"))
+			to_chat(target, SPAN_DANGER("You now have a weapon pointed at you. <big>No sudden moves!</big>"))
 		aiming_with = thing
 		aiming_at = target
 		if (istype(aiming_with, /obj/item/weapon/gun))
