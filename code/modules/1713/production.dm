@@ -701,7 +701,7 @@
 	if (storage.contents.len>0)
 		for(var/obj/item/I in storage.contents)
 			dryed_now += "[additional_info ? "[dry_as_text(I)]" : ""] [normal_item_name(I)]"
-		to_chat(user, SPAN_NOTICE("There hangs \a [esnglish_list(dryed_now, and_text = " and a ")].")) // \a because we need "there hangs an almost dried..."
+		to_chat(user, SPAN_NOTICE("There hangs \a [english_list(dryed_now, and_text = " and a ")].")) // \a because we need "there hangs an almost dried..."
 
 /obj/structure/dehydrator/proc/normal_item_name(var/obj/item/I)
 	return copytext(I.name, 1, findtext(I.name, "ON_DEHYDRATOR"))
