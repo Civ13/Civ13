@@ -686,8 +686,8 @@
 		if (0.4 to 0.6) return "half dried"
 		if (0.6 to 0.85) return "three quarters dried"
 		if (1 to INFINITY)
-			if (!findtext(normal_item_name(I),"dried"))
-				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose
+			if (!findtext(normal_item_name(I),"dried")) // Look at normal_item_name()
+				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose (this breaks because the problem seems to be that it doesnt find dried so it moves on to dry it doesn't find that and it returns dried. Fix this.)
 					return "dried"
 			else
 				return ""
@@ -701,7 +701,7 @@
 	if (storage.contents.len>0)
 		for(var/obj/item/I in storage.contents)
 			dryed_now += "[additional_info ? "[dry_as_text(I)]" : ""] [normal_item_name(I)]"
-		to_chat(user, SPAN_NOTICE("There is \a [english_list(dryed_now, and_text = " and a ")]."))
+		to_chat(user, SPAN_NOTICE("There hangs \a [esnglish_list(dryed_now, and_text = " and a ")].")) // \a because we need "there hangs an almost dried..."
 
 /obj/structure/dehydrator/proc/normal_item_name(var/obj/item/I)
 	return copytext(I.name, 1, findtext(I.name, "ON_DEHYDRATOR"))
