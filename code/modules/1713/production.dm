@@ -687,7 +687,7 @@
 		if (0.6 to 0.85) return "three quarters dried"
 		if (1 to INFINITY)
 			if (!findtext(normal_item_name(I),"dried")) // Look at normal_item_name()
-				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose (this breaks because the problem seems to be that it doesnt find dried so it moves on to dry it doesn't find that and it returns dried. Fix this.)
+				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose (This breaks because the name "dried" is in the final product, and so it bugs out and adds an extra space before the dry_as_text descriptor.)
 					return "dried"
 			else
 				return ""
