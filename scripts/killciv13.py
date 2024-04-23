@@ -16,7 +16,7 @@ pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 for pid in pids:
 	try:
 		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-		if "civ13.dmb" in name and (port in name):
+		if "earth.dmb" in name and (port in name):
 			os.kill(int(pid), signal.SIGKILL)
 	except IOError:
 		continue

@@ -61,7 +61,7 @@ if done == 0:
 else:
 	dmms.append("#include \"{}\"".format(maploc))
 
-DME = "{}civ13-git/civ13.dme".format(mdir)
+DME = "{}civ13-git/earth.dme".format(mdir)
 
 lines = []
 with open(DME, "r") as search:
@@ -88,7 +88,7 @@ t1 = time.time()
 
 print("Rebuilding binaries...")
 
-os.system("DreamMaker {}civ13-git/civ13.dme".format(mdir))
+os.system("DreamMaker {}civ13-git/earth.dme".format(mdir))
 
 print("Copying configuration settings...")
 
@@ -116,7 +116,7 @@ for pid in pids:
 			may_restart_server.append("notathing")
 
 		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-		if "civ13.dmb" in name:
+		if "earth.dmb" in name:
 			if not "sudo" in name:
 
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
@@ -129,13 +129,13 @@ for pid in pids:
 							print("Killing the server...")
 							os.kill(int(pid), signal.SIGKILL)
 							print("Copying binaries...")
-							dmb = os.path.join('{}civ13-git/civ13.dmb'.format(mdir))
+							dmb = os.path.join('{}civ13-git/earth.dmb'.format(mdir))
 							rsc = os.path.join('{}civ13-git/civ13.rsc'.format(mdir))
-							shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
+							shutil.copyfile(dmb, '{}{}earth.dmb'.format(mdir,cdir))
 							shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 							time.sleep(8)
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon {}{}civ13.dmb {} -trusted -webclient -logself &'.format(mdir,cdir,port))
+							os.system('sudo DreamDaemon {}{}earth.dmb {} -trusted -webclient -logself &'.format(mdir,cdir,port))
 							print("Restarted main server on port {}.".format(port))
 
 	except IOError:

@@ -3,7 +3,7 @@
 /obj/effect/lobby_image
 	name = "Lobby"
 	desc = ""
-	icon = 'icons/lobby/civ13.gif'
+	icon = 'icons/lobby/civilizations.gif'
 	icon_state = ""
 	screen_loc = "WEST,SOUTH"
 	var/list/stored_img = list()

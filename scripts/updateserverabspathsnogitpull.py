@@ -17,7 +17,7 @@ cdir = cdir.replace("cdir:", "")
 
 print("Rebuilding binaries...")
 
-os.system("DreamMaker {}civ13-git/civ13.dme".format(mdir))
+os.system("DreamMaker {}civ13-git/earth.dme".format(mdir))
 
 print("Copying configuration settings...")
 
@@ -25,10 +25,10 @@ os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join('{}civ13-git/civ13.dmb'.format(mdir))
+dmb = os.path.join('{}civ13-git/earth.dmb'.format(mdir))
 rsc = os.path.join('{}civ13-git/civ13.rsc'.format(mdir))
 
-shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir,cdir))
+shutil.copyfile(dmb, '{}{}earth.dmb'.format(mdir,cdir))
 
 shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir,cdir))
 

@@ -1,7 +1,7 @@
 /obj/map_metadata/twotribes
 	ID = MAP_TWOTRIBES
 	title = "Two Tribes"
-	lobby_icon = 'icons/lobby/civ13.gif'
+	lobby_icon = 'icons/lobby/civilizations.gif'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle)
 	respawn_delay = 0
 	victory_time = 15000

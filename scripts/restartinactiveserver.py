@@ -28,7 +28,7 @@ for pid in pids:
             may_restart_server.append("notathing")
 
         name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-        if "civ13.dmb" in name:
+        if "earth.dmb" in name:
             if not "sudo" in name:
 
                 # main server logic: for some reason I could get a valid string/int for port so we're just using "in"
@@ -42,7 +42,7 @@ for pid in pids:
                             # for some reason I have to do this now
                             time.sleep(5)
                             os.system(
-                                'sudo DreamDaemon {}{}civ13.dmb {} -trusted -webclient -logself &'.format(mdir, cdir, port))
+                                'sudo DreamDaemon {}{}earth.dmb {} -trusted -webclient -logself &'.format(mdir, cdir, port))
                             print("Restarted main server on port {}.".format(port))
     except IOError:
         continue

@@ -24,7 +24,7 @@ os.system("sudo git reset --hard origin/master")
 
 print("Rebuilding binaries...")
 
-os.system("sudo DreamMaker civ13.dme")
+os.system("sudo DreamMaker earth.dme")
 
 os.system("cd")
 
@@ -34,10 +34,10 @@ os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir, cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join(mdir, 'civ13-git/civ13.dmb')
+dmb = os.path.join(mdir, 'civ13-git/earth.dmb')
 rsc = os.path.join(mdir, 'civ13-git/civ13.rsc')
 
-shutil.copyfile(dmb, '{}{}civ13.dmb'.format(mdir, cdir))
+shutil.copyfile(dmb, '{}{}earth.dmb'.format(mdir, cdir))
 
 
 shutil.copyfile(rsc, '{}{}civ13.rsc'.format(mdir, cdir))
@@ -47,4 +47,4 @@ t2 = time.time() - t1
 print("Finished updating all directories in {} seconds".format(t2))
 
 print("Started server on port {}.".format(port))
-os.system("sudo DreamDaemon {}{}civ13.dmb {} -trusted -logself -webclient &".format(mdir, cdir, port))
+os.system("sudo DreamDaemon {}{}earth.dmb {} -trusted -logself -webclient &".format(mdir, cdir, port))

@@ -20,7 +20,7 @@ os.system("sudo git reset --hard origin/master")
 
 print("Rebuilding binaries...")
 
-os.system("sudo DreamMaker civ13.dme")
+os.system("sudo DreamMaker earth.dme")
 
 os.system("cd")
 
@@ -30,10 +30,10 @@ os.system("sudo python3 {}{}scripts/copyconfigfiles.py".format(mdir,cdir))
 
 print("Copying binaries...")
 
-dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
+dmb = os.path.join(mdir,'civ13-git/earth.dmb')
 rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
 
-shutil.copyfile(dmb, os.path.join(mdir,cdir,'civ13.dmb'))
+shutil.copyfile(dmb, os.path.join(mdir,cdir,'earth.dmb'))
 
 
 shutil.copyfile(rsc, os.path.join(mdir,cdir,'civ13.rsc'))

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo WELCOME TO CIV13!
+echo WELCOME TO SSE!
 echo -----------------
 echo Prepairing the system...
 sudo dpkg --add-architecture i386

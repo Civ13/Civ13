@@ -35,11 +35,11 @@ os.system("sudo git clone https://github.com/civ13/civ13 civ13-git")
 
 print("Building binaries...")
 
-os.system("DreamMaker civ13-git/civ13.dme")
+os.system("DreamMaker civ13-git/earth.dme")
 os.system("sudo pip3 install psutil")
 print("Copying files and folders...")
 os.system("mkdir {}".format(cdir))
-dmb = os.path.join(mdir,'civ13-git/civ13.dmb')
+dmb = os.path.join(mdir,'civ13-git/earth.dmb')
 rsc = os.path.join(mdir,'civ13-git/civ13.rsc')
 
 shutil.copy(dmb, os.path.join(mdir,cdir))

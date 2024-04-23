@@ -13,7 +13,7 @@ var/diary			   = null
 var/attack_log		  = null
 var/href_logfile		= null
 var/customserver_name   = null
-var/game_version		= "Civilization 13"
+var/game_version		= "SinguloStation Earth"
 var/changelog_hash	  = ""
 
 

@@ -1,4 +1,4 @@
-<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">Civilization 13<span style = "color: #CD4C6C"> - Beta Edition</span></span></b></span></small></h2>
+<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">SinguloStation Earth<span style = "color: #CD4C6C"> - Beta Edition</span></span></b></span></small></h2>
 <i>
 The current map is <b>{server_map}</b>.
 <br>
