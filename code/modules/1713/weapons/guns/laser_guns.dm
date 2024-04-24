@@ -251,7 +251,7 @@
 	weight = 0.5
 	ammo_type = /obj/item/ammo_casing/laser/pistol
 /////////////////////////////STAT MG'S/////////////////////////////////////////
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser
+/obj/item/weapon/gun/projectile/automatic/stationary/laser
 	name = "laser MG"
 	desc = "shouldnt be viewing this"
 	icon_state = "repeating_blaster"
@@ -264,19 +264,19 @@
 		list(name = "automatic", burst=3, burst_delay=1.8, fire_delay=1.8)
 		)
 	ammo_type = /obj/item/ammo_casing/laser
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/update_icon()
+/obj/item/weapon/gun/projectile/automatic/stationary/laser/update_icon()
 	if (ammo_magazine)
 		icon_state = base_icon
 	else
 		icon_state = "[base_icon]_empty"
 	update_held_icon()
 	return
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/handle_post_fire()
+/obj/item/weapon/gun/projectile/automatic/stationary/laser/handle_post_fire()
 	..()
 	jamcheck = 0
 	last_fire = world.time
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/repeating_laser
+/obj/item/weapon/gun/projectile/automatic/stationary/laser/repeating_laser
 	name = "repeating laser"
 	desc = "A stationary repeating laser, a turret firing tibanna gas cartridge lasers."
 	icon_state = "repeating_blaster"
@@ -290,7 +290,7 @@
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
-/obj/item/weapon/gun/projectile/automatic/stationary/modern/laser/eweb
+/obj/item/weapon/gun/projectile/automatic/stationary/laser/eweb
 	name = "E-WEB Heavy Repeating blaster"
 	desc = "A stationary repeating blasyer, set on a tri-pod, firing tibanna-gas cartridge lasers."
 	icon_state = "repeating_blaster"

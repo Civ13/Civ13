@@ -1190,7 +1190,7 @@
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/leopard(src))
-		//weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg3(src))
+		//weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/mg3(src))
 		..()
 
 /obj/structure/turret/chiha
