@@ -128,7 +128,7 @@
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
 				//add polution to global meter
-				change_global_pollution(fuelconsumption)
+				//change_global_pollution(fuelconsumption)
 				done = TRUE
 		if (broken)
 			on = FALSE
