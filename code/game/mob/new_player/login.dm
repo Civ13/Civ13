@@ -24,11 +24,10 @@
 	sight |= SEE_TURFS
 	player_list |= src
 
-	new_player_panel()
-
-	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
-		client.fit_viewport()
-
-	spawn (10)
+	spawn (40)
 		if (client)
+			new_player_panel()
 			client.playtitlemusic()
+			if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
+				client.fit_viewport()
+	return ..()

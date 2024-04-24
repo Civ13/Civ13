@@ -9,10 +9,9 @@
 	var/list/stored_img = list()
 
 /obj/effect/lobby_image/initialize()
-	if (map && map.lobby_icon)
-		var/F = file(map.lobby_icon)
-		if (F)
-			icon = F
+	icon = map.lobby_icon
+
+	. = ..()
 
 /obj/effect/lobby_image/New()
 	..()

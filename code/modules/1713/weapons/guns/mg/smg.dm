@@ -308,7 +308,6 @@
 	fire_sound = 'sound/weapons/guns/fire/mg34.ogg'
 	magazine_type = /obj/item/ammo_magazine/fg42
 	good_mags = list(/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small)
-	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3),
@@ -433,7 +432,7 @@
 		list(name = "automatic",	burst=1, burst_delay=1.4),
 		)
 	recoil = 10
-	accuracy = 10 // дай бог ты попадешь хоть одной пулей
+	accuracy = 10
 
 	sel_mode = 1
 	recoil = 25
@@ -544,7 +543,6 @@
 	base_icon = "ppsh"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.63
@@ -600,7 +598,6 @@
 	base_icon = "ppd"
 	caliber = "a762x25"
 	fire_sound = 'sound/weapons/guns/fire/762x25.ogg'
-	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	good_mags = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps)
 	weight = 3.7
@@ -1008,7 +1005,6 @@
 	base_icon = "ar15"
 	icon_state = "ar15"
 	item_state = "ar15"
-	full_auto = FALSE
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3),
 	)
@@ -1035,7 +1031,6 @@
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
-	full_auto = FALSE
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.5),
 	)
@@ -1063,7 +1058,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3),
-		list(name = "automatic",	burst=1, burst_delay=1.1),
+		list(name = "automatic", burst=1, burst_delay=1.1),
 	)
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
@@ -1078,7 +1073,7 @@
 	full_auto = FALSE
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3),
-		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "3-round-burst", burst=3, burst_delay=1.5),
 	)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
 	recoil = 25
@@ -1111,7 +1106,7 @@
 	full_auto = FALSE
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.3),
-		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 	)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
 	recoil = 25
@@ -1231,15 +1226,15 @@
 	magazine_type = /obj/item/ammo_magazine/hk
 	good_mags = list(/obj/item/ammo_magazine/hk)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
-	weight = 4.2
-	equiptimer = 15
+	weight = 4.4
+	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.9),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
-	recoil = 50
+	recoil = 45
 	accuracy = 3
 
 	mag_x_offset = 2
@@ -1247,7 +1242,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/fal
 	name = "FN Fal"
-	desc = "A Belgian battle rifle, chambered in 7.62×51mm."
+	desc = "A Belgian battle rifle, chambered in 7.62x51mm."
 	icon = 'icons/obj/guns/assault_rifles.dmi'
 	icon_state = "fal"
 	item_state = "fal"
@@ -1258,7 +1253,7 @@
 	good_mags = list(/obj/item/ammo_magazine/fal)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 3.8
-	equiptimer = 12
+	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.9),
@@ -1345,7 +1340,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.6),
-		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1376,7 +1371,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.6),
-		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1450,7 +1445,7 @@
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=0.4),
-		list(name = "burst fire",	burst=3, burst_delay=1.5),
+		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.0),
 	)
 	sel_mode = 1

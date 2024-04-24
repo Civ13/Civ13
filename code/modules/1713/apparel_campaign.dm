@@ -44,6 +44,31 @@
 		new /obj/item/ammo_magazine/mosin(src)
 		new /obj/item/ammo_magazine/mosin(src)
 
+/obj/item/weapon/storage/belt/smallpouches/red/white/recon
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/mosin(src)
+		new /obj/item/ammo_magazine/mosin(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red/marksman
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/svd(src)
+		new /obj/item/ammo_magazine/svd(src)
+
+/obj/item/weapon/storage/belt/smallpouches/red/white/marksman
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/svd(src)
+		new /obj/item/ammo_magazine/svd(src)
+
+
 /obj/item/weapon/storage/belt/largepouches/red
 	icon_state = "largepouches"
 	item_state = "largepouches"
@@ -94,6 +119,30 @@
 		new /obj/item/stack/medical/bruise_pack/gauze(src)
 		new /obj/item/ammo_magazine/mosin(src)
 		new /obj/item/ammo_magazine/mosin(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue/white/recon
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/mosin(src)
+		new /obj/item/ammo_magazine/mosin(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue/marksman
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/svd(src)
+		new /obj/item/ammo_magazine/svd(src)
+
+/obj/item/weapon/storage/belt/smallpouches/blue/white/marksman
+	New()
+		..()
+		new /obj/item/clothing/mask/gas/swat_new(src)
+		new /obj/item/stack/medical/bruise_pack/gauze(src)
+		new /obj/item/ammo_magazine/svd(src)
+		new /obj/item/ammo_magazine/svd(src)
 
 /obj/item/weapon/storage/belt/largepouches/blue
 	icon_state = "largepouches"

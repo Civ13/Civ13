@@ -90,8 +90,18 @@
 				break
 
 			if(T.density)
-				if(!istype(T, /obj/structure/barricade) || !istype(T, /obj/structure/window/barrier))
+				stop_at_turf = TRUE
+
+			for(var/obj/covers/C in T)
+				if(C.density)
 					stop_at_turf = TRUE
+			for(var/obj/structure/vehicleparts/frame/F in T)
+				var/penloc = F.get_wall_name(get_dir(source_turf, T))
+				if(!(F.is_ambrasure(penloc)))
+					stop_at_turf = TRUE
+
+			if(stop_at_turf)
+				break
 			else
 				if (distance > 0)
 					ignite_turf(get_turf(T), 6, 70) // 6 second 70 damage flame
@@ -100,9 +110,6 @@
 				if(stop_at_turf)
 					break
 				continue
-
-			if(stop_at_turf)
-				break
 
 			distance++
 
