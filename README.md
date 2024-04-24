@@ -20,10 +20,6 @@ Civ13 (formerly 1713) is a game based on Space Station 13 code, which features s
 https://civ13.com/
 
 
-## Trello
-https://trello.com/b/DW0RQAEX
-
-
 ## Playing the game
 You will need a windows machine or a virtual machine running it from another OS.
 
