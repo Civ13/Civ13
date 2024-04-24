@@ -141,34 +141,34 @@
 		set_light(0)
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
 
 // Other brazier type defines.
 
 /obj/structure/brazier/stone
 	name = "stone brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "s_brazier0"
 
 /obj/structure/brazier/sandstone
 	name = "sandstone brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "sandstone_brazier0"
 
 /obj/structure/brazier/obsidian
 	name = "obsidian brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "obsidian_brazier0"
 
 /obj/structure/brazier/marble
 	name = "marble brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "marble_brazier0"
 
 /obj/structure/brazier/potbellystove // This is a stove not a brazier; todo: move this.
 	name = "potbelly stove"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "potbelly"
 
 // Other lit brazier procedures. - todo: call parent proc which handles all of this, save for the icon states, condensifying code as a result.
@@ -244,7 +244,7 @@
 		icon_state = "s_brazier0"
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
 
 /obj/structure/brazier/potbellystove/attack_hand(mob/user as mob) // This is a stove not a brazier; todo: move this.
@@ -261,7 +261,7 @@
 		icon_state = "potbelly"
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
 
 /obj/structure/brazier/sandstone/attack_hand(mob/user as mob)
@@ -278,7 +278,7 @@
 		icon_state = "sandstone_brazier0"
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
 
 /obj/structure/brazier/obsidian/attack_hand(mob/user as mob)
@@ -295,7 +295,7 @@
 		icon_state = "obsidian_brazier0"
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
 
 /obj/structure/brazier/marble/attack_hand(mob/user as mob)
@@ -312,5 +312,5 @@
 		icon_state = "marble_brazier0"
 		return
 	else
-		to_chat(user, SPAN_WARNING("\The [src] is out of fuel."))
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return
