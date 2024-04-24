@@ -185,7 +185,7 @@
 
 	// Install
 	if (istype(W, /obj/item/weapon/wrench))
-		user.visible_message(anchored ? "<span class='notice'>\The [user] begins unfasten \the [src].</span>" : "<span class='notice'>\The [user] begins fasten \the [src].</span>" )
+		user.visible_message(anchored ? "<span class='notice'>\The [user] begins to unfasten \the [src].</span>" : "<span class='notice'>\The [user] begins to fasten \the [src].</span>" )
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		if (do_after(user, 10, src))
 			user << (anchored ? "<span class='notice'>You have unfastened \the [src] from the floor.</span>" : "<span class='notice'>You have fastened \the [src] to the floor.</span>")

@@ -372,7 +372,7 @@ var/list/global/floor_cache = list()
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
 		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
+		if (!do_after(user, (10 - S.dig_speed)*5, src))
 			return
 		if (istype(src,/turf/floor/dirt))
 			trench_stage++

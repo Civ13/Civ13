@@ -250,11 +250,11 @@
 		if (istype(src, /obj/roof/canopy))
 			for (var/obj/structure/tent/TT in loc)
 				supportfound = TRUE
-		for (var/obj/structure/roof_support/RS in range(2, src))
+		for (var/obj/structure/roof_support/RS in range(3, src))
 			supportfound = TRUE
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
 			supportfound = TRUE
-		for (var/turf/wall/W in range(1, src))
+		for (var/turf/wall/W in range(2, src))
 			supportfound = TRUE
 		for (var/obj/structure/simple_door/SD in loc)
 			supportfound = TRUE
@@ -372,7 +372,7 @@
 		to_chat(user, "That area is already roofed!")
 		return
 	var/confirm = FALSE
-	for(var/obj/structure/roof_support/RS in range(2, get_step(user, user.dir)))
+	for(var/obj/structure/roof_support/RS in range(3, get_step(user, user.dir)))
 		confirm = TRUE
 	for(var/obj/structure/mine_support/stone/SS in range(2, get_step(user, user.dir)))
 		confirm = TRUE
