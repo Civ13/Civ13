@@ -761,7 +761,6 @@
 			handle_casings = HOLD_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
 			load_shell_sound = 'sound/weapons/guns/interact/clip_reload.ogg'
-			accuracy = TRUE
 			gun_type = GUN_TYPE_RIFLE
 			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 			accuracy_increase_mod = 2.00
@@ -836,7 +835,7 @@
 			weight = 3.85
 			load_delay = 8
 			firemodes = list(
-				list(name = "single shot",burst=1, move_delay=2, fire_delay=6)
+				list(name = "semiauto", burst=1, move_delay=2, fire_delay=6)
 				)
 		if ("Open-Bolt (small)")
 			item_state = "pps"
@@ -849,7 +848,7 @@
 			attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptymagazine,/obj/item/ammo_magazine/emptymagazine/rifle)
 			firemodes = list(
-				list(name = "automatic",	burst=1, burst_delay=1, recoil=1, move_delay=5)
+				list(name = "automatic", burst=1, burst_delay=1, recoil=1, move_delay=5)
 			)
 			load_method = MAGAZINE
 			load_delay = 8
@@ -868,7 +867,7 @@
 			attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 			good_mags = list(/obj/item/ammo_magazine/emptybelt)
 			firemodes = list(
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8),
+				list(name = "automatic", burst=1, burst_delay=1.3, recoil = 1.6, move_delay=8),
 			)
 			weight = 10
 			slot_flags = 0
@@ -899,7 +898,7 @@
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
 				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2),
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
+				list(name = "automatic", burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
 				)
 			sel_mode = 1
 			attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -922,8 +921,8 @@
 			slot_flags = SLOT_SHOULDER
 			firemodes = list(
 				list(name = "semiauto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2),
-				list(name = "3-round-burst",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3),
-				list(name = "automatic",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
+				list(name = "3-round-burst", burst=3, burst_delay=1.4, recoil=0.9, move_delay=3),
+				list(name = "automatic", burst=1, burst_delay=1.3, recoil=1.3, move_delay=4),
 				)
 			sel_mode = 1
 			attachment_slots =ATTACH_IRONSIGHTS|ATTACH_BARREL

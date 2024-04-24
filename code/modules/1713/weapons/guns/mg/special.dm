@@ -49,12 +49,11 @@
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/mk18
 	good_mags = list(/obj/item/ammo_magazine/mk18)
-	full_auto = TRUE
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semi auto", burst=1, burst_delay=0.8),
-		list(name = "burst fire", burst=3, burst_delay=1.4),
-		list(name = "full auto", burst=1, burst_delay=1.3),
+		list(name = "semiauto", burst=1, burst_delay=0.8),
+		list(name = "3-round-burst", burst=3, burst_delay=1.4),
+		list(name = "automatic", burst=1, burst_delay=1.3),
 		)
 	sel_mode = 1
 	accuracy = 1
@@ -79,13 +78,12 @@
 	fire_sound = 'sound/weapons/guns/fire/assault_rifle.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/ak74m)
-	full_auto = TRUE
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semi auto",	burst=1, burst_delay=0.8),
-		list(name = "burst fire",	burst=3, burst_delay=0.8),
-		list(name = "full auto",	burst=1, burst_delay=0.8),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "3-round-burst",	burst=3, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=0.8),
 		)
 	sel_mode = 1
 	accuracy = 1
