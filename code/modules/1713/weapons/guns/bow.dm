@@ -211,7 +211,7 @@
 		if (caliber != C.caliber)
 			return //incompatible
 		if (loaded.len >= max_shells)
-			user << "<span class='warning'>the [src] already has \a [projtype] ready!</span>"
+			to_chat(user, SPAN_WARNING("\The [src] already has \a [projtype] ready!"))
 			return
 
 		user.remove_from_mob(C)
