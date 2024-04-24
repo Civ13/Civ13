@@ -1048,6 +1048,9 @@
 	update_icon()
 	return
 
+/obj/item/flare_pouch/AltClick(mob/user)
+	toggle_open()
+
 /obj/item/flare_pouch/attack_hand(mob/user as mob)
 	if (opened)
 		if (stored.len > 0)
