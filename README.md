@@ -36,6 +36,10 @@ You will need a windows machine or a virtual machine running it from another OS.
 
 ## Setting up a Server
 
+Disclaimer:
+Python scripts will not function appropriately when Hosting within a Windows or WSL environment and support for such usage will not be provided.
+Most scripts are called externally by our [Discord bot](https://github.com/Valgorithms/Civilizationbot) which will be required for a proper installation.
+
 ### Windows
 1. Install both [BYOND](https://www.byond.com/download/) and [Python 3](https://www.python.org/downloads/windows/)
 
