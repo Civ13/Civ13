@@ -113,9 +113,9 @@
 
 /obj/map_metadata/campaign/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 2 MINUTES
+		return 1 MINUTES
 	else
-		return 2 MINUTES
+		return 3 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -383,6 +383,7 @@
 */
 
 // For capturing a base
+var/no_loop_ca = FALSE
 /obj/map_metadata/campaign/update_win_condition()
 	// Win when timer reaches zero
 	if (world.time >= victory_time)
@@ -397,10 +398,7 @@
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	// Win when objective is captured
-	if (world.time >= next_win && next_win != -1)
-		if (win_condition_spam_check)
-			return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
 		get_faction1_captured_equipment()
 		get_faction2_captured_equipment()
 		ticker.finished = TRUE
@@ -411,13 +409,14 @@
 		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
+		no_loop_ca = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -425,8 +424,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -435,7 +434,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -444,7 +443,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -532,12 +531,12 @@
 /obj/map_metadata/campaign/proc/get_faction1_captured_equipment()
 	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
 		if(capturable_equipment.Find(I))
-			captured_equipment_red += I
+			captured_equipment_red += I.name
 
 /obj/map_metadata/campaign/proc/get_faction2_captured_equipment()
 	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
 		if(capturable_equipment.Find(I))
-			captured_equipment_blue += I
+			captured_equipment_blue += I.name
 
 ///////////Map Specific Objects///////////
 /obj/structure/altar/heads
