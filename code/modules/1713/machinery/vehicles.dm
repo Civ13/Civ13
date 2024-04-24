@@ -656,11 +656,11 @@
 		var/spd = user.driver_vehicle.axis.get_speed()
 		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
 			user.driver_vehicle.moving = FALSE
-			to_chat(H, "You stop \the [user.driver_vehicle].")
+			to_chat(user, "You stop \the [user.driver_vehicle].")
 			return
 		else
 			user.driver_vehicle.vehicle_m_delay = spd
-			to_chat(H, "You pull the rope to reduce the speed.")
+			to_chat(user, "You pull the rope to reduce the speed.")
 			return
 
 /obj/item/vehicleparts/wheel/handle
@@ -763,11 +763,11 @@
 		var/spd = user.driver_vehicle.axis.get_speed()
 		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
 			user.driver_vehicle.moving = FALSE
-			to_chat(H, "You stop \the [user.driver_vehicle].")
+			to_chat(user, "You stop \the [user.driver_vehicle].")
 			return
 		else
 			user.driver_vehicle.vehicle_m_delay = spd
-			to_chat(H, "You reduce the speed.")
+			to_chat(user, "You reduce the speed.")
 			return
 ///////////////////FRAME///////////////////////////////
 /obj/item/vehicleparts/frame
