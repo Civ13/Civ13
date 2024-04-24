@@ -528,8 +528,8 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	try_destroy()
 
 /obj/structure/supply_crate/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
-	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	health -= proj.damage * 0.01
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 
@@ -650,7 +650,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	var/faction_text = null // To what faction does it belong?
 
 /obj/structure/milsim/anti_air/attack_hand(mob/living/human/H as mob)
-	if (!faction_text)
+	if (!faction_text && map.ID != MAP_PEPELSIBIRSK)
 		faction_text = H.faction_text
 		name = "[map.roundend_condition_def2name(faction_text)] [name]"
 		message_admins("[H.ckey] ([H.faction_text]) has built an Anti-Air at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)

@@ -34,9 +34,10 @@ a, a:link, a:visited, :active, a:hover
 .ooc .looc				{color: #75B5B5;}
 .ooc .elevated			{color: #2e78d9;}
 .ooc .mentor			{color: #2e78d9;}
-.ooc .moderator			{color: #2E78D9;}
-.ooc .developer			{color: #39ac41;}
-.ooc .admin				{color: #b82e00;}
+.ooc .moderator			{color: #2ed9ab;}
+.ooc .developer			{color: #a649bf;}
+.ooc .admin				{color: #39ac41;}
+.ooc .highstaff			{color: #b82e00;}
 
 /* Admin: Private Messages */
 .pm  .howto				{color: #ff0000;	font-weight: bold;		font-size: 200%;}
@@ -76,6 +77,8 @@ h1.alert, h2.alert		{color: #ff0000;}
 .passive				{color: #660000;}
 
 .red					{color: #ff3737}
+.green					{color: #289120}
+.green_bold				{color: #289120; font-weight: bold;}
 .danger					{color: #ff3737; font-weight: bold;}
 .userdanger				{color: #ff3737; font-weight: bold; font-size: 2.0em;}
 .userdanger_yellow		{color: #ffff00; font-weight: bold; font-size: 2.5em;}

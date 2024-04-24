@@ -3,7 +3,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "iv_drip_unhooked"
 	anchored = FALSE
-	density = TRUE
+	density = FALSE // You can pass through IV drips.
 	var/mob/living/human/attached = null
 	var/mode = TRUE // TRUE is injecting, FALSE is taking blood.
 	var/obj/item/weapon/reagent_containers/beaker = null
@@ -46,7 +46,7 @@
 	..()
 
 	if (attached)
-		visible_message("[attached] is detached from \the [src]")
+		visible_message("[attached] is detached from \the [src].")
 		attached = null
 		update_icon()
 		return

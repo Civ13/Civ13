@@ -120,17 +120,17 @@
 /obj/item/cannon_ball/shell/tank/HE45
 	atype = "HE"
 	caliber = 45
-	heavy_armor_penetration = 8
+	heavy_armor_penetration = 5
 	damage = 290
 /obj/item/cannon_ball/shell/tank/AP45
 	atype = "AP"
 	caliber = 45
-	heavy_armor_penetration = 40
+	heavy_armor_penetration = 70
 	damage = 75
 /obj/item/cannon_ball/shell/tank/APCR45
 	atype = "APCR"
 	caliber = 45
-	heavy_armor_penetration = 60
+	heavy_armor_penetration = 94
 	damage = 90
 
 /obj/item/cannon_ball/shell/tank/HE47
@@ -165,6 +165,16 @@
 	heavy_armor_penetration = 75
 	damage = 115
 
+/obj/item/cannon_ball/shell/tank/HEAT73
+	icon_state = "pg15v"
+	atype = "HEAT"
+	caliber = 73
+	heavy_armor_penetration = 400
+	damage = 125
+
+/obj/item/cannon_ball/shell/tank/HEAT73/update_icon()
+	return
+
 /obj/item/cannon_ball/shell/tank/HE75
 	atype = "HE"
 	caliber = 75
@@ -184,49 +194,49 @@
 /obj/item/cannon_ball/shell/tank/HE100
 	atype = "HE"
 	caliber = 100
-	heavy_armor_penetration = 20
+	heavy_armor_penetration = 27
 	damage = 333
 /obj/item/cannon_ball/shell/tank/AP100
 	atype = "AP"
 	caliber = 100
-	heavy_armor_penetration = 70
+	heavy_armor_penetration = 180
 	damage = 133
 /obj/item/cannon_ball/shell/tank/APCR100
 	atype = "APCR"
 	caliber = 100
-	heavy_armor_penetration = 100
+	heavy_armor_penetration = 220
 	damage = 100
 
 /obj/item/cannon_ball/shell/tank/HE120
 	atype = "HE"
 	caliber = 120
-	heavy_armor_penetration = 20
+	heavy_armor_penetration = 40
 	damage = 333
 /obj/item/cannon_ball/shell/tank/AP120
 	atype = "AP"
 	caliber = 120
-	heavy_armor_penetration = 110
+	heavy_armor_penetration = 200
 	damage = 140
 /obj/item/cannon_ball/shell/tank/APCR120
 	atype = "APCR"
 	caliber = 120
-	heavy_armor_penetration = 130
+	heavy_armor_penetration = 240
 	damage = 100
 
 /obj/item/cannon_ball/shell/tank/HE125
 	atype = "HE"
 	caliber = 125
-	heavy_armor_penetration = 20
+	heavy_armor_penetration = 45
 	damage = 333
 /obj/item/cannon_ball/shell/tank/AP125
 	atype = "AP"
 	caliber = 125
-	heavy_armor_penetration = 115
+	heavy_armor_penetration = 450
 	damage = 140
 /obj/item/cannon_ball/shell/tank/APCR125
 	atype = "APCR"
 	caliber = 125
-	heavy_armor_penetration = 135
+	heavy_armor_penetration = 450
 	damage = 100
 
 /obj/item/cannon_ball/shell/tank/HE88
@@ -237,12 +247,12 @@
 /obj/item/cannon_ball/shell/tank/AP88
 	atype = "AP"
 	caliber = 88
-	heavy_armor_penetration = 110
+	heavy_armor_penetration = 150
 	damage = 145
 /obj/item/cannon_ball/shell/tank/APCR88
 	atype = "APCR"
 	caliber = 88
-	heavy_armor_penetration = 130
+	heavy_armor_penetration = 270
 	damage = 175
 
 /obj/item/cannon_ball/shell/tank/HE85
@@ -253,28 +263,28 @@
 /obj/item/cannon_ball/shell/tank/AP85
 	atype = "AP"
 	caliber = 85
-	heavy_armor_penetration = 110
+	heavy_armor_penetration = 140
 	damage = 140
 /obj/item/cannon_ball/shell/tank/APCR85
 	atype = "APCR"
 	caliber = 85
-	heavy_armor_penetration = 130
+	heavy_armor_penetration = 195
 	damage = 170
 
 /obj/item/cannon_ball/shell/tank/HE76
 	atype = "HE"
 	caliber = 76.2
-	heavy_armor_penetration = 16
+	heavy_armor_penetration = 10
 	damage = 250
 /obj/item/cannon_ball/shell/tank/AP76
 	atype = "AP"
 	caliber = 76.2
-	heavy_armor_penetration = 55
+	heavy_armor_penetration = 100
 	damage = 100
 /obj/item/cannon_ball/shell/tank/APCR76
 	atype = "APCR"
 	caliber = 76.2
-	heavy_armor_penetration = 80
+	heavy_armor_penetration = 125
 	damage = 125
 
 /obj/item/cannon_ball/shell/tank/HE204
@@ -285,12 +295,12 @@
 /obj/item/cannon_ball/shell/tank/AP204
 	atype = "AP"
 	caliber = 204
-	heavy_armor_penetration = 150
+	heavy_armor_penetration = 350
 	damage = 400
 /obj/item/cannon_ball/shell/tank/APCR204
 	atype = "APCR"
 	caliber = 204
-	heavy_armor_penetration = 125
+	heavy_armor_penetration = 350
 	damage = 450
 
 /obj/item/cannon_ball/shell/naval
@@ -310,7 +320,7 @@
 /obj/item/cannon_ball/shell/naval/HE150
 	atype = "HE"
 	caliber = 150
-	heavy_armor_penetration = 80
+	heavy_armor_penetration = 50
 	damage = 350
 
 /obj/item/cannon_ball/shell/naval/HE380

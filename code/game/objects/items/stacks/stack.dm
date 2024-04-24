@@ -41,7 +41,7 @@
 	return
 
 //If a stack is pulled over another stack, this proc is called.
-obj/item/stack/Crossed(var/obj/item/stack/S)
+/obj/item/stack/Crossed(var/obj/item/stack/S)
 	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
 	if(istype(S, stacktype) && !S.throwing)
 		merge(S)
@@ -60,6 +60,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	S.amount += transfer
 	src.update_icon()
 	S.update_icon()
+	src.update_strings()
+	S.update_strings()
 	if(src.amount <= 0)
 		qdel(src)
 	return transfer
@@ -800,14 +802,14 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
 			user << SPAN_WARNING("You need to have electronic circuits in the other hand to craft the powered saw mill.")
 			return
-		if (istype(H.l_hand, /obj/item/stack/material/woodplank))
-			var/obj/item/stack/material/woodplank/NR = H.l_hand
-			NR.amount -= 200
+		if (istype(H.l_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.l_hand
+			NR.amount -= 1
 			if (NR.amount <= 0)
 				qdelHandReturn(H.l_hand, H)
-		else if (istype(H.r_hand, /obj/item/stack/material/woodplank))
-			var/obj/item/stack/material/woodplank/NR = H.r_hand
-			NR.amount -= 200
+		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.r_hand
+			NR.amount -= 1
 			if (NR.amount <= 0)
 				qdelHandReturn(H.r_hand, H)
 
@@ -1918,10 +1920,10 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-				if (H.faction_text == PIRATES)
-					T.icon_state = "m16"
-				else if (H.faction_text == CIVILIAN)
+				if (H.faction_text == BLUEFACTION)
 					T.icon_state = "ak74"
+				else if (H.faction_text == REDFACTION)
+					T.icon_state = "m16"
 			return
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))

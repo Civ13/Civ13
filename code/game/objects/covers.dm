@@ -172,7 +172,7 @@
 
 /obj/covers/fire_act(temperature)
 	if (prob(20) && flammable)
-		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
 		qdel(src)
 
 /obj/covers/CanPass(var/atom/movable/mover)
@@ -292,7 +292,7 @@
 			if (wall)
 				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
 					new_bullethole()
-				health -= proj.damage * 0.1
+				health -= proj.damage * 0.01
 				try_destroy()
 		return
 

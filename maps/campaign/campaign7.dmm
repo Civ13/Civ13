@@ -338,7 +338,7 @@
 "zs" = (/obj/structure/bed/chair/comfy/blue{dir = 4},/obj/covers/steelplating,/turf/floor/broken_floor,/area/caribbean/japanese/land/inside)
 "zu" = (/obj/structure/window/classic/metal,/obj/covers/steelplating,/obj/effect/floor_decal/corner_steel_grid/diagonal,/obj/effect/floor_decal/corner_steel_grid/diagonal{dir = 8},/obj/structure/mine_support/stone/concrete,/obj/covers/jail/steeljail,/obj/structure/barricade/steel,/turf/floor/broken_floor,/area/caribbean/japanese/land/inside)
 "zy" = (/obj/covers/steelplating,/obj/structure/table/modern,/obj/structure/sign/flag/redmenia{pixel_x = -32},/turf/floor/broken_floor,/area/caribbean/british/land/inside)
-"zC" = (/obj/map_metadata/campaign/campaign7,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
+"zC" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "zF" = (/obj/effect/floor_decal/corner_steel_grid/full{dir = 8},/obj/structure/barricade/steel,/obj/covers/steelplating,/obj/effect/floor_decal/corner/grey,/obj/roof/concrete,/obj/effect/floor_decal/spline/plain{dir = 1; pixel_x = 13; pixel_y = -16},/obj/effect/floor_decal/spline/plain{dir = 8; pixel_x = 16; pixel_y = -16},/obj/structure/window/barrier/sandbag,/turf/floor/broken_floor,/area/caribbean/sea/sea)
 "zI" = (/obj/covers/steelplating,/obj/structure/grapplehook{dir = 1},/turf/floor/broken_floor,/area/caribbean/sea/sea)
 "zJ" = (/obj/structure/lamp/lamp_big/alwayson{dir = 4; icon_state = "tube"},/obj/covers/steelplating,/turf/floor/beach/water/deep/saltwater,/area/caribbean/japanese/land/inside)

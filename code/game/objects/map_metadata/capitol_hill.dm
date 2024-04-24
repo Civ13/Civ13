@@ -7,6 +7,7 @@
 	no_winner = "The operation is still underway."
 	gamemode = "Siege"
 	no_hardcore = TRUE
+	can_spawn_on_base_capture = TRUE
 	var/list/HVT_list = list()
 
 	faction_organization = list(
@@ -393,7 +394,7 @@ var/no_loop_capitol = FALSE
 		win_condition.hash = 0
 		last_win_condition = win_condition.hash
 		message = "25 minutes have passed! The HVTs are now safe!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		win_condition_spam_check = TRUE
 		return FALSE
 	if (processes.ticker.playtime_elapsed >= 3000)

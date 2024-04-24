@@ -109,11 +109,11 @@ var/global/list/vehicle_walls = list( \
 	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
 
 /obj/structure/vehicleparts/frame/l3/lf
-	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 	override_roof_icon = "l3_barrel"
 /obj/structure/vehicleparts/frame/l3/lf/cc
-	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 	override_roof_icon = "l3cc_barrel"
 /obj/structure/vehicleparts/frame/l3/rf
@@ -121,7 +121,7 @@ var/global/list/vehicle_walls = list( \
 	w_right = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/l3/lc
-	w_front = list("l3_turret",TRUE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("l3_turret",TRUE,TRUE,14,14,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 	override_frame_icon = "l3_turret"
 /obj/structure/vehicleparts/frame/l3/rc

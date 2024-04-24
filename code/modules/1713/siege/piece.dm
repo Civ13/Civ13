@@ -37,14 +37,11 @@
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
 
-	var/degree = 180
+	var/azimuth = 180
 	var/distance = 5
-	var/has_scope = TRUE
-	var/scope_mod = "Disabled"
+	var/scope_mod = TRUE
 	var/target_x = 0
 	var/target_y = -5
-
-	var/course = FALSE
 
 	var/is_naval = FALSE
 	var/naval_position = "middle"
@@ -139,33 +136,22 @@
 				to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
 				return
 			// load first and only slot
-			var/found_loader = FALSE
-			for (var/obj/structure/bed/chair/loader/L in M.loc)
-				found_loader = TRUE
-			if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-				to_chat(M, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
-				return FALSE
-
 			var/loadtime = caliber*0.5
 			if (istype(src,/obj/structure/cannon/modern/naval))
 				loadtime = caliber*0.25
 
+			if(M.buckled && istype(M.buckled, /obj/structure/bed/chair/loader))
+				loadtime /= 2
+
 			if (do_after(M, loadtime, M, can_move = TRUE))
-				if (M && (locate(M) in range(1,src)))
-					found_loader = FALSE
-					for (var/obj/structure/bed/chair/loader/L in M.loc)
-						found_loader = TRUE
-					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-						to_chat(M, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
-						return FALSE
-					M.remove_from_mob(W)
-					W.loc = src
-					loaded += W
-					to_chat(M, SPAN_NOTICE("You load \the [src]."))
-					playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-					return
+				M.remove_from_mob(W)
+				W.loc = src
+				loaded += W
+				M << SPAN_NOTICE("You load \the [src].")
+				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+				return
 		else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
-			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE(">You start securing \the [src] to the floor.")))
+			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
 				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
@@ -207,15 +193,16 @@
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
+	distance = clamp(distance, minrange, maxrange)
 	switch(dir)
-		if (NORTH)
-			degree = 0
-		if (SOUTH)
-			degree = 180
-		if (WEST)
-			degree = 270
-		if (EAST)
-			degree = 90
+		if(NORTH)
+			azimuth = 0
+		if(EAST)
+			azimuth = 90
+		if(SOUTH)
+			azimuth = 180
+		if(WEST)
+			azimuth = 270
 
 /obj/structure/cannon/Destroy()
 	cannon_piece_list -= src
@@ -265,7 +252,7 @@
 					if (M == user)
 						do_html(M)
 		else if (istype(W,/obj/item/weapon/wrench))
-			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE(">You start securing \the [src] to the floor.")))
+			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
 				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
@@ -318,7 +305,7 @@
 	else
 		user = M
 		user.use_cannon(src)
-		update_scope()
+		draw_aiming_line(user)
 		do_html(user)
 
 
@@ -332,9 +319,11 @@
 
 /mob/proc/stop_using_cannon()
 	if (using_cannon)
-		using_cannon.delete_scope_image()
+		src << "you are stopped using [using_cannon.name]"
+		using_cannon.clear_aiming_line(src)
 		src << browse(null, "window=artillery_window")
-		using_cannon.scope_mod = "Disabled"
+		using_cannon.scope_mod = FALSE
+		using_cannon.user = null
 		using_cannon = null
 
 /mob/living/human/Move()
@@ -385,83 +374,75 @@
 		return FALSE
 
 	if (href_list["load"])
-		if (!broken)
-			if (!loaded.len)
-				if (!autoloader)
-					var/obj/item/cannon_ball/TS = user.get_active_hand()
-					if (istype(TS, ammotype))
-						if (caliber != TS.caliber && caliber != null && caliber != 0)
-							user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
-							return
-						// load first and only slot
-						var/found_loader = FALSE
-						for (var/obj/structure/bed/chair/loader/L in user.loc)
-							found_loader = TRUE
-						if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-							user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-							return FALSE
-						var/loadtime = caliber/2
-						if (istype(src,/obj/structure/cannon/modern/naval))
-							loadtime = caliber
-						if (do_after(user, loadtime, user, can_move = TRUE))
-							if (user && (locate(user) in range(1,src)))
-								found_loader = FALSE
-								for (var/obj/structure/bed/chair/loader/L in user.loc)
-									found_loader = TRUE
-								if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-									user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
-									return FALSE
-								user.remove_from_mob(TS)
-								TS.loc = src
-								loaded += TS
-								user << SPAN_NOTICE("You load \the [src].")
-								if (istype(src, /obj/structure/cannon/modern/tank))
-									playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-								return
-				else
-					var/list/loadable = list()
-					for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
-						if (AL.storage.contents)
-							for (var/obj/item/cannon_ball/TS in AL.storage.contents)
-								if (istype(TS, ammotype))
-									if (caliber != TS.caliber && caliber != null && caliber != 0)
-										user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
-										continue
-									loadable += TS
-					/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
-						user << SPAN_WARNING("There are no shell racks to load from nearby.")
-						return */
-
-					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
-					var/obj/item/cannon_ball/chosen
-
-					user << SPAN_NOTICE("The autoloader begins loading a shell.")
-					spawn (6 SECONDS)
-						if (!loadable.len)
-							user << SPAN_WARNING("There are no shells to load.")
-							return
-						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
-						if (!chosen || chosen == "")
-							return
-						chosen.loc = src
-						loaded += chosen
-						user << SPAN_NOTICE("The autoloader loads \the [src].")
+		if (!loaded.len)
+			if (!autoloader)
+				var/obj/item/cannon_ball/M = user.get_active_hand()
+				if (istype(M, ammotype))
+					var/obj/item/cannon_ball/shell/tank/TS = M
+					if (caliber != TS.caliber && caliber != null && caliber != 0)
+						user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
 						return
+					// load first and only slot
+					var/found_loader = FALSE
+					for (var/obj/structure/bed/chair/loader/L in user.loc)
+						found_loader = TRUE
+					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
+						user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+						return FALSE
+					var/loadtime = caliber/2
+					if (istype(src,/obj/structure/cannon/modern/naval))
+						loadtime = caliber
+					if (do_after(user, loadtime, user, can_move = TRUE))
+						if (user && (locate(user) in range(1,src)))
+							user.remove_from_mob(M)
+							M.loc = src
+							loaded += M
+							user << SPAN_NOTICE("You load \the [src].")
+							if (istype(src, /obj/structure/cannon/modern/tank))
+								playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+							return
+			else
+				var/list/loadable = list()
+				for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
+					if (AL.storage.contents)
+						for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+							if (istype(TS, ammotype))
+								if (caliber != TS.caliber && caliber != null && caliber != 0)
+									user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
+									continue
+								loadable += TS
+				/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
+					user << SPAN_WARNING("There are no shell racks to load from nearby.")
+					return */
 
-			else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
-				var/obj/item/cannon_ball/M = loaded[1]
-				var/unloadtime = caliber/8
-				if (do_after(user, unloadtime, user, can_move = TRUE))
-					if (user && (locate(user) in range(1,src)))
-						loaded -= M
-						M.loc = get_turf(user)
-						user.put_in_active_hand(M)
-						user << SPAN_NOTICE("You unload \the [src].")
-						if (istype(src, /obj/structure/cannon/modern/tank))
-							playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+				playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
+				var/obj/item/cannon_ball/shell/tank/chosen
+
+				user << SPAN_NOTICE("The autoloader begins loading a shell.")
+				spawn (6 SECONDS)
+					if (!loadable.len)
+						user << SPAN_WARNING("There are no shells to load.")
 						return
-		else
-			to_chat(user, SPAN_DANGER("\The [src] is broken! Repair it first."))
+					chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
+					if (!chosen || chosen == "")
+						return
+					chosen.loc = src
+					loaded += chosen
+					user << SPAN_NOTICE("The autoloader loads \the [src].")
+					return
+
+		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
+			var/obj/item/cannon_ball/M = loaded[1]
+			var/unloadtime = caliber/8
+			if (do_after(user, unloadtime, user, can_move = TRUE))
+				if (user && (locate(user) in range(1,src)))
+					loaded -= M
+					M.loc = get_turf(user)
+					user.put_in_active_hand(M)
+					user << SPAN_NOTICE("You unload \the [src].")
+					if (istype(src, /obj/structure/cannon/modern/tank))
+						playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+					return
 
 	if (href_list["set_distance"])
 		distance = input(user, "Set Distance? (From [minrange] to [maxrange] meters)") as num
@@ -481,72 +462,47 @@
 		distance += 10
 		distance = clamp(distance, minrange, max_distance)
 
-	if (href_list["set_degree"])
-		degree = input(user, "What to set the degree to? (From [0] to [359] degrees - N = 0, E = 90, S = 180, W = 270)") as num
-		if (degree < 0)
-			degree += 360
-		if (degree >= 360)
-			degree -= 360
+	if (href_list["set_azimuth"])
+		azimuth = input(user, "Want to set the Azimuth to what? (From [0] to [359] degrees - N = 0, E = 90, S = 180, W = 270)") as num
+		if(azimuth < 0)
+			azimuth += 360
+		if(azimuth >= 360)
+			azimuth -= 360
 
-	if (href_list["degree_1minus"])
-		degree = degree - 1
-		if (degree < 0)
-			degree += 360
-	if (href_list["degree_10minus"])
-		degree = degree - 10
-		if (degree < 0)
-			degree += 360
+	if (href_list["azimuth_1minus"])
+		azimuth = azimuth - 1
+		if(azimuth < 0)
+			azimuth += 360
+	if (href_list["azimuth_10minus"])
+		azimuth = azimuth - 10
+		if(azimuth < 0)
+			azimuth += 360
 
-	if (href_list["degree_10plus"])
-		degree = degree + 10
-		if (degree >= 360)
-			degree -= 360
-	if (href_list["degree_1plus"])
-		degree = degree + 1
-		if (degree >= 360)
-			degree -= 360
+	if (href_list["azimuth_10plus"])
+		azimuth = azimuth + 10
+		if(azimuth >= 360)
+			azimuth -= 360
+	if (href_list["azimuth_1plus"])
+		azimuth = azimuth + 1
+		if(azimuth >= 360)
+			azimuth -= 360
 
-	// 0 north
-	// 90 west
-	// 180 south
-	// 270 east
+	// 90 north
+	// 180 west
+	// 270 south
+	// 360 = 0 east
 
-	if (course)
-		if (dir == EAST)
-			degree = clamp(degree, 45, 134)
-		else if (dir == SOUTH)
-			degree = clamp(degree, 135, 224)
-		else if (dir == WEST)
-			degree = clamp(degree, 225, 315)
-		else if (dir == NORTH)
-			if (degree > 180)
-				degree = clamp(degree, 315, 360)
-			else
-				degree = clamp(degree, 0, 44)
+	get_target_coords()
+	draw_aiming_line(user)
 
-	target_coords()
-	update_scope()
-
-	if (degree >= 45 && degree < 135)
+	if(azimuth >= 45 && azimuth < 135)
 		dir = EAST
-	else if (degree >= 135 && degree < 225)
+	else if(azimuth >= 135 && azimuth < 225)
 		dir = SOUTH
-	else if (degree >= 225 && degree < 315)
+	else if(azimuth >= 225 && azimuth < 315)
 		dir = WEST
-	else if (degree >= 315 || degree < 45)
+	else
 		dir = NORTH
-	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
-		F.update_icon()
-
-	if (href_list["toggle_scope"])
-		if (scope_mod == "Enabled")
-			scope_mod = "Disabled"
-			delete_scope_image()
-			to_chat(user, SPAN_NOTICE("Scope disabled."))
-		else
-			scope_mod = "Enabled"
-			to_chat(user,  SPAN_NOTICE("Scope enabled."))
-			update_scope()
 
 	if (href_list["fire"])
 		if (!broken)
@@ -569,7 +525,6 @@
 					if (BS1.opacity)
 						user << "You have no opening to fire through!"
 						return
-
 			if (istype(src, /obj/structure/cannon/rocket))
 				for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
 					if (do_after(user, firedelay, src, can_move = FALSE))
@@ -760,7 +715,7 @@
 									high = FALSE
 
 								var/hit = FALSE
-								
+
 								var/tx = x + target_x + rand(-1,1)
 								var/ty = y + target_y + rand(-1,1)
 
@@ -827,13 +782,13 @@
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/naval/HE380))
 												explosion(target, 2, 3, 3, 4)
 												if (target.z > 1)
-													var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+													var/turf/tgtbelow = locate(tx,tx,z-1)
 													if (tgtbelow)
 														explosion(tgtbelow, 2, 2, 2, 3)
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/naval/HE150))
 												explosion(target, 2, 2, 2, 3)
 												if (target.z > 1)
-													var/turf/tgtbelow = locate(target.x,target.y,target.z-1)
+													var/turf/tgtbelow = locate(tx,tx,z-1)
 													if (tgtbelow)
 														explosion(tgtbelow, 1, 2, 2, 3)
 
@@ -955,20 +910,17 @@
 										*/
 								sleep(0.5)
 		else
-			to_chat(user, SPAN_DANGER("\The [src] is broken! Repair it first."))	
+			to_chat(user, SPAN_DANGER("\The [src] is broken! Repair it first."))
 
 	do_html(user)
 
-/obj/structure/cannon/proc/do_html(var/mob/M)
+/obj/structure/cannon/proc/do_html(var/mob/m)
 
-	if (M)
-		if (degree < 0)
-			degree += 360
-		if (degree >= 360)
-			degree -= 360
+	if (m)
+
 		max_distance = maxrange
 
-		M << browse({"
+		m << browse({"
 
 		<br>
 		<html>
@@ -991,71 +943,96 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded.len ? loaded[1].name : (autoloader ? "Click here to load shell" : "No shell loaded")]</a>[see_amount_loaded ? (loaded.len ? " <b>There are [loaded.len] [loaded[1].name]s loaded.</b>" : " <b>There is nothing loaded.</b>") : ""]<br><br>
-		Increase/Decrease <b>distance</b>: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
-		Increase/Decrease <b>degree</b>: <a href='?src=\ref[src];degree_10minus=10'>-10</a> | <a href='?src=\ref[src];degree_1minus=1'>-1</a> | <a href='?src=\ref[src];set_degree=1'>[degree] degrees</a> | <a href='?src=\ref[src];degree_1plus=1'>+1</a> | <a href='?src=\ref[src];degree_10plus=1'>+10</a><br><br>
-		Scope: [has_scope ? ("<a href='?src=\ref[src];toggle_scope=1'>[scope_mod]</a>") : "This weapon has no scope" ] <br><br>
+		Increase/Decrease distance: <a href='?src=\ref[src];distance_10minus=1'>-10</a> | <a href='?src=\ref[src];distance_1minus=1'>-1</a> | <a href='?src=\ref[src];set_distance=1'>[distance] meters</a> | <a href='?src=\ref[src];distance_1plus=1'>+1</a> | <a href='?src=\ref[src];distance_10plus=1'>+10</a><br><br>
+		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>-10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>+10</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
 		</center>
-
 		</body>
 		</html>
 		<br>
-		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x400")
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
 
-/obj/structure/cannon/proc/target_coords()
-	var/azimuth = degree - 90
-	target_x = round(abs(distance * cos(-azimuth))) * sign(cos(-azimuth))
-	target_y = round(abs(distance * sin(-azimuth))) * sign(sin(-azimuth))
+/obj/structure/cannon/proc/face_dir(var/new_dir)
+	if (new_dir == EAST)
+		azimuth = 90
+	else if (new_dir == SOUTH)
+		azimuth = 180
+	else if (new_dir == WEST)
+		azimuth = 270
+	else
+		azimuth = 0
+	dir = new_dir
+	get_target_coords()
+	draw_aiming_line(user)
+
+/obj/structure/cannon/proc/get_target_coords()
+	var/actual_azimuth = azimuth - 90
+	target_x = ceil(distance * cos(-actual_azimuth))
+	target_y = ceil(distance * sin(-actual_azimuth))
 
 /obj/structure/cannon/proc/sway()
-	if (degree > 315 || degree < 45)
+	if (azimuth > 315 || azimuth < 45)
 		return target_x
-	else if (degree >= 45 && degree < 135)
+	else if (azimuth >= 45 && azimuth < 135)
 		return target_y
-	else if (degree >= 135 && degree < 225)
+	else if (azimuth >= 135 && azimuth < 225)
 		return (-1 * target_x)
 	else
 		return (-1 * target_y)
 
-/obj/structure/cannon/proc/rotate_to(var/new_dir)
-	if (new_dir == NORTH)
-		degree = 0
-	else if (new_dir == EAST)
-		degree = 90
-	else if (new_dir == SOUTH)
-		degree = 180
-	else
-		degree = 270
-	dir = new_dir
-	target_coords()
-	update_scope()
-
-/obj/structure/cannon/proc/delete_scope_image()
-	for (var/image/img in usr.client.images)
+/obj/structure/cannon/proc/clear_aiming_line(var/mob/user)
+	if(!user)
+		return
+	if(!user.client)
+		return
+	for (var/image/img in user.client.images)
 		if (img.icon_state == "point")
 			user.client.images.Remove(img)
 		if (img.icon_state == "cannon_target")
 			user.client.images.Remove(img)
 
-/obj/structure/cannon/proc/update_scope()
-	if (scope_mod != "Enabled")
+/obj/structure/cannon/proc/draw_aiming_line(var/mob/user)
+	if(!user)
 		return
-	delete_scope_image()
-	var/image/targeted_image
-	target_coords()
-	var/azimuth = degree - 90
-	var/i
-	for(i = 1, i <= distance, i++)
-		var/point_x = round(abs(i * cos(-azimuth))) * sign(cos(-azimuth))
-		var/point_y = round(abs(i * sin(-azimuth))) * sign(sin(-azimuth))
+	if(!user.client)
+		return
+	clear_aiming_line(user)
+	var/image/aiming_line
+	var/i = 0
+	var/point_x
+	var/point_y
+	var/actual_azimuth = azimuth - 90
+	for(i = 0, i < 15 * 32, i+=32)
+		point_x = ceil(i * cos(-actual_azimuth))
+		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
-			targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "point", pixel_x = point_x * 32, pixel_y = point_y * 32, layer = 12)
-			usr.client.images += targeted_image
-	targeted_image = new/image('icons/effects/Targeted.dmi', src, icon_state = "cannon_target", pixel_x = target_x * 32, pixel_y = target_y * 32, layer = 12)
-	usr.client.images += targeted_image
+			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
+			aiming_line.alpha = 255 - (i / 1.15)
+			user.client.images += aiming_line
+
+/obj/structure/cannon/modern/tank/draw_aiming_line(var/mob/user)
+	if(!user)
+		return
+	if(!user.client)
+		return
+	clear_aiming_line(user)
+	var/image/aiming_line
+	var/i = 0
+	var/point_x
+	var/point_y
+	var/actual_azimuth = azimuth - 90
+	for(i = 0, i < distance * 32, i+=32)
+		point_x = ceil(i * cos(-actual_azimuth))
+		point_y = ceil(i * sin(-actual_azimuth))
+		if (point_x != 0 || point_y != 0)
+			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
+			aiming_line.alpha = 255 - (i / 4)
+			user.client.images += aiming_line
+	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", pixel_x = point_x, pixel_y = point_y, layer = 14)
+	user.client.images += aiming_line
 
 /obj/structure/cannon/verb/rotate_left()
 	set category = null
@@ -1065,14 +1042,14 @@
 	if (!istype(usr, /mob/living))
 		return
 
+	azimuth -= 90
+	if (azimuth < 0)
+		azimuth += 360
+
 	if (!is_naval)
-		if (course)
-			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
-			return
 		switch(dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1080,7 +1057,6 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = SOUTH
-				degree = 180
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1088,7 +1064,6 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = WEST
-				degree = 270
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1096,7 +1071,6 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = EAST
-				degree = 90
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1116,11 +1090,9 @@
 		var/obj/structure/bed/chair/chair_found
 		for (var/obj/structure/bed/chair/chair in behind)
 			chair_found = chair
-
 		switch (dir)
 			if (EAST)
 				dir = NORTH
-				degree = 0
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1137,7 +1109,6 @@
 						src.y += 3
 			if (WEST)
 				dir = SOUTH
-				degree = 180
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1154,7 +1125,6 @@
 						src.y -= 3
 			if (NORTH)
 				dir = WEST
-				degree = 270
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1171,7 +1141,6 @@
 						src.y -= 1
 			if (SOUTH)
 				dir = EAST
-				degree = 90
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1202,11 +1171,8 @@
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
 
-	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
-		F.update_icon()
-
-	target_coords()
-	update_scope()
+	get_target_coords()
+	draw_aiming_line(user)
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -1217,14 +1183,14 @@
 	if (!istype(usr, /mob/living))
 		return
 
+	azimuth += 90
+	if (azimuth >= 360)
+		azimuth -= 360
+
 	if (!is_naval)
-		if (course)
-			to_chat(user, SPAN_DANGER("You can't turn \the [src]."))
-			return
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1232,7 +1198,6 @@
 					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				degree = 0
 				if (spritemod)
 					bound_height = 64
 					bound_width = 32
@@ -1240,7 +1205,6 @@
 					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				degree = 90
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1248,7 +1212,6 @@
 					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				degree = 270
 				if (spritemod)
 					bound_height = 32
 					bound_width = 64
@@ -1272,7 +1235,7 @@
 		switch (dir)
 			if (EAST)
 				dir = SOUTH
-				degree = 180
+				azimuth = 180
 				pixel_y = -64
 				switch (naval_position)
 					if ("middle")
@@ -1289,7 +1252,7 @@
 						src.y -= 1
 			if (WEST)
 				dir = NORTH
-				degree = 0
+				azimuth = 0
 				pixel_y = 0
 				switch (naval_position)
 					if ("middle")
@@ -1306,7 +1269,7 @@
 						src.y += 1
 			if (NORTH)
 				dir = EAST
-				degree = 90
+				azimuth = 90
 				pixel_x = 0
 				switch (naval_position)
 					if ("middle")
@@ -1323,7 +1286,7 @@
 						src.y -= 3
 			if (SOUTH)
 				dir = WEST
-				degree = 270
+				azimuth = 270
 				pixel_x = -64
 				switch (naval_position)
 					if ("middle")
@@ -1353,12 +1316,9 @@
 			chair_found.dir = src.dir
 			if (chair_found.buckled_mob)
 				chair_found.buckled_mob.loc = new_behind
-
-	for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
-		F.update_icon()
-
-	target_coords()
-	update_scope()
+	
+	get_target_coords()
+	draw_aiming_line(user)
 	return
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
 	if (direction)
@@ -1392,35 +1352,29 @@
 	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
 	if (spritemod)
+		icon = 'icons/obj/cannon.dmi'
+		icon_state = "cannon"
 		switch (dir)
 			if (SOUTH)
 				bound_height = 64
 				bound_width = 32
 				pixel_x = -16
 				pixel_y = 0
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
 			if (NORTH)
 				bound_height = 64
 				bound_width = 32
 				pixel_x = -16
 				pixel_y = 0
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
 			if (EAST)
 				bound_height = 32
 				bound_width = 64
 				pixel_x = 0
 				pixel_y = -16
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
 			if (WEST)
 				bound_height = 32
 				bound_width = 64
 				pixel_x = 0
 				pixel_y = -16
-				icon = 'icons/obj/cannon.dmi'
-				icon_state = "cannon"
 	return TRUE
 
 /obj/structure/cannon/Bump(var/atom/A, yes)
@@ -1504,8 +1458,8 @@
 	if (!loaded.len)
 		return FALSE
 	var/turf/TF
-	target_coords()
-	TF = locate(src.x + target_x,src.y + target_y,z)
+	get_target_coords()
+	TF = locate(src.x + target_x, src.y + target_y, z)
 	if (!TF)
 		return FALSE
 	var/sub = loaded[1].subtype
@@ -1531,4 +1485,5 @@
 			S1.launch(TF, user, src, rand(-2,2), 0)
 	else
 		S.launch(TF, user, src, 0, 0)
+	playsound(loc, "artillery_out", 100, TRUE)
 	return TRUE

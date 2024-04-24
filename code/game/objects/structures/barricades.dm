@@ -127,7 +127,7 @@
 	if (can_damage)
 		switch(W.damtype)
 			if ("fire")
-				health -= W.force * TRUE
+				health -= W.force * 1
 			if ("brute")
 				health -= W.force * 0.75
 
@@ -183,13 +183,13 @@
 			return TRUE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
-	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	health -= proj.damage * 0.01
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 /obj/structure/barricade/horizontal
 	name = "wood barrier"
-	desc = "A wood wall made of vines and logs roped together."
+	desc = "A wood wall constructed from interwoven logs."
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
 	protection_chance = 85
@@ -197,7 +197,7 @@
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"
-	desc = "A wood wall made of vines and logs roped together."
+	desc = "A wood wall constructed from interwoven logs."
 	icon_state = "woodbarricade_vertical"
 	flammable = TRUE
 	protection_chance = 85

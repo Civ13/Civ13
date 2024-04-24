@@ -218,6 +218,7 @@
 			del(src)
 			return
 
+
 	if (custom_event_msg && custom_event_msg != "")
 		src << "<h1 class='alert'>Custom Event</h1>"
 		src << "<h2 class='alert'>A custom event is taking place. OOC Info:</h2>"
@@ -232,10 +233,10 @@
 
 	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.
 	// (but turn them off first, since sometimes BYOND doesn't turn them on properly otherwise)
-	spawn(5) // And wait a half-second, since it sounds like you can do this too fast.
+	spawn(1) // And wait a half-second, since it sounds like you can do this too fast.
 		if (src)
 			winset(src, null, "command=\".configure graphics-hwmode off\"")
-			sleep(2) // wait a bit more, possibly fixes hardware mode not re-activating right
+			sleep(1) // wait a bit more, possibly fixes hardware mode not re-activating right
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
 	if (src)
 		send_resources()
@@ -245,7 +246,7 @@
 	spawn (1)
 		log_to_db()
 
-	spawn (2)
+	spawn (1)
 		if (!istype(mob, /mob/new_player))
 			src << browse(null, "window=playersetup;")
 
@@ -262,6 +263,10 @@
 		sleep(1)
 
 	movementMachine_clients += src
+
+/client/MouseEntered(atom/object, location, control, params)
+	mouse_x = object.x
+	mouse_y = object.y
 
 	//////////////
 	//DISCONNECT//

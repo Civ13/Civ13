@@ -32,7 +32,7 @@
 			G  = user.r_hand
 		if (G.reagents.get_reagent_amount("fat_oil") >= 5)
 			if(do_after(user, 90))
-				visible_message("[user.name] pours the [src.name] into the [G.name], mixing it.")
+				user.visible_message(SPAN_NOTICE("[user.name] pours the [src.name] into the [G.name], mixing it."), SPAN_NOTICE("You pour the [src.name] into \the [G.name], mixing it."))
 				G.reagents.remove_reagent("fat_oil", 5)
 				new/obj/item/weapon/reagent_containers/food/snacks/pemmican(user.loc)
 				qdel(src)
@@ -58,6 +58,7 @@
 	var/ready = FALSE
 	var/salted = FALSE
 	var/slices = 5
+
 /obj/item/weapon/pigleg/bloodless
 	bloody = FALSE
 	name = "bloodless raw ham"
@@ -73,29 +74,29 @@
 
 /obj/item/weapon/pigleg/salted/dried
 	name = "dried ham"
-	desc = "a dried, ready to eat ham. Delicious!"
+	desc = "a dried, ready-to-eat ham. Delicious!"
 	icon_state = "dried_ham"
 	ready = TRUE
 
 /obj/item/weapon/pigleg/salted/dried/packaged
 	name = "packaged ham"
-	desc = "a dried, ready to eat ham, wrapped in a protective case. Delicious!"
+	desc = "A dried, ready-to-eat ham, wrapped in a protective case. Delicious!"
 	icon_state = "labeled_ham"
 
 /obj/item/weapon/pigleg/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (slices<=0)
 		qdel(src)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) && slices>0 && ready)
-		user << "You carefully cut a thin ham slice from the ham."
+		to_chat(user, SPAN_NOTICE("You carefully cut a thin ham slice from the ham."))
 		slices--
 		new/obj/item/weapon/reagent_containers/food/snacks/curedham(user.loc)
 		if (slices<=0)
 			qdel(src)
 		return
 	else if (istype(W, /obj/item/weapon/hammer) && bloody)
-		user << "You start beating the ham with the hammer..."
+		to_chat(user, SPAN_NOTICE("You start beating the ham with the hammer..."))
 		if (do_after(user, 100, src))
-			user << "You finish beating the ham with the hammer, removing the blood."
+			to_chat(user, SPAN_NOTICE("You finish beating the ham with the hammer, removing the blood."))
 			bloody = FALSE
 			name = "bloodless raw ham"
 			desc = "a raw, bloodless pork leg."
@@ -135,7 +136,7 @@
 
 /obj/structure/salting_container/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
 	if (salting)
-		user << "<span class=warning>The container is full!</span>"
+		to_chat(user, SPAN_WARNING("The salting container is full!"))
 		return
 	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity && contents.len)
 		if (saltamount < 30)
@@ -143,7 +144,7 @@
 			saltamount += W.reagents.get_reagent_amount("sodiumchloride")
 			qdel(W)
 			if (saltamount >= 30)
-				user << "The salting container is now filled up."
+				visible_message("The salting container is now full.")
 				icon_state = "salting_container_processing"
 				salting = TRUE
 				salting()
@@ -155,7 +156,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "ham"
-			user << "You add \the [W] to the salting container."
+			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
@@ -164,7 +165,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "cod"
-			user << "You add \the [W] to the salting container."
+			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage))
@@ -173,20 +174,20 @@
 			max_capacity = 5
 			producttype = W.type
 			producttype_name = "sausage"
-			user << "You add \the [W] to the salting container."
+			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 	else if (producttype == W.type && contents.len < max_capacity && !salting)
 		user.drop_from_inventory(W, src, FALSE)
 		W.forceMove(src)
-		user << "You add \the [W] to the salting container."
+		to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
 		icon_state = "salting_container_[producttype_name]_[contents.len]"
 		return
 	else if (producttype == W.type && contents.len >= max_capacity)
-		user << "<span class=warning>You can't add any more [W] to the container.</span>"
+		to_chat(user, SPAN_WARNING("You can't add any more of \the [W] to the container."))
 		return
 	else if (producttype != W.type)
-		user << "<span class=warning>This is the wrong type of product!</span>"
+		to_chat(user, SPAN_WARNING("This is the wrong type of product!"))
 		return
 	else
 		..()
@@ -195,7 +196,7 @@
 	spawn(3600)
 		salting = FALSE
 		icon_state = "salting_container"
-		visible_message("The products in the salting container are ready.")
+		visible_message("The products in the salting container swell up and fully salt.")
 		saltamount = 0
 		for (var/obj/item/I in contents)
 			qdel(I)
@@ -225,14 +226,16 @@
 
 /obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if (filled >= max_capacity)
-		H << "<span class='notice'>\The [src] is full!</span>"
+		to_chat(H, SPAN_WARNING("\The [src] is full!"))
 		return
 	if (filled == 0 || istype(W, producttype))
 		if (istype(W, /obj/item/weapon/pigleg) && filled < max_capacity)
 			var/obj/item/weapon/pigleg/P = W
 			if (P.salted && !P.bloody && !P.ready)
 				max_capacity = 3
-				H << "You hang the [W.name] to dry."
+				H.visible_message(
+					"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
+					"<span class='notice'>You hang \the [W.name] to dry.")
 				producttype_name = "ham"
 				producttype = /obj/item/weapon/pigleg
 				filled += 1
@@ -242,7 +245,9 @@
 				return
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
 			max_capacity = 5
-			H << "You hang the [W.name] to dry."
+			H.visible_message(
+				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
+				"<span class='notice'>You hang \the [W.name] to dry.")
 			producttype_name = "salami"
 			producttype = /obj/item/weapon/reagent_containers/food/snacks/sausage/salted
 			filled += 1
@@ -251,14 +256,16 @@
 			dry_obj(producttype)
 			return
 	else if (!istype(W, producttype) && filled > 0)
-		H << "<span class=warning>You can't dry this at the same time as you dry [producttype_name]."
+		to_chat(H, SPAN_WARNING("You can't dry this at the same time as \the [producttype_name]."))
 		return
 	else if (filled == 0)
 		if (istype(W, /obj/item/weapon/pigleg))
 			var/obj/item/weapon/pigleg/P = W
 			if (P.salted && !P.bloody && !P.ready)
 				max_capacity = 3
-				H << "You hang the [W.name] to dry."
+				H.visible_message(
+					"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
+					"<span class='notice'>You hang \the [W.name] to dry.")
 				producttype_name = "ham"
 				producttype = /obj/item/weapon/pigleg
 				filled += 1
@@ -268,7 +275,9 @@
 				return
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
 			max_capacity = 5
-			H << "You hang the [W.name] to dry."
+			H.visible_message(
+				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
+				"<span class='notice'>You hang \the [W.name] to dry.")
 			producttype_name = "salami"
 			producttype = /obj/item/weapon/reagent_containers/food/snacks/sausage/salted
 			filled += 1

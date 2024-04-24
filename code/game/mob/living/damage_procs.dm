@@ -40,7 +40,7 @@
 
 
 
-/mob/living/proc/apply_effect(var/effect = FALSE,var/effecttype = STUN, var/blocked = FALSE, var/check_protection = TRUE)
+/mob/living/proc/apply_effect(var/effect = FALSE, var/effecttype = STUN, var/blocked = FALSE, var/check_protection = TRUE)
 	if (!effect || (blocked >= 2))	return FALSE
 	switch(effecttype)
 		if (STUN)

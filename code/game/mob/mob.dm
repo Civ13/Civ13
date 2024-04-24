@@ -213,7 +213,7 @@
 	set category = "IC"
 
 	if ((is_blind(src) || stat) && !isobserver(src))
-		src << "<span class='notice'>Something is there but you can't see it.</span>"
+		to_chat(src, SPAN_NOTICE("Something is there but you can't see it."))
 		return TRUE
 
 	// changing direction counts as a movement, so don't do it unless we have to - Kachnov
@@ -690,7 +690,7 @@
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
-					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, ITALIAN, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, FILIPINO, CHECHEN, CHINESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, VIETNAMESE, POLISH).Find(faction))
+					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, ITALIAN, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, FILIPINO, CHECHEN, CHINESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, VIETNAMESE, POLISH, BLUEFACTION, REDFACTION).Find(faction))
 						continue
 					if (grace_period_string)
 						grace_period_string += ", "
@@ -1066,6 +1066,10 @@ mob/proc/yank_out_object()
 	set name = "Face-Direction"
 	set category = "IC"
 	set src = usr
+
+	if (!ishuman(usr)) // Prevents ghosts from using this verb, it doesn't even set their face_dir as a ghost, so it just leads to unexpec-bugs down the line.
+		to_chat(usr, SPAN_WARNING("You must be human to use this verb."))
+		return
 
 	set_face_dir()
 

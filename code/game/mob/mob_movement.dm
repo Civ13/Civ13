@@ -344,7 +344,7 @@
 		if (ref && map && map.check_caribbean_block(mob, ref))
 			mob.dir = direct
 			if (world.time >= mob.next_gracewall_message)
-				mob << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"
+				to_chat(mob, SPAN_WARNING("You cannot pass the invisible wall until the <b>Grace Period</b> has ended."))
 				mob.next_gracewall_message = world.time + 10
 			return FALSE
 
@@ -407,14 +407,14 @@
 
 	if (mob_is_living)
 		for (var/obj/structure/window_frame/W in mob.loc)
-			mob.visible_message("<span class = 'warning'>[mob] starts climbing through the window frame.</span>")
+			mob.visible_message(SPAN_WARNING("[mob] starts climbing through the window frame."), SPAN_WARNING("You start climbing through the window frame."))
 			mob.canmove = FALSE
 			var/oloc = mob.loc
 			sleep(rand(8,12))
 			mob.canmove = TRUE
 			if (mob.lying || mob.stat == DEAD || mob.stat == UNCONSCIOUS || mob.loc != oloc)
 				return
-			mob.visible_message("<span class = 'warning'>[mob] climbs through the window frame.</span>")
+			mob.visible_message(SPAN_WARNING("[mob] climbs through the window frame."), SPAN_WARNING("You climb through the window frame."))
 			break
 
 	// we can probably move now, so update our eye for ladders
@@ -432,7 +432,7 @@
 				if (M.pulling == mob)
 					if (!M.restrained() && M.stat == 0 && M.canmove && mob.Adjacent(M))
 						if (world.time >= mob.next_cannotmove_message)
-							src << "<span class = 'notice'>You're restrained! You can't move!</span>"
+							to_chat(src, SPAN_NOTICE("You're restrained! You can't move!"))
 							mob.next_cannotmove_message = world.time + 10
 						return FALSE
 					else
@@ -440,7 +440,7 @@
 
 		if (mob.pinned.len)
 			if (world.time >= mob.next_cannotmove_message)
-				src << "<span class = 'notice'>You're pinned to a wall by [mob.pinned[1]]!</span>"
+				to_chat(src, SPAN_NOTICE("You're pinned to a wall by [mob.pinned[1]]!"))
 				mob.next_cannotmove_message = world.time + 10
 			return FALSE
 
@@ -479,7 +479,7 @@
 			for (var/obj/covers/CV in get_turf(F))
 				F.muddy = FALSE
 			var/snow_message = ""
-			var/snow_span = "notice"
+			var/snow_span = "warning"
 
 			if (F.icon == 'icons/turf/snow.dmi' && snow && !H.lizard)
 				standing_on_snow = 1
@@ -546,7 +546,7 @@
 				else
 					standing_on_snow = rand(2,3)
 				if (world.time >= mob.next_mud_message)
-					mob << "<span class = 'warning'>The mud slows you down.</span>"
+					to_chat(mob, SPAN_WARNING("The mud slows you down."))
 					mob.next_mud_message = world.time+100
 					if (ishuman(mob))
 						var/mob/living/human/perp = mob
@@ -641,16 +641,16 @@
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
-				H << "<span class = 'danger'>You're starting to tire from running so much.</span>"
+				to_chat(H, SPAN_DANGER("You're starting to tire from running so much."))
 				H.next_stamina_message = world.time + 20
 
 			if (H.getStat("stamina") <= 0 && H.m_intent == "run")
-				H << "<span class = 'danger'>You're too tired to keep running.</span>"
+				to_chat(H, SPAN_DANGER("You're too tired to keep running."))
 				if (H.m_intent != "walk")
-					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
-					if (mob.HUDneed.Find("mov_intent"))
-						var/obj/screen/intent/I = mob.HUDneed["mov_intent"]
-						I.update_icon()
+					H.m_intent = "walk" // Incase we don't set the intent to walk somehow, force-set it here...
+					if (mob.HUDneed.Find("m_intent")) // Find the movement intent in the HUDneed list() on mob_defines.
+						var/obj/screen/intent/I = mob.HUDneed["m_intent"] // Set a variable to access that movement intent.
+						I.update_icon() // Updates the HUD icon to 'walk'.
 
 		var/tickcomp = FALSE //moved this out here so we can use it for vehicles
 		if (config.Tickcomp)
@@ -759,7 +759,7 @@
 					else
 						for (var/mob/living/L in mob.loc)
 							if (L.lying && L != H)
-								H.visible_message("<span class = 'warning'>[H] steps over [L].</span>")
+								H.visible_message("<span class = 'warning'>[H] steps over \the [L].</span>", "<span class = 'warning'>You step over \the [L].</span>", "You hear a step.")
 
 			#undef STOMP_TIME
 
@@ -955,6 +955,8 @@
 					H << "You switch into forward."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = FALSE
+			for(var/obj/item/turret_controls/C in H)
+				C.increase_distance(1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -994,6 +996,8 @@
 					H << "You switch into reverse."
 					playsound(H.loc, 'sound/effects/lever.ogg',65, TRUE)
 					MW.control.axis.reverse = TRUE
+			for(var/obj/item/turret_controls/C in H)
+				C.increase_distance(-1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH
@@ -1028,6 +1032,8 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
+			for(var/obj/item/turret_controls/C in H)
+				C.start_rotation(1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1062,6 +1068,8 @@
 				H.football.update_movement()
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"left")
+			for(var/obj/item/turret_controls/C in H)
+				C.start_rotation(-1)
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
@@ -1098,9 +1106,13 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()

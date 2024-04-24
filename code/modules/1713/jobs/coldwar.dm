@@ -576,7 +576,7 @@
 				uniform.attackby(mosinp, H)
 		H.setStat("machinegun", STAT_MEDIUM_LOW)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/rpd(H), slot_shoulder)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/rpd(H), slot_shoulder)
 		var/obj/item/weapon/storage/belt/largepouches/mgbelt = new /obj/item/weapon/storage/belt/largepouches(null)
 		H.equip_to_slot_or_del(mgbelt, slot_belt)
 		mgbelt.attackby(new /obj/item/ammo_magazine/rpd, H)

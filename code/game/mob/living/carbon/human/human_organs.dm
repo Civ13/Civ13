@@ -173,7 +173,6 @@
 			var/emote_scream = pick("screams in pain and ", "lets out a sharp cry and ", "cries out and ")
 			emote("me", TRUE, "[(species.flags & NO_PAIN) ? "" : emote_scream ]drops what they were holding in their [E.name]!")
 
-
 //Handles chem traces
 /mob/living/human/proc/handle_trace_chems()
 	//New are added for reagents to random organs.

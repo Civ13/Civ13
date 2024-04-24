@@ -5,7 +5,7 @@
 	H.name = H.species.get_random_italian_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/italian/squad_leader
+/datum/job/italian/officer
 	title = "Tenente"
 	en_meaning = "Officer"
 	rank_abbreviation = "Ten."
@@ -13,11 +13,12 @@
 	spawn_location = "JoinLateIT"
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_commander = TRUE
 
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/italian/squad_leader/equip(var/mob/living/human/H)
+/datum/job/italian/officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
@@ -56,6 +57,7 @@
 
 	spawn_location = "JoinLateIT"
 	is_squad_leader = TRUE
+	uses_squads = TRUE
 	is_ww2 = TRUE
 
 	min_positions = 2

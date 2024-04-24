@@ -53,10 +53,10 @@
 		return FALSE
 
 	if (!H.has_organ_for_slot(slot_handcuffed))
-		user << "<span class='danger'>\The [H] needs at least two wrists before you can cuff them together!</span>"
+		to_chat(user, SPAN_DANGER("\The [H] needs at least two wrists before you can cuff them together!"))
 		return FALSE
 
-	user.visible_message("<span class='danger'>\The [user] is attempting to put [cuff_type] on \the [H]!</span>")
+	user.visible_message("<span class='danger'>\The [user] is attempting to put [cuff_type] on \the [H]!</span>", "<span class='notice'>You are trying to put [cuff_type] on \the [H]!</span>", "You hear a tight click.")
 
 	if (!do_after(user,8, target))
 		return FALSE
@@ -73,7 +73,7 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(H)
 
-	user.visible_message("<span class='danger'>\The [user] has put [cuff_type] on \the [H]!</span>")
+	user.visible_message("<span class='danger'>\The [user] has put [cuff_type] on \the [H]!</span>", "<span class='notice'>You have put [cuff_type] on \the [H]!</span>")
 
 	// Apply cuffs.
 	var/obj/item/weapon/handcuffs/cuffs = src

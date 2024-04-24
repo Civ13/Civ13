@@ -73,8 +73,8 @@
 		if (!is_bad)
 			user.show_message("<span class='notice'>* No general health issues.</span>")
 
-		var/ecount = 0
-		var/icount = 0
+		var/ecount = 0 // external organs count
+		var/icount = 0 // internal organs count
 
 		var/list/unsplinted_limbs = list()
 		user.show_message("[victim] has:")
@@ -88,7 +88,7 @@
 			var/internal = FALSE
 			var/open = FALSE
 			var/bleeding = FALSE
-			var/foreign = FALSE // sharpnel, implants, and etcera
+			var/foreign = FALSE // shrapnel, implants, and etcera
 
 			if (!e)
 				continue
@@ -135,7 +135,7 @@
 					inner += "signs of internal bleeding"
 					inner += " [foreign ? "and " : "in"]"
 				if (foreign)
-					inner += "likely sharpnel"
+					inner += "likely shrapnel"
 					inner += " in"
 				string += "[capitalize(inner)] [G.his] [e.name].</span>"
 				user.show_message("<b>[string]</b>")

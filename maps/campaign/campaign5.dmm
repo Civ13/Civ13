@@ -159,7 +159,7 @@
 "Ar" = (/obj/structure/window/barrier/sandbag{dir = 4},/turf/floor/dirt/dark_dirt,/area/caribbean/nomads/forest)
 "Aw" = (/obj/structure/floodlight/on,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "Bj" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/nomads/forest)
-"Bn" = (/obj/map_metadata/campaign/campaign5,/turf/floor/grass,/area/caribbean/nomads/forest)
+"Bn" = (/turf/floor/grass,/area/caribbean/nomads/forest)
 "BA" = (/obj/structure/wild/flowers,/obj/structure/barbwire{dir = 1},/turf/floor/grass,/area/caribbean/nomads/forest)
 "BH" = (/turf/floor/plating/road,/area/caribbean/british/land/outside/objective)
 "BK" = (/obj/structure/barricade/hescobastion,/turf/floor/dirt,/area/caribbean/nomads/forest)

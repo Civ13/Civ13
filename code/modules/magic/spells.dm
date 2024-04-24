@@ -1,78 +1,37 @@
-//Spells go here.
+/datum/mind
+	var/list/learned_spells
 
-/*
-SPELL SCHOOLS:
+//A fix for when a spell is created before a mob is created
+/mob/Login()
+	. = ..()
+	if(mind)
+		if(!mind.learned_spells)
+			mind.learned_spells = list()
 
-These all follow the same naming sense. (-tion)
+proc/restore_spells(var/mob/H)
+	if(H.mind && H.mind.learned_spells)
+		var/list/spells = list()
+		for(var/spell/spell_to_remove in H.mind.learned_spells) //remove all the spells from other people.
+			if(istype(spell_to_remove.holder,/mob))
+				var/mob/M = spell_to_remove.holder
+				spells += spell_to_remove
+				M.remove_spell(spell_to_remove)
 
-Abjuration - Wards, Buffs, Enchanting, that sorta thing.
-Alteration - Manipulating stuff, like telekinesis.
-Conjuration - Summoning.
-Divination - Premonition, Oracle stuff.
-Evocation - Typical Spell, Like fireball n such.
-Restoration - Healing n such.
-Transmutation - Changing one thing into another.
+		for(var/spell/spell_to_add in spells)
+			H.add_spell(spell_to_add)
 
-It bugs me this doesn't match the other school names.
-May not use these.
+/mob/proc/add_spell(var/spell/spell_to_add, var/spell_base = "wiz_spell_ready")
+	spell_to_add.holder = src
+	if(mind)
+		if(!mind.learned_spells)
+			mind.learned_spells = list()
+		mind.learned_spells |= spell_to_add
+	return 1
 
-Necromancy - Dealing with the dead. - Conjuration? Not really, Transmutation? Not really.
-Illusion - Tricking Sense - Kinda like conjuration?
+/mob/proc/remove_spell(var/spell/spell_to_remove)
+	if(!spell_to_remove || !istype(spell_to_remove))
+		return
 
-*/
-/*
-Potential SFX
-sound/effects/bamf.ogg - Soft bamf noise
-
-sound/effects/bang.ogg - loud bamf
-
-sound/effects/cardboard_punch.ogg - thud noise
-
-sound/effects/cascade.ogg - watery magic sound
-
-sound/effects/custom_flare.ogg - hiss
-
-*/
-/datum/spell/clean
-	name 		= "Cleanse"
-	desc   		= "Cleans the target."
-	icon_state 	= "cleanse"
-	proj_state	= "energy2"
-	school   	= "Restoration"
-	circle 	= 1
-
-	time    = 1
-	cost   	= 10
-
-/datum/spell/close_wounds
-	name 		= "Close Wounds"
-	desc   		= "Stops Bleeding."
-	icon_state 	= "telekinesis"
-	proj_state	= "energy2"
-	school   	= "Restoration"
-	circle 	= 1
-
-	time    = 1
-	cost   	= 10
-
-/datum/spell/force_bolt
-	name 		= "Force Bolt"
-	desc   		= "A projectile of pure manna."
-	icon_state 	= "telekinesis"
-	proj_state	= "energy"
-	school   	= "Evocation"
-	circle 	= 1
-
-	time    = 1
-	cost   	= 10
-
-/datum/spell/telekinesis
-	name 		= "Telekinesis"
-	desc   		= "Manipulate objects with manna."
-	icon_state 	= "telekinesis"
-	proj_state	= "energy"
-	school   	= "Alteration"
-	circle 	= 1
-
-	time    = 1
-	cost   	= 10
+	if(mind)
+		mind.learned_spells -= spell_to_remove
+	return 1

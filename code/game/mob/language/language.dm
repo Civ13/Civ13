@@ -416,6 +416,26 @@
 	var/full_name = "David Stewart"
 	return full_name
 
+/datum/language/proc/get_random_bluefaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
+		else
+			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
+
+	var/full_name = "John Adams"
+	return full_name
+
+/datum/language/proc/get_random_redfaction_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
+		else
+			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
+
+	var/full_name = "John Adams"
+	return full_name
+
 /datum/language
 	var/list/scramble_cache = list()
 
@@ -603,6 +623,10 @@
 			else if (istype(l, /datum/language/inuit))
 				cname_check = FALSE
 			else if (istype(l, /datum/language/cherokee))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/redmenian))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/blugoslavian))
 				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))

@@ -6,6 +6,7 @@
 	respawn_delay = 0
 	victory_time = 15000
 	no_winner = "No faction controls the Castle."
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		BRITISH,
