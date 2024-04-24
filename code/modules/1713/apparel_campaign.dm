@@ -14,8 +14,8 @@
 ///////////////////// Pouches ///////////////////////
 
 /obj/item/weapon/storage/belt/smallpouches/red
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
+	icon_state = "smallpouches_green"
+	item_state = "smallpouches_green"
 
 /obj/item/weapon/storage/belt/smallpouches/red/full
 	New()
@@ -90,8 +90,8 @@
 		new /obj/item/ammo_magazine/dp(src)
 
 /obj/item/weapon/storage/belt/smallpouches/blue
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
+	icon_state = "smallpouches_green"
+	item_state = "smallpouches_green"
 
 /obj/item/weapon/storage/belt/smallpouches/blue/full
 	New()

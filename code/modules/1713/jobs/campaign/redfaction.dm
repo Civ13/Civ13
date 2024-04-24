@@ -155,19 +155,19 @@
 
 //helmet
 	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
 	else if (findtext(title, "Officer"))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_r_hand)
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_redmenia(H), slot_head)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach(H), slot_r_hand)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_r_hand)
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
-	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && A.climate == "taiga" || A.climate == "tundra")
+	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && (A.climate == "taiga" || A.climate == "tundra"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
 	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/green(H), slot_head)
 
 //equipment
 	if (findtext(title, "Squadleader") && !findtext(title, "Armored"))
@@ -258,10 +258,7 @@
 			else
 				var/obj/item/clothing/accessory/storage/webbing/green_webbing/red/webbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing/red/g3(null)
 				uniform.attackby(webbing, H)
-		if(A.climate == "taiga" || A.climate == "tundra")
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/white/full(H), slot_belt)
-		else
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/red/full(H), slot_belt)
 	
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.setStat("strength", STAT_NORMAL)
