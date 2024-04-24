@@ -137,7 +137,7 @@
 /mob/proc/stop_using_turret()
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
-		to_chat(src, "You have stopped using the [using_turret.name]")
+		to_chat(src, SPAN_NOTICE("You have stopped using the [using_turret.name]."))
 		to_chat(src, browse(null, "window=artillery_window"))
 		using_turret = null
 
@@ -152,7 +152,7 @@
 		mob_vehicle = F.axis
 
 	if(turret_vehicle != mob_vehicle)
-		to_chat(src, "You have to be in the same vehicle as the turret to get in it.")
+		to_chat(src, SPAN_WARNING("You have to be in the same vehicle as the turret to get in it."))
 		return
 
 	if (M.buckled)
@@ -160,15 +160,15 @@
 	M.forceMove(loc)
 	if(gunner_seat && !gunner_seat.buckled_mob)
 		gunner_seat.buckle_mob(M)
-		to_chat(src, "You climb into the gunner seat.")
+		to_chat(src, SPAN_NOTICE("You climb into the gunner seat."))
 	else if(loader_seat && !loader_seat.buckled_mob)
 		loader_seat.buckle_mob(M)
-		to_chat(src, "You climb into the loader seat.")
+		to_chat(src, SPAN_NOTICE("You climb into the loader seat."))
 	else if(commander_seat && !commander_seat.buckled_mob)
 		commander_seat.buckle_mob(M)
-		to_chat(src, "You climb into the commander seat.")
+		to_chat(src, SPAN_NOTICE("You climb into the commander seat."))
 	else
-		to_chat(src, "There are no free seats in the turret.")
+		to_chat(src, SPAN_NOTICE("There are no available seats in the turret."))
 		return
 	M.start_using_turret(src)
 
@@ -281,11 +281,11 @@
 
 	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic))
 		var/obj/item/weapon/gun/projectile/automatic/G = weapons[selected_weapon]
-		to_chat(M, "You start loading the [G.name].")
+		to_chat(M, SPAN_NOTICE("You start loading the [G.name]."))
 		G.attackby(W, M)
 	else if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank))
 		var/obj/structure/cannon/modern/tank/C = weapons[selected_weapon]
-		to_chat(M, "You start loading the [C.name].")
+		to_chat(M, SPAN_NOTICE("You start loading the [C.name]."))
 		C.attackby(W, M)
 
 	do_html(M)
@@ -307,7 +307,7 @@
 					var/obj/item/cannon_ball/S = C.loaded[1]
 					C.loaded -= S
 					S.loc = get_turf(user)
-					user << SPAN_NOTICE("You unload \the [src].")
+					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
 				if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank/autoloader))
 					var/obj/structure/cannon/modern/tank/autoloader/A = weapons[selected_weapon]
 					var/list/loadable = list()
@@ -316,24 +316,24 @@
 							for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
 								if (istype(TS, A.ammotype))
 									if (A.caliber != TS.caliber && A.caliber != null && A.caliber != 0)
-										user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon.")
+										to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon."))
 										continue
 									loadable += TS
 
 					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
 					var/obj/item/cannon_ball/shell/tank/chosen
 
-					user << SPAN_NOTICE("The autoloader begins loading a shell.")
+					to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
 					spawn (6 SECONDS)
 						if (!loadable.len)
-							user << SPAN_WARNING("There are no shells to load.")
+							to_chat(user, SPAN_WARNING("There are no shells to load."))
 							return
 						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
 						if (!chosen || chosen == "")
 							return
 						chosen.loc = src
 						A.loaded += chosen
-						user << SPAN_NOTICE("The autoloader loads \the [src].")
+						to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
 						return
 	do_html(user)
 

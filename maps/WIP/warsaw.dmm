@@ -949,9 +949,9 @@
 "sB" = (/obj/item/mine/at/armed,/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
 "sC" = (/obj/item/mine/at/armed,/turf/floor/grass,/area/caribbean/nomads)
 "sD" = (/obj/structure/table/modern/table,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
-"sE" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/axis/car{name = "Mercedes 303"; color = "#636351"},/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"sE" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "sF" = (/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
-"sG" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
+"sG" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/vehicleparts/axis/car{name = "Mercedes 303"; color = "#636351"},/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "sH" = (/obj/structure/table/modern/table,/obj/item/weapon/paper_bin,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
 "sI" = (/obj/covers/cement_wall/incomplete,/obj/structure/barbwire,/obj/structure/barbwire{dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/nomads)
 "sJ" = (/obj/structure/table/modern/table,/obj/item/weapon/pen/pencil,/turf/floor/carpet/whitecarpet,/area/caribbean/roofed/temperate)
@@ -1870,7 +1870,6 @@ EDEDEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 EDEDEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 EDEtEDEDysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysysys
 "}
-
 (1,1,2) = {"
 aCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaaaaaaaaaGaGbkbkbkbkbkbkaGaGahahahahvuvuvuvuvuiGvdxFxGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGiGDWDXwdiGvcxNxOwdiMvlvhvfvmvnvoiMDZDZahahaGaGbkbkbkbkbkbkaGaGaaaaaaaanpaaaafMfMaaaaaaaaaaaaaaaaacadadaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaCaaaaaaaaaGaGbkbkbkDbbkDbaGaGahahahahvuvuiGiGiGiGiGiGiGiGiGiGiGiGahiGiGiGiGiGiGiGiGiGiGiGiGiGDWDZEYiGiGiGiGiGiGiGiGiGiGiGiGvfDZDZahahaGaGbkbkbkbkbkbksuaGaaaaaaaaaaaaajaayqnpaaaaalfMaaaaaaacadadaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae

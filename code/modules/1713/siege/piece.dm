@@ -144,6 +144,9 @@
 				loadtime /= 2
 
 			if (do_after(M, loadtime, M, can_move = TRUE))
+				if (loaded.len >= max_loaded)
+					to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+					return
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded += W
@@ -237,7 +240,7 @@
 	if (!broken)
 		if (istype(W, ammotype))
 			if (loaded.len >= max_loaded)
-				M << "<span class = 'warning'>There's already a [loaded[1]] loaded.</span>"
+				to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
 				return
 			// load first and only slot
 			var/loadtime = caliber/2
@@ -245,6 +248,9 @@
 				loadtime = caliber
 			if (do_after(M, loadtime, src, can_move = TRUE))
 				if (M && (locate(M) in range(1,src)))
+					if (loaded.len >= max_loaded)
+						to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+						return
 					M.remove_from_mob(W)
 					W.loc = src
 					loaded += W
@@ -394,6 +400,9 @@
 						loadtime = caliber
 					if (do_after(user, loadtime, user, can_move = TRUE))
 						if (user && (locate(user) in range(1,src)))
+							if (loaded.len >= max_loaded)
+								to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
+								return
 							user.remove_from_mob(M)
 							M.loc = src
 							loaded += M
@@ -840,39 +849,39 @@
 											if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear/W9))
 												radiation_pulse(target, 10, 60, 1400, TRUE)
 												explosion(target, 2, 2, 2, 100)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear/W19))
 												radiation_pulse(target, 8, 70, 1400, TRUE)
 												explosion(target, 2, 2, 2, 100)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear/W33))
 												radiation_pulse(target, 10, 45, 1000, TRUE)
 												explosion(target, 2, 2, 2, 100)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear/W33Boosted))
 												radiation_pulse(target, 10, 50, 1400, TRUE)
 												explosion(target, 2, 2, 2, 100)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 											else if (istype(fired_shell, /obj/item/cannon_ball/shell/nuclear/nomads))
 												radiation_pulse(target, 18, 150, 1000, TRUE)
 												explosion(target, 5, 8, 20, 80)
 												for (var/turf/floor/T in circlerangeturfs(4, target))
 													ignite_turf(T, 8, 70)
-												change_global_pollution(200)
+												//change_global_pollution(200)
 												change_global_radiation(18)
 											else if (istype(fired_shell,/obj/item/cannon_ball/rocket/nuclear))
 												radiation_pulse(target, 12, 80, 1400, TRUE)
 												explosion(target, 2, 2, 2, 30)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 											else
 												radiation_pulse(target, 4, 50, 800, TRUE)
 												explosion(target, 2, 2, 2, 100)
-												change_global_pollution(150)
+												//change_global_pollution(150)
 												change_global_radiation(10)
 
 											world << SPAN_DANGER("<big>A nuclear explosion has happened!</big>")
