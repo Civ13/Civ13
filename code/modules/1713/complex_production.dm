@@ -164,7 +164,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "ham"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("You add \the [W] to the salting container."), SPAN_NOTICE("[user] adds \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
@@ -173,7 +173,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "cod"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("You add \the [W] to the salting container."), SPAN_NOTICE("[user] adds \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage))
@@ -182,13 +182,13 @@
 			max_capacity = 5
 			producttype = W.type
 			producttype_name = "sausage"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("You add \the [W] to the salting container."), SPAN_NOTICE("[user] adds \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 	else if (producttype == W.type && contents.len < max_capacity && !salting)
 		user.drop_from_inventory(W, src, FALSE)
 		W.forceMove(src)
-		to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+		user.visible_message(SPAN_NOTICE("You add \the [W] to the salting container."), SPAN_NOTICE("[user] adds \the [W] to the salting container."))
 		icon_state = "salting_container_[producttype_name]_[contents.len]"
 		return
 	else if (producttype == W.type && contents.len >= max_capacity)
