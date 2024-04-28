@@ -14,6 +14,7 @@ var/list/vocal_emotes = list(
 	"sneeze",
 	"yawn",
 	"charge",
+	"medic",
 	"gasp",
 	"burp")
 
@@ -363,17 +364,17 @@ var/list/vocal_emotes = list(
 						//Racial charges take priority over normal faction charges
 						//Manually set race variables take charge over TDM nonhuman races
 						//You should never have more then two races.
-						if (orc == 1)
+						if (orc)
 							playsound(get_turf(src), "charge_ORC", 100)
-						else if (wolfman == 1)
+						else if (wolfman)
 							playsound(get_turf(src), "charge_WOLFMAN", 100)
-						else if (ant == 1)
+						else if (ant)
 							playsound(get_turf(src), "charge_ANT", 100)
-						else if (crab == 1)
+						else if (crab)
 							playsound(get_turf(src), "charge_CRAB", 100)
-						else if (lizard == 1)
+						else if (lizard)
 							playsound(get_turf(src), "charge_LIZARD", 100)
-						else if (gorillaman == 1)
+						else if (gorillaman)
 							playsound(get_turf(src), "charge_GORILLA", 100)
 						else //If you are not a special race, check normal factions.
 							//You should never have more then two factions.
@@ -467,6 +468,28 @@ var/list/vocal_emotes = list(
 									playsound(get_turf(src), "charge_REDFACTION", 100)
 								else // if no corresponding faction is found we'll default to generic charges
 									playsound(get_turf(src), "charge_GENERIC_[gender]", 100)
+					else
+						message = "makes a weak noise."
+						m_type = 2
+			
+			if ("medic")
+				if (miming)
+					message = "try to shouts something"
+					m_type = 1
+				else
+					if (!muzzled)
+						message = "calls for a Corpsman!"
+						m_type = 2
+
+						
+						var/image/speech_bubble = image('icons/mob/talk.dmi',src,"medic")
+						spawn(30) qdel(speech_bubble)
+
+						for (var/mob/M in viewers(7, src))
+							M << speech_bubble
+						
+						playsound(get_turf(src), "medic", 100)
+						
 					else
 						message = "makes a weak noise."
 						m_type = 2

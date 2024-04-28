@@ -32,7 +32,7 @@
 	naval_position = "middle"
 
 /obj/structure/cannon/modern/naval/attack_hand(var/mob/user)
-	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+	if (ishuman(user) && (map.ID == MAP_BATTLE_SHIPS))
 		var/mob/living/human/H = user
 		if (findtext(H.original_job_title,"Marine"))
 			to_chat(user, SPAN_WARNING("You do not know how to operate this gun!"))
@@ -83,7 +83,7 @@
 	layer = 3.01
 
 /obj/structure/naval_cannon_control/attack_hand(var/mob/user as mob)
-	if (ishuman(user) && (map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS))
+	if (ishuman(user) && (map.ID == MAP_BATTLE_SHIPS))
 		var/mob/living/human/H = user
 		if (findtext(H.original_job_title,"Marine"))
 			to_chat(user, SPAN_WARNING("You do not know how to operate this machinery!"))

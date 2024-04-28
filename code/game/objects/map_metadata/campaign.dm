@@ -68,6 +68,7 @@
 	)
 	var/list/captured_equipment_red = list()
 	var/list/captured_equipment_blue = list()
+	var/at_mines_placed = 0
 
 /obj/map_metadata/campaign/New()
 	..()
@@ -113,9 +114,9 @@
 
 /obj/map_metadata/campaign/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 2 MINUTES
+		return 1 MINUTES
 	else
-		return 2 MINUTES
+		return 3 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -154,8 +155,8 @@
 //role selector
 /mob/new_player/proc/LateChoicesCampaign(factjob)
 	var/list/available_jobs_per_side = list(
-		REDFACTION = FALSE,
 		BLUEFACTION = FALSE,
+		REDFACTION = FALSE,
 	)
 	var/obj/map_metadata/campaign/MC = map
 	src << browse(null, "window=latechoices")
@@ -166,10 +167,10 @@
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
 	dat += "<b>Current Autobalance Status</b>: "
-	if (REDFACTION in map.faction_organization)
-		dat += "[alive_redfaction.len] Redmenians "
 	if (BLUEFACTION in map.faction_organization)
 		dat += "[alive_bluefaction.len] Blugoslavians "
+	if (REDFACTION in map.faction_organization)
+		dat += "[alive_redfaction.len] Redmenians "
 
 	dat += "<br>"
 	if (istype(map, /obj/map_metadata/nationsrp/coldwar_campaign))
@@ -383,6 +384,7 @@
 */
 
 // For capturing a base
+var/no_loop_ca = FALSE
 /obj/map_metadata/campaign/update_win_condition()
 	// Win when timer reaches zero
 	if (world.time >= victory_time)
@@ -397,10 +399,7 @@
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	// Win when objective is captured
-	if (world.time >= next_win && next_win != -1)
-		if (win_condition_spam_check)
-			return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
 		get_faction1_captured_equipment()
 		get_faction2_captured_equipment()
 		ticker.finished = TRUE
@@ -411,13 +410,14 @@
 		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
+		no_loop_ca = TRUE
 		return FALSE
 	// German major
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -425,8 +425,8 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -435,7 +435,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -444,7 +444,7 @@
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
 				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -532,12 +532,12 @@
 /obj/map_metadata/campaign/proc/get_faction1_captured_equipment()
 	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
 		if(capturable_equipment.Find(I))
-			captured_equipment_red += I
+			captured_equipment_red += I.name
 
 /obj/map_metadata/campaign/proc/get_faction2_captured_equipment()
 	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
 		if(capturable_equipment.Find(I))
-			captured_equipment_blue += I
+			captured_equipment_blue += I.name
 
 ///////////Map Specific Objects///////////
 /obj/structure/altar/heads
@@ -559,14 +559,14 @@
 		if (!head_nationality)
 			return
 
-		user << "You place the head in the chest."
+		to_chat(user, SPAN_NOTICE("You place the head in the chest."))
 		switch(head_nationality)
-			if("Redmenia")
-				AW.scores["Redmenia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
 			if("Blugoslavia")
 				AW.scores["Blugoslavia"] += 1
 				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+			if("Redmenia")
+				AW.scores["Redmenia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
 		return
 
 /obj/structure/altar/heads/examine(mob/user, distance)
@@ -574,11 +574,11 @@
 	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/campaign/AW = map
-		switch(H.nationality)
-			if("Redmenia")
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
-			if("Blugoslavia")
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+		switch(H.faction_text)
+			if(BLUEFACTION)
+				to_chat(user, "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>")
+			if(REDFACTION)
+				to_chat(user, "Total heads inside: <b>[AW.scores["Redmenia"]]</b>")
 
 /obj/item/weapon/telephone/mobile/campaign
 	name = "telephone"
@@ -586,16 +586,6 @@
 	anchored = TRUE
 	update_icon()
 		icon_state = "telephone"
-
-/obj/item/weapon/telephone/mobile/campaign/red
-	name = "Red Command telephone"
-	phonenumber = 1111
-	desc = "Used to communicate with the opposite faction. Number is 1111."
-	New()
-		..()
-		phone_numbers += phonenumber
-		update_icon()
-		contacts += list(list("Blue Command",9999))
 
 /obj/item/weapon/telephone/mobile/campaign/blue
 	name = "Blue Command telephone"
@@ -609,6 +599,16 @@
 		phone_numbers += phonenumber
 		update_icon()
 		contacts += list(list("Red Command",1111))
+
+/obj/item/weapon/telephone/mobile/campaign/red
+	name = "Red Command telephone"
+	phonenumber = 1111
+	desc = "Used to communicate with the opposite faction. Number is 1111."
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Blue Command",9999))
 
 
 /obj/item/weapon/telephone/mobile/campaign/attack_self(var/mob/user as mob)

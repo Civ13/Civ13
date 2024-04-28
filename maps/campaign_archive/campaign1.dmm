@@ -201,7 +201,6 @@
 "Fu" = (/turf/floor/plating/road/yellowline{dir = 1},/area/caribbean/roofed/temperate)
 "FA" = (/obj/structure/iv_drip,/turf/floor/plating/road,/area/caribbean/faction1)
 "FN" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/closet/crate/footlocker,/turf/floor/dirt,/area/caribbean/forest)
-"FQ" = (/turf/wall/rockwall,/area/caribbean/forest)
 "FR" = (/obj/structure/iv_drip,/turf/floor/plating/road/whiteline{dir = 1; icon_state = "road_line"},/area/caribbean/forest)
 "FW" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "GD" = (/obj/structure/wild/smallbush,/turf/floor/plating/cobblestone/vertical,/area/caribbean/forest)
@@ -419,5 +418,5 @@ oPeZoPoPZGcnoPoPhMAohMoPoPoPoPoPhMaxoPoPoPoPhMoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPoPcn
 cnZGoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPoPoPoPoPoPcnoPoPoPoPoPAooPoPoPoPoPcnoPoPAooPoPAoAooPoPoPAoeZcnoPXUoPcncncnhMoPoPoPoPoPoPoPoPoPeZcnoPlboPeZoPoPeZoPoPcnoPoPoPoPoPeZoPoPeZAooPoPAoeZcnoPXUoPoPoPoPhMoPbVamawamlDcvlDawamamamambSamambSambfamambVbVbVamamamamawamamamOkamoPoPoPoPcncncncnAtAt
 oPoPoPoPoPoPoPoPoPZQcnoPoPoPAooPoPcncncneZoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPcnoPoPoPeZoPoPoPoPcnoPcnoPoPoPOhoPoPAoAocncncncnoPeZeZoPoPAoAooPoPoPoPoPoPoPhMhMoPoPoPoPoPoPoPeZoPoPoPoPoPcnoPoPoPamamawamawawawamamccambObOamamamamamamamamambSamamamawbOamamamawawcncncnoPoPcncnAtAtmy
 fBfBoPoPoPAooPhMhMcnoPoPoPhMoPoPoPcnoPoPoPoPoPoPoPoPcncncncncncnoPoPoPcnoPoPcncncncncncnoPoPoPcnoPoPoPAooPhMoPoPoPoPoPoPoPlboPoPoPAooPoPeZoPoPeZcncnoPoPoPoPoPoPoPoPoPoPoPoPoPAocnproPeZoPAoAooPhMoPoPoPoPoPoPcnoPAooPamawawamamamamamsmamamawlDambSamamamamamamamamamamamamamamamamamamoPoPoPoPcncnAtAtmymy
-FQfBoPoPoPoPhMoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPoPhMoPoPoPAooPcncnoPoPoPoPoPoPoPoPAooPcncnoPoPoPoPoPoPoPoPoPcnoPoPcncncnAooPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcncncnoPAooPoPoPoPoPcncncnoPeZoPcnoPoPcncncnAooPoPoPcnoPbOamawamamamamamamamamamawawawamamamccamamamamamambOamamamamamamccoPoPoPcncnAtAtmymymy
+fBfBoPoPoPoPhMoPoPoPcnoPoPoPoPoPoPhMoPoPoPoPoPhMoPoPoPAooPcncnoPoPoPoPoPoPoPoPAooPcncnoPoPoPoPoPoPoPoPoPcnoPoPcncncnAooPoPoPoPoPoPoPoPoPoPoPoPcncnoPoPoPoPoPoPcncncnoPAooPoPoPoPoPcncncnoPeZoPcnoPoPcncncnAooPoPoPcnoPbOamawamamamamamamamamamawawawamamamccamamamamamambOamamamamamamccoPoPoPcncnAtAtmymymy
 "}

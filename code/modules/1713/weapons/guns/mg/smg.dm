@@ -1256,8 +1256,8 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.9),
-		list(name = "automatic",	burst=1, burst_delay=1.2),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
 	)
 	sel_mode = 1
 	recoil = 45
@@ -1280,7 +1280,7 @@
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "semiauto",	burst=1, burst_delay=0.9),
 		list(name = "automatic",	burst=1, burst_delay=1.3),
 	)
 	sel_mode = 1

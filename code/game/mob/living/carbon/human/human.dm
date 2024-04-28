@@ -10,6 +10,7 @@
 	var/look_amount = 3
 	var/can_defib = TRUE //Horrible damage (like beheadings) will prevent defibbing organics.
 	var/spawned_at_fob = FALSE // For spawning in at an FOB or your normal job spawnpoint
+	var/immune_to_barbwire = FALSE
 	var/voice_pitch = 100
 
 /mob/living/human/New(var/new_loc, var/new_species = null)
