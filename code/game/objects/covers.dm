@@ -132,7 +132,7 @@
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
+			if (map && map.ID != MAP_BATTLE_SHIPS)
 				visible_message("<span class='notice'>You can't build here!</span>")
 				return
 		var/mob/living/human/H = user

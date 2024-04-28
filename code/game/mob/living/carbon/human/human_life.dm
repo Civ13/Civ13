@@ -1697,7 +1697,7 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"nco")
-			if (map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
+			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
 					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)

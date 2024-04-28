@@ -23,7 +23,7 @@
 	..()
 	spawn(15)
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_BATTLE_SHIPS)
 			visible_message("The [src] sinks!")
 			qdel(src)
 			return

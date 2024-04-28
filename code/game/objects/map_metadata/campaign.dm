@@ -68,6 +68,7 @@
 	)
 	var/list/captured_equipment_red = list()
 	var/list/captured_equipment_blue = list()
+	var/at_mines_placed = 0
 
 /obj/map_metadata/campaign/New()
 	..()
@@ -154,8 +155,8 @@
 //role selector
 /mob/new_player/proc/LateChoicesCampaign(factjob)
 	var/list/available_jobs_per_side = list(
-		REDFACTION = FALSE,
 		BLUEFACTION = FALSE,
+		REDFACTION = FALSE,
 	)
 	var/obj/map_metadata/campaign/MC = map
 	src << browse(null, "window=latechoices")
@@ -166,10 +167,10 @@
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
 	dat += "<b>Current Autobalance Status</b>: "
-	if (REDFACTION in map.faction_organization)
-		dat += "[alive_redfaction.len] Redmenians "
 	if (BLUEFACTION in map.faction_organization)
 		dat += "[alive_bluefaction.len] Blugoslavians "
+	if (REDFACTION in map.faction_organization)
+		dat += "[alive_redfaction.len] Redmenians "
 
 	dat += "<br>"
 	if (istype(map, /obj/map_metadata/nationsrp/coldwar_campaign))
@@ -558,14 +559,14 @@ var/no_loop_ca = FALSE
 		if (!head_nationality)
 			return
 
-		user << "You place the head in the chest."
+		to_chat(user, SPAN_NOTICE("You place the head in the chest."))
 		switch(head_nationality)
-			if("Redmenia")
-				AW.scores["Redmenia"] += 1
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
 			if("Blugoslavia")
 				AW.scores["Blugoslavia"] += 1
 				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+			if("Redmenia")
+				AW.scores["Redmenia"] += 1
+				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
 		return
 
 /obj/structure/altar/heads/examine(mob/user, distance)
@@ -573,11 +574,11 @@ var/no_loop_ca = FALSE
 	if(ishuman(user) && map && map.ID == MAP_CAMPAIGN)
 		var/mob/living/human/H = user
 		var/obj/map_metadata/campaign/AW = map
-		switch(H.nationality)
-			if("Redmenia")
-				user << "Total heads inside: <b>[AW.scores["Redmenia"]]</b>"
-			if("Blugoslavia")
-				user << "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>"
+		switch(H.faction_text)
+			if(BLUEFACTION)
+				to_chat(user, "Total heads inside: <b>[AW.scores["Blugoslavia"]]</b>")
+			if(REDFACTION)
+				to_chat(user, "Total heads inside: <b>[AW.scores["Redmenia"]]</b>")
 
 /obj/item/weapon/telephone/mobile/campaign
 	name = "telephone"
@@ -585,16 +586,6 @@ var/no_loop_ca = FALSE
 	anchored = TRUE
 	update_icon()
 		icon_state = "telephone"
-
-/obj/item/weapon/telephone/mobile/campaign/red
-	name = "Red Command telephone"
-	phonenumber = 1111
-	desc = "Used to communicate with the opposite faction. Number is 1111."
-	New()
-		..()
-		phone_numbers += phonenumber
-		update_icon()
-		contacts += list(list("Blue Command",9999))
 
 /obj/item/weapon/telephone/mobile/campaign/blue
 	name = "Blue Command telephone"
@@ -608,6 +599,16 @@ var/no_loop_ca = FALSE
 		phone_numbers += phonenumber
 		update_icon()
 		contacts += list(list("Red Command",1111))
+
+/obj/item/weapon/telephone/mobile/campaign/red
+	name = "Red Command telephone"
+	phonenumber = 1111
+	desc = "Used to communicate with the opposite faction. Number is 1111."
+	New()
+		..()
+		phone_numbers += phonenumber
+		update_icon()
+		contacts += list(list("Blue Command",9999))
 
 
 /obj/item/weapon/telephone/mobile/campaign/attack_self(var/mob/user as mob)
