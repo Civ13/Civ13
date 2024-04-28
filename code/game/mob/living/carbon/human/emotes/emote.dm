@@ -483,6 +483,9 @@ var/list/vocal_emotes = list(
 
 						var/image/speech_bubble = image('icons/mob/talk.dmi',src,"medic")
 						spawn(30) qdel(speech_bubble)
+
+						for (var/mob/M in listening)
+							M << speech_bubble
 						
 						playsound(get_turf(src), "medic", 100)
 						
