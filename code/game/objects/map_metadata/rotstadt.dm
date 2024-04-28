@@ -173,7 +173,7 @@ var/no_loop_rot = FALSE
 		BLUEFACTION = FALSE,
 		REDFACTION = FALSE,
 	)
-	var/obj/map_metadata/campaign/MC = map
+	var/obj/map_metadata/rotstadt/MR = map
 	src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
@@ -215,7 +215,7 @@ var/no_loop_rot = FALSE
 				continue
 			if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MR.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
 				continue
-		if (istype(job, /datum/job/ref))
+		if (istype(job, /datum/job/redfaction))
 			if (!job.is_rotstadt)
 				continue
 			if(findtext(job.title, "RPR Commander") && MR.squad_jobs_red["none"]["Commander"]<= 0)
