@@ -33,7 +33,7 @@
 			pulse  = PULSE_THREADY	//not enough :(
 
 		if (owner.status_flags & FAKEDEATH || owner.chem_effects[CE_NOPULSE])
-			pulse = PULSE_NONE		//pretend that we're dead. unlike actual death, can be inflienced by meds
+			pulse = PULSE_NONE		//pretend that we're dead. unlike actual death, can be influenced by meds
 
 		pulse = Clamp(pulse + owner.chem_effects[CE_PULSE], PULSE_SLOW, PULSE_2FAST)
 
@@ -71,7 +71,7 @@
 	switch(blood_volume)
 		if (BLOOD_VOLUME_OKAY to BLOOD_VOLUME_SAFE)
 			if (prob(1))
-				owner << "<span class='warning'>You feel [pick("dizzy","woosey","faint")]</span>"
+				to_chat(owner, SPAN_WARNING("You feel [pick("dizzy","woozy","faint")]."))
 			if (owner.getOxyLoss() < 20 && prob(30))
 				owner.adjustOxyLoss(1.0)
 		if (BLOOD_VOLUME_BAD to BLOOD_VOLUME_OKAY)
@@ -81,10 +81,10 @@
 					owner.adjustOxyLoss(3.0)
 				owner.adjustOxyLoss(6.0)
 				owner.Paralyse(rand(1,3))
-				owner << "<span class='warning'>You feel extremely [pick("dizzy","woosey","faint")]</span>"
+				to_chat(owner, SPAN_WARNING("You feel extremely [pick("dizzy","woozy","faint")]."))
 		if (BLOOD_VOLUME_SURVIVE to BLOOD_VOLUME_BAD)
 			if (prob(15))
-				owner << "<span class='warning'>You feel extremely [pick("dizzy","woosey","faint")]</span>"
+				to_chat(owner, SPAN_WARNING("You feel extremely [pick("dizzy","woozy","faint")]."))
 				owner.adjustOxyLoss(10.0)
 				owner.adjustToxLoss(7.0)
 		if (-100 to BLOOD_VOLUME_SURVIVE)
@@ -147,7 +147,7 @@
 			blood_max *= 0.8
 
 		if(world.time >= next_blood_squirt && istype(owner.loc, /turf) && do_spray.len)
-			owner.visible_message("<span class='danger'>Blood squirts from [pick(do_spray)]!</span>")
+			owner.visible_message(SPAN_DANGER("Blood squirts from [pick(do_spray)]!"))
 			playsound(owner, 'sound/effects/gore/blood_splat.ogg', 100, 0)
 			// It becomes very spammy otherwise. Arterial bleeding will still happen outside of this block, just not the squirt effect.
 			next_blood_squirt = world.time + 100
