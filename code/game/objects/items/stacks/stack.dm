@@ -1896,6 +1896,14 @@
 		else if (inpt > 150)
 			inpt = 150
 		required = 2*(inpt/75)
+	
+	if (recipe.result_type == /obj/structure/barbwire)
+		var/barbwire_amount = 0
+		for (var/obj/structure/barbwire/B in get_turf(user))
+			barbwire_amount++
+		if (barbwire_amount >= 2)
+			to_chat(H, SPAN_WARNING("You cannot build more barbwire here."))
+			return
 
 	if (use(required,H))
 		var/atom/O

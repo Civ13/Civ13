@@ -7,13 +7,21 @@
 	not_disassemblable = TRUE
 	layer = 2.98
 
+/obj/structure/barbwire/New()
+	..()
+	for(var/mob/living/human/H in get_turf(src))
+		H.immune_to_barbwire = TRUE
+	return
+
 /obj/structure/barbwire/ex_act(severity)
 	switch(severity)
+		if (1)
+			qdel(src)
+		if (2)
+			qdel(src)
 		if (3)
 			if (prob(50))
 				qdel(src)
-		else
-			qdel(src)
 	return
 
 /obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
@@ -26,7 +34,7 @@
 		var/mob/M = AM
 		if (ishuman(M))
 			var/mob/living/human/H = M
-			if (prob (33))
+			if (prob(33))
 				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
 				if (affecting && affecting.take_damage(5, FALSE))
@@ -34,7 +42,7 @@
 				H.updatehealth()
 				if (affecting)
 					to_chat(M, SPAN_DANGER("Your [affecting.name] gets slightly cut by \the [src]!"))
-			else if (prob (33))
+			else if (prob(33))
 				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
 				if (affecting && affecting.take_damage(10, FALSE))
@@ -53,23 +61,27 @@
 	return ..()
 
 // Disabled until a fix is found (the issue is that; Building a barbed wire on your src makes you get stuck in it too.)
-/*/obj/structure/barbwire/Uncross(AM as mob)
+/obj/structure/barbwire/Uncross(AM as mob)
 	if(ismob(AM))
 		var/mob/M = AM
 		if (ishuman(M))
-			if(prob(45))
-				M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
-				var/mob/living/human/H = M
-				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
-				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting.take_damage(4, FALSE))
-					H.UpdateDamageIcon()
-				H.updatehealth()
-				return FALSE
+			var/mob/living/human/H = M
+			if(!H.immune_to_barbwire)
+				if(prob(50))
+					M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
+					playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
+					var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
+					if (affecting.take_damage(4, FALSE))
+						H.UpdateDamageIcon()
+					H.updatehealth()
+					return FALSE
+				else
+					M.visible_message(SPAN_DANGER("[M] frees themself from the barbed wire!"))
+					return TRUE
 			else
-				M.visible_message(SPAN_DANGER("[M] frees themself from the barbed wire!"))
+				H.immune_to_barbwire = FALSE
 				return TRUE
-	return ..()*/
+	return ..()
 
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wirecutters))
