@@ -191,7 +191,7 @@
 				colour = COLOR_WHITE
 			else
 				colour = COLOR_BLACK
-		to_chat(user, SPAN_NOTICE("\The [src] will now write in [lowertext(selected_type)] ink."))
+		to_chat(usr, SPAN_NOTICE("\The [src] will now write in [lowertext(selected_type)] ink."))
 
 
 /*
