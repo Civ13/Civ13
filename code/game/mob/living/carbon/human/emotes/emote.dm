@@ -484,6 +484,25 @@ var/list/vocal_emotes = list(
 						var/image/speech_bubble = image('icons/mob/talk.dmi',src,"medic")
 						spawn(30) qdel(speech_bubble)
 
+						var/list/hearturfs = list()
+
+						for (var/I in hear)
+							if (ismob(I))
+								var/mob/M = I
+								listening += M
+								hearturfs += M.locs[1]
+							else if (isobj(I))
+								var/obj/O = I
+								hearturfs += O.locs[1]
+								listening_obj |= O
+
+						for (var/mob/M in player_list)
+							if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_ears))
+								listening |= M
+								continue
+							if (M.loc && M.locs[1] in hearturfs)
+								listening |= M
+
 						for (var/mob/M in listening)
 							M << speech_bubble
 						
