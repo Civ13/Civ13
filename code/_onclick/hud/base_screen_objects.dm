@@ -759,7 +759,7 @@
 				return
 
 
-obj/screen/tactic
+/obj/screen/tactic
 	name = "tactic"
 
 	icon_state = "charge"
