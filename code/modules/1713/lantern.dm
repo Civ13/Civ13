@@ -204,6 +204,9 @@
 	return
 
 /obj/item/flashlight/proc/do_torch()
+	if(!crafted) // Flashlight optimization
+		update_icon()
+		return
 	spawn(10)
 		if (fuel == 50 && on)
 			visible_message("<span class='warning'>\The [src] is about to run out!</span>")

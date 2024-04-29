@@ -51,7 +51,7 @@
 	good_mags = list(/obj/item/ammo_magazine/mk18)
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semiauto", burst=1, burst_delay=0.8),
+		list(name = "semiauto", burst=1, burst_delay=1.3),
 		list(name = "3-round-burst", burst=3, burst_delay=1.4),
 		list(name = "automatic", burst=1, burst_delay=1.3),
 		)

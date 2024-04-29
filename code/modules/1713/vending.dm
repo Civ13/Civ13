@@ -1002,14 +1002,14 @@ obj/structure/vending/hezammo
 	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
 	W.forceMove(src)
 	product_records.Add(R)
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 	update_icon()
 
 /obj/structure/vending/craftable/proc/stock_auto(obj/item/W)
 	var/datum/data/vending_product/R = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
 	W.forceMove(src)
 	product_records.Add(R)
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 	update_icon()
 
 /obj/structure/vending/craftable/rifles

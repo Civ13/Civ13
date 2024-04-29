@@ -48,8 +48,7 @@
 
 	var/climate = "temperate" //temperate, desert, jungle, tundra
 
-// ===
-/area
+	var/nukesafe = FALSE
 	var/global/global_uid = FALSE
 	var/uid
 	var/artillery_integrity = 100
@@ -136,7 +135,7 @@
 		return
 
 	var/lastsound = CL.ambience_playing
-	var/sound = src.ambience && src.ambience.len ? pick(src.ambience) : (map && map.ambience.len) ? pick(map.ambience) : null
+	var/sound = (map && map.ambience.len) ? pick(map.ambience) : null
 	var/override_volume = 0
 
 	if (sound && (!CL.ambience_playing || override || sound != lastsound))

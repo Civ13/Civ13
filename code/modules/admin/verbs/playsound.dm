@@ -45,3 +45,20 @@ var/list/sounds_cache = list()
 	if (melody == "--CANCEL--")	return
 
 	play_sound(melody)
+
+/client/proc/play_world_sound(S as sound)
+	set category = "Fun"
+	set name = "Play World Sound"
+	if (!check_rights(R_SOUNDS))	return
+
+	var/sound/uploaded_sound = sound(S, repeat = FALSE, wait = TRUE, channel = 777)
+	uploaded_sound.priority = 250
+
+	sounds_cache += S
+
+	if (WWinput(src, "Are you ready?\nSong: [S]\nNow you can also play this sound using \"Play Server Sound\".", "Confirmation request", "Play", list("Play", "Cancel")) == "Cancel")
+		return
+
+	log_admin("[key_name(src)] played world sound [S]")
+	message_admins("[key_name_admin(src)] played world sound [S]", TRUE)
+	world << uploaded_sound

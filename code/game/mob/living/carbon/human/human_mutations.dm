@@ -17,8 +17,10 @@
 					lizard = 0
 				if ("gorillaman")
 					gorillaman = 0
+				if ("droid")
+					droid = 0
 /mob/living/human/proc/checkrace()
-	if(!orc && !goblin && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate)
+	if(!orc && !goblin && !ant && !wolfman && !lizard && !gorillaman && !crab && !droid && can_mutate)
 		return TRUE
 	else
 		return FALSE

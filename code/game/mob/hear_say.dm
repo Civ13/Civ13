@@ -132,7 +132,7 @@
 
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (src.sdisabilities & BLIND) || src.blinded || src.find_trait("Blind") || !(speaker in view(src)))
+		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
 			message = stars(message)
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
@@ -180,16 +180,24 @@
 		if (destination)
 			if (istype(destination, /obj/structure/radio))
 				var/obj/structure/radio/RD = destination
+				var/khz = "([RD.freq] kHz)"
 				if (RD)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					if(!isnum(RD.freq))
+						khz = "([RD.freq])"
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[khz]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 					if (track)
-						full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+						full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[khz]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 			else
 				var/obj/item/weapon/radio/RD = destination
+				var/khz = "([RD.freq] kHz)"
 				if (RD)
-					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+					if(!isnum(RD.freq))
+						khz = "([RD.freq])"
+				if (RD)
+					full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[khz]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 					if (track)
-						full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[RD.freq] kHz</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+						full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], <i>[khz]</i>:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> [track] <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		else
 			full_message = "<font size = [fontsize] color=#FFAE19><b>Radio:</font></b><font size = [fontsize]> <b>[speaker.real_name]</b> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 			if (track)
@@ -352,10 +360,10 @@
 			else        	adverb = " a very lengthy message"
 		message = "<B>[speaker]</B> [verb][adverb]."
 
-	if(src.status_flags & PASSEMOTES)
-		for(var/mob/living/M in src.contents)
+	if (status_flags & PASSEMOTES)
+		for (var/mob/living/M in contents)
 			M.show_message(message)
-	src.show_message(message)
+	show_message(message)
 
 /mob/proc/hear_sleep(var/message)
 	var/heard = ""

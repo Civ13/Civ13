@@ -401,7 +401,7 @@
 	loader_y = -2
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -421,7 +421,7 @@
 	loader_y = -2
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -449,7 +449,7 @@
 	rotation_speed = 1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -474,7 +474,7 @@
 	commander_y = 0
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -501,7 +501,7 @@
 	rotation_speed = 0.9
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -589,7 +589,7 @@
 	loader_y = 18
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -608,7 +608,7 @@
 	loader_y = 18
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -632,7 +632,7 @@
 	rotation_speed = 1.1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -662,7 +662,7 @@
 	rotation_speed = 1.3
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -692,14 +692,14 @@
 	rotation_speed = 1.1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/russian100(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/dshk(src))
 		..()
 
 /obj/structure/turret/t62
@@ -722,14 +722,14 @@
 	rotation_speed = 1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
-		//weapons.Add(new/obj/structure/cannon/modern/tank/russian115(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/structure/cannon/modern/tank/russian115(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/t62/t62m
@@ -759,12 +759,12 @@
 	rotation_speed = 0.7
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/autoloader/t90a(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/t72
@@ -784,12 +784,12 @@
 	rotation_speed = 0.8
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/autoloader/t90a(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/t72/t72m1
@@ -819,12 +819,12 @@
 	rotation_speed = 0.6
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/autoloader/t90a(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/t80u/t80uk
@@ -848,12 +848,12 @@
 	rotation_speed = 0.6
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/autoloader/t90a(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/bmd2
@@ -876,12 +876,12 @@
 	rotation_speed = 0.3
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/btr80
@@ -901,10 +901,10 @@
 	rotation_speed = 0.4
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a72(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/pkm(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
 
 /obj/structure/turret/mtlb
@@ -924,7 +924,7 @@
 	rotation_speed = 0.9
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/base/mtlb(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner/mtlb(src.loc)
 		gunner_seat.setup(src)
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/pkm(src))
 		..()
@@ -949,7 +949,7 @@
 	rotation_speed = 1.1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -979,7 +979,7 @@
 	rotation_speed = 1.3
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -1009,7 +1009,7 @@
 	rotation_speed = 0.3
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -1039,7 +1039,7 @@
 	rotation_speed = 0.8
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
@@ -1069,13 +1069,13 @@
 	rotation_speed = 0.7
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
-		//weapons.Add(new/obj/structure/cannon/modern/tank/american76(src))
+		weapons.Add(new/obj/structure/cannon/modern/tank/american76(src))
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/browning_lmg(src))
 		..()
 
@@ -1096,13 +1096,13 @@
 	rotation_speed = 0.7
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
-		//weapons.Add(new/obj/structure/cannon/modern/tank/american90(src))
+		weapons.Add(new/obj/structure/cannon/modern/tank/american90(src))
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/browning_lmg(src))
 		..()
 
@@ -1126,13 +1126,58 @@
 	rotation_speed = 0.3
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster(src))
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/manual/m249(src))
 		..()
+
+/obj/structure/turret/technical_dshk
+	turret_icon = ""
+	name = "DSHK"
+
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "dshk"
+
+	turret_x = 16
+	turret_y = 7
+
+	gunner_x = 0
+	gunner_y = 4
+
+	rotation_speed = 0.2
+
+	New()
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat.setup(src)
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/dshk(src))
+		..()
+
+/*
+/obj/structure/turret/technical_atgm
+	turret_icon = ""
+	name = "ATGM"
+
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "atgm"
+
+	turret_x = 9
+	turret_y = -1
+
+	gunner_x = -8
+	gunner_y = 0
+
+	rotation_speed = 0.2
+
+	New()
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat.setup(src)
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/atgm(src))
+		..()
+*/
+
 /obj/structure/turret/m1abrams
 	turret_color = "#787859"
 	turret_icon = "m1a1_turret"
@@ -1153,14 +1198,14 @@
 	rotation_speed = 0.4
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/m1a1_abrams(src))
-		//weapons.Add(new/obj/item/weapon/gun/projectile/automatic/m249(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/manual/m249(src))
 		..()
 
 /obj/structure/turret/challenger2
@@ -1183,14 +1228,14 @@
 	rotation_speed = 0.4
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/modern(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
 		loader_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/leopard(src))
-		//weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/mg3(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/mg3(src))
 		..()
 
 /obj/structure/turret/chiha
@@ -1210,10 +1255,7 @@
 	rotation_speed = 1
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner/ww2(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
-		weapons.Add(new/obj/structure/cannon/modern/tank/japanese57(src))
-		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/type99(src))
-		..()

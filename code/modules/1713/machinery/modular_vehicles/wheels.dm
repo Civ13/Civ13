@@ -339,18 +339,9 @@
 	flammable = FALSE
 	var/obj/structure/turret/turret = null
 	var/obj/item/turret_controls/controls = null
-
-/obj/structure/bed/chair/gunner/base/New()
-	..()
-	controls = new/obj/item/turret_controls/base(src)
-
-/obj/structure/bed/chair/gunner/ww2/New()
-	..()
-	controls = new/obj/item/turret_controls/ww2(src)
-
-/obj/structure/bed/chair/gunner/modern/New()
-	..()
-	controls = new/obj/item/turret_controls/modern(src)
+	New()
+		..()
+		controls = new/obj/item/turret_controls(src)
 
 /obj/structure/bed/chair/gunner/proc/setup(var/obj/structure/turret/origin_turret)
 	turret = origin_turret
@@ -442,25 +433,10 @@
 	var/obj/structure/turret/turret = null
 	var/is_rotating = FALSE
 	var/rotating_dir = 0
-
-/obj/item/turret_controls/base/New()
-	..()
-	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
-	optics.zoom_amt = ZOOM_CONSTANT
-	build_zooming()
-
-/obj/structure/bed/chair/gunner/base/mtlb
-
-/obj/item/turret_controls/ww2/New()
-	..()
-	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
-	optics.zoom_amt = 10
-	build_zooming()
-
-/obj/item/turret_controls/modern/New()
-	..()
-	optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
-	build_zooming()
+	New()
+		..()
+		optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+		build_zooming()
 
 /obj/item/turret_controls/proc/get_zoom_amt()
 	if(!optics)
@@ -505,7 +481,7 @@
 		is_rotating = TRUE
 		rotate()
 
-/obj/structure/bed/chair/gunner/base/mtlb/update_icon()
+/obj/structure/bed/chair/gunner/mtlb/update_icon()
 	if(!turret)
 		return
 	dir = turret.dir
@@ -728,14 +704,80 @@
 	else
 		..()
 
+///////COMMANDER NAVAL////////
+
 /obj/structure/bed/chair/commander/naval
 	name = "spotter's seat"
 	desc = "A spotter's seat with a long-range periscope."
 	anchored = TRUE
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "commanders_seat"
-
 	New()
 		..()
 		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
 		periscope.commanderchair = src
+
+///////COMMANDER NVG////////
+
+/obj/structure/bed/chair/commander/nvg
+	name = "commander's seat with night vision"
+	desc = "The vehicle commander's seat, with a perisope and night vision."
+	anchored = FALSE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	flammable = FALSE
+	var/overtype = "nvg"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
+		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/nvg/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+		buckled_mob << "Your hands are full!"
+		return
+	if(buckled_mob)
+		buckled_mob << "You activate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = TRUE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = TRUE
+			buckled_mob.handle_vision()
+		buckled_mob.update_action_buttons()
+
+/obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
+	if(buckled_mob)
+		buckled_mob << "You deactivate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = FALSE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = FALSE
+			buckled_mob.handle_vision()
+
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
+			M.remove_from_mob(PS)
+			PS.forceMove(src)
+	return M
+
+///////COMMANDER THERMAL////////
+
+/obj/structure/bed/chair/commander/nvg/thermal
+	name = "commander's seat with thermal imaging"
+	desc = "The vehicle commander's seat, with a perisope and thermal imaging."
+	overtype = "thermal"
+

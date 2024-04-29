@@ -76,12 +76,12 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 
 /mob/visible_message(var/message, var/self_message, var/blind_message)
-	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src)
+	var/list/see = get_mobs_or_objects_in_view(7,src,TRUE,FALSE) | viewers(7,src)
 
 	for (var/I in see)
 		if (isobj(I))
 			spawn(0)
-				if (I) //It's possible that it could be deleted in the meantime.
+				if (istype(I, /mob/living/human)) //It's possible that it could be deleted in the meantime.
 					var/obj/O = I
 					O.show_message( message, TRUE, blind_message, 2)
 		else if (ismob(I))
@@ -338,6 +338,22 @@
 			update_inv_r_hand()
 	return
 
+
+/mob/verb/secondary_action()
+	set name = "Activate Secondary Object"
+	set category = null
+	set src = usr
+	if (hand)
+		var/obj/item/W = l_hand
+		if (W)
+			W.secondary_attack_self(src)
+			update_inv_l_hand()
+	else
+		var/obj/item/W = r_hand
+		if (W)
+			W.secondary_attack_self(src)
+			update_inv_r_hand()
+	return
 /*
 /mob/verb/dump_source()
 
@@ -548,20 +564,16 @@
 
 
 /mob/proc/pull_damage()
-	return 0
-
-/mob/living/human/pull_damage()
-	if(!lying || getBruteLoss() + getBurnLoss() < 100)
-		return 0
-	for(var/thing in organs)
-		var/obj/item/organ/external/E = thing
-		if(!E || E.is_stump())
-			continue
-		if((E.status & ORGAN_BROKEN) && !(E.status & ORGAN_SPLINTED))
-			return 1
-		if(E.status & ORGAN_BLEEDING)
-			return 1
-	return 0
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.health - H.halloss <= config.health_threshold_softcrit)
+			for (var/name in H.organs_by_name)
+				var/obj/item/organ/external/e = H.organs_by_name[name]
+				if (e && H.lying)
+					if (((e.status & ORGAN_BROKEN && !(e.status & ORGAN_SPLINTED)) || e.status & ORGAN_BLEEDING) && (H.getBruteLoss() + H.getBurnLoss() >= 100))
+						return TRUE
+						break
+		return FALSE
 
 /mob/MouseDrop(mob/M as mob)
 	..()

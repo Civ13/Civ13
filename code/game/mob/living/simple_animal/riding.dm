@@ -4,6 +4,8 @@
 
 	var/can_ride = FALSE
 	var/ride = FALSE
+	var/ride_pixel_x = 0
+	var/ride_pixel_y = 0
 	var/mob/living/human/rider = null
 
 /mob/living/simple_animal/New()
@@ -37,8 +39,8 @@
 			MM.forceMove(src.loc)
 			MM.riding = TRUE
 			MM.riding_mob = src
-			src.pixel_x = -13
-			src.pixel_y = -21
+			src.pixel_x = src.ride_pixel_x
+			src.pixel_y = src.ride_pixel_y
 			update_icons()
 			stop_automated_movement = TRUE
 			return

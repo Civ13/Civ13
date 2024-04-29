@@ -1,4 +1,6 @@
-
+#define RESTART_COUNTER_PATH "data/round_counter.txt"
+#define MAX_TOPIC_LEN 100
+#define TOPIC_BANNED 1
 /*
 	The initialization of the game happens roughly like this:
 
@@ -16,6 +18,9 @@ var/global/list/faction_list_red = list()
 var/global/list/faction_list_blue = list()
 var/global/list/craftlist_lists = list("global" = list())
 var/global/list/dictionary_list = list()
+
+#define DIRECT_OUTPUT(A, B) A << B
+#define SEND_TEXT(target, text) DIRECT_OUTPUT(target, text)
 /*
 	Pre-map initialization stuff should go here.
 */
@@ -61,9 +66,20 @@ var/world_is_open = TRUE
 	view = 7
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
 
-#define RECOMMENDED_VERSION 512
+#define RECOMMENDED_VERSION 514
 /world/New()
+#ifdef USE_BYOND_TRACY
+	#warn USE_BYOND_TRACY is enabled
+	init_byond_tracy()
+#endif
+#ifdef USE_EXTOOLS
+	var/extools = world.GetConfig("env", "EXTOOLS_DLL") || (world.system_type == MS_WINDOWS ? "./byond-extools.dll" : "./libbyond-extools.so")
+	if(fexists(extools))
+		LIBCALL(extools, "maptick_initialize")()
+#endif
 
+	if (map && istype(map,/obj/map_metadata/nomads_persistence_beta))
+		loop_checks = FALSE
 	config.post_load()
 
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
@@ -162,6 +178,56 @@ var/world_topic_spam_protect_time = world.timeofday
 	return T
 
 /world/Topic(T, addr, master, key)
+// Пока без тгс
+//	TGS_TOPIC	//redirect to server tools if necessary
+
+	var/static/list/bannedsourceaddrs = list()
+
+	var/static/list/lasttimeaddr = list()
+	var/static/list/topic_handlers = TopicHandlers()
+
+	//LEAVE THIS COOLDOWN HANDLING IN PLACE, OR SO HELP ME I WILL MAKE YOU SUFFER
+	if (bannedsourceaddrs[addr])
+		return
+
+	var/list/filtering_whitelist = config.topic_filtering_whitelist
+	var/host = splittext_char(addr, ":")
+	if(!filtering_whitelist[host[1]]) // We only ever check the host, not the port (if provided)
+		if(length_char(T) >= MAX_TOPIC_LEN)
+			/*log_admin_private("*/
+			diary << "TOPIC: [addr] banned from topic calls for a round for too long status message"
+			bannedsourceaddrs[addr] = TOPIC_BANNED
+			return
+
+		if(lasttimeaddr[addr])
+			var/lasttime = lasttimeaddr[addr]
+			if(world.time < lasttime)
+				/*log_admin_private("*/
+				diary << "TOPIC: [addr] banned from topic calls for a round for too frequent messages"
+				bannedsourceaddrs[addr] = TOPIC_BANNED
+				return
+
+		lasttimeaddr[addr] = world.time + 1200 //2 секунды
+
+	var/list/input = params2list(T)
+	var/datum/world_topic/handler
+	for(var/I in topic_handlers)
+		if(I in input)
+			handler = topic_handlers[I]
+			break
+
+	if((!handler || initial(handler.log)) && config) //&& CONFIG_GET(flag/log_world_topic))
+		diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key]"
+
+	if(!handler)
+		return
+
+	handler = new handler()
+	return handler.TryRun(input)
+
+/*
+// Old code
+/world/Topic(T, addr, master, key)
 	diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key][log_end]"
 
 	// normal ss13 stuff
@@ -176,8 +242,8 @@ var/world_topic_spam_protect_time = world.timeofday
 		var/input[] = params2list(T)
 		var/list/s = list()
 		s["version"] = game_version
-		s["respawn"] = config.abandon_allowed
-		s["enter"] = config.enter_allowed
+		s["respawn"] = GLOB.abandon_allowed
+		s["enter"] = GLOB.enter_allowed
 		s["vote"] = config.allow_vote_mode
 		s["host"] = host ? host : null
 
@@ -186,6 +252,8 @@ var/world_topic_spam_protect_time = world.timeofday
 		s["game_id"] = game_id
 		s["stationtime"] = stationtime2text()
 		s["roundduration"] = roundduration2text()
+		s["rounddurationinsecond"] = round((round_start_time ? world.time - round_start_time : FALSE) * 10)
+		s["rounddurationinticks"] = (round_start_time ? world.time - round_start_time : FALSE)
 
 		s["map"] = "unknown"
 		s["age"] = "unknown"
@@ -209,6 +277,7 @@ var/world_topic_spam_protect_time = world.timeofday
 			if (map)
 				s["map"] = map.title
 				s["age"] = map.age
+				s["gamemode"] = map.gamemode
 			s["season"] = season
 		else
 			var/n = FALSE
@@ -227,8 +296,10 @@ var/world_topic_spam_protect_time = world.timeofday
 			if (map)
 				s["map"] = map.title
 				s["age"] = map.age
+				s["gamemode"] = map.gamemode
 			s["season"] = season
 		return list2params(s)
+*/
 
 /world/Reboot(var/reason)
 
@@ -246,6 +317,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		..(reason)
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
+
+/proc/log_world(text)
+	SEND_TEXT(world.log, text)
 
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
@@ -442,3 +516,29 @@ var/global/nextsave = 0
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
 		sleep(10)
+
+/world/proc/on_tickrate_change()
+	SStimer.reset_buckets()
+
+/world/proc/change_fps(new_value = 20)
+	if(new_value <= 0)
+		CRASH("change_fps() called with [new_value] new_value.")
+	if(fps == new_value)
+		return //No change required.
+
+	fps = new_value
+	on_tickrate_change()
+
+/world/proc/init_byond_tracy()
+	var/library
+
+	switch (system_type)
+		if (MS_WINDOWS)
+			library = "prof.dll"
+		if (UNIX)
+			library = "libprof.so"
+		else
+			CRASH("Unsupported platform: [system_type]")
+	var/init_result = LIBCALL(library, "init")()
+	if (init_result != "0")
+		CRASH("Error initializing byond-tracy: [init_result]")

@@ -17,6 +17,7 @@ var/list/debug_verbs = list (
 	  //  ,/client/proc/kill_air_processing
 		,/client/proc/disable_communication
 		,/client/proc/disable_movement
+		,/client/proc/toggle_right_click
   //	  ,/client/proc/Zone_Info
  //	   ,/client/proc/Test_ZAS_Connection
   //	  ,/client/proc/ZoneTick

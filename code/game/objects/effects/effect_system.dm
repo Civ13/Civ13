@@ -528,27 +528,27 @@ steam.start() -- spawns the effect
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard in the distance. Sounds like a UH-1."
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-1."
 /obj/effect/helicopter_flyby/uh60/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard in the distance. Sounds like a UH-60 Black Hawk."
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
 /obj/effect/helicopter_flyby/ch47/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/ch47.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard in the distance. Sounds like a Boeing CH-47 Chinook."
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
 /obj/effect/helicopter_flyby/mi8/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/mi8.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard in the distance. Sounds like a Mi-8."
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-8."
 /obj/effect/helicopter_flyby/mi24/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/mi24.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard in the distance. Sounds like a Mi-24 Hind."
+		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind."
 
 
 /obj/effect/plane_flyby

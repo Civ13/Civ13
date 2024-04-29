@@ -3,6 +3,17 @@
 	stop_automated_movement_when_pulled = FALSE
 	a_intent = I_HARM
 	behaviour = "hunt"
+	var/atom/target
+//These vars are related to how mobs locate and target
+	var/robust_searching = 0 //By default, mobs have a simple searching method, set this to 1 for the more scrutinous searching (stat_attack, stat_exclusive, etc), should be disabled on most mobs
+	var/vision_range = 9 //How big of an area to search for targets in, a vision of 9 attempts to find targets as soon as they walk into screen view
+	var/aggro_vision_range = 9 //If a mob is aggro, we search in this radius. Defaults to 9 to keep in line with original simple mob aggro radius
+	var/idle_vision_range = 9 //If a mob is just idling around, it's vision range is limited to this. Defaults to 9 to keep in line with original simple mob aggro radius
+	var/search_objects = 0 //If we want to consider objects when searching around, set this to 1. If you want to search for objects while also ignoring mobs until hurt, set it to 2. To completely ignore mobs, even when attacked, set it to 3
+	var/list/wanted_objects = list() //A list of objects that will be checked against to attack, should we have search_objects enabled
+	var/stat_attack = 0 //Mobs with stat_attack to 1 will attempt to attack things that are unconscious, Mobs with stat_attack set to 2 will attempt to attack the dead.
+	var/stat_exclusive = 0 //Mobs with this set to 1 will exclusively attack things defined by stat_attack, stat_attack 2 means they will only attack corpses
+	var/attack_same = 0 //Set us to 1 to allow us to attack our own faction, or 2, to only ever attack our own faction
 
 /mob/living/simple_animal/proc/FindTarget()
 	var/atom/T = null
@@ -105,7 +116,9 @@
 			if (prob(3*dmod))
 				H.disease = TRUE
 				H.disease_type = "plague"
-
+//		if(robust_searching)
+//			if(L.stat > stat_attack || L.stat != stat_attack && stat_exclusive == 1)
+//				return 0
 		if (prob(95) || !can_bite_limbs_off)
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		else
@@ -151,3 +164,6 @@
 			else if (istype(obstacle, /obj/structure/simple_door))
 				var/obj/structure/simple_door/SD = obstacle
 				SD.Bumped(src)
+
+/mob/living/simple_animal/hostile/proc/Found(var/atom/A)//This is here as a potential override to pick a specific target if available
+	return

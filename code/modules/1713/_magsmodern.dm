@@ -9,11 +9,6 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/ak47/drum
-	name = "AK Drum magazine (7.62x39mm)"
-	icon_state = "tommydrum"
-	max_ammo = 75
-
 /obj/item/ammo_magazine/sksm
 	name = "SKS-M magazine (7.62x39mm)"
 	icon_state = "sksm"
@@ -46,14 +41,9 @@
 	weight = 0.5
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/ak74/drum
-	name = "AK-74 Drum magazine (5.45x39mm)"
-	max_ammo = 75
-	icon_state = "tommydrum"
-
 /obj/item/ammo_magazine/ak74/box
 	name = "magazine box (5.45x39mm)"
-	icon_state = "545x39"
+	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"
 	w_class = ITEM_SIZE_NORMAL
@@ -82,11 +72,6 @@
 	name = "AK-74M magazine (5.45x39mm)"
 	icon_state = "ak74m"
 	attached_icon_state = "ak74m_magak"
-
-/obj/item/ammo_magazine/ak74/ak74m/drum
-	name = "AK-74M Drum Mmgazine (5.45x39mm)"
-	icon_state = "tommydrum"
-	max_ammo = 75
 
 /obj/item/ammo_magazine/bx7
 	name = "BX-7 (.50 caliber)"
@@ -145,9 +130,9 @@
 /obj/item/ammo_magazine/ar10
 	name = "AR-10 magazine (7.62x51mm)"
 	icon_state = "m16"
-	attached_icon_state = "ar10_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
+	attached_icon_state = "ar10_mag"
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 20
 	weight = 0.5
@@ -178,9 +163,9 @@
 /obj/item/ammo_magazine/hk
 	name = "G3 magazine (7.62x51mm)"
 	icon_state = "hk"
-	attached_icon_state = "hk_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x51"
+	attached_icon_state = "hk_mag"
 	ammo_type = /obj/item/ammo_casing/a762x51
 	max_ammo = 20
 	weight = 0.45
@@ -289,7 +274,6 @@
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = ITEM_SIZE_LARGE
-
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
@@ -302,7 +286,6 @@
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
 	w_class = ITEM_SIZE_NORMAL
-
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 100
 	multiple_sprites = TRUE
@@ -328,6 +311,16 @@
 	max_ammo = 100
 	multiple_sprites = TRUE
 	is_box = TRUE
+
+/obj/item/ammo_magazine/ak47/drum
+	name = "AK Drum Magazine (7.62x39mm)"
+	icon_state = "tommydrum"
+	max_ammo = 75
+
+/obj/item/ammo_magazine/ak74/drum
+	name = "AK-74 Drum Magazine (5.45x39mm)"
+	max_ammo = 75
+	icon_state = "tommydrum"
 
 /obj/item/ammo_magazine/rpd
 	name = "RPD drum (7.62x39)"
@@ -463,17 +456,6 @@
 	max_ammo = 50
 	weight = 0.045
 	multiple_sprites = TRUE
-
-/obj/item/ammo_magazine/makarov/box
-	name = "magazine box (9x18mm)"
-	icon_state = "9mm"
-	mag_type = MAGAZINE
-	caliber = "a9x19"
-	w_class = ITEM_SIZE_NORMAL
-	ammo_type = /obj/item/ammo_casing/a9x18
-	max_ammo = 60
-	multiple_sprites = TRUE
-	is_box = TRUE
 
 /obj/item/ammo_magazine/aps
 	name = "Stechkin APS magazine (9x18mm)"
@@ -874,7 +856,7 @@
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
 	caliber = "a50cal"
-	max_ammo = 100
+	max_ammo = 150
 	weight = 0.8
 	multiple_sprites = TRUE
 	belt = TRUE

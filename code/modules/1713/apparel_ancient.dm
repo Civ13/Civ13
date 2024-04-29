@@ -400,6 +400,7 @@
 /obj/item/clothing/head/helmet/roman
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -639,6 +640,7 @@
 /obj/item/clothing/head/helmet/roman/nomads
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"

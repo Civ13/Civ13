@@ -24,7 +24,7 @@
 	if (sound)
 		data.sound = sound
 	// queue work
-	processes.callproc.queue(processes.explosion, /process/explosion/proc/queue, list(data), 1)
+	processes.callproc.queue(processes.explosion, TYPE_PROC_REF(/process/explosion, queue), list(data), 1)
 
 	return data
 

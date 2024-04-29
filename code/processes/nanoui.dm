@@ -12,22 +12,22 @@
 			try
 				// runtime prevention
 				if (NUI.state && NUI.user)
-					NUI.process()
+					NUI.Process()
 			catch(var/exception/e)
 				catchException(e, NUI)
 		else
 			catchBadType(NUI)
-			nanomanager.processing_uis -= NUI
+			GLOB.nanomanager.processing_uis -= NUI
 
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
 
 /process/nanoUI/reset_current_list()
-	PROCESS_USE_FASTEST_LIST(nanomanager.processing_uis)
+	PROCESS_USE_FASTEST_LIST(GLOB.nanomanager.processing_uis)
 
 /process/nanoUI/statProcess()
 	..()
-	stat(null, "[nanomanager.processing_uis.len] UIs")
+	stat(null, "[GLOB.nanomanager.processing_uis.len] UIs")
 
 /process/nanoUI/htmlProcess()
-	return ..() + "[nanomanager.processing_uis.len] UIs"
+	return ..() + "[GLOB.nanomanager.processing_uis.len] UIs"

@@ -1063,7 +1063,7 @@
 	var/scale = 1
 	var/heavy = TRUE
 	var/explosion_timer = 1 SECOND
-	var/reliability = 100
+	reliability = 100
 
 	var/devastation_range = 2
 	var/heavy_impact_range = 4

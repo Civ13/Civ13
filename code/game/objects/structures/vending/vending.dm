@@ -196,7 +196,7 @@
 
 		data["products"] = listed_products
 
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		ui = new(user, src, ui_key, "vending_machine.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
@@ -229,13 +229,13 @@
 
 		add_fingerprint(usr)
 		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
-		nanomanager.update_uis(src)
+		GLOB.nanomanager.update_uis(src)
 
 /obj/structure/vending/proc/vend(datum/data/vending_product/R, mob/user)
 	vend_ready = FALSE //One thing at a time!!
 	status_message = "Vending..."
 	status_error = FALSE
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 
 	spawn(vend_delay)
 		R.get_product(get_turf(src),1,user)
@@ -246,7 +246,7 @@
 		currently_vending = null
 		if (istype(src, /obj/structure/vending/craftable))
 			product_records -= R
-		nanomanager.update_uis(src)
+		GLOB.nanomanager.update_uis(src)
 		update_icon()
 
 /**
@@ -263,7 +263,7 @@
 	R.amount++
 	qdel(W)
 
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 	update_icon()
 
 /obj/structure/vending/process()

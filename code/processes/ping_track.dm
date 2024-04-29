@@ -33,7 +33,7 @@
 		if (!hascall(C, ".update_ping")) // BYOND treats "update_ping" and ".update_ping" the same here, for reference
 			continue
 		if (!client_ckey_check[C.ckey])
-			client_ckey_check[C.ckey] = world.time+50
+			client_ckey_check[C.ckey] = world.time+100
 			continue
 		if (world.time < client_ckey_check[C.ckey])
 			continue

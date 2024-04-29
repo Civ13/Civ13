@@ -13,7 +13,7 @@
 	good_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	equiptimer = 15
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2),
+		list(name = "semiauto",	burst=1, burst_delay=1.2, recoil=0, move_delay=2),
 		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4),
 		)
 	sel_mode = 1

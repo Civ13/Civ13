@@ -767,11 +767,10 @@
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf39/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf39(src)
 	SP.attached(null,src,TRUE)
 
-/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese/New()
-	..()
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese
+	scope_mounts = list("swept_back")
 	name = "Chiang Kai-Shek"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition. This one being adopted by the Chinese."
-	scope_mounts = list("swept_back")
 
 /obj/item/weapon/gun/projectile/boltaction/p14enfield
 	name = "Pattern 1914 Enfield"

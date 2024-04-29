@@ -38,7 +38,7 @@
 			if(prob(50) || map.triggered_blizzard)
 				world << "<big>A huge blizzard is approaching!</big>"
 				map.triggered_blizzard = FALSE
-				spawn(600) // 1 minute
+				spawn(600)
 					map.blizzard = TRUE
 					change_weather(WEATHER_EXTREME)
 					//world << "<big>The blizzard is in full force!</big>"
@@ -51,7 +51,7 @@
 			if(prob(50)|| map.triggered_heatwave)
 				world << "<big>The weather starts to get hotter than normal...</big>"
 				map.triggered_heatwave = FALSE
-				spawn(600) // 1 minute
+				spawn(600)
 					map.heat_wave = TRUE
 					change_weather(WEATHER_NONE)
 					world << "<big>A heat wave has arrived in this area!</big>"
@@ -71,7 +71,7 @@
 			if(prob(50)|| map.triggered_sandstorm)
 				world << "<big>You start seeing dark clouds in the horizon...</big>"
 				map.triggered_sandstorm = FALSE
-				spawn(600) // 1 minute
+				spawn(600)
 					map.sandstorm = TRUE
 					change_weather(WEATHER_EXTREME)
 					//world << "<big>A sandstorm has arrived in this area!</big>"
