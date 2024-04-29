@@ -17,6 +17,8 @@ var/global/list/cached_icons = list()
 	flags = OPENCONTAINER
 	var/paint_type = "red"
 
+// Over-ridden by attack_turf() in parent which does a better job of this old-code.
+/*
 	afterattack(turf/target, mob/user, proximity)
 		if (!proximity) return
 		if (istype(target) && reagents.total_volume > 5)
@@ -24,7 +26,7 @@ var/global/list/cached_icons = list()
 			reagents.trans_to_turf(target, 5)
 		else
 			return ..()
-
+*/
 	New()
 		if (paint_type && length(paint_type) > 0)
 			name = paint_type + " " + name
