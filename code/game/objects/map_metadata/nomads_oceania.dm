@@ -1,13 +1,12 @@
 
-/obj/map_metadata/nomads
-	ID = MAP_NOMADS
-	title = "Nomads (Temperate)"
-	lobby_icon = 'icons/lobby/civ13.gif'
+/obj/map_metadata/nomads_oceania
+	ID = MAP_NOMADS_OCEANIA
+	title = "Nomads (Oceania)"
+	lobby_icon = 'icons/lobby/oceania.png'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
-
 	faction_organization = list(
 		CIVILIAN,)
 
@@ -24,20 +23,21 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Didgeridoo" = 'sound/music/didgeridoo.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
-/obj/map_metadata/nomads/New()
+	var/list/arealist_r = list()
+	var/list/arealist_g = list()
+
+/obj/map_metadata/nomads_oceania/New()
 	..()
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads/cross_message(faction)
-	return ""
-
-/obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_oceania/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else
 		. = FALSE
+

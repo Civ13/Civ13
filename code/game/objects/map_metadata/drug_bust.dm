@@ -28,7 +28,7 @@
 	grace_wall_timer = 5 MINUTES
 	gamemode = "Drug Bust"
 	songs = list(
-		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = "sound/music/amphetamine_cocaine.ogg",)
+		"D.A.V.E. The Drummer - Amphetamine or Cocaine:1" = 'sound/music/amphetamine_cocaine.ogg',)
 	var/list/HVT_list = list()
 
 /obj/map_metadata/drug_bust/New()

@@ -27,7 +27,7 @@
 	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Song of Zhenbao Island - Sino-Soviet War Song:1" = "sound/music/zhenbao.ogg",)
+		"Song of Zhenbao Island - Sino-Soviet War Song:1" = 'sound/music/zhenbao.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/zhenbao/job_enabled_specialcheck(var/datum/job/J)

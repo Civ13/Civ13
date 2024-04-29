@@ -30,7 +30,7 @@
 	force_mapgen = TRUE
 	grace_wall_timer = 1500
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"
 /obj/map_metadata/four_kingdoms/New()
 	var/newnamea = list("Orc Horde" = list(48,49,48,null,0,"skull","#7F6865","#252232",0,0))

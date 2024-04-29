@@ -24,7 +24,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
 /obj/map_metadata/kursk/job_enabled_specialcheck(var/datum/job/J)
 	..()

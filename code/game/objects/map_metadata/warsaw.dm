@@ -26,7 +26,7 @@
 	faction2 = POLISH
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Song of The Warsaw Uprising - Chłopcy Silni Jak Stal (Boys Strong As Steel):1" = "sound/music/boysstrongassteel.ogg",)
+		"Song of The Warsaw Uprising - Chłopcy Silni Jak Stal (Boys Strong As Steel):1" = 'sound/music/boysstrongassteel.ogg',)
 	grace_wall_timer = 3000
 	gamemode = "Siege"
 	ambience = list('sound/ambience/battle1.ogg')

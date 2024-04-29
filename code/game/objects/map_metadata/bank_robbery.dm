@@ -28,7 +28,7 @@
 	grace_wall_timer = 3000
 	gamemode = "Bank Robbery"
 	songs = list(
-		"George Baker Selection - Little Green Bag:1" = "sound/music/little_green_bag.ogg",)
+		"George Baker Selection - Little Green Bag:1" = 'sound/music/little_green_bag.ogg',)
 
 	var/list/civilians_killed = list(
 		"Police" = 0,

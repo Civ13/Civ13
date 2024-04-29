@@ -22,7 +22,7 @@
 	faction2 = RUSSIAN
 	ordinal_age = 6
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg")
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 1800
 

@@ -28,7 +28,7 @@
 	grace_wall_timer = 6000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - I Want Changes:1" = "sound/music/want_changes.ogg",)
+		"Kino - I Want Changes:1" = 'sound/music/want_changes.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(

@@ -25,7 +25,7 @@
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	grace_wall_timer = 3600 // 6 minutes
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)

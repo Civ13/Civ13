@@ -22,7 +22,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"In the Navy - Village People:1" = "sound/music/inthenavy.ogg",)
+		"In the Navy - Village People:1" = 'sound/music/inthenavy.ogg',)
 	var/ship_faction1 = null
 	var/ship_faction2 = null
 	var/island = null

@@ -19,7 +19,7 @@
 	faction1 = JAPANESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Akira:1" = "sound/music/akira.ogg",)
+		"Akira:1" = 'sound/music/akira.ogg',)
 	is_singlefaction = TRUE
 	scores = list(
 		"Yamaguchi-Gumi" = 0,
