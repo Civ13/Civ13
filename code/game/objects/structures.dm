@@ -63,7 +63,7 @@
 		if (prob(66) && density)
 			return TRUE
 		else
-			visible_message(SPAN_WARNING("The [mover.name] ricochetes off \the [src]!"))
+			visible_message(SPAN_WARNING("\The [mover.name] ricochets off \the [src]!"))
 			return FALSE
 	else
 		return ..()

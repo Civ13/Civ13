@@ -97,6 +97,7 @@
 	..()
 
 //#####REAGENTS#####
+
 //SHIT
 /datum/reagent/poo
 	name = "poo"
@@ -228,6 +229,7 @@
 		bowels = 0
 	if(bladder <= 0)
 		bladder = 0
+
 	if(bowels >= 250)
 		switch(bowels)
 			if(250 to 400)
@@ -236,22 +238,23 @@
 					bowels += 10
 			if(400 to 450)
 				if(prob(7))
-					to_chat(src, "<span class='danger'>You really need to use the restroom!</span>")
+					to_chat(src, SPAN_DANGER("You really need to use the restroom!"))
 					bowels += 15
 			if(450 to 500)
 				if(prob(2))
 					handle_shit()
 				else if(prob(10))
-					to_chat(src, "<span class='danger'>You're about to shit yourself!</span>")
+					to_chat(src, SPAN_DANGER("You're about to shit yourself!"))
 					bowels += 25
 			if(500 to 550)
 				if(prob(15))
 					handle_shit()
 				else if(prob(30))
-					to_chat(src, "<span class='danger'>OH MY GOD YOU HAVE TO SHIT!</span>")
+					to_chat(src, SPAN_DANGER("OH MY GOD YOU HAVE TO SHIT!"))
 					bowels += 35
 			if(550 to INFINITY)
 				handle_shit()
+
 	if(bladder >= 100)//Your bladder is smaller than your colon
 		switch(bladder)
 			if(100 to 250)
@@ -260,19 +263,19 @@
 					bladder += 10
 			if(250 to 400)
 				if(prob(7))
-					to_chat(src, "<span class='danger'>You really need to use the restroom!</span>")
+					to_chat(src, SPAN_DANGER("You really need to use the restroom!"))
 					bladder += 15
 			if(400 to 500)
 				if(prob(2))
 					handle_piss()
 				else if(prob(10))
-					to_chat(src, "<span class='danger'>You're about to piss yourself!</span>")
+					to_chat(src, SPAN_DANGER("You're about to piss yourself!"))
 					bladder += 25
 			if(500 to 550)
 				if(prob(15))
 					handle_piss()
 				else if(prob(30))
-					to_chat(src, "<span class='danger'>OH MY GOD YOU HAVE TO PEE!</span>")
+					to_chat(src, SPAN_DANGER("OH MY GOD YOU HAVE TO PEE!"))
 					bladder += 35
 			if(550 to INFINITY)
 				handle_piss()
@@ -283,6 +286,7 @@
 	if (src.bowels < 30 && stat != DEAD)
 		to_chat(src, "You don't have to shit.")
 		return
+
 	//Poo in the loo.
 	var/obj/structure/toilet/T = locate() in src.loc
 	var/mob/living/M = locate() in src.loc
@@ -295,6 +299,7 @@
 		if(reagents)
 			reagents.trans_to(V, rand(1,5))
 		V.forceMove(T)
+
 	else if(w_uniform)
 		message = "<B>[src]</B> shits \his pants."
 		reagents.add_reagent("poo", 10)
@@ -304,11 +309,13 @@
 		w_uniform.overlays += w_uniform.shit_overlay
 		w_uniform.update_icon()
 		update_icons()
+
 	//Poo on the face.
 	else if(M != src && M.lying) //Can only shit on them if they're lying down.
 		message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
 		if (M && M.reagents)
 			M.reagents.add_reagent("poo", 10)
+
 	//Poo on the floor.
 	else
 		message = "<B>[src]</B> [pick("shits", "craps", "poops")]."
@@ -325,28 +332,34 @@
 	if (bladder < 30 && stat != DEAD)
 		to_chat(src, "You don't have to piss.")
 		return
+
 	var/mob/living/M = locate() in src.loc
 	var/obj/structure/toilet/T = locate() in src.loc
 	var/obj/structure/toilet/T2 = locate() in src.loc
 	var/obj/structure/sink/S = locate() in src.loc
 	var/obj/item/weapon/reagent_containers/RC = locate() in src.loc
+
 	if((S) && gender != FEMALE)//In the urinal or sink.
-		message = "<B>[src]</B> urinates into [S]."
+		message = "<B>[src]</B> urinates into \the [S]."
 		reagents.remove_any(rand(5,10))
+
 	else if( (T && T.open) || (T2 && T2.open) )//In the toilet.
-		message = "<B>[src]</B> urinates into [T]."
+		message = "<B>[src]</B> urinates into \the [T]."
 		reagents.remove_any(rand(5,10))
+
 	else if (M.crap_inside) //Into the hole inside the outhouse.
 		message = "<B>[src]</B> urinates into the hole."
 		reagents.remove_any(rand(5,10))
+
 	else if(RC && (istype(RC,/obj/item/weapon/reagent_containers/food/drinks || istype(RC,/obj/item/weapon/reagent_containers/glass))))
 		if(RC.is_open_container())
 			//Inside a beaker, glass, drink, etc.
-			message = "<B>[src]</B> urinates into [RC]."
+			message = "<B>[src]</B> urinates into \the [RC]."
 			var/amount = rand(5,10)
 			RC.reagents.add_reagent("urine", amount)
 			if(reagents)
 				reagents.trans_to(RC, amount)
+
 	else if(w_uniform)//In your pants.
 		message = "<B>[src]</B> pisses \his pants."
 		adjust_hygiene(-25)
@@ -355,11 +368,13 @@
 		w_uniform.overlays += w_uniform.piss_overlay
 		w_uniform.update_icon()
 		update_icons()
+
 	else//On the floor.
 		var/turf/TT = src.loc
 		var/obj/effect/decal/cleanable/urine/D = new/obj/effect/decal/cleanable/urine(src.loc)
 		if(reagents)
 			reagents.trans_to(D, rand(5,10))
-		message = "<B>[src]</B> pisses on the [TT.name]."
+		message = "<B>[src]</B> pisses on \the [TT.name]."
+
 	bladder -= rand(100,130)
 	visible_message("[message]")
