@@ -23,7 +23,7 @@
 	gamemode = "Turf War"
 	no_hardcore = TRUE
 	songs = list(
-		"Compton\'s Most Wanted - Hood Took Me Under:1" = "sound/music/hood_took_me_under.ogg",)
+		"Compton\'s Most Wanted - Hood Took Me Under:1" = 'sound/music/hood_took_me_under.ogg',)
 	var/grove_points = 0
 	var/ballas_points = 0
 	var/a1_control = "None"

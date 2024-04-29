@@ -25,7 +25,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"Emma:1" = 'sound/music/emma.ogg',)
 	artillery_count = 0
 
 	scores = list(

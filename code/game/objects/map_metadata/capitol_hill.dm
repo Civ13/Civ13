@@ -28,7 +28,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"To Arms in Dixie:1" = "sound/music/to_arms_in_dixie.ogg",)
+		"To Arms in Dixie:1" = 'sound/music/to_arms_in_dixie.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(
@@ -327,7 +327,7 @@ var/no_loop_capitol = FALSE
 	faction1 = AMERICAN
 	faction2 = CHINESE
 	songs = list(
-		"Red Sun Up in the Sky (Phonk Remix):1" = "sound/music/redphonkinthesky.ogg",)
+		"Red Sun Up in the Sky (Phonk Remix):1" = 'sound/music/redphonkinthesky.ogg',)
 	valid_artillery = list()
 	scores = list(
 		"Peoples Liberation Army" = 0,

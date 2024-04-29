@@ -23,7 +23,7 @@
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
-		"God, Syria and Bashar!:1" = "sound/music/godsyriabashar.ogg")
+		"God, Syria and Bashar!:1" = 'sound/music/godsyriabashar.ogg')
 	gamemode = "King of the Hill"
 
 /obj/map_metadata/syria/faction2_can_cross_blocks()

@@ -24,7 +24,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Cossacks Song:1" = "sound/music/cossacksong.ogg",)
+		"Red Army Choir - Cossacks Song:1" = 'sound/music/cossacksong.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/barbarossa/job_enabled_specialcheck(var/datum/job/J)

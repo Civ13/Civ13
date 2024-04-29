@@ -490,7 +490,7 @@
 
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
-	else if (map.ID == MAP_NOMADS_UK)
+	else if (map.ID == MAP_NOMADS_UK || map.ID == MAP_NOMADS_OCEANIA)
 		switch (mob_area.climate)
 			if ("temperate")
 				for (var/datum/language/english/A in languages)

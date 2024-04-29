@@ -26,7 +26,7 @@
 	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Noisia - Shellshock:1" = "sound/music/shellshock.ogg",)
+		"Noisia - Shellshock:1" = 'sound/music/shellshock.ogg',)
 	artillery_count = 0
 	no_hardcore = TRUE
 	var/list/squad_jobs_blue = list(

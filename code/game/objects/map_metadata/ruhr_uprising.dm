@@ -25,7 +25,7 @@
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Argonnerwaldlied:1" = "sound/music/argonnerwaldlied.ogg",)
+		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/ruhr_uprising/job_enabled_specialcheck(var/datum/job/J)

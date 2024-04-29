@@ -23,7 +23,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Korobushka:1" = "sound/music/korobushka.ogg")
+		"Korobushka:1" = 'sound/music/korobushka.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 4200
 

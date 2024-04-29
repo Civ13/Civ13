@@ -24,7 +24,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - Gruppa Krovi (Blood Group):1" = "sound/music/gruppakrovi.ogg",)
+		"Kino - Gruppa Krovi (Blood Group):1" = 'sound/music/gruppakrovi.ogg',)
 	gamemode = "Siege"
 	artillery_count = 3
 	grace_wall_timer = 4800 // 8 minutes.

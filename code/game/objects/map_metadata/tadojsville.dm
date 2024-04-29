@@ -27,7 +27,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"The Hygrades - Rough Rider:1" = "sound/music/roughrider.ogg",)
+		"The Hygrades - Rough Rider:1" = 'sound/music/roughrider.ogg',)
 
 /obj/map_metadata/tadojsville/job_enabled_specialcheck(var/datum/job/J)
 	..()

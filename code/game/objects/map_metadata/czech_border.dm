@@ -23,7 +23,7 @@
 	faction2 = NATO
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/putmusichere",)
+		"Red Army Choir - Katyusha:1" = 'sound/music/putmusichere',)
 	gamemode = "Siege"
 	grace_wall_timer = 4800
 

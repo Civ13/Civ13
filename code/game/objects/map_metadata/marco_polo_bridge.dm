@@ -22,8 +22,8 @@
 	faction2 = CHINESE
 	ordinal_age = 6
 	songs = list(
-		"Mugi to Heitai:1" = "sound/music/mugi_to_heitai.ogg",
-		"I Hate These Classes:2" = "sound/music/i_hate_these_classes.ogg")
+		"Mugi to Heitai:1" = 'sound/music/mugi_to_heitai.ogg',
+		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg')
 	gamemode = "King of the Hill"
 /obj/map_metadata/marco_polo_bridge/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)

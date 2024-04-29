@@ -22,7 +22,7 @@
 	faction2 = ITALIAN
 	ordinal_age = 5
 	songs = list(
-		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
+		"Bella Ciao:1" = 'sound/music/bella_ciao.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3000
 	var/no_loop_elaia = FALSE
