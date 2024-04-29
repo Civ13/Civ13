@@ -41,7 +41,7 @@
 		return ..()
 
 /////////////////////////////////////////////////
-//////////////////////JAM�N//////////////////////
+                 ///PIGLEGS///
 /////////////////////////////////////////////////
 
 /obj/item/weapon/pigleg
@@ -103,6 +103,11 @@
 			icon_state = "no_blood_ham"
 			return
 	..()
+
+/////////////////////////////////////////////////
+           ///SALTING CONTAINER///
+/////////////////////////////////////////////////
+
 /obj/structure/salting_container
 	name = "salting container"
 	desc = "A wood container, used to salt foods for preservation."
@@ -138,13 +143,16 @@
 	if (salting)
 		to_chat(user, SPAN_WARNING("The salting container is full!"))
 		return
-	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity && contents.len)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/saltpile) && contents.len <= max_capacity)
+		if(!contents.len)
+			to_chat(user, SPAN_WARNING("Add some product first!"))
+			return
 		if (saltamount < 30)
-			user << "You add salt to the container."
+			user.visible_message(SPAN_NOTICE("[user] adds salt to the container."), "You [pick("drop", "throw", "lightly throw", "sprinkle")] \the [W] into the container.")
 			saltamount += W.reagents.get_reagent_amount("sodiumchloride")
 			qdel(W)
 			if (saltamount >= 30)
-				visible_message("The salting container is now full.")
+				visible_message(SPAN_WARNING("The salting container is now full."))
 				icon_state = "salting_container_processing"
 				salting = TRUE
 				salting()
@@ -156,7 +164,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "ham"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("[user] adds \the [W] to the salting container"), SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))
@@ -165,7 +173,7 @@
 			max_capacity = 3
 			producttype = W.type
 			producttype_name = "cod"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("[user] adds \the [W] to the salting container"), SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage))
@@ -174,41 +182,45 @@
 			max_capacity = 5
 			producttype = W.type
 			producttype_name = "sausage"
-			to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+			user.visible_message(SPAN_NOTICE("[user] adds \the [W] to the salting container"), SPAN_NOTICE("You add \the [W] to the salting container."))
 			icon_state = "salting_container_[producttype_name]_[contents.len]"
 			return
 	else if (producttype == W.type && contents.len < max_capacity && !salting)
 		user.drop_from_inventory(W, src, FALSE)
 		W.forceMove(src)
-		to_chat(user, SPAN_NOTICE("You add \the [W] to the salting container."))
+		user.visible_message(SPAN_NOTICE("[user] adds \the [W] to the salting container"), SPAN_NOTICE("You add \the [W] to the salting container."))
 		icon_state = "salting_container_[producttype_name]_[contents.len]"
 		return
 	else if (producttype == W.type && contents.len >= max_capacity)
 		to_chat(user, SPAN_WARNING("You can't add any more of \the [W] to the container."))
 		return
 	else if (producttype != W.type)
-		to_chat(user, SPAN_WARNING("This is the wrong type of product!"))
+		to_chat(user, SPAN_WARNING("You can't add a different product!"))
 		return
 	else
 		..()
 
 /obj/structure/salting_container/proc/salting()
-	spawn(3600)
+	spawn(rand(2900,3600))
 		salting = FALSE
 		icon_state = "salting_container"
-		visible_message("The products in the salting container swell up and fully salt.")
-		saltamount = 0
+		switch(contents.len)
+			if(1)
+				visible_message(SPAN_NOTICE("The product inside the salting container swells up and fully salts."))
+			else
+				visible_message(SPAN_NOTICE("The products in the salting container swell up and fully salt."))
+		saltamount = 0 // TODO: RE-work the system to remove intervals of '10' depending on how much product is loaded, and then attack_hand() to begin the salting process, time to salt would depend by product.
 		for (var/obj/item/I in contents)
-			qdel(I)
-		if (producttype_name == "ham")
-			for(var/i=1, i<=max_capacity, i++)
-				new/obj/item/weapon/pigleg/salted(loc)
-		if (producttype_name == "cod")
-			for(var/i=1, i<=max_capacity, i++)
-				new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
-		if (producttype_name == "sausage")
-			for(var/i=1, i<=max_capacity, i++)
-				new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
+			qdel(I)	// Clear the contents list.
+			switch(producttype_name)
+				if("ham")
+					new/obj/item/weapon/pigleg/salted(loc)
+				else if("cod")
+					new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
+				else if("sausage")
+					new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
+		producttype = null // Reset the product type variable to allow the next cycle of salting.
+
 ///////////////////////////////LARGE/DEHYDRATOR///////////////////////////////
 /obj/structure/drying_rack
 	name = "drying rack"
