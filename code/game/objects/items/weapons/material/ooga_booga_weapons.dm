@@ -69,10 +69,10 @@
 
 /obj/item/weapon/branch/attack_self(mob/living/human/user as mob)
 	if (ants)
-		user << "You start licking some ants off the stick..."
+		to_chat(user, SPAN_NOTICE("You start licking some ants off the stick..."))
 		if (do_after(user, 50, src))
 			if (src && ants)
-				user << "You finish eating some ants."
+				to_chat(user, SPAN_NOTICE("You finish eating some ants."))
 				icon_state = "sharpened_stick"
 				ants = FALSE
 				if (user.gorillaman)
@@ -85,6 +85,7 @@
 				return
 	else
 		..()
+
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
 		user << "You start sharpening the stick..."
