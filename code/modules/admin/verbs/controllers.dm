@@ -47,7 +47,7 @@ var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "C
 			debug_variables(config)
 
 		if ("Observation")
-			debug_variables(all_observable_events)
+			debug_variables(GLOB.all_observable_events)
 
 		if ("Job Master")
 			if (job_master)

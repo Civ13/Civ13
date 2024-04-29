@@ -21,6 +21,7 @@ var/list/global_huds = list(
 /datum/hud/var/obj/screen/disarm_intent
 /datum/hud/var/obj/screen/help_intent
 */
+
 /datum/global_hud
 	var/obj/screen/druggy
 	var/obj/screen/blurry
@@ -166,7 +167,7 @@ var/list/global_huds = list(
 	set hidden = TRUE
 
 	if (!hud_used)
-		to_chat(usr, SPAN_WARNING("This mob type does not use a HUD."))
+		usr << "<span class='warning'>This mob type does not use a HUD.</span>"
 		return
 
 	if (!ishuman(src))
@@ -174,7 +175,7 @@ var/list/global_huds = list(
 		return
 
 	if (!client) return
-	if (client.view != world.view)
+	if (client.view != WORLD_VIEW)
 		return
 
 //	hud_used.hidden_inventory_update()
@@ -189,7 +190,7 @@ var/list/global_huds = list(
 		return
 	if (!client)
 		return
-	if (client.view != world.view)
+	if (client.view != WORLD_VIEW)
 		return
 
 	update_action_buttons()

@@ -136,7 +136,7 @@ var/global/redirect_all_players = null
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			output += "<p><a href='byond://?src=\ref[src];late_join=1'>[translate("Join Game!")]</a></p>"
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
 	var/height = 250
 	if (client.holder)
@@ -146,12 +146,33 @@ var/global/redirect_all_players = null
 
 	output += "</div>"
 
-	src << browse(null, "window=playersetup;")
-	src << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=275x[height];can_close=0;can_resize=0")
+	client << browse(null, "window=playersetup;")
+	client << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=275x[height];can_close=0;can_resize=0")
 	return
 
 /mob/new_player/Stat()
 
+// New way
+	if(ticker)
+		if(ticker.current_state == GAME_STATE_PLAYING)
+			src << browse(null, "window=playerlist")
+			return
+
+		if((ticker.current_state == GAME_STATE_PREGAME))// && going)
+			client << output(list2params(list("[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")), "playerlist.browser:setTimeToStart")
+		//if((ticker.current_state == GAME_STATE_PREGAME))// && !going)
+		//	client << output(list2params(list("[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")), "playerlist.browser:setTimeToStart")
+
+		for(var/mob/new_player/player in player_list)
+			if(client) // Add later professional choice
+				//if(player.ready && player.client.work_chosen)
+				//	client << output(list2params(list("[player.client.work_chosen]", "[player.client.key]")), "playerlist.browser:addPlayerCell")
+				//else
+				client << output(list2params(list("Player", "[player.client.key]")), "playerlist.browser:addPlayerCell")
+				client << output(list2params(list()), "playerlist.browser:renderPlayerList")
+				player.updateTimeToStart()
+
+// Old way
 	if (client.status_tabs && statpanel("Status") && ticker)
 		stat("")
 		stat(stat_header("Lobby"))
@@ -620,7 +641,7 @@ var/global/redirect_all_players = null
 
 		var/job_flag = actual_job.base_type_flag()
 
-		if (!config.enter_allowed)
+		if (!GLOB.enter_allowed)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
@@ -797,7 +818,7 @@ var/global/redirect_all_players = null
 				spawn(10)
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
 		return FALSE
-	if (!config.enter_allowed)
+	if (!GLOB.enter_allowed)
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1514,6 +1535,10 @@ var/global/redirect_all_players = null
 				else if (!replaced_faction_title && findtext(dat[v], "&&[key]&&"))
 					dat[v] = replacetext(dat[v], "&&[key]&&", "")
 					replaced_faction_title = TRUE
+
+	if (!any_available_jobs && !ticker)
+		WWalert(usr,"The game is loading.","Error")
+		return
 
 	if (!any_available_jobs)
 		WWalert(usr,"All roles are disabled by autobalance!","Error")

@@ -19,3 +19,8 @@ client/verb/updateFullscreen()
 		winset(src, "mainwindow.mainvsplit", "splitter=75")
 		fullscreen = FALSE
 		return
+
+client/verb/fixFullscreen()
+	set name = "fixFullscreen"
+	set hidden = TRUE
+	winset(src, "mainwindow", "can-resize=true;titlebar=true;menu=menu")

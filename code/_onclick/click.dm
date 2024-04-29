@@ -146,9 +146,7 @@
 			return
 	if (stat || paralysis || stunned || weakened)
 		return
-	if (!prone)
-		face_atom(A) // change direction to face what you clicked on
-	else
+	if (prone)
 		var/cdir = get_dir(src, A)
 		if (cdir == NORTH || cdir == NORTHWEST || cdir == NORTHEAST || cdir == WEST)
 			dir = WEST
@@ -162,6 +160,8 @@
 			M.Turn(90)
 			M.Translate(1,-6)
 			transform = M
+	else
+		face_atom(A) // change direction to face what you clicked on
 	if (!canClick()) // in the year 2000...
 		return
 

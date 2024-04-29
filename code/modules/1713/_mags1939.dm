@@ -371,9 +371,9 @@
 	..()
 	stored_ammo.Cut()
 
-/obj/item/ammo_magazine/makarov // Made in 1959 by the Soviet Union.
+/obj/item/ammo_magazine/makarov
 	name = "PM Makarov magazine (9x18mm)" 
-	icon_state = "m1911" //temporary, to be changed
+	icon_state = "9mm"
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x18
 	caliber = "a9x18"
@@ -382,6 +382,17 @@
 /obj/item/ammo_magazine/makarov/empty/New()
 	..()
 	stored_ammo.Cut()
+
+/obj/item/ammo_magazine/makarov/box
+	name = "magazine box (9x18mm)"
+	icon_state = "9mm"
+	mag_type = MAGAZINE
+	caliber = "a9x18"
+	w_class = ITEM_SIZE_NORMAL
+	ammo_type = /obj/item/ammo_casing/a9x18
+	max_ammo = 60
+	multiple_sprites = TRUE
+	is_box = TRUE
 
 /obj/item/ammo_magazine/garand
 	name = "clip (30-06) 8 rounds"

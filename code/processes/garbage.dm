@@ -50,19 +50,19 @@ var/list/delayed_garbage = list()
 	while (destroyed.len && --checkRemain >= 0)
 		if (remaining_force_dels <= 0)
 			#ifdef GC_DEBUG
-			testing("GC: Reached max force dels per tick [dels] vs [maxDels]")
+//			testing("GC: Reached max force dels per tick [dels] vs [maxDels]")
 			#endif
 			break // Server's already pretty pounded, everything else can wait 2 seconds
 		var/refID = destroyed[1]
 		var/GCd_at_time = destroyed[refID]
 		if (GCd_at_time > time_to_kill)
 			#ifdef GC_DEBUG
-			testing("GC: [refID] not old enough, breaking at [world.time] for [GCd_at_time - time_to_kill] deciseconds until [GCd_at_time + collection_timeout]")
+//			testing("GC: [refID] not old enough, breaking at [world.time] for [GCd_at_time - time_to_kill] deciseconds until [GCd_at_time + collection_timeout]")
 			#endif
 			break // Everything else is newer, skip them
 		var/datum/A = locate(refID)
 		#ifdef GC_DEBUG
-		testing("GC: [refID] old enough to test: GCd_at_time: [GCd_at_time] time_to_kill: [time_to_kill] current: [world.time]")
+//		testing("GC: [refID] old enough to test: GCd_at_time: [GCd_at_time] time_to_kill: [time_to_kill] current: [world.time]")
 		#endif
 		if (A && A.gcDestroyed == GCd_at_time) // So if something else coincidently gets the same ref, it's not deleted by mistake
 			#ifdef GC_FINDREF
@@ -81,7 +81,7 @@ var/list/delayed_garbage = list()
 			remaining_force_dels--
 		else
 			#ifdef GC_DEBUG
-			testing("GC: [refID] properly GC'd at [world.time] with timeout [GCd_at_time]")
+//			testing("GC: [refID] properly GC'd at [world.time] with timeout [GCd_at_time]")
 			#endif
 			soft_dels++
 		tick_dels++
@@ -98,12 +98,12 @@ var/list/delayed_garbage = list()
 #ifdef GC_FINDREF
 
 /process/garbage/proc/LocateReferences(var/atom/A)
-	testing("GC: Attempting to locate references to [A] | [A.type]. This is a potentially long-running operation.")
+//	testing("GC: Attempting to locate references to [A] | [A.type]. This is a potentially long-running operation.")
 	if (istype(A))
 		if (A.loc != null)
-			testing("GC: [A] | [A.type] is located in [A.loc] instead of null")
+//			testing("GC: [A] | [A.type] is located in [A.loc] instead of null")
 		if (A.contents.len)
-			testing("GC: [A] | [A.type] has contents: [jointext(A.contents)]")
+//			testing("GC: [A] | [A.type] has contents: [jointext(A.contents)]")
 	var/ref_count = 0
 	for (var/atom/atom)
 		ref_count += LookForRefs(atom, A)
@@ -123,7 +123,7 @@ var/list/delayed_garbage = list()
 			continue
 		if (!islist(D.vars[V]))
 			if (D.vars[V] == A)
-				testing("GC: [A] | [A.type] referenced by [D] | [D.type], var [V]")
+//				testing("GC: [A] | [A.type] referenced by [D] | [D.type], var [V]")
 				. += 1
 		else
 			. += LookForListRefs(D.vars[V], A, D, V)
@@ -133,7 +133,7 @@ var/list/delayed_garbage = list()
 	for (var/F in L)
 		if (!islist(F))
 			if (F == A || L[F] == A)
-				testing("GC: [A] | [A.type] referenced by [D] | [D.type], list [V]")
+//				testing("GC: [A] | [A.type] referenced by [D] | [D.type], list [V]")
 				. += 1
 		else
 			. += LookForListRefs(F, A, D, "[F] in list [V]")
@@ -143,7 +143,7 @@ var/list/delayed_garbage = list()
 	if (!istype(A) || A.gcDestroyed)
 		return
 	#ifdef GC_DEBUG
-	testing("GC: AddTrash(\ref[A] - [A.type])")
+//	testing("GC: AddTrash(\ref[A] - [A.type])")
 	#endif
 	A.gcDestroyed = world.time+1
 	destroyed -= "\ref[A]" // Removing any previous references that were GC'd so that the current object will be at the end of the list.
@@ -231,55 +231,6 @@ var/list/delayed_garbage = list()
 
 /turf/finalize_qdel()
 	del(src)
-
-// Default implementation of clean-up code.
-// This should be overridden to remove all references pointing to the object being destroyed.
-// Return true if the the GC controller should allow the object to continue existing. (Useful if pooling objects.)
-/datum/proc/Destroy()
-	nanomanager.close_uis(src)
-	tag = null
-	return
-
-/client/var/running_find_references
-
-/atom/proc/find_references()
-
-	if (!usr || !usr.client)
-		return
-
-	if (usr.client.running_find_references)
-		testing("CANCELLED search for references to a [usr.client.running_find_references].")
-		usr.client.running_find_references = null
-		return
-
-	if (WWinput(usr, "Running this will create a lot of lag until it finishes.  You can cancel it by running it again.  Would you like to begin the search?", "Find References", "Yes", list("Yes", "No")) == "No")
-		return
-
-	// Remove this object from the list of things to be auto-deleted.
-	if (processes.garbage)
-		processes.garbage.destroyed -= "\ref[src]"
-
-	usr.client.running_find_references = type
-	testing("Beginning search for references to a [type].")
-	var/list/things = list()
-	for (var/client/thing)
-		things += thing
-	for (var/datum/thing)
-		things += thing
-	for (var/atom/thing)
-		things += thing
-	testing("Collected list of things in search for references to a [type]. ([things.len] Thing\s)")
-	for (var/datum/thing in things)
-		if (!usr.client.running_find_references) return
-		for (var/varname in thing.vars)
-			var/variable = thing.vars[varname]
-			if (variable == src)
-				testing("Found [type] \ref[src] in [thing.type]'s [varname] var.")
-			else if (islist(variable))
-				if (src in variable)
-					testing("Found [type] \ref[src] in [thing.type]'s [varname] list var.")
-	testing("Completed search for references to a [type].")
-	usr.client.running_find_references = null
 
 /client/proc/purge_all_destroyed_objects()
 	set category = "Debug"

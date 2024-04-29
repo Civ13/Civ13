@@ -26,6 +26,8 @@
 	// replaced by OPENCONTAINER flags and atom/proc/is_open_container()
 	///Chemistry.
 
+	var/crafted = FALSE //optimization for map loaded atoms
+
 	//Detective Work, used for the duplicate data points kept in the scanners
 	var/list/original_atom
 
@@ -76,11 +78,6 @@
 		return loc.return_air()
 	else
 		return null
-
-//return flags that should be added to the viewer's sight var.
-//Otherwise return a negative number to indicate that the view should be cancelled.
-/atom/proc/check_eye(user as mob)
-	return -1
 
 /atom/proc/on_reagent_change()
 	return
@@ -186,7 +183,7 @@
 		return FALSE
 
 	dir = new_dir
-	dir_set_event.raise_event(src, old_dir, new_dir)
+	GLOB.dir_set_event.raise_event(src, old_dir, new_dir)
 	return TRUE
 
 /atom/proc/ex_act()
@@ -376,7 +373,10 @@
 		blood_DNA = list()
 
 	was_bloodied = TRUE
-	blood_color = "#A10808"
+	if (M.droid)
+		blood_color = "#030303"
+	else
+		blood_color = "#A10808"
 	if (istype(M))
 		if (!istype(M.dna, /datum/dna))
 			M.dna = new /datum/dna(null)
@@ -421,7 +421,7 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 /atom/proc/visible_message(var/message, var/blind_message)
 
-	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
+	var/list/see = get_mobs_or_objects_in_view(7,src, TRUE, FALSE) | viewers(get_turf(src), null)
 
 	for (var/I in see)
 		if (isobj(I))
@@ -496,6 +496,9 @@
 	if (!user.canClick())
 		return
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
+		return
+	if(user.pacifist)
+		to_chat(src, "<font color='yellow'><b><big>I don't want to bite!</big></b></font>")
 		return
 	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
@@ -619,8 +622,3 @@
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
 	user.throw_at(target, 5, 0.5, user)
 	user.setClickCooldown(22)
-
-/atom/proc/SetName(var/new_name)
-	var/old_name = name
-	if(old_name != new_name)
-		name = new_name

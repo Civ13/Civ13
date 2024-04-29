@@ -40,6 +40,7 @@
 	var/matrix_l = 0
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
+
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
@@ -88,12 +89,38 @@
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
 
+/obj/structure/vehicleparts/axis/heavy/is1
+	name = "IS-1"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/is2
+	name = "IS-2"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/is3
 	name = "IS-3"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
-	color = "#5C5C4C"
+	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
@@ -170,7 +197,6 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-
 /obj/structure/vehicleparts/axis/heavy/mtlb
 	name = "MT-LB"
 	speeds = 4
@@ -191,6 +217,18 @@
 	reg_number = ""
 	color = "#939276"
 	vehicle_type = "apc"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m41
+	name = "M41"
+	speeds = 4
+	speedlist = list(1=14,2=10,3=8)
+	reg_number = ""
+	color = "#494224"
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
@@ -232,7 +270,7 @@
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
-	color = "#787859"
+	color = "#4a5243"
 	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	vehicle_type = "apc"
 	New()
@@ -263,6 +301,30 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	vehicle_type = "apc"
+
+/obj/structure/vehicleparts/axis/heavy/t80u
+	name = "T-80U"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t80uk
+	name = "T-80UK"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t72
 	name = "T-72"
@@ -505,7 +567,7 @@
 	name = "M-4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color = "#293822"
+	color = "#494224"
 	reg_number = ""
 	New()
 		..()
@@ -517,7 +579,7 @@
 	name = "M-48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color = "#293822"
+	color = "#494224"
 	reg_number = ""
 	New()
 		..()

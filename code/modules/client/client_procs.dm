@@ -1,9 +1,9 @@
 	////////////
 	//SECURITY//
 	////////////
-#define UPLOAD_LIMIT		10485760	//Restricts client uploads to the server to 10MB //Boosted this thing. What's the worst that can happen?
-#define ABSOLUTE_MIN_CLIENT_VERSION 511
-#define REAL_MIN_CLIENT_VERSION 512
+#define UPLOAD_LIMIT		100000000	//Restricts client uploads to the server to 1000MB //Boosted this thing. What's the worst that can happen?
+#define ABSOLUTE_MIN_CLIENT_VERSION 512
+#define REAL_MIN_CLIENT_VERSION 513
 #define PLAYERCAP 200
 	/*
 	When somebody clicks a link in game, this Topic is called first.
@@ -233,13 +233,13 @@
 
 	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.
 	// (but turn them off first, since sometimes BYOND doesn't turn them on properly otherwise)
-	spawn(1) // And wait a half-second, since it sounds like you can do this too fast.
+	spawn(5) // And wait a half-second, since it sounds like you can do this too fast.
 		if (src)
 			winset(src, null, "command=\".configure graphics-hwmode off\"")
 			sleep(1) // wait a bit more, possibly fixes hardware mode not re-activating right
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
-	if (src)
-		send_resources()
+	
+	send_resources()
 
 	fix_nanoUI()
 
@@ -373,6 +373,8 @@
 		)
 
 	spawn (10) //removing this spawn causes all clients to not get verbs.
+		if(!src) // client disconnected
+			return
 		//Precache the client with all other assets slowly, so as to not block other browse() calls
 		getFilesSlow(src, asset_cache.cache, register_asset = FALSE)
 

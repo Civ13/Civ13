@@ -230,7 +230,7 @@
 
 //Returns a string with the first element of the string capitalized.
 /proc/capitalize(var/t as text)
-	return uppertext(copytext(t, TRUE, 2)) + copytext(t, 2)
+	return uppertext(copytext_char(t, TRUE, 2)) + copytext_char(t, 2)
 
 //This proc strips html properly, remove < > and all text between
 //for complete text sanitizing should be used sanitize()
@@ -354,5 +354,18 @@ proc/TextPreview(var/string,var/len=40)
  */
 /proc/strip_improper(var/text)
 	return replacetext(replacetext(text, "\proper", ""), "\improper", "")
+
+//HTML ENCODE/DECODE
+/proc/rhtml_encode(var/msg)
+	msg = replacetext(msg, "<", "&lt;")
+	msg = replacetext(msg, ">", "&gt;")
+	msg = replacetext(msg, "�", "&#255;")
+	return msg
+
+/proc/rhtml_decode(var/msg)
+	msg = replacetext(msg, "&gt;", ">")
+	msg = replacetext(msg, "&lt;", "<")
+	msg = replacetext(msg, "&#255;", "�")
+	return msg
 
 #define gender2text(gender) capitalize(gender)

@@ -100,7 +100,8 @@ var/list/admin_verbs_trialadmin = list(
 var/list/admin_verbs_sounds = list(
 	/client/proc/play_local_sound,
 	/client/proc/play_sound,
-	/client/proc/play_server_sound
+	/client/proc/play_server_sound,
+	/client/proc/play_world_sound
 	)
 var/list/admin_verbs_fun = list(
 	/client/proc/object_talk,
@@ -288,6 +289,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/show_battle_report,
 	/client/proc/quickBan_search,
 	/client/proc/quickBan_person,
+	/client/proc/toggle_right_click,
 )
 
 var/list/admin_verbs_mentor = list(
@@ -944,7 +946,7 @@ var/global/list/global_colour_matrix = null
 	return
 
 /client/proc/radiation_emission()
-	set category = "Fun"
+	set category = "Special"
 	set name = "Radiation Emission"
 	set desc = "Emits radiation for a set duration."
 	if (!check_rights(R_SPAWN))

@@ -198,7 +198,7 @@ If you make a derivative work from this code, you must include this notification
 		if (T && isturf(T))
 			if (!D.stat)
 				D.emote("scream")
-			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, /mob/living.proc/Paralyze, 20))
+			D.throw_at(T, 10, 4, A, TRUE, TRUE, callback = CALLBACK(D, TYPE_PROC_REF(/mob/living, Paralyze), 20))
 		D.attack_log += "\[[time_stamp()]\] <font color='orange'>Thrown with wrestling by [A.name] ([A.ckey])</font>"
 	return
 
@@ -334,7 +334,7 @@ If you make a derivative work from this code, you must include this notification
 			A.setDir(turn(A.dir, 90))
 
 		A.forceMove(D.loc)
-		addtimer(CALLBACK(src, .proc/CheckStrikeTurf, A, T), 4)
+		addtimer(CALLBACK(src, PROC_REF(CheckStrikeTurf), A, T), 4)
 
 		D.visible_message("<span class='danger'>[A] headbutts [D]!</span>", \
 						"<span class='userdanger'>You're headbutted by [A]!</span>", "<span class='hear'>You hear a sickening sound of flesh hitting flesh!</span>")

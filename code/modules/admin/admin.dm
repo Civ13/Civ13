@@ -120,6 +120,7 @@ proc/admin_notice(var/message, var/rights)
 				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Werewolf</A> |
 				<A href='?src=\ref[src];simplemake=ant;mob=\ref[M]'>Ant</A> |
 				<A href='?src=\ref[src];simplemake=orc;mob=\ref[M]'>Orc</A> |
+				<A href='?src=\ref[src];simplemake=droid;mob=\ref[M]'>Droid</A> |
 				<br>"}
 	body += {"<br><br>
 			<b>Other actions:</b>
@@ -453,8 +454,9 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Server"
 	set desc = "People can't enter"
 	set name = "Toggle Entering"
-	config.enter_allowed = !(config.enter_allowed)
-	if (!(config.enter_allowed))
+	set desc = "People can't enter"
+	GLOB.enter_allowed = !(GLOB.enter_allowed)
+	if (!(GLOB.enter_allowed))
 		world << "<b>New players may no longer enter the game.</b>"
 	else
 		world << "<b>New players may now enter the game.</b>"
@@ -467,13 +469,13 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Server"
 	set desc = "Respawn basically"
 	set name = "Toggle Respawn"
-	config.abandon_allowed = !(config.abandon_allowed)
-	if (config.abandon_allowed)
+	GLOB.abandon_allowed = !(GLOB.abandon_allowed)
+	if (GLOB.abandon_allowed)
 		world << "<b>You may now respawn.</b>"
 	else
 		world << "<b>You may no longer respawn :(</b>"
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].</span>", key_name_admin(usr))
-	log_admin("[key_name(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].")
+	message_admins("<span class = 'notice'>[key_name_admin(usr)] toggled respawn to [GLOB.abandon_allowed ? "On" : "Off"].</span>", key_name_admin(usr))
+	log_admin("[key_name(usr)] toggled respawn to [GLOB.abandon_allowed ? "On" : "Off"].")
 	world.update_status()
 
 /datum/admins/proc/delay()
@@ -764,7 +766,6 @@ proc/admin_notice(var/message, var/rights)
 			usr << "- name: [item.name] icon: [item.item_icon] path: [item.item_path] desc: [item.item_desc]"
 */
 
-var/list/atom_types = null
 /datum/admins/proc/spawn_atom(var/object as text)
 	set category = "Debug"
 	set desc = "(atom path) Spawn an atom"
@@ -772,12 +773,10 @@ var/list/atom_types = null
 
 	if (!check_rights(R_SPAWN))	return
 
-	if (!atom_types)
-		atom_types = typesof(/atom)
+	var/list/types = typesof(/atom)
+	var/list/matches = new()
 
-	var/list/matches = list()
-
-	for (var/path in atom_types)
+	for (var/path in types)
 		if (findtext("[path]", object))
 			matches += path
 
@@ -789,7 +788,7 @@ var/list/atom_types = null
 		chosen = matches[1]
 	else
 		chosen = WWinput(usr, "Select an atom type", "Spawn Atom", matches[1], WWinput_list_or_null(matches))
-		if (!chosen || chosen == "")
+		if (!chosen)
 			return
 
 	if (ispath(chosen,/turf))
@@ -1309,7 +1308,7 @@ var/list/atom_types = null
 		world.log << "[usr] set the worlds radiation to [num]."
 
 /datum/admins/proc/set_pollution()
-	set category = "Fun"
+	set category = "Debug"
 	set desc = "Set the pollution level of the world."
 	set name = "Set World Pollution"
 

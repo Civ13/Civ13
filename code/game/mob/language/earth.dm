@@ -41,6 +41,7 @@
 #define AFRIKAANS_SYLLABLES list("ek", "yk", "my", "eek", "ag", "van", "en", "heid", "al", "oei", "oek", "uur", "er", "net", "het", "hoe", "wat", "en", "alle", "aard", "eer", "nee", "ont", "nee", "yk", "sy", "hy", "sal", "mal", "eyer", "nie", "ja", "ee", "ad", "een", "ol", "ier", "oor", "de", "aar", "aal", "mit", "em", "ie", "alle", "daag", "se", "aer", "ae", "eed")
 #define WELSH_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "d'o", "d'u", "fa", "fe", "fi", "fo", "fu", "ga", "ge", "gi", "go", "gu", "ha", "he", "hi", "ho", "hu", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va")
 #define SCOTS_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
+#define DROID_SYLLABLES list("0", "1", "01", "10", "101", "010", "1010", "0101", "10101", "01010", "101010", "010101", "101010", "0101010", "1010101")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -541,4 +542,13 @@
 	colour = "Greenistani"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CHECHEN_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/droid
+	name = "Binary"
+	desc = "Бинарный язык дройдов."
+	key = "bn"
+	colour = "Binary"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = DROID_SYLLABLES
 	mutual_intelligibility = list()

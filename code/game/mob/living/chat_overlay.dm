@@ -15,6 +15,7 @@
 /obj/chat_text
 	name = "overlay"
 	desc = "overlay object"
+	mouse_opacity = FALSE
 	plane = CHAT_PLANE
 	icon = null
 

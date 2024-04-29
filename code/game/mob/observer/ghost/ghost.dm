@@ -109,6 +109,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 	..()
 
+/*
 /mob/observer/ghost/attack_hand(mob/user)
 	if (istype(user, /mob/observer/ghost))
 		var/mob/observer/ghost/G = user
@@ -126,7 +127,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 			animation.icon_state = "blank"
 			animation.icon = 'icons/mob/mob.dmi'
 			animation.master = src
-			animation.invisibility = 60
+			animation.invisibility = INVISIBILITY_OBSERVER
 			flick(anim, animation)
 			src.forceMove(locate(1,1,1))
 			src.ghostlife = 100
@@ -135,6 +136,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 					qdel(animation)
 	else
 		..()
+*/
 
 /mob/observer/ghost/Life()
 	..()
@@ -407,23 +409,20 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 
 	stop_following()
-	if (istype(target, /mob/observer/ghost))
-		return
 	following = target
-	moved_event.register(following, src, /atom/movable/proc/move_to_destination)
-	dir_set_event.register(following, src, /atom/proc/recursive_dir_set)
-	destroyed_event.register(following, src, /mob/observer/ghost/proc/stop_following)
+	GLOB.moved_event.register(following, src, /atom/movable/proc/move_to_turf)
+	GLOB.dir_set_event.register(following, src, /atom/proc/recursive_dir_set)
+	GLOB.destroyed_event.register(following, src, /mob/observer/ghost/proc/stop_following)
 
-	src << "<span class='notice'>Now following \the [following]</span>"
-
-	move_to_destination(following, following.loc, following.loc)
+	to_chat(src, "<span class='notice'>Now following \the [following].</span>")
+	move_to_turf(following, following.loc, following.loc)
 
 /mob/observer/ghost/proc/stop_following()
-	if (following)
-		src << "<span class='notice'>No longer following \the [following]</span>"
-		moved_event.unregister(following, src)
-		dir_set_event.unregister(following, src)
-		destroyed_event.unregister(following, src)
+	if(following)
+		to_chat(src, "<span class='notice'>No longer following \the [following]</span>")
+		GLOB.moved_event.unregister(following, src)
+		GLOB.dir_set_event.unregister(following, src)
+		GLOB.destroyed_event.unregister(following, src)
 		following = null
 
 /mob/observer/ghost/verb/jumptomob(target in getfitmobs() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak

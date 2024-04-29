@@ -103,6 +103,26 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define show_image(target, image)                           target << (image)
 #define send_rsc(target, rsc_content, rsc_name)             target << browse_rsc(rsc_content, rsc_name)
 
+#define MAP_IMAGE_PATH "nano/images/[GLOB.using_map.path]/"
+
+#define map_image_file_name(z_level) "[GLOB.using_map.path]-[z_level].png"
+
+#define RANDOM_BLOOD_TYPE pick(4;"O-", 36;"O+", 3;"A-", 28;"A+", 1;"B-", 20;"B+", 1;"AB-", 5;"AB+")
+
+#define any2ref(x) "\ref[x]"
+
+#define CanInteract(user, state) (CanUseTopic(user, state) == STATUS_INTERACTIVE)
+
+#define CanInteractWith(user, target, state) (target.CanUseTopic(user, state) == STATUS_INTERACTIVE)
+
+#define CanPhysicallyInteract(user) CanInteract(user, GLOB.physical_state)
+
+#define CanPhysicallyInteractWith(user, target) CanInteractWith(user, target, GLOB.physical_state)
+
+#define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
+
+#define ARGS_DEBUG log_debug("[__FILE__] - [__LINE__]") ; for(var/arg in args) { log_debug("\t[log_info_line(arg)]") }
+
 // Helper macros to aid in optimizing lazy instantiation of lists.
 // All of these are null-safe, you can use them without knowing if the list var is initialized yet
 
@@ -151,7 +171,3 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define SPAN_ALERT(X) SPAN("alert", X)
 #define SPAN_DEADSAY(X) SPAN("deadsay", X)
 #define SPAN_INFO(X) SPAN("info", X)
-
-#define DIRECT_OUTPUT(A, B) A << B
-#define SEND_IMAGE(target, image) DIRECT_OUTPUT(target, image)
-#define SEND_SOUND(target, sound) DIRECT_OUTPUT(target, sound)

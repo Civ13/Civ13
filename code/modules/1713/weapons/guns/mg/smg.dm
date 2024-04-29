@@ -63,8 +63,8 @@
 	load_delay = 8
 	equiptimer = 15
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.8),
-		list(name = "automatic",	burst=1, burst_delay=1.5),
+		list(name = "semiauto",	burst=1, burst_delay=1.5),
+		list(name = "automatic",	burst=1, burst_delay=1.4),
 		)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 
@@ -102,7 +102,7 @@
 	weight = 3.4
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
-		list(name = "semiauto",    burst=1, burst_delay=0.7),
+		list(name = "semiauto",    burst=1, burst_delay=1.2),
 		list(name = "automatic",    burst=1, burst_delay=1.2),
 		)
 
@@ -128,7 +128,7 @@
 	equiptimer = 15
 	fire_sound = 'sound/weapons/guns/fire/shotgun.ogg'
 	firemodes = list(
-		list(name = "semiauto",    burst=1, burst_delay=0.7),
+		list(name = "semiauto",    burst=1, burst_delay=1.2),
 		list(name = "automatic",    burst=1, burst_delay=1.2),
 		)
 
@@ -289,8 +289,8 @@
 	magazine_type = /obj/item/ammo_magazine/mp40/mp5
 	good_mags = list(/obj/item/ammo_magazine/mp40/mp5)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1),
-		list(name = "automatic",	burst=1, burst_delay=1),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
 		)
 	sel_mode = 1
 	recoil = 20
@@ -310,7 +310,7 @@
 	good_mags = list(/obj/item/ammo_magazine/fg42,/obj/item/ammo_magazine/fg42/small)
 	equiptimer = 12
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=0.4),
 		list(name = "automatic",	burst=1, burst_delay=0.4),
 		)
 	sel_mode = 1
@@ -340,7 +340,7 @@
 	magazine_type = /obj/item/ammo_magazine/uzi
 	good_mags = list(/obj/item/ammo_magazine/uzi)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "semiauto",	burst=1, burst_delay=0.9),
 		list(name = "automatic",	burst=1, burst_delay=0.9),
 		)
 	sel_mode = 1
@@ -361,7 +361,7 @@
 	magazine_type = /obj/item/ammo_magazine/mac10
 	good_mags = list(/obj/item/ammo_magazine/mac10)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=0.5),
 		list(name = "automatic",	burst=1, burst_delay=0.5),
 		)
 	sel_mode = 1
@@ -384,7 +384,7 @@
 	equiptimer = 8
 	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "semiauto",	burst=1, burst_delay=0.3),
 		list(name = "automatic",	burst=1, burst_delay=0.3),
 		)
 	sel_mode = 1
@@ -406,7 +406,7 @@
 	magazine_type = /obj/item/ammo_magazine/skorpion
 	good_mags = list(/obj/item/ammo_magazine/skorpion)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
 		list(name = "automatic",	burst=1, burst_delay=0.8),
 		)
 	sel_mode = 1
@@ -548,8 +548,8 @@
 	weight = 3.63
 	equiptimer = 14
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5),
-		list(name = "automatic",	burst=1, burst_delay=1.2),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
+		list(name = "automatic",	burst=1, burst_delay=0.7),
 		)
 	sel_mode = 1
 	recoil = 20
@@ -580,7 +580,7 @@
 	weight = 3.04
 	equiptimer = 10
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
 		)
 	recoil = 25
 	accuracy = 4
@@ -603,8 +603,8 @@
 	weight = 3.7
 	equiptimer = 15
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5),
-		list(name = "automatic",	burst=1, burst_delay=1.3),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
+		list(name = "automatic",	burst=1, burst_delay=1.0),
 		)
 	recoil = 20
 	accuracy = 4
@@ -631,7 +631,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "semiauto",	burst=1, burst_delay=1.3),
 		list(name = "automatic",	burst=1, burst_delay=1.3),
 		)
 	stat = "rifle"
@@ -716,7 +716,7 @@
 	slot_flags = SLOT_SHOULDER
 	stat = "rifle"
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.7),
+		list(name = "semiauto",	burst=1, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.5),
 		)
 	sel_mode = 1
@@ -919,7 +919,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -985,7 +985,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "automatic",	burst=1, burst_delay=1.1),
 	)
 	sel_mode = 1
@@ -1006,7 +1006,7 @@
 	icon_state = "ar15"
 	item_state = "ar15"
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
 	)
 	recoil = 30
 	accuracy = 3
@@ -1032,7 +1032,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.5),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
 	)
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1057,7 +1057,7 @@
 	equiptimer = 9
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "automatic", burst=1, burst_delay=1.1),
 	)
 	sel_mode = 1
@@ -1072,7 +1072,7 @@
 	desc = "A modernized version of the M16, with burst fire instead of automatic."
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "3-round-burst", burst=3, burst_delay=1.5),
 	)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_SCOPE|ATTACH_UNDER
@@ -1105,7 +1105,7 @@
 	desc = "A modernized version of the M16, with a railed upper receiver and handguard."
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.3),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
 		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 	)
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
@@ -1185,7 +1185,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1230,7 +1230,7 @@
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.9),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1256,7 +1256,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
 		list(name = "automatic",	burst=1, burst_delay=1.0),
 	)
 	sel_mode = 1
@@ -1280,7 +1280,7 @@
 	equiptimer = 10
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.9),
+		list(name = "semiauto",	burst=1, burst_delay=1.3),
 		list(name = "automatic",	burst=1, burst_delay=1.3),
 	)
 	sel_mode = 1
@@ -1311,7 +1311,7 @@
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.2),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1339,7 +1339,7 @@
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
@@ -1370,7 +1370,7 @@
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
@@ -1414,8 +1414,8 @@
 	equiptimer = 8
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4),
-		list(name = "automatic",	burst=1, burst_delay=1.0),
+		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=0.5),
 	)
 	sel_mode = 1
 	recoil = 10
@@ -1444,9 +1444,9 @@
 	equiptimer = 4
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.4),
-		list(name = "3-round-burst",	burst=3, burst_delay=1.5),
-		list(name = "automatic",	burst=1, burst_delay=1.0),
+		list(name = "semiauto",	burst=1, burst_delay=1.0),
+		list(name = "3-round-burst",	burst=3, burst_delay=0.8),
+		list(name = "automatic",	burst=1, burst_delay=0.6),
 	)
 	sel_mode = 1
 	recoil = 20
@@ -1475,7 +1475,7 @@
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.6),
+		list(name = "semiauto",	burst=1, burst_delay=1.2),
 		list(name = "automatic",	burst=1, burst_delay=1.2),
 	)
 	sel_mode = 1
@@ -1525,7 +1525,7 @@
 	equiptimer = 12
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.8),
+		list(name = "semiauto",	burst=1, burst_delay=1.3),
 		list(name = "automatic",	burst=1, burst_delay=1.3),
 	)
 	sel_mode = 1
@@ -1566,7 +1566,7 @@
 	equiptimer = 13
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "automatic",	burst=1, burst_delay=1.1),
 	)
 	sel_mode = 1
@@ -1628,8 +1628,8 @@
 	equiptimer = 11
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=1),
-		list(name = "automatic",	burst=1, burst_delay=2),
+		list(name = "semiauto",	burst=1, burst_delay=2.0),
+		list(name = "automatic",	burst=1, burst_delay=2.0),
 	)
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
@@ -1652,8 +1652,8 @@
 	var/folded = FALSE
 	weight = 2
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=1),
-		list(name = "automatic", burst=1, burst_delay=2),
+		list(name = "semiauto",	burst=1, burst_delay=2.0),
+		list(name = "automatic", burst=1, burst_delay=2.0),
 	)
 	sel_mode = 1
 	recoil = 30
@@ -1715,7 +1715,7 @@
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "automatic", burst=1, burst_delay=1.1),
 		)
 	sel_mode = 1
@@ -1739,7 +1739,7 @@
 	equiptimer = 14
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.1),
+		list(name = "semiauto",	burst=1, burst_delay=1.1),
 		list(name = "automatic", burst=1, burst_delay=1.1),
 		)
 	sel_mode = 1
@@ -1758,7 +1758,7 @@
 	base_icon = "service_rifle"
 	full_auto = FALSE
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0),
+		list(name = "semiauto",	burst=1, burst_delay=0.7),
 		)
 	magazine_type = /obj/item/ammo_magazine/service_rifle
 	good_mags = list(/obj/item/ammo_magazine/service_rifle, /obj/item/ammo_magazine/m16)

@@ -33,7 +33,7 @@ var/list/gamemode_cache = list()
 	var/allow_admin_rev = TRUE				// allows admin revives
 	var/vote_delay = 6000					// minimum time between voting sessions (deciseconds, 10 minute default)
 	var/vote_period = 600					// length of voting period (deciseconds, default 1 minute)
-	var/vote_autogamemode_timeleft = 45 	//Length of time before round start when autogamemode vote is called (in seconds, default 45).
+	var/vote_autogamemode_timeleft = 45 	// Length of time before round start when autogamemode vote is called (in seconds, default 45).
 	var/vote_no_default = FALSE				// vote does not default to nochange/norestart (tbi)
 	var/vote_no_dead = FALSE				// dead people can't vote (tbi)
 //	var/enable_authentication = FALSE		// goon authentication
@@ -82,6 +82,7 @@ var/list/gamemode_cache = list()
 
 	//game_options.txt configs
 
+	var/health_threshold_softcrit = FALSE
 	var/health_threshold_crit = -60
 	var/health_threshold_dead = -80
 
@@ -123,6 +124,11 @@ var/list/gamemode_cache = list()
 	var/no_respawn_delays = FALSE
 	var/allowedgamemodes = "ALL"
 
+	var/error_cooldown = 600 // The "cooldown" time for each occurrence of a unique error
+	var/error_limit = 50 // How many occurrences before the next will silence them
+	var/error_silence_time = 6000 // How long a unique error will be silenced for
+	var/error_msg_delay = 50 // How long to wait between messaging admins about occurrences of a unique error
+
 	// hub stuff
 
 	var/hub = FALSE
@@ -158,8 +164,13 @@ var/list/gamemode_cache = list()
 	var/webhook_address = null
 	var/webhook_key = null
 	
-	//language
-	var/game_language = "english"
+
+	var/new_round_webhook_color = ""
+	var/new_round_mention_webhook_url = ""
+	var/new_round_webhook_url = ""
+
+	var/topic_filtering_whitelist = list("127.0.0.1")
+
 /datum/configuration/proc/load(filename, type = "config") //the type can also be game_options, in which case it uses a different switch. not making it separate to not copypaste code - Urist
 
 	var/list/Lines = file2list(filename)
@@ -362,7 +373,7 @@ var/list/gamemode_cache = list()
 					config.looc_allowed = FALSE
 
 				if ("disable_entry")
-					config.enter_allowed = FALSE
+					GLOB.enter_allowed = FALSE
 
 				if ("disable_dead_ooc")
 					config.dooc_allowed = FALSE
@@ -371,7 +382,7 @@ var/list/gamemode_cache = list()
 					config.dsay_allowed = FALSE
 
 				if ("disable_respawn")
-					config.abandon_allowed = FALSE
+					GLOB.abandon_allowed = FALSE
 
 				if ("useapprovedlist")
 					config.useapprovedlist = TRUE
@@ -462,8 +473,17 @@ var/list/gamemode_cache = list()
 					config.webhook_address = value
 				if ("webhook_key")
 					config.webhook_key = value
-				if ("language")
-					config.game_language = value
+				
+
+				if("error_cooldown")
+					error_cooldown = text2num(value)
+				if("error_limit")
+					error_limit = text2num(value)
+				if("error_silence_time")
+					error_silence_time = text2num(value)
+				if("error_msg_delay")
+					error_msg_delay = text2num(value)
+
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 

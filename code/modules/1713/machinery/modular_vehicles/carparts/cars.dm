@@ -292,6 +292,84 @@
 	hasoverlay = "carback2_right"
 	removesroof = TRUE
 	override_roof_icon = "truckback_right_closed"
+
+//TOYOTA
+/obj/structure/vehicleparts/frame/car/toyota/lf
+	icon_state = "frame_steel_corner_lf"
+	w_front = list("truckfront2_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "toyota2_left"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/toyota/rf
+	icon_state = "frame_steel_corner_rf"
+	w_front = list("truckfront2_rightU",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	hasoverlay = "toyota2_right"
+	removesroof = TRUE
+/obj/structure/vehicleparts/frame/car/toyota/lfc
+	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,FALSE)
+	w_front = list("vanwindshield2door_leftU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanwindshield2door_left"
+/obj/structure/vehicleparts/frame/car/toyota/rfc
+	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,FALSE)
+	w_front = list("vanwindshield2door_rightU",FALSE,TRUE,0,0.1,FALSE,FALSE)
+	hasoverlay = "vanwindshield2door_right"
+/obj/structure/vehicleparts/frame/car/toyota/lfcc
+	w_left = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota/rfcc
+	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota/lb
+	icon_state = "frame_steel_corner_lb"
+	w_back = list("truckback_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_left"
+	removesroof = TRUE
+	override_roof_icon = "truckback_left_closed"
+/obj/structure/vehicleparts/frame/car/toyota/rb
+	icon_state = "frame_steel_corner_rb"
+	w_back = list("truckback_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_right"
+	removesroof = TRUE
+	override_roof_icon = "truckback_right_closed"
+
+//TOYOTA armored
+/obj/structure/vehicleparts/frame/car/toyota_armored/lf
+	icon_state = "frame_steel_corner_lf"
+	w_front = list("c_armoredwall",TRUE,TRUE,25,30,FALSE,FALSE)
+	w_left = list("c_wall",TRUE,TRUE,25,30,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota_armored/rf
+	icon_state = "frame_steel_corner_rf"
+	w_front = list("c_armoredwall",TRUE,TRUE,25,30,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,25,30,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota_armored/lfc
+	w_left = list("c_door",TRUE,TRUE,25,30,TRUE,FALSE)
+	w_front = list("c_window2",FALSE,TRUE,25,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota_armored/rfc
+	w_right = list("c_door",TRUE,TRUE,25,30,TRUE,FALSE)
+	w_front = list("c_window2",FALSE,TRUE,25,30,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota_armored/lfcc
+	w_left = list("c_windoweddoor",TRUE,TRUE,25,30,TRUE,FALSE)
+/obj/structure/vehicleparts/frame/car/toyota_armored/rfcc
+	w_right = list("c_windoweddoor",TRUE,TRUE,25,30,TRUE,FALSE)
+
+/obj/structure/vehicleparts/frame/car/toyota_armored/lb
+	icon_state = "frame_steel_corner_lb"
+	w_back = list("truckback_leftU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_left = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_left"
+	override_roof_icon = "truckback_left_closed"
+/obj/structure/vehicleparts/frame/car/toyota_armored/rb
+	icon_state = "frame_steel_corner_rb"
+	w_back = list("truckback_rightU",TRUE,TRUE,0,0.1,TRUE,FALSE)
+	w_right = list("none",TRUE,TRUE,0,0.1,FALSE,FALSE)
+	w_front = list("c_thin",TRUE,TRUE,1,0.1,FALSE,FALSE)
+	hasoverlay = "carback2_right"
+	override_roof_icon = "truckback_right_closed"
+
 //shinobu
 /obj/structure/vehicleparts/frame/car/shinobu/lf
 	w_front = list("carfront5_leftU",TRUE,TRUE,0,0.1,FALSE,FALSE)
@@ -564,6 +642,17 @@
 	speedlist = list(1=7,2=5.5,3=4.5,4=3)
 	turntimer = 9
 
+/obj/structure/vehicleparts/axis/car/toyota
+	name = "Toyota"
+	desc = "A powered axis from a car."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	color = "#BDB76B"
+	speeds = 5
+	maxpower = 1580
+	speedlist = list(1=10,2=6.5,3=4.5,4=3,5=2)
+	turntimer = 7
+
 /obj/structure/vehicleparts/axis/car/daf
 	name = "DAF YA-4442 Truck"
 	desc = "A powered axis from a car."
@@ -633,9 +722,9 @@
 	desc = "A powered axis from a car."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	speeds = 5
+	speeds = 4
 	maxpower = 1000
-	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	speedlist = list(1=10,2=6,3=4,4=3)
 	turntimer = 6
 	reg_number = ""
 	color = "#ffffff"

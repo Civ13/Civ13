@@ -165,6 +165,7 @@
 	var/stunned = FALSE
 	var/weakened = FALSE
 	var/drowsyness = 0.0//Carbon
+	var/pacifist = FALSE
 
 	var/memory = ""
 	var/flavor_text = ""

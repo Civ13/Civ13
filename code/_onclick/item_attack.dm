@@ -90,6 +90,9 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		return FALSE
 	if (M == user && user.a_intent != I_HARM)
 		return FALSE
+	if (user.pacifist)
+		to_chat(src, "<font color='yellow'><b><big>I don't want to fight!</big></b></font>")
+		return FALSE
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (H.stats["stamina"][1] >= (cooldownw*0.45)/H.getStatCoeff("strength"))

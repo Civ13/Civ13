@@ -1,7 +1,7 @@
 //#define TESTING
-#if DM_VERSION < 512
-#warn This compiler is out of date. You may experience issues with projectile animations.
-#endif
+//#if DM_VERSION < 512
+//#warn This compiler is out of date. You may experience issues with projectile animations.
+//#endif
 
 var/bearcave_ticking = FALSE
 var/wolfcave_ticking = FALSE
@@ -24,10 +24,7 @@ var/datum/configuration/config	  = null
 var/Debug2 = FALSE
 var/datum/debug/debugobj
 
-
 var/join_motd = null
-
-var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
 
 var/season = "SPRING"
 var/game_hour = 0
@@ -59,7 +56,7 @@ var/max_explosion_range = 14
 
 // "convenient" (shitcode) way to make normal windows look like nanoUI, since BYOND won't load stylesheets normally - Kachnov
 var/common_browser_style = {"
-<meta charset="UTF-8">
+<meta charset='utf-8'>
 <style>
 body
 {
@@ -377,7 +374,7 @@ div.notice
 "}
 //green on black
 var/computer_browser_style = {"
-<meta charset="UTF-8">
+<meta charset='utf-8'>
 <style>
 body
 {

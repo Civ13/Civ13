@@ -62,6 +62,8 @@
 #define CUSTOM_ITEM_SYNTH 'icons/mob/custom_synthetic.dmi'
 #endif
 
+GLOBAL_LIST_INIT(bitflags, list((1<<0), (1<<1), (1<<2), (1<<3), (1<<4), (1<<5), (1<<6), (1<<7), (1<<8), (1<<9), (1<<10), (1<<11), (1<<12), (1<<13), (1<<14), (1<<15), (1<<16), (1<<17), (1<<18), (1<<19), (1<<20), (1<<21), (1<<22), (1<<23)))
+
 #define BOMBCAP_DVSTN_RADIUS (max_explosion_range/4)
 #define BOMBCAP_HEAVY_RADIUS (max_explosion_range/2)
 #define BOMBCAP_LIGHT_RADIUS max_explosion_range
@@ -70,6 +72,18 @@
 //HUD element hidings flags
 #define F12_FLAG 1 // 0001
 #define TOGGLE_INVENTORY_FLAG 2 //0010
+
+#ifndef WINDOWS_HTTP_POST_DLL_LOCATION
+#define WINDOWS_HTTP_POST_DLL_LOCATION "lib/byhttp.dll"
+#endif
+
+#ifndef UNIX_HTTP_POST_DLL_LOCATION
+#define UNIX_HTTP_POST_DLL_LOCATION "lib/libbyhttp.so"
+#endif
+
+#ifndef HTTP_POST_DLL_LOCATION
+#define HTTP_POST_DLL_LOCATION (world.system_type == MS_WINDOWS ? WINDOWS_HTTP_POST_DLL_LOCATION : UNIX_HTTP_POST_DLL_LOCATION)
+#endif
 
 //Fullscreen overlay resolution in tiles.
 #define FULLSCREEN_OVERLAY_RESOLUTION_X 11

@@ -165,16 +165,6 @@
 	heavy_armor_penetration = 75
 	damage = 115
 
-/obj/item/cannon_ball/shell/tank/HEAT73
-	icon_state = "pg15v"
-	atype = "HEAT"
-	caliber = 73
-	heavy_armor_penetration = 400
-	damage = 125
-
-/obj/item/cannon_ball/shell/tank/HEAT73/update_icon()
-	return
-
 /obj/item/cannon_ball/shell/tank/HE75
 	atype = "HE"
 	caliber = 75
@@ -206,6 +196,32 @@
 	caliber = 100
 	heavy_armor_penetration = 220
 	damage = 100
+/obj/item/cannon_ball/shell/tank/HEAT100
+	atype = "HEAT"
+	caliber = 100
+	heavy_armor_penetration = 0
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/HE115
+	atype = "HE"
+	caliber = 115
+	heavy_armor_penetration = 27
+	damage = 333
+/obj/item/cannon_ball/shell/tank/AP115
+	atype = "AP"
+	caliber = 115
+	heavy_armor_penetration = 220
+	damage = 133
+/obj/item/cannon_ball/shell/tank/APCR115
+	atype = "APCR"
+	caliber = 115
+	heavy_armor_penetration = 400
+	damage = 100
+/obj/item/cannon_ball/shell/tank/HEAT115
+	atype = "HEAT"
+	caliber = 115
+	heavy_armor_penetration = 350
+	damage = 100
 
 /obj/item/cannon_ball/shell/tank/HE120
 	atype = "HE"
@@ -220,8 +236,24 @@
 /obj/item/cannon_ball/shell/tank/APCR120
 	atype = "APCR"
 	caliber = 120
-	heavy_armor_penetration = 240
+	heavy_armor_penetration = 450
 	damage = 100
+/obj/item/cannon_ball/shell/tank/HEAT120
+	atype = "HEAT"
+	caliber = 120
+	heavy_armor_penetration = 450
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/HE122
+	atype = "HE"
+	caliber = 122
+	heavy_armor_penetration = 35
+	damage = 333
+/obj/item/cannon_ball/shell/tank/AP122
+	atype = "AP"
+	caliber = 122
+	heavy_armor_penetration = 215
+	damage = 140
 
 /obj/item/cannon_ball/shell/tank/HE125
 	atype = "HE"
@@ -238,6 +270,27 @@
 	caliber = 125
 	heavy_armor_penetration = 450
 	damage = 100
+/obj/item/cannon_ball/shell/tank/HEAT125
+	atype = "HEAT"
+	caliber = 125
+	heavy_armor_penetration = 450
+	damage = 100
+
+/obj/item/cannon_ball/shell/tank/HE90
+	atype = "HE"
+	caliber = 90
+	heavy_armor_penetration = 20
+	damage = 350
+/obj/item/cannon_ball/shell/tank/AP90
+	atype = "AP"
+	caliber = 90
+	heavy_armor_penetration = 180
+	damage = 145
+/obj/item/cannon_ball/shell/tank/APCR90
+	atype = "APCR"
+	caliber = 90
+	heavy_armor_penetration = 300
+	damage = 175
 
 /obj/item/cannon_ball/shell/tank/HE88
 	atype = "HE"
@@ -312,9 +365,9 @@
 	caliber = 100
 	heavy_armor_penetration = 15
 	atype = "HE"
+	icon_state = "navalshell"
 	New()
 		..()
-		name = "[caliber]mm [atype] shell"
 		icon_state = "navalshell"
 
 /obj/item/cannon_ball/shell/naval/HE150
@@ -419,7 +472,7 @@
 /obj/item/cannon_ball/rocket/nuclear
 	name = "Nuclear Rocket"
 	desc = "You might want to step back a bit..."
-	icon_state = "rocket_nuclear"
+	icon_state = "shell_nuclear_rocket"
 	value = 80
 	atype = "NUCLEAR"
 
@@ -524,31 +577,29 @@
 
 /obj/structure/shellrack/autoloader/full100/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=12, i++)
 		new /obj/item/cannon_ball/shell/tank/HE100(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/AP100(storage)
-	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/APCR100(storage)
 	update_icon()
 
 /obj/structure/shellrack/autoloader/full125/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/HE125(storage)
 	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/AP125(storage)
+		new /obj/item/cannon_ball/shell/tank/HEAT125(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR125(storage)
 	update_icon()
 
 /obj/structure/shellrack/full57/New()
 	..()
-	for (var/i=1, i<=6, i++)
+	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/HE57(storage)
-	for (var/i=1, i<=5, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/AP57(storage)
-	for (var/i=1, i<=5, i++)
+	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR57(storage)
 	update_icon()
 
@@ -556,9 +607,9 @@
 	..()
 	for (var/i=1, i<=6, i++)
 		new /obj/item/cannon_ball/shell/tank/HE45(storage)
-	for (var/i=1, i<=5, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/AP45(storage)
-	for (var/i=1, i<=5, i++)
+	for (var/i=1, i<=2, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR45(storage)
 	update_icon()
 
@@ -571,12 +622,11 @@
 	for (var/i=1, i<=5, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR47(storage)
 	update_icon()
-
 /obj/structure/shellrack/full75/New()
 	..()
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/HE75(storage)
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/AP75(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR75(storage)
@@ -584,29 +634,60 @@
 
 /obj/structure/shellrack/full75/american/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/HE75(storage)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/cannon_ball/shell/tank/AP75(storage)
+	for (var/i=1, i<=2, i++)
+		new /obj/item/cannon_ball/shell/tank/APCR75(storage)
 	update_icon()
 
-/obj/structure/shellrack/full100/New()
+/obj/structure/shellrack/full100ww2/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=10, i++)
+		new /obj/item/cannon_ball/shell/tank/HE100(storage)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/cannon_ball/shell/tank/AP100(storage)
+	update_icon()
+
+/obj/structure/shellrack/full100modern/New()
+	..()
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/HE100(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/AP100(storage)
 	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/APCR100(storage)
+		new /obj/item/cannon_ball/shell/tank/HEAT100(storage)
 	update_icon()
 
+/obj/structure/shellrack/full115/New()
+	..()
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/HE115(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/AP115(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/APCR115(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/HEAT115(storage)
+	update_icon()
 
 /obj/structure/shellrack/full120/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/HE120(storage)
 	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/AP120(storage)
-	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR120(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/HEAT120(storage)
+	update_icon()
+
+/obj/structure/shellrack/full122/New()
+	..()
+	for (var/i=1, i<=10, i++)
+		new /obj/item/cannon_ball/shell/tank/HE122(storage)
+	for (var/i=1, i<=6, i++)
+		new /obj/item/cannon_ball/shell/tank/AP122(storage)
 	update_icon()
 
 /obj/structure/shellrack/full125/New()
@@ -614,33 +695,42 @@
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/HE125(storage)
 	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/AP125(storage)
+		new /obj/item/cannon_ball/shell/tank/HEAT125(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR125(storage)
 	update_icon()
 
 /obj/structure/shellrack/full85/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=6, i++)
 		new /obj/item/cannon_ball/shell/tank/HE85(storage)
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/AP85(storage)
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=2, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR85(storage)
+	update_icon()
 
 /obj/structure/shellrack/full88/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=6, i++)
 		new /obj/item/cannon_ball/shell/tank/HE88(storage)
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=6, i++)
 		new /obj/item/cannon_ball/shell/tank/AP88(storage)
+	update_icon()
+
+/obj/structure/shellrack/full90/New()
+	..()
 	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/APCR88(storage)
+		new /obj/item/cannon_ball/shell/tank/HE90(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/AP90(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/APCR90(storage)
 	update_icon()
 
 /obj/structure/shellrack/full76/New()
 	..()
-	for (var/i=1, i<=4, i++)
+	for (var/i=1, i<=8, i++)
 		new /obj/item/cannon_ball/shell/tank/HE76(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/AP76(storage)
