@@ -36,3 +36,16 @@
 	load_delay = 60
 	aim_miss_chance_divider = 3.00
 	accuracy = 1
+
+/obj/item/weapon/gun/projectile/bow/crossbow/New()
+	..()
+	if (map && !map.civilizations)
+		if (map.ordinal_age == 1)
+			loaded = list()
+			var/obj/item/ammo_casing/C = new /obj/item/ammo_casing/bolt/bronze(src)
+			loaded.Insert(1, C) //add to the head of the list
+		else if (map.ordinal_age >= 2)
+			loaded = list()
+			var/obj/item/ammo_casing/C = new /obj/item/ammo_casing/bolt/iron(src)
+			loaded.Insert(1, C) //add to the head of the list
+	update_icon()
