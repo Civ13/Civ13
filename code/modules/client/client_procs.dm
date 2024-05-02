@@ -271,6 +271,24 @@
 	//////////////
 	//DISCONNECT//
 	//////////////
+
+/client/proc/UpdateMouseScreenLoc(var/params)
+	var/list/click_params = params2list(params)
+
+	mouse_screen_x = text2num(splittext(splittext(click_params["screen-loc"], ",")[1], ":")[1])
+	mouse_screen_y = text2num(splittext(splittext(click_params["screen-loc"], ",")[2], ":")[1])
+
+	mouse_screen_pixel_x = text2num(splittext(splittext(click_params["screen-loc"], ",")[1], ":")[2])
+	mouse_screen_pixel_y = text2num(splittext(splittext(click_params["screen-loc"], ",")[2], ":")[2])
+
+/client/MouseMove(object, location, control, params)
+	UpdateMouseScreenLoc(params)
+	..()
+
+/client/MouseDrag(src_object,over_object,src_location,over_location,src_control,over_control,params)
+	UpdateMouseScreenLoc(params)
+	..()
+
 /client/Del()
 	webhook_send_logout(ckey)
 

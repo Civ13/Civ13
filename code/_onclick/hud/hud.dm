@@ -34,6 +34,7 @@ var/list/global_huds = list(
 	var/obj/screen/fishbed
 	var/obj/screen/noise
 	var/obj/screen/cover
+	var/obj/screen/aim_cross
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
@@ -101,6 +102,12 @@ var/list/global_huds = list(
 	fov.screen_loc = "4,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
+
+	aim_cross = new /obj/screen/aiming_cross()
+	fov.name = " "
+	fov.screen_loc = "1,1"
+	fov.mouse_opacity = FALSE
+	fov.layer = 21
 
 	cover = new /obj/screen/cover()
 	noise = new /obj/screen/noise()
