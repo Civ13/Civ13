@@ -495,6 +495,38 @@
 		icon_state = "hand[slot_id==slot_l_hand ? "-l" : "-r"]"
 //--------------------------------------------------inventory end---------------------------------------------------------
 
+/obj/screen/aiming_cross
+	name = "aim"
+	icon = 'icons/mob/screen/aiming_cross.dmi'
+	icon_state = "cross3"
+	screen_loc = "7,7"
+	process_flag = TRUE
+	mouse_opacity = 0
+
+/obj/screen/aiming_cross/New()
+	..()
+	update()
+
+/obj/screen/aiming_cross/update_icon()
+	..()
+
+	if(!usr)
+		return
+	if(!istype(usr.get_active_hand(), /obj/item/weapon/gun))
+		alpha = 0
+		return
+	alpha = 255
+
+	icon_state = "cross[clamp(round(usr.get_active_hand().get_dispersion_range(usr), 3), 3, 30)]"
+
+	screen_loc = "[usr.client.mouse_screen_x]:[usr.client.mouse_screen_pixel_x - 16],[usr.client.mouse_screen_y]:[usr.client.mouse_screen_pixel_y - 16]"
+
+/obj/screen/aiming_cross/proc/update()
+	update_icon()
+	spawn(0.7)
+		update()
+	return
+
 //--------------------------------------------------health---------------------------------------------------------
 /obj/screen/health
 	name = "health"

@@ -64,7 +64,13 @@
 
 	var/fullscreen = FALSE
 
-	var/mouse_x = null
-	var/mouse_y = null
+	var/mouse_x = 0
+	var/mouse_y = 0
+
+	var/mouse_screen_x = 0
+	var/mouse_screen_y = 0
+
+	var/mouse_screen_pixel_x = 0
+	var/mouse_screen_pixel_y = 0
 
 /client/authenticate = FALSE
