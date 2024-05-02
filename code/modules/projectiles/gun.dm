@@ -431,7 +431,9 @@
 	var/accuracy_range = accuracy
 
 	if(dt > firemodes[sel_mode].burst_delay)
-		recoil_range = (recoil_range / (sqrt(dt) * 1.5)) - (sign(recoil_range) * dt * 0.5)
+		recoil_range /= sqrt(dt) * 1.5
+		if((recoil_range -= sqrt(dt) * 1.5) < 0)
+			recoil_range = 0
 
 	if(user.lying || user.prone)
 		recoil_range /= 2
