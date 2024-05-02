@@ -431,7 +431,7 @@
 	var/accuracy_range = accuracy
 
 	if(dt > firemodes[sel_mode].burst_delay)
-		recoil_range /= sqrt(dt) * 1.5
+		recoil_range /= sqrt(dt) * 2
 		if((recoil_range - sqrt(dt) * 1.5) < 0)
 			recoil_range = 0
 		else
@@ -466,12 +466,11 @@
 	var/shot_recoil = next_shot_recoil / ergonomics
 
 	if(dt > firemodes[sel_mode].burst_delay)
-		shot_recoil /= sqrt(dt) * 1.5
-
-	if(sign(next_shot_recoil) * dt * 0.5 < abs(shot_recoil))
-		shot_recoil -= sign(next_shot_recoil) * dt * 0.5
-	else
-		shot_recoil = 0
+		shot_recoil /= sqrt(dt) * 2
+		if(dt * 0.5 < abs(shot_recoil) )
+			shot_recoil -= sign(shot_recoil) * dt * 0.5
+		else
+			shot_recoil = 0
 
 	if(user.lying || user.prone)
 		shot_recoil /= 2
@@ -481,12 +480,14 @@
 	var/dt_movement = world.time - user.last_movement
 
 	if (dt_movement <= 6)
-		shot_accuracy = rand(-30, 30)
+		shot_accuracy = rand(-20, 20)
 	else if (dt_movement < 10)
-		var/accuracy_range = 30 / sqrt(dt_movement - 6)
+		var/accuracy_range = 20 / sqrt(dt_movement - 6)
 		shot_accuracy = rand(-accuracy_range, accuracy_range)
 		if (abs(shot_accuracy) < 5) // even RNjesus won’t help you get there right away
 			shot_accuracy += 5
+		if(user.m_intent != "run")
+			shot_accuracy *= 0.75
 
 	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
 
