@@ -68,7 +68,7 @@
 	var/healthp = (health/maxhealth)*100
 	switch (healthp)
 		if (-100 to 21)
-			return "<font color='#7f0000'>Is pratically falling apart!</font>"
+			return "<font color='#7f0000'>Is practically falling apart!</font>"
 		if (22 to 49)
 			return "<font color='#a74510'>Seems to be in very bad condition.</font>"
 		if (50 to 69)
