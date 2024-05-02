@@ -393,7 +393,7 @@ BLIND	 // can't see anything
 
 /obj/item/clothing/shoes/attack_hand(var/mob/living/M)
 	if (hasorgans(M)) // if ishuman
-		var/mob/living/human/M = user
+		var/mob/living/human/user = M
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
 		if (user.hand)
 			temp = H.organs_by_name["l_hand"]
