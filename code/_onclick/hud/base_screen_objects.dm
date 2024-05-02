@@ -523,7 +523,7 @@
 
 /obj/screen/aiming_cross/proc/update()
 	update_icon()
-	spawn(0.7)
+	spawn(0.2)
 		update()
 	return
 
