@@ -203,6 +203,7 @@
 			spawn(6)
 				qdel(O)
 			return
+
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5
 		if (istype(O, /obj/item))
@@ -237,7 +238,9 @@
 
 //This is called when the mob is thrown into a dense turf
 /mob/living/proc/turf_collision(var/turf/T, var/speed)
+	visible_message(SPAN_DANGER("[src] slams into \the [T]!"))
 	take_organ_damage(speed*5)
+	T.add_blood(src)
 
 /mob/living/proc/near_wall(var/direction,var/distance=1)
 	var/turf/T = get_step(get_turf(src),direction)
