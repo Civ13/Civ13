@@ -432,8 +432,10 @@
 
 	if(dt > firemodes[sel_mode].burst_delay)
 		recoil_range /= sqrt(dt) * 1.5
-		if((recoil_range -= sqrt(dt) * 1.5) < 0)
+		if((recoil_range - sqrt(dt) * 1.5) < 0)
 			recoil_range = 0
+		else
+			recoil_range -= sqrt(dt) * 1.5
 
 	if(user.lying || user.prone)
 		recoil_range /= 2
@@ -478,10 +480,10 @@
 
 	var/dt_movement = world.time - user.last_movement
 
-	if (dt_movement <= 5)
+	if (dt_movement <= 6)
 		shot_accuracy = rand(-30, 30)
 	else if (dt_movement < 10)
-		var/accuracy_range = 30 / sqrt(dt_movement - 5)
+		var/accuracy_range = 30 / sqrt(dt_movement - 6)
 		shot_accuracy = rand(-accuracy_range, accuracy_range)
 		if (abs(shot_accuracy) < 5) // even RNjesus won’t help you get there right away
 			shot_accuracy += 5
