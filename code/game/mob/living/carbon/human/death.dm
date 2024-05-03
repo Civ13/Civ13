@@ -360,8 +360,6 @@
 						if (i[1]=="UPA")
 							i[2]-= 10*/
 
-	handle_piss()
-	handle_shit()
 	if (squad > 0 && original_job && original_job.uses_squads)
 		if (map && faction_text == map.faction1)
 			map.faction1_squads[squad] -= src
@@ -443,6 +441,8 @@
 	. = ..(gibbed)//,species.death_message)
 	if (!gibbed)
 		handle_organs() // Handle the following only after we call the parent to get all the proper stat values and etcetra.
+		handle_piss()
+		handle_shit()
 		if (species.death_sound)
 			playsound(loc, species.death_sound, 80, TRUE, TRUE)
 	handle_hud_list()
