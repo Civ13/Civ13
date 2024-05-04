@@ -478,17 +478,17 @@ var/list/vocal_emotes = list(
 					m_type = 1
 				else
 					if (!muzzled)
-						message = "calls for a Corpsman!"
+						message = "calls for a medic!"
 						m_type = 2
 
 						
 						var/image/speech_bubble = image('icons/mob/talk.dmi',src,"medic")
 						spawn(30) qdel(speech_bubble)
 
-						for (var/mob/M in viewers(7, src))
-							M << speech_bubble
+						for (var/mob/living/M in viewers(7, src))
+							to_chat(M, speech_bubble)
 						
-						playsound(get_turf(src), "medic", 100)
+						playsound(get_turf(src), "medic", 100) // Plays regardless of language for anyone. /probably shouldnt./
 						
 					else
 						message = "makes a weak noise."
