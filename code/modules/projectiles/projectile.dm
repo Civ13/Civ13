@@ -5,6 +5,7 @@
 	density = FALSE								// we no longer use Bump() to detect collisions - Kachnov
 	anchored = TRUE								// There's a reason this is here, Mport. God fucking damn it -Agouri. Find&Fix by Pete. The reason this is here is to stop the curving of emitter shots.
 	pass_flags = PASSTABLE
+	animate_movement = 0
 	mouse_opacity = FALSE
 	value = 0
 	flags = CONDUCT
@@ -131,7 +132,7 @@
 	return TRUE
 
 /obj/item/projectile/proc/on_impact(var/atom/A)
-	impact_effect(effect_transform)		// generate impact effect
+	impact_effect()		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
 
 	spawn(25)
@@ -806,11 +807,12 @@
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()
 		forceMove(location.return_turf())
+		update_icon()
 
 		if (!did_muzzle_effect)
-			muzzle_effect(effect_transform)
+			muzzle_effect()
 		else if (!bumped)
-			tracer_effect(effect_transform)
+			tracer_effect()
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
@@ -835,45 +837,35 @@
 
 	transform = turn(transform, -(trajectory.return_angle() + 90)) //no idea why 90 needs to be added, but it works
 
-/obj/item/projectile/proc/muzzle_effect(var/matrix/T)
+/obj/item/projectile/update_icon()
+	var/dx = x - starting.x
+	var/dy = y - starting.y
+	var/dist = sqrt((dx*dx) + (dy*dy))
+	pixel_x = (cos(angle) * world.icon_size * dist) - (dx * world.icon_size)
+	pixel_y = (sin(angle) * world.icon_size * dist) - (dy * world.icon_size)
 
+/obj/item/projectile/proc/muzzle_effect()
 	if (silenced)
 		did_muzzle_effect = TRUE
 		return
-
 	if (ispath(muzzle_type))
-		var/obj/effect/projectile/M = new muzzle_type(get_turf(src))
-
+		var/obj/effect/projectile/M = new muzzle_type(starting)
 		if (istype(M))
-			M.set_transform(T)
-			M.pixel_x = location.pixel_x
-			M.pixel_y = location.pixel_y
-			M.activate()
-
+			M.activate(get_angle())
 	did_muzzle_effect = TRUE
 
-/obj/item/projectile/proc/tracer_effect(var/matrix/M)
+/obj/item/projectile/proc/tracer_effect()
 	if (ispath(tracer_type))
-		var/obj/effect/projectile/P = new tracer_type(location.loc)
-
+		var/obj/effect/projectile/P = new tracer_type(get_turf(loc))
 		if (istype(P))
-			P.set_transform(M)
-			P.pixel_x = location.pixel_x
-			P.pixel_y = location.pixel_y
-		/*	if (!hitscan)
-				P.activate(step_delay)	//if not a hitscan projectile, remove after a single delay
-			else*/
-			P.activate()
+			P.pixel_x = pixel_x
+			P.pixel_y = pixel_y
+			P.activate(get_angle())
 
-/obj/item/projectile/proc/impact_effect(var/matrix/M)
+/obj/item/projectile/proc/impact_effect()
 	if (ispath(impact_type))
-		var/turf/effect_loc = null
-		if(permutated.len > 0)
-			effect_loc = permutated[permutated.len]
-		else
-			effect_loc = starting
 		for(var/i = 1, i < 5, i++)
-			var/obj/effect/projectile/P = new impact_type(effect_loc)
+			var/obj/effect/projectile/P = new impact_type(get_turf(loc))
 			if (istype(P))
 				P.activate(get_angle())
 
