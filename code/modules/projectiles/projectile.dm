@@ -71,7 +71,7 @@
 	// effect types to be used
 	var/muzzle_type
 	var/tracer_type
-	var/impact_type
+	var/impact_type = /obj/effect/projectile/impact
 
 	var/passed_trenches = 0 					// Number of tiles with trenches that a bullet passed in a row
 
@@ -519,6 +519,7 @@
 
 	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
+		on_impact(previous_step)
 		qdel(src)
 		return
 
@@ -538,14 +539,17 @@
 					else
 						forceMove(T)
 						permutated += T
+						on_impact(T)
 						S.initiate(T)
 				else
+					on_impact(T)
 					loc = null
 					qdel(src)
 				return FALSE
 			else
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
+					on_impact(T)
 					if(S.initiated)
 						F.bullet_act(src,penloc)
 						passthrough = TRUE
@@ -578,6 +582,7 @@
 						if (!S.CanPass(src, original))
 							passthrough = FALSE
 					else
+						on_impact(T)
 						do_bullet_act(O)
 						bumped = TRUE
 						loc = null
@@ -620,6 +625,7 @@
 
 						if (prob(hit_chace))
 							passthrough = !attack_mob(L, firer_dist)
+							return
 						else
 							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 						def_zone = tmp_zone
@@ -669,6 +675,7 @@
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
 		if(S.initiated)
+			on_impact(T)
 			S.initiate(T)
 
 	for (var/obj/structure/vehicleparts/frame/F in loc)
@@ -824,7 +831,6 @@
 
 	// generate this now since all visual effects the projectile makes can use it
 	effect_transform = new()
-	effect_transform.Scale(trajectory.return_hypotenuse(), TRUE)
 	effect_transform.Turn(-trajectory.return_angle())		//no idea why this has to be inverted, but it works
 
 	transform = turn(transform, -(trajectory.return_angle() + 90)) //no idea why 90 needs to be added, but it works
@@ -860,14 +866,16 @@
 			P.activate()
 
 /obj/item/projectile/proc/impact_effect(var/matrix/M)
-	if (ispath(tracer_type))
-		var/obj/effect/projectile/P = new impact_type(location.loc)
-
-		if (istype(P))
-			P.set_transform(M)
-			P.pixel_x = location.pixel_x
-			P.pixel_y = location.pixel_y
-			P.activate()
+	if (ispath(impact_type))
+		var/turf/effect_loc = null
+		if(permutated.len > 0)
+			effect_loc = permutated[permutated.len]
+		else
+			effect_loc = starting
+		for(var/i = 1, i < 5, i++)
+			var/obj/effect/projectile/P = new impact_type(effect_loc)
+			if (istype(P))
+				P.activate(get_angle())
 
 //Helper proc to check if you can hit them or not.
 
