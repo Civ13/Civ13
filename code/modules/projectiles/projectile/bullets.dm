@@ -9,7 +9,6 @@
 	sharp = TRUE
 	hitsound_wall = "ric_sound"
 	var/mob_passthrough_check = FALSE
-
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 
 /obj/item/projectile/bullet/get_structure_damage()
