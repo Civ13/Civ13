@@ -14,6 +14,7 @@
 	heavy_armor_penetration = 25
 	var/caliber = 75
 	atype = "HE"
+	tracer_type = /obj/effect/projectile/tracer/shell
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 	var/turf/targloc = null
 	var/initiated = FALSE

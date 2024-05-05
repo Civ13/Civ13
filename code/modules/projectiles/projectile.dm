@@ -811,7 +811,7 @@
 
 		if (!did_muzzle_effect)
 			muzzle_effect()
-		else if (!bumped)
+		else if (!bumped && loc)
 			tracer_effect()
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
@@ -838,11 +838,9 @@
 	transform = turn(transform, -(trajectory.return_angle() + 90)) //no idea why 90 needs to be added, but it works
 
 /obj/item/projectile/update_icon()
-	var/dx = x - starting.x
-	var/dy = y - starting.y
-	var/dist = sqrt((dx*dx) + (dy*dy))
-	pixel_x = (cos(angle) * world.icon_size * dist) - (dx * world.icon_size)
-	pixel_y = (sin(angle) * world.icon_size * dist) - (dy * world.icon_size)
+	var/dist = permutated.len * world.icon_size
+	pixel_x = (cos(angle) * dist) - ((x - starting.x) * world.icon_size)
+	pixel_y = (sin(angle) * dist) - ((y - starting.y) * world.icon_size)
 
 /obj/item/projectile/proc/muzzle_effect()
 	if (silenced)
@@ -856,16 +854,22 @@
 
 /obj/item/projectile/proc/tracer_effect()
 	if (ispath(tracer_type))
-		var/obj/effect/projectile/P = new tracer_type(get_turf(loc))
-		if (istype(P))
-			P.pixel_x = pixel_x
-			P.pixel_y = pixel_y
-			P.activate(get_angle())
+		for(var/i = 1, i <= 4, i++)
+			var/obj/effect/projectile/P = new tracer_type(starting)
+			if (istype(P))
+				P.alpha *= 0.6 / i
+				var/px_dist = ((permutated.len - 1) * world.icon_size) + (i * 8)
+				P.activate(get_angle(), px_dist, starting)
 
 /obj/item/projectile/proc/impact_effect()
 	if (ispath(impact_type))
-		for(var/i = 1, i < 5, i++)
-			var/obj/effect/projectile/P = new impact_type(get_turf(loc))
+		var/turf/effect_loc = null
+		if(permutated.len > 0)
+			effect_loc = permutated[permutated.len]
+		else
+			effect_loc = starting
+		for(var/i = 0, i < 5, i++)
+			var/obj/effect/projectile/P = new impact_type(effect_loc)
 			if (istype(P))
 				P.activate(get_angle())
 

@@ -5,7 +5,7 @@
 
 	base_spread = FALSE //causes it to be treated as a shrapnel explosion instead of cone
 	spread_step = 12
-
+	tracer_type = null
 	silenced = TRUE
 	no_attack_log = TRUE
 	muzzle_type = null
