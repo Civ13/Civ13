@@ -706,6 +706,7 @@
 	if (istype(src, /obj/item/projectile/shell))
 		if (loc == trajectory.target)
 			var/obj/item/projectile/shell/S = src
+			on_impact(T)
 			S.initiate(loc)
 			return FALSE
 
