@@ -854,11 +854,11 @@
 
 /obj/item/projectile/proc/tracer_effect()
 	if (ispath(tracer_type))
-		for(var/i = 1, i <= 4, i++)
+		for(var/i = 1, i <= 2, i++)
 			var/obj/effect/projectile/P = new tracer_type(starting)
 			if (istype(P))
 				P.alpha *= 0.6 / i
-				var/px_dist = ((permutated.len - 1) * world.icon_size) + (i * 8)
+				var/px_dist = ((permutated.len - 1) * world.icon_size) + (i * 16)
 				P.activate(get_angle(), px_dist, starting)
 
 /obj/item/projectile/proc/impact_effect()

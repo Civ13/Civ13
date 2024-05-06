@@ -97,12 +97,12 @@
 
 /obj/effect/projectile/tracer/update()
 	var/dt = world.time - call_time
-	if(dt > 4)
+	if(dt > 2)
 		loc = null
 		qdel(src)
 		return
-	alpha *= 0.9
-	spawn(0.5)
+	alpha *= 0.8
+	spawn(0.6)
 		update()
 
 /obj/effect/projectile/tracer/minor
