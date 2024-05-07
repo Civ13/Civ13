@@ -581,6 +581,8 @@
 					if (istype(O, /obj/structure))
 						var/obj/structure/S = O
 						if (!S.CanPass(src, original))
+							on_impact(T)
+							do_bullet_act(O)
 							passthrough = FALSE
 					else
 						on_impact(T)
@@ -670,8 +672,8 @@
 
 	for(var/obj/structure/window/barrier/S in T)
 		if (!S.CanPassOut(src))
+			do_bullet_act(T)
 			passthrough = FALSE
-
 
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
