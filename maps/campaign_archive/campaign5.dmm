@@ -265,7 +265,7 @@
 "TH" = (/obj/structure/table/modern/table,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "TR" = (/obj/effects/premadevehicles/tank/baf1_a,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Uh" = (/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/mask/sterile,/obj/item/clothing/mask/sterile,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/accessory/armband/redcross,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/structure/closet/crate/ww1,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
-"Us" = (/obj/structure/shellrack/full100,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
+"Us" = (/obj/structure/shellrack/full100modern,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "UD" = (/obj/structure/barricade,/obj/structure/sign/flag/medical,/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "UN" = (/obj/structure/wild/burnedbush,/obj/structure/window/barrier/sandbag{dir = 8},/turf/floor/dirt,/area/caribbean/nomads/forest)
 "UX" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/burned,/area/caribbean/nomads/forest)
