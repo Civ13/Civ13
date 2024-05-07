@@ -2,6 +2,7 @@
 	icon = 'icons/effects/projectiles.dmi'
 	icon_state = "bolt"
 	layer = 5
+	mouse_opacity = FALSE
 	var/angle = 0
 	var/call_time = 0
 	var/life_time = 2
@@ -55,7 +56,7 @@
 /obj/effect/projectile/impact
 	icon_state = "dust_cloud_generic"
 	life_time = 6
-	alpha_modifier = 0.9
+	alpha_modifier = 0.8
 	update_time = 0.5
 	var/speed_modifier = 1
 
