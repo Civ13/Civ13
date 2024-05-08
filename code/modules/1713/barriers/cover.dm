@@ -44,9 +44,6 @@
 	var/is_lying = FALSE
 
 	if(!proj.firer)
-		visible_message("<span class = 'warning'>[proj] hits \the [src]!</span>")
-		health -= proj.damage * 0.01
-		bullet_act(proj)
 		return FALSE
 
 	if(proj.firer.lying || proj.firer.prone)
