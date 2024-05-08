@@ -175,7 +175,12 @@
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
-		return prob(100 - protection_chance + (P.penetrating*4))
+		var/hitchance = protection_chance - (P.penetrating*4)
+		P.on_impact(loc)
+		if(get_turf(target) == loc)
+			return prob(100 - hitchance)
+		else
+			return prob(hitchance)
 	else
 		if (density)
 			return FALSE
@@ -183,7 +188,7 @@
 			return TRUE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage * 0.01
+	health -= proj.damage * 0.05
 	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
