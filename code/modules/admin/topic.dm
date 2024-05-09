@@ -77,7 +77,7 @@
 				D = new /datum/admins(new_rank, FALSE, adm_ckey) // initial rights must be FALSE or their rights do not change!
 				D.associate(C)											//link up with the client and add verbs
 
-				to_chat(C, "<b>[key_name_admin(usr)] has set your admin rank to: [new_rank].</b>"))
+				to_chat(C, "<b>[key_name_admin(usr)] has set your admin rank to: [new_rank].</b>")
 
 			message_admins("[key_name_admin(usr)] edited the admin rank of [adm_ckey] to [new_rank].", key_name_admin(usr))
 			log_admin("[key_name(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
