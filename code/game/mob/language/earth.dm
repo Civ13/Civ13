@@ -106,7 +106,6 @@
 	syllables = CARIB_SYLLABLES
 	mutual_intelligibility = list()
 
-
 /datum/language/greek
 	name = "Greek"
 	desc = "Old and rational."
@@ -546,7 +545,7 @@
 
 /datum/language/droid
 	name = "Binary"
-	desc = "Бинарный язык дройдов."
+	desc = "Binary language used by droids."
 	key = "bn"
 	colour = "Binary"
 	flags = RESTRICTED | COMMON_VERBS
