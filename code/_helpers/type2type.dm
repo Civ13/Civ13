@@ -24,6 +24,8 @@
 	while(i > 0)
 		var/char = copytext_char(hex, i, i + 1)
 		switch(char)
+			if ("0")
+				pass()
 			if("9", "8", "7", "6", "5", "4", "3", "2", "1")
 				num += text2num(char) * 16 ** power
 			if("a", "A")

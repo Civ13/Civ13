@@ -483,10 +483,10 @@ steam.start() -- spawns the effect
 			s.start()
 
 			for (var/mob/M in viewers(5, location))
-				M << "<span class='warning'>The solution violently explodes.</span>"
+				to_chat(M, SPAN_WARNING("The solution violently explodes."))
 			for (var/mob/M in viewers(1, location))
 				if (prob (50 * amount))
-					M << "<span class='warning'>The explosion knocks you down.</span>"
+					to_chat(M, SPAN_WARNING("The explosion knocks you down."))
 					M.Weaken(rand(1,5))
 			return
 		else
@@ -509,7 +509,7 @@ steam.start() -- spawns the effect
 				flash = (amount/4) * flashing_factor
 
 			for (var/mob/M in viewers(8, location))
-				M << "<span class='warning'>The solution violently explodes.</span>"
+				to_chat(M, SPAN_WARNING("The solution violently explodes."))
 
 			explosion(
 				location,
@@ -528,27 +528,27 @@ steam.start() -- spawns the effect
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/uh1.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-1."
+		to_chat(world, "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-1.")
 /obj/effect/helicopter_flyby/uh60/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/uh60.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk."
+		to_chat(world, "The sound of a helicopter rotor can be heard from the sky. Sounds like a UH-60 Black Hawk.")
 /obj/effect/helicopter_flyby/ch47/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/ch47.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook."
+		to_chat(world, "The sound of a helicopter rotor can be heard from the sky. Sounds like a Boeing CH-47 Chinook.")
 /obj/effect/helicopter_flyby/mi8/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/mi8.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-8."
+		to_chat(world, "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-8.")
 /obj/effect/helicopter_flyby/mi24/New()
 	..()
 	spawn(10)
 		playsound(get_turf(src), 'sound/effects/aircraft/mi24.ogg', 100, TRUE, extrarange = 100)
-		world << "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind."
+		to_chat(world, "The sound of a helicopter rotor can be heard from the sky. Sounds like a Mi-24 Hind.")
 
 
 /obj/effect/plane_flyby
@@ -564,7 +564,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a F-16 Fighting Falcon flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a F-16 Fighting Falcon flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/f16_no_message/New()
@@ -583,7 +583,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a Su-25 Rook flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a Su-25 Rook flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/su25_no_message/New()
@@ -603,7 +603,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a Bf-109 flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a Bf-109 flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/ju87/New()
@@ -613,7 +613,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a Junkers Ju 87 'Stuka' flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a Junkers Ju 87 'Stuka' flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/ju87_no_message/New()
@@ -632,7 +632,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a IL-2 flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a IL-2 flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/il2_no_message/New()
@@ -651,7 +651,7 @@ steam.start() -- spawns the effect
 		uploaded_sound.priority = 250
 		for (var/mob/M in player_list)
 			if (!new_player_mob_list.Find(M))
-				M << SPAN_NOTICE("<font size=3>The air vibrates as a P-47 'Thunderbolt' flies overhead.</font>")
+				to_chat(M, SPAN_NOTICE("<font size=3>The air vibrates as a P-47 'Thunderbolt' flies overhead.</font>"))
 				M.client << uploaded_sound
 
 /obj/effect/plane_flyby/p47_no_message/New()

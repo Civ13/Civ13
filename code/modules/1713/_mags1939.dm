@@ -373,7 +373,7 @@
 
 /obj/item/ammo_magazine/makarov
 	name = "PM Makarov magazine (9x18mm)" 
-	icon_state = "9mm"
+	icon_state = "m1911" //Temporary until someones sprites a magazine for it, don't change it to an ammo box though!
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x18
 	caliber = "a9x18"

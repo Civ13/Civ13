@@ -135,7 +135,7 @@
 		return
 
 	var/lastsound = CL.ambience_playing
-	var/sound = (map && map.ambience.len) ? pick(map.ambience) : null
+	var/sound = src.ambience && src.ambience.len ? pick(src.ambience) : (map && map.ambience.len) ? pick(map.ambience) : null // Checks for the ambience var of the area first, if it doesn't exist, it goes for the map's ambience variable, if it doesn't exist, it plays nothing
 	var/override_volume = 0
 
 	if (sound && (!CL.ambience_playing || override || sound != lastsound))

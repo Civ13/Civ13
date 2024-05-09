@@ -26,7 +26,7 @@
 #endif							//	1 to use the default behaviour;
 								//	2 for preloading absolutely everything;
 
-// Запускает билд на карте которая минимально нагружает систему
+// Launches the build on the map that takes up minimal system memory.
 //#ifdef LOWMEMORYMODE
 //#define FORCE_MAP "_maps/runtimestation.json"
 //#endif
@@ -69,7 +69,7 @@
 #define CBT
 #endif
 
-// Когда будет тгчат
+// When there will be /tg/ chat
 //#if !defined(CBT) && !defined(SPACEMAN_DMM)
 //#warn Building with Dream Maker is no longer supported and will result in errors.
 //#warn In order to build, run BUILD.cmd in the root directory.
