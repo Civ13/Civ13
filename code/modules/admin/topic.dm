@@ -449,7 +449,7 @@
 
 		var/mob/living/L = locate(href_list["revive"])
 		if (!istype(L))
-			usr << "This can only be used on instances of type /mob/living"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living"))
 			return
 
 		if (config.allow_admin_rev)
