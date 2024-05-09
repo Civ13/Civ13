@@ -107,7 +107,7 @@
 
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
-		message_admins(SPAN_NOTICE("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].", key_name(usr)))
+		message_admins(SPAN_NOTICE("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"]."), key_name(usr))
 		href_list["secretsadmin"] = "check_antagonist"
 	else if (href_list["simplemake"])
 
@@ -127,7 +127,7 @@
 				if ("Yes")		delmob = TRUE
 
 		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
-		message_admins(SPAN_NOTICE("[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]", key_name_admin(usr)))
+		message_admins(SPAN_NOTICE("[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]"), key_name_admin(usr))
 
 		var/usr_client = usr.client
 
@@ -442,7 +442,7 @@
 			M.say(speech)
 			speech = sanitize(speech) // Nah, we don't trust them
 			log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
-			message_admins(SPAN_NOTICE("[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]", key_name_admin(usr)))
+			message_admins(SPAN_NOTICE("[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]"), key_name_admin(usr))
 
 	else if (href_list["revive"])
 		if (!check_rights(R_REJUVINATE))	return
@@ -454,7 +454,7 @@
 
 		if (config.allow_admin_rev)
 			L.revive()
-			message_admins(SPAN_RED("[key_name_admin(usr)] healed / revived [key_name_admin(L)]!", key_name_admin(usr)))
+			message_admins(SPAN_RED("[key_name_admin(usr)] healed / revived [key_name_admin(L)]!"), key_name_admin(usr))
 			log_admin("[key_name(usr)] healed / revived [key_name(L)]")
 		else
 			to_chat(usr, SPAN_WARNING("Admin Rejuvinates have been disabled."))
