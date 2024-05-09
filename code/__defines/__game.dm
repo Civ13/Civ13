@@ -60,7 +60,7 @@
 // Default preferences
 #define DEFAULT_SPECIES "Human"
 
-#define GAME_YEAR (text2num(time2text(world.realtime, "YYYY"))) // To be adapted accoriding to maps
+#define GAME_YEAR (text2num(time2text(world.realtime, "YYYY"))) // To be adapted according to each map's year. Here it gives a date set in the current real world year.
 
 
 #define MAX_MESSAGE_LEN 1024
