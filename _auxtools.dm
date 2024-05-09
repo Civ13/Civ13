@@ -5,7 +5,7 @@
 #define LIBCALL call_ext
 #endif
 
-// Спизженно с фарвеба
+// Taken from FarWeb
 
 /proc/auxtools_stack_trace(msg)
 	CRASH(msg)
