@@ -15,7 +15,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	var/obj/item/I = get_active_hand()
 	if (!I)
-		src << "<span class='notice'>You are not holding anything to equip.</span>"
+		to_chat(src, SPAN_NOTICE("You are not holding anything to equip."))
 		return
 	if (equip_to_appropriate_slot(I))
 		if (hand)
@@ -23,7 +23,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		else
 			update_inv_r_hand(0)
 	else
-		src << "<span class = 'red'>You are unable to equip that.</span>"
+		to_chat(src, SPAN_RED("You are unable to equip that."))
 
 /client/verb/disactivation()
 	set name = "disactivation"
@@ -223,6 +223,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.HUDneed["damage zone"].update_icon()
 	H.HUDneed["random damage zone"].update_icon()
+
 /mob/living/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = FALSE))
@@ -530,7 +531,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if(wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
 				var/obj/item/clothing/suit/storage/coat/fur/COAT = wear_suit
 				if (COAT.hood)
-					user << "<span class='warning'>\The [COAT]'s hood is in the way.</span>"
+					to_chat(user, SPAN_WARNING("\The [COAT]'s hood is in the way."))
 					return FALSE
 	if (covering && (covering.body_parts_covered & (I.body_parts_covered|check_flags)))
 		to_chat(user, SPAN_WARNING("\The [covering] is in the way."))
@@ -644,17 +645,17 @@ This saves us from having to call add_fingerprint() any time something is put in
 		switch (mob.middle_click_intent)
 			if("kick")
 				mob.middle_click_intent = "jump"
-				mob << "<span class='warning'>You will now jump.</span>"
+				to_chat(mob, SPAN_WARNING("You will now jump."))
 				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("jump")
 				mob.middle_click_intent = "bite"
-				mob << "<span class='warning'>You will now bite.</span>"
+				to_chat(mob, SPAN_WARNING("You will now bite."))
 				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("bite")
 				mob.middle_click_intent = "kick"
-				mob << "<span class='warning'>You will now kick.</span>"
+				to_chat(mob, SPAN_WARNING("You will now kick."))
 				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 		return
@@ -667,12 +668,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (ishuman(mob))
 		if (mob.defense_intent == I_DODGE)
 			mob.defense_intent = I_PARRY
-			mob << "<span class='warning'>You will now parry.</span>"
+			to_chat(mob, SPAN_WARNING("You will now parry."))
 			var/obj/screen/intent/I = mob.HUDneed["mode"]
 			I.update_icon()
 		else
 			mob.defense_intent = I_DODGE
-			mob << "<span class='warning'>You will now dodge.</span>"
+			to_chat(mob, SPAN_WARNING("You will now dodge."))
 			var/obj/screen/intent/I = mob.HUDneed["mode"]
 			I.update_icon()
 
@@ -769,20 +770,21 @@ This saves us from having to call add_fingerprint() any time something is put in
 		return
 	var/mob/living/human/H = mob
 
-	if (H.tactic == "charge")
-		H.tactic = "aim"
-		H << "<span class='warning'>You will now focus on aiming.</span>"
-	else if (H.tactic == "aim")
-		H.tactic = "rush"
-		H << "<span class='warning'>You will now focus on rushing.</span>"
-	else if (H.tactic == "rush")
-		H.tactic = "defend"
-		H << "<span class='warning'>You will now focus on defending.</span>"
-	else if (H.tactic == "defend")
-		H.tactic = "charge"
-		H << "<span class='warning'>You will now focus on charging.</span>"
-	else
-		H.tactic = "charge"
+	switch(H.tactic)
+		if ("charge")
+			H.tactic = "aim"
+			to_chat(H, SPAN_WARNING("You will now focus on aiming."))
+		if ("aim")
+			H.tactic = "rush"
+			to_chat(H, SPAN_WARNING("You will now focus on rushing."))
+		if ("rush")
+			H.tactic = "defend"
+			to_chat(H, SPAN_WARNING("You will now focus on defending."))
+		if ("defend")
+			H.tactic = "charge"
+			to_chat(H, SPAN_WARNING("You will now focus on charging."))
+		else
+			H.tactic = "charge"
 
 	if (mob.HUDneed.Find("tactic"))
 		var/obj/screen/tactic/I = mob.HUDneed["tactic"]
