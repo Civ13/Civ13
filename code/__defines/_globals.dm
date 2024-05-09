@@ -8,7 +8,7 @@
 	gvars_datum_init_order += #X;\
 }
 
-#define GLOBAL_PROC		"magic BS"
+#define GLOBAL_PROC		"magic BS" // Why?
 
 //Creates an empty global initializer, do not use
 #define GLOBAL_UNMANAGED(X) /datum/controller/global_vars/proc/InitGlobal##X() { return; }
