@@ -1,5 +1,6 @@
 /mob/living/human
 	var/prev_tone = null
+
 /mob/living/human/proc/handle_animalistic(var/type = "Default")
 	switch (type)
 		if ("Default")
@@ -8,7 +9,7 @@
 				icon_update = 1
 				icon_state = "human"
 				s_tone = prev_tone
-				src << "<font size=3>You become human again!</font>"
+				to_chat(src, "<font size=3>You become human again!</font>")
 				body_build = get_body_build(gender,"Default")
 				damage_multiplier = 1
 				movement_speed_multiplier = 1.0
@@ -26,7 +27,7 @@
 				icon = 'icons/mob/human.dmi'
 				icon_update = 1
 				s_tone = prev_tone
-				src << "<font size=3>You turn into a satyr!</font>"
+				to_chat(src, "<font size=3>You turn into a satyr!</font>")
 				body_build = get_body_build(gender,"Satyr")
 				damage_multiplier = 1
 				movement_speed_multiplier = 1.0
@@ -41,7 +42,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite()
 		if ("Gorilla")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Gorilla!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into a Gorilla!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = get_body_build(gender,"Gorilla")
 				prev_tone = s_tone
@@ -60,7 +61,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite()
 		if ("Orc")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into an Orc!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into an Orc!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = pick(get_body_build(gender,"Orc"),get_body_build(gender,"Dark Orc"),get_body_build(gender,"Brown Orc"))
 				prev_tone = s_tone
@@ -79,7 +80,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite()
 		if ("Goblin")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Goblin, gobbel gobbel!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into a Goblin, gobbel gobbel!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = pick(get_body_build(gender,"Goblin"))
 				prev_tone = s_tone
@@ -98,7 +99,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite()
 		if ("Ant")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into an Ant!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into an Ant!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = pick(get_body_build(gender,"Ant"),get_body_build(gender,"Black Ant"),get_body_build(gender,"Yellow Ant"))
 				prev_tone = s_tone
@@ -116,7 +117,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite()
 		if ("Lizard")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Lizard!</font>"
+				to_chat(src,"<font size=3 color='red'>You turn into a Lizard!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = get_body_build(gender,"Lizard")
 				prev_tone = s_tone
@@ -133,7 +134,7 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
 		if ("Crab")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Crustacean!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into a Crustacean!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = get_body_build(gender,"Crab")
 				prev_tone = s_tone
@@ -152,7 +153,7 @@
 
 		if ("Wolf")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Wolf!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into a Wolf!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = get_body_build(gender,"Wolfman")
 				prev_tone = s_tone
@@ -172,12 +173,12 @@
 			switch (time_of_day)
 				if ("Midday","Afternoon","Morning","Early Morning","Evening")
 					if (body_build.name != "Default")
-						src << "<font size=3>You become human again!</font>"
+						to_chat(src, "<font size=3>You become human again!</font>")
 						handle_animalistic("Default")
 						s_tone = prev_tone
 				if ("Night")
 					if (body_build.name == "Default")
-						src << "<font size=3 color='red'>You turn into a werewolf!</font>"
+						to_chat(src, "<font size=3 color='red'>You turn into a werewolf!</font>")
 						icon_state = "werewolf"
 						body_build = get_body_build(gender,"Werewolf")
 						prev_tone = s_tone
@@ -196,7 +197,7 @@
 						species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
 		if ("Droid")
 			if (body_build.name == "Default")
-				src << "<font size=3 color='red'>You turn into a Combat Droid!</font>"
+				to_chat(src, "<font size=3 color='red'>You turn into a Combat Droid!</font>")
 				icon = 'icons/mob/human.dmi'
 				body_build = get_body_build(gender,"Droid")
 				prev_tone = s_tone
@@ -212,4 +213,4 @@
 				species.unarmed_attacks += new /datum/unarmed_attack/stomp()
 				species.unarmed_attacks += new /datum/unarmed_attack/kick()
 				species.unarmed_attacks += new /datum/unarmed_attack/punch()
-				species.unarmed_attacks += new /datum/unarmed_attack/bite()
+				species.unarmed_attacks += new /datum/unarmed_attack/bite() // Can droids bite? Might wanna remove this, but this whole file needs some refactoring.
