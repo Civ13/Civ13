@@ -717,6 +717,7 @@
 #include "code\modules\1713\automation.dm"
 #include "code\modules\1713\barbwire.dm"
 #include "code\modules\1713\battlereport_variables.dm"
+#include "code\modules\1713\beekeeping.dm"
 #include "code\modules\1713\betting.dm"
 #include "code\modules\1713\blueprint.dm"
 #include "code\modules\1713\book.dm"
@@ -1156,5 +1157,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\smallingrad.dmm"
+#include "maps\1969\nationsrp_coldwar.dmm"
 // END_INCLUDE
