@@ -937,7 +937,7 @@
 				possible_h_list = list("Black")
 				possible_e_list = list("Black")
 				possible_s_range = list(-110,-160)
-				h_style = pick("Buzzcut", "Buzzcut Alt", "Crewcut", "Afro", "Father", "Afro 2", "Flat Top", "Skinhead", "High", "Trimmed", "High Tight", "High Fade", "Low Fade", "Medium Fade", "Average Joe")
+				h_style = pick("Buzzcut", "Buzzcut Alt", "Crewcut", "Afro", "Father", "Afro 2", "Flat Top", "Skinhead", "Trimmed", "High Tight", "High Fade", "Low Fade", "Medium Fade", "Average Joe")
 			real_name = name
 		//east Russian
 		else if (original_job_title == "Civilization B Citizen")
