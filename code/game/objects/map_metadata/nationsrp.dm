@@ -105,9 +105,9 @@
 	title = "Nations RP Cold War"
 	lobby_icon = 'icons/lobby/coldwar.png'
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>24 hours</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
-	age = "the Cold War"
+	age = "Cold War Era"
 	songs = list(
-		"Emma:1" = 'sound/music/emma.ogg',)
+		"Tears For Fears - Everybody Wants To Rule The World:1" = 'sound/music/everybodywantstoruletheworld.ogg',)
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
