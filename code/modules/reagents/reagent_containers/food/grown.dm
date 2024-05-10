@@ -365,3 +365,14 @@
 		return
 	else
 		return
+
+/obj/item/weapon/reagent_containers/food/snacks/honeycomb
+	name = "honeycomb"
+	icon = 'icons/farming/beekeeping.dmi'
+	icon_state = "honeycomb"
+	filling_color = "#ffbf00"
+	decay = 250*600
+	w_class = ITEM_SIZE_TINY
+	New()
+		..()
+		reagents.add_reagent("honey", 10)
