@@ -3,7 +3,7 @@
 	desc = "Different from the Middle Ages version."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "rack"
-	flipped = -1
+	flipped = FALSE
 	low = TRUE
 	fixedsprite = TRUE
 
@@ -26,7 +26,7 @@
 	desc = "An old expensive table."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "fancytable"
-	flipped = -1
+	flipped = FALSE
 	low = TRUE
 	fixedsprite = TRUE
 
@@ -35,7 +35,7 @@
 	desc = "A night stand."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "nightstand"
-	flipped = -1
+	flipped = FALSE
 	low = TRUE
 	fixedsprite = TRUE
 
