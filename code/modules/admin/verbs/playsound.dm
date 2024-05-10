@@ -21,14 +21,14 @@ var/list/sounds_cache = list()
 			if (M.is_preference_enabled(/datum/client_preference/play_admin_midis))
 				M.client << uploaded_sound
 
-/client/proc/play_local_sound(S as sound, var/volume = 50)
+/client/proc/play_local_sound(S as sound)
 	set category = "Fun"
 	set name = "Play Local Sound"
 	if (!check_rights(R_SOUNDS))	return
 
 	log_admin("[key_name(src)] played a local sound [S]")
 	message_admins("[key_name_admin(src)] played a local sound [S]", key_name_admin(src))
-	playsound(get_turf(mob), S, volume, FALSE, FALSE)
+	playsound(get_turf(src.mob), S, 50, 0, 0)
 
 
 /client/proc/play_server_sound()
