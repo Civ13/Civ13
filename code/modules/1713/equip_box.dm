@@ -36,10 +36,10 @@
 	var/list/options = list()
 	switch (user.faction_text)
 		if (DUTCH)
-			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
+			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm/bgm_tow,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
 			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack/mortar,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 		if (RUSSIAN)
-			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
+			options["Foldable Anti-Tank Guided Missile system"] = list(/obj/item/weapon/foldable/atgm/kornet,/obj/item/weapon/storage/backpack/heavyrucksack/atgm)
 			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack/mortar,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 			options["Foldable PKM"] = list(/obj/item/weapon/foldable/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm)
 	
