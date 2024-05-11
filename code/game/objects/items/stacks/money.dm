@@ -2,10 +2,22 @@
 /obj/item/stack/money/update_icon()
 	if(novariants)
 		return ..()
-	if(amount >= 2)
+	if(amount >= 50)
 		if (map.ordinal_age >= 4)
 			if(icon_state != "silvercoin_pile")
 				icon_state = "[initial(icon_state)]_2"
+	if(amount >= 100)
+		if (map.ordinal_age >= 4)
+			if(icon_state != "silvercoin_pile")
+				icon_state = "[initial(icon_state)]_3"
+	if(amount >= 250)
+		if (map.ordinal_age >= 4)
+			if(icon_state != "silvercoin_pile")
+				icon_state = "[initial(icon_state)]_4"
+	if(amount >= 500)
+		if (map.ordinal_age >= 4)
+			if(icon_state != "silvercoin_pile")
+				icon_state = "[initial(icon_state)]_5"
 
 	else
 		if (map.ordinal_age >= 4)
@@ -340,6 +352,7 @@
 		icon_state = "goldcoin_pile"
 		value = 120
 		return ..()
+
 
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
