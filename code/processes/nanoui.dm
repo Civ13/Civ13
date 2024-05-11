@@ -12,7 +12,7 @@
 			try
 				// runtime prevention
 				if (NUI.state && NUI.user)
-					NUI.Process()
+					NUI.process()
 			catch(var/exception/e)
 				catchException(e, NUI)
 		else

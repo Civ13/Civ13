@@ -1030,50 +1030,35 @@
 	opacity = FALSE
 	density = FALSE
 
+/obj/item/tank_system/New()
+	..()
+	processing_objects += src
+
+/obj/item/tank_system/Del()
+	processing_objects -= src
+	..()
+
 /obj/item/tank_system/ecms
 	name = "ECMS"
 	desc = "An Electromagnetic Counter-Mine System."
-	New()
-		..()
-		spawn(5)
-		explode_mines()
 
-/obj/item/tank_system/ecms/proc/explode_mines()
-	if (src)
-		for (var/obj/item/mine/M in range(5, src))
-			if (M.anchored)
-				M.trigger(src)
-				for (var/mob/O in viewers(7, get_turf(src)))
-					to_chat(O, SPAN_DANGER("\The [src] explodes the [M]!"))
-		sleep(6 SECONDS)
-		explode_mines()
-	else return
+/obj/item/tank_system/ecms/process()
+	for (var/obj/item/mine/M in range(5, src))
+		if (M.anchored)
+			M.trigger(src)
+			for (var/mob/O in viewers(7, get_turf(src)))
+				to_chat(O, SPAN_DANGER("\The [src] explodes the [M]!"))
 
 /obj/item/tank_system/aps
 	name = "Active Protection System"
 	desc = "A hard-kill active protection system for defense against Rocket-Propelled Grenades and Anti-Tank Guided Missiles."
-	var/uses = 12
-	New()
-		..()
-		spawn(5)
-		explode_missiles()
 
-/obj/item/tank_system/aps/proc/explode_missiles()
-	if (src)
-		if (uses > 0)
-			for (var/obj/item/projectile/shell/missile/M in range(6, src))
-				if (M)
-					M.initiate(get_turf(M))
-					--uses
-					for (var/mob/O in viewers(7, get_turf(src)))
-						to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))
-		sleep(1 SECONDS)
-		explode_missiles()
-	else return
-
-/obj/item/tank_system/aps/examine(mob/user)
-	..()
-	to_chat(user, SPAN_NOTICE("It has [uses] uses left."))
+/obj/item/tank_system/aps/process()
+	for (var/obj/item/projectile/shell/missile/M in range(6, src))
+		if (M)
+			M.initiate(get_turf(M))
+			for (var/mob/O in viewers(7, get_turf(src)))
+				to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))
 
 /obj/item/tank_system/aps/ironfist
 	name = "Iron Fist APS"
