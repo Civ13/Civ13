@@ -2,7 +2,7 @@
 	name = "beehive"
 	desc = "A wooden box where beehives are kept for honey production and bee breeding."
 	icon = 'icons/farming/beekeeping.dmi'
-	icon_state = "beehive"
+	icon_state = "apiary"
 	density = 1
 	anchored = 1
 
