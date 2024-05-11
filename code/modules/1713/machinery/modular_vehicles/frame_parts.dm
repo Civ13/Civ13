@@ -439,6 +439,19 @@ var/global/list/license_plate_numbers = list()
 	front = TRUE
 	centered = TRUE
 
+/obj/structure/vehicleparts/license_plate/ru_mil
+	icon_state = "license_plate_ru_mil"
+/obj/structure/vehicleparts/license_plate/ru_mil/front
+	icon_state = "license_plate_ru_mil"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/ru_mil/centered
+	icon_state = "license_plate_ru_mil"
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/ru_mil/centered/front
+	icon_state = "license_plate_ru_mil"
+	front = TRUE
+	centered = TRUE
+
 /obj/structure/vehicleparts/axis
 	var/reg_number = "000"
 
