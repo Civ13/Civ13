@@ -1217,6 +1217,7 @@
 	item_state = "emir_turban"
 	worn_state = "emir_turban"
 	body_parts_covered = HEAD|FACE
+	item_flags = FLEXIBLEMATERIAL // The emirate helmet does not block the face. body_parts_covered is used in armor calculation, masks with this flag will not prevent eating even if they are covering your "face".
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 	health = 45

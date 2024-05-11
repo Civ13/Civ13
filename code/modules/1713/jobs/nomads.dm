@@ -282,6 +282,9 @@
 										equip_to_slot_or_del(new/obj/item/clothing/head/cowboyhat(src), slot_head)
 									if (2)
 										equip_to_slot_or_del(new/obj/item/clothing/head/cowboyhat2(src), slot_head)
+							var/obj/item/stack/money/dollar/DOL = new /obj/item/stack/money/dollar(src)
+							DOL.amount = rand(5,30)
+							equip_to_slot_or_del(DOL, slot_r_store)
 						else if (original_job_title == "Civilization B Citizen")
 							var/rand_uni = rand(1,5)
 							switch(rand_uni)
@@ -314,6 +317,9 @@
 										equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(src), slot_head)
 									if (4)
 										equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(src), slot_head)
+							var/obj/item/stack/money/rubles/RUB = new /obj/item/stack/money/rubles(src)
+							RUB.amount = 15
+							equip_to_slot_or_del(RUB, slot_r_store)
 					else
 						equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 						equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup/brown(src), slot_shoes)

@@ -365,7 +365,6 @@
 
 //returns TRUE if made bloody, returns FALSE otherwise
 /atom/proc/add_blood(mob/living/human/M as mob)
-
 	if (flags & NOBLOODY)
 		return FALSE
 
@@ -373,10 +372,8 @@
 		blood_DNA = list()
 
 	was_bloodied = TRUE
-	if (M.droid)
-		blood_color = "#030303"
-	else
-		blood_color = "#A10808"
+	blood_color = "#A10808"
+	
 	if (istype(M))
 		if (!istype(M.dna, /datum/dna))
 			M.dna = new /datum/dna(null)
@@ -384,6 +381,8 @@
 		M.check_dna()
 		if (M.species)
 			blood_color = M.species.blood_color
+		if (M.droid)
+			blood_color = "#030303"
 	. = TRUE
 	return TRUE
 

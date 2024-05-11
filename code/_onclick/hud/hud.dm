@@ -174,7 +174,7 @@ var/list/global_huds = list(
 	set hidden = TRUE
 
 	if (!hud_used)
-		usr << "<span class='warning'>This mob type does not use a HUD.</span>"
+		to_chat(usr, SPAN_WARNING("This mob type does not use a HUD."))
 		return
 
 	if (!ishuman(src))

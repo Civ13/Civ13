@@ -717,6 +717,7 @@
 #include "code\modules\1713\automation.dm"
 #include "code\modules\1713\barbwire.dm"
 #include "code\modules\1713\battlereport_variables.dm"
+#include "code\modules\1713\beekeeping.dm"
 #include "code\modules\1713\betting.dm"
 #include "code\modules\1713\blueprint.dm"
 #include "code\modules\1713\book.dm"

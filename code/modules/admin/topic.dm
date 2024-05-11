@@ -19,14 +19,14 @@
 			var/new_ckey = ckey(input(usr,"New admin's ckey","Admin ckey", null) as text|null)
 			if (!new_ckey)	return
 			if (new_ckey in admin_datums)
-				usr << "<font color='red'>Error: Topic 'editrights': [new_ckey] is already an admin.</font>"
+				to_chat(usr, SPAN_RED("Error: Topic 'editrights': [new_ckey] is already an admin."))
 				return
 			adm_ckey = new_ckey
 			task = "rank"
 		else if (task != "show")
 			adm_ckey = ckey(href_list["ckey"])
 			if (!adm_ckey)
-				usr << "<font color='red'>Error: Topic 'editrights': No valid ckey</font>"
+				to_chat(usr, SPAN_RED("Error: Topic 'editrights': No valid ckey"))
 				return
 
 		var/datum/admins/D = admin_datums[adm_ckey]
@@ -59,7 +59,7 @@
 					new_rank = input("Please input a new rank", "New custom rank", null, null) as null|text
 
 					if (!new_rank)
-						usr << "<font color='red'>Error: Topic 'editrights': Invalid rank</font>"
+						to_chat(usr, SPAN_RED("Error: Topic 'editrights': Invalid rank!"))
 						return
 			/*
 			if (D)
@@ -77,7 +77,7 @@
 				D = new /datum/admins(new_rank, FALSE, adm_ckey) // initial rights must be FALSE or their rights do not change!
 				D.associate(C)											//link up with the client and add verbs
 
-				C << "<b>[key_name_admin(usr)] has set your admin rank to: [new_rank].</b>"
+				to_chat(C, "<b>[key_name_admin(usr)] has set your admin rank to: [new_rank].</b>")
 
 			message_admins("[key_name_admin(usr)] edited the admin rank of [adm_ckey] to [new_rank].", key_name_admin(usr))
 			log_admin("[key_name(usr)] edited the admin rank of [adm_ckey] to [new_rank].")
@@ -107,7 +107,7 @@
 
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
-		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", key_name(usr))
+		message_admins(SPAN_NOTICE("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"]."), key_name(usr))
 		href_list["secretsadmin"] = "check_antagonist"
 	else if (href_list["simplemake"])
 
@@ -116,7 +116,7 @@
 		var/mob/M = locate(href_list["mob"])
 		var/M_area = get_area(M)
 		if (!istype(M))
-			usr << "This can only be used on instances of type /mob"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob"))
 			return
 
 		var/orig_client = M.client
@@ -127,7 +127,7 @@
 				if ("Yes")		delmob = TRUE
 
 		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", key_name_admin(usr))
+		message_admins(SPAN_NOTICE("[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]"), key_name_admin(usr))
 
 		var/usr_client = usr.client
 
@@ -148,7 +148,7 @@
 			if ("default")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.gorillaman = 0
@@ -169,7 +169,7 @@
 			if ("gorilla")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.gorillaman = 1
@@ -184,7 +184,7 @@
 			if ("werewolf")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.werewolf = 1
@@ -199,7 +199,7 @@
 			if ("orc")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.orc = 1
@@ -214,7 +214,7 @@
 			if ("ant")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.ant = 1
@@ -229,7 +229,7 @@
 			if ("lizard")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.lizard = 1
@@ -244,7 +244,7 @@
 			if ("crab")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.lizard = 0
@@ -259,7 +259,7 @@
 			if ("wolfman")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.lizard = 0
@@ -274,7 +274,7 @@
 			if ("goblin")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.lizard = 0
@@ -289,7 +289,7 @@
 			if ("droid")
 				var/mob/living/human/HM = M
 				if (!ishuman(M))
-					usr << "This can only be used on instances of type /mob/living/human"
+					to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 					return
 				else
 					HM.lizard = 0
@@ -411,7 +411,7 @@
 			else
 				M << "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>"
 			log_admin("[key_name(usr)] booted [key_name(M)].")
-			message_admins("<span class = 'notice'>[key_name_admin(usr)] booted [key_name_admin(M)].</span>", key_name_admin(usr))
+			message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
 			//M.client = null
 			qdel(M.client)
 
@@ -434,7 +434,7 @@
 
 		var/mob/M = locate(href_list["forcespeech"])
 		if (!ismob(M))
-			usr << "this can only be used on instances of type /mob"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob"))
 
 		var/speech = input("What will [key_name(M)] say?.", "Force speech", "")// Don't need to sanitize, since it does that in say(), we also trust our admins.
 		if (!speech)	return
@@ -442,22 +442,22 @@
 			M.say(speech)
 			speech = sanitize(speech) // Nah, we don't trust them
 			log_admin("[key_name(usr)] forced [key_name(M)] to say: [speech]")
-			message_admins("<span class = 'notice'>[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]</span>", key_name_admin(usr))
+			message_admins(SPAN_NOTICE("[key_name_admin(usr)] forced [key_name_admin(M)] to say: [speech]"), key_name_admin(usr))
 
 	else if (href_list["revive"])
 		if (!check_rights(R_REJUVINATE))	return
 
 		var/mob/living/L = locate(href_list["revive"])
 		if (!istype(L))
-			usr << "This can only be used on instances of type /mob/living"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living"))
 			return
 
 		if (config.allow_admin_rev)
 			L.revive()
-			message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(L)]!</span>", key_name_admin(usr))
+			message_admins(SPAN_RED("[key_name_admin(usr)] healed / revived [key_name_admin(L)]!"), key_name_admin(usr))
 			log_admin("[key_name(usr)] healed / revived [key_name(L)]")
 		else
-			usr << "Admin Rejuvinates have been disabled"
+			to_chat(usr, SPAN_WARNING("Admin Rejuvinates have been disabled."))
 
 	else if (href_list["adminplayeropts"])
 		var/mob/M = locate(href_list["adminplayeropts"])
@@ -494,7 +494,7 @@
 	else if (href_list["adminmoreinfo"])
 		var/mob/M = locate(href_list["adminmoreinfo"])
 		if (!ismob(M))
-			usr << "This can only be used on instances of type /mob"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob"))
 			return
 
 		var/location_description = ""
@@ -529,24 +529,24 @@
 		else
 			health_description = "This mob type has no health to speak of."
 
-		//Gener
+		//Gender
 		switch(M.gender)
 			if (MALE,FEMALE)	gender_description = "[M.gender]"
 			else			gender_description = "<font color='red'><b>[M.gender]</b></font>"
 
-		owner << "<b>Info about [M.name]:</b> "
-		owner << "Mob type = [M.type]; Gender = [gender_description] Damage = [health_description]"
-		owner << "Name = <b>[M.name]</b>; Real_name = [M.real_name]; Mind_name = [M.mind?"[M.mind.name]":""]; Key = <b>[M.key]</b>;"
-		owner << "Location = [location_description];"
-		owner << "[special_role_description]"
-		owner << "(<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a>) (<A HREF='?src=\ref[src];adminplayeropts=\ref[M]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[M]'>VV</A>) (<A HREF='?src=\ref[src];subtlemessage=\ref[M]'>SM</A>) ([admin_jump_link(M, src)]) (<A HREF='?src=\ref[src];secretsadmin=check_antagonist'>CA</A>)"
+		to_chat(owner, "<b>Info about [M.name]:</b> ")
+		to_chat(owner, "Mob type = [M.type]; Gender = [gender_description] Damage = [health_description]")
+		to_chat(owner, "Name = <b>[M.name]</b>; Real_name = [M.real_name]; Mind_name = [M.mind?"[M.mind.name]":""]; Key = <b>[M.key]</b>;")
+		to_chat(owner, "Location = [location_description];")
+		to_chat(owner, "[special_role_description]")
+		to_chat(owner, "(<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a>) (<A HREF='?src=\ref[src];adminplayeropts=\ref[M]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[M]'>VV</A>) (<A HREF='?src=\ref[src];subtlemessage=\ref[M]'>SM</A>) ([admin_jump_link(M, src)]) (<A HREF='?src=\ref[src];secretsadmin=check_antagonist'>CA</A>)")
 
-	else if (href_list["adminspawncookie"])
+	else if (href_list["adminspawncookie"]) // Why the fuck do we even need it?
 		if (!check_rights(R_ADMIN|R_FUN))	return
 
 		var/mob/living/human/H = locate(href_list["adminspawncookie"])
 		if (!ishuman(H))
-			usr << "This can only be used on instances of type /mob/living/human"
+			to_chat(usr, SPAN_WARNING("This can only be used on instances of type /mob/living/human"))
 			return
 
 		H.equip_to_slot_or_del( new /obj/item/weapon/reagent_containers/food/snacks/cookie(H), slot_l_hand )
@@ -557,13 +557,13 @@
 				message_admins("[key_name(H)] has their hands full, so they did not receive their cookie, spawned by [key_name(owner)].", key_name(owner))
 				return
 			else
-				H.update_inv_r_hand()//To ensure the icon appears in the HUD
+				H.update_inv_r_hand() //To ensure the icon appears in the HUD
 		else
 			H.update_inv_l_hand()
 		log_admin("[key_name(H)] got their cookie, spawned by [key_name(owner)]")
 		message_admins("[key_name(H)] got their cookie, spawned by [key_name(owner)]", key_name(owner))
 
-		H << "<span class = 'notice'>Your prayers have been answered!! You received the <b>best cookie</b>!</span>"
+		to_chat(H, SPAN_NOTICE("Your prayers have been answered!! You received the <b>best cookie</b>!</span>"))
 
 	else if (href_list["jumpto"])
 		if (!check_rights(R_ADMIN))	return
@@ -623,19 +623,19 @@
 			if (isdatum(thing) || isclient(thing))
 				C.debug_variables(thing)
 			else if (!islist(thing))
-				usr << "[somevar] = [thing]"
+				to_chat(usr, "[somevar] = [thing]")
 			else
 				var/list/L = thing
 				if (!L.len)
-					usr << "[somevar] is an empty list"
+					to_chat(usr, "[somevar] is an empty list")
 				else if (list_is_assoc(L))
-					usr << "[somevar] is an <b>ASSOCIATIVE</b> list"
+					to_chat(usr, "[somevar] is an <b>ASSOCIATIVE</b> list")
 					for (var/i in TRUE to L.len)
-						usr << "element [i]: [thing[i]] = [thing[thing[i]]]"
+						to_chat(usr, "element [i]: [thing[i]] = [thing[thing[i]]]")
 				else
-					usr << "[thing] is a list"
+					to_chat(usr, "[thing] is a list")
 					for (var/i in TRUE to L.len)
-						usr << "element [i]: [thing[i]]"
+						to_chat(usr, "element [i]: [thing[i]]")
 
 	else if (href_list["modify_global"])
 		if (!check_rights(R_DEBUG))	return
@@ -643,7 +643,7 @@
 		if (global.vars:Find(somevar)) // prevents runtimes
 			var/thing = global.vars[somevar]
 			if (isdatum(thing) || isclient(thing) || islist(thing))
-				usr << "[somevar] is a datum, client, or list. You can't edit it here. For datums & clients, use the 'View/Debug a global' to edit their variables."
+				to_chat(usr, "[somevar] is a datum, client, or list. You can't edit it here. For datums & clients, use the 'View/Debug a global' to edit their variables.")
 				return
 			else
 				var/changeto = input(usr, "Change this global variable to what type?") in list("Empty List", "Text", "Num", "Cancel")
@@ -661,10 +661,10 @@
 		if (world.vars.Find(somevar)) // prevents runtimes
 			var/thing = world.vars[somevar]
 			if (isdatum(thing) || isclient(thing) || islist(thing))
-				usr << "[somevar] is a datum, client, or list. You can't edit it here. For datums & clients, use the 'View/Debug a global' to edit their variables."
+				to_chat(usr, "[somevar] is a datum, client, or list. You can't edit it here. For datums & clients, use the 'View/Debug a global' to edit their variables.")
 				return
 			else
-				usr << "[somevar] is [thing]"
+				to_chat(usr,  "[somevar] is [thing]")
 				// this is somehow broken
 				var/changeto = input(usr, "Change this world variable to what type?") in list("Empty List", "Text", "Num", "Cancel")
 				switch (lowertext(changeto))
@@ -679,7 +679,7 @@
 		if (!check_rights(R_SPAWN))	return
 
 		if (!config.allow_admin_spawning)
-			usr << "Spawning of items is not allowed."
+			to_chat(usr, SPAN_WARNING("Spawning of items is not allowed."))
 			return
 
 		var/atom/loc = usr.loc
@@ -725,7 +725,7 @@
 		switch(where)
 			if ("inhand")
 				if (!ishuman(usr))
-					usr << "Can only spawn in hand when you're a carbon mob."
+					to_chat(usr, SPAN_WARNING("Can only spawn in-hand when you're a mob."))
 					where = "onfloor"
 				target = usr
 
@@ -738,10 +738,10 @@
 							target = locate(loc.x + X,loc.y + Y,loc.z + Z)
 			if ("inmarked")
 				if (!marked_datum())
-					usr << "You don't have any object marked. Abandoning spawn."
+					to_chat(usr, "You don't have any object marked. Abandoning spawn.")
 					return
 				else if (!istype(marked_datum(),  /atom))
-					usr << "The object you have marked cannot be used as a target. Target must be of type /atom. Abandoning spawn."
+					to_chat(usr, "The object you have marked cannot be used as a target. Target must be of type /atom. Abandoning spawn.")
 					return
 				else
 					target = marked_datum()
@@ -780,17 +780,17 @@
 		if (check_rights(R_SPAWN))
 			var/mob/M = locate(href_list["toglang"])
 			if (!istype(M))
-				usr << "[M] is illegal type, must be /mob!"
+				to_chat(usr, SPAN_WARNING("[M] is an illegal type, must be /mob!"))
 				return
 			var/lang2toggle = href_list["lang"]
 			var/datum/language/L = all_languages[lang2toggle]
 
 			if (L in M.languages)
 				if (!M.remove_language(lang2toggle))
-					usr << "Failed to remove language '[lang2toggle]' from \the [M]!"
+					to_chat(usr, SPAN_WARNING("Failed to remove language '[lang2toggle]' from \the [M]!"))
 			else
 				if (!M.add_language(lang2toggle))
-					usr << "Failed to add language '[lang2toggle]' from \the [M]!"
+					to_chat(usr, SPAN_WARNING("Failed to add language '[lang2toggle]' from \the [M]!"))
 
 			show_player_panel(M)
 

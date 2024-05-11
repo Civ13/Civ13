@@ -625,11 +625,11 @@
 			user.remove_from_mob(I)
 			I.loc = src
 			rockets += I
-			user.visible_message("[user] loads a [I] into \the [src].", "You load a [I] into \the [src]")
+			user.visible_message("[user] loads a [I] into \the [src].", "You load a [I] into \the [src].")
 			update_icon()
 			return
 		else
-			to_chat(usr, SPAN_WARNING("\The [src] cannot hold more rockets."))
+			to_chat(usr, SPAN_WARNING("\The [src] cannot hold any more rockets."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/unload_ammo(mob/user, var/allow_dump=1)
 	if (rockets.len)
@@ -638,13 +638,13 @@
 			rockets -= I
 		update_icon()
 	else
-		to_chat(user, SPAN_WARNING("The ATGM is empty"))
+		to_chat(user, SPAN_WARNING("The ATGM is empty!"))
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/handle_click_empty(mob/user)
 	if (rockets.len <= 0)
 		if (user)
-			user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+			user.visible_message("*click click*", SPAN_DANGER("*click*"))
 		else
 			visible_message("*click click*")
 		playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
@@ -672,6 +672,12 @@
 		return TRUE
 
 	return FALSE
+
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/update_icon()
+	if (rockets.len)
+		icon_state = base_icon
+	else
+		icon_state = "[base_icon]_empty"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/kornet
 	name = "9K135 Kornet"
