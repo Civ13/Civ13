@@ -23,7 +23,7 @@
 	faction2 = GREEK
 	ambience = list('sound/ambience/jungle1.ogg')
 	songs = list(
-		"Divinitus:1" = "sound/music/divinitus.ogg",)
+		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	grace_wall_timer = 3000
 obj/map_metadata/heraclea/job_enabled_specialcheck(var/datum/job/J)
 	..()

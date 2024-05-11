@@ -6,7 +6,7 @@
    * - 2 Us Army
    * - 2a Us Army Armor
    * - 2a1 PASGT Armor
-   * - 2a2 US Lightwieght Helmets
+   * - 2a2 US Lightweight Helmets
    * - 2b US Army Clothing
    * - 2c Russian Army Clothing
    /////////////////////////////////////
@@ -79,7 +79,7 @@
 /* Armor Plates*/
 
 /obj/item/weapon/armorplates
-	name = "ballistic plates"
+	name = "ballistic plate"
 	desc = "Used to increase the protection of some body armors."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "plates"
@@ -507,7 +507,7 @@
 	item_state = "n34bmm"
 	worn_state = "n34bmm"
 
-		/* US Lightwieght Helmets*/
+		/* US Lightweight Helmets*/
 
 /obj/item/clothing/head/helmet/modern/lwh
 	name = "LWH helmet"

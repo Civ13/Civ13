@@ -100,7 +100,8 @@ var/list/admin_verbs_trialadmin = list(
 var/list/admin_verbs_sounds = list(
 	/client/proc/play_local_sound,
 	/client/proc/play_sound,
-	/client/proc/play_server_sound
+	/client/proc/play_server_sound,
+	/client/proc/play_world_sound
 	)
 var/list/admin_verbs_fun = list(
 	/client/proc/object_talk,
@@ -275,7 +276,7 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/client/proc/dsay,
-	/datum/admins/proc/announce,		//priority announce something to all clients.,
+	/datum/admins/proc/announce,		//priority announce something to all clients,
 	/datum/admins/proc/show_player_panel,
 	/client/proc/cmd_admin_subtle_message, // send an message to somebody as a 'voice in their head',
 	/datum/admins/proc/paralyze_mob,
@@ -288,7 +289,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/show_battle_report,
 	/client/proc/quickBan_search,
 	/client/proc/quickBan_person,
-	/client/proc/set_teams,
+	/client/proc/toggle_right_click,
 )
 
 var/list/admin_verbs_mentor = list(
@@ -614,23 +615,23 @@ var/list/admin_verbs_host = list(
 			V.show_message("<b>[mob.control_object.name]</b> says: \"" + msg + "\"", 2)
 
 /client/proc/readmin_self()
-	set name = "Re-Admin self"
+	set name = "Readmin self"
 	set category = "Admin"
 
 	if (deadmin_holder)
 		deadmin_holder.reassociate()
-		log_admin("[src] re-admined themself.")
-		message_admins("[src] re-admined themself.", src)
+		log_admin("[src] re-admined themselves.")
+		message_admins("[src] re-admined themselves.", src)
 		verbs -= /client/proc/readmin_self
 
 /client/proc/deadmin_self()
-	set name = "De-admin self"
+	set name = "Deadmin self"
 	set category = "Admin"
 
 	if (holder)
 		if (WWinput(src, "Confirm self-deadmin for the round? You can re-admin yourself at any time.", "Deadmin Self", "Yes", list("Yes","No")) == "Yes")
-			log_admin("[src] deadmined themself.")
-			message_admins("[src] deadmined themself.")
+			log_admin("[src] deadmined themselves.")
+			message_admins("[src] deadmined themselves.")
 			deadmin()
 			verbs |= /client/proc/readmin_self
 
@@ -945,7 +946,7 @@ var/global/list/global_colour_matrix = null
 	return
 
 /client/proc/radiation_emission()
-	set category = "Fun"
+	set category = "Special"
 	set name = "Radiation Emission"
 	set desc = "Emits radiation for a set duration."
 	if (!check_rights(R_SPAWN))

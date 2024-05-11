@@ -39,7 +39,7 @@
 		process_awards()
 	if (transforming)
 		return
-	if (werewolf + gorillaman + orc +goblin + ant + lizard + wolfman + crab > 1)
+	if (werewolf || gorillaman || orc || goblin || ant || lizard || wolfman || crab || droid)
 		werewolf = 0
 		gorillaman = 0
 		orc = 0
@@ -48,6 +48,7 @@
 		lizard = 0
 		wolfman = 0
 		crab = 0
+		droid = 0
 		handle_animalistic("Default")
 
 	if (werewolf)
@@ -66,7 +67,9 @@
 		handle_animalistic("Wolf")
 	else if (crab)
 		handle_animalistic("Crab")
-	else if (!gorillaman && !werewolf && !orc && !goblin && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
+	else if (droid)
+		handle_animalistic("Droid")
+	else if (!gorillaman && !werewolf && !orc && !goblin && !ant && !lizard && !wolfman && !crab && !droid && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
@@ -118,6 +121,8 @@
 		mood -= 0.05
 	else if (mood < 40) //moves to 40 if below 40
 		mood += 0.05
+	if (droid)
+		mood = 100
 	if(istype(buckled, /obj/structure/cross))
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
@@ -179,6 +184,9 @@
 			water_m *= 2.5
 		if (gorillaman)
 			water_m *= 0.2
+		if (droid)
+			food_m *= 0
+			water_m *= 0
 		if (istype(buckled, /obj/structure/cross))
 			food_m *= 1.5
 			water_m *= 5
@@ -551,6 +559,12 @@
 
 
 	if (disease == TRUE)
+		if (droid)
+			disease = FALSE
+			disease_type = "none"
+			disease_progression = 0
+			disease_treatment = 0
+
 		if (disease_type in disease_immunity)
 			disease = FALSE
 			disease_type = "none"
@@ -636,7 +650,8 @@
 			species.handle_npc(src)
 	else if (stat == DEAD)
 		handle_defib_timer()
-	process_roofs()
+	process_turret_roofs()
+	process_vehicle_roofs()
 	process_static_roofs()
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -1429,9 +1444,7 @@
 			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS)
-						holder2.icon_state = "redmenia"
-					else if (map && !map.battleroyale)
+					if (map && !map.battleroyale)
 						holder2.icon_state = "pirate_basic"
 				if (BRITISH)
 					if (map.ordinal_age >= 4)
@@ -1526,7 +1539,7 @@
 					else
 						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
-					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
+					if (map.ID == MAP_YELTSIN || map.ID == MAP_GROZNY || map.ID == MAP_FACTORY || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY || map.ID == MAP_CONSTANTINOPOLI)
 						holder2.icon_state = "ru_basic"
 					else if (map.ID == MAP_BANK_ROBBERY)
 						holder2.icon_state = "robbers"
@@ -1578,8 +1591,6 @@
 				if (CIVILIAN)
 					if (map.ID == MAP_CAPITOL_HILL)
 						holder2.icon_state = "civ1"
-					else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_ROTSTADT || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS)
-						holder2.icon_state = "blugoslavia"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
 					else if (original_job.is_upa && map.ID != MAP_OCCUPATION)
@@ -1623,6 +1634,11 @@
 						holder2.icon_state = "civ6"
 					else
 						holder2.icon_state = ""
+					
+				if (BLUEFACTION)
+					holder2.icon_state = "blugoslavia"
+				if (REDFACTION)
+					holder2.icon_state = "redmenia"
 			holder2.overlays.Cut()
 			if (faction_text == CIVILIAN && map.ID == MAP_GULAG13)
 				switch(original_job_title)
@@ -1641,41 +1657,44 @@
 			if (original_job.uses_squads)
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
-				else
-					if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
-						if(squad == 4)
+
+				if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
+					switch (squad)
+						if (4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
 							holder2.overlays += icon(holder2.icon,"i_cpl")
-						else if (squad == 5)
+						if (5)
 							holder2.overlays += icon(holder2.icon,"squad_armoured")
-						else if (squad == 6)
+						if (6)
 							holder2.overlays += icon(holder2.icon,"squad_at")
 							holder2.overlays += icon(holder2.icon,"i_cpl")
-						else if (squad == 7)
+						if (7)
 							holder2.overlays += icon(holder2.icon,"squad_engineer")
 							holder2.overlays += icon(holder2.icon,"i_cpl")
 						else
 							holder2.overlays += icon(holder2.icon,"squad_[squad]")
-						if(findtext(original_job_title,"Private"))
-							holder2.overlays += icon(holder2.icon,"rifleman")
-						if(findtext(original_job_title,"Des. Marksman"))
-							holder2.overlays += icon(holder2.icon,"i_cpl")
-							holder2.overlays += icon(holder2.icon,"designated_marksman")
-						if(findtext(original_job_title,"Machinegunner"))
-							holder2.overlays += icon(holder2.icon,"mg")
-							holder2.overlays += icon(holder2.icon,"i_cpl")
-						if((findtext(original_job_title,"Officer") && !findtext(original_job_title,"Petty Officer")) || findtext(original_job_title,"Ensign"))
-							holder2.overlays += icon(holder2.icon,"i_lt")
-						else if(findtext(original_job_title,"Squadleader") || findtext(original_job_title,"Petty Officer"))
-							holder2.overlays += icon(holder2.icon,"i_sgt")
-						else if(findtext(original_job_title,"Commander") || findtext(original_job_title,"Captain"))
-							holder2.overlays += icon(holder2.icon,"i_cpt")
-						else if(findtext(original_job_title,"Medic"))
-							holder2.overlays += icon(holder2.icon,"i_ssgt")
-						else if(findtext(original_job_title,"Corpsman"))
-							holder2.overlays += icon(holder2.icon,"i_cpl")
-					else
-						holder2.overlays += icon(holder2.icon,"squad_[squad]")
+					
+					if(findtext(original_job_title,"Private"))
+						holder2.overlays += icon(holder2.icon,"rifleman")
+					if(findtext(original_job_title,"Des. Marksman"))
+						holder2.overlays += icon(holder2.icon,"i_cpl")
+						holder2.overlays += icon(holder2.icon,"designated_marksman")
+					if(findtext(original_job_title,"Machinegunner"))
+						holder2.overlays += icon(holder2.icon,"mg")
+						holder2.overlays += icon(holder2.icon,"i_cpl")
+					if((findtext(original_job_title,"Officer") && !findtext(original_job_title,"Petty Officer")) || findtext(original_job_title,"Ensign"))
+						holder2.overlays += icon(holder2.icon,"i_lt")
+					else if(findtext(original_job_title,"Squadleader") || findtext(original_job_title,"Petty Officer"))
+						holder2.overlays += icon(holder2.icon,"i_sgt")
+					else if(findtext(original_job_title,"Commander") || findtext(original_job_title,"Captain"))
+						holder2.overlays += icon(holder2.icon,"i_cpt")
+					else if(findtext(original_job_title,"Medic"))
+						holder2.overlays += icon(holder2.icon,"i_ssgt")
+					else if(findtext(original_job_title,"Corpsman"))
+						holder2.overlays += icon(holder2.icon,"i_cpl")
+				else
+					holder2.overlays += icon(holder2.icon,"squad_[squad]")
+					
 			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT && map.ID != MAP_BATTLE_SHIPS)
 				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer) || original_job.is_vip)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
@@ -1692,7 +1711,7 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"nco")
-			if (map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
+			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
 					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)

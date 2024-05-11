@@ -620,7 +620,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/m1911 = 50,
 		/obj/item/ammo_magazine/m9beretta = 50,
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 15,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 15,
 		/obj/item/weapon/attachment/under/laser = 15,
@@ -1002,14 +1002,14 @@ obj/structure/vending/hezammo
 	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
 	W.forceMove(src)
 	product_records.Add(R)
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 	update_icon()
 
 /obj/structure/vending/craftable/proc/stock_auto(obj/item/W)
 	var/datum/data/vending_product/R = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
 	W.forceMove(src)
 	product_records.Add(R)
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 	update_icon()
 
 /obj/structure/vending/craftable/rifles
@@ -1125,7 +1125,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/makarov = 15,
 		/obj/item/ammo_magazine/pkm = 8,
 		/obj/item/ammo_magazine/maxim = 8,
-		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
 	)
@@ -1221,7 +1221,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 4,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
-		/obj/item/weapon/gun/projectile/automatic/rpd = 3,
+		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 	)
 
@@ -1361,7 +1361,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak47 = 5,
 		/obj/item/weapon/gun/projectile/submachinegun/ak47/akms = 5,
 		/obj/item/ammo_magazine/ak47 = 25,
-		/obj/item/weapon/gun/projectile/automatic/rpd = 2,
+		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 2,
 		/obj/item/ammo_magazine/rpd = 10,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
 		/obj/item/ammo_magazine/makarov = 25,
@@ -1482,7 +1482,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/ak74m = 4,
 		/obj/item/weapon/gun/projectile/automatic/pkm = 2,
-		/obj/item/weapon/gun/projectile/automatic/kord = 1,
+		/obj/item/weapon/gun/projectile/automatic/nsv_utes = 1,
 		/obj/item/weapon/gun/projectile/semiautomatic/svd = 2,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 15,
 		/obj/item/weapon/gun/projectile/pistol/mp443 = 15,
@@ -1564,7 +1564,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/pistol/m1911 = 7,
 		/obj/item/weapon/gun/projectile/submachinegun/greasegun  = 10,
 		/obj/item/weapon/gun/projectile/submachinegun/sten  = 5,
-		/obj/item/weapon/gun/projectile/automatic/m249  = 3,
+		/obj/item/weapon/gun/projectile/automatic/manual/m249  = 3,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/grenade/smokebomb = 15,
 		/obj/item/weapon/grenade/coldwar/m67 = 15,

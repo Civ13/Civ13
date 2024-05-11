@@ -27,7 +27,7 @@
 	gamemode = "Firefight"
 	valid_weather_types = list(WEATHER_NONE)
 	songs = list(
-		"Тоска - Molchat Doma:1" = "sound/music/toska.ogg",)
+		"Тоска - Molchat Doma:1" = 'sound/music/toska.ogg',)
 
 /obj/map_metadata/eft_factory/New()
 	..()

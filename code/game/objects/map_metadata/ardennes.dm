@@ -24,7 +24,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Woody Guthrine - Tear the Fascists Down:1" = "sound/music/tearthefascists.ogg",)
+		"Woody Guthrine - Tear the Fascists Down:1" = 'sound/music/tearthefascists.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/ardennes/job_enabled_specialcheck(var/datum/job/J)

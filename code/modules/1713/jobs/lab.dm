@@ -312,7 +312,7 @@
 	//belt
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/m249(H), slot_belt)
 	//gun2
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m249(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_l_hand)
 	//pockets
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p90(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/p90(H), slot_r_store)

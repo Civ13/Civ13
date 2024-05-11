@@ -2,7 +2,7 @@
 /obj/item/weapon/material/sword/magic
 	name = "Hypothetical Magic Sword"
 	desc = "This is a place holder for code don't use it as an item."
-	icon = 'icons/obj/magicweapons.dmi'
+	icon = 'icons/obj/magic_weapons.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_magic.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_magic.dmi',
@@ -241,8 +241,8 @@
 	sharpness = 0
 	block_chance = 25
 
-	var/overlay = 'icons/obj/magicoverlay.dmi'
-	var/overlay_icon = 'icons/obj/magicoverlay.dmi'
+	var/overlay = 'icons/obj/magic_overlay.dmi'
+	var/overlay_icon = 'icons/obj/magic_overlay.dmi'
 	var/set_light()
 	var/old_force_divisor = 0.10
 	var/old_thrown_force_divisor = 0.10
@@ -325,9 +325,6 @@ obj/item/weapon/material/sword/magic/onoff/blue
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -396,9 +393,6 @@ obj/item/weapon/material/sword/magic/onoff/red
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -469,9 +463,6 @@ obj/item/weapon/material/sword/magic/onoff/green
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -540,9 +531,6 @@ obj/item/weapon/material/sword/magic/onoff/lightgreen
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -613,9 +601,6 @@ obj/item/weapon/material/sword/magic/onoff/darkgreen
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -684,9 +669,6 @@ obj/item/weapon/material/sword/magic/onoff/purple
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -757,9 +739,6 @@ obj/item/weapon/material/sword/magic/onoff/teal
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -828,9 +807,6 @@ obj/item/weapon/material/sword/magic/onoff/cyan
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -901,9 +877,6 @@ obj/item/weapon/material/sword/magic/onoff/magenta
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -972,9 +945,6 @@ obj/item/weapon/material/sword/magic/onoff/redpink
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -1045,9 +1015,6 @@ obj/item/weapon/material/sword/magic/onoff/yellow
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -1116,9 +1083,6 @@ obj/item/weapon/material/sword/magic/onoff/gold
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -1189,9 +1153,6 @@ obj/item/weapon/material/sword/magic/onoff/orange
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -1260,9 +1221,6 @@ obj/item/weapon/material/sword/magic/onoff/darkorange
 	thrown_force_divisor = 0.10
 	sharpness = 0
 	block_chance = 25
-
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
 
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
@@ -1333,9 +1291,6 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 	sharpness = 0
 	block_chance = 25
 
-	overlay = 'icons/obj/magicoverlay.dmi'
-	overlay_icon = 'icons/obj/magicoverlay.dmi'
-
 	old_force_divisor = 0.10
 	old_thrown_force_divisor = 0.10
 	old_sharpness = 0
@@ -1396,7 +1351,7 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 /obj/item/weapon/material/magic/wand
 	name = "Magic Wand"
 	desc = "Sparkly."
-	icon = 'icons/obj/magicweapons.dmi'
+	icon = 'icons/obj/magic_weapons.dmi'
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_magic.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_magic.dmi',
@@ -1411,78 +1366,72 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 	hitsound = 'sound/effects/woodhit.ogg'
 	drawsound = null
 	default_material = null
-	var/magic_state = "Spark" //this switches according to spell.
-	var/magic_state_stage //stage of state.
-	var/magic_spell_amount = 4 //How many spells are in the wand.
-	var/low_spell_list = list("Spark", "Flare", "Root", "Ice Shard") //Magic stat 0-75
-	var/med_spell_list = list("Shock Bolt", "Fire Bolt", "Vine Shot", "Ice Blast") //Magic stat 75 - 125
-	var/hig_spell_list = list("Lightning Strike", "Fire Ball", "Ensnare", "Frozen Rain") //Magic stat 125 - 200
-	var/active_spell_list = list()
-	var/maxcharges = 10 //How many times you can cast spells without waiting.
-	var/chargetime = 60 //How long in seconds it takes to recharge a charge
-	var/castdelay = 8 //antispam measure.
-	var/casting = FALSE //check if we are casting.
-	var/minimum_level = 0 //Minimum required magic level.
+	var/magic_state = "Spark" // this switches according to spell.
+	var/magic_state_stage // stage of state.
+	var/list/low_spell_list = list("Spark", "Flare", "Root", "Ice Shard") // Magic stat 0-75
+	var/list/med_spell_list = list("Shock Bolt", "Fire Bolt", "Vine Shot", "Ice Blast") // Magic stat 75 - 125
+	var/list/hig_spell_list = list("Lightning Strike", "Fire Ball", "Ensnare", "Frozen Rain") // Magic stat 125 - 200
+	var/list/active_spell_list = list()
+	var/maxcharges = 10 // How many times you can cast spells without waiting.
+	var/chargetime = 60 // How long in seconds it takes to recharge a charge
+	var/castdelay = 8 // antispam measure.
+	var/casting = FALSE // check if we are casting.
+	var/minimum_level = 0 // Minimum required magic level.
 	var/charges
-	var/gem //this will hold the gem, which will directly influence spell lists and description along with icon.
-	New()
-		active_spell_list = low_spell_list
-		charges = maxcharges //fill 'er up.
-		default_material = null
+	var/gem // this will hold the gem, which will directly influence spell lists and description along with icon.
+
+/obj/item/weapon/material/magic/wand/New()
+	active_spell_list = low_spell_list
+	charges = maxcharges //fill 'er up.
+	default_material = null
 
 //Utility
 /obj/item/weapon/material/magic/wand/examine(mob/user as mob)
-	var/mob/living/human/H = user
-	user << "<span class='notice'>[desc]</span>"
-	user << "<span class='notice'>The currently active spell is [magic_state]</span>"
-	if(H.getStat("magic") <= 100)
-		user << "<span class='notice'>You cannot detect anything about the wands spells.</span>"
-	else
-		user << "<span class='notice'>The wand has the spells [active_spell_list] active spells.</span>"
-	//How many uses are left.
-	if(H.getStat("magic") <= 100)
-		if(charges >= maxcharges / 1.5)
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>full</font>!</span>"
-		else if(charges >= maxcharges / 1.75)
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>somewhat full</font>!</span>"
-		else if(charges >= maxcharges / 3)
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>faint</font>!</span>"
+	to_chat(user, SPAN_NOTICE("[desc]"))
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		to_chat(user, SPAN_NOTICE("The currently active spell is [magic_state]"))
+		if (H.getStat("magic") <= 100)
+			to_chat(user, SPAN_NOTICE("You cannot detect anything about the wands spells."))
 		else
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>dead</font>!</span>"
-	else if(H.getStat("magic") <= 150)
-		if(charges >= maxcharges / 1.25)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>very full</font>!</span>"
-		else if(charges >= maxcharges / 1.5)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>full</font>!</span>"
-		else if(charges >= maxcharges / 1.75)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>mostly full</font>!</span>"
-		else if(charges >= maxcharges / 2)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>partially full</font>!</span>"
-		else if(charges >= maxcharges / 2.5)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>half-empty</font>!</span>"
-		else if(charges >= maxcharges / 3)
-			user << "<span class='notice'>The wand looks <font color=#9fe6f5>somewhat empty</font>!</span>"
-		else if(charges >= maxcharges / 4)
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>halfway empty</font>!</span>"
-		else if(charges >= maxcharges / 5)
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>almost empty</font>!</span>"
-		else
-			user << "<span class='notice'>The wand feels <font color=#9fe6f5>empty</font>!</span>"
-	else if(H.getStat("magic") <= 200)
-		user << "<span class='notice'>The wand has <font color=#9fe6f5>[charges] charges left!</font>!</span>"
-	else
-		user << "<span class='notice'>The wand has <font color=#9fe6f5>[charges]</font> out of <font color=#9fe6f5>[maxcharges] charges left!</font>!</span>"
+			to_chat(user, SPAN_NOTICE("The wand has the spells [active_spell_list] active spells."))
 
-/obj/item/weapon/material/magic/wand/attackby(obj/item/W as obj, mob/user as mob)
+		
+		//How many uses are left.
+		var/fullness
+		if(H.getStat("magic") < 100)
+			if (charges >= maxcharges)
+				fullness = "full"
+			else if (charges >= maxcharges*0.75)
+				fullness = "almost full"
+			else if (charges >= maxcharges*0.50)
+				fullness = "mostly full"
+			else if (charges >= maxcharges*0.25)
+				fullness = "partially empty"
+			else if (charges > 0)
+				fullness = "almost empty"
+			else
+				fullness = "empty"
+			to_chat(user, SPAN_NOTICE("The wand looks <font color=#9fe6f5>[fullness]!</font>"))
+		else
+			to_chat(user, SPAN_NOTICE("The wand has <font color=#9fe6f5>[charges]</font> out of <font color=#9fe6f5>[maxcharges] charges left!</font>!"))
+	else
+		to_chat(user, SPAN_NOTICE("Eugh, magic disgusts you. Leave it to humans."))
+
+/obj/item/weapon/material/magic/wand/attack_hand(mob/user)
 	//Switch spell
 	magic_state_stage++
-	if(magic_state_stage > magic_spell_amount)
+	if(magic_state_stage > active_spell_list.len)
 		magic_state_stage = 1
-	user << "<span class='notice'>Spell set to [active_spell_list[magic_state_stage]]!</span>"
+	to_chat(user, SPAN_NOTICE("Spell set to [active_spell_list[magic_state_stage]]!"))
 	magic_state = active_spell_list[magic_state_stage]
 
 /obj/item/weapon/material/magic/wand/attack(obj/item/W as obj, mob/user as mob)
-	//if charges > 0, casting = true spawn(castdelay), CASTING = false, shoot projectile.
+	if (charges > 0)
+		casting = TRUE
+		if(do_after(castdelay))
+			casting = FALSE
+		//	shoot projectile
 
 /obj/item/weapon/material/magic/wand/proc/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 

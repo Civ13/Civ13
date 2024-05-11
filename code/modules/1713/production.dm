@@ -561,7 +561,7 @@
 // Alghorithm will try to rotate item if not empty space are found. For example 1x3 item (dry_size=9) not found a place, but dehydrator have free row, and item will placed 3x1 (as dry_size=3).
 // ====================================================================
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named the same as icon_state of drying product
-// Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For exapmle "rawcutletR"
+// Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For example "rawcutletR"
 // Product (dried and ready) items must have an icons with normal and rotated states in 'icons/obj/food/dryer.dmi'
 // Items with size of 4 rows (dry_size=13..15) or equal side sizes (1x1, 2x2, 3x3) may not have an icon with additional "R".
 // For optimization try don't use dry_size 4, 8 and 12. Use instead 13, 14 and 15. Also, this will save you from having to draw two icons: straight and rotated; it will be enough to draw only one straight icon.
@@ -681,17 +681,18 @@
 
 /obj/structure/dehydrator/proc/dry_as_text(var/obj/item/I)
 	switch(get_dry_timer(I)/TIME_TO_DRY)
-		if (0 to 0.15) return "not dried"
-		if (0.15 to 0.4) return "a quarter dry"
+		if (0 to 0.15) return "drying"
+		if (0.15 to 0.4) return "quarter dried"
 		if (0.4 to 0.6) return "half dried"
-		if (0.6 to 0.85) return "three quarters dry"
+		if (0.6 to 0.85) return "three quarters dried"
 		if (1 to INFINITY)
-			if (!findtext(normal_item_name(I),"dried"))
-				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose
+			if (!findtext(normal_item_name(I),"dried")) // Look at normal_item_name()
+				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose (This breaks because the name "dried" is in the final product, and so it bugs out and adds an extra space before the dry_as_text descriptor.)
 					return "dried"
 			else
 				return ""
-		else return "almost dry"
+		else
+			return "almost dried"
 
 /obj/structure/dehydrator/examine(mob/user, distance)
 	..(user, distance)
@@ -699,8 +700,8 @@
 	var/additional_info = in_range(user, src) || isghost(user)
 	if (storage.contents.len>0)
 		for(var/obj/item/I in storage.contents)
-			dryed_now += "[additional_info ? "[dry_as_text(I)] " : ""][normal_item_name(I)]"
-		user << "<span class='notice'>There [storage.contents.len == 1 ? "is dries" : "are drying"] [english_list(dryed_now, "")].</span>"
+			dryed_now += "[additional_info ? "[dry_as_text(I)]" : ""] [normal_item_name(I)]"
+		to_chat(user, SPAN_NOTICE("There hangs \a [english_list(dryed_now, and_text = " and a ")].")) // \a because we need "there hangs an almost dried..."
 
 /obj/structure/dehydrator/proc/normal_item_name(var/obj/item/I)
 	return copytext(I.name, 1, findtext(I.name, "ON_DEHYDRATOR"))
@@ -722,7 +723,7 @@
 			return TRUE
 	if (!W.dried_type)
 		if (H)
-			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] cannot be dried."))
 		return TRUE//This can't be dryed
 	if (!W.dry_size)
 		return TRUE//ERROR
@@ -730,19 +731,19 @@
 		var/obj/item/weapon/reagent_containers/food/D = W
 		if (D.rotten)
 			if (H)
-				H << "<span class='warning'>\The [W.name] is rotten.</span>"
+				to_chat(H, SPAN_WARNING("\The [W.name] is rotten!"))
 			return TRUE
 	if (W.dry_size>15)
 		if (H)
-			H << "<span class='warning'>\The [W.name] not fit here!</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] does not fit here!"))
 		return TRUE
 	if (!hang_on(W))
 		if (H)
-			H << "<span class='warning'>Not enough room for one more [W.name]!</span>"
+			H << "<span class='warning'>There is not enough room for \the [W.name]!</span>"
 		return TRUE
 	if (H)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>",
+			"<span class='notice'>You can see how [H.name] hangs \a [normal_item_name(W)] to dry.</span>",
 			"<span class='notice'>You hang \a [normal_item_name(W)] to dry.")
 		return TRUE
 	..(W, H, icon_x, icon_y)
@@ -788,7 +789,7 @@
 						if (!P.dried_type)
 							set_dry_timer(P, TIME_TO_DRY+1)
 						qdel(I)
-						P.visible_message("[normal_item_name(P)] finishes drying.")
+						P.visible_message(SPAN_WARNING("\The [normal_item_name(P)] on \the [src] finishes drying."))
 						update_icon()
 		dry_process(this_process)
 
@@ -1665,7 +1666,7 @@
 
 	if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -1824,7 +1825,7 @@
 		return
 	if (istype(W, /obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		H << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 		return
 	if (istype(W, /obj/item/weapon/hammer))

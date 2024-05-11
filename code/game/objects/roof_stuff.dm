@@ -21,6 +21,7 @@
 //	invisibility = 101
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
+	var/switch_area = TRUE
 	var/image/roof_overlay
 
 /obj/roof/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -34,7 +35,7 @@
 				health -= 15
 				if (prob(30))
 					new/obj/effect/fire(loc)
-					visible_message("<span class='danger'>The roof catches fire!<span>")
+					visible_message(SPAN_DANGER("The roof catches fire!"))
 			return
 	if (istype(W, /obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -174,7 +175,7 @@
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	var/oldclimate = CURRENTAREA.climate
 
-	if (CURRENTAREA.type)
+	if (CURRENTAREA.type && src.switch_area)
 		current_area_type = CURRENTAREA.type
 		switch(oldclimate)
 			if ("tundra")
@@ -250,11 +251,11 @@
 		if (istype(src, /obj/roof/canopy))
 			for (var/obj/structure/tent/TT in loc)
 				supportfound = TRUE
-		for (var/obj/structure/roof_support/RS in range(2, src))
+		for (var/obj/structure/roof_support/RS in range(3, src))
 			supportfound = TRUE
 		for (var/obj/structure/mine_support/stone/SS in range(2, src))
 			supportfound = TRUE
-		for (var/turf/wall/W in range(1, src))
+		for (var/turf/wall/W in range(2, src))
 			supportfound = TRUE
 		for (var/obj/structure/simple_door/SD in loc)
 			supportfound = TRUE
@@ -372,7 +373,7 @@
 		to_chat(user, "That area is already roofed!")
 		return
 	var/confirm = FALSE
-	for(var/obj/structure/roof_support/RS in range(2, get_step(user, user.dir)))
+	for(var/obj/structure/roof_support/RS in range(3, get_step(user, user.dir)))
 		confirm = TRUE
 	for(var/obj/structure/mine_support/stone/SS in range(2, get_step(user, user.dir)))
 		confirm = TRUE

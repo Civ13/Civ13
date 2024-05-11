@@ -132,6 +132,7 @@ Please contact me on #coderbus IRC. ~Carn x
 #define R_HAND_LAYER			24
 #define FIRE_LAYER				25		//If you're on fire
 #define TARGETED_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
+#define OVEREFFECTS_LAYER		27
 #define TOTAL_LAYERS			27
 //////////////////////////////////
 
@@ -261,8 +262,7 @@ var/global/list/damage_icon_parts = list()
 	
 	reload_cached_icons(icon_key, forced)
 
-	if (update_icons)
-		update_icons()
+	if (update_icons)	update_icons()
 
 /mob/living/human/proc/reload_cached_icons(var/icon_key, var/forced)
 	var/icon/base_icon
@@ -1458,4 +1458,5 @@ var/global/list/damage_icon_parts = list()
 #undef R_HAND_LAYER
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
+#undef OVEREFFECTS_LAYER
 #undef TOTAL_LAYERS

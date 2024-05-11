@@ -1,6 +1,6 @@
 /obj/structure/brazier
 	name = "brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "brazier0"
 	anchored = TRUE
 	density = TRUE
@@ -41,44 +41,44 @@
 					return
 		else if (istype(W, /obj/item/stack/ore/coal))
 			fuel += (220)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/ore/charcoal))
 			fuel += (180)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/wood || /obj/item/stack/material/woodplank))
 			fuel += (80)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/bamboo))
 			fuel += (80)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if(istype(W, /obj/item/stack/dung))
 			fuel += (90)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/branch))
 			fuel += (60)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/leaf))
 			fuel += (60)*W.amount
-			user << "You refuel the [src]."
+			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/ammo_casing/arrow) && on)
 			var/obj/item/ammo_casing/arrow/WW = W
-			user << "You start lighting the arrow in \the [src]..."
+			to_chat(user, SPAN_NOTICE("You start lighting the arrow in \the [src]..."))
 			if (do_after(user, 30, src))
-				user << "You light the arrow in \the [src]."
+				to_chat(user, SPAN_NOTICE("You light the arrow in \the [src]."))
 				WW.name = "fire arrow"
 				WW.icon_state = "arrowf"
 				WW.projectile_type = /obj/item/projectile/arrow/arrow/fire
@@ -88,9 +88,9 @@
 				return
 		else if (istype(W, /obj/item/ammo_casing/bolt) && on)
 			var/obj/item/ammo_casing/bolt/WW = W
-			user << "You start lighting the bolt in \the [src]..."
+			to_chat(user, SPAN_NOTICE("You start lighting the bolt in \the [src]..."))
 			if (do_after(user, 30, src))
-				user << "You light the bolt in \the [src]."
+				to_chat(user, SPAN_NOTICE("You light the bolt in \the [src]."))
 				WW.name = "fire bolt"
 				WW.icon_state = "boltf"
 				WW.projectile_type = /obj/item/projectile/arrow/bolt/fire
@@ -105,181 +105,212 @@
 					fuel += 25*ST.amount
 				else
 					fuel += 25
-				user << "You place \the [W] in \the [src], refueling it."
+				user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 				qdel(W)
 				return
 			else
 				if (on)
-					user << "You throw \the [W] into \the [src], melting it."
+					to_chat(user, SPAN_NOTICE("You throw \the [W] into \the [src], melting it."))
 					qdel(W)
 					return
 	..()
+
 /obj/structure/brazier/proc/do_light()
 	if (on)
 		fuel--
-		change_global_pollution(0.015)
+		//change_global_pollution(0.015)
 		if (fuel <= 0)
 			on = FALSE
 			icon_state = "brazier0"
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			set_light(0)
 	spawn(10)
 		do_light()
 
 /obj/structure/brazier/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light \the [src]."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		icon_state = "brazier1"
 		set_light(5)
 		return
-	else
-		user << "You put out \the [src]."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		icon_state = "brazier0"
 		set_light(0)
 		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
+		return
+
+// Other brazier type defines.
 
 /obj/structure/brazier/stone
 	name = "stone brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "s_brazier0"
 
 /obj/structure/brazier/sandstone
 	name = "sandstone brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "sandstone_brazier0"
 
 /obj/structure/brazier/obsidian
 	name = "obsidian brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "obsidian_brazier0"
 
 /obj/structure/brazier/marble
 	name = "marble brazier"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "marble_brazier0"
 
-/obj/structure/brazier/potbellystove
+/obj/structure/brazier/potbellystove // This is a stove not a brazier; todo: move this.
 	name = "potbelly stove"
-	desc = "Where you keep warm or light arrows on fire."
+	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "potbelly"
+
+// Other lit brazier procedures. - todo: call parent proc which handles all of this, save for the icon states, condensifying code as a result.
 
 /obj/structure/brazier/sandstone/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
 		if (fuel <= 0)
 			on = FALSE
 			set_light(0)
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			icon_state = "sandstone_brazier0"
 	spawn(10)
 		do_light()
 
 /obj/structure/brazier/obsidian/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
 		if (fuel <= 0)
 			on = FALSE
 			set_light(0)
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			icon_state = "obsidian_brazier0"
 	spawn(10)
 		do_light()
 
 /obj/structure/brazier/marble/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
 		if (fuel <= 0)
 			on = FALSE
 			set_light(0)
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			icon_state = "marble_brazier0"
 	spawn(10)
 		do_light()
 
 /obj/structure/brazier/stone/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
 		if (fuel <= 0)
 			on = FALSE
 			set_light(0)
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			icon_state = "s_brazier0"
 	spawn(10)
 		do_light()
 
-/obj/structure/brazier/potbellystove/do_light()
+/obj/structure/brazier/potbellystove/do_light() // This is a stove not a brazier; todo: move this.
 	if (on)
-		fuel = (fuel-1)
+		fuel--
 		if (fuel <= 0)
 			on = FALSE
 			set_light(0)
+			visible_message(SPAN_WARNING("\The [src] runs out of fuel!"))
 			icon_state = "potbelly"
 	spawn(10)
 		do_light()
 
+// Other brazier hand lighting procs - todo: call parent proc which handles all of this, save for the icon states, condensifying code as a result.
+
 /obj/structure/brazier/stone/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light the stone brazier."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		set_light(5)
 		icon_state = "s_brazier1"
 		return
-	else
-		user << "You put out the stone brazier."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		set_light(0)
 		icon_state = "s_brazier0"
 		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
+		return
 
-/obj/structure/brazier/potbellystove/attack_hand(mob/user as mob)
+/obj/structure/brazier/potbellystove/attack_hand(mob/user as mob) // This is a stove not a brazier; todo: move this.
 	if (!on && fuel > 0)
-		user << "You light the potbelly stove."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		set_light(5)
 		icon_state = "potbelly-lit"
 		return
-	else
-		user << "You put out the potbelly stove."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		set_light(0)
 		icon_state = "potbelly"
 		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
+		return
 
 /obj/structure/brazier/sandstone/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light the sandstone brazier."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		set_light(5)
 		icon_state = "sandstone_brazier1"
 		return
-	else
-		user << "You put out the sandstone brazier."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		set_light(0)
 		icon_state = "sandstone_brazier0"
 		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
+		return
 
 /obj/structure/brazier/obsidian/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light the obsidian brazier."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		set_light(5)
 		icon_state = "obsidian_brazier1"
 		return
-	else
-		user << "You put out the obsidian brazier."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		set_light(0)
 		icon_state = "obsidian_brazier0"
 		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
+		return
 
 /obj/structure/brazier/marble/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light the marble brazier."
+		user.visible_message(SPAN_NOTICE("[user] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		on = TRUE
 		set_light(5)
 		icon_state = "marble_brazier1"
 		return
-	else
-		user << "You put out the marble brazier."
+	else if (on)
+		user.visible_message(SPAN_NOTICE("[user] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		on = FALSE
 		set_light(0)
 		icon_state = "marble_brazier0"
+		return
+	else
+		to_chat(user, SPAN_WARNING("\The [src] is out of fuel!"))
 		return

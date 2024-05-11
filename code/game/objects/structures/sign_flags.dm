@@ -2,18 +2,19 @@
 	var/ripped = FALSE
 	icon = 'icons/obj/decals.dmi'
 	flammable = TRUE
+
 /obj/structure/sign/flag/attack_hand(mob/user as mob)
 	if (!ripped)
 		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 		for (var/i = FALSE to 3)
-			if (do_after(user, 10))
-				playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
-			else
+			if (!do_after(user, 10))
 				return
-		visible_message("<span class='warning'>[user] rips [src]!</span>" )
+			playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
+		visible_message(SPAN_WARNING("[user] rips [src]!"))
 		qdel(src)
 	not_movable = FALSE
 	not_disassemblable = TRUE
+
 /obj/structure/sign/flag/green
 	name = "\improper green banner"
 	desc = "A green linen banner."
@@ -138,38 +139,24 @@
 	icon_state = "clock"
 /obj/structure/sign/clock/examine(mob/user)
 	..()
-	user << "<big>It is now [clock_time()].</big>"
+	to_chat(user, "<big>It is now [clock_time()].</big>")
 /obj/structure/sign/wide
 	icon = 'icons/obj/decals_wide.dmi'
 	bound_x = 32
 
 /obj/structure/sign/wide/carpet
-	name = "\improper Carpet"
-	desc = "A low quality carpet dangling on the wall."
+	name = "\improper carpet"
+	desc = "A shaped piece of thick material used for covering floors."
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
 /obj/structure/sign/wide/carpet/purple
-	name = "\improper Carpet"
-	desc = "A low quality carpet dangling on the wall."
-	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "carpet2"
-	layer = OBJ_LAYER - 0.1
-
 /obj/structure/sign/wide/carpet/red
-	name = "\improper Carpet"
-	desc = "A low quality carpet dangling on the wall."
-	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "carpet3"
-	layer = OBJ_LAYER - 0.1
-
 /obj/structure/sign/wide/carpet/green
-	name = "\improper Carpet"
-	desc = "A low quality carpet dangling on the wall."
-	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "carpet4"
-	layer = OBJ_LAYER - 0.1
 
 /obj/structure/sign/wide/stalingrad
 	name = "Stalingrad sign"
@@ -185,7 +172,7 @@
 
 /obj/structure/sign/wide/vadso
 	name = "Vadso sign"
-	desc = "A displaying Vadso."
+	desc = "A sign displaying Vadso."
 	icon = 'icons/obj/decals_wide.dmi'
 	icon_state = "grestin"
 

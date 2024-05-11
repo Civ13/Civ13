@@ -16,12 +16,11 @@
 	desc = "supports wheels."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
-	var/tile_size = "32x32"
 	var/vehicle_type = "car"
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
-	var/maxpower = 100
+	var/maxpower = 50
 	var/list/speedlist = list(1=6,2=5,3=4,4=3,5=2)
 	powerneeded = 0
 	var/obj/structure/engine/engine = null
@@ -41,14 +40,12 @@
 	var/matrix_l = 0
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
-	var/turret_type = "tank_turret"
-	var/turret_x = 0
-	var/turret_y = 0
+
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 20
+	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
 	reg_number = ""
 	turntimer = 5
@@ -68,7 +65,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 3
-	maxpower = 60
+	maxpower = 40
 	speedlist = list(1=8,2=6,3=4)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -77,7 +74,7 @@
 	name = "boat rudder control"
 	currentspeed = 0
 	speeds = 4
-	maxpower = 60
+	maxpower = 40
 	speedlist = list(1=6,2=5,3=3,4=2)
 	reg_number = ""
 	vehicle_type = "boat"
@@ -88,18 +85,43 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 3
-	maxpower = 5000
+	maxpower = 2500
 	speedlist = list(1=12,2=8,3=6)
 	vehicle_type = "tank"
+
+/obj/structure/vehicleparts/axis/heavy/is1
+	name = "IS-1"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/is2
+	name = "IS-2"
+	speeds = 4
+	speedlist = list(1=12,2=8,3=6,4=5)
+	reg_number = ""
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/is3
 	name = "IS-3"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
-	color = "#5C5C4C"
-	turret_type = "is3_turret"
-	tile_size = "96x96"
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -112,8 +134,7 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#3d5931"
-	turret_type = "t34_turret"
-	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -122,7 +143,6 @@
 
 /obj/structure/vehicleparts/axis/heavy/t34/t3485
 	name = "T-34-85"
-	turret_type = "t3485_turret"
 	color = "#4a5243"
 
 /obj/structure/vehicleparts/axis/heavy/su100
@@ -131,8 +151,7 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#4a5243"
-	turret_type = "su100_turret"
-	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -172,13 +191,11 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#3d5931"
-	turret_type = "kv_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
-
 
 /obj/structure/vehicleparts/axis/heavy/mtlb
 	name = "MT-LB"
@@ -186,8 +203,6 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#4a5243"
-	turret_type = "none"
-	tile_size = "96x96"
 	vehicle_type = "apc"
 	New()
 		..()
@@ -200,9 +215,20 @@
 	speeds = 4
 	speedlist = list(1=14,2=10,3=8)
 	reg_number = ""
-	turret_type = "none"
 	color = "#939276"
 	vehicle_type = "apc"
+	New()
+		..()
+		var/pickedname = pick(tank_names_usa)
+		tank_names_usa -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/m41
+	name = "M41"
+	speeds = 4
+	speedlist = list(1=14,2=10,3=8)
+	reg_number = ""
+	color = "#494224"
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
@@ -215,11 +241,8 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "bmd1_turret"
-	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -232,11 +255,8 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "bmd2_turret"
-	tile_size = "96x96"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 16
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -244,19 +264,15 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/bmd2/atgm
-	turret_type = "bmd2_atgm_turret"
 
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
 	speeds = 5
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
-	color = "#787859"
-	turret_type = "btr80_turret"
-	tile_size = "96x96"
+	color = "#4a5243"
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 0
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -264,7 +280,6 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
-	turret_type = "btr_atgm_turret"
 
 /obj/structure/vehicleparts/axis/heavy/bradley
 	name = "M2 Bradley"
@@ -272,11 +287,7 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#787859"
-	turret_type = "bradley_turret"
-	tile_size = "96x96"
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 0
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
@@ -289,16 +300,60 @@
 	speedlist = list(1=10,2=6,3=5,4=4,5=3)
 	reg_number = ""
 	color = "#5C5C4C"
-	turret_type = "cv90_turret"
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 16
+
+/obj/structure/vehicleparts/axis/heavy/t80u
+	name = "T-80U"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t80uk
+	name = "T-80UK"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t72
 	name = "T-72"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t72_turret"
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t72m1
+	name = "T-72M1"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
+	reg_number = ""
+	color = "#5C5C4C"
+	New()
+		..()
+		var/pickedname = pick(tank_names_soviet)
+		tank_names_soviet -= pickedname
+		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/t72b3
+	name = "T-72B3"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -311,7 +366,6 @@
 	name = "T-64BM"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t64bm_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -324,7 +378,6 @@
 	name = "T-64BV"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t64bv_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -337,7 +390,6 @@
 	name = "T-62A"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t62a_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -350,7 +402,6 @@
 	name = "T-62M"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t62m_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -363,7 +414,6 @@
 	name = "T-62MV"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t62mv_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -376,7 +426,6 @@
 	name = "T-55"
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
-	turret_type = "t55_turret"
 	reg_number = ""
 	color = "#5C5C4C"
 	New()
@@ -391,7 +440,6 @@
 	speedlist = list(1=12,2=8,3=6)
 	reg_number = ""
 	color = "#585A5C"
-	turret_type = "pziv_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_german)
@@ -402,7 +450,6 @@
 	name = "Panzer VI Tiger"
 	speeds = 4
 	speedlist = list(1=14,2=11,3=9,4=7)
-	turret_type = "tiger_turret"
 	reg_number = ""
 	color = "#3B3F41"
 	New()
@@ -414,10 +461,9 @@
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
 	speeds = 4
-	speedlist = list(1=9,2=5,3=3,4=2)
+	speedlist = list(1=10,2=6,3=4,4=3)
 	reg_number = ""
-	color = "#c4a567"
-	turret_type = ""
+	color = "#D79E57"
 
 /obj/structure/vehicleparts/axis/heavy/l3cc
 	name = "L3/33 CC"
@@ -425,7 +471,6 @@
 	speedlist = list(1=9,2=5,3=3,4=2)
 	reg_number = ""
 	color = "#c4a567"
-	turret_type = ""
 
 /obj/structure/vehicleparts/axis/heavy/m13
 	name = "M13/40"
@@ -433,7 +478,6 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#778687"
-	turret_type = "tank_turret"
 
 /obj/structure/vehicleparts/axis/heavy/omw22_2
 	name = "OMW-22 mk. II"
@@ -441,7 +485,6 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#774D4C"
-	turret_type = "t55_turret"
 
 /obj/structure/vehicleparts/axis/heavy/baf1_a
 	name = "BAF I mod. A"
@@ -449,7 +492,6 @@
 	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#8383C2"
-	turret_type = "pt76_turret"
 
 /obj/structure/vehicleparts/axis/heavy/adrian
 	name = "Type-9 Adrian"
@@ -457,11 +499,7 @@
 	speedlist = list(1=12,2=8,3=6,4=5)
 	reg_number = ""
 	color = "#555346"
-	turret_type = "bmd2_turret"
-	tile_size = "96x96"
 	vehicle_type = "apc"
-	turret_x = 16
-	turret_y = 16
 
 /obj/structure/vehicleparts/axis/heavy/t90a
 	name = "T-90A"
@@ -469,7 +507,6 @@
 	speedlist = list(1=10,2=7,3=5,4=4)
 	reg_number = ""
 	color = "#5C5C4C"
-	turret_type = "t90a_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_soviet)
@@ -482,7 +519,6 @@
 	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#5C5C4C"
-	turret_type = "2a6_turret"
 
 /obj/structure/vehicleparts/axis/heavy/challenger2
 	name = "FV4034 Challenger 2"
@@ -490,7 +526,6 @@
 	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#CCC0A6"
-	turret_type = "challenger2_turret"
 
 /obj/structure/vehicleparts/axis/heavy/m1a1_abrams
 	name = "M1A1 Abrams"
@@ -498,7 +533,6 @@
 	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#58564a"
-	turret_type = "m1a1_WIP2_turret"
 	New()
 		..()
 		var/pickedname = pick(tank_names_usa)
@@ -510,7 +544,6 @@
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
 	color = "#6a5a3d"
-	turret_type = "jap_turret"
 	reg_number = ""
 	New()
 		..()
@@ -523,7 +556,6 @@
 	speeds = 4
 	speedlist = list(1=10,2=7,3=5,4=4)
 	color = "#6a5a3d"
-	turret_type = "jap_turret"
 	reg_number = ""
 	New()
 		..()
@@ -532,11 +564,10 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m4
-	name = "M4 Sherman"
+	name = "M-4 Sherman"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color = "#293822"
-	turret_type = "m4_turret"
+	color = "#494224"
 	reg_number = ""
 	New()
 		..()
@@ -545,11 +576,10 @@
 		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
-	name = "M48A1 Patton"
+	name = "M-48A1 Patton"
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
-	color = "#293822"
-	turret_type = "m48a1_turret"
+	color = "#494224"
 	reg_number = ""
 	New()
 		..()
@@ -562,7 +592,6 @@
 	speeds = 4
 	speedlist = list(1=12,2=8,3=6,4=5)
 	color = "#4B4D40"
-	turret_type = "m60a3_turret"
 	reg_number = ""
 	New()
 		..()
@@ -576,7 +605,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 1000
+	maxpower = 800
 	speedlist = list(1=8,2=6,3=4,4=3,5=2)
 	turntimer = 8
 	vehicle_type = "car"
@@ -642,7 +671,7 @@
 	if(istype(H.driver_vehicle, /obj/structure/vehicle/carriage))
 		var/obj/structure/vehicle/carriage/M = H.driver_vehicle
 		if(M.buckled_animal_propulsion <= 0)
-			H << "You need animals to move the [H.driver_vehicle.name]."
+			to_chat(H, "You need animals to move the [H.driver_vehicle.name].")
 			return
 		else if(M.buckled_animal_propulsion == 1)
 			H.driver_vehicle.axis.speedlist = list(1=25,2=20)
@@ -665,7 +694,7 @@
 			if (H.driver_vehicle.axis.currentspeed == 1)
 				H.driver_vehicle.moving = TRUE
 				H.driver_vehicle.startmovementloop()
-				H << "You hit the animal to move."
+				to_chat(H, "You hit the animal to move.")
 		return
 	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
@@ -676,7 +705,7 @@
 			return
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
-			H << "You hit the animal harder."
+			to_chat(H, "You hit the animal harder.")
 			return
 	else
 		return
@@ -689,11 +718,11 @@
 		var/spd = user.driver_vehicle.axis.get_speed()
 		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
 			user.driver_vehicle.moving = FALSE
-			user << "You stop \the [user.driver_vehicle]."
+			to_chat(user, "You stop \the [user.driver_vehicle].")
 			return
 		else
 			user.driver_vehicle.vehicle_m_delay = spd
-			user << "You pull the rope to reduce the speed."
+			to_chat(user, "You pull the rope to reduce the speed.")
 			return
 
 /obj/item/vehicleparts/wheel/handle
@@ -711,6 +740,7 @@
 	desc = "Used to steer a boat and control the sails."
 	icon_state = "rudder"
 	var/spamtimer = 0
+
 /obj/item/vehicleparts/wheel/rudder_sails/attack_self(mob/living/human/H)
 	if(!H.driver_vehicle)
 		return
@@ -721,17 +751,18 @@
 	if (H.driver_vehicle.sails)
 		if (!H.driver_vehicle.sails_on)
 			if (world.time > spamtimer)
-				H << "You hoist the sails."
+				to_chat(H, "You hoist the sails.")
 				H.driver_vehicle.sails_on = TRUE
 				H.driver_vehicle.check_sails()
 				spamtimer = world.time + 20
 				H.driver_vehicle.update_overlay()
 				return
 		else
-			H << "You retract the sails."
+			to_chat(H, "You retract the sails.")
 			H.driver_vehicle.sails_on = FALSE
 			H.driver_vehicle.update_overlay()
 			return
+
 /obj/item/vehicleparts/wheel/attack_self(mob/living/human/H)
 	if(!H.driver_vehicle)
 		return
@@ -794,11 +825,11 @@
 		var/spd = user.driver_vehicle.axis.get_speed()
 		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
 			user.driver_vehicle.moving = FALSE
-			user << "You stop \the [user.driver_vehicle]."
+			to_chat(user, "You stop \the [user.driver_vehicle].")
 			return
 		else
 			user.driver_vehicle.vehicle_m_delay = spd
-			user << "You reduce the speed."
+			to_chat(user, "You reduce the speed.")
 			return
 ///////////////////FRAME///////////////////////////////
 /obj/item/vehicleparts/frame
@@ -1030,9 +1061,9 @@
 /obj/item/tank_system/aps/proc/explode_missiles()
 	if (src)
 		if (uses > 0)
-			for (var/obj/item/missile/M in range(6, src))
+			for (var/obj/item/projectile/shell/missile/M in range(6, src))
 				if (M)
-					M.throw_impact(get_turf(M))
+					M.initiate(get_turf(M))
 					--uses
 					for (var/mob/O in viewers(7, get_turf(src)))
 						to_chat(O, SPAN_DANGER("<big>\The [src] explodes the rocket!</big>"))

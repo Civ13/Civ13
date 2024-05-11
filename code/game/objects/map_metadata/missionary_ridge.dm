@@ -22,7 +22,7 @@
 	faction2 = CIVILIAN
 	ordinal_age = 4
 	songs = list(
-		"The Good the Bad the Ugly Theme:1" = "sound/music/good_bad_ugly.ogg")
+		"The Good the Bad the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3000
 /obj/map_metadata/missionary_ridge/job_enabled_specialcheck(var/datum/job/J)

@@ -21,6 +21,7 @@ var/list/global_huds = list(
 /datum/hud/var/obj/screen/disarm_intent
 /datum/hud/var/obj/screen/help_intent
 */
+
 /datum/global_hud
 	var/obj/screen/druggy
 	var/obj/screen/blurry
@@ -33,6 +34,7 @@ var/list/global_huds = list(
 	var/obj/screen/fishbed
 	var/obj/screen/noise
 	var/obj/screen/cover
+	var/obj/screen/aim_cross
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
@@ -100,6 +102,12 @@ var/list/global_huds = list(
 	fov.screen_loc = "4,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
+
+	aim_cross = new /obj/screen/aiming_cross()
+	fov.name = " "
+	fov.screen_loc = "1,1"
+	fov.mouse_opacity = FALSE
+	fov.layer = 21
 
 	cover = new /obj/screen/cover()
 	noise = new /obj/screen/noise()
@@ -174,7 +182,7 @@ var/list/global_huds = list(
 		return
 
 	if (!client) return
-	if (client.view != world.view)
+	if (client.view != WORLD_VIEW)
 		return
 
 //	hud_used.hidden_inventory_update()
@@ -189,7 +197,7 @@ var/list/global_huds = list(
 		return
 	if (!client)
 		return
-	if (client.view != world.view)
+	if (client.view != WORLD_VIEW)
 		return
 
 	update_action_buttons()

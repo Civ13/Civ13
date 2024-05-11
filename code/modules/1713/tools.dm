@@ -609,7 +609,7 @@
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
-			if((map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS) && istype(nT, /turf/floor/broken_floor))
+			if(map.ID == MAP_BATTLE_SHIPS && istype(nT, /turf/floor/broken_floor))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return

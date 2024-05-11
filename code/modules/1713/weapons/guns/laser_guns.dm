@@ -22,9 +22,9 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.10
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
+	can_tactical_reload = TRUE
 
 /obj/item/weapon/gun/projectile/semiautomatic/laser/consume_next_projectile(var/check = FALSE)
 	//get the next casing
@@ -79,7 +79,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 20
-	effectiveness_mod = 1.10
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
@@ -107,7 +106,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 20
 	throwforce = 25
-	effectiveness_mod = 1.25
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
@@ -135,7 +133,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 15
-	effectiveness_mod = 1.10
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
@@ -163,7 +160,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 15
-	effectiveness_mod = 1.25
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
@@ -191,7 +187,6 @@
 	gun_type = GUN_TYPE_RIFLE
 	force = 10
 	throwforce = 15
-	effectiveness_mod = 1.15
 	attachment_slots = null
 	handle_casings = REMOVE_CASINGS
 
@@ -209,7 +204,6 @@
 	ammo_type = /obj/item/ammo_casing/laser/b
 	load_method = MAGAZINE
 	handle_casings = REMOVE_CASINGS
-	effectiveness_mod = 1
 
 /obj/item/weapon/gun/projectile/pistol/laser/dc17
 	name = "DC-17 blaster"
@@ -220,7 +214,6 @@
 	name = "DC-17 Commando blaster"
 	desc = "A DC-17 Commando blaster pistol most commonly used by the Grand Army of the Republic Commandos."
 	icon_state = "DC-17c"
-	effectiveness_mod = 1.04
 
 /obj/item/weapon/gun/projectile/pistol/laser/dl44
 	name = "DL-44 blaster"
@@ -233,7 +226,6 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dl44)
 	weight = 0.5
 	ammo_type = /obj/item/ammo_casing/laser/pistol
-	effectiveness_mod = 1.02
 
 /obj/item/weapon/gun/projectile/pistol/laser/dh17
 	name = "DH-17 blaster"
@@ -246,7 +238,6 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dh17)
 	weight = 0.5
 	ammo_type = /obj/item/ammo_casing/laser/pistol
-	effectiveness_mod = 0.98
 
 /obj/item/weapon/gun/projectile/pistol/laser/westar34
 	name = "Westar-34 blaster"
@@ -259,7 +250,6 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/westar34)
 	weight = 0.5
 	ammo_type = /obj/item/ammo_casing/laser/pistol
-	effectiveness_mod = 1.30
 /////////////////////////////STAT MG'S/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary/laser
 	name = "laser MG"
@@ -271,11 +261,9 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=3, burst_delay=1.8, fire_delay=1.8)
 		)
 	ammo_type = /obj/item/ammo_casing/laser
-	full_auto = TRUE
-	
 /obj/item/weapon/gun/projectile/automatic/stationary/laser/update_icon()
 	if (ammo_magazine)
 		icon_state = base_icon
@@ -298,7 +286,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=5, burst_delay=1.8, fire_delay=1.8)
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -312,7 +300,7 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/repeating_blaster
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/repeating_blaster)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.9, 0.9, 1.1, 1.1, 1), accuracy=list(2))
+		list(name = "automatic", burst=5, burst_delay=1.8, fire_delay=1.8)
 		)
 	ammo_type = /obj/item/ammo_casing/laser
 
@@ -335,6 +323,7 @@
 	has_telescopic = FALSE
 	slot_flags = SLOT_SHOULDER
 	is_laser_mg = TRUE
+	recoil = 1
 
 /obj/item/weapon/gun/projectile/automatic/laser/update_icon()
 	if (ammo_magazine)
@@ -404,7 +393,6 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/dcb2)
 	weight = 0.6
 	ammo_type = /obj/item/ammo_casing/laser/pistol/b
-	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/pistol/laser/dcb2/update_icon()
 	..()
@@ -427,8 +415,8 @@
 	magazine_type = /obj/item/ammo_magazine/tibannagas/lasgun
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/lasgun)
 	firemodes = list(
-		list(name = "semiauto",	burst=1, burst_delay=0.7, recoil=0, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name = "semiauto",	burst=1, burst_delay=1.2, recoil=0, move_delay=2),
+		list(name = "automatic",	burst=1, burst_delay=1.2, recoil=0, move_delay=4),
 		)
 	weight = 3.08
 	force = 20
@@ -449,7 +437,6 @@
 	good_mags = list(/obj/item/ammo_magazine/tibannagas/laspistol)
 	weight = 0.7
 	ammo_type = /obj/item/ammo_casing/laser/pistol
-	effectiveness_mod = 1.04
 
 /obj/item/weapon/gun/projectile/pistol/laser/laspistol/update_icon()
 	..()

@@ -17,7 +17,7 @@
 
 /obj/structure/wild/berrybush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
-		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
 		if (prob(18))
 			new/obj/structure/wild/burnedbush(src.loc)
 		qdel(src)

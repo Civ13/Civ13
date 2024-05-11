@@ -4,7 +4,7 @@
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if (!H.next_look_at.Find(getRoundUID(TRUE)) || H.next_look_at[getRoundUID(TRUE)] <= world.time)
-			H.visible_message("<small>[user.name] looks at \the [src].</small>", "<small>You look at \the [src].</small")
+			H.visible_message("<small>[user.name] looks at \the [src].</small>", "<small>You look at \the [src].</small>")
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
 
 	var/skipgloves = FALSE
@@ -354,7 +354,7 @@
 					else
 						msg += "<br><font color='red'><i>[T.He] is a citizen of the <b>[civname_b]</b>.</font></i>"
 
-			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+			if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
 				if (H.original_job_title == original_job_title)
 					if (original_job_title == "Redmenian Civilian")
 						msg += "<br><i><font color='green'>You recognize [T.him] as a citizen of your nation, <b>[civname_a]</b>.</i></font>"

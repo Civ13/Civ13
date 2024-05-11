@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Nuclear Wasteland"
@@ -131,7 +131,7 @@
 	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = "sound/music/whytheyhidetheirbodies.ogg",)
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)

@@ -56,6 +56,7 @@
 	desc = "A fancy orange armband!"
 	icon_state = "dutch"
 	slot = "armband"
+
 /obj/item/clothing/accessory/armband/japanese
 	name = "Japanese armband"
 	desc = "An armband with japan's flag on it!"
@@ -67,7 +68,6 @@
 	desc = "A polish armband!"
 	icon_state = "polisharmband"
 	slot = "armband"
-
 
 /obj/item/clothing/accessory/armband/wagner
 	name = "red wagner armband"

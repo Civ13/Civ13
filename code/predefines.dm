@@ -294,43 +294,17 @@
 #define GRAB_UPGRADING  4
 #define GRAB_KILL	   5
 
-// Security levels.
-#define SEC_LEVEL_GREEN 0
-#define SEC_LEVEL_BLUE  1
-#define SEC_LEVEL_RED   2
-#define SEC_LEVEL_DELTA 3
-
-#define TRANSITIONEDGE 7 // Distance from edge to move to another z-level.
-
 // Invisibility constants.
-#define INVISIBILITY_LIGHTING			 20
 #define INVISIBILITY_LEVEL_ONE			35
 #define INVISIBILITY_LEVEL_TWO			45
-#define INVISIBILITY_OBSERVER			 60
 #define INVISIBILITY_EYE				  61
 
-#define SEE_INVISIBLE_LIVING			  25
 #define SEE_INVISIBLE_OBSERVER_NOLIGHTING 45
 #define SEE_INVISIBLE_LEVEL_ONE		   35
 #define SEE_INVISIBLE_LEVEL_TWO		   45
-#define SEE_INVISIBLE_OBSERVER			25
-
-#define SEE_INVISIBLE_MINIMUM 5
-#define INVISIBILITY_MAXIMUM 100
-
-// Object specific defines.
-#define CANDLE_LUM 3 // For how bright candles are.
 
 //Some mob defines below
 #define AI_CAMERA_LUMINOSITY 6
-
-// Some arbitrary defines to be used by self-pruning global lists. (see master_controller)
-#define PROCESS_KILL 26 // Used to trigger removal from a processing list.
-
-#define HOSTILE_STANCE_IDLE	  1
-#define HOSTILE_STANCE_ALERT	 2
-#define HOSTILE_STANCE_ATTACK	3
-#define HOSTILE_STANCE_TIRED	 4
 
 #define ROUNDSTART_LOGOUT_REPORT_TIME 6000 // Amount of time (in deciseconds) after the rounds starts, that the player disconnect report is issued.
 
@@ -414,9 +388,6 @@
 #define IS_RESTRICTED	 32768 // Is not a core/normally playable species. (castes, mutantraces)
 #define REGENERATES_LIMBS 65536 // Attempts to regenerate unamputated limbs.
 
-//Flags for zone sleeping
-#define ZONE_ACTIVE   1
-#define ZONE_SLEEPING 0
 
 
 /*
@@ -443,13 +414,6 @@
 #define FIRE_DAMAGE_MODIFIER 0.0215 // Higher values result in more external fire damage to the skin. (default 0.0215)
 #define  AIR_DAMAGE_MODIFIER 2.025  // More means less damage from hot air scalding lungs, less = more damage. (default 2.025)
 #define INFINITY			 1.#INF
-
-// Setting this much higher than 1024 could allow spammers to DOS the server easily.
-#define MAX_MESSAGE_LEN	   1024
-#define MAX_PAPER_MESSAGE_LEN 3072
-#define MAX_BOOK_MESSAGE_LEN  9216
-#define MAX_LNAME_LEN		 64
-#define MAX_NAME_LEN		  45 // long german names and stuff
 
 // Event defines.
 #define EVENT_LEVEL_MUNDANE  1
@@ -597,3 +561,41 @@
 #define KD_CHANCE_LOW 40
 #define KD_CHANCE_MEDIUM 60
 #define KD_CHANCE_HIGH 80
+
+/////////////////
+////WIZARD //////
+/////////////////
+
+/*		WIZARD SPELL FLAGS		*/
+#define GHOSTCAST		0x1		//can a ghost cast it?
+#define NEEDSCLOTHES	0x2		//does it need the wizard garb to cast? Nonwizard spells should not have this
+#define NEEDSHUMAN		0x4		//does it require the caster to be human?
+#define Z2NOCAST		0x8		//if this is added, the spell can't be cast at centcomm
+#define STATALLOWED		0x10	//if set, the user doesn't have to be conscious to cast. Required for ghost spells
+#define IGNOREPREV		0x20	//if set, each new target does not overlap with the previous one
+//The following flags only affect different types of spell, and therefore overlap
+//Targeted spells
+#define INCLUDEUSER		0x40	//does the spell include the caster in its target selection?
+#define SELECTABLE		0x80	//can you select each target for the spell?
+//AOE spells
+#define IGNOREDENSE		0x40	//are dense turfs ignored in selection?
+#define IGNORESPACE		0x80	//are space turfs ignored in selection?
+//End split flags
+#define CONSTRUCT_CHECK	0x100	//used by construct spells - checks for nullrods
+#define NO_BUTTON		0x200	//spell won't show up in the HUD with this
+
+//invocation
+#define SpI_SHOUT	"shout"
+#define SpI_WHISPER	"whisper"
+#define SpI_EMOTE	"emote"
+#define SpI_NONE	"none"
+
+//upgrading
+#define Sp_SPEED	"speed"
+#define Sp_POWER	"power"
+#define Sp_TOTAL	"total"
+
+//casting costs
+#define Sp_RECHARGE	"recharge"
+#define Sp_CHARGES	"charges"
+#define Sp_HOLDVAR	"holdervar"

@@ -22,7 +22,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Sun Up in the Sky:1" = "sound/music/redsun.ogg",)
+		"Red Sun Up in the Sky:1" = 'sound/music/redsun.ogg',)
 	grace_wall_timer = 4800
 
 /obj/map_metadata/long_march/job_enabled_specialcheck(var/datum/job/J)

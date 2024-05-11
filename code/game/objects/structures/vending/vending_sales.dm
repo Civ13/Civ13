@@ -149,7 +149,7 @@
 	vend_ready = FALSE //One thing at a time!!
 	status_message = "Vending..."
 	status_error = FALSE
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 
 	spawn(vend_delay)
 		R.get_product(get_turf(src),p_amount,user)
@@ -159,7 +159,7 @@
 		vend_ready = TRUE
 		currently_vending = null
 		update_icon()
-		nanomanager.update_uis(src)
+		GLOB.nanomanager.update_uis(src)
 
 /**
  * Add item to the machine
@@ -215,7 +215,7 @@
 
 		data["products"] = listed_products
 
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
 			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 440, 600)
@@ -274,7 +274,7 @@
 						if (istype(src, /obj/structure/vending/sales/pepelsibirsk))
 							var/obj/structure/vending/sales/pepelsibirsk/faction_trader = src
 							if (istype(faction_trader))
-								pepel_factions.pepelsibirsk_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
+								external_relations.npc_faction_relations[faction_trader.faction_relations] += price_with_tax*inp*0.02
 								to_chat(usr, "Relations have increased by [price_with_tax*inp*0.02].")
 						moneyin -= price_with_tax*inp
 						if (owner != "Global")
@@ -319,7 +319,7 @@
 									qdel(NM)
 						moneyin = 0
 						vend(R, usr, inp)
-						nanomanager.update_uis(src)
+						GLOB.nanomanager.update_uis(src)
 
 		else if (href_list["cancelpurchase"])
 			currently_vending = null
@@ -351,12 +351,12 @@
 				if (GC.amount == 0)
 					qdel(GC)
 			moneyin = 0
-			nanomanager.update_uis(src)
+			GLOB.nanomanager.update_uis(src)
 			return
 
 		add_fingerprint(usr)
 		playsound(usr.loc, 'sound/machines/button.ogg', 100, TRUE)
-		nanomanager.update_uis(src)
+		GLOB.nanomanager.update_uis(src)
 
 
 //VENDING MACHINES
@@ -659,7 +659,7 @@
 		W.forceMove(src)
 		R.product_item += W
 		R.amount++
-	nanomanager.update_uis(src)
+	GLOB.nanomanager.update_uis(src)
 
 /obj/structure/vending/process()
 

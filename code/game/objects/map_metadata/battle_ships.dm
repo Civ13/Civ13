@@ -3,25 +3,26 @@
 	title = "Battle Ships"
 	no_winner = "The battle is still going on."
 	lobby_icon = 'icons/lobby/battleships.png'
+	can_spawn_on_base_capture = TRUE
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/sea)
 	faction_organization = list(
-		PIRATES,
-		CIVILIAN)
+		REDFACTION,
+		BLUEFACTION)
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/faction1/ship/lower,
+		list(REDFACTION) = /area/caribbean/faction1/ship/lower,
 		list(CIVILIAN) = /area/caribbean/faction2/ship/lower,
 		)
 	age = "2024"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
+	faction_distribution_coeffs = list(REDFACTION = 0.5, BLUEFACTION = 0.5)
 	battle_name = "Battle over the Ocean"
 	mission_start_message = "<font size=4><b>5 minutes</b> until the battle begins. Both sides have to sink eachothers ships by dealing as much damage to the bottom deck as possible!</font>"
 	grace_wall_timer = 3000
-	faction1 = PIRATES
-	faction2 = CIVILIAN
+	faction1 = REDFACTION
+	faction2 = BLUEFACTION
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"In the Navy - Village People:1" = "sound/music/inthenavy.ogg",)
+		"In the Navy - Village People:1" = 'sound/music/inthenavy.ogg',)
 	var/ship_faction1 = null
 	var/ship_faction2 = null
 	var/island = null
@@ -40,17 +41,17 @@
 /obj/map_metadata/battle_ships/roundend_condition_def2name(define)
 	..()
 	switch (define)
-		if (PIRATES)
+		if (REDFACTION)
 			return "Redmenian"
-		if (CIVILIAN)
+		if (BLUEFACTION)
 			return "Blugoslavian"
 
 /obj/map_metadata/battle_ships/roundend_condition_def2army(define)
 	..()
 	switch (define)
-		if (PIRATES)
+		if (REDFACTION)
 			return "Imperial Redmenian Navy"
-		if (CIVILIAN)
+		if (BLUEFACTION)
 			return "Blugoslavian Naval Forces"
 
 /obj/map_metadata/battle_ships/army2name(army)
@@ -332,13 +333,13 @@
 
 /obj/map_metadata/battle_ships/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (istype(J, /datum/job/civilian))
-		if (J.is_event && J.is_navy)
+	if (istype(J, /datum/job/redfaction))
+		if (J.is_navy)
 			. = TRUE
 		else
 			. = FALSE
-	else if (istype(J, /datum/job/pirates))
-		if (J.is_event && J.is_navy)
+	else if (istype(J, /datum/job/bluefaction))
+		if (J.is_navy)
 			. = TRUE
 		else
 			. = FALSE
@@ -363,7 +364,7 @@
 
 /obj/map_metadata/battle_ships/cross_message(faction)
 	switch (faction)
-		if (PIRATES)
+		if (REDFACTION)
 			to_chat(world, sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
 			return "<font size=4 color='red'>The battle has begun!</font>"
 		else

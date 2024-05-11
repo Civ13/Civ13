@@ -23,6 +23,8 @@
 	layer = 3.99
 	a_intent = I_HARM
 	can_ride = TRUE
+	ride_pixel_x = -13
+	ride_pixel_y = -21
 
 /mob/living/simple_animal/horse/black
 	icon_state = "horse2"

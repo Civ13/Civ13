@@ -1251,11 +1251,21 @@
 // Battle Ships //
 
 // Faction 1
+/area/caribbean/faction1
+	name = "Base"
+	icon_state = "red2"
+	location = AREA_OUTSIDE
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/faction1/inside
+	icon_state = "red3"
+	location = AREA_INSIDE
+
 /area/caribbean/faction1/ship
 	name = "Ship"
+	icon_state = "red2"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	location = AREA_OUTSIDE
-	icon_state = "red2"
 
 /area/caribbean/faction1/ship/upper
 	base_turf = /turf/floor/broken_floor
@@ -1283,11 +1293,21 @@
 	name = "Magazine"
 
 // Faction 2
+/area/caribbean/faction2
+	name = "Base"
+	icon_state = "blue2"
+	location = AREA_OUTSIDE
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/faction2/inside
+	icon_state = "blue3"
+	location = AREA_INSIDE
+
 /area/caribbean/faction2/ship
 	name = "Ship"
+	icon_state = "blue2"
 	base_turf = /turf/floor/beach/water/deep/saltwater
 	location = AREA_OUTSIDE
-	icon_state = "blue2"
 
 /area/caribbean/faction2/ship/upper
 	base_turf = /turf/floor/broken_floor

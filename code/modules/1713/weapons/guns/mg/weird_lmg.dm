@@ -73,7 +73,7 @@
 	full_auto = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.3), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=0.8, move_delay=8),)
 
 	jammed_until = -1
 	jamcheck = 0
@@ -385,7 +385,7 @@
 	full_auto = TRUE
 	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=0.1, move_delay=2, dispersion = list(0.4, 0.5, 0.6, 0.6, 0.7), recoil = 0),)
+		list(name = "automatic",	burst=1, burst_delay=0.1, move_delay=2),)
 
 */
 //commented out until i get it working

@@ -59,7 +59,7 @@
 			if (PRD.transmitter && PRD.transmitter_on)
 				if (PRD in contents)
 					if (dd_hasprefix(message_without_html, ";"))
-						message_without_html = replacetext(message_without_html,";","")
+						message_without_html = replacetext(message_without_html,";","",1,2)
 						PRD.broadcast(message_without_html, src, verb)
 				else
 					PRD.broadcast(message_without_html, src, verb)

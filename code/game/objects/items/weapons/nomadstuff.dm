@@ -18,7 +18,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "bedroll_o"
 	anchored = TRUE
-	layer = MOB_LAYER - 0.01
+	layer = MOB_LAYER - 0.06 // Why 0.06? To prevent beds from clipping above east-facing barriers (3.95).
 	var/used = FALSE
 	var/running = FALSE //to prevent exploits of unbuckling/bucking etc
 	can_buckle = TRUE

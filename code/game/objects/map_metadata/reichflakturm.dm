@@ -24,7 +24,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Over There!:1" = "sound/music/overthere.ogg",)
+		"Over There!:1" = 'sound/music/overthere.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/reichflakturm/job_enabled_specialcheck(var/datum/job/J)
 	..()

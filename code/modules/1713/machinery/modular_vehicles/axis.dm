@@ -586,6 +586,17 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 						if(O.density)
 							if (user)
 								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [O]!</span>"
+							return 
+					else if (istype(O, /obj/structure/barricade))
+						var/obj/structure/barricade/B = O
+						if(B.density > 0 && B.health > 600)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+							return FALSE
+					else if (istype(O, /obj/covers))
+						if(O.density)
+							if (user)
+								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
 							return FALSE
 					else
 						todestroy += O
@@ -627,6 +638,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 							ST.Destroy()
 				for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 					if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
+						if (istype(M, /obj/structure/turret/course))
+							var/obj/structure/turret/course/C = M
+							C.turn_to_dir(tdir)
 						M.forceMove(matrix_current_locs[dlocfind][1])
 						if (istype(M, /obj))
 							var/obj/O = M
@@ -708,9 +722,9 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 
 		var/colors // Colors you can make your vehicle
 		if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-			if (H.faction_text == PIRATES)
+			if (H.faction_text == REDFACTION)
 				colors = list("redmenian red")
-			else if (H.faction_text == CIVILIAN)
+			else if (H.faction_text == BLUEFACTION)
 				colors = list("blugoslavian blue")
 		else
 			colors = list("light gray", "medium gray", "dark gray", "green", "pale green", "Feldgrau (WW1)", "Feldgrau (WW2)", "light khaki", "dark khaki", "olive drab")
@@ -732,7 +746,6 @@ var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "E
 			var/chooseturret = WWinput(H, "Choose this vehicle's turret type:", "Vehicle Turret", "tank", turrets)
 			if (chooseturret)
 				chooseturret += "_turret"
-				turret_type = chooseturret
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
 		H << "<span class='warning'>Vehicle assembled.</span>"

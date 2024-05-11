@@ -25,7 +25,7 @@
 	faction2 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"One They Fear:1" = "sound/music/tesonetheyfear.ogg",)
+		"One They Fear:1" = 'sound/music/tesonetheyfear.ogg',)
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

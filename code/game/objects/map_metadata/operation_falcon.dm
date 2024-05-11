@@ -24,7 +24,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Doe Maar - The Bomb (De Bom):1" = "sound/music/de_bom.ogg",)
+		"Doe Maar - The Bomb (De Bom):1" = 'sound/music/de_bom.ogg',)
 	gamemode = "Area Control"
 	ambience = list('sound/ambience/battle1.ogg')
 	var/rus_points = 0
@@ -528,8 +528,8 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	try_destroy()
 
 /obj/structure/supply_crate/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
-	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	health -= proj.damage * 0.01
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 

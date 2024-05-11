@@ -24,7 +24,7 @@
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	default_research = 105
 	gamemode = "Nations RP"
 	ordinal_age = 4
@@ -103,11 +103,11 @@
 /obj/map_metadata/nationsrp/coldwar
 	ID = MAP_NATIONSRP_COLDWAR
 	title = "Nations RP Cold War"
-	lobby_icon = 'icons/lobby/vietnam.png'
+	lobby_icon = 'icons/lobby/coldwar.png'
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>24 hours</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
-	age = "the Cold War"
+	age = "Cold War Era"
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"Tears For Fears - Everybody Wants To Rule The World:1" = 'sound/music/everybodywantstoruletheworld.ogg',)
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -137,20 +137,20 @@
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>2 days</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	age = "the Cold War"
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"Emma:1" = 'sound/music/emma.ogg',)
 	is_singlefaction = FALSE
 	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
 	faction_organization = list(
-		PIRATES,
-		CIVILIAN)
+		REDFACTION,
+		BLUEFACTION)
 
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/japanese,
-		list(CIVILIAN) = /area/caribbean/british,
+		list(REDFACTION) = /area/caribbean/japanese,
+		list(BLUEFACTION) = /area/caribbean/british,
 		)
-	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
-	faction1 = PIRATES
-	faction2 = CIVILIAN
+	faction_distribution_coeffs = list(REDFACTION = 0.5, BLUEFACTION = 0.5)
+	faction1 = REDFACTION
+	faction2 = BLUEFACTION
 	default_research = 175
 	ordinal_age = 7
 	age1_done = TRUE
@@ -178,10 +178,8 @@
 	for (var/mob/M in player_list)
 		M.client << warning_sound
 
-	if (faction == PIRATES)
-		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
-	else if (faction == CIVILIAN)
-		return "<font size = 5><b>THE GRACE PERIOD HAS ENDED, REDMENIA AND BLUGOSLAVIA ARE AT WAR!</b></font>"
+	if (faction == REDFACTION)
+		return SPAN_DANGER("<font size = 5>THE GRACE PERIOD HAS ENDED<br>REDMENIA AND BLUGOSLAVIA ARE AT WAR!</font>")
 	else
 		return ""
 
@@ -204,7 +202,7 @@
 	ID = MAP_NATIONSRP_TRIPLE
 	title = "Triple Nations RP"
 	availablefactions = list("Civilization A Citizen", "Civilization B Citizen", "Civilization C Citizen")
-	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is an RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	mission_start_message = "<big>Three nations rule this land. The grace wall will end in <b>30 minutes</b>. This is a RP focused map, people of all three nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	default_research = 145
 	ordinal_age = 4
 	age1_done = TRUE
@@ -218,12 +216,12 @@
 
 /obj/map_metadata/nationsrp/triple/New()
 	..()
-	civname_a = "Latin Nation"
-	civname_b = "Gaelic Nation"
+	civname_a = "British Nation"
+	civname_b = "French Nation"
 	civname_c = "German Nation"
-	var/newnamea = list("Latin Nation" = list(default_research,default_research,default_research,null,0,"cross","#D4AF37","#660000"))
-	var/newnameb = list("Gaelic Nation" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
-	var/newnamec = list("German Nation" = list(default_research,default_research,default_research,null,0,"saltire","#0B5394","#B45F06"))
+	var/newnamea = list("British Nation" = list(default_research,default_research,default_research,null,0,"bigcross","#800101","#C0C0C0"))
+	var/newnameb = list("French Nation" = list(default_research,default_research,default_research,null,0,"saltire","#193798","#C0C0C0"))
+	var/newnamec = list("German Nation" = list(default_research,default_research,default_research,null,0,"cross","#FFCC1E","#111111"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec

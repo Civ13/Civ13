@@ -127,7 +127,7 @@
 	if (can_damage)
 		switch(W.damtype)
 			if ("fire")
-				health -= W.force * TRUE
+				health -= W.force * 1
 			if ("brute")
 				health -= W.force * 0.75
 
@@ -175,7 +175,12 @@
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
-		return prob(100 - protection_chance + (P.penetrating*4))
+		var/hitchance = protection_chance - (P.penetrating*4)
+		P.on_impact(loc)
+		if(get_turf(target) == loc)
+			return prob(100 - hitchance)
+		else
+			return prob(hitchance)
 	else
 		if (density)
 			return FALSE
@@ -183,13 +188,13 @@
 			return TRUE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage/3
-	visible_message(SPAN_NOTICE("\The [src] is hit by the [proj.name]!"))
+	health -= proj.damage * 0.05
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
 /obj/structure/barricade/horizontal
 	name = "wood barrier"
-	desc = "A wood wall made of vines and logs roped together."
+	desc = "A wood wall constructed from interwoven logs."
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
 	protection_chance = 85
@@ -197,7 +202,7 @@
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"
-	desc = "A wood wall made of vines and logs roped together."
+	desc = "A wood wall constructed from interwoven logs."
 	icon_state = "woodbarricade_vertical"
 	flammable = TRUE
 	protection_chance = 85

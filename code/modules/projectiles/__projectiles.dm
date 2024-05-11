@@ -231,7 +231,6 @@
 		qdel(src)
 	..()
 
-
 /obj/item/projectile/arrow/bolt/vial
 	damage = DAMAGE_MEDIUM
 	penetrating = 1
@@ -288,9 +287,9 @@
 	armor_penetration = 10
 
 /obj/item/projectile/bullet/rifle/a65x52
-	damage = DAMAGE_VERY_HIGH + 10
+	damage = DAMAGE_VERY_HIGH
 	penetrating = 5
-	armor_penetration = 52
+	armor_penetration = 35
 
 /obj/item/projectile/bullet/rifle/a8x53
 	damage = DAMAGE_VERY_HIGH + 13
@@ -312,12 +311,14 @@
 	damage = DAMAGE_VERY_HIGH + 40
 	penetrating = 6
 	armor_penetration = 47
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a762x54/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 1
 	armor_penetration = 18
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/pistol/a762x38
 	damage = DAMAGE_LOW + 6
@@ -393,12 +394,14 @@
 	damage = DAMAGE_VERY_HIGH + 46
 	penetrating = 5
 	armor_penetration = 50
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a792x57/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 20
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a765x53
 	damage = DAMAGE_VERY_HIGH + 20
@@ -451,12 +454,14 @@
 	damage = DAMAGE_VERY_HIGH + 35
 	penetrating = 4
 	armor_penetration = 47
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a3006/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 24
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_LOW + 2
@@ -469,14 +474,14 @@
 	armor_penetration = 5
 
 /obj/item/projectile/bullet/pistol/a9x19
-	damage = DAMAGE_LOW + 1
+	damage = DAMAGE_LOW
 	penetrating = 2
 	armor_penetration = 8
 
 /obj/item/projectile/bullet/pistol/a9x18
 	damage = DAMAGE_LOW
 	penetrating = 2
-	armor_penetration = 10
+	armor_penetration = 9
 
 /obj/item/projectile/bullet/pistol/a792x33
 	damage = DAMAGE_HIGH + 5
@@ -495,9 +500,10 @@
 	damage = DAMAGE_HIGH + 12
 	penetrating = 3
 	armor_penetration = 30
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a545x39
-	damage = DAMAGE_HIGH - 3
+	damage = DAMAGE_MEDIUM_HIGH + 15
 	penetrating = 3
 	armor_penetration = 16
 
@@ -508,12 +514,14 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 21
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a556x45
 	damage = DAMAGE_HIGH + 3
@@ -545,23 +553,27 @@
 	penetrating = 10
 	armor_penetration = 50
 	heavy_armor_penetration = 10
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a50cal/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 10
 	armor_penetration = 20
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5
 	penetrating = 40
 	armor_penetration = 80
 	heavy_armor_penetration = 50
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_he
 	damage = DAMAGE_LOW + 20
 	penetrating = 12
 	armor_penetration = 15
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_he/on_impact(var/atom/A)
 	impact_effect(effect_transform)
@@ -590,34 +602,39 @@
 		explosion(T, 1, 0, 2, 1)
 
 /obj/item/projectile/bullet/rifle/a127
-	damage = DAMAGE_HIGH
+	damage = DAMAGE_OH_GOD + 65
 	penetrating = 20
 	armor_penetration = 55
-	heavy_armor_penetration = 35
+	heavy_armor_penetration = 34
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = DAMAGE_OH_GOD + 90
 	penetrating = 20
 	armor_penetration = 65
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a15115
 	damage = DAMAGE_OH_GOD + 90
 	penetrating = 20
 	armor_penetration = 70
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_ap
 	damage = DAMAGE_MEDIUM + 64
 	penetrating = 40
 	armor_penetration = 75
 	heavy_armor_penetration = 55
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_aphe
 	damage = DAMAGE_LOW + 25
 	penetrating = 30
 	armor_penetration = 65
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_aphe/on_impact(var/atom/A)
 	impact_effect(effect_transform)
@@ -655,19 +672,22 @@
 	damage = DAMAGE_OH_GOD + 80
 	penetrating = 25
 	armor_penetration = 85
-	heavy_armor_penetration = 50
+	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a792x94
 	damage = DAMAGE_OH_GOD + 85
 	penetrating = 20
 	armor_penetration = 60
-	heavy_armor_penetration = 45
+	heavy_armor_penetration = 30
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a792x94_ap
 	damage = DAMAGE_OH_GOD + 80
 	penetrating = 25
 	armor_penetration = 85
-	heavy_armor_penetration = 55
+	heavy_armor_penetration = 40
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20
@@ -678,6 +698,8 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
+	alpha = 128
+	tracer_type = null
 
 /obj/item/projectile/bullet/rifle/a357
 	damage = DAMAGE_HIGH+30
@@ -687,14 +709,16 @@
 // Shotguns
 
 /obj/item/projectile/bullet/pellet/buckshot
-	name = "buckshot"
-	icon_state = "buckshot"
+	kill_count = 20
+	agony = 42
+	name = "buckshot pellet"
+	icon_state = "pellets"
 	damage = DAMAGE_VERY_HIGH + 35
 	armor_penetration = 10
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
-	damage = DAMAGE_VERY_HIGH + 67
+	damage = DAMAGE_MEDIUM_HIGH
 	armor_penetration = 33
 
 /obj/item/projectile/bullet/shotgun/beanbag
@@ -719,77 +743,3 @@
 	name = "incendiary slug"
 	damage = DAMAGE_LOW
 	armor_penetration = 5
-
-// Autocannon
-
-/obj/item/projectile/bullet/autocannon/frag
-	damage = DAMAGE_MEDIUM
-	penetrating = 0
-	armor_penetration = 0
-	heavy_armor_penetration = 0
-
-	var/fragment_type = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
-	var/num_fragments = 12  //total number of fragments produced by the grenade
-	var/fragment_damage = 20
-	var/spread_range = 7
-	var/incendiary = FALSE
-
-/obj/item/projectile/bullet/autocannon/frag/on_impact(var/atom/A)
-	impact_effect(effect_transform)
-
-	var/turf/T = get_turf(A)
-	explosion(T, 0, 0, 1, 1)
-	if (incendiary)
-		ignite_turf(T,8,40)
-
-	fragmentate(T, num_fragments, spread_range, fragment_type)
-
-/obj/item/projectile/bullet/autocannon/a20mm_aphe
-	damage = DAMAGE_OH_GOD + 12
-	penetrating = 36
-	armor_penetration = 36
-	heavy_armor_penetration = 36
-
-/obj/item/projectile/bullet/autocannon/a25mm_ap
-	damage = DAMAGE_VERY_HIGH + 10
-	penetrating = 20
-	armor_penetration = 40
-	heavy_armor_penetration = 20
-
-/obj/item/projectile/bullet/autocannon/frag/a25mm_he
-	damage = DAMAGE_MEDIUM
-	penetrating = 0
-	armor_penetration = 0
-	heavy_armor_penetration = 0
-
-/obj/item/projectile/bullet/autocannon/a30mm_ap
-	damage = DAMAGE_OH_GOD + 12
-	penetrating = 30
-	armor_penetration = 30
-	heavy_armor_penetration = 30
-
-/obj/item/projectile/bullet/autocannon/frag/a30mm_he
-	damage = DAMAGE_MEDIUM + 5
-
-/obj/item/projectile/bullet/autocannon/a35mm_fap
-	damage = DAMAGE_OH_GOD + 32
-	penetrating = 50
-	armor_penetration = 50
-	heavy_armor_penetration = 50
-
-/obj/item/projectile/bullet/autocannon/frag/a35mm_hei
-	damage = DAMAGE_MEDIUM
-	incendiary = TRUE
-
-/obj/item/projectile/bullet/autocannon/a73mm
-	icon = 'icons/obj/grenade.dmi'
-	icon_state = "atgm_missile"
-	damage = DAMAGE_OH_GOD + 500
-	penetrating = 40
-	armor_penetration = 300
-	heavy_armor_penetration = 300
-
-/obj/item/projectile/bullet/autocannon/a73mm/on_impact(var/atom/A)
-	var/turf/T = get_turf(A)
-	explosion(T, 0, 0, 1, 1)
-	..()

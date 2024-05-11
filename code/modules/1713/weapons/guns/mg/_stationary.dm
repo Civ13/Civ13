@@ -6,27 +6,29 @@
 	stat = "machinegun"
 	maxhealth = 500
 	layer = MOB_LAYER + 3
-	
+
 	max_shells = 500
 	w_class = ITEM_SIZE_GARGANTUAN
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-	
+
 	density = TRUE
 	anchored = FALSE
 	auto_eject = TRUE
-	
+
 	caliber = "a762x54"
 	magazine_type = /obj/item/ammo_magazine/maxim
 	ammo_type = /obj/item/ammo_casing/a762x54
-	
+
 	fire_sound = 'sound/weapons/guns/fire/Maxim.ogg'
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	slot_flags = FALSE
 	full_auto = TRUE
-	fire_delay = 3
+	fire_delay = 0
+	recoil = 10 // Stationary weapons have virtually no recoil
+	accuracy = 3
 
 	var/climbers = list()
 	var/can_turn = TRUE // Used for fixed coaxial MGs (like the Breda 30)
@@ -35,12 +37,12 @@
 	var/maximum_use_range = 0 // user loc at minigun's current loc (used in use_object.dm)
 	var/user_old_x = 0
 	var/user_old_y = 0
-	
+
 	var/mob/used_by_mob = null
 
 	var/zoom_amount = 10
 	is_hmg = TRUE
-	
+
 	gun_type = GUN_TYPE_MG
 
 	accuracy_increase_mod = 1.00
@@ -100,16 +102,16 @@
 					started_using(user)
 					return
 		else
-			to_chat(user, SPAN_WARNING("You need both hands to use a machinegun."))
+			to_chat(user, SPAN_WARNING("You need both hands to use \the [src]."))
 			return
-	if (user.loc == T)
+	if (user.loc == T || istype(src, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
 		if (user.has_empty_hand(both = TRUE))
 			if (!map || !map.check_caribbean_block(user, loc))
 				if (do_after(user, 15, src))
 					started_using(user)
 					return
 		else
-			to_chat(user, SPAN_WARNING("You need both hands to use a machinegun."))
+			to_chat(user, SPAN_WARNING("You need both hands to use \the [src]."))
 			return
 
 	else
@@ -123,6 +125,9 @@
 		layer = FLY_LAYER
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/check_direction(mob/user, atom/A)
+	if (user.buckled)
+		return TRUE
+
 	if (get_turf(A) == loc)
 		return FALSE
 
@@ -139,13 +144,15 @@
 
 	if (zoomed)
 		zoom(user, FALSE) //Stop Zoom
-	
+
 	user.forceMove(loc)
 	user.dir = dir
 	*/
 	return
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/update_pixels(mob/user as mob)
+	if(user.buckled)
+		return
 	var/diff_x = 0
 	var/diff_y = 0
 	if(dir == EAST)
@@ -159,6 +166,8 @@
 	animate(user, pixel_x=diff_x, pixel_y=diff_y, 4, 1)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/started_using(mob/user as mob, var/need_message = TRUE)
+	if(user.buckled)
+		return
 	if(need_message)
 		user.visible_message(SPAN_NOTICE("[user.name] handles \the [src]."), SPAN_NOTICE("You handle \the [src]."))
 	used_by_mob = user

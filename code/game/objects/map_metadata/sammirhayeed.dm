@@ -22,7 +22,7 @@
 	faction2 = FRENCH
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Crusaders:1" = "sound/music/crusaders.ogg")
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

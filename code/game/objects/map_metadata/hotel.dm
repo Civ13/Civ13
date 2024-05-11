@@ -4,7 +4,7 @@
 	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
-
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		GERMAN,
@@ -22,7 +22,7 @@
 	faction2 = RUSSIAN
 	ordinal_age = 6
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg")
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 1800
 

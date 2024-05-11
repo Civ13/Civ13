@@ -3,9 +3,8 @@
 	var/burst = 1
 	var/burst_delay = 0
 	var/fire_delay = -1
-	var/move_delay = 0
-	var/recoil = -1
-	var/list/dispersion = list(0)
+	var/move_delay = 1
+	var/shake_strength = -1
 
 //using a list makes defining fire modes for new guns much nicer,
 //however we convert the lists to datums in part so that firemodes can be VVed if necessary.
@@ -38,14 +37,19 @@
 	attack_verb = list("struck", "hit", "bashed")
 
 	var/full_auto = FALSE
-	var/fire_delay = 5 	//delay after shooting before the gun can be used again
+	var/fire_delay = 0.1 	//delay after shooting before the gun can be used again
 	var/fire_sound = 'sound/weapons/guns/fire/rifle.ogg'
 	var/silencer_fire_sound = 'sound/weapons/guns/fire/AKM-SD.ogg'
 	var/fire_sound_text = "gunshot"
-	var/recoil = 0		//screen shake
+	var/shake_strength = 0		//screen shake
 	var/muzzle_flash = 3
-	var/accuracy = 0   //accuracy is measured in tiles. +1 accuracy means that everything is effectively one tile closer for the purpose of miss chance, -1 means the opposite. launchers are not supported, at the moment.
-//	var/scoped_accuracy = null
+
+	var/recoil = 15 // movement of the barrel by recoil to the sides when shooting
+	var/next_shot_recoil = 0
+	var/last_shot_time = 0 // last shot time
+	var/accuracy = 1 // basic trunk defect
+	var/ergonomics = 1
+	var/stat = "rifle"
 
 	var/next_fire_time = 0
 
@@ -62,6 +66,8 @@
 	var/tmp/told_cant_shoot = FALSE //So that it doesn't spam them with the fact they cannot hit them.
 	var/tmp/lock_time = -100
 
+	var/list/under_mounts = list() //List of extra compatible unders
+	var/list/scope_mounts = list() //List of extra compatible scopes
 
 	var/damage_modifier = 0
 
@@ -71,17 +77,14 @@
 //	var/can_scope = FALSE
 
 	var/burst = 1
-	var/move_delay = 0
+	var/move_delay = 1
 	var/list/burst_accuracy = list(0)
-	var/list/dispersion = list(0)
 
 	var/obj/item/weapon/attachment/bayonet = null
 	var/obj/item/weapon/gun/launcher/grenade/underslung/launcher = null
 	var/use_launcher = FALSE
 
 	var/gun_type = GUN_TYPE_GENERIC
-
-	var/autofiring = FALSE
 
 	var/gibs = FALSE
 	var/crushes = FALSE
@@ -164,9 +167,9 @@
 						spawn(3)
 							off_hand.Fire(A,user,params, accuracy_mod = 0.66)
 	if (!off_hand_fire)
-		Fire(A, user, params) //Otherwise, fire normally.
+		Fire(A,user,params) //Otherwise, fire normally.
 	else
-		Fire(A, user, params, accuracy_mod = 0.66)
+		Fire(A,user,params, accuracy_mod = 0.66)
 
 /obj/item/weapon/gun/attack(atom/A, mob/living/user, def_zone)
 	var/mob/living/human/H = user
@@ -277,16 +280,6 @@
 
 	if (!user || !target) return
 
-	if (user.pixel_y > 16) return // can't fire while we're this high up - used for paradropping in particular
-
-	// stops admemes from sending immortal dummies into combat
-	if (user && istype(user, /mob/living/human))
-		var/mob/living/human/H = user
-		if ((H.client && istype(H, /mob/living/human/dummy)) || !H.original_job || !H.original_job_title)
-			if (clients.len > 1)
-				user << "<span class = 'danger'>Hey you fucking dumbass, don't send immortal dummies into combat.</span>"
-				return
-
 	add_fingerprint(user)
 
 	if (!force)
@@ -329,15 +322,11 @@
 		health_check(user)
 		health -= 0.2
 
-		var/disp = firemode.dispersion[min(i, firemode.dispersion.len)]
-
 		if (istype(projectile, /obj/item/projectile))
 			var/obj/item/projectile/P = projectile
 			if (istype(P.firedfrom, /obj/item/weapon/gun/projectile))
 				var/obj/item/weapon/gun/projectile/proj = P.firedfrom
 				P.KD_chance = proj.KD_chance
-
-		process_accuracy(projectile, user, target, accuracy_mod, disp)
 
 		if (pointblank)
 			if (istype(projectile, /obj/item/projectile))
@@ -349,7 +338,7 @@
 			tgt = user.targeted_organ
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
-			if (process_projectile(projectile, user, target, tgt, clickparams))
+			if (!process_projectile(projectile, user, target, tgt, clickparams))
 				handle_post_fire(user, target, pointblank, reflex)
 				update_icon()
 
@@ -397,27 +386,21 @@
 //called after successfully firing
 /obj/item/weapon/gun/proc/handle_post_fire(mob/user, atom/target, var/pointblank=0, var/reflex=0)
 	if (silencer)
-		playsound(get_turf(user), silencer_fire_sound, 100-silencer.reduction, TRUE, 100-silencer.reduction)
+		playsound(user, silencer_fire_sound, 100-silencer.reduction, TRUE,100-silencer.reduction)
 	else
-		playsound(get_turf(user), fire_sound, 100, TRUE, 100)
-
-		if (muzzle_flash)
-			set_light(muzzle_flash)
+		playsound(user, fire_sound, 100, TRUE,100)
+	if (muzzle_flash)
+		set_light(muzzle_flash)
 
 	var/datum/firemode/F = firemodes[sel_mode]
 
-	var/i_recoil = recoil
-	if (F.recoil != -1)
-		recoil = F.recoil
+	if (F.shake_strength != -1)
+		shake_strength = F.shake_strength
 
-	if (recoil)
+	if (shake_strength)
 		spawn(0)
-			var/shake_strength = recoil
 			if (shake_strength > 0)
 				shake_camera(user, max(shake_strength, 0), min(shake_strength, 50))
-			recoil = i_recoil
-	else
-		recoil = i_recoil
 
 	update_icon()
 
@@ -441,22 +424,28 @@
 				damage_mult = 3
 	P.damage *= damage_mult
 
-/obj/item/weapon/gun/proc/process_accuracy(obj/projectile, mob/user, atom/target, acc_mod, dispersion)
-	var/obj/item/projectile/P = projectile
+/obj/item/weapon/gun/proc/get_dispersion_range(mob/user)
+	var/dt = world.time - last_shot_time
+	var/dt_movement = world.time - user.last_movement
+	var/recoil_range = recoil / ergonomics
+	var/accuracy_range = accuracy
 
-	if (!istype(P))
-		return //default behaviour only applies to true projectiles
+	if(dt > firemodes[sel_mode].burst_delay)
+		recoil_range /= sqrt(dt) * 2
+		if((recoil_range - sqrt(dt) * 1.5) < 0)
+			recoil_range = 0
+		else
+			recoil_range -= sqrt(dt) * 1.5
 
-	//Accuracy modifiers
-	P.accuracy = accuracy*acc_mod
-	P.dispersion = dispersion
+	if(user.lying || user.prone)
+		recoil_range /= 2
 
-	//accuracy bonus from aiming
-	if (aim_targets && (target in aim_targets))
-		//If you aim at someone beforehead, it'll hit more often.
-		//Kinda balanced by fact you need like 2 seconds to aim
-		//As opposed to no-delay pew pew
-		P.accuracy += 2
+	if(dt_movement <= 6)
+		accuracy_range = 30
+	else if (dt_movement < 10)
+		accuracy_range = 40 / (dt_movement - 6)
+
+	return recoil_range + accuracy_range
 
 //does the actual launching of the projectile
 /obj/item/weapon/gun/proc/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
@@ -472,9 +461,42 @@
 	if (damage_modifier != 0)
 		P.damage += damage_modifier
 
+	var/dt = world.time - last_shot_time
+
+	var/shot_recoil = next_shot_recoil / ergonomics
+
+	if(dt > firemodes[sel_mode].burst_delay)
+		shot_recoil /= sqrt(dt) * 2
+		if(dt * 0.5 < abs(shot_recoil) )
+			shot_recoil -= sign(shot_recoil) * dt * 0.5
+		else
+			shot_recoil = 0
+
+	if(user.lying || user.prone)
+		shot_recoil /= 2
+
+	var/shot_accuracy = rand(-accuracy, accuracy)
+
+	var/dt_movement = world.time - user.last_movement
+
+	if (dt_movement <= 6)
+		shot_accuracy = rand(-20, 20)
+	else if (dt_movement < 10)
+		var/accuracy_range = 20 / sqrt(dt_movement - 6)
+		shot_accuracy = rand(-accuracy_range, accuracy_range)
+		if (abs(shot_accuracy) < 5) // even RNjesus won’t help you get there right away
+			shot_accuracy += 5
+		if(user.m_intent != "run")
+			shot_accuracy *= 0.75
+
+	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
+
+	P.dispersion = shot_dispersion
+
 	//shooting while in shock
 	var/x_offset = 0
 	var/y_offset = 0
+
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/mob = user
 		if (mob.shock_stage > 120)
@@ -484,7 +506,12 @@
 			y_offset = rand(-1,1)
 			x_offset = rand(-1,1)
 
-	return !P.launch(target, user, src, target_zone, x_offset, y_offset)
+	if(!P.launch(target, user, src, target_zone, x_offset, y_offset))
+		next_shot_recoil = clamp(shot_recoil + (rand(recoil * 0.5, recoil) * rand(-1, 1)), -40, 40)
+		next_shot_recoil /= rand(1, sqrt(abs(next_shot_recoil)) / 3)
+		last_shot_time = world.time
+		return FALSE
+	return TRUE
 
 //Suicide handling.
 /obj/item/weapon/gun/var/mouthshoot = FALSE //To stop people from suiciding twice... >.>

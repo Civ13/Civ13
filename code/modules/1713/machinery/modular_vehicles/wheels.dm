@@ -258,94 +258,60 @@
 	else
 		..()
 
-////////GUNNER/LOADER CHAIR////////////
-
-/obj/structure/bed/chair/gunner
-	name = "gunner's seat"
-	desc = "a seat next to the gun trigger."
+/obj/structure/bed/chair/mgunner
+	name = "machinegunner's seat"
+	desc = "a seat with a course machinegun."
 	icon_state = "officechair_white"
 	anchored = FALSE
 	flammable = FALSE
-/obj/structure/bed/chair/gunner/update_icon()
+	var/obj/item/weapon/gun/projectile/automatic/mg = null
+	New()
+		..()
+		if(mg)
+			mg.mount = src
+			mg.nothrow = TRUE
+			mg.nodrop = TRUE
+			mg.recoil = 1
+/obj/structure/bed/chair/mgunner/rotate_right()
 	return
-/obj/structure/bed/chair/loader
-	name = "loader's seat"
-	desc = "A seat at the gun loader's position."
-	icon_state = "officechair_white"
-	anchored = FALSE
-	flammable = FALSE
-/obj/structure/bed/chair/loader/update_icon()
+
+/obj/structure/bed/chair/mgunner/rotate_left()
 	return
-//////////COMMANDER CHAIR/////////////
-/obj/structure/bed/chair/commander
-	name = "commander's seat"
-	desc = "The vehicle commander's seat, with a perisope."
-	anchored = FALSE
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "commanders_seat"
-	flammable = FALSE
-	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
-	New()
+
+/obj/structure/bed/chair/mgunner/update_icon()
+	return
+
+/obj/structure/bed/chair/mgunner/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && mg)
+		if(buckled_mob.put_in_active_hand(mg) == FALSE)
+			buckled_mob << "Your hands are full!"
+			return
+
+/obj/structure/bed/chair/mgunner/dt28/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/dp28/dt28(src)
 		..()
-		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
-		periscope.commanderchair = src
 
-/obj/structure/bed/chair/commander/naval
-	name = "spotter's seat"
-	desc = "A spotter's seat with a long-range periscope."
-	anchored = TRUE
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "commanders_seat"
-	New()
+/obj/structure/bed/chair/mgunner/dtm28/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/dp28/dt28/dtm28(src)
 		..()
-		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
-		periscope.commanderchair = src
 
-
-/obj/structure/bed/chair/commander/nvg
-	name = "commander's seat with night vision"
-	desc = "The vehicle commander's seat, with a perisope and night vision."
-	anchored = FALSE
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "commanders_seat"
-	flammable = FALSE
-	var/overtype = "nvg"
-	New()
+/obj/structure/bed/chair/mgunner/mg34/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/manual/mg34(src)
 		..()
-		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
-		periscope.commanderchair = src
 
-/obj/structure/bed/chair/commander/nvg/thermal
-	name = "commander's seat with thermal imaging"
-	desc = "The vehicle commander's seat, with a perisope and thermal imaging."
-	overtype = "thermal"
+/obj/structure/bed/chair/mgunner/browning_lmg/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/browning_lmg(src)
+		..()
 
-/obj/structure/bed/chair/commander/nvg/post_buckle_mob()
-	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-		to_chat(buckled_mob, "Your hands are full!")
-		return
-	if (buckled_mob)
-		to_chat(buckled_mob, "You activate the optics on the [src].")
-		switch (overtype)
-			if ("nvg")
-				buckled_mob.nvg = TRUE
-				buckled_mob.handle_vision()
-			if ("thermal")
-				buckled_mob.thermal = TRUE
-				buckled_mob.handle_vision()
-		buckled_mob.update_action_buttons()
+/obj/structure/bed/chair/mgunner/pkm/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/pkm(src)
+		..()
 
-/obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
-	if (buckled_mob)
-		to_chat(buckled_mob, "You deactivate the optics on the [src].")
-		switch (overtype)
-			if ("nvg")
-				buckled_mob.nvg = FALSE
-				buckled_mob.handle_vision()
-			if ("thermal")
-				buckled_mob.thermal = FALSE
-				buckled_mob.handle_vision()
+/obj/structure/bed/chair/mgunner/type99/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/type99(src)
+		..()
 
+/obj/structure/bed/chair/mgunner/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (M)
 		if (M != user)
@@ -359,11 +325,309 @@
 				"<span class='notice'>You unbuckle yourself from [src].</span>",\
 				"<span class='notice'>You hear metal clanking.</span>")
 		add_fingerprint(user)
-		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
-			M.remove_from_mob(PS)
-			PS.forceMove(src)
+		if(mg)
+			M.remove_from_mob(mg)
+			mg.forceMove(src)
 	return M
-		
+
+////////GUNNER///////////
+/obj/structure/bed/chair/gunner
+	name = "gunner's seat"
+	desc = "a seat next to the gun trigger."
+	icon_state = "officechair_white"
+	anchored = FALSE
+	flammable = FALSE
+	var/obj/structure/turret/turret = null
+	var/obj/item/turret_controls/controls = null
+	New()
+		..()
+		controls = new/obj/item/turret_controls(src)
+
+/obj/structure/bed/chair/gunner/proc/setup(var/obj/structure/turret/origin_turret)
+	turret = origin_turret
+	controls.turret = origin_turret
+	update_icon()
+
+/obj/structure/bed/chair/gunner/update_icon()
+	if(!turret)
+		return
+	dir = turret.dir
+	switch(turret.dir)
+		if(EAST)
+			pixel_x = -turret.gunner_y - 8
+			pixel_y = turret.gunner_x - 8
+		if(NORTH)
+			pixel_x = -turret.gunner_x
+			pixel_y = -turret.gunner_y - 16
+		if(WEST)
+			pixel_x = turret.gunner_y + 8
+			pixel_y = -turret.gunner_x - 7
+		if(SOUTH)
+			pixel_x = turret.gunner_x
+			pixel_y = turret.gunner_y
+
+	pixel_x += turret.pixel_x
+	pixel_y += turret.pixel_y
+
+	if(buckled_mob)
+		buckled_mob.dir = dir
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+
+/obj/structure/bed/chair/gunner/post_buckle_mob()
+	..()
+	update_icon()
+	if(buckled_mob)
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+		if(turret)
+			turret.draw_aiming_line(buckled_mob)
+			turret.gunner = buckled_mob
+		if (istype(buckled_mob, /mob/living/human))
+			if(buckled_mob.put_in_active_hand(controls) == FALSE)
+				buckled_mob << "Your hands are full!"
+				return
+			else
+				controls.azoom.Grant(buckled_mob)
+
+/obj/structure/bed/chair/gunner/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/turret_controls))
+		H.remove_from_mob(I)
+		I.forceMove(src)
+		user_unbuckle_mob(H)
+		return
+	else
+		..()
+
+/obj/structure/bed/chair/gunner/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/turret_controls/C in M)
+			M.remove_from_mob(C)
+			C.forceMove(src)
+		if(turret)
+			M.stop_using_turret()
+			turret.gunner = null
+	return M
+
+/obj/item/turret_controls
+	icon = 'icons/obj/device.dmi'
+	icon_state = "turret_control"
+	item_state = "turret_control"
+	worn_state = "turret_control"
+	nothrow = TRUE
+	nodrop = TRUE
+	var/datum/action/toggle_scope/azoom
+	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/optics
+	var/obj/structure/turret/turret = null
+	var/is_rotating = FALSE
+	var/rotating_dir = 0
+	New()
+		..()
+		optics = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope()
+		build_zooming()
+
+/obj/item/turret_controls/proc/get_zoom_amt()
+	if(!optics)
+		return ZOOM_CONSTANT
+	return optics.zoom_amt
+
+/obj/item/turret_controls/proc/build_zooming()
+	azoom = new()
+	azoom.scope = optics
+	actions += azoom
+
+/obj/item/turret_controls/scope/on_changed_slot()
+	..()
+
+	if (azoom)
+		if (istype(loc, /obj/item))
+			var/mob/M = loc.loc
+			if (M && istype(M))
+				azoom.Remove(M)
+				if(loc == M.r_hand || loc == M.l_hand)
+					azoom.Grant(M)
+
+		else if (istype(loc, /mob))
+			var/mob/M = loc
+			if (istype(M))
+				azoom.Remove(M)
+				if (src == M.r_hand || src == M.l_hand)
+					azoom.Grant(M)
+
+/obj/item/turret_controls/dropped(mob/user)
+	..()
+	if (azoom)
+		azoom.Remove(user)
+
+/obj/item/turret_controls/proc/stop_rotation()
+	rotating_dir = 0
+	is_rotating = FALSE
+
+/obj/item/turret_controls/proc/start_rotation(var/direction)
+	rotating_dir = direction
+	if(!is_rotating)
+		is_rotating = TRUE
+		rotate()
+
+/obj/structure/bed/chair/gunner/mtlb/update_icon()
+	if(!turret)
+		return
+	dir = turret.dir
+	switch(turret.dir)
+		if(EAST)
+			pixel_x = -turret.gunner_y
+			pixel_y = turret.gunner_x
+		if(NORTH)
+			pixel_x = -turret.gunner_x
+			pixel_y = -turret.gunner_y
+		if(WEST)
+			pixel_x = turret.gunner_y
+			pixel_y = -turret.gunner_x
+		if(SOUTH)
+			pixel_x = turret.gunner_x
+			pixel_y = turret.gunner_y
+
+	pixel_x += turret.pixel_x
+	pixel_y += turret.pixel_y
+
+	if(buckled_mob)
+		buckled_mob.dir = dir
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+
+/obj/item/turret_controls/proc/rotate()
+	if(!turret)
+		return
+	if(!is_rotating)
+		rotating_dir = 0
+		return
+	if (rotating_dir > 0)
+		turret.icrease_target_azimuth(1)
+	else if (rotating_dir < 0)
+		turret.icrease_target_azimuth(-1)
+
+	spawn(0.1)
+		rotate()
+
+/obj/item/turret_controls/proc/increase_distance(var/distance)
+	if(!turret)
+		return
+	if(distance > 0)
+		turret.icrease_target_distance(1)
+	else
+		turret.icrease_target_distance(-1)
+
+/obj/item/turret_controls/attack_self(mob/living/human/user)
+	if(!turret)
+		return
+	turret.open_fire()
+
+/obj/item/turret_controls/proc/stop_firing()
+	if(!turret)
+		return
+	turret.is_firing = FALSE
+
+/obj/item/turret_controls/secondary_attack_self(mob/living/human/user)
+	if(!turret)
+		return
+	turret.switch_weapon(user)
+
+////////LOADER CHAIR////////
+/obj/structure/bed/chair/loader
+	name = "loader's seat"
+	desc = "A seat at the gun loader's position."
+	icon_state = "officechair_white"
+	anchored = FALSE
+	flammable = FALSE
+	var/obj/structure/turret/turret = null
+
+/obj/structure/bed/chair/loader/proc/setup(var/obj/structure/turret/origin_turret)
+	turret = origin_turret
+	update_icon()
+
+/obj/structure/bed/chair/loader/update_icon()
+	if(!turret)
+		return
+	dir = turret.dir
+	switch(dir)
+		if(EAST)
+			pixel_x = -turret.loader_y - 8
+			pixel_y = turret.loader_x - 8
+		if(NORTH)
+			pixel_x = -turret.loader_x
+			pixel_y = -turret.loader_y - 16
+		if(WEST)
+			pixel_x = turret.loader_y + 8
+			pixel_y = -turret.loader_x - 7
+		if(SOUTH)
+			pixel_x = turret.loader_x
+			pixel_y = turret.loader_y
+
+	pixel_x += turret.pixel_x
+	pixel_y += turret.pixel_y
+
+	if(buckled_mob)
+		buckled_mob.dir = dir
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+
+/obj/structure/bed/chair/loader/post_buckle_mob()
+	update_icon()
+	if(buckled_mob)
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+		if(turret)
+			turret.loader = buckled_mob
+
+/obj/structure/bed/chair/loader/user_unbuckle_mob(mob/user)
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		if(turret)
+			M.stop_using_turret()
+			turret.loader = null
+	return M
+
+//////////COMMANDER CHAIR/////////////
+/obj/structure/bed/chair/commander
+	name = "commander's seat"
+	desc = "The vehicle commander's seat, with a perisope."
+	anchored = FALSE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	flammable = FALSE
+	var/obj/structure/turret/turret = null
+	var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/periscope = null
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
+		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/proc/setup(var/obj/structure/turret/origin_turret)
+	turret = origin_turret
+	update_icon()
 
 /obj/structure/bed/chair/commander/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
@@ -382,15 +646,46 @@
 		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
 			M.remove_from_mob(PS)
 			PS.forceMove(src)
+		if(turret)
+			M.stop_using_turret()
+			turret.commander = null
 	return M
 
 /obj/structure/bed/chair/commander/update_icon()
-	return
+	if(!turret)
+		return
+	dir = turret.dir
+	switch(turret.dir)
+		if(EAST)
+			pixel_x = -turret.commander_y - 8
+			pixel_y = turret.commander_x - 8
+		if(NORTH)
+			pixel_x = -turret.commander_x
+			pixel_y = -turret.commander_y - 16
+		if(WEST)
+			pixel_x = turret.commander_y + 10
+			pixel_y = -turret.commander_x - 7
+		if(SOUTH)
+			pixel_x = turret.commander_x
+			pixel_y = turret.commander_y
+
+	pixel_x += turret.pixel_x
+	pixel_y += turret.pixel_y
+
+	if(buckled_mob)
+		buckled_mob.dir = dir
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
 
 /obj/structure/bed/chair/commander/post_buckle_mob()
-	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-		to_chat(buckled_mob, "Your hands are full!")
-		return
+	if(buckled_mob)
+		buckled_mob.pixel_x = pixel_x
+		buckled_mob.pixel_y = pixel_y
+		if(turret)
+			turret.commander = buckled_mob
+		if (istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+			buckled_mob << "Your hands are full!"
+			return
 
 /obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
@@ -400,10 +695,89 @@
 		return
 	else
 		..()
+
 /obj/structure/bed/chair/commander/attack_hand( var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && periscope.loc != H)
 		if (buckled_mob.put_in_active_hand(periscope))
-			to_chat(H, "You look through the periscope.")
+			H << "You look through the periscope."
 			return
 	else
 		..()
+
+///////COMMANDER NAVAL////////
+
+/obj/structure/bed/chair/commander/naval
+	name = "spotter's seat"
+	desc = "A spotter's seat with a long-range periscope."
+	anchored = TRUE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval(src)
+		periscope.commanderchair = src
+
+///////COMMANDER NVG////////
+
+/obj/structure/bed/chair/commander/nvg
+	name = "commander's seat with night vision"
+	desc = "The vehicle commander's seat, with a perisope and night vision."
+	anchored = FALSE
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "commanders_seat"
+	flammable = FALSE
+	var/overtype = "nvg"
+	New()
+		..()
+		periscope = new/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope(src)
+		periscope.commanderchair = src
+
+/obj/structure/bed/chair/commander/nvg/post_buckle_mob()
+	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
+		buckled_mob << "Your hands are full!"
+		return
+	if(buckled_mob)
+		buckled_mob << "You activate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = TRUE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = TRUE
+			buckled_mob.handle_vision()
+		buckled_mob.update_action_buttons()
+
+/obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
+	if(buckled_mob)
+		buckled_mob << "You deactivate the optics on the [src]."
+		if (overtype == "nvg")
+			buckled_mob.nvg = FALSE
+			buckled_mob.handle_vision()
+		else if (overtype == "thermal")
+			buckled_mob.thermal = FALSE
+			buckled_mob.handle_vision()
+
+	var/mob/living/M = unbuckle_mob()
+	if (M)
+		if (M != user)
+			M.visible_message(\
+				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
+				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		else
+			M.visible_message(\
+				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
+				"<span class='notice'>You unbuckle yourself from [src].</span>",\
+				"<span class='notice'>You hear metal clanking.</span>")
+		add_fingerprint(user)
+		for(var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/PS in M)
+			M.remove_from_mob(PS)
+			PS.forceMove(src)
+	return M
+
+///////COMMANDER THERMAL////////
+
+/obj/structure/bed/chair/commander/nvg/thermal
+	name = "commander's seat with thermal imaging"
+	desc = "The vehicle commander's seat, with a perisope and thermal imaging."
+	overtype = "thermal"
+

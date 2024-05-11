@@ -479,10 +479,10 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Change View Range"
 	set desc = "switches between 1x and custom views"
 
-	if (view == world.view)
+	if (view == WORLD_VIEW)
 		view = input("Select view range:", "Change View Range", 7) in list(1,2,3,4,5,6,7,8,9,10,11,12,13,14,24,36,64,128,256)
 	else
-		view = world.view
+		view = WORLD_VIEW
 
 	log_admin("[key_name(usr)] changed their view range to [view].")
 	//message_admins("\blue [key_name_admin(usr)] changed their view range to [view].", key_name_admin(usr))	//why? removed by order of XSI
@@ -495,3 +495,15 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	usr << text("<span class = 'red'><b>Attack Log for []</b></span>", mob)
 	for (var/t in M.attack_log)
 		usr << t
+
+//A verb so that admins can toggle right click if they need to use debug stuff. - Matt
+/client/proc/toggle_right_click()
+	set name = "Toggle Right Click"
+	set category = "Special"
+
+	if(!show_popup_menus)
+		show_popup_menus = TRUE
+		to_chat(src, "<span class='interface'>Right click enabled.</span>")
+	else
+		show_popup_menus = FALSE
+		to_chat(src, "<span class='interface'>Right click disabled.</span>")

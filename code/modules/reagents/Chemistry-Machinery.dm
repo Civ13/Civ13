@@ -155,7 +155,7 @@
 	data["chemicals"] = chemicals
 
 	// update the ui if it exists, returns null if no ui is passed/found
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		// the ui does not exist, so we'll create a new() one
 		// for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
@@ -220,7 +220,7 @@
 		user.drop_item()
 		B.loc = src
 		user << "You place [B] in the dispenser."
-		nanomanager.update_uis(src) // update all UIs attached to src
+		GLOB.nanomanager.update_uis(src) // update all UIs attached to src
 		return
 	..()
 
@@ -685,7 +685,7 @@
 		return
 	if (istype(B,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 
 	if (istype(B, /obj/item/weapon/reagent_containers/glass))

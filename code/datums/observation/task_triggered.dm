@@ -6,7 +6,7 @@
 //
 //		Arguments that the called proc should expect:
 //			/datum/scheduled_task/task: The task that reached its trigger time.
-var/decl/observ/task_triggered/task_triggered_event = new()
+GLOBAL_DATUM_INIT(task_triggered_event, /decl/observ/task_triggered, new)
 
 /decl/observ/task_triggered
 	name = "Task Triggered"

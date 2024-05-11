@@ -593,7 +593,7 @@ obj/structure/religious/monument
 		else
 			return
 	else if (istype(W, /obj/item/weapon/material/shovel) && !open)
-		visible_message("[user] starts digging up \the [src]...","You start digging up \the [src]...")
+		user.visible_message("[user] starts digging up \the [src]...", "You start digging up \the [src]...")
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
 			if (!open)
@@ -630,7 +630,7 @@ obj/structure/religious/monument
 							HM.client.perspective = MOB_PERSPECTIVE
 					CF.forceMove(src.loc)
 	if (istype(W, /obj/item/weapon/barrier) && open)
-		visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
+		user.visible_message("[user] throws the dirt into \the [src].", "You throw the dirt into \the [src].")
 		filled++
 		qdel(W)
 		if (filled >= 2)
@@ -694,7 +694,7 @@ obj/structure/religious/monument
 
 /obj/structure/religious/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		qdel(src)
 		return
 
@@ -742,6 +742,7 @@ obj/structure/religious/monument
 					newmob.x=src.x+(rand(12,25))
 					newmob.y=src.y+(rand(-15,15))
 		I += 1
+
 /obj/structure/religious/totem/offerings/proc/check_favours()
 	spawn(1800)
 		//very angry

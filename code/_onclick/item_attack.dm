@@ -75,6 +75,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 // Click parameters is the params string from byond Click() code, see that documentation.
 /obj/item/proc/afterattack(atom/target, mob/user, proximity_flag, params)
 	if (istype(target, /obj/structure/table))
+		if(!proximity_flag) return // if this afterattack was not called on something adjacent/in reach, to prevent the item from turning invisible (wrenches/hammers).
 		var/list/click_params = params2list(params)
 		//Center the icon where the user clicked.
 		pixel_x = (text2num(click_params["icon-x"]) - 16)
@@ -89,6 +90,9 @@ avoid code duplication. This includes items that may sometimes act as a standard
 	if (!force || (flags & NOBLUDGEON))
 		return FALSE
 	if (M == user && user.a_intent != I_HARM)
+		return FALSE
+	if (user.pacifist)
+		to_chat(src, "<font color='yellow'><b><big>I don't want to fight!</big></b></font>")
 		return FALSE
 	if (ishuman(user))
 		var/mob/living/human/H = user

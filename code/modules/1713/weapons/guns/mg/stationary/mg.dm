@@ -8,9 +8,11 @@
 	magazine_type = /obj/item/ammo_magazine/maxim
 	good_mags = list(/obj/item/ammo_magazine/maxim)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.7, 0.8, 0.9, 1.0, 1.1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	recoil = 10
+	accuracy = 4
 
 /obj/item/weapon/gun/projectile/automatic/stationary/maxim/ww2
 	name = "Maxim"
@@ -23,9 +25,11 @@
 	magazine_type = /obj/item/ammo_magazine/maxim
 	good_mags = list(/obj/item/ammo_magazine/maxim)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.7, 0.8, 0.9, 1.0, 1.1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	recoil = 10
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/mg08
 	name = "Maschinengewehr 08"
@@ -37,9 +41,11 @@
 	magazine_type = /obj/item/ammo_magazine/mg08
 	good_mags = list(/obj/item/ammo_magazine/mg08)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.7, 0.8, 0.9, 1.0, 1.1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	recoil = 10
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/pkm
 	name = "PKM machine gun"
@@ -50,9 +56,11 @@
 	magazine_type = /obj/item/ammo_magazine/pkm
 	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.7, 0.8, 0.9, 1.0, 1.1), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=1.3, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	recoil = 10
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/dshk
 	name = "DShK machine gun"
@@ -63,9 +71,11 @@
 	magazine_type = /obj/item/ammo_magazine/ammo127
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.2, fire_delay=1.2, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.2, fire_delay=1.2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a127
+	recoil = 25
+	accuracy = 1
 
 /obj/item/weapon/gun/projectile/automatic/stationary/nsvt
 	name = "NSVT machine gun"
@@ -76,9 +86,11 @@
 	magazine_type = /obj/item/ammo_magazine/ammo127
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.1, fire_delay=1.1, dispersion=list(0.4, 0.5, 0.6, 1.0, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.1, fire_delay=1.1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a127
+	recoil = 30
+	accuracy = 1
 
 /obj/item/weapon/gun/projectile/automatic/stationary/foldable
 	anchored = TRUE
@@ -110,9 +122,11 @@
 	magazine_type = /obj/item/ammo_magazine/pkm
 	good_mags = list(/obj/item/ammo_magazine/pkm, /obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=1.3, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=1.3, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	recoil = 10
+	accuracy = 3
 
 	path = /obj/item/weapon/foldable/pkm
 
@@ -126,9 +140,11 @@
 	magazine_type = /obj/item/ammo_magazine/vickers
 	good_mags = list(/obj/item/ammo_magazine/vickers)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a303/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/vickers/type24
 	name = "Type 24 machine gun"
@@ -140,7 +156,7 @@
 	magazine_type = /obj/item/ammo_magazine/mg08
 	good_mags = list(/obj/item/ammo_magazine/mg08)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=2, fire_delay=2, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 
@@ -153,6 +169,8 @@
 	magazine_type = /obj/item/ammo_magazine/hotchkiss
 	good_mags = list(/obj/item/ammo_magazine/hotchkiss)
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/type3
 	name = "Type 3 machine gun"
@@ -163,6 +181,8 @@
 	magazine_type = /obj/item/ammo_magazine/type3
 	good_mags = list(/obj/item/ammo_magazine/type3)
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/type98
 	name = "Type 92 machine gun"
@@ -174,10 +194,13 @@
 	magazine_type = /obj/item/ammo_magazine/type92
 	good_mags = list(/obj/item/ammo_magazine/type92)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.8, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a77x58
 	attachment_slots = ATTACH_SCOPE
+	recoil = 25
+	accuracy = 3
+
 /obj/item/weapon/gun/projectile/automatic/stationary/type98/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
 
@@ -215,6 +238,7 @@
 		return
 
 	visible_message(SPAN_WARNING("[usr] starts to disassemble the [src]."))
+
 /obj/item/weapon/type92tripod
 	name = "Type 92 HMG tripod"
 	desc = "Used to make gun emplacements"
@@ -228,6 +252,7 @@
 	slowdown = 0.3
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
+
 /obj/item/weapon/type92tripod/attack_self(mob/user)
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
@@ -293,12 +318,14 @@
 	magazine_type = /obj/item/ammo_magazine/breda30
 	good_mags = list(/obj/item/ammo_magazine/breda30)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3.0, fire_delay=1.0, dispersion = list(0.6, 0.6, 0.7, 0.8, 0.9), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=3.0, fire_delay=1.0, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a65x52
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 20
 	load_delay = 12
+	recoil = 20
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
@@ -321,12 +348,14 @@
 	magazine_type = /obj/item/ammo_magazine/a20mm_aphe
 	good_mags = list(/obj/item/ammo_magazine/a20mm_aphe)
 	firemodes = list(
-		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=6.0, dispersion = list(0.1, 0.4, 0.8), accuracy=list(2))
+		list(name = "semiauto", burst=1, burst_delay=1, fire_delay=6.0, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a20mm_aphe
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = 10
 	load_delay = 60
+	recoil = 30
+	accuracy = 2
 
 /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/update_icon()
 	icon_state = "type92hmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 5) : "_empty"]"
@@ -351,9 +380,12 @@
 	magazine_type = /obj/item/ammo_magazine/browning
 	good_mags = list(/obj/item/ammo_magazine/browning)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a3006
+	recoil = 25
+	accuracy = 3
+
 /obj/item/weapon/gun/projectile/automatic/stationary/browning/update_icon()
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
@@ -367,9 +399,11 @@
 	magazine_type = /obj/item/ammo_magazine/a50cal_can
 	good_mags = list(/obj/item/ammo_magazine/a50cal_can)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.8, fire_delay=1.1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a50cal/weak
+	recoil = 30
+	accuracy = 1
 
 /obj/item/weapon/gun/projectile/automatic/stationary/mg34
 	name = "MG 34 machine gun"
@@ -380,9 +414,11 @@
 	magazine_type = /obj/item/ammo_magazine/mg34belt
 	good_mags = list(/obj/item/ammo_magazine/mg34belt, /obj/item/ammo_magazine/mg34)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/mg3
 	name = "MG 3 machine gun"
@@ -393,9 +429,11 @@
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/fnmag
 	name = "FN MAG machine gun"
@@ -406,9 +444,11 @@
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1, fire_delay=1, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/blugoslavia
 	name = "BHMG-21 machine gun"
@@ -419,9 +459,11 @@
 	magazine_type = /obj/item/ammo_magazine/emptybelt/filled_762x54
 	good_mags = list(/obj/item/ammo_magazine/emptybelt,/obj/item/ammo_magazine/emptybelt/filled_762x54)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=2.5, dispersion=list(0.7, 0.8, 0.9, 1.1, 1.2), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=2.5, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54
+	recoil = 25
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/redmenia
 	name = "RK-42 stationary machine gun"
@@ -432,9 +474,11 @@
 	magazine_type = /obj/item/ammo_magazine/emptybelt/filled_556x45
 	good_mags = list(/obj/item/ammo_magazine/emptybelt,/obj/item/ammo_magazine/emptybelt/filled_556x45)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=1.3, fire_delay=2.3, dispersion=list(0.7, 0.9, 1.0, 1.1, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=3, fire_delay=2.3, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a762x54
+	recoil = 25
+	accuracy = 3
 
 // Autocannons
 
@@ -450,36 +494,22 @@
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.2, 0.2, 0.3), accuracy=list(2)),
+		list(name = "autocannon", burst=1, burst_delay=3, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	is_hmg = TRUE
 	anchored = TRUE
 	full_auto = FALSE
+	recoil = 1
+	accuracy = 1
 
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/grom2a28 // BMD-1
-	name = "2A28 Grom 73mm semi-automatic gun"
-	desc = "The 73mm 2A28 semi-automatic gun was developed as a replacement for the 2A28 Grom. It fires 73mm rounds."
-	icon_state = "autocannon"
-	base_icon = "autocannon"
-	caliber = "a73"
-	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
-	load_method = SINGLE_CASING | MAGAZINE
-	handle_casings = REMOVE_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a73mm
-	good_mags = list(/obj/item/ammo_magazine/a73mm)
-	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=75, dispersion=list(0.1, 0.2, 0.2, 0.3), accuracy=list(2)),
-		)
-	ammo_type = /obj/item/ammo_casing/a73mm
-	full_auto = FALSE
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/grom2a28/handle_post_fire(mob/user, atom/target)
-	..()
-	playsound(get_turf(src), 'sound/machines/autoloader.ogg', 60, TRUE)
-	for (var/datum/firemode/FM in firemodes)
-		spawn(FM.fire_delay)
-			to_chat(user, SPAN_NOTICE("\The [src] loads another round."))
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
+	var/obj/item/projectile/P = projectile
+	P.loc = get_turf(user)
+	P.dispersion = clamp(rand(-accuracy, accuracy), -30, 30)
+	if(!P.launch(target, user, src))
+		return FALSE
+	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon/shipunov2a42 // BMD-2
 	name = "Shipunov 2A42 30mm autocannon"
@@ -492,7 +522,7 @@
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
 	firemodes = list(
-		list(name = "automatic", burst=1, fire_delay=12, dispersion=list(0.1, 0.2, 0.2, 0.3), accuracy=list(2)),
+		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = TRUE
@@ -508,7 +538,7 @@
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3.5, fire_delay=2.5, dispersion=list(0.1, 0.2, 0.2, 0.2), accuracy=list(2)),
+		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = TRUE
@@ -524,7 +554,7 @@
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3.5, fire_delay=2.5, dispersion=list(0.1, 0.1, 0.2, 0.2), accuracy=list(2)),
+		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = TRUE
@@ -541,7 +571,7 @@
 	magazine_type = /obj/item/ammo_magazine/a25mm_ap/bradley
 	good_mags = list(/obj/item/ammo_magazine/a25mm_ap/bradley, /obj/item/ammo_magazine/a25mm_he/bradley)
 	firemodes = list(
-		list(name = "full auto", burst=3, burst_delay=2, fire_delay=3, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a25mm_ap
 
@@ -557,239 +587,10 @@
 	magazine_type = /obj/item/ammo_magazine/a30mm_ap
 	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_ap/small, /obj/item/ammo_magazine/a30mm_he, /obj/item/ammo_magazine/a30mm_he/small)
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=35, dispersion=list(0.1, 0.3, 1.0, 2.5), accuracy=list(2)),
+		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = FALSE
-
-///////////////////////////////////// ATGM Autocannons ////////////////////////////////
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm
-	name = "30mm autocannon with ATGM"
-	desc = "An autocannon capable of firing 600 rounds a minute! Unfortunately the firing mode switch is stuck at semi-automatic. It fires 30mm rounds. It includes an Anti Tank Guide Missle system, to use it right-click the gun and press 'Toggle ATGM Mode'"
-	icon_state = "atgm_autocannon"
-	base_icon = "atgm_autocannon"
-	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
-	load_method = MAGAZINE
-	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a30mm_ap
-	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
-	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.2, 0.2, 0.3), accuracy=list(2)),
-		)
-	ammo_type = /obj/item/ammo_casing/a30mm_ap
-	var/firing_mode = 0 // 0 = autocannon, 1 = ATGM
-	var/debounce = FALSE // A bit of cooldown for switching firing modes
-
-	var/atgm_ammo = /obj/item/ammo_casing/rocket/atgm // What kind of ammo can be loaded into the ATGM
-	var/max_rockets = 1
-	var/list/rockets = new/list() // What rockets are currently loaded
-	var/release_force = 5
-	var/firing_range = 30
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/verb/switch_firingmode()
-	set name = "Toggle ATGM Mode"
-	set category = null
-	set src in range(1, usr)
-	if (debounce <= world.time)
-		debounce = world.time + 1 SECOND
-		switch (firing_mode)
-			if (0) // Switch to ATGM
-				playsound(get_turf(src), 'sound/machines/click.ogg', 60)
-				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on \the [src]."), SPAN_NOTICE("You switch weapons to the ATGM."))
-				firing_mode = 1
-			if (1) // Switch to autocannon
-				playsound(get_turf(src), 'sound/machines/click.ogg', 60)
-				usr.visible_message(SPAN_NOTICE("[usr] flicks a switch on \the [src]."), SPAN_NOTICE("You switch weapons to the autocannon."))
-				firing_mode = 0
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/AltClick()
-	..()
-	switch_firingmode()
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, atgm_ammo)) // If our ammo type is correct start a delay and load our ammo
-		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
-			user.remove_from_mob(I)
-			I.loc = src
-			rockets += I
-			user.visible_message("[user] loads a [I] into \the [src].", "You load a [I] into \the [src]")
-			update_icon()
-		else
-			to_chat(usr, SPAN_WARNING("\The [src] cannot hold more rockets."))
-		return
-	..()
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/unload_ammo(mob/user, var/allow_dump=1)
-	switch (firing_mode)
-		if (0) // Autocannon
-			..()
-		if (1) // ATGM
-			if (rockets.len)
-				for (var/obj/item/ammo_casing/rocket/I in rockets)
-					I.loc = get_turf(src)
-					rockets -= I
-				update_icon()
-			else
-				to_chat(user, SPAN_WARNING("The ATGM is empty"))
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_click_empty(mob/user)
-	switch (firing_mode)
-		if (0) // Autocannon
-			if (user)
-				user.visible_message("*click click*", "<span class='danger'>*click*</span>")
-			else
-				visible_message("*click click*")
-
-			playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
-			process_chambered()
-		if (1) // ATGM
-			if (rockets.len <= 0)
-				if (user)
-					user.visible_message("*click click*", "<span class='danger'>*click*</span>")
-				else
-					visible_message("*click click*")
-				playsound(loc, 'sound/weapons/empty.ogg', 100, TRUE)
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/consume_next_projectile()
-	switch (firing_mode)
-		if (0) // Autocannon
-			// Copied code from consume_next_projectile() since using ..() didn't work
-			if (loaded.len)
-				chambered = loaded[1] //load next casing.
-				if (handle_casings != HOLD_CASINGS)
-					loaded -= chambered
-					if (infinite_ammo)
-						loaded += new chambered.type
-
-			else if (ammo_magazine && ammo_magazine.stored_ammo.len)
-				chambered = ammo_magazine.stored_ammo[1]
-				if (handle_casings != HOLD_CASINGS)
-					ammo_magazine.stored_ammo -= chambered
-					if (infinite_ammo)
-						ammo_magazine.stored_ammo += new chambered.type
-
-			if (chambered)
-				if (gibs)
-					chambered.BB.gibs = TRUE
-				if (crushes)
-					chambered.BB.crushes = TRUE
-				return chambered.BB
-			return null
-		if (1) // ATGM
-			if (rockets.len)
-				var/obj/item/ammo_casing/rocket/I = rockets[1]
-				var/obj/item/missile/M = new I.projectile_type(src)
-				playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
-				M.dir = src.dir
-				M.primed = 1
-				rockets -= I
-				return M
-			return null
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/handle_post_fire(mob/user, atom/target)
-	switch (firing_mode)
-		if (0) // Autocannon
-			// Copied code from handle_post_fire() since using ..() didn't work
-			playsound(get_turf(user), fire_sound, 100, TRUE, 100)
-
-			if (muzzle_flash)
-				set_light(muzzle_flash)
-
-			var/datum/firemode/F = firemodes[sel_mode]
-
-			var/i_recoil = recoil
-			if (F.recoil != -1)
-				recoil = F.recoil
-
-			if (recoil)
-				spawn(0)
-					var/shake_strength = recoil
-					if (shake_strength > 0)
-						shake_camera(user, max(shake_strength, 0), min(shake_strength, 50))
-					recoil = i_recoil
-			else
-				recoil = i_recoil
-
-			update_icon()
-		if (1) // ATGM
-			message_admins("[key_name_admin(user)] fired an ATGM at [target].", key_name_admin(user))
-			log_game("[key_name_admin(user)] used an ATGM at [target].")
-			update_icon()
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null)
-	switch (firing_mode)
-		if (0) // Autocannon
-			// Copied code from process_projectile() since using ..() didn't work
-			var/obj/item/projectile/P = projectile
-
-			if (!istype(P))
-				return FALSE //default behaviour only applies to true projectiles
-
-			if (params)
-				P.set_clickpoint(params)
-
-			if (damage_modifier != 0)
-				P.damage += damage_modifier
-
-			//shooting while in shock
-			var/x_offset = 0
-			var/y_offset = 0
-			if (istype(user, /mob/living/human))
-				var/mob/living/human/mob = user
-				if (mob.shock_stage > 120)
-					y_offset = rand(-2,2)
-					x_offset = rand(-2,2)
-				else if (mob.shock_stage > 70)
-					y_offset = rand(-1,1)
-					x_offset = rand(-1,1)
-
-			return !P.launch(target, user, src, target_zone, x_offset, y_offset)
-		if (1) // ATGM
-			projectile.loc = get_turf(user)
-			projectile.throw_at(target, firing_range, release_force, user)
-			projectile.dir = get_dir(src.loc, target.loc)
-			if (ishuman(user) && istype(projectile, /obj/item/missile))
-				var/obj/item/missile/MS = projectile
-				MS.firer = user
-			if (istype(projectile, /obj/item/missile))
-				var/obj/item/missile/M = projectile
-				M.startingturf = get_turf(user)
-			update_icon(projectile)
-			return TRUE
-
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a42
-	name = "Shipunov 2A42 30mm autocannon with ATGM"
-	desc = "The 30mm 2A42 autocannon was developed as a replacement the for 2A28 Grom. It fires 30mm rounds. This one has an Anti-Tank Guided Missile system installed."
-	icon_state = "atgm_autocannon"
-	base_icon = "atgm_autocannon"
-	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/30mm.ogg'
-	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a30mm_ap
-	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
-	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=12, dispersion=list(0.1, 0.2, 0.2, 0.3), accuracy=list(2)),
-		)
-	ammo_type = /obj/item/ammo_casing/a30mm_ap
-
-/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/atgm/shipunov2a72
-	name = "Shipunov 2A72 30mm autocannon with ATGM"
-	desc = "A lighter simplified variant of the 2A42 with a lower number of parts, a longer barrel, and higher muzzle velocity, but also a lower rate of fire. It fires 30mm rounds. This one has an Anti-Tank Guided Missile system installed."
-	icon_state = "autocannon"
-	base_icon = "autocannon"
-	caliber = "a30"
-	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
-	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
-	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
-	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3.5, fire_delay=2.5, dispersion=list(0.1, 0.2, 0.2, 0.2), accuracy=list(2)),
-		)
-	ammo_type = /obj/item/ammo_casing/a30mm_ap
-	full_auto = TRUE
 
 // ATGMs
 
@@ -804,7 +605,7 @@
 	handle_casings = REMOVE_CASINGS
 	magazine_type = /obj/item/ammo_magazine/mosin
 	firemodes = list(
-		list(name = "single shot", burst=1, fire_delay=20, accuracy=list(2)),
+		list(name = "single shot", burst=1, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/rocket/atgm
 	is_hmg = TRUE
@@ -819,6 +620,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, atgm_ammo))
+		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
 		if (rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.remove_from_mob(I)
 			I.loc = src
@@ -850,10 +652,8 @@
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/consume_next_projectile()
 	if (rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
-		var/obj/item/missile/M = new I.projectile_type(src)
+		var/obj/item/projectile/shell/missile/M = new I.projectile_type(src)
 		playsound(get_turf(src), 'sound/weapons/guns/fire/rpg7.ogg', 100, TRUE)
-		M.dir = src.dir
-		M.primed = 1
 		rockets -= I
 		return M
 	return null
@@ -865,16 +665,13 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 	projectile.loc = get_turf(user)
-	projectile.throw_at(target, firing_range, release_force, user)
-	projectile.dir = get_dir(src.loc, target.loc)
-	if (ishuman(user) && istype(projectile, /obj/item/missile))
-		var/obj/item/missile/MS = projectile
-		MS.firer = user
-	if (istype(projectile, /obj/item/missile))
-		var/obj/item/missile/M = projectile
-		M.startingturf = get_turf(user)
-	update_icon(projectile)
-	return TRUE
+	if(istype(projectile, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/P = projectile
+		P.dir = SOUTH
+		P.launch(target, user, src)
+		return TRUE
+
+	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/kornet
 	name = "9K135 Kornet"

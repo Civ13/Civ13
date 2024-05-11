@@ -27,14 +27,30 @@
 
 /obj/structure/vehicleparts/movement/armored/btr
 	name = "armored wheels"
-	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	icon_state = "wheel_t_dark"
 	base_icon = "wheel_t_dark"
 	movement_icon = "wheel_t_dark_m"
 	ntype = "wheel"
-
-/obj/structure/vehicleparts/movement/armored/btr/reversed
-	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/btr/left_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "btr80_tracks_left_front"
+	base_icon = "btr80_tracks_left_front"
+	movement_icon = "btr80_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/btr/right_front
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "btr80_tracks_right_front"
+	base_icon = "btr80_tracks_right_front"
+	movement_icon = "btr80_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/btr/left_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "btr80_tracks_left_back"
+	base_icon = "btr80_tracks_left_back"
+	movement_icon = "btr80_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/btr/right_back
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	icon_state = "btr80_tracks_right_back"
+	base_icon = "btr80_tracks_right_back"
+	movement_icon = "btr80_tracks_right_back_m"
 
 /obj/structure/vehicleparts/movement/tracks
 	name = "armored tracks"
@@ -195,6 +211,27 @@
 	base_icon = "is3_tracks_right_back"
 	movement_icon = "is3_tracks_right_back_m"
 
+/obj/structure/vehicleparts/movement/tracks/is2/left_front
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	icon_state = "is2_tracks_left_front"
+	base_icon = "is2_tracks_left_front"
+	movement_icon = "is2_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/is2/right_front
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	icon_state = "is2_tracks_right_front"
+	base_icon = "is2_tracks_right_front"
+	movement_icon = "is2_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/is2/left_back
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	icon_state = "is2_tracks_left_back"
+	base_icon = "is2_tracks_left_back"
+	movement_icon = "is2_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/is2/right_back
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	icon_state = "is2_tracks_right_back"
+	base_icon = "is2_tracks_right_back"
+	movement_icon = "is2_tracks_right_back_m"
+
 /obj/structure/vehicleparts/movement/tracks/t34/left_front
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
 	icon_state = "t34_tracks_left_front"
@@ -216,26 +253,26 @@
 	base_icon = "t34_tracks_right_back"
 	movement_icon = "t34_tracks_right_back_m"
 
-/obj/structure/vehicleparts/movement/tracks/su100/left_front
+/obj/structure/vehicleparts/movement/tracks/m41/left_front
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
-	icon_state = "su100_tracks_left_front"
-	base_icon = "su100_tracks_left_front"
-	movement_icon = "su100_tracks_left_front_m"
-/obj/structure/vehicleparts/movement/tracks/su100/right_front
+	icon_state = "m41_tracks_left_front"
+	base_icon = "m41_tracks_left_front"
+	movement_icon = "m41_tracks_left_front_m"
+/obj/structure/vehicleparts/movement/tracks/m41/right_front
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
-	icon_state = "su100_tracks_right_front"
-	base_icon = "su100_tracks_right_front"
-	movement_icon = "su100_tracks_right_front_m"
-/obj/structure/vehicleparts/movement/tracks/su100/left_back
+	icon_state = "m41_tracks_right_front"
+	base_icon = "m41_tracks_right_front"
+	movement_icon = "m41_tracks_right_front_m"
+/obj/structure/vehicleparts/movement/tracks/m41/left_back
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
-	icon_state = "su100_tracks_left_back"
-	base_icon = "su100_tracks_left_back"
-	movement_icon = "su100_tracks_left_back_m"
-/obj/structure/vehicleparts/movement/tracks/su100/right_back
+	icon_state = "m41_tracks_left_back"
+	base_icon = "m41_tracks_left_back"
+	movement_icon = "m41_tracks_left_back_m"
+/obj/structure/vehicleparts/movement/tracks/m41/right_back
 	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
-	icon_state = "su100_tracks_right_back"
-	base_icon = "su100_tracks_right_back"
-	movement_icon = "su100_tracks_right_back_m"
+	icon_state = "m41_tracks_right_back"
+	base_icon = "m41_tracks_right_back"
+	movement_icon = "m41_tracks_right_back_m"
 
 /obj/structure/vehicleparts/movement/tracks/apc/left
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
@@ -522,6 +559,7 @@ var/global/list/rotation_matrixes1 = list(
 
 	"left" = list(
 			"1,1" = list("1,1"),),)
+
 /obj/structure/vehicleparts/frame/proc/convertdirs(var/dire)
 	if (!dire)
 		return NORTH

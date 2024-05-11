@@ -250,7 +250,7 @@
 
 /obj/structure/oven/fireplace/proc/keep_sound_on()
     if (on && looping && fuel > 0)
-        playsound(src, "sound/effects/campfire_cackling.ogg", 65, 20, 0, 25)
+        playsound(get_turf(src), "sound/effects/campfire_cackling.ogg", 65, TRUE, -1)
         spawn(50) // 6 seconds
             keep_sound_on()
 
@@ -268,12 +268,12 @@
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 0)
-		visible_message("<span class = 'notice'>[H] lights \the [name].</span>")
+		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
 		keep_fire_on()
 		keep_sound_on()
 	else if (on)
-		visible_message("<span class = 'notice'>[H] puts off \the [name].</span>")
+		H.visible_message(SPAN_NOTICE("[H] extinguishes \the [name]."), SPAN_NOTICE("You extinguish \the [name]."))
 		on = FALSE
 		set_light(0)
 		update_icon()
@@ -297,7 +297,7 @@
 				if (x == HH.x)
 					currdir = ""
 			if (currdir != "somewhere" && currdir != "")
-				HH << "<b>You see some smoke signals [currdir] of you...</b>"
+				to_chat(HH, "<b>You see some smoke signals [currdir] of you...</b>")
 
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
@@ -305,11 +305,12 @@
 		smoke_signals()
 	else
 		..()
+
 /obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
 	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
-		visible_message("<span class = 'warning'>[M] gets burnt by the [name]!</span>")
+		M.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))
 
 /obj/structure/oven/fireplace/pit
 	name = "fire pit"

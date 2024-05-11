@@ -71,16 +71,16 @@
 //IMAGINARY DARTGUN BASE
 /obj/item/weapon/gun/projectile/dartgun
 	icon = 'icons/obj/guns/dartgun.dmi'
-	var/base_icon = "blowgun"
+	base_icon = "blowgun"
 	var/list/beakers = list() //All containers inside the gun.
 	var/list/mixing = list() //Containers being used for mixing.
 	var/max_beakers = 1
 	var/dart_reagent_amount = 10
 	var/container_type = /obj/item/weapon/reagent_containers
 	var/list/starting_chems = null
-	move_delay = 2
-	fire_delay = 6
-	burst = 1
+	move_delay=2
+	fire_delay=6
+	burst=1
 	max_shells = 1
 	muzzle_flash = FALSE
 
@@ -103,11 +103,10 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	effectiveness_mod = 1.07
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
 	fire_sound_text = "a sharp metalic clack"
-	recoil = FALSE
+	shake_strength = FALSE
 	magazine_type = /obj/item/ammo_magazine/chemdart
 	auto_eject = FALSE
 	gtype = "none"
@@ -146,12 +145,11 @@
 	weight = 0.9
 	force = 3
 	throwforce = 20
-	effectiveness_mod = 1.07
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/fire/Crossbow.ogg'
 	fire_sound_text = "someone blowing through a tube"
 	bulletinsert_sound = 'sound/items/matchstick_hit.ogg'
-	recoil = FALSE
+	shake_strength = 0
 	auto_eject = FALSE
 	gtype = "none"
 	max_beakers = 1
@@ -289,11 +287,10 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	effectiveness_mod = 1.07
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
 	fire_sound_text = "a sharp metalic clack"
-	recoil = FALSE
+	shake_strength = 0
 	auto_eject = TRUE
 	gtype = "none"
 	max_beakers = 1
@@ -330,11 +327,10 @@
 	force = 10
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	effectiveness_mod = 1.07
 	caliber = "dart"
 	fire_sound = 'sound/weapons/guns/interact/garandload.ogg'
 	fire_sound_text = "a sharp metalic clack"
-	recoil = FALSE
+	shake_strength = 0
 	magazine_type = /obj/item/ammo_magazine/chemdart/mag
 	auto_eject = TRUE
 	gtype = "none"

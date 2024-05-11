@@ -24,7 +24,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	grace_wall_timer = 3000
 	songs = list(
-		"Divinitus:1" = "sound/music/divinitus.ogg",)
+		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 obj/map_metadata/teutoburg/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
