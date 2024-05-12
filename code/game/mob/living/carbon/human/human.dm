@@ -1100,6 +1100,8 @@ var/list/coefflist = list()
 					var/obj/screen/movable/action_button/A = O
 					if (A.name == "Look into Distance ([src])" || (A.owner && istype(A.owner, /datum/action/toggle_scope)))
 						continue
+				if (istype(O, /obj/screen/aiming_cross))
+					continue
 				O.scoped_invisible = TRUE
 				O.invisibility = 100
 		else

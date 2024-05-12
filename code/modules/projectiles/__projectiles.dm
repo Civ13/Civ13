@@ -311,12 +311,14 @@
 	damage = DAMAGE_VERY_HIGH + 40
 	penetrating = 6
 	armor_penetration = 47
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a762x54/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 1
 	armor_penetration = 18
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/pistol/a762x38
 	damage = DAMAGE_LOW + 6
@@ -392,12 +394,14 @@
 	damage = DAMAGE_VERY_HIGH + 46
 	penetrating = 5
 	armor_penetration = 50
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a792x57/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 20
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a765x53
 	damage = DAMAGE_VERY_HIGH + 20
@@ -450,12 +454,14 @@
 	damage = DAMAGE_VERY_HIGH + 35
 	penetrating = 4
 	armor_penetration = 47
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a3006/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 24
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_LOW + 2
@@ -494,6 +500,7 @@
 	damage = DAMAGE_HIGH + 12
 	penetrating = 3
 	armor_penetration = 30
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a545x39
 	damage = DAMAGE_MEDIUM_HIGH + 15
@@ -507,11 +514,14 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
+	tracer_type = /obj/effect/projectile/tracer
+
 /obj/item/projectile/bullet/rifle/a762x51/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 3
 	armor_penetration = 21
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a556x45
 	damage = DAMAGE_HIGH + 3
@@ -543,23 +553,27 @@
 	penetrating = 10
 	armor_penetration = 50
 	heavy_armor_penetration = 10
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a50cal/weak/New()
 	..()
 	damage = (damage)/2
 	penetrating = 10
 	armor_penetration = 20
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_ap
 	damage = DAMAGE_MEDIUM + 5
 	penetrating = 40
 	armor_penetration = 80
 	heavy_armor_penetration = 50
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_he
 	damage = DAMAGE_LOW + 20
 	penetrating = 12
 	armor_penetration = 15
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a50cal_he/on_impact(var/atom/A)
 	impact_effect(effect_transform)
@@ -592,30 +606,35 @@
 	penetrating = 20
 	armor_penetration = 55
 	heavy_armor_penetration = 34
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a145
 	damage = DAMAGE_OH_GOD + 90
 	penetrating = 20
 	armor_penetration = 65
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer/red
 
 /obj/item/projectile/bullet/rifle/a15115
 	damage = DAMAGE_OH_GOD + 90
 	penetrating = 20
 	armor_penetration = 70
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_ap
 	damage = DAMAGE_MEDIUM + 64
 	penetrating = 40
 	armor_penetration = 75
 	heavy_armor_penetration = 55
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_aphe
 	damage = DAMAGE_LOW + 25
 	penetrating = 30
 	armor_penetration = 65
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer
 
 /obj/item/projectile/bullet/rifle/a15115_aphe/on_impact(var/atom/A)
 	impact_effect(effect_transform)
@@ -654,18 +673,21 @@
 	penetrating = 25
 	armor_penetration = 85
 	heavy_armor_penetration = 45
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a792x94
 	damage = DAMAGE_OH_GOD + 85
 	penetrating = 20
 	armor_penetration = 60
 	heavy_armor_penetration = 30
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/rifle/a792x94_ap
 	damage = DAMAGE_OH_GOD + 80
 	penetrating = 25
 	armor_penetration = 85
 	heavy_armor_penetration = 40
+	tracer_type = /obj/effect/projectile/tracer/green
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_LOW - 20
@@ -676,6 +698,8 @@
 	damage = DAMAGE_VERY_HIGH + 23
 	penetrating = 5
 	armor_penetration = 42
+	alpha = 128
+	tracer_type = null
 
 /obj/item/projectile/bullet/rifle/a357
 	damage = DAMAGE_HIGH+30

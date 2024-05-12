@@ -1,31 +1,6 @@
+// None of those definitions are used in-game as of May 9th 2024.
+
 #define DEBUG 0
-
-//Game defining directives.
-#define MAIN_AI_SYSTEM "ARES v3.2"
-
-#define MAP_BIG_RED "Big Red"
-#define MAP_ICE_COLONY "Ice Colony"
-#define MAP_ICY_CAVES "Icy Caves"
-#define MAP_LV_624 "LV624"
-#define MAP_PRISON_STATION "Prison Station"
-#define MAP_RESEARCH_OUTPOST "Research Outpost"
-#define MAP_WHISKEY_OUTPOST "Whiskey Outpost"
-#define MAP_BARRENQUILLA_MINING "Barrenquilla Mining Facility"
-#define MAP_MAGMOOR_DIGSITE "Magmoor Digsite IV"
-#define MAP_CHIGUSA "Chigusa"
-#define MAP_GELIDA_IV "Gelida IV"
-#define MAP_DELTA_STATION "Delta Station"
-#define MAP_OSCAR_OUTPOST "Oscar Outpost"
-
-#define MAP_PILLAR_OF_SPRING "Pillar of Spring"
-#define MAP_SULACO "Sulaco"
-#define MAP_THESEUS "Theseus"
-#define MAP_TALOS "Talos"
-#define MAP_MINERVA "Minerva"
-#define MAP_TWIN_PILLARS "Twin Pillars"
-#define MAP_COMBAT_PATROL_BASE "Combat Patrol Base"
-
-#define PREDATOR_TO_TOTAL_SPAWN_RATIO 1/20
 
 #define SEE_INVISIBLE_MINIMUM 5
 
@@ -43,11 +18,6 @@
 
 //Object specific defines
 #define CANDLE_LUM 3 //For how bright candles are
-
-#define SEC_LEVEL_GREEN 0
-#define SEC_LEVEL_BLUE 1
-#define SEC_LEVEL_RED 2
-#define SEC_LEVEL_DELTA 3
 
 
 //some arbitrary defines to be used by self-pruning global lists. (see master_controller)
@@ -90,7 +60,7 @@
 // Default preferences
 #define DEFAULT_SPECIES "Human"
 
-#define GAME_YEAR (text2num(time2text(world.realtime, "YYYY")) + 395)
+#define GAME_YEAR (text2num(time2text(world.realtime, "YYYY"))) // To be adapted according to each map's year. Here it gives a date set in the current real world year.
 
 
 #define MAX_MESSAGE_LEN 1024
@@ -108,22 +78,9 @@
 #define USE_STATIC_TRANSPARENT 1
 #define USE_STATIC_OPAQUE 2
 
-
-#define CINEMATIC_DEFAULT 1
-#define CINEMATIC_SELFDESTRUCT 2
-#define CINEMATIC_SELFDESTRUCT_MISS 3
-#define CINEMATIC_NUKE_WIN 4
-#define CINEMATIC_NUKE_MISS 5
-#define CINEMATIC_ANNIHILATION 6
-#define CINEMATIC_MALF 7
-#define CINEMATIC_NUKE_FAKE 8
-#define CINEMATIC_NUKE_NO_CORE 9
-#define CINEMATIC_NUKE_FAR 10
-#define CINEMATIC_CRASH_NUKE 11
-
 #define WORLD_VIEW "15x15"
-// 7 по Х и 7 по У = 15х15
-// 9 по Х и 7 по У = 19х15
+// 7 to X and 7 to Y = 15х15
+// 9 to X and 7 to Y = 19х15
 #define WORLD_VIEW_NUM_X 5
 #define WORLD_VIEW_NUM_Y 5
 #define VIEW_NUM_TO_STRING(v) "[1 + 2 * v]x[1 + 2 * v]"

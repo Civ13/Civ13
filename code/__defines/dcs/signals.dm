@@ -23,8 +23,6 @@
 #define COMSIG_GLOB_NUKE_DIFFUSED "!nuke_diffused"
 #define COMSIG_GLOB_DISK_GENERATED "!disk_produced"
 
-#define COMSIG_GLOB_YAUTJA_ARMORY_OPENED "yautja_armory_opened"
-
 /// from /obj/machinery/setAnchored(): (machine, anchoredstate)
 #define COMSIG_GLOB_MACHINERY_ANCHORED_CHANGE "!machinery_anchored_change"
 
@@ -34,11 +32,6 @@
 #define COMSIG_GLOB_MOB_LOGIN "!mob_login"
 #define COMSIG_GLOB_MOB_LOGOUT "!mob_logout"
 #define COMSIG_GLOB_MOB_DEATH "!mob_death"
-
-#define COMSIG_GLOB_AI_GOAL_SET "!ai_goal_set"
-#define COMSIG_GLOB_AI_MINION_RALLY "!ai_minion_rally"
-#define COMSIG_GLOB_HIVE_TARGET_DRAINED "!hive_target_drained"
-
 
 /// Sent when a marine dropship enters transit level
 #define COMSIG_GLOB_DROPSHIP_TRANSIT "!dropship_transit"
@@ -483,10 +476,6 @@
 #define COMSIG_LIVING_STATUS_MUTE "living_mute"					//from base of mob/living/Mute()
 	#define COMPONENT_NO_MUTE (1<<0)
 
-#define COMSIG_LIVING_ADD_VENTCRAWL "living_add_ventcrawl"
-#define COMSIG_LIVING_WEEDS_AT_LOC_CREATED "living_weeds_at_loc_created"	///from obj/alien/weeds/Initialize()
-#define COMSIG_LIVING_WEEDS_ADJACENT_REMOVED "living_weeds_adjacent_removed"	///from obj/alien/weeds/Destroy()
-
 #define COMSIG_LIVING_UPDATE_PLANE_BLUR "living_update_plane_blur"
 	#define COMPONENT_CANCEL_BLUR (1<<0)
 
@@ -518,86 +507,6 @@
 #define COMSIG_SHUTTLE_SETMODE "shuttle_setmode"
 
 #define COMSIG_DROPSHIP_EQUIPMENT_UNEQUIPPED "shuttle_equipment_unequipped"
-
-// xeno stuff
-#define COMSIG_HIVE_BECOME_RULER "hive_become_ruler"
-#define COMSIG_HIVE_XENO_DEATH "hive_xeno_death"
-#define COMSIG_HIVE_XENO_MOTHER_PRE_CHECK "hive_xeno_mother_pre_check"		//from datum/hive_status/normal/proc/attempt_to_spawn_larva()
-#define COMSIG_HIVE_XENO_MOTHER_CHECK "hive_xeno_mother_check"				//from /datum/hive_status/normal/proc/spawn_larva()
-
-#define COMSIG_XENOACTION_TOGGLECHARGETYPE "xenoaction_togglechargetype"
-
-#define COMSIG_WARRIOR_USED_GRAB "warrior_used_grab"
-#define COMSIG_WARRIOR_NECKGRAB "warrior_neckgrab"
-	#define COMSIG_WARRIOR_CANT_NECKGRAB (1<<0)
-#define COMSIG_WARRIOR_USED_FLING "warrior_used_fling"
-#define COMSIG_WARRIOR_USED_GRAPPLE_TOSS "warrior_used_grapple_toss"
-
-#define COMSIG_XENOABILITY_HUNTER_MARK "xenoability_hunter_mark"
-#define COMSIG_XENOABILITY_PSYCHIC_TRACE "xenoability_psychic_trace"
-
-#define COMSIG_XENOMORPH_PLASMA_REGEN "xenomorph_plasma_regen"
-#define COMSIG_XENOMORPH_HEALTH_REGEN "xenomorph_health_regen"
-#define COMSIG_XENOMORPH_SUNDER_REGEN "xenomorph_sunder_regen"
-#define COMSIG_XENOMORPH_RESIN_JELLY_APPLIED "xenomorph_resin_jelly_applied"
-
-#define COMSIG_XENOMORPH_REST "xenomorph_rest"
-#define COMSIG_XENOMORPH_UNREST "xenomorph_unrest"
-
-#define COMSIG_XENOMORPH_ZONE_SELECT "xenomorph_zone_select"
-	#define COMSIG_ACCURATE_ZONE (1<<0)
-
-#define COMSIG_XENOMORPH_POUNCE "xenomorph_pounce"
-#define COMSIG_XENOMORPH_POUNCE_END "xenomorph_pounce_end"
-
-#define COMSIG_XENOMORPH_HEADBITE "headbite"
-
-#define COMSIG_XENOMORPH_GIBBING "xenomorph_gibbing"
-#define COMSIG_XENOMORPH_POSTEVOLVING "xenomorph_evolving"
-#define COMSIG_XENOMORPH_ABILITY_ON_UPGRADE "xenomorph_ability_on_upgrade"
-
-#define COMSIG_XENOMORPH_GRAB "xenomorph_grab"
-#define COMSIG_XENOMORPH_ATTACK_OBJ "xenomorph_attack_obj"
-#define COMSIG_XENOMORPH_ATTACK_LIVING "xenomorph_attack_living"
-	#define COMSIG_XENOMORPH_BONUS_APPLIED (1<<0)
-
-#define COMSIG_XENOMORPH_ATTACK_HUMAN "xenomorph_attack_human"
-#define COMSIG_XENOMORPH_DISARM_HUMAN "xenomorph_disarm_human"
-	#define COMPONENT_BYPASS_SHIELDS (1<<0)
-	#define COMPONENT_BYPASS_ARMOR (1<<1)
-
-#define COMSIG_XENOMORPH_THROW_HIT "xenomorph_throw_hit"
-
-#define COMSIG_XENOMORPH_FIRE_BURNING "xenomorph_fire_burning"
-#define COMSIG_XENOMORPH_TAKING_DAMAGE "xenomorph_taking_damage" // (target, damagetaken)
-
-#define COMSIG_XENOMORPH_INTERFERENCE "xenomorph_interference"
-
-#define COMSIG_XENOMORPH_BRUTE_DAMAGE "xenomorph_brute_damage" // (amount, amount_mod, passive)
-#define COMSIG_XENOMORPH_BURN_DAMAGE "xenomorph_burn_damage" // (amount, amount_mod, passive)
-
-#define COMSIG_XENOMORPH_EVOLVED "xenomorph_evolved"
-#define COMSIG_XENOMORPH_DEEVOLVED "xenomorph_deevolved"
-#define COMSIG_XENOMORPH_WATCHXENO "xenomorph_watchxeno"
-
-#define COMSIG_XENOMORPH_LEADERSHIP "xenomorph_leadership"
-#define COMSIG_XENOMORPH_QUEEN_PLASMA "xenomorph_queen_plasma"
-
-#define COMSIG_XENOMORPH_CORE_RETURN "xenomorph_core_return"
-#define COMSIG_XENOMORPH_HIVEMIND_CHANGE_FORM "xenomorph_hivemind_change_form"
-
-#define COMSIG_XENO_OBJ_THROW_HIT "xeno_obj_throw_hit"				///from [/mob/living/carbon/xenomorph/throw_impact]: (obj/target, speed)
-#define COMSIG_XENO_LIVING_THROW_HIT "xeno_living_throw_hit"		///from [/mob/living/carbon/xenomorph/throw_impact]: (mob/living/target)
-	#define COMPONENT_KEEP_THROWING (1<<0)
-#define COMSIG_XENO_PROJECTILE_HIT "xeno_projectile_hit"			///from [/mob/living/carbon/xenomorph/projectile_hit] called when a projectile hits a xeno but before confirmation of a hit (can miss due to inaccuracy/evasion)
-	#define COMPONENT_PROJECTILE_DODGE (1<<0)
-
-#define COMSIG_XENOMORPH_WRAITH_RECALL "xenomorph_wraith_recall"
-	#define COMPONENT_BANISH_TARGETS_EXIST (1<<0)
-
-#define COMSIG_XENO_PSYCHIC_LINK_REMOVED "xeno_psychic_link_removed"
-
-#define COMSIG_XENO_WIDOW_GRAB_SPIDERLINGS "xeno_widow_grab_spiderlings"
 
 //human signals
 #define COMSIG_CLICK_QUICKEQUIP "click_quickequip"
@@ -662,195 +571,6 @@
 #define COMSIG_KB_TOGGLE_MINIMAP "toggle_minimap"
 #define COMSIG_KB_SELFHARM "keybind_selfharm"
 
-// mecha keybinds
-#define COMSIG_MECHABILITY_TOGGLE_INTERNALS "mechability_toggle_internals"
-#define COMSIG_MECHABILITY_TOGGLE_STRAFE "mechability_toggle_strafe"
-#define COMSIG_MECHABILITY_VIEW_STATS "mechability_view_stats"
-#define COMSIG_MECHABILITY_SMOKE "mechability_smoke"
-#define COMSIG_MECHABILITY_TOGGLE_ZOOM "mechability_toggle_zoom"
-#define COMSIG_MECHABILITY_SKYFALL "mechability_skyfall"
-#define COMSIG_MECHABILITY_STRIKE "mechability_strike"
-
-// xeno abilities for keybindings
-
-#define COMSIG_XENOABILITY_REST "xenoability_rest"
-#define COMSIG_XENOABILITY_HEADBITE "xenoability_headbite"
-#define COMSIG_XENOABILITY_REGURGITATE "xenoability_regurgitate"
-#define COMSIG_XENOABILITY_BLESSINGSMENU "xenoability_blesssingsmenu"
-#define COMSIG_XENOABILITY_DROP_WEEDS "xenoability_drop_weeds"
-#define COMSIG_XENOABILITY_CHOOSE_WEEDS "xenoability_choose_weeds"
-#define COMSIG_XENOABILITY_DROP_PLANT "xenoability_drop_plant"
-#define COMSIG_XENOABILITY_CHOOSE_PLANT "xenoability_choose_plant"
-#define COMSIG_XENOABILITY_SECRETE_RESIN "xenoability_secrete_resin"
-#define COMSIG_XENOABILITY_PLACE_ACID_WELL "place_acid_well"
-#define COMSIG_XENOABILITY_EMIT_RECOVERY "xenoability_emit_recovery"
-#define COMSIG_XENOABILITY_EMIT_WARDING "xenoability_emit_warding"
-#define COMSIG_XENOABILITY_EMIT_FRENZY "xenoability_emit_frenzy"
-#define COMSIG_XENOABILITY_TRANSFER_PLASMA "xenoability_transfer_plasma"
-#define COMSIG_XENOABILITY_CORROSIVE_ACID "xenoability_corrosive_acid"
-#define COMSIG_XENOABILITY_SPRAY_ACID "xenoability_spray_acid"
-#define COMSIG_XENOABILITY_ACID_DASH "xenoability_acid_dash"
-#define COMSIG_XENOABILITY_XENO_SPIT "xenoability_xeno_spit"
-#define COMSIG_XENOABILITY_HIDE "xenoability_hide"
-#define COMSIG_XENOABILITY_NEUROTOX_STING "xenoability_neurotox_sting"
-#define COMSIG_XENOABILITY_OZELOMELYN_STING "xenoability_ozelomelyn_sting"
-#define COMSIG_XENOABILITY_INJECT_EGG_NEUROGAS "xenoability_inject_egg_neurogas"
-#define COMSIG_XENOABILITY_RALLY_HIVE "xenoability_rally_hive"
-#define COMSIG_XENOABILITY_RALLY_MINION "xenoability_rally_minion"
-#define COMSIG_XENOABILITY_MINION_BEHAVIOUR "xenoability_minion_behavior"
-#define COMSIG_XENOABILITY_SILENCE "xenoability_silence"
-
-#define COMSIG_XENOABILITY_RETURN_CORE "xenoability_return_core"
-#define COMSIG_XENOABILITY_CHANGE_FORM "xenoability_change_form"
-
-#define COMSIG_XENOABILITY_TOXIC_SPIT "xenoability_toxic_spit"
-#define COMSIG_XENOABILITY_TOXIC_SLASH "xenoability_toxic_slash"
-#define COMSIG_XENOABILITY_DRAIN_STING "xenoability_drain_sting"
-#define COMSIG_XENOABILITY_TOXIC_GRENADE "xenoability_toxic_grenade"
-
-#define COMSIG_XENOABILITY_ACIDIC_SALVE "xenoability_acidic_salve"
-#define COMSIG_XENOABILITY_ESSENCE_LINK "xenoability_essence_link"
-#define COMSIG_XENOABILITY_ESSENCE_LINK_REMOVE "xenoability_essence_link_remove"
-#define COMSIG_XENOABILITY_ENHANCEMENT "xenoability_enhancement"
-
-#define COMSIG_XENOABILITY_LONG_RANGE_SIGHT "xenoability_long_range_sight"
-#define COMSIG_XENOABILITY_TOGGLE_BOMB "xenoability_toggle_bomb"
-#define COMSIG_XENOABILITY_TOGGLE_BOMB_RADIAL "xenoability_toggle_bomb_radial"
-#define COMSIG_XENOABILITY_CREATE_BOMB "xenoability_create_bomb"
-#define COMSIG_XENOABILITY_ROOT "xenoability_root"
-#define COMSIG_XENOABILITY_BOMBARD "xenoability_bombard"
-#define COMSIG_XENOABILITY_DUMP_ACID "xenoability_dump_acid"
-
-#define COMSIG_XENOABILITY_THROW_HUGGER "xenoability_throw_hugger"
-#define COMSIG_XENOABILITY_CALL_YOUNGER "xenoability_call_younger"
-#define COMSIG_XENOABILITY_PLACE_TRAP "xenoability_place_trap"
-#define COMSIG_XENOABILITY_SPAWN_HUGGER "xenoability_spawn_hugger"
-#define COMSIG_XENOABILITY_SWITCH_HUGGER "xenoability_switch_hugger"
-#define COMSIG_XENOABILITY_CHOOSE_HUGGER "xenoability_choose_hugger"
-#define COMSIG_XENOABILITY_DROP_ALL_HUGGER "xenoability_drop_all_hugger"
-
-#define COMSIG_XENOABILITY_STOMP "xenoability_stomp"
-#define COMSIG_XENOABILITY_TOGGLE_CHARGE "xenoability_toggle_charge"
-#define COMSIG_XENOABILITY_CRESTTOSS "xenoability_cresttoss"
-#define COMSIG_XENOABILITY_ADVANCE "xenoability_advance"
-
-#define COMSIG_XENOABILITY_DEVOUR "xenoability_devour"
-#define COMSIG_XENOABILITY_DRAIN "xenoability_drain"
-#define COMSIG_XENOABILITY_TRANSFUSION "xenoability_transfusion"
-#define COMSIG_XENOABILITY_REJUVENATE "xenoability_rejuvenate"
-#define COMSIG_XENOABILITY_PSYCHIC_LINK "xenoability_psychic_link"
-#define COMSIG_XENOABILITY_CARNAGE "xenoability_carnage"
-#define COMSIG_XENOABILITY_FEAST "xenoability_feast"
-
-#define COMSIG_XENOABILITY_BULLCHARGE "xenoability_bullcharge"
-#define COMSIG_XENOABILITY_BULLHEADBUTT "xenoability_bullheadbutt"
-#define COMSIG_XENOABILITY_BULLGORE "xenoability_bullgore"
-
-#define COMSIG_XENOABILITY_TAIL_SWEEP "xenoability_tail_sweep"
-#define COMSIG_XENOABILITY_FORWARD_CHARGE "xenoability_forward_charge"
-#define COMSIG_XENOABILITY_CREST_DEFENSE "xenoability_crest_defense"
-#define COMSIG_XENOABILITY_FORTIFY "xenoability_fortify"
-#define COMSIG_XENOABILITY_REGENERATE_SKIN "xenoability_regenerate_skin"
-#define COMSIG_XENOABILITY_CENTRIFUGAL_FORCE "xenoability_centrifugal_force"
-
-#define COMSIG_XENOABILITY_EMIT_NEUROGAS "xenoability_emit_neurogas"
-#define COMSIG_XENOABILITY_SELECT_REAGENT "xenoability_select_reagent"
-#define COMSIG_XENOABILITY_RADIAL_SELECT_REAGENT "xenoability_radial_select_reagent"
-#define COMSIG_XENOABILITY_REAGENT_SLASH "xenoability_reagent_slash"
-#define COMSIG_XENOABILITY_DEFILE "xenoability_defile"
-#define COMSIG_XENOABILITY_TENTACLE "xenoability tentacle"
-
-#define COMSIG_XENOABILITY_RESIN_WALKER "xenoability_resin_walker"
-#define COMSIG_XENOABILITY_BUILD_TUNNEL "xenoability_build_tunnel"
-#define COMSIG_XENOABILITY_PLACE_JELLY_POD "xenoability_place_jelly_pod"
-#define COMSIG_XENOABILITY_CREATE_JELLY "xenoability_create_jelly"
-#define COMSIG_XENOABILITY_HEALING_INFUSION "xenoability_healing_infusion"
-#define COMSIG_XENOABILITY_RECYCLE "xenoability_recycle"
-
-#define COMSIG_XENOABILITY_TOGGLE_STEALTH "xenoability_toggle_stealth"
-#define COMSIG_XENOABILITY_TOGGLE_DISGUISE "xenoability_toggle_disguise"
-#define COMSIG_XENOABILITY_MIRAGE "xenoability_mirage"
-
-#define COMSIG_XENOABILITY_SCREECH "xenoability_screech"
-#define COMSIG_XENOABILITY_PSYCHIC_WHISPER "xenoability_psychic_whisper"
-#define COMSIG_XENOABILITY_TOGGLE_QUEEN_ZOOM "xenoability_toggle_queen_zoom"
-#define COMSIG_XENOABILITY_XENO_LEADERS "xenoability_xeno_leaders"
-#define COMSIG_XENOABILITY_QUEEN_HEAL "xenoability_queen_heal"
-#define COMSIG_XENOABILITY_QUEEN_GIVE_PLASMA "xenoability_queen_give_plasma"
-#define COMSIG_XENOABILITY_QUEEN_HIVE_MESSAGE "xenoability_queen_hive_message"
-#define COMSIG_XENOABILITY_DEEVOLVE "xenoability_deevolve"
-#define COMSIG_XENOABILITY_QUEEN_BULWARK "xenoability_queen_bulwark"
-
-#define COMSIG_XENOABILITY_LAY_HIVEMIND "xenoability_lay_hivemind"
-#define COMSIG_XENOABILITY_LAY_EGG "xenoability_lay_egg"
-#define COMSIG_XENOABILITY_CALL_OF_THE_BURROWED "xenoability_call_of_the_burrowed"
-#define COMSIG_XENOABILITY_PSYCHIC_FLING "xenoability_psychic_fling"
-#define COMSIG_XENOABILITY_PSYCHIC_GRAB "xenoability_psychic_grab"
-#define COMSIG_XENOABILITY_PSYCHIC_CURE "xenoability_psychic_cure"
-#define COMSIG_XENOABILITY_UNRELENTING_FORCE "xenoability_unrelenting_force"
-#define COMSIG_XENOABILITY_UNRELENTING_FORCE_SELECT "xenoability_unrelenting_force_select"
-
-#define COMSIG_XENOABILITY_RAVAGER_CHARGE "xenoability_ravager_charge"
-#define COMSIG_XENOABILITY_RAVAGE "xenoability_ravage"
-#define COMSIG_XENOABILITY_RAVAGE_SELECT "xenoability_ravage_select"
-#define COMSIG_XENOABILITY_SECOND_WIND "xenoability_second_wind"
-#define COMSIG_XENOABILITY_ENDURE "xenoability_endure"
-#define COMSIG_XENOABILITY_RAGE "xenoability_rage"
-#define COMSIG_XENOABILITY_VAMPIRISM "xenoability_vampirism"
-
-#define COMSIG_XENOABILITY_TOGGLE_SAVAGE "xenoability_toggle_savage"
-#define COMSIG_XENOABILITY_POUNCE "xenoability_pounce"
-#define COMSIG_XENOABILITY_EVASION "xenoability_evasion"
-#define COMSIG_XENOABILITY_SNATCH "xenoability_snatch"
-
-#define COMSIG_XENOABILITY_ROAR "xenoability_roar"
-#define COMSIG_XENOABILITY_SMASH "xenoability_smash"
-#define COMSIG_XENOABILITY_DEVASTATE "xenoability_devastate"
-
-#define COMSIG_XENOABILITY_VENTCRAWL "xenoability_vent_crawl"
-
-#define COMSIG_XENOABILITY_TOGGLE_AGILITY "xenoability_toggle_agility"
-#define COMSIG_XENOABILITY_LUNGE "xenoability_lunge"
-#define COMSIG_XENOABILITY_FLING "xenoability_fling"
-#define COMSIG_XENOABILITY_PUNCH "xenoability_punch"
-#define COMSIG_XENOABILITY_GRAPPLE_TOSS "xenoability_grapple_toss"
-#define COMSIG_XENOABILITY_JAB "xenoability_jab"
-
-#define COMSIG_XENOABILITY_PORTAL "xenoablity_portal"
-#define COMSIG_XENOABILITY_PORTAL_ALTERNATE "xenoability_portal_alternate"
-#define COMSIG_XENOABILITY_BLINK "xenoability_blink"
-#define COMSIG_XENOABILITY_BANISH "xenoability_banish"
-#define COMSIG_XENOABILITY_RECALL "xenoability_recall"
-#define COMSIG_XENOABILITY_TIMESTOP "xenoability_timestop"
-#define COMSIG_XENOABILITY_REWIND "xenoability_rewind"
-
-#define COMSIG_XENOABILITY_NIGHTFALL "xenoability_nightfall"
-#define COMSIG_XENOABILITY_PETRIFY "xenoability_petrify"
-#define COMSIG_XENOABILITY_OFFGUARD "xenoability_offguard"
-#define COMSIG_XENOABILITY_SHATTERING_ROAR "xenoability_shattering_roar"
-#define COMSIG_XENOABILITY_ZEROFORMBEAM "xenoability_zeroformbeam"
-#define COMSIG_XENOABILITY_HIVE_SUMMON "xenoability_hive_summon"
-
-#define COMSIG_XENOABILITY_SCATTER_SPIT "xenoability_scatter_spit"
-
-#define COMSIG_XENOABILITY_WEB_SPIT "xenoability_web_spit"
-#define COMSIG_XENOABILITY_BURROW "xenoability_burrow"
-#define COMSIG_XENOABILITY_LEASH_BALL "xenoability_leash_ball"
-#define COMSIG_XENOABILITY_CREATE_SPIDERLING "xenoability_create_spiderling"
-#define COMSIG_XENOABILITY_ATTACH_SPIDERLINGS "xenoability_attach_spiderlings"
-#define COMSIG_XENOABILITY_WEB_HOOK "xenoability_web_hook"
-#define COMSIG_XENOABILITY_SPIDERLING_MARK "xenoability_spiderling_mark"
-
-#define COMSIG_XENOABILITY_PSYCHIC_SHIELD "xenoability_psychic_shield"
-#define COMSIG_XENOABILITY_TRIGGER_PSYCHIC_SHIELD "xenoability_trigger_psychic_shield"
-#define COMSIG_XENOABILITY_PSYCHIC_BLAST "xenoability_psychic_blast"
-#define COMSIG_XENOABILITY_PSYCHIC_CRUSH "xenoability_psychic_crush"
-
-#define COMSIG_XENOABILITY_TEARING_TAIL "xenoability_tearing_tail"
-#define COMSIG_XENOABILITY_ADRENALINE_JUMP "xenoability_adrenaline_jump"
-#define COMSIG_XENOABILITY_ADRENALINE_RUSH "xenoability_adrenaline_rush"
-#define COMSIG_XENOABILITY_EVASIVE_MANEUVERS "xenoability_evasive_maneuvers"
-
 // throw parry signals
 #define COMSIG_THROW_PARRY_CHECK "throw_parry_check"
 #define COMSIG_PARRY_TRIGGER "parry_trigger"
@@ -881,29 +601,12 @@
 #define COMSIG_KB_DEFENDORDER "keybind_defendorder"
 #define COMSIG_KB_RETREATORDER "keybind_retreatorder"
 
-
 // human modules signals for keybindings
 #define COMSIG_KB_VALI_CONFIGURE "keybinding_vali_configure"
 #define COMSIG_KB_VALI_HEAL "keybinding_vali_heal"
 #define COMSIG_KB_VALI_CONNECT "keybiding_vali_connect"
 #define COMSIG_KB_SUITANALYZER "keybinding_suitanalyzer"
 
-// yautja abilities for keybindings
-
-#define COMSIG_PRED_MARK_HUNT "pred_mark_hunt"
-#define COMSIG_PRED_MARK_PANEL "pred_mark_panel"
-#define COMSIG_PRED_ZOOM "pred_zoom"
-#define COMSIG_PRED_TOGGLESIGHT "pred_togglesight"
-#define COMSIG_PRED_COMBISTICK "pred_combistick"
-#define COMSIG_PRED_SMART_DISC "pred_smart_disc"
-#define COMSIG_PRED_TRANSLATOR "pred_translator"
-#define COMSIG_PRED_CRYSTAL "pred_crystal"
-#define COMSIG_PRED_CAPSULE "pred_capsule"
-#define COMSIG_PRED_WRISTBLADES "pred_wristblades"
-#define COMSIG_PRED_CASTER "pred_caster"
-#define COMSIG_PRED_CLOACK "pred_cloack"
-#define COMSIG_PRED_SD "pred_sd"
-#define COMSIG_PRED_SD_MODE "pred_sd_mode"
 
 // Ability adding/removing signals
 #define ACTION_GIVEN "gave_an_action"		//from base of /datum/action/proc/give_action(): (datum/action)

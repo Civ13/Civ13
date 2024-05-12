@@ -182,6 +182,8 @@ var/set_dir = null // Set the variable outside of any scopes
 	return FALSE
 
 /obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
+	health -= Proj.damage * 0.03
+	visible_message("<span class = 'warning'>[Proj] hits the [src]!</span>")
 	if (health <= 0)
 		qdel(src)
 

@@ -14,11 +14,13 @@
 	heavy_armor_penetration = 25
 	var/caliber = 75
 	atype = "HE"
+	tracer_type = /obj/effect/projectile/tracer/shell
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
+	impact_type = /obj/effect/projectile/impact/heavy
 	var/turf/targloc = null
 	var/initiated = FALSE
 
-/obj/item/projectile/shell/update_icon()
+/obj/item/projectile/shell/New()
 	..()
 	icon_state = "[atype]_shell"
 
@@ -39,12 +41,11 @@
 	return ..()
 
 /obj/item/projectile/shell/on_impact(var/atom/A)
-	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "cannonball")
-			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor) && !istype(T, /turf/floor/trench))
 				T.ChangeTurf(/turf/floor/dirt/burned)
 			explosion(T, 1, 1, 1, 2)
 		else
@@ -55,6 +56,17 @@
 			qdel(src)
 	return TRUE
 
+/obj/item/projectile/shell/impact_effect()
+	if (ispath(impact_type))
+		var/turf/effect_loc = null
+		if(permutated.len > 0)
+			effect_loc = permutated[permutated.len]
+		else
+			effect_loc = starting
+		for(var/i = 0, i < 10, i++)
+			var/obj/effect/projectile/P = new impact_type(effect_loc)
+			if (istype(P))
+				P.activate(get_angle())
 
 /obj/item/projectile/shell/launch(atom/target, mob/user, obj/structure/cannon/modern/tank/launcher)
 	targloc = get_turf(target)
@@ -96,7 +108,8 @@
 	if(!T)
 		return
 	var/caliber_modifier = clamp(round(caliber / 50), 0, 4)
-
+	if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor) && !istype(T, /turf/floor/trench))
+		T.ChangeTurf(/turf/floor/dirt/burned)
 	if (atype == "HE")
 		var/he_range = caliber_modifier
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
@@ -182,8 +195,9 @@
 	icon = 'icons/obj/projectiles.dmi'
 	icon_state = "bullet"
 
-/obj/item/projectile/shell/autocannon/update_icon()
-	return
+/obj/item/projectile/shell/autocannon/New()
+	..()
+	icon_state = "bullet"
 
 /obj/item/projectile/shell/autocannon/a20_aphe
 	atype = "AP"

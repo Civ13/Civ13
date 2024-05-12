@@ -424,6 +424,29 @@
 				damage_mult = 3
 	P.damage *= damage_mult
 
+/obj/item/weapon/gun/proc/get_dispersion_range(mob/user)
+	var/dt = world.time - last_shot_time
+	var/dt_movement = world.time - user.last_movement
+	var/recoil_range = recoil / ergonomics
+	var/accuracy_range = accuracy
+
+	if(dt > firemodes[sel_mode].burst_delay)
+		recoil_range /= sqrt(dt) * 2
+		if((recoil_range - sqrt(dt) * 1.5) < 0)
+			recoil_range = 0
+		else
+			recoil_range -= sqrt(dt) * 1.5
+
+	if(user.lying || user.prone)
+		recoil_range /= 2
+
+	if(dt_movement <= 6)
+		accuracy_range = 30
+	else if (dt_movement < 10)
+		accuracy_range = 40 / (dt_movement - 6)
+
+	return recoil_range + accuracy_range
+
 //does the actual launching of the projectile
 /obj/item/weapon/gun/proc/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
 
@@ -440,21 +463,33 @@
 
 	var/dt = world.time - last_shot_time
 
-	var/shot_recoil = next_shot_recoil / (dt * ergonomics)
+	var/shot_recoil = next_shot_recoil / ergonomics
+
+	if(dt > firemodes[sel_mode].burst_delay)
+		shot_recoil /= sqrt(dt) * 2
+		if(dt * 0.5 < abs(shot_recoil) )
+			shot_recoil -= sign(shot_recoil) * dt * 0.5
+		else
+			shot_recoil = 0
 
 	if(user.lying || user.prone)
-		shot_recoil /= 2.5
+		shot_recoil /= 2
 
 	var/shot_accuracy = rand(-accuracy, accuracy)
 
 	var/dt_movement = world.time - user.last_movement
-	if (dt_movement > 0 && dt_movement < 4)
-		shot_accuracy = 0
-		while (abs(shot_accuracy) < 4) // even RNjesus won’t help you get there right away
-			shot_accuracy = rand(-20, 20)
-		shot_recoil *= 6 / dt_movement 
 
-	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -30, 30)
+	if (dt_movement <= 6)
+		shot_accuracy = rand(-20, 20)
+	else if (dt_movement < 10)
+		var/accuracy_range = 20 / sqrt(dt_movement - 6)
+		shot_accuracy = rand(-accuracy_range, accuracy_range)
+		if (abs(shot_accuracy) < 5) // even RNjesus won’t help you get there right away
+			shot_accuracy += 5
+		if(user.m_intent != "run")
+			shot_accuracy *= 0.75
+
+	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
 
 	P.dispersion = shot_dispersion
 
@@ -472,11 +507,8 @@
 			x_offset = rand(-1,1)
 
 	if(!P.launch(target, user, src, target_zone, x_offset, y_offset))
-		next_shot_recoil += rand(-recoil, recoil) * 0.5
-		var/max_recoil = rand(5, 30)
-		if(abs(next_shot_recoil) >= max_recoil)
-			next_shot_recoil = clamp(next_shot_recoil, -max_recoil, max_recoil)
-			next_shot_recoil /= rand(1, 4)
+		next_shot_recoil = clamp(shot_recoil + (rand(recoil * 0.5, recoil) * rand(-1, 1)), -40, 40)
+		next_shot_recoil /= rand(1, sqrt(abs(next_shot_recoil)) / 3)
 		last_shot_time = world.time
 		return FALSE
 	return TRUE

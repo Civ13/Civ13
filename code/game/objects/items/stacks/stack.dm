@@ -186,7 +186,7 @@
 /obj/item/stack/AltClick(mob/living/user)
 	var/turf/T = get_turf(src)
 	if (T && user.TurfAdjacent(T))
-		if(zero_amount())
+		if (zero_amount() || amount <= 1) // Prevents Alt-clicking if the amount is 0 or 1
 			return
 		var/max = amount
 		var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
@@ -195,12 +195,12 @@
 		if(stackmaterial == null || stackmaterial <= 0)
 			return
 		else if (!user.item_is_in_hands(src) && !user.Adjacent(src))
-			to_chat(user, "<span class='warning'>The stack isn't in your hands or next to you!</span>")
+			to_chat(user, SPAN_WARNING("The stack isn't in your hands or next to you!"))
 			return
 		else
 			change_stack(user, stackmaterial)
 			update_strings(stackmaterial)
-			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
+			to_chat(user, SPAN_NOTICE("You take [stackmaterial] out of the stack."))
 
 /obj/item/stack/proc/update_strings()
     return

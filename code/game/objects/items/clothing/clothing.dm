@@ -13,23 +13,23 @@
 	health = 32
 	dropsound = 'sound/effects/drop_clothing.ogg'
 	flammable = TRUE
-	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
+	var/restricts_view = 0 // If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
 
 	var/dirtyness = 0
 	var/fleas = FALSE
 
 	var/ripable = FALSE
-	var/rag_amt = 1
+	var/rag_amount = 1
 	secondary_action = TRUE
 
 /obj/item/clothing/secondary_attack_self(mob/living/human/user)
-	if (secondary_action && ripable && rag_amt > 0)
-		user << "You start ripping apart \the [src]..."
+	if (secondary_action && ripable && rag_amount > 0)
+		to_chat(user, SPAN_WARNING("You start ripping apart \the [src]..."))
 		if (do_after(user, 100, get_turf(user)))
 			playsound(user.loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
-			user << "You rip \the [src] apart into rags."
+			to_chat(user, SPAN_WARNING("You rip \the [src] apart into rags."))
 			var/obj/item/stack/material/rags/R = new/obj/item/stack/material/rags(user.loc)
-			R.amount = rag_amt
+			R.amount = rag_amount
 			qdel(src)
 			return
 	else
@@ -46,7 +46,7 @@
 /obj/item/clothing/proc/check_health()
 	if (health <= 0)
 		visible_message("\The [src] falls apart!")
-		if (ripable && rag_amt > 0)
+		if (ripable && rag_amount > 0)
 			new/obj/item/stack/material/rags(get_turf(src))
 		if (istype(loc, /mob/living))
 			var/mob/living/M = loc
@@ -180,6 +180,7 @@ SEE_PIXELS// if an object is located on an unlit area, but some of its pixels ar
 		  // in a lit area (via pixel_x,y or smooth movement), can see those pixels
 BLIND	 // can't see anything
 */
+
 /obj/item/clothing/glasses
 	name = "glasses"
 	icon = 'icons/obj/clothing/glasses.dmi'
@@ -197,9 +198,10 @@ BLIND	 // can't see anything
 		var/mob/M = loc
 		M.update_inv_eyes()
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
-//Gloves
+/*
+* GLOVE(s)
+*/
+
 /obj/item/clothing/gloves
 	name = "gloves"
 	gender = PLURAL //Carn: for grammarically correct text-parsing
@@ -240,10 +242,10 @@ BLIND	 // can't see anything
         desc = "[desc]<br>They have had the fingertips cut off of them."
         return
 
+/*
+* HEAD(s)
+*/
 
-
-///////////////////////////////////////////////////////////////////////
-//Head
 /obj/item/clothing/head
 	name = "head"
 	icon = 'icons/obj/clothing/hats.dmi'
@@ -318,8 +320,10 @@ BLIND	 // can't see anything
 		var/mob/M = loc
 		M.update_inv_head()
 
-///////////////////////////////////////////////////////////////////////
-//Mask
+/*
+* MASK(s)
+*/ 
+
 /obj/item/clothing/mask
 	name = "mask"
 	icon = 'icons/obj/clothing/masks.dmi'
@@ -341,8 +345,10 @@ BLIND	 // can't see anything
 /obj/item/clothing/mask/proc/filter_air(datum/gas_mixture/air)
 	return
 
-///////////////////////////////////////////////////////////////////////
-//Shoes
+/*
+* SHOE(s)
+*/
+
 /obj/item/clothing/shoes
 	name = "shoes"
 	icon = 'icons/obj/clothing/shoes.dmi'
@@ -361,12 +367,12 @@ BLIND	 // can't see anything
 	force = 2
 	var/overshoes = FALSE
 
-/obj/item/clothing/shoes/attack_hand(var/mob/M)
-	if (holding)
-		draw_knife()
-	else return ..(M)
-
 /obj/item/clothing/shoes/proc/draw_knife()
+	set name = "Draw Shoe Knife"
+	set desc = "Pull out your shoe's knife."
+	set category = "IC"
+	set src in usr
+
 	if (!holding)
 		return FALSE
 
@@ -376,7 +382,7 @@ BLIND	 // can't see anything
 	holding.forceMove(get_turf(usr))
 
 	if (usr.put_in_hands(holding))
-		visible_message(SPAN_DANGER("\The [usr] pulls \a [holding] out of their boot!"))
+		usr.visible_message(SPAN_DANGER("\The [usr] pulls \a [holding] out of \the [src]!"), SPAN_DANGER("You pull \a [holding] out of \the [src]!"))
 		holding = null
 	else
 		to_chat(usr, SPAN_WARNING("You must not be holding anything to do that."))
@@ -385,7 +391,23 @@ BLIND	 // can't see anything
 	update_icon()
 	return TRUE
 
-
+/obj/item/clothing/shoes/attack_hand(var/mob/living/M)
+	if (hasorgans(M)) // if ishuman
+		var/mob/living/human/user = M
+		var/obj/item/organ/external/temp = user.organs_by_name["r_hand"]
+		if (user.hand)
+			temp = user.organs_by_name["l_hand"]
+		if (temp && !temp.is_usable())
+			to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
+			return
+		if (!temp)
+			to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attached!"))
+			return
+	if (holding && src.loc == M)
+		draw_knife(M)
+		return
+	else
+		return ..()
 
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
@@ -412,8 +434,10 @@ BLIND	 // can't see anything
 		var/mob/M = loc
 		M.update_inv_shoes()
 
-///////////////////////////////////////////////////////////////////////
-//Suit
+/*
+* SUIT(s)
+*/
+
 /obj/item/clothing/suit
 	icon = 'icons/obj/clothing/suits.dmi'
 	name = "suit"
@@ -425,14 +449,16 @@ BLIND	 // can't see anything
 	siemens_coefficient = 0.9
 	w_class = ITEM_SIZE_NORMAL
 	ripable = TRUE
-	rag_amt = 4
+	rag_amount = 4
 /obj/item/clothing/suit/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
 		M.update_inv_wear_suit()
 
-///////////////////////////////////////////////////////////////////////
-//Under clothing
+/*
+* UNDER CLOTHING
+*/
+
 /obj/item/clothing/under
 	icon = 'icons/obj/clothing/uniforms.dmi'
 	item_icons = list(
@@ -446,7 +472,7 @@ BLIND	 // can't see anything
 	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	w_class = ITEM_SIZE_NORMAL
 	ripable = TRUE
-	rag_amt = 3
+	rag_amount = 3
 	//var/has_sensor = TRUE //For the crew computer 2 = unable to change mode
 //	var/sensor_mode = FALSE
 		/*

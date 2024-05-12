@@ -579,6 +579,7 @@
 	icon_state = "missile"
 	atype = "HE"
 	heavy_armor_penetration = 10
+	tracer_type = null
 	caliber = 90
 
 /obj/item/projectile/shell/missile/update_icon()
@@ -633,6 +634,7 @@
 	icon_state = "atgm_missile"
 	atype = "HE"
 	caliber = 120
+	tracer_type = null
 
 /obj/item/projectile/shell/missile/atgm/process()
 	if(permutated.len > 2 && firer && firer.client)

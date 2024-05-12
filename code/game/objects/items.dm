@@ -176,7 +176,7 @@
 					to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
 					return
 				if (!temp)
-					to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attacked!"))
+					to_chat(user, SPAN_NOTICE("You try to use your hand, but realise it is no longer attached!"))
 					return
 			pickup(user)
 			if (istype(loc, /obj/item/weapon/storage))

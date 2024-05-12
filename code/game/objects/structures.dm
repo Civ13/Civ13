@@ -181,7 +181,7 @@
 	if (!istype(T) || !istype(U))
 		return FALSE
 
-	// Check if the target turf is a table or a crate
+	// Check if the target turf is a crate or a barricade.
 	if (istype(src, /obj/structure/closet/crate) || istype(src, /obj/structure/barricade)) // we check for barricades because [sand]stone walls are under this.
 		if (user.loc == src.loc)
 			to_chat(user, SPAN_WARNING("You're already on this!"))

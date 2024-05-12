@@ -5,6 +5,7 @@
 	density = FALSE								// we no longer use Bump() to detect collisions - Kachnov
 	anchored = TRUE								// There's a reason this is here, Mport. God fucking damn it -Agouri. Find&Fix by Pete. The reason this is here is to stop the curving of emitter shots.
 	pass_flags = PASSTABLE
+	animate_movement = 0
 	mouse_opacity = FALSE
 	value = 0
 	flags = CONDUCT
@@ -71,7 +72,7 @@
 	// effect types to be used
 	var/muzzle_type
 	var/tracer_type
-	var/impact_type
+	var/impact_type = /obj/effect/projectile/impact
 
 	var/passed_trenches = 0 					// Number of tiles with trenches that a bullet passed in a row
 
@@ -131,7 +132,7 @@
 	return TRUE
 
 /obj/item/projectile/proc/on_impact(var/atom/A)
-	impact_effect(effect_transform)		// generate impact effect
+	impact_effect()		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
 
 	spawn(25)
@@ -519,6 +520,7 @@
 
 	if (!is_trench && launch_from_trench && firer.prone && !overcoming_trench) // shooting while lying down from trench to trench is impossible [translated]
 		T.visible_message(SPAN_WARNING("\The [name] hits the wall of the trench!"))
+		on_impact(previous_step)
 		qdel(src)
 		return
 
@@ -538,14 +540,17 @@
 					else
 						forceMove(T)
 						permutated += T
+						on_impact(T)
 						S.initiate(T)
 				else
+					on_impact(T)
 					loc = null
 					qdel(src)
 				return FALSE
 			else
 				if (istype(src, /obj/item/projectile/shell))
 					var/obj/item/projectile/shell/S = src
+					on_impact(T)
 					if(S.initiated)
 						F.bullet_act(src,penloc)
 						passthrough = TRUE
@@ -576,8 +581,11 @@
 					if (istype(O, /obj/structure))
 						var/obj/structure/S = O
 						if (!S.CanPass(src, original))
+							on_impact(T)
+							do_bullet_act(O)
 							passthrough = FALSE
 					else
+						on_impact(T)
 						do_bullet_act(O)
 						bumped = TRUE
 						loc = null
@@ -620,6 +628,7 @@
 
 						if (prob(hit_chace))
 							passthrough = !attack_mob(L, firer_dist)
+							return
 						else
 							visible_message(SPAN_WARNING("\The [name] flies over \the [AM]!"))
 						def_zone = tmp_zone
@@ -663,12 +672,13 @@
 
 	for(var/obj/structure/window/barrier/S in T)
 		if (!S.CanPassOut(src))
+			do_bullet_act(T)
 			passthrough = FALSE
-
 
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
 		if(S.initiated)
+			on_impact(T)
 			S.initiate(T)
 
 	for (var/obj/structure/vehicleparts/frame/F in loc)
@@ -698,6 +708,7 @@
 	if (istype(src, /obj/item/projectile/shell))
 		if (loc == trajectory.target)
 			var/obj/item/projectile/shell/S = src
+			on_impact(T)
 			S.initiate(loc)
 			return FALSE
 
@@ -799,11 +810,12 @@
 		handleTurf(loc, untouchable = _untouchable)
 		before_move()
 		forceMove(location.return_turf())
+		update_icon()
 
 		if (!did_muzzle_effect)
-			muzzle_effect(effect_transform)
-		else if (!bumped)
-			tracer_effect(effect_transform)
+			muzzle_effect()
+		else if (!bumped && loc)
+			tracer_effect()
 
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
@@ -824,50 +836,45 @@
 
 	// generate this now since all visual effects the projectile makes can use it
 	effect_transform = new()
-	effect_transform.Scale(trajectory.return_hypotenuse(), TRUE)
 	effect_transform.Turn(-trajectory.return_angle())		//no idea why this has to be inverted, but it works
 
 	transform = turn(transform, -(trajectory.return_angle() + 90)) //no idea why 90 needs to be added, but it works
 
-/obj/item/projectile/proc/muzzle_effect(var/matrix/T)
+/obj/item/projectile/update_icon()
+	var/dist = permutated.len * world.icon_size
+	pixel_x = (cos(angle) * dist) - ((x - starting.x) * world.icon_size)
+	pixel_y = (sin(angle) * dist) - ((y - starting.y) * world.icon_size)
 
+/obj/item/projectile/proc/muzzle_effect()
 	if (silenced)
 		did_muzzle_effect = TRUE
 		return
-
 	if (ispath(muzzle_type))
-		var/obj/effect/projectile/M = new muzzle_type(get_turf(src))
-
+		var/obj/effect/projectile/M = new muzzle_type(starting)
 		if (istype(M))
-			M.set_transform(T)
-			M.pixel_x = location.pixel_x
-			M.pixel_y = location.pixel_y
-			M.activate()
-
+			M.activate(get_angle())
 	did_muzzle_effect = TRUE
 
-/obj/item/projectile/proc/tracer_effect(var/matrix/M)
+/obj/item/projectile/proc/tracer_effect()
 	if (ispath(tracer_type))
-		var/obj/effect/projectile/P = new tracer_type(location.loc)
+		for(var/i = 1, i <= 2, i++)
+			var/obj/effect/projectile/P = new tracer_type(starting)
+			if (istype(P))
+				P.alpha *= 0.6 / i
+				var/px_dist = ((permutated.len - 1) * world.icon_size) + (i * 16)
+				P.activate(get_angle(), px_dist, starting)
 
-		if (istype(P))
-			P.set_transform(M)
-			P.pixel_x = location.pixel_x
-			P.pixel_y = location.pixel_y
-		/*	if (!hitscan)
-				P.activate(step_delay)	//if not a hitscan projectile, remove after a single delay
-			else*/
-			P.activate()
-
-/obj/item/projectile/proc/impact_effect(var/matrix/M)
-	if (ispath(tracer_type))
-		var/obj/effect/projectile/P = new impact_type(location.loc)
-
-		if (istype(P))
-			P.set_transform(M)
-			P.pixel_x = location.pixel_x
-			P.pixel_y = location.pixel_y
-			P.activate()
+/obj/item/projectile/proc/impact_effect()
+	if (ispath(impact_type))
+		var/turf/effect_loc = null
+		if(permutated.len > 0)
+			effect_loc = permutated[permutated.len]
+		else
+			effect_loc = starting
+		for(var/i = 0, i < 5, i++)
+			var/obj/effect/projectile/P = new impact_type(effect_loc)
+			if (istype(P))
+				P.activate(get_angle())
 
 //Helper proc to check if you can hit them or not.
 
