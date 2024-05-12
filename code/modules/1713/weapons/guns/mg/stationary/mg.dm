@@ -601,6 +601,7 @@
 	base_icon = "atgm"
 	caliber = "rocket"
 	fire_sound = 'sound/weapons/guns/fire/rpg7.ogg'
+	zoom_amount = ZOOM_CONSTANT*2+4
 	load_method = SINGLE_CASING
 	handle_casings = REMOVE_CASINGS
 	magazine_type = /obj/item/ammo_magazine/mosin
