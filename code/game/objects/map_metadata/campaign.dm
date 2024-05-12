@@ -395,7 +395,7 @@ var/no_loop_ca = FALSE
 		get_faction2_captured_equipment()
 
 		ticker.finished = TRUE
-		var/message = "<font color='red'>The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font> The Redmenians halted the attack!"
+		var/message = SPAN_BLUE("The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]! The Redmenians halted the attack!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
@@ -409,7 +409,7 @@ var/no_loop_ca = FALSE
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = "<font color='blue'>The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font>"
+			message = SPAN_RED("The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
