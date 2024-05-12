@@ -37,9 +37,12 @@
 		layer = TURF_LAYER + 0.01
 		icon_state = "mine_armed"
 		user.drop_item()
-		if (map.ID == MAP_CAMPAIGN && istype(src, (/obj/item/mine/at)))
+		if (map.ID == MAP_CAMPAIGN)
 			var/obj/map_metadata/campaign/CM = map
-			CM.at_mines_placed++
+			if (istype(src, (/obj/item/mine/at)))
+				CM.at_mines_placed++
+			else
+				CM.ap_mines_placed++
 		return
 
 //Disarming
@@ -70,9 +73,12 @@
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
-					if (map.ID == MAP_CAMPAIGN && istype(src, (/obj/item/mine/at)))
+					if (map.ID == MAP_CAMPAIGN)
 						var/obj/map_metadata/campaign/CM = map
-						CM.at_mines_placed--
+						if (istype(src, (/obj/item/mine/at)))
+							CM.at_mines_placed--
+						else
+							CM.ap_mines_placed--
 					return
 				else
 					Bumped(user)
@@ -94,9 +100,12 @@
 				anchored = FALSE
 				icon_state = "mine"
 				layer = initial(layer)
-				if (map.ID == MAP_CAMPAIGN && istype(src, (/obj/item/mine/at)))
+				if (map.ID == MAP_CAMPAIGN)
 					var/obj/map_metadata/campaign/CM = map
-					CM.at_mines_placed--
+					if (istype(src, (/obj/item/mine/at)))
+						CM.at_mines_placed--
+					else
+						CM.ap_mines_placed--
 				return
 			else
 				Bumped(user)

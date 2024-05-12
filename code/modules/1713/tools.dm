@@ -191,9 +191,10 @@
 
 /obj/item/weapon/material/shovel/trench/foldable/etool
 	name = "foldable entrenching tool"
-	desc = "A foldable shovel used specifically for digging and moving dirt."
+	desc = "A foldable shovel used for digging dirt and moving dirt. It can be also as a improvised hatchet."
 	icon_state = "etool"
 	usespeed = 0.8
+	chopping_speed = 3.1
 	path = /obj/item/weapon/foldable_shovel/trench/etool
 
 /obj/item/weapon/material/shovel/trench/foldable/secondary_attack_self(mob/living/human/user)

@@ -39,7 +39,7 @@
 	title = "BAF Squad 1 Private"
 	squad = 1
 	rank_abbreviation = "1-Pvt"
-/datum/job/civilian/bluefaction/s1/corpsman
+/datum/job/bluefaction/s1/corpsman
 	title = "BAF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
@@ -140,7 +140,7 @@
 	var/area/A = get_area(get_turf(H))
 	
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
@@ -323,7 +323,7 @@
 	if(is_squad_leader)
 		map.faction2_squad_leaders[squad] = H
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //armor and clothes
 	if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni(H), slot_w_uniform)
@@ -401,7 +401,7 @@
 	if (!H)	return FALSE
 	H.nationality = "Blugoslavia"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/blugoslavia/standard(H), slot_w_uniform)
 

@@ -139,7 +139,7 @@
 	var/area/A = get_area(get_turf(H))
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 	
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
@@ -324,7 +324,7 @@
 	if(is_squad_leader)
 		map.faction1_squad_leaders[squad] = H
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //armor and clothes
 	if (findtext(title, "Marine"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
@@ -445,7 +445,7 @@
 	H.squad = squad
 	H.nationality = "Redmenia"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //clothes
 	var/rand_uni = rand(1,2)
 	switch (rand_uni)
@@ -493,7 +493,7 @@
 	if(is_squad_leader)
 		map.faction1_squad_leaders[squad] = H
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
 //armor
@@ -543,7 +543,7 @@
 	if (!H)	return FALSE
 	H.nationality = "Redmenia"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/combat(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/redmenia/standard/modern(H), slot_w_uniform)
 

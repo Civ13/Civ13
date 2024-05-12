@@ -13,6 +13,14 @@
 	var/frames = 0
 	var/maxFrames = 5
 
+/obj/structure/beehive/New()
+	..()
+	processing_objects += src
+
+/obj/structure/beehive/Del()
+	processing_objects -= src
+	..()
+
 /obj/structure/beehive/update_icon()
 	overlays.Cut()
 	icon_state = "beehive"
@@ -144,9 +152,7 @@
 			to_chat(user, SPAN_NOTICE("You take all filled honeycombs out."))
 		return
 
-/obj/structure/beehive/Process() // All processes seem to be a lie
-	spawn(30)
-		visible_message(SPAN_NOTICE("DEBUG: Process is working."))
+/obj/structure/beehive/process() // All processes seem to be a lie
 	if(closed && !smoked && bee_count)
 		pollinate_flowers()
 		update_icon()

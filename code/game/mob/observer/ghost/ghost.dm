@@ -375,8 +375,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/verb/follow_bluefaction(input in getfitmobs(BLUEFACTION)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow a Bluefaction"
-	set desc = "Follow and haunt a living Bluefaction."
+	set name = "Follow a Blugoslavian"
+	set desc = "Follow and haunt a living Blugoslavian."
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(BLUEFACTION)
 		if (mobs[input])
@@ -384,8 +384,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/verb/follow_redfaction(input in getfitmobs(REDFACTION)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow a Redfaction"
-	set desc = "Follow and haunt a living Redfaction."
+	set name = "Follow a Redmenian"
+	set desc = "Follow and haunt a living Redmenian."
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(REDFACTION)
 		if (mobs[input])

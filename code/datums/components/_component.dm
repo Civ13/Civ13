@@ -174,13 +174,13 @@
 /datum/proc/RegisterSignal(datum/target, sig_type_or_types, proctype, override = FALSE)
 	if(QDELETED(src) || QDELETED(target))
 		return
-	var/list/procs = signal_procs
+	var/list/procs = (_signal_procs ||= list())
 	if(!procs)
-		signal_procs = procs = list()
+		_signal_procs = procs = list()
 	var/list/target_procs = procs[target] || (procs[target] = list())
-	var/list/lookup = target.comp_lookup
+	var/list/lookup = target._listen_lookup
 	if(!lookup)
-		target.comp_lookup = lookup = list()
+		target._listen_lookup = lookup = list()
 
 	for(var/sig_type in (islist(sig_type_or_types) ? sig_type_or_types : list(sig_type_or_types)))
 		if(!override && target_procs[sig_type])
@@ -210,37 +210,37 @@
  * * sig_typeor_types Signal string key or list of signal keys to stop listening to specifically
  */
 /datum/proc/UnregisterSignal(datum/target, sig_type_or_types)
-	var/list/lookup = target.comp_lookup
-	if(!signal_procs || !signal_procs[target] || !lookup)
+	var/list/lookup = target._listen_lookup
+	if(!_signal_procs || !_signal_procs[target] || !lookup)
 		return
 	if(!islist(sig_type_or_types))
 		sig_type_or_types = list(sig_type_or_types)
 	for(var/sig in sig_type_or_types)
-		if(!signal_procs[target][sig])
+		if(!_signal_procs[target][sig])
 			continue
 		switch(length_char(lookup[sig]))
 			if(2)
 				lookup[sig] = (lookup[sig]-src)[1]
 			if(1)
-				stack_trace("[target] ([target.type]) somehow has single length list inside comp_lookup")
+				stack_trace("[target] ([target.type]) somehow has single length list inside _listen_lookup")
 				if(src in lookup[sig])
 					lookup -= sig
 					if(!length_char(lookup))
-						target.comp_lookup = null
+						target._listen_lookup = null
 						break
 			if(0)
 				if(lookup[sig] != src)
 					continue
 				lookup -= sig
 				if(!length_char(lookup))
-					target.comp_lookup = null
+					target._listen_lookup = null
 					break
 			else
 				lookup[sig] -= src
 
-	signal_procs[target] -= sig_type_or_types
-	if(!signal_procs[target].len)
-		signal_procs -= target
+	_signal_procs[target] -= sig_type_or_types
+	if(!_signal_procs[target].len)
+		_signal_procs -= target
 
 /**
  * Called on a component when a component of the same type was added to the same parent
@@ -304,13 +304,13 @@
  * Use the [SEND_SIGNAL] define instead
  */
 /datum/proc/_SendSignal(sigtype, list/arguments)
-	var/target = comp_lookup[sigtype]
+	var/target = _listen_lookup[sigtype]
 	if(!length_char(target))
 		var/datum/listening_datum = target
-		return NONE | CallAsync(listening_datum, listening_datum.signal_procs[src][sigtype], arguments)
+		return NONE | CallAsync(listening_datum, listening_datum._signal_procs[src][sigtype], arguments)
 	. = NONE
 	for(var/datum/listening_datum as anything in target)
-		. |= CallAsync(listening_datum, listening_datum.signal_procs[src][sigtype], arguments)
+		. |= CallAsync(listening_datum, listening_datum._signal_procs[src][sigtype], arguments)
 
 // The type arg is casted so initial works, you shouldn't be passing a real instance into this
 /**

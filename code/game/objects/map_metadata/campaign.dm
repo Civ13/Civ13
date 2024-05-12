@@ -8,6 +8,7 @@
 	no_winner = "The battle is going on."
 	victory_time = 60 MINUTES
 	grace_wall_timer = 20 MINUTES
+	can_spawn_on_base_capture = FALSE
 	faction_organization = list(
 		REDFACTION,
 		BLUEFACTION)
@@ -19,7 +20,7 @@
 	age = "2024"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(REDFACTION = 0.5, BLUEFACTION = 0.5)
-	battle_name = "battle of Dewsbury Village"
+	battle_name = "battle of the Tanburr defensive line"
 	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = REDFACTION
 	faction2 = BLUEFACTION
@@ -61,13 +62,17 @@
 		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
 	)
 	var/list/capturable_equipment = list(
-		/obj/structure/cannon/mortar,
 		/obj/structure/cannon/modern,
 		/obj/structure/cannon/rocket,
-		/obj/item/weapon/gun/projectile/automatic/stationary,
+		/obj/structure/cannon/rocket/loaded,
+		/obj/structure/cannon/rocket/old,
+		/obj/structure/cannon/mortar,
+		/obj/structure/cannon/mortar/foldable/generic,
+		/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 	)
 	var/list/captured_equipment_red = list()
 	var/list/captured_equipment_blue = list()
+	var/ap_mines_placed = 0
 	var/at_mines_placed = 0
 
 /obj/map_metadata/campaign/New()
@@ -114,15 +119,15 @@
 
 /obj/map_metadata/campaign/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 1 MINUTES
+		return 2 MINUTES
 	else
-		return 3 MINUTES
+		return 5 MINUTES
 
 /obj/map_metadata/campaign/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 2 MINUTES
 	else
-		return 5 MINUTES
+		return 7 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
 	var/ctb = 0
@@ -390,24 +395,26 @@ var/no_loop_ca = FALSE
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
-		get_faction1_captured_equipment()
-		get_faction2_captured_equipment()
 		ticker.finished = TRUE
-		var/message = "<font color='red'>The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font> The Blugoslavians halted the attack!"
-		world << SPAN_NOTICE("<font size = 4>[message]</font>")
-		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		var/message = SPAN_BLUE("The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]! The Redmenians halted the attack!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+
+		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
+		
+		after_round_checks()
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		get_faction1_captured_equipment()
-		get_faction2_captured_equipment()
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = "<font color='blue'>The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!</font>"
-		world << SPAN_NOTICE("<font size = 4>[message]</font>")
-		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+			message = SPAN_RED("The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+
+		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
+
+		after_round_checks()
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_ca = TRUE
@@ -416,8 +423,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(BLUEFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(REDFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -425,8 +432,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(BLUEFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(REDFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -434,8 +441,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(BLUEFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(REDFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -443,14 +450,14 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(BLUEFACTION)
+				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(REDFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Redmenians</b> have recaptured control over the objective!</font>"
+			world << "<font size = 3>The <b>Blugoslavians</b> have retaken control over the objective!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -530,14 +537,32 @@ var/no_loop_ca = FALSE
 	icon_state = "blue3"
 
 /obj/map_metadata/campaign/proc/get_faction1_captured_equipment()
-	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
-		if(capturable_equipment.Find(I))
+	for(var/obj/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
+		if(locate(I) in capturable_equipment)
 			captured_equipment_red += I.name
+	to_chat(world, "<big><b><font color='red'>Captured equipment Redmenia:</font></b></big>")
+	if(captured_equipment_red.len)
+		to_chat(world, "<big>[jointext(captured_equipment_red,"\n")]</big>")
+	else
+		to_chat(world, "<big>No equipment was captured.</big>")
 
 /obj/map_metadata/campaign/proc/get_faction2_captured_equipment()
-	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
-		if(capturable_equipment.Find(I))
+	for(var/obj/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
+		if(locate(I) in capturable_equipment)
 			captured_equipment_blue += I.name
+	to_chat(world, "<big><b><font color='blue'>Captured equipment Blugoslavia:</font></b></big>")
+	if(captured_equipment_blue.len)
+		to_chat(world, "<big>[jointext(captured_equipment_blue,"\n")]</big>")
+	else
+		to_chat(world, "<big>No equipment was captured.</big>")
+
+
+/obj/map_metadata/campaign/proc/after_round_checks()
+	spawn(5 SECONDS)
+		to_chat(world, "<big><b>AP mines placed: [ap_mines_placed]</b></big>")
+		to_chat(world, "<big><b>AT mines placed: [at_mines_placed]</b></big>")
+		get_faction1_captured_equipment()
+		get_faction2_captured_equipment()
 
 ///////////Map Specific Objects///////////
 /obj/structure/altar/heads

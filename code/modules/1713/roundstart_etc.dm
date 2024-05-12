@@ -21,7 +21,7 @@ var/GRACE_PERIOD_LENGTH = 7
 					if (MAP_FOOTBALL_CAMPAIGN)
 						time_of_day = "Midday"
 					if (MAP_CAMPAIGN)
-						time_of_day = "Morning"
+						time_of_day = "Night"
 					if (MAP_DRUG_BUST)
 						time_of_day = "Night"
 			update_lighting(time_of_day, null, FALSE)

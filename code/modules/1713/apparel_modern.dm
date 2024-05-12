@@ -502,7 +502,7 @@
 
 /obj/item/clothing/accessory/armor/coldwar/plates/b5/n34/medical
 	name = "N34-BM body armor"
-	desc = "A blugoslavian armor used by medics and doctors alike, comes with a white medical cross on the back."
+	desc = "A Blugoslavian armor used by medics and doctors alike, comes with a white medical cross on the back."
 	icon_state = "n34bmm"
 	item_state = "n34bmm"
 	worn_state = "n34bmm"

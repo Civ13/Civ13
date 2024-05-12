@@ -166,6 +166,7 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define SPAN_WARNING(X) SPAN("warning", X)
 #define SPAN_DANGER(X) SPAN("danger", X)
 #define SPAN_RED(X) SPAN("red", X)
+#define SPAN_BLUE(X) SPAN("blue", X)
 #define SPAN_GREEN(X) SPAN("green", X)
 #define SPAN_GREEN_BOLD(X) SPAN("green_bold", X)
 #define SPAN_ALERT(X) SPAN("alert", X)
