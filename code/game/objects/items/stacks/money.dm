@@ -1,17 +1,23 @@
-//spanish money was the world currency in the early 18th century. 1 doubloon = 2 escudos = 4 spanish dollars = 32 reales
+// Spanish money was the world currency in the early 18th century. 1 doubloon = 2 escudos = 4 spanish dollars = 32 reales
 /obj/item/stack/money/update_icon()
-	if(novariants)
-		return ..()
-	if(amount >= 2)
-		if (map.ordinal_age >= 4)
-			if(icon_state != "silvercoin_pile")
-				icon_state = "[initial(icon_state)]_2"
-
+	if (novariants)
+		return // TO-DO: Check if the parent proc is actually needed here as a "return ..()"
+	if (map.ordinal_age >= 4 && icon_state != "silvercoin_pile")
+		var/icon_suffix = 1 
+		switch(amount)
+			if (50 to 99)
+				icon_suffix = 2
+			if (100 to 249)
+				icon_suffix = 3
+			if (250 to 499)
+				icon_suffix = 4
+			if (500 to INFINITY)
+				icon_suffix = 5
+		icon_state = "[initial(icon_state)]_[icon_suffix]"
 	else
-		if (map.ordinal_age >= 4)
-			icon_state = initial(icon_state)
+		icon_state = initial(icon_state)
 	..()
-
+	//TO-DO: Check what the parent proc actually does
 
 /obj/item/stack/money
 	name = "gold coins"
@@ -93,6 +99,26 @@
 	amount = 1
 	value = 1
 
+/obj/item/stack/money/rubles/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/rubles/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "50"
+		if (100 to 249)
+			icon_suffix = "100"
+		if (250 to 499)
+			icon_suffix = "250"
+		if (500 to INFINITY)
+			icon_suffix = "500"
+	icon_state = "ruble[icon_suffix]"
+	// TO-DO: Check if the parent update_icon proc has to be called
+
 /obj/item/stack/money/yen
 	name = "yen"
 	desc = "A japanese 1 yen coin."
@@ -104,67 +130,41 @@
 	flags = CONDUCT
 
 /obj/item/stack/money/yen/New()
-	if(amount == 2)
-		icon_state = "yen_2"
-	if(amount == 3)
-		icon_state = "yen_3"
-	if(amount == 4)
-		icon_state = "yen_4"
-	if(amount == 5)
-		desc = "A japanese 5 yen coin"
-		icon_state = "yen_5"
-	if(amount == 6)
-		icon_state = "yen_6"
-	if(amount >= 7)
-		icon_state = "yen_7"
-	if(amount >= 10)
-		desc = "A japanese 10 yen coin"
-		icon_state = "yen_10"
-	if(amount >= 50)
-		desc = "A japanese 50 yen coin"
-		icon_state = "yen_50"
-	if(amount >= 100)
-		desc = "A japanese 100 yen coin"
-		icon_state = "yen_100"
-	if(amount == 500)
-		desc = "A japanese 500 yen coin"
-		icon_state = "yen_500"
-	if(amount > 500)
-		desc = "A japanese 500 yen coin with some other Yen coins."
-		icon_state = "yen_500+"
 	update_icon()
 	return ..()
 
 /obj/item/stack/money/yen/update_icon()
-	if(amount == 2)
-		icon_state = "yen_2"
-	if(amount == 3)
-		icon_state = "yen_3"
-	if(amount == 4)
-		icon_state = "yen_4"
-	if(amount == 5)
-		desc = "A japanese 5 yen coin"
-		icon_state = "yen_5"
-	if(amount == 6)
-		icon_state = "yen_6"
-	if(amount >= 7)
-		icon_state = "yen_7"
-	if(amount >= 10)
-		desc = "A japanese 10 yen coin"
-		icon_state = "yen_10"
-	if(amount >= 50)
-		desc = "A japanese 50 yen coin"
-		icon_state = "yen_50"
-	if(amount >= 100)
-		desc = "A japanese 100 yen coin"
-		icon_state = "yen_100"
-	if(amount == 500)
-		desc = "A japanese 500 yen coin"
-		icon_state = "yen_500"
-	if(amount > 500)
-		desc = "A japanese 500 yen coin with some other Yen coins."
-		icon_state = "yen_500+"
-	..()
+	var/icon_suffix = ""
+	switch(amount)
+		if (2)
+			icon_suffix = "_2"
+		if (3)
+			icon_suffix = "_3"
+		if (4)
+			icon_suffix = "_4"
+		if (5)
+			desc = "A japanese 5 yen coin"
+			icon_suffix = "_5"
+		if (6)
+			icon_suffix = "_6"
+		if (7 to 9)
+			icon_suffix = "_7"
+		if (10 to 49)
+			desc = "A japanese 10 yen coin"
+			icon_suffix = "_10"
+		if (50 to 99)
+			desc = "A japanese 50 yen coin"
+			icon_suffix = "_50"
+		if (100 to 499)
+			desc = "A japanese 100 yen coin"
+			icon_suffix = "_100"
+		if (500)
+			desc = "A japanese 500 yen coin"
+			icon_suffix = "_500"
+		if (501 to INFINITY)
+			desc = "A japanese 500 yen coin with some other Yen coins."
+			icon_suffix = "_500+"
+	icon_state = "yen[icon_suffix]"
 
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
@@ -212,6 +212,33 @@
 		value = 4
 		return ..()
 
+/obj/item/stack/money/dollar100
+	name = "100 Dollar Bill"
+	desc = "Paper bank note valued at one-hundred dollars"
+	icon_state = "100dollar"
+	value = 100
+	amount = 1
+
+/obj/item/stack/money/dollar100/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/dollar100/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "50"
+		if (100 to 299)
+			icon_suffix = "100"
+		if (300 to 499)
+			icon_suffix = "300"
+		if (500 to INFINITY)
+			icon_suffix = "500"
+	icon_state = "100dollar[icon_suffix]"
+	//TO-DO: Check if the parent update_icon proc has to be called
+
 /obj/item/stack/money/escudo
 	name = "spanish escudos"
 	desc = "A gold coin. Worth 16 reales."
@@ -245,7 +272,6 @@
 		icon_state = "goldcoin_pile"
 		value = 60
 		return ..()
-
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
 	desc = "A large gold coin, the largest in circulation. Worth 32 reales."
@@ -280,6 +306,7 @@
 		icon_state = "goldcoin_pile"
 		value = 120
 		return ..()
+
 
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
