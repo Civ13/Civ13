@@ -510,7 +510,7 @@
 /obj/screen/aiming_cross/update_icon()
 	..()
 
-	if(!usr)
+	if(!usr || !usr.client)
 		return
 	if(!istype(usr.get_active_hand(), /obj/item/weapon/gun))
 		alpha = 0
