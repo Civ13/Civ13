@@ -62,13 +62,17 @@
 		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
 	)
 	var/list/capturable_equipment = list(
-		/obj/structure/cannon/mortar,
 		/obj/structure/cannon/modern,
 		/obj/structure/cannon/rocket,
-		/obj/item/weapon/gun/projectile/automatic/stationary,
+		/obj/structure/cannon/rocket/loaded,
+		/obj/structure/cannon/rocket/old,
+		/obj/structure/cannon/mortar,
+		/obj/structure/cannon/mortar/foldable/generic,
+		/obj/item/weapon/gun/projectile/automatic/stationary/pkm,
 	)
 	var/list/captured_equipment_red = list()
 	var/list/captured_equipment_blue = list()
+	var/ap_mines_placed = 0
 	var/at_mines_placed = 0
 
 /obj/map_metadata/campaign/New()
@@ -391,21 +395,17 @@ var/no_loop_ca = FALSE
 	if (world.time >= victory_time)
 		if (win_condition_spam_check)
 			return FALSE
-		get_faction1_captured_equipment()
-		get_faction2_captured_equipment()
-
 		ticker.finished = TRUE
 		var/message = SPAN_BLUE("The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]! The Redmenians halted the attack!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
+		
+		after_round_checks()
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		get_faction1_captured_equipment()
-		get_faction2_captured_equipment()
-
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
@@ -413,6 +413,8 @@ var/no_loop_ca = FALSE
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
+
+		after_round_checks()
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_ca = TRUE
@@ -535,24 +537,32 @@ var/no_loop_ca = FALSE
 	icon_state = "blue3"
 
 /obj/map_metadata/campaign/proc/get_faction1_captured_equipment()
-	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
-		if(capturable_equipment.Find(I))
+	for(var/obj/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction1))
+		if(locate(I) in capturable_equipment)
 			captured_equipment_red += I.name
-	to_chat(world, "<big><font color='red'>Captured equipment Redmenia:</font></big>")
+	to_chat(world, "<big><b><font color='red'>Captured equipment Redmenia:</font></b></big>")
 	if(captured_equipment_red.len)
 		to_chat(world, "<big>[jointext(captured_equipment_red,"\n")]</big>")
 	else
 		to_chat(world, "<big>No equipment was captured.</big>")
 
 /obj/map_metadata/campaign/proc/get_faction2_captured_equipment()
-	for(var/obj/item/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
-		if(capturable_equipment.Find(I))
+	for(var/obj/I in get_area_all_atoms(/area/caribbean/captured_equipment/faction2))
+		if(locate(I) in capturable_equipment)
 			captured_equipment_blue += I.name
-	to_chat(world, "<big><font color='blue'>Captured equipment Blugoslavia:</font></big>")
+	to_chat(world, "<big><b><font color='blue'>Captured equipment Blugoslavia:</font></b></big>")
 	if(captured_equipment_blue.len)
 		to_chat(world, "<big>[jointext(captured_equipment_blue,"\n")]</big>")
 	else
 		to_chat(world, "<big>No equipment was captured.</big>")
+
+
+/obj/map_metadata/campaign/proc/after_round_checks()
+	spawn(5 SECONDS)
+		to_chat(world, "<big><b>AP mines placed: [ap_mines_placed]</b></big>")
+		to_chat(world, "<big><b>AT mines placed: [at_mines_placed]</b></big>")
+		get_faction1_captured_equipment()
+		get_faction2_captured_equipment()
 
 ///////////Map Specific Objects///////////
 /obj/structure/altar/heads
