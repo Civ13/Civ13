@@ -15,7 +15,7 @@
 				icon_suffix = 5
 		icon_state = "[initial(icon_state)]_[icon_suffix]"
 	else
-        	icon_state = initial(icon_state)
+		icon_state = initial(icon_state)
 	..()
 	//TO-DO: Check what the parent proc actually does
 
