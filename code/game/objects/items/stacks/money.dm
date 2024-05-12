@@ -164,7 +164,7 @@
 		if (501 to INFINITY)
 			desc = "A japanese 500 yen coin with some other Yen coins."
 			icon_suffix = "_500+"
-		icon_state = "yen[icon_suffix]"
+	icon_state = "yen[icon_suffix]"
 
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
