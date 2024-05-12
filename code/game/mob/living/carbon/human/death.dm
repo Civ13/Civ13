@@ -441,8 +441,9 @@
 	. = ..(gibbed)//,species.death_message)
 	if (!gibbed)
 		handle_organs() // Handle the following only after we call the parent to get all the proper stat values and etcetra.
-		handle_piss()
-		handle_shit()
+		if (map.civilizations)
+			handle_piss()
+			handle_shit()
 		if (species.death_sound)
 			playsound(loc, species.death_sound, 80, TRUE, TRUE)
 	handle_hud_list()
