@@ -674,7 +674,7 @@
 	return FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/update_icon()
-	if (rockets.len)
+	if (rockets.len > 0)
 		icon_state = base_icon
 	else
 		icon_state = "[base_icon]_empty"
