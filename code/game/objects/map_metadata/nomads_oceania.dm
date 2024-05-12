@@ -3,7 +3,7 @@
 	ID = MAP_NOMADS_OCEANIA
 	title = "Nomads (Oceania)"
 	lobby_icon = 'icons/lobby/oceania.png'
-	no_winner ="The round is proceeding normally."
+	no_winner = "The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	has_hunger = TRUE
@@ -17,13 +17,13 @@
 	civilizations = TRUE
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the civilizations"
+	battle_name = "Civilizations"
 	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settle down. Will they be able to work together?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Didgeridoo" = 'sound/music/didgeridoo.ogg',)
+		"Didgeridoo:1" = 'sound/music/didgeridoo.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
