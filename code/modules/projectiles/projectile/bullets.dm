@@ -52,7 +52,7 @@
 			return FALSE
 		else
 			// 21% chance for rifles to penetrate a brick wall, 62% for a wood wall
-			chance = round((damage/(W.material ? W.material.integrity : 175)) * 150)
+			chance = round((damage/(W.material ? W.material.integrity : 175)) * 15)
 			// 1/3rd of that for MGs, buffed since their accuracy was fixed
 			if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 				chance /= 2
