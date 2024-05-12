@@ -560,8 +560,9 @@
 
 /obj/structure/shellrack/attackby(obj/item/W as obj, mob/user as mob)
 	..()
-	storage.attackby(W, user)
-	update_icon()
+	if (storage)
+		storage.attackby(W, user)
+		update_icon()
 
 /obj/structure/shellrack/update_icon()
 	..()

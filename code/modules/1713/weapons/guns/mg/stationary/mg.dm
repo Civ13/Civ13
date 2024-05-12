@@ -700,6 +700,11 @@
 	base_icon = "foldable_atgm"
 	var/path = /obj/item/weapon/foldable/atgm
 
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/AltClick(mob/living/human/user)
+	if(!ishuman(user))
+		return
+	retrieve()
+
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
