@@ -954,7 +954,7 @@
 			possible_s_range = list(-10,-30)
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
-	else if ( map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+	else if ( map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		//west Redmenian
 		if (original_job_title == "Redmenian Civilian")
 			add_language("Redmenian",TRUE)

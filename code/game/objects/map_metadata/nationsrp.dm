@@ -131,7 +131,7 @@
 	civb_research = list(default_research,default_research,default_research,null)
 
 /obj/map_metadata/nationsrp/coldwar_campaign
-	ID = MAP_NATIONSRP_COLDWAR_CAMPAIGN
+	ID = MAP_NATIONSRP_COLDWAR_CMP
 	title = "Nations RP Cold War"
 	lobby_icon = 'icons/lobby/campaign.png'
 	mission_start_message = "<big>Two nations rule this land. The grace wall will end in <b>2 days</b>. This is an RP focused map, people of both nations start friendly by default.</big><br><b>Wiki Guide: http://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

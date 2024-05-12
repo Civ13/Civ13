@@ -155,7 +155,7 @@
 			if (istype(r_hand, /obj/item/football))
 				drop_from_inventory(r_hand, loc, TRUE)
 				drop_item()
-	if (map && map.ID == MAP_FOOTBALL_CAMPAIGN && (r_hand || l_hand))
+	if (map && map.ID == MAP_FOOTBALL_CMP && (r_hand || l_hand))
 		var/area/A = get_area(loc)
 		if (!istype(A, /area/caribbean/football/red/goalkeeper) && !istype(A, /area/caribbean/football/blue/goalkeeper))
 			if (istype(l_hand, /obj/item/football))

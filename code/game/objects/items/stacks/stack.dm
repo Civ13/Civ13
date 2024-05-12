@@ -1927,7 +1927,7 @@
 
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
-			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 				if (H.faction_text == BLUEFACTION)
 					T.icon_state = "ak74"
 				else if (H.faction_text == REDFACTION)
