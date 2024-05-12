@@ -901,7 +901,7 @@ var/redfaction_forceEnabled = FALSE
 	var/msg_factions = ""
 	var/relpf = ""
 	var/relpf_max = 0
-	if (map && map.civilizations && map.ID != MAP_NATIONSRP && map.ID != MAP_NATIONSRP_TRIPLE && map.ID != MAP_NATIONSRPMED && map.ID != MAP_NATIONSRP_WW2 && map.ID != MAP_NATIONSRP_COLDWAR && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
+	if (map && map.civilizations && map.ID != MAP_NATIONSRP && map.ID != MAP_NATIONSRP_TRIPLE && map.ID != MAP_NATIONSRPMED && map.ID != MAP_NATIONSRP_WW2 && map.ID != MAP_NATIONSRP_COLDWAR && map.ID != MAP_NATIONSRP_COLDWAR_CMP && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
 		map.facl = list()
 		for (var/i=1,i<=map.custom_faction_nr.len,i++)
 			var/nu = 0

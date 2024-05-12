@@ -369,7 +369,7 @@
 		if (map && map.ID == MAP_FOOTBALL)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team1][1]
-		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+		if (map && map.ID == MAP_FOOTBALL_CMP)
 			var/obj/map_metadata/football_campaign/FBM = map
 			team = FBM.teams[FBM.team1][1]
 
@@ -381,7 +381,7 @@
 		if (map && map.ID == MAP_FOOTBALL)
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
-		if (map && map.ID == MAP_FOOTBALL_CAMPAIGN)
+		if (map && map.ID == MAP_FOOTBALL_CMP)
 			var/obj/map_metadata/football_campaign/FBM = map
 			team = FBM.teams[FBM.team2][1]
 /////////////////TEAM CREATOR/////////////////////

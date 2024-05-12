@@ -18,7 +18,7 @@ var/GRACE_PERIOD_LENGTH = 7
 				switch (map.ID)
 					if (MAP_FOOTBALL)
 						time_of_day = "Midday"
-					if (MAP_FOOTBALL_CAMPAIGN)
+					if (MAP_FOOTBALL_CMP)
 						time_of_day = "Midday"
 					if (MAP_CAMPAIGN)
 						time_of_day = "Night"

@@ -245,7 +245,7 @@
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
 
 		if (7)
-			if (map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+			if (map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
 				spawn(5)
 					if (original_job_title == "Civilization A Citizen")

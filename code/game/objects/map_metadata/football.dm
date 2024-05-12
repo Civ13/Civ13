@@ -327,7 +327,7 @@
 
 // Campaign
 /obj/map_metadata/football_campaign
-	ID = MAP_FOOTBALL_CAMPAIGN
+	ID = MAP_FOOTBALL_CMP
 	title = "Football Match"
 	lobby_icon = 'icons/lobby/football.png'
 	caribbean_blocking_area_types = list(/area/caribbean/football/midfield, /area/caribbean/football/nopass)

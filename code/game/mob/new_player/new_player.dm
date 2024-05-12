@@ -141,7 +141,7 @@ var/global/redirect_all_players = null
 	var/height = 250
 	if (client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
-	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN )
+	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CMP )
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
@@ -215,7 +215,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN) && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
