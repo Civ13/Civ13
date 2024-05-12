@@ -39,7 +39,7 @@
 	title = "BAF Squad 1 Private"
 	squad = 1
 	rank_abbreviation = "1-Pvt"
-/datum/job/civilian/bluefaction/s1/corpsman
+/datum/job/bluefaction/s1/corpsman
 	title = "BAF Squad 1 Corpsman"
 	is_medic = TRUE
 	squad = 1
