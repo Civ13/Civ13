@@ -150,7 +150,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if (istype(W,/obj/item/weapon/material/hatchet) ||istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe))
+	if (istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		var/obj/item/weapon/material/HT = W
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
@@ -158,7 +158,7 @@ var/list/seed_list_jungle
 		if (do_after(user, 30*HT.chopping_speed, user.loc))
 			health = 0
 			try_destroy()
-			HT.health = HT.health - 0.25
+			HT.health -= 0.25
 			if (HT.health <=0)
 				HT.shatter()
 			if (istype(user, /mob/living/human))

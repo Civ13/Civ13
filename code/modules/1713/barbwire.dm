@@ -95,7 +95,7 @@
 			qdel(src)
 			return
 
-	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet))
+	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		if (anchored)
 			user.visible_message(SPAN_NOTICE("\The [user] starts to hack through \the [src] with \the [W]."))
 			if (!do_after(user,120))
@@ -110,7 +110,7 @@
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					var/obj/item/organ/external/affecting = null
-					if (istype(H.l_hand, /obj/item/weapon/material/kitchen/utensil/knife) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || istype(H.l_hand, /obj/item/weapon/material/hatchet))
+					if (istype(H.l_hand, /obj/item/weapon/material/kitchen/utensil/knife) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || istype(H.l_hand, /obj/item/weapon/material/hatchet) || istype(H.l_hand, /obj/item/weapon/material/shovel/trench/foldable/etool))
 						affecting = H.get_organ("l_hand")
 					else
 						affecting = H.get_organ("r_hand")
