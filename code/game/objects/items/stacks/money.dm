@@ -92,7 +92,7 @@
 		return ..()
 
 /obj/item/stack/money/rubles
-	name = "soviet ruble"
+	name = "Soviet Ruble"
 	desc = "A Soviet 1 ruble banknote."
 	singular_name = "ruble"
 	icon_state = "ruble" 
