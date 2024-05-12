@@ -50,6 +50,36 @@
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 
+/obj/item/weapon/paper/entry_permit
+	name = "entry permit"
+	desc = "a permit granting right of entry to a specified country"
+	icon_state = "entry_permit"
+
+/obj/item/weapon/paper/asylum
+	name = "asylum grant"
+	desc = "an official document granting political asylum to the recipient in a specified country"
+	icon_state = "asylum_grant"
+
+/obj/item/weapon/paper/id_supp
+	name = "id supplement"
+	desc = "a small document supplement detailing physical appearance"
+	icon_state = "id_supp"
+
+/obj/item/weapon/paper/vaccine
+	name = "vaccine certificate"
+	desc = "an official medical certificate confirming that a person has been vaccinated against certain disease(s)"
+	icon_state = "vaccine_cert"
+
+/obj/item/weapon/paper/diplomatic_auth
+	name = "diplomatic authorisation"
+	desc = "an official document from an international organisation confirming the diplomatic status and diplomatic right to travel of the recipient"
+	icon_state = "diplomatic_auth"
+
+/obj/item/weapon/paper/entry_ticket
+	name = "entry ticket"
+	desc = "a simple small ticket granting right of entry"
+	icon_state = "entry_ticket"
+
 /obj/item/weapon/paper/official/New()
 	..()
 	spawn(30)
@@ -499,16 +529,19 @@
 		stampoverlay.pixel_x = rand(-2, 2)
 		stampoverlay.pixel_y = rand(-3, 2)
 		stampoverlay.icon_state = "paper_[P.icon_state]"
-		var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
-		if (istype(P, /obj/item/weapon/stamp/mail))
-			stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
-		stampoverlay_paper.icon_state = P.icon_state
-		stamps += "<img src='\ref[stampoverlay_paper]'>"
+
+		// The following commented code does not work.
+
+		// var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
+		// if (istype(P, /obj/item/weapon/stamp/mail))
+		// 	stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
+		// stampoverlay_paper.icon_state = P.icon_state
+		// stamps += "<img src='\ref[stampoverlay_paper]'>"
 		
-		if(!stamped)
-			stamped = new
-		stamped += P.type
-		overlays += stampoverlay
+		// if(!stamped)
+		// 	stamped = new
+		// stamped += P.type
+		// overlays += stampoverlay
 
 		playsound(src,'sound/effects/stamp_down.ogg', 70, TRUE)
 		to_chat(user, SPAN_NOTICE("You stamp the paper with the [P.name]."))
