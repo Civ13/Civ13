@@ -71,8 +71,8 @@
 		new /obj/item/ammo_magazine/svd(src)
 
 /obj/item/weapon/storage/belt/largepouches/blue
-	icon_state = "largepouches"
-	item_state = "largepouches"
+	icon_state = "largepouches_green"
+	item_state = "largepouches_green"
 
 /obj/item/weapon/storage/belt/largepouches/blue/mg
 	New()
@@ -149,8 +149,8 @@
 
 
 /obj/item/weapon/storage/belt/largepouches/red
-	icon_state = "largepouches"
-	item_state = "largepouches"
+	icon_state = "largepouches_green"
+	item_state = "largepouches_green"
 
 /obj/item/weapon/storage/belt/largepouches/red/mg
 	New()
@@ -177,8 +177,8 @@
 	name = "Blugoslavian green chest webbing"
 	desc = "A green chest-level webbing, with three medium sized pouches."
 	slots = 3
-	icon_state = "green_webbing"
-	item_state = "green_webbing"
+	icon_state = "russian_vest"
+	item_state = "russian_vest"
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/blue/mosin
 	New()
