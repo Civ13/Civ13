@@ -106,7 +106,7 @@
 /obj/map_metadata/eft_factory/proc/show_extractees()
 	if (extractees.len)
 		to_chat(world, "<big><b>Extracted:</b></big>")
-		to_chat(world, "<big>[jointext(extractees,"\n")]</big>")
+		to_chat(world, "<big>[jointext(extractees[1],"\n")]</big>")
 	spawn(1 MINUTE)
 	show_extractees()
 
