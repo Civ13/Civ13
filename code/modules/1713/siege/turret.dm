@@ -1239,9 +1239,9 @@
 		..()
 
 /obj/structure/turret/chiha
-	turret_color = "#787859"
+	turret_color = "#6a5a3d"
 	turret_icon = "jap_turret"
-	name = "Chi-Ha"
+	name = "Type 97 Chi-Ha"
 
 	turret_x = 0
 	turret_y = -8
@@ -1259,3 +1259,6 @@
 		gunner_seat.setup(src)
 		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
 		commander_seat.setup(src)
+		weapons.Add(new/obj/structure/cannon/modern/tank/japanese57(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/type99/type97tank(src))
+		..()

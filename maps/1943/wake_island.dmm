@@ -86,6 +86,7 @@
 "bH" = (/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean)
 "bI" = (/obj/structure/toilet,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/plating/white,/area/caribbean/russian/land/inside)
 "bJ" = (/obj/structure/barricade/antitank,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bK" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "bL" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/no_mans_land/invisible_wall/two)
 "bM" = (/obj/structure/barricade/antitank,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/no_mans_land/invisible_wall/two)
 "bN" = (/turf/floor/beach/sand,/area/caribbean/no_mans_land/invisible_wall/two)
@@ -169,6 +170,7 @@
 "dn" = (/obj/structure/sign/n3,/turf/wall/iron,/area/caribbean/transport/three)
 "do" = (/obj/structure/transport_lever,/turf/floor/plating/road,/area/caribbean/transport/two)
 "dp" = (/obj/structure/transport_lever,/turf/floor/plating/road,/area/caribbean/transport/one)
+"dq" = (/obj/structure/vehicleparts/frame/i_go/left,/obj/structure/shellrack/full57,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "dt" = (/obj/structure/bed/chair/wood,/turf/floor/plating/road,/area/caribbean/sea/sea)
 "dw" = (/obj/structure/transport_lever,/turf/floor/plating/road,/area/caribbean/transport/three)
 "dA" = (/obj/structure/vehicleparts/frame/chi_ha/rf,/obj/structure/vehicleparts/movement/tracks,/obj/item/weapon/gun/projectile/automatic/stationary/type98,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
@@ -615,7 +617,6 @@
 "lZ" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "ma" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag"; dir = 2},/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "mb" = (/obj/structure/window/barrier/sandbag/incomplete{icon_state = "sandbag"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
-"mc" = (/obj/structure/vehicleparts/frame/i_go/rb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/structure/engine/internal/diesel{enginesize = 20000},/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/ammo_magazine/type92,/obj/item/weapon/gun/projectile/automatic/stationary/type98{dir = 1},/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "md" = (/obj/structure/vehicleparts/frame/i_go/back,/obj/structure/lamp/lamp_small/tank/red{icon_state = "bulb"; dir = 1},/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "me" = (/obj/structure/vehicleparts/frame/i_go/lb,/obj/structure/vehicleparts/movement/tracks/reversed{icon_state = "tracks_end"; dir = 1},/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "mf" = (/obj/effect/autoassembler,/obj/structure/vehicleparts/frame/i_go/right/door,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
@@ -623,7 +624,6 @@
 "mh" = (/obj/structure/vehicleparts/frame/i_go/left/door,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "mi" = (/obj/structure/vehicleparts/frame/i_go/right,/obj/structure/shellrack/full57,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 "mj" = (/obj/structure/vehicleparts/frame/i_go,/obj/structure/turret/chiha,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
-"mk" = (/obj/structure/vehicleparts/frame/i_go/left,/obj/structure/shellrack/full57,/turf/floor/plating/tiled/woodh,/area/caribbean/transport/two)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -647,9 +647,9 @@ aaaaaaaaataeagaeamaeagaeataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaataeaxaeagaeaxaeataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatabawawawawawabataaaaakakaaaaaaakaaaaakaaaaaaaaakaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaataialaianaialaiataaaaaaaaaaaaaaaa
 aaaaaaaaataeayaeaeaeayaeataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatabawawawawawabavaaakaaaaaaakaaaaakaaakaaakaaaaaaakaaaaaaaaaaakaaaaaaaaaaaaaaaaaaataiazaialaiazaiataaaaaaaaaaaaakaa
 aaaaakaaataeayayayayayaeataaaaakaaaaaaaaaaaaaaakaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakaaaaavabawawawawawabatakakakakakakakakakakakakaaakakaaaaaaaaakaaaaaaaaaaaaaaaaaaakaaaaataiaAaiaiaiaAaiataaaaaaaaaaaaaaaa
-aaaaaaaaataeayayayayayaeavaaaaaaaaaaakaaaaaaaaaaaaaaaaakaaakaaaaaaaaaaaaakaaaaaaaaaaatabawmcmdmeawabavakakakakakakakakakakakakakaaaaakaaaaaaaaaaaaakaaaaaaakaaaaaaaaaaavaiaAaAaAaAaAaiatakaaaaaaakaaaaak
+aaaaaaaaataeayayayayayaeavaaaaaaaaaaakaaaaaaaaaaaaaaaaakaaakaaaaaaaaaaaaakaaaaaaaaaaatabawbKmdmeawabavakakakakakakakakakakakakakaaaaakaaaaaaaaaaaaakaaaaaaakaaaaaaaaaaavaiaAaAaAaAaAaiatakaaaaaaakaaaaak
 aaakakaaataeayayayayayaeataaaaakaaaaaaaaaaakaaaaaaaaaaaaaaaaaaakaaakaaaaaaaaaaakaaaaavabawmfmgmhawabavakakakakakakakakakakakakakakaaakaaakakaaaaaaaaaaaaaaaaakaaaaakaaataiaAaAaAaAaAaiataaaaakaaaaaaaaaa
-akaaaaaaataeayayayayayaeavaaaaaaaaakaaaaaaaaaaaaaaakaaaaaaakaaaaaaaaaaaaakaaakaaaaakatabawmimjmkawabavakakakakakakakakakakakakakakakakakaaaaakaaakaaaaakaaaaaaaaaaaaakataiaAaAaAaAaAaiataaaaaaaaakakaaaa
+akaaaaaaataeayayayayayaeavaaaaaaaaakaaaaaaaaaaaaaaakaaaaaaakaaaaaaaaaaaaakaaakaaaaakatabawmimjdqawabavakakakakakakakakakakakakakakakakakaaaaakaaakaaaaakaaaaaaaaaaaaakataiaAaAaAaAaAaiataaaaaaaaakakaaaa
 akakakaaavaeegayayayegaeatakakaaaaaaaaakakakaaaaakakaaaaakaaaaakaaaaaaakaaakaaaaakakavabawdAdBdCawabavakakakakakakakakakakakakakakakakakakakakakaaakaaaaakaaakaaakaaaaataiaAaAaAaAaAaiavaaakaaakaaaaakak
 akakakakatavaeayayayaeavavakakakakakakakakakakakakakakakaaaaakaaaaakakakaaakakakakakavabawawawawawabavakakakakakakakakakakakakakakakakakakakakakakakakakaaaaaaaaakaaaaavaiehaAaAaAehaiatakaaakaaakakakak
 akakakakakavaeapapapaeavakakakakakakakakakakakakakakakakaaakakakaaaaaaakakakakakakakavabawawawawawabavakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakavavaiaAaAaAaiavatakakakakakakakak
