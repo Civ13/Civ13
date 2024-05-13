@@ -270,7 +270,7 @@
 	caliber = 90
 
 /obj/structure/cannon/modern/tank/japanese57
-	name = "Type 90 Cannon"
+	name = "Type 97 Cannon"
 	desc = "A 57mm Japanese tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 25

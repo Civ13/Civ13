@@ -52,7 +52,18 @@
 	mag_type = MAGAZINE
 	caliber = "a77x58"
 	ammo_type = /obj/item/ammo_casing/a77x58
-	max_ammo = 32
+	max_ammo = 30
+	weight = 0.40
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/type99/type97
+	name = "Type-97 Magazine"
+	icon_state = "type97"
+	attached_icon_state = "type99_mag"
+	mag_type = MAGAZINE
+	caliber = "a77x58"
+	ammo_type = /obj/item/ammo_casing/a77x58
+	max_ammo = 20
 	weight = 0.40
 	multiple_sprites = TRUE
 
@@ -63,7 +74,7 @@
 	mag_type = MAGAZINE
 	caliber = "a65x50"
 	ammo_type = /obj/item/ammo_casing/a65x50
-	max_ammo = 32
+	max_ammo = 30
 	weight = 0.40
 	multiple_sprites = TRUE
 
@@ -372,7 +383,7 @@
 	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/makarov
-	name = "PM Makarov magazine (9x18mm)" 
+	name = "PM Makarov magazine (9x18mm)"
 	icon_state = "m1911" //Temporary until someones sprites a magazine for it, don't change it to an ammo box though!
 	mag_type = MAGAZINE
 	ammo_type = /obj/item/ammo_casing/a9x18

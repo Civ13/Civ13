@@ -105,7 +105,7 @@
 	base_icon = "type99lmg"
 	caliber = "a77x58"
 	magazine_type = /obj/item/ammo_magazine/type99
-	good_mags = list(/obj/item/ammo_magazine/type99, /obj/item/ammo_magazine/type92)
+	good_mags = list(/obj/item/ammo_magazine/type99)
 	weight = 9.12
 	force = 20
 	throwforce = 30
@@ -113,6 +113,12 @@
 	slowdown = 0.2
 	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
+
+/obj/item/weapon/gun/projectile/automatic/type99/type97tank
+	name = "Type 97 tank machinegun"
+	desc = "The Type 97 tank machine Gun, is a Japanese machine gun based on the ZB26 designed specifically for tank use."
+	magazine_type = /obj/item/ammo_magazine/type99/type97
+	good_mags = list(/obj/item/ammo_magazine/type99/type97)
 
 /obj/item/weapon/gun/projectile/automatic/type96
 	name = "Type 96 light machinegun"
@@ -349,10 +355,10 @@
 	nothrow = TRUE
 	throwforce = 30
 	equiptimer = 25
-	load_delay = 50
+	load_delay = 10
 	slowdown = 1
 	recoil = 30
-	accuracy = 2
+	accuracy = 1
 	scope_mounts = list ("picatinny")
 	scope_y_offset = -1
 
@@ -795,7 +801,7 @@
 
 ////////////////////////C6 GPMG/////////////////////////////
 
-/obj/item/weapon/gun/projectile/automatic/c6
+/obj/item/weapon/gun/projectile/automatic/manual/c6
 	name = "C6 GPMG"
 	desc = "A Canadian License Produced FN MAG called the C6 GPMG, the main squad support weapon of the CAF."
 	icon_state = "c6"
@@ -817,12 +823,15 @@
 	force = 20
 	throwforce = 30
 	recoil = 40
-	accuracy = 3
+	accuracy = 1
 	scope_mounts = list ("picatinny")
 	mag_x_offset = -4
 	mag_y_offset = -2
+	equiptimer = 25
+	load_delay = 10
+	slowdown = 1
 
-/obj/item/weapon/gun/projectile/automatic/c6/update_icon()
+/obj/item/weapon/gun/projectile/automatic/manual/c6/update_icon()
 	..()
 	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/c6belt))
 		return
