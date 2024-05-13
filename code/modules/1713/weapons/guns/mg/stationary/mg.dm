@@ -601,6 +601,7 @@
 	base_icon = "atgm"
 	caliber = "rocket"
 	fire_sound = 'sound/weapons/guns/fire/rpg7.ogg'
+	zoom_amount = ZOOM_CONSTANT*2+4
 	load_method = SINGLE_CASING
 	handle_casings = REMOVE_CASINGS
 	magazine_type = /obj/item/ammo_magazine/mosin
@@ -714,7 +715,7 @@
 		return
 	usr.face_atom(src)
 	visible_message(SPAN_WARNING("[usr] starts to get the [src] from the ground."))
-	if (do_after(usr, 40, get_turf(usr)))
+	if (do_after(usr, 30, get_turf(usr)))
 		for (var/obj/item/ammo_casing/rocket/I in rockets)
 			I.loc = get_turf(src)
 			rockets -= I

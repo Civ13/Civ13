@@ -263,8 +263,6 @@
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
 
-/obj/structure/vehicleparts/axis/heavy/bmd2/atgm
-
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
 	speeds = 5
