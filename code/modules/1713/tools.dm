@@ -168,7 +168,7 @@
 
 /obj/item/weapon/material/shovel/spade/foldable/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 10, src))
+		if (do_after(user, 10, src, can_move = TRUE))
 			user.visible_message("<span class='warning'>[user] folds their [src] closed.</span>", "<span class='notice'>You fold your [src] closed.</span>", "<span class='warning'>You hear something being folded nearby.</span>")
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
@@ -267,7 +267,7 @@
 
 /obj/item/weapon/foldable_shovel/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 5, src))
+		if (do_after(user, 5, src, can_move = TRUE))
 			to_chat(usr, SPAN_NOTICE("You quickly snap your [src] open."))
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
