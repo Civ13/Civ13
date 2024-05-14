@@ -111,14 +111,28 @@
 	throwforce = 30
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
-	has_telescopic = TRUE
+	scope_mounts = list("type99_cronstein")
+//	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
+/obj/item/weapon/gun/projectile/automatic/type99/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/type99/type97tank
 	name = "Type 97 tank machinegun"
 	desc = "The Type 97 tank machine Gun, is a Japanese machine gun based on the ZB26 designed specifically for tank use."
+	scope_mounts = list("type97_tank")
 	magazine_type = /obj/item/ammo_magazine/type99/type97
 	good_mags = list(/obj/item/ammo_magazine/type99/type97)
+	icon_state = "type97lmg"
+	item_state = "type99lmg"
+	base_icon = "type97lmg"
+
+/obj/item/weapon/gun/projectile/automatic/type99/type97tank/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/type96
 	name = "Type 96 light machinegun"
@@ -133,10 +147,16 @@
 	weight = 9.0
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
-	has_telescopic = TRUE
+//	has_telescopic = TRUE
+	scope_mounts = list("type99_cronstein")
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "automatic",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0))
+
+/obj/item/weapon/gun/projectile/automatic/type96/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"

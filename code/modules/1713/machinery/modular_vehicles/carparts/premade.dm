@@ -640,6 +640,21 @@
 	"3,4" = list(/obj/structure/vehicleparts/movement/tracks/reversed,/obj/structure/vehicleparts/frame/chi_ha/lb,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 	)
 
+/obj/effects/premadevehicles/tank/hago
+	name = "Type 95 Ha-Go"
+	icon_state = "3x3"
+	custom_color = "#6a5a3d"
+	axis = /obj/structure/vehicleparts/axis/heavy/hago
+	tocreate = list(
+	"1,1" = list(/obj/structure/vehicleparts/movement/tracks/hago/right,/obj/structure/vehicleparts/frame/hago/rf,/obj/structure/bed/chair/drivers/tank),
+	"2,1" = list(/obj/structure/vehicleparts/movement/tracks/hago/left,/obj/structure/vehicleparts/frame/hago/lf,/obj/structure/bed/chair/mgunner/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97),
+
+	"1,2" = list(/obj/structure/vehicleparts/frame/hago/rc,),
+	"2,2" = list(/obj/structure/vehicleparts/frame/hago/lc, /obj/structure/turret/hago),
+
+	"1,3" = list(/obj/structure/vehicleparts/frame/hago/rb,/obj/structure/vehicleparts/movement/tracks/hago/left/reversed,/obj/structure/engine/internal/diesel/premade/hago,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
+	"2,3" = list(/obj/structure/vehicleparts/frame/hago/lb,/obj/structure/vehicleparts/movement/tracks/hago/right/reversed,/obj/structure/shellrack/full37,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97,/obj/item/ammo_magazine/type99/type97),
+	)
 /obj/effects/premadevehicles/tank/l3
 	name = "L3/33"
 	icon_state = "3x3"
