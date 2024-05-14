@@ -86,7 +86,7 @@
 
 	update_icon()
 	if (has_telescopic)
-		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97/A = new /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97(src)
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/A = new /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99(src)
 		spawn_add_attachment(A, src)
 	else
 		var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)

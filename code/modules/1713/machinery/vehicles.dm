@@ -561,6 +561,18 @@
 		tank_names_japanese -= pickedname
 		name = "[name] \'[pickedname]\'"
 
+/obj/structure/vehicleparts/axis/heavy/hago
+	name = "Type 95 Ha-Go"
+	speeds = 4
+	speedlist = list(1=8,2=5,3=3,4=2)
+	color = "#6a5a3d"
+	reg_number = ""
+	New()
+		..()
+		var/pickedname = pick(tank_names_japanese)
+		tank_names_japanese -= pickedname
+		name = "[name] \'[pickedname]\'"
+
 /obj/structure/vehicleparts/axis/heavy/m4
 	name = "M-4 Sherman"
 	speeds = 4

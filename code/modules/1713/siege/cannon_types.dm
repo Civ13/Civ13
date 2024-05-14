@@ -276,6 +276,13 @@
 	maxrange = 25
 	caliber = 57
 
+/obj/structure/cannon/modern/tank/japanese37
+	name = "Type 94 Cannon"
+	desc = "A 37mm Japanese tank-based cannon."
+	icon_state = "tank_cannon"
+	maxrange = 25
+	caliber = 37
+
 /obj/structure/cannon/modern/tank/german88
 	name = "8.8 cm KwK 36"
 	desc = "A 88mm German tank-based cannon."

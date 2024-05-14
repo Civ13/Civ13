@@ -117,6 +117,22 @@
 		name = "[caliber]mm [atype] shell"
 		icon_state = "shell[atype]"
 
+/obj/item/cannon_ball/shell/tank/HE37
+	atype = "HE"
+	caliber = 37
+	heavy_armor_penetration = 5
+	damage = 225
+/obj/item/cannon_ball/shell/tank/AP37
+	atype = "AP"
+	caliber = 37
+	heavy_armor_penetration = 65
+	damage = 95
+/obj/item/cannon_ball/shell/tank/APCR37
+	atype = "APCR"
+	caliber = 37
+	heavy_armor_penetration = 85
+	damage = 115
+
 /obj/item/cannon_ball/shell/tank/HE45
 	atype = "HE"
 	caliber = 45
@@ -602,6 +618,16 @@
 		new /obj/item/cannon_ball/shell/tank/AP57(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR57(storage)
+	update_icon()
+
+/obj/structure/shellrack/full37/New()
+	..()
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/HE37(storage)
+	for (var/i=1, i<=8, i++)
+		new /obj/item/cannon_ball/shell/tank/AP37(storage)
+	for (var/i=1, i<=4, i++)
+		new /obj/item/cannon_ball/shell/tank/APCR37(storage)
 	update_icon()
 
 /obj/structure/shellrack/full45/New()
