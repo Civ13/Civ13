@@ -470,7 +470,7 @@
 	else if (istype(proj, /obj/item/weapon/grenade))
 		startingturf = get_turf(proj)
 	
-	else if (istype(proj, /obj/item/drone))
+	else if (istype(proj, /obj/structure/drone))
 		startingturf = get_turf(proj)
 
 	if (!startingturf)
