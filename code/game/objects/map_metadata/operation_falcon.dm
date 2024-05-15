@@ -455,6 +455,10 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 
 				new /obj/structure/flag/russian(get_turf(src))
 				new /obj/item/weapon/storage/ammo_can/ak74(locate(src.x, src.y-1, src.z))
+			else
+				pickedfrom = fob_names_nato
+				pickedname = pick(pickedfrom)
+				fob_names_nato -= pickedname
 
 		for (var/obj/structure/flag/F in range(1, src))
 			F.pixel_x += 20
@@ -478,7 +482,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 
 /obj/structure/supply_crate
 	name = "supply crate"
-	desc = "A supply crate used to make FOBs. This crate belongs to nobody."
+	desc = "A supply crate used to make FOBs and other various structures. This crate belongs to nobody."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "supply_crate"
 	anchored = FALSE
@@ -497,7 +501,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	..()
 	if (faction_text)
 		name = "[map.roundend_condition_def2name(faction_text)] [name]"
-		desc = "A supply crate used to make FOBs. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+		desc = "A supply crate used to make FOBs and other various structures. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
 	spawn(2)
 		update_icon()
 
@@ -536,6 +540,10 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 /obj/structure/supply_crate/attack_hand(mob/living/human/H as mob)
 	if (!faction_text) // Claim a crate if it isn't assigned to a faction.
 		faction_text = H.faction_text
+		name = "[map.roundend_condition_def2name(faction_text)] [name]"
+		desc = "A supply crate used to make FOBs and other various structures. This crate belongs to the <b>[map.roundend_condition_def2army(faction_text)]!</b>"
+		spawn(2)
+			update_icon()
 	if (faction_text != H.faction_text) // Check if the user's faction is the same as the crate's faction.
 		to_chat(H, SPAN_WARNING("This supply crate does not belong to your faction!"))
 		return
@@ -618,7 +626,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 	opacity = FALSE
 	density = TRUE
 	layer = 5
-	var/health = 1000
+	var/health = 500
 
 /obj/structure/milsim/proc/try_destroy()
 	if (health <= 0)
@@ -642,7 +650,7 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 
 /obj/structure/milsim/anti_air
 	name = "Anti-Air SAM site"
-	desc = "This is an Anti-Air Surface to Air Missile site for defence against jets and the like."
+	desc = "This is an Anti-Air Surface to Air Missile site for defence against aircraft."
 	icon_state = "namas_open"
 	health = 1000
 	bound_width = 64

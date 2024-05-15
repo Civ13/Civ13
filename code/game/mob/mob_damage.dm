@@ -1,7 +1,6 @@
 
 /mob/proc/Stun(amount)
 	if (status_flags & CANSTUN)
-		facing_dir = null
 		stunned = max(max(stunned,amount),0) //can't go below 0, getting a low amount of stun doesn't lower your current stun
 	return
 
@@ -17,7 +16,6 @@
 
 /mob/proc/Weaken(amount)
 	if (status_flags & CANWEAKEN)
-		facing_dir = null
 		weakened = max(max(weakened,amount),0)
 		update_canmove()	//updates lying, canmove and icons
 	return
@@ -36,7 +34,6 @@
 
 /mob/proc/Paralyse(amount)
 	if (status_flags & CANPARALYSE)
-		facing_dir = null
 		paralysis = max(max(paralysis,amount),0)
 	return
 
