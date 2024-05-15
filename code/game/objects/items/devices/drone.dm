@@ -33,13 +33,13 @@
 
 /obj/item/drone_controller/proc/cut_connection()
 	if(controller)
+		to_chat(controller, SPAN_NOTICE("The connection to \the [connected_drone] has been lost."))
 		connected_drone = null
 		controller.unset_using_drone(src)
-		to_chat(controller, SPAN_NOTICE("The connection to \the [connected_drone] has been lost."))
 		return
 
 /obj/item/drone_controller/dropped()
-	if (controller.using_drone)
+	if (controller)
 		controller.unset_using_drone(src)
 	..()
 
@@ -114,7 +114,13 @@
 		health = 0
 		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
 		do_special()
-		return
+	else if (health <= 50 && !broken)
+		if (prob(5))
+			broken = TRUE
+			visible_message(SPAN_DANGER("\The [src] breaks down!"))
+			if (connected_controller)
+				connected_controller.is_moving = FALSE
+	return
 
 /obj/structure/drone/ex_act(severity)
 	switch(severity)
@@ -132,7 +138,7 @@
 	try_destroy()
 
 /obj/structure/drone/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage * 0.01
+	health -= proj.damage * 0.1
 	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
 	try_destroy()
 
@@ -212,11 +218,10 @@
 /obj/structure/drone/goliath
 	name = "Goliath SdKfz. 302"
 	desc = "The SdKfz. 302, also known as the Goliath, is a remote-controlled tracked mine carrying either 60 or 100 kg of high explosives. It is used for destroying tanks, disrupting dense infantry formations, and the demolition of buildings or bridges."
-	movement_delay = 4
+	movement_delay = 4.5
 	has_special = TRUE
 	heavy_armor_penetration = 40
 	devastation_range = 2
 	heavy_impact_range = 3
 	light_impact_range = 5
 	flash_range = 6
-
