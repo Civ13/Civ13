@@ -299,7 +299,7 @@
 	if (anchored)
 		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
 	else
-		set_dir(turn(dir, -90))
+		set_dir(turn(dir, 90))
 	return
 
 /obj/structure/catapult/verb/rotate_right()
@@ -309,7 +309,7 @@
 	if (anchored)
 		user << "<span class='notice'>You need to unsecure the catapult first!</span>"
 	else
-		set_dir(turn(dir, 90))
+		set_dir(turn(dir, -90))
 
 	return
 
