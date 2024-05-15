@@ -499,6 +499,8 @@ default behaviour is:
 /mob/living/Move(a, b, flag)
 	if (buckled)
 		return
+	if (using_drone)
+		return
 
 	if (restrained())
 		stop_pulling()

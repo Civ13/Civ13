@@ -152,6 +152,23 @@
 		var/obj/O = AM
 		O.in_use = TRUE
 
+/mob/proc/unset_using_drone()
+	if (using_drone)
+		using_drone.is_moving = FALSE
+		using_drone = null
+	if (client)
+		client.eye = src
+		client.perspective = MOB_PERSPECTIVE
+
+/mob/proc/set_using_drone(var/obj/item/drone_controller/RC)
+	if (using_drone)
+		unset_using_drone()
+	if (RC)
+		using_drone = RC
+		if (client)
+			client.eye = using_drone.connected_drone
+			client.perspective = EYE_PERSPECTIVE
+
 /obj/item/proc/updateSelfDialog()
 	var/mob/M = loc
 	if (istype(M) && M.client && M.using_object == src)

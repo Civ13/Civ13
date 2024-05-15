@@ -957,6 +957,9 @@
 					MW.control.axis.reverse = FALSE
 			for(var/obj/item/turret_controls/C in H)
 				C.increase_distance(1)
+			for(var/obj/item/drone_controller/RC in H)
+				if(H.using_drone)
+					RC.start_move_drone(NORTH)
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
@@ -998,6 +1001,9 @@
 					MW.control.axis.reverse = TRUE
 			for(var/obj/item/turret_controls/C in H)
 				C.increase_distance(-1)
+			for(var/obj/item/drone_controller/RC in H)
+				if(H.using_drone)
+					RC.start_move_drone(SOUTH)
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH
@@ -1034,6 +1040,9 @@
 				MW.turndir(mob,"right")
 			for(var/obj/item/turret_controls/C in H)
 				C.start_rotation(1)
+			for(var/obj/item/drone_controller/RC in H)
+				if(H.using_drone)
+					RC.start_move_drone(EAST)
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
@@ -1070,6 +1079,9 @@
 				MW.turndir(mob,"left")
 			for(var/obj/item/turret_controls/C in H)
 				C.start_rotation(-1)
+			for(var/obj/item/drone_controller/RC in H)
+				if(H.using_drone)
+					RC.start_move_drone(WEST)
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
@@ -1094,12 +1106,18 @@
 	set instant = TRUE
 	if (mob && mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
+		for(var/obj/item/drone_controller/RC in mob)
+			if(mob.using_drone)
+				RC.stop_move_drone()
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
 	set instant = TRUE
 	if (mob && mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
+		for(var/obj/item/drone_controller/RC in mob)
+			if(mob.using_drone)
+				RC.stop_move_drone()
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
@@ -1108,6 +1126,9 @@
 		mob.movement_eastwest = null
 		for(var/obj/item/turret_controls/C in mob)
 			C.stop_rotation()
+		for(var/obj/item/drone_controller/RC in mob)
+			if(mob.using_drone)
+				RC.stop_move_drone()
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
@@ -1116,3 +1137,6 @@
 		mob.movement_eastwest = null
 		for(var/obj/item/turret_controls/C in mob)
 			C.stop_rotation()
+		for(var/obj/item/drone_controller/RC in mob)
+			if(mob.using_drone)
+				RC.stop_move_drone()
