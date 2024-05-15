@@ -39,7 +39,7 @@
 		return
 
 /obj/item/drone_controller/dropped()
-	if (controller.using_drone)
+	if (controller)
 		controller.unset_using_drone(src)
 	..()
 
