@@ -247,7 +247,7 @@
 	w_left = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/m13/right
 	w_right = list("c_wall",TRUE,TRUE,25,25,FALSE,FALSE)
-	
+
 /obj/structure/vehicleparts/frame/m13/left/door
 	w_left = list("c_door",TRUE,TRUE,25,25,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/m13/right/door
@@ -370,6 +370,9 @@
 	w_left = list("c_wall",TRUE,TRUE,70,70,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,75,75,FALSE,FALSE)
 
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////JAPAN///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/vehicleparts/frame/i_go
 
@@ -428,6 +431,55 @@
 /obj/structure/vehicleparts/frame/chi_ha/lf
 	w_left = list("c_wall",TRUE,TRUE,25,50,FALSE,FALSE)
 	w_front = list("c_armoredfront",TRUE,TRUE,25,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/hago
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
+	broken_icon = 'icons/obj/vehicles/vehicleparts_damaged.dmi'
+
+/// front
+/obj/structure/vehicleparts/frame/hago/lf
+	icon_state = "hago_frame_lf"
+	w_front = list("hago_fl_frame",FALSE,FALSE,12,50,FALSE,FALSE,TRUE)
+	w_left = list("none",TRUE,TRUE,12,50,FALSE,FALSE)
+	override_roof_icon = "hago_fl_roof"
+	override_frame_icon = "hago_fl_frame"
+/obj/structure/vehicleparts/frame/hago/rf
+	icon_state = "hago_frame_rf"
+	w_front = list("hago_fr_frame",TRUE,TRUE,12,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,12,50,FALSE,FALSE)
+	override_roof_icon = "hago_fr_roof"
+	override_frame_icon = "hago_fr_frame"
+/// middle
+/obj/structure/vehicleparts/frame/hago/lc
+	icon_state = "hago_frame_cl"
+	w_left = list("hago_cl_frame",TRUE,TRUE,10,50,TRUE,TRUE)
+	override_roof_icon = "hago_cl_roof"
+	override_frame_icon = "hago_cl_frame"
+
+/obj/structure/vehicleparts/frame/hago/rc
+	icon_state = "hago_frame_cr"
+	w_right = list("hago_cr_frame",TRUE,TRUE,10,50,FALSE,FALSE)
+	override_roof_icon = "hago_cr_roof"
+	override_frame_icon = "hago_cr_frame"
+
+/// back
+/obj/structure/vehicleparts/frame/hago/lb
+	icon_state = "hago_frame_bl"
+	w_back = list("hago_bl_frame",TRUE,TRUE,6,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,10,50,FALSE,FALSE)
+	override_roof_icon = "hago_bl_roof"
+	override_frame_icon = "hago_bl_frame"
+
+/obj/structure/vehicleparts/frame/hago/rb
+	icon_state = "hago_frame_br"
+	w_back = list("hago_br_frame",TRUE,TRUE,6,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,10,50,FALSE,FALSE)
+	override_roof_icon = "hago_br_roof"
+	override_frame_icon = "hago_br_frame"
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/vehicleparts/frame/m4
 /obj/structure/vehicleparts/frame/m4/front
@@ -906,7 +958,7 @@
 /obj/structure/vehicleparts/frame/is2/rbc
 	icon_state = "is2_frame_steel_middle_back_right"
 	w_right = list("is2_middle_back_right_frame",TRUE,TRUE,90,90,TRUE,TRUE)
-	
+
 /// back
 /obj/structure/vehicleparts/frame/is2/lb
 	icon_state = "is2_frame_steel_back_left"

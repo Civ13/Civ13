@@ -311,6 +311,10 @@
 		mg = new/obj/item/weapon/gun/projectile/automatic/type99(src)
 		..()
 
+/obj/structure/bed/chair/mgunner/type97/New()
+		mg = new/obj/item/weapon/gun/projectile/automatic/type99/type97tank(src)
+		..()
+
 /obj/structure/bed/chair/mgunner/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (M)

@@ -274,6 +274,22 @@
 	base_icon = "m41_tracks_right_back"
 	movement_icon = "m41_tracks_right_back_m"
 
+/obj/structure/vehicleparts/movement/tracks/hago/left
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	icon_state = "hago_tracks_l"
+	base_icon = "hago_tracks_l"
+	movement_icon = "hago_tracks_l_m"
+
+/obj/structure/vehicleparts/movement/tracks/hago/right
+	icon = 'icons/obj/vehicles/tankparts.dmi'
+	icon_state = "hago_tracks_r"
+	base_icon = "hago_tracks_r"
+	movement_icon = "hago_tracks_r_m"
+/obj/structure/vehicleparts/movement/tracks/hago/left/reversed
+	reversed = TRUE
+/obj/structure/vehicleparts/movement/tracks/hago/right/reversed
+	reversed = TRUE
+
 /obj/structure/vehicleparts/movement/tracks/apc/left
 	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
 	icon_state = "tracks_end_left"

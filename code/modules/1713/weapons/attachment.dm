@@ -285,10 +285,24 @@ Current Defines (_defines/attachment.dm)
 /// JAPANESE ///
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97
-	name = "Type 97"
-	desc = "You can attach this to japanese ww2 sniper rifles and machineguns"
+	name = "Type 97 Optic"
+	desc = "You can attach this to japanese arisaka rifles."
 	icon_state = "type97"
 	mount = "type97_cronstein"
+
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99
+	name = "Type 99 Optic"
+	desc = "You can attach this to japanese mgs."
+	icon_state = "type99"
+	mount = "type99_cronstein"
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96
+	name = "Type 96 Optic"
+
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank
+	name = "Type 97 Scope"
+	desc = "You can attach this to the type 97 heavy tank rifle."
+	icon_state = "type97_tank"
+	mount = "type97_tank"
 
 /// FRENCH ///
 

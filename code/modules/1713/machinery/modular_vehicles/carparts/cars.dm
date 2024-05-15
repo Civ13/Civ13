@@ -778,6 +778,9 @@
 /obj/structure/engine/internal/diesel/premade/chiha
 	enginesize = 25000
 
+/obj/structure/engine/internal/diesel/premade/hago
+	enginesize = 10000
+
 /obj/structure/engine/internal/gasoline/premade/falcon
 	enginesize = 6500
 
