@@ -4,7 +4,8 @@
 	icon = 'icons/obj/device.dmi'
 	icon_state = "rc_control"
 	secondary_action = TRUE
-	var/obj/item/drone/connected_drone = null
+	var/obj/structure/drone/connected_drone = null
+	var/mob/living/human/controller = null
 	var/is_moving = FALSE
 	var/executing_move = FALSE
 	var/moving_dir = NORTH
@@ -30,15 +31,16 @@
 		to_chat(H, SPAN_WARNING("There is no drone connected to \the [src]."))
 		return
 
-/obj/item/drone_controller/proc/cut_connection(var/mob/living/human/H)
-	if(H.using_drone)
+/obj/item/drone_controller/proc/cut_connection()
+	if(controller)
 		connected_drone = null
-		H.unset_using_drone(src)
-		to_chat(H, SPAN_NOTICE("The connection to \the [connected_drone] has been lost."))
+		controller.unset_using_drone(src)
+		to_chat(controller, SPAN_NOTICE("The connection to \the [connected_drone] has been lost."))
 		return
 
-/obj/item/drone_controller/dropped(var/mob/living/human/H)
-	H.unset_using_drone(src)
+/obj/item/drone_controller/dropped()
+	if (controller.using_drone)
+		controller.unset_using_drone(src)
 	..()
 
 /obj/item/drone_controller/proc/stop_move_drone()
@@ -46,15 +48,21 @@
 
 /obj/item/drone_controller/proc/start_move_drone(var/direction)
 	moving_dir = direction
+	if(!connected_drone)	return
+
+	if(connected_drone.broken)
+		if(controller)
+			to_chat(controller, SPAN_DANGER("\The [connected_drone]\'s tracks are broken, repair it with a welding tool."))
+		return
 	if(!is_moving)
 		is_moving = TRUE
 		move_drone()
 
 /obj/item/drone_controller/proc/move_drone()
-	if(!is_moving)
-		return
-	if(executing_move)
-		return
+	if(!is_moving)	return
+	if(!connected_drone)	return
+	if(connected_drone.broken)	return
+	if(executing_move)	return
 	executing_move = TRUE
 	connected_drone.Move(get_step(connected_drone, moving_dir))
 	connected_drone.dir = moving_dir
@@ -63,7 +71,7 @@
 		executing_move = FALSE
 		move_drone()
 
-/obj/item/drone
+/obj/structure/drone
 	name = "drone"
 	desc = "A movable drone."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
@@ -72,6 +80,8 @@
 	var/movement_delay = 5
 	var/movement_sound = 'sound/machines/rc_car.ogg'
 	var/has_special = FALSE
+	var/health = 100
+	var/broken = FALSE
 	
 	heavy_armor_penetration = 0
 	var/devastation_range = 2
@@ -79,22 +89,59 @@
 	var/light_impact_range = 5
 	var/flash_range = 6
 
-/obj/item/drone/attackby(obj/item/I as obj, mob/user)
+/obj/structure/drone/attackby(obj/item/I as obj, mob/user)
 	if(istype(I, /obj/item/drone_controller))
 		var/obj/item/drone_controller/RC = I
 		if (!connected_controller && !RC.connected_drone)
 			connected_controller = RC
 			connected_controller.connected_drone = src
-			to_chat(user, SPAN_NOTICE("You pair \the [src] to \the [connected_controller]."))
+			to_chat(user, SPAN_NOTICE("You connect \the [src] to \the [connected_controller]."))
 			return
 		else
-			to_chat(user, SPAN_WARNING("\The [src] is already paired with a controller."))
+			to_chat(user, SPAN_WARNING("\The [src] is already connected to a controller."))
+			return
+	if(broken && istype(I, /obj/item/weapon/weldingtool))
+		visible_message("[user] starts repairing \the [src]...")
+		if (do_after(user, 100, src))
+			visible_message("[user] sucessfully repairs \the [src].")
+			broken = FALSE
 			return
 	else
 		..()
 
-/obj/item/drone/proc/do_special(var/mob/living/human/H)
-	connected_controller.cut_connection(H)
+/obj/structure/drone/proc/try_destroy()
+	if (health <= 0)
+		health = 0
+		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
+		do_special()
+		return
+
+/obj/structure/drone/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 100
+		if (2.0)
+			health -= 50
+			if (prob(40))
+				broken = TRUE
+				visible_message(SPAN_DANGER("\The [src] breaks down!"))
+				if (connected_controller)
+					connected_controller.is_moving = FALSE
+		if (3.0)
+			health -= 25
+	try_destroy()
+
+/obj/structure/drone/bullet_act(var/obj/item/projectile/proj)
+	health -= proj.damage * 0.01
+	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
+	try_destroy()
+
+/obj/structure/drone/Destroy()
+	if (connected_controller)
+		connected_controller.cut_connection()
+	..()
+
+/obj/structure/drone/proc/do_special()
 	var/turf/T = get_turf(src)
 	qdel(src)
 	explosion(T, devastation_range, heavy_impact_range, light_impact_range, flash_range)
@@ -158,11 +205,11 @@
 		F.update_icon()
 	return
 
-/obj/item/drone/Move()
+/obj/structure/drone/Move()
 	..()
 	playsound(loc, movement_sound, 100, TRUE)
 
-/obj/item/drone/goliath
+/obj/structure/drone/goliath
 	name = "Goliath SdKfz. 302"
 	desc = "The SdKfz. 302, also known as the Goliath, is a remote-controlled tracked mine carrying either 60 or 100 kg of high explosives. It is used for destroying tanks, disrupting dense infantry formations, and the demolition of buildings or bridges."
 	movement_delay = 4

@@ -155,6 +155,7 @@
 /mob/proc/unset_using_drone()
 	if (using_drone)
 		using_drone.is_moving = FALSE
+		using_drone.controller = null
 		using_drone = null
 	if (client)
 		client.eye = src
@@ -165,6 +166,7 @@
 		unset_using_drone()
 	if (RC)
 		using_drone = RC
+		using_drone.controller = src
 		if (client)
 			client.eye = using_drone.connected_drone
 			client.perspective = EYE_PERSPECTIVE
