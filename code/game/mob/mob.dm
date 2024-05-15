@@ -849,6 +849,7 @@
 		else if (cannot_stand())
 			lying = TRUE
 			canmove = FALSE
+			facing_dir = null
 		else if (stunned)
 			canmove = FALSE
 		else if (captured)

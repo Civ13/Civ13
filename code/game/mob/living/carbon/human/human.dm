@@ -1112,7 +1112,7 @@ var/list/coefflist = list()
 
 /mob/living/human/proc/can_look(mob/living/user)//Largely copied from zoom.dm
 	var/mob/living/human/H = user
-
+	if (H.using_drone)	return FALSE
 	if(user.stat || !ishuman(user))
 		to_chat(user, SPAN_WARNING("You are unable to look into the distance right now."))
 		return FALSE

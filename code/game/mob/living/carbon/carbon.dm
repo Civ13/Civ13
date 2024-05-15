@@ -120,6 +120,8 @@
 		var/mob/living/human/H = src
 		if (H.using_look())
 			look_into_distance(src, FALSE)
+		if (using_drone)
+			unset_using_drone()
 	return
 
 /mob/living/human/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.

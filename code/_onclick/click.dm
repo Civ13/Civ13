@@ -161,7 +161,9 @@
 			M.Translate(1,-6)
 			transform = M
 	else
-		face_atom(A) // change direction to face what you clicked on
+		if (!using_drone)
+			face_atom(A) // change direction to face what you clicked on
+	
 	if (!canClick()) // in the year 2000...
 		return
 
