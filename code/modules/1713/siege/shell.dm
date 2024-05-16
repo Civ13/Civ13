@@ -622,9 +622,9 @@
 
 /obj/structure/shellrack/full37/New()
 	..()
-	for (var/i=1, i<=4, i++)
-		new /obj/item/cannon_ball/shell/tank/HE37(storage)
 	for (var/i=1, i<=8, i++)
+		new /obj/item/cannon_ball/shell/tank/HE37(storage)
+	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/AP37(storage)
 	for (var/i=1, i<=4, i++)
 		new /obj/item/cannon_ball/shell/tank/APCR37(storage)
