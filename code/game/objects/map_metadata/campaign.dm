@@ -178,7 +178,7 @@
 		dat += "[alive_redfaction.len] Redmenians "
 
 	dat += "<br>"
-	if (istype(map, /obj/map_metadata/nationsrp/coldwar_campaign))
+	if (istype(map, /obj/map_metadata/nationsrp/coldwar_cmp))
 		if (factjob == "RDF")
 			dat +="<b><h1><big>Redmenian People</big></h1></b>"
 		else if (factjob == "BAF")
