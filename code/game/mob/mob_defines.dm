@@ -38,6 +38,7 @@
 	var/use_me = TRUE //Allows all mobs to use the me verb by default, will have to manually specify they cannot
 	var/damageoverlaytemp = FALSE
 	var/atom/movable/using_object = null
+	var/obj/item/drone_controller/using_drone = null
 	var/poll_answer = 0.0
 	var/sdisabilities = FALSE	//Carbon
 	var/disabilities = FALSE	//Carbon
@@ -165,6 +166,7 @@
 	var/stunned = FALSE
 	var/weakened = FALSE
 	var/drowsyness = 0.0//Carbon
+	var/pacifist = FALSE
 
 	var/memory = ""
 	var/flavor_text = ""

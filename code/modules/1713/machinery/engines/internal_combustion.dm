@@ -128,7 +128,7 @@
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
 				//add polution to global meter
-				change_global_pollution(fuelconsumption)
+				//change_global_pollution(fuelconsumption)
 				done = TRUE
 		if (broken)
 			on = FALSE
@@ -176,6 +176,22 @@
 	maxpower = 100
 	torque = 0.9
 	fuelefficiency = 0.3
+	fuels = list("gasoline")
+
+	starting_snd = 'sound/machines/gasoline_starting.ogg'
+	running_snd = 'sound/machines/gasoline_loop.ogg'
+	ending_snd = 'sound/machines/gasoline_ending.ogg'
+
+/obj/structure/engine/internal/gasoline/efficient
+	name = "efficient four-stroke gasoline engine"
+	desc = "A relatively expensive but efficient four-stroke gasoline engine."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "gasoline_static"
+	engineclass = "gasoline"
+
+	maxpower = 500
+	torque = 5
+	fuelefficiency = 0.001
 	fuels = list("gasoline")
 
 	starting_snd = 'sound/machines/gasoline_starting.ogg'

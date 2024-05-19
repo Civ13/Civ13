@@ -2,7 +2,7 @@
 /obj/map_metadata/pioneers
 	ID = MAP_PIONEERS
 	title = "Pioneers"
-	lobby_icon = "icons/lobby/wildwest.png"
+	lobby_icon = 'icons/lobby/wildwest.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	has_hunger = TRUE
@@ -25,7 +25,7 @@
 	faction1 = CIVILIAN
 	faction2 = INDIANS
 	songs = list(
-		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Pioneer Building RP"
 	grace_wall_timer = 15000
 
@@ -46,7 +46,7 @@ obj/map_metadata/pioneers/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 	else if (istype(J, /datum/job/indians))
-		if (J.is_1713 == TRUE)
+		if (J.is_1713 && !J.is_deathmatch)
 			. = TRUE
 		else
 			. = FALSE

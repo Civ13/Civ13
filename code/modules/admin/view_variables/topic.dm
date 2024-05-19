@@ -116,16 +116,6 @@
 		if (usr.client)
 			usr.client.cmd_assume_direct_control(M)
 
-	else if (href_list["findrefs"])
-		if (!check_rights(R_DEBUG))	return
-
-		var/mob/M = locate(href_list["findrefs"])
-		if (!istype(M))
-			usr << "This can only be used on instances of type /mob"
-			return
-
-		M.find_references()
-
 	else if (href_list["delall"])
 		if (!check_rights(R_DEBUG|R_SERVER))	return
 
@@ -192,7 +182,7 @@
 			usr << "This can only be done to instances of type /datum"
 			return
 
-		holder.marked_datum_weak = weakref(D)
+		holder.marked_datum_weak = WEAKREF(D)
 		href_list["datumrefresh"] = href_list["mark_object"]
 
 	else if (href_list["rotatedatum"])

@@ -2,7 +2,7 @@
 /obj/map_metadata/cursed_island
 	ID = MAP_CURSED_ISLAND
 	title = "Cursed Island"
-	lobby_icon = "icons/lobby/cursed.png"
+	lobby_icon = 'icons/lobby/cursed.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,
 		/area/caribbean/no_mans_land/invisible_wall/inside)
 	respawn_delay = 0
@@ -24,7 +24,7 @@
 	is_singlefaction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
-		"Words Trough the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Trough the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Player vs NPCs"
 	grace_wall_timer = 1200
 

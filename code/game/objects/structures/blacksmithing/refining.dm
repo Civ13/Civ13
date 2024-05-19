@@ -80,6 +80,11 @@
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/stack/material/woodplank))
+				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
 
 			if (istype(I, /obj/item/stack/ore/iron))
 				iron += I.amount
@@ -226,6 +231,11 @@
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/stack/material/woodplank))
+				fuel += I.amount
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
 
 			if (istype(I, /obj/item/stack/ore/iron))
 				iron += I.amount
@@ -329,6 +339,11 @@
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
+				H << "You place \the [I] in \the [src], refueling it."
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/material/woodplank))
+				fuel += I.amount
 				H << "You place \the [I] in \the [src], refueling it."
 				qdel(I)
 				return

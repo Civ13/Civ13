@@ -376,6 +376,32 @@ proc/random_polish_name(gender, species = "Human")
 	else
 		return current_species.get_random_polish_name(gender)
 
+proc/random_bluefaction_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
+		else
+			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
+	else
+		return current_species.get_random_english_name(gender)
+
+proc/random_redfaction_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
+		else
+			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
+	else
+		return current_species.get_random_english_name(gender)
+
 // Afrikaans names. No real ingame purpose at the moment.
 proc/random_afrikaans_name(gender, species = "Human")
 	var/datum/species/current_species
@@ -888,6 +914,38 @@ Proc for attack log creation, because really why not
 			polish += H
 	return polish
 
+/proc/getbluefactionmobs(var/alive = FALSE)
+	var/list/bluefaction = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/bluefaction))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		bluefaction += H
+	return bluefaction
+
+/proc/getredfactionmobs(var/alive = FALSE)
+	var/list/redfaction = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/redfaction))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		redfaction += H
+	return redfaction
+
 /proc/getfitmobs(var/faction)
 
 	var/list/mobs = null
@@ -936,6 +994,10 @@ Proc for attack log creation, because really why not
 			mobs = getfilipinomobs(0)
 		if (POLISH)
 			mobs = getpolishmobs(0)
+		if (BLUEFACTION)
+			mobs = getbluefactionmobs(0)
+		if (REDFACTION)
+			mobs = getredfactionmobs(0)
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)
 		for (var/mob/m in mobs)
@@ -954,7 +1016,6 @@ Proc for attack log creation, because really why not
 					newmobs[m.real_name] = m
 
 	return newmobs
-
 
 //Orders mobs by type then by name
 /proc/sortmobs()

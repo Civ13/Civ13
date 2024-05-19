@@ -46,27 +46,27 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	if (!..(user, 2))
 		return
 	if (reagents && reagents.reagent_list.len)
-		user << "<span class='notice'>It contains [reagents.total_volume] units of liquid.</span>"
+		to_chat(user, SPAN_NOTICE("It contains [reagents.total_volume] units of liquid."))
 	else
-		user << "<span class='notice'>It is empty.</span>"
+		to_chat(user, SPAN_NOTICE("It is empty."))
 	if (!is_open_container())
-		user << "<span class='notice'>Airtight lid seals it completely.</span>"
+		to_chat(user, SPAN_NOTICE("\the airtight lid seals it completely!"))
 
 /obj/item/weapon/reagent_containers/glass/self_feed_message(var/mob/user)
-	user << "<span class='notice'>You swallow a gulp from \the [src].</span>"
+	user.visible_message("<span class='notice'>[src] drinks from \the [src].</span>", "<span class='notice'>You swallow a gulp from \the [src].</span>") // Different perspectives from different point of views of the 	clients.
 
 /obj/item/weapon/reagent_containers/glass/feed_sound(var/mob/user)
 	playsound(user.loc, "drink", rand(10, 50), TRUE)
 
-/obj/item/weapon/reagent_containers/glass/attack_self()
+/obj/item/weapon/reagent_containers/glass/attack_self(mob/user as mob)
 	..()
 	if (!(istype(src,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
 		if (is_open_container())
 			playsound(src,'sound/effects/Lid_Removal_Bottle_mono.ogg',50,1)
-			usr << "<span class = 'notice'>You put the lid on \the [src].</span>"
+			user.visible_message("<span class = 'notice'>[usr] puts \the lid on \the [src].</span>", "<span class = 'notice'>You put the lid on \the [src].</span>")
 			flags &= ~OPENCONTAINER
 		else
-			usr << "<span class = 'notice'>You take the lid off \the [src].</span>"
+			user.visible_message("<span class = 'notice'>[usr] takes \the lid off \the [src].</span>", "<span class = 'notice'>You take the lid off \the [src].</span>")
 			flags |= OPENCONTAINER
 	update_icon()
 
@@ -116,186 +116,185 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes)) //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the grapes, producing grapejuice."
+		user.visible_message("<span class='warning'>[user] smashes the grapes against \the container.</span>", "<span class='notice'>You smash the grapes into its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
 		reagents.add_reagent("grapejuice", 5)
 		qdel(W)
 		return
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona)) //liquid transfer? solid???
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona)) //liquid transfer? solid??? (error sprite???)
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
-			return
-		user << "You grind the cinchona plant, producing quinine."
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		user.visible_message("<span class='warning'>[user] grinds the cinchona plant against \the container.</span>", "<span class='notice'>You grind the cinchona plant into quinine inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
 		reagents.add_reagent("quinine", 10)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))  //liquid transfer? solid???
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the olives, producing olive oil."
+		user.visible_message("<span class='warning'>[user] grinds the olives against \the container.</span>", "<span class='notice'>You grind the olives into an olive oil mixture inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
 		reagents.add_reagent("olive_oil", 6)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/juniper))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the juniper berries, producing juniper juice."
+		user.visible_message("<span class='warning'>[user] crushes the juniper berry against \the container.</span>", "<span class='notice'>You crush the juniper berry to extract its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something crushing.</span>")
 		reagents.add_reagent("juniper_juice", 6)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/animalfat))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the animal fat inside the container, creating lard."
+		user.visible_message("<span class='warning'>[user] smashes and grinds the animal fat inside \the container.</span>", "<span class='notice'>You smash and grind the animal fat inside \the container into a mixture of lard.</span>", "<span class='notice'>You hear \the sound of repetitive grinding and smashing.</span>")
 		reagents.add_reagent("lard", 10)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
 
-		user << "You smash the potatoes, producing potato juice."
-		reagents.add_reagent("potato", 5)
+		user.visible_message("<span class='warning'>[user] smashes the potato against \the container.</span>", "<span class='notice'>You smash the potato and extract its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
+		reagents.add_reagent("potato", 5)	
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/agave))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You rip up the agave leaves, producing agave nectar."
+		user.visible_message("<span class='warning'>[user] rips up the agave leaf against \the container.</span>", "<span class='notice'>You rip up the agave leaf and collect its nectar inside \the container.</span>", "<span class='notice'>You hear \the sound of something ripping.</span>")
 		reagents.add_reagent("agave", 10)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/sapote))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the sapote fruit, producing sapote juice."
+		user.visible_message("<span class='warning'>[user] crushes the sapote fruit against \the container.</span>", "<span class='notice'>You crush the sapote fruit and let its juice seep into \the container.</span>", "<span class='notice'>You hear \the sound of something crushing.</span>")
 		reagents.add_reagent("sapotejuice", 4)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/apple))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the apple, producing apple juice."
+		user.visible_message("<span class='warning'>[src] smashes the apple against \the container.</span>", "<span class='notice'>You smash the apple against \the container and let its juice seep into \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
 		reagents.add_reagent("applejuice", 10)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla))  //liquid transfer?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the sapodilla, producing sapodilla juice."
+		user.visible_message("<span class='warning'>[src] smashes the sapodilla against \the container.</span>", "<span class='notice'>You smash the sapodilla and let its juice seep inside \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
 		reagents.add_reagent("sapodillajuice", 10)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod))  //item transfer? what?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You throw the fish into the barrel."
+		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering \the container.")
 		reagents.add_reagent("fish", 5)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))  //item transfer? what is it?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You throw the fish into the barrel."
+		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering \the container.")
 		reagents.add_reagent("fish", 5)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice)) //item transfer? what is it?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You smash the rice, producing a rice paste."
+		user.visible_message("<span class='warning'>[user] smashes the rice against \the insides of \the [src].</span>", "<span class='notice'>You smash the rice and produce a rice paste inside the container.</span>", "<span class='notice'>You smash the rice and produce a rice paste inside the container.</span>", "You hear the sound of activity.")
 		reagents.add_reagent("rice", 5)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/coffee)) //item transfer? what is it?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You grind the coffee, producing a coffee drink."
+		user.visible_message("<span class='warning'>[user] grinds the coffee against \the [src].</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "You hear the sound of something grinding.")
 		reagents.add_reagent("coffee", 15)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/stack/material/cotton)) //item transfer? what is it?
 		var/obj/item/stack/material/cotton/CT = W
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You put the cotton inside \the [src]."
+		user.visible_message("<span class='warning'>[user] puts the cotton inside \the [src].</span>", "<span class='notice'>You put the cotton inside \the [src].</span>", "<span class='notice'>You put the cotton inside \the [src].</span>", "You hear the sound of activity.")
 		reagents.add_reagent("cotton", CT.amount)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/corn)) //item transfer? what is it?
 		if (!is_open_container())
-			user << "<span class='notice'>\The [src] is closed.</span>"
+			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
 		if (!reagents.get_free_space())
-			user << "<span class='notice'>[src] is full.</span>"
+			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user << "You grind the corn, producing corn oil."
+		user.visible_message("<span class='warning'>[user] grinds the corn against \the [src].</span>", "<span class='notice'>You grind the corn and produce corn oil.</span>", "<span class='notice'>You grind the corn and produce corn oil.</span>", "You hear the sound of something grinding.")
 		reagents.add_reagent("cornoil", 5)
 		qdel(W)
 		return
 	else if(istype(W, /obj/item/stack/material/rope)) //Lard candle making
 		if (reagents.get_reagent_amount("lard") >= 5)
 			var/obj/item/stack/material/rope/R = W
-			visible_message("[user] starts to dip the [R.name] into the [src.name], shaping a candle.")
+			user.visible_message("<span class='warning'>[user] starts to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You start to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You hear \the sound of something shaping.</span>")
 			if(do_after(user, 40, user))
 				reagents.remove_reagent("lard", 5)
 				new/obj/item/weapon/flame/candle/lard(user.loc)
@@ -570,8 +569,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	volume = 160
 
 /obj/item/weapon/reagent_containers/glass/small_pot/clay
-	desc = "A primitive clay pot, used for boiling water and cooking."
 	name = "clay cooking pot"
+	desc = "A primitive clay pot, specifically designed and used for boiling water and holding liquids."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "cookingpot"
 	item_state = "bucket" //TODO: need be checked
@@ -781,6 +780,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		overlays += lid
 	else
 		var/image/filling = image(icon, src, "[icon_state]85")
+		if (!reagents)
+			return
 		var/percent = round((reagents.total_volume / volume) * 100)
 		switch(percent)
 			if (0 to 85)	filling.icon_state = "[icon_state]-85"
@@ -1033,7 +1034,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder/bullet_act(var/obj/item/projectile/proj)
 	if (proj && !proj.nodamage)
 		if (prob(30))
-			visible_message("<span class = 'warning'>\The [src] is hit by \the [proj] and explodes!</span>")
+			visible_message("<span class = 'danger'>\The [src] is hit by \the [proj] and explodes!</span>")
 			explode()
 			return TRUE
 	return FALSE

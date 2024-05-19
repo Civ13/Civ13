@@ -1,7 +1,7 @@
 /obj/map_metadata/nomads_persistence_beta
 	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nations RP (Persistence BETA)"
-	lobby_icon = "icons/lobby/campaign.png"
+	lobby_icon = 'icons/lobby/campaign.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 3000 // 5 minutes
 	has_hunger = TRUE
@@ -27,7 +27,7 @@
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
-		"Emma:1" = "sound/music/emma.ogg",)
+		"Emma:1" = 'sound/music/emma.ogg',)
 	default_research = 210
 	gamemode = "Nations RP (Persistence)"
 	ordinal_age = 8

@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
-	lobby_icon = "icons/lobby/civ13.gif"
+	lobby_icon = 'icons/lobby/civ13.gif'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Nuclear Wasteland"
@@ -71,7 +71,7 @@
 			log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 			return
 	else
-		spawn(600)
+		spawn(600) // 1 minute
 			nuke_proc(timer)
 	return
 /obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
@@ -127,11 +127,11 @@
 	gamemode = "Wasteland"
 	hasnukes = FALSE
 	is_zombie = TRUE
-	lobby_icon = "icons/lobby/wasteland2.png"
+	lobby_icon = 'icons/lobby/wasteland2.png'
 	mission_start_message = "<big>Something has gone terribly wrong. The undead roam the world, and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = "sound/music/whytheyhidetheirbodies.ogg",)
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
 
 /obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)

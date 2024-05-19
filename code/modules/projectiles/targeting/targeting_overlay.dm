@@ -121,13 +121,13 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 		return
 
 	if (owner.incapacitated())
-		owner << "<span class='warning'>You cannot aim a gun in your current state.</span>"
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun in your current state."))
 		return
-	if (owner.lying && !owner.prone)
-		owner << "<span class='warning'>You cannot aim a gun while laying on the floor.</span>"
-		return
+	/*if (owner.lying && !owner.prone)
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun while lying on the floor."))
+		return*/
 	if (owner.restrained())
-		owner << "<span class='warning'>You cannot aim a gun while handcuffed.</span>"
+		to_chat(owner, SPAN_WARNING("You cannot aim a gun while handcuffed."))
 		return
 
 	var/success = FALSE
@@ -149,7 +149,14 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 	if (success)
 		if (owner.client)
 			owner.client.add_gun_icons()
-		target << "<span class='danger'>You now have a gun pointed at you. No sudden moves!</span>"
+		if (istype(thing, /obj/item/weapon/gun/projectile/bow)) // All bows are lower-cased, so therefore not proper-nouns, and so we can use \a
+			to_chat(target, SPAN_DANGER("You now have \a [thing] pointed at you. <big>No sudden moves!</big>"))
+		else if (istype(thing, /obj/item/weapon/gun/projectile/pistol)) // Pistols are usually upper-cased, so therefore classed as proper-nouns, and so we have to specify.
+			to_chat(target, SPAN_DANGER("You now have a pistol pointed at you. <big>No sudden moves!</big>"))
+		//else if (istype(thing, /obj/item/weapon/gun/projectile/submachinegun)) // This is not really correct; calling it a submachine gun (SMG) since, by definition, an SMG fires a pistol-caliber cartridge. And we have ak7
+			//to_chat(target, SPAN_DANGER("You now have a submachinegun pointed at you. <big>No sudden moves!</big>"))
+		else
+			to_chat(target, SPAN_DANGER("You now have a weapon pointed at you. <big>No sudden moves!</big>"))
 		aiming_with = thing
 		aiming_at = target
 		if (istype(aiming_with, /obj/item/weapon/gun))
@@ -163,9 +170,9 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 		locked = FALSE
 		update_icon()
 		lock_time = world.time + 35
-		moved_event.register(owner, src, /obj/aiming_overlay/proc/update_aiming)
-		moved_event.register(aiming_at, src, /obj/aiming_overlay/proc/target_moved)
-		destroyed_event.register(aiming_at, src, /obj/aiming_overlay/proc/cancel_aiming)
+		GLOB.moved_event.register(owner, src, /obj/aiming_overlay/proc/update_aiming)
+		GLOB.moved_event.register(aiming_at, src, /obj/aiming_overlay/proc/target_moved)
+		GLOB.destroyed_event.register(aiming_at, src, /obj/aiming_overlay/proc/cancel_aiming)
 
 /obj/aiming_overlay/update_icon()
 	if (locked)
@@ -200,10 +207,10 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 	if (!no_message)
 		owner.visible_message("<span class='notice'>\The [owner] lowers \the [aiming_with].</span>")
 
-	moved_event.unregister(owner, src)
+	GLOB.moved_event.unregister(owner, src)
 	if (aiming_at)
-		moved_event.unregister(aiming_at, src)
-		destroyed_event.unregister(aiming_at, src)
+		GLOB.moved_event.unregister(aiming_at, src)
+		GLOB.destroyed_event.unregister(aiming_at, src)
 		aiming_at.aimed -= src
 		aiming_at = null
 

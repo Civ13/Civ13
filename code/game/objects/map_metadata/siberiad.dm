@@ -1,11 +1,12 @@
 /obj/map_metadata/siberiad
 	ID = MAP_SIBERIAD
 	title = "Operation Siberiad"
-	lobby_icon = "icons/lobby/siberiad.png"
+	lobby_icon = 'icons/lobby/siberiad.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
 	no_hardcore = FALSE
 	ambience = list('sound/ambience/winter.ogg')
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		AMERICAN,
@@ -15,16 +16,21 @@
 		list(AMERICAN) = /area/caribbean/no_mans_land/capturable/one,
 		list(RUSSIAN) = /area/caribbean/no_mans_land/capturable/one,
 		)
-	age = "2049"
+	age = "1992"
 	faction_distribution_coeffs = list(AMERICAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siberian Conflict"
-	mission_start_message = "<font size=4>The remnants of the <font color = 'blue'>Coalition</font color> and the <font color = red><b>Soviet Army</b></font> are fighting for the control of an <b>Military Industrial Complex</b> in the <b>MIDDLE</b> of the area of operations.<br>In order to win, a side has to hold the <b>Control Room</b> for<b>5 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The remnants of the <font color = red>Soviet Union</font color> are fighting the <font color = 'blue'>Coalition</font color> in a devastated Siberian town, home to a military research facility in the <b>MIDDLE</b>.<br>A helicopter transporting a high ranking officer has crashed in the <b>SOUTH-WEST</b> of the map.<br>Better retrieve the highly confidential documents in time before the enemy does...<br>The battle will start in roughly <b>5 minutes</b>.</font>"
 	faction1 = AMERICAN
 	faction2 = RUSSIAN
 	ordinal_age = 7
 	songs = list(
-		"Audio - Emissions:1" = "sound/music/emissions.ogg")
-	gamemode = "King of the Hill"
+		"Audio - Emissions:1" = 'sound/music/emissions.ogg')
+	gamemode = "Extraction"
+	var/activation_code = 0
+
+/obj/map_metadata/siberiad/New()
+	..()
+	activation_code = rand(1000,9999) // Lazy way for now.
 
 /obj/map_metadata/siberiad/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
@@ -51,7 +57,7 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3000 // 5 minutes
+		return 1200 // 2 minutes
 
 /obj/map_metadata/siberiad/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -85,9 +91,9 @@
 
 /obj/map_metadata/siberiad/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The <b><font color = blue>Coalition</b></font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = blue>Coalition</font color> may now cross the invisible wall!</font>"
 	else if (faction == RUSSIAN)
-		return "<font size = 4>The <b><font color = red>Soviets</b></font> may now cross the invisible wall!</font>"
+		return "<font size = 4>The <font color = red>Soviet Army</font color> may now cross the invisible wall!</font>"
 	else
 		return ""
 
@@ -100,66 +106,23 @@
 		return ""
 
 /obj/map_metadata/siberiad/update_win_condition()
-
-	if (world.time >= next_win && next_win != -1)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = "The battle is over! The [current_winner] were victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		if (current_winner == "Americans")
+	if (win_condition_spam_check)
+		return FALSE
+	for (var/obj/structure/props/computerprops/tracking/siberiad/TS in world)
+		if (TS.active)
+			ticker.finished = TRUE
+			var/message = "The operation is over! The nuclear missile has been launched!"
 			for (var/obj/structure/nuclear_missile/nuke in world)
 				nuke.activate()
-		win_condition_spam_check = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
-				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
-				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
-				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the Industrial Complex! They will win in {time} minute{s}."
-				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The [current_winner] have lost control of the Industrial Complex!</font>"
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
+			switch (TS.destination)
+				if (1)
+					world << SPAN_NOTICE("<font size = 4>[message]</font>")
+					world << SPAN_NOTICE("<font size = 4>It is heading towards Seattle. The Coalition's capitol is about to turn to dust.</font>")
+				if (2)
+					world << SPAN_NOTICE("<font size = 4>[message]</font>")
+					world << SPAN_NOTICE("<font size = 4>It is heading towards Novosibirsk. The remnants of the Soviet Union are to be extinct.</font>")
+			win_condition_spam_check = TRUE
+			return FALSE
 	return TRUE
 
 /obj/map_metadata/siberiad/check_caribbean_block(var/mob/living/human/H, var/turf/T)
@@ -176,3 +139,78 @@
 		else
 			return !faction1_can_cross_blocks()
 	return FALSE
+
+// MAP SPECIFIC OBJECTS //
+
+/obj/structure/props/computerprops/tracking/siberiad
+	name = "launch terminal"
+	desc = "A terminal used to control the missile silo."
+	var/active = FALSE
+	var/unlocked = FALSE
+	var/destination = 0
+
+/obj/structure/props/computerprops/tracking/siberiad/attack_hand(var/mob/living/human/H as mob)
+	if (map && map.ID == MAP_SIBERIAD)
+		var/obj/map_metadata/siberiad/SD = map
+		if (src.active)
+			to_chat(H, SPAN_WARNING("The nuclear missile has already been activated and calibrated."))
+			return
+		if (!src.unlocked)
+			var/code = input(H, "Enter the activation code:", "Access Termninal") as num
+			if (code != SD.activation_code)
+				to_chat(H, SPAN_WARNING("\icon[src] Wrong password."))
+				return
+		src.visible_message(SPAN_NOTICE("\icon[src] Initiliazing protocols... Please wait."))
+		spawn(100)
+			src.visible_message(SPAN_WARNING("\icon[src] Security protocol terminated. Please insert the trajectory path disk."))
+			src.unlocked = TRUE
+
+/obj/structure/props/computerprops/tracking/siberiad/attackby(obj/item/O as obj, mob/living/human/user as mob)
+	if (!istype(O, /obj/item/weapon/disk/siberiad))
+		return
+	if (src.active)
+		to_chat(user, SPAN_WARNING("The nuclear missile has already been activated and calibrated."))
+		return
+	if (!unlocked)
+		to_chat(user, SPAN_WARNING("Activate the console using the security code first."))
+		return
+	else
+		if (istype(O, /obj/item/weapon/disk/siberiad/soviet))
+			destination = 1
+		else if (istype(O, /obj/item/weapon/disk/siberiad/nato))
+			destination = 2
+		src.visible_message(SPAN_NOTICE("\icon[src] Calibrating trajectory... Please wait."))
+		spawn(100)
+			src.active = TRUE
+			src.visible_message(SPAN_WARNING("\icon[src] Nuclear missile activated."))
+			switch(destination)
+				if (1)
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: SEATTLE <br>(LAT: 47.608013, LONG: -122.335167)."))
+				if (2)
+					src.visible_message(SPAN_WARNING("\icon[src] Target destination: NOVOSIBIRSK <br>(LAT: 55.018803, LONG: 82.933952)."))
+
+/obj/item/weapon/disk/siberiad
+	name = "ballistic trajectory diskette"
+	desc = "A diskette containing protocols for setting up the ballistic trajectory a missile."
+	icon_state = "disk_black"
+	item_state = "disk_black"
+	attackby(obj/item/W, mob/living/M)
+		return
+
+/obj/item/weapon/disk/siberiad/soviet
+	name = "Soviet ballistic trajectory diskette"
+	icon_state = "disk_red"
+	item_state = "disk_red"
+
+/obj/item/weapon/disk/siberiad/nato
+	name = "Coalition ballistic trajectory diskette"
+	icon_state = "disk_blue"
+	item_state = "disk_blue"
+
+/obj/item/weapon/paper/official/activation_code
+	name = "confidential document"
+	New()
+		..()
+		if (map && map.ID == MAP_SIBERIAD)
+			var/obj/map_metadata/siberiad/SD = map
+			info = "<p><strong>TOP SECRET</strong></p><br><p><em>Ministry of Defense of the USSR</em></p><br><p><strong>Activation code: [SD.activation_code]</strong></p><br><p><strong>Activation Instructions:</strong></p><br><ol><li>Enter the above code into the activation console.</li><br><li>Await verification protocols.</li><br><li>Once verified, insert the ballistic trajectory diskette.</li><br><li>Await missile calibration.</li><br><li>Initiate missile launch.</li><br></ol>"

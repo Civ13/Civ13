@@ -2,10 +2,10 @@
 	ID = MAP_HILL_3234
 	title = "Battle for Hill 3234"
 	no_winner = "Hill 3234 is still under Soviet control."
-	lobby_icon = "icons/lobby/sovafghan.png"
+	lobby_icon = 'icons/lobby/sovafghan.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 600 // 1 minute
-	victory_time = 24000
+	respawn_delay = 600 // 1 minute.
+	victory_time = 24000 // 40 minutes to hold out for soviets.
 	no_hardcore = TRUE
 
 	faction_organization = list(
@@ -19,15 +19,15 @@
 	age = "1988"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(RUSSIAN = 0.3, ARAB = 0.7)
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the battle begins!<br>The <font color = 'red'>Soviets</font> will win if they hold out the hill for <b>40 minutes</b>.<br>The <b><font color = 'black'>Mujahideen</font></b> will win if they manage to capture the radio station on the top of the hill!</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the battle begins!<br>The <font color = 'red'>Soviets</font> will win if they hold out the hill for <b>40 minutes</b>.<br>The <b><font color = 'black'>Mujahideen</font></b> will win if they manage to capture the radio station on the top of the hill!</font>"
 	faction1 = RUSSIAN
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - Gruppa Krovi (Blood Group):1" = "sound/music/gruppakrovi.ogg",)
+		"Kino - Gruppa Krovi (Blood Group):1" = 'sound/music/gruppakrovi.ogg',)
 	gamemode = "Siege"
 	artillery_count = 3
-	grace_wall_timer = 3000
+	grace_wall_timer = 4800 // 8 minutes.
 
 
 /obj/map_metadata/hill_3234/New()
@@ -118,6 +118,7 @@
 			return "Soviet Army"
 		if (ARAB)
 			return "Mujahideen"
+
 /obj/map_metadata/hill_3234/roundend_condition_def2army(define)
 	..()
 	switch (define)

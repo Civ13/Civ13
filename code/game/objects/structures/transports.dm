@@ -303,7 +303,7 @@
 		user << SPAN_NOTICE("You begin dismantling \the [src].")
 		if (do_after(user,25,src))
 			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood and rope is no longer useful as raw.
-			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
+			var /obj/item/stack/material/woodplank/W = new /obj/item/stack/material/woodplank(get_turf(src))
 			new /obj/item/stack/material/rope(get_turf(src))
 			W.amount += 4 //adds 4 boards to the stack, making it 5
 			qdel(src)
@@ -554,7 +554,7 @@
 		if (do_after(user,25,src))
 			user << SPAN_NOTICE("You dismantle \the [src].") //We lose some materials in the process. Some wood is no longer useful as raw.
 			new /obj/item/sail(get_turf(src))
-			var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
+			var /obj/item/stack/material/woodplank/W = new /obj/item/stack/material/woodplank(get_turf(src))
 			W.amount += 9 //adds 9 boards to the stack, making it 10
 			qdel(src)
 			return
@@ -745,6 +745,11 @@
 
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
+	if (!driver)
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
+		
 	var/turf/T = get_turf(get_step(src,driver.dir))
 	var/area/A = get_area(T)
 	if (map && A && map.caribbean_blocking_area_types.Find(A.type))
@@ -772,7 +777,7 @@
 		ontop -= driver
 		driver = null
 
-	if (istype(get_turf(get_step(src, driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src, driver.dir)), /turf/floor/trench/flooded))
+	if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
 		if (driver in get_turf(src))
 			return TRUE
 		else
@@ -787,6 +792,7 @@
 			update_icon()
 			ontop -= driver
 			driver = null
+			return FALSE
 	else
 		moving = FALSE
 		axis.currentspeed = 0

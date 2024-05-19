@@ -1,7 +1,7 @@
 /obj/map_metadata/omaha
 	ID = MAP_OMAHA
 	title = "Omaha Beach"
-	lobby_icon = "icons/lobby/omaha.png"
+	lobby_icon = 'icons/lobby/omaha.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	victory_time = 24000
@@ -24,7 +24,7 @@
 	faction1 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Over There!:1" = "sound/music/overthere.ogg",)
+		"Over There!:1" = 'sound/music/overthere.ogg',)
 	gamemode = "Siege"
 	grace_wall_timer = 4800
 /obj/map_metadata/omaha/job_enabled_specialcheck(var/datum/job/J)

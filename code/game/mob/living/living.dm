@@ -156,7 +156,7 @@ default behaviour is:
 			return TRUE
 
 /mob/living/proc/can_swap_with(var/mob/living/tmob)
-	if (map && (map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CAMPAIGN))
+	if (map && (map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CMP))
 		return FALSE
 	if (ishuman(src))
 		var/mob/living/human/H = src
@@ -499,6 +499,8 @@ default behaviour is:
 /mob/living/Move(a, b, flag)
 	if (buckled)
 		return
+	if (using_drone)
+		return
 
 	if (restrained())
 		stop_pulling()
@@ -628,15 +630,15 @@ default behaviour is:
 				qdel(G)
 			if (GRAB_AGGRESSIVE)
 				if (prob(19)) //same chance of breaking the grab as disarm
-					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>")
+					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>", "<span class='warning'>You have broken free of [G.assailant]'s grip!</span>")
 					qdel(G)
 			if (GRAB_NECK)
-				//If the you move when grabbing someone then it's easier for them to break free. Same if the affected mob is immune to stun.
+				//If you move when grabbing someone then it's easier for them to break free. Same if the affected mob is immune to stun.
 				if (((world.time - G.assailant.l_move_time < 30 || !stunned) && prob(15)) || prob(3))
-					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s headlock!</span>")
+					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s headlock!</span>", "<span class='warning'>You have broken free of [G.assailant]'s headlock!</span>")
 					qdel(G)
 	if (resisting)
-		visible_message("<span class='danger'>[src] resists!</span>")
+		visible_message("<span class='danger'>[src] resists!</span>", "<span class ='warning'>You resist!</span>")
 
 
 /mob/living/verb/lay_down()
@@ -644,7 +646,7 @@ default behaviour is:
 	set category = "IC"
 
 	resting = !resting
-	src << "<span class='notice'>You are [resting ? "now resting" : "no longer resting"].</span>"
+	to_chat(src, SPAN_NOTICE("You are [resting ? "now resting" : "no longer resting"]."))
 
 /mob/living/proc/has_brain()
 	return TRUE
@@ -676,7 +678,7 @@ default behaviour is:
 	if (!..())
 		return FALSE
 	if (!possession_candidate)
-		possessor << "<span class='warning'>That animal cannot be possessed.</span>"
+		to_chat(possessor, SPAN_WARNING("That animal cannot be possessed."))
 		return FALSE
 	if (!possessor.MayRespawn(1,0))
 		return FALSE
@@ -688,7 +690,7 @@ default behaviour is:
 		return FALSE
 
 	if (ckey || client)
-		possessor << "<span class='warning'>\The [src] already has a player.</span>"
+		to_chat(possessor, SPAN_WARNING("\The [src] already has a player."))
 		return FALSE
 
 	message_admins("<span class='adminnotice'>[key_name_admin(possessor)] has taken control of \the [src].</span>", key_name_admin(possessor))
@@ -705,8 +707,8 @@ default behaviour is:
 		//cultify() // Maybe another time.
 		return*/
 
-	src << "<b>You are now \the [src]!</b>"
-	src << "<span class='notice'>Remember to stay in character for a mob of this type!</span>"
+	to_chat(src, "<b>You are now \the [src]!</b>")
+	to_chat(src, SPAN_NOTICE("Remember to stay in character for a mob of this type!"))
 	return TRUE
 
 /mob/living/throw_mode_off()
@@ -747,22 +749,22 @@ default behaviour is:
 		return
 
 	if (AM.anchored || istype(AM, /obj/item/football))
-		src << "<span class='warning'>It won't budge!</span>"
+		to_chat(src, SPAN_WARNING("It won't budge!"))
 		return
 
 	var/mob/M = AM
 	if (ismob(AM))
 
 		if (!can_pull_mobs || !can_pull_size)
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, SPAN_WARNING("It won't budge!"))
 			return
 
 		if ((mob_size < M.mob_size) && (can_pull_mobs != MOB_PULL_LARGER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, SPAN_WARNING("It won't budge!"))
 			return
 
 		if ((mob_size == M.mob_size) && (can_pull_mobs == MOB_PULL_SMALLER))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, SPAN_WARNING("It won't budge!"))
 			return
 
 		// If your size is larger than theirs and you have some
@@ -777,7 +779,7 @@ default behaviour is:
 	else if (isobj(AM))
 		var/obj/I = AM
 		if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
-			src << "<span class='warning'>It won't budge!</span>"
+			to_chat(src, SPAN_WARNING("It won't budge!"))
 			return
 
 	if (pulling)

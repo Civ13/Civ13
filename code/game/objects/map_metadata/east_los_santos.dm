@@ -1,7 +1,7 @@
 /obj/map_metadata/east_los_santos
 	ID = MAP_EAST_LOS_SANTOS
 	title = "East Los Santos"
-	lobby_icon = "icons/lobby/east_los_santos.png"
+	lobby_icon = 'icons/lobby/east_los_santos.png'
 	no_winner = "The fight for the hood is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
@@ -23,7 +23,7 @@
 	gamemode = "Turf War"
 	no_hardcore = TRUE
 	songs = list(
-		"Compton\'s Most Wanted - Hood Took Me Under:1" = "sound/music/hood_took_me_under.ogg",)
+		"Compton\'s Most Wanted - Hood Took Me Under:1" = 'sound/music/hood_took_me_under.ogg',)
 	var/grove_points = 0
 	var/ballas_points = 0
 	var/a1_control = "None"

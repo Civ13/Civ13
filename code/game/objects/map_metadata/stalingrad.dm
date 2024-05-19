@@ -2,8 +2,8 @@
 /obj/map_metadata/stalingrad
 	ID = MAP_STALINGRAD
 	title = "Stalingrad"
-	lobby_icon = "icons/lobby/stalingrad.png"
-	no_winner ="The battle for the city is still going on."
+	lobby_icon = 'icons/lobby/stalingrad.png'
+	no_winner = "The battle for the city is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/one,/area/caribbean/no_mans_land/invisible_wall/taiga/two)
 	respawn_delay = 600 // 1 minute
 
@@ -19,12 +19,12 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central and City Hall</b>.<br>First team to reach <b>40</b> points wins!</big>"
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 	gamemode = "Area Control"
 	var/sov_points = 0
 	var/ger_points = 0
@@ -248,7 +248,7 @@
 
 	faction_distribution_coeffs = list(GERMAN = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Stalingrad"
-	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</font>"
+	mission_start_message = "<font size=4>All factions have <b>3 minutes</b> to prepare before the ceasefire ends!</font><br><big>Points are added to each team for each minute they control the <b>Train Station, Telephone Central, Hospital, and City Hall</b>.<br>First team to reach <b>40</b> points wins!</big>"
 
 /obj/map_metadata/stalingrad/minigrad/job_enabled_specialcheck(var/datum/job/J)
 	..()

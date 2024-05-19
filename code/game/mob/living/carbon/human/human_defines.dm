@@ -111,6 +111,10 @@
 	var/mood_modifier = 1
 	var/surrendered = FALSE
 
+	var/bank_dollar = 0 //How many dollars they have in the bank
+	var/bank_rubles = 0 //How many rubles they have in the bank
+	var/bank_hold = FALSE
+
 	var/werewolf = FALSE
 	var/gorillaman = FALSE
 	var/ant = FALSE
@@ -119,6 +123,7 @@
 	var/lizard = FALSE
 	var/wolfman = FALSE
 	var/crab = FALSE
+	var/droid = FALSE
 	var/nationality = "none"
 	/* These are stats. They affect how fast and how well you can do certain
 	 * actions. All stats have a min (stats[stat][1]) and a max (stats[stat][2]),

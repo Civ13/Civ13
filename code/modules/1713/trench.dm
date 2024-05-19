@@ -178,6 +178,8 @@ var/list/global/floor_cache = list()
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
+	if(locate(/obj/structure/vehicleparts/frame) in contents)
+		return ..()
 	if(locate(/obj/structure/vehicleparts/frame/ship) in contents)
 		return ..()
 	for (var/obj/OB in src)
@@ -192,9 +194,6 @@ var/list/global/floor_cache = list()
 			return 1
 		if(!istype(oldloc, /turf/floor/trench))
 			if(locate(/obj/covers/repairedfloor) in contents)
-				L.forceMove(src)
-				return 1
-			if(locate(/obj/structure/vehicleparts/frame) in contents)
 				L.forceMove(src)
 				return 1
 			if(L.grabbed_by && L.grabbed_by.len)
@@ -308,15 +307,18 @@ var/list/global/floor_cache = list()
 					L.forceMove(newloc)
 				return TRUE
 		if(istype(newloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, newloc) && !locate(/obj/structure/vehicleparts/frame, usr.loc))
+			for(var/obj/structure/vehicleparts/frame/F in newloc)
+				if(F.CanPass(L) == 0)
+					return FALSE
 			if(world.time > message_cooldown + 30)
 				visible_message("<span class = 'notice'>[L] starts to climb on a frame.</span>")
 				message_cooldown = world.time
 			if (!do_after(L, 20, src, needhand = FALSE))
 				return FALSE
 			if(..())
-				visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
 				var/turf/T = newloc
 				if(T.Enter(O, src))
+					visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
 					L.forceMove(newloc)
 				return TRUE
 	return ..()
@@ -370,7 +372,7 @@ var/list/global/floor_cache = list()
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
 		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
+		if (!do_after(user, (10 - S.dig_speed)*5, src))
 			return
 		if (istype(src,/turf/floor/dirt))
 			trench_stage++
@@ -393,10 +395,10 @@ var/list/global/floor_cache = list()
 	var/mob/living/human/H = user
 	if (istype(C, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed)))) //Think a DEFINE for the number being divided over S.dig_speed could be helpful, keeping it this for now
 			return
-		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
 		if (A.climate == "jungle" || A.climate == "savanna")
@@ -406,10 +408,10 @@ var/list/global/floor_cache = list()
 		return
 	else if (istype(C, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/S = C
-		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/S.usespeed)))
 			return
-		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
 		if (A.climate == "jungle" || A.climate == "savanna")
@@ -423,10 +425,10 @@ var/list/global/floor_cache = list()
 	var/mob/living/human/H = user
 	if (istype(C, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to remove snow layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] starts to remove the snow layer."), SPAN_NOTICE("[user] starts to remove the snow layer."), "You hear something digging into the ground.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed))))
 			return
-		visible_message("<span class = 'notice'>[user] removes snow layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] removes the snow layer."), SPAN_NOTICE("[user] removes the snow layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)
 		ChangeTurf(/turf/floor/dirt)
 		return
@@ -437,9 +439,9 @@ var/list/global/floor_cache = list()
 		return
 	if (H.a_intent == I_GRAB)
 		if (salty)
-			H << "<span class='warning'>It�s probably not a good idea to drink saltwater.</span>"
+			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
 			return
-		H << "You start drinking some water from the flooded trench..."
+		H.visible_message("[H] starts drinking some water from \the [src]...", "You start drinking some water from \the [src]...")
 		if (do_after(H,50,src))
 			var/watertype = "water"
 			if (radiation>0)
@@ -461,7 +463,7 @@ var/list/global/floor_cache = list()
 				H.water += rand(40,50)
 			H.water += 75
 			H.bladder += 75
-			H << "You drink some water."
+			H.visible_message("[H] drinks some water from \the [src].", "You drink some water from \the [src].", "You hear something being drank.")
 			playsound(H.loc, "drink", rand(10, 50), TRUE)
 			return
 		else
@@ -489,7 +491,7 @@ var/list/global/floor_cache = list()
 		if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 			var/choice = WWinput(user, "Do you want to fill up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
 			if (choice == "Yes")
-				user << "You shove some dirt into the irrigation channel."
+				to_chat(user, SPAN_NOTICE("You shove some dirt into the irrigation channel."))
 				ChangeTurf(get_base_turf_by_area(src))
 				qdel(C)
 				return
@@ -503,7 +505,7 @@ var/list/global/floor_cache = list()
 							RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
 							sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
-						user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+						user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>", "<span class='notice'>You fill \the [RG] with water.</span>")
 						playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 						user.setClickCooldown(5)
 						return TRUE

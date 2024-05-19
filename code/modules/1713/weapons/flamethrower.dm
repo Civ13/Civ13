@@ -32,12 +32,12 @@
 	if (active)
 		active=FALSE
 		update_icon()
-		H << "<span class='danger'>You extinguish \the [src].</span>"
+		H.visible_message(SPAN_NOTICE("[H] extinguishes \the [src]."), SPAN_NOTICE("You extinguish \the [src]."))
 		set_light(0)
 	else
 		active=TRUE
 		update_icon()
-		H << "<span class='danger'>You light \the [src].</span>"
+		H.visible_message(SPAN_NOTICE("[H] lights \the [src]."), SPAN_NOTICE("You light \the [src]."))
 		set_light(2, 1, "#FF9900")
 
 /obj/item/weapon/flamethrower/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
@@ -46,21 +46,21 @@
 	if (world.time<=lastfire)
 		return
 	if (!H.has_empty_hand(both = FALSE))
-		H << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		to_chat(H, SPAN_WARNING("You need both hands to use \the [src]!"))
 		return
 	if (!cdir)
 		cdir = H.dir
 	var/obj/item/weapon/reagent_containers/glass/flamethrower/FM = null
 	if (!H.back || !istype(H.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
-		H << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+		to_chat(H, SPAN_WARNING("You need a fuel tank on your back in order to be able to use a flamethrower!"))
 		return
 	if (istype(H.back,/obj/item/weapon/reagent_containers/glass/flamethrower))
 		FM = H.back
 	if (!FM)
-		H << "<span class='warning'>You need a fuel tank on your back in order to be able to use a flamethrower!</span>"
+		to_chat(H, SPAN_WARNING("You need a fuel tank on your back in order to be able to use a flamethrower!"))
 		return
 	if (FM.reagents && FM.reagents.get_reagent_amount("gasoline") < 5)
-		H << "<span class='warning'>The fuel tank doesn't have enough fuel to operate the flamethrower!</span>"
+		to_chat(H, SPAN_WARNING("The fuel tank doesn't have enough fuel to operate the flamethrower!"))
 		return
 	else
 		process_fire(H,FM,cdir,target)
@@ -90,8 +90,18 @@
 				break
 
 			if(T.density)
-				if(!istype(T, /obj/structure/barricade) || !istype(T, /obj/structure/window/barrier))
+				stop_at_turf = TRUE
+
+			for(var/obj/covers/C in T)
+				if(C.density)
 					stop_at_turf = TRUE
+			for(var/obj/structure/vehicleparts/frame/F in T)
+				var/penloc = F.get_wall_name(get_dir(source_turf, T))
+				if(!(F.is_ambrasure(penloc)))
+					stop_at_turf = TRUE
+
+			if(stop_at_turf)
+				break
 			else
 				if (distance > 0)
 					ignite_turf(get_turf(T), 6, 70) // 6 second 70 damage flame
@@ -100,9 +110,6 @@
 				if(stop_at_turf)
 					break
 				continue
-
-			if(stop_at_turf)
-				break
 
 			distance++
 

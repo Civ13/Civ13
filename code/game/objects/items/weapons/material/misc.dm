@@ -131,10 +131,10 @@
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/material/pitchfork))
-		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (C.cooldownw * C.force)))
 			return
-		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
+		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
 		var/area/AREA = get_area(src)
 		if(map.ID == MAP_NOMADS_DESERT)
 			ChangeTurf(/turf/floor/dirt/dust)
@@ -146,10 +146,10 @@
 /obj/structure/wild/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(src, /obj/structure/wild/junglebush) || istype(src, /obj/structure/wild/smallbush/) || istype(src, /obj/structure/wild/burnedbush/) || istype(src, /obj/structure/wild/tallgrass2) || istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/flowers) || istype(src, /obj/structure/wild/bush/big) || istype(src, /obj/structure/wild/bush))
 		if (istype(C, /obj/item/weapon/material/pitchfork))
-			visible_message("<span class = 'notice'>[user] starts to uproot [src].</span>")
+			user.visible_message(SPAN_NOTICE("[user] starts to uproot the [src]."), SPAN_NOTICE("[user] starts to uproot the [src]."), "You hear something being uprooted.")
 			if (!do_after(user, (C.cooldownw * C.force)))
 				return
-			visible_message("<span class = 'notice'>[user] uproots [src].</span>")
+			user.visible_message(SPAN_NOTICE("[user] uproots the [src]."), SPAN_NOTICE("[user] uproots the [src]."), "You hear something being uprooted.")
 			qdel(src)
 	..()
 /obj/item/weapon/material/spear
@@ -1022,7 +1022,7 @@
 	desc = "A very sharp stone axe blade upon a long wood handle. Not great at chopping wood but excellent at chopping limbs."
 
 /obj/item/weapon/material/scepter
-	name = "gold scepter"
+	name = "scepter" // corrects to gold scepter because of the default_material
 	sharp = FALSE
 	edge = FALSE
 	desc = "An old golden staff, doesn't do too much damage but its fast at blocking and hitting"

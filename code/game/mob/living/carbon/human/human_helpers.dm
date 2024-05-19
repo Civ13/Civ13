@@ -158,7 +158,7 @@
 		return
 	else
 		sleeping = 66
-		spawn(600)
+		spawn(600) // 1 minute
 			sleep_update()
 			return
 
@@ -257,39 +257,94 @@
 	if (wear_mask && wear_mask.radiation>0)
 		rad_act(wear_mask.radiation/10/1500)
 
+/mob/living/human
+	var/roofs_removed = TRUE
 
-/mob/living/human/proc/process_roofs()
+/mob/living/human/proc/process_turret_roofs()
 	if (!client)
 		return
+
+	var/view_dist = client.view + 4
+
+	var/view_x_offset = 0
+	var/view_y_offset = 0
+
+	if(client.pixel_x > 0)
+		view_x_offset = client.view
+	else if(client.pixel_x < 0)
+		view_x_offset = -client.view
+
+	if(client.pixel_y > 0)
+		view_y_offset = client.view
+	else if(client.pixel_y < 0)
+		view_y_offset = -client.view
+
+	var/view_loc = locate(x + view_x_offset, y + view_y_offset, z)
+
+	for (var/image/tmpimg in client.images)
+		if (tmpimg.icon == 'icons/obj/vehicles/vehicles256x256.dmi')
+			if(get_dist(tmpimg, view_loc) < view_dist)
+				client.images.Remove(tmpimg)
+
+	for (var/obj/structure/turret/T in view(view_dist, view_loc))
+		client.images += T.turret_image
+		client.images += T.turret_roof_image
+
+	for (var/obj/structure/turret/T in view(1,client))
+
+		var/obj/structure/vehicleparts/frame/turret_vehicle = null
+		var/obj/structure/vehicleparts/frame/client_vehicle = null
+
+		for(var/obj/structure/vehicleparts/frame/FR in T.loc)
+			turret_vehicle = FR
+		for(var/obj/structure/vehicleparts/frame/FR in loc)
+			client_vehicle = FR
+
+		if(turret_vehicle && client_vehicle)
+			if(turret_vehicle.axis == client_vehicle.axis)
+				client.images -= T.turret_roof_image
+		else if(!turret_vehicle && !client_vehicle)
+			client.images -= T.turret_roof_image
+
+/mob/living/human/proc/process_vehicle_roofs()
+	if (!client)
+		return
+	var/view_dist = client.view + 4 // + reserve so that when moving the load is not visible [translated]
+
+	var/view_x_offset = 0
+	var/view_y_offset = 0
+
+	if(client.pixel_x > 0)
+		view_x_offset = client.view
+	else if(client.pixel_x < 0)
+		view_x_offset = -client.view
+
+	if(client.pixel_y > 0)
+		view_y_offset = client.view
+	else if(client.pixel_y < 0)
+		view_y_offset = -client.view
+
+	var/view_loc = locate(x + view_x_offset, y + view_y_offset, z)
+
 	var/obj/structure/vehicleparts/frame/found = null
 
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles256x256.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi')
-			client.images.Remove(tmpimg)
-	for (var/obj/structure/vehicleparts/frame/FRL in loc) // Check if we're standing a frame
+		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96.dmi'  || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96_damaged.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96_damaged.dmi')
+			if(get_dist(tmpimg, view_loc) < view_dist)
+				client.images.Remove(tmpimg)
+	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
-	for (var/obj/structure/vehicleparts/frame/FR in view(client)) // If the axis of the frame is not the same as our frame draw a roof
+	for (var/obj/structure/vehicleparts/frame/FR in view(view_dist, view_loc))
 		if (found)
 			if (FR.axis != found.axis && FR != found)
 				client.images += FR.roof
-				if (FR.roof_turret)
-					client.images += FR.roof_turret
-			else // Else don't draw the roof (we are inside)
-				client.images -= FR.roof
-				if (FR.roof_turret)
-					client.images -= FR.roof_turret
-		else
-			if (locate(FR) in view(client))
-				client.images += FR.roof
-				if (FR.roof_turret)
-					client.images += FR.roof_turret
 			else
 				client.images -= FR.roof
-				if (FR.roof_turret)
-					client.images -= FR.roof_turret
-
-/mob/living/human
-	var/roofs_removed = TRUE
+		else
+			if (locate(FR) in view(view_dist, view_loc))
+				client.images += FR.roof
+			else
+				client.images -= FR.roof
 
 /mob/living/human/proc/process_static_roofs()
 	if (!client)

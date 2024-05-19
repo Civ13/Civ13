@@ -1,7 +1,7 @@
 /obj/map_metadata/tantiveiv
 	ID = MAP_TANTIVEIV
 	title = "VantiveIV"
-	lobby_icon = "icons/lobby/galacticbattles.png"
+	lobby_icon = 'icons/lobby/galacticbattles.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -23,7 +23,7 @@
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Battle of Heroes (Galactic Battles):1" = "sound/music/battle_of_heroes.ogg",)
+		"Battle of Heroes (Galactic Battles):1" = 'sound/music/battle_of_heroes.ogg',)
 	gamemode = "Siege"
 	grace_wall_timer = 2400
 /obj/map_metadata/tantiveiv/job_enabled_specialcheck(var/datum/job/J)

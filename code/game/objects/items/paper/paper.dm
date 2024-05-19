@@ -1,3 +1,6 @@
+// large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+#define MAX_FIELDS 50
+
 /*
  * Paper
  * also scraps of paper
@@ -46,6 +49,36 @@
 	var/faction = ""
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
+
+/obj/item/weapon/paper/entry_permit
+	name = "entry permit"
+	desc = "a permit granting right of entry to a specified country"
+	icon_state = "entry_permit"
+
+/obj/item/weapon/paper/asylum
+	name = "asylum grant"
+	desc = "an official document granting political asylum to the recipient in a specified country"
+	icon_state = "asylum_grant"
+
+/obj/item/weapon/paper/id_supp
+	name = "id supplement"
+	desc = "a small document supplement detailing physical appearance"
+	icon_state = "id_supp"
+
+/obj/item/weapon/paper/vaccine
+	name = "vaccine certificate"
+	desc = "an official medical certificate confirming that a person has been vaccinated against certain disease(s)"
+	icon_state = "vaccine_cert"
+
+/obj/item/weapon/paper/diplomatic_auth
+	name = "diplomatic authorisation"
+	desc = "an official document from an international organisation confirming the diplomatic status and diplomatic right to travel of the recipient"
+	icon_state = "diplomatic_auth"
+
+/obj/item/weapon/paper/entry_ticket
+	name = "entry ticket"
+	desc = "a simple small ticket granting right of entry"
+	icon_state = "entry_ticket"
 
 /obj/item/weapon/paper/official/New()
 	..()
@@ -141,7 +174,7 @@
 	if (in_range(user, src) || isghost(user))
 		show_content(usr)
 	else
-		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
+		to_chat(user, SPAN_NOTICE("You have to go closer if you want to read it."))
 	return
 
 /obj/item/weapon/paper/proc/show_content(var/mob/user, var/forceshow=0)
@@ -212,10 +245,10 @@
 					H.update_body()
 
 /obj/item/weapon/paper/proc/addtofield(var/id, var/text, var/links = FALSE)
-	var/locid = FALSE
+	var/locid = 0
 	var/laststart = TRUE
 	var/textindex = TRUE
-	while (1) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
+	while (locid < MAX_FIELDS) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
 		var/istart = FALSE
 		if (links)
 			istart = findtext(info_links, "<span class=\"paper_field\">", laststart)
@@ -329,8 +362,8 @@
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
 
 //Count the fields
-	var/laststart = TRUE
-	while (1)
+	var/laststart = 1
+	while (fields < MAX_FIELDS)
 		var/i = findtext(t, "<span class=\"paper_field\">", laststart)	//</span>
 		if (i==0)
 			break
@@ -413,7 +446,7 @@
 		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
 
 
-		if (fields > 50)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+		if (fields > MAX_FIELDS)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
 			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			fields = last_fields_value
 			return
@@ -496,16 +529,19 @@
 		stampoverlay.pixel_x = rand(-2, 2)
 		stampoverlay.pixel_y = rand(-3, 2)
 		stampoverlay.icon_state = "paper_[P.icon_state]"
-		var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
-		if (istype(P, /obj/item/weapon/stamp/mail))
-			stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
-		stampoverlay_paper.icon_state = P.icon_state
-		stamps += "<img src='\ref[stampoverlay_paper]'>"
+
+		// The following commented code does not work.
+
+		// var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
+		// if (istype(P, /obj/item/weapon/stamp/mail))
+		// 	stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
+		// stampoverlay_paper.icon_state = P.icon_state
+		// stamps += "<img src='\ref[stampoverlay_paper]'>"
 		
-		if(!stamped)
-			stamped = new
-		stamped += P.type
-		overlays += stampoverlay
+		// if(!stamped)
+		// 	stamped = new
+		// stamped += P.type
+		// overlays += stampoverlay
 
 		playsound(src,'sound/effects/stamp_down.ogg', 70, TRUE)
 		to_chat(user, SPAN_NOTICE("You stamp the paper with the [P.name]."))
@@ -524,7 +560,7 @@
 	info = "For crimes against the crown, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/Court/pirates
-	name = "Ship udgement"
+	name = "Ship Judgement"
 	info = "For crimes against the crew, the offender is sentenced to:<BR>\n<BR>\n"
 
 /obj/item/weapon/paper/crumpled

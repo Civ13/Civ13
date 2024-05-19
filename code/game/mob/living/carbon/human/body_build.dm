@@ -105,6 +105,12 @@
 	nohair = TRUE
 	nofacialhair = TRUE
 
+/datum/body_build/droid
+	name			= "Droid"
+	index			= "_droid"
+	nohair = TRUE
+	nofacialhair = TRUE
+
 /datum/body_build/wolfman/female
 	gender 			= FEMALE
 

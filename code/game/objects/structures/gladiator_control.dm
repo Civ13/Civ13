@@ -22,7 +22,7 @@
 		var/obj/map_metadata/gladiators/GD = map
 		if (istype(user, /mob/living/human))
 			var/mob/living/human/H = user
-			if (H.original_job_title == "Imperator" && timer <= world.time && H.client.ckey == "taislin")
+			if (H.original_job_title == "Imperator" && timer <= world.time)
 				var/list/vlist = list("Cancel")
 				for(var/mob/living/human/GLAD in world)
 					var/area/A = get_area(GLAD)
@@ -78,7 +78,7 @@
 					//														alive?						ckey						name						victories						matches
 					toplist["[GD.gladiator_stats[i][2]]"] = list(text2num(GD.gladiator_stats[i][4]), GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6]))
 					playerlist_ord["[GD.gladiator_stats[i][2]]"] = text2num(GD.gladiator_stats[i][5])
-				newtoplist = sortTim(playerlist_ord, /proc/cmp_numeric_dsc,TRUE)
+				newtoplist = sortTim(playerlist_ord, GLOBAL_PROC_REF(cmp_numeric_dsc), TRUE)
 				for (var/i in newtoplist)
 					var/WR = ""
 					if (toplist[i][5]!=0)
@@ -101,7 +101,7 @@
 					else
 						ckeylist["[GD.gladiator_stats[i][1]]"] = list(text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6]),"[GD.gladiator_stats[i][1]]")
 						ckeylist_ord["[GD.gladiator_stats[i][1]]"] = text2num(GD.gladiator_stats[i][5])
-				newtoplist = sortTim(ckeylist_ord, /proc/cmp_numeric_dsc,TRUE)
+				newtoplist = sortTim(ckeylist_ord, GLOBAL_PROC_REF(cmp_numeric_dsc), TRUE)
 				for (var/ii in newtoplist)
 					if (ckeylist[ii])
 						var/WR = ""

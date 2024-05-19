@@ -14,8 +14,8 @@ var/global/list/sparring_attack_cache = list()
 	var/deal_halloss
 	var/sparring_variant_type = /datum/unarmed_attack/light_strike
 
-	var/eye_attack_text
-	var/eye_attack_text_victim
+	var/eye_attack_text = "fingers" // We put this here because if we were to initialize the variable as "fingers" in unarmed_attack/punch, it would turn into unarmed_attack/stomp, if the target is laying. So we define it here and over-write it on other things such as unarmed_attack/claws.
+	var/eye_attack_text_victim = "digits" // Same here, default for HUMANS. (ONLY used if the species can kill-grab and its probably from when there used to be more species and races that were removed from "AVAbattlegrounds"), shouldn't be a problem for GORILLAS.
 
 /datum/unarmed_attack/proc/get_sparring_variant()
 	if (sparring_variant_type)
@@ -103,10 +103,10 @@ var/global/list/sparring_attack_cache = list()
 
 /datum/unarmed_attack/proc/handle_eye_attack(var/mob/living/human/user, var/mob/living/human/target)
 	var/obj/item/organ/eyes/eyes = target.internal_organs_by_name["eyes"]
-	eyes.take_damage(rand(3,4), TRUE)
+	eyes.take_damage(rand(3,4), TRUE) // Roughly 4 eye_attacks to radial blind.
 
-	user.visible_message("<span class='danger'>[user] presses \his [eye_attack_text] into [target]'s [eyes.name]!</span>")
-	target << "<span class='danger'>You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel" ] [eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]</span>"
+	user.visible_message("<span class='danger'>[user] presses \his [eye_attack_text] into [target]'s [eyes.name]!</span>", "<span class = 'danger'>You press your [eye_attack_text] into [target]'s [eyes.name]!</span>")
+	to_chat(target, SPAN_DANGER("You experience[(target.species.flags & NO_PAIN)? "" : " immense pain as you feel "][eye_attack_text_victim] being pressed into your [eyes.name][(target.species.flags & NO_PAIN)? "." : "!"]"))
 
 /datum/unarmed_attack/bite
 	attack_verb = list("bit")
@@ -127,8 +127,6 @@ var/global/list/sparring_attack_cache = list()
 /datum/unarmed_attack/punch
 	attack_verb = list("punched")
 	attack_noun = list("fist")
-	eye_attack_text = "fingers"
-	eye_attack_text_victim = "digits"
 	damage = FALSE
 
 /datum/unarmed_attack/punch/show_attack(var/mob/living/human/user, var/mob/living/human/target, var/zone, var/attack_damage)
@@ -140,7 +138,7 @@ var/global/list/sparring_attack_cache = list()
 	attack_damage = Clamp(attack_damage, TRUE, 5) // We expect damage input of TRUE to 5 for this proc. But we leave this check juuust in case.
 
 	if (target == user)
-		user.visible_message("<span class='danger'>[user] [pick(attack_verb)] \himself in the [organ]!</span>")
+		user.visible_message("<span class='danger'>[user] [pick(attack_verb)] \himself in the [organ]!</span>", "<span class = 'danger'>You [pick(attack_verb)] yourself in the [organ]!</span>")
 		return FALSE
 
 	if (!target.lying)
@@ -188,6 +186,9 @@ var/global/list/sparring_attack_cache = list()
 	if (!(zone in list("l_leg", "r_leg", "l_foot", "r_foot", "groin")))
 		return FALSE
 
+	if (user == target) // Prevents us from using the kick attack_verbs, so we default to punching instead.
+		return FALSE
+
 	var/obj/item/organ/external/E = user.organs_by_name["l_foot"]
 	if (E && !E.is_stump())
 		return TRUE
@@ -211,6 +212,10 @@ var/global/list/sparring_attack_cache = list()
 
 	attack_damage = Clamp(attack_damage, TRUE, 5)
 
+	if (target == user)
+		user.visible_message("<span class='danger'>[user] [pick(attack_verb)] \himself in the [organ]!</span>")
+		return FALSE
+
 	switch(attack_damage)
 		if (1 to 2)	user.visible_message("<span class='danger'>[user] threw [target] a glancing [pick(attack_noun)] to the [organ]!</span>") //it's not that they're kicking lightly, it's that the kick didn't quite connect
 		if (3 to 4)	user.visible_message("<span class='danger'>[user] [pick(attack_verb)] [target] in \his [organ]!</span>")
@@ -228,6 +233,9 @@ var/global/list/sparring_attack_cache = list()
 		return FALSE
 
 	if (!istype(target))
+		return FALSE
+
+	if (user == target) //In-case we SOMEHOW stomp ourselves.
 		return FALSE
 
 	if (!user.lying && (target.lying || (zone in list("l_foot", "r_foot"))))

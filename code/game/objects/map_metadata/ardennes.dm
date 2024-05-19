@@ -1,8 +1,8 @@
 /obj/map_metadata/ardennes
 	ID = MAP_ARDENNES
 	title = "Ardennes Offensive"
-	lobby_icon = "icons/lobby/ardennes.png"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/three,/area/caribbean/no_mans_land/invisible_wall/tundra/two,/area/caribbean/no_mans_land/invisible_wall/tundra/one)
+	lobby_icon = 'icons/lobby/ardennes.png'
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra,/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/tundra/two)
 	respawn_delay = 1200
 	no_winner = "The HQ stays under American control, stalling the German offense."
 	no_hardcore = TRUE
@@ -24,7 +24,7 @@
 	grace_wall_timer = 3600
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Woody Guthrine - Tear the Fascists Down:1" = "sound/music/tearthefascists.ogg",)
+		"Woody Guthrine - Tear the Fascists Down:1" = 'sound/music/tearthefascists.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/ardennes/job_enabled_specialcheck(var/datum/job/J)
@@ -188,10 +188,10 @@ var/no_loop_ar = FALSE
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
 			if (H.faction_text == faction1)
 				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/three))
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))
 			if (H.faction_text == faction2)
 				return TRUE
 		else

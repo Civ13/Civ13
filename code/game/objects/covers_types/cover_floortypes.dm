@@ -23,7 +23,7 @@
 	..()
 	spawn(15)
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater) && map.ID != MAP_RIVER_KWAI && map.ID != MAP_VOYAGE && map.ID != MAP_MISSIONARY_RIDGE && map.ID != MAP_BATTLE_SHIPS)
 			visible_message("The [src] sinks!")
 			qdel(src)
 			return
@@ -55,21 +55,6 @@
 		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		Destroy()
 
-/obj/covers/repairedfloor/ship/Destroy()
-	if(istype(src.loc, /turf/floor/beach/water) && map.ID == MAP_BATTLE_SHIPS)
-		var/turf/T1 = get_step(src.loc,pick(NORTH,NORTHWEST))
-		if(T1)
-			new/obj/effect/flooding(T1)
-		var/turf/T2 = get_step(src.loc,pick(EAST,NORTHEAST))
-		if(T2)
-			new/obj/effect/flooding(T2)
-		var/turf/T3 = get_step(src.loc,pick(WEST,SOUTHWEST))
-		if(T3)
-			new/obj/effect/flooding(T3)
-		var/turf/T4 = get_step(src.loc,pick(SOUTH,SOUTHEAST))
-		if(T4)
-			new/obj/effect/flooding(T4)
-	..()
 /obj/covers/repairedfloor/ship/south
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor_south1"

@@ -9,10 +9,10 @@
 	value = 3
 	bitesize = 2
 	decay = 25*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
 	name = "cinchona plant"
-	icon = 'icons/obj/flora/plants.dmi'
-	icon_state = "cinchona_inhand"
+	icon_state = "cinchona_inhand" // No icon_state exists for this, will be an ERROR.
 	desc = "Contains quinine."
 	nutriment_amt = 1
 	nutriment_desc = "bitter"
@@ -143,6 +143,7 @@
 	filling_color = "#7a378b"
 	satisfaction = 4
 	decay = 12*600
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/olives
 	name = "bunch of olives"
 	icon_state = "olives"
@@ -364,3 +365,14 @@
 		return
 	else
 		return
+
+/obj/item/weapon/reagent_containers/food/snacks/honeycomb
+	name = "honeycomb"
+	icon = 'icons/farming/beekeeping.dmi'
+	icon_state = "honeycomb"
+	filling_color = "#ffbf00"
+	decay = 250*600
+	w_class = ITEM_SIZE_TINY
+	New()
+		..()
+		reagents.add_reagent("honey", 10)

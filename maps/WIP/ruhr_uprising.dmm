@@ -3730,6 +3730,10 @@
 /obj/structure/engine/internal/gasoline{
 	enginesize = 7000
 	},
+/obj/structure/vehicleparts/axis/car{
+	color = "#444444";
+	speedlist = list(7,5,4,2.5,1.8)
+	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)
 "wf" = (
@@ -6212,10 +6216,6 @@
 "Kg" = (
 /obj/structure/vehicleparts/frame/car/van/lfc{
 	doorcode = 4975
-	},
-/obj/structure/vehicleparts/axis/car{
-	color = "#444444";
-	speedlist = list(7,5,4,2.5,1.8)
 	},
 /obj/structure/bed/chair/drivers,
 /turf/floor/plating/cobblestone/vertical/dark,

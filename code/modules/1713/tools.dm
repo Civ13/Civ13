@@ -47,9 +47,9 @@
 /obj/item/weapon/foldable/attack_self(var/mob/user as mob)
 	var/target = get_step(user, user.dir)
 	if (target)
-		visible_message("<span class = 'warning'>[user] starts to deploy \the [src].</span>")
+		user.visible_message("<span class='warning'>[user] starts to deploy the [src].</span>", "<span class='notice'>You start to deploy the [src].</span>", "<span class='warning'>You feel something being deployed nearby.</span>")
 		if (do_after(user, 25, get_turf(user)))
-			visible_message("<span class = 'warning'>[user] deploys \the [src].</span>")
+			user.visible_message("<span class='warning'>[user] deploys the [src].</span>", "<span class='notice'>You deploy the [src].</span>", "<span class='warning'>You hear the sound of something being deployed nearby.</span>")
 			var/atom/A = new path(get_turf(src))
 			A.dir = user.dir
 			user.remove_from_mob(src)
@@ -75,6 +75,20 @@
 	icon_state = "atgm"
 	item_state = "atgm"
 	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable
+
+/obj/item/weapon/foldable/atgm/kornet
+	name = "Foldable 9K135 Kornet"
+	desc = "A highly accurate, Russian laser-guided anti-tank missile system with long-range capabilities and advanced armor penetration, designed for modern battlefield engagements."
+	icon_state = "kornet_atgm"
+	item_state = "kornet_atgm"
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/kornet
+
+/obj/item/weapon/foldable/atgm/bgm_tow
+	name = "Foldable BGM-71 TOW"
+	desc = "A wire-guided anti-tank missile, known for its effectiveness against armored vehicles at long distances."
+	icon_state = "bgm71_tow_atgm"
+	item_state = "bgm71_tow_atgm"
+	path = /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/bgm_tow
 
 /obj/item/weapon/foldable/pkm
 	name = "Foldable PKM machine gun"
@@ -196,8 +210,8 @@
 
 /obj/item/weapon/material/shovel/spade/foldable/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 10, src))
-			usr << "You fold your [src] closed."
+		if (do_after(user, 10, src, can_move = TRUE))
+			user.visible_message("<span class='warning'>[user] folds their [src] closed.</span>", "<span class='notice'>You fold your [src] closed.</span>", "<span class='warning'>You hear something being folded nearby.</span>")
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
@@ -219,15 +233,16 @@
 
 /obj/item/weapon/material/shovel/trench/foldable/etool
 	name = "foldable entrenching tool"
-	desc = "A foldable shovel used specifically for digging and moving dirt."
+	desc = "A foldable shovel used for digging dirt and moving dirt. It can be also as a improvised hatchet."
 	icon_state = "etool"
 	usespeed = 0.8
+	chopping_speed = 3.1
 	path = /obj/item/weapon/foldable_shovel/trench/etool
 
 /obj/item/weapon/material/shovel/trench/foldable/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
 		if (do_after(user, 10, src))
-			usr << "You fold your [src] closed."
+			to_chat(usr, SPAN_NOTICE("You fold your [src] closed."))
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
@@ -294,8 +309,8 @@
 
 /obj/item/weapon/foldable_shovel/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
-		if (do_after(user, 5, src))
-			usr << "You quickly snap your [src] open."
+		if (do_after(user, 5, src, can_move = TRUE))
+			to_chat(usr, SPAN_NOTICE("You quickly snap your [src] open."))
 			qdel(src)
 			usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 
@@ -382,7 +397,7 @@
 
 /obj/item/weapon/berriesgatherer
 	name = "berries gatherer"
-	desc = "A simple berry gatherer. Use it on berry bushes to efficiently gather berries."
+	desc = "A basic berry gatherer tool. Utilize it on berry bushes for efficient berry harvesting."
 	icon = 'icons/obj/flora/berries.dmi'
 	icon_state = "berriesgatherer"
 	force = 2.0
@@ -415,20 +430,20 @@
 	var/input =  WWinput(user, "What design do you want to carve?", "Carving", "Cancel", display)
 	if (input == "Cancel")
 		return
-	else if  (input == "Smooth")
-		user << "<span class='notice'>You will now carve the smooth design!</span>"
+	else if (input == "Smooth")
+		to_chat(user, SPAN_NOTICE("You will now carve the smooth design!"))
 		design = "smooth"
-	else if  (input == "Cave")
-		user << "<span class='notice'>You will now carve the cave design!</span>"
+	else if (input == "Cave")
+		to_chat(user, SPAN_NOTICE("You will now carve the cave design!"))
 		design = "cave"
-	else if  (input == "Brick")
-		user << "<span class='notice'>You will now carve the brick design!</span>"
+	else if (input == "Brick")
+		to_chat(user, SPAN_NOTICE("You will now carve the brick design!"))
 		design = "brick"
-	else if  (input == "Cobbled")
-		user << "<span class='notice'>You will now carve the cobbled design!</span>"
+	else if (input == "Cobbled")
+		to_chat(user, SPAN_NOTICE("You will now carve the cobbled design!"))
 		design = "cobbled"
-	else if  (input == "Tiled")
-		user << "<span class='notice'>You will now carve the tiled design!</span>"
+	else if (input == "Tiled")
+		to_chat(user, SPAN_NOTICE("You will now carve the tiled design!"))
 		design = "tiled"
 
 /obj/item/weapon/chisel/metal
@@ -462,23 +477,23 @@
 			TB = locate(user.x,user.y,user.z+1)
 			for (var/obj/OB in TB)
 				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
-					user << "<span class='notice'>You can't dig up here, there is something blocking the way!</span>"
+					to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
 					return
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
-				user << "<span class='notice'>You can't dig up on that type of floor!</span>"
+				to_chat(user, SPAN_NOTICE("You can't dig up on that type of floor!"))
 				return
 			var/digging_tunnel_time = 400
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				digging_tunnel_time /= H.getStatCoeff("strength")
 				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-			visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='danger'>You start digging up.</span>")
+			user.visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='notice'>You start digging up.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TB.is_diggable)
 					return
 				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
-				visible_message("<span class='danger'>[user] finishes digging up.</span>")
+				user.visible_message("<span class='danger'>[user] finishes digging up!</span>", "<span class='notice'>You finish digging up.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
@@ -486,7 +501,7 @@
 			return
 		if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
 			if (user.z <= 1)
-				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+				to_chat(user, SPAN_NOTICE("You can't dig a tunnel here, the bedrock is right below."))
 				return
 			else
 				var/digging_tunnel_time = 200
@@ -494,7 +509,7 @@
 					var/mob/living/human/H = user
 					digging_tunnel_time /= H.getStatCoeff("strength")
 					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+				user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 				if (do_after(user, digging_tunnel_time, user.loc))
 					if (!TB.is_diggable)
 						return
@@ -503,22 +518,22 @@
 					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
 					if (istype(BL, /turf/floor/dirt/underground))
 						BL.ChangeTurf(/turf/floor/dirt)
-					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+					user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
 					if (ishuman(user))
 						var/mob/living/human/H = user
 						H.adaptStat("crafting", 1)
 						H.adaptStat("strength", 1)
 				return
 		else if (locate(/obj/structure/multiz/) in user.loc)
-			user << "<span class='warning'>There already is something here.</span>"
+			to_chat(user, SPAN_WARNING("There already is something here."))
 			return
 		else if (!TB.is_diggable)
-			user << "<span class='warning'>You cannot dig a hole here!</span>"
+			to_chat(user, SPAN_WARNING("You cannot dig a hole here!"))
 			return
 	else if (input == "Irrigation Channel")
-		visible_message("<span class = 'notice'>[user] starts to dig an irrigation channel.</span>")
-		if (do_after(user, 25,src))
-			visible_message("<span class = 'notice'>[user] makes a irrigation channel.</span>")
+		user.visible_message("<span class='notice'>[user] starts to dig an irrigation channel.</span>", "<span class='notice'>You start to dig an irrigation channel.</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
+		if (do_after(user, 25, src))
+			user.visible_message("<span class='notice'>[user] makes an irrigation channel.</span>", "<span class='notice'>You make an irrigation channel.</span>", "<span class='notice'>You finish and the sounds cease.</span>")
 			TB.irrigate("empty")
 			return
 		return
@@ -529,10 +544,10 @@
 			if (locate(/obj/structure/multiz) in user.loc)
 				user << "<span class='notice'>There is a tunnel entrance here!</span>"
 				return
-			visible_message("[user] starts digging up a grave...","You start digging up a grave...")
+			user.visible_message("[user] starts digging up a grave...", "<span class='notice'>You start digging up a grave...</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 100, src))
-				user << "You finish digging the grave."
+				to_chat(user, SPAN_NOTICE("You finish digging the grave."))
 				new/obj/structure/religious/grave(user.loc)
 				return
 			else
@@ -542,12 +557,12 @@
 			return
 		else
 			if (locate(/obj/structure/multiz) in user.loc)
-				user << "<span class='notice'>There is a tunnel entrance here!</span>"
+				to_chat(user, SPAN_NOTICE("There is a tunnel entrance here!"))
 				return
-			visible_message("[user] starts digging up a pit latrine...","You start digging up a pit latrine...")
+			user.visible_message("[user] starts digging up a pit latrine...", "<span class='notice'>You start digging up a pit latrine...</span>", "<span class='notice'>You hear the sound of dirt being excavated nearby.</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 150, src))
-				user << "You finish digging the pit latrine."
+				to_chat(user, SPAN_NOTICE("You finish digging the pit latrine."))
 				new/obj/structure/toilet/pit_latrine(user.loc)
 				return
 			else
@@ -577,15 +592,15 @@
 			return
 /obj/structure/grapplehook/attack_hand(mob/living/human/user)
 	if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-		user << "<span class = 'danger'>You can't use this yet.</span>"
+		to_chat(user, SPAN_DANGER("You can't use this yet."))
 		return
 	if (!deployed)
 		var/turf/nT = get_step(loc,user.dir)
 		var/turf/nTT = get_step(nT,user.dir)
 		if (!istype(nTT, /turf/floor/beach/water) && !istype(nTT, /turf/floor/broken_floor))
-			user << "<span class='warning'>You cannot deploy in this direction!</span>"
+			to_chat(user, SPAN_WARNING("You cannot deploy in this direction!"))
 			return
-		user << "<span class='notice'>You start deploying the [src]...</span>"
+		to_chat(user, SPAN_NOTICE("You start deploying the [src]..."))
 		if (do_after(user, 80, target = src))
 			dir = user.dir
 			if (dir == SOUTHWEST || dir == SOUTHEAST)
@@ -595,16 +610,16 @@
 			deployed = TRUE
 			deploy()
 			update_icon()
-			user << "<span class='notice'>You deployed the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You deployed the [src]."))
 			return
 	else
-		user << "<span class='notice'>You start packing the [src]...</span>"
+		to_chat(user, SPAN_NOTICE("You start packing the [src]..."))
 		if (do_after(user, 80, target = src))
 			dir = user.dir
 			deployed = FALSE
 			undeploy()
 			update_icon()
-			user << "<span class='notice'>You packed the [src].</span>"
+			to_chat(user, SPAN_NOTICE("You packed the [src]."))
 			return
 
 /obj/structure/grapplehook/update_icon()
@@ -637,13 +652,13 @@
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
-			if((map.ID == MAP_CAMPAIGN || map.ID == MAP_BATTLE_SHIPS) && istype(nT, /turf/floor/broken_floor))
+			if(map.ID == MAP_BATTLE_SHIPS && istype(nT, /turf/floor/broken_floor))
 				var/obj/covers/repairedfloor/rope/end/endpart = new/obj/covers/repairedfloor/rope/end(nT)
 				endpart.develop(src)
 				return
 		var/obj/covers/repairedfloor/rope/part = new/obj/covers/repairedfloor/rope(nT)
 		part.develop(src)
-	visible_message("<span class='warning'>The [src] failed to attach into anything!</span>")
+	visible_message("<span class='warning'>The [src] failed to attach to anything!</span>")
 	src.undeploy()
 	deployed = FALSE
 	update_icon()

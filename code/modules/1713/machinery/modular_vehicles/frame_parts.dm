@@ -109,19 +109,19 @@ var/global/list/vehicle_walls = list( \
 	normal_icon = 'icons/obj/vehicles/tankparts.dmi'
 
 /obj/structure/vehicleparts/frame/l3/lf
-	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
-	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE,TRUE)
 	override_roof_icon = "l3_barrel"
 /obj/structure/vehicleparts/frame/l3/lf/cc
-	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
-	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
+	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE,TRUE)
 	override_roof_icon = "l3cc_barrel"
 /obj/structure/vehicleparts/frame/l3/rf
-	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
-	w_right = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
+	w_right = list("c_wall",FALSE,TRUE,14,14,FALSE,FALSE,TRUE)
 
 /obj/structure/vehicleparts/frame/l3/lc
-	w_front = list("l3_turret",TRUE,TRUE,14,14,FALSE,FALSE)
+	w_front = list("l3_turret",TRUE,TRUE,14,14,FALSE,FALSE,TRUE)
 	w_left = list("c_wall",TRUE,TRUE,14,14,FALSE,FALSE)
 	override_frame_icon = "l3_turret"
 /obj/structure/vehicleparts/frame/l3/rc
@@ -436,6 +436,19 @@ var/global/list/license_plate_numbers = list()
 	centered = TRUE
 /obj/structure/vehicleparts/license_plate/nl/centered/front
 	icon_state = "license_plate_nl"
+	front = TRUE
+	centered = TRUE
+
+/obj/structure/vehicleparts/license_plate/ru_mil
+	icon_state = "license_plate_ru_mil"
+/obj/structure/vehicleparts/license_plate/ru_mil/front
+	icon_state = "license_plate_ru_mil"
+	front = TRUE
+/obj/structure/vehicleparts/license_plate/ru_mil/centered
+	icon_state = "license_plate_ru_mil"
+	centered = TRUE
+/obj/structure/vehicleparts/license_plate/ru_mil/centered/front
+	icon_state = "license_plate_ru_mil"
 	front = TRUE
 	centered = TRUE
 

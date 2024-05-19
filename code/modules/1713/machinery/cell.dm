@@ -138,6 +138,14 @@
 	var/chargelevel = -1
 	var/charge_rate = 20 //This is the power drawn when charging, given in Watts (may need to be adjusted)
 
+/obj/machinery/cell_charger/New()
+	..()
+	processing_objects += src
+
+/obj/machinery/cell_charger/Del()
+	processing_objects -= src
+	..()
+
 /obj/machinery/cell_charger/update_icon()
 	icon_state = "ccharger[charging ? 1 : 0]"
 

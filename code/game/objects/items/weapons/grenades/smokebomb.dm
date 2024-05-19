@@ -116,7 +116,7 @@
 					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-					options["FOB Supply Crate"] = list(/obj/structure/supply_crate/faction1)
+					options["Supply Crate"] = list(/obj/structure/supply_crate/faction1)
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						things_to_spawn = options[choice]
@@ -138,7 +138,7 @@
 					options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-					options["FOB Supply Crate"] = list(/obj/structure/supply_crate/faction2)
+					options["Supply Crate"] = list(/obj/structure/supply_crate/faction2)
 					var/choice = input(user,"What type of supply drop?") as null|anything in options
 					if(src && choice)
 						things_to_spawn = options[choice]
@@ -192,14 +192,14 @@
 						if (AA.faction_text != user.faction_text)
 							anti_air_in_range++
 					if (anti_air_in_range)
-						var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 777)
+						var/sound/sam_sound = sound('sound/effects/aircraft/sa6_sam_site.ogg', repeat = FALSE, wait = FALSE, channel = 780)
 						sam_sound.priority = 250
 						for (var/mob/M in player_list)
 							if (!new_player_mob_list.Find(M))
 								to_chat(M, SPAN_DANGER("<big>A SAM site fires at the [helicopter_name]!</big>"))
 								M.client << sam_sound
 						spawn(5 SECONDS)
-							var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 777)
+							var/sound/uploaded_sound = sound((pick('sound/effects/aircraft/effects/metal1.ogg','sound/effects/aircraft/effects/metal2.ogg')), repeat = FALSE, wait = FALSE, channel = 780)
 							uploaded_sound.priority = 250
 							for (var/mob/M in player_list)
 								if (!new_player_mob_list.Find(M))

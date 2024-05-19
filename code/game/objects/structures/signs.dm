@@ -128,6 +128,11 @@
 	desc = "A sign that says bar on it."
 	icon_state = "barsign"
 
+/obj/structure/sign/cafe_ru
+	name = "CAFE"
+	desc = "A sign that says CAFE on it in cyrillic."
+	icon_state = "cafesign_ru"
+
 /obj/structure/sign/barbershop
 	name = "barbershop"
 	desc = "A swirly object indicating a barbershop."

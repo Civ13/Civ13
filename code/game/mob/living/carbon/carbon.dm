@@ -35,7 +35,7 @@
 	..()
 
 
-/mob/living/human/relaymove(var/mob/living/user, direction)
+/mob/living/human/relaymove(var/mob/living/user, direction) // Devour code, leben left-overs of a non-human mob.
 	if ((user in stomach_contents) && istype(user))
 		if (user.last_special <= world.time)
 			user.last_special = world.time + 50
@@ -78,7 +78,7 @@
 		if (H.hand)
 			temp = H.organs_by_name["l_hand"]
 		if (temp && !temp.is_usable())
-			H << "<span class = 'red'>You can't use your [temp.name].</span>"
+			to_chat(H, SPAN_RED("You can't use your [temp.name]."))
 			return
 
 	return
@@ -120,6 +120,8 @@
 		var/mob/living/human/H = src
 		if (H.using_look())
 			look_into_distance(src, FALSE)
+		if (using_drone)
+			unset_using_drone()
 	return
 
 /mob/living/human/proc/activate_hand(var/selhand) //0 or "r" or "right" for right hand; TRUE or "l" or "left" for left hand.
@@ -143,23 +145,23 @@
 		else if (on_fire)
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 			if (M.on_fire)
-				M.visible_message("<span class='warning'>[M] tries to pat out [src]'s flames, but to no avail!</span>",
-				"<span class='warning'>You try to pat out [src]'s flames, but to no avail! Put yourself out first!</span>")
+				M.visible_message("<span class='warning'>[M] tries to pat out \the [src]'s flames, but to no avail!</span>",
+				"<span class='warning'>You try to pat out \the [src]'s flames, but to no avail! Put yourself out first!</span>")
 			else
-				M.visible_message("<span class='warning'>[M] tries to pat out [src]'s flames!</span>",
-				"<span class='warning'>You try to pat out [src]'s flames! Hot!</span>")
+				M.visible_message("<span class='warning'>[M] tries to pat out \the [src]'s flames!</span>",
+				"<span class='warning'>You try to pat out \the [src]'s flames! Hot!</span>")
 				if (do_mob(M, src, 15))
 					fire_stacks -= 0.5
 					if (prob(10) && (M.fire_stacks <= 0))
 						M.fire_stacks += 1
 					M.IgniteMob()
 					if (M.on_fire)
-						M.visible_message("<span class='danger'>The fire spreads from [src] to [M]!</span>",
+						M.visible_message("<span class='danger'>The fire spreads from \the [src] to \the [M]!</span>",
 						"<span class='danger'>The fire spreads to you as well!</span>")
 					else
 						fire_stacks -= 0.5 //Less effective than stop, drop, and roll - also accounting for the fact that it takes half as long.
 						if (fire_stacks <= 0)
-							M.visible_message("<span class='warning'>[M] successfully pats out [src]'s flames.</span>",
+							M.visible_message("<span class='warning'>[M] successfully pats out \the [src]'s flames.</span>",
 							"<span class='warning'>You successfully pat out [src]'s flames.</span>")
 							ExtinguishMob()
 							fire_stacks = FALSE
@@ -177,21 +179,21 @@
 			var/mob/living/human/H = src
 			if (istype(H)) show_ssd = H.species.show_ssd
 			if (show_ssd && !client && !teleop)
-				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
-									"<span class='notice'>You shake [src], but they do not respond... Maybe they have shell shock?</span>")
+				M.visible_message("<span class='notice'>[M] shakes \the [src] trying to wake [t_him] up!</span>", \
+									"<span class='notice'>You shake \the [src], but they do not respond... Maybe they have shell shock?</span>")
 			else if (lying || sleeping)
 				sleeping = max(0,sleeping-5)
 				if (!sleeping)
 					resting = 0
-				M.visible_message("<span class='notice'>[M] shakes [src] trying to wake [t_him] up!</span>", \
-									"<span class='notice'>You shake [src] trying to wake [t_him] up!</span>")
+				M.visible_message("<span class='notice'>[M] shakes \the [src] trying to wake [t_him] up!</span>", \
+									"<span class='notice'>You shake \the [src] trying to wake [t_him] up!</span>")
 			else
 				var/mob/living/human/hugger = M
 				if (istype(hugger))
 					hugger.species.hug(hugger,src)
 				else
-					M.visible_message("<span class='notice'>[M] hugs [src] to make [t_him] feel better!</span>", \
-								"<span class='notice'>You hug [src] to make [t_him] feel better!</span>")
+					M.visible_message("<span class='notice'>[M] hugs \the [src] to make [t_him] feel better!</span>", \
+								"<span class='notice'>You hug \the [src] to make [t_him] feel better!</span>")
 				if (M.fire_stacks >= (fire_stacks + 3))
 					fire_stacks += 1
 					M.fire_stacks -= 1
@@ -265,7 +267,7 @@
 					else if (map && !map.faction2_can_cross_blocks() && H.faction_text == map.faction2)
 						nothrow = TRUE
 					if (nothrow)
-						src << "<span class = 'danger'>You can't throw a molotov yet.</span>"
+						to_chat(src, SPAN_DANGER("You can't throw a molotov yet."))
 						return
 
 	if (istype(item, /obj/item/weapon/grab))
@@ -306,12 +308,12 @@
 		throwtime_divider *= 0.5 + H.getStat("throwing")/100
 	//actually throw it!
 
-	visible_message("<span class = 'warning'>[src] prepares to throw \the [item]!</span>")
+	src.visible_message(SPAN_WARNING("[src] prepares to throw \the [item]!"), SPAN_WARNING("You prepare to throw \the [item]!"))
 	if (item && do_after(src, max(1, round(abs_dist(src, target)/throwtime_divider)), get_turf(src)))
 		playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
 		remove_from_mob(item)
 		item.loc = loc
-		visible_message("<span class = 'warning'>[src] throws \the [item]!</span>")
+		src.visible_message(SPAN_WARNING("[src] throws \the [item]!"), SPAN_WARNING("You throw \the [item]!"))
 		if (istype(item, /obj/item/ammo_casing))
 			var/obj/item/ammo_casing/NI = item
 			NI.randomrotation()

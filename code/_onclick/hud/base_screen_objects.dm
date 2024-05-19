@@ -495,6 +495,38 @@
 		icon_state = "hand[slot_id==slot_l_hand ? "-l" : "-r"]"
 //--------------------------------------------------inventory end---------------------------------------------------------
 
+/obj/screen/aiming_cross
+	name = "aim"
+	icon = 'icons/mob/screen/aiming_cross.dmi'
+	icon_state = "cross3"
+	screen_loc = "7,7"
+	process_flag = TRUE
+	mouse_opacity = 0
+
+/obj/screen/aiming_cross/New()
+	..()
+	update()
+
+/obj/screen/aiming_cross/update_icon()
+	..()
+
+	if(!usr || !usr.client)
+		return
+	if(!istype(usr.get_active_hand(), /obj/item/weapon/gun))
+		alpha = 0
+		return
+	alpha = 255
+
+	icon_state = "cross[clamp(round(usr.get_active_hand().get_dispersion_range(usr), 3), 3, 30)]"
+
+	screen_loc = "[usr.client.mouse_screen_x]:[usr.client.mouse_screen_pixel_x - 16],[usr.client.mouse_screen_y]:[usr.client.mouse_screen_pixel_y - 16]"
+
+/obj/screen/aiming_cross/proc/update()
+	update_icon()
+	spawn(0.2)
+		update()
+	return
+
 //--------------------------------------------------health---------------------------------------------------------
 /obj/screen/health
 	name = "health"
@@ -684,7 +716,7 @@
 	name = "drop"
 
 	icon_state = "act_drop"
-	screen_loc = "15:-16,2"
+	screen_loc = "EAST:-16,2"
 
 /obj/screen/drop/Click()
 	if (usr.client)
@@ -759,7 +791,7 @@
 				return
 
 
-obj/screen/tactic
+/obj/screen/tactic
 	name = "tactic"
 
 	icon_state = "charge"
@@ -813,7 +845,7 @@ obj/screen/tactic
 	name = "mood"
 
 	icon_state = "mood1"
-	screen_loc = "15,8"
+	screen_loc = "EAST-1:28,5:11"
 	process_flag = TRUE
 /obj/screen/mood/Click()
 	if (ishuman(parentmob))
@@ -1124,7 +1156,8 @@ obj/screen/tactic
 	name = "full_1_tile_overlay"
 	icon_state = "blank"
 	layer = 21
-	mouse_opacity = TRUE
+	mouse_opacity = FALSE
+
 /obj/screen/full_1_tile_overlay/process()
 	update_icon()
 	return
@@ -1138,7 +1171,6 @@ obj/screen/tactic
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
 	var/global/image/blind_icon = image('icons/mob/screen1_full.dmi', "blackimageoverlay")
-
 
 /obj/screen/damageoverlay/process()
 	update_icon()
@@ -1241,7 +1273,7 @@ obj/screen/tactic
 ////////////Screen effects/////////////////////////
 /obj/screen/noise
 	icon = 'icons/effects/static.dmi'
-	icon_state = "1 moderate"
+	icon_state = "1 light"
 	screen_loc = "WEST,SOUTH to EAST,NORTH"
 	layer = 17
 	alpha = 127
@@ -1347,7 +1379,6 @@ obj/screen/tactic
 	else
 		icon_state = "no_items1"
 //			owner.item_use_icon.name = "Disallow Item Use"
-
 //-----------------------Gun Mod End------------------------------
 
 //-----------------------toggle_inventory------------------------------

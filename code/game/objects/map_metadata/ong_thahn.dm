@@ -1,7 +1,7 @@
 /obj/map_metadata/ong_thahn
 	ID = MAP_ONG_THAHN
 	title = "Battle of Ong Thahn"
-	lobby_icon = "icons/lobby/vietnam.png"
+	lobby_icon = 'icons/lobby/vietnam.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle/one, /area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/jungle/three)
 	victory_time = 24000
 	no_winner = "The FOB is still held by the US Army."
@@ -25,7 +25,7 @@
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
+		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 3
 	grace_wall_timer = 3600
 	gamemode = "Siege"
@@ -144,7 +144,7 @@ var/spam_check3 = FALSE
 			spam_check3 = TRUE
 			world << "<big><font color='red'>The NVA has captured BOTH outposts! <br>The US Army retreats back to their FOB!</font></big>"
 			viet_supplies()
-	spawn(600)
+	spawn(600) // 1 minute
 		outpost_check()
 
 /obj/map_metadata/ong_thahn/proc/outpost_status()

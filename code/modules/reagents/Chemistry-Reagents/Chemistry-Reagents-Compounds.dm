@@ -50,6 +50,7 @@
 /datum/reagent/gasoline/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))
 		L.adjust_fire_stacks(amount / 2)
+
 /datum/reagent/ammonia
 	name = "Ammonia"
 	id = "ammonia"
@@ -141,14 +142,14 @@
 	if (istype(O, /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/paperaffected = O
 		paperaffected.clearpaper()
-		usr << "The solution dissolves the ink on the paper."
+		to_chat(usr, SPAN_NOTICE("The solution dissolves the ink on the paper."))
 		return
 	if (istype(O, /obj/item/weapon/book))
 		if (volume < 5)
 			return
 		var/obj/item/weapon/book/affectedbook = O
 		affectedbook.dat = null
-		usr << "<span class='notice'>The solution dissolves the ink on the book.</span>"
+		to_chat(usr, SPAN_NOTICE("The solution dissolves the ink on the book."))
 	return
 
 /datum/reagent/hydrazine
@@ -215,7 +216,6 @@
 		if (removed <= 0)
 			return
 
-
 		if (removed <= 0)
 			return
 
@@ -234,7 +234,8 @@
 		qdel(O)
 		remove_self(meltdose) // 10 units of acid will not melt EVERYTHING on the tile
 
-/datum/reagent/acid/hydrochloric //Like sulfuric, but less toxic and more acidic.
+//Like sulfuric acid, but less toxic and more acidic.
+/datum/reagent/acid/hydrochloric
 	name = "Hydrochloric Acid"
 	id = "hclacid"
 	description = "A very corrosive mineral acid with the molecular formula HCl."
@@ -243,6 +244,7 @@
 	color = "#808080"
 	power = 3
 	meltdose = 8
+
 /datum/reagent/acid/hydrogen_chloride
 	name = "Hydrogen Chloride"
 	id = "hydrogen_chloride"
@@ -252,6 +254,7 @@
 	color = "#808080"
 	power = 1
 	meltdose = 30
+
 /datum/reagent/sodium
 	name = "Sodium"
 	id = "sodium"
@@ -276,11 +279,12 @@
 /datum/reagent/cocaine
 	name = "Cocaine"
 	id = "cocaine"
-	description = "A recreational drug made from coca leaves,tastes great."
+	description = "A recreational drug made from coca leaves, tastes bitter and metallic."
 	taste_description = "very powdery and sweet"
 	reagent_state = SOLID
 	color = "#FFFFFF"
 
+// Extracted from Blood w/ Centrifuge
 /datum/reagent/bloodplasma
 	name = "Blood Plasma"
 	id = "blood_plasma"
@@ -289,6 +293,7 @@
 	reagent_state = LIQUID
 	color = "#FCEA94"
 
+// Extracted from Blood w/ Centrifuge
 /datum/reagent/red_blood_cells
 	name = "Red Blood Cells"
 	id = "red_blood_cells"
@@ -297,6 +302,7 @@
 	reagent_state = LIQUID
 	color = "#C80000"
 
+// Extracted from Blood w/ Centrifuge
 /datum/reagent/white_blood_cells
 	name = "White Blood Cells"
 	id = "white_blood_cells"

@@ -1,6 +1,6 @@
 /var/list/all_ui_styles = list(
 	"1713Style",
-	"NewStyle",
+//	"NewStyle",
 	"LiteWebStyle",
 	"FoFStyle",
 	)
@@ -11,7 +11,7 @@
 	set desc = "Configure your user interface."
 
 	if (!ishuman(usr))
-		usr << "<span class='warning'>You must be human to use this verb.</span>"
+		to_chat(usr, SPAN_WARNING("You must be human to use this verb."))
 		return
 	var/UI_style_new = prefs.UI_style
 	if (all_ui_styles.len > 2)

@@ -1,7 +1,7 @@
 /obj/map_metadata/holdmadrid
 	ID = MAP_HOLDMADRID
 	title = "Siege of Madrid"
-	lobby_icon = "icons/lobby/madrid.png"
+	lobby_icon = 'icons/lobby/madrid.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner ="The Radio stays under Republican control."
@@ -24,7 +24,7 @@
 	grace_wall_timer = 3000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Banda Bassotti - Luna rossa:1" = "sound/music/lunarossa.ogg",)
+		"Banda Bassotti - Luna rossa:1" = 'sound/music/lunarossa.ogg',)
 	gamemode = "Siege"
 
 obj/map_metadata/holdmadrid/job_enabled_specialcheck(var/datum/job/J)

@@ -137,6 +137,18 @@
 	else
 		color = rgb(255,255,255,255)
 
+// A crutch from the buttons that is not visible
+	var/alpha_old = alpha
+	var/mouse_opacity_old = mouse_opacity
+	if(!icon_state)
+		alpha = 0
+		mouse_opacity = 0
+	else
+		alpha = alpha_old
+		mouse_opacity = mouse_opacity_old
+	alpha_old = null
+	mouse_opacity_old = null
+
 //Hide/Show Action Buttons ... Button
 /obj/screen/movable/action_button/hide_toggle
 	name = "Hide Buttons"

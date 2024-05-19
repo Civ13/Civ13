@@ -1,11 +1,12 @@
 /obj/map_metadata/oasis
 	ID = MAP_OASIS
 	title = "Trouble at the Oasis"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	victory_time = 15000
 	no_winner = "No faction controls the Oasis."
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		FRENCH,
@@ -19,7 +20,7 @@
 	ordinal_age = 2
 	faction_distribution_coeffs = list(FRENCH = 0.5, ARAB = 0.5)
 	songs = list(
-		"Crusaders:1" = "sound/music/crusaders.ogg")
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	battle_name = "Trouble at the Oasis"
 	mission_start_message = "<font size=4>The <b>Crusader</b> and <b>Arabic Caliphate</b> armies have found each other by chance in the desert as they searched for a water source. Each group is thirsty and seeking to secure the valuable Oasis for themselves. Whichever army manages to hold onto the shores of the Oasis for 5 minutes will capture it. Grace wall will end in 4 minutes."
 	faction1 = FRENCH

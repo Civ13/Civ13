@@ -13,7 +13,7 @@
 	desc = "It's a normal black ink pen."
 	name = "pen"
 	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "pen"
+	icon_state = "pen" // feather
 	item_state = "pen"
 	slot_flags = SLOT_BELT | SLOT_EARS
 	throwforce = FALSE
@@ -21,16 +21,17 @@
 	throw_speed = 7
 	throw_range = 15
 
-	var/colour = "black"	//what colour the ink is!
+	var/colour = COLOR_BLACK	//what colour the ink is!
 
 /obj/item/weapon/pen/New()
 	..()
-	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
-		icon_state = "pennew"
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil || /obj/item/weapon/pen/crayon))
+		icon_state = "pennew" // from feather to modern black-point plastic pen.
+
 /obj/item/weapon/pen/update_icon()
 	..()
-	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil))
-		icon_state = "pennew"
+	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil || /obj/item/weapon/pen/crayon))
+		icon_state = "pennew" // from feather to modern black-point plastic pen.
 
 /obj/item/weapon/pen/pencil
 	name = "pencil"
@@ -45,46 +46,50 @@
 /obj/item/weapon/pen/blue
 	desc = "It's a normal blue ink pen."
 	icon_state = "pen"
-	colour = "blue"
+	colour = COLOR_BLUE
 
 /obj/item/weapon/pen/red
 	desc = "It's a normal red ink pen."
 	icon_state = "pen"
-	colour = "red"
+	colour = COLOR_RED
 
 /obj/item/weapon/pen/multi
 	desc = "It's a pen with multiple colors of ink!"
-	var/selectedColor = TRUE
+	var/selectedColor = 1 // starts off with the color "black", index 1
 	var/colors = list("black","blue","red")
 
 /obj/item/weapon/pen/multi/attack_self(mob/user)
 	if (++selectedColor > 3)
-		selectedColor = TRUE
+		selectedColor = 1 // going 1-2-3-1 through the list "colors"
 
 	colour = colors[selectedColor]
 
+// These icon states do not exist.
+/*
 	if (colour == "black")
 		icon_state = "pen"
 	else
 		icon_state = "pen_[colour]"
+*/
 
-	to_chat(user, SPAN_NOTICE("Changed color to '[colour]"))
+	to_chat(user, SPAN_NOTICE("\The [src] will now write in [colour] ink."))
 
 /obj/item/weapon/pen/invisible
 	desc = "It's an invisble pen marker."
 	icon_state = "pen"
-	colour = "white"
+	colour = COLOR_WHITE
 
-
-/obj/item/weapon/pen/attack(mob/M as mob, mob/user as mob)
-	if (!ismob(M))
+// parent proc only continues if this pen has force, no special 'stab' attack only attacked like a blunt object, TODO this to properly stab; but I'm just gonna comment this out fully.
+/*
+/obj/item/weapon/pen/attack(mob/target as mob, mob/user as mob)
+	if (!ismob(target))
 		return
-	to_chat(user, SPAN_WARNING("You stab [M] with the pen."))
-//	M << "<span class = 'red'>You feel a tiny prick!</span>" //That's a whole lot of meta!
-	M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been stabbed with [name]  by [user.name] ([user.ckey])</font>")
-	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Used the [name] to stab [M.name] ([M.ckey])</font>")
-	msg_admin_attack("[user.name] ([user.ckey]) Used the [name] to stab [M.name] ([M.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, M.ckey)
-	return
+	// user.visible_message(SPAN_DANGER("[user] stabs [target] with \the [src]"), SPAN_DANGER("You stab [target] with \the [src]."))
+	//	M << "<span class = 'red'>You feel a tiny prick!</span>" //That's a whole lot of meta!
+	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been stabbed with [name]  by [user.name] ([user.ckey])</font>")
+	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Used the [name] to stab [target.name] ([target.ckey])</font>")
+	msg_admin_attack("[user.name] ([user.ckey]) Used the [name] to stab [target.name] ([target.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, target.ckey)
+*/
 
 /*
  * Reagent pens
@@ -105,7 +110,7 @@
 
 	. = ..()
 
-	if (M.can_inject(user,1))
+	if (M.can_inject(user,1)) // alerts "There is no exposed flesh or thin material on their [x] to inject into." if false.
 		if (reagents.total_volume)
 			if (M.reagents)
 				var/contained_reagents = reagents.get_reagents()
@@ -116,7 +121,7 @@
  * Sleepy Pens
  */
 /obj/item/weapon/pen/reagent/sleepy
-	desc = "It's a black ink pen with a sharp point and a carefully engraved \"Waffle Co.\""
+	desc = "It's a black ink pen with a sharp point."
 
 /obj/item/weapon/pen/reagent/sleepy/New()
 	..()
@@ -124,14 +129,14 @@
 
 
 /*
- * Parapens
+ * Parapen
  */
 /obj/item/weapon/pen/reagent/paralysis
 
-/obj/item/weapon/pen/reagent/paralysis/New()
-	..()
-	reagents.add_reagent("zombiepowder", 10)
-	reagents.add_reagent("cryptobiolin", 15)
+	New()
+		..()
+		reagents.add_reagent("zombiepowder", 10)
+		reagents.add_reagent("cryptobiolin", 15)
 
 /*
  * Chameleon pen
@@ -186,7 +191,7 @@
 				colour = COLOR_WHITE
 			else
 				colour = COLOR_BLACK
-		usr << "<span class='info'>You select the [lowertext(selected_type)] ink container.</span>"
+		to_chat(usr, SPAN_NOTICE("\The [src] will now write in [lowertext(selected_type)] ink."))
 
 
 /*

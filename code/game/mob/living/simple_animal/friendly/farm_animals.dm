@@ -367,7 +367,7 @@
 	icon_living = "pig_boar"
 	icon_dead = "pig_boar_dead"
 	speak = list("OINK!","SQWEEEL!")
-	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	emote_see = list("rolls on the ground", "lays with its belly up", "snorts")
 	speak_chance = 1
 	move_to_delay = 5
 	see_in_dark = 6
@@ -399,7 +399,7 @@
 	icon_living = "pig_gilt"
 	icon_dead = "pig_gilt_dead"
 	speak = list("OINK!","SQWEEEL!")
-	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	emote_see = list("rolls on the ground", "lays with its belly up", "snorts")
 	speak_chance = 1
 	move_to_delay = 5
 	see_in_dark = 6
@@ -537,12 +537,12 @@
 
 /mob/living/simple_animal/boar_boar
 	name = "boar"
-	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small, wooly mammal with a stocky body, long snout, and small eyes. They are a member of the Suidae family."
 	icon_state = "boar_boar"
 	icon_living = "boar_boar"
 	icon_dead = "boar_dead"
 	speak = list("Gweeeeiiirrr!","Ghhhhhhh!","Oeerrrrhhh!")
-	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	emote_see = list("rolls on the ground", "lays with its belly up", "snorts")
 	speak_chance = 1
 	move_to_delay = 5
 	see_in_dark = 6
@@ -571,12 +571,12 @@
 
 /mob/living/simple_animal/boar_gilt
 	name = "boar gilt"
-	desc = "A small Wooly Mammal, with a stocky Body, Long snout and small eyes they are a member of the Suidae Family."
+	desc = "A small, wooly mammal with a stocky body, long snout, and small eyes. They are a member of the Suidae family."
 	icon_state = "boar_gilt"
 	icon_living = "boar_gilt"
 	icon_dead = "boar_dead"
 	speak = list("Gweeeeiiirrr!","Ghhhhhhh!","Oeerrrrhhh!")
-	emote_see = list("rolls on the ground", "lays with it's belly up", "snorts")
+	emote_see = list("rolls on the ground", "lays with its belly up", "snorts")
 	speak_chance = 1
 	move_to_delay = 5
 	see_in_dark = 6

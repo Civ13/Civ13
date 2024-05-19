@@ -1,7 +1,7 @@
 /obj/map_metadata/eft_factory
 	ID = MAP_EFT_FACTORY
 	title = "Factory"
-	lobby_icon = "icons/lobby/battleroyale.png"
+	lobby_icon = 'icons/lobby/battleroyale.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 3000
 
@@ -27,11 +27,10 @@
 	gamemode = "Firefight"
 	valid_weather_types = list(WEATHER_NONE)
 	songs = list(
-		"Тоска - Molchat Doma:1" = "sound/music/toska.ogg",)
+		"Тоска - Molchat Doma:1" = 'sound/music/toska.ogg',)
 
 /obj/map_metadata/eft_factory/New()
 	..()
-	//extract()
 	show_extractees()
 
 
@@ -106,41 +105,35 @@
 
 /obj/map_metadata/eft_factory/proc/show_extractees()
 	if (extractees.len)
-		world << "<big><b>Extracted:</b></big>"
-		world << "<big>[jointext(extractees,"\n")]</big>"
+		to_chat(world, "<big><b>Extracted:</b></big>")
+		to_chat(world, "<big>[jointext(extractees[1],"\n")]</big>")
 	spawn(1 MINUTE)
 	show_extractees()
 
 /area/caribbean/extract/Entered(var/atom/movable/A)
 	var/obj/map_metadata/eft_factory/MEFT = map
-	if(!istype(A,/mob/living/human)) return
+	if (!istype(A, /mob/living/human))	return
 
 	var/mob/living/human/H = A
-	if(!H.ckey)	return
-	if(H.stat != DEAD)
-		H << SPAN("b","Extracting, wait 10 seconds.")
-		if(do_after(H,10 SECONDS,H,FALSE,can_move = FALSE))
-			if(H.stat != DEAD)
-				MEFT.extractees += "[H.ckey]"
-				world << "[H.ckey] has extracted!"
-				H.ghostize()
-				qdel(H)
-				return
-			return
-		else
-			H << SPAN("b","You have moved, extraction failed.")
-			return
-/*
-/datum/extract/proc/check(var/list/areas, var/list/extractess)
-	for (var/mob/living/human/H in get_area_turfs(/area/caribbean/supply))
-		if (H && H.original_job && H.client && H.stat == CONSCIOUS && !H.restrained() && !iscloset(H.loc))
-			var/area/H_area = get_area(H)
-			if (H_area && area_check(H_area, areas))
-				spawn(100)
-				if(H.stat != DEAD)
-					extractees += H.ckey += ";"
+	if (!H.ckey)	return
+	if (H.stat != DEAD)
+		to_chat(H, "<big><font color='green'>Extracting, wait 10 seconds.</font></big>")
+		if (do_after(H, 10 SECONDS, H, FALSE, can_move = TRUE))
+			if (istype(get_area(H), /area/caribbean/extract))
+				if (H.stat != DEAD)
+					var/extracted_value = 0
+					for (var/obj/item/I in H.contents)
+						extracted_value += I.value
+					MEFT.extractees += list("[H.ckey]", extracted_value)
+					to_chat(world, "<big><font color='green'>[H.ckey] has extracted!</font></big>")
+					H.ghostize()
 					qdel(H)
-*/
+					return
+			else
+				to_chat(H, SPAN_DANGER("Extraction failed - Left extraction zone."))
+				return
+	return
+
 /area/caribbean/extract
 	name = "extract"
 	icon_state = "green1"

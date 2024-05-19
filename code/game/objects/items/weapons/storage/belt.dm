@@ -114,7 +114,7 @@
 	new /obj/item/weapon/weldingtool(src)
 	new /obj/item/weapon/wirecutters/boltcutters(src)
 	new /obj/item/weapon/hammer(src)
-	new /obj/item/weapon/material/shovel(src)
+	new /obj/item/weapon/material/hatchet/steel()
 	new /obj/item/weapon/material/shovel/trench(src)
 
 /obj/item/weapon/storage/belt/utility/full/New()

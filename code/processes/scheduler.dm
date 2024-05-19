@@ -41,12 +41,12 @@
 
 /process/scheduler/proc/schedule(var/datum/scheduled_task/st)
 	scheduled_tasks += st
-	destroyed_event.register(st, src, /process/scheduler/proc/unschedule)
+	GLOB.destroyed_event.register(st, src, TYPE_PROC_REF(/process/scheduler, unschedule))
 
 /process/scheduler/proc/unschedule(var/datum/scheduled_task/st)
 	if (st in scheduled_tasks)
 		scheduled_tasks -= st
-		destroyed_event.unregister(st, src)
+		GLOB.destroyed_event.unregister(st, src)
 
 /**********
 * Helpers *
@@ -58,22 +58,22 @@
 	return schedule_task_with_source(world.time + in_time, source, procedure, arguments)
 
 /proc/schedule_task(var/trigger_time, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, /proc/destroy_scheduled_task, list())
+	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, GLOBAL_PROC_REF(destroy_scheduled_task), list())
 	processes.scheduler.schedule(st)
 	return st
 
 /proc/schedule_task_with_source(var/trigger_time, var/source, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, /proc/destroy_scheduled_task, list())
+	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, GLOBAL_PROC_REF(destroy_scheduled_task), list())
 	processes.scheduler.schedule(st)
 	return st
 
 /proc/schedule_repeating_task(var/trigger_time, var/repeat_interval, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, /proc/repeat_scheduled_task, list(repeat_interval))
+	var/datum/scheduled_task/st = new/datum/scheduled_task(trigger_time, procedure, arguments, GLOBAL_PROC_REF(repeat_scheduled_task), list(repeat_interval))
 	processes.scheduler.schedule(st)
 	return st
 
 /proc/schedule_repeating_task_with_source(var/trigger_time, var/repeat_interval, var/source, var/procedure, var/list/arguments)
-	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, /proc/repeat_scheduled_task, list(repeat_interval))
+	var/datum/scheduled_task/st = new/datum/scheduled_task/source(trigger_time, source, procedure, arguments, GLOBAL_PROC_REF(repeat_scheduled_task), list(repeat_interval))
 	processes.scheduler.schedule(st)
 	return st
 
@@ -104,7 +104,7 @@
 	return ..()
 
 /datum/scheduled_task/proc/pre_process()
-	task_triggered_event.raise_event(src)
+	GLOB.task_triggered_event.raise_event(src)
 
 /datum/scheduled_task/proc/process()
 	if (procedure)
@@ -122,7 +122,7 @@
 
 /datum/scheduled_task/source/New(var/trigger_time, var/datum/_source, var/procedure, var/list/arguments, var/proc/task_after_process, var/list/task_after_process_args)
 	source = _source
-	destroyed_event.register(source, src, /datum/scheduled_task/source/proc/source_destroyed)
+	GLOB.destroyed_event.register(source, src, /datum/scheduled_task/source/proc/source_destroyed)
 	..(trigger_time, procedure, arguments, task_after_process, task_after_process_args)
 
 /datum/scheduled_task/source/Destroy()

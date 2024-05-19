@@ -1,7 +1,7 @@
 /obj/map_metadata/karelia
 	ID = MAP_KARELIA
 	title = "Karelia"
-	lobby_icon = "icons/lobby/karelia.png"
+	lobby_icon = 'icons/lobby/karelia.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -22,7 +22,7 @@
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	grace_wall_timer = 3600
 	songs = list(
-		"Red Army Choir - Katyusha:1" = "sound/music/katyusha.ogg",)
+		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg',)
 
 /obj/map_metadata/karelia/job_enabled_specialcheck(var/datum/job/J)
 	..()

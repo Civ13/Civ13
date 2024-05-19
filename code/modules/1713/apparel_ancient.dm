@@ -400,6 +400,7 @@
 /obj/item/clothing/head/helmet/roman
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -452,7 +453,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHAIR
 	armor = list(melee = 65, arrow = 50, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-	restricts_view = 2
+	restricts_view = 1
 	health = 55
 	slowdown = 0.25
 
@@ -639,6 +640,7 @@
 /obj/item/clothing/head/helmet/roman/nomads
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
+	icon_override = 'code/modules/1713/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"

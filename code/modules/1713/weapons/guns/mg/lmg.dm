@@ -2,60 +2,16 @@
 /obj/item/weapon/gun/projectile/automatic
 	gtype = "mg"
 	icon = 'icons/obj/guns/mgs.dmi'
-	force = 20
+	force = 15
 	throwforce = 30
-	nothrow = TRUE
-	var/base_icon = "automatic"
+	base_icon = "automatic"
 	equiptimer = 28
 	load_delay = 12
 	gun_safety = TRUE
 	slowdown = 0.5
 
-	// not accurate at all
-	accuracy_list = list(
-
-		// small body parts: head, hand, feet
-		"small" = list(
-			SHORT_RANGE_STILL = 30,
-			SHORT_RANGE_MOVING = 27,
-
-			MEDIUM_RANGE_STILL = 21,
-			MEDIUM_RANGE_MOVING = 19,
-
-			LONG_RANGE_STILL = 11,
-			LONG_RANGE_MOVING = 10,
-
-			VERY_LONG_RANGE_STILL = 8,
-			VERY_LONG_RANGE_MOVING = 7),
-
-		// medium body parts: limbs
-		"medium" = list(
-			SHORT_RANGE_STILL = 38,
-			SHORT_RANGE_MOVING = 34,
-
-			MEDIUM_RANGE_STILL = 30,
-			MEDIUM_RANGE_MOVING = 27,
-
-			LONG_RANGE_STILL = 23,
-			LONG_RANGE_MOVING = 21,
-
-			VERY_LONG_RANGE_STILL = 11,
-			VERY_LONG_RANGE_MOVING = 10),
-
-		// large body parts: chest, groin
-		"large" = list(
-			SHORT_RANGE_STILL = 78,
-			SHORT_RANGE_MOVING = 66,
-
-			MEDIUM_RANGE_STILL = 55,
-			MEDIUM_RANGE_MOVING = 45,
-
-			LONG_RANGE_STILL = 33,
-			LONG_RANGE_MOVING = 30,
-
-			VERY_LONG_RANGE_STILL = 19,
-			VERY_LONG_RANGE_MOVING = 15),
-	)
+	accuracy = 3
+	recoil = 50
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 2.00
@@ -67,21 +23,37 @@
 	slot_flags = SLOT_SHOULDER
 	sel_mode = 1
 	full_auto = TRUE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS
+	attachment_slots = ATTACH_BARREL|ATTACH_IRONSIGHTS
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=0.8, move_delay=8, dispersion = list(0.7, 1.1, 1.1, 1.1, 1.2), recoil = 0))
-
+		list(name = "automatic", burst=1, burst_delay=0.8),
+	)
 	var/jammed_until = -1
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/automatic/update_icon()
-	if (ammo_magazine)
-		icon_state = base_icon
-	else
-		icon_state = "[base_icon]_open"
-	update_held_icon()
-	return
+	var/obj/structure/bed/chair/mgunner/mount = null
+
+	can_tactical_reload = TRUE
+
+/obj/item/weapon/gun/projectile/automatic/Fire(atom/target, mob/living/user, clickparams=null, pointblank=0, reflex=0, forceburst = -1, force = FALSE, accuracy_mod = 1)
+	if (mount)
+		var/turf/firing_turf = get_turf(mount)
+		var/turf/target_turf = get_turf(target)
+		var/dx = target_turf.x - firing_turf.x
+		var/dy = target_turf.y - firing_turf.y
+		var/shot_angle = Atan2(dx, dy)
+		if (shot_angle < 0)
+			shot_angle = 180 + (180 - abs(shot_angle))
+		var/shot_dir = EAST
+		if(shot_angle >= 45 && shot_angle < 135)
+			shot_dir = NORTH
+		else if(shot_angle >= 135 && shot_angle < 225)
+			shot_dir = WEST
+		else if(shot_angle >= 225 && shot_angle < 315)
+			shot_dir = SOUTH
+		if(mount.dir != shot_dir)
+			return
+	..()
 
 /obj/item/weapon/gun/projectile/automatic/special_check(mob/user)
 	if (gun_safety && safetyon)
@@ -118,10 +90,12 @@
 	caliber = "a762x54"
 	magazine_type = /obj/item/ammo_magazine/madsen
 	good_mags = list(/obj/item/ammo_magazine/madsen)
-	ammo_type = /obj/item/ammo_casing/a762x54
-	weight = 10.4
-	effectiveness_mod = 1.01
+	weight = 9.12
+	force = 20
+	throwforce = 30
 	slot_flags = SLOT_SHOULDER
+	recoil = 40
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/type99
 	name = "Type 99 light machinegun"
@@ -131,14 +105,34 @@
 	base_icon = "type99lmg"
 	caliber = "a77x58"
 	magazine_type = /obj/item/ammo_magazine/type99
-	good_mags = list(/obj/item/ammo_magazine/type99, /obj/item/ammo_magazine/type92)
-	ammo_type = /obj/item/ammo_casing/a77x58
+	good_mags = list(/obj/item/ammo_magazine/type99)
 	weight = 9.12
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	force = 20
+	throwforce = 30
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
-	effectiveness_mod = 1.00
-	has_telescopic = TRUE
+	scope_mounts = list("type99_cronstein")
+//	has_telescopic = TRUE
 	slot_flags = SLOT_SHOULDER
+/obj/item/weapon/gun/projectile/automatic/type99/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/type99/type97tank
+	name = "Type 97 tank machinegun"
+	desc = "The Type 97 tank machine Gun, is a Japanese machine gun based on the ZB26 designed specifically for tank use."
+	scope_mounts = list("type97_tank")
+	magazine_type = /obj/item/ammo_magazine/type99/type97
+	good_mags = list(/obj/item/ammo_magazine/type99/type97)
+	icon_state = "type97lmg"
+	item_state = "type99lmg"
+	base_icon = "type97lmg"
+
+/obj/item/weapon/gun/projectile/automatic/type99/type97tank/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type97tank(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/type96
 	name = "Type 96 light machinegun"
@@ -151,13 +145,18 @@
 	good_mags = list(/obj/item/ammo_magazine/type96)
 	ammo_type = /obj/item/ammo_casing/a65x50
 	weight = 9.0
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	slowdown = 0.2
-	effectiveness_mod = 1.13
-	has_telescopic = TRUE
+//	has_telescopic = TRUE
+	scope_mounts = list("type99_cronstein")
 	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name = "automatic",	burst=1, burst_delay=0.4, move_delay=4, dispersion = list(0.2, 0.1, 0.4, 0.6, 0.2), recoil = 0))
+
+/obj/item/weapon/gun/projectile/automatic/type96/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/type99/type96(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/dp28
 	name = "DP-28"
@@ -168,13 +167,71 @@
 	caliber = "a762x54_weak"
 	fire_sound = 'sound/weapons/guns/fire/DP28.ogg'
 	magazine_type = /obj/item/ammo_magazine/dp
-	good_mags = list(/obj/item/ammo_magazine/dp)
-	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	good_mags = list(/obj/item/ammo_magazine/dp, /obj/item/ammo_magazine/dp/dt)
 	slot_flags = SLOT_SHOULDER
-	weight = 10
-	effectiveness_mod = 1.05
+	weight = 9.12
+	force = 20
+	throwforce = 30
 	bad_magazine_types = list(/obj/item/ammo_magazine/maxim)
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
+	recoil = 40
+	accuracy = 3
+	var/folded = FALSE
 
+/obj/item/weapon/gun/projectile/automatic/dp28/dt28
+	name = "DT-28"
+	desc = "The DT-28 light machinegun. Designed to be places in vehicles. This one is in 7.62x54mmR."
+	icon_state = "dt"
+	item_state = "dt"
+	base_icon = "dt"
+
+/obj/item/weapon/gun/projectile/automatic/dp28/dt28/update_icon()
+	..()
+	if (folded)
+		icon_state = "[base_icon]_folded"
+	else
+		icon_state = "[base_icon]"
+
+/obj/item/weapon/gun/projectile/automatic/dp28/dt28/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		recoil *= 1.5
+		icon_state = "[base_icon]_folded"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 15
+		set_stock()
+		update_icon()
+	else
+		recoil /= 1.5
+		folded = TRUE
+		icon_state = "[base_icon]"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 7
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/automatic/dp28/dt28/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
+	else
+		slot_flags = SLOT_SHOULDER
+
+/obj/item/weapon/gun/projectile/automatic/dp28/dt28/dtm28
+	name = "DTM-28"
+	desc = "The DTM-28 light machinegun. Designed to be places in vehicles. This one is in 7.62x54mmR."
+	icon_state = "dtm"
+	base_icon = "dtm"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	scope_mounts = list("dt_mount")
+	New()
+		..()
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu/ppu8/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu/ppu8(src)
+		SP.attached(null,src,TRUE)
 /obj/item/weapon/gun/projectile/automatic/bar
 	name = "M1918A2 BAR"
 	desc = "The BAR, is a light machine gun (LMG) This one is chambered in .30-06 rounds."
@@ -186,12 +243,12 @@
 	fire_sound = 'sound/weapons/guns/fire/M1918A2.ogg'
 	magazine_type = /obj/item/ammo_magazine/bar
 	good_mags = list(/obj/item/ammo_magazine/bar)
-	ammo_type = /obj/item/ammo_casing/a3006/weak
-	weight = 8.8
-	effectiveness_mod = 1.02
-	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=3, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
+	weight = 9.12
+	force = 20
+	throwforce = 30
 	bad_magazine_types = list(/obj/item/ammo_magazine/browning)
+	recoil = 40
+	accuracy = 3
 
 ///////////////////////////M1919A6//////////////////////
 /obj/item/weapon/gun/projectile/automatic/browning_lmg
@@ -207,22 +264,28 @@
 	fire_sound = 'sound/weapons/guns/fire/M1919.ogg'
 	magazine_type = /obj/item/ammo_magazine/browning
 	good_mags = list(/obj/item/ammo_magazine/browning)
-	ammo_type = /obj/item/ammo_casing/a3006
-	weight = 15 //heavy piece of shit
-	effectiveness_mod = 1.01
+	weight = 12.50 //heavy piece of shit
+	force = 20
+	throwforce = 30
+
 /obj/item/weapon/gun/projectile/automatic/browning_lmg/update_icon()
-	icon_state = "browlmg[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
+	..()
+	if (!ammo_magazine)
+		return
+	overlays -= mag_image
+	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+	overlays += mag_image
 
 ////////////////////////////Manual Machine guns/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/manual
 	var/cover_open = FALSE
-	var/cover_toggle_time = 5
+	var/cover_toggle_time = 2
 	var/cover_open_sound = 'sound/weapons/guns/interact/lmg_open.ogg'
 	var/cover_close_sound = 'sound/weapons/guns/interact/lmg_close.ogg'
 
 /obj/item/weapon/gun/projectile/automatic/manual/special_check(mob/user)
 	if (cover_open)
-		user << SPAN_WARNING("\The [src]'s cover is open! Close it before firing!")
+		to_chat(user, SPAN_WARNING("\The [src]'s cover is open! Close it before firing!"))
 		return FALSE
 	return ..()
 
@@ -230,14 +293,11 @@
 	if (do_after(user, cover_toggle_time, src, can_move = TRUE, needhand = FALSE))
 		cover_open ? playsound(loc, cover_close_sound, 100, TRUE) : playsound(loc, cover_open_sound, 100, TRUE)
 		cover_open = !cover_open
-		user << SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s cover.")
+		to_chat(user, SPAN_NOTICE("You [cover_open ? "open" : "close"] \the [src]'s cover."))
 	update_icon()
 
 /obj/item/weapon/gun/projectile/automatic/manual/attack_self(mob/user as mob)
-	if (cover_open)
-		toggle_cover(user) //close the cover
-	else
-		return ..() //once closed, behave like normal
+	toggle_cover(user) //close the cover
 
 /obj/item/weapon/gun/projectile/automatic/manual/attack_hand(mob/user as mob)
 	if (!cover_open && user.get_inactive_hand() == src)
@@ -246,21 +306,29 @@
 		return ..() //once open, behave like normal
 
 /obj/item/weapon/gun/projectile/automatic/manual/update_icon()
-	icon_state = "[initial(icon_state)][cover_open ? "_open" : "closed"][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "-empty"]"
+	..()
+	if (cover_open)
+		icon_state = "[base_icon]_open"
+	else
+		icon_state = "[base_icon]"
+	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/mg34belt) || !istype(ammo_magazine, /obj/item/ammo_magazine/mg3belt))
+		return
+	overlays -= mag_image
+	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+	overlays += mag_image
 
 /obj/item/weapon/gun/projectile/automatic/manual/load_ammo(var/obj/item/A, mob/user)
 	if (!cover_open)
-		user << SPAN_WARNING("You need to open the cover to load \the [src].")
+		to_chat(user, SPAN_WARNING("You need to open the cover to load \the [src]."))
 		return
 	..()
 
 /obj/item/weapon/gun/projectile/automatic/manual/unload_ammo(mob/user, var/allow_dump=1)
 	if (!cover_open)
-		user << SPAN_WARNING("You need to open the cover to unload \the [src].")
+		to_chat(user, SPAN_WARNING("You need to open the cover to unload \the [src]."))
 		return
 	..()
 
-////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/manual/mg34
 	name = "MG34"
 	desc = "German light machinegun chambered in 7.92x57mm Mauser. An utterly devastating support weapon."
@@ -271,16 +339,129 @@
 	caliber = "a792x57_weak"
 	weight = 12.1
 	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	load_method = MAGAZINE
-	cover_toggle_time = 2
 	magazine_type = /obj/item/ammo_magazine/mg34
 	good_mags = list(/obj/item/ammo_magazine/mg34, /obj/item/ammo_magazine/mg34belt)
-	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound = 	'sound/weapons/guns/fire/mg34.ogg'
-	effectiveness_mod = 1.01
+	load_delay = 12
+	force = 20
+	throwforce = 30
+	recoil = 40
+	accuracy = 3
+	mag_x_offset = -5
+	mag_y_offset = -3
+
+/obj/item/weapon/gun/projectile/automatic/manual/m249
+	name = "M249 SAW"
+	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
+	icon_state = "m249"
+	item_state = "m249"
+	base_icon = "m249"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/guns/fire/minimi.ogg'
+	magazine_type = /obj/item/ammo_magazine/m249
+	good_mags = list(/obj/item/ammo_magazine/m249)
+	slot_flags = SLOT_SHOULDER
+	weight = 10
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=1.1),
+	)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 10
+	slowdown = 1
+	recoil = 30
+	accuracy = 1
+	scope_mounts = list ("picatinny")
+	scope_y_offset = -1
+
+/obj/item/weapon/gun/projectile/automatic/manual/m249/acog/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/manual/m249/suppressor/New()
+	..()
+	if(prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/elcan(src)
+		SP.attached(null,src,TRUE)
+
+	if(prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/manual/mg34/mg3
+	name = "MG3"
+	desc = "Modern German light machinegun chambered in 7.62x51mm. An utterly devastating support weapon."
+	icon_state = "mg3"
+	base_icon = "mg3"
+	caliber = "a762x51_weak"
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	magazine_type = /obj/item/ammo_magazine/mg3belt
+	good_mags = list(/obj/item/ammo_magazine/mg3belt)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	load_delay = 12
+	recoil = 30
+	scope_mounts = list ("picatinny")
+	scope_x_offset = 7
+	scope_y_offset = 4
+	under_mounts = list ("picatinny")
+	under_x_offset = 7
+	under_y_offset = 4
+
+/obj/item/weapon/gun/projectile/automatic/manual/mg34/mg3/tactical/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog(src)
+	SP.attached(null,src,TRUE)
+
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/automatic/manual/rpd
+	name = "RPD machine gun"
+	desc = "A soviet machinegun chambered in 7.62x39 rounds."
+	icon_state = "rpd"
+	item_state = "rpd"
+	base_icon = "rpd"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/rpd
+	good_mags = list(/obj/item/ammo_magazine/rpd)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	weight = 7.4
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
+	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 22
+	load_delay = 40
+	slowdown = 0.6
+	recoil = 30
+	accuracy = 2
+	scope_x_offset = -4
+	scope_y_offset = -5
+	barrel_x_offset = 14
+	barrel_y_offset = 17
+	scope_mounts = list ("dovetail")
 
 ////////////////////////////Breda 30/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/breda30
@@ -302,8 +483,9 @@
 	reload_sound 	= 'sound/weapons/guns/interact/breda30_clip.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound 		= 'sound/weapons/guns/fire/Type92.ogg'
-	effectiveness_mod = 1.0
 	load_delay = 12
+	recoil = 40
+	accuracy = 3
 	firemodes = list(
 		list(name = "automatic", burst=1, burst_delay=3.0, move_delay=8, dispersion = list(0.2, 0.3, 0.5, 0.8, 0.6), recoil = 0))
 	var/cover_open = FALSE
@@ -358,62 +540,19 @@
 	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
 	magazine_type = /obj/item/ammo_magazine/b762
 	good_mags = list(/obj/item/ammo_magazine/b762)
-	ammo_type = /obj/item/ammo_casing/a762x51/weak
 	slot_flags = SLOT_SHOULDER
 	weight = 10.5
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 1
-	effectiveness_mod = 1.04
-
-/obj/item/weapon/gun/projectile/automatic/minimi
-	name = "FN Minimi"
-	desc = "A Belgian 5.56x45mm NATO light machine gun. It was developed by Ernest Vervier for FN Herstaland Introduced in the late 1970s."
-	icon_state = "m249"
-	item_state = "m249"
-	base_icon = "m249"
-	caliber = "a556x45"
-	fire_sound = 'sound/weapons/guns/fire/minimi.ogg'
-	magazine_type = /obj/item/ammo_magazine/m249
-	good_mags = list(/obj/item/ammo_magazine/m249)
-	ammo_type = /obj/item/ammo_casing/a556x45
-	slot_flags = SLOT_SHOULDER
-	weight = 7.1
-	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	equiptimer = 25
-	load_delay = 50
-	slowdown = 1
-	effectiveness_mod = 1.07
-
-/obj/item/weapon/gun/projectile/automatic/m249
-	name = "M249 SAW"
-	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
-	icon_state = "m249"
-	item_state = "m249"
-	base_icon = "m249"
-	caliber = "a556x45"
-	fire_sound = 'sound/weapons/guns/fire/minimi.ogg'
-	magazine_type = /obj/item/ammo_magazine/m249
-	good_mags = list(/obj/item/ammo_magazine/m249)
-	ammo_type = /obj/item/ammo_casing/a556x45
-	slot_flags = SLOT_SHOULDER
-	weight = 7.47
-	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
-	equiptimer = 25
-	load_delay = 50
-	slowdown = 1
-	effectiveness_mod = 1.07
-
-/obj/item/weapon/gun/projectile/automatic/m249/acog/New()
-	..()
-	var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
-	SP.attached(null,src,TRUE)
+	recoil = 40
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/pkm
 	name = "PKM machine gun"
@@ -424,34 +563,60 @@
 	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/pkm/c100
 	good_mags = list(/obj/item/ammo_magazine/pkm/c100, /obj/item/ammo_magazine/maxim, /obj/item/ammo_magazine/pkm)
-	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 7.5
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
 	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.8
-	effectiveness_mod = 1.07
+	recoil = 40
+	accuracy = 3
+	mag_x_offset = -3
+	mag_y_offset = 1
+	barrel_y_offset = 17
+	scope_x_offset = -1
+	scope_y_offset = -3
+	scope_mounts = list ("dovetail")
 
-/obj/item/weapon/gun/projectile/automatic/rpd
-	name = "RPD machine gun"
-	desc = "A soviet machinegun chambered in 7.62x39 rounds."
-	icon_state = "rpd"
-	item_state = "rpd"
-	base_icon = "rpd"
-	caliber = "a762x39"
-	magazine_type = /obj/item/ammo_magazine/rpd
-	good_mags = list(/obj/item/ammo_magazine/rpd)
-	ammo_type = /obj/item/ammo_casing/a762x39
-	weight = 7.4
-	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=6, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
-	slot_flags = SLOT_SHOULDER
-	equiptimer = 22
-	load_delay = 40
-	slowdown = 0.6
-	effectiveness_mod = 1.05
+/obj/item/weapon/gun/projectile/automatic/pkm/update_icon()
+	..()
+	if (!ammo_magazine)
+		icon_state = "[base_icon]_open"
+	else
+		icon_state = "[base_icon]"
+
+/obj/item/weapon/gun/projectile/automatic/pkm/pkp
+	name = "PKP machine gun"
+	desc = "A modernized soviet PKM machinegun chambered in 7.62x54mmR rounds."
+	icon_state = "pkp"
+	base_icon = "pkp"
+	recoil = 25
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_UNDER|ATTACH_SCOPE|ATTACH_BARREL
+	scope_mounts = list ("dovetail", "picatinny")
+	under_mounts = list ("picatinny")
+	under_x_offset = 3
+	under_y_offset = 2
+
+/obj/item/weapon/gun/projectile/automatic/pkm/pkp/devastator/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4(src)
+		SP.attached(null,src,TRUE)
+
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+
+
 
 /obj/item/weapon/gun/projectile/automatic/rpk74
 	name = "RPK-74 machine gun"
@@ -461,32 +626,57 @@
 	base_icon = "rpk74"
 	caliber = "a545x39"
 	magazine_type = /obj/item/ammo_magazine/rpk74
-	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74)
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/ak74m)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 5.1
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=5, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
 	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 20
-	load_delay = 30
+	load_delay = 8
 	slowdown = 0.5
-	effectiveness_mod = 1.07
+	recoil = 25
+	accuracy = 2
+	scope_x_offset = -1
+	scope_y_offset = -1
+	scope_mounts = list ("dovetail")
 
-/obj/item/weapon/gun/projectile/automatic/rpk74/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74))
-			item_state = "rpk74"
-			icon_state = "rpk74"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk74/drum))
-			icon_state = "rpk74_drum"
-			item_state = "rpk74_drum"
-			base_icon = "rpk74_drum"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak74))
-			icon_state = "rpk74_magak"
+/obj/item/weapon/gun/projectile/automatic/rpk74/rpk16
+	name = "RPK-16 machine gun"
+	desc = "A modernized russian RPK-74 machinegun chambered in 5.45x39 rounds."
+	icon_state = "rpk16"
+	base_icon = "rpk16"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_UNDER|ATTACH_SCOPE|ATTACH_BARREL
+	recoil = 20
+	accuracy = 2
+	scope_mounts = list ("dovetail", "picatinny")
+	under_mounts = list ("picatinny")
+	mag_y_offset = -1
+	under_x_offset = 1
+	under_y_offset = 1
+
+/obj/item/weapon/gun/projectile/automatic/rpk74/rpk16/suppressor/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4(src)
+		SP.attached(null,src,TRUE)
 	else
-		icon_state = "rpk74_open"
-		item_state = "rpk74_open"
-	update_held_icon()
-	return
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+
+	if (prob(50))
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/under/laser/LS = new/obj/item/weapon/attachment/under/laser(src)
+		LS.attached(null,src,TRUE)
+
+	var/obj/item/weapon/attachment/silencer/rifle/pbs4/SL = new/obj/item/weapon/attachment/silencer/rifle/pbs4(src)
+	SL.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/automatic/rpk47
 	name = "RPK-47 machine gun"
@@ -497,38 +687,33 @@
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/rpk47
 	good_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47)
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 5.7
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
 	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 21
-	load_delay = 26
+	load_delay = 8
 	slowdown = 0.4
-	effectiveness_mod = 1.03
+	recoil = 35
+	accuracy = 3
+	scope_x_offset = -1
+	scope_y_offset = -1
+	scope_mounts = list ("dovetail")
 
-/obj/item/weapon/gun/projectile/automatic/rpk47/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47))
-			item_state = "rpk47"
-			icon_state = "rpk47"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/rpk47/drum))
-			icon_state = "rpk47_drum"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/ak47))
-			icon_state = "rpk47_magak"
-	else
-		icon_state = "rpk47_open"
-		item_state = "rpk47_open"
-	update_held_icon()
-	return
-
-/obj/item/weapon/gun/projectile/automatic/rpk47/modern //too lazy to add in a new icon for now, will do it later
-	effectiveness_mod = 1.07
+/obj/item/weapon/gun/projectile/automatic/rpk47/modern
 	slowdown = 0.3
 	equiptimer = 18
 	load_delay = 19
 	weight = 4.7
 	name = "RPK-47M machine gun"
 	desc = "A modernized Soviet machinegun chambered in 7.62x39 rounds."
+	recoil = 30
+	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/negev
 	name = "IWI Negev"
@@ -542,16 +727,32 @@
 	slot_flags = SLOT_SHOULDER
 	weight = 8
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=0.9),
+	)
 	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.9
-	effectiveness_mod = 1.01
+	recoil = 40
+	accuracy = 3
+	scope_mounts = list ("picatinny")
 
-/obj/item/weapon/gun/projectile/automatic/kord
-	name = "Kord 6P50"
+/obj/item/weapon/gun/projectile/automatic/negev/update_icon()
+	..()
+	if (!ammo_magazine)
+		icon_state = "[base_icon]_open"
+	else
+		icon_state = "[base_icon]"
+
+///NSVT//////////////
+
+/obj/item/weapon/gun/projectile/automatic/nsv_utes
+	name = "NSV Utes"
 	desc = "A Soviet heavy machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
+	fire_sound = 'sound/weapons/guns/fire/ptrd.ogg'
 	icon_state = "nsvth"
 	item_state = "nsvth"
 	base_icon = "nsvth"
@@ -560,14 +761,29 @@
 	good_mags = list(/obj/item/ammo_magazine/ammo127)
 	weight = 12.5
 	firemodes = list(
-		list(name = "controlled burst",	burst=5, burst_delay=1.0, move_delay=4, recoil = 1, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
-		list(name = "semi",	burst=1, burst_delay=1.5, move_delay=3, recoil = 1,  dispersion = list(0.4, 1.1, 1.2, 1.3, 1.1)),
-		)
+		list(name = "automatic", burst=1, burst_delay=1.8),
+	)
+	shake_strength = 1
 	slot_flags = SLOT_SHOULDER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE
+	force = 20
+	nothrow = TRUE
+	throwforce = 25
 	equiptimer = 25
 	load_delay = 55
 	slowdown = 0.8
-	effectiveness_mod = 0.85
+	recoil = 60
+	accuracy = 1
+	scope_mounts = list ("dovetail")
+	scope_x_offset = -1
+	scope_y_offset = -4
+	mag_x_offset = -5
+	mag_y_offset = -2
+	New()
+		..()
+		var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso4(src)
+		SP.attached(null,src,TRUE)
+////////////////////////MG13////////////////////////////////
 
 /obj/item/weapon/gun/projectile/automatic/mg13
 	name = "Maschinengewehr 13"
@@ -581,28 +797,31 @@
 	weight = 9
 	heavy = TRUE
 	firemodes = list(
-		list(name = "automatic",	burst=1, burst_delay=1.3, move_delay=4, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 0))
+		list(name = "automatic", burst=1, burst_delay=1.3),
+	)
 	slot_flags = SLOT_SHOULDER
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
 	equiptimer = 21
 	load_delay = 21
 	slowdown = 0.5
-	effectiveness_mod = 1.01
+	recoil = 40
+	accuracy = 3
+	mag_x_offset = -5
+	mag_x_offset = -3
 
 /obj/item/weapon/gun/projectile/automatic/mg13/update_icon()
-	if (ammo_magazine)
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/mg08))
-			item_state = "mg13_b"
-			icon_state = "mg13_b"
-		if (istype(ammo_magazine, /obj/item/ammo_magazine/mg13))
-			item_state = "mg13"
-			icon_state = "mg13"
-	else
-		icon_state = "mg13_open"
-		item_state = "mg13_open"
-	update_held_icon()
-	return
+	..()
+	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/mg08))
+		return
+	overlays -= mag_image
+	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+	overlays += mag_image
 
-/obj/item/weapon/gun/projectile/automatic/c6
+////////////////////////C6 GPMG/////////////////////////////
+
+/obj/item/weapon/gun/projectile/automatic/manual/c6
 	name = "C6 GPMG"
 	desc = "A Canadian License Produced FN MAG called the C6 GPMG, the main squad support weapon of the CAF."
 	icon_state = "c6"
@@ -610,24 +829,32 @@
 	base_icon = "c6"
 	max_shells = 220
 	caliber = "a762x51"
-	weight = 11.8
+	weight = 8.1
 	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a762x51
 	load_method = MAGAZINE
-	attachment_slots = ATTACH_SILENCER|ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	magazine_type = /obj/item/ammo_magazine/c6belt
 	good_mags = list(/obj/item/ammo_magazine/c6belt, /obj/item/ammo_magazine/c6can)
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound = 'sound/weapons/guns/fire/M60.ogg'
-	effectiveness_mod = 1.07
+	force = 20
+	throwforce = 30
+	recoil = 40
+	accuracy = 1
+	scope_mounts = list ("picatinny")
+	mag_x_offset = -4
+	mag_y_offset = -2
+	equiptimer = 25
+	load_delay = 10
+	slowdown = 1
 
-/obj/item/weapon/gun/projectile/automatic/c6/update_icon()
-	if (ammo_magazine)
-		icon_state = "[base_icon]_can[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "0"]"
-		item_state = base_icon
-	else
-		icon_state = "[base_icon]_open"
-		item_state = "[base_icon]_open"
-	update_held_icon()
+/obj/item/weapon/gun/projectile/automatic/manual/c6/update_icon()
+	..()
+	if (!ammo_magazine || !istype(ammo_magazine, /obj/item/ammo_magazine/c6belt))
+		return
+	overlays -= mag_image
+	mag_image = image(icon = 'icons/obj/guns/parts.dmi', loc = src, icon_state = ammo_magazine.attached_icon_state + "[round(ammo_magazine.stored_ammo.len, 25)]", pixel_x = mag_x_offset, pixel_y = mag_y_offset)
+	overlays += mag_image

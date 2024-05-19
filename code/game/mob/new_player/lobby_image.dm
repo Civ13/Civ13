@@ -7,6 +7,7 @@
 	icon_state = ""
 	screen_loc = "WEST,SOUTH"
 	var/list/stored_img = list()
+
 /obj/effect/lobby_image/initialize()
 	if (map && map.lobby_icon)
 		var/F = file(map.lobby_icon)
@@ -23,6 +24,7 @@
 	spawn(100)
 		update_icon()
 		update_icon_proc()
+		
 /obj/effect/lobby_image/update_icon()
 	..()
 	if (map && map.ID == MAP_BATTLEROYALE_MODERN)

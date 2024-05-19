@@ -110,6 +110,9 @@ macro "macro"
 	elem 
 		name = "CTRL+Z"
 		command = "Activate-Held-Object"
+	elem "disactivation"
+		name = "Z+UP"
+		command = "disactivation"
 	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
@@ -322,6 +325,9 @@ macro "hotkeymode"
 	elem 
 		name = "CTRL+Z"
 		command = "Activate-Held-Object"
+	elem "disactivation"
+		name = "Z+UP"
+		command = "disactivation"
 	elem
 		name = ","
 		command = "m-intent-prone"

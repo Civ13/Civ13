@@ -1,7 +1,7 @@
 /obj/map_metadata/elaia
 	ID = MAP_ELAIA
 	title = "Elaia"
-	lobby_icon = "icons/lobby/ww2.png"
+	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	no_hardcore = TRUE
@@ -22,8 +22,9 @@
 	faction2 = ITALIAN
 	ordinal_age = 5
 	songs = list(
-		"Bella Ciao:1" = "sound/music/bella_ciao.ogg")
+		"Bella Ciao:1" = 'sound/music/bella_ciao.ogg')
 	gamemode = "Siege"
+	grace_wall_timer = 3000
 	var/no_loop_elaia = FALSE
 	var/it_reinforcements_time = 15 MINUTES
 	var/reinforcements_called = FALSE
@@ -52,7 +53,7 @@
 				if (J.title == "Cisterna")
 					J.max_positions = 12
 					J.total_positions = 12
-	world << SPAN_NOTICE("<big>Italian reinforcements have arrived!</big>")
+	world << SPAN_NOTICE("<font size=4>Italian reinforcements have arrived!</font>")
 
 /obj/map_metadata/elaia/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)

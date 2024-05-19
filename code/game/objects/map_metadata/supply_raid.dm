@@ -2,7 +2,7 @@
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid"
-	lobby_icon = "icons/lobby/imperial.png"
+	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
 	grace_wall_timer = 3000
@@ -27,7 +27,7 @@
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/indians))
-		if (J.is_1713)
+		if (J.is_1713 && !J.is_deathmatch)
 			. = TRUE
 		else
 			. = FALSE

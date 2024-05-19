@@ -47,6 +47,10 @@ var/global/redirect_all_players = null
 			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
 			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Gulag_13\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
 			src << browse(htmlfile,"window=wiki;size=820x650")
+		if (map && map.ID == MAP_PEPELSIBIRSK)
+			var/htmlfile = "<!DOCTYPE html><HTML><HEAD><TITLE>Wiki Guide</TITLE><META http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"></HEAD> \
+			<BODY><iframe src=\"https://civ13.github.io/civ13-wiki/Pepelsibirsk\"  style=\"position: absolute; height: 97%; width: 97%; border: none\"></iframe></BODY></HTML>"
+			src << browse(htmlfile,"window=wiki;size=820x650")
 
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
@@ -125,27 +129,50 @@ var/global/redirect_all_players = null
 	else
 		if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
-		else if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+		else if (map.ID == MAP_CAMPAIGN)
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
-		else if (map.civilizations && !map.nomads && map.ID != MAP_NOMADS_PERSISTENCE_BETA)
+		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
 		else if (map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
-			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
 	var/height = 250
-	if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN || client.holder)
+	if (client.holder)
+		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
+	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CMP )
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
 	output += "</div>"
 
-	src << browse(null, "window=playersetup;")
-	src << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=275x[height];can_close=0;can_resize=0")
+	client << browse(null, "window=playersetup;")
+	client << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=275x[height];can_close=0;can_resize=0")
 	return
 
 /mob/new_player/Stat()
 
+// New way
+	if(ticker)
+		if(ticker.current_state == GAME_STATE_PLAYING)
+			src << browse(null, "window=playerlist")
+			return
+
+		if((ticker.current_state == GAME_STATE_PREGAME))// && going)
+			client << output(list2params(list("[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")), "playerlist.browser:setTimeToStart")
+		//if((ticker.current_state == GAME_STATE_PREGAME))// && !going)
+		//	client << output(list2params(list("[ticker.pregame_timeleft][round_progressing ? "" : " (DELAYED)"]")), "playerlist.browser:setTimeToStart")
+
+		for(var/mob/new_player/player in player_list)
+			if(client) // Add later professional choice
+				//if(player.ready && player.client.work_chosen)
+				//	client << output(list2params(list("[player.client.work_chosen]", "[player.client.key]")), "playerlist.browser:addPlayerCell")
+				//else
+				client << output(list2params(list("Player", "[player.client.key]")), "playerlist.browser:addPlayerCell")
+				client << output(list2params(list()), "playerlist.browser:renderPlayerList")
+				player.updateTimeToStart()
+
+// Old way
 	if (client.status_tabs && statpanel("Status") && ticker)
 		stat("")
 		stat(stat_header("Lobby"))
@@ -188,7 +215,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN) && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -419,22 +446,22 @@ var/global/redirect_all_players = null
 			return FALSE
 
 		var/factjob
-		for (var/i in faction_list_red)
+		for (var/i in faction_list_blue)
 			var/temp_ckey = lowertext(i)
 			temp_ckey = replacetext(temp_ckey," ", "")
 			temp_ckey = replacetext(temp_ckey,"_", "")
 			if (temp_ckey == client.ckey)
-				factjob = "RDF"
+				factjob = "BAF"
 		if (!factjob)
-			for (var/i in faction_list_blue)
+			for (var/i in faction_list_red)
 				var/temp_ckey = lowertext(i)
 				temp_ckey = replacetext(temp_ckey," ", "")
 				temp_ckey = replacetext(temp_ckey,"_", "")
 				if (temp_ckey == client.ckey)
-					factjob = "BAF"
+					factjob = "RDF"
 
 		if (factjob)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
 		else
 			if (config.discordurl)
@@ -495,68 +522,52 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
-		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-			if (map.ID == MAP_CAMPAIGN && !findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
+		if (map.ID == MAP_CAMPAIGN)
+			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
 				var/obj/map_metadata/campaign/MC = map
-				var/obj/map_metadata/rotstadt/MR = map
 				if(findtext(href_list["SelectedJob"],"Squad 1"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 1"]["Sniper"]--
-						MR.squad_jobs_blue["Squad 1"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
-						MR.squad_jobs_blue["Squad 1"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
-						MR.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 2"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 2"]["Sniper"]--
-						MR.squad_jobs_blue["Squad 2"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
-						MR.squad_jobs_blue["Squad 2"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
-						MR.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 3"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_blue["Squad 3"]["Sniper"]--
-						MR.squad_jobs_blue["Squad 3"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
-						MR.squad_jobs_blue["Squad 3"]["Machinegunner"]--
 					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
 						MC.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
-						MR.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"BAF Doctor"))
 					MC.squad_jobs_blue["none"]["Doctor"]--
-					MR.squad_jobs_blue["none"]["Doctor"]--
 
 				else if(findtext(href_list["SelectedJob"],"BAF Officer"))
 					MC.squad_jobs_blue["none"]["Officer"]--
-					MR.squad_jobs_blue["none"]["Officer"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Commander"))
 					MC.squad_jobs_blue["none"]["Commander"]--
-					MR.squad_jobs_blue["none"]["Commander"]--
+					
 				else if(findtext(href_list["SelectedJob"],"BAF Recon"))
 					MC.squad_jobs_blue["Recon"]["Sniper"]--
-					MR.squad_jobs_blue["Recon"]["Sniper"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
 					MC.squad_jobs_blue["AT"]["Anti-Tank"]--
-					MR.squad_jobs_blue["AT"]["Anti-Tank"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Armored Crew"))
 					MC.squad_jobs_blue["Armored"]["Crew"]--
-					MR.squad_jobs_blue["Armored"]["Crew"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Engineer"))
 					MC.squad_jobs_blue["Engineer"]["Engineer"]--
-					MR.squad_jobs_blue["Engineer"]["Engineer"]--
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
 
@@ -567,18 +578,24 @@ var/global/redirect_all_players = null
 						MC.squad_jobs_red["Squad 1"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_red["Squad 1"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MC.squad_jobs_red["Squad 1"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 2"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_red["Squad 2"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_red["Squad 2"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MC.squad_jobs_red["Squad 2"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"Squad 3"))
 					if (findtext(href_list["SelectedJob"],"Sniper"))
 						MC.squad_jobs_red["Squad 3"]["Sniper"]--
 					if (findtext(href_list["SelectedJob"],"Machinegunner"))
 						MC.squad_jobs_red["Squad 3"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MC.squad_jobs_red["Squad 3"]["Des. Marksman"]--
 
 				else if(findtext(href_list["SelectedJob"],"RDF Doctor"))
 					MC.squad_jobs_red["none"]["Doctor"]--
@@ -599,6 +616,55 @@ var/global/redirect_all_players = null
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
 
+		if(map.ID == MAP_ROTSTADT)
+			if(findtext(href_list["SelectedJob"],"BAF"))
+				var/obj/map_metadata/rotstadt/MR = map
+				if(findtext(href_list["SelectedJob"],"Squad 1"))
+					if (findtext(href_list["SelectedJob"],"Sniper"))
+						MR.squad_jobs_blue["Squad 1"]["Sniper"]--
+					if (findtext(href_list["SelectedJob"],"Machinegunner"))
+						MR.squad_jobs_blue["Squad 1"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MR.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
+
+				else if(findtext(href_list["SelectedJob"],"Squad 2"))
+					if (findtext(href_list["SelectedJob"],"Sniper"))
+						MR.squad_jobs_blue["Squad 2"]["Sniper"]--
+					if (findtext(href_list["SelectedJob"],"Machinegunner"))
+						MR.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MR.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
+
+				else if(findtext(href_list["SelectedJob"],"Squad 3"))
+					if (findtext(href_list["SelectedJob"],"Sniper"))
+						MR.squad_jobs_blue["Squad 3"]["Sniper"]--
+					if (findtext(href_list["SelectedJob"],"Machinegunner"))
+						MR.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+					if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+						MR.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
+
+				else if(findtext(href_list["SelectedJob"],"BAF Doctor"))
+					MR.squad_jobs_blue["none"]["Doctor"]--
+
+				else if(findtext(href_list["SelectedJob"],"BAF Officer"))
+					MR.squad_jobs_blue["none"]["Officer"]--
+				else if(findtext(href_list["SelectedJob"],"BAF Commander"))
+					MR.squad_jobs_blue["none"]["Commander"]--
+				else if(findtext(href_list["SelectedJob"],"BAF Recon"))
+					MR.squad_jobs_blue["Recon"]["Sniper"]--
+				else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
+					MR.squad_jobs_blue["AT"]["Anti-Tank"]--
+				else if(findtext(href_list["SelectedJob"],"BAF Armored Crew"))
+					MR.squad_jobs_blue["Armored"]["Crew"]--
+				else if(findtext(href_list["SelectedJob"],"BAF Engineer"))
+					MR.squad_jobs_blue["Engineer"]["Engineer"]--
+				AttemptLateSpawn(href_list["SelectedJob"])
+				return
+
+			else if (findtext(href_list["SelectedJob"],"RDF"))
+				AttemptLateSpawn(href_list["SelectedJob"])
+				return
+
 		if(href_list["SelectedJob"] == "Company Member")
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
@@ -614,11 +680,11 @@ var/global/redirect_all_players = null
 
 		var/job_flag = actual_job.base_type_flag()
 
-		if (!config.enter_allowed)
+		if (!GLOB.enter_allowed)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_WACO && map.ID != MAP_CAPITOL_HILL && map.ID != MAP_CAMP && map.ID != MAP_HILL_203 && map.ID != MAP_CALOOCAN && map.ID != MAP_YELTSIN && map.ID != MAP_HOTEL && map.ID != MAP_OASIS && map.ID != MAP_SYRIA && map.ID != MAP_BANK_ROBBERY && map.ID != MAP_DRUG_BUST && map.ID != MAP_GROZNY && map.ID != MAP_SIBERIAD && map.ID != MAP_TWOTRIBES && map.ID != MAP_BATTLE_SHIPS && map.ID != MAP_NANKOU && map.ID != MAP_MARCO_POLO_BRIDGE)
+		if (map && map.has_occupied_base(job_flag) && !map.can_spawn_on_base_capture)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
 
@@ -791,7 +857,7 @@ var/global/redirect_all_players = null
 				spawn(10)
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
 		return FALSE
-	if (!config.enter_allowed)
+	if (!GLOB.enter_allowed)
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1194,6 +1260,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_filipino.len] Filipino "
 	if (POLISH in map.faction_organization)
 		dat += "[alive_polish.len] Poles "
+	if (BLUEFACTION in map.faction_organization)
+		dat += "[alive_bluefaction.len] Blugoslavians "
+	if (REDFACTION in map.faction_organization)
+		dat += "[alive_redfaction.len] Redmenians "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1225,6 +1295,8 @@ var/global/redirect_all_players = null
 		VIETNAMESE = FALSE,
 		CHINESE = FALSE,
 		POLISH = FALSE,
+		BLUEFACTION = FALSE,
+		REDFACTION = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -1320,6 +1392,13 @@ var/global/redirect_all_players = null
 
 		if (istype(job, /datum/job/polish) && !polish_toggled)
 			job_is_available = FALSE
+		
+		if (istype(job, /datum/job/bluefaction) && !bluefaction_toggled)
+			job_is_available = FALSE
+		
+		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
+			job_is_available = FALSE
+
 		// check if the job is admin-locked or disabled codewise
 
 		if (!job.enabled)
@@ -1433,33 +1512,13 @@ var/global/redirect_all_players = null
 								temp_name = "Chinese Red Army"
 							if (temp_name == "Chinese")
 								temp_name = "Chinese National Army"
-
-						if (MAP_CAMPAIGN)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-						if (MAP_NOMADS_PERSISTENCE_BETA)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-						if (MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
-
+						
 						if (MAP_ROTSTADT)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavian Armed Forces"
-							if (temp_name == "Pirates")
+							if (temp_name == "Redmenia")
 								temp_name = "Rotstadt People's Republic"
-						if (MAP_BATTLE_SHIPS)
-							if (temp_name == "Civilian")
-								temp_name = "Blugoslavia"
-							if (temp_name == "Pirates")
-								temp_name = "Redmenia"
+							if (temp_name == "Blugoslavia")
+								temp_name = "Blugoslavian Armed Forces"
+							
 						if (MAP_HOLDMADRID)
 							if (temp_name == "Civilian")
 								temp_name = "Republican"
@@ -1515,6 +1574,10 @@ var/global/redirect_all_players = null
 				else if (!replaced_faction_title && findtext(dat[v], "&&[key]&&"))
 					dat[v] = replacetext(dat[v], "&&[key]&&", "")
 					replaced_faction_title = TRUE
+
+	if (!any_available_jobs && !ticker)
+		WWalert(usr,"The game is loading.","Error")
+		return
 
 	if (!any_available_jobs)
 		WWalert(usr,"All roles are disabled by autobalance!","Error")

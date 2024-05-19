@@ -1,11 +1,12 @@
 /obj/map_metadata/camp
 	ID = MAP_CAMP
 	title = "Camp"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	victory_time = 15000
 	no_winner = "No faction controls the Castle."
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		BRITISH,
@@ -19,7 +20,7 @@
 	ordinal_age = 2
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
 	songs = list(
-		"Crusaders:1" = "sound/music/crusaders.ogg")
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	battle_name = "battle of Normandy"
 	mission_start_message = "<font size=4>The <b>French</b> and <b>English</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>4 minutes</b>.</font>"
 	faction1 = BRITISH
@@ -27,13 +28,13 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 2400
-obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_medieval == TRUE)
+	if (J.is_medieval && !J.is_deathmatch)
 		. = TRUE
 	else
 		. = FALSE
-	if (J.is_crusader == TRUE)
+	if (J.is_crusader)
 		. = FALSE
 
 /obj/map_metadata/camp/short_win_time(faction)

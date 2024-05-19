@@ -1,7 +1,7 @@
 /obj/map_metadata/long_march
 	ID = MAP_LONG_MARCH
 	title = "The Long March"
-	lobby_icon = "icons/lobby/longmarch.png"
+	lobby_icon = 'icons/lobby/longmarch.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra/one,/area/caribbean/no_mans_land/invisible_wall/inside,/area/caribbean/no_mans_land/invisible_wall/two)
 	no_hardcore = TRUE
 	respawn_delay = 1200
@@ -22,7 +22,7 @@
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Red Sun Up in the Sky:1" = "sound/music/redsun.ogg",)
+		"Red Sun Up in the Sky:1" = 'sound/music/redsun.ogg',)
 	grace_wall_timer = 4800
 
 /obj/map_metadata/long_march/job_enabled_specialcheck(var/datum/job/J)

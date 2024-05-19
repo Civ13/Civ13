@@ -105,8 +105,17 @@
 	name = "medieval wall"
 	desc = "A dark-ages wall."
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "medieval_wall"
+	icon_state = "medieval0"
+	base_icon_state = "medieval"
 	health = 330
+	adjusts = TRUE
+	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
+/obj/covers/wood_wall/medieval/can_join_with(var/atom/W)
+	if (istype(W,src))
+		return TRUE
+	for (var/i in mergewith)
+		if (istype(W,i))
+			return TRUE
 
 /obj/covers/wood_wall/medieval/x
 	name = "medieval wall crossbeam"

@@ -168,6 +168,18 @@ var/list/sneeze_sounds_female = list(
 	'sound/effects/emotes/female_sneeze1.ogg',
 	'sound/effects/emotes/female_sneeze2.ogg')
 
+var/list/medic_sounds = list(
+	'sound/effects/emotes/medic1.ogg',
+	'sound/effects/emotes/medic2.ogg',
+	'sound/effects/emotes/medic3.ogg',
+	'sound/effects/emotes/medic4.ogg',
+	'sound/effects/emotes/medic5.ogg',
+	'sound/effects/emotes/medic6.ogg',)
+var/list/medic_hurt_sounds = list(
+	'sound/effects/emotes/medic_hurt1.ogg',
+	'sound/effects/emotes/medic_hurt2.ogg',
+	'sound/effects/emotes/medic_hurt3.ogg',)
+
 var/list/charge_sounds_eng = list(
 	'sound/effects/emotes/charge_eng.ogg',
 	'sound/effects/emotes/god_save_the_king.ogg',)
@@ -195,8 +207,12 @@ var/list/charge_sounds_nl = list(
 	'sound/effects/emotes/charge_nl3.ogg',
 	'sound/effects/emotes/charge_nl4.ogg',)
 var/list/charge_sounds_it = list(
-	
-	)
+	'sound/effects/emotes/charge_it1.ogg',
+	'sound/effects/emotes/charge_it2.ogg',
+	'sound/effects/emotes/charge_it3.ogg',
+	'sound/effects/emotes/charge_it4.ogg',
+	'sound/effects/emotes/charge_it5.ogg',
+	'sound/effects/emotes/charge_it6.ogg',)
 var/list/charge_sounds_ro = list(
 	'sound/effects/emotes/charge_ro.ogg',)
 var/list/charge_sounds_jp = list(
@@ -217,22 +233,19 @@ var/list/charge_sounds_ar = list(
 	'sound/effects/emotes/charge_ar5.ogg',
 	'sound/effects/emotes/charge_ar6.ogg',
 	'sound/effects/emotes/charge_ar7.ogg',
-	'sound/effects/emotes/charge_ar8.ogg',
-	)
+	'sound/effects/emotes/charge_ar8.ogg',)
 var/list/charge_sounds_chechen = list(
 	'sound/effects/emotes/chechen1.ogg',
 	'sound/effects/emotes/chechen2.ogg',
 	'sound/effects/emotes/chechen3.ogg',
 	'sound/effects/emotes/chechen4.ogg',
-	'sound/effects/emotes/chechen5.ogg',
-	)
+	'sound/effects/emotes/chechen5.ogg',)
 var/list/charge_sounds_ge = list(
 	'sound/effects/emotes/charge_ger.ogg',
 	'sound/effects/emotes/charge_ger2.ogg',
 	'sound/effects/emotes/charge_ger3.ogg',
 	'sound/effects/emotes/charge_ger4.ogg',
-	'sound/effects/emotes/charge_ger5.ogg',
-	)
+	'sound/effects/emotes/charge_ger5.ogg',)
 var/list/charge_sounds_crusader = list(
 	'sound/effects/emotes/charge_crusader.ogg',)
 var/list/charge_sounds_vi = list(
@@ -248,8 +261,7 @@ var/list/charge_sounds_fin = list(
 	'sound/effects/emotes/charge_fin1.ogg',
 	'sound/effects/emotes/charge_fin2.ogg',
 	'sound/effects/emotes/charge_fin3.ogg',
-	'sound/effects/emotes/charge_fin4.ogg',
-	)
+	'sound/effects/emotes/charge_fin4.ogg',)
 var/list/charge_sounds_orc = list(
 	'sound/effects/emotes/charge_orc1.ogg',
 	'sound/effects/emotes/charge_orc2.ogg',)
@@ -288,13 +300,22 @@ var/list/charge_sounds_iranian = list(
 	'sound/effects/emotes/charge_iran1.ogg',
 	'sound/effects/emotes/charge_iran2.ogg',
 	'sound/effects/emotes/charge_iran3.ogg',)
-var/list/charge_sounds_redmenia = list(
-	'sound/effects/emotes/redmenia1.ogg',
-	'sound/effects/emotes/redmenia2.ogg',
-	'sound/effects/emotes/redmenia3.ogg',)
-var/list/charge_sounds_blugoslavia = list(
-	
-	)
+var/list/charge_sounds_bluefaction = list(
+	'sound/effects/emotes/charge_blugoslavia1.ogg',
+	'sound/effects/emotes/charge_blugoslavia2.ogg',
+	'sound/effects/emotes/charge_blugoslavia3.ogg',
+	'sound/effects/emotes/charge_blugoslavia4.ogg',
+	'sound/effects/emotes/charge_blugoslavia5.ogg',
+	'sound/effects/emotes/charge_blugoslavia6.ogg',
+	'sound/effects/emotes/charge_blugoslavia7.ogg',
+	'sound/effects/emotes/charge_blugoslavia8.ogg',
+	'sound/effects/emotes/charge_blugoslavia9.ogg',)
+var/list/charge_sounds_redfaction = list(
+	'sound/effects/emotes/charge_redmenia1.ogg',
+	'sound/effects/emotes/charge_redmenia2.ogg',
+	'sound/effects/emotes/charge_redmenia3.ogg',
+	'sound/effects/emotes/charge_redmenia4.ogg',
+	'sound/effects/emotes/charge_redmenia5.ogg',)
 var/list/charge_sounds_police = list(
 	'sound/effects/emotes/charge_police1.ogg',
 	'sound/effects/emotes/charge_police2.ogg',
@@ -338,6 +359,28 @@ var/list/charge_sounds_ballas = list(
 	'sound/effects/emotes/ballas_vsgrov2.ogg',
 	'sound/effects/emotes/ballas_vsgrov3.ogg',
 	'sound/effects/emotes/ballas_vsgrov4.ogg',)
+// generic charge sounds from cm
+var/list/charge_sounds_generic_male = list(
+	'sound/effects/emotes/male_generic_warcry1.ogg',
+	'sound/effects/emotes/male_generic_warcry2.ogg',
+	'sound/effects/emotes/male_generic_warcry3.ogg',
+	'sound/effects/emotes/male_generic_warcry4.ogg',
+	'sound/effects/emotes/male_generic_warcry5.ogg',
+	'sound/effects/emotes/male_generic_warcry6.ogg',
+	'sound/effects/emotes/male_generic_warcry7.ogg',
+	'sound/effects/emotes/male_generic_warcry8.ogg',
+	'sound/effects/emotes/male_generic_warcry9.ogg',
+	'sound/effects/emotes/male_generic_warcry10.ogg',
+	'sound/effects/emotes/male_generic_warcry11.ogg',
+	'sound/effects/emotes/male_generic_warcry12.ogg',
+	'sound/effects/emotes/male_generic_warcry13.ogg',)
+var/list/charge_sounds_generic_female = list(
+	'sound/effects/emotes/female_generic_warcry1.ogg',
+	'sound/effects/emotes/female_generic_warcry2.ogg',
+	'sound/effects/emotes/female_generic_warcry3.ogg',
+	'sound/effects/emotes/female_generic_warcry4.ogg',
+	'sound/effects/emotes/female_generic_warcry5.ogg',
+	'sound/effects/emotes/female_generic_warcry6.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -530,6 +573,11 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("sneeze_female")
 				soundin = pick(sneeze_sounds_female)
 
+			if ("medic")
+				soundin = pick(medic_sounds)
+			if ("medic_hurt")
+				soundin = pick(medic_hurt_sounds)
+
 			if ("charge_BRITISH")
 				soundin = pick(charge_sounds_eng)
 			if ("charge_PIRATES")
@@ -592,10 +640,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_african)
 			if ("charge_IRANIAN")
 				soundin = pick(charge_sounds_iranian)
-			if ("charge_REDMENIA")
-				soundin = pick(charge_sounds_redmenia)
-			if ("charge_BLUGOSLAVIA")
-				soundin = pick(charge_sounds_blugoslavia)
+			if ("charge_BLUEFACTION")
+				soundin = pick(charge_sounds_bluefaction)
+			if ("charge_REDFACTION")
+				soundin = pick(charge_sounds_redfaction)
 			if ("charge_POLICE")
 				soundin = pick(charge_sounds_police)
 			if ("charge_RUROBBERS")
@@ -604,4 +652,9 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_grove)
 			if ("charge_BALLAS")
 				soundin = pick(charge_sounds_ballas)
+			// generic charges from cm
+			if ("charge_GENERIC_male")
+				soundin = pick(charge_sounds_generic_male)
+			if ("charge_GENERIC_female")
+				soundin = pick(charge_sounds_generic_female)
 	return soundin

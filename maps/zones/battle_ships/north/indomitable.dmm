@@ -321,7 +321,6 @@
 "Mj" = (/obj/covers/steelplating,/obj/structure/sign/flag/blugoslavia{pixel_y = 32},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "Mk" = (/obj/covers/steelplating,/obj/covers/steelplating,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "Ml" = (/obj/covers/steelplating,/obj/effect/floor_decal/corner_steel_grid/diagonal,/obj/effect/floor_decal/corner_steel_grid/diagonal{dir = 8},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/pkm,/obj/structure/railing/steel,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
-"Mu" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/soviet/guard,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "MA" = (/obj/covers/steelplating,/obj/structure/sign/securearea{desc = "A warning sign which reads 'DANGER - EXPLOSIVES'."; name = "\improper DANGER - EXPLOSIVES"; pixel_y = 32},/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "MF" = (/obj/covers/steelplating,/obj/effect/floor_decal/corner_steel_grid/diagonal,/obj/effect/floor_decal/corner_steel_grid/diagonal{dir = 8},/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/weapon/gun/projectile/automatic/stationary/pkm{dir = 1},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
 "MN" = (/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/covers/steelplating,/obj/covers/wood_ship,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
@@ -384,7 +383,7 @@
 "TH" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/anyone,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower/storage/kitchen)
 "TI" = (/obj/covers/cement_wall,/obj/structure/cannon/modern/naval/n380/right{pixel_y = -20; dir = 4},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "TK" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5{dir = 1},/obj/structure/table/modern,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "Bridge Radio"},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
-"TO" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/custom/jail/steeljail/guard,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
+"TO" = (/obj/covers/steelplating,/obj/structure/simple_door/key_door/custom/jail/steeljail,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "TQ" = (/obj/covers/cement_wall,/turf/floor/beach/water/deep/saltwater,/area/caribbean/faction2/ship/lower)
 "TS" = (/obj/covers/steelplating,/obj/effect/floor_decal/steeldecal/steel_decals5,/obj/effect/floor_decal/corner_steel_grid{dir = 4},/obj/structure/table/modern,/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper/inside)
 "TU" = (/obj/effect/floor_decal/corner_steel_grid/full,/obj/structure/barricade/steel,/obj/covers/steelplating,/obj/effect/floor_decal/spline/plain{pixel_x = 16; pixel_y = 17},/obj/effect/floor_decal/spline/plain{dir = 8; pixel_x = 16; pixel_y = 16},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/broken_floor,/area/caribbean/faction2/ship/upper)
@@ -448,10 +447,10 @@ PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQTQTQTQTQTQcZdHlYwZHFYOHFTQTiTiTQVcaMTQIArHTQIAWGTQiHzDfnTQNlNwfNTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQyrTQgrWDsOLTLTTQcZsowZsoHFHFTiTQlYwZTQaKJVTQrnDETQcYKiTQTQMuTQTQTQTcTQTQTQMhNwMhbzMhLKppTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQTQTQTQTQZUrBFtTQyrTQHCJjJjJjJjTQJJsowZwZHFHFHFTQTiwZTQsgTOTQsgTOTQsgTOTQRNMhZgMuMhMhxKfyqvMhMhMhNwMhMhMhMhTQNwMhbzyXUzUzTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQTQBkIZBkBkzLcwTQyrTQHfHfHfFxJjTQdSsowZwZgIgIgITQTQOwTQGCLqphMhhRphMhMhMuNwmjbTTQMhMhmljUqvClMhMhMhMhFpMhMhCSMhMhLPLPNwMhCSMhMhNwzDNwMhTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPC
-PCPCPCPCPCPCTQTQTQjYUuUujYuaBETQyrTQTQTQTQTQrGTQTQdSimwZsowZwZOwLqphTQTQTQMuTQTQTQTQTQTQoPNEoPTQMhtLTQTQTQTQrJTQTQTQTQTQTQTQMhMhMhMhhRMhTQTQTQTQTQTQMhHtTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCPCTQTQTQTQTQTQTQTQTQyrTQgrWDsOLTLTTQcZsowZsoHFHFTiTQlYwZTQaKJVTQrnDETQcYKiTQTQCSTQTQTQTcTQTQTQMhNwMhbzMhLKppTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQTQTQTQTQZUrBFtTQyrTQHCJjJjJjJjTQJJsowZwZHFHFHFTQTiwZTQsgTOTQsgTOTQsgTOTQRNMhZgCSMhMhxKfyqvMhMhMhNwMhMhMhMhTQNwMhbzyXUzUzTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQTQBkIZBkBkzLcwTQyrTQHfHfHfFxJjTQdSsowZwZgIgIgITQTQOwTQGCLqphMhhRphMhMhCSNwmjbTTQMhMhmljUqvClMhMhMhMhFpMhMhCSMhMhLPLPNwMhCSMhMhNwzDNwMhTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPCPCPCPC
+PCPCPCPCPCPCTQTQTQjYUuUujYuaBETQyrTQTQTQTQTQrGTQTQdSimwZsowZwZOwLqphTQTQTQCSTQTQTQTQTQTQoPNEoPTQMhtLTQTQTQTQrJTQTQTQTQTQTQTQMhMhMhMhhRMhTQTQTQTQTQTQMhHtTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQhtUxUxUxUxuaZJTQyrTQQWJqQWTQaNXGTQTQTQTQrDTQTQTQMhMhMhLKMhMhMhMjNwLKNwyEMhMhMhhKMhNwJOTQaINXkKGUTQTQHeNyUmTQWrMkovwnTQMhazTQQWJqQWTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQYhbMLgLgbMDpXjTQyrTQsXGAtWYmMhMhTQrydHlYwZwZPBTQMhMhNwFpMhMhQgLPVESUMhGRMhMhMhhKMhNwILTQjKIktkGUTQTQumGAtWYmGMMkqLFMTQMhzEYmqQkyfQTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC
 PCPCPCPCPCPCTQTQhtELELELELuaXjGPyrTQhNCZdzTQMhMhTQrywZsowZQLTQTQCSCSTQTQrTTQTQTQTQTQTQTQrTTQTQTQMhMhVCTQqHaIkKGUTQTQKhwSAqTQGMMkcqORTQMhxNTQhNCZdzTQMhLPTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQTQPCPCPCPCPCPC

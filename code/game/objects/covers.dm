@@ -104,27 +104,12 @@
 		T.move_delay = 0
 	return TRUE
 
-
-/obj/covers/Destroy()
-	if (map.ID == MAP_BATTLE_SHIPS)
-		if(istype(get_turf(src), /turf/floor/beach/water))
-			var/turf/T1 = get_step(get_turf(src), pick(NORTH,NORTHWEST))
-			if(T1)
-				new/obj/effect/flooding(T1)
-			var/turf/T2 = get_step(get_turf(src), pick(EAST,NORTHEAST))
-			if(T2)
-				new/obj/effect/flooding(T2)
-			var/turf/T3 = get_step(get_turf(src), pick(WEST,SOUTHWEST))
-			if(T3)
-				new/obj/effect/flooding(T3)
-			var/turf/T4 = get_step(get_turf(src), pick(SOUTH,SOUTHEAST))
-			if(T4)
-				new/obj/effect/flooding(T4)
-				
+/obj/covers/Destroy()			
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
-			new current_area_type(get_turf(src))
+			if (!map.ID == MAP_BATTLE_SHIPS)
+				new current_area_type(get_turf(src))
 		var/turf/floor/T = get_turf(loc)
 		if (T)
 			T.water_level = origin_water_level
@@ -147,7 +132,7 @@
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_BATTLE_SHIPS)
+			if (map && map.ID != MAP_BATTLE_SHIPS)
 				visible_message("<span class='notice'>You can't build here!</span>")
 				return
 		var/mob/living/human/H = user
@@ -187,7 +172,7 @@
 
 /obj/covers/fire_act(temperature)
 	if (prob(20) && flammable)
-		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
 		qdel(src)
 
 /obj/covers/CanPass(var/atom/movable/mover)
@@ -307,7 +292,7 @@
 			if (wall)
 				if (istype(proj, /obj/item/projectile/bullet) && bullethole_count.len < 13)
 					new_bullethole()
-				health -= proj.damage * 0.1
+				health -= proj.damage * 0.01
 				try_destroy()
 		return
 

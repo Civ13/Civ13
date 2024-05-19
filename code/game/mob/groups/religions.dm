@@ -15,7 +15,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion != "none")
 			to_chat(usr, SPAN_DANGER("You are already member of a religion. Abandon it first."))
 			return
@@ -107,7 +107,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN || map.ID == MAP_NOMADS_PERSISTENCE_BETA)
+	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
 			return
@@ -136,7 +136,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_DANGER("You are not part of any religion."))
 			return
@@ -292,6 +292,7 @@
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
 	layer = 3.2
+
 /obj/structure/poster/religious/New()
 	..()
 	invisibility = 101
@@ -311,11 +312,12 @@
 		transform = matrixangle(rand(-9,9))
 		update_icon()
 		invisibility = 0
+
 /obj/structure/poster/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		to_chat(user, "You start ripping off the [src]...")
+		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 70, src))
-			visible_message("[user] rips the [src]!")
+			user.visible_message("<span class ='warning'>[user] rips \the [src]!</span>", "<span class = 'warning'>You rip off \the [src]!</span>")
 			overlays.Cut()
 			icon_state = "poster_ripped"
 			color = color2
@@ -540,9 +542,9 @@ obj/structure/altar/iron
 
 /obj/structure/banner/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
-		to_chat(user, "You start ripping off the [src]...")
+		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 130, src))
-			visible_message("[user] rips the [src]!")
+			user.visible_message("<span class ='warning'>[user] rips \the [src]!</span>", "<span class = 'warning'>You rip off \the [src]!</span>")
 			qdel(src)
 	else
 		..()

@@ -184,7 +184,7 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
 	name = "shank"
-	desc = "A small self-made knife used a lot in jail."
+	desc = "A small self-made knife."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "steelshank"
 	item_state = "knife"
@@ -228,7 +228,7 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/dagger
 	name = "dagger"
-	desc = "A long, sharp, swordlike knife that is used for close quarter combat."
+	desc = "A dagger with two sharp edges alongside a very sharp point."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "dagger"
 	item_state = "knife"

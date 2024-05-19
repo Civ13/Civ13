@@ -44,6 +44,8 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FILIPINO]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[POLISH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BLUEFACTION]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[REDFACTION]
 	else
 		for (var/faction in map.faction_organization)
 			if (job_master)
@@ -285,20 +287,6 @@ var/global/datum/controller/occupations/job_master
 			else
 				spawn_location = "JoinLateIND5"
 
-		if(map && map.ID == MAP_CAMPAIGN && istype(map, /obj/map_metadata/campaign/campaign5))
-			if (findtext(H.original_job_title,"RDF"))
-				spawn_location = "JoinLateRedN"
-				if(findtext(H.original_job_title,"Squad 2"))
-					spawn_location = "JoinLateRedS"
-				else if(findtext(H.original_job_title,"Engineer"))
-					spawn_location = "JoinLateRedS"
-				else if(findtext(H.original_job_title,"Anti-Tank"))
-					spawn_location = "JoinLateRedS"
-				else if(findtext(H.original_job_title,"Recon"))
-					spawn_location = "JoinLateRedS"
-				else if(findtext(H.original_job_title,"Armored"))
-					spawn_location = "JoinLateRedS"
-
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs[spawn_location]
 		if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)
@@ -342,11 +330,13 @@ var/global/datum/controller/occupations/job_master
 				continue
 			if (T.density)
 				spawnable_turf = FALSE
+			if (istype(T, /turf/floor/beach/water/deep))
+				spawnable_turf = FALSE
 			if (spawnable_turf && !blocked)
 				valid_spawns += T
 
 		if (blocked)
-			H << SPAN_WARNING("<big>Cannot spawn at FOB because enemy is closeby.</big>")
+			H << SPAN_WARNING("<big>Cannot spawn at this FOB because an enemy is nearby.</big>")
 			SpawnAtFob(H)
 			return
 
@@ -484,30 +474,6 @@ var/global/datum/controller/occupations/job_master
 
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
-
-		if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
-			if(istype(job, /datum/job/pirates/redfaction))
-				H.remove_language("English")
-				H.add_language("Redmenian",FALSE)
-				for (var/datum/language/redmenian/A in H.languages)
-					H.default_language = A
-
-			else if (istype(job, /datum/job/civilian/bluefaction))
-				H.remove_language("English")
-				H.add_language("Blugoslavian",FALSE)
-				for (var/datum/language/blugoslavian/A in H.languages)
-					H.default_language = A
-		if(map.ID == MAP_FOOTBALL_CAMPAIGN)
-			if(istype(job, /datum/job/civilian/football_red_campaign) || istype(job, /datum/job/civilian/football_red_campaign/goalkeeper))
-				H.remove_language("English")
-				H.add_language("Redmenian",FALSE)
-				for (var/datum/language/redmenian/A in H.languages)
-					H.default_language = A
-			else if (istype(job, /datum/job/civilian/football_blue_campaign) || istype(job, /datum/job/civilian/football_blue_campaign/goalkeeper))
-				H.remove_language("English")
-				H.add_language("Blugoslavian",FALSE)
-				for (var/datum/language/blugoslavian/A in H.languages)
-					H.default_language = A
 					
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
@@ -530,6 +496,10 @@ var/global/datum/controller/occupations/job_master
 			H.wolfman = 1
 		if (map && H && (H.faction_text in map.crab))
 			H.crab = 1
+		if (map && H && (H.faction_text in map.goblin))
+			H.goblin = 1
+		if (map && H && (H.faction_text in map.droid))
+			H.droid = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
 
@@ -585,6 +555,10 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateFP"
 				if (POLISH)
 					spawn_location = "JoinLatePOL"
+				if (BLUEFACTION)
+					spawn_location = "JoinLateBlue"
+				if (REDFACTION)
+					spawn_location = "JoinLateRed"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -610,6 +584,10 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateAR"
 			else if (findtext(H.original_job.spawn_location, "JoinLatePOL"))
 				spawn_location = "JoinLatePOL"
+			else if (findtext(H.original_job.spawn_location, "JoinLateRed"))
+				spawn_location = "JoinLateRed"
+			else if (findtext(H.original_job.spawn_location, "JoinLateBlue"))
+				spawn_location = "JoinLateBlue"
 		H.job_spawn_location = spawn_location
 
 		if (H.mind)
@@ -670,6 +648,8 @@ var/global/datum/controller/occupations/job_master
 	var/chinese = alive_n_of_side(CHINESE)
 	var/filipino = alive_n_of_side(FILIPINO)
 	var/polish = alive_n_of_side(POLISH)
+	var/bluefaction = alive_n_of_side(BLUEFACTION)
+	var/redfaction = alive_n_of_side(REDFACTION)
 
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
@@ -697,6 +677,8 @@ var/global/datum/controller/occupations/job_master
 	var/max_chinese = INFINITY
 	var/max_filipino = INFINITY
 	var/max_polish = INFINITY
+	var/max_bluefaction = INFINITY
+	var/max_redfaction = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -775,6 +757,10 @@ var/global/datum/controller/occupations/job_master
 			max_filipino = ceil(relevant_clients * map.faction_distribution_coeffs[FILIPINO])
 		if (map.faction_distribution_coeffs.Find(POLISH))
 			max_polish = ceil(relevant_clients * map.faction_distribution_coeffs[POLISH])
+		if (map.faction_distribution_coeffs.Find(BLUEFACTION))
+			max_bluefaction = ceil(relevant_clients * map.faction_distribution_coeffs[BLUEFACTION])
+		if (map.faction_distribution_coeffs.Find(REDFACTION))
+			max_redfaction = ceil(relevant_clients * map.faction_distribution_coeffs[REDFACTION])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
@@ -921,5 +907,16 @@ var/global/datum/controller/occupations/job_master
 			if (polish_forceEnabled)
 				return FALSE
 			if (polish >= max_polish)
+				return TRUE
+		
+		if (BLUEFACTION)
+			if (bluefaction_forceEnabled)
+				return FALSE
+			if (bluefaction >= max_bluefaction)
+				return TRUE
+		if (REDFACTION)
+			if (redfaction_forceEnabled)
+				return FALSE
+			if (redfaction >= max_redfaction)
 				return TRUE
 	return FALSE

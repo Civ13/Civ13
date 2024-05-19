@@ -159,7 +159,7 @@
 
 /obj/item/clothing/under/japoffuni
 	name = "Japanese Officer Uniform"
-	desc = "A imperial japanese army officer uniform."
+	desc = "An Imperial Japanese Army officer uniform."
 	icon_state = "japoffuni"
 	item_state = "japoffuni"
 	worn_state = "japoffuni"
@@ -197,7 +197,7 @@
 
 /obj/item/clothing/under/rusuni
 	name = "Russian Army uniform"
-	desc = "A standard imperial russian army uniform."
+	desc = "A standard Imperial Russian Army uniform."
 	icon_state = "rusuni"
 	item_state = "rusuni"
 	worn_state = "rusuni"
@@ -205,14 +205,14 @@
 
 /obj/item/clothing/under/rusuni_ww1
 	name = "Russian Army uniform"
-	desc = "A standard imperial russian army uniform."
+	desc = "A standard Imperial Russian Army uniform."
 	icon_state = "ww1_russian2"
 	item_state = "ww1_russian2"
 	worn_state = "ww1_russian2"
 
 /obj/item/clothing/under/rusuni_ww1_officer
 	name = "Russian Army officer uniform"
-	desc = "A standard imperial russian army uniform, with officer epaulettes."
+	desc = "A standard Imperial Russian Army uniform, with officer epaulettes."
 	icon_state = "ww1_russian_o"
 	item_state = "ww1_russian_o"
 	worn_state = "ww1_russian_o"
@@ -220,7 +220,7 @@
 
 /obj/item/clothing/under/rusuni_rcw
 	name = "Red Army uniform"
-	desc = "A standard early 20th century russian uniform, with no epaulettes or insignias."
+	desc = "A standard early 20th century Russian uniform, with no epaulettes or insignias."
 	icon_state = "ww1_russian"
 	item_state = "ww1_russian"
 	worn_state = "ww1_russian"
@@ -259,14 +259,16 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
+
 /obj/item/clothing/under/kuban_cossak
 	name = "Kuban Cossak beshmet"
 	desc = "A red beshmet with grey trousers, traditional of the Kuban Cossaks."
 	icon_state = "kuban_cossak"
 	item_state = "kuban_cossak"
 	worn_state = "kuban_cossak"
+
 /obj/item/clothing/suit/storage/coat/kuban_cossak
-	name = "black cherkesska coat"
+	name = "Black cherkesska coat"
 	desc = "A traditional Kuban Cossak coat."
 	icon_state = "kuban_cossak"
 	item_state = "kuban_cossak"
@@ -289,8 +291,8 @@
 	value = 65
 
 /obj/item/clothing/suit/storage/coat/japcoat
-	name = "Japanese Coat"
-	desc = "A japanese army coat."
+	name = "Japanese coat"
+	desc = "A Japanese army coat."
 	icon_state = "japcoat"
 	item_state = "japcoat"
 	worn_state = "japcoat"
@@ -299,9 +301,11 @@
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
+
 /obj/item/clothing/suit/storage/coat/japcoat/abashiri
-	name = "Abashiri Guard Coat"
+	name = "Abashiri guard coat"
 	desc = "An Abashiri Prison Guard coat."
+
 /obj/item/clothing/suit/storage/coat/priest
 	name = "priest sleev"
 	desc = "A holy coat worn by a priest."
@@ -339,20 +343,20 @@
 	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/ruscoat/grey
-	name = "Grey Winter Coat"
+	name = "Grey winter coat"
 	desc = "A thick winter coat."
 
 /obj/item/clothing/suit/storage/coat/japcoat2/brown
-	name = "Brown Winter Coat"
+	name = "Brown winter coat"
 	desc = "A thick winter coat."
 
 /obj/item/clothing/suit/storage/coat/japcoat2/trench
-	name = "brown trench coat"
+	name = "Brown trench coat"
 	desc = "A long coat to keep you clean and dry."
 
 /obj/item/clothing/suit/storage/coat/rusoffcoat
-	name = "Russian Officer Coat."
-	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
+	name = "Russian officer coat."
+	desc = "A Russian Army officer coat. Worn by officers, acknowledge their rank."
 	icon_state = "rusoffcoat"
 	item_state = "rusoffcoat"
 	worn_state = "rusoffcoat"
@@ -367,7 +371,7 @@
 
 /obj/item/clothing/suit/armor/japmisc/japvest
 	name = "Matagi Vest"
-	desc = "A warm, fur lined vest made of leather."
+	desc = "A warm fur lined vest made out of leather."
 	icon_state = "japvest"
 	item_state = "japvest"
 	worn_state = "japvest"
@@ -379,7 +383,7 @@
 
 /obj/item/clothing/head/japcap
 	name = "Japanese Cap"
-	desc = "A cap worn by japanese soldiers."
+	desc = "A cap worn by Japanese soldiers."
 	icon_state = "japcap"
 	item_state = "japcap"
 	var/adjusted = FALSE
@@ -1039,26 +1043,31 @@
 	block_chance = 22
 	cooldownw = 7
 	value = 60
+
 /obj/item/clothing/head/ww/cheka
 	name = "Cheka cap"
 	desc = "A black leather cap worn by Cheka agents."
 	icon_state = "cheka"
 	item_state = "cheka"
+
 /obj/item/clothing/head/ww/papakha
 	name = "papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha"
 	item_state = "papakha"
+
 /obj/item/clothing/head/ww/papakha/white
 	name = "white papakha"
 	desc = "A traditional caucasus hat."
 	icon_state = "papakha_white"
 	item_state = "papakha_white"
+
 /obj/item/clothing/head/ww/papakha/kuban
 	name = "Kuban papakha"
 	desc = "A traditional Kuban Cossak papakha, black with a red crown."
 	icon_state = "papakha_kuban"
 	item_state = "papakha_kuban"
+
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
 	desc = "A typical pointed helmet."
@@ -1068,11 +1077,13 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/ww/budenovka
 	name = "budenovka"
 	desc = "A Soviet budenovka hat."
 	icon_state = "budenovka"
 	item_state = "budenovka"
+
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "M1935 stahlhelm"
 	desc = "A typical german helmet."
@@ -1258,54 +1269,6 @@
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
 		new /obj/item/weapon/grenade/modern/thermaldetonator(src)
-
-/obj/item/weapon/storage/belt/smallpouches/red
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
-	New()
-		..()
-		new /obj/item/clothing/mask/gas/swat_new(src)
-		new /obj/item/stack/medical/bruise_pack/gauze(src)
-		new /obj/item/ammo_magazine/ak47(src)
-		new /obj/item/weapon/attachment/bayonet(src)
-
-/obj/item/weapon/storage/belt/smallpouches/red/white
-	icon_state = "smallpouches_white"
-	item_state = "smallpouches_white"
-
-/obj/item/weapon/storage/belt/largepouches/redmg
-/obj/item/weapon/storage/belt/largepouches/redmg/New()
-	..()
-	new /obj/item/ammo_magazine/dp(src)
-	new /obj/item/ammo_magazine/dp(src)
-
-/obj/item/weapon/storage/belt/largepouches/redmg/white
-	icon_state = "largepouches_white"
-	item_state = "largepouches_white"
-
-/obj/item/weapon/storage/belt/smallpouches/blue
-	icon_state = "smallpouches_olive"
-	item_state = "smallpouches_olive"
-	New()
-		..()
-		new /obj/item/clothing/mask/gas/swat_new(src)
-		new /obj/item/stack/medical/bruise_pack/gauze(src)
-		new /obj/item/ammo_magazine/ak47(src)
-		new /obj/item/weapon/attachment/bayonet(src)
-
-/obj/item/weapon/storage/belt/smallpouches/blue/white
-	icon_state = "smallpouches_white"
-	item_state = "smallpouches_white"
-
-/obj/item/weapon/storage/belt/largepouches/bluemg
-/obj/item/weapon/storage/belt/largepouches/bluemg/New()
-	..()
-	new /obj/item/ammo_magazine/rpk47/drum(src)
-	new /obj/item/ammo_magazine/rpk47/drum(src)
-
-/obj/item/weapon/storage/belt/largepouches/bluemg/white
-	icon_state = "largepouches_white"
-	item_state = "largepouches_white"
 
 /obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
 	storage_slots = 6

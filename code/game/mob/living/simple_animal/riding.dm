@@ -4,6 +4,8 @@
 
 	var/can_ride = FALSE
 	var/ride = FALSE
+	var/ride_pixel_x = 0
+	var/ride_pixel_y = 0
 	var/mob/living/human/rider = null
 
 /mob/living/simple_animal/New()
@@ -28,17 +30,17 @@
 /mob/living/simple_animal/MouseDrop_T(mob/living/M, mob/living/human/user)
 	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.body_build.name == "Default"))
 		var/mob/living/human/MM = M
-		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on \the [src]'s back...</div>")
+		M.visible_message("<span class='notice'>[M] starts trying to get on \the [src]'s back...</span>","<span class='notice'>You start trying to get on \the [src]'s back...</span>")
 		if (do_after(MM, 40, src))
 			M.plane = GAME_PLANE
-			visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s back.</div>","<div class='notice'>You sucessfully climb into \the [src]'s back.</div>")
+			M.visible_message("<span class='notice'>[M] manages to successfully climb into \the [src]'s back.</span>","<span class='notice'>You manage to successfully climb into \the [src]'s back.</span>")
 			ride = TRUE
 			rider = MM
 			MM.forceMove(src.loc)
 			MM.riding = TRUE
 			MM.riding_mob = src
-			src.pixel_x = -13
-			src.pixel_y = -21
+			src.pixel_x = src.ride_pixel_x
+			src.pixel_y = src.ride_pixel_y
 			update_icons()
 			stop_automated_movement = TRUE
 			return
@@ -48,9 +50,9 @@
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	if (can_ride && ride == TRUE && !isnull(rider))
 		if (rider == M)
-			visible_message("<div class='notice'>[M] starts to get off \the [src]...</div>","<div class='notice'>You start to get off \the [src]...</div>")
+			M.visible_message("<span class='notice'>[M] starts to get off \the [src]...</span>","<span class='notice'>You start to get off \the [src]...</span>")
 			if (do_after(M, 40, src))
-				visible_message("<div class='danger'>[M] gets off \the [src].</div>","<div class='danger'>You get off \the [src].</div>")
+				M.visible_message("<span class='danger'>[M] gets off \the [src].</span>","<span class='danger'>You get off \the [src].</span>")
 				M.riding = FALSE
 				M.riding_mob = null
 				ride = FALSE
@@ -61,9 +63,9 @@
 				stop_automated_movement = FALSE
 				return
 		else
-			visible_message("<div class='danger'>[M] tries to pull [rider] from \the [src]!</div>","<div class='danger'>You try to pull [rider] from \the [src]!</div>")
+			M.visible_message("<span class='danger'>[M] tries to pull [rider] off from \the [src]!</span>","<span class='danger'>You try to pull [rider] off from \the [src]!</span>")
 			if (do_after(M, 40, src))
-				visible_message("<div class='danger'>[M] pulls [rider] from \the [src]!</div>","<div class='danger'>You pull [rider] from \the [src]!</div>")
+				M.visible_message("<span class='danger'>[M] pulls [rider] off from \the [src]!</span>","<span class='danger'>You pull [rider] off from \the [src]!</span>")
 				rider.riding = FALSE
 				rider.riding_mob = null
 				rider.forceMove(locate(x+1,y,z))
@@ -82,7 +84,7 @@
 /mob/living/simple_animal/death()
 	..()
 	if (can_ride && !isnull(rider))
-		visible_message("<div class='danger'>[rider] falls from \the [src]!</div>","<div class='danger'>You fall from \the [src]!</div>")
+		rider.visible_message("<span class='danger'>[rider] falls off from \the [src]!</span>", "<span class='danger'>You fall off from \the [src]!</span>")
 		rider.riding = FALSE
 		rider.SpinAnimation(5,1)
 		rider.forceMove(locate(x+1,y,z))
@@ -95,7 +97,7 @@
 
 /mob/living/simple_animal/proc/trample(var/mob/living/tmob)
 	if (can_ride && tmob.stat != DEAD)
-		visible_message("<div class='danger'>\The [src] tramples [tmob]!</div>")
+		visible_message("<span class='danger'>\The [src] tramples [tmob]!</span>")
 		playsound(tmob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
 		tmob.adjustBruteLoss(rand(6,7))
 		if (prob(35))

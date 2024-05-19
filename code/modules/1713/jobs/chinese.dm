@@ -311,7 +311,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/chicap(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/sniper_scope/zf39(H), slot_l_store)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(60))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -1187,7 +1187,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
-//////////////////////////////sovietsino borderconflict////////////////////////////////
+//////////////////////////////Sino-Soviet Border Conflict////////////////////////////////
 
 /datum/job/chinese/sovcon/pla/commisar
 	title = "Zhengwei"

@@ -27,7 +27,7 @@
 		return FALSE
 
 // TO DO TODO: Make this universal proc for all expirience gains
-/mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 5, EPIC_fail_chance = 0.5)
+/mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 0, EPIC_fail_chance = 0)
 	// returns 0 - nothing happens, 1 - breaktrough, 2 - EUREKA, -1 - fail, -2 - EPIC fail
 	// exp_skills_list - list of skills how it declared in human_defines.dm, f.e. list("swords","strength","dexterity","stamina") or empty list if you want simply generate chance
 	// exp_skills_percent - list of percent distribution of gain expirience, f.e. list(85,5,5,5) or empty list, if you want equal distribution in skills experience
@@ -36,7 +36,7 @@
 	// no_emotes - set it to TRUE if no emotes when procedure work
 	// no_msg - set it to TRUE if no messages to user when procedure work
 	// change_mood_coefficient - set this multiplicator not 1 if you want greater or less effect to mood
-	// EUREKA_chance, breakthrough_chance, fail_chance, EPIC_fail_chance - in percents, by default they are 0.5, 5, 5 and 0.5
+	// EUREKA_chance, breakthrough_chance, fail_chance, EPIC_fail_chance - in percents, by default they are 0.5, 5, 5 and 0.5 ||Shinobi|| not anymore, no fails
 	var/equal_distribution = 0
 	var/exp_gain = work_amount/10/2 //1 exp for every 2 seconds of work
 	var/e_c = EUREKA_chance * 100
@@ -125,6 +125,9 @@
 
 //TO DO TODO: make this procedure global using
 /obj/structure/proc/wrench_action(var/mob/living/human/H)
+	if (powersource)
+		to_chat(H, SPAN_NOTICE("Remove the cables first."))
+		return
 	if(!not_movable)
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		H.visible_message(
@@ -177,7 +180,7 @@
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] stops dismantling \the [src].</span>",
 				"<span class='notice'>You stops dismantling \the [src].</span>",
-				"<span class='notice'>Dismantling sounds are gone.</span>")
+				"<span class='notice'>The ratchetting sounds are gone.</span>")
 	else
 		H << "<span class='warning'>\The [src] is not dissasemblable.</span>"
 
@@ -215,7 +218,7 @@
 		if (current_user.give_exp(list("crafting","dexterity"), list(67,33), work_time_amount) == -2)
 			var/newamount = clamp(ceil(this_production.amount/2+rand(1,ceil(this_production.amount/2))),ceil(this_production.amount/2),this_production.amount)
 			if (newamount < this_production.amount)
-				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>"
+				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name].</span>"
 				this_production.amount = newamount
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67
 		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33
@@ -558,7 +561,7 @@
 // Alghorithm will try to rotate item if not empty space are found. For example 1x3 item (dry_size=9) not found a place, but dehydrator have free row, and item will placed 3x1 (as dry_size=3).
 // ====================================================================
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named the same as icon_state of drying product
-// Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For exapmle "rawcutletR"
+// Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For example "rawcutletR"
 // Product (dried and ready) items must have an icons with normal and rotated states in 'icons/obj/food/dryer.dmi'
 // Items with size of 4 rows (dry_size=13..15) or equal side sizes (1x1, 2x2, 3x3) may not have an icon with additional "R".
 // For optimization try don't use dry_size 4, 8 and 12. Use instead 13, 14 and 15. Also, this will save you from having to draw two icons: straight and rotated; it will be enough to draw only one straight icon.
@@ -678,17 +681,18 @@
 
 /obj/structure/dehydrator/proc/dry_as_text(var/obj/item/I)
 	switch(get_dry_timer(I)/TIME_TO_DRY)
-		if (0 to 0.15) return "not dried"
-		if (0.15 to 0.4) return "a quarter dry"
+		if (0 to 0.15) return "drying"
+		if (0.15 to 0.4) return "quarter dried"
 		if (0.4 to 0.6) return "half dried"
-		if (0.6 to 0.85) return "three quarters dry"
+		if (0.6 to 0.85) return "three quarters dried"
 		if (1 to INFINITY)
-			if (!findtext(normal_item_name(I),"dried"))
-				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose
+			if (!findtext(normal_item_name(I),"dried")) // Look at normal_item_name()
+				if (!findtext(normal_item_name(I),"dry")) //two if for optimization purpose (This breaks because the name "dried" is in the final product, and so it bugs out and adds an extra space before the dry_as_text descriptor.)
 					return "dried"
 			else
 				return ""
-		else return "almost dry"
+		else
+			return "almost dried"
 
 /obj/structure/dehydrator/examine(mob/user, distance)
 	..(user, distance)
@@ -696,8 +700,8 @@
 	var/additional_info = in_range(user, src) || isghost(user)
 	if (storage.contents.len>0)
 		for(var/obj/item/I in storage.contents)
-			dryed_now += "[additional_info ? "[dry_as_text(I)] " : ""][normal_item_name(I)]"
-		user << "<span class='notice'>There [storage.contents.len == 1 ? "is dries" : "are drying"] [english_list(dryed_now, "")].</span>"
+			dryed_now += "[additional_info ? "[dry_as_text(I)]" : ""] [normal_item_name(I)]"
+		to_chat(user, SPAN_NOTICE("There hangs \a [english_list(dryed_now, and_text = " and a ")].")) // \a because we need "there hangs an almost dried..."
 
 /obj/structure/dehydrator/proc/normal_item_name(var/obj/item/I)
 	return copytext(I.name, 1, findtext(I.name, "ON_DEHYDRATOR"))
@@ -719,7 +723,7 @@
 			return TRUE
 	if (!W.dried_type)
 		if (H)
-			H << "<span class='warning'>\The [W.name] is not for drying.</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] cannot be dried."))
 		return TRUE//This can't be dryed
 	if (!W.dry_size)
 		return TRUE//ERROR
@@ -727,19 +731,19 @@
 		var/obj/item/weapon/reagent_containers/food/D = W
 		if (D.rotten)
 			if (H)
-				H << "<span class='warning'>\The [W.name] is rotten.</span>"
+				to_chat(H, SPAN_WARNING("\The [W.name] is rotten!"))
 			return TRUE
 	if (W.dry_size>15)
 		if (H)
-			H << "<span class='warning'>\The [W.name] not fit here!</span>"
+			to_chat(H, SPAN_WARNING("\The [W.name] does not fit here!"))
 		return TRUE
 	if (!hang_on(W))
 		if (H)
-			H << "<span class='warning'>Not enough room for one more [W.name]!</span>"
+			H << "<span class='warning'>There is not enough room for \the [W.name]!</span>"
 		return TRUE
 	if (H)
 		H.visible_message(
-			"<span class='notice'>You can see how [H.name] hang \a [normal_item_name(W)] to dry.</span>",
+			"<span class='notice'>You can see how [H.name] hangs \a [normal_item_name(W)] to dry.</span>",
 			"<span class='notice'>You hang \a [normal_item_name(W)] to dry.")
 		return TRUE
 	..(W, H, icon_x, icon_y)
@@ -785,7 +789,7 @@
 						if (!P.dried_type)
 							set_dry_timer(P, TIME_TO_DRY+1)
 						qdel(I)
-						P.visible_message("[normal_item_name(P)] finishes drying.")
+						P.visible_message(SPAN_WARNING("\The [normal_item_name(P)] on \the [src] finishes drying."))
 						update_icon()
 		dry_process(this_process)
 
@@ -1662,7 +1666,7 @@
 
 	if (istype(W,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(W,/obj/item/weapon/hammer) || istype(W,/obj/item/weapon/hammer/modern))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -1821,7 +1825,7 @@
 		return
 	if (istype(W, /obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		H << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		H << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 		return
 	if (istype(W, /obj/item/weapon/hammer))
@@ -2171,3 +2175,261 @@
 /obj/structure/compost/after_load()
 	. = ..()
 	initialize()
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////PLANKAGE////////////////SAWMILLS//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/obj/structure/sawmill
+	name = "Primitive Saw Mill"
+	desc = "A small saw mill, used to cut logs into planks. This crude machine only produces 1 plank per log."
+	icon = 'icons/obj/plankage.dmi'
+	icon_state = "primitive_sawmill"
+	anchored = TRUE
+	density = TRUE
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/tmp/obj/item/stack/current_work = null
+	var/tmp/obj/item/stack/current_material = null
+	var/tmp/mob/living/human/current_user = null
+	var/tmp/work_time_amount = 0
+
+/obj/structure/sawmill/large
+	name = "Large Saw Mill"
+	desc = "A large saw mill, used to cut logs into planks. This one produces 2 planks per log."
+	icon = 'icons/obj/plankage_64.dmi'
+	icon_state = "sawmill"
+	bound_width = 64
+	bound_height = 32
+
+/obj/structure/sawmill/powered
+	name = "Powered Saw Mill"
+	desc = "A large powered saw mill, used to cut logs into planks. This one produces 4 planks per log."
+	icon = 'icons/obj/plankage_64.dmi'
+	bound_width = 64
+	bound_height = 32
+	icon_state = "sawmill_power"
+	powerneeded = 1
+
+/obj/structure/sawmill/proc/check_power()
+	if (!powersource || !powerneeded)
+		return FALSE
+	else
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!powered)
+				powersource.update_power(powerneeded,1)
+				powered = TRUE
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
+				return TRUE
+		else
+			powered = FALSE
+			return
+
+/obj/structure/sawmill/proc/finish_work()
+	check_power()
+	if (current_work)
+		current_user.visible_message(
+			"<span class='notice'>You can see how [current_user.name] made [current_work.name] on \a [src.name].</span>",
+			"<span class='notice'>You finish producing \the [current_work.name].</span>",
+			"<span class='notice'>The sounds of \the [src.name] were gone.</span>")
+		if (istype(src, /obj/structure/sawmill/large))
+			icon_state = "sawmill"
+		else if (istype(src, /obj/structure/sawmill/powered))
+			icon_state = "sawmill_power"
+		else
+			icon_state = "primitive_sawmill"
+		qdel(current_material)
+		var/obj/item/stack/this_production = new current_work.type(null, current_work.amount, FALSE) //deleting and creating for sterilization effect (we need really new object)
+		current_user.put_in_active_hand(this_production)
+		qdel(current_work)
+		if (current_user.give_exp(list("crafting","dexterity"), list(67,33), work_time_amount) == -2)
+			var/newamount = clamp(ceil(this_production.amount/2+rand(1,ceil(this_production.amount/2))),ceil(this_production.amount/2),this_production.amount)
+			if (newamount < this_production.amount)
+				current_user << "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>"
+				this_production.amount = newamount
+		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67
+		current_user.mood -= work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33
+		current_user.stats["stamina"][1] -= work_time_amount*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*0.33
+	current_work = null
+	current_material = null
+	current_user = null
+	work_time_amount = 0
+
+/obj/structure/sawmill/proc/produce(var/obj/item/stack/W, var/mob/living/human/H, var/obj/item/stack/P)
+	check_power()
+	if (!H.in_mood())
+		return
+	if(!anchored)
+		H << "<span class='warning'>\The [src] needs to be fixed in place before anything can be cut.</span>"
+		return
+	if(istype(src, /obj/structure/sawmill/powered) && powered == FALSE)
+		H << "<span class='warning'>\The [src] needs to be powered before anything can be cut.</span>"
+		return
+	if (current_work)
+		H << "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>"
+		return
+	if (istype(src, /obj/structure/sawmill/large))
+		current_work = new P(null, W.amount * 2, FALSE) //in fact for information purpose only we really need new object
+		icon = 'icons/obj/plankage_64.dmi'
+		icon_state = "sawmill1"
+		work_time_amount = round(0.1*(W.amount*8+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+	else if (istype(src, /obj/structure/sawmill/powered) && powered == TRUE)
+		current_work = new P(null, W.amount * 4, FALSE) //in fact for information purpose only we really need new object
+		icon = 'icons/obj/plankage_64.dmi'
+		icon_state = "sawmill_power1"
+		work_time_amount = round(0.1*(W.amount*4+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+	else
+		current_work = new P(null, W.amount, FALSE) //in fact for information purpose only we really need new object
+		icon_state = "primitive_sawmill1"
+		work_time_amount = round(0.1*(W.amount*12+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
+	current_material = W
+	current_user = H
+	H.visible_message(
+		"<span class='notice'>You can see how [H.name] began to cut [W.name] on \a [src.name].</span>",
+		"<span class='notice'>You start to produce \the [current_work.name].</span>",
+		"<span class='notice'>You hear someone begin to cut on \the [src.name].</span>")
+	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
+	if (do_after(H, work_time_amount, src.loc))
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+		finish_work()
+	else
+		if (istype(src, /obj/structure/sawmill/large))
+			icon_state = "sawmill"
+		else if (istype(src, /obj/structure/sawmill/powered))
+			icon_state = "sawmill_power"
+		else
+			icon_state = "primitive_sawmill"
+		//20% - with no penalty, 30% - little mood decreasing, 25% - mood decreasing,
+		//15% - to lose some material and mood decreasing, 10% to lose all material and great mood decreasing
+		switch (rand(1,100)) //here are another algorithm because we don't know how much work was really done
+			if (1 to 20) //20% with no penalty... almost
+				H.visible_message(
+					"<span class='notice'>You see how [H.name] pulls [W.name] out of [src.name], stopping work.</span>",
+					"<span class='notice'>You safely pull \the [W.name] from \the [src.name], stopping work.</span>",
+					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
+				if (prob(25)) //5% to lose or gain some skill
+					if (prob(80)) //4% to lose
+						H.emote("sigh")
+						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						H.adaptStat("crafting", -1)
+					else //1% to gain
+						H.emote("giggle")
+						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						H.adaptStat("crafting", 1)
+			if (21 to 50) //30% little mood decreasing
+				H.visible_message(
+					"<span class='notice'>You see how [H.name] sighs and pulls [W.name] out of [src.name], stopping work.</span>",
+					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are a little upset.</span>",
+					"<span class='notice'>You hear an irritated murmur. The sounds of \the [src.name] gone.</span>")
+				H.mood -= 2
+			if (51 to 75) //25% nervously
+				H.visible_message(
+					"<span class='notice'>You see how [H.name] nervously plucks [W.name] from \the [src.name], stopping work.</span>",
+					"<span class='notice'>You nervously pluck \the [W.name] from \the [src.name], stopping work. You are a some upset.</span>",
+					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
+				H.emote("sigh")
+				H.mood -= 4
+			if (76 to 90) //15% losing some material
+				H.visible_message(
+					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
+					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are upset.</span>",
+					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
+				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
+				H << "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>"
+				H.emote("cry")
+				H.mood -= 8
+				if (prob(33)) //5% to lose or gain some skill
+					if (prob(80)) //4% to gain
+						H << "<span class='notice'>You learned a little more about the craft.</span>"
+						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,5)))
+					else //1% to lose
+						H << "<span class='notice'>You've lost a bit of crafting skill.</span>"
+						H.adaptStat("crafting", -1)
+			else //10% to lose all material
+				H.visible_message(
+					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
+					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are very upset.</span>",
+					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
+				if (prob(50)) //5% to breakthrough
+					if (prob(10)) //0.5% EUREKA!
+						H << "<span class='notice'>But...</span> <span class='good'>EUREKA!</span> <span class='notice'>You have learned several times more about the craft.</span>"
+						H.adaptStat("crafting", current_work.amount*2) //20 times more than usual. EUREKA!
+					else // 4.5% breakthrough
+						H << "<span class='notice'>But... You learned a little more about the craft.</span>"
+						H.adaptStat("crafting", rand(1, clamp(current_work.amount-W.amount,1,20))) //In fact three times more.
+				W.amount = 0
+				qdel(W)
+				H.emote("scream")
+				H.mood -= 16
+		qdel(current_work)
+		current_work = null
+		current_material = null
+		current_user = null
+
+/obj/structure/sawmill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob, var/obj/item/I)
+	check_power()
+	if (istype(W, /obj/item/stack/material/wood))
+		produce(W, H, /obj/item/stack/material/woodplank)
+		return
+	if (istype(W,/obj/item/weapon/wrench))
+		wrench_action(H)
+		return
+	if (istype(W,/obj/item/weapon/hammer))
+		hammer_action(H, W, 150, list("/obj/item/stack/material/wood"), list(6))
+		return
+	if (istype(W, /obj/item/stack/cable_coil))
+		if (powersource)
+			H << "There's already a cable connected here! Split it further from the [src]."
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		powersource = CC.place_turf(get_turf(src), H, turn(get_dir(H,src),180))
+		if (!powersource)
+			return
+		powersource.connections += src
+		var/opdir1 = 0
+		var/opdir2 = 0
+		if (powersource.tiledir == "horizontal")
+			opdir1 = 4
+			opdir2 = 8
+		else if  (powersource.tiledir == "vertical")
+			opdir1 = 1
+			opdir2 = 2
+		powersource.update_icon()
+
+		if (opdir1 != 0 && opdir2 != 0)
+			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
+				if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
+					if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						NCOO.connections += powersource
+					if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
+						powersource.connections += NCOO
+					H << "You connect the two cables."
+
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
+					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						NCOC.connections += powersource
+					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
+						powersource.connections += NCOC
+		H << "You connect the cable to the [src]."
+	else
+		..()
+	..(W, H)
+
+/obj/structure/sawmill/initialize()
+	. = ..()
+	finish_work()
+
+/obj/structure/sawmill/after_load()
+	. = ..()
+	finish_work()
+
+/obj/structure/sawmill/before_save()
+	. = ..()
+	finish_work()

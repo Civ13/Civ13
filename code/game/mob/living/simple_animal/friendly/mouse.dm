@@ -49,7 +49,7 @@
 	item_state = "mouse_[body_color]"
 	icon_living = "mouse_[body_color]"
 	icon_dead = "mouse_[body_color]_dead"
-	desc = "It's a small [body_color] rodent, often seen hiding in the ship's hull and making a nuisance of itself."
+	desc = "It's a small [body_color] rodent."
 
 	if(body_color == "black")
 		if(map && (map.ordinal_age == 2 || map.ordinal_age == 3)) //Approx epochs where black plague was a thing.

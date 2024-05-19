@@ -1,7 +1,7 @@
 /obj/map_metadata/zhenbao
 	ID = MAP_ZHENBAO
 	title = "Sino-Soviet Border Conflict"
-	lobby_icon = "icons/lobby/zhenbao.png"
+	lobby_icon = 'icons/lobby/zhenbao.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/taiga,/area/caribbean/no_mans_land/invisible_wall/taiga/two,/area/caribbean/no_mans_land/invisible_wall/taiga/one)
 	respawn_delay = 1200
 	no_winner ="The Radio Station stays under Soviet control."
@@ -27,7 +27,7 @@
 	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Song of Zhenbao Island - Sino-Soviet War Song:1" = "sound/music/zhenbao.ogg",)
+		"Song of Zhenbao Island - Sino-Soviet War Song:1" = 'sound/music/zhenbao.ogg',)
 	gamemode = "Siege"
 
 /obj/map_metadata/zhenbao/job_enabled_specialcheck(var/datum/job/J)

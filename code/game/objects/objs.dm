@@ -36,6 +36,13 @@
 
 	var/explosion_resistance
 
+	var/origin_tech = null	//Used by R&D to determine what research bonuses it grants.
+	var/m_amt = 0	// metal
+	var/g_amt = 0	// glass
+	var/w_amt = 0	// waster amounts
+	var/crit_fail = 0
+	var/reliability = 100	//Used by SOME devices to determine how reliable they are.
+
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)
@@ -131,9 +138,6 @@
 	ui_interact(user)
 	..()
 
-/obj/proc/interact(mob/user)
-	return
-
 /obj/proc/update_icon()
 	return
 
@@ -147,6 +151,25 @@
 	if (isobj(AM))
 		var/obj/O = AM
 		O.in_use = TRUE
+
+/mob/proc/unset_using_drone()
+	if (using_drone)
+		using_drone.is_moving = FALSE
+		using_drone.controller = null
+		using_drone = null
+	if (client)
+		client.eye = src
+		client.perspective = MOB_PERSPECTIVE
+
+/mob/proc/set_using_drone(var/obj/item/drone_controller/RC)
+	if (using_drone)
+		unset_using_drone()
+	if (RC)
+		using_drone = RC
+		using_drone.controller = src
+		if (client)
+			client.eye = using_drone.connected_drone
+			client.perspective = EYE_PERSPECTIVE
 
 /obj/item/proc/updateSelfDialog()
 	var/mob/M = loc

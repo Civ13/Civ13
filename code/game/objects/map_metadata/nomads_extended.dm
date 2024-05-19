@@ -2,7 +2,7 @@
 /obj/map_metadata/nomads_extended
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush"
-	lobby_icon = "icons/lobby/civ13.gif"
+	lobby_icon = 'icons/lobby/civ13.gif'
 	no_winner ="The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // q0 minutes!
@@ -23,7 +23,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Words Through the Sky:1" = "sound/music/words_through_the_sky.ogg",)
+		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	nomads = TRUE
 	gamemode = "Oil Rush"
 	ordinal_age = 5

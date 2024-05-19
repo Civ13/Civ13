@@ -2,7 +2,7 @@
 /obj/map_metadata/little_creek_tdm
 	ID = MAP_LITTLE_CREEK_TDM
 	title = "Big Trouble in Little Creek (TDM)"
-	lobby_icon = "icons/lobby/wildwest.png"
+	lobby_icon = 'icons/lobby/wildwest.png'
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 600
@@ -24,13 +24,15 @@
 	ambience = list('sound/ambience/desert.ogg')
 	gamemode = "Bank Robbery (TDM)"
 	songs = list(
-		"The Good, the Bad, and the Ugly Theme:1" = "sound/music/good_bad_ugly.ogg",)
+		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
 	is_singlefaction = TRUE
 obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_cowboy == TRUE)
 		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy" || J.title == "Sheriff")
 			. = TRUE
+		else if (J.is_deathmatch == TRUE)
+			. = FALSE
 		else if (J.is_heist == TRUE)
 			. = FALSE
 		else if (J.is_civil_war == TRUE)

@@ -221,7 +221,8 @@ datum/admins/proc/print_chemical_reactions()
 //this is called just before reactants are removed.
 /datum/chemical_reaction/proc/send_data(var/datum/reagents/holder, var/reaction_limit)
 	return null
-/* aLL new chemicals will be added from the top going down starting from */
+
+/* all new chemicals will be added from the top going down starting from */
 // https://discord.com/channels/468979034571931648/1127619013447520266/1127644788502564864
 /* Common reactions */
 
@@ -391,16 +392,16 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 4, "hydrogen" = 8)
 	result_amount = 5
 
-/* We can just make isobutylene
+// Also known as 2-methyl-1-propanol, is an alcohol commonly used as a solvent in various industries, including paints, coatings, and printing inks. It is also used as a fuel additive and in the production of chemicals like esters and plasticizers.
 /datum/chemical_reaction/isobutanol
 	name = "Isobutanol"
 	id = "isobutanol"
 	result = "isobutanol"
 	required_reagents = list("carbon" = 4, "hydrogen" = 10, "oxygen" = 1)
 	result_amount = 5
-*/
 
 // Mostly used for butyl rubber production, refrigeration, adhesives, polymers, fuel and fuel additive
+// Also known as 2-methylpropene, is an alkene primarily used in the production of polymers such as polyethylene and polypropylene. It is also used in the synthesis of various chemicals, including methyl tert-butyl ether (MTBE) and what is listed above.
 /datum/chemical_reaction/isobutylene
 	name = "Isobutylene"
 	id = "isobutylene"
@@ -599,21 +600,21 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Aspirin"
 	id = "aspirin"
 	result = "aspirin"
-	required_reagents = list("carbon" = 5, "water" = 4, "oxygen" = 2 )
+	required_reagents = list("carbon" = 5, "water" = 4, "oxygen" = 2)
 	result_amount = 5
 
 /datum/chemical_reaction/calcium_carbonate
 	name = "Calcium carbonate"
 	id = "calcium carbonate"
 	result = "calcium carbonate"
-	required_reagents = list("carbon" =1, "calcium" = 1, "oxygen" = 3 )
+	required_reagents = list("carbon" = 1, "calcium" = 1, "oxygen" = 3)
 	result_amount = 2
 
 /datum/chemical_reaction/carbon_dioxide
 	name = "Carbon dioxide"
 	id = "carbon_dioxide"
 	result = "carbon_dioxide"
-	required_reagents = list("carbon" =1,  "oxygen" = 2 )
+	required_reagents = list("carbon" = 1,  "oxygen" = 2)
 	result_amount = 2
 
 
@@ -621,49 +622,49 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Sulphuric acid"
 	id = "sacid"
 	result = "sacid"
-	required_reagents = list("sulfur" =1, "oxygen" = 1, "hydrogen" = 1 )
+	required_reagents = list("sulfur" = 1, "oxygen" = 1, "hydrogen" = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/saline_glucose
 	name = "Saline Glucose solution"
 	id = "saline_glucose"
 	result = "saline_glucose"
-	required_reagents = list("sodiumchloride" = 1, "water" = 1, "sugar" = 1 )
+	required_reagents = list("sodiumchloride" = 1, "water" = 1, "sugar" = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
-	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
+	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3)
 	result_amount = 4
 
 /datum/chemical_reaction/baking_soda
 	name = "Baking soda"
 	id = "baking_soda"
 	result = "baking_soda"
-	required_reagents = list("carbon_dioxide" =1, "ammonia" = 1, "sodium_chloride" = 2 )
+	required_reagents = list("carbon_dioxide" = 1, "ammonia" = 1, "sodium_chloride" = 2)
 	result_amount = 2
 
 /datum/chemical_reaction/bleach
 	name = "Bleach"
 	id = "bleach"
 	result = "bleach"
-	required_reagents = list("sodium_hypochlorite" =1, "water" = 9)
+	required_reagents = list("sodium_hypochlorite" = 1, "water" = 9)
 	result_amount = 10
 
 /datum/chemical_reaction/sodium_hypochlorite
 	name = "Sodium hypochlorite"
 	id = "sodium_hypochlorite"
 	result = "sodium_hypochlorite"
-	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
+	required_reagents = list("potassium" = 1, "oxygen" = 1, "chlorine" = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/hydrazine
 	name = "Hydrazine"
 	id = "hydrazine"
 	result = "hydrazine"
-	required_reagents = list("ammonia" =1, "hydrogen" = 1, "nitrogen" = 1 )
+	required_reagents = list("ammonia" = 1, "hydrogen" = 1, "nitrogen" = 1)
 	result_amount = 1
 
 /datum/chemical_reaction/condensedcapsaicin
@@ -975,12 +976,12 @@ datum/admins/proc/print_chemical_reactions()
 		new /obj/item/weapon/reagent_containers/food/snacks/meatball(location)
 	return
 
-/datum/chemical_reaction/dough
+/* /datum/chemical_reaction/dough
 	name = "Dough"
 	id = "dough"
 	result = null
 	required_reagents = list("water" = 5, "flour" = 10)
-	result_amount = 1
+	result_amount = 1 */
 
 /datum/chemical_reaction/sweetdough
 	name = "Sweet Dough"

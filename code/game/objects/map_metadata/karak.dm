@@ -2,7 +2,7 @@
 /obj/map_metadata/karak
 	ID = MAP_KARAK
 	title = "Karak"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	no_winner ="The fighting is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
@@ -24,7 +24,7 @@
 	faction2 = ARAB
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Crusaders:1" = "sound/music/crusaders.ogg")
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

@@ -2,7 +2,7 @@
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
 	title = "Compound"
-	lobby_icon = "icons/lobby/vietnam.png"
+	lobby_icon = 'icons/lobby/vietnam.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_winner ="No base has been captured."
@@ -25,7 +25,7 @@
 	faction2 = VIETNAMESE
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
 	songs = list(
-		"Fortunate Son:1" = "sound/music/fortunate_son.ogg",)
+		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 3
 	grace_wall_timer = 3000
 

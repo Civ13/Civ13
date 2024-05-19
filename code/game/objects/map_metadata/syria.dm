@@ -1,10 +1,11 @@
 /obj/map_metadata/syria
 	ID = MAP_SYRIA
 	title = "Syrian Civil War"
-	lobby_icon = "icons/lobby/syria.png"
+	lobby_icon = 'icons/lobby/syria.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
+	can_spawn_on_base_capture = TRUE
 
 	faction_organization = list(
 		ARAB,
@@ -22,7 +23,7 @@
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
-		"God, Syria and Bashar!:1" = "sound/music/godsyriabashar.ogg")
+		"God, Syria and Bashar!:1" = 'sound/music/godsyriabashar.ogg')
 	gamemode = "King of the Hill"
 
 /obj/map_metadata/syria/faction2_can_cross_blocks()

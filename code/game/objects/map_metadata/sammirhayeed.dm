@@ -1,7 +1,7 @@
 /obj/map_metadata/sammirhayeed
 	ID = MAP_SAMMIRHAYEED
 	title = "Sammir Hayeed"
-	lobby_icon = "icons/lobby/medieval.png"
+	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 300
 	no_hardcore = TRUE
@@ -22,7 +22,7 @@
 	faction2 = FRENCH
 	ambience = list('sound/ambience/desert.ogg')
 	songs = list(
-		"Crusaders:1" = "sound/music/crusaders.ogg")
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	gamemode = "Siege"
 	grace_wall_timer = 3600
 

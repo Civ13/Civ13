@@ -12,7 +12,7 @@ var/civmax_research = list(230,230,230)
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
 	var/title = null
-	var/lobby_icon = "icons/lobby/civ13.gif"
+	var/lobby_icon = 'icons/lobby/civ13.gif'
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
@@ -39,7 +39,7 @@ var/civmax_research = list(230,230,230)
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-		"Nassau Shores:1" = "sound/music/nassau_shores.ogg",)
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
 	var/is_RP = FALSE
 	var/mosinonly = FALSE
@@ -96,6 +96,7 @@ var/civmax_research = list(230,230,230)
 	var/current_loser = null
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
+	var/can_spawn_on_base_capture = FALSE
 	var/list/awards = list()
 	var/list/scores = list()
 	var/list/warrants = list()
@@ -157,10 +158,11 @@ var/civmax_research = list(230,230,230)
 	var/perschadplus = FALSE
 	var/is_wasteland = FALSE
 	var/hasnukes = FALSE
+	var/disablehud = FALSE //Faction hud
 
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
-	var/autoresearch_mult = 0.4 // the amount research goes up per minute. Can be edited by admins.
+	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be editted by admins.
 	var/resourceresearch = FALSE
 
 	var/age1_lim = 75
@@ -238,6 +240,8 @@ var/civmax_research = list(230,230,230)
 	var/list/lizard = list()
 	var/list/wolfman = list()
 	var/list/crab = list()
+	var/list/goblin = list()
+	var/list/droid = list()
 
 	var/list/berryeffects = list(list("neutral","neutral","water"), list("tinto","neutral","water"), list("amar","neutral","water"), list("majo","neutral","water"), list("narco","neutral","water"), list("azul","neutral","water"), list("zelenyy","neutral","water"), list("marron","neutral","water"), list("corcairghorm","neutral","water"))
 
@@ -272,8 +276,8 @@ var/civmax_research = list(230,230,230)
 				i[3] = pick("peyote", "psilocybin","mindbreaker")
 			else if (i[2] == "healing")
 				i[3] = pick("paracetamol", "penicillin", "opium", "cocaine", "sal_acid")
-	spawn(5000)
-		pollution()
+//	spawn(5000)
+//		pollution()
 	spawn(2400)
 		wind()
 	spawn(2000)
@@ -372,6 +376,9 @@ var/civmax_research = list(230,230,230)
 		change_weather(WEATHER_SMOG)
 		to_chat(world, SPAN_NOTICE("<font size = 3>The air gets smoggy...</font>"))
 	if (global_pollution < 0)
+		if (weather == WEATHER_SMOG)
+			to_chat(world, SPAN_NOTICE("<font size = 3>The smog clears...</font>"))
+			weather = WEATHER_NONE
 		set_global_pollution(0)
 	else
 		change_global_pollution(-80)
@@ -416,7 +423,7 @@ var/civmax_research = list(230,230,230)
 
 /obj/map_metadata/proc/autoresearch_proc()
 	if (autoresearch && default_research < 230)
-		spawn(600) //1 minute = 0.4 points (by default)
+		spawn(600) //1 minute = 0.03 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
 				civa_research = list(default_research,default_research,default_research,null,0)
@@ -672,7 +679,7 @@ var/civmax_research = list(230,230,230)
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		win_condition_spam_check = TRUE
 		return FALSE
-	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CAMPAIGN)
+	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CMP)
 		// German major
 		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
@@ -751,7 +758,10 @@ var/civmax_research = list(230,230,230)
 		AMERICAN = 0,
 		VIETNAMESE = 0,
 		CHINESE = 0,
-		FILIPINO = 0,)
+		FILIPINO = 0,
+		BLUEFACTION = 0,
+		REDFACTION = 0,
+		)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -827,12 +837,8 @@ var/civmax_research = list(230,230,230)
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-				return "Redmenian"
 			return "Pirate"
 		if (CIVILIAN)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-				return "Blugoslavian"
 			return "Colonist"
 		if (INDIANS)
 			return "Native"
@@ -881,6 +887,11 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if (POLISH)
 			return "Polish"
+		if (BLUEFACTION)
+			return "Blugoslavia"
+		if (REDFACTION)
+			return "Redmenia"
+
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -889,14 +900,8 @@ var/civmax_research = list(230,230,230)
 			else
 				return "British Empire"
 		if (PIRATES)
-			if (map.ID == MAP_CAMPAIGN)
-				return "Redmenia Defence Force"
-			else if (map.ID == MAP_ROTSTADT)
-				return "Rotstadt People's Republic"
 			return "Pirate crew"
 		if (CIVILIAN)
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT)
-				return "Blugoslavian Armed Forces"
 			return "Colonists"
 		if (INDIANS)
 			return "Native Tribe"
@@ -948,6 +953,13 @@ var/civmax_research = list(230,230,230)
 			return "Philippine Revolutionary Army"
 		if (POLISH)
 			return "Polish Home Army"
+		if (BLUEFACTION)
+			return "Blugoslavian Armed Forces"
+		if (REDFACTION)
+			if (map.ID == MAP_ROTSTADT)
+				return "Rotstadt People's Republic"
+			else
+				return "Redmenia Defence Force"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -955,10 +967,6 @@ var/civmax_research = list(230,230,230)
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
-		if ("Redmenia Defence Force")
-			return "Redmenian"
-		if ("Blugoslavian Armed Forces")
-			return "Blugoslavian"
 		if ("Colonists")
 			return "Colonist"
 		if ("Native Tribe")
@@ -997,6 +1005,11 @@ var/civmax_research = list(230,230,230)
 			return "Filipino"
 		if ("Polish Home Army")
 			return "Polish"
+		if ("Blugoslavian Armed Forces")
+			return "Blugoslavian"
+		if ("Redmenia Defence Force")
+			return "Redmenian"
+
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
@@ -1042,14 +1055,14 @@ var/civmax_research = list(230,230,230)
 					BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
 			for (var/turf/floor/dirt/DT in get_area_turfs(/area/caribbean/nomads/forest))
 				if (!istype(DT, /turf/floor/dirt/underground))
-					var/tmp/area/A = get_area(DT)
+					var/area/A = get_area(DT)
 					if (A.climate == "temperate")
 						if (prob(75))
 							DT.ChangeTurf(/turf/floor/dirt/winter)
 					else if (A.climate == "tundra" || A.climate == "taiga")
 						DT.ChangeTurf(/turf/floor/dirt/winter)
 			for (var/turf/floor/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
-				var/tmp/area/A = get_area(GT)
+				var/area/A = get_area(GT)
 				if (A.climate == "temperate")
 					if (prob(80))
 						GT.ChangeTurf(/turf/floor/winter/grass)
@@ -1082,11 +1095,11 @@ var/civmax_research = list(230,230,230)
 				if (DF.z > 1)
 					DF.ChangeTurf(/turf/floor/dirt/flooded)
 			for (var/turf/floor/dirt/winter/DT in get_area_turfs(/area/caribbean/nomads/forest))
-				var/tmp/area/A = get_area(DT)
+				var/area/A = get_area(DT)
 				if (A.climate == "temperate")
 					DT.ChangeTurf(/turf/floor/dirt)
 			for (var/turf/floor/winter/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
-				var/tmp/area/A = get_area(GT)
+				var/area/A = get_area(GT)
 				if (A.climate == "temperate")
 					GT.ChangeTurf(/turf/floor/grass)
 			for (var/turf/floor/winter/WT in get_area_turfs(/area/caribbean/roofed))
@@ -1100,7 +1113,7 @@ var/civmax_research = list(230,230,230)
 				for (var/obj/structure/wild/tree/live_tree/TREES in world)
 					TREES.change_season()
 			for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
-				var/tmp/area/A = get_area(D)
+				var/area/A = get_area(D)
 				if (A.climate == "temperate")
 					if (prob(60))
 						if (prob(40))
@@ -1108,55 +1121,55 @@ var/civmax_research = list(230,230,230)
 						else
 							D.ChangeTurf(/turf/floor/dirt)
 			for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
-				var/tmp/area/A = get_area(G)
+				var/area/A = get_area(G)
 				if (A.climate == "temperate")
 					if (prob(60))
 						G.ChangeTurf(/turf/floor/grass)
 			spawn(150)
 				change_weather(WEATHER_NONE)
 				for (var/obj/structure/window/barrier/snowwall/SW1 in world)
-					var/tmp/area/A = get_area(SW1)
+					var/area/A = get_area(SW1)
 					if (A.climate != "tundra" && A.climate != "taiga")
 						if (prob(60))
 							qdel(SW1)
 				for (var/obj/covers/snow_wall/SW2 in world)
-					var/tmp/area/A = get_area(SW2)
+					var/area/A = get_area(SW2)
 					if (A.climate != "tundra" && A.climate != "taiga")
 						if (prob(60))
 							qdel(SW2)
 				for (var/obj/item/weapon/snowwall/SW3 in world)
-					var/tmp/area/A = get_area(SW3)
+					var/area/A = get_area(SW3)
 					if (A.climate != "tundra" && A.climate != "taiga")
 						if (prob(60))
 							qdel(SW3)
 			spawn(3000)
 				for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
-					var/tmp/area/A = get_area(D)
+					var/area/A = get_area(D)
 					if (A.climate == "temperate")
 						if (prob(40))
 							D.ChangeTurf(/turf/floor/grass)
 						else
 							D.ChangeTurf(/turf/floor/dirt)
 				for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
-					var/tmp/area/A = get_area(G)
+					var/area/A = get_area(G)
 					if (A.climate == "temperate")
 						G.ChangeTurf(/turf/floor/grass)
 				for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/semiarid))
-					var/tmp/area/A = get_area(D)
+					var/area/A = get_area(D)
 					if (A.climate == "semiarid" && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/underground))
 						if (prob(40))
 							D.ChangeTurf(/turf/floor/grass)
 
 				for (var/obj/structure/window/barrier/snowwall/SW1 in world)
-					var/tmp/area/A = get_area(get_turf(SW1))
+					var/area/A = get_area(get_turf(SW1))
 					if (A.climate != "tundra" && A.climate != "taiga")
 						qdel(SW1)
 				for (var/obj/covers/snow_wall/SW2 in world)
-					var/tmp/area/A = get_area(get_turf(SW2))
+					var/area/A = get_area(get_turf(SW2))
 					if (A.climate != "tundra" &&A.climate != "taiga")
 						qdel(SW2)
 				for (var/obj/item/weapon/snowwall/SW3 in world)
-					var/tmp/area/A = get_area(get_turf(SW3))
+					var/area/A = get_area(get_turf(SW3))
 					if (A.climate != "tundra" && A.climate != "taiga")
 						qdel(SW3)
 		else if (season == "SUMMER")
@@ -1177,22 +1190,22 @@ var/civmax_research = list(230,230,230)
 			spawn(15000)
 				change_weather(WEATHER_WET)
 				for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-					var/tmp/area/A = get_area(D)
+					var/area/A = get_area(D)
 					if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !(A.climate == "jungle"))
 						D.ChangeTurf(/turf/floor/dirt/winter)
 				for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
-					var/tmp/area/A = get_area(G)
+					var/area/A = get_area(G)
 					if (A.climate == "temperate")
 						if (prob(40))
 							G.ChangeTurf(/turf/floor/winter/grass)
 				spawn(1200)
 					for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-						var/tmp/area/A = get_area(D)
+						var/area/A = get_area(D)
 						if (!istype(D,/turf/floor/dirt/winter) && (A.climate == "temperate"))
 							if (D.z == world.maxz && prob(50) && !istype(D,/turf/floor/dirt/underground))
 								D.ChangeTurf(/turf/floor/dirt/winter)
 					for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
-						var/tmp/area/A = get_area(G)
+						var/area/A = get_area(G)
 						if (A.climate == "temperate")
 							if (prob(50))
 								G.ChangeTurf(/turf/floor/winter/grass)

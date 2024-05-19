@@ -1,7 +1,7 @@
 /obj/structure/vehicleparts/frame/ship/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
 		return
-	if (((istype (I, /obj/item/stack/material/wood) && !istype(src, /obj/structure/vehicleparts/frame/ship/steel)) || (istype (I, /obj/item/stack/material/steel) && istype(src, /obj/structure/vehicleparts/frame/ship/steel))) && !axis)
+	if (((istype (I, /obj/item/stack/material/wood || /obj/item/stack/material/woodplank) && !istype(src, /obj/structure/vehicleparts/frame/ship/steel)) || (istype (I, /obj/item/stack/material/steel) && istype(src, /obj/structure/vehicleparts/frame/ship/steel))) && !axis)
 		var/obj/item/stack/material/S = I
 		var/list/optlist = list("Cancel")
 		if (w_left[1] == "")

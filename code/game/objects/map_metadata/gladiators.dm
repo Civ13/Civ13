@@ -2,7 +2,7 @@ K
 /obj/map_metadata/gladiators
 	ID = MAP_GLADIATORS
 	title = "Gladiators"
-	lobby_icon = "icons/lobby/gladiators.png"
+	lobby_icon = 'icons/lobby/gladiators.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0
 
@@ -21,7 +21,7 @@ K
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = ROMAN
 	songs = list(
-		"Divinitus:1" = "sound/music/divinitus.ogg",)
+		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
 	valid_weather_types = list(WEATHER_NONE)

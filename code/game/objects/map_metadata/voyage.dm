@@ -3,7 +3,7 @@
 	ID = MAP_VOYAGE
 	title = "Voyage"
 	no_winner ="The ship is on the way."
-	lobby_icon = "icons/lobby/imperial.png"
+	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	faction_organization = list(PIRATES)
 	roundend_condition_sides = list(list(PIRATES) = /area/caribbean/no_mans_land)
@@ -125,7 +125,7 @@
 							else
 								for(var/obj/structure/voyage/anchor_capstan/AC in world)
 									AC.lower_anchor()
-	spawn(600)
+	spawn(600) // 1 minute
 		nav()
 //checks for ships when the player ship arrives in new coordinate
 /obj/map_metadata/voyage/proc/check_ships()
@@ -812,7 +812,7 @@
 						return
 					else
 						world << "<font size=4 color='yellow'>The ship is getting ready to leave, ALL crew outside must return within <b>2</b> minutes or be left behind!</font>"
-						spawn(600)
+						spawn(600) // 1 minute
 							world << "<font size=4 color='yellow'>The ship is leaving, ALL crew outside must return within <b>1</b> minute or be left behind!</font>"
 						spawn(1200)
 							raise_anchor()

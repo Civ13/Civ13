@@ -127,10 +127,10 @@
 		return FALSE
 	if(current_location.cannot_depart(src))
 		return FALSE
-	testing("[src] moving to [destination]. Areas are [english_list(shuttle_area)]")
+	//testing("[src] moving to [destination]. Areas are [english_list(shuttle_area)]")
 	var/list/translation = list()
 	for(var/area/A in shuttle_area)
-		testing("Moving [A]")
+		//testing("Moving [A]")
 		translation += get_turf_translation(get_turf(current_location), get_turf(destination), A.contents)
 	shuttle_moved(destination, translation)
 	return TRUE

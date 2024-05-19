@@ -136,61 +136,8 @@
 		roof.overlays.Cut()
 	var/turf/T = get_turf(src)
 	if (!noroof)
-		if (axis)
-			var/ic = 'icons/obj/vehicles/vehicles256x256.dmi'
-			var/roof_turret_x = 0
-			var/roof_turret_y = 0
-			if (axis.tile_size == "32x32")
-				roof_turret_x = -112
-				roof_turret_y = -112
-			else if (axis.tile_size == "96x96")
-				roof_turret_x = -80
-				roof_turret_y = -80
-			for(var/obj/structure/cannon/modern/tank/C in T)
-				if (C.course && C.dir != src.dir)
-					C.rotate_to(src.dir)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
-
-				if (roof_turret && axis.color)
-					roof_turret.color = axis.color
-				if (dir == NORTH)
-					roof_turret_x -= axis.turret_x
-					roof_turret_y -= axis.turret_y
-				else if (dir == SOUTH)
-					roof_turret_x += axis.turret_x
-					roof_turret_y += axis.turret_y
-				else if (dir == WEST)
-					roof_turret_x += axis.turret_y
-					roof_turret_y -= axis.turret_x
-				else if (dir == EAST)
-					roof_turret_x -= axis.turret_y
-					roof_turret_y += axis.turret_x
-
-				roof_turret.pixel_x = roof_turret_x
-				roof_turret.pixel_y = roof_turret_y
-
-			for(var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/C in T)
-				roof_turret = image(icon=ic,loc=src, icon_state="[axis.turret_type][broken]", layer=11.1, dir=C.dir)
-
-				if (roof_turret && axis && axis.color)
-					roof_turret.color = axis.color
-
-				if (dir == NORTH)
-					roof_turret_x -= axis.turret_x
-					roof_turret_y -= axis.turret_y
-				else if (dir == SOUTH)
-					roof_turret_x += axis.turret_x
-					roof_turret_y += axis.turret_y
-				else if (dir == WEST)
-					roof_turret_x += axis.turret_y
-					roof_turret_y -= axis.turret_x
-				else if (dir == EAST)
-					roof_turret_x -= axis.turret_y
-					roof_turret_y += axis.turret_x
-
-				roof_turret.pixel_x = roof_turret_x
-				roof_turret.pixel_y = roof_turret_y
-
+		for(var/obj/structure/turret/TR in T)
+			TR.update_icon()
 		for (var/obj/CC in T)
 			if (istype(CC, /obj/structure/bed/chair/drivers) && istype(axis, /obj/structure/vehicleparts/axis/heavy))
 				roof.icon_state = "roof_steel_hatch_driver"
@@ -231,7 +178,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_left[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
-				if (w_left.len < 8)
+				if (w_left.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -245,7 +192,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
-				if (w_right.len < 8)
+				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -262,7 +209,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
-				if (w_front.len < 8)
+				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -279,7 +226,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
-				if (w_back.len < 8)
+				if (w_back.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -298,7 +245,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_left[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
-				if (w_left.len < 8)
+				if (w_left.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -312,7 +259,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
-				if (w_right.len < 8)
+				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -329,7 +276,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
-				if (w_front.len < 8)
+				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -346,7 +293,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
-				if (w_back.len < 8)
+				if (w_back.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -365,7 +312,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_left[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
-				if (w_left.len < 8)
+				if (w_left.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -379,7 +326,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
-				if (w_right.len < 8)
+				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -396,7 +343,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
-				if (w_front.len < 8)
+				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -413,7 +360,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
-				if (w_back.len < 8)
+				if (w_back.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -432,7 +379,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_left[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
-				if (w_left.len < 8)
+				if (w_left.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -446,7 +393,7 @@
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
-				if (w_right.len < 8)
+				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -463,7 +410,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
-				if (w_front.len < 8)
+				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color
@@ -480,7 +427,7 @@
 					tempstate = override_frame_icon
 					override_applied = TRUE
 				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
-				if (w_back.len < 8)
+				if (w_back.len <= 8)
 					if (axis)
 						if (override_color)
 							tmpimg1.color = override_color

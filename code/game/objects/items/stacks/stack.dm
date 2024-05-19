@@ -41,7 +41,7 @@
 	return
 
 //If a stack is pulled over another stack, this proc is called.
-obj/item/stack/Crossed(var/obj/item/stack/S)
+/obj/item/stack/Crossed(var/obj/item/stack/S)
 	//Checking if stack types match and if it isn't thrown to avoid scooping up stacks in flight.
 	if(istype(S, stacktype) && !S.throwing)
 		merge(S)
@@ -60,6 +60,8 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 	S.amount += transfer
 	src.update_icon()
 	S.update_icon()
+	src.update_strings()
+	S.update_strings()
 	if(src.amount <= 0)
 		qdel(src)
 	return transfer
@@ -165,7 +167,9 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		var/obj/item/stack/S = W
 		merge(S)
 		S.update_icon()
+		S.update_strings()
 		src.update_icon()
+		src.update_strings()
 		spawn(0) //give the stacks a chance to delete themselves if necessary
 		if (S && usr.using_object == S)
 			S.interact(usr)
@@ -182,7 +186,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 /obj/item/stack/AltClick(mob/living/user)
 	var/turf/T = get_turf(src)
 	if (T && user.TurfAdjacent(T))
-		if(zero_amount())
+		if (zero_amount() || amount <= 1) // Prevents Alt-clicking if the amount is 0 or 1
 			return
 		var/max = amount
 		var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
@@ -191,18 +195,24 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		if(stackmaterial == null || stackmaterial <= 0)
 			return
 		else if (!user.item_is_in_hands(src) && !user.Adjacent(src))
-			to_chat(user, "<span class='warning'>The stack isn't in your hands or next to you!</span>")
+			to_chat(user, SPAN_WARNING("The stack isn't in your hands or next to you!"))
 			return
 		else
 			change_stack(user, stackmaterial)
-			to_chat(user, "<span class='notice'>You take [stackmaterial] out of the stack.</span>")
+			update_strings(stackmaterial)
+			to_chat(user, SPAN_NOTICE("You take [stackmaterial] out of the stack."))
+
+/obj/item/stack/proc/update_strings()
+    return
 
 /obj/item/stack/proc/change_stack(mob/user, amount)
 	var/obj/item/stack/F = split(amount)
 	if (F)
 		user.put_in_hands(F)
 		F.update_icon()
+		F.update_strings()
 		src.update_icon()
+		src.update_strings()
 		add_fingerprint(user)
 		F.add_fingerprint(user)
 		spawn(0)
@@ -773,6 +783,24 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			return
 		if (!istype(H.l_hand, /obj/item/stack/material/iron) && !istype(H.r_hand, /obj/item/stack/material/iron))
 			user << SPAN_WARNING("You need to have iron in the other hand to craft electronic circuits.")
+			return
+		if (istype(H.l_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.l_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.l_hand, H)
+		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.r_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.r_hand, H)
+
+	else if (recipe.result_type == /obj/structure/sawmill/powered)
+		if (H.getStatCoeff("crafting") < 2.2)
+			H << SPAN_DANGER("This is too complex for your skill level.")
+			return
+		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
+			user << SPAN_WARNING("You need to have electronic circuits in the other hand to craft the powered saw mill.")
 			return
 		if (istype(H.l_hand, /obj/item/stack/material/electronics))
 			var/obj/item/stack/material/electronics/NR = H.l_hand
@@ -1426,7 +1454,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "grandfather clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1450,7 +1478,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "standing clock"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 6 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1474,7 +1502,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 					return
 
 	else if (findtext(recipe.title, "wooden house door"))
-		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
+		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			user << "<span class = 'warning'>You need a stack of at least 5 wood in one of your hands in order to make this.</span>"
 			return
 		else
@@ -1868,6 +1896,14 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 		else if (inpt > 150)
 			inpt = 150
 		required = 2*(inpt/75)
+	
+	if (recipe.result_type == /obj/structure/barbwire)
+		var/barbwire_amount = 0
+		for (var/obj/structure/barbwire/B in get_turf(user))
+			barbwire_amount++
+		if (barbwire_amount >= 2)
+			to_chat(H, SPAN_WARNING("You cannot build more barbwire here."))
+			return
 
 	if (use(required,H))
 		var/atom/O
@@ -1888,14 +1924,14 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			T.caliber = inpt
 			T.name = "[T.caliber]mm cannon casing"
 			return
-		
+
 		if (istype(O, /obj/item/ammo_magazine/emptymagazine/rifle))
 			var/obj/item/ammo_magazine/emptymagazine/rifle/T = O
-			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CAMPAIGN)
-				if (H.faction_text == PIRATES)
-					T.icon_state = "m16"
-				else if (H.faction_text == CIVILIAN)
+			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+				if (H.faction_text == BLUEFACTION)
 					T.icon_state = "ak74"
+				else if (H.faction_text == REDFACTION)
+					T.icon_state = "m16"
 			return
 
 		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
@@ -1905,7 +1941,7 @@ obj/item/stack/Crossed(var/obj/item/stack/S)
 			else
 				O.color = input
 				return
-				
+
 		if (istype(O, /obj/structure/closet/crate/wall_mailbox) && !istype(O, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
 			var/input = WWinput(user, "Choose the color:", "Color" , "#FFFFFF", "color")
 			if (input == null || input == "")

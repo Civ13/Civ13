@@ -117,7 +117,7 @@
 
 /mob/proc/say_quote(var/message, var/datum/language/speaking = null)
 		var/verb = "says"
-		var/ending = copytext(message, length(message))
+		var/ending = copytext(message, length_char(message))
 		if (ending=="!")
 				verb=pick("exclaims","shouts","yells")
 		else if (ending=="?")
@@ -139,7 +139,7 @@
 	return get_turf(src)
 
 /mob/proc/say_test(var/text)
-	var/ending = copytext(text, length(text))
+	var/ending = copytext(text, length_char(text))
 	if (ending == "?")
 		return "1"
 	else if (ending == "!")
@@ -150,10 +150,10 @@
 //returns the language object only if the code corresponds to a language that src can speak, otherwise null.
 /mob/proc/parse_language(var/message)
 	var/prefix = copytext(message,1,2)
-	if (length(message) >= 1 && prefix == "!")
+	if (length_char(message) >= 1 && prefix == "!")
 		return all_languages["Noise"]
 
-	if (length(message) >= 3 && is_language_prefix(prefix))
+	if (length_char(message) >= 3 && is_language_prefix(prefix))
 		var/language_prefix = lowertext(copytext(message, 2, 4))
 		var/datum/language/L = language_keys[language_prefix]
 		if (can_speak(L))

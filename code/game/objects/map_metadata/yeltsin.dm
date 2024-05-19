@@ -1,12 +1,13 @@
 /obj/map_metadata/yeltsin
 	ID = MAP_YELTSIN
 	title = "Battle for the Russian Parliament"
-	lobby_icon = "icons/lobby/yeltsin.png"
+	lobby_icon = 'icons/lobby/yeltsin.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 1200
 	no_winner = "The operation is still underway."
 	gamemode = "Protect the VIP."
 	no_hardcore = TRUE
+	can_spawn_on_base_capture = TRUE
 	var/list/HVT_list = list()
 
 	faction_organization = list(
@@ -27,7 +28,7 @@
 	grace_wall_timer = 6000
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Kino - I Want Changes:1" = "sound/music/want_changes.ogg",)
+		"Kino - I Want Changes:1" = 'sound/music/want_changes.ogg',)
 	artillery_count = 0
 	valid_artillery = list()
 	scores = list(
@@ -106,8 +107,8 @@
 				current_win_condition = no_winner
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
-				message = "25 minutes have passed! The HVT is now safe!"
-				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+				message = "40 minutes have passed! The HVT is now safe!"
+				to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 				win_condition_spam_check = TRUE
 				return FALSE
 			if (processes.ticker.playtime_elapsed >= 3000)

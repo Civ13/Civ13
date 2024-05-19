@@ -183,8 +183,17 @@
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 	basic_icon = "ship"
 	icon_state = "ship"
-	desc = "A wood round ship door"
+	desc = "A wood round ship door."
 	override_material = TRUE
 
+/obj/structure/simple_door/key_door/anyone/high_sec
+	name = "secure door"
+	icon = 'icons/obj/doors/rapid_pdoor.dmi'
+	basic_icon = "secure"
+	icon_state = "secure"
+	desc = "A sturdy secure sliding door."
+	material = "steel"
+	override_material = TRUE
+	
 #undef ANYONE_CODE
 

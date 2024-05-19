@@ -1,7 +1,7 @@
 /obj/map_metadata/iwojima
 	ID = MAP_IWO_JIMA
 	title = "Iwo Jima"
-	lobby_icon = "icons/lobby/ww2.png"
+	lobby_icon = 'icons/lobby/ww2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	no_hardcore = TRUE
@@ -24,8 +24,8 @@
 	grace_wall_timer = 4800
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET)
 	songs = list(
-		"Over There!:1" = "sound/music/overthere.ogg",
-		"I Hate These Classes:2" = "sound/music/i_hate_these_classes.ogg",)
+		"Over There!:1" = 'sound/music/overthere.ogg',
+		"I Hate These Classes:2" = 'sound/music/i_hate_these_classes.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/iwojima/job_enabled_specialcheck(var/datum/job/J)
 	..()
