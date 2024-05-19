@@ -130,7 +130,7 @@
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
 
-/obj/map_metadata/nationsrp/coldwar_campaign
+/obj/map_metadata/nationsrp/coldwar_cmp
 	ID = MAP_NATIONSRP_COLDWAR_CMP
 	title = "Nations RP Cold War"
 	lobby_icon = 'icons/lobby/campaign.png'
@@ -162,7 +162,7 @@
 	age7_done = TRUE
 	grace_wall_timer = 2 DAYS
 
-/obj/map_metadata/nationsrp/coldwar_campaign/New()
+/obj/map_metadata/nationsrp/coldwar_cmp/New()
 	..()
 	civname_a = "Redmenian Nation"
 	civname_b = "Blugoslavian Nation"
@@ -173,7 +173,7 @@
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
 
-/obj/map_metadata/nationsrp/coldwar_campaign/cross_message(faction)
+/obj/map_metadata/nationsrp/coldwar_cmp/cross_message(faction)
 	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
@@ -183,7 +183,7 @@
 	else
 		return ""
 
-/obj/map_metadata/nationsrp/coldwar_campaign/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/nationsrp/coldwar_cmp/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
