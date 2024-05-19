@@ -200,6 +200,15 @@
 
 				else if (istype(T, /turf/floor/dirt) && istype(H))
 					if (T.available_dirt > 0)
+						if (H.a_intent == I_GRAB)
+							if(!SH.heldclod)
+								visible_message("<span class = 'notice'>[user] shovels up clod.</span>", "<span class = 'notice'>You shovel up clod.</span>")
+								playsound(src, 'sound/items/dig_shovel.ogg', 100, TRUE)
+								var/obj/item/S = new /obj/item/dirtclod(SH)
+								SH.heldclod = S
+								SH.update_icon()
+								T.available_dirt -= 1
+								return
 						H.shoveling = TRUE
 						visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
@@ -348,14 +357,14 @@
 						if(O.dir == user.dir)
 							to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 							return
-			visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
+			visible_message("<span class='danger'>[user] starts constructing the base of a dirt barrier.</span>", "<span class='danger'>You start constructing the base of a dirt barrier.</span>")
 			if (do_after(user, sandbag_time, user.loc))
 				var/obj/item/weapon/barrier/bag = C
 				var/progress = bag.sand_amount
 				qdel(C)
 				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user)
 				sandbag.progress = progress
-				visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
+				visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barrier. Anyone can now add to it.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 3)

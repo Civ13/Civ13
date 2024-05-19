@@ -5,7 +5,7 @@
 
 /obj/structure/window/barrier
 	icon = 'icons/obj/structures.dmi'
-	name = "dirt wall"
+	name = "dirt barrier"
 	desc = "That's a barricade from dirt."
 	icon_state = "dirt_wall"
 	layer = MOB_LAYER + 2 //just above mobs
@@ -144,19 +144,32 @@
 
 /obj/structure/window/barrier/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
-	if (istype(O, /obj/item/weapon/barrier))
+	if (istype(O, /obj/item/weapon/barrier)) // Sequencing of code could probably use a make-over.
 		if (progress < 3)
 			progress += 1
-			if (progress == 2)
-				icon_state = "dirt_wall_66%"
-			if (progress >= 3)
-				icon_state = "dirt_wall"
-				new/obj/structure/window/barrier(loc, dir)
-				qdel(src)
-			visible_message(SPAN_DANGER("[user] shovels dirt into [src].</span>"))
+			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_NOTICE("You add dirt onto \the [src]."))
 			qdel(O)
-	else
-		return
+	else if(istype(O, /obj/item/dirtclod))
+		if (progress < 3)
+			progress += 0.5
+			user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_NOTICE("You add dirt onto \the [src]."))
+			qdel(O)
+	else if(istype(O, /obj/item/weapon/material/shovel))
+		var/obj/item/weapon/material/shovel/S = O
+		if(S.heldclod)
+			playsound(loc,'sound/items/empty_shovel.ogg', 100, TRUE)
+			S.heldclod = null
+			S.update_icon()
+			if(progress < 3)
+				progress += 1 // For now...
+				user.visible_message(SPAN_DANGER("[user] adds dirt onto \the [src]."), SPAN_NOTICE("You add dirt onto \the [src]."))
+	switch(progress)
+		if(2)
+			icon_state = "dirt_wall_66%"
+		if(3 to INFINITY)
+			icon_state = "dirt_wall"
+			new/obj/structure/window/barrier(loc, dir)
+			qdel(src)
 
 /obj/structure/window/barrier/set_dir(direction)
 	dir = direction
@@ -223,8 +236,135 @@
 /obj/structure/window/barrier/fire_act(temperature)
 	return
 
+/obj/item/dirtclod
+	name = "clod"
+	desc = "A handful of dirt clod."
+	icon = 'icons/obj/items.dmi'
+	w_class = ITEM_SIZE_TINY
+
+	New()
+		..()
+		icon_state = "dirtpile[rand(1,2)]"
+		pixel_x = rand(-5, 5)
+		pixel_y = rand(-5, 5)
+
+/obj/item/dirtclod/dropped()
+	pixel_x = rand(-5, 5)
+	pixel_y = rand(-5, 5)
+
+/obj/item/dirtclod/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/material/shovel))
+		var/obj/item/weapon/material/shovel/S = W
+		if(!S.heldclod)
+			playsound(loc,'sound/items/dig_shovel.ogg', 100, TRUE)
+			src.forceMove(S)
+			S.heldclod = src
+			S.update_icon()
+			return
+	else if(istype(W, src.type))
+		qdel(W)
+		qdel(src)
+		var/obj/item/pile = new /obj/item/weapon/barrier()
+		user.put_in_hands(pile)
+	..()
+/*
+	if (user.get_inactive_hand() == src)
+		var/obj/item/stack/F = split(min(1, src.amount))
+		if (F)
+			F.update_icon()
+			src.update_icon()
+			user.put_in_hands(F)
+			add_fingerprint(user)
+			F.add_fingerprint(user)
+			src.update_icon()
+			spawn(0)
+				if (src && usr.using_object == src)
+					interact(usr)
+	else
+		..()
+*/
+//If a clod is pulled/dropped over another clod, this proc is called.
+/obj/item/dirtclod/Crossed(var/obj/item/dirtclod/S)
+	//Checking if clod types match and if it isn't thrown to avoid making clod piles in flight.
+	if(istype(S, /obj/item/dirtclod) && !S.throwing)
+		if(isturf(loc))
+			var/turf/T = loc
+			for(var/obj/structure/clodpile/C in T)
+				//C.dirtamt = min(C.dirtamt+1, 6)
+				//qdel(src)
+				return // Simply don't make another clodpile in the same turf.
+			var/dirtcount = 0 // We don't set it to `1` because then it will make a pile at `4` on the same tile. Since dirtcount++ ; down v-v-v.
+			var/list/dirts = list()
+			for(var/obj/item/dirtclod/D in T)
+				dirtcount++ // ++ clod on this tile.
+				dirts += D
+			if(dirtcount >= 3)
+				for(var/obj/item/I in dirts) // Only deletes 3 of what is in the list.
+					qdel(I)
+				new /obj/structure/clodpile(T) // Create the pile.
+	. = ..()
+
+/obj/item/dirtclod/attack_self(mob/living/user as mob)
+	var/choice = WWinput(user, "Are you sure you want to scatter the handful of clod?", "Scatter Confirmation", "No", list("Yes", "No")) // To prevent accidental scattering...
+	if(choice == "Yes")
+		if(src)
+			user.visible_message(SPAN_WARNING("[user] scatters \the [src]."), SPAN_WARNING("You scatter \the [src]."))
+			qdel(src)
+	else
+		return
+
+/obj/structure/clodpile // ideasguying: Small one-tile barrier protecting whilst prone behind it?
+	name = "clod pile"
+	desc = "A pile of clod."
+	icon_state = "dirtpile_full"
+	icon = 'icons/obj/structures.dmi'
+	climbable = FALSE
+	density = FALSE
+	var/dirtamount = 3
+
+	New()
+		..()
+		dir = pick(NORTH,EAST,WEST,SOUTH) // Start facing a random direction, (four states but only two different (for variation of stacking; dir should be properly set regardless~)).
+		anchored = TRUE
+
+/obj/structure/clodpile/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/material/shovel))
+		var/obj/item/weapon/material/shovel/S = W
+		if(!S.heldclod)
+			playsound(loc,'sound/items/dig_shovel.ogg', 100, TRUE)
+			var/obj/item/J = new /obj/item/dirtclod(S)
+			S.heldclod = J
+			dirtamount--
+			if(dirtamount <= 0)
+				qdel(src)
+				return
+			S.update_icon()
+			return
+		else if (dirtamount == 3)
+			to_chat(user, SPAN_WARNING("\The [src] has too much clod."))
+			return
+		else
+			playsound(loc,'sound/items/empty_shovel.ogg', 100, TRUE)
+			var/obj/item/I = S.heldclod
+			S.heldclod = null
+			qdel(I)
+			dirtamount++
+			S.update_icon()
+			return
+	user.setClickCooldown(cooldownw) // Default attack cooldown to prevent spam.
+	..()
+
+/obj/structure/clodpile/update_icon()
+	switch(dirtamount)
+		if(1) // if(1 to 2)
+			icon_state = "dirtpile_one"
+		if(2) // if(3 to 4)
+			icon_state = "dirtpile_half"
+		else
+			icon_state = "dirtpile_full"
+
 /obj/item/weapon/barrier
-	name = "dirt"
+	name = "dirt pile"
 	icon_state = "dirt_pile"
 	icon = 'icons/obj/items.dmi'
 	w_class = ITEM_SIZE_TINY
@@ -248,12 +388,13 @@
 				if(O.dir == user.dir)
 					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 					return
-	user << "You start building the dirt blocks wall..."
+	to_chat(user, SPAN_NOTICE("You start building the dirt blocks wall..."))
 	if (do_after(user, 25, src))
-		user << "You finish the placement of the dirt blocks wall foundation."
+		to_chat(user, SPAN_NOTICE("You finish the placement of the dirt blocks wall foundation."))
 		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)
 		return
+
 /obj/structure/window/barrier/rock
 	name = "rock wall"
 	desc = "That's a barricade from rocks."
