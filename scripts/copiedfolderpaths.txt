@@ -1,6 +1,5 @@
 UI
 maps/zones
-maps/campaign
 config/names
 config/crafting
 sound/music
