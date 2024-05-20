@@ -2,7 +2,7 @@
 /obj/map_metadata/campaign
 	ID = MAP_CAMPAIGN
 	title = "Campaign"
-	lobby_icon = 'icons/lobby/campaign.png'
+	lobby_icon = 'icons/lobby/campaign1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/temperate)
 	respawn_delay = 3 MINUTES
 	no_winner = "The battle is going on."
@@ -178,7 +178,7 @@
 		dat += "[alive_redfaction.len] Redmenians "
 
 	dat += "<br>"
-	if (istype(map, /obj/map_metadata/nationsrp/coldwar_campaign))
+	if (istype(map, /obj/map_metadata/nationsrp/coldwar_cmp))
 		if (factjob == "RDF")
 			dat +="<b><h1><big>Redmenian People</big></h1></b>"
 		else if (factjob == "BAF")

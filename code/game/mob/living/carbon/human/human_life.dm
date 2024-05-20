@@ -192,8 +192,8 @@
 			water_m *= 5
 
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
-			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
-			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
+			nutrition -= 0
+			water -= 0
 
 		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
@@ -1368,7 +1368,7 @@
 	if(!can_feel_pain())
 		shock_stage = 0
 		return
-		
+
 	var/traumatic_shock = get_shock()
 	if(traumatic_shock >= max(30, 0.8*shock_stage))
 		shock_stage += 1
@@ -1634,7 +1634,7 @@
 						holder2.icon_state = "civ6"
 					else
 						holder2.icon_state = ""
-					
+
 				if (BLUEFACTION)
 					holder2.icon_state = "blugoslavia"
 				if (REDFACTION)
@@ -1673,7 +1673,7 @@
 							holder2.overlays += icon(holder2.icon,"i_cpl")
 						else
 							holder2.overlays += icon(holder2.icon,"squad_[squad]")
-					
+
 					if(findtext(original_job_title,"Private"))
 						holder2.overlays += icon(holder2.icon,"rifleman")
 					if(findtext(original_job_title,"Des. Marksman"))
@@ -1694,7 +1694,7 @@
 						holder2.overlays += icon(holder2.icon,"i_cpl")
 				else
 					holder2.overlays += icon(holder2.icon,"squad_[squad]")
-					
+
 			if (map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT && map.ID != MAP_BATTLE_SHIPS)
 				if (original_job.is_commander || (original_job.is_commander && original_job.is_officer) || original_job.is_vip)
 					if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
@@ -1744,7 +1744,7 @@
 /mob/living/human/handle_fire()
 	if (..())
 		return
-	
+
 	if (prob(10))
 		src << pick(SPAN_DANGER("<big>OH MY GOD I AM ON FIRE!!!</big>"), SPAN_DANGER("<big>PUT IT OUT!!!</big>"), SPAN_DANGER("<big>I AM BURNING ALIVE!!!</big>"), SPAN_DANGER("<big>MY SKIN IS PEELING OFF!!!</big>"))
 		emote("scream")
@@ -1754,7 +1754,7 @@
 
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
-	
+
 	var/species_heat_mod = 1
 
 	var/protected_limbs = get_heat_protection_flags(burn_temperature)
@@ -1802,7 +1802,7 @@
 /mob/living/human/proc/do_rotting()
 	if (map && istype(src, /mob/living/human/corpse))
 		return
-	spawn(600) // 1 minute 
+	spawn(600) // 1 minute
 		if (stat == DEAD)
 			spawn(30000)
 				if (stat == DEAD)

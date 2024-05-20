@@ -103,6 +103,8 @@
 
 	for (var/obj/structure/vehicleparts/frame/F in loc)
 		vehicle_dir = F.dir
+		if (F.axis && F.axis.color)
+			turret_color = F.axis.color
 
 	if(vehicle_dir != 0)
 		switch(vehicle_dir)
@@ -832,7 +834,6 @@
 	name = "T-80UK"
 
 /obj/structure/turret/t90a
-	turret_color = "#4a5243"
 	turret_icon = "t90a_turret"
 	name = "T-90A"
 
@@ -1107,7 +1108,6 @@
 		..()
 
 /obj/structure/turret/bradley
-	turret_color = "#787859"
 	turret_icon = "bradley_turret"
 	name = "Bradley"
 
@@ -1116,6 +1116,33 @@
 
 	turret_x = 9
 	turret_y = -1
+
+	gunner_x = -8
+	gunner_y = 0
+
+	commander_x = 8
+	commander_y = 0
+
+	rotation_speed = 0.3
+
+	New()
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat.setup(src)
+		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
+		commander_seat.setup(src)
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/bushmaster/bradley(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/manual/m249(src))
+		..()
+
+/obj/structure/turret/cv90
+	turret_icon = "cv90_turret"
+	name = "CV90"
+
+	icon = 'icons/obj/guns/mgs.dmi'
+	icon_state = "autocannon"
+
+	turret_x = 16
+	turret_y = 24
 
 	gunner_x = -8
 	gunner_y = 0
@@ -1179,7 +1206,6 @@
 */
 
 /obj/structure/turret/m1abrams
-	turret_color = "#787859"
 	turret_icon = "m1a1_turret"
 	name = "M1A1_turret"
 
@@ -1209,7 +1235,6 @@
 		..()
 
 /obj/structure/turret/challenger2
-	turret_color = "#787859"
 	turret_icon = "challenger2_turret"
 	name = "Challenger-2"
 
