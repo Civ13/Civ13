@@ -386,7 +386,7 @@
 	if (hit_zone && istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
 		if(S.initiated)
-			S.initiate(T)
+			S.initiate(get_turf(target_mob))
 			return
 
 	if (target_mob.takes_less_damage)
