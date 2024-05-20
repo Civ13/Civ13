@@ -57,7 +57,7 @@
 
 		// Begin displaying
 		user.show_message("<b>----------</b>")
-		user.show_message("Consulting [src], you've concluded that [victim] [victim.stat == DEAD ? "is dead. [G.He] " : "" ]has:")
+		user.show_message("Consulting [src], you've concluded that [victim] [victim.stat == DEAD ? SPAN_RED("<b>is dead.</b>") : SPAN_GREEN("<b>is alive.</b>")] [G.He] has:")
 
 		user.show_message("<span class='notice'>* [H.b_type] blood type.</span>")
 		var/is_bad = FALSE	// I hate myself
