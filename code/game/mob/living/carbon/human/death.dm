@@ -419,13 +419,12 @@
 		ticker.mode.check_win()*/
 
 	if (client)
-		if (map.gamemode == "Hardcore")
-			client.next_normal_respawn = world.realtime + 999999
-		else
-			if (map.ID == MAP_CAMPAIGN)
+		switch (map.ID)
+			if (MAP_CAMPAIGN)
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)
 				client.respawn_count++
-			else if (map.ID == MAP_BATTLE_SHIPS)
+				to_chat(client, RESPAWN_MESSAGE)
+			if (MAP_BATTLE_SHIPS)
 				var/obj/map_metadata/battle_ships/BS = map
 				if (faction_text == map.faction1)
 					client.next_normal_respawn = world.realtime + (BS.faction1_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
@@ -433,9 +432,16 @@
 					client.next_normal_respawn = world.realtime + (BS.faction2_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
 				else
 					client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
+				to_chat(client, RESPAWN_MESSAGE)
 			else
-				client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
-			client << RESPAWN_MESSAGE
+				if (map.gamemode == "Hardcore")
+					client.next_normal_respawn = world.realtime + 999999
+				else if (map.gamemode == "Competitive")
+					client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
+					to_chat(client, RESPAWN_MESSAGE)
+				else
+					client.next_normal_respawn = world.realtime
+					to_chat(client, RESPAWN_MESSAGE)
 
 
 	. = ..(gibbed)//,species.death_message)
