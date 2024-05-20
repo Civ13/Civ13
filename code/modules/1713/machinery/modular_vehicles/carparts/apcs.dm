@@ -233,6 +233,11 @@
 	override_roof_icon = "mt_front_left_roof"
 	override_frame_icon = "mt_front_left_frame"
 
+/obj/structure/vehicleparts/frame/cv90/front
+	w_front = list("mt_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	override_roof_icon = "mt_front_roof"
+	override_frame_icon = "mt_front_frame"
+
 /obj/structure/vehicleparts/frame/cv90/rf
 	w_front = list("mt_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	w_right = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
@@ -260,13 +265,18 @@
 	override_frame_icon = "mt_front_right_frame"
 
 /obj/structure/vehicleparts/frame/cv90/lb
-	w_back = list("mt_back_left_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_back = list("mt_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_back_left_roof"
 	override_frame_icon = "mt_back_left_frame"
 
+/obj/structure/vehicleparts/frame/cv90/back
+	w_back = list("mt_back_door_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	override_roof_icon = "mt_back_door_roof"
+	override_frame_icon = "mt_back_door_frame"
+
 /obj/structure/vehicleparts/frame/cv90/rb
-	w_back = list("mt_right_back_frame",TRUE,TRUE,35,50,TRUE,TRUE)
+	w_back = list("mt_right_back_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	w_right = list("c_wall",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_back_right_roof"
 	override_frame_icon = "mt_back_right_frame"
