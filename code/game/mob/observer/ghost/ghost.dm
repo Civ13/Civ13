@@ -151,6 +151,10 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/proc/ghostize(var/can_reenter_corpse = TRUE)
 	// don't create bad ghosts - Kachnov
+	if (map && (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP))
+		to_chat(M, SPAN_WARNING("<font size=5>You cannot ghost in the campaign.</font>"))
+		return
+
 	if (!client)
 		return
 
