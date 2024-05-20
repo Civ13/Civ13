@@ -34,7 +34,7 @@
 				client.movement_busy = FALSE
 				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 					spawn(5)
-						M << "<font size=6>You have died!</font>"
+						to_chat(client, "<font size=6>You have died!</font>")
 				else
 					ghostize()
 			if (src)
@@ -78,7 +78,7 @@
 				client.movement_busy = FALSE
 				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 					spawn(5)
-						M << "<font size=6>You have died!</font>"
+						to_chat(client, "<font size=6>You have died!</font>")
 				else
 					ghostize()
 			if (src)
@@ -132,7 +132,7 @@
 		client.movement_busy = FALSE
 		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
 			spawn(5)
-				M << "<font size=6>You have died!</font>"
+				to_chat(client, "<font size=6>You have died!</font>")
 		else
 			ghostize()
 	announce_ghost_joinleave(client, FALSE)
