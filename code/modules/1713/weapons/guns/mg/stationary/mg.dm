@@ -548,11 +548,11 @@
 	desc = "The Bushmaster III is a chain gun, like the other members of the Bushmaster family, which grants it great dependability and safety from ammunition cook-off even though it does result in lower rates of fire."
 	icon_state = "autocannon"
 	base_icon = "autocannon"
-	caliber = "a30"
+	caliber = "a35"
 	fire_sound = 'sound/weapons/guns/fire/2a72.ogg'
 	handle_casings = EJECT_CASINGS
-	magazine_type = /obj/item/ammo_magazine/a30mm_ap/btr80
-	good_mags = list(/obj/item/ammo_magazine/a30mm_ap/btr80, /obj/item/ammo_magazine/a30mm_he/btr80)
+	magazine_type = /obj/item/ammo_magazine/a35mm_fap
+	good_mags = list(/obj/item/ammo_magazine/a35mm_fap, /obj/item/ammo_magazine/a35mm_hei)
 	firemodes = list(
 		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
 		)
