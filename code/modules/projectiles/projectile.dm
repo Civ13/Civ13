@@ -382,6 +382,12 @@
 
 	if (!target_mob)
 		return
+	
+	if (hit_zone && istype(src, /obj/item/projectile/shell))
+		var/obj/item/projectile/shell/S = src
+		if(S.initiated)
+			S.initiate(T)
+			return
 
 	if (target_mob.takes_less_damage)
 		switch (damage)
