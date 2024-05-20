@@ -5,7 +5,7 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	victory_time = 21600
 	no_winner = "The settlement is still held by the Raven Clan."
-	respawn_delay = 0
+	respawn_delay = 300
 	no_hardcore = TRUE
 	faction_organization = list(
 		NORWEGIAN,

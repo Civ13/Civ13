@@ -3,7 +3,7 @@
 	title = "Tadojsville Siege"
 	lobby_icon = 'icons/lobby/tadojsville.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle/one)
-	respawn_delay = 0
+	respawn_delay = 300
 	no_winner ="No warband has captured the clinic yet."
 	no_hardcore = TRUE
 	faction_organization = list(
