@@ -158,8 +158,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 	
 	if (map && (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP))
-		to_chat(client, SPAN_WARNING("<font size=5>You cannot ghost in the campaign.</font>"))
-		return
+		if (!client.holder)
+			to_chat(client, SPAN_WARNING("<font size=5>You cannot ghost in the campaign.</font>"))
+			return
 
 	src << browse(null, "window=memory")
 
