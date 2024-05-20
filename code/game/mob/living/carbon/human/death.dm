@@ -420,20 +420,20 @@
 
 	if (client)
 		switch (map.ID)
-			if (MAP_CAMPAIGN)
+			if (MAP_CAMPAIGN) // If it's campaign make respawn times based off of how many times you've respawned
 				client.next_normal_respawn = world.realtime + 1800 + (client.respawn_count * 600)
 				client.respawn_count++
 				to_chat(client, RESPAWN_MESSAGE)
-			if (MAP_BATTLE_SHIPS)
+			if (MAP_BATTLE_SHIPS) // If it's battle ships make respawn times based off of if your factions engines have been destroyed
 				var/obj/map_metadata/battle_ships/BS = map
 				if (faction_text == map.faction1)
 					client.next_normal_respawn = world.realtime + (BS.faction1_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
 				else if (faction_text == map.faction2)
 					client.next_normal_respawn = world.realtime + (BS.faction2_engines_killed ? map.respawn_delay : (map.respawn_delay + (map.respawn_delay * 3)))
 				else
-					client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
+					client.next_normal_respawn = world.realtime
 				to_chat(client, RESPAWN_MESSAGE)
-			else
+			else // If it's not a special map do the normal respawn times
 				if (map.gamemode == "Hardcore")
 					client.next_normal_respawn = world.realtime + 999999
 				else if (map.gamemode == "Competitive")
