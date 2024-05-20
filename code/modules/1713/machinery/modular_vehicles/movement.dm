@@ -27,30 +27,32 @@
 
 /obj/structure/vehicleparts/movement/armored/btr
 	name = "armored wheels"
-	icon_state = "wheel_t_dark"
-	base_icon = "wheel_t_dark"
-	movement_icon = "wheel_t_dark_m"
+	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/apcparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'
+	icon_state = "btr80_wheels_front_left"
+	base_icon = "btr80_wheels_front_left"
+	movement_icon = "btr80_wheels_front_left_m"
 	ntype = "wheel"
-/obj/structure/vehicleparts/movement/tracks/btr/left_front
-	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	icon_state = "btr80_tracks_left_front"
-	base_icon = "btr80_tracks_left_front"
-	movement_icon = "btr80_tracks_left_front_m"
-/obj/structure/vehicleparts/movement/tracks/btr/right_front
-	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	icon_state = "btr80_tracks_right_front"
-	base_icon = "btr80_tracks_right_front"
-	movement_icon = "btr80_tracks_right_front_m"
-/obj/structure/vehicleparts/movement/tracks/btr/left_back
-	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	icon_state = "btr80_tracks_left_back"
-	base_icon = "btr80_tracks_left_back"
-	movement_icon = "btr80_tracks_left_back_m"
-/obj/structure/vehicleparts/movement/tracks/btr/right_back
-	icon = 'icons/obj/vehicles/apcparts96x96.dmi'
-	icon_state = "btr80_tracks_right_back"
-	base_icon = "btr80_tracks_right_back"
-	movement_icon = "btr80_tracks_right_back_m"
+/obj/structure/vehicleparts/movement/armored/btr/left
+	icon_state = "btr80_wheels_front_left"
+	base_icon = "btr80_wheels_front_left"
+	movement_icon = "btr80_wheels_front_left_m"
+/obj/structure/vehicleparts/movement/armored/btr/right
+	icon_state = "btr80_wheels_front_right"
+	base_icon = "btr80_wheels_front_right"
+	movement_icon = "btr80_wheels_front_right_m"
+/obj/structure/vehicleparts/movement/armored/btr/left/reversed
+	reversed = TRUE
+	icon_state = "btr80_wheels_back_left"
+	base_icon = "btr80_wheels_back_left"
+	movement_icon = "btr80_wheels_back_left_m"
+/obj/structure/vehicleparts/movement/armored/btr/right/reversed
+	icon_state = "btr80_wheels_back_right"
+	base_icon = "btr80_wheels_back_right"
+	movement_icon = "btr80_wheels_back_right_m"
+	reversed = TRUE
+
 
 /obj/structure/vehicleparts/movement/tracks
 	name = "armored tracks"

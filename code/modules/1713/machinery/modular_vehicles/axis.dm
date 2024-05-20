@@ -2,6 +2,7 @@ var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teuf
 var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom","Gvozdika","Tyulpan","Krokodil","Grach","Bereza","Zhuravl","Topol","Bogatyr","Yenot","Orel","Natasha","Molodets","Rusalka","Volga","Molot","Serp","Zubr","Kazak")
 var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go","Bushido","Hinomaru","Shuriken")
 var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
+var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu", "Avalanche", "Bandit", "Cyclone", "Defender", "Eagle", "Falcon", "Guardian", "Havoc", "Ironclad", "Jaguar", "Kodiak", "Lightning", "Maverick", "Nomad", "Panther", "Phantom", "Quicksilver", "Renegade", "Specter", "Sentinel", "Thunderbolt", "Viper", "Warlock", "Xenoh", "Yeti", "Zephyr")
 
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
