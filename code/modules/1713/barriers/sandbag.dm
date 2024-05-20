@@ -14,8 +14,8 @@
 	mouse_drop_zone = TRUE
 	var/incomplete = FALSE
 	var/dismantlable = TRUE
-	maxhealth = 30
-	health = 30
+	maxhealth = 100
+	health = 100
 	New()
 		..()
 		health = maxhealth
@@ -280,7 +280,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	anchored = TRUE
 	climbable = TRUE
 	dismantlable = FALSE
-	maxhealth = 900
+	maxhealth = 1000
 
 /obj/structure/window/barrier/rock
 	name = "rock wall"
@@ -289,7 +289,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	maxhealth = 30
+	maxhealth = 900
 
 /obj/structure/window/barrier/sandstone
 	name = "sandstone wall"
@@ -299,14 +299,14 @@ var/set_dir = null // Set the variable outside of any scopes
 	anchored = TRUE
 	climbable = TRUE
 	dismantlable = FALSE
-	maxhealth = 30
+	maxhealth = 900
 
 /obj/structure/window/barrier/palisade
 	name = "palisade"
 	desc = "A wooden palisade."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "palisade"
-	health = 25
+	maxhealth = 50
 	anchored = TRUE
 	climbable = FALSE
 	flammable = TRUE
@@ -318,8 +318,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	icon = 'icons/obj/items.dmi'
 	w_class = ITEM_SIZE_TINY
 	sand_amount = TRUE
-	value = 0
-	maxhealth = 30
+	maxhealth = 300
 
 /obj/item/weapon/barrier/sandbag/empty
 	sand_amount = FALSE
@@ -419,7 +418,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	anchored = TRUE
 	climbable = TRUE
 	dismantlable = FALSE
-	maxhealth = 1500
+	maxhealth = 900
 
 /obj/structure/window/barrier/railing/stone
 	name = "railing"
@@ -429,7 +428,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	maxhealth = 2500
+	maxhealth = 900
 
 /obj/structure/window/barrier/railing/brick
 	name = "Brick Wall"
@@ -439,7 +438,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	layer = MOB_LAYER + 2 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-	maxhealth = 3500
+	maxhealth = 1200
 
 /obj/structure/window/barrier/railing/New()
 	..()
@@ -450,7 +449,7 @@ var/set_dir = null // Set the variable outside of any scopes
 	desc = "Barrier employed to separate lanes of traffic."
 	icon_state = "jerseybarrier1"
 	icon = 'icons/obj/junk.dmi'
-	maxhealth = 200
+	maxhealth = 900
 	dismantlable = FALSE
 
 /obj/structure/window/barrier/jersey/New()
