@@ -1155,8 +1155,8 @@
 	custom_color = "#4A5243"
 	axis = /obj/structure/vehicleparts/axis/heavy/btr80
 	tocreate = list(
-	"1,1" = list(/obj/structure/vehicleparts/movement/armored/btr,/obj/structure/vehicleparts/frame/btr80/rf),
-	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr,/obj/structure/vehicleparts/frame/btr80/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
+	"1,1" = list(/obj/structure/vehicleparts/movement/armored/btr/right,/obj/structure/vehicleparts/frame/btr80/rf),
+	"2,1" = list(/obj/structure/vehicleparts/movement/armored/btr/left,/obj/structure/vehicleparts/frame/btr80/lf,/obj/structure/bed/chair/drivers/tank,/obj/structure/radio/transmitter_receiver/nopower/tank/faction2),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc,/obj/structure/turret/btr80),
 	"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm),
@@ -1164,8 +1164,8 @@
 	"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc,/obj/structure/lamp/lamp_small/tank/red),
 	"2,3" = list(/obj/structure/vehicleparts/frame/btr80/lbc,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_ap/btr80,/obj/item/ammo_magazine/a30mm_he/btr80),
 
-	"1,4" = list(/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/frame/btr80/rb,/obj/structure/engine/internal/diesel/premade/btr80,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
-	"2,4" = list(/obj/structure/vehicleparts/movement/armored/reversed,/obj/structure/vehicleparts/frame/btr80/lb),
+	"1,4" = list(/obj/structure/vehicleparts/movement/armored/btr/right/reversed,/obj/structure/vehicleparts/frame/btr80/rb,/obj/structure/engine/internal/diesel/premade/btr80,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
+	"2,4" = list(/obj/structure/vehicleparts/movement/armored/btr/left/reversed,/obj/structure/vehicleparts/frame/btr80/lb),
 	)
 
 /obj/effects/premadevehicles/apc/cv90
