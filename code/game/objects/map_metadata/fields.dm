@@ -3,7 +3,7 @@
 	title = "Fields"
 	lobby_icon = 'icons/lobby/imperial.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 0
+	respawn_delay = 300
 
 
 	faction_organization = list(
