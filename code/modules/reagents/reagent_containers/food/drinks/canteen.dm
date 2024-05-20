@@ -58,7 +58,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus
 	dropsound = 'sound/effects/drop_default.ogg'
 	name = "Russian canteen"
-	icon_state = "canteen_soviet"
+	icon_state = "canteen_german"
 	volume = 200
 	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	desc = "A very large canteen for storing water."
