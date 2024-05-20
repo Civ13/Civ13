@@ -75,9 +75,6 @@
 	var/is_lying = FALSE
 
 	if(!proj.firer)
-		visible_message(SPAN_WARNING("[proj] hits \the [src]!"))
-		health -= proj.damage * 0.01
-		bullet_act(proj)
 		return FALSE
 
 	if(proj.firer.lying || proj.firer.prone)
@@ -93,7 +90,6 @@
 		hitchance = 100
 
 	if(prob(hitchance))
-		visible_message(SPAN_WARNING("[proj] hits \the [src]!"))
 		health -= proj.damage * 0.01
 		bullet_act(proj)
 		return FALSE

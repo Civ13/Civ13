@@ -125,6 +125,7 @@
 	squad = 6
 	rank_abbreviation = "6-AT"
 */
+
 /datum/job/redfaction/engineer
 	title = "RDF Engineer"
 	squad = 7
@@ -199,7 +200,8 @@
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	
 	if (findtext(title, "Corpsman"))
-		H.setStat("medical", STAT_MEDIUM_HIGH)
+		H.setStat("medical", STAT_VERY_HIGH)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 		var/obj/item/clothing/accessory/custom/armband/medicalarm = new /obj/item/clothing/accessory/armband/redcross(null)
 		uniform.attackby(medicalarm, H)

@@ -181,9 +181,9 @@ var/set_dir = null // Set the variable outside of any scopes
 /obj/structure/window/barrier/shatter(var/display_message = TRUE)
 	return FALSE
 
-/obj/structure/window/barrier/bullet_act(var/obj/item/projectile/Proj)
-	health -= Proj.damage * 0.03
-	visible_message("<span class = 'warning'>[Proj] hits the [src]!</span>")
+/obj/structure/window/barrier/bullet_act(var/obj/item/projectile/proj)
+	health -= proj.damage * 0.03
+	visible_message(SPAN_WARNING("[proj] hits \the [src]!"))
 	if (health <= 0)
 		qdel(src)
 
