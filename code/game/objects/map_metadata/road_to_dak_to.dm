@@ -4,7 +4,7 @@
 	title = "Road to Dak To"
 	lobby_icon = 'icons/lobby/vietnam.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle,/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/inside)
-	respawn_delay = 300
+	respawn_delay = 0
 
 
 	faction_organization = list(

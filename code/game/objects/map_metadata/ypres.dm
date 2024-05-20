@@ -4,7 +4,7 @@
 	title = "2nd Battle of Ypres"
 	lobby_icon = 'icons/lobby/ww1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 300
+	respawn_delay = 0
 
 	faction_organization = list(
 		BRITISH,

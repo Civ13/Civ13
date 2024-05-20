@@ -3,7 +3,7 @@
 	title = "Sammir Hayeed"
 	lobby_icon = 'icons/lobby/medieval.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two)
-	respawn_delay = 300
+	respawn_delay = 0
 	no_hardcore = TRUE
 	faction_organization = list(
 		ARAB,
