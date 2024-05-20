@@ -530,6 +530,7 @@ var/list/coefflist = list()
 	// This will ignore any prosthetics in the prefs currently.
 	species.create_organs(src)
 
+	never_set_faction_huds = TRUE
 	losebreath = FALSE
 	rotting_stage = 0
 	shock_stage = 0
