@@ -522,6 +522,29 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
+		if(href_list["SelectedJob"] == "Company Member")
+			AttemptLateSpawn(href_list["SelectedJob"])
+			return
+		var/datum/job/actual_job = null
+
+		for (var/datum/job/j in job_master.occupations)
+			if (j.title == href_list["SelectedJob"])
+				actual_job = j
+				break
+
+		if (!actual_job)
+			return
+
+		var/job_flag = actual_job.base_type_flag()
+
+		if (!GLOB.enter_allowed)
+			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
+			return
+
+		if (map && map.has_occupied_base(job_flag) && !map.can_spawn_on_base_capture)
+			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
+			return
+		
 		if (map.ID == MAP_CAMPAIGN)
 			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
 				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
@@ -664,29 +687,6 @@ var/global/redirect_all_players = null
 			else if (findtext(href_list["SelectedJob"],"RDF"))
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
-
-		if(href_list["SelectedJob"] == "Company Member")
-			AttemptLateSpawn(href_list["SelectedJob"])
-			return
-		var/datum/job/actual_job = null
-
-		for (var/datum/job/j in job_master.occupations)
-			if (j.title == href_list["SelectedJob"])
-				actual_job = j
-				break
-
-		if (!actual_job)
-			return
-
-		var/job_flag = actual_job.base_type_flag()
-
-		if (!GLOB.enter_allowed)
-			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
-			return
-
-		if (map && map.has_occupied_base(job_flag) && !map.can_spawn_on_base_capture)
-			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
-			return
 
 //Kandahar DRA spawnpoints
 		if (map && map.ID == MAP_KANDAHAR)
