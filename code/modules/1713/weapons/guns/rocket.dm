@@ -321,7 +321,7 @@
 
 /obj/item/weapon/gun/launcher/flaregun/civilian
 	name = "flare gun"
-	desc = "A flare gun used in emergency situations for signaling to asking for help."
+	desc = "A flare gun issued for civilian use in case of an emergency."
 	icon_state = "flaregun_civ"
 	item_state = "flaregun_civ"
 	good_flare = /obj/item/ammo_casing/flare
