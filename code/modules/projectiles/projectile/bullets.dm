@@ -51,9 +51,9 @@
 		if (istype(A, /turf/wall/rockwall) || istype(A, /turf/wall/indestructable))//can't penetrate cave walls or indestructable ones
 			return FALSE
 		else
-			// 21% chance for rifles to penetrate a brick wall, 62% for a wood wall
-			chance = round((damage/(W.material ? W.material.integrity : 175)) * 15)
-			// 1/3rd of that for MGs, buffed since their accuracy was fixed
+			// 3% chance for rifles to penetrate a brick wall, 30% for a wood wall
+			chance = round((damage/(W.material ? W.material.integrity : 175)) * 15) //todo: why cant integrity just be hardset for each wall as the percentile, bloated calculations...? (not even taking account the caliber, or the mass; we literally transferred BS-12 momentum code why?)
+			// 1/3rd of that for MGs, buffed since their accuracy was fixed-
 			if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 				chance /= 2
 
