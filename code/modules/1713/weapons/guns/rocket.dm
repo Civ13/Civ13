@@ -177,7 +177,7 @@
 
 /obj/item/weapon/gun/launcher/flaregun
 	name = "flare gun"
-	desc = "A flare gun combat situations for signaling to other people are asking for help."
+	desc = "A flare gun used to launch flares."
 	icon = 'icons/obj/guns/pistols.dmi'
 	icon_state = "flaregun"
 	item_state = "flaregun"
