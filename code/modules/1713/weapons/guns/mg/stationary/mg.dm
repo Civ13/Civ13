@@ -480,6 +480,36 @@
 	recoil = 25
 	accuracy = 3
 
+// Automatic Grenade Launcher
+/obj/item/weapon/gun/projectile/automatic/stationary/ags17
+	name = "AGS-17 automatic grenade launcher"
+	desc = "A soviet automatic capable grenade launcher chambeers and fires 30×29mm grenades."
+	icon_state = "ags17"
+	base_icon = "ags17"
+	caliber = "a30"
+	fire_sound = 'sound/weapons/guns/fire/M79.ogg'
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	magazine_type = /obj/item/ammo_magazine/a30mm_ap
+	good_mags = list(/obj/item/ammo_magazine/a30mm_ap, /obj/item/ammo_magazine/a30mm_he)
+	firemodes = list(
+		list(name = "automatic", burst=1, burst_delay=3, fire_delay=2.3, accuracy=list(2))
+		)
+	ammo_type = /obj/item/ammo_casing/a30mm_ap
+	is_hmg = TRUE
+	anchored = FALSE
+	full_auto = TRUE
+	recoil = 1
+	accuracy = 1
+
+/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
+	var/obj/item/projectile/P = projectile
+	P.loc = get_turf(user)
+	P.dispersion = clamp(rand(-accuracy, accuracy), -30, 30)
+	if(!P.launch(target, user, src))
+		return FALSE
+	return TRUE
+
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
