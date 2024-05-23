@@ -1,11 +1,10 @@
-
 /obj/map_metadata/nomads_north_america
 	ID = MAP_NOMADS_NORTH_AMERICA
 	title = "Nomads (North America)"
 	lobby_icon = 'icons/lobby/north_america.png'
-	no_winner ="The round is proceeding normally."
+	no_winner = "The round is proceeding normally."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // 10 minutes!
+	respawn_delay = 10 MINUTES
 	has_hunger = TRUE
 	faction_organization = list(
 		CIVILIAN,)
@@ -23,12 +22,13 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"North America" = "sound/music/north_america.ogg",)
+		"North America:1" = "sound/music/north_america.ogg")
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
+
 /obj/map_metadata/nomads_north_america/New()
 	..()
 	spawn(18000)
@@ -39,4 +39,3 @@
 		. = TRUE
 	else
 		. = FALSE
-
