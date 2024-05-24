@@ -380,6 +380,16 @@ var/set_dir = null // Set the variable outside of any scopes
 	user.setClickCooldown(cooldownw) // Default attack cooldown to prevent spam.
 	..()
 
+/obj/structure/clodpile/attack_hand(mob/user as mob)
+	if (ishuman(user))
+		if(dirtamount >= 1)
+			if (!user.get_active_hand())
+				var/obj/item/J = new /obj/item/dirtclod()
+				user.put_in_hands(J)
+				dirtamount--
+				if(dirtamount <= 0)
+					qdel(src)
+
 /obj/structure/clodpile/update_icon()
 	switch(dirtamount)
 		if(1) // if(1 to 2)
