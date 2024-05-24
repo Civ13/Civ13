@@ -582,6 +582,13 @@
 		else
 			return capitalize(pick(first_names_male_cherokee))
 
+/datum/species/proc/get_random_iroquois_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_iroquois))
+		else
+			return capitalize(pick(first_names_male_iroquois))
+
 /datum/species/proc/get_random_korean_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
