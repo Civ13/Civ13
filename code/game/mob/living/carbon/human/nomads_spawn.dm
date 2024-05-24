@@ -498,7 +498,7 @@
 				name = species.get_random_english_name(gender)
 				real_name = name
 				add_note("Known Languages", "English")
-				possible_h_list = list("Light Brown","Dark brown","Black", "Blond")
+				possible_h_list = list("Light Brown","Dark Brown","Black", "Blond")
 				possible_e_list = list("Brown","Green","Blue")
 				possible_s_range = list(-15,-30)
 
@@ -511,7 +511,7 @@
 				name = species.get_random_gaelic_name(gender)
 				real_name = name
 				add_note("Known Languages", "Gaelic")
-				possible_h_list = list("Orange","Light Brown","Red","Dark brown")
+				possible_h_list = list("Orange","Light Brown","Red","Dark Brown")
 				possible_e_list = list("Brown","Green", "Blue")
 				possible_s_range = list(-15,-30)
 
@@ -553,6 +553,70 @@
 				possible_h_list = list("Orange","Light Brown","Red","Brown")
 				possible_e_list = list("Brown","Green")
 				possible_s_range = list(-15,-30)
+
+		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
+
+	else if (map.ID == MAP_NOMADS_NORTH_AMERICA)
+		if (y < 100) // SOUTH
+			if (map.ordinal_age >= 3 && prob(70))
+				add_language("Spanish",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/spanish/A in languages)
+					default_language = A
+				name = species.get_random_spanish_name(gender)
+				real_name = name
+				add_note("Known Languages", "Spanish")
+				possible_h_list = list("Black","Dark Brown","Light Brown")
+				possible_e_list = list("Brown","Black")
+				possible_s_range = list(-40,-90)
+			else
+				add_language("Carib",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/carib/A in languages)
+					default_language = A
+				name = species.get_random_carib_name(gender)
+				real_name = name
+				add_note("Known Languages", "Carib")
+				possible_h_list = list("Black","Dark Brown")
+				possible_e_list = list("Brown","Black")
+				possible_s_range = list(-80,-115)
+		else
+			if (x < 200) //Temporary, NORTH-WEST
+				add_language("Cherokee",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/cherokee/A in languages)
+					default_language = A
+				name = species.get_random_cherokee_name(gender)
+				real_name = name
+				add_note("Known Languages", "Cherokee")
+				possible_h_list = list("Black","Dark Brown","Light Brown")
+				possible_e_list = list("Brown","Black")
+				possible_s_range = list(-40,-90)
+			else
+				if (map.ordinal_age >= 3 && prob(70))
+					for (var/datum/language/english/A in languages)
+						default_language = A
+					name = species.get_random_english_name(gender)
+					real_name = name
+					add_note("Known Languages", "English")
+					possible_h_list = list("Light Brown","Dark Brown","Blond", "Red", "Orange")
+					possible_e_list = list("Brown","Green","Blue")
+					possible_s_range = list(-15,-30)
+				else
+					add_language("Iroquois",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/iroquois/A in languages)
+						default_language = A
+					name = species.get_random_iroquois_name(gender)
+					real_name = name
+					add_note("Known Languages", "Iroquois")
+					possible_h_list = list("Black","Dark Brown","Light Brown")
+					possible_e_list = list("Brown","Black")
+					possible_s_range = list(-40,-90)
 
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
