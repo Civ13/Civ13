@@ -234,7 +234,7 @@
 	override_frame_icon = "mt_front_left_frame"
 
 /obj/structure/vehicleparts/frame/cv90/front
-	w_front = list("mt_front_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
+	w_front = list("mt_front_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_front_roof"
 	override_frame_icon = "mt_front_frame"
 
@@ -244,25 +244,15 @@
 	override_roof_icon = "mt_front_right_roof"
 	override_frame_icon = "mt_front_right_frame"
 
-/obj/structure/vehicleparts/frame/cv90/lfc
+/obj/structure/vehicleparts/frame/cv90/left
 	w_left = list("mt_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_left_roof"
 	override_frame_icon = "mt_left_frame"
 
-/obj/structure/vehicleparts/frame/cv90/rfc
+/obj/structure/vehicleparts/frame/cv90/right
 	w_right = list("mt_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
 	override_roof_icon = "mt_right_roof"
 	override_frame_icon = "mt_right_frame"
-
-/obj/structure/vehicleparts/frame/cv90/lbc
-	w_left = list("mt_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)
-	override_roof_icon = "mt_front_left_roof"
-	override_frame_icon = "mt_front_left_frame"
-
-/obj/structure/vehicleparts/frame/cv90/rbc
-	w_right = list("mt_right_frame",TRUE,TRUE,35,50,FALSE,FALSE)
-	override_roof_icon = "mt_front_right_roof"
-	override_frame_icon = "mt_front_right_frame"
 
 /obj/structure/vehicleparts/frame/cv90/lb
 	w_back = list("mt_back_left_frame",TRUE,TRUE,35,50,FALSE,FALSE)

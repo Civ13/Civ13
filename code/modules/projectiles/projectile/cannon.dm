@@ -109,7 +109,8 @@
 		return
 	var/caliber_modifier = clamp(round(caliber / 50), 0, 4)
 	if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor) && !istype(T, /turf/floor/trench))
-		T.ChangeTurf(/turf/floor/dirt/burned)
+		if(caliber >= 37)
+			T.ChangeTurf(/turf/floor/dirt/burned)
 	if (atype == "HE")
 		var/he_range = caliber_modifier
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
@@ -124,13 +125,15 @@
 		var/ap_range = clamp(round(caliber_modifier / 2), 0, 4)
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
 		if(caliber >= 37)
-			explosion(T, ap_range, ap_range + 1, ap_range + 2, 3)
+			if(caliber >= 50)
+				explosion(T, ap_range, ap_range + 1, ap_range + 2, 3)
 			fragmentate(T, 8, 7, fragment_types)
 		loc = null
 		qdel(src)
 	else if (atype == "APCR")
 		if(!initiated)
-			explosion(T, 0, 0, 1, 0)
+			if(caliber >= 40)
+				explosion(T, 0, 0, 1, 0)
 			loc = null
 			qdel(src)
 			return
@@ -194,6 +197,7 @@
 /obj/item/projectile/shell/autocannon
 	icon = 'icons/obj/projectiles.dmi'
 	icon_state = "bullet"
+	damage = 50
 
 /obj/item/projectile/shell/autocannon/New()
 	..()
@@ -226,7 +230,7 @@
 
 /obj/item/projectile/shell/autocannon/a35_fap
 	atype = "APCR"
-	heavy_armor_penetration = 127
+	heavy_armor_penetration = 102
 	caliber = 35
 
 /obj/item/projectile/shell/autocannon/a35_hei

@@ -1178,13 +1178,13 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/cv90/front),
 	"3,1" = list(/obj/structure/vehicleparts/movement/tracks/left,/obj/structure/vehicleparts/frame/cv90/lf,/obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/cv90/rfc,/obj/structure/turret/cv90{density = 0}),
-	"2,2" = list(/obj/structure/vehicleparts/frame/cv90),
-	"3,2" = list(/obj/structure/vehicleparts/frame/cv90/lfc),
+	"1,2" = list(/obj/structure/vehicleparts/frame/cv90/right,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a35mm_fap,/obj/item/ammo_magazine/a35mm_fap,/obj/item/ammo_magazine/a35mm_hei,/obj/item/ammo_magazine/a35mm_hei),
+	"2,2" = list(/obj/structure/vehicleparts/frame/cv90,/obj/structure/turret/cv90{density = 0}),
+	"3,2" = list(/obj/structure/vehicleparts/frame/cv90/left,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/cv90/rbc,/obj/structure/lamp/lamp_small/tank/red,/obj/item/ammo_magazine/a35mm_fap,/obj/item/ammo_magazine/a35mm_fap,/obj/item/ammo_magazine/a35mm_hei,/obj/item/ammo_magazine/a35mm_hei),
+	"1,3" = list(/obj/structure/vehicleparts/frame/cv90/right),
 	"2,3" = list(/obj/structure/vehicleparts/frame/cv90),
-	"3,3" = list(/obj/structure/vehicleparts/frame/cv90/lbc,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249,/obj/item/ammo_magazine/m249),
+	"3,3" = list(/obj/structure/vehicleparts/frame/cv90/left),
 
 	"1,4" = list(/obj/structure/vehicleparts/movement/tracks/left/reversed,/obj/structure/vehicleparts/frame/cv90/rb,/obj/structure/engine/internal/diesel/premade/btr80,/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel{density = 0}),
 	"2,4" = list(/obj/structure/vehicleparts/frame/cv90/back),

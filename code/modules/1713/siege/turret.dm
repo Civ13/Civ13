@@ -1141,8 +1141,8 @@
 	icon = 'icons/obj/guns/mgs.dmi'
 	icon_state = "autocannon"
 
-	turret_x = 16
-	turret_y = 24
+	turret_x = 0
+	turret_y = 0
 
 	gunner_x = -8
 	gunner_y = 0
