@@ -357,6 +357,14 @@
 	slot_flags = SLOT_SHOULDER
 	is_laser_mg = TRUE
 
+/obj/item/weapon/gun/projectile/automatic/laser/z6/update_icon()
+	if (ammo_magazine)
+		icon_state = base_icon
+	else
+		icon_state = base_icon
+	update_held_icon()
+	return
+
 /obj/item/weapon/gun/projectile/automatic/laser/z6/empire
 	desc = "The standard Z-6 heavy rotary blaster used commonly by the by the Storm Trooper Corps of the Galactic Empire and the combatants of the Rebel Alliance alike."
 

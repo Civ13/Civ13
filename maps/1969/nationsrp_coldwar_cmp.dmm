@@ -4,7 +4,7 @@
 "ad" = (/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "ae" = (/turf/floor/beach/water,/area/caribbean/void/caves)
 "af" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)
-"ag" = (/obj/map_metadata/nationsrp/coldwar_campaign,/turf/floor/beach/water/deep/saltwater,/area/caribbean/void/caves)
+"ag" = (/obj/map_metadata/nationsrp/coldwar_cmp,/turf/floor/beach/water/deep/saltwater,/area/caribbean/void/caves)
 "ah" = (/turf/floor/grass,/area/caribbean/nomads/forest)
 "ai" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads/forest)
 "aj" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads/forest)

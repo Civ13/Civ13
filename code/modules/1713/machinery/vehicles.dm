@@ -299,6 +299,11 @@
 	reg_number = ""
 	color = "#5C5C4C"
 	vehicle_type = "apc"
+	New()
+		..()
+		var/pickedname = pick(tank_names_nato)
+		tank_names_nato -= pickedname
+		name = "[name] \'[pickedname]\'"
 
 /obj/structure/vehicleparts/axis/heavy/t80u
 	name = "T-80U"

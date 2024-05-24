@@ -452,6 +452,7 @@
 
 	M.emote("gasp")
 	M.Weaken(rand(10,25))
+	M.never_set_faction_huds = TRUE
 	M.updatehealth()
 	apply_brain_damage(M)
 

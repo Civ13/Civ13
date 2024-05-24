@@ -345,8 +345,8 @@
 				MF.scorers += list("[scorer]" = 1)
 			return
 	if (istype(A, /obj/item/football) && team)
-		if (istype(map, /obj/map_metadata/football_campaign))
-			var/obj/map_metadata/football_campaign/MF = map
+		if (istype(map, /obj/map_metadata/football_cmp))
+			var/obj/map_metadata/football_cmp/MF = map
 			MF.reset_ball()
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
@@ -370,7 +370,7 @@
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team1][1]
 		if (map && map.ID == MAP_FOOTBALL_CMP)
-			var/obj/map_metadata/football_campaign/FBM = map
+			var/obj/map_metadata/football_cmp/FBM = map
 			team = FBM.teams[FBM.team1][1]
 
 /obj/effect/step_trigger/goal/blue
@@ -382,7 +382,7 @@
 			var/obj/map_metadata/football/FBM = map
 			team = FBM.teams[FBM.team2][1]
 		if (map && map.ID == MAP_FOOTBALL_CMP)
-			var/obj/map_metadata/football_campaign/FBM = map
+			var/obj/map_metadata/football_cmp/FBM = map
 			team = FBM.teams[FBM.team2][1]
 /////////////////TEAM CREATOR/////////////////////
 

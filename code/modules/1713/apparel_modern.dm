@@ -379,6 +379,19 @@
 	w_class = ITEM_SIZE_LARGE
 	weight = 4.2
 
+/obj/item/clothing/accessory/armor/coldwar/plates/b46
+	name = "6B46 body armor"
+	desc = "A modern plate carrier of Russian origin. This one is used by paratroopers and vehicle crewmen as it is a lighter version of the 6B45."
+	icon_state = "6b46"
+	item_state = "6b46"
+	worn_state = "6b46"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, arrow = 95, gun = 50, energy = 22, bomb = 55, bio = 20, rad = FALSE)
+	value = 150
+	slowdown = 0.1
+	w_class = ITEM_SIZE_LARGE
+	weight = 3.2
+
 /* Us Army*/
 
 	/* Us Army Armor*/
@@ -432,7 +445,7 @@
 	icon_state = "pasgt_white_alt_2"
 	item_state = "pasgt_white_alt_2"
 	worn_state = "pasgt_white_alt_2"
-	
+
 /obj/item/clothing/head/helmet/modern/pasgt/desert/New()
 	..()
 	if (prob(50))
@@ -1873,24 +1886,53 @@
 	set src in usr
 	if (type != /obj/item/clothing/under/russian)
 		return
+	if (rolled)
+		item_state = "russian_emr"
+		worn_state = "russian_emr"
+		item_state_slots["w_uniform"] = "russian_emr"
+		to_chat(usr, SPAN_NOTICE("You roll down your uniform's sleeves."))
+		rolled = FALSE
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	else
-		if (rolled)
-			item_state = "russian_emr"
-			worn_state = "russian_emr"
-			item_state_slots["w_uniform"] = "russian_emr"
-			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
-			rolled = FALSE
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-			update_clothing_icon()
-		else if (!rolled)
-			item_state = "russian_emr_rolled"
-			worn_state = "russian_emr_rolled"
-			item_state_slots["w_uniform"] = "russian_emr_rolled"
-			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
-			rolled = TRUE
-			heat_protection = ARMS
-			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
-			update_clothing_icon()
+		item_state = "russian_emr_rolled"
+		worn_state = "russian_emr_rolled"
+		item_state_slots["w_uniform"] = "russian_emr_rolled"
+		to_chat(usr, SPAN_NOTICE("You roll up your uniform's sleeves."))
+		rolled = TRUE
+		heat_protection = ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	update_clothing_icon()
+
+/obj/item/clothing/under/russian/vdv/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/russian/vdv)
+		return
+	if (rolled)
+		item_state = "russian_emr_vdv"
+		worn_state = "russian_emr_vdv"
+		item_state_slots["w_uniform"] = "russian_emr_vdv"
+		to_chat(usr, SPAN_NOTICE("You roll down your uniform's sleeves."))
+		rolled = FALSE
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	else
+		item_state = "russian_emr_vdv_rolled"
+		worn_state = "russian_emr_vdv_rolled"
+		item_state_slots["w_uniform"] = "russian_emr_vdv_rolled"
+		to_chat(usr, SPAN_NOTICE("You roll up your uniform's sleeves."))
+		rolled = TRUE
+		heat_protection = ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
+	update_clothing_icon()
+
+/obj/item/clothing/under/russian/vdv
+	name = "EMR pattern uniform"
+	desc = "The standard Russian Federation Army camo uniform."
+	icon_state = "russian_emr_vdv"
+	item_state = "russian_emr_vdv"
+	worn_state = "russian_emr_vdv"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	rolled = FALSE
 
 /obj/item/clothing/under/russiandesert
 	name = "EMR desert pattern uniform"
