@@ -96,7 +96,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
-	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	armour.attackby(plates1, H)
