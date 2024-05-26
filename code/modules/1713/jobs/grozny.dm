@@ -200,8 +200,8 @@
 	uniform.attackby(armor, H)
 
 //suit
-	var/randsuits = rand(1,6)
-	switch(ransuits)
+	var/randsuit = rand(1,6)
+	switch(randsuit)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker/lizard_jacket(H), slot_wear_suit)
 		if (2)
