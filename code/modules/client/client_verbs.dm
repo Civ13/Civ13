@@ -84,14 +84,14 @@
 			Lines += entry
 	else
 		for (var/client/C in clients)
-			var/entry = "Player <b>[C.key]</b> - Playing as <i>[C.mob.real_name]</i>"
+			var/entry = "<b>[C.key]</b>"
 			Lines += entry
 
 	for (var/line in sortList(Lines))
 		msg += "[line]\n"
 
 	msg += "<b>Total Players: [length(Lines)]</b>"
-	src << msg
+	to_chat(src, msg)
 
 /client/verb/adminwho()
 	set category = "Help!"

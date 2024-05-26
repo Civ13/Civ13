@@ -282,6 +282,7 @@
 
 
 	return TRUE
+	
 /datum/job/russian/infantry
 	title = "Ryadovoy"
 	en_meaning = "Soldier Second-class"
@@ -315,7 +316,6 @@
 	uniform.attackby(russbando, H)
 	for (var/i=1, i<= 4, i++)
 		russbando.attackby(new/obj/item/ammo_magazine/mosin, H)
-	give_random_name(H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class employed by the Imperial Russian Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -393,11 +393,11 @@
 	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	whitelisted = TRUE
-	is_karelia = TRUE
 	is_ww2 = TRUE
+	is_karelia = TRUE
 
 	min_positions = 1
-	max_positions = 1
+	max_positions = 2
 
 /datum/job/russian/nkvd_soviet/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
@@ -506,10 +506,12 @@
 	rank_abbreviation = "Srj."
 
 	spawn_location = "JoinLateRUDoc"
-	is_karelia = TRUE
 	is_ww2 = TRUE
-	is_bordersov = FALSE
 	is_medic = TRUE
+
+	is_karelia = TRUE
+	is_bordersov = FALSE
+	
 	min_positions = 1
 	max_positions = 4
 
@@ -553,10 +555,10 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-	is_karelia = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
+	is_karelia = TRUE
 
 	min_positions = 2
 	max_positions = 12
@@ -604,10 +606,10 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRU"
-	is_karelia = TRUE
 	is_ww2 = TRUE
 	uses_squads = TRUE
 
+	is_karelia = TRUE
 
 	min_positions = 2
 	max_positions = 8
@@ -863,7 +865,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	if (map.ID == MAP_KARELIA || map.ID == MAP_STALINGRAD || map.ID == MAP_SMALLINGRAD || map.ID == MAP_SMALLSIEGEMOSCOW || map.ID == MAP_GULAG13)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba/winter(H), slot_w_uniform)
 	else
 		if (prob(70))
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba(H), slot_w_uniform)
@@ -944,7 +946,7 @@
 				var/obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather/ww2/svt/frag(null)
 				uniform.attackby(webbing, H)
 		if (2)
-			if (prob(70))
+			if (prob(30))
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppd(H), slot_shoulder)
 			else
 				H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_shoulder)
@@ -2209,39 +2211,39 @@
 	if (!H)	return FALSE
 //shoes
 	var/randshoe2 = rand(1,5)
-	if (randshoe2 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-	else if (randshoe2 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
-	else if (randshoe2 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
-	else if (randshoe2 == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-	else if (randshoe2 == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-
+	switch(randshoe2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
 
 //clothes
 	var/randjack2 = rand(1,9)
-	if (randjack2 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
-	else if (randjack2 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
-	else if (randjack2 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-	else if (randjack2 == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-	else if (randjack2 == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/oldmansuit(H), slot_w_uniform)
-	else if (randjack2 == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/engi(H), slot_w_uniform)
-	else if (randjack2 == 7)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
-	else if (randjack2 == 8)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-	else if (randjack2 == 9)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-
+	switch(randjack2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/farmer_outfit(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/oldmansuit(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/engi(H), slot_w_uniform)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		if (8)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+		if (9)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
 //head
 	var/randhead2 = rand(1,7)
@@ -2858,17 +2860,17 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/russian/vdv(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/armor/coldwar/plates/b45/b45 = new /obj/item/clothing/accessory/armor/coldwar/plates/b45(null)
-	uniform.attackby(b45, H)
+	var/obj/item/clothing/accessory/armor/coldwar/plates/b46/b46 = new /obj/item/clothing/accessory/armor/coldwar/plates/b46(null)
+	uniform.attackby(b46, H)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	var/obj/item/weapon/armorplates/plates2 = new /obj/item/weapon/armorplates(null)
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv/modern(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74m/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak74m(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -3097,11 +3099,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	if (prob(80))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_amoeba/winter(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_berezka(H), slot_w_uniform)
 //glove
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 //gun
