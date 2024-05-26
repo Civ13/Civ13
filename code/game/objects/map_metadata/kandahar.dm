@@ -567,51 +567,67 @@
 		if ("Soviets")
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		if ("Mujahideen")
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "pirates"
+				F.name = "Mujahideen flag"
 		if ("DRA")
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		else
 			for (var/obj/structure/flag/objective/one/F in world)
 				F.icon_state = "white"
+				F.name = "Unclaimed flag"
 	switch (a2_control)
 		if ("Soviets")
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		if ("Mujahideen")
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "pirates"
+				F.name = "Mujahideen flag"
 		if ("DRA")
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		else
 			for (var/obj/structure/flag/objective/two/F in world)
 				F.icon_state = "white"
+				F.name = "Unclaimed flag"
 	switch (a3_control)
 		if ("Soviets")
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		if ("Mujahideen")
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "pirates"
+				F.name = "Mujahideen flag"
 		if ("DRA")
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		else
 			for (var/obj/structure/flag/objective/three/F in world)
 				F.icon_state = "white"
+				F.name = "Unclaimed flag"
 	switch (a4_control)
 		if ("Soviets")
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		if ("Mujahideen")
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "pirates"
+				F.name = "Mujahideen flag"
 		if ("DRA")
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "soviet"
+				F.name = "Soviet flag"
 		else
 			for (var/obj/structure/flag/objective/four/F in world)
 				F.icon_state = "white"
+				F.name = "Unclaimed flag"
