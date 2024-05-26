@@ -786,10 +786,16 @@
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
-	desc = "A beret worn by the Russian Airborn Forces."
+	desc = "A beret worn by the Soviet and Russian Airborne Forces."
 	icon_state = "beret_rus_vdv"
 	item_state = "beret_rus_vdv"
 	body_parts_covered = HEAD
+
+/obj/item/clothing/head/beret_rus_vdv/modern
+	name = "VDV beret"
+	desc = "A beret worn by the Russian Airborne Forces."
+	icon_state = "beret_rus_vdv_modern"
+	item_state = "beret_rus_vdv_modern"
 
 /obj/item/clothing/head/beret_rus_spez
 	name = "Spetznaz beret"

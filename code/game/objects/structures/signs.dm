@@ -522,13 +522,28 @@
 	desc = "An icon depicting Archangel Michael. Often used in Eastern Orthodox cultures."
 	icon_state = "orthodox3"
 
-/obj/structure/sign/khalif_ali1
+/obj/structure/sign/khalif_ali
 	name = "portrait of Khalif Ali"
 	desc = "A portrait of Khalif Ali."
 	icon_state = "khalif_ali1"
 
-/obj/structure/sign/khalif_ali2
+/obj/structure/sign/khalif_ali/alt
 	icon_state = "khalif_ali2"
+
+/obj/structure/sign/soviet_poster
+	name = "military poster"
+	desc = "A Soviet military poster depicting a saluting soldier in front of the Soviet flag."
+	icon_state = "soviet_poster"
+
+/obj/structure/sign/sovafghan_poster
+	name = "Soviet-Afghan friendship poster"
+	desc = "A poster depicting a Soviet and DRA soldier smiling at each other while holding a rifle together."
+	icon_state = "sovafghan_poster_1"
+
+/obj/structure/sign/sovafghan_poster/alt
+	name = "Soviet-Afghan friendship poster"
+	desc = "A poster depicting armed men holding the Soviet and DRA flags."
+	icon_state = "sovafghan_poster_2"
 
 //BILLBOARDS
 

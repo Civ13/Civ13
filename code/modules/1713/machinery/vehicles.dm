@@ -252,7 +252,7 @@
 /obj/structure/vehicleparts/axis/heavy/bmd2
 	name = "BMD-2"
 	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
+	speedlist = list(1=9,2=6,3=4,4=3)
 	reg_number = ""
 	color = "#787859"
 	broken_icon = 'icons/obj/vehicles/apcparts96x96_damaged.dmi'

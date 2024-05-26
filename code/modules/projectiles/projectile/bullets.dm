@@ -48,12 +48,12 @@
 	var/chance = 0
 	if (istype(A, /turf/wall))
 		var/turf/wall/W = A
-		if (istype(A, /turf/wall/rockwall) || istype(A, /turf/wall/indestructable))//can't penetrate cave walls or indestructable ones
+		if (istype(A, /turf/wall/rockwall) || istype(A, /turf/wall/indestructable)) //can't penetrate cave walls or indestructable ones
 			return FALSE
 		else
-			// 21% chance for rifles to penetrate a brick wall, 62% for a wood wall
+			// 3% chance for rifles to penetrate a brick wall, 30% for a wood wall
 			chance = round((damage/(W.material ? W.material.integrity : 175)) * 15)
-			// 1/3rd of that for MGs, buffed since their accuracy was fixed
+			// Half of that for MGs, buffed since their accuracy was allegedly fixed
 			if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 				chance /= 2
 
