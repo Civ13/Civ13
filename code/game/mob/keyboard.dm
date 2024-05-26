@@ -4,7 +4,10 @@
 
 	if (ishuman(src) && !src.stat)
 		var/mob/living/human/H = src
-		H.look_into_distance(src)
+		if (H.using_drone)
+			using_drone.toggle_state()
+		else
+			H.look_into_distance(src)
 		return
 	return FALSE
 
