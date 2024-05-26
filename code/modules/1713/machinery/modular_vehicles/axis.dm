@@ -9,6 +9,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	var/maxdist = 5 //the highest of length and width
 	var/turntimer = 15
 	var/doorcode = 0
+	var/movement_processes = 0
 /obj/structure/vehicleparts/axis/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -46,12 +47,14 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			movementsound()
 
 /obj/structure/vehicleparts/axis/proc/movementloop()
-	if (moving == TRUE)
+	if (moving && !movement_processes)
 		get_weight()
+		movement_processes++
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
 					moving = FALSE
+					movement_processes--
 					stopmovementloop()
 					return
 				else
@@ -60,9 +63,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		else
 			currentspeed = 0
 			moving = FALSE
+			movement_processes--
 			stopmovementloop()
 			return
 		spawn(vehicle_m_delay+1)
+			movement_processes--
 			movementloop()
 			return
 	else
