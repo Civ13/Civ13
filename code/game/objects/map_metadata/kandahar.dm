@@ -39,7 +39,7 @@
 	grace_wall_timer = 4800
 	var/list/supply_points = list(
 		"Soviet Army" = 0,
-		"Mujahideen" = 0,)
+		"Mujahideen" = 0)
 
 /obj/map_metadata/kandahar/New()
 	..()
@@ -51,6 +51,7 @@
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
+	handle_flags() //Called once in the beginning to set up DRA flags
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
 		override_global_recipes = "sovafghan"
@@ -327,6 +328,7 @@
 						if ("Mujahideen Group Leader")
 							sov_points += 2
 							world << "<font color='orange' size=2>A <b><font color='black'>Mujahideen Group Leader</font></b> is in captivity!</font>"
+	handle_flags()
 	spawn(600) // 1 minute
 		points_check()
 		spawn(300)
@@ -560,3 +562,56 @@
 				return
 	..()
 
+/obj/map_metadata/kandahar/proc/handle_flags()
+	switch (a1_control)
+		if ("Soviets")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "soviet"
+		if ("Mujahideen")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "pirates"
+		if ("DRA")
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "soviet"
+		else
+			for (var/obj/structure/flag/objective/one/F in world)
+				F.icon_state = "white"
+	switch (a2_control)
+		if ("Soviets")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "soviet"
+		if ("Mujahideen")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "pirates"
+		if ("DRA")
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "soviet"
+		else
+			for (var/obj/structure/flag/objective/two/F in world)
+				F.icon_state = "white"
+	switch (a3_control)
+		if ("Soviets")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "soviet"
+		if ("Mujahideen")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "pirates"
+		if ("DRA")
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "soviet"
+		else
+			for (var/obj/structure/flag/objective/three/F in world)
+				F.icon_state = "white"
+	switch (a4_control)
+		if ("Soviets")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "soviet"
+		if ("Mujahideen")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "pirates"
+		if ("DRA")
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "soviet"
+		else
+			for (var/obj/structure/flag/objective/four/F in world)
+				F.icon_state = "white"
