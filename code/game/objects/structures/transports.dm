@@ -17,6 +17,7 @@
 	var/wheeled = FALSE
 	var/obj/item/vehicleparts/wheel/dwheel = null
 	var/moving = FALSE
+	var/movement_processes = 0
 	var/obj/structure/engine/internal/engine = null
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
@@ -117,12 +118,14 @@
 	movementloop()
 
 /obj/structure/vehicle/proc/movementloop()
-	if (moving == TRUE && driver)
+	if (moving && driver && !movement_processes)
+		movement_processes++
 		if (do_vehicle_check() && axis.currentspeed > 0)
 			do_move(driver.dir)
 		else
 			axis.currentspeed = 0
 		spawn(vehicle_m_delay+1)
+			movement_processes--
 			movementloop()
 			return
 	else

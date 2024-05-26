@@ -49,9 +49,9 @@
 /obj/item/drone_controller/proc/start_move_drone(var/direction)
 	moving_dir = direction
 	if(!connected_drone)	return
-
-	if(connected_drone.broken)
-		if(controller)
+	if(!connected_drone.can_move)	return
+	if(connected_drone.broken && controller)
+		if(!connected_drone.can_fly)
 			to_chat(controller, SPAN_DANGER("\The [connected_drone]\'s tracks are broken, repair it with a welding tool."))
 		return
 	if(!is_moving)
@@ -61,6 +61,7 @@
 /obj/item/drone_controller/proc/move_drone()
 	if(!is_moving)	return
 	if(!connected_drone)	return
+	if(!connected_drone.can_move)	return
 	if(connected_drone.broken)	return
 	if(executing_move)	return
 	executing_move = TRUE
@@ -71,6 +72,11 @@
 		executing_move = FALSE
 		move_drone()
 
+/obj/item/drone_controller/proc/toggle_state()
+	if(connected_drone && connected_drone.can_fly && !connected_drone.broken)
+		to_chat(controller, SPAN_NOTICE("You [connected_drone.flying ? "decent \the [src] to the ground." : "fly \the [src] into the air."]"))
+		connected_drone.toggle_state()
+
 /obj/structure/drone
 	name = "drone"
 	desc = "A movable drone."
@@ -78,16 +84,26 @@
 	icon_state = "goliath"
 	var/obj/item/drone_controller/connected_controller = null
 	var/movement_delay = 5
-	var/movement_sound = 'sound/machines/rc_car.ogg'
-	var/has_special = FALSE
+	
 	var/health = 100
 	var/broken = FALSE
+	var/can_move = TRUE
+	var/can_fly = FALSE
+	var/flying = FALSE
+
+	var/obj/item/weapon/grenade/payload = null
+	var/has_special = FALSE
+
+	var/movement_sound = 'sound/machines/rc_car.ogg'
+
+	var/starting_snd = null
+	var/running_snd = null
+	var/ending_snd = null
+
+	var/starting_snd_len = 26
+	var/running_snd_len = 11
 	
 	heavy_armor_penetration = 0
-	var/devastation_range = 2
-	var/heavy_impact_range = 3
-	var/light_impact_range = 5
-	var/flash_range = 6
 
 /obj/structure/drone/attackby(obj/item/I as obj, mob/user)
 	if(istype(I, /obj/item/drone_controller))
@@ -108,6 +124,27 @@
 			return
 	else
 		..()
+
+/obj/structure/drone/proc/toggle_state()
+	if(can_fly)
+		can_move = FALSE
+		if(!flying)
+			animate(src, pixel_y = 16, time = starting_snd_len, easing = CUBIC_EASING | EASE_IN)
+			playsound(loc, starting_snd, 50, FALSE, 2)
+			spawn(starting_snd_len)
+				can_move = TRUE
+				flying = TRUE
+				icon_state = "[initial(icon_state)]_flying"
+				running_sound()
+		else
+			
+			playsound(loc, ending_snd, 50, FALSE, 2)
+			spawn(5)
+				animate(src, pixel_y = 0, time = 5, easing = BOUNCE_EASING | EASE_OUT)
+				spawn(5)
+					can_move = TRUE
+					flying = FALSE
+					icon_state = initial(icon_state)
 
 /obj/structure/drone/proc/try_destroy()
 	if (health <= 0)
@@ -148,9 +185,30 @@
 	..()
 
 /obj/structure/drone/proc/do_special()
+	return
+
+/obj/structure/drone/Move()
+	..()
+	playsound(loc, movement_sound, 100, TRUE)
+
+/obj/structure/drone/proc/running_sound()
+	if (flying)
+		playsound(loc, pick(running_snd), 50, FALSE, 2)
+		spawn(running_snd_len)
+			running_sound()
+	return
+
+/obj/structure/drone/goliath
+	name = "Goliath SdKfz. 302"
+	desc = "The SdKfz. 302, also known as the Goliath, is a remote-controlled tracked mine carrying either 60 or 100 kg of high explosives. It is used for destroying tanks, disrupting dense infantry formations, and the demolition of buildings or bridges."
+	movement_delay = 4.5
+	has_special = TRUE
+	heavy_armor_penetration = 40
+
+/obj/structure/drone/goliath/do_special()
 	var/turf/T = get_turf(src)
 	qdel(src)
-	explosion(T, devastation_range, heavy_impact_range, light_impact_range, flash_range)
+	explosion(T, 2, 3, 5, 6)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,src))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)
@@ -211,17 +269,20 @@
 		F.update_icon()
 	return
 
-/obj/structure/drone/Move()
-	..()
-	playsound(loc, movement_sound, 100, TRUE)
+/obj/structure/drone/flying
+	name = "drone"
+	desc = "A flying drone."
+	icon_state = "drone"
+	health = 50
+	movement_delay = 2
+	movement_sound = null
+	can_fly = TRUE
 
-/obj/structure/drone/goliath
-	name = "Goliath SdKfz. 302"
-	desc = "The SdKfz. 302, also known as the Goliath, is a remote-controlled tracked mine carrying either 60 or 100 kg of high explosives. It is used for destroying tanks, disrupting dense infantry formations, and the demolition of buildings or bridges."
-	movement_delay = 4.5
-	has_special = TRUE
-	heavy_armor_penetration = 40
-	devastation_range = 2
-	heavy_impact_range = 3
-	light_impact_range = 5
-	flash_range = 6
+	movement_sound = null
+
+	starting_snd = 'sound/machines/drone_startup.ogg'
+	running_snd = list('sound/machines/drone_active1.ogg', 'sound/machines/drone_active2.ogg', 'sound/machines/drone_active3.ogg')
+	ending_snd = 'sound/machines/drone_shutdown.ogg'
+
+/obj/structure/drone/flying/Move()
+	..()

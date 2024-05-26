@@ -28,14 +28,16 @@
 		movementsound()
 
 /obj/structure/vehicleparts/axis/ship/movementloop()
-	if (moving == TRUE)
+	if (moving && !movement_processes)
 		get_weight()
+		movement_processes++
 		if (masts.len)
 			check_sails()
 		if (do_vehicle_check() && currentspeed > 0)
 			for (var/obj/structure/vehicleparts/movement/sail/S in masts)
 				if (!S.sails || S.broken)
 					moving = FALSE
+					movement_processes--
 					stopmovementloop()
 					return FALSE
 				else
@@ -44,9 +46,11 @@
 		else
 			currentspeed = 0
 			moving = FALSE
+			movement_processes--
 			stopmovementloop()
 			return FALSE
 		spawn(vehicle_m_delay+1)
+			movement_processes--
 			movementloop()
 			return FALSE
 	else

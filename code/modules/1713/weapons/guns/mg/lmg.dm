@@ -284,7 +284,7 @@
 	var/cover_close_sound = 'sound/weapons/guns/interact/lmg_close.ogg'
 
 /obj/item/weapon/gun/projectile/automatic/manual/special_check(mob/user)
-	if (cover_open)
+	if (cover_open && !istype(loc, /obj/structure/turret))
 		to_chat(user, SPAN_WARNING("\The [src]'s cover is open! Close it before firing!"))
 		return FALSE
 	return ..()
@@ -318,13 +318,13 @@
 	overlays += mag_image
 
 /obj/item/weapon/gun/projectile/automatic/manual/load_ammo(var/obj/item/A, mob/user)
-	if (!cover_open)
+	if (!cover_open && !istype(loc, /obj/structure/turret))
 		to_chat(user, SPAN_WARNING("You need to open the cover to load \the [src]."))
 		return
 	..()
 
 /obj/item/weapon/gun/projectile/automatic/manual/unload_ammo(mob/user, var/allow_dump=1)
-	if (!cover_open)
+	if (!cover_open && !istype(loc, /obj/structure/turret))
 		to_chat(user, SPAN_WARNING("You need to open the cover to unload \the [src]."))
 		return
 	..()
