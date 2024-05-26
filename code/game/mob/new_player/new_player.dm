@@ -7,7 +7,7 @@
 
 /mob/new_player
 	var/ready = FALSE
-	var/spawning = FALSE//Referenced when you want to delete the new_player later on in the code.
+	var/spawning = FALSE //Referenced when you want to delete the new_player later on in the code.
 	var/totalPlayers = 0		 //Player counts for the Lobby tab
 	var/totalPlayersReady = 0
 	var/desired_job = null // job title. This is for join queues.
@@ -151,9 +151,8 @@ var/global/redirect_all_players = null
 	return
 
 /mob/new_player/Stat()
-
-// New way
-	if(ticker)
+// Commented out as it is not working as intended and bugs out the Status tab in the Statpanel.
+	/*if(ticker)
 		if(ticker.current_state == GAME_STATE_PLAYING)
 			src << browse(null, "window=playerlist")
 			return
@@ -170,9 +169,8 @@ var/global/redirect_all_players = null
 				//else
 				client << output(list2params(list("Player", "[player.client.key]")), "playerlist.browser:addPlayerCell")
 				client << output(list2params(list()), "playerlist.browser:renderPlayerList")
-				player.updateTimeToStart()
+				player.updateTimeToStart()*/
 
-// Old way
 	if (client.status_tabs && statpanel("Status") && ticker)
 		stat("")
 		stat(stat_header("Lobby"))
