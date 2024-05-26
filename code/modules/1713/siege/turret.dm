@@ -312,31 +312,36 @@
 					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
 				if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank/autoloader))
 					var/obj/structure/cannon/modern/tank/autoloader/A = weapons[selected_weapon]
-					var/list/loadable = list()
-					for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
-						if (AL.storage.contents)
-							for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
-								if (istype(TS, A.ammotype))
-									if (A.caliber != TS.caliber && A.caliber != null && A.caliber != 0)
-										to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon."))
-										continue
-									loadable += TS
+					if (!A.is_loading)
+						A.is_loading = TRUE
+						var/list/loadable = list()
+						for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
+							if (AL.storage.contents)
+								for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+									if (istype(TS, A.ammotype))
+										if (A.caliber != TS.caliber && A.caliber != null && A.caliber != 0)
+											to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon."))
+											continue
+										loadable += TS
 
-					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
-					var/obj/item/cannon_ball/shell/tank/chosen
+						playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
+						var/obj/item/cannon_ball/shell/tank/chosen
 
-					to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
-					spawn (6 SECONDS)
-						if (!loadable.len)
-							to_chat(user, SPAN_WARNING("There are no shells to load."))
+						to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
+						spawn (6 SECONDS)
+							if (!loadable.len)
+								to_chat(user, SPAN_WARNING("There are no shells to load."))
+								return
+							chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
+							if (!chosen || chosen == "")
+								return
+							chosen.loc = src
+							A.loaded += chosen
+							to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
+							A.is_loading = FALSE
 							return
-						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
-						if (!chosen || chosen == "")
-							return
-						chosen.loc = src
-						A.loaded += chosen
-						to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
-						return
+					else
+						to_chat(user, SPAN_WARNING("The autoloader is currently in use."))
 	do_html(user)
 
 /obj/structure/turret/proc/do_html(var/mob/m)

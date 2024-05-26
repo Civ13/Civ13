@@ -54,6 +54,7 @@
 	var/z_transfer = data.z_transfer
 	var/power = data.rec_pow
 	var/sound = data.sound
+	var/create_smoke = data.create_smoke
 
 	if (!sound)
 		sound = get_sfx("explosion")
@@ -92,7 +93,7 @@
 		log_game("Explosion with size ([devastation_range], [heavy_impact_range], [light_impact_range]) in area [epicenter.loc.name] ")
 
 	if (heavy_impact_range > 0)
-		var/datum/effect/system/explosion/E = new/datum/effect/system/explosion()
+		var/datum/effect/system/explosion/E = new/datum/effect/system/explosion(create_smoke)
 		E.set_up(epicenter)
 		E.start()
 
@@ -227,3 +228,4 @@
 	var/rec_pow
 	var/list/objects_with_immunity = list()
 	var/sound = null
+	var/create_smoke = TRUE

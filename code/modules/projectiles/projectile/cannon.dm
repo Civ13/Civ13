@@ -19,6 +19,7 @@
 	impact_type = /obj/effect/projectile/impact/heavy
 	var/turf/targloc = null
 	var/initiated = FALSE
+	var/create_smoke = TRUE
 
 /obj/item/projectile/shell/New()
 	..()
@@ -198,6 +199,7 @@
 	icon = 'icons/obj/projectiles.dmi'
 	icon_state = "bullet"
 	damage = 50
+	create_smoke = FALSE
 
 /obj/item/projectile/shell/autocannon/New()
 	..()
