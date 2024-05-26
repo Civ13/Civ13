@@ -274,7 +274,7 @@
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b3/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/b3(null)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)
 	armour.attackby(plates1, H)
-	uniform.attackby(armour2, H)
+	uniform.attackby(armour, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
 
 //head
