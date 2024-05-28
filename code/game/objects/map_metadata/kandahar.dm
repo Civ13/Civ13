@@ -51,10 +51,10 @@
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
-	handle_flags() //Called once in the beginning to set up DRA flags
 	spawn(100)
 		load_new_recipes("config/crafting/material_recipes_sovafghan.txt")
 		override_global_recipes = "sovafghan"
+		handle_flags() //Called once in the beginning to set up DRA flags
 	spawn(4800)
 		points_check()
 
