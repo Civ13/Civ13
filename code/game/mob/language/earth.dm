@@ -522,7 +522,7 @@
     colour = "Chinook"
     flags = RESTRICTED | COMMON_VERBS
     syllables = CHINOOK_SYLLABLES
-    mutual_intelligibility = list(datum/language/iroquois = 6, /datum/language/inuit = 4)
+    mutual_intelligibility = list(/datum/language/iroquois = 6, /datum/language/inuit = 4)
 
 /datum/language/comanche
     name = "Comanche"
@@ -542,13 +542,13 @@
     syllables = MAYAN_SYLLABLES
     mutual_intelligibility = list(/datum/language/aztec = 6, /datum/language/cherokee = 2)
 
-/datum/language/nahuatl
+/datum/language/aztec
     name = "Aztec"
     desc = "Nahuatl language."
     key = "az"
     colour = "Aztec"
     flags = RESTRICTED | COMMON_VERBS
-    syllables = NAHUATL_SYLLABLES
+    syllables = AZTEC_SYLLABLES
     mutual_intelligibility = list(/datum/language/mayan = 6, /datum/language/cherokee = 2)
 
 /datum/language/hawaiian
