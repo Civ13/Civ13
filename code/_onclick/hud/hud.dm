@@ -102,13 +102,13 @@ var/list/global_huds = list(
 	fov.screen_loc = "4,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
-
+/*
 	aim_cross = new /obj/screen/aiming_cross()
 	fov.name = " "
 	fov.screen_loc = "1,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 21
-
+*/
 	cover = new /obj/screen/cover()
 	noise = new /obj/screen/noise()
 	fishbed = new /obj/screen/fishbed()
