@@ -36,6 +36,7 @@
 	var/obj/structure/bed/chair/gunner/gunner_chair = null
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
+	var/is_loading = FALSE
 
 	var/azimuth = 180
 	var/distance = 5
@@ -411,34 +412,39 @@
 								playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 							return
 			else
-				var/list/loadable = list()
-				for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
-					if (AL.storage.contents)
-						for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
-							if (istype(TS, ammotype))
-								if (caliber != TS.caliber && caliber != null && caliber != 0)
-									user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
-									continue
-								loadable += TS
-				/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
-					user << SPAN_WARNING("There are no shell racks to load from nearby.")
-					return */
+				if (!is_loading)
+					is_loading = TRUE
+					var/list/loadable = list()
+					for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
+						if (AL.storage.contents)
+							for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+								if (istype(TS, ammotype))
+									if (caliber != TS.caliber && caliber != null && caliber != 0)
+										to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon."))
+										continue
+									loadable += TS
+					/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
+						to_chat(user, SPAN_WARNING("There are no shell racks to load from nearby.")
+						return */
 
-				playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
-				var/obj/item/cannon_ball/shell/tank/chosen
+					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
+					var/obj/item/cannon_ball/shell/tank/chosen
 
-				user << SPAN_NOTICE("The autoloader begins loading a shell.")
-				spawn (6 SECONDS)
-					if (!loadable.len)
-						user << SPAN_WARNING("There are no shells to load.")
+					to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
+					spawn (6 SECONDS)
+						if (!loadable.len)
+							to_chat(user, SPAN_WARNING("There are no shells to load."))
+							return
+						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
+						if (!chosen || chosen == "")
+							return
+						chosen.loc = src
+						loaded += chosen
+						to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
+						is_loading = FALSE
 						return
-					chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
-					if (!chosen || chosen == "")
-						return
-					chosen.loc = src
-					loaded += chosen
-					user << SPAN_NOTICE("The autoloader loads \the [src].")
-					return
+				else
+					to_chat(user, SPAN_WARNING("The autoloader is currently in use."))
 
 		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
 			var/obj/item/cannon_ball/M = loaded[1]

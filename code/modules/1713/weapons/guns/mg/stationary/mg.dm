@@ -554,7 +554,7 @@
 	magazine_type = /obj/item/ammo_magazine/a35mm_fap
 	good_mags = list(/obj/item/ammo_magazine/a35mm_fap, /obj/item/ammo_magazine/a35mm_hei)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2)),
+		list(name = "automatic", burst=1, burst_delay=5, accuracy=list(2)),
 		)
 	ammo_type = /obj/item/ammo_casing/a30mm_ap
 	full_auto = TRUE
@@ -571,7 +571,7 @@
 	magazine_type = /obj/item/ammo_magazine/a25mm_ap/bradley
 	good_mags = list(/obj/item/ammo_magazine/a25mm_ap/bradley, /obj/item/ammo_magazine/a25mm_he/bradley)
 	firemodes = list(
-		list(name = "automatic", burst=1, burst_delay=3, accuracy=list(2))
+		list(name = "automatic", burst=1, burst_delay=5, accuracy=list(2))
 		)
 	ammo_type = /obj/item/ammo_casing/a25mm_ap
 

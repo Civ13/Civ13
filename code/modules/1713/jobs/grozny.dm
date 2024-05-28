@@ -1,18 +1,16 @@
 /////////Chechen Army//////////////
-
 /datum/job/arab/civilian/chechen/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chechen_name(H.gender)
 	H.real_name = H.name
 	H.circumcised = TRUE
 
-
 /datum/job/arab/civilian/chechen/leader
 	title = "Chechen Warlord"
-	rank_abbreviation = "W."
 	spawn_location = "JoinLateCCWL"
-	is_grozny = TRUE
+	
 	is_commander = TRUE
-	is_ww2 = FALSE
+	is_officer = TRUE
+	is_grozny = TRUE
 	is_modernday = TRUE
 	whitelisted = TRUE
 
@@ -36,8 +34,6 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb(H), slot_shoulder)
-
-
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/chechoff(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -86,41 +82,41 @@
 
 //shoes
 	var/randshoe2 = rand(1,5)
-	if (randshoe2 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-	else if (randshoe2 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
-	else if (randshoe2 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
-	else if (randshoe2 == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-	else if (randshoe2 == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
-
+	switch(randshoe2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/workboots(H), slot_shoes)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/winterboots(H), slot_shoes)
 
 //clothes
 	var/randjack2 = rand(1,10)
-	if (randjack2 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
-	else if (randjack2 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
-	else if (randjack2 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
-	else if (randjack2 == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
-	else if (randjack2 == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/oldmansuit(H), slot_w_uniform)
-	else if (randjack2 == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/engi(H), slot_w_uniform)
-	else if (randjack2 == 7)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
-	else if (randjack2 == 8)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/mafia(H), slot_w_uniform)
-	else if (randjack2 == 9)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
-	else if (randjack2 == 10)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-
+	switch(randjack2)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/oldmansuit(H), slot_w_uniform)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/engi(H), slot_w_uniform)
+		if (7)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
+		if (8)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/mafia(H), slot_w_uniform)
+		if (9)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+		if (10)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
 
 //head
 	var/randhead2 = rand(1,6)
@@ -149,7 +145,6 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/watch(H), slot_gloves)
 		if (4)
 			H.equip_to_slot_or_del(new /obj/item/clothing/gloves/watch/specialwatch(H), slot_gloves)
-
 
 //misc
 	var/randmisc2 = rand(1,6)
@@ -205,19 +200,20 @@
 	uniform.attackby(armor, H)
 
 //suit
-	var/randsuits = rand(1,6)
-	if (randsuits == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker/lizard_jacket(H), slot_wear_suit)
-	else if (randsuits == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown(H), slot_wear_suit)
-	else if (randsuits == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
-	else if (randsuits == 4)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/expensivecoat(H), slot_wear_suit)
-	else if (randsuits == 5)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
-	else if (randsuits == 6)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/winter_coat(H), slot_wear_suit)
+	var/randsuit = rand(1,6)
+	switch(randsuit)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/biker/lizard_jacket(H), slot_wear_suit)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/bomberjacketbrown(H), slot_wear_suit)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/expensivecoat(H), slot_wear_suit)
+		if (5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/sovcoat2(H), slot_wear_suit)
+		if (6)
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/winter_coat(H), slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
@@ -261,7 +257,6 @@
 	is_medic = TRUE
 	is_grozny = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	min_positions = 3
 	max_positions = 10
@@ -323,7 +318,7 @@
 
 /datum/job/russian/ruff_lieutenant
 	title = "Russian Federal Forces Lieutenant"
-	rank_abbreviation = "Lt."
+	rank_abbreviation = "Leyt."
 
 	spawn_location = "JoinLateRUCap"
 
@@ -331,7 +326,6 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 	whitelisted = TRUE
 
 	min_positions = 1
@@ -399,7 +393,6 @@
 
 	is_grozny = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 	is_squad_leader = TRUE
 	uses_squads = TRUE
 
@@ -475,7 +468,6 @@
 	is_medic = TRUE
 	is_grozny = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	min_positions = 2
 	max_positions = 8
@@ -551,7 +543,6 @@
 	is_radioman = TRUE
 	uses_squads = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	min_positions = 1
 	max_positions = 5
@@ -644,7 +635,6 @@
 
 	is_grozny = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	uses_squads = TRUE
 
@@ -746,7 +736,6 @@
 	whitelisted = TRUE
 	is_grozny = TRUE
 	is_modernday = TRUE
-	is_ww2 = FALSE
 
 	uses_squads = TRUE
 

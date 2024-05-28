@@ -271,6 +271,26 @@
 
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 
+/*
+ * Saw
+ */
+
+/obj/item/weapon/saw
+	name = "saw"
+	desc = "Used for sawing logs into usable planks."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "saw"
+	item_state = "saw"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = ITEM_SIZE_SMALL
+	edge = TRUE
+	sharp = TRUE
+
+	attack_verb = list("cut", "slashed", "sawed")
+
 /obj/item/weapon/horn
 	name = "blowing horn"
 	desc = "Good for long range communication."
@@ -303,8 +323,8 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "whistle"
 	attack_verb = list("attacked", "whacked")
-	slot_flags = SLOT_BELT
-	w_class = ITEM_SIZE_SMALL | SLOT_POCKET
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	w_class = ITEM_SIZE_SMALL
 	flags = CONDUCT
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS

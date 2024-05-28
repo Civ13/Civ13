@@ -17,7 +17,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "blast_control"
 	anchored = TRUE
-	cooldown = 3
 	distance = 5
 	density = FALSE
 	not_movable = TRUE
@@ -325,7 +324,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gate_control"
 	anchored = TRUE
-	cooldown = 0
 	distance = 6
 	density = TRUE
 	not_movable = TRUE
@@ -419,7 +417,6 @@
 	layer = MOB_LAYER + 0.01
 	climbable = TRUE
 	open = FALSE
-	cooldown = 0
 	bound_width = 32
 	bound_height = 64 // Only left facing version present because the rest of those variables, a solution would be to separate the open states from the closed states by making two separate .dmi files, where one's icon sizes are 64x32px, while the other one is 32x64px (not tested though)
 
@@ -541,7 +538,6 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "lift_panel2"
 	anchored = TRUE
-	cooldown = 5
 	distance = 5
 	density = FALSE
 	not_movable = TRUE
