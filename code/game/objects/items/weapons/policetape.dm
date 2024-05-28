@@ -266,6 +266,10 @@ var/list/tape_roll_applications = list()
 		name = "crumpled [name]"
 
 /obj/item/tape/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if(!lifted && ismob(mover))
 		var/mob/M = mover
 		add_fingerprint(M)

@@ -21,6 +21,10 @@
 	for (var/obj/covers/repairedfloor/rope/R in get_turf(get_step(mover,mover.dir)))
 		return TRUE
 
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 

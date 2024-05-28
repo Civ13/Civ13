@@ -137,6 +137,10 @@ var/list/seed_list_jungle
 	icon_state = "[initial(icon_state)]_swaying_[pick("left", "right")]"
 
 /obj/structure/wild/CanPass(var/atom/movable/mover)
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
