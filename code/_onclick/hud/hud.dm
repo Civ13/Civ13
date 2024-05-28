@@ -104,10 +104,10 @@ var/list/global_huds = list(
 	fov.layer = 18
 
 	aim_cross = new /obj/screen/aiming_cross()
-	fov.name = " "
-	fov.screen_loc = "1,1"
-	fov.mouse_opacity = FALSE
-	fov.layer = 21
+	aim_cross.name = " "
+	aim_cross.screen_loc = "1,1"
+	aim_cross.mouse_opacity = FALSE
+	aim_cross.layer = 21
 
 	cover = new /obj/screen/cover()
 	noise = new /obj/screen/noise()
