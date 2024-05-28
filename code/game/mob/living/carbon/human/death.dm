@@ -118,8 +118,8 @@
 										map.scores["Militia"] += 1
 							else
 								map.scores["Militia"] += 1
-					else
-						map.scores["Russian Army"] += 1
+						else
+							map.scores["Russian Army"] += 1
 
 
 			if (MAP_OPERATION_FALCON)
