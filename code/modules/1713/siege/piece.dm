@@ -387,7 +387,7 @@
 				if (istype(M, ammotype))
 					var/obj/item/cannon_ball/shell/tank/TS = M
 					if (caliber != TS.caliber && caliber != null && caliber != 0)
-						to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")))
+						to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon."))
 						return
 					// load first and only slot
 					var/found_loader = FALSE
