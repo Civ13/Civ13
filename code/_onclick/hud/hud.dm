@@ -34,7 +34,6 @@ var/list/global_huds = list(
 	var/obj/screen/fishbed
 	var/obj/screen/noise
 	var/obj/screen/cover
-	var/obj/screen/aim_cross
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
