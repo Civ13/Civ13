@@ -122,11 +122,11 @@ var/list/_client_preferences_by_type
 	if (!enabled)
 		preference_mob.set_typing_indicator(0)
 
-/*/datum/client_preference/dynamic_aiming_cross
+/datum/client_preference/dynamic_aiming_cross
 	description = "Dynamic aiming cross"
 	key = "SHOW_DYN_CROSS"
 	enabled_description = "Show"
-	disabled_description = "Hide"*/
+	disabled_description = "Hide"
 
 /datum/client_preference/show_ooc
 	description ="OOC chat"
