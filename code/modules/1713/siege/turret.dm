@@ -1299,7 +1299,7 @@
 	name = "Type 95 Ha-Go"
 	density = 0
 
-	turret_x = 0
+	turret_x = -12
 	turret_y = 0
 
 	gunner_x = 0
@@ -1311,10 +1311,8 @@
 	rotation_speed = 2
 
 	New()
-		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat = new /obj/structure/bed/chair/gunner/mtlb(src.loc)
 		gunner_seat.setup(src)
-		commander_seat = new /obj/structure/bed/chair/commander(src.loc)
-		commander_seat.setup(src)
 		weapons.Add(new/obj/structure/cannon/modern/tank/japanese37(src))
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/type99/type97tank(src))
 		..()
