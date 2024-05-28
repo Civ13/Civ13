@@ -89,24 +89,25 @@ var/global/datum/controller/occupations/job_master
 /datum/controller/occupations/proc/set_factions2(var/autobalance_nr = 0)
 	var/list/randomfaction = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen","Civilization F Citizen")
 	if (map.availablefactions_run == TRUE)
-		if (autobalance_nr <= 8)
-			map.availablefactions = list("Civilization A Citizen")
-			to_chat(world, "Only one civilization is enabled: <b>[civname_a]</b>.")
-		else if (autobalance_nr > 8 && autobalance_nr <= 16)
-			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen")
-			to_chat(world, "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>.")
-		else if (autobalance_nr > 16 && autobalance_nr <= 24)
-			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen")
-			to_chat(world, "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>.")
-		else if (autobalance_nr > 24 && autobalance_nr <= 30)
-			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen")
-			to_chat(world, "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>.")
-		else if (autobalance_nr > 30 && autobalance_nr <= 36)
-			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen")
-			to_chat(world, "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>.")
-		else if (autobalance_nr > 36)
-			map.availablefactions = randomfaction
-			to_chat(world, "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>.")
+		switch(autobalance_nr)
+			if (0 to 8)
+				map.availablefactions = list("Civilization A Citizen")
+				to_chat(world, "Only one civilization is enabled: <b>[civname_a]</b>.")
+			if (9 to 16)
+				map.availablefactions = list("Civilization A Citizen","Civilization B Citizen")
+				to_chat(world, "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>.")
+			if (17 to 24)
+				map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen")
+				to_chat(world, "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>.")
+			if (25 to 30)
+				map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen")
+				to_chat(world, "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>.")
+			if (31 to 36)
+				map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen")
+				to_chat(world, "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>.")
+			if (37 to INFINITY)
+				map.availablefactions = randomfaction
+				to_chat(world, "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>.")
 
 	map.availablefactions_run = FALSE
 	return
@@ -228,6 +229,7 @@ var/global/datum/controller/occupations/job_master
 						HSL = HM
 			else if (map.faction2_squad_leaders[H.squad] && !map.faction2_squad_leaders[H.squad].original_job.is_tankcom)
 				HSL = map.faction2_squad_leaders[H.squad]
+		
 		if (HSL && HSL.stat == CONSCIOUS)
 			var/found = FALSE
 			for(var/mob/living/human/EN in range(6,HSL))
@@ -252,7 +254,8 @@ var/global/datum/controller/occupations/job_master
 							spawnloc = get_turf(HSL)
 							break
 				H.forceMove(spawnloc)
-				HSL << "<big><font color='green'>[H] has arrived at your squad.</font></big>"
+				to_chat(HSL, "<big><font color='green'>[H] has arrived at your squad.</font></big>")
+				
 				// make sure we have the right ambience for our new location
 				spawn (1)
 					var/area/H_area = get_area(H)
@@ -266,26 +269,29 @@ var/global/datum/controller/occupations/job_master
 		SpawnAtFob(H)
 	if (!H.spawned_at_fob)
 		if (map.ID == MAP_GULAG13)
-			if(H.nationality == "German")
-				spawn_location = "JoinLateCivG"
-			else if(H.nationality == "Polish")
-				spawn_location = "JoinLateCivP"
-			else if(H.nationality == "Ukrainian")
-				spawn_location = "JoinLateCivU"
-		if (!spawn_location && H.original_job)
-			spawn_location = H.original_job.spawn_location
+			switch(H.nationality)
+				if ("German")
+					spawn_location = "JoinLateCivG"
+				if ("Polish")
+					spawn_location = "JoinLateCivP"
+				if ("Ukrainian")
+					spawn_location = "JoinLateCivU"
 		if (map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 			if (H.original_job_title in map.availablefactions)
-				if (H.original_job_title == "Human tribesman")
-					spawn_location = "JoinLateIND1"
-				else if (H.original_job_title == "Crustacean tribesman")
-					spawn_location = "JoinLateIND2"
-				else if (H.original_job_title == "Orc tribesman")
-					spawn_location = "JoinLateIND3"
-				else if (H.original_job_title == "Lizard tribesman")
-					spawn_location = "JoinLateIND4"
+				switch(H.original_job_title)
+					if ("Human tribesman")
+						spawn_location = "JoinLateIND1"
+					if ("Crustacean tribesman")
+						spawn_location = "JoinLateIND2"
+					if ("Orc tribesman")
+						spawn_location = "JoinLateIND3"
+					if ("Lizard tribesman")
+						spawn_location = "JoinLateIND4"
 			else
 				spawn_location = "JoinLateIND5"
+		
+		if (!spawn_location && H.original_job)
+			spawn_location = H.original_job.spawn_location
 
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs[spawn_location]
@@ -336,7 +342,7 @@ var/global/datum/controller/occupations/job_master
 				valid_spawns += T
 
 		if (blocked)
-			H << SPAN_WARNING("<big>Cannot spawn at this FOB because an enemy is nearby.</big>")
+			to_chat(H, SPAN_WARNING("<big>Cannot spawn at this FOB because an enemy is nearby.</big>"))
 			SpawnAtFob(H)
 			return
 
@@ -349,7 +355,7 @@ var/global/datum/controller/occupations/job_master
 					H_area.play_ambience(H)
 			return
 		else
-			H << SPAN_WARNING("<big>No valid spawnpoints were found at this FOB.</big>")
+			to_chat(H, SPAN_WARNING("<big>No valid spawnpoints were found at this FOB.</big>"))
 			SpawnAtFob(H)
 			return
 
