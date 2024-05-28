@@ -117,8 +117,6 @@
 										to_chat(world, "<font color='red' size=3>The <b>Russian Army</b> Lieutenant has been killed!</font>")
 									else
 										map.scores["Militia"] += 1
-							else
-								map.scores["Militia"] += 1
 						else
 							map.scores["Russian Army"] += 1
 
@@ -182,7 +180,7 @@
 									to_chat(world, "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>")
 								if ("Mujahideen Group Leader")
 									MP.sov_points += 5
-									to_chat(world, "<font color='red' size=3>The <b>Mujahideen Group Leader</b> has been killed!</font>")
+									to_chat(world, "<font color='red' size=3>A <b>Mujahideen Group Leader</b> has been killed!</font>")
           
 			if (MAP_KANDAHAR)
 				var/obj/map_metadata/kandahar/MP = map
