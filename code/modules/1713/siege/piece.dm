@@ -151,7 +151,7 @@
 				M.remove_from_mob(W)
 				W.loc = src
 				loaded += W
-				M << SPAN_NOTICE("You load \the [src].")
+				to_chat(M, SPAN_NOTICE("You load \the [src]."))
 				playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 				return
 		else if (istype(W,/obj/item/weapon/wrench) && !can_assemble)
@@ -232,7 +232,7 @@
 
 /obj/structure/cannon/attack_hand(var/mob/attacker)
 	if (can_assemble && !assembled)
-		attacker << "<span class = 'warning'>Assemble the cannon first.</span>"
+		to_chat(attacker, SPAN_WARNING("Assemble the cannon first."))
 		return
 	else
 		interact(attacker)
@@ -267,22 +267,22 @@
 	else
 		if (istype(W, /obj/item/weapon/weldingtool)) // Repair normally with a welding tool
 			visible_message("[M] starts repairing the [src]...")
-			if (do_after(M, 200, src))
-				visible_message("[M] sucessfully repairs the [src].")
-				broken = FALSE
+			if (!do_after(M, 200, src))
 				return
+			visible_message("[M] sucessfully repairs the [src].")
+			broken = FALSE
 			return
 		else if (istype(W, /obj/item/stack/material/steel)) // Repair at the cost of 10 steel and slower
 			var/obj/item/stack/material/MAT = W
-			if (MAT.amount >= 10)
-				visible_message("[M] starts repairing the [src]...")
-				if (do_after(M, 300, src))
-					visible_message("[M] sucessfully repairs the [src].")
-					MAT.amount -= 10
-					broken = FALSE
-					return
-			else
+			if (MAT.amount < 10)
 				to_chat(M, "You need 10 [MAT] to repair \the [src].")
+				return
+			visible_message("[M] starts repairing the [src]...")
+			if (!do_after(M, 300, src))
+				return
+			visible_message("[M] sucessfully repairs the [src].")
+			MAT.amount -= 10
+			broken = FALSE
 			return
 		else
 			to_chat(M, SPAN_DANGER("\The [src] is broken! Repair it first."))
@@ -326,7 +326,7 @@
 
 /mob/proc/stop_using_cannon()
 	if (using_cannon)
-		src << "you are stopped using [using_cannon.name]"
+		to_chat(src, "You stopped using [using_cannon.name].")
 		using_cannon.clear_aiming_line(src)
 		src << browse(null, "window=artillery_window")
 		using_cannon.scope_mod = FALSE
@@ -350,22 +350,22 @@
 		istank = TRUE
 	var/mob/living/human/H = user
 	if (istype(H) && H.faction_text == INDIANS)
-		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
+		to_chat(user, SPAN_WARNING("You have no idea how this thing works."))
 		return FALSE
 
 	if (!locate(user) in range(1,src))
 		if (dir != EAST && dir != WEST)
-			user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
+			to_chat(user, SPAN_WARNING("Get behind \the [src] to use it."))
 			return FALSE
 		else
 			if (dir == SOUTH)
 				var/turf/T = get_step(src,NORTH)
 				if (!locate(user) in range(1,T))
-					user << "<span class = 'danger'>Get behind \the [src] to use it.</span>"
+					to_chat(user, SPAN_WARNING("Get behind \the [src] to use it."))
 					return FALSE
 
 	if (!user.can_use_hands())
-		user << "<span class = 'danger'>You have no hands to use this with.</span>"
+		to_chat(user, SPAN_DANGER("You have no hands to use this with."))
 		return FALSE
 
 	if (istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
@@ -373,11 +373,11 @@
 		for (var/obj/structure/bed/chair/gunner/G in user.loc)
 			found_gunner = TRUE
 		if (!found_gunner)
-			user << "<span class = 'warning'>You need to be at the gunner's position to operate \the [src].</span>"
+			to_chat(user, SPAN_WARNING("You need to be at the gunner's position to operate \the [src]."))
 			return FALSE
 
 	if (!anchored)
-		user << "<span class = 'danger'>You need to fix \the [src] to the floor to operate it.</span>"
+		to_chat(user, SPAN_WARNING("You need to fix \the [src] to the floor to operate it."))
 		return FALSE
 
 	if (href_list["load"])
@@ -387,14 +387,14 @@
 				if (istype(M, ammotype))
 					var/obj/item/cannon_ball/shell/tank/TS = M
 					if (caliber != TS.caliber && caliber != null && caliber != 0)
-						user << SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")
+						to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [caliber] mm shells for this cannon.")))
 						return
 					// load first and only slot
 					var/found_loader = FALSE
 					for (var/obj/structure/bed/chair/loader/L in user.loc)
 						found_loader = TRUE
 					if (!found_loader && istype(src, /obj/structure/cannon/modern/tank) && !istype(src, /obj/structure/cannon/modern/tank/voyage))
-						user << SPAN_WARNING("You need to be at the loader's position to load \the [src].")
+						to_chat(user, SPAN_WARNING("You need to be at the loader's position to load \the [src]."))
 						return FALSE
 					var/loadtime = caliber/2
 					if (istype(src,/obj/structure/cannon/modern/naval))
@@ -407,7 +407,7 @@
 							user.remove_from_mob(M)
 							M.loc = src
 							loaded += M
-							user << SPAN_NOTICE("You load \the [src].")
+							to_chat(user, SPAN_NOTICE("You load \the [src]."))
 							if (istype(src, /obj/structure/cannon/modern/tank))
 								playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 							return
@@ -424,7 +424,7 @@
 										continue
 									loadable += TS
 					/* if (!(/obj/structure/shellrack/autoloader in range(1,src)))
-						to_chat(user, SPAN_WARNING("There are no shell racks to load from nearby.")
+						to_chat(user, SPAN_WARNING("There are no shell racks to load from nearby."))
 						return */
 
 					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
@@ -522,11 +522,11 @@
 	if (href_list["fire"])
 		if (!broken)
 			if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-				user << "<span class = 'danger'>You can't fire yet.</span>"
+				to_chat(user, SPAN_WARNING("You can't fire yet."))
 				return
 
 			if (!loaded.len)
-				user << "<span class = 'danger'>There's nothing in \the [src].</span>"
+				to_chat(user, SPAN_WARNING("There's nothing in \the [src]."))
 				return
 
 			if (istype(map, /obj/map_metadata/voyage))
@@ -534,11 +534,11 @@
 				var/turf/twostep = get_step(onestep, src.dir)
 				for (var/obj/structure/barricade/ship/BS in onestep)
 					if (BS.opacity)
-						user << "You have no opening to fire through!"
+						to_chat(user, SPAN_WARNING("You have no opening to fire through!"))
 						return
 				for (var/obj/structure/barricade/ship/BS1 in twostep)
 					if (BS1.opacity)
-						user << "You have no opening to fire through!"
+						to_chat(user, SPAN_WARNING("You have no opening to fire through!"))
 						return
 			if (istype(src, /obj/structure/cannon/rocket))
 				for (var/obj/item/cannon_ball/rocket/fired_shell in loaded)
