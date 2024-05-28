@@ -126,41 +126,49 @@
 						map.scores["Militia"] += 1
 					else
 						map.scores["National Guard"] += 1
-				if(original_job && original_job.title == "President of the USA")
-					to_chat(world, "<font color='red' size=3>The <b>President</b> has been killed!</font>")
-				else if(original_job && original_job.title == "Vice-President of the USA")
-					to_chat(world, "<font color='red' size=3>The <b>Vice-President</b> has been killed!</font>")
-				else if(original_job && original_job.title == "Speaker of the House")
-					to_chat(world, "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>")
-
+				if (original_job)
+					switch(original_job.title)	
+						if ("President of the USA")
+							to_chat(world, "<font color='red' size=3>The <b>President</b> has been killed!</font>")
+						if ("Vice-President of the USA")
+							to_chat(world, "<font color='red' size=3>The <b>Vice-President</b> has been killed!</font>")
+						if ("Speaker of the House")
+							to_chat(world, "<font color='red' size=3>The <b>Speaker of the House</b> has been killed!</font>")
 
 			if (MAP_KANDAHAR)
 				var/obj/map_metadata/kandahar/MP = map
-				if (faction_text == RUSSIAN && original_job.title == "Soviet Army Captain")
-					MP.muj_points += 15
-					to_chat(world, "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>")
-				if (faction_text == RUSSIAN && original_job.title == "Soviet Army Lieutenant")
-					MP.muj_points += 12
-					to_chat(world, "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>")
-				else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Sergeant")
-					MP.muj_points += 5
-				else if (faction_text == RUSSIAN && original_job.title == "Soviet Army Radio Operator")
-					MP.muj_points += 3
-				else if (faction_text == CIVILIAN && original_job.title == "DRA Governor")
-					MP.muj_points += 15
-					to_chat(world, "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>")
-				else if (faction_text == CIVILIAN && original_job.title == "DRA Lieutenant")
-					to_chat(world, "<font color='red' size=3>A <b>DRA Lieutenant</b> has been killed!</font>")
-					MP.muj_points += 10
-				else if (faction_text == CIVILIAN && original_job.title == "DRA Sergeant")
-					to_chat(world, "<font color='red' size=3>A <b>DRA Sergeant</b> has been killed!</font>")
-					MP.muj_points += 5
-				else if (faction_text == ARAB && original_job.title == "Mujahideen Warchief")
-					MP.sov_points += 15
-					to_chat(world, "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>")
-				else if (faction_text == ARAB && original_job.title == "Mujahideen Group Leader")
-					MP.sov_points += 5
-					to_chat(world, "<font color='red' size=3>The <b>Mujahideen Group Leader</b> has been killed!</font>")
+				switch(faction_text)
+					if (RUSSIAN)
+						switch(original_job.title)
+							if ("Soviet Army Captain")
+								MP.muj_points += 15
+								to_chat(world, "<font color='red' size=3>The <b>Soviet Army Captain</b> has been killed!</font>")
+							if ("Soviet Army Lieutenant")
+								MP.muj_points += 12
+								to_chat(world, "<font color='red' size=3>A <b>Soviet Army Lieutenant</b> has been killed!</font>")
+							if ("Soviet Army Sergeant")
+								MP.muj_points += 5
+							if ("Soviet Army Radio Operator")
+								MP.muj_points += 3
+					if (CIVILIAN)
+						switch(original_job.title)
+							if ("DRA Governor")
+								MP.muj_points += 15
+								to_chat(world, "<font color='red' size=3>The <b>DRA Governor</b> has been killed!</font>")
+							if ("DRA Lieutenant")
+								to_chat(world, "<font color='red' size=3>A <b>DRA Lieutenant</b> has been killed!</font>")
+								MP.muj_points += 10
+							if ("DRA Sergeant")
+								to_chat(world, "<font color='red' size=2>A <b>DRA Sergeant</b> has been killed!</font>")
+								MP.muj_points += 5
+					if (ARAB)
+						switch(original_job.title)
+							if("Mujahideen Warchief")
+								MP.sov_points += 15
+								to_chat(world, "<font color='red' size=3>The <b>Mujahideen Warchief</b> has been killed!</font>")
+							if ("Mujahideen Group Leader")
+								MP.sov_points += 5
+								to_chat(world, "<font color='red' size=2>A <b>Mujahideen Group Leader</b> has been killed!</font>")
 
 			if (MAP_SEKIGAHARA)
 				if (civilization && civilization in map.scores)
