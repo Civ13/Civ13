@@ -659,8 +659,8 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
-	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	maxpower = 1800
+	speedlist = list(1=8,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/mercedes
@@ -669,8 +669,8 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
-	speedlist = list(1=10,2=5,3=4,4=3,5=2)
+	maxpower = 1000
+	speedlist = list(1=7,2=4,3=3,4=2,5=1)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/tigr
@@ -679,8 +679,8 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
-	speedlist = list(1=10,2=5,3=4,4=3,5=2)
+	maxpower = 1000
+	speedlist = list(1=7,2=4,3=3,4=2,5=1)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/ba64
@@ -740,8 +740,8 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	speeds = 5
-	maxpower = 800
-	speedlist = list(1=10,2=6,3=5,4=4,5=3)
+	maxpower = 1800
+	speedlist = list(1=8,2=5,3=4,4=3,5=2)
 	turntimer = 8
 
 /obj/structure/vehicleparts/axis/car/volle/ambulance
