@@ -122,3 +122,10 @@
 					H.updatehealth()
 					if (!(H.species && (H.species.flags)))
 						H.Weaken(1)
+
+/obj/item/stack/material/barbwire/attack_self(mob/user as mob)
+	var/mob/living/human/H = user
+	for (var/obj/structure/barbwire/B in get_turf(H))
+		to_chat(H, SPAN_WARNING("There's already some barbed wire here."))
+		return
+	..()
