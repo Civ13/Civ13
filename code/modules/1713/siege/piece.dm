@@ -144,7 +144,7 @@
 			if(M.buckled && istype(M.buckled, /obj/structure/bed/chair/loader))
 				loadtime /= 2
 
-			if (do_after(M, loadtime, M, can_move = TRUE))
+			if (do_after(M, loadtime, src, can_move = TRUE))
 				if (loaded.len >= max_loaded)
 					to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
 					return
@@ -399,7 +399,7 @@
 					var/loadtime = caliber/2
 					if (istype(src,/obj/structure/cannon/modern/naval))
 						loadtime = caliber
-					if (do_after(user, loadtime, user, can_move = TRUE))
+					if (do_after(user, loadtime, src, can_move = TRUE))
 						if (user && (locate(user) in range(1,src)))
 							if (loaded.len >= max_loaded)
 								to_chat(M, SPAN_WARNING("There's already a [loaded[1]] loaded."))
@@ -449,7 +449,7 @@
 		else if (istype(src, /obj/structure/cannon/modern) || istype(src, /obj/structure/cannon/mortar))
 			var/obj/item/cannon_ball/M = loaded[1]
 			var/unloadtime = caliber/8
-			if (do_after(user, unloadtime, user, can_move = TRUE))
+			if (do_after(user, unloadtime, src, can_move = TRUE))
 				if (user && (locate(user) in range(1,src)))
 					loaded -= M
 					M.loc = get_turf(user)

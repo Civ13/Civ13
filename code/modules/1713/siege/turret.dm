@@ -244,7 +244,7 @@
 /obj/structure/turret/proc/fire()
 	if(weapons.len < selected_weapon)
 		return
-	if(!gunner)
+	if(!gunner_seat || !gunner || gunner.stat != CONSCIOUS)
 		return
 
 	var/next_shot_delay = 1
@@ -1147,7 +1147,7 @@
 	icon_state = "autocannon"
 
 	turret_x = 0
-	turret_y = 0
+	turret_y = 12
 
 	gunner_x = -8
 	gunner_y = 0

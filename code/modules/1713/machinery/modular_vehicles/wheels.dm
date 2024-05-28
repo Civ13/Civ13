@@ -536,6 +536,8 @@
 /obj/item/turret_controls/attack_self(mob/living/human/user)
 	if(!turret)
 		return
+	if(user.stat != CONSCIOUS)
+		return
 	turret.open_fire()
 
 /obj/item/turret_controls/proc/stop_firing()
