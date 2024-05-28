@@ -19,10 +19,18 @@
 #define GAELIC "GAELIC"
 #define ITALIAN "ITALIAN"
 #define CHEROKEE "CHEROKEE"
+#define IROQUOIS "IROQUOIS"
+#define SIOUX "SIOUX"
+#define APACHE "APACHE"
+#define NAVAJO "NAVAJO"
+#define CHINOOK "CHINOOK"
+#define COMANCHE "COMANCHE"
+#define MAYAN "MAYAN"
+#define AZTEC "AZTEC"
+#define HAWAIIAN "HAWAIIAN"
 #define INUIT "INUIT"
 #define OLDNNORSE "OLDNORSE"
 #define EGYPTIAN "EGYPTIAN"
-#define IROQUOIS "IROQUOIS"
 #define PASHTO "PASHTO"
 #define DARI "DARI"
 #define FARSI "FARSI"
@@ -54,222 +62,253 @@
 #define REDFACTION "REDFACTION"
 
 /proc/faction_const2name(constant,age = 0)
+	switch(constant)
+		if (PIRATES)
+			return "Pirates"
 
-	if (constant == PIRATES)
-		return "Pirates"
-
-	if (constant == BRITISH)
-		if (age >= 6)
-			return "United Kingdom"
-		else
-			if (map.ID == "TWOTRIBES")
-				return "Red Tribe"
-			else
-				return "British Empire"
-
-	if (constant == CIVILIAN)
-		if (map.ID == "TSARITSYN")
-			return "Red Army"
-		else if (map.ID == "YELTSIN")
-			return "Militia"
-		else if (map.ID == "AFRICAN_WARLORDS")
-			return "Yellowagwana Wartribe"
-		else if (map.ID == "TADOJSVILLE")
-			return "United Nations Peacekeepers"
-		else if (map.ID == "WHITERUN")
-			return "Stormcloaks"
-		else if (map.ID == "CAPITOL_HILL")
-			return "Rioters"
-		else if (map.ID == "WACO")
-			return "Branch Davidians"
-		else if (map.ID == "MISSIONARY_RIDGE")
-			return "Confederates"
-		else if (map.ID == "TANTIVEIV")
-			return "Rebels"
-		else if (map.ID == "RUHR_UPRISING")
-			return "Ruhr Red Army"
-		else if (map.ID == "MAGISTRAL")
-			return "DRA Army"
-		else if (map.ID == "BANK_ROBBERY" || map.ID == "DRUG_BUST")
-			return "Police Department"
-		else if (map.ID == "LONG_MARCH")
-			return "Red Army"
-		else if (map.ID == "EFT_FACTORY")
-			return "Scavs"
-		else
+		if (BRITISH)
 			if (age >= 6)
-				return "Civilians"
+				return "United Kingdom"
 			else
-				return "Colonists"
+				if (map.ID == "TWOTRIBES")
+					return "Red Tribe"
+				else
+					return "British Empire"
 
-	if (constant == INDIANS)
-		if (map.ID == "AFRICAN_WARLORDS")
-			return "Blugisi Wartribe"
-		else if (map.ID == "TADOJSVILLE")
-			return "Mercenary Warbands"
-		else if (map.ID == "EAST_LOS_SANTOS")
-			return "Ballas"
-		else
-			return "Native Tribe"
+		if (CIVILIAN)
+			switch(map.ID)
+				if ("TSARITSYN")
+					return "Red Army"
+				if ("YELTSIN")
+					return "Militia"
+				if ("AFRICAN_WARLORDS")
+					return "Yellowagwana Wartribe"
+				if ("TADOJSVILLE")
+					return "United Nations Peacekeepers"
+				if ("WHITERUN")
+					return "Stormcloaks"
+				if ("CAPITOL_HILL")
+					return "Rioters"
+				if ("WACO")
+					return "Branch Davidians"
+				if ("MISSIONARY_RIDGE")
+					return "Confederates"
+				if ("TANTIVEIV")
+					return "Rebels"
+				if ("RUHR_UPRISING")
+					return "Ruhr Red Army"
+				if ("MAGISTRAL")
+					return "DRA Army"
+				if ("BANK_ROBBERY" || "DRUG_BUST")
+					return "Police Department"
+				if ("LONG_MARCH")
+					return "Red Army"
+				if ("EFT_FACTORY")
+					return "Scavs"
+				else
+					if (age >= 6)
+						return "Civilians"
+					else
+						return "Colonists"
 
-	if (constant == PORTUGUESE)
-		return "Portuguese Empire"
+		if (INDIANS)
+			switch(map.ID)
+				if ("AFRICAN_WARLORDS")
+					return "Blugisi Wartribe"
+				if ("TADOJSVILLE")
+					return "Mercenary Warbands"
+				if ("EAST_LOS_SANTOS")
+					return "Ballas"
+				else
+					return "Native Tribe"
 
-	if (constant == SPANISH)
-		return "Spanish Empire"
+		if (PORTUGUESE)
+			return "Portuguese Empire"
 
-	if (constant == FRENCH)
-		if (age >= 4)
-			return "French Republic"
-		else
-			if (map.ID == "TWOTRIBES")
-				return "Blue Tribe"
+		if (SPANISH)
+			return "Spanish Empire"
+
+		if (FRENCH)
+			if (age >= 4)
+				return "French Republic"
 			else
-				return "French Empire"
+				if (map.ID == "TWOTRIBES")
+					return "Blue Tribe"
+				else
+					return "French Empire"
 
-	if (constant == DUTCH)
-		if (map.ID == "OPERATION_FALCON")
-			return "Dutch Royal Army"
-		else
+		if (DUTCH)
+			if (map.ID == "OPERATION_FALCON")
+				return "Dutch Royal Army"
+			else
+				if (age >= 6)
+					return "Dutch Monarchy"
+				else
+					return "Dutch Republic"
+
+		if (ITALIAN)
+			if (age >= 7)
+				return "Italian Republic"
+			else
+				return "Italian Monarchy"
+
+		if (JAPANESE)
+			return "Japanese Empire"
+
+		if (RUSSIAN)
+			switch(map.ID)
+				if ("YELTSIN")
+					return "Russian Army"
+				if ("GROZNY")
+					return "Russian Federal Forces"
+				if ("CONSTANTINOPOLI")
+					return "Slavo-Russian Imperial Army"
+				if ("TSARITSYN")
+					return "White Army"
+				if ("BANK_ROBBERY")
+					return "Robbers"
+				if ("DRUG_BUST")
+					return "Rednikov Mobsters"
+				if ("EFT_FACTORY")
+					return "BEAR"
+				else
+					switch(age)
+						if (6 to 7)
+							return "Soviet Union"
+						if (8)
+							return "Russian Federation"
+						else
+							return "Russian Empire"
+
+		if (ROMAN)
+			switch(map.ID)
+				if ("WHITERUN") 
+					return "Imperial Army"
+				if ( "CONSTANTINOPOLI")
+					return "Exercitus Latinus Imperialis"
+				else
+					return "Roman Republic"
+
+		if (CHECHEN)
+			return "Chechen Republic of Ichkeria"
+
+		if (FINNISH)
+			return "Republic of Finland"
+
+		if (NORWEGIAN)
+			if (map.ID == "CLASH")
+				return "Bear Clan"
+			else
+				return "Kingdom of Norway"
+
+		if (SWEDISH)
+			return "Kingdom of Sweden"
+
+		if (DANISH)
+			if (map.ID == "CLASH")
+				return "Raven Clan"
+			else
+				return "Kingdom of Denmark"
+
+		if (GERMAN)
+			if (age == 6)
+				return "Third Reich"
+			else if (age >= 7)
+				return "Federal Republic of Germany"
+			else if (map.ID == "RUHR_UPRISING")
+				return "Weimar Republic"
+			else
+				return "German Empire"
+		if (GREEK)
+			return "Greek States"
+
+		if (ARAB)
 			if (age >= 6)
-				return "Dutch Monarchy"
+				switch(map.ID)
+					if ("ARAB_TOWN")
+						return "Hezbollah"
+					if ("KANDAHAR" || "HILL_3234" || "MAGISTRAL")
+						return "Mujahideen"
+					if ("SYRIA")
+						return "Syrian Armed Forces"
+					else
+						return "Insurgents"
 			else
-				return "Dutch Republic"
+				return "Arabic Caliphate"
 
-	if (constant == ITALIAN)
-		if (age >= 7)
-			return "Italian Republic"
-		else
-			return "Italian Monarchy"
+		if (AMERICAN)
+			switch(map.ID)
+				if ("ARAB_TOWN")
+					return "IDF"
+				if ("CAPITOL_HILL")
+					return "American Government"
+				if ("WACO")
+					return "ATF"
+				if ("TANTIVEIV")
+					return "Imperials"
+				if ("EAST_LOS_SANTOS")
+					return "Grove Street Families"
+				if ("EFT_FACTORY")
+					return "USEC"
+				if ("SYRIA")
+					return "Free Syrian Army"
+				else
+					return "United States"
 
-	if (constant == JAPANESE)
-		return "Japanese Empire"
+		if (VIETNAMESE)
+			return "Vietnamese"
 
-	if (constant == RUSSIAN)
-		if (map.ID == "YELTSIN")
-			return "Russian Army"
-		else if (map.ID == "GROZNY")
-			return "Russian Federal Forces"
-		else if (map.ID == "CONSTANTINOPOLI")
-			return "Slavo-Russian Imperial Army"
-		else if (map.ID == "TSARITSYN")
-			return "White Army"
-		else if (map.ID == "BANK_ROBBERY")
-			return "Robbers"
-		else if (map.ID == "DRUG_BUST")
-			return "Rednikov Mobsters"
-		else if (map.ID == "EFT_FACTORY")
-			return "BEAR"
-		else
-			if (age == 6 || age == 7)
-				return "Soviet Union"
-			else if (age >= 8)
-				return "Russian Federation"
+		if (POLISH)
+			if (map.ID == "WARSAW")
+				return "Polish Home Army"
 			else
-				return "Russian Empire"
+				return "Polish"
 
-	if (constant == ROMAN)
-		if (map.ID == "WHITERUN")
-			return "Imperial Army"
-		else if (map.ID == "CONSTANTINOPOLI")
-			return "Exercitus Latinus Imperialis"
-		else
-			return "Roman Republic"
-
-	if (constant == CHECHEN)
-		return "Chechen Republic of Ichkeria"
-
-	if (constant == FINNISH)
-		return "Republic of Finland"
-
-	if (constant == NORWEGIAN)
-		if (map.ID == "CLASH")
-			return "Bear Clan"
-		else
-			return "Kingdom of Norway"
-
-	if (constant == SWEDISH)
-		return "Kingdom of Sweden"
-
-	if (constant == DANISH)
-		if (map.ID == "CLASH")
-			return "Raven Clan"
-		else
-			return "Kingdom of Denmark"
-
-	if (constant == GERMAN)
-		if (age == 6)
-			return "Third Reich"
-		else if (age >= 7)
-			return "Federal Republic of Germany"
-		else if (map.ID == "RUHR_UPRISING")
-			return "Weimar Republic"
-		else
-			return "German Empire"
-	if (constant == GREEK)
-		return "Greek States"
-
-	if (constant == ARAB)
-		if (age >= 6)
-			if (map.ID == "ARAB_TOWN")
-				return "Hezbollah"
-			else if (map.ID == "KANDAHAR" || map.ID == "HILL_3234" || map.ID == "MAGISTRAL")
-				return "Mujahideen"
-			else if (map.ID == "SYRIA")
-				return "Syrian Armed Forces"
+		if (CHINESE)
+			if (map.ID == "LONG_MARCH")
+				return "National Army"
 			else
-				return "Insurgents"
-		else
-			return "Arabic Caliphate"
+				return "Chinese"
 
-	if (constant == AMERICAN)
-		if (map.ID == "ARAB_TOWN")
-			return "IDF"
-		else if (map.ID == "CAPITOL_HILL")
-			return "American Government"
-		else if (map.ID == "WACO")
-			return "ATF"
-		else if (map.ID == "TANTIVEIV")
-			return "Imperials"
-		else if (map.ID == "EAST_LOS_SANTOS")
-			return "Grove Street Families"
-		else if (map.ID == "EFT_FACTORY")
-			return "USEC"
-		else if (map.ID == "SYRIA")
-			return "Free Syrian Army"
-		else
-			return "United States"
+		if (EGYPTIAN)
+			return "Egyptian"
 
-	if (constant == VIETNAMESE)
-		return "Vietnamese"
+		if (KOREAN)
+			return "Korean"
 
-	if (constant == POLISH)
-		if (map.ID == "WARSAW")
-			return "Polish Home Army"
-		else
-			return "Polish"
+		if (IROQUOIS)
+			return "Iroquois"
+		
+		if (SIOUX) 
+			return "Sioux Natives"
 
-	if (constant == CHINESE)
-		if (map.ID == "LONG_MARCH")
-			return "National Army"
-		else
-			return "Chinese"
+		if (APACHE) 
+			return "Apache Natives"
 
-	if (constant == EGYPTIAN)
-		return "Egyptian"
+		if (NAVAJO) 
+			return "Navajo Natives"
 
-	if (constant == KOREAN)
-		return "Korean"
+		if (CHINOOK) 
+			return "Chinook Natives"
 
-	if (constant == IROQUOIS)
-		return "Iroquois"
+		if (COMANCHE) 
+			return "Comanche Natives"
 
-	if (constant == FILIPINO)
-		return "Filipino"
-	
-	if (constant == BLUEFACTION)
-		return "Blugoslavia"
-	
-	if (constant == REDFACTION)
-		return "Redmenia"
+		if (MAYAN) 
+			return "Mayans"
+
+		if (AZTEC)
+			return "Aztecs"
+
+		if (HAWAIIAN)
+			return "Hawaiians"
+
+		if (FILIPINO)
+			return "Filipino"
+		
+		if (BLUEFACTION)
+			return "Blugoslavia"
+		
+		if (REDFACTION)
+			return "Redmenia"
 
