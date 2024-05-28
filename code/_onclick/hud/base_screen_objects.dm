@@ -499,7 +499,7 @@
 	icon = 'icons/mob/screen/aiming_cross.dmi'
 	icon_state = "cross3"
 	screen_loc = "7,7"
-	process_flag = TRUE
+	process_flag = FALSE
 	mouse_opacity = 0
 /*
 // disables cross for now...
