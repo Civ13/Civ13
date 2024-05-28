@@ -347,6 +347,10 @@
 /obj/structure/table/bullet_act(var/obj/item/projectile/P)
 	return
 /obj/structure/table/CanPass(atom/movable/mover, turf/target)
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover,/obj/item/projectile))
 		return (check_cover(mover,target))
 	if (flipped == TRUE)

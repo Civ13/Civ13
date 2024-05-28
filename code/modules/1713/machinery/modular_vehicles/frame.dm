@@ -173,9 +173,7 @@
 	return FALSE
 
 /obj/structure/vehicleparts/frame/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/effect/effect/smoke))
-		return FALSE
-	else if (mover)
+	if (mover)
 		switch(mover.dir)
 			if (NORTH)
 				switch(dir)

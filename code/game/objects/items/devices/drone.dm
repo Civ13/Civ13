@@ -134,6 +134,7 @@
 			spawn(starting_snd_len)
 				can_move = TRUE
 				flying = TRUE
+				sinkable = FALSE
 				icon_state = "[initial(icon_state)]_flying"
 				running_sound()
 		else
@@ -144,6 +145,7 @@
 				spawn(5)
 					can_move = TRUE
 					flying = FALSE
+					sinkable = TRUE
 					icon_state = initial(icon_state)
 
 /obj/structure/drone/proc/try_destroy()
