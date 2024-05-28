@@ -140,12 +140,6 @@
 							map.scores["National Guard"] += 1
 
 				if (original_job)
-					switch (original_job.title)
-					if (civilization == "National Guard")
-						map.scores["Militia"] += 1
-					else
-						map.scores["National Guard"] += 1
-				if (original_job)
 					switch(original_job.title)	
 						if ("President of the USA")
 							to_chat(world, "<font color='red' size=3>The <b>President</b> has been killed!</font>")
