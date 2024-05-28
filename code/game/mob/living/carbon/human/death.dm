@@ -105,7 +105,8 @@
 
 			if (MAP_YELTSIN)
 				if (civilization && civilization in map.scores)
-					if (civilization == "Russian Army")
+					switch (civilization)
+						if ("Russian Army")
 							if (original_job)
 								switch (original_job.title)
 									if ("Russian Army Sergeant")
@@ -118,8 +119,8 @@
 										map.scores["Militia"] += 1
 							else
 								map.scores["Militia"] += 1
-					else
-						map.scores["Russian Army"] += 1
+						else
+							map.scores["Russian Army"] += 1
 
 
 			if (MAP_OPERATION_FALCON)
