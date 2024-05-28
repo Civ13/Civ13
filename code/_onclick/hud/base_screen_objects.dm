@@ -501,8 +501,9 @@
 	screen_loc = "7,7"
 	process_flag = FALSE
 	mouse_opacity = 0
-	invisibility = 101
 
+/*
+// disables cross for now...
 /obj/screen/aiming_cross/New()
 	..()
 	update()
