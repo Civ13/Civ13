@@ -117,8 +117,11 @@
 										to_chat(world, "<font color='red' size=3>The <b>Russian Army</b> Lieutenant has been killed!</font>")
 									else
 										map.scores["Militia"] += 1
+							else
+								map.scores["Militia"] += 1
 						else
 							map.scores["Russian Army"] += 1
+
 
 			if (MAP_OPERATION_FALCON)
 				if (original_job.is_commander)
