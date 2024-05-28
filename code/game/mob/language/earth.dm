@@ -28,6 +28,14 @@
 #define EGYPTIAN_SYLLABLES list("ura","ure", "nuf", "nif", "pha", "phe", "phi", "fenet", "fanat", "uneph", "uniph", "ophset", "uphset", "un", "ne", "nef", "nak", "naf", "rak", "raf", "ru", "ri", "tu", "ti", "ta", "te", "ut", "it", "pher", "phir", "inet", "uot","eunet", "runet", "aunet", "mun", "mon", "min", "am", "em", "im", "oka", "okef", "okif", "okuf", "kha", "onet", "kama", "umet", "khe", "khuf", "nem", "nim", "net", "nit", "phet", "phat", "phat", "om", "am", "um", "im", "yut", "yat", "yit", "eim", "uim", "iem", "het", "uminet", "nieter", "umerter", "omier", "kepne", "kepher", "kuph", "keph", "kiph", "ieun", "iaun", "ioun", "onetfer", "unetfer", "enetfer", "ferneh", "pherneh", "miu", "mih", "mie", "kek")
 #define KOREAN_SYLLABLES list("gya", "ga", "geo", "gyeo", "go", "gyo", "gu", "gyu", "geu", "gi", "na", "nya", "neo", "nyeo", "no", "nyo", "nu", "nyu", "neu", "ni", "da", "dya", "deo", "dyeo", "do", "dyo", "du", "dyu", "deu", "di", "ra", "rya", "reo", "ryeo", "ro", "ryo", "ru", "ryu", "reu", "ri", "ma", "mya", "meo", "myeo", "mo", "myo", "mu", "myu", "meu", "mi", "ba", "bya", "beo", "byeo", "bo", "byo", "bu", "byu", "beu", "bi", "sa", "sya", "seo", "syeo", "so", "syo", "su", "syu", "seu", "si", "a", "ya", "eo", "yeo", "o", "yo", "u", "yu", "eu", "i", "ja", "jya", "jeo", "jyeo", "jo", "jyo", "ju", "jyu", "jeu", "ji", "cha", "chya", "cheo", "chyeo", "cho", "chyo", "chu", "chyu", "cheu", "chi", "ka", "kya", "keo", "kyeo", "ko", "kyo", "ku", "kyu", "keu", "ki", "ta", "tya", "teo", "tyeo", "to", "tyo", "tu", "tyu", "teu", "ti", "pa", "pya", "peo", "pyeo", "po", "pyo", "pu", "pyu", "peu", "pi", "ha", "hya", "heo", "hyeo", "ho", "hyo", "hu", "hyu", "heu", "hi")
 #define IROQUOIS_SYLLABLES list("a", "ga", "ka", "ha", "la", "ma", "na", "hna", "nah", "qua", "s", "sa", "da", "ta", "dla", "tla", "tsa", "wa", "ya", "e", "ge", "he", "le", "me", "ne", "que", "se", "de", "te", "tle", "tse", "we", "ye", "i", "gi", "hi", "li", "mi", "ni", "qui", "si", "di", "tli", "tsi", "twi", "wi", "yi", "ti", "o", "go", "ho", "lo", "mo", "no", "quo", "so", "do", "tio", "tso", "wo", "yo", "u", "gu", "hu", "lu", "mu", "nu", "quu", "su", "du", "tlu", "tsu", "wu", "yu", "v", "gv", "hv", "lv", "nv", "quv", "sv", "dv", "tlv", "wv", "yv")
+#define SIOUX_SYLLABLES list("a", "i", "u", "e", "o", "ka", "kha", "ga", "gha", "ma", "na", "nga", "pa", "pha", "ba", "cha", "chang", "wa", "ya", "za", "ha", "la", "sha", "ta", "tha", "da", "cha", "chang", "wang", "yang", "zha", "sa", "mang", "nang")
+#define APACHE_SYLLABLES list("a", "i", "o", "u", "ba", "da", "ga", "ka", "la", "ma", "na", "pa", "sa", "ta", "tsa", "za", "cha", "ha", "wa", "ya", "nga", "nda", "nka", "nna", "nwa", "nya", "bai", "dai", "gai", "kai", "lai", "mai", "nai", "pai", "sai", "tai", "tsai", "zai", "chai", "hai", "wai", "yai", "ngai", "ndai", "nkai", "nnai", "nwai", "nyai")
+#define NAVAJO_SYLLABLES list("a", "e", "i", "o", "u", "ha", "ba", "cha", "da", "ga", "ja", "ka", "la", "ma", "na", "pa", "sa", "ta", "tsa", "za", "wa", "ya", "aa", "ee", "ii", "oo", "uu", "baa", "daa", "gaa", "jaa", "kaa", "naa", "paa", "saa", "taa", "tsaa", "zaa", "waa", "yaa", "hai", "bai", "dai", "gai", "jai", "kai", "lai", "mai", "nai", "pai", "sai", "tai", "tsai", "zai", "wai", "yai")
+#define CHINOOK_SYLLABLES list("a", "i", "u", "e", "o", "ka", "kha", "ga", "gha", "ma", "na", "nga", "pa", "pha", "ba", "cha", "chang", "wa", "ya", "za", "ha", "la", "sa", "ta", "tha", "da", "cha", "chang", "wang", "yang", "zha", "sa", "mang", "nang")
+#define COMANCHE_SYLLABLES list("a", "e", "i", "o", "u", "wa", "we", "wi", "wo", "wu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "ha", "he", "hi", "ho", "hu", "sa", "se", "si", "so", "su", "ya", "ye", "yi", "yo", "yu")
+#define MAYAN_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "cha", "che", "chi", "cho", "chu", "ja", "je", "ji", "jo", "ju", "sa", "se", "si", "so", "su", "wa", "we", "wi", "wo", "wu", "ya", "ye", "yi", "yo", "yu")
+#define AZTEC_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "ca", "ce", "ci", "co", "cu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "ta", "te", "ti", "to", "tu", "cha", "che", "chi", "cho", "chu", "ya", "ye", "yi", "yo", "yu", "tl", "tla", "tle", "tli", "tlo", "tlu", "xa", "xe", "xi", "xo", "xu")
+#define HAWAIIAN_SYLLABLES list("a", "e", "i", "o", "u", "ka", "ke", "ki", "ko", "ku", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "no", "nu", "pa", "pe", "pi", "po", "pu", "wa", "we", "wi", "wo", "wu", "ha", "he", "hi", "ho", "hu")
 #define FILIPINO_SYLLABLES list("a", "b", "da", "fa", "ga", "gra", "ha", "han", "hon", "ka", "la", "lat", "ma", "na", "nga", "pa", "pra", "ra", "sa", "sal", "ta", "tra", "wa", "e", "be", "bre", "de", "dre", "ge", "he", "ke", "le", "me", "ne", "pe", "pre", "re", "se", "te", "tre", "i", "bi", "di", "fi", "gi", "hi", "ki", "li", "mi", "ni", "pi", "pri", "ri", "si", "ti", "o", "ong", "oo", "bo", "bro", "do", "dro", "go", "ho", "ko", "lo", "mo", "no", "ngo", "po", "pro", "ro", "so", "to", "tro", "yo", "u", "bu", "du", "gu", "hu", "ku", "lu", "mu", "pu", "yu")
 #define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
 #define CHECHEN_SYLLABLES list("la", "ma", "nakh", "dukh", "duy", "lu", "sal", "shi", "shov", "dansh", "en", "be", "kha", "ja", "bal", "tsa", "mol", "ush", "jin", "khor", "gie", "buylsh", "or", "ga", "tha", "zan", "dakh", "gash", "det", "mekh", "sa", "salam", "al", "kum", "ha", "at", "qo", "di", "ste", "aid")
@@ -478,7 +486,79 @@
     colour = "Iroquois"
     flags = RESTRICTED | COMMON_VERBS
     syllables = IROQUOIS_SYLLABLES
-    mutual_intelligibility = list(/datum/language/inuit = 10)
+    mutual_intelligibility = list(/datum/language/inuit = 10, /datum/language/sioux = 6)
+
+/datum/language/sioux
+    name = "Sioux"
+    desc = "Lakotan, the language spoken by the Sioux."
+    key = "sx"
+    colour = "Sioux"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = SIOUX_SYLLABLES
+    mutual_intelligibility = list(/datum/language/cherokee = 10, /datum/language/iroquois = 6)
+
+/datum/language/apache
+    name = "Apache"
+    desc = "Western Apache."
+    key = "ap"
+    colour = "Apache"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = APACHE_SYLLABLES
+    mutual_intelligibility = list(/datum/language/navajo = 10, /datum/language/cherokee = 4)
+
+/datum/language/navajo
+    name = "Navajo"
+    desc = "Diné Bizaad."
+    key = "nv"
+    colour = "Navajo"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = NAVAJO_SYLLABLES
+    mutual_intelligibility = list(/datum/language/apache = 10, /datum/language/cherokee = 4)
+
+/datum/language/chinook
+    name = "Chinook"
+    desc = "Chinook Jargon."
+    key = "cj"
+    colour = "Chinook"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = CHINOOK_SYLLABLES
+    mutual_intelligibility = list(datum/language/iroquois = 6, /datum/language/inuit = 4)
+
+/datum/language/comanche
+    name = "Comanche"
+    desc = "Numu Tekwapu."
+    key = "cm"
+    colour = "Comanche"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = COMANCHE_SYLLABLES
+    mutual_intelligibility = list(/datum/language/cherokee = 8, /datum/language/apache = 6)
+
+/datum/language/mayan
+    name = "Mayan"
+    desc = "Maya T'aan."
+    key = "my"
+    colour = "Mayan"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = MAYAN_SYLLABLES
+    mutual_intelligibility = list(/datum/language/aztec = 6, /datum/language/cherokee = 2)
+
+/datum/language/nahuatl
+    name = "Aztec"
+    desc = "Nahuatl language."
+    key = "az"
+    colour = "Aztec"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = NAHUATL_SYLLABLES
+    mutual_intelligibility = list(/datum/language/mayan = 6, /datum/language/cherokee = 2)
+
+/datum/language/hawaiian
+    name = "Hawaiian"
+    desc = "Ōlelo Hawai'i."
+    key = "hw"
+    colour = "Hawaiian"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = HAWAIIAN_SYLLABLES
+    mutual_intelligibility = list(/datum/language/chinook = 4, /datum/language/inuit = 2)
 
 /datum/language/filipino
     name = "Filipino"
