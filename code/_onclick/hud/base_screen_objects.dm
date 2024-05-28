@@ -494,7 +494,8 @@
 	else
 		icon_state = "hand[slot_id==slot_l_hand ? "-l" : "-r"]"
 //--------------------------------------------------inventory end---------------------------------------------------------
-
+/*
+// disables cross for now...
 /obj/screen/aiming_cross
 	name = "aim"
 	icon = 'icons/mob/screen/aiming_cross.dmi'
@@ -526,7 +527,7 @@
 	spawn(0.2)
 		update()
 	return
-
+*/
 //--------------------------------------------------health---------------------------------------------------------
 /obj/screen/health
 	name = "health"
