@@ -2275,17 +2275,17 @@
 		H << "<span class='warning'>\The [src.name] is busy, wait for the saw blade to finish cutting.</span>"
 		return
 	if (istype(src, /obj/structure/sawmill/large))
-		current_work = new P(null, W.amount * 2, FALSE) //in fact for information purpose only we really need new object
+		current_work = new P(null, W.amount * 10, FALSE) //in fact for information purpose only we really need new object
 		icon = 'icons/obj/plankage_64.dmi'
 		icon_state = "sawmill1"
 		work_time_amount = round(0.1*(W.amount*8+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	else if (istype(src, /obj/structure/sawmill/powered) && powered == TRUE)
-		current_work = new P(null, W.amount * 4, FALSE) //in fact for information purpose only we really need new object
+		current_work = new P(null, W.amount * 12, FALSE) //in fact for information purpose only we really need new object
 		icon = 'icons/obj/plankage_64.dmi'
 		icon_state = "sawmill_power1"
 		work_time_amount = round(0.1*(W.amount*4+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	else
-		current_work = new P(null, W.amount, FALSE) //in fact for information purpose only we really need new object
+		current_work = new P(null, W.amount * 4, FALSE) //in fact for information purpose only we really need new object
 		icon_state = "primitive_sawmill1"
 		work_time_amount = round(0.1*(W.amount*12+47)) //The efficiency increases with the amount of material. For 1 material we get 20 deciseconds, for 50 material - 254 deciseconds.
 	current_material = W

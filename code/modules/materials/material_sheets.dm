@@ -432,30 +432,55 @@
 		if (src.amount < 2)
 			to_chat(user, "You don't have enough material to try.")
 			return
-		else
-			// Check if splitting process is already in progress
-			if (splitting_in_progress)
-				to_chat(user, SPAN_DANGER("\The [src] are already being split."))
-				return
-			// Set splitting_in_progress to TRUE to indicate the process has started
-			splitting_in_progress = TRUE
+		// Check if splitting process is already in progress
+		if (splitting_in_progress)
+			to_chat(user, SPAN_WARNING("\The [src] are already being split."))
+			return
+		// Set splitting_in_progress to TRUE to indicate the process has started
+		splitting_in_progress = TRUE
 
-			// Start the splitting process
-			user.visible_message("[user.name] starts carving \the [src] into a plank using \the [T].", "You start carving \the [src] into a plank.")
-			playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
-			
-			// Set a delay for the splitting process
-			if (!do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
-				splitting_in_progress = FALSE // In case we abort mid-way.
-				return
-			// Finish the splitting process
-			user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
-			src.use(2)
-			var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
-			dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
-			dropwood.update_strings() 
-			splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
+		// Start the splitting process
+		user.visible_message("[user.name] starts carving \the [src] into a plank using \the [T].", "You start carving \the [src] into a plank.")
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+		
+		// Set a delay for the splitting process
+		if (!do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
+			splitting_in_progress = FALSE // In case we abort mid-way.
+			return
+		// Finish the splitting process
+		user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
+		src.use(2)
+		var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
+		dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
+		dropwood.update_strings() 
+		splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
+	if (istype(T, /obj/item/weapon/saw))
+		// Check if there's enough material
+		if (src.amount < 1)
+			to_chat(user, "You don't have enough planks to saw.")
+			return
+		// Check if splititng process is already in progress
+		if (splitting_in_progress)
+			to_chat(user, SPAN_WARNING("\The [src] are already being sawed."))
+			return
+		// Set splitting_in_progress to TRUE to indicate the process has started
+		splitting_in_progress = TRUE
 
+		// Start the splitting process
+		user.visible_message("[user.name] starts sawing \the [src] into planks using \the [T].", "You start sawing \the [src] into planks.")
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+		
+		// Set a delay for the splitting process
+		if (!do_after(user, (60/(user.getStatCoeff("strength"))), src))
+			splitting_in_progress = FALSE // In case we abort mid-way.
+			return
+		// Finish the splitting process
+		user.visible_message("[user.name] finishes sawing \the [src] into planks.", "You finish carving \the [src] into planks.")
+		src.use(1)
+		var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
+		dropwood.amount = 4
+		dropwood.update_strings() 
+		splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
 	return ..()
 
 /obj/item/stack/material/woodplank
