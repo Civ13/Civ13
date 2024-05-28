@@ -1,5 +1,5 @@
 
-/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = "explosion")
+/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = "explosion", create_smoke = TRUE)
 /*
 	// TODO: splits explosions bigger than 5x5 into sub-explosions
 	var/num_explosions = devastation_range/5
@@ -23,6 +23,7 @@
 	data.rec_pow = max(0,devastation_range) * 2 + max(0,heavy_impact_range) + max(0,light_impact_range)
 	if (sound)
 		data.sound = sound
+	data.create_smoke = create_smoke
 	// queue work
 	processes.callproc.queue(processes.explosion, TYPE_PROC_REF(/process/explosion, queue), list(data), 1)
 

@@ -19,9 +19,9 @@ nanoui is used to open and update nano browser uis
 	// window_id is used as the window name/identifier for browse and onclose
 	var/window_id
 	// the browser window width
-	var/width = FALSE
+	var/width = 0
 	// the browser window height
-	var/height = FALSE
+	var/height = 0
 	// whether to use extra logic when window closes
 	var/on_close_logic = TRUE
 	// an extra ref to use when the window is closed, usually null

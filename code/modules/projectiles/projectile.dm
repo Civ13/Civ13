@@ -683,7 +683,9 @@
 
 	if (istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
-		if(S.initiated)
+		if (!istype(src, /obj/item/projectile/shell/missile))
+			S.initiate(previous_step)
+		else
 			on_impact(T)
 			S.initiate(T)
 
