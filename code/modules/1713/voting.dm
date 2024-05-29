@@ -16,13 +16,19 @@
 	var/list/vote_options = list()
 	var/total_votes = 0
 
-	//voyage stuff
+	// Voyage Defines.
 	var/special_election = FALSE
 	var/found_captain = FALSE
 	var/found_boatswain = FALSE
 	var/found_quartermaster = FALSE
 	var/mob/living/human/person = null
 	var/person_role = ""
+
+//
+// Ballots; a (red) /// b (green) /// c (blue)
+//
+
+// ballot a
 /obj/structure/voting/civa
 	name = "ballot box"
 	icon_state = "bet_box_red"
@@ -31,13 +37,15 @@
 		spawn(10)
 			nation = civname_a
 			name = "[nation] ballot box"
+
 	attack_hand(var/mob/living/human/user as mob)
 		if (user.original_job_title == "Civilization A Citizen")
 			..()
 		else
-			user << "You are not part of this Nation."
+			to_chat(user, SPAN_WARNING("You are not a part of this civilization to vote here."))
 			return
 
+// ballot b
 /obj/structure/voting/civb
 	name = "ballot box"
 	icon_state = "bet_box_green"
@@ -46,13 +54,15 @@
 		spawn(10)
 			nation = civname_b
 			name = "[nation] ballot box"
+
 	attack_hand(var/mob/living/human/user as mob)
 		if (user.original_job_title == "Civilization B Citizen")
 			..()
 		else
-			user << "You are not part of this Nation."
+			to_chat(user, SPAN_WARNING("You are not a part of this civilization to vote here."))
 			return
 
+// ballot c
 /obj/structure/voting/civc
 	name = "ballot box"
 	icon_state = "bet_box_blue"
@@ -61,23 +71,15 @@
 		spawn(10)
 			nation = civname_c
 			name = "[nation] ballot box"
+
 	attack_hand(var/mob/living/human/user as mob)
 		if (user.original_job_title == "Civilization C Citizen")
 			..()
 		else
-			user << "You are not part of this Nation."
+			to_chat(user, SPAN_WARNING("You are not a part of this civilization to vote here."))
 			return
 
-/obj/structure/voting/pirates
-	name = "ballot box"
-	icon_state = "bet_box_red"
-
-	attack_hand(var/mob/living/human/user as mob)
-		if (user.faction_text == PIRATES)
-			..()
-		else
-			user << "You are not part of this Faction."
-			return
+// General civilian ballot - ((blue))
 
 /obj/structure/voting/civilain
 	name = "ballot box"
@@ -87,8 +89,23 @@
 		if (user.faction_text == CIVILIAN)
 			..()
 		else
-			user << "You are not part of this Faction."
+			to_chat(user, SPAN_WARNING("You are not a part of this civilization to vote here."))
 			return
+
+// General pirate ballot - ((red))
+
+/obj/structure/voting/pirates
+	name = "ballot box"
+	icon_state = "bet_box_red"
+
+	attack_hand(var/mob/living/human/user as mob)
+		if (user.faction_text == PIRATES)
+			..()
+		else
+			to_chat(user, SPAN_WARNING("You are not a part of this civilization to vote here."))
+			return
+
+// Voyage defines find_roles [getter] proc.
 
 /obj/structure/voting/proc/find_roles()
 	found_captain = FALSE
@@ -102,13 +119,15 @@
 		if(H.original_job_title == "Pirate Quartermaster" && H.stat != DEAD)
 			found_quartermaster = TRUE
 
+// General Procs 
+
 /obj/structure/voting/examine(mob/user)
 	..()
 	if (in_election)
-		user << "Currently voting for: <b>[election_desc]</b>"
-		user << "<b>A total of [total_votes] votes have been cast.</b>"
+		to_chat(user, "Currently voting for: <b>[election_desc]</b>")
+		to_chat(user, "<b>A total of [total_votes] votes have been cast.</b>")
 	else
-		user << "<b>No current vote.</b>"
+		to_chat(user, "<b>No current vote.</b>")
 
 /obj/structure/voting/attack_hand(var/mob/living/human/user as mob)
 	if (in_election)
@@ -170,17 +189,17 @@
 		total_votes = 0
 		for(var/j in vote_options)
 			votes += list("[j]" = 0)
-		world << "<big><font color='yellow'>A vote has started! Results in 2 minutes.</big></font>"
-		world << "<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>"
+		to_chat(world, "<big><font color='yellow'>A vote has started! Results in 2 minutes.</big></font>")
+		to_chat(world, "<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>")
 		for(var/i in vote_options)
-			world << "<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>"
+			to_chat(world, "<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>")
 		start_timer(1200)
 
 /obj/structure/voting/proc/start_timer(var/time = 1800)
 	spawn(time)
 		in_election = FALSE
 		if (total_votes == 0)
-			world << "<big><font color='yellow'><b>The election ended with no votes!</b></big></font>"
+			to_chat(world, "<big><font color='yellow'><b>The election ended with no votes!</b></big></font>")
 		var/winner = "none"
 		var/sum = 0
 		for(var/j in votes)
@@ -190,16 +209,16 @@
 			else if (votes[j] == sum && sum != 0)
 				winner = "tie"
 		if (winner != "tie")
-			world << "<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>"
+			to_chat(world, "<big><font color='yellow'><b><i>[winner]</i></b> is the most voted choice!</big></font>")
 		else
-			world << "<big><font color='yellow'>The vote ended in a <b><i>tie</i></b>!</big></font>"
+			to_chat(world, "<big><font color='yellow'>The vote ended in a <b><i>tie</i></b>!</big></font>")
 		if(total_votes > 0)
-			world << "<font color='yellow'><b>Results:</b></font>"
+			to_chat(world, "<font color='yellow'><b>Results:</b></font>")
 			for(var/i in votes)
-				world << "<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>"
+				to_chat(world, "<font color='yellow'><b><i>[i]</i> - [(votes[i]/total_votes)*100]% ([votes[i]] votes)</b></font>")
 			total_votes = 0
 			if(special_election && winner == "Yes")
-				world << "<big><font color='yellow'>[person] has been elected as the new [person_role].</font></big>"
+				to_chat(world, "<big><font color='yellow'>[person] has been elected as the new [person_role].</font></big>")
 				if(person)
 					person.original_job_title = "Pirate [person_role]"
 					person.name = replacetext(person.name,"[person.title] ","")
@@ -210,7 +229,7 @@
 						person.make_title_changer()
 					person.make_commander()
 					person.make_artillery_officer()
-					WWalert(person,"You are the new [person_role]!","Election Winner")
-			person = null
+					WWalert(person, "You are the new [person_role]!","Election Winner")
+			person = null // Reset variables.
 			person_role = ""
 	return
