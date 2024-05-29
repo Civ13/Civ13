@@ -587,7 +587,7 @@ MAPS:
 	desc = "A rack of war equipment."
 	icon_state = "equipment_japan"
 
-New() // Different products for different maps...
+/obj/structure/vending/japweapons_ww2/New() // Different products for different maps...
 	..()
 	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		products = list(
@@ -595,7 +595,6 @@ New() // Different products for different maps...
 			/obj/item/ammo_magazine/arisakabox = 5,
 			/obj/item/ammo_magazine/arisaka = 50,
 			/obj/item/weapon/attachment/bayonet = 15,
-
 		)
 	else
 		products = list(
@@ -605,7 +604,6 @@ New() // Different products for different maps...
 			/obj/item/ammo_magazine/arisaka = 50,
 			/obj/item/ammo_magazine/arisaka99 = 40,
 			/obj/item/weapon/attachment/bayonet = 15,
-
 		)
 
 /*
