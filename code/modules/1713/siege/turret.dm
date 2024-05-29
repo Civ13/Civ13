@@ -1,7 +1,7 @@
 /obj/structure/turret
 	not_movable = TRUE
 	anchored = TRUE
-	density = TRUE
+	density = FALSE
 	layer = MOB_LAYER + 1 //just above mobs
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "tank_cannon"
@@ -155,7 +155,7 @@
 		mob_vehicle = F.axis
 
 	if(turret_vehicle != mob_vehicle)
-		to_chat(src, SPAN_WARNING("You have to be in the same vehicle as the turret to get in it."))
+		to_chat(M, SPAN_WARNING("You have to be in the same vehicle as the turret to get in it."))
 		return
 
 	if (M.buckled)
@@ -163,17 +163,16 @@
 	M.forceMove(loc)
 	if(gunner_seat && !gunner_seat.buckled_mob)
 		gunner_seat.buckle_mob(M)
-		to_chat(src, SPAN_NOTICE("You climb into the gunner seat."))
+		to_chat(M, SPAN_NOTICE("You climb into the gunner seat."))
 	else if(loader_seat && !loader_seat.buckled_mob)
 		loader_seat.buckle_mob(M)
-		to_chat(src, SPAN_NOTICE("You climb into the loader seat."))
+		to_chat(M, SPAN_NOTICE("You climb into the loader seat."))
 	else if(commander_seat && !commander_seat.buckled_mob)
 		commander_seat.buckle_mob(M)
-		to_chat(src, SPAN_NOTICE("You climb into the commander seat."))
+		to_chat(M, SPAN_NOTICE("You climb into the commander seat."))
 	else
-		to_chat(src, SPAN_NOTICE("There are no available seats in the turret."))
+		to_chat(M, SPAN_NOTICE("There are no available seats in the turret."))
 		return
-	M.start_using_turret(src)
 
 /obj/structure/turret/attack_hand(var/mob/attacker)
 	place_user(attacker)
@@ -1297,7 +1296,6 @@
 	turret_color = "#6a5a3d"
 	turret_icon = "type95_turret"
 	name = "Type 95 Ha-Go"
-	density = 0
 
 	turret_x = 0
 	turret_y = 0

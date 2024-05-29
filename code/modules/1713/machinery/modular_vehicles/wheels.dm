@@ -284,7 +284,7 @@
 /obj/structure/bed/chair/mgunner/post_buckle_mob()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && mg)
 		if(buckled_mob.put_in_active_hand(mg) == FALSE)
-			buckled_mob << "Your hands are full!"
+			to_chat(buckled_mob, "Your hands are full!")
 			return
 
 /obj/structure/bed/chair/mgunner/dt28/New()
@@ -390,7 +390,7 @@
 			buckled_mob.start_using_turret(turret)
 		if (istype(buckled_mob, /mob/living/human))
 			if(buckled_mob.put_in_active_hand(controls) == FALSE)
-				buckled_mob << "Your hands are full!"
+				to_chat(buckled_mob, "Your hands are full!")
 				return
 			else
 				controls.azoom.Grant(buckled_mob)
@@ -409,14 +409,14 @@
 	if (M)
 		if (M != user)
 			M.visible_message(\
-				"<span class='notice'>[M.name] was unbuckled by [user.name]!</span>",\
-				"<span class='notice'>You were unbuckled from [src] by [user.name].</span>",\
-				"<span class='notice'>You hear metal clanking.</span>")
+				SPAN_NOTICE("[M.name] was unbuckled by [user.name]!"),\
+				SPAN_NOTICE("You were unbuckled from [src] by [user.name]."),\
+				SPAN_NOTICE("You hear metal clanking."))
 		else
 			M.visible_message(\
-				"<span class='notice'>[M.name] unbuckled themselves!</span>",\
-				"<span class='notice'>You unbuckle yourself from [src].</span>",\
-				"<span class='notice'>You hear metal clanking.</span>")
+				SPAN_NOTICE("[M.name] unbuckled themselves!"),\
+				SPAN_NOTICE("You unbuckle yourself from [src]."),\
+				SPAN_NOTICE("You hear metal clanking."))
 		add_fingerprint(user)
 		for(var/obj/item/turret_controls/C in M)
 			M.remove_from_mob(C)
@@ -691,7 +691,7 @@
 		if(turret)
 			turret.commander = buckled_mob
 		if (istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-			buckled_mob << "Your hands are full!"
+			to_chat(buckled_mob, "Your hands are full!")
 			return
 
 /obj/structure/bed/chair/commander/attackby(var/obj/item/I, var/mob/living/human/H)
@@ -706,7 +706,7 @@
 /obj/structure/bed/chair/commander/attack_hand( var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && periscope.loc != H)
 		if (buckled_mob.put_in_active_hand(periscope))
-			H << "You look through the periscope."
+			to_chat(H, "You look through the periscope.")
 			return
 	else
 		..()
@@ -741,10 +741,10 @@
 
 /obj/structure/bed/chair/commander/nvg/post_buckle_mob()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
-		buckled_mob << "Your hands are full!"
+		to_chat(buckled_mob, "Your hands are full!")
 		return
 	if(buckled_mob)
-		buckled_mob << "You activate the optics on the [src]."
+		to_chat(buckled_mob, "You activate the optics on the [src].")
 		if (overtype == "nvg")
 			buckled_mob.nvg = TRUE
 			buckled_mob.handle_vision()
@@ -755,7 +755,7 @@
 
 /obj/structure/bed/chair/commander/nvg/user_unbuckle_mob(mob/user)
 	if(buckled_mob)
-		buckled_mob << "You deactivate the optics on the [src]."
+		to_chat(buckled_mob, "You deactivate the optics on the [src].")
 		if (overtype == "nvg")
 			buckled_mob.nvg = FALSE
 			buckled_mob.handle_vision()
