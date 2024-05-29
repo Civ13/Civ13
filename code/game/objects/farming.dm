@@ -413,7 +413,7 @@
 
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
-	desc = "A opium poppy plant."
+	desc = "An opium poppy plant."
 	icon_state = "poppy-grow1"
 	plant = "poppy"
 	stack = "material/poppy"
@@ -582,7 +582,7 @@
 
 /obj/structure/farming/plant/oat
 	name = "oat plant"
-	desc = "A oat plant."
+	desc = "An oat plant."
 	icon_state = "oat-grow1"
 	plant = "oat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
