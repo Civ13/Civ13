@@ -931,7 +931,7 @@ obj/structure/vending/sofammo
 	)
 
 /*
-///////// general ammunition vendors - / Wehrmacht, Soviets, IDF, Hez_bollah / -
+///////// general ammunition vendors - / Wehrmacht, Soviets, IDF, HEZ_bollah / -
 */
 
 /obj/structure/vending/wehrmachtammo
@@ -1310,7 +1310,9 @@ obj/structure/vending/idfammo
 	)
 
 /*
-///////// -sovafghan- vendors - Soviet -
+///////// =-SOV-AFGHAN-= (KANDAHAR) - general vendors - Soviet Armed Forces. DRA. (Russia)
+* Hill_3234 [1969]
+* Kandahar [maps\WIP...]
 */
 
 /obj/structure/vending/sovafghan/soviet/apparel
