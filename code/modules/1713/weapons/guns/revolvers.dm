@@ -510,7 +510,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther revolver"
-	desc = "a .44 caliber revolver."
+	desc = "A .44 caliber revolver."
 	icon_state = "panther"
 	item_state = "panther"
 	w_class = ITEM_SIZE_SMALL

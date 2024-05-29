@@ -211,7 +211,7 @@
 
 /obj/item/clothing/head/ainu_bandana
 	name = "ainu bandana"
-	desc = "a bandana with intricate patterns."
+	desc = "A bandana with intricate patterns."
 	icon_state = "ainu"
 	item_state = "ainu"
 	worn_state = "ainu"
@@ -755,7 +755,7 @@
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt headcover"
-	desc = "a bear pelt turned into a headcover."
+	desc = "A bear pelt turned into a headcover."
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
 	worn_state = "bearpelt"
@@ -765,7 +765,7 @@
 
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt headcover"
-	desc = "a wolf pelt turned into a headcover."
+	desc = "A wolf pelt turned into a headcover."
 	icon_state = "wolfpelt"
 	item_state = "wolfpelt"
 	worn_state = "wolfpelt"

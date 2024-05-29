@@ -2470,7 +2470,7 @@
 "VA" = (/obj/structure/grille/chainlinkfence{icon_state = "chainlinkfence"; dir = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest)
 "VB" = (/obj/structure/window/barrier/ship/blue/bport3,/turf/floor/wood/ship,/area/caribbean/nomads/forest)
 "VC" = (/obj/structure/window/barrier/ship/blue/bport0,/turf/floor/wood/ship,/area/caribbean/nomads/forest)
-"VD" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/concrete{desc = "a ship's plank."; name = "plank"},/area/caribbean/nomads/forest)
+"VD" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/concrete{desc = "A ship's plank."; name = "plank"},/area/caribbean/nomads/forest)
 "VE" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/nomads/forest)
 "VF" = (/obj/structure/barricade/ship/blue/b16,/turf/floor/wood/ship,/area/caribbean/nomads/forest)
 "VG" = (/obj/structure/barricade/ship/blue/b9,/turf/floor/wood/ship,/area/caribbean/nomads/forest)

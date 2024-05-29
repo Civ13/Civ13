@@ -113,7 +113,7 @@
 
 /obj/roof/palm
 	name = "palm leaves roof"
-	desc = "a roof made of layered palm leaves."
+	desc = "A roof made of layered palm leaves."
 	overlay_state = "palm"
 	icon_state = "palm_dm"
 
