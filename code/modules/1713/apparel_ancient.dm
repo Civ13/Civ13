@@ -246,7 +246,7 @@
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "segmented armor"
-	desc = "A thick, expensive segmented iron armor, covering the torso."
+	desc = "A thick and expensive segmented piece of iron armor, its scales protect the torso."
 	icon_state = "scale_armor"
 	item_state = "scale_armor"
 	worn_state = "scale_armor"
@@ -363,14 +363,14 @@
 
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"
-	desc = "a wide brim hat, used by the toxotai."
+	desc = "A wide brim hat, used by the toxotai."
 	icon_state = "toxotai"
 	item_state = "toxotai"
 	worn_state = "toxotai"
 
 /obj/item/clothing/head/egyptian_headdress_black
 	name = "black egyptian headdress"
-	desc = "a plain sun-protective linen headdress, despite its black stripes."
+	desc = "A plain sun-protective linen headdress, despite its black stripes."
 	icon_state = "egyptian_headdress_black"
 	item_state = "egyptian_headdress_black"
 	worn_state = "egyptian_headdress_black"
@@ -379,7 +379,7 @@
 
 /obj/item/clothing/head/egyptian_headdress_blue
 	name = "blue egyptian headdress"
-	desc = "a plain sun-protective blue linen headdress."
+	desc = "A plain sun-protective blue linen headdress."
 	icon_state = "egyptian_headdress_blue"
 	item_state = "egyptian_headdress_blue"
 	worn_state = "egyptian_headdress_blue"
@@ -388,7 +388,7 @@
 
 /obj/item/clothing/head/egyptian_headdress_red
 	name = "red egyptian headdress"
-	desc = "a plain sun-protective red linen headdress."
+	desc = "A plain sun-protective red linen headdress."
 	icon_state = "egyptian_headdress_red"
 	item_state = "egyptian_headdress_red"
 	worn_state = "egyptian_headdress_red"
@@ -505,11 +505,12 @@
 
 /obj/item/clothing/head/helmet/egyptian
 	name = "egyptian war headdress"
-	desc = "A bronze egyptian headpiece, with a exposed face to relieve the wearer of heat."
+	desc = "A bronze egyptian headpiece, with an exposed face to relieve the wearer of heat."
 	icon_state = "egyptian_bronze_headdress"
 	item_state = "egyptian_bronze_headdress"
 	worn_state = "egyptian_bronze_headdress"
 	body_parts_covered = HEAD|EYES
+	item_flags = FLEXIBLEMATERIAL // The egyptian helmet does not block the face. body_parts_covered is used in armor calculation, masks with this flag will not prevent eating even if they are covering your "face".
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 35
