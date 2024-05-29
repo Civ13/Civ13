@@ -108,16 +108,22 @@
 // Voyage defines find_roles [getter] proc.
 
 /obj/structure/voting/proc/find_roles()
-	found_captain = FALSE
-	found_boatswain = FALSE
-	found_quartermaster = FALSE
-	for(var/mob/living/human/H in mob_list)
-		if(H.original_job_title == "Pirate Captain" && H.stat != DEAD)
-			found_captain = TRUE
-		if(H.original_job_title == "Pirate Boatswain" && H.stat != DEAD)
-			found_boatswain = TRUE
-		if(H.original_job_title == "Pirate Quartermaster" && H.stat != DEAD)
-			found_quartermaster = TRUE
+    // Initialize the roles to FALSE, we're about to get them.
+    found_captain = FALSE
+    found_boatswain = FALSE
+    found_quartermaster = FALSE
+
+    // Loop through each human in the mob list
+    for(var/mob/living/human/H in living_mob_list)
+        // We are iterating through the `List of all alive mobs, including clientless. Excludes /mob/new_player`. Safety check anyway;
+        if(H.stat != DEAD)
+            switch(H.original_job_title) // Switch job title.
+                if("Pirate Captain")
+                    found_captain = TRUE
+                if("Pirate Boatswain")
+                    found_boatswain = TRUE
+                if("Pirate Quartermaster")
+                    found_quartermaster = TRUE
 
 // General Procs 
 
