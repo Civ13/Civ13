@@ -770,7 +770,7 @@
 
 /obj/item/clothing/accessory/armband/policebadge
 	name = "police badge"
-	desc = "A police badge in star shape, with an officer's name engraved."
+	desc = "A police badge in a star shape, with an officer's name engraved."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "sheriff"
 	throwforce = WEAPON_FORCE_HARMLESS
