@@ -30,7 +30,6 @@
 			if (ismob(target))
 
 				var/time = 20 //2/3rds the time of a syringe
-				user.visible_message("<span class='warning'>[user] is trying to squirt something into [target]'s eyes!</span>")
 				user.visible_message(SPAN_WARNING("[user] is trying to squirt something into [target]'s eyes!"), SPAN_WARNING("You start trying to squirt something into [target]'s eyes"), "You hear the squeezing and squirting of liquid.")
 
 				if (!do_mob(user, target, time))
