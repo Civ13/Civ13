@@ -518,7 +518,7 @@
 */
 /obj/item/weapon/visa
 	name = "visa"
-	desc = "a traveller visa."
+	desc = "A traveller visa."
 	icon = 'icons/obj/bureaucracy.dmi'
 	icon_state = "visa0"
 	item_state = "paper"

@@ -16,47 +16,47 @@
 
 /obj/item/clothing/head/cowboyhat
 	name = "cowboy hat"
-	desc = "a curved leather hat."
+	desc = "A curved leather hat."
 	icon_state = "cowboy"
 	item_state = "cowboy"
 	heat_protection = HEAD
 
 /obj/item/clothing/head/cowboyhat2
 	name = "dark cowboy hat"
-	desc = "a grayish, curved leather hat."
+	desc = "A grayish, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
 	heat_protection = HEAD
 
 /obj/item/clothing/head/vaquerohat
 	name = "vaquero hat"
-	desc = "a wide brimmed hat with a feather in the top, favored by mexican cowboys. The wide brim helps keep the sun off the wearer's face."
+	desc = "A wide brimmed hat with a feather in the top, favored by mexican cowboys. The wide brim helps keep the sun off the wearer's face."
 	icon_state = "vaquerohat"
 	item_state = "vaquerohat"
 	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/bandit
 	name = "bandit hat"
-	desc = "a dark and long brimmed cowboy hat with a grim presence. Despite the dark colors, it helps keep the sun off the wearer's face."
+	desc = "A dark and long brimmed cowboy hat with a grim presence. Despite the dark colors, it helps keep the sun off the wearer's face."
 	icon_state = "bandit"
 	item_state = "bandit"
 	heat_protection = HEAD|EYES
 
 /obj/item/clothing/head/unionhat
 	name = "dark union hat"
-	desc = "a dark, slouched leather hat worn commonly by union soldiers."
+	desc = "A dark, slouched leather hat worn commonly by union soldiers."
 	icon_state = "union_hat"
 	item_state = "union_hat"
 
 /obj/item/clothing/head/unionhatlight
 	name = "light union hat"
-	desc = "a light, slouched leather hat worn commonly by union soldiers."
+	desc = "A light, slouched leather hat worn commonly by union soldiers."
 	icon_state = "union_hat2"
 	item_state = "union_hat2"
 
 /obj/item/clothing/head/confederatehat
 	name = "grey confederate hat"
-	desc = "a grey, slouched leather hat worn commonly by confederate soldiers."
+	desc = "A grey, slouched leather hat worn commonly by confederate soldiers."
 	icon_state = "confederate_hat"
 	item_state = "confederate_hat"
 

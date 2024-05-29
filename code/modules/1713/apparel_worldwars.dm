@@ -1039,7 +1039,7 @@
 
 /obj/item/clothing/accessory/harness
 	name = "Japanese pilot harness"
-	desc = "a harness made to strap someone to a plane."
+	desc = "A harness made to strap someone to a plane."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "jap_harn"
 	item_state = "jap_harn"

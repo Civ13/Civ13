@@ -12,7 +12,7 @@
 	
 /obj/covers/repairedfloor
 	name = "repaired floor"
-	desc = "a repaired wood floor."
+	desc = "A repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
 	layer = 1.98
@@ -32,7 +32,7 @@
 
 /obj/covers/repairedfloor/ship
 	name = "ship floor"
-	desc = "a wooden ship floor."
+	desc = "A wooden ship floor."
 	icon_state = "wood_ship"
 	material = "Wood"
 	passable = TRUE
@@ -48,7 +48,7 @@
 /obj/covers/repairedfloor/ship/try_destroy()
 	if (health <= 50)
 		name = "weak floor"
-		desc = "a weakened ship floor."
+		desc = "A weakened ship floor."
 		maxhealth = 50
 		icon_state = "wood_ship_repaired"
 	if (health <= 0)
@@ -61,7 +61,7 @@
 
 /obj/covers/repairedfloor/rope
 	name = "grappling hook rope"
-	desc = "a piece of rope attached to a grappling hook"
+	desc = "A piece of rope attached to a grappling hook"
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "grapplehook_line_bridge"
 	flammable = FALSE

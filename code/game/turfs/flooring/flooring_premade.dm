@@ -296,7 +296,7 @@
 	name = "flood plains dirt"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "flood_dirt"
-	desc = "a fertile dirt patch, flooded during the wet season."
+	desc = "A fertile dirt patch, flooded during the wet season."
 	uses_winter_overlay = FALSE
 	may_become_muddy = TRUE
 	available_dirt = 3

@@ -101,28 +101,28 @@
 
 /obj/item/clothing/head/artisan
 	name = "artisan hat"
-	desc = "a large artisan hat."
+	desc = "A large artisan hat."
 	icon_state = "artisan"
 	item_state = "artisan"
 	worn_state = "artisan"
 
 /obj/item/clothing/head/feathered_hat
 	name = "feathered hat"
-	desc = "a feathered hat."
+	desc = "A feathered hat."
 	icon_state = "feathered_hat"
 	item_state = "feathered_hat"
 	worn_state = "feathered_hat"
 
 /obj/item/clothing/head/count_hat
 	name = "count hat"
-	desc = "a fancy, feathered hat."
+	desc = "A fancy, feathered hat."
 	icon_state = "medieval_count_hat"
 	item_state = "medieval_count_hat"
 	worn_state = "medieval_count_hat"
 
 /obj/item/clothing/head/cavalier
 	name = "cavalier hat"
-	desc = "a free willled and fanciful leather feathered hat."
+	desc = "A free willled and fanciful leather feathered hat."
 	icon_state = "cavalier"
 	item_state = "cavalier"
 	worn_state = "cavalier"
@@ -139,7 +139,7 @@
 
 /obj/item/clothing/head/phrigian_hat
 	name = "phrigian hat"
-	desc = "a knob ended hat of the ancient phrigian design. Often worn by merchants or peasants of jewish descent."
+	desc = "A knob ended hat of the ancient phrigian design. Often worn by merchants or peasants of jewish descent."
 	icon_state = "phrigian_hat"
 	item_state = "phrigian_hat"
 	worn_state = "phrigian_hat"
@@ -158,7 +158,7 @@
 
 /obj/item/clothing/head/phrigian_hat/doge
 	name = "doge hat"
-	desc = "a ornate knob ended hat banded in gold of the ancient phrigian design. Often worn by republic rulers over many petty merchantile aristocrats."
+	desc = "A ornate knob ended hat banded in gold of the ancient phrigian design. Often worn by republic rulers over many petty merchantile aristocrats."
 	icon_state = "doge"
 	item_state = "doge"
 	worn_state = "doge"
@@ -192,7 +192,7 @@
 
 /obj/item/clothing/head/turban
 	name = "turban"
-	desc = "a colored, light fabric turban."
+	desc = "A colored, light fabric turban."
 	icon_state = "turban1"
 	item_state = "turban1"
 	worn_state = "turban1"
@@ -206,7 +206,7 @@
 
 /obj/item/clothing/head/turban/imam
 	name = "white turban"
-	desc = "a simple white turban."
+	desc = "A simple white turban."
 	icon_state = "turban_w"
 	item_state = "turban_w"
 	worn_state = "turban_w"
@@ -218,7 +218,7 @@
 
 /obj/item/clothing/head/turban/sultan
 	name = "grand turban"
-	desc = "a large turban often worn by figures of importance.."
+	desc = "A large turban often worn by figures of importance.."
 	icon_state = "sultan"
 	item_state = "sultan"
 	worn_state = "sultan"
@@ -838,7 +838,7 @@
 
 /obj/item/clothing/head/helmet/brown_eisenbruck
 	name = "brown padded head-cap"
-	desc = "a padded brown coif, applies practical if modest protection."
+	desc = "A padded brown coif, applies practical if modest protection."
 	icon_state = "brown_eisenbruck"
 	item_state = "brown_eisenbruck"
 	worn_state = "brown_eisenbruck"
@@ -848,7 +848,7 @@
 
 /obj/item/clothing/head/helmet/grey_eisenbruck
 	name = "grey padded head-cap"
-	desc = "a padded grey coif, applies practical if modest protection."
+	desc = "A padded grey coif, applies practical if modest protection."
 	icon_state = "grey_eisenbruck"
 	item_state = "grey_eisenbruck"
 	worn_state = "grey_eisenbruck"
@@ -858,7 +858,7 @@
 
 /obj/item/clothing/head/helmet/aged_eisenbruck
 	name = "ratty old padded head-cap"
-	desc = "a ratty, old padded coif, its color faded but remains protective."
+	desc = "A ratty, old padded coif, its color faded but remains protective."
 	icon_state = "aged_eisenbruck"
 	item_state = "aged_eisenbruck"
 	worn_state = "aged_eisenbruck"
@@ -1476,14 +1476,14 @@
 
 /obj/item/clothing/head/mayan_headdress
 	name = "mayan headdress"
-	desc = "a mayan style headdress."
+	desc = "A mayan style headdress."
 	icon_state = "mayan_headdress"
 	item_state = "mayan_headdress"
 	worn_state = "mayan_headdress"
 
 /obj/item/clothing/under/huipil
 	name = "huipil"
-	desc = "a light cloth, with blue trimmings."
+	desc = "A light cloth, with blue trimmings."
 	icon_state = "huipil"
 	item_state = "huipil"
 	worn_state = "huipil"
@@ -1491,7 +1491,7 @@
 
 /obj/item/clothing/under/halfhuipil
 	name = "half huipil"
-	desc = "a light cloth, covering the lower part of the body. With red trimmings."
+	desc = "A light cloth, covering the lower part of the body. With red trimmings."
 	icon_state = "halfhuipil"
 	item_state = "halfhuipil"
 	worn_state = "halfhuipil"
@@ -1687,7 +1687,7 @@
 
 /obj/item/clothing/head/steppe_shaman
 	name = "steppe shaman wool hat"
-	desc = "a dyed red wool hat of steppe nomad design. Often worn by shamans to protect themselves from the elements on the steppe whilst performing rituals"
+	desc = "A dyed red wool hat of steppe nomad design. Often worn by shamans to protect themselves from the elements on the steppe whilst performing rituals"
 	icon_state = "steppe_shaman_wool_hat"
 	item_state = "steppe_shaman_wool_hat"
 	worn_state = "steppe_shaman_wool_hat"

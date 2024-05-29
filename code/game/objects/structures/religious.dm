@@ -562,7 +562,7 @@ obj/structure/religious/monument
 				open = FALSE
 				icon_state = "grave_filled"
 				name = "grave"
-				desc = "a grave."
+				desc = "A grave."
 				for (var/obj/structure/religious/remains/RMN in src.loc)
 					RMN.forceMove(src)
 				for (var/obj/item/IT in src.loc)

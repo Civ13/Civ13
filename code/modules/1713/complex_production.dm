@@ -46,7 +46,7 @@
 
 /obj/item/weapon/pigleg
 	name = "raw ham"
-	desc = "a raw, bloody pork leg."
+	desc = "A raw, bloody pork leg."
 	icon = 'icons/obj/complex_foods.dmi'
 	icon_state = "bloody_ham"
 	force = WEAPON_FORCE_WEAK+5
@@ -62,19 +62,19 @@
 /obj/item/weapon/pigleg/bloodless
 	bloody = FALSE
 	name = "bloodless raw ham"
-	desc = "a raw, bloodless pork leg."
+	desc = "A raw, bloodless pork leg."
 	icon_state = "no_blood_ham"
 
 /obj/item/weapon/pigleg/salted
 	bloody = FALSE
 	name = "salted ham"
-	desc = "a salted, but not dried, pork leg."
+	desc = "A salted, but not dried, pork leg."
 	icon_state = "salted_ham"
 	salted = TRUE
 
 /obj/item/weapon/pigleg/salted/dried
 	name = "dried ham"
-	desc = "a dried, ready-to-eat ham. Delicious!"
+	desc = "A dried, ready-to-eat ham. Delicious!"
 	icon_state = "dried_ham"
 	ready = TRUE
 
@@ -99,7 +99,7 @@
 			to_chat(user, SPAN_NOTICE("You finish beating the ham with the hammer, removing the blood."))
 			bloody = FALSE
 			name = "bloodless raw ham"
-			desc = "a raw, bloodless pork leg."
+			desc = "A raw, bloodless pork leg."
 			icon_state = "no_blood_ham"
 			return
 	..()
@@ -328,7 +328,7 @@
 
 /obj/item/weapon/chicken_carcass
 	name = "chicken carcass"
-	desc = "a whole chicken."
+	desc = "A whole chicken."
 	icon = 'icons/obj/food/chicken.dmi'
 	icon_state = "chicken_carcass"
 	force = WEAPON_FORCE_WEAK
