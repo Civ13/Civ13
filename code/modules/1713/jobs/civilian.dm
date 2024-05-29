@@ -2826,7 +2826,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Sheriff ","")] Sheriff's Office badge"
-		pb.desc = "A sheriff badge in star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
+		pb.desc = "A sheriff badge in a star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	var/obj/item/weapon/storage/belt/keychain/KC2 = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/civ/police/po1 = new/obj/item/weapon/key/civ/police(null)
