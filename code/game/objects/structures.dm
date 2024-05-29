@@ -42,8 +42,8 @@
 					return
 				if (do_after(user, 15, src))
 					playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-					to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-					src.anchored = !src.anchored
+					to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+					anchored = !anchored
 					return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
