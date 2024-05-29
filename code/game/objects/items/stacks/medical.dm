@@ -111,7 +111,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "trauma_kit"
 	item_state = "trauma_kit"
-	heal_brute = 20
+	heal_brute = 15
 	flammable = TRUE
 
 /obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/human/M as mob, mob/user as mob)
@@ -257,7 +257,7 @@
 	item_state = "trauma_kit"
 	amount = 20
 	flammable = TRUE
-	
+
 /obj/item/stack/medical/advanced/sulfa/small
 	amount = 5
 
@@ -306,7 +306,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "burn_kit"
 	item_state = "burn_kit"
-	heal_burn = 20
+	heal_burn = 15
 	amount = 10
 
 
