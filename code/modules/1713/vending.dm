@@ -29,7 +29,7 @@ Vending Apparel/Weapon racks, used for maps, put your structures defines here.
 /*
 ///// Musket vendors [racks] - General
 MAPS (including, but not up to);
-[1713 maps...]
+[1713 maps.]
 * Bridge 
 * Fields 
 * Colony 
@@ -183,7 +183,7 @@ MAPS:
 	)
 
 /*
-///////// Rednikov [NOT AOTD], Drug_Bust... 
+///////// Rednikov [NOT AOTD], Drug_Bust.
 ** Weapons
 * Apparel
 */
@@ -556,7 +556,7 @@ MAPS:
 	desc = "A rack of war equipment."
 	icon_state = "equipment_japan"
 
-/obj/structure/vending/japweapons_ww2/New() // Different products for different maps...
+/obj/structure/vending/japweapons_ww2/New() // Different products for different maps.
 	..()
 	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		products = list(
@@ -637,7 +637,7 @@ MAPS:
 	)
 
 /*
-///////// SOF vendors - / MAPS; hostages, arab_town... / -
+///////// SOF vendors - / MAPS; hostages, arab_town. / -
 */
 
 /obj/structure/vending/sofapparel
@@ -713,7 +713,7 @@ obj/structure/vending/sofammo
 	)
 
 /*
-///////// general apparel vendors - / Red Army, Wehrmacht, SS(German), SS_officer rack... / -
+///////// general apparel vendors - / Red Army, Wehrmacht, SS(German), SS_officer rack / -
 */
 
 
@@ -1250,7 +1250,7 @@ obj/structure/vending/idfammo
 /*
 ///////// =-SOV-AFGHAN-= (KANDAHAR) - general vendors - Soviet Armed Forces. DRA. (Russia)
 * Hill_3234 [1969]
-* Kandahar [maps\WIP...]
+* Kandahar [maps\WIP]
 */
 
 /obj/structure/vending/sovafghan/soviet/apparel
