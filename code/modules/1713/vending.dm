@@ -1,4 +1,14 @@
-// APPAREL RACKS
+/*
+Vending Apparel/Weapon racks, used for maps, put your structures defines here.
+*/
+///
+/*
+///// General - Vendor - Pirates.
+* Naval [1713]
+* Skullisland [1713]
+* robusta_pir [maps\special]
+/////
+*/
 
 /obj/structure/vending/piratesapparel
 	name = "Pirate clothes rack"
@@ -15,6 +25,18 @@
 		/obj/item/clothing/under/pirate5 = 15,
 		/obj/item/clothing/head/piratebandana1 = 25,
 	)
+
+/*
+///// Musket vendors [racks] - General
+MAPS (including, but not up to);
+[1713 maps...]
+* Bridge 
+* Fields 
+* Colony 
+* Naval 
+* Robusta
+
+*/
 
 /obj/structure/vending/muskets
 	name = "Musket rack"
@@ -45,7 +67,7 @@
 
 /obj/structure/vending/muskets/french
 	name = "French musket rack"
-	desc = "A rack of smoothbore charleville muskets ."
+	desc = "A rack of smoothbore charleville muskets."
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/charleville = 15,
@@ -54,7 +76,7 @@
 
 /obj/structure/vending/muskets/spanish
 	name = "Spanish musket rack"
-	desc = "A rack of smoothbore M1752 muskets ."
+	desc = "A rack of smoothbore M1752 muskets."
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
@@ -63,7 +85,7 @@
 
 /obj/structure/vending/muskets/portuguese
 	name = "Portuguese musket rack"
-	desc = "A rack of smoothbore Portuguese muskets ."
+	desc = "A rack of smoothbore Portuguese muskets."
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
@@ -81,16 +103,27 @@
 
 	)
 
+/*
+///// general vendor [Cap-n-Ball].
+* Missionary Ridge [1873]
+*/
+
 /obj/structure/vending/capnball
-	name = "Cap n Ball weapon rack"
-	desc = "An assorted rack of Cap n Ball weapons."
+	name = "Cap-n-Ball weapon rack"
+	desc = "An assorted rack of Cap-n-Ball weapons."
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/springfield = 15,
 		/obj/item/weapon/gun/projectile/flintlock/springfield1795 = 5,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/material/shovel/trench = 15,
+
 	)
+
+/*
+///// Confederate & Union apparel - vendors.
+* Missionary Ridge [Confederate /v.s/ Union]
+*/
 
 /obj/structure/vending/confederate_apparel
 	name = "confederate apparel rack"
@@ -102,7 +135,9 @@
 		/obj/item/clothing/under/confederate_uniform/grey_blue = 15,
 		/obj/item/clothing/head/confederatehat = 5,
 		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
+
 	)
+
 /obj/structure/vending/union_apparel
 	name = "union apparel rack"
 	desc = "An assorted rack of union apparel."
@@ -115,6 +150,16 @@
 		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
 
 	)
+
+/*
+///// British apparel - Royal Navy sailor - vendor.
+MAPS:
+* Skull Island [1713]
+* Supply_raid [1713]
+* robusta_pir [maps\special]
+
+*/
+
 
 /obj/structure/vending/britishapparel
 	name = "Royal Navy sailor clothes rack"
@@ -132,6 +177,10 @@
 
 //	idle_power_usage = 0
 
+/*
+///// Russian Weapon Vendor
+*/
+
 /obj/structure/vending/rusweapons
 	name = "Russian Weapon rack"
 	desc = "A rack of war equipment."
@@ -141,7 +190,14 @@
 		/obj/item/ammo_magazine/mosin = 50,
 		/obj/item/ammo_magazine/mosinbox = 10,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
+
+/*
+///////// Rednikov [NOT AOTD], Drug_Bust... 
+** Weapons
+* Apparel
+*/
 
 /obj/structure/vending/rednikovweapons
 	name = "Rednikov Weapon rack"
@@ -173,6 +229,13 @@
 
 	)
 
+/*
+///////// WW1 [french, germany, britain.] - Vendors
+** Weapons
+* Apparel
+
+*/
+
 /obj/structure/vending/ww1gerweapons
 	name = "German rifle rack"
 	desc = "A rack of rifles and ammunition."
@@ -182,6 +245,7 @@
 		/obj/item/ammo_magazine/gewehr98 = 50,
 		/obj/item/ammo_magazine/mauser = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
 
 /obj/structure/vending/ww1britweapons
@@ -193,7 +257,9 @@
 		/obj/item/ammo_magazine/enfield = 50,
 		/obj/item/ammo_magazine/c455 = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
+
 /obj/structure/vending/ww1frenchweapons
 	name = "French rifle rack"
 	desc = "A rack of rifles and ammunition."
@@ -204,7 +270,9 @@
 		/obj/item/ammo_magazine/c8x50_3clip = 30,
 		/obj/item/ammo_magazine/c8x27 = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
+
 /obj/structure/vending/ww1frenchapparel
 	name = "French Army apparel rack"
 	desc = "Basic wear for soldiers of the French Army."
@@ -221,7 +289,9 @@
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french = 50,
+
 	)
+
 /obj/structure/vending/ww1britapparel
 	name = "British Army apparel rack"
 	desc = "Basic wear for soldiers of the Royal Army."
@@ -233,13 +303,15 @@
 		/obj/item/clothing/head/ww/britishcap = 15,
 		/obj/item/clothing/accessory/storage/webbing/ww1/british = 15,
 		/obj/item/clothing/head/helmet/ww/mk1brodieag = 15,
-	    /obj/item/clothing/head/helmet/ww/mk1brodiedeb = 15,
+		/obj/item/clothing/head/helmet/ww/mk1brodiedeb = 15,
 		/obj/item/clothing/mask/gas/british = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/german = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british = 50,
+
 	)
+
 /obj/structure/vending/ww1gerapparel
 	name = "German Army apparel rack"
 	desc = "Basic wear for soldiers of the Imperial German Army."
@@ -257,7 +329,13 @@
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
+
 	)
+
+/*
+///////// Japanese -/- General weapons and apparel vendors. Imperial Japanese Army (IJA)
+*/
+
 /obj/structure/vending/japweapons
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
@@ -267,6 +345,7 @@
 		/obj/item/ammo_magazine/arisakabox = 10,
 		/obj/item/ammo_magazine/arisaka = 50,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 
 /obj/structure/vending/japaneseapparel
@@ -285,7 +364,13 @@
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
+
 	)
+
+/*
+///////// Chinese -/- Equipment, apparel. --- KOREAN WAR, GENERAL.
+// Korean War (Korean War, 1950-1953 war between North and South Korea).
+*/
 
 /obj/structure/vending/chineseweapons
 	name = "Chinese Weapon rack"
@@ -296,6 +381,7 @@
 		/obj/item/ammo_magazine/gewehr98box = 10,
 		/obj/item/ammo_magazine/gewehr98 = 50,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 
 /obj/structure/vending/chineseweapons_korean_war
@@ -310,6 +396,7 @@
 		/obj/item/ammo_magazine/dp = 15,
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 /obj/structure/vending/chineseapparel_korean_war
 	name = "Chinese apparel rack"
@@ -326,6 +413,7 @@
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+
 	)
 
 
@@ -346,6 +434,7 @@
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+
 	)
 
 /obj/structure/vending/chineseapparel/early
@@ -363,7 +452,15 @@
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+
 	)
+
+/*
+///////// General US, Japanese apparel and weapons/equipment vendors.
+*//**/
+// WW2, (WW2, 1939, 1945) 
+// Korean War (Korean War, 1950-1953 war between North and South Korea).
+//**/
 
 /obj/structure/vending/usa_apparel_ww2
 	name = "US Army apparel rack"
@@ -383,6 +480,7 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
+
 	)
 
 /obj/structure/vending/usa_apparel_korean_war
@@ -401,6 +499,7 @@
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
+
 	)
 
 /obj/structure/vending/usa_equipment_ww2
@@ -419,6 +518,7 @@
 		/obj/item/ammo_magazine/m1911 = 10,
 		/obj/item/ammo_magazine/a45acpbox = 10,
 		/obj/item/ammo_magazine/m1carbine/box = 10,
+
 	)
 
 /obj/structure/vending/japaneseapparel_ww2
@@ -439,6 +539,7 @@
 		/obj/item/flashlight/japflashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
+
 	)
 
 /obj/structure/vending/japaneseapparel_ww2_snlf
@@ -458,7 +559,9 @@
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 		/obj/item/havelock = 40,
 		/obj/item/puttees = 40,
+
 	)
+
 /obj/structure/vending/japaneseapparel_ww2_navy
 	name = "Imperial Japanese Navy apparel rack"
 	desc = "Basic wear for soldiers of the Imperial Japanese Navy."
@@ -476,12 +579,15 @@
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
+
 	)
+
 /obj/structure/vending/japweapons_ww2
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
 	icon_state = "equipment_japan"
-/obj/structure/vending/japweapons_ww2/New()
+
+New() // Different products for different maps...
 	..()
 	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		products = list(
@@ -489,6 +595,7 @@
 			/obj/item/ammo_magazine/arisakabox = 5,
 			/obj/item/ammo_magazine/arisaka = 50,
 			/obj/item/weapon/attachment/bayonet = 15,
+
 		)
 	else
 		products = list(
@@ -498,7 +605,12 @@
 			/obj/item/ammo_magazine/arisaka = 50,
 			/obj/item/ammo_magazine/arisaka99 = 40,
 			/obj/item/weapon/attachment/bayonet = 15,
+
 		)
+
+/*
+///////// Yakuza -/- Alleyway apparel and equipment vendors.
+*/
 
 /obj/structure/vending/yakuza
 	name = "Yakuza apparel rack"
@@ -513,6 +625,7 @@
 		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
+
 	)
 
 /obj/structure/vending/yakuza/equipment
@@ -536,7 +649,12 @@
 		/obj/item/ammo_magazine/p220 = 4,
 		/obj/item/weapon/material/kitchen/utensil/knife/tanto = 15,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
+
 	)
+
+/*
+///////// General - Russian Army vendor
+*/
 
 /obj/structure/vending/russianapparel
 	name = "Russian Army apparel rack"
@@ -554,6 +672,9 @@
 
 	)
 
+/*
+///////// SOF vendors - / MAPS; hostages, arab_town... / -
+*/
 
 /obj/structure/vending/sofapparel
 	name = "SOF apparel rack"
@@ -584,6 +705,7 @@
 		/obj/item/clothing/mask/balaclava = 15,
 		/obj/item/clothing/glasses/nvg = 15,
 		/obj/item/clothing/glasses/thermal = 10,
+
 	)
 
 /obj/structure/vending/sofweapons
@@ -606,6 +728,7 @@
 		/obj/item/weapon/grenade/incendiary/anm14 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 
 obj/structure/vending/sofammo
@@ -625,7 +748,12 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 15,
 		/obj/item/weapon/attachment/under/laser = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
+
 	)
+
+/*
+///////// general apparel vendors - / Red Army, Wehrmacht, SS(German), SS_officer rack... / -
+*/
 
 
 /obj/structure/vending/sovietapparel
@@ -710,7 +838,12 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 2,
 		/obj/item/weapon/compass = 2,
+
 	)
+
+/*
+///////// general rifle vendors - / Wehrmacht, SS(German), Soviet(Russian) / -
+*/
 
 /obj/structure/vending/wehrmachtweapons
 	name = "Wehrmacht rifle rack"
@@ -719,6 +852,7 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
 
 /obj/structure/vending/ss_weaponsassault
@@ -736,6 +870,7 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/grenade/ww2/stg1924 = 5,
 		/obj/item/weapon/grenade/antitank/stg24_bundle = 3,
 		/obj/item/weapon/attachment/bayonet = 25,
+
 	)
 
 /obj/structure/vending/ss_weaponsassaultlatewar
@@ -756,6 +891,7 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/flamethrower/eins = 2,
 		/obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled = 2,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 
 /obj/structure/vending/sovietweapons
@@ -765,6 +901,7 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 15,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
 
 /obj/structure/vending/sovietweaponsassault
@@ -780,6 +917,7 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/grenade/antitank/rpg40 = 2,
 		/obj/item/weapon/grenade/smokebomb = 2,
 		/obj/item/weapon/grenade/ww2/rgd33 = 5,
+
 	)
 
 /obj/structure/vending/oldrussianweapons
@@ -789,7 +927,12 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
+
+/*
+///////// general ammunition vendors - / Wehrmacht, Soviets, IDF, Hez_bollah / -
+*/
 
 /obj/structure/vending/wehrmachtammo
 	name = "Wehrmacht ammo crate"
@@ -807,6 +950,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/ammo_magazine/c9mm = 10,
 		/obj/item/weapon/storage/ammo_can = 1,
+
 	)
 
 /obj/structure/vending/sovietammo
@@ -823,6 +967,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/c762x38mmR = 10,
 		/obj/item/ammo_magazine/tt30 = 10,
 		/obj/item/weapon/storage/ammo_can = 1,
+
 	)
 
 obj/structure/vending/idfammo
@@ -839,9 +984,10 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
 		/obj/item/weapon/attachment/bayonet = 30,
 //		/obj/item/weapon/grenade/incendiary = 20,
+
 	)
 
-obj/structure/vending/hezammo
+/obj/structure/vending/hezammo
 	name = "Hezbollah ammo pile"
 	desc = "ammunition and attachments for the Hezbollah armed forces."
 	icon_state = "ammo_crates"
@@ -855,7 +1001,12 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/grenade/coldwar/m26= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/material/kitchen/utensil/knife/military = 30,
+
 	)
+
+/*
+///////// general Apparel vendors - / HEZ_bollah, IDF, USA / -
+*/
 
 /obj/structure/vending/usa_apparel_modern
 	name = "USMC apparel rack"
@@ -871,6 +1022,7 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+
 	)
 
 /obj/structure/vending/hez_apparel_modern
@@ -887,6 +1039,7 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/flatbread = 50,
+
 	)
 
 /obj/structure/vending/idf_apparel_modern
@@ -903,7 +1056,12 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf = 50,
+
 	)
+
+/*
+///////// general USA vendors. - America - Modern/Coldwar
+*/
 
 /obj/structure/vending/usa_equipment_modern
 	name = "USMC ammunition"
@@ -921,6 +1079,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
 		/obj/item/weapon/attachment/bayonet = 20,
+
 	)
 
 /obj/structure/vending/usa_apparel_coldwar
@@ -950,6 +1109,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
 		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
 		/obj/item/weapon/flame/lighter = 10,
+
 	)
 
 /obj/structure/vending/usa_equipment_coldwar
@@ -970,11 +1130,13 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/grenade/coldwar/m67 = 15,
 		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
 		/obj/item/weapon/grenade/incendiary/anm14 = 10,
+
 	)
 
+/*
+///////// Craftable rifle rack code. -/= Nomads =/-
+*/
 
-
-//craftable rifle rack
 /obj/structure/vending/craftable
 	var/product_type = /obj/item/weapon/gun/projectile
 	var/max_products = 5
@@ -1024,31 +1186,40 @@ obj/structure/vending/hezammo
 	icon_state = "rack_base_wood"
 	flammable = TRUE
 
+/*
+///////// Shortened New() procs; with for [i] loops.
+*/
+
 /obj/structure/vending/craftable/rifles/wood/filled_blunderbuss/New()
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/blunderbuss/B = new/obj/item/weapon/gun/projectile/flintlock/blunderbuss(src.loc)
 		src.stock_auto(B)
+
 /obj/structure/vending/craftable/rifles/wood/filled_musket/New()
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/musket/B = new/obj/item/weapon/gun/projectile/flintlock/musket(src.loc)
 		src.stock_auto(B)
+
 /obj/structure/vending/craftable/rifles/wood/filled_musket_spanish/New()
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/m1752/B = new/obj/item/weapon/gun/projectile/flintlock/m1752(src.loc)
 		src.stock_auto(B)
+
 /obj/structure/vending/craftable/rifles/wood/filled_musket_french/New()
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/charleville/B = new/obj/item/weapon/gun/projectile/flintlock/charleville(src.loc)
 		src.stock_auto(B)
+
 /obj/structure/vending/craftable/rifles/wood/filled_musket_british/New()
 	..()
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/flintlock/brownbess/B = new/obj/item/weapon/gun/projectile/flintlock/brownbess(src.loc)
 		src.stock_auto(B)
+
 /obj/structure/vending/craftable/rifles/wood/filled_musketoon/New()
 	..()
 	for(var/i=1, i<=5, i++)
@@ -1060,6 +1231,11 @@ obj/structure/vending/hezammo
 	for(var/i=1, i<=5, i++)
 		var/obj/item/weapon/gun/projectile/boltaction/lebel/B = new/obj/item/weapon/gun/projectile/boltaction/lebel(src.loc)
 		src.stock_auto(B)
+
+/*
+///////// -Yeltsin- vendors - Russian Army [Black October] -
+*/
+
 /obj/structure/vending/yeltsinapparel
 	name = "Russian Army apparel rack"
 	desc = "A rack of clothing and gear."
@@ -1087,6 +1263,7 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
 	)
 
 /obj/structure/vending/yeltsinweapons
@@ -1109,6 +1286,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/shield/metal_riot = 15,
 		/obj/item/weapon/material/machete = 15,
 		/obj/item/weapon/melee/nightbaton = 15,
+
 	)
 
 /obj/structure/vending/yeltsinammo
@@ -1128,7 +1306,12 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
+
 	)
+
+/*
+///////// -sovafghan- vendors - Soviet -
+*/
 
 /obj/structure/vending/sovafghan/soviet/apparel
 	name = "Soviet Army apparel and gear rack"
@@ -1157,6 +1340,7 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
 	)
 
 /obj/structure/vending/sovafghan/soviet/weapons
@@ -1169,6 +1353,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
 		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
+
 	)
 
 /obj/structure/vending/sovafghan/soviet/ammo
@@ -1183,6 +1368,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/makarov = 20,
 		/obj/item/ammo_magazine/rpk74 = 12,
 		/obj/item/ammo_magazine/rpk74/drum = 6,
+
 	)
 
 /obj/structure/vending/sovafghan/dra/apparel
@@ -1209,6 +1395,7 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
 	)
 
 /obj/structure/vending/sovafghan/dra/weapons
@@ -1223,6 +1410,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
 		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
+
 	)
 
 /obj/structure/vending/sovafghan/dra/ammo
@@ -1237,6 +1425,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/rpd = 6,
 		/obj/item/ammo_magazine/makarov = 10,
+
 	)
 
 /obj/structure/vending/coldwar/soviet/apparel
@@ -1263,9 +1452,12 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
 	)
 
-//sovietsinoborder
+/*
+///////// -Soviet_sino_border- vendors - Chinese -
+*/
 
 /obj/structure/vending/sixties/china/apparel
 	name = "Chinese apparel rack"
@@ -1287,7 +1479,9 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+
 	)
+
 /obj/structure/vending/sixties/china/apparelnotwinter
 	name = "Chinese apparel rack"
 	desc = "Basic wear for soldiers of the People's Liberation Army."
@@ -1307,7 +1501,9 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
+
 	)
+
 /obj/structure/vending/sixties/china/weapons
 	name = "Chinese Weapon rack"
 	desc = "A rack of war equipment."
@@ -1326,7 +1522,12 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/dp = 15,
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/weapon/attachment/bayonet = 15,
+
 	)
+
+/*
+///////// -Soviet Army- vendors - sixties -
+*/
 
 /obj/structure/vending/sixties/soviet/apparel
 	name = "Soviet Army apparel and gear rack"
@@ -1352,7 +1553,9 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
 	)
+
 /obj/structure/vending/sixties/soviet/weapons
 	name = "Soviet Army weapons and ammo rack"
 	desc = "A rack of war equipment."
@@ -1372,9 +1575,12 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/gun/projectile/automatic/rpk47 = 1,
 		/obj/item/ammo_magazine/rpk47/drum = 2,
 		/obj/item/ammo_magazine/rpk47 = 2,
+
 	)
 
-///////////Star Wars stuff//////////////////////
+/*
+///////// -Star- Wars; vendors; [fiction]
+*/
 
 /obj/structure/vending/starwars/imperial/apparel
 	name = "Imperial uniform rack"
@@ -1386,6 +1592,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/shoes/replicantshoes = 25,
 		/obj/item/clothing/gloves/replicantgloves = 25,
 		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
+
 	)
 
 /obj/structure/vending/starwars/imperial/weapons
@@ -1399,6 +1606,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
 		/obj/item/weapon/grenade/modern/thermaldetonator = 4,
 		/obj/item/weapon/grenade/flashbang/galaxywars = 5,
+
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1410,6 +1618,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/suit/storage/jacket/rebel_vest = 25,
 		/obj/item/clothing/head/helmet/rebel = 25,
 		/obj/item/clothing/shoes/jackboots = 25,
+
 	)
 
 /obj/structure/vending/starwars/rebel/weapons
@@ -1424,6 +1633,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 		/obj/item/weapon/grenade/modern/thermaldetonator = 5,
+
 	)
 
 /obj/structure/vending/starwars/republic/apparel
@@ -1440,6 +1650,7 @@ obj/structure/vending/hezammo
 		/obj/item/clothing/head/helmet/replicant/airborne = 25,
 		/obj/item/clothing/head/helmet/replicant = 25,
 		/obj/item/clothing/head/helmet/replicant/pilot = 25,
+
 	)
 
 /obj/structure/vending/starwars/republic/weapons
@@ -1453,6 +1664,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dc17 =20,
 		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
 		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
+
 	)
 
 /obj/structure/vending/starwars/gonk/gcw
@@ -1464,6 +1676,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 60,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
+
 	)
 
 /obj/structure/vending/grenade_crate
@@ -1471,8 +1684,13 @@ obj/structure/vending/hezammo
 	desc = "A crate full of grenades."
 	icon_state = "grenade_crate"
 	products = list()
+
 /obj/structure/vending/grenade_crate/alt
 	icon_state = "grenade_crate_alt"
+
+/*
+///////// Syrian Army; vendors
+*/
 
 /obj/structure/vending/syria/gungov
 	name = "Syrian Army weapon rack"
@@ -1495,6 +1713,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 2,
 		/obj/item/weapon/gun/projectile/semiautomatic/vintorez = 2,
+
 	)
 
 /obj/structure/vending/syria/ammogov
@@ -1517,6 +1736,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/srm = 8,
 		/obj/item/ammo_magazine/srm/box = 8,
 		/obj/item/ammo_magazine/vintorez = 8,
+
 	)
 
 /obj/structure/vending/syria/armorgov
@@ -1548,9 +1768,13 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern = 50,
+
 	)
 
-////Free Syrian Army
+/*
+///////// -=Free=- Syrian Army; vendors
+*/
+
 /obj/structure/vending/syria/fsa/gunreb
 	name = "Free Syrian Army weapon rack"
 	desc = "A rack of war equipment."
@@ -1572,6 +1796,7 @@ obj/structure/vending/hezammo
 		/obj/item/weapon/plastique/c4 = 3,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/gun/launcher/rocket/single_shot/m72law = 2,
+
 	)
 
 /obj/structure/vending/syria/fsa/ammoreb
@@ -1591,6 +1816,7 @@ obj/structure/vending/hezammo
 		/obj/item/ammo_magazine/greasegun/box = 8,
 		/obj/item/ammo_magazine/m249 = 12,
 		/obj/item/ammo_magazine/sten2 = 15,
+
 	)
 
 /obj/structure/vending/syria/fsa/armorreb
@@ -1623,4 +1849,5 @@ obj/structure/vending/hezammo
 		/obj/item/flashlight/militarylight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+
 	)
