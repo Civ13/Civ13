@@ -587,19 +587,19 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/under/laser
 	name = "laser pointer"
 	icon_state = "laser"
-	desc = "a basic laser pointer, increases accuracy by a bit."
+	desc = "A basic laser pointer, increases accuracy by a bit."
 	ergonomics = 1.25
 
 /obj/item/weapon/attachment/under/foregrip
 	name = "foregrip"
 	icon_state = "foregrip"
-	desc = "a foregrip, to increase stability when firing."
+	desc = "A foregrip, to increase stability when firing."
 	ergonomics = 1.5
 
 /obj/item/weapon/attachment/under/foregrip/alt
 	name = "foregrip"
 	icon_state = "foregrip_alt"
-	desc = "a foregrip, to increase stability when firing."
+	desc = "A foregrip, to increase stability when firing."
 	ergonomics = 1.5
 
 /obj/item/weapon/gun/launcher/grenade/underslung/proc/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
@@ -650,7 +650,7 @@ Current Defines (_defines/attachment.dm)
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "silencer"
 	name = "silencer"
-	desc = "a gun silencer."
+	desc = "A gun silencer."
 	attachment_type = ATTACH_BARREL
 	var/reduction = 50
 	var/caliber = "multicaliber"
@@ -719,7 +719,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/oil_filter
 	name = "oil filter suppressor"
 	icon_state = "oil_filter_suppressor"
-	desc = "a makeshift suppressor."
+	desc = "A makeshift suppressor."
 	reduction = 35
 	fits = list("smg", "rifle")
 	ergonomics = 1.1
@@ -728,7 +728,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/pistol
 	name = "pistol suppressor"
 	icon_state = "modern_pistol_suppressor"
-	desc = "a pistol suppressor."
+	desc = "A pistol suppressor."
 	reduction = 50
 	fits = list("pistol")
 	ergonomics = 1.2
@@ -736,14 +736,14 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/pistol/ww2
 	name = "pistol suppressor"
 	icon_state = "ww2_pistol_suppressor"
-	desc = "a pistol suppressor."
+	desc = "A pistol suppressor."
 	reduction = 35
 	ergonomics = 1.15
 
 /obj/item/weapon/attachment/silencer/rifle
 	name = "rifle suppressor"
 	icon_state = "modern_rifle_suppressor"
-	desc = "a rifle suppressor."
+	desc = "A rifle suppressor."
 	reduction = 50
 	fits = list("rifle")
 	ergonomics = 2
@@ -751,7 +751,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/rifle/srm
 	name = "srm suppressor"
 	icon_state = "srm_silencer"
-	desc = "a 9x39 SRM suppressor."
+	desc = "A 9x39 SRM suppressor."
 	reduction = 50
 	fits = list("rifle")
 	ergonomics = 2
@@ -760,7 +760,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/rifle/pbs1
 	name = "PBS-1"
 	icon_state = "pbs1"
-	desc = "a 7.62x39 AKM suppressor."
+	desc = "A 7.62x39 AKM suppressor."
 	reduction = 50
 	fits = list("rifle")
 	ergonomics = 2
@@ -769,7 +769,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/rifle/pbs4
 	name = "PBS-4"
 	icon_state = "pbs1"
-	desc = "a 5.45x39 AK74 suppressor."
+	desc = "A 5.45x39 AK74 suppressor."
 	reduction = 50
 	fits = list("rifle")
 	ergonomics = 2
@@ -778,7 +778,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/rifle/ww2
 	name = "rifle suppressor"
 	icon_state = "ww2_rifle_suppressor"
-	desc = "a rifle suppressor."
+	desc = "A rifle suppressor."
 	reduction = 35
 	ergonomics = 1.5
 
@@ -794,7 +794,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/smg
 	name = "smg suppressor"
 	icon_state = "modern_smg_suppressor"
-	desc = "a smg suppressor."
+	desc = "A smg suppressor."
 	reduction = 50
 	fits = list("smg")
 	ergonomics = 1.5
@@ -802,14 +802,14 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/silencer/smg/ww2
 	name = "smg suppressor"
 	icon_state = "ww2_smg_suppressor"
-	desc = "a smg suppressor."
+	desc = "A smg suppressor."
 	reduction = 35
 	ergonomics = 1.25
 
 /obj/item/weapon/attachment/silencer/shotgun
 	name = "shotgun suppressor"
 	icon_state = "modern_shotgun_suppressor"
-	desc = "a shotgun suppressor."
+	desc = "A shotgun suppressor."
 	reduction = 40
 	fits = list("shotgun")
 	ergonomics = 1.5

@@ -211,7 +211,7 @@
 
 /obj/item/clothing/head/ainu_bandana
 	name = "ainu bandana"
-	desc = "a bandana with intricate patterns."
+	desc = "A bandana with intricate patterns."
 	icon_state = "ainu"
 	item_state = "ainu"
 	worn_state = "ainu"
@@ -363,14 +363,14 @@
 
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"
-	desc = "a wide brim hat, used by the toxotai."
+	desc = "A wide brim hat, used by the toxotai."
 	icon_state = "toxotai"
 	item_state = "toxotai"
 	worn_state = "toxotai"
 
 /obj/item/clothing/head/egyptian_headdress_black
 	name = "black egyptian headdress"
-	desc = "a plain sun-protective linen headdress, despite its black stripes."
+	desc = "A plain sun-protective linen headdress, despite its black stripes."
 	icon_state = "egyptian_headdress_black"
 	item_state = "egyptian_headdress_black"
 	worn_state = "egyptian_headdress_black"
@@ -379,7 +379,7 @@
 
 /obj/item/clothing/head/egyptian_headdress_blue
 	name = "blue egyptian headdress"
-	desc = "a plain sun-protective blue linen headdress."
+	desc = "A plain sun-protective blue linen headdress."
 	icon_state = "egyptian_headdress_blue"
 	item_state = "egyptian_headdress_blue"
 	worn_state = "egyptian_headdress_blue"
@@ -388,7 +388,7 @@
 
 /obj/item/clothing/head/egyptian_headdress_red
 	name = "red egyptian headdress"
-	desc = "a plain sun-protective red linen headdress."
+	desc = "A plain sun-protective red linen headdress."
 	icon_state = "egyptian_headdress_red"
 	item_state = "egyptian_headdress_red"
 	worn_state = "egyptian_headdress_red"
@@ -754,7 +754,7 @@
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt headcover"
-	desc = "a bear pelt turned into a headcover."
+	desc = "A bear pelt turned into a headcover."
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
 	worn_state = "bearpelt"
@@ -764,7 +764,7 @@
 
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt headcover"
-	desc = "a wolf pelt turned into a headcover."
+	desc = "A wolf pelt turned into a headcover."
 	icon_state = "wolfpelt"
 	item_state = "wolfpelt"
 	worn_state = "wolfpelt"

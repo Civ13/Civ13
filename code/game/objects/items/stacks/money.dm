@@ -430,7 +430,7 @@
 
 /obj/item/stack/money/pearls
 	name = "pearls"
-	desc = "a bunch of pearls. Looks valuable!"
+	desc = "A bunch of pearls. Looks valuable!"
 	singular_name = "nugget"
 	icon_state = "pearls1"
 	force = WEAPON_FORCE_HARMLESS

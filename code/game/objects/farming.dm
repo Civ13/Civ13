@@ -172,7 +172,7 @@
 
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
-	desc = "a potato selected for breeding because of its characteristics."
+	desc = "A potato selected for breeding because of its characteristics."
 	plant = "potato"
 	icon_state = "potato"
 	biomes = list("temperate", "taiga", "semiarid")
@@ -357,7 +357,7 @@
 //////////////////////////////////////////////////////////
 /obj/structure/farming/plant
 	name = "plant"
-	desc = "a generic plant."
+	desc = "A generic plant."
 	icon = 'icons/farming/plants.dmi'
 	icon_state = "tomato-grow1"
 	anchored = TRUE
@@ -560,7 +560,7 @@
 
 /obj/structure/farming/plant/oat
 	name = "oat plant"
-	desc = "a oat plant."
+	desc = "A oat plant."
 	icon_state = "oat-grow1"
 	plant = "oat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
@@ -569,7 +569,7 @@
 
 /obj/structure/farming/plant/barley
 	name = "barley plant"
-	desc = "a barley plant."
+	desc = "A barley plant."
 	icon_state = "barley-grow1"
 	plant = "barley"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
@@ -578,7 +578,7 @@
 
 /obj/structure/farming/plant/rice
 	name = "rice"
-	desc = "a rice plant."
+	desc = "A rice plant."
 	icon_state = "rice-grow1"
 	plant = "rice"
 	harvest_verb = "harvest"
@@ -590,7 +590,7 @@
 //////////////////////////////////////////////////////////
 /obj/structure/farming/plant/potato
 	name = "potato plant"
-	desc = "a potato plant."
+	desc = "A potato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "potato-grow1"
 	plant = "potato"
@@ -599,7 +599,7 @@
 
 /*/obj/structure/farming/plant/sweetpotato
 	name = "sweet-potato plant"
-	desc = "a sweet-potato plant."
+	desc = "A sweet-potato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "sweetpotato-grow1"
 	plant = "sweetpotato"
@@ -609,7 +609,7 @@
 
 /obj/structure/farming/plant/carrot
 	name = "carrot plant"
-	desc = "a carrot plant."
+	desc = "A carrot plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "carrot-grow1"
 	plant = "carrot"
@@ -617,7 +617,7 @@
 
 /obj/structure/farming/plant/cabbage
 	name = "cabbage plant"
-	desc = "a cabbage plant."
+	desc = "A cabbage plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "cabbage-grow1"
 	plant = "cabbage"
@@ -626,7 +626,7 @@
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
-	desc = "a tomato plant."
+	desc = "A tomato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "tomato-grow1"
 	plant = "tomato"
@@ -636,7 +636,7 @@
 
 /obj/structure/farming/plant/corn
 	name = "corn plant"
-	desc = "a corn plant."
+	desc = "A corn plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "corn-grow1"
 	plant = "corn"
@@ -646,7 +646,7 @@
 
 /obj/structure/farming/plant/beans
 	name = "bean plant"
-	desc = "a bean plant."
+	desc = "A bean plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "beans-grow1"
 	plant = "beans"
@@ -655,7 +655,7 @@
 
 /obj/structure/farming/plant/parsnip
 	name = "parsnip plant"
-	desc = "a parsnip plant."
+	desc = "A parsnip plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "parsnip-grow1"
 	plant = "parsnip"

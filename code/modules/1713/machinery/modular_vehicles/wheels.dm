@@ -260,7 +260,7 @@
 
 /obj/structure/bed/chair/mgunner
 	name = "machinegunner's seat"
-	desc = "a seat with a course machinegun."
+	desc = "A seat with a course machinegun."
 	icon_state = "officechair_white"
 	anchored = FALSE
 	flammable = FALSE
@@ -337,7 +337,7 @@
 ////////GUNNER///////////
 /obj/structure/bed/chair/gunner
 	name = "gunner's seat"
-	desc = "a seat next to the gun trigger."
+	desc = "A seat next to the gun trigger."
 	icon_state = "officechair_white"
 	anchored = FALSE
 	flammable = FALSE

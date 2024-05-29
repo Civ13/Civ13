@@ -11,7 +11,7 @@
 			color = material.icon_colour
 /obj/structure/bed/chair/carseat
 	name = "car seat"
-	desc = "a leather car seat."
+	desc = "A leather car seat."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "carseat_middle"
 	material = "leather"
