@@ -135,6 +135,7 @@
 	stop_using_turret()
 	if (o && istype(o, /obj/structure/turret))
 		using_turret = o
+		using_turret.do_html(src)
 
 /mob/proc/stop_using_turret()
 	if (using_turret)
@@ -176,8 +177,6 @@
 
 /obj/structure/turret/attack_hand(var/mob/attacker)
 	place_user(attacker)
-	if(attacker.using_turret == src)
-		do_html(attacker)
 
 /obj/structure/turret/proc/switch_weapon()
 	selected_weapon += 1
@@ -245,6 +244,7 @@
 	if(weapons.len < selected_weapon)
 		return
 	if(!gunner_seat || !gunner || gunner.stat != CONSCIOUS)
+		is_firing = FALSE
 		return
 
 	var/next_shot_delay = 1
@@ -259,8 +259,8 @@
 		A.Fire(locate(x + target_x, y + target_y, z),gunner)
 		A.forceMove(src)
 		next_shot_delay = A.firemodes[A.sel_mode].burst_delay
-	else if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic))
-		var/obj/item/weapon/gun/projectile/automatic/G = weapons[selected_weapon]
+	else if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile))
+		var/obj/item/weapon/gun/projectile/G = weapons[selected_weapon]
 		G.recoil = 1
 		G.dir = dir
 		G.Fire(locate(x + target_x, y + target_y, z),gunner)

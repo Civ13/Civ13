@@ -387,6 +387,7 @@
 		if(turret)
 			turret.draw_aiming_line(buckled_mob)
 			turret.gunner = buckled_mob
+			buckled_mob.start_using_turret(turret)
 		if (istype(buckled_mob, /mob/living/human))
 			if(buckled_mob.put_in_active_hand(controls) == FALSE)
 				buckled_mob << "Your hands are full!"
