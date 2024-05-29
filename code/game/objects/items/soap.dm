@@ -103,4 +103,4 @@
 			x = 3
 		else
 			x = 4
-	icon_state = "soap_lard_[i]"
+	icon_state = "soap_lard_[x]"
