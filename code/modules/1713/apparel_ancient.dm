@@ -246,7 +246,7 @@
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "segmented armor"
-	desc = "A thick, expensive segmented iron armor, covering the torso."
+	desc = "A thick and expensive segmented piece of iron armor, its scales protect the torso."
 	icon_state = "scale_armor"
 	item_state = "scale_armor"
 	worn_state = "scale_armor"
@@ -505,11 +505,12 @@
 
 /obj/item/clothing/head/helmet/egyptian
 	name = "egyptian war headdress"
-	desc = "A bronze egyptian headpiece, with a exposed face to relieve the wearer of heat."
+	desc = "A bronze egyptian headpiece, with an exposed face to relieve the wearer of heat."
 	icon_state = "egyptian_bronze_headdress"
 	item_state = "egyptian_bronze_headdress"
 	worn_state = "egyptian_bronze_headdress"
 	body_parts_covered = HEAD|EYES
+	item_flags = FLEXIBLEMATERIAL // The egyptian helmet does not block the face. body_parts_covered is used in armor calculation, masks with this flag will not prevent eating even if they are covering your "face".
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 35
