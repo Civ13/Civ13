@@ -69,6 +69,10 @@
 	return TRUE
 
 /obj/structure/closet/crate/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return !density

@@ -1319,6 +1319,30 @@ proc/admin_notice(var/message, var/rights)
 		set_global_pollution(num)
 		world.log << "[usr] set the worlds pollution to [num]."
 
+/datum/admins/proc/set_faction1_supply_points()
+	set category = "Fun"
+	set desc = "Set Faction 1 Supply Points."
+	set name = "Set Faction 1 Supply Points"
+
+	var/num = input(usr, "Enter how many supply points the faction should have, press cancel or leave blank if you change your mind.", "Set Supply Points", 0) as num
+	if (!isnum(num) || num < 0)
+		return
+	else
+		faction1_supply_points = num
+		world.log << "[usr] set faction 1 supply points to [num]."
+
+/datum/admins/proc/set_faction2_supply_points()
+	set category = "Fun"
+	set desc = "Set Faction 2 Supply Points."
+	set name = "Set Faction 2 Supply Points"
+
+	var/num = input(usr, "Enter how many supply points the faction should have, press cancel or leave blank if you change your mind.", "Set Supply Points", 0) as num
+	if (!isnum(num) || num < 0)
+		return
+	else
+		faction2_supply_points = num
+		world.log << "[usr] set faction 2 supply points to [num]."
+
 /datum/admins/proc/zombiemechanic()
 	set category = "Fun"
 	set desc = "toggle zombie mechanic in the current round."

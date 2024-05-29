@@ -103,20 +103,48 @@
 		messages["grenade"] = list("!!GRENADE!!!", "!!Grenade, run!!")
 
 		gun = new/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet(src)
-		icon_state = "ww2_jap_ranged[rand(1,4)]"
+		icon_state = "ww2_jap_ranged[rand(1,5)]"
 /mob/living/simple_animal/hostile/human/ww2_jap/death()
 	faction2_npcs--
 	..()
 
-
-/mob/living/simple_animal/hostile/human/ww2_jap/summer
-	name = "Japanese Soldier"
-	desc = "A jap soldier! he looks hostile!"
-	icon_state = "ww2_jap_ranged_summer1"
+/mob/living/simple_animal/hostile/human/ww2_jap/medic
+	name = "Japanese Medic"
+	icon_state = "ww2_jap_ranged_medic"
+	corpse = /mob/living/human/corpse/ww2_jap_medic
+	role = "medic"
 
 	New()
 		..()
-		icon_state = "ww2_jap_ranged_summer[rand(1,4)]"
+		icon_state = "ww2_jap_ranged_medic"
+		grenades = 0
+
+/mob/living/simple_animal/hostile/human/ww2_jap/mg
+	name = "Japanese Machinegunner"
+	icon_state = "ww2_jap_ranged_mg"
+	corpse = /mob/living/human/corpse/ww2_jap_mg
+	rapid = 2
+	grenades = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a77x58
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_mg"
+		gun = new/obj/item/weapon/gun/projectile/automatic/type99(src)
+
+/mob/living/simple_animal/hostile/human/ww2_jap/squad_leader
+	name = "Japanese Squad Leader"
+	icon_state = "ww2_jap_ranged_sl"
+	projectiletype = /obj/item/projectile/bullet/pistol/c8mmnambu
+	corpse = /mob/living/human/corpse/ww2_jap_sl
+	rapid = 1
+	grenades = 1
+	role = "officer"
+
+	New()
+		..()
+		icon_state = "ww2_jap_ranged_sl"
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/type100(src)
 
 /mob/living/simple_animal/hostile/human/ww2_jap/summer/medic
 	name = "Japanese Medic"
@@ -129,7 +157,7 @@
 		icon_state = "ww2_jap_ranged_summer_medic"
 		grenades = 0
 
-/mob/living/simple_animal/hostile/human/ww2_jap/mg
+/mob/living/simple_animal/hostile/human/ww2_jap/summer/mg
 	name = "Japanese Machinegunner"
 	icon_state = "ww2_jap_ranged_summer_mg"
 	corpse = /mob/living/human/corpse/ww2_jap_mg
@@ -142,7 +170,7 @@
 		icon_state = "ww2_jap_ranged_summer_mg"
 		gun = new/obj/item/weapon/gun/projectile/automatic/type99(src)
 
-/mob/living/simple_animal/hostile/human/ww2_jap/squad_leader
+/mob/living/simple_animal/hostile/human/ww2_jap/summer/squad_leader
 	name = "Japanese Squad Leader"
 	icon_state = "ww2_jap_ranged_summer_sl"
 	projectiletype = /obj/item/projectile/bullet/pistol/c8mmnambu

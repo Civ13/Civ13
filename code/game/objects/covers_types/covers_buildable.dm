@@ -35,6 +35,10 @@
 	flammable = FALSE
 
 /obj/covers/dirt_wall/blocks/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		return prob(30 + (P.penetrating*2))
@@ -120,6 +124,10 @@
 	material = "Stone"
 
 /obj/covers/clay_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		return prob(20 + (P.penetrating*2))
@@ -207,6 +215,10 @@
 	material = "Stone"
 
 /obj/covers/clay_wall/sumerian/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		return prob(20 + (P.penetrating*2))
@@ -400,6 +412,10 @@
 	buildstack = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/covers/cement_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		return prob(20 + (P.penetrating*2))
@@ -442,6 +458,10 @@
 	material = "Stone"
 
 /obj/covers/brick_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		return prob(20 + (P.penetrating*2))

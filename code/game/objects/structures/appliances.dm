@@ -84,6 +84,10 @@
 /* TV Technical*/
 
 /obj/structure/TV/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (istype(mover, /obj/item/projectile))
 		return prob(100-protection_chance)
 	else
@@ -110,17 +114,6 @@
 	user.do_attack_animation(src)
 	try_destroy()
 	..()
-
-/obj/structure/TV/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/item/projectile))
-		return prob(100-protection_chance)
-	else
-		return FALSE
-
-/obj/structure/TV/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage * 0.01
-	visible_message("<span class='danger'>\The [src] is hit by \the [proj.name]!</span>")
-	try_destroy()
 
 /obj/structure/TV/proc/try_destroy()
 	if (health <= 0)

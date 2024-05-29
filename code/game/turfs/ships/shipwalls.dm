@@ -44,7 +44,10 @@
 
 //copied from sandbags
 /obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-
+	if (istype(mover, /obj/structure/drone))
+		var/obj/structure/drone/D = mover
+		if (D.flying)
+			return TRUE
 	if (!ispartial)
 		return ..()
 
