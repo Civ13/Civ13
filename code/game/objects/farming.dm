@@ -15,10 +15,7 @@
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
 /* 
-/////// Cash crop && plant seeds... (Different than structure code, this is object code for the seed and stack handling...)
-/// * Stacks
-// - Vegetable, Fruit, Grain seeds....
-/
+/////// Plant seeds... (Different than structure code, this is object code for the seed and stack handling...)
 */
 
 /obj/item/stack/farming/seeds/mushroom
