@@ -44,7 +44,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/musket = 15,
-
 	)
 
 /obj/structure/vending/muskets/small
@@ -53,7 +52,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/musket = 5,
-
 	)
 
 /obj/structure/vending/muskets/english
@@ -62,7 +60,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/brownbess = 15,
-
 	)
 
 /obj/structure/vending/muskets/french
@@ -71,7 +68,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/charleville = 15,
-
 	)
 
 /obj/structure/vending/muskets/spanish
@@ -80,7 +76,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
-
 	)
 
 /obj/structure/vending/muskets/portuguese
@@ -89,7 +84,6 @@ MAPS (including, but not up to);
 	icon_state = "apparel_rifles"
 	products = list(
 		/obj/item/weapon/gun/projectile/flintlock/m1752 = 15,
-
 	)
 
 /obj/structure/vending/flintlock
@@ -117,7 +111,6 @@ MAPS (including, but not up to);
 		/obj/item/weapon/gun/projectile/flintlock/springfield1795 = 5,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/material/shovel/trench = 15,
-
 	)
 
 /*
@@ -135,7 +128,6 @@ MAPS (including, but not up to);
 		/obj/item/clothing/under/confederate_uniform/grey_blue = 15,
 		/obj/item/clothing/head/confederatehat = 5,
 		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
-
 	)
 
 /obj/structure/vending/union_apparel
@@ -148,7 +140,6 @@ MAPS (including, but not up to);
 		/obj/item/clothing/head/unionhat = 5,
 		/obj/item/clothing/head/unionhatlight = 5,
 		/obj/item/clothing/accessory/storage/webbing/civil_war = 15,
-
 	)
 
 /*
@@ -172,7 +163,6 @@ MAPS:
 		/obj/item/clothing/under/british_sailor4 = 15,
 		/obj/item/clothing/head/tarred_hat = 25,
 		/obj/item/clothing/accessory/armband/british_scarf = 25,
-
 	)
 
 //	idle_power_usage = 0
@@ -190,7 +180,6 @@ MAPS:
 		/obj/item/ammo_magazine/mosin = 50,
 		/obj/item/ammo_magazine/mosinbox = 10,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /*
@@ -226,7 +215,6 @@ MAPS:
 		/obj/item/clothing/accessory/armor/coldwar/plates/interceptor = 15,
 		/obj/item/weapon/armorplates = 30,
 		/obj/item/clothing/accessory/armband = 40,
-
 	)
 
 /*
@@ -245,7 +233,6 @@ MAPS:
 		/obj/item/ammo_magazine/gewehr98 = 50,
 		/obj/item/ammo_magazine/mauser = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /obj/structure/vending/ww1britweapons
@@ -257,7 +244,6 @@ MAPS:
 		/obj/item/ammo_magazine/enfield = 50,
 		/obj/item/ammo_magazine/c455 = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /obj/structure/vending/ww1frenchweapons
@@ -270,7 +256,6 @@ MAPS:
 		/obj/item/ammo_magazine/c8x50_3clip = 30,
 		/obj/item/ammo_magazine/c8x27 = 20,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /obj/structure/vending/ww1frenchapparel
@@ -289,7 +274,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french = 50,
-
 	)
 
 /obj/structure/vending/ww1britapparel
@@ -309,7 +293,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/german = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british = 50,
-
 	)
 
 /obj/structure/vending/ww1gerapparel
@@ -329,7 +312,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
-
 	)
 
 /*
@@ -364,7 +346,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
-
 	)
 
 /*
@@ -381,7 +362,6 @@ MAPS:
 		/obj/item/ammo_magazine/gewehr98box = 10,
 		/obj/item/ammo_magazine/gewehr98 = 50,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 /obj/structure/vending/chineseweapons_korean_war
@@ -396,7 +376,6 @@ MAPS:
 		/obj/item/ammo_magazine/dp = 15,
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 /obj/structure/vending/chineseapparel_korean_war
 	name = "Chinese apparel rack"
@@ -413,9 +392,7 @@ MAPS:
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
-
 	)
-
 
 /obj/structure/vending/chineseapparel
 	name = "Chinese apparel rack"
@@ -434,7 +411,6 @@ MAPS:
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
-
 	)
 
 /obj/structure/vending/chineseapparel/early
@@ -452,7 +428,6 @@ MAPS:
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
-
 	)
 
 /*
@@ -480,7 +455,6 @@ MAPS:
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
-
 	)
 
 /obj/structure/vending/usa_apparel_korean_war
@@ -499,7 +473,6 @@ MAPS:
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
 		/obj/item/clothing/accessory/storage/webbing/us_ww2 = 20,
-
 	)
 
 /obj/structure/vending/usa_equipment_ww2
@@ -518,7 +491,6 @@ MAPS:
 		/obj/item/ammo_magazine/m1911 = 10,
 		/obj/item/ammo_magazine/a45acpbox = 10,
 		/obj/item/ammo_magazine/m1carbine/box = 10,
-
 	)
 
 /obj/structure/vending/japaneseapparel_ww2
@@ -539,7 +511,6 @@ MAPS:
 		/obj/item/flashlight/japflashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
-
 	)
 
 /obj/structure/vending/japaneseapparel_ww2_snlf
@@ -559,7 +530,6 @@ MAPS:
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 		/obj/item/havelock = 40,
 		/obj/item/puttees = 40,
-
 	)
 
 /obj/structure/vending/japaneseapparel_ww2_navy
@@ -579,7 +549,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/jap = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
-
 	)
 
 /obj/structure/vending/japweapons_ww2
@@ -623,7 +592,6 @@ MAPS:
 		/obj/item/clothing/suit/storage/jacket/charcoal_suit = 15,
 		/obj/item/clothing/suit/storage/jacket/black_suit = 10,
 		/obj/item/clothing/suit/storage/jacket/blackvest = 10,
-
 	)
 
 /obj/structure/vending/yakuza/equipment
@@ -647,7 +615,6 @@ MAPS:
 		/obj/item/ammo_magazine/p220 = 4,
 		/obj/item/weapon/material/kitchen/utensil/knife/tanto = 15,
 		/obj/item/ammo_magazine/emptyspeedloader = 20,
-
 	)
 
 /*
@@ -667,7 +634,6 @@ MAPS:
 		/obj/item/weapon/material/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /*
@@ -703,7 +669,6 @@ MAPS:
 		/obj/item/clothing/mask/balaclava = 15,
 		/obj/item/clothing/glasses/nvg = 15,
 		/obj/item/clothing/glasses/thermal = 10,
-
 	)
 
 /obj/structure/vending/sofweapons
@@ -726,7 +691,6 @@ MAPS:
 		/obj/item/weapon/grenade/incendiary/anm14 = 15,
 		/obj/item/weapon/plastique/c4 = 6,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 obj/structure/vending/sofammo
@@ -746,7 +710,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 15,
 		/obj/item/weapon/attachment/under/laser = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
-
 	)
 
 /*
@@ -773,7 +736,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 1,
 		/obj/item/weapon/compass = 1,
-
 	)
 
 /obj/structure/vending/wehrmachtapparel
@@ -794,7 +756,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 1,
 		/obj/item/weapon/compass = 1,
-
 	)
 
 /obj/structure/vending/ssapparel
@@ -815,7 +776,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 2,
 		/obj/item/weapon/compass = 1,
-
 	)
 
 /obj/structure/vending/ss_officerapparel
@@ -836,7 +796,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 20,
 		/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = 2,
 		/obj/item/weapon/compass = 2,
-
 	)
 
 /*
@@ -850,7 +809,6 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /obj/structure/vending/ss_weaponsassault
@@ -868,7 +826,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/grenade/ww2/stg1924 = 5,
 		/obj/item/weapon/grenade/antitank/stg24_bundle = 3,
 		/obj/item/weapon/attachment/bayonet = 25,
-
 	)
 
 /obj/structure/vending/ss_weaponsassaultlatewar
@@ -889,7 +846,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/flamethrower/eins = 2,
 		/obj/item/weapon/reagent_containers/glass/flamethrower/eins/filled = 2,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 /obj/structure/vending/sovietweapons
@@ -899,7 +855,6 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 15,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 /obj/structure/vending/sovietweaponsassault
@@ -915,7 +870,6 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/grenade/antitank/rpg40 = 2,
 		/obj/item/weapon/grenade/smokebomb = 2,
 		/obj/item/weapon/grenade/ww2/rgd33 = 5,
-
 	)
 
 /obj/structure/vending/oldrussianweapons
@@ -925,7 +879,6 @@ obj/structure/vending/sofammo
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 /*
@@ -948,7 +901,6 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/ammo_magazine/c9mm = 10,
 		/obj/item/weapon/storage/ammo_can = 1,
-
 	)
 
 /obj/structure/vending/sovietammo
@@ -965,7 +917,6 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/c762x38mmR = 10,
 		/obj/item/ammo_magazine/tt30 = 10,
 		/obj/item/weapon/storage/ammo_can = 1,
-
 	)
 
 obj/structure/vending/idfammo
@@ -982,7 +933,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
 		/obj/item/weapon/attachment/bayonet = 30,
 //		/obj/item/weapon/grenade/incendiary = 20,
-
 	)
 
 /obj/structure/vending/hezammo
@@ -999,7 +949,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m26= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/material/kitchen/utensil/knife/military = 30,
-
 	)
 
 /*
@@ -1020,7 +969,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
-
 	)
 
 /obj/structure/vending/hez_apparel_modern
@@ -1037,7 +985,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/rus = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/flatbread = 50,
-
 	)
 
 /obj/structure/vending/idf_apparel_modern
@@ -1054,7 +1001,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/ww2/us = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf = 50,
-
 	)
 
 /*
@@ -1077,7 +1023,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/m249 = 15,
 		/obj/item/ammo_magazine/m9beretta = 50,
 		/obj/item/weapon/attachment/bayonet = 20,
-
 	)
 
 /obj/structure/vending/usa_apparel_coldwar
@@ -1107,7 +1052,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/storage/fancy/cigarettes/marlboro = 10,
 		/obj/item/weapon/storage/fancy/cigarettes/luckystrike = 10,
 		/obj/item/weapon/flame/lighter = 10,
-
 	)
 
 /obj/structure/vending/usa_equipment_coldwar
@@ -1128,7 +1072,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m67 = 15,
 		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
 		/obj/item/weapon/grenade/incendiary/anm14 = 10,
-
 	)
 
 /*
@@ -1159,7 +1102,7 @@ obj/structure/vending/idfammo
 	if (!user.unEquip(W))
 		return
 
-	user << "<span class='notice'>You insert \the [W] in \the [src].</span>"
+	user.visible_message(SPAN_NOTICE("[user] inserts \the [W] into \the [src]."), SPAN_NOTICE("You insert \the [W] into \the [src]."), "You hear something thudding and slotting into place.")
 	W.forceMove(src)
 	product_records.Add(R)
 	GLOB.nanomanager.update_uis(src)
@@ -1261,7 +1204,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /obj/structure/vending/yeltsinweapons
@@ -1284,7 +1226,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/shield/metal_riot = 15,
 		/obj/item/weapon/material/machete = 15,
 		/obj/item/weapon/melee/nightbaton = 15,
-
 	)
 
 /obj/structure/vending/yeltsinammo
@@ -1304,7 +1245,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog = 15,
 		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
-
 	)
 
 /*
@@ -1340,7 +1280,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /obj/structure/vending/sovafghan/soviet/weapons
@@ -1353,7 +1292,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 5,
 		/obj/item/weapon/gun/projectile/automatic/rpk74 = 5,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 10,
-
 	)
 
 /obj/structure/vending/sovafghan/soviet/ammo
@@ -1368,7 +1306,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/makarov = 20,
 		/obj/item/ammo_magazine/rpk74 = 12,
 		/obj/item/ammo_magazine/rpk74/drum = 6,
-
 	)
 
 /obj/structure/vending/sovafghan/dra/apparel
@@ -1395,7 +1332,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /obj/structure/vending/sovafghan/dra/weapons
@@ -1410,7 +1346,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 4,
 		/obj/item/weapon/gun/projectile/automatic/manual/rpd = 3,
 		/obj/item/weapon/gun/projectile/pistol/makarov = 5,
-
 	)
 
 /obj/structure/vending/sovafghan/dra/ammo
@@ -1425,7 +1360,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/pkm = 5,
 		/obj/item/ammo_magazine/rpd = 6,
 		/obj/item/ammo_magazine/makarov = 10,
-
 	)
 
 /obj/structure/vending/coldwar/soviet/apparel
@@ -1452,7 +1386,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /*
@@ -1479,7 +1412,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
-
 	)
 
 /obj/structure/vending/sixties/china/apparelnotwinter
@@ -1501,7 +1433,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 30,
-
 	)
 
 /obj/structure/vending/sixties/china/weapons
@@ -1522,7 +1453,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/dp = 15,
 		/obj/item/ammo_magazine/mauser = 10,
 		/obj/item/weapon/attachment/bayonet = 15,
-
 	)
 
 /*
@@ -1553,7 +1483,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
-
 	)
 
 /obj/structure/vending/sixties/soviet/weapons
@@ -1575,7 +1504,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/gun/projectile/automatic/rpk47 = 1,
 		/obj/item/ammo_magazine/rpk47/drum = 2,
 		/obj/item/ammo_magazine/rpk47 = 2,
-
 	)
 
 /*
@@ -1592,7 +1520,6 @@ obj/structure/vending/idfammo
 		/obj/item/clothing/shoes/replicantshoes = 25,
 		/obj/item/clothing/gloves/replicantgloves = 25,
 		/obj/item/clothing/head/helmet/replicant/stormtrooper = 25,
-
 	)
 
 /obj/structure/vending/starwars/imperial/weapons
@@ -1606,7 +1533,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/tibannagas/e11 = 60,
 		/obj/item/weapon/grenade/modern/thermaldetonator = 4,
 		/obj/item/weapon/grenade/flashbang/galaxywars = 5,
-
 	)
 
 /obj/structure/vending/starwars/rebel/apparel
@@ -1618,7 +1544,6 @@ obj/structure/vending/idfammo
 		/obj/item/clothing/suit/storage/jacket/rebel_vest = 25,
 		/obj/item/clothing/head/helmet/rebel = 25,
 		/obj/item/clothing/shoes/jackboots = 25,
-
 	)
 
 /obj/structure/vending/starwars/rebel/weapons
@@ -1633,7 +1558,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
 		/obj/item/weapon/grenade/modern/thermaldetonator = 5,
-
 	)
 
 /obj/structure/vending/starwars/republic/apparel
@@ -1650,7 +1574,6 @@ obj/structure/vending/idfammo
 		/obj/item/clothing/head/helmet/replicant/airborne = 25,
 		/obj/item/clothing/head/helmet/replicant = 25,
 		/obj/item/clothing/head/helmet/replicant/pilot = 25,
-
 	)
 
 /obj/structure/vending/starwars/republic/weapons
@@ -1664,7 +1587,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/tibannagas/dc17 =20,
 		/obj/item/ammo_magazine/tibannagas/dc15 = 50,
 		/obj/item/ammo_magazine/tibannagas/dc15a = 25,
-
 	)
 
 /obj/structure/vending/starwars/gonk/gcw
@@ -1676,7 +1598,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/tibannagas/dl44 = 60,
 		/obj/item/ammo_magazine/tibannagas/dh17 = 60,
 		/obj/item/ammo_magazine/tibannagas/a280 = 60,
-
 	)
 
 /obj/structure/vending/grenade_crate
@@ -1713,7 +1634,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22 = 2,
 		/obj/item/weapon/gun/projectile/semiautomatic/vintorez = 2,
-
 	)
 
 /obj/structure/vending/syria/ammogov
@@ -1736,7 +1656,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/srm = 8,
 		/obj/item/ammo_magazine/srm/box = 8,
 		/obj/item/ammo_magazine/vintorez = 8,
-
 	)
 
 /obj/structure/vending/syria/armorgov
@@ -1768,7 +1687,6 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight/alt = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian/modern = 50,
-
 	)
 
 /*
@@ -1796,7 +1714,6 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/plastique/c4 = 3,
 		/obj/item/weapon/attachment/bayonet = 15,
 		/obj/item/weapon/gun/launcher/rocket/single_shot/m72law = 2,
-
 	)
 
 /obj/structure/vending/syria/fsa/ammoreb
@@ -1816,7 +1733,6 @@ obj/structure/vending/idfammo
 		/obj/item/ammo_magazine/greasegun/box = 8,
 		/obj/item/ammo_magazine/m249 = 12,
 		/obj/item/ammo_magazine/sten2 = 15,
-
 	)
 
 /obj/structure/vending/syria/fsa/armorreb
@@ -1849,5 +1765,4 @@ obj/structure/vending/idfammo
 		/obj/item/flashlight/militarylight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
-
 	)
