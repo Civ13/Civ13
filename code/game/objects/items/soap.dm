@@ -93,12 +93,14 @@
 		return ..()
 
 /obj/item/weapon/soap/lard/update_icon()
-	var/i
-	if(used < 5)
-		i = 1
-	else if(used < 15)
-		i = 2
-	else if(used < 25)
-		i = 3
-	else i = 4
+	var/x
+	switch(used)
+		if(0 to 4)
+			x = 1
+		if(5 to 14)
+			x = 2
+		if(15 to 24)
+			x = 3
+		else
+			x = 4
 	icon_state = "soap_lard_[i]"
