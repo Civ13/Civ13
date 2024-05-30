@@ -61,7 +61,7 @@ var/global/list/ashtray_cache = list()
 	if (istype(W, /obj/item/weapon/cigbutt) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || istype(W, /obj/item/weapon/flame/match)) 
 
 		if (contents.len >= max_butts)
-			user.visible_message(SPAN_NOTICE("[user] tries to place \the [W] into \the [src], it doesn't fit."), SPAN_WARNING("You try and place \the [W] into the [src], but realise that it doesn't fit!"), "You hear some noise.")
+			user.visible_message(SPAN_NOTICE("[user] tries to place \the [W] into \the [src], it doesn't fit."), SPAN_WARNING("You try and place \the [W] into \the [src], but realise that it doesn't fit!"), "You hear some noise.")
 			return
 
 		if (istype(W, /obj/item/clothing/mask/smokable/cigarette))
