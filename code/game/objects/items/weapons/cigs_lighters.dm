@@ -223,7 +223,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/cigarette/attack_self(mob/user as mob)
 	if (lit == TRUE)
-		user.visible_message("<span class='notice'>[user] calmly drops and treads on the lit [src], putting it out instantly.</span>")
+		user.visible_message(SPAN_NOTICE("[user] drops and treads on the lit [src.name], putting it out instantly."), "You drop and tread on the lit [src.name], putting it out instantly.")
 		die(1)
 	return ..()
 
