@@ -10,7 +10,7 @@
 	icon_state = "energy_blade"
 	item_state = "energy_blade"
 	var/base_icon = "energy_blade"
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
@@ -92,7 +92,7 @@
 	item_state = "ark_of_disease"
 	base_icon = "ark_of_disease"
 	desc = "It pulses ominously, you feel sick just by looking at it."
-	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	sharpness = 25
 	block_chance = 35
@@ -143,7 +143,7 @@
 	item_state = "cultblade"
 	base_icon = "cultblade"
 	desc = "The blade feels cool but looks like it's red hot."
-	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 40
 	block_chance = 40
@@ -166,7 +166,7 @@
 	item_state = "sord"
 	base_icon = "sord"
 	desc = "Your breath mists as it nears the blade."
-	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 40
 	block_chance = 40
@@ -186,7 +186,7 @@
 	item_state = "elec"
 	base_icon = "elec"
 	desc = "Holding this blade makes your small hairs stand on end."
-	force_divisor = 1.5 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.5 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.60 // 10 when thrown with weight 20 (steel)
 	sharpness = 40
 	block_chance = 40
@@ -209,7 +209,7 @@
 	base_icon = "mjolnir"
 	desc = "Only for the worthy."
 	slot_flags = SLOT_BELT
-	force_divisor = 1.6 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 1.6 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 1.2 // 10 when thrown with weight 20 (steel)
 	attack_verb = list("bashed","struck","beaten")
 	hitsound = 'sound/items/trayhit2.ogg'
@@ -1359,7 +1359,7 @@ obj/item/weapon/material/sword/magic/onoff/bronze
 	icon_state = "wand_shaman"
 	item_state = "wand_shaman"
 	slot_flags = SLOT_BACK
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	block_chance = 35
 	attack_verb = list("bonked", "batted", "hit", "whacked")
