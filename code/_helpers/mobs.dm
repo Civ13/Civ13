@@ -458,22 +458,21 @@ proc/age2agedescription(age)
 		else				return "unknown"
 
 proc/ageAndGender2Desc(age, gender) // Radio name getters.
-	if(!gender || !isnum(age))
+	if (!gender || !isnum(age))
 		CRASH("ageAndGender2Desc; proc called without age/gender argument.")
 
-	switch(gender)
-		if(MALE)
-			switch(age)
-				if (0 to 15)		return "Boy"
-				if (16 to 25)		return "Young Man"
-				if (26 to 60)		return "Man"
-				if (61 to INFINITY)	return "Old Man"
-		if(FEMALE)
-			switch(age)
-				if (0 to 15)		return "Girl"
-				if (16 to 25)		return "Young Woman"
-				if (26 to 60)		return "Woman"
-				if (61 to INFINITY)	return "Old Woman"
+	if (gender == MALE)
+		switch(age)
+			if (0 to 15)		return "Boy"
+			if (16 to 25)		return "Young Man"
+			if (26 to 60)		return "Man"
+			if (61 to INFINITY)	return "Old Man"
+	else
+		switch(age)
+			if (0 to 15)		return "Girl"
+			if (16 to 25)		return "Young Woman"
+			if (26 to 60)		return "Woman"
+			if (61 to INFINITY)	return "Old Woman"
 	return "Unknown"
 
 proc/get_body_build(gender, body_build = "Default")
