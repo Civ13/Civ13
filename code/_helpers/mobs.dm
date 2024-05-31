@@ -455,12 +455,12 @@ proc/age2agedescription(age)
 		if (2 to 3)				return "toddler"
 		if (4 to 12)			return "child"
 		if (13 to 18)			return "teenager"
-        if (19 to 29)			return "young adult"
-        if (30 to 44)			return "adult"
-        if (45 to 59)			return "middle-aged"
-        if (60 to 69)			return "aging"
-        if (70 to INFINITY)		return "elderly"
-        else					return "unknown"
+		if (19 to 29)			return "young adult"
+		if (30 to 44)			return "adult"
+		if (45 to 59)			return "middle-aged"
+		if (60 to 69)			return "aging"
+		if (70 to INFINITY)		return "elderly"
+		else					return "unknown"
 
 proc/ageAndGender2Desc(age, gender) // Radio name getters.
 	if(!gender || !isnum(age))
