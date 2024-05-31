@@ -62,7 +62,7 @@
 	var/filename
 	for (key in stylesheets)
 		filename = "[ckey(key)].css"
-		user << browse_rsc(stylesheets[key], filename))
+		user << browse_rsc(stylesheets[key], filename)
 		head_content += "<link rel='stylesheet' type='text/css' href='[filename]'>"
 
 	for (key in scripts)
