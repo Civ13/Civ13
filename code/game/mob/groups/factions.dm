@@ -564,6 +564,6 @@
 			</body></html>
 		"}
 
-		to_chat(usr, browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450"))
+		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
 	else
 		return

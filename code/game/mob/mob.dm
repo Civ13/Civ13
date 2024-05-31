@@ -469,7 +469,7 @@
 		to_chat(usr, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
-	to_chat(src, browse(null, "window=memory"))
+	src << browse(null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
 	stop_ambience(usr)
@@ -551,11 +551,11 @@
 	if (href_list["mach_close"])
 		var/t1 = text("window=[href_list["mach_close"]]")
 		unset_using_object()
-		to_chat(src, browse(null, t1))
+		src << browse(null, t1)
 
 	if (href_list["flavor_more"])
 		if (src in view(usr))
-			to_chat(usr, browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name)))
+			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), text("window=[];size=500x200", name))
 			onclose(usr, "[name]")
 	if (href_list["flavor_change"])
 		update_flavor_text()
