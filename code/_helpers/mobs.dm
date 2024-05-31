@@ -435,7 +435,7 @@ proc/skintone2racedescription(tone)
 	if(!isnum(tone))
 		CRASH("skintone2racedescription; proc called without correct tone (integer) argument.")
 
-	switch (tone)
+	switch(tone)
 		if (30 to INFINITY)		return "albino"
 		if (20 to 29)			return "pale"
 		if (5 to 19)			return "light skinned"
@@ -450,11 +450,11 @@ proc/age2agedescription(age)
 	if(!isnum(age))
 		CRASH("age2agedescription; proc called without correct age (integer) argument.")
 
-    switch(age)
-        if (0 to 1)				return "infant"
-        if (2 to 3)				return "toddler"
-        if (4 to 12)			return "child"
-        if (13 to 18)			return "teenager"
+	switch(age)
+		if (0 to 1)				return "infant"
+		if (2 to 3)				return "toddler"
+		if (4 to 12)			return "child"
+		if (13 to 18)			return "teenager"
         if (19 to 29)			return "young adult"
         if (30 to 44)			return "adult"
         if (45 to 59)			return "middle-aged"
