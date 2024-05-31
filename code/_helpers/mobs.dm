@@ -417,14 +417,14 @@ proc/random_afrikaans_name(gender, species = "Human")
 		return current_species.get_random_afrikaans_name(gender)
 
 proc/random_skin_tone()
-	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino"))
+	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino", 1;"anything"))
 		if("caucasian")		. = -10
 		if("afroamerican")	. = -115
 		if("african")		. = -165
 		if("latino")		. = -55
 		if("albino")		. = 34
 		else			. = rand(-185,34)
-	return min(max( .+rand(-25, 25), -185),34)
+	return clamp(. + rand(-25, 25), -185, 34) // Clamp() keeps the rand(-25, 25) variation of skin tone between -185 to 34.
 
 proc/skintone2racedescription(tone)
 	if(!isnum(tone))
