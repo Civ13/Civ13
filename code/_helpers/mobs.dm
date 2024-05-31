@@ -424,7 +424,7 @@ proc/random_skin_tone()
 		if("latino")		. = -55
 		if("albino")		. = 34
 		else			. = rand(-185,34)
-	return min(max( .+rand(-25, 25), -185),34)
+	return clamp(. + rand(-25, 25), -185, 34) // Clamp() keeps the rand(-25, 25) variation of skin tone between -185 to 34.
 
 proc/skintone2racedescription(tone)
 	if(!isnum(tone))
