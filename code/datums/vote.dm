@@ -35,7 +35,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
 			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
-				world << "<b>Voting aborted due to game start.</b>"
+				to_chat(world, "<b>Voting aborted due to game start.</b>")
 				reset()
 				return
 
@@ -53,13 +53,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				result()
 				for (var/client/C in voting)
 					if (C)
-						C << browse(null,"window=vote")
+						to_chat(C, browse(null,"window=vote"))
 				reset()
 			else
 				voting.Cut()
 				for (var/client/C in voting)
 					if (C)
-						C << browse(vote.interface(C),"window=vote")
+						to_chat(C, browse(vote.interface(C),"window=vote"))
 
 	proc/autogamemode()
 		if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == MAP_CAMPAIGN || map.ID == MAP_GLADIATORS || map.ID == MAP_ALLEYWAY || map.ID == MAP_FOOTBALL || map.ID == MAP_FOOTBALL_CMP || map.ID == MAP_NOMADS_EXTENDED || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_JUNGLE_OF_THE_CHADS || map.ID == MAP_NOMADS_WASTELAND || map.ID == MAP_NOMADS_WASTELAND_2 || map.ID == MAP_TESTING || map.battleroyale || map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_PEPELSIBIRSK)
@@ -420,7 +420,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		switch(href_list["vote"])
 			if ("close")
 				voting -= usr.client
-				usr << browse(null, "window=vote")
+				to_chat(usr, browse(null, "window=vote"))
 				return
 			if ("cancel")
 				if (usr.client.holder)
@@ -434,11 +434,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
 					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
-						usr << "You can't start restart votes if you are not playing."
+						to_chat(usr, "You can't start restart votes if you are not playing.")
 						return FALSE
 					if (!config.allowedgamemodes == "TDM")
 						if ((map.nomads || map.is_RP) && clients.len < 5 && ((world.time-round_start_time)>108000) && !usr.client.holder)
-							usr << "You can't start restart votes if the server population is lower than 5 and the round has been going for over 3 hour."
+							to_chat(usr, "You can't start restart votes if the server population is lower than <b>five</b> and the round has been going for over <b>three</b> hours.")
 							return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")
@@ -459,4 +459,4 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	set name = "Vote"
 
 	if (vote)
-		src << browse(vote.interface(client),"window=vote;size=400x600")
+		to_chat(src, browse(vote.interface(client),"window=vote;size=400x600"))
