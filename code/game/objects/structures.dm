@@ -215,8 +215,8 @@
 			to_chat(user, SPAN_WARNING("This is not climbable."))
 			return
 
-	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb
-	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate a barrier in the opposite direction facing towards us.
+	var/climb_dir = src.dir  // Direction of the barrier that the user is trying to climb.
+	var/opposite_dir = reverse_direction(climb_dir)  // Reverse the direction to simulate if a barrier in the opposite direction is blocking us from vaulting.
 
 	// Check if the user is not directly in front of or behind the barrier
 	var/turf/next_turf = get_step(T, climb_dir)  
@@ -234,10 +234,10 @@
 			return
 */
 	// Check the next turf in the climbing direction for a barrier or table
-	var/turf/next_turf_climb = get_step(next_turf, climb_dir)
-	for (var/obj/I in next_turf_climb)
+	// var/turf/next_turf_climb = get_step(next_turf, climb_dir)
+	for (var/obj/I in T) // Used to be (next_turf_climb); but that was giving one explicit bug, as it got two tiles infront of the climb-dir, instead of one. T is [target-turf] and does this better.
 		if (I.dir == opposite_dir && istype(I, /obj/structure/window/barrier))
-			user.face_atom(next_turf_climb)
+			user.face_atom(T)
 			to_chat(user, SPAN_WARNING("You can't vault this barrier. \A [I.name] is blocking the way."))
 			return
 		else if (istype(I, /obj/structure/table))
