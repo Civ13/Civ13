@@ -4,7 +4,7 @@
 	icon_state = "claymore"
 	item_state = "claymore"
 	slot_flags = SLOT_BELT
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	sharp = TRUE
 	edge = TRUE
@@ -120,7 +120,7 @@
 	icon_state = "katana"
 	item_state = "katana"
 	block_chance = 27
-	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.8 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 60
@@ -132,7 +132,7 @@ obj/item/weapon/material/sword/wakazashi
 	icon_state = "wakazashi"
 	item_state = "wakazashi"
 	block_chance = 19
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT
 	value = 60
@@ -151,7 +151,7 @@ obj/item/weapon/material/sword/wakazashi/yakuza
 	item_state = "smallsword"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	force_divisor = 0.6 // 36 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
@@ -174,7 +174,7 @@ obj/item/weapon/material/sword/smallsword/bronze
 	item_state = "longsword2"
 	throw_speed = 3
 	throw_range = 3
-	force_divisor = 0.8 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.8 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
@@ -197,7 +197,7 @@ obj/item/weapon/material/sword/spadroon/bronze
 	item_state = "longsword2"
 	throw_speed = 3
 	throw_range = 3
-	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.9 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 37
@@ -220,7 +220,7 @@ obj/item/weapon/material/sword/armingsword/bronze
 	item_state = "longsword2"
 	throw_speed = 3
 	throw_range = 2
-	force_divisor = 0.10 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.10 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 38
@@ -244,7 +244,7 @@ obj/item/weapon/material/sword/vikingsword/bronze
 	item_state = "longsword2"
 	throw_speed = 3
 	throw_range = 3
-	force_divisor = 0.11 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.11 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
@@ -258,7 +258,7 @@ obj/item/weapon/material/sword/vikingsword/bronze
 	item_state = "longsword2"
 	throw_speed = 4
 	throw_range = 4
-	force_divisor = 0.75 // 45 when wielded with hardnes 60 (steel)
+	force_divisor = 0.75 // 45 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 35
@@ -271,7 +271,7 @@ obj/item/weapon/material/sword/vikingsword/bronze
 	item_state = "bolo"
 	throw_speed = 3
 	throw_range = 6
-	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.9 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 37
@@ -290,7 +290,7 @@ obj/item/weapon/material/sword/vikingsword/bronze
 	item_state = "kukri"
 	throw_speed = 3
 	throw_range = 6
-	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	force_divisor = 0.9 // 48 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 37
@@ -309,7 +309,7 @@ obj/item/weapon/material/sword/vikingsword/bronze
 	item_state = "cutlass"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
@@ -326,7 +326,7 @@ obj/item/weapon/material/sword/cutlass/iron
 	item_state = "sabre"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30
@@ -343,7 +343,7 @@ obj/item/weapon/material/sword/scimitar/iron
 	item_state = "longquan"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30
@@ -379,7 +379,7 @@ obj/item/weapon/material/sword/scimitar/iron
 	item_state = "umar_sword"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.8 // 45 when wielded with hardnes 60 (steel)
+	force_divisor = 0.8 // 45 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 34
@@ -396,7 +396,7 @@ obj/item/weapon/material/sword/saif/iron
 	item_state = "sabre"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.75 // 45 when wielded with hardnes 60 (steel)
+	force_divisor = 0.75 // 45 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 32
@@ -502,7 +502,7 @@ obj/item/weapon/material/sword/rapier/iron
 	item_state = "gladius"
 	throw_speed = 2
 	throw_range = 6
-	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	force_divisor = 0.6 // 36 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
@@ -522,7 +522,7 @@ obj/item/weapon/material/sword/rapier/iron
 	item_state = "gaelic_short"
 	throw_speed = 2
 	throw_range = 6
-	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
+	force_divisor = 0.6 // 36 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
@@ -542,7 +542,7 @@ obj/item/weapon/material/sword/rapier/iron
 	item_state = "khopesh"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	force_divisor = 0.75 // 36 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
@@ -562,7 +562,7 @@ obj/item/weapon/material/sword/rapier/iron
 	item_state = "gladius"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	force_divisor = 0.75 // 36 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28

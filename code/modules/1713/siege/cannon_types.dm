@@ -397,7 +397,7 @@
 
 /obj/structure/cannon/modern/tank/russian85
 	name = "85mm S-53"
-	desc = "a 85mm Russian tank-based cannon."
+	desc = "A 85mm Russian tank-based cannon."
 	icon_state = "tank_cannon"
 	maxrange = 33
 	caliber = 85

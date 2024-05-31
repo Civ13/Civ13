@@ -104,14 +104,14 @@
 
 /obj/item/clothing/head/impcaptaincap
 	name = "imperial naval officer cap"
-	desc = "a tight fitting green cap."
+	desc = "A tight fitting green cap."
 	icon_state = "repofficer_navcaptain"
 	item_state = "repofficer_navcaptain"
 	worn_state = "repofficer_navcaptain"
 
 /obj/item/clothing/head/impstormcap
 	name = "imperial black field cap"
-	desc = "a tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
+	desc = "A tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
 	icon_state = "impofficer_stormofficer"
 	item_state = "impofficer_stormofficer"
 	worn_state = "impofficer_stormofficer"
@@ -141,28 +141,28 @@
 
 /obj/item/clothing/head/repcaptaincap
 	name = "republic naval officer cap"
-	desc = "a tight fitting green cap."
+	desc = "A tight fitting green cap."
 	icon_state = "repnavalcaptain_cap"
 	item_state = "repnavalcaptain_cap"
 	worn_state = "repnavalcaptain_cap"
 
 /obj/item/clothing/head/repensigncap
 	name = "republic naval ensign cap"
-	desc = "a tight fitting blue grey cap."
+	desc = "A tight fitting blue grey cap."
 	icon_state = "repensign_cap"
 	item_state = "repensign_cap"
 	worn_state = "repensign_cap"
 
 /obj/item/clothing/head/repmedicalcap
 	name = "republic medical officer cap"
-	desc = "a tight fitting grey cap."
+	desc = "A tight fitting grey cap."
 	icon_state = "repmedicalofficer_cap"
 	item_state = "repmedicalofficer_cap"
 	worn_state = "repmedicalofficer_cap"
 
 /obj/item/clothing/head/impofficercap
 	name = "imperial officer cap"
-	desc = "a tight fitting grey cap."
+	desc = "A tight fitting grey cap."
 	icon_state = "impofficer_stormofficer"
 	item_state = "impofficer_stormofficer"
 	worn_state = "impofficer_stormofficer"

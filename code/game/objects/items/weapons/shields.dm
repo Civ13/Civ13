@@ -88,7 +88,7 @@
 
 /obj/item/weapon/shield/aspis
 	name = "aspis"
-	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	desc = "A round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "athenian_shield"
 	item_state = "athenian_shield"
 	material = "bronze"
@@ -107,7 +107,7 @@
 
 /obj/item/weapon/shield/nomads/aspis //to avoid the new() , this variant is nerfed to be evenly matched with roman but slightly stronger than iron shields
 	name = "athenian aspis"
-	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	desc = "A round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "athenian_shield"
 	item_state = "athenian_shield"
 	material = "bronze"
@@ -118,7 +118,7 @@
 
 /obj/item/weapon/shield/nomads/spartan
 	name = "spartan aspis"
-	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	desc = "A round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "spartan_shield"
 	item_state = "spartan_shield"
 	material = "bronze"
@@ -129,7 +129,7 @@
 
 /obj/item/weapon/shield/nomads/aspis/pegasus
 	name = "aspis with image of a pegasus"
-	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	desc = "A round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "pegasus_shield"
 	item_state = "pegasus_shield"
 	material = "bronze"
@@ -140,7 +140,7 @@
 
 /obj/item/weapon/shield/nomads/aspis/owl
 	name = "aspis with image of a owl"
-	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	desc = "A round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "owl_shield"
 	item_state = "owl_shield"
 	material = "bronze"
@@ -153,7 +153,7 @@
 
 /obj/item/weapon/shield/egyptian
 	name = "egyptian shield"
-	desc = "a semi oval, rectangular bronze shield of egyptian design and motifs"
+	desc = "A semi oval, rectangular bronze shield of egyptian design and motifs"
 	icon_state = "egyptian_shield"
 	item_state = "egyptian_shield"
 	material = "bronze"
@@ -164,7 +164,7 @@
 
 /obj/item/weapon/shield/scutum
 	name = "scutum shield"
-	desc = "a rounded rectangular shield, with celtic motifs."
+	desc = "A rounded rectangular shield, with celtic motifs."
 	icon_state = "scutum"
 	item_state = "scutum"
 	material = "bronze"
@@ -175,7 +175,7 @@
 
 /obj/item/weapon/shield/roman
 	name = "roman shield"
-	desc = "a rectangular shield, with roman motifs."
+	desc = "A rectangular shield, with roman motifs."
 	icon_state = "roman_shield"
 	item_state = "roman_shield"
 	material = "bronze"
@@ -186,13 +186,13 @@
 
 /obj/item/weapon/shield/roman/blue
 	name = "blue roman shield"
-	desc = "a blue rectangular shield, with roman motifs. Often used by imitation legions and client states."
+	desc = "A blue rectangular shield, with roman motifs. Often used by imitation legions and client states."
 	icon_state = "blue_roman_shield"
 	item_state = "blue_roman_shield"
 
 /obj/item/weapon/shield/roman/praetorian
 	name = "praetorian roman shield"
-	desc = "a purple rectangular shield, with roman motifs. Often used by the praetorian guard, it looks more robust than the standard roman shield."
+	desc = "A purple rectangular shield, with roman motifs. Often used by the praetorian guard, it looks more robust than the standard roman shield."
 	icon_state = "prae_roman_shield"
 	item_state = "prae_roman_shield"
 	health = 30
@@ -201,7 +201,7 @@
 
 /obj/item/weapon/shield/roman_buckler
 	name = "roman parma shield"
-	desc = "a circular buckler, with roman motifs."
+	desc = "A circular buckler, with roman motifs."
 	icon_state = "roman_buckler"
 	item_state = "roman_buckler"
 	base_block_chance = 25 //nerfed from 257
@@ -352,7 +352,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 
 /obj/item/weapon/shield/chitin
 	name = "chitin buckler"
-	desc = "a rounded shield made out of fused chitinous plates."
+	desc = "A rounded shield made out of fused chitinous plates."
 	icon_state = "chitin_buckler"
 	item_state = "chitin_buckler"
 	material = "chitin"
@@ -363,7 +363,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 
 /obj/item/weapon/shield/chitin/large
 	name = "chitin shield"
-	desc = "a large shield made out of fused chitinous plates."
+	desc = "A large shield made out of fused chitinous plates."
 	icon_state = "chitin_shield"
 	item_state = "chitin_shield"
 	material = "chitin"

@@ -1,4 +1,4 @@
-/obj/covers/jail/
+/obj/covers/jail
 	name = "jail"
 	desc = "Do not use this."
 	icon = 'icons/turf/walls.dmi'
@@ -46,7 +46,7 @@
 		if (material != "Steel")
 			to_chat(user, "This is the wrong tool.")
 		else
-			to_chat(user, SPAN_NOTICE("You start disassembling the [src]..."))
+			user.visible_message(SPAN_WARNING("[user] starts disassembling \the [src]..."), SPAN_WARNING("You start disassembling \the [src]..."), "You hear the turning of something.")
 			playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
 				for (var/i = TRUE, i <= buildstackamount, i++)
@@ -57,7 +57,7 @@
 		if (material != "Wood")
 			to_chat(user, "This is the wrong tool.")
 		else
-			to_chat(user, SPAN_NOTICE("You start disassembling the [src]..."))
+			user.visible_message(SPAN_WARNING("[user] starts disassembling \the [src]..."), SPAN_WARNING("You start disassembling \the [src]..."), "You hear the turning of something.")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
 				for (var/i = TRUE, i <= buildstackamount, i++)
@@ -67,13 +67,12 @@
 		if (material != "Steel")
 			to_chat(user, "This is the wrong tool.")
 		else
-			to_chat(user, SPAN_NOTICE("You start filing through the [src]..."))
+			user.visible_message(SPAN_WARNING("[user] starts filing through \the [src]..."), SPAN_WARNING("You start filing through \the [src]..."), "You hear metallic filing.")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
 			if (do_after(user, 1000, target = src))
 				for (var/i = TRUE, i <= buildstackamount, i++)
 					new buildstack(get_turf(src))
 				qdel(src)
-				return
 				return
 	return TRUE
 

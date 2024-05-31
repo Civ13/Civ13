@@ -530,7 +530,7 @@
 	icon_state = "tanto"
 	item_state = "tanto"
 	block_chance = 10
-	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.4 // 42 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	value = 60
 	cooldownw = 6

@@ -3,18 +3,21 @@
 	desc = "Some seeds."
 	icon = 'icons/farming/seeds.dmi'
 	icon_state = "seeds"
+
 	w_class = ITEM_SIZE_TINY
 	value = 0.1
 	amount = 1
 	max_amount = 100
 	singular_name = "seed"
-	var/plant = "plant_name" //plant that appears after sowing /obj/structure/farming/plant/plant_name
+
+	var/plant = "plant_name" // The string for the plant to appear when sowing; (i.e; /obj/structure/farming/plant/plant_name )
 	var/list/biomes = list("tundra", "temperate", "sea", "desert", "jungle", "savanna", "taiga", "semiarid")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
-//////////////////////////////////////////////////////////
-/* Cash crop & plant seeds *//////////////////////////////
-//////////////////////////////////////////////////////////
+/* 
+/////// Plant seeds; (Different than structure code, this is object code for the seed and stack handling...)
+*/
+
 /obj/item/stack/farming/seeds/mushroom
 	name = "mushroom spores"
 	plant = "mushroom"
@@ -154,9 +157,12 @@
 	color = "#2e8d2e"
 	biomes = list()
 
-//////////////////////////////////////////////////////////
-/* Vegtable seeds *///////////////////////////////////////
-//////////////////////////////////////////////////////////
+/* 
+/////// Vegetable seeds.
+* Organic
+
+*/
+
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
 	plant = "tomato"
@@ -172,7 +178,7 @@
 
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
-	desc = "a potato selected for breeding because of its characteristics."
+	desc = "A potato selected for breeding because of its characteristics."
 	plant = "potato"
 	icon_state = "potato"
 	biomes = list("temperate", "taiga", "semiarid")
@@ -214,9 +220,11 @@
 	color = "#d6d0b5" //dark shaded yellow
 	biomes = list("jungle", "sea")
 
-//////////////////////////////////////////////////////////
-/* Grains seeds*//////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Grain seeds.
+* small, hard, dry fruits
+*/
+
 /obj/item/stack/farming/seeds/wheat
 	name = "wheat seeds"
 	plant = "wheat"
@@ -246,9 +254,10 @@
 	icon_state = "riceseeds"
 	biomes = list("jungle", "savanna", "sea")
 
-//////////////////////////////////////////////////////////
-/* Fruit seeds *//////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Fruit seeds
+*/
+
 /obj/item/stack/farming/seeds/apple
 	name = "apple seeds"
 	plant = "apple"
@@ -348,21 +357,20 @@
 	color = "#8f5101" //orange brown
 	biomes = list("jungle", "temperate")
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/* Plants *///////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Plant structure code.
+*/
+
 /obj/structure/farming/plant
 	name = "plant"
-	desc = "a generic plant."
+	desc = "A generic plant."
 	icon = 'icons/farming/plants.dmi'
 	icon_state = "tomato-grow1"
+
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
+
 	var/stage = 1
 	var/counter = 0
 	var/harvest_verb = "harvest"
@@ -372,11 +380,14 @@
 	var/condiment = "product_name" // change it if product is condiment type: /obj/item/weapon/reagent_containers/food/condiment/product_name
 	var/stack = "product_name" // change it if product is stack type: /obj/item/stack/product_name
 	var/stack_amount = 1 // if product is stack type, then this is amount of harvested material, change it if it not 1
+
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+
 	var/list/biomes = list("tundra", "taiga", "temperate", "sea", "semiarid", "desert", "jungle", "savanna")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+
 	var/vstatic = FALSE // to "freeze" the image, so it can be used as a prop
 	var/fertilized = FALSE
 	var/water = 60
@@ -388,12 +399,18 @@
 	..()
 	water = max_water
 
-//////////////////////////////////////////////////////////
-/* Cash crop & misc plants *//////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Miscellaneous plants
+* Cash crop
+- Tea
+- Tobacco
+- Flax
+- Coca...
+*/
+
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
-	desc = "A opium poppy plant."
+	desc = "An opium poppy plant."
 	icon_state = "poppy-grow1"
 	plant = "poppy"
 	stack = "material/poppy"
@@ -546,9 +563,11 @@
 	biomes = list("temperate", "semiarid", "sea", "jungle")
 	max_water = 38
 
-//////////////////////////////////////////////////////////
-/* Grains plants *////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Grain plants...
+/// * From grain seeds
+*/
+
 /obj/structure/farming/plant/wheat
 	name = "wheat plant"
 	desc = "A wheat plant."
@@ -560,7 +579,7 @@
 
 /obj/structure/farming/plant/oat
 	name = "oat plant"
-	desc = "a oat plant."
+	desc = "An oat plant."
 	icon_state = "oat-grow1"
 	plant = "oat"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
@@ -569,7 +588,7 @@
 
 /obj/structure/farming/plant/barley
 	name = "barley plant"
-	desc = "a barley plant."
+	desc = "A barley plant."
 	icon_state = "barley-grow1"
 	plant = "barley"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season")
@@ -578,19 +597,21 @@
 
 /obj/structure/farming/plant/rice
 	name = "rice"
-	desc = "a rice plant."
+	desc = "A rice plant."
 	icon_state = "rice-grow1"
 	plant = "rice"
 	harvest_verb = "harvest"
 	biomes = list("jungle", "savanna", "sea")
 	max_water = 30
 
-//////////////////////////////////////////////////////////
-/* Vegtables plants */////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Vegetable plants...
+/// * From vegetable seeds
+*/
+
 /obj/structure/farming/plant/potato
 	name = "potato plant"
-	desc = "a potato plant."
+	desc = "A potato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "potato-grow1"
 	plant = "potato"
@@ -599,7 +620,7 @@
 
 /*/obj/structure/farming/plant/sweetpotato
 	name = "sweet-potato plant"
-	desc = "a sweet-potato plant."
+	desc = "A sweet-potato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "sweetpotato-grow1"
 	plant = "sweetpotato"
@@ -609,7 +630,7 @@
 
 /obj/structure/farming/plant/carrot
 	name = "carrot plant"
-	desc = "a carrot plant."
+	desc = "A carrot plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "carrot-grow1"
 	plant = "carrot"
@@ -617,7 +638,7 @@
 
 /obj/structure/farming/plant/cabbage
 	name = "cabbage plant"
-	desc = "a cabbage plant."
+	desc = "A cabbage plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "cabbage-grow1"
 	plant = "cabbage"
@@ -626,7 +647,7 @@
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
-	desc = "a tomato plant."
+	desc = "A tomato plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "tomato-grow1"
 	plant = "tomato"
@@ -636,7 +657,7 @@
 
 /obj/structure/farming/plant/corn
 	name = "corn plant"
-	desc = "a corn plant."
+	desc = "A corn plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "corn-grow1"
 	plant = "corn"
@@ -646,7 +667,7 @@
 
 /obj/structure/farming/plant/beans
 	name = "bean plant"
-	desc = "a bean plant."
+	desc = "A bean plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "beans-grow1"
 	plant = "beans"
@@ -655,16 +676,18 @@
 
 /obj/structure/farming/plant/parsnip
 	name = "parsnip plant"
-	desc = "a parsnip plant."
+	desc = "A parsnip plant."
 	icon = 'icons/farming/vegetables.dmi'
 	icon_state = "parsnip-grow1"
 	plant = "parsnip"
 	biomes = list("temperate", "semiarid")
 	max_water = 60
 
-//////////////////////////////////////////////////////////
-/* Fruit plants */////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Fruit plants...
+/// * From fruit seeds
+*/
+
 /obj/structure/farming/plant/apple
 	name = "apple tree"
 	desc = "An apple tree."
@@ -685,7 +708,7 @@
 
 /obj/structure/farming/plant/lime
 	name = "lime tree"
-	desc = "An lime tree."
+	desc = "A lime tree."
 	icon = 'icons/farming/fruits.dmi'
 	icon_state = "lime-grow1"
 	plant = "lime"
@@ -750,7 +773,7 @@
 
 /obj/structure/farming/plant/zucchini
 	name = "zucchini"
-	desc = "An zucchini vine."
+	desc = "A zucchini vine."
 	icon = 'icons/farming/fruits.dmi'
 	icon_state = "zucchini-grow1"
 	plant = "zucchini"
@@ -759,7 +782,7 @@
 
 /obj/structure/farming/plant/cherry
 	name = "cherry"
-	desc = "An cherry tree."
+	desc = "A cherry tree."
 	icon = 'icons/farming/fruits.dmi'
 	icon_state = "cherry-grow1"
 	plant = "cherry"
@@ -831,7 +854,7 @@
 
 /obj/structure/farming/plant/coconut
 	name = "coconut"
-	desc = "An coconut tree."
+	desc = "A coconut tree."
 	icon = 'icons/farming/fruits.dmi'
 	icon_state = "coconut-grow1"
 	plant = "coconut"
@@ -856,13 +879,11 @@
 	biomes = list("jungle", "temperate",)
 	max_water = 65
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/* Plants spawns *////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Plant spawn code...
+///
+*/
+
 /obj/item/stack/farming/seeds/proc/spawn_plant(turf/loc_to_plant)
 	var/plantpath = "/obj/structure/farming/plant/[plant]"
 	if (isturf(loc_to_plant))
@@ -897,13 +918,13 @@
 				I = new fruitpath(loc)
 				I.radiation = radiation/2
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/* Plants life *//////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+/*
+/////// Plant life processing code...
+/// * Growth, harvest, death.
+// * Stages
+/ * Yield and attackby (harvest) procs.
+*/
+
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
 	..()

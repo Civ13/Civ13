@@ -118,7 +118,7 @@
 "cn" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/wood/ship,/area/caribbean)
 "co" = (/obj/structure/window/barrier/ship/blue/bport3,/turf/floor/wood/ship,/area/caribbean)
 "cp" = (/obj/structure/window/barrier/ship/blue/bport0,/turf/floor/wood/ship,/area/caribbean)
-"cq" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/concrete{desc = "a ship's plank."; name = "plank"},/area/caribbean)
+"cq" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/concrete{desc = "A ship's plank."; name = "plank"},/area/caribbean)
 "cr" = (/obj/structure/window/barrier/ship/blue/bport0,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean)
 "cs" = (/obj/structure/barricade/ship/blue/b16,/turf/floor/wood/ship,/area/caribbean)
 "ct" = (/obj/structure/barricade,/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/beach/water/shallowsaltwater,/area/caribbean)

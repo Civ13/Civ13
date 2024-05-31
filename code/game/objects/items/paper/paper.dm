@@ -52,7 +52,7 @@
 
 /obj/item/weapon/paper/entry_permit
 	name = "entry permit"
-	desc = "a permit granting right of entry to a specified country"
+	desc = "A permit granting right of entry to a specified country"
 	icon_state = "entry_permit"
 
 /obj/item/weapon/paper/asylum
@@ -62,7 +62,7 @@
 
 /obj/item/weapon/paper/id_supp
 	name = "id supplement"
-	desc = "a small document supplement detailing physical appearance"
+	desc = "A small document supplement detailing physical appearance"
 	icon_state = "id_supp"
 
 /obj/item/weapon/paper/vaccine
@@ -77,7 +77,7 @@
 
 /obj/item/weapon/paper/entry_ticket
 	name = "entry ticket"
-	desc = "a simple small ticket granting right of entry"
+	desc = "A simple small ticket granting right of entry"
 	icon_state = "entry_ticket"
 
 /obj/item/weapon/paper/official/New()

@@ -1,7 +1,7 @@
 ////////////////////////FRAMES//////////////////////
 /obj/structure/vehicleparts/frame
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "frame_steel"
 	powerneeded = 0
