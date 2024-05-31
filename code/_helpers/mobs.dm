@@ -417,65 +417,69 @@ proc/random_afrikaans_name(gender, species = "Human")
 		return current_species.get_random_afrikaans_name(gender)
 
 proc/random_skin_tone()
+	switch(rand(1, 100))
+		if(1 to 60)  // 60% chance (caucasian)
+			. = -10
+		if(61 to 75) // 15% chance (mulatto)
+			. = -115
+		if(76 to 85) // 10% chance (african)
+			. = -165
+		if(86 to 95) // 10% chance (latino)
+			. = -55
+		if(96 to 100) // 5% chance (albino/pale)
+			. = 34
 
-	var/skin_tone = "caucasian"
-	if (prob(60))
-		pass()
-	else if (prob(15))
-		skin_tone = "mulatto"
-	else if (prob(10))
-		skin_tone = "african"
-	else if (prob(10))
-		skin_tone = "latino"
-
-	switch(skin_tone)
-		if ("caucasian")		. = -10
-		if ("mulatto")	. = -115
-		if ("african")		. = -165
-		if ("latino")		. = -55
-		else				. = rand(-185,34)
-	return min(max( .+rand(-25, 25), -185),34)
+	return Clamp(. + rand(-25, 25), -185, 34) // Clamp() keeps the rand(-25, 25) variation of skin tone between -185 to 34.
 
 proc/skintone2racedescription(tone)
+	if(!isnum(tone))
+		CRASH("skintone2racedescription; proc called without correct tone (integer) argument.")
+
 	switch (tone)
 		if (30 to INFINITY)		return "albino"
-		if (20 to 30)			return "pale"
-		if (5 to 15)				return "light skinned"
-		if (-10 to 5)			return "white"
-		if (-25 to -10)			return "tan"
-		if (-45 to -25)			return "darker skinned"
-		if (-65 to -45)			return "brown"
-		if (-INFINITY to -65)	return "black"
+		if (20 to 29)			return "pale"
+		if (5 to 19)			return "light skinned"
+		if (-10 to 4)			return "white"
+		if (-25 to -9)			return "tan"
+		if (-45 to -24)			return "darker skinned"
+		if (-65 to -44)			return "brown"
+		if (-INFINITY to -64)	return "black"
 		else					return "unknown"
 
 proc/age2agedescription(age)
-	switch(age)
-		if (0 to 1)			return "infant"
-		if (1 to 3)			return "toddler"
-		if (3 to 13)			return "child"
-		if (13 to 19)		return "teenager"
-		if (19 to 30)		return "young adult"
-		if (30 to 45)		return "adult"
-		if (45 to 60)		return "middle-aged"
-		if (60 to 70)		return "aging"
-		if (70 to INFINITY)	return "elderly"
-		else				return "unknown"
+	if(!isnum(age))
+		CRASH("age2agedescription; proc called without correct age (integer) argument.")
 
-proc/ageAndGender2Desc(age, gender)//Used for the radio
-	if (gender == FEMALE)
-		switch(age)
-			if (0 to 15)			return "Girl"
-			if (15 to 25)		return "Young Woman"
-			if (25 to 60)		return "Woman"
-			if (60 to INFINITY)	return "Old Woman"
-			else				return "Unknown"
-	else
-		switch(age)
-			if (0 to 15)			return "Boy"
-			if (15 to 25)		return "Young Man"
-			if (25 to 60)		return "Man"
-			if (60 to INFINITY)	return "Old Man"
-			else				return "Unknown"
+    switch(age)
+        if (0 to 1)				return "infant"
+        if (2 to 3)				return "toddler"
+        if (4 to 12)			return "child"
+        if (13 to 18)			return "teenager"
+        if (19 to 29)			return "young adult"
+        if (30 to 44)			return "adult"
+        if (45 to 59)			return "middle-aged"
+        if (60 to 69)			return "aging"
+        if (70 to INFINITY)		return "elderly"
+        else					return "unknown"
+
+proc/ageAndGender2Desc(age, gender) // Radio name getters.
+	if(!gender || !isnum(age))
+		CRASH("ageAndGender2Desc; proc called without age/gender argument.")
+
+	switch(gender)
+		if(MALE)
+			switch(age)
+				if (0 to 15)		return "Boy"
+				if (16 to 25)		return "Young Man"
+				if (26 to 60)		return "Man"
+				if (61 to INFINITY)	return "Old Man"
+		if(FEMALE)
+			switch(age)
+				if (0 to 15)		return "Girl"
+				if (16 to 25)		return "Young Woman"
+				if (26 to 60)		return "Woman"
+				if (61 to INFINITY)	return "Old Woman"
+	return "Unknown"
 
 proc/get_body_build(gender, body_build = "Default")
 	if (gender == MALE)
