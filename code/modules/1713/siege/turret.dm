@@ -141,7 +141,7 @@
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
 		to_chat(src, SPAN_NOTICE("You have stopped using the [using_turret.name]."))
-		to_chat(src, browse(null, "window=artillery_window"))
+		src << browse(null, "window=artillery_window")
 		using_turret = null
 
 /obj/structure/turret/proc/place_user(var/mob/living/M)
