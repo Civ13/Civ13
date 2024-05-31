@@ -417,19 +417,14 @@ proc/random_afrikaans_name(gender, species = "Human")
 		return current_species.get_random_afrikaans_name(gender)
 
 proc/random_skin_tone()
-	switch(rand(1, 100))
-		if(1 to 60)  // 60% chance (caucasian)
-			. = -10
-		if(61 to 75) // 15% chance (mulatto)
-			. = -115
-		if(76 to 85) // 10% chance (african)
-			. = -165
-		if(86 to 95) // 10% chance (latino)
-			. = -55
-		if(96 to 100) // 5% chance (albino/pale)
-			. = 34
-
-	return Clamp(. + rand(-25, 25), -185, 34) // Clamp() keeps the rand(-25, 25) variation of skin tone between -185 to 34.
+	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino"))
+		if("caucasian")		. = -10
+		if("afroamerican")	. = -115
+		if("african")		. = -165
+		if("latino")		. = -55
+		if("albino")		. = 34
+		else			. = rand(-185,34)
+	return min(max( .+rand(-25, 25), -185),34)
 
 proc/skintone2racedescription(tone)
 	if(!isnum(tone))
@@ -443,24 +438,24 @@ proc/skintone2racedescription(tone)
 		if (-25 to -9)			return "tan"
 		if (-45 to -24)			return "darker skinned"
 		if (-65 to -44)			return "brown"
-		if (-INFINITY to -64)	return "black"
-		else					return "unknown"
+		if (-INFINITY to -64)		return "black"
+		else				return "unknown"
 
 proc/age2agedescription(age)
 	if(!isnum(age))
 		CRASH("age2agedescription; proc called without correct age (integer) argument.")
 
 	switch(age)
-		if (0 to 1)				return "infant"
-		if (2 to 3)				return "toddler"
+		if (0 to 1)			return "infant"
+		if (2 to 3)			return "toddler"
 		if (4 to 12)			return "child"
-		if (13 to 18)			return "teenager"
-		if (19 to 29)			return "young adult"
+		if (13 to 17)			return "teenager"
+		if (18 to 29)			return "young adult"
 		if (30 to 44)			return "adult"
 		if (45 to 59)			return "middle-aged"
 		if (60 to 69)			return "aging"
 		if (70 to INFINITY)		return "elderly"
-		else					return "unknown"
+		else				return "unknown"
 
 proc/ageAndGender2Desc(age, gender) // Radio name getters.
 	if(!gender || !isnum(age))
