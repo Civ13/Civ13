@@ -417,7 +417,7 @@ proc/random_afrikaans_name(gender, species = "Human")
 		return current_species.get_random_afrikaans_name(gender)
 
 proc/random_skin_tone()
-	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino", 1;"anything"))
+	switch(pick(60;"caucasian", 15;"afroamerican", 10;"african", 10;"latino", 5;"albino"))
 		if("caucasian")		. = -10
 		if("afroamerican")	. = -115
 		if("african")		. = -165
