@@ -67,7 +67,7 @@
 
 	for (key in scripts)
 		filename = "[ckey(key)].js"
-		user << browse_rsc(scripts[key], filename))
+		user << browse_rsc(scripts[key], filename)
 		head_content += "<script type='text/javascript' src='[filename]'></script>"
 
 	var/title_attributes = "class='uiTitle'"
