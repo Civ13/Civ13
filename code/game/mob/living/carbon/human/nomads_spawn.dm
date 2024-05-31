@@ -631,7 +631,7 @@
 						default_language = A
 					name = species.get_random_inuit_name(gender)
 					real_name = name
-					add_note("Known Languages", "Cherokee")
+					add_note("Known Languages", "Inuit")
 					possible_h_list = list("Black","Dark Brown","Light Brown")
 					possible_e_list = list("Brown","Black")
 					possible_s_range = list(-40,-90)
