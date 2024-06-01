@@ -579,14 +579,6 @@ obj/item/clothing/under/confederate_uniform/New()
 
 /* Miscallaneous*/
 
-/obj/item/clothing/suit/storage/jacket/kool_kids_klub 	//24 December 1865
-	name = "white robe with hood"
-	desc = "A white robe with a white hood, covering the whole body."
-	icon_state = "kool_kids_klub"
-	item_state = "kool_kids_klub"
-	worn_state = "kool_kids_klub"
-	body_parts_covered = FULL_BODY
-
 /obj/item/clothing/under/dimmadome
 	name = "eccentric businessman outfit"
 	desc = "A cream jacket with white undershirt, the jacket and the shirt seem to be sown into one piece for convenience and it has texan style bowtie. This person probably has a lot of money.."
