@@ -131,22 +131,23 @@
 		if(!flying)
 			animate(src, pixel_y = 16, time = starting_snd_len, easing = CUBIC_EASING | EASE_IN)
 			playsound(loc, starting_snd, 50, FALSE, 2)
+			icon_state = "[initial(icon_state)]_flying"
 			spawn(starting_snd_len)
 				can_move = TRUE
 				flying = TRUE
 				sinkable = FALSE
-				icon_state = "[initial(icon_state)]_flying"
+				layer = 8
 				running_sound()
 		else
-			
 			playsound(loc, ending_snd, 50, FALSE, 2)
 			spawn(5)
 				animate(src, pixel_y = 0, time = 5, easing = BOUNCE_EASING | EASE_OUT)
 				spawn(5)
-					can_move = TRUE
+					can_move = FALSE
 					flying = FALSE
 					sinkable = TRUE
 					icon_state = initial(icon_state)
+					layer = initial(layer)
 
 /obj/structure/drone/proc/try_destroy()
 	if (health <= 0)

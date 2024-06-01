@@ -367,9 +367,9 @@
 //checks if projectile 'P' from turf 'from' can hit whatever is behind the table. Returns TRUE if it can, FALSE if bullet stops.
 /obj/structure/table/proc/check_cover(obj/item/projectile/P, turf/from)
 	var/turf/cover
-	if (flipped==1)
+	if (flipped)
 		cover = get_turf(src)
-	else if (flipped==0)
+	else
 		cover = get_step(loc, get_dir(from, loc))
 	if (!cover)
 		return TRUE
@@ -398,9 +398,13 @@
 	return TRUE
 
 /obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)
+	if (istype(O, /obj/structure/drone))
+		var/obj/structure/drone/D = O
+		if (D.flying)
+			return TRUE
 	if (istype(O) && O.checkpass(PASSTABLE))
 		return TRUE
-	if (flipped==1)
+	if (flipped)
 		if (get_dir(loc, target) == dir)
 			return !density
 		else
