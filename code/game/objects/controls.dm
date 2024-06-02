@@ -10,6 +10,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	layer = 3.01
+	crushable = FALSE
 
 /obj/structure/gatecontrol/blastcontrol
 	name = "blast door control"
@@ -153,6 +154,7 @@
 	var/maxhealth = 600
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	crushable = FALSE
 
 /obj/structure/gate/open
 	name = "gate"
@@ -401,6 +403,7 @@
 	open = FALSE
 	var/cooldown = 0
 	bound_width = 64
+	crushable = TRUE
 
 /obj/structure/gate/barrier/vertical
 	name = "barrier gate"
@@ -557,6 +560,7 @@
 	density = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	crushable = FALSE
 	var/next_activation = -1
 
 /obj/structure/elevator_button/attack_hand(var/mob/user as mob)

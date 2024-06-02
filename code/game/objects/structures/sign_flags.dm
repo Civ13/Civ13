@@ -208,6 +208,7 @@
 	name = "STOP sign"
 	desc = ""
 	icon_state = "stop"
+	crushable = FALSE // To preserve map decorations
 
 /obj/structure/sign/traffic/stop
 

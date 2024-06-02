@@ -6,6 +6,7 @@
 	var/base_icon = "wheel_t_dark"
 	var/movement_icon = "wheel_t_dark_m"
 	layer = 2.99
+	crushable = FALSE
 	var/reversed = FALSE
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/structure/vehicleparts/frame/connected = null
