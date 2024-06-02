@@ -45,6 +45,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/list/connections = list()
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	crushable = FALSE
 	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond. For turning on/off.
 	var/lastupdate2 = 0 //to prevent loops. Can only update once per decisecond. For power calculations.
 	var/cable_color = "red"
