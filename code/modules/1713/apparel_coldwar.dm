@@ -2062,6 +2062,16 @@ obj/item/clothing/head/chinaguardcap
 	worn_state = "sov_klmk"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/sov_klmk/alt
+	icon_state = "sov_klmk_alt"
+	item_state = "sov_klmk_alt"
+	worn_state = "sov_klmk_alt"
+
+/obj/item/clothing/under/sov_klmk/yellow
+	icon_state = "sov_klmk_yellow"
+	item_state = "sov_klmk_yellow"
+	worn_state = "sov_klmk_yellow"
+
 /obj/item/clothing/under/sov_kzs
 	name = "KZS camo uniform"
 	desc = "A suit in the KZS camo pattern, issued by the Soviet Union in the late 1970s."
