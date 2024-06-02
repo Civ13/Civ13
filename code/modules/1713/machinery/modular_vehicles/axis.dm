@@ -466,26 +466,25 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				FM.mwheel = MV
 	for(var/obj/structure/vehicleparts/movement/MV in wheels)
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
-		switch(MV.connected)
-			if (corners[1])
-				MV.reversed = FALSE
-			if (corners[2])
-				if (MV.ntype == "wheel")
-					MV.reversed = TRUE
-				else
-					MV.reversed = FALSE
-			if (corners[3])
-				if (MV.ntype == "wheel")
-					MV.reversed = TRUE
-				else
-					MV.reversed = FALSE
-			if (corners[4])
-				if (MV.ntype == "wheel")
-					MV.reversed = TRUE
-				else
-					MV.reversed = TRUE
+		if (MV.connected == corners[1])
+			MV.reversed = FALSE
+		else if (MV.connected == corners[2])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
 			else
-				return
+				MV.reversed = FALSE
+		else if (MV.connected == corners[3])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = FALSE
+		else if (MV.connected == corners[4])
+			if (MV.ntype == "wheel")
+				MV.reversed = TRUE
+			else
+				MV.reversed = TRUE
+		else
+			return
 
 		if (MV.reversed)
 			MV.dir = OPPOSITE_DIR(dir)
