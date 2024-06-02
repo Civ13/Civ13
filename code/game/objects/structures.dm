@@ -4,6 +4,7 @@
 
 	var/climbable = FALSE
 	var/breakable = FALSE
+	var/crushable = TRUE // If the structure can be crushed by vehicles.
 	var/parts
 	var/list/climbers = list()
 	var/low = FALSE

@@ -561,6 +561,7 @@
 	layer = MOB_LAYER + 0.1
 	bound_width = 64
 	bound_height = 64
+	crushable = FALSE
 	var/adnumber
 
 /obj/structure/billboard/Destroy()

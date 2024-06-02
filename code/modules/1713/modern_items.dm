@@ -12,6 +12,7 @@
 	var/on = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	crushable = FALSE
 	powerneeded = 2
 	var/light_amt = 6 //light range
 	layer = 3.95

@@ -903,6 +903,7 @@
 	bound_width = 128
 	bound_height = 128
 	bound_x = 32
+	crushable = FALSE
 
 /obj/structure/broken_hind_tail
 	name = "helicopter tail"
@@ -918,6 +919,7 @@
 	bound_width = 128
 	bound_height = 128
 	bound_x = 32
+	crushable = FALSE
 
 /obj/structure/props/marketstall
 	name = "market stall"
@@ -981,6 +983,7 @@
 	density = TRUE
 	opacity = TRUE
 	anchored = TRUE
+	crushable = FALSE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -993,6 +996,7 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	crushable = FALSE
 
 /obj/structure/flag/ex_act(severity)
 	switch(severity)
@@ -1583,6 +1587,7 @@
 	layer = 5
 	density = FALSE
 	anchored = TRUE
+	crushable = FALSE
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////TORCH STAND/////////////////////////////////////////////
@@ -1601,6 +1606,7 @@
 	var/obj/item/weapon/storage/internal/storage
 	var/max_storage = 3
 	var/brightness_on = 5 //luminosity when on
+	crushable = FALSE
 
 /obj/structure/torch_stand/update_icon()
 	if (dir == 1)
@@ -1711,6 +1717,7 @@
 	not_disassemblable = TRUE
 	bound_width = 96
 	bound_height = 64
+	crushable = FALSE
 
 /obj/structure/cargo_container/New()
 	var/number = rand(1,5)
@@ -1729,6 +1736,7 @@
 	not_disassemblable = TRUE
 	bound_width = 96
 	bound_height = 96
+	crushable = FALSE
 
 /obj/structure/machinery/construction_crane
 	name = "crane"
@@ -1741,6 +1749,7 @@
 	not_disassemblable = TRUE
 	bound_width = 64
 	bound_height = 64
+	crushable = FALSE
 
 /obj/structure/machinery/construction_crane/New()
 	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
@@ -1766,6 +1775,7 @@
 	not_disassemblable = TRUE
 	bound_width = 64
 	bound_height = 64
+	crushable = FALSE
 
 /obj/structure/machinery/construction_crane/New()
 	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
@@ -1787,6 +1797,7 @@
 	not_disassemblable = TRUE
 	bound_width = 64
 	bound_height = 128
+	crushable = FALSE
 
 /obj/structure/radome
 	name = "radio dome"
@@ -1799,6 +1810,7 @@
 	not_disassemblable = TRUE
 	bound_width = 128
 	bound_height = 128
+	crushable = FALSE
 
 /obj/structure/medical_divider
 	name = "medical divider"
@@ -1806,8 +1818,10 @@
 	icon_state = "medical_divider_half"
 	density = FALSE
 	flammable = TRUE
+	anchored = TRUE
 
 /obj/structure/medical_divider/full
 	icon_state = "medical_divider_full"
 	density = TRUE
 	flammable = TRUE
+	anchored = TRUE
