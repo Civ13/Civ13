@@ -50,8 +50,8 @@ AWARDS:
 		else
 			if (map.ordinal_age>=5)
 				awards["service"]++
-				if (awards["service"]>=1200 && client && !("long service medal" in awarded))
-					map.give_award(client.ckey, name, "long service medal", capitalize(faction_text),src)
+				if (awards["service"]>=1200 && client && !("long service" in awarded))
+					map.give_award(client.ckey, name, "long service", capitalize(faction_text),src)
 
 				if (awards["medic"]>=200 && client && !("medical medal" in awarded))
 					map.give_award(client.ckey, name, "medical medal", capitalize(faction_text),src)
@@ -123,7 +123,7 @@ AWARDS:
 				if ("wounded gold badge")
 					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/wound_gold(get_turf(L))
 
-				if ("long service medal")
+				if ("long service")
 					MEDAL = new /obj/item/clothing/accessory/medal/german/ww2/long_service(get_turf(L))
 
 				if ("tank destroyer silver badge")
