@@ -466,7 +466,10 @@
 	var/randuni = rand(1,3)
 	switch(randuni)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk(H), slot_w_uniform)
+			if (prob(50))
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk(H), slot_w_uniform)
+			else
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk/alt(H), slot_w_uniform)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 		if (3)
