@@ -183,8 +183,11 @@
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
 	if (grenades && prob(5) && target_mob in view(7,src))
-		var/do_it = FALSE
+		var/enemies_in_sight = 0
 		for(var/mob/living/L in range(3,target_mob))
+			if (map.ID == MAP_CAMPAIGN && istype(L, /mob/living/simple_animal/civilian)) // Please don't shoot civilians
+				break
+
 			if (L.faction == src.faction)
 				break
 			else if (ishuman(L))
@@ -192,10 +195,10 @@
 				if (H.faction_text == faction)
 					break
 				else
-					do_it++
+					enemies_in_sight++
 			else
-				do_it++
-		if (do_it>=3 && grenades)
+				enemies_in_sight++
+		if (enemies_in_sight >= 3 && grenades)
 			grenades--
 			var/obj/item/weapon/grenade/GN = new grenade_type(loc)
 			throw_item(GN,target_mob)
@@ -206,11 +209,11 @@
 		if (world.time>last_fire+firedelay)
 			last_fire = world.time
 			switch(rapid)
-				if(0) //singe-shot
+				if (0) //singe-shot
 					Shoot(target_mob, src.loc, src)
 					if(casingtype)
 						new casingtype
-				if(1) //semi-auto
+				if (1) //semi-auto
 					var/shots = rand(1,3)
 					var/s_timer = 1
 					for(var/i = 1, i<= shots, i++)
@@ -218,7 +221,7 @@
 							Shoot(target_mob, src.loc, src)
 							if(casingtype)
 								new casingtype(get_turf(src))
-						s_timer+=3
+						s_timer += 3
 				if (2) //automatic
 					var/shots = rand(3,5)
 					var/s_timer = 1
@@ -227,7 +230,7 @@
 							Shoot(target_mob, src.loc, src)
 							if(casingtype)
 								new casingtype(get_turf(src))
-						s_timer+=2
+						s_timer += 2
 	return
 
 /mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)

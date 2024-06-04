@@ -24,7 +24,7 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
-	faction = PIRATES
+	faction = REDFACTION
 	ranged = 1
 	rapid = 0
 	firedelay = 15
