@@ -15,82 +15,82 @@ AWARDS:
 /mob/living/human
 	var/list/awards = list("medic" = 0, "wounded"= 0, "service" = 0, "tank"= 0, "kills"=list("",0,0), "kill_count"= 0, "arrests"= 0)
 	var/list/awarded = list()
+
 /mob/living/human/proc/process_awards()
-	if (!client)
-		return FALSE
-	if (map.ID == MAP_ALLEYWAY && stat != DEAD)
-		if (original_job && (original_job.title == "Yama Wakagashira" || original_job.title ==  "Ichi Wakagashira"))
-			awards["service"]++
-			if (awards["service"]>=60)
-				if (original_job && original_job.title == "Yama Wakagashira")
-					map.scores["Yamaguchi-Gumi"] += 1
-					awards["service"]=0
-				else if (original_job && original_job.title == "Ichi Wakagashira")
-					map.scores["Ichiwa-Kai"] += 1
-					awards["service"]=0
-	if (map.ID == MAP_SEKIGAHARA && stat != DEAD)
-		if (original_job && (original_job.title == "Azuma no Daimyo" || original_job.title ==  "Sei no Daimyo"))
-			awards["service"]++
-			if (awards["service"]>=60)
-				if (original_job && original_job.title == "Azuma no Daimyo")
-					map.scores["Eastern Army"] += 1
-					awards["service"]=0
-				else if (original_job && original_job.title == "Sei no Daimyo")
-					map.scores["Western Army"] += 1
-					awards["service"]=0
-	
-	if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)
-		if (awards["arrests"]>=3 && client && !("bronze public order ribbon" in awarded))
-			map.give_award(client.ckey, name, "bronze public order ribbon", capitalize(faction_text),src)
-			return TRUE
+    if (!client) return FALSE
 
-	if (map.gamemode == "Hardcore")
-		if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST) //Prevents farming kill medals on those maps
-			return FALSE
-		else
-			if (map.ordinal_age>=5)
-				awards["service"]++
-				if (awards["service"]>=1200 && client && !("long service" in awarded))
-					map.give_award(client.ckey, name, "long service", capitalize(faction_text),src)
+    switch(map.ID)
+        if (map.ID == MAP_ALLEYWAY && stat != DEAD)
+            if (original_job && (original_job.title == "Yama Wakagashira" || original_job.title == "Ichi Wakagashira"))
+                awards["service"]++
+                if (awards["service"] >= 60)
+                    if (original_job.title == "Yama Wakagashira")
+                        map.scores["Yamaguchi-Gumi"] += 1
+                        awards["service"] = 0
+                    else if (original_job.title == "Ichi Wakagashira")
+                        map.scores["Ichiwa-Kai"] += 1
+                        awards["service"] = 0
+        
+        if (map.ID == MAP_SEKIGAHARA && stat != DEAD)
+            if (original_job && (original_job.title == "Azuma no Daimyo" || original_job.title == "Sei no Daimyo"))
+                awards["service"]++
+                if (awards["service"] >= 60)
+                    if (original_job.title == "Azuma no Daimyo")
+                        map.scores["Eastern Army"] += 1
+                        awards["service"] = 0
+                    else if (original_job.title == "Sei no Daimyo")
+                        map.scores["Western Army"] += 1
+                        awards["service"] = 0
+        
+        if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)
+            if (awards["arrests"] >= 3 && client && !("bronze public order ribbon" in awarded))
+                map.give_award(client.ckey, name, "bronze public order ribbon", capitalize(faction_text), src)
+                return TRUE
 
-				if (awards["medic"]>=200 && client && !("medical medal" in awarded))
-					map.give_award(client.ckey, name, "medical medal", capitalize(faction_text),src)
+        if (map.gamemode == "Hardcore")
+            if (map.ID == MAP_BANK_ROBBERY || map.ID == MAP_DRUG_BUST)
+                return FALSE
+            else
+                if (map.ordinal_age >= 5)
+                    awards["service"]++
 
-				if (awards["tank"]>=2 && !("tank destroyer silver badge" in awarded))
-					map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text),src)
-				else if (awards["tank"]>=4 && !("tank destroyer gold badge" in awarded))
-					map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text),src)
-					map.remove_award(client.ckey, name, "tank destroyer silver badge")
-	/**
-				if (awards["wounded"]>=300 && !("wounded gold badge" in awarded))
-					map.give_award(client.ckey, name, "wounded gold badge", capitalize(faction_text),src)
-					map.remove_award(client.ckey, name, "wounded silver badge")
-					map.remove_award(client.ckey, name, "wounded badge")
-				else if (awards["wounded"]>=200 && !("wounded silver badge" in awarded))
-					map.give_award(client.ckey, name, "wounded silver badge", capitalize(faction_text),src)
-					map.remove_award(client.ckey, name, "wounded badge")
-				else if (awards["wounded"]>=150 && !("wounded badge" in awarded))
-					map.give_award(client.ckey, name,"wounded badge", capitalize(faction_text),src)
-	**/
-				for(var/list/i in awards["kills"])
-					if (islist(i) && i[1] != "" && i[2] >= 100 && i[3]==0)
-						i[3]=1
-						awards["kill_count"]++
-				for(var/list/i in awards["melee_kills"])
-					if (islist(i) && i[1] != "" && i[2] >= 100 && i[3]==0)
-						i[3]=1
-						awards["melee_kill_count"]++
-				if (awards["kill_count"]>= 10 && !("iron cross 1st class" in awarded))
-					map.give_award(client.ckey, name,"iron cross 1st class", capitalize(faction_text),src)
-					map.remove_award(client.ckey, name, "iron cross 2nd class")
-				else if (awards["kill_count"]>= 7 && !("iron cross 2nd class" in awarded))
-					map.give_award(client.ckey, name,"iron cross 2nd class", capitalize(faction_text),src)
-				else if (awards["kill_count"]>= 3 && !("assault badge" in awarded))
-					map.give_award(client.ckey, name,"assault badge", capitalize(faction_text),src)
-				if (awards["melee_kill_count"]>= 5 && !("order of the rising sun" in awarded))
-					map.give_award(client.ckey, name,"order of the rising sun", capitalize(faction_text),src)
-				return TRUE
-	return FALSE
+                    if (awards["service"] >= 1200 && client && !("long service" in awarded))
+                        map.give_award(client.ckey, name, "long service", capitalize(faction_text), src)
+
+                    if (awards["medic"] >= 200 && client && !("medical medal" in awarded))
+                        map.give_award(client.ckey, name, "medical medal", capitalize(faction_text), src)
+
+                    if (awards["tank"] >= 2 && !("tank destroyer silver badge" in awarded))
+                        map.give_award(client.ckey, name, "tank destroyer silver badge", capitalize(faction_text), src)
+
+                    else if (awards["tank"] >= 4 && !("tank destroyer gold badge" in awarded))
+                        map.give_award(client.ckey, name, "tank destroyer gold badge", capitalize(faction_text), src)
+                        map.remove_award(client.ckey, name, "tank destroyer silver badge")
+
+                    for (var/list/i in awards["kills"])
+                        if (islist(i) && i[1] != "" && i[2] >= 100 && i[3] == 0)
+                            i[3] = 1
+                            awards["kill_count"]++
+
+                    for (var/list/i in awards["melee_kills"])
+                        if (islist(i) && i[1] != "" && i[2] >= 100 && i[3] == 0)
+                            i[3] = 1
+                            awards["melee_kill_count"]++
+
+                    if (awards["kill_count"] >= 10 && !("iron cross 1st class" in awarded))
+                        map.give_award(client.ckey, name, "iron cross 1st class", capitalize(faction_text), src)
+                        map.remove_award(client.ckey, name, "iron cross 2nd class")
+                    else if (awards["kill_count"] >= 7 && !("iron cross 2nd class" in awarded))
+                        map.give_award(client.ckey, name, "iron cross 2nd class", capitalize(faction_text), src)
+                    else if (awards["kill_count"] >= 3 && !("assault badge" in awarded))
+                        map.give_award(client.ckey, name, "assault badge", capitalize(faction_text), src)
+                    if (awards["melee_kill_count"] >= 5 && !("order of the rising sun" in awarded))
+                        map.give_award(client.ckey, name, "order of the rising sun", capitalize(faction_text), src)
+
+                    return TRUE
+    
+    return FALSE
+
 
 /obj/map_metadata/proc/save_awards()
 	var/F = file("SQL/awards.txt")
