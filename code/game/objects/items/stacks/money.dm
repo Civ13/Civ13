@@ -3,17 +3,19 @@
 	if (novariants)
 		return // TO-DO: Check if the parent proc is actually needed here as a "return ..()"
 	if (map.ordinal_age >= 4 && icon_state != "silvercoin_pile")
-		var/icon_suffix = 1 
+		var/icon_suffix = ""
 		switch(amount)
+			if (0 to 49)
+				icon_suffix = ""
 			if (50 to 99)
-				icon_suffix = 2
+				icon_suffix = "_2"
 			if (100 to 249)
-				icon_suffix = 3
+				icon_suffix = "_3"
 			if (250 to 499)
-				icon_suffix = 4
+				icon_suffix = "_4"
 			if (500 to INFINITY)
-				icon_suffix = 5
-		icon_state = "[initial(icon_state)]_[icon_suffix]"
+				icon_suffix = "_5"
+		icon_state = "[initial(icon_state)][icon_suffix]"
 	else
 		icon_state = initial(icon_state)
 	..()
