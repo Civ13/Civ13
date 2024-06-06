@@ -94,7 +94,7 @@
 
 /obj/map_metadata/red_menace/reverse_cross_message(faction)
 	if (faction == RUSSIAN)
-		return "<span class = 'userdanger'>The Soviets may no longer cross the invisible wall!</span>"
+		return SPAN_DANGER("The Soviets may no longer cross the invisible wall!")
 	else if (faction == AMERICAN)
 		return ""
 	else
@@ -107,14 +107,14 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = "The <b>Americans</b> have successfully defended the Town Hall! The Soviets have halted the attack!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_o == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>Soviets</b> have captured the Town Hall! The Battle for America is over!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		no_loop_o = TRUE
@@ -157,7 +157,7 @@
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Americans</b> have recaptured the Town Hall!</font>"
+			to_chat(world, "<font size = 3>The <b>Americans</b> have recaptured the Town Hall!</font>")
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -193,9 +193,7 @@
 
 /obj/map_metadata/red_menace/proc/us_reinforcements()
 	for (var/obj/effect/spawner/objspawner/m1a1_abrams/MA in world)
-		MA.activated = TRUE
-		spawn(15)
-			MA.activated = FALSE
+		MA.spawnTarget()
 	for (var/datum/job/J in job_master.occupations)
 		if (J.is_reds)
 			if (J.title == "US Army Lieutenant")
@@ -226,7 +224,7 @@
 				J.max_positions = 12
 				J.total_positions = 12
 				J.spawn_location = "JoinLateRNT2"
-	world << SPAN_NOTICE("<big>American reinforcements have arrived!</big>")
+	to_chat(world, SPAN_NOTICE("<big>American reinforcements have arrived!</big>"))
 
 /obj/effect/spawner/objspawner/m1a1_abrams
 	name = "M1A1 Abrams spawner"
