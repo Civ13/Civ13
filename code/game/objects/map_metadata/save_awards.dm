@@ -21,28 +21,28 @@ AWARDS:
 
     switch(map.ID)
         if (MAP_ALLEYWAY)
-			if(stat != DEAD)
-				if (original_job && (original_job.title == "Yama Wakagashira" || original_job.title == "Ichi Wakagashira"))
-					awards["service"]++
-					if (awards["service"] >= 60)
-						if (original_job.title == "Yama Wakagashira")
-							map.scores["Yamaguchi-Gumi"] += 1
-							awards["service"] = 0
-						else if (original_job.title == "Ichi Wakagashira")
-							map.scores["Ichiwa-Kai"] += 1
-							awards["service"] = 0
+            if (stat != DEAD)
+                if (original_job && (original_job.title == "Yama Wakagashira" || original_job.title == "Ichi Wakagashira"))
+                    awards["service"]++
+                    if (awards["service"] >= 60)
+                        if (original_job.title == "Yama Wakagashira")
+                            map.scores["Yamaguchi-Gumi"] += 1
+                            awards["service"] = 0
+                        else if (original_job.title == "Ichi Wakagashira")
+                            map.scores["Ichiwa-Kai"] += 1
+                            awards["service"] = 0
         
         if (MAP_SEKIGAHARA)
-			if(stat != DEAD)
-				if (original_job && (original_job.title == "Azuma no Daimyo" || original_job.title == "Sei no Daimyo"))
-					awards["service"]++
-					if (awards["service"] >= 60)
-						if (original_job.title == "Azuma no Daimyo")
-							map.scores["Eastern Army"] += 1
-							awards["service"] = 0
-						else if (original_job.title == "Sei no Daimyo")
-							map.scores["Western Army"] += 1
-							awards["service"] = 0
+            if (stat != DEAD)
+                if (original_job && (original_job.title == "Azuma no Daimyo" || original_job.title == "Sei no Daimyo"))
+                    awards["service"]++
+                    if (awards["service"] >= 60)
+                        if (original_job.title == "Azuma no Daimyo")
+                            map.scores["Eastern Army"] += 1
+                            awards["service"] = 0
+                        else if (original_job.title == "Sei no Daimyo")
+                            map.scores["Western Army"] += 1
+                            awards["service"] = 0
         
         if (MAP_BANK_ROBBERY || MAP_DRUG_BUST)
             if (awards["arrests"] >= 3 && client && !("bronze public order ribbon" in awarded))
