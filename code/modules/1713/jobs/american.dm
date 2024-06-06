@@ -1237,7 +1237,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kevlarhelmet/press(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard/yellow(src), slot_r_store)
-	var/obj/item/clothing/under/uniform = w_uniform
+	var/obj/item/clothing/under/uniform = slot_w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press/press_armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press(null)
 	uniform.attackby(press_armor, src)
 

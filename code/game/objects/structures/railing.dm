@@ -165,6 +165,10 @@
 
 
 /obj/structure/railing/CheckExit(atom/movable/O as mob|obj, target as turf)
+	if (istype(O, /obj/structure/drone))
+		var/obj/structure/drone/D = O
+		if (D.flying)
+			return TRUE
 	if (istype(O) && O.checkpass(PASSTABLE))
 		return TRUE
 	if (get_dir(O.loc, target) == dir)
