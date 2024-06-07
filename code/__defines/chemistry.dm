@@ -16,12 +16,12 @@
 
 #define CHEM_SYNTH_ENERGY 500 // How much energy does it take to synthesize 1 unit of chemical, in Joules.
 
-#define CE_STABLE "stable" // adrenaline
-#define CE_ANTIBIOTIC "antibiotic" // Spaceacilin
-#define CE_BLOODRESTORE "bloodrestore" // Iron/nutriment
+#define CE_STABLE "stable" // I.E 'inaprovaline', if we had it.
+#define CE_ANTIBIOTIC "antibiotic" // I.E; increasing/decreasing immunity system[?].
+#define CE_BLOODRESTORE "bloodrestore" // Gives off an iron/nutriment blood restoration effect.
 #define CE_PAINKILLER "painkiller"
-#define CE_ALCOHOL "alcohol" // Liver filtering
-#define CE_ALCOHOL_TOXIC "alcotoxic" // Liver damage
-#define CE_SPEEDBOOST "gofast" // Hyperzine
-#define CE_PULSE	  "xcardic" // increases or decreases heart rate
-#define CE_NOPULSE	"heartstop" // stops heartbeat
+#define CE_ALCOHOL "alcohol" // Used for filtering by the liver; can be checked and incremented until value 'x' is toxic.
+#define CE_ALCOHOL_TOXIC "alcotoxic" // Used for dealing damage to the liver; when 'x' is a checked value, E.G; if(filter_effect < 3) CE_ALCOHOL... else take_damage(user.chem_effects[CE_ALCOHOL_TOXIC])
+#define CE_SPEEDBOOST "gofast" // I.E; Pervitin, Hyperzine.
+#define CE_PULSE	  "xcardic" // Manages heart-rate (increase/decrease)
+#define CE_NOPULSE	"heartstop" // Registers no pulse for the heartbeat.
