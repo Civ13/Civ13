@@ -5,7 +5,7 @@
 	mouse_opacity = FALSE
 	var/angle = 0
 	var/call_time = 0
-	var/life_time = 2
+	var/life_time = 0.6
 	var/alpha_modifier = 1
 	var/update_time = 0.6
 
@@ -18,8 +18,7 @@
 	pixel_y = sin(direction) * 25
 	transform = turn(transform, -direction) 
 	call_time = world.time
-	spawn(0.3)
-		update()
+	update()
 
 /obj/effect/projectile/proc/update()
 	var/dt = world.time - call_time
@@ -48,6 +47,39 @@
 	icon = 'icons/effects/projectiles.dmi'
 	icon_state = "bolt"
 	layer = 5
+
+/obj/effect/projectile/bullet/muzzle/gunsmoke
+	icon_state = "dust_cloud_generic"
+	life_time = 8
+	alpha_modifier = 0.8
+	update_time = 0.4
+	var/speed_modifier = 1
+
+/obj/effect/projectile/bullet/muzzle/gunsmoke/activate(var/direction)
+	pixel_x = cos(direction) * 16
+	pixel_y = sin(direction) * 16
+	call_time = world.time
+	var/dispersion = rand(-20, 20)
+	angle = direction + dispersion
+	speed_modifier *= sqrt(abs(dispersion)) * 2
+	update()
+
+/obj/effect/projectile/bullet/muzzle/gunsmoke/update()
+	var/dt = world.time - call_time
+	if(dt > life_time)
+		loc = null
+		qdel(src)
+		return
+	alpha *= alpha_modifier
+	var/ds = 30
+	if(speed_modifier != 0)
+		ds /= speed_modifier
+	if(dt != 0)
+		ds /= dt 
+	pixel_x += cos(angle) * sqrt(ds)
+	pixel_y += sin(angle) * sqrt(ds)
+	spawn(update_time)
+		update()
 
 //----------------------------
 // Impact
