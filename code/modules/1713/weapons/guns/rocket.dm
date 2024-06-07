@@ -593,6 +593,13 @@
 	tracer_type = null
 	caliber = 90
 
+/obj/item/projectile/shell/missile/tracer_effect()
+	if(permutated.len < 3)
+		return
+	for(var/i = 1, i <= 5, i++)
+		var/obj/effect/projectile/tracer/missile/P = new/obj/effect/projectile/tracer/missile(loc)
+		P.activate(get_angle(), pixel_x, pixel_y)
+
 /obj/item/projectile/shell/missile/heat
 	atype = "HEAT"
 	heavy_armor_penetration = 80
@@ -678,7 +685,6 @@
 		trajectory.setup(loc, new_target)
 		trajectory.angle = new_angle
 		transform = turn(transform, -(trajectory.angle + 90))
-		new/obj/effect/effect/smoke/small/fast(loc)
 	..()
 
 /obj/item/projectile/shell/missile/atgm/he

@@ -136,3 +136,34 @@
 /obj/effect/projectile/tracer/shell
 	icon_state = "shell_tracer_white"
 	life_time = 10
+
+/obj/effect/projectile/tracer/missile
+	icon_state = "dust_cloud_generic"
+	life_time = 8
+	alpha_modifier = 0.8
+	update_time = 0.2
+	var/speed_modifier
+
+/obj/effect/projectile/tracer/missile/activate(var/direction, var/x_offset, var/y_offset)
+	pixel_x = x_offset - (cos(direction) * 32)
+	pixel_y = y_offset - (sin(direction) * 32)
+	call_time = world.time
+	var/dispersion = rand(-20, 20)
+	angle = direction + dispersion - 180
+	speed_modifier = rand(1, 2)
+	update()
+
+/obj/effect/projectile/tracer/missile/update()
+	var/dt = world.time - call_time
+	if(dt > life_time)
+		loc = null
+		qdel(src)
+		return
+	alpha *= alpha_modifier
+	var/ds = 20
+	if(dt != 0)
+		ds /= dt * speed_modifier
+	pixel_x += cos(angle) * sqrt(ds)
+	pixel_y += sin(angle) * sqrt(ds)
+	spawn(update_time)
+		update()
