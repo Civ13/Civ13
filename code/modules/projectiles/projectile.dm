@@ -712,7 +712,7 @@
 		--penetrating
 
 	if (istype(src, /obj/item/projectile/shell))
-		if (loc == trajectory.target)
+		if (permutated.len > get_dist(starting, trajectory.target) + rand(0, 3))
 			var/obj/item/projectile/shell/S = src
 			on_impact(T)
 			S.initiate(loc)

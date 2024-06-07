@@ -465,7 +465,7 @@
 
 	var/shot_recoil = next_shot_recoil / ergonomics
 
-	if(dt > firemodes[sel_mode].burst_delay)
+	if(dt >= firemodes[sel_mode].burst_delay)
 		shot_recoil /= sqrt(dt) * 2
 		if(dt * 0.5 < abs(shot_recoil) )
 			shot_recoil -= sign(shot_recoil) * dt * 0.5

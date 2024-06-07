@@ -39,9 +39,20 @@
 
 /obj/item/weapon/gun/launcher/process_projectile(obj/item/projectile, mob/user, atom/target, var/target_zone, var/params=null, var/pointblank=0, var/reflex=0)
 	projectile.loc = get_turf(user)
-
+	var/shot_accuracy = rand(-accuracy, accuracy)
+	var/dt_movement = world.time - user.last_movement
+	if (dt_movement <= 6)
+		shot_accuracy = rand(-20, 20)
+	else if (dt_movement < 10)
+		var/accuracy_range = 20 / sqrt(dt_movement - 6)
+		shot_accuracy = rand(-accuracy_range, accuracy_range)
+		if (abs(shot_accuracy) < 5) // even RNjesus won’t help you get there right away
+			shot_accuracy += 5
+		if(user.m_intent != "run")
+			shot_accuracy *= 0.75
 	if(istype(projectile, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/P = projectile
+		P.dispersion = clamp(shot_accuracy, -40, 40)
 		P.dir = SOUTH
 		P.launch(target, user, src, 0, 0)
 		playsound(get_turf(user), fire_sound, 100, TRUE,100)
@@ -582,8 +593,12 @@
 	tracer_type = null
 	caliber = 90
 
-/obj/item/projectile/shell/missile/update_icon()
-	return
+/obj/item/projectile/shell/missile/tracer_effect()
+	if(permutated.len < 3)
+		return
+	for(var/i = 1, i <= 5, i++)
+		var/obj/effect/projectile/tracer/missile/P = new/obj/effect/projectile/tracer/missile(loc)
+		P.activate(get_angle(), pixel_x, pixel_y)
 
 /obj/item/projectile/shell/missile/heat
 	atype = "HEAT"
@@ -670,7 +685,6 @@
 		trajectory.setup(loc, new_target)
 		trajectory.angle = new_angle
 		transform = turn(transform, -(trajectory.angle + 90))
-		new/obj/effect/effect/smoke/small/fast(loc)
 	..()
 
 /obj/item/projectile/shell/missile/atgm/he
