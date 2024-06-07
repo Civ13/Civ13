@@ -19,5 +19,8 @@
 // QDEL_LIST_ASSOC but it deletes everything on the value side of the list.
 #define QDEL_LIST_ASSOC_VAL(L) if(L) { for(var/I in L) qdel(L[I]); L.Cut(); }
 
-/proc/______qdel_list_wrapper(list/L) //the underscores are to encourage people not to use this directly.
+/proc/______qdel_list_wrapper(list/L) // The underscores are to encourage people not to use this directly. Should never be directly used.
 	QDEL_LIST(L)
+
+
+
