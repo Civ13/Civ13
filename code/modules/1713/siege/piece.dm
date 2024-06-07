@@ -589,16 +589,12 @@
 
 							var/hit = FALSE
 
-							var/tx = x + target_x + rand(-2,2)
-							var/ty = y + target_y + rand(-2,2)
-							if (tx < 1)
-								tx = 1
-							if (tx > world.maxx)
-								tx = world.maxx
-							if (ty < 1)
-								ty = 1
-							if (ty > world.maxy)
-								ty = world.maxy
+							var/dispersion_dir = rand(0, 360)
+							var/dispersion_dist = rand(0, distance * 0.2)
+							var/dispersion_x = trunc(cos(dispersion_dir) * dispersion_dist)
+							var/dispersion_y = trunc(sin(dispersion_dir) * dispersion_dist)
+							var/tx = clamp(x + target_x + dispersion_x, 1, world.maxx)
+							var/ty = clamp(y + target_y + dispersion_y, 1, world.maxy)
 							target = locate(tx, ty, z)
 							var/highcheck = high
 							var/area/target_area = get_area(target)
@@ -731,24 +727,12 @@
 
 								var/hit = FALSE
 
-								var/tx = x + target_x + rand(-1,1)
-								var/ty = y + target_y + rand(-1,1)
-
-								if (istype(src, /obj/structure/cannon/modern/naval))
-									tx += rand(-4,4)
-									ty += rand(-4,4)
-								else
-									tx += rand(-1,1)
-									ty += rand(-1,1)
-
-								if (tx < 1)
-									tx = 1
-								if (tx > world.maxx)
-									tx = world.maxx
-								if (ty < 1)
-									ty = 1
-								if (ty > world.maxy)
-									ty = world.maxy
+								var/dispersion_dir = rand(0, 360)
+								var/dispersion_dist = rand(0, distance * 0.15)
+								var/dispersion_x = trunc(cos(dispersion_dir) * dispersion_dist)
+								var/dispersion_y = trunc(sin(dispersion_dir) * dispersion_dist)
+								var/tx = clamp(x + target_x + dispersion_x, 1, world.maxx)
+								var/ty = clamp(y + target_y + dispersion_y, 1, world.maxy)
 								target = locate(tx, ty, z)
 								var/highcheck = high
 								var/area/target_area = get_area(target)
@@ -985,8 +969,8 @@
 
 /obj/structure/cannon/proc/get_target_coords()
 	var/actual_azimuth = azimuth - 90
-	target_x = ceil(distance * cos(-actual_azimuth))
-	target_y = ceil(distance * sin(-actual_azimuth))
+	target_x = trunc(distance * cos(-actual_azimuth))
+	target_y = trunc(distance * sin(-actual_azimuth))
 
 /obj/structure/cannon/proc/sway()
 	if (azimuth > 315 || azimuth < 45)

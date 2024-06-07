@@ -646,10 +646,12 @@
 	caliber = 88
 
 /obj/item/projectile/shell/missile/atgm
-	icon_state = "atgm_missile"
 	atype = "HE"
 	caliber = 120
 	tracer_type = null
+	New()
+		..()
+		icon_state = "atgm_missile"
 
 /obj/item/projectile/shell/missile/atgm/process()
 	if(permutated.len > 2 && firer && firer.client)

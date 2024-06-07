@@ -855,10 +855,15 @@
 	if (silenced)
 		did_muzzle_effect = TRUE
 		return
-	if (ispath(muzzle_type))
+	if (ispath(muzzle_type) && !did_muzzle_effect)
 		var/obj/effect/projectile/M = new muzzle_type(starting)
 		if (istype(M))
 			M.activate(get_angle())
+	if(!istype(muzzle_type, /obj/effect/projectile/laser))
+		for(var/i = 0, i < 15, i++)
+			spawn (i * 0.3)
+				var/obj/effect/projectile/bullet/muzzle/gunsmoke/S = new/obj/effect/projectile/bullet/muzzle/gunsmoke(starting)
+				S.activate(get_angle())
 	did_muzzle_effect = TRUE
 
 /obj/item/projectile/proc/tracer_effect()
