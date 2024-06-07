@@ -21,6 +21,3 @@
 
 /proc/______qdel_list_wrapper(list/L) // The underscores are to encourage people not to use this directly. Should never be directly used.
 	QDEL_LIST(L)
-
-
-
