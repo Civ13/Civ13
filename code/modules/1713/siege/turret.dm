@@ -248,8 +248,8 @@
 
 	var/next_shot_delay = 1
 	var/actual_azimuth = azimuth - 90
-	var/target_x = ceil(distance * cos(-actual_azimuth))
-	var/target_y = ceil(distance * sin(-actual_azimuth))
+	var/target_x = trunc(distance * cos(-actual_azimuth))
+	var/target_y = trunc(distance * sin(-actual_azimuth))
 
 	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
 		var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/A = weapons[selected_weapon]
