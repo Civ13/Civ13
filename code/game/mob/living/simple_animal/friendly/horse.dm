@@ -23,6 +23,7 @@
 	layer = 3.99
 	a_intent = I_HARM
 	can_ride = TRUE
+	stop_automated_movement_when_pulled = TRUE
 	ride_pixel_x = -13
 	ride_pixel_y = -21
 
