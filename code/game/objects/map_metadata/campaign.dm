@@ -8,7 +8,7 @@
 	no_winner = "The battle is going on."
 	victory_time = 60 MINUTES
 	grace_wall_timer = 20 MINUTES
-	can_spawn_on_base_capture = FALSE
+	can_spawn_on_base_capture = TRUE
 	faction_organization = list(
 		REDFACTION,
 		BLUEFACTION)
@@ -20,7 +20,7 @@
 	age = "2024"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(REDFACTION = 0.5, BLUEFACTION = 0.5)
-	battle_name = "battle of the Tanburr defensive line"
+	battle_name = "battle of Emberburg"
 	mission_start_message = "<font size=4><b>20 minutes</b> until the battle begins.</font>"
 	faction1 = REDFACTION
 	faction2 = BLUEFACTION
@@ -40,13 +40,14 @@
 	var/list/civilians_killed = list(
 		"Redmenia" = 0,
 		"Blugoslavia" = 0,
+		"Unknown" = 0,
 	)
 	var/list/squad_jobs_red = list(
 		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-	//	"Armored" = list("Crew" = 8),
+		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 3),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
@@ -56,7 +57,7 @@
 		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
 		"Recon" = list("Sniper" = 4),
-	//	"Armored" = list("Crew" = 8),
+		"Armored" = list("Crew" = 8),
 		"AT" = list("Anti-Tank" = 3),
 		"Engineer" = list("Engineer" = 3),
 		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
@@ -89,6 +90,9 @@
 		. = FALSE
 
 /obj/map_metadata/campaign/cross_message(faction)
+	for (var/datum/job/J in job_master.occupations)
+		if (istype(J, /datum/job/redfaction))
+			J.spawn_location = "JoinLateRed_Reinforcement"
 	switch (faction)
 		if (REDFACTION)
 			to_chat(world, sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3))
@@ -130,32 +134,25 @@
 		return 7 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
-	var/ctb = 0
-	var/ctr = 0
 	for(var/turf/T in get_area_turfs(/area/caribbean/japanese/land))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
-			if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
-				var/msg = "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
-				world << msg
-				game_log(msg)
-				qdel(CVL)
-			else
-				if(CVL.stat != DEAD)
-					qdel(CVL)
+			if(CVL.stat != DEAD)
+				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
+					world << "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+				else
 					civilians_evacuated["Blugoslavia"]++
+				qdel(CVL)
 	for(var/turf/T in get_area_turfs(/area/caribbean/pirates/land))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
-			if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
-				var/msg = "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
-				world << msg
-				game_log(msg)
-			else
-				if(CVL.stat != DEAD)
-					qdel(CVL)
+			if(CVL.stat != DEAD)
+				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
+					world << "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>"
+				else
 					civilians_evacuated["Redmenia"]++
+				qdel(CVL)	
 	spawn(600) // 1 minute
 		civ_collector()
-	return "[ctb],[ctr]"
+	return
 
 //role selector
 /mob/new_player/proc/LateChoicesCampaign(factjob)
@@ -179,17 +176,19 @@
 
 	dat += "<br>"
 	if (istype(map, /obj/map_metadata/nationsrp/coldwar_cmp))
-		if (factjob == "RDF")
-			dat +="<b><h1><big>Redmenian People</big></h1></b>"
-		else if (factjob == "BAF")
-			dat +="<b><h1><big>Blugoslavian People</big></h1></b>"
+		switch (factjob)
+			if ("blue")
+				dat +="<b><h1><big>Blugoslavian People</big></h1></b>"
+			if ("red")
+				dat +="<b><h1><big>Redmenian People</big></h1></b>"
 		for (var/datum/job/job in job_master.faction_organized_occupations)
-			if (factjob == "BAF")
-				if(!findtext(job.title, "Blugoslavian Civilian"))
-					continue
-			else if (factjob == "RDF")
-				if(!findtext(job.title, "Redmenian Civilian"))
-					continue
+			switch (factjob)
+				if ("blue")
+					if(!findtext(job.title, "Blugoslavian Civilian"))
+						continue
+				if ("red")
+					if(!findtext(job.title, "Redmenian Civilian"))
+						continue
 			if (job)
 				var/active = processes.job_data.get_active_positions(job)
 				var/extra_span = ""
@@ -210,57 +209,59 @@
 				dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
 				++available_jobs_per_side[job.base_type_flag()]
 	else
-		if (factjob == "RDF")
-			dat +="<b><h1><big>Redmenia Defense Force</big></h1></b>"
-		else if (factjob == "BAF")
-			dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
+		switch (factjob)
+			if ("blue")
+				dat +="<b><h1><big>Blugoslavian Armed Forces</big></h1></b>"
+			if ("red")
+				dat +="<b><h1><big>Redmenia Defense Force</big></h1></b>"
 		for (var/datum/job/job in job_master.faction_organized_occupations)
-			if (factjob == "RDF")
-				if(!findtext(job.title, "RDF"))
-					continue
-				if(findtext(job.title, "RDF Doctor") && MC.squad_jobs_red["none"]["Doctor"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Commander") && MC.squad_jobs_red["none"]["Commander"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
-					continue
-				if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[job.squad])
-					continue
-				if(findtext(job.title, "RDF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Engineer") && MC.squad_jobs_red["Engineer"]["Engineer"]<= 0)
-					continue
-				if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
-					continue
-			else if (factjob == "BAF")
-				if(!findtext(job.title, "BAF"))
-					continue
-				if(findtext(job.title, "BAF Doctor") && MC.squad_jobs_blue["none"]["Doctor"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Commander") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
-					continue
-				if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[job.squad])
-					continue
-				if(findtext(job.title, "BAF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
-					continue
-				if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
-					continue
+			switch (factjob)
+				if ("blue")
+					if(!findtext(job.title, "BAF"))
+						continue
+					if(findtext(job.title, "BAF Doctor") && MC.squad_jobs_blue["none"]["Doctor"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Officer") && MC.squad_jobs_blue["none"]["Officer"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Commander") && MC.squad_jobs_blue["none"]["Commander"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Squad [job.squad] Squadleader") && MC.faction2_squad_leaders[job.squad])
+						continue
+					if(findtext(job.title, "BAF Armored Squadleader") && MC.faction2_squad_leaders[job.squad])
+						continue
+					if(findtext(job.title, "BAF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Recon") && MC.squad_jobs_blue["Recon"]["Sniper"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Anti-Tank") && MC.squad_jobs_blue["AT"]["Anti-Tank"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Engineer") && MC.squad_jobs_blue["Engineer"]["Engineer"]<= 0)
+						continue
+					if(findtext(job.title, "BAF Squad [job.squad] Machinegunner") && MC.squad_jobs_blue["Squad [job.squad]"]["Machinegunner"]<= 0)
+						continue
+				if ("red")
+					if(!findtext(job.title, "RDF"))
+						continue
+					if(findtext(job.title, "RDF Doctor") && MC.squad_jobs_red["none"]["Doctor"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Officer") && MC.squad_jobs_red["none"]["Officer"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Commander") && MC.squad_jobs_red["none"]["Commander"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Squad [job.squad] Squadleader") && MC.faction1_squad_leaders[job.squad])
+						continue
+					if(findtext(job.title, "RDF Armored Squadleader") && MC.faction1_squad_leaders[job.squad])
+						continue
+					if(findtext(job.title, "RDF Armored Crew") && MC.squad_jobs_red["Armored"]["Crew"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Recon") && MC.squad_jobs_red["Recon"]["Sniper"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Anti-Tank") && MC.squad_jobs_red["AT"]["Anti-Tank"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Engineer") && MC.squad_jobs_red["Engineer"]["Engineer"]<= 0)
+						continue
+					if(findtext(job.title, "RDF Squad [job.squad] Machinegunner") && MC.squad_jobs_red["Squad [job.squad]"]["Machinegunner"]<= 0)
+						continue
 			if (job)
 				var/active = processes.job_data.get_active_positions(job)
 				var/extra_span = "<b>"
@@ -396,10 +397,8 @@ var/no_loop_ca = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = SPAN_BLUE("The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]! The Redmenians halted the attack!")
+		var/message = SPAN_RED("The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]! The Redmenians halted the attack!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
 		
 		after_round_checks()
 		show_global_battle_report(null)
@@ -409,10 +408,8 @@ var/no_loop_ca = FALSE
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = SPAN_RED("The <b>Redmenians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+			message = SPAN_BLUE("The <b>Blugoslavians</b> are victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>")
 
 		after_round_checks()
 		show_global_battle_report(null)
@@ -423,8 +420,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -432,8 +429,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -441,8 +438,8 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -450,14 +447,14 @@ var/no_loop_ca = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Redmenians</b> have captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(REDFACTION)
+				current_win_condition = "The <b>Blugoslavians</b> have captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(BLUEFACTION)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != no_winner && current_winner && current_loser)
-			world << "<font size = 3>The <b>Blugoslavians</b> have retaken control over the objective!</font>"
+			world << "<font size = 3>The <b>Redmenians</b> have retaken control over the objective!</font>"
 			current_winner = null
 			current_loser = null
 		next_win = -1
@@ -558,6 +555,7 @@ var/no_loop_ca = FALSE
 
 
 /obj/map_metadata/campaign/proc/after_round_checks()
+	to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]], <font color='grey'>Unknown</font> [civilians_killed["Unknown"]]</big>")
 	spawn(5 SECONDS)
 		to_chat(world, "<big><b>AP mines placed: [ap_mines_placed]</b></big>")
 		to_chat(world, "<big><b>AT mines placed: [at_mines_placed]</b></big>")
