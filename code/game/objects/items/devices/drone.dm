@@ -62,6 +62,7 @@
 	if(!is_moving)	return
 	if(!connected_drone)	return
 	if(!connected_drone.can_move)	return
+	if(connected_drone.can_fly && !connected_drone.flying)	return
 	if(connected_drone.broken)	return
 	if(executing_move)	return
 	executing_move = TRUE
@@ -123,16 +124,18 @@
 			visible_message("[user] repairs \the [src].")
 			broken = FALSE
 		return
-	if(istype(I, /obj/item/weapon/grenade))
-		visible_message("[user] starts attaching \the [I] to \the [src]...")
+	if(istype(I, /obj/item/weapon/grenade) && !payload && special && !flying)
+		visible_message("[user] starts attaching the [I] to \the [src]...")
 		if (do_after(user, 100, src))
-			visible_message("[user] attaches \the [I] to \the [src].")
+			visible_message("[user] attaches the [I] to \the [src].")
+			user.remove_from_mob(I)
+			I.loc = src
 			payload = I
 	else
 		..()
 
 /obj/structure/drone/proc/toggle_state()
-	if (!can_fly)
+	if(!can_fly)
 		return
 	if(!broken && can_move)
 		can_move = FALSE
@@ -332,10 +335,16 @@
 		payload.pixel_x = pixel_x
 		payload.pixel_y = pixel_y
 		payload.loc = T
-		payload.activate(src)
-		animate(payload, pixel_y = 0, time = 5, easing = SINE_EASING | EASE_IN)
+		payload.activate()
+		if (flying)
+			animate(payload, pixel_y = 0, time = 5, easing = LINEAR_EASING)
 		payload = null
 	return
 
 /obj/structure/drone/flying/Move()
 	..()
+
+/obj/structure/drone/flying/grenade
+	name = "drone"
+	desc = "A flying drone. This one is capable of carrying and releasing grenades."
+	special = "release"
