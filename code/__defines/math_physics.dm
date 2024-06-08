@@ -26,7 +26,7 @@
 #define RADIATOR_EXPOSED_SURFACE_AREA_RATIO 0.04 // (3 cm + 100 cm * sin(3deg))/(2*(3+100 cm)). Unitless ratio.
 #define HUMAN_EXPOSED_SURFACE_AREA		  5.2 //m^2, surface area of 1.7m (H) x 0.46m (D) cylinder
 
-#define Clamp(x, y, z) 	(x <= y ? y : (x >= z ? z : x))
+#define Clamp(x, y, z) 	(x <= y ? y : (x >= z ? z : x)) // Ensures that a value (x) is within a specified range (y to z). If x is less than y, it returns y; if x is greater than z, it returns z; otherwise, it returns x. This effectively clamps the value of x within the range specified by y and z.
 #define CLAMP01(x) max(0, min(1, x))
 #define CLAMP0100(x) max(0, min(100, x))
 

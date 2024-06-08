@@ -1,6 +1,6 @@
 /obj/structure/vehicleparts/frame/ship
 	name = "ship frame"
-	desc = "a wood ship frame."
+	desc = "A wood ship frame."
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "boat_floor1"
 	normal_icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
@@ -16,7 +16,7 @@
 
 /obj/structure/vehicleparts/frame/ship/steel
 	name = "steel ship frame"
-	desc = "a steel ship frame."
+	desc = "A steel ship frame."
 	icon_state = "Mboat_floor1"
 	prefix = "M"
 	New()

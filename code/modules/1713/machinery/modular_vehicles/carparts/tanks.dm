@@ -154,7 +154,7 @@
 	w_front = list("c_armoredfront",TRUE,TRUE,20,20,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t20/leftm
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon_state = "frame_steel"
 	flammable = TRUE
 	resistance = 150
@@ -162,7 +162,7 @@
 	w_left = list("c_wall",TRUE,TRUE,15,15,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/t20/rightm
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon_state = "frame_steel"
 	flammable = TRUE
 	resistance = 150
@@ -171,7 +171,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/t20/frontlback
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 120
@@ -181,7 +181,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/t20/frontrback
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 120
@@ -191,7 +191,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/t20/backl
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 120
@@ -201,7 +201,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/t20/backr
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 120
@@ -281,7 +281,7 @@
 	w_front = list("c_armoredfront",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
 /obj/structure/vehicleparts/frame/unattr/leftm
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon_state = "frame_steel"
 	flammable = TRUE
 	resistance = 150
@@ -289,7 +289,7 @@
 	w_left = list("c_wall",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/unattr/rightm
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon_state = "frame_steel"
 	flammable = TRUE
 	resistance = 150
@@ -298,7 +298,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/unattr/frontlback
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = FALSE
 	resistance = 140
@@ -309,7 +309,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/unattr/frontrback
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = FALSE
 	resistance = 140
@@ -320,7 +320,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/unattr/backl
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 140
@@ -331,7 +331,7 @@
 	doorcode = 4975
 /obj/structure/vehicleparts/frame/unattr/backr
 	name = "wood frame"
-	desc = "a wood vehicle frame."
+	desc = "A wood vehicle frame."
 	icon_state = "frame_wood"
 	flammable = TRUE
 	resistance = 140

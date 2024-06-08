@@ -770,7 +770,7 @@
 
 /obj/item/clothing/accessory/armband/policebadge
 	name = "police badge"
-	desc = "a police badge in star shape, with an officer's name engraved."
+	desc = "A police badge in a star shape, with an officer's name engraved."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "sheriff"
 	throwforce = WEAPON_FORCE_HARMLESS
@@ -807,6 +807,7 @@
 	anchored = TRUE
 	not_disassemblable = TRUE
 	not_movable = TRUE
+	crushable = FALSE
 
 /obj/structure/redmailbox/attackby(obj/item/I,mob/living/human/H)
 	if (istype(I,/obj/item/stack/component) && istype(map, /obj/map_metadata/art_of_the_deal))

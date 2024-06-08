@@ -143,7 +143,7 @@
 			if(PULSE_2FAST, PULSE_THREADY)
 				blood_max *= 1.5
 
-		if(CE_STABLE in owner.chem_effects) // inaprovaline
+		if(CE_STABLE in owner.chem_effects) // E.G; something like 'Inaprovaline' would affect this.
 			blood_max *= 0.8
 
 		if(world.time >= next_blood_squirt && istype(owner.loc, /turf) && do_spray.len)

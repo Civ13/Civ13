@@ -557,66 +557,171 @@
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
 	else if (map.ID == MAP_NOMADS_NORTH_AMERICA)
-		if (y < 100) // SOUTH
-			if (map.ordinal_age >= 3 && prob(70))
-				add_language("Spanish",TRUE)
-				remove_language("English")
-				remove_note("Known Languages","English")
-				for (var/datum/language/spanish/A in languages)
-					default_language = A
-				name = species.get_random_spanish_name(gender)
-				real_name = name
-				add_note("Known Languages", "Spanish")
-				possible_h_list = list("Black","Dark Brown","Light Brown")
-				possible_e_list = list("Brown","Black")
-				possible_s_range = list(-40,-90)
-			else
-				add_language("Carib",TRUE)
-				remove_language("English")
-				remove_note("Known Languages","English")
-				for (var/datum/language/carib/A in languages)
-					default_language = A
-				name = species.get_random_carib_name(gender)
-				real_name = name
-				add_note("Known Languages", "Carib")
-				possible_h_list = list("Black","Dark Brown")
-				possible_e_list = list("Brown","Black")
-				possible_s_range = list(-80,-115)
-		else
-			if (x < 200) //Temporary, NORTH-WEST
-				add_language("Cherokee",TRUE)
-				remove_language("English")
-				remove_note("Known Languages","English")
-				for (var/datum/language/cherokee/A in languages)
-					default_language = A
-				name = species.get_random_cherokee_name(gender)
-				real_name = name
-				add_note("Known Languages", "Cherokee")
-				possible_h_list = list("Black","Dark Brown","Light Brown")
-				possible_e_list = list("Brown","Black")
-				possible_s_range = list(-40,-90)
-			else
+		switch(y)
+			if (1 to 120) // SOUTH
 				if (map.ordinal_age >= 3 && prob(70))
-					for (var/datum/language/english/A in languages)
-						default_language = A
-					name = species.get_random_english_name(gender)
-					real_name = name
-					add_note("Known Languages", "English")
-					possible_h_list = list("Light Brown","Dark Brown","Blond", "Red", "Orange")
-					possible_e_list = list("Brown","Green","Blue")
-					possible_s_range = list(-15,-30)
-				else
-					add_language("Iroquois",TRUE)
+					add_language("Spanish",TRUE)
 					remove_language("English")
 					remove_note("Known Languages","English")
-					for (var/datum/language/iroquois/A in languages)
+					for (var/datum/language/spanish/A in languages)
 						default_language = A
-					name = species.get_random_iroquois_name(gender)
+					name = species.get_random_spanish_name(gender)
 					real_name = name
-					add_note("Known Languages", "Iroquois")
+					add_note("Known Languages", "Spanish")
 					possible_h_list = list("Black","Dark Brown","Light Brown")
 					possible_e_list = list("Brown","Black")
 					possible_s_range = list(-40,-90)
+				else
+					switch(x)
+						if (1 to 90)
+							add_language("Hawaiian",TRUE)
+							remove_language("English")
+							remove_note("Known Languages","English")
+							for (var/datum/language/hawaiian/A in languages)
+								default_language = A
+							name = species.get_random_hawaiian_name(gender)
+							real_name = name
+							add_note("Known Languages", "Hawaiian")
+							possible_h_list = list("Black","Dark Brown")
+							possible_e_list = list("Brown","Black")
+							possible_s_range = list(-90,-115)
+						if (328 to 450)
+							add_language("Carib",TRUE)
+							remove_language("English")
+							remove_note("Known Languages","English")
+							for (var/datum/language/carib/A in languages)
+								default_language = A
+							name = species.get_random_carib_name(gender)
+							real_name = name
+							add_note("Known Languages", "Carib")
+							possible_h_list = list("Black","Dark Brown")
+							possible_e_list = list("Brown","Black")
+							possible_s_range = list(-80,-115)
+						else
+							if (mob_area.climate == "semiarid")
+								add_language("Aztec",TRUE)
+								remove_language("English")
+								remove_note("Known Languages","English")
+								for (var/datum/language/aztec/A in languages)
+									default_language = A
+								name = species.get_random_aztec_name(gender)
+								real_name = name
+								add_note("Known Languages", "Aztec (Nahuatl)")
+								possible_h_list = list("Black","Dark Brown")
+								possible_e_list = list("Brown","Black")
+								possible_s_range = list(-80,-115)
+							else
+								add_language("Mayan",TRUE)
+								remove_language("English")
+								remove_note("Known Languages","English")
+								for (var/datum/language/mayan/A in languages)
+									default_language = A
+								name = species.get_random_mayan_name(gender)
+								real_name = name
+								add_note("Known Languages", "Mayan")
+								possible_h_list = list("Black","Dark Brown")
+								possible_e_list = list("Brown","Black")
+								possible_s_range = list(-80,-115)
+			if (121 to 300)
+				if (mob_area.climate == "tundra")
+					add_language("Inuit",TRUE)
+					remove_language("English")
+					remove_note("Known Languages","English")
+					for (var/datum/language/inuit/A in languages)
+						default_language = A
+					name = species.get_random_inuit_name(gender)
+					real_name = name
+					add_note("Known Languages", "Inuit")
+					possible_h_list = list("Black","Dark Brown","Light Brown")
+					possible_e_list = list("Brown","Black")
+					possible_s_range = list(-40,-90)
+				else
+					if (map.ordinal_age >= 3 && prob(70))
+						for (var/datum/language/english/A in languages)
+							default_language = A
+						name = species.get_random_english_name(gender)
+						real_name = name
+						add_note("Known Languages", "English")
+						possible_h_list = list("Light Brown","Dark Brown","Blond", "Red", "Orange")
+						possible_e_list = list("Brown","Green","Blue")
+						possible_s_range = list(-15,-30)
+					else
+						switch(x)
+							if (100 to 200)
+								if (mob_area.climate == "desert")
+									add_language("Navajo",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/navajo/A in languages)
+										default_language = A
+									name = species.get_random_navajo_name(gender)
+									real_name = name
+									add_note("Known Languages", "Navajo")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
+								else
+									add_language("Chinook",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/chinook/A in languages)
+										default_language = A
+									name = species.get_random_chinook_name(gender)
+									real_name = name
+									add_note("Known Languages", "Chinook")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
+							if (201 to 310)
+								if (y < 165)
+									add_language("Comanche",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/comanche/A in languages)
+										default_language = A
+									name = species.get_random_comanche_name(gender)
+									real_name = name
+									add_note("Known Languages", "Comanche")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
+								else
+									add_language("Sioux",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/sioux/A in languages)
+										default_language = A
+									name = species.get_random_sioux_name(gender)
+									real_name = name
+									add_note("Known Languages", "Sioux")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
+							if (311 to 450)
+								if (y < 150)
+									add_language("Cherokee",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/cherokee/A in languages)
+										default_language = A
+									name = species.get_random_cherokee_name(gender)
+									real_name = name
+									add_note("Known Languages", "Cherokee")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
+								else
+									add_language("Iroquois",TRUE)
+									remove_language("English")
+									remove_note("Known Languages","English")
+									for (var/datum/language/iroquois/A in languages)
+										default_language = A
+									name = species.get_random_iroquois_name(gender)
+									real_name = name
+									add_note("Known Languages", "Iroquois")
+									possible_h_list = list("Black","Dark Brown","Light Brown")
+									possible_e_list = list("Brown","Black")
+									possible_s_range = list(-40,-90)
 
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 

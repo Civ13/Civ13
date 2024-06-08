@@ -141,7 +141,7 @@
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
 		to_chat(src, SPAN_NOTICE("You have stopped using the [using_turret.name]."))
-		to_chat(src, browse(null, "window=artillery_window"))
+		src << browse(null, "window=artillery_window")
 		using_turret = null
 
 /obj/structure/turret/proc/place_user(var/mob/living/M)
@@ -248,8 +248,8 @@
 
 	var/next_shot_delay = 1
 	var/actual_azimuth = azimuth - 90
-	var/target_x = ceil(distance * cos(-actual_azimuth))
-	var/target_y = ceil(distance * sin(-actual_azimuth))
+	var/target_x = trunc(distance * cos(-actual_azimuth))
+	var/target_y = trunc(distance * sin(-actual_azimuth))
 
 	if(istype(weapons[selected_weapon], /obj/item/weapon/gun/projectile/automatic/stationary/autocannon))
 		var/obj/item/weapon/gun/projectile/automatic/stationary/autocannon/A = weapons[selected_weapon]

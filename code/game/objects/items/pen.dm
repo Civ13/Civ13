@@ -35,12 +35,12 @@
 
 /obj/item/weapon/pen/pencil
 	name = "pencil"
-	desc = "a normal graphite pencil."
+	desc = "A normal graphite pencil."
 	icon_state = "pencil"
 
 /obj/item/weapon/pen/fancy
 	name = "expensive pen"
-	desc = "a pen used by the boss."
+	desc = "A pen used by the boss."
 	icon_state = "fancypen"
 
 /obj/item/weapon/pen/blue

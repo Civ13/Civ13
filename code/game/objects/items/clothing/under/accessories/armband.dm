@@ -114,7 +114,7 @@
 
 /obj/item/clothing/accessory/armband/sheriff
 	name = "Sheriff Star"
-	desc = "a golden star of the town's Sheriff."
+	desc = "A golden star of the town's Sheriff."
 	icon_state = "sheriff"
 	icon_state = "sheriff"
 	slot = "armband"

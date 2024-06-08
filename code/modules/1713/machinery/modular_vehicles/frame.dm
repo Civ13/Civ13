@@ -1,7 +1,7 @@
 ////////////////////////FRAMES//////////////////////
 /obj/structure/vehicleparts/frame
 	name = "steel frame"
-	desc = "a steel vehicle frame."
+	desc = "A steel vehicle frame."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "frame_steel"
 	powerneeded = 0
@@ -28,6 +28,7 @@
 	var/override_frame_icon = null
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	crushable = FALSE
 	var/broken = FALSE
 	var/override_color = null
 	var/hasoverlay = null

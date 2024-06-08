@@ -35,7 +35,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
 			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
-				world << "<b>Voting aborted due to game start.</b>"
+				to_chat(world, "<b>Voting aborted due to game start.</b>")
 				reset()
 				return
 
@@ -434,11 +434,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
 					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
-						usr << "You can't start restart votes if you are not playing."
+						to_chat(usr, "You can't start restart votes if you are not playing.")
 						return FALSE
 					if (!config.allowedgamemodes == "TDM")
 						if ((map.nomads || map.is_RP) && clients.len < 5 && ((world.time-round_start_time)>108000) && !usr.client.holder)
-							usr << "You can't start restart votes if the server population is lower than 5 and the round has been going for over 3 hour."
+							to_chat(usr, "You can't start restart votes if the server population is lower than <b>five</b> and the round has been going for over <b>three</b> hours.")
 							return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")

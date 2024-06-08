@@ -10,14 +10,14 @@
 
 /obj/item/kitchen/plate
 	name = "plate"
-	desc = "a common plate."
+	desc = "A common plate."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "plate"
 	dropsound = 'sound/effects/drop_glass.ogg'
 
 /obj/item/kitchen/snack_bowl
 	name = "bowl"
-	desc = "a common bowl."
+	desc = "A common bowl."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "snack_bowl"
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -25,7 +25,7 @@
 
 /obj/item/kitchen/wood_bowl
 	name = "wood bowl"
-	desc = "a common wood bowl."
+	desc = "A common wood bowl."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "wood_bowl"
 	value = 2
@@ -40,7 +40,7 @@
 	pixel_x = rand(-5,5)
 /obj/item/trash/tray
 	name = "tray"
-	desc = "a common tray."
+	desc = "A common tray."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "tray"
 

@@ -890,7 +890,7 @@
 ////////Cans///////////
 /obj/item/weapon/reagent_containers/food/drinks/can
 	name = "small can"
-	desc = "a small, 35 unit can."
+	desc = "A small, 35 unit can."
 	volume = 35
 	flags = FALSE //starts closed
 	icon_state = "monster"

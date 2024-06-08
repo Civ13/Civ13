@@ -23,7 +23,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	for(var/obj/structure/vehicleparts/frame/F in components)
 		F.axis = null
 	wheel = null
-	visible_message("<span class='danger'>The [name] axis gets wrecked!</span>")
+	visible_message(SPAN_DANGER("The [name] axis gets wrecked!"))
 	qdel(src)
 */
 /obj/structure/vehicleparts/axis/proc/startmovementloop()
@@ -94,7 +94,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			return FALSE
 		for(var/obj/structure/vehicleparts/movement/MV in wheels)
 			if (MV.broken)
-				visible_message("<span class = 'warning'>\The [name] can't move, a [MV.ntype] is broken!</span>")
+				visible_message(SPAN_WARNING("\The [name] can't move, a [MV.ntype] is broken!"))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
@@ -113,12 +113,12 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			var/area/A = get_area(T)
 			if (map && A && map.caribbean_blocking_area_types.Find(A.type))
 				if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
-					visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+					visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
 			if (map && map.check_caribbean_block(driver,T))
-				visible_message("<span class = 'danger'>You cannot cross the grace wall yet!</span>")
+				visible_message(SPAN_DANGER("You cannot cross the grace wall yet!"))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
@@ -133,7 +133,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					MAT.trigger(FR)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message(SPAN_WARNING("\The [src] crushes \the [MAT]!"),SPAN_WARNING("You crush \the [MAT]!"))
 			for (var/obj/item/mine/boobytrap/MAT in T)
 				if (MAT.anchored)
 					qdel(MAT)
@@ -161,7 +161,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					protec = TRUE
 				if (!protec)
 					if (current_weight >= 800)
-						visible_message("<span class='warning'>\The [src] runs over \the [L]!</span>","<span class='warning'>You run over \the [L]!</span>")
+						visible_message(SPAN_WARNING("\The [src] runs over \the [L]!"),SPAN_WARNING("You run over \the [L]!"))
 						for(var/obj/item/I in L)
 							qdel(I)
 						L.crush()
@@ -172,16 +172,16 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 							var/mob/living/human/HH = L
 							HH.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							HH.Weaken(rand(2,5))
-							visible_message("<span class='warning'>\The [src] hits \the [L]!</span>","<span class='warning'>You hit \the [L]!</span>")
+							visible_message(SPAN_WARNING("\The [src] hits \the [L]!"),SPAN_WARNING("You hit \the [L]!"))
 							L.forceMove(get_turf(get_step(TT,dir)))
 						else if (istype(L,/mob/living/simple_animal))
 							var/mob/living/simple_animal/SA = L
 							SA.adjustBruteLoss(rand(7,16)*abs(currentspeed))
 							if (SA.mob_size >= 30)
-								visible_message("<span class='warning'>\The [src] hits \the [SA]!</span>","<span class='warning'>You hit \the [SA]!</span>")
+								visible_message(SPAN_WARNING("\The [src] hits \the [SA]!"),SPAN_WARNING("You hit \the [SA]!"))
 								L.forceMove(get_turf(get_step(TT,dir)))
 							else
-								visible_message("<span class='warning'>\The [src] runs over \the [SA]!</span>","<span class='warning'>You run over \the [SA]!</span>")
+								visible_message(SPAN_WARNING("\The [src] runs over \the [SA]!"),SPAN_WARNING("You run over \the [SA]!"))
 								for(var/obj/item/I in SA)
 									qdel(I)
 								SA.crush()
@@ -191,31 +191,31 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				for (var/obj/structure/vehicleparts/frame/FM in O.loc)
 					done = TRUE
 					if (FM.axis != src)
-						visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+						visible_message(SPAN_WARNING("\The [src] hits \the [O]!"),SPAN_WARNING("You hit \the [O]!"))
 						moving = FALSE
 						stopmovementloop()
 						return FALSE
 				if (!done)
-					if (O.density == TRUE && !(O in transporting))
-						if (current_weight >= 400 && !istype(O, /obj/structure/redmailbox) && !istype(O, /obj/structure/barricade/antitank) && !istype(O, /obj/structure/vehicleparts/frame)&& !istype(O, /obj/structure/vehicleparts/movement)&& !istype(O, /obj/structure/barricade/stone_h)&& !istype(O, /obj/structure/barricade/stone_v)&& !istype(O, /obj/structure/barricade/jap_h) && !istype(O, /obj/structure/barricade/jap_v)&& !istype(O, /obj/structure/barricade/jap_h_l)&& !istype(O, /obj/structure/barricade/jap_h_r)&& !istype(O, /obj/structure/barricade/jap_v_b)&& !istype(O, /obj/structure/barricade/jap_v_t)&& !istype(O, /obj/structure/barricade/sandstone_h)&& !istype(O, /obj/structure/barricade/sandstone_v)&& !istype(O, /obj/structure/barricade/sandstone_v/crenelated)&& !istype(O, /obj/structure/barricade/sandstone_h/crenelated)&& !istype(O, /obj/structure/barricade/stone_v/crenelated) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/billboard))
-							visible_message("<span class='warning'>\The [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+					if (O.density && !(O in transporting))
+						if (O.crushable && istype(src, /obj/structure/vehicleparts/axis/heavy))
+							visible_message(SPAN_WARNING("\The [src] crushes \the [O]!"),SPAN_WARNING("You crush \the [O]!"))
 							qdel(O)
 						else
-							visible_message("<span class='warning'>\The [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+							visible_message(SPAN_WARNING("\The [src] hits \the [O]!"),SPAN_WARNING("You hit \the [O]!"))
 							return FALSE
-					else if (O.density == FALSE && !(O in transporting))
-						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/cable) && !istype(O, /obj/structure/gate) && !istype(O, /obj/structure/lamp/lamppost_small/) && !istype(O, /obj/structure/lamp/lamp_big/alwayson) && !istype(O, /obj/structure/lamp/lamp_small/alwayson))
-	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
+					else if (!O.density && !(O in transporting))
+						if (O.crushable)
+	//						visible_message(SPAN_WARNING("\the [src] crushes \the [O]!"),SPAN_WARNING("You crush \the [O]!"))
 							qdel(O)
 
-			if (T.density == TRUE)
-				visible_message("<span class='warning'>\The [src] hits \the [T]!</span>","<span class='warning'>You hit \the [T]!</span>")
+			if (T.density)
+				visible_message(SPAN_WARNING("\The [src] hits \the [T]!"),SPAN_WARNING("You hit \the [T]!"))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
 			for(var/obj/covers/CV in T)
 				if (CV.density)
-					visible_message("<span class='warning'>\the [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
+					visible_message(SPAN_WARNING("\the [src] hits \the [CV]!"),SPAN_WARNING("You hit \the [CV]!"))
 					moving = FALSE
 					stopmovementloop()
 					return FALSE
@@ -228,7 +228,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
-				if (CVV.density == FALSE)
+				if (!CVV.density)
 					canpass = TRUE
 			if ((!istype(T, /turf/floor/beach/water/deep) ||  istype(T, /turf/floor/beach/water/deep) && canpass == TRUE) && T.density == FALSE  || istype(T, /turf/floor/trench/flooded))
 				canpass = TRUE
@@ -241,6 +241,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		moving = FALSE
 		stopmovementloop()
 		return FALSE
+
 /obj/structure/vehicleparts/axis/proc/check_engine()
 	if (!engine)
 		return FALSE
@@ -248,7 +249,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		engine.on = FALSE
 		return FALSE
 	else if (get_weight() > engine.maxpower*2 || get_weight() > maxpower)
-		visible_message("<span class='warning'>\The [engine] struggles and stalls!</span>")
+		visible_message(SPAN_WARNING("\The [engine] struggles and stalls!"))
 		return FALSE
 	else
 		if (engine && engine.fueltank && engine.fueltank.reagents && engine.fueltank.reagents.total_volume <= 0)
@@ -310,17 +311,17 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					MAT.trigger(F)
 				else
 					qdel(MAT)
-					visible_message("<span class='warning'>\The [src] crushes \the [MAT]!</span>","<span class='warning'>You crush \the [MAT]!</span>")
+					visible_message(SPAN_WARNING("\The [src] crushes \the [MAT]!"),SPAN_WARNING("You crush \the [MAT]!"))
 			if (istype(M, /obj/item/mine/boobytrap))
 				var/obj/item/mine/boobytrap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
 			if (istype(M, /obj/item/mine/ap))
 				var/obj/item/mine/ap/BAT = M
 				if (BAT.anchored)
 					qdel(BAT)
-					visible_message("<span class='warning'>\The [src] crushes \the [BAT]!</span>","<span class='warning'>You crush \the [BAT]!</span>")
+					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard))
 					transporting += M
@@ -404,6 +405,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				matrix["[disx+1],[disy+1]"] = list(PV, disy+1, disx+1,"[disy+1],[disx+1]")
 
 	return TRUE
+
 /obj/structure/vehicleparts/axis/proc/check_corners()
 	corners = list(null, null, null, null) //Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 	for (var/obj/structure/vehicleparts/frame/F in components)
@@ -416,41 +418,45 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					sides = "[sides][i]"
 		if (length(sides) == 2)
 			if (findtext(sides,"1") && findtext(sides,"4")) //SW corner
-				if (dir == SOUTH) //FR
-					corners[1] = F
-				else if (dir == NORTH) //BL
-					corners[4] = F
-				else if  (dir == WEST) //FL
-					corners[2] = F
-				else if (dir == EAST) // BR
-					corners[3] = F
+				switch(dir)
+					if (SOUTH) //FR
+						corners[1] = F
+					if (NORTH) //BL
+						corners[4] = F
+					if (WEST) //FL
+						corners[2] = F
+					if (EAST) // BR
+						corners[3] = F
 			if (findtext(sides,"1") && findtext(sides,"8")) //SE corner
-				if (dir == SOUTH) //FL
-					corners[2] = F
-				else if (dir == NORTH) //BR
-					corners[3] = F
-				else if  (dir == WEST) //BL
-					corners[4] = F
-				else if (dir == EAST) // FR
-					corners[1] = F
+				switch(dir)
+					if (SOUTH) //FL
+						corners[2] = F
+					if (NORTH) //BR
+						corners[3] = F
+					if (WEST) //BL
+						corners[4] = F
+					if (EAST) // FR
+						corners[1] = F
 			if (findtext(sides,"2") && findtext(sides,"4")) //NW corner
-				if (dir == SOUTH) //BR
-					corners[3] = F
-				else if (dir == NORTH) //FL
-					corners[2] = F
-				else if  (dir == WEST) //FR
-					corners[1] = F
-				else if (dir == EAST) // BL
-					corners[4] = F
+				switch(dir)
+					if (SOUTH) //BR
+						corners[3] = F
+					if (NORTH) //FL
+						corners[2] = F
+					if (WEST) //FR
+						corners[1] = F
+					if (EAST) // BL
+						corners[4] = F
 			if (findtext(sides,"2") && findtext(sides,"8")) //NE corner
-				if (dir == SOUTH) //BL
-					corners[4] = F
-				else if (dir == NORTH) //FR
-					corners[1] = F
-				else if  (dir == WEST) //BR
-					corners[3] = F
-				else if (dir == EAST) // FL
-					corners[2] = F
+				switch(dir)
+					if (SOUTH) //BL
+						corners[4] = F
+					if (NORTH) //FR
+						corners[1] = F
+					if (WEST) //BR
+						corners[3] = F
+					if (EAST) // FL
+						corners[2] = F
 	maxdist=1+max(abs(corners[1].x-corners[2].x),abs(corners[1].y-corners[3].y),abs(corners[1].y-corners[2].y),abs(corners[1].x-corners[3].x))
 	for(var/obj/structure/vehicleparts/frame/FM in components)
 		for(var/obj/structure/vehicleparts/movement/MV in wheels)
@@ -574,35 +580,35 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 						var/obj/structure/vehicleparts/frame/ship/FRM = O
 						if (FRM.axis != src)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked by [FRM]!"))
 							return FALSE
 					if (istype(O, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/FRM = O
 						if (FRM.axis != src)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [FRM]!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked by [FRM]!"))
 							return FALSE
 					else if (istype(O, /obj/structure/barricade))
 						var/obj/structure/barricade/B = O
 						if(B.density > 0 && B.health > 600)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [B]!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked by [B]!"))
 							return FALSE
 					else if (istype(O, /obj/covers))
 						if(O.density)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked by [O]!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked by [O]!"))
 							return 
 					else if (istype(O, /obj/structure/barricade))
 						var/obj/structure/barricade/B = O
 						if(B.density > 0 && B.health > 600)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked!"))
 							return FALSE
 					else if (istype(O, /obj/covers))
 						if(O.density)
 							if (user)
-								user << "<span class = 'warning'>You can't turn in that direction, the way is blocked!</span>"
+								to_chat(user, SPAN_WARNING("You can't turn in that direction, the way is blocked!"))
 							return FALSE
 					else
 						todestroy += O
@@ -690,17 +696,17 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	if (!ishuman(H))
 		return
 	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
-		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		to_chat(H, SPAN_NOTICE("The axis needs to be placed at the <b>TOP LEFT</b> corner!"))
 		return
 	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
-		H << "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>"
+		to_chat(H, SPAN_NOTICE("The axis needs to be placed at the <b>TOP LEFT</b> corner!"))
 		return
 	for(var/obj/structure/vehicleparts/frame/ship/SH in range(4,src))
 		var/turf/TT = get_turf(SH)
 		if (!istype(TT, /turf/floor/beach/water) && !istype(TT, /turf/floor/trench/flooded))
-			H << "<span class='notice'>All ship parts must be in a water tile.</span>"
+			to_chat(H, SPAN_WARNING("All ship parts must be on a water tile."))
 			return
-	var/inp = WWinput(H, "Are you sure you wan't to assemble a vehicle here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
+	var/inp = WWinput(H, "Are you sure that you want to assemble a vehicle here? This has to be the <b>top-left</b> corner of the vehicle.", "Vehicle Assembly", "No", list("No", "Yes"))
 	if (inp == "No")
 		return
 	for(var/obj/structure/vehicleparts/frame/F in loc)
@@ -754,7 +760,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				chooseturret += "_turret"
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
-		H << "<span class='warning'>Vehicle assembled.</span>"
+		to_chat(H, SPAN_NOTICE("Vehicle assembled."))
 		for (var/obj/O in components)
 			O.update_icon()
 		return

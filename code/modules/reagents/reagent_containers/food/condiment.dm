@@ -253,7 +253,7 @@
 
 /obj/item/weapon/reagent_containers/food/condiment/bsugar
 	name = "sugarcane sugar"
-	desc = "a pile of unrefined brown sugar."
+	desc = "A pile of unrefined brown sugar."
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "sugar"
 	item_state = "flour"
@@ -264,9 +264,10 @@
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
 	decay = 0
+
 /obj/item/weapon/reagent_containers/food/condiment/tealeaves
 	name = "tea leaves"
-	desc = "some tea leaves. mix with hot water."
+	desc = "some tea leaves. Mix with hot water."
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "tea_leaves_dried"
 	item_state = "flour"

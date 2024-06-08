@@ -2449,7 +2449,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Officer ","")] police badge"
-		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
+		pb.desc = "A police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
@@ -2545,7 +2545,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Officer ","")] police badge"
-		pb.desc = "a police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
+		pb.desc = "A police badge in star shape, with <b>[replacetext(H.real_name,"Officer ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/swat_new(H), slot_head)
@@ -2614,7 +2614,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Agent ","")] DEA badge"
-		pb.desc = "a DEA badge, with <b>[replacetext(H.real_name,"Agent ","")]</b> engraved."
+		pb.desc = "A DEA badge, with <b>[replacetext(H.real_name,"Agent ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
 	if (prob(50))
@@ -2666,7 +2666,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Deputy ","")] Sheriff's Office badge"
-		pb.desc = "a sheriff deputy badge in star shape, with <b>[replacetext(H.real_name,"Deputy ","")]</b> engraved."
+		pb.desc = "A sheriff deputy badge in star shape, with <b>[replacetext(H.real_name,"Deputy ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(H), slot_shoes)
@@ -2749,7 +2749,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Detective ","")] Sheriff's Office badge"
-		pb.desc = "a Sheriff's Office detective badge in star shape, with <b>[replacetext(H.real_name,"Detective ","")]</b> engraved."
+		pb.desc = "A Sheriff's Office detective badge in star shape, with <b>[replacetext(H.real_name,"Detective ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	if (prob(80))
 		var/randtie = rand(1,3)
@@ -2826,7 +2826,7 @@
 	var/obj/item/clothing/accessory/armband/policebadge/pb = new /obj/item/clothing/accessory/armband/policebadge(null)
 	spawn(15)
 		pb.name = "[replacetext(H.real_name,"Sheriff ","")] Sheriff's Office badge"
-		pb.desc = "a sheriff badge in star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
+		pb.desc = "A sheriff badge in a star shape, with <b>[replacetext(H.real_name,"Sheriff ","")]</b> engraved."
 	uniform1.attackby(pb, H)
 	var/obj/item/weapon/storage/belt/keychain/KC2 = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/civ/police/po1 = new/obj/item/weapon/key/civ/police(null)

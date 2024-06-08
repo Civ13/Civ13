@@ -1671,7 +1671,7 @@
 
 /obj/item/clothing/accessory/storage/webbing/light
 	name = "light webbing"
-	desc = "a light webbing, with lower capacity but permitting fast movement."
+	desc = "A light webbing, with lower capacity but permitting fast movement."
 	slots = 3
 	icon_state = "german_vest"
 	item_state = "german_vest"
@@ -1926,7 +1926,7 @@
 
 /obj/item/clothing/suit/nbcponcho
 	name = "NBC poncho"
-	desc = "a NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
+	desc = "A NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
 	icon_state = "nbcponcho"
 	item_state = "nbcponcho"
 	worn_state = "nbcponcho"
@@ -2062,6 +2062,16 @@ obj/item/clothing/head/chinaguardcap
 	worn_state = "sov_klmk"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/sov_klmk/alt
+	icon_state = "sov_klmk_alt"
+	item_state = "sov_klmk_alt"
+	worn_state = "sov_klmk_alt"
+
+/obj/item/clothing/under/sov_klmk/yellow
+	icon_state = "sov_klmk_yellow"
+	item_state = "sov_klmk_yellow"
+	worn_state = "sov_klmk_yellow"
+
 /obj/item/clothing/under/sov_kzs
 	name = "KZS camo uniform"
 	desc = "A suit in the KZS camo pattern, issued by the Soviet Union in the late 1970s."
@@ -2149,7 +2159,7 @@ obj/item/clothing/head/chinaguardcap
 
 /obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
-	desc = "a heavy NIJ level IV vest."
+	desc = "A heavy NIJ level IV vest."
 	icon_state = "heavypolice"
 	item_state = "heavypolice"
 	worn_state = "heavypolice"
@@ -2161,7 +2171,7 @@ obj/item/clothing/head/chinaguardcap
 
 /obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
-	desc = "a heavy NIJ level III vest."
+	desc = "A heavy NIJ level III vest."
 	icon_state = "mediumvest"
 	item_state = "mediumvest"
 	worn_state = "mediumvest"

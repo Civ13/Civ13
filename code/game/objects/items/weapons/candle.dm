@@ -1,6 +1,6 @@
 /obj/item/weapon/flame/candle
 	name = "red candle"
-	desc = "a small pillar candle."
+	desc = "A small pillar candle."
 	icon = 'icons/obj/candle.dmi'
 	icon_state = "candle1"
 	item_state = "candle1"

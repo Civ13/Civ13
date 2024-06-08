@@ -397,7 +397,7 @@ obj/item/weapon/storage/fancy/medal/japanese_china_full
 
 /obj/item/weapon/storage/fancy/picklejar
 	name = "pickle jar"
-	desc = "a jar filled with pickles and vinegar"
+	desc = "A jar filled with pickles and vinegar"
 	icon = 'icons/obj/food/food.dmi'
 	icon_state = "picklejar"
 	key_type = "pickles"

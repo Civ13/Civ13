@@ -332,7 +332,7 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
 	dat += "<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>"
 
-	to_chat(user, browse(dat, text("window=mob[name];size=340x540")))
+	user << browse(dat, text("window=mob[name];size=340x540"))
 	onclose(user, "mob[name]")
 	return
 

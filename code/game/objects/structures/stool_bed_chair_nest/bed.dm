@@ -36,7 +36,7 @@
 
 /obj/structure/bed/hammock
 	name = "hammock"
-	desc = "a rope bed, hanging from the ceiling."
+	desc = "A rope bed, hanging from the ceiling."
 	applies_material_colour = FALSE
 	material = "rope"
 	icon_state = "hammockf"

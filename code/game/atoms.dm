@@ -169,10 +169,14 @@
 			f_name += "<span class='danger'>blood-stained</span> [name][infix]!"
 		else
 			f_name += "oil-stained [name][infix]."
+
 	if (!isobserver(user))
 		user.visible_message("<font size=1>[user.name] looks at \the [src].</font>", "<font size =1>You look at \the [src].</font>")
+
 	to_chat(user, "\icon[src] That's [f_name] [suffix]")
-	to_chat(user, desc)
+
+	if(desc) // If the description is not null.
+		to_chat(user, desc)
 
 	return distance == -1 || (get_dist(src, user) <= distance)
 

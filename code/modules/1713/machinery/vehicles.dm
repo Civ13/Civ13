@@ -1,7 +1,7 @@
 
 /obj/structure/vehicleparts
 	name = "vehicle part"
-	desc = "a basic vehicle part."
+	desc = "A basic vehicle part."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "part"
 	anchored = FALSE
@@ -855,7 +855,7 @@
 ///////////////////FRAME///////////////////////////////
 /obj/item/vehicleparts/frame
 	name = "vehicle frame"
-	desc = "a vehicle frame."
+	desc = "A vehicle frame."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "motorcycle_frame0"
 	var/customcolor = "#FFFFFF"
@@ -877,7 +877,7 @@
 
 /obj/item/vehicleparts/frame/bike
 	name = "motorcycle frame"
-	desc = "a motorcycle frame. Will fit engines up to 125cc and fueltanks up to 75u."
+	desc = "A motorcycle frame. Will fit engines up to 125cc and fueltanks up to 75u."
 	icon_state = "motorcycle_frame1"
 	base_icon = "motorcycle_frame"
 	customcolor = "#FFFFFF"
@@ -891,7 +891,7 @@
 
 /obj/item/vehicleparts/frame/boat
 	name = "outrigger boat frame"
-	desc = "a simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
+	desc = "A simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
 	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "outrigger_frame1"
 	base_icon = "outrigger_frame"
@@ -905,7 +905,7 @@
 
 /obj/item/vehicleparts/frame/boat/rhib
 	name = "rhib boat frame"
-	desc = "a rhib boat frame, with no engine or propulsion mode. Supports engines up to 600cc and fueltanks up to 200u"
+	desc = "A rhib boat frame, with no engine or propulsion mode. Supports engines up to 600cc and fueltanks up to 200u"
 	icon = 'icons/obj/vehicles/vehicleparts64x64.dmi'
 	icon_state = "rib_frame1"
 	base_icon = "rib_frame"
