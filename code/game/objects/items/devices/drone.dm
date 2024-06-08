@@ -137,7 +137,7 @@
 /obj/structure/drone/proc/toggle_state()
 	if(!can_fly)
 		return
-	if(!broken && can_move)
+	if(!broken)
 		can_move = FALSE
 		if (connected_controller)
 			connected_controller.is_moving = FALSE
