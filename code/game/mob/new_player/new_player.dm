@@ -449,14 +449,22 @@ var/global/redirect_all_players = null
 			temp_ckey = replacetext(temp_ckey," ", "")
 			temp_ckey = replacetext(temp_ckey,"_", "")
 			if (temp_ckey == client.ckey)
-				factjob = "BAF"
+				factjob = "blue"
+		
+		for (var/i in faction_list_red)
+			var/temp_ckey = lowertext(i)
+			temp_ckey = replacetext(temp_ckey," ", "")
+			temp_ckey = replacetext(temp_ckey,"_", "")
+			if (temp_ckey == client.ckey)
+				factjob = "red"
+				
 		if (!factjob)
-			for (var/i in faction_list_red)
+			for (var/i in faction_list_organizer)
 				var/temp_ckey = lowertext(i)
 				temp_ckey = replacetext(temp_ckey," ", "")
 				temp_ckey = replacetext(temp_ckey,"_", "")
 				if (temp_ckey == client.ckey)
-					factjob = "RDF"
+					factjob = "organizer"
 
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
