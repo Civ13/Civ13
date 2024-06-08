@@ -56,10 +56,13 @@
 		for (var/i in flist_temp)
 			if (findtext(i, ";"))
 				var/list/current = splittext(i, ";")
-				if (current[2] == "red")
-					faction_list_red += current[1]
-				else if (current[2] == "blue")
-					faction_list_blue += current[1]
+				switch (current[2])
+					if ("blue")
+						faction_list_blue += current[1]
+					if ("red")
+						faction_list_red += current[1]
+					if ("organizer")
+						faction_list_organizer += current[1]
 	else
 		admin_notice("<span class='danger'>Failed to load factionlist!</span>", R_DEBUG)
 	
