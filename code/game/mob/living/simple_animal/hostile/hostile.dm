@@ -51,6 +51,8 @@
 						T = RH
 						break
 			else
+				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng))
+					continue
 				if (L.faction == faction)
 					continue
 				else if (L in friends)
@@ -148,7 +150,7 @@
 
 
 /mob/living/simple_animal/proc/ListTargets(var/dist = 8)
-	var/list/L = hearers(dist,src)
+	var/list/L = viewers(dist,src)
 	return L
 
 /mob/living/simple_animal/proc/DestroySurroundings()
