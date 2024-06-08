@@ -134,7 +134,7 @@
 		return 7 MINUTES
 
 /obj/map_metadata/campaign/proc/civ_collector()
-	for(var/turf/T in get_area_turfs(/area/caribbean/japanese/land))
+	for(var/turf/T in get_area_turfs(/area/caribbean/faction2/collector))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
@@ -555,6 +555,7 @@ var/no_loop_ca = FALSE
 
 
 /obj/map_metadata/campaign/proc/after_round_checks()
+	to_chat(world, "Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>")
 	to_chat(world, "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]], <font color='grey'>Unknown</font> [civilians_killed["Unknown"]]</big>")
 	spawn(5 SECONDS)
 		to_chat(world, "<big><b>AP mines placed: [ap_mines_placed]</b></big>")
