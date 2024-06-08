@@ -1257,6 +1257,9 @@
 	location = AREA_OUTSIDE
 	base_turf = /turf/floor/dirt
 
+/area/caribbean/faction1/collector
+	name = "Collection Area"
+
 /area/caribbean/faction1/inside
 	icon_state = "red3"
 	location = AREA_INSIDE
@@ -1298,6 +1301,9 @@
 	icon_state = "blue2"
 	location = AREA_OUTSIDE
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/faction2/collector
+	name = "Collection Area"
 
 /area/caribbean/faction2/inside
 	icon_state = "blue3"

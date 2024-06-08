@@ -1216,3 +1216,41 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
+
+/datum/job/american/war_correspondent
+	title = "War Correspondent"
+	rank_abbreviation = ""
+
+	spawn_location = "JoinLateRN"
+
+	additional_languages = list("Blugoslavian" = 100, "Redmenian" = 100)
+
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/american/war_correspondent/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new  /obj/item/clothing/under/reporter(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kevlarhelmet/press(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard/yellow(src), slot_r_store)
+	var/obj/item/clothing/under/uniform = slot_w_uniform
+	var/obj/item/clothing/accessory/armor/nomads/civiliankevlar/press/press_armor = new /obj/item/clothing/accessory/armor/nomads/civiliankevlar/press(null)
+	uniform.attackby(press_armor, src)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, take some pictures and record the chaos!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("machinegun", STAT_NORMAL)
+
+	return TRUE

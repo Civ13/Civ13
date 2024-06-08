@@ -4,6 +4,7 @@
 	icon = 'icons/obj/policetape.dmi'
 	icon_state = "tape"
 	w_class = ITEM_SIZE_SMALL
+	var/can_be_used = TRUE
 	var/turf/start
 	var/turf/end
 	var/tape_type = /obj/item/tape
@@ -11,6 +12,10 @@
 
 var/list/image/hazard_overlays
 var/list/tape_roll_applications = list()
+
+/obj/item/taperoll/no_tape
+	name = "tape roll"
+	can_be_used = FALSE
 
 /obj/item/tape
 	name = "tape"
@@ -121,6 +126,8 @@ var/list/tape_roll_applications = list()
 	return ..()
 
 /obj/item/taperoll/attack_self(mob/user as mob)
+	if(!can_be_used)
+		return
 	if(!start)
 		start = get_turf(src)
 		usr << "<span class='notice'>You place the first end of \the [src].</span>"
@@ -231,6 +238,8 @@ var/list/tape_roll_applications = list()
 		return
 
 /obj/item/taperoll/afterattack(var/atom/A, mob/user as mob, proximity)
+	if(!can_be_used)
+		return
 	if(!proximity)
 		return
 

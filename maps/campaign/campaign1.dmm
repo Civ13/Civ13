@@ -50,7 +50,6 @@
 "lQ" = (/obj/structure/wild/smallbush{icon_state = "smallbush30"},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/temperate{icon_state = "green1"})
 "mb" = (/obj/structure/closet/crate/sandbags,/turf/floor/grass,/area/caribbean/faction2)
 "mg" = (/obj/structure/camonet,/obj/structure/closet/crate/ww2,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/window/barrier/sandbag{dir = 8},/obj/structure/window/barrier/sandbag{dir = 1; icon_state = "sandbag"},/turf/floor/dirt,/area/caribbean/faction2)
-"mh" = (/obj/map_metadata/campaign,/turf/floor/grass,/area/caribbean/no_mans_land/temperate)
 "mr" = (/obj/structure/closet/crate/ww2,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/obj/item/weapon/plastique/c4,/turf/floor/dirt,/area/caribbean/faction2)
 "mG" = (/obj/structure/wild/tree/live_tree,/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/faction2)
 "mI" = (/obj/item/weapon/barrier/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
@@ -346,5 +345,5 @@ QzQVIDLyQVQVQVQVOsQVOsQVHeQVQVlqQVJiJijVIUIUIUIUIUIUIUQzQVQVQVQVQVQVQVQVQVQVQVlq
 QVQVQVQVOsQVQVEYQVQzQVQVQVQVQVOsQVJiZtJiIURUIUQaIUIUIUQVQVQVQVQVlqQVQVlqlqQVQVQVQVQVQVuPQVQVQVQVQVEYQVQVQVQVQVEYQVQVQVQVQVlqlqlqQVbrlqlqlqlqQVQVOsQVQVQVQVQVQVbrlqQVQVQVQVlqQVlqQVQVQVuPQzQVQVQVQVFpswswgWQBgWgWQBQBQBhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhb
 QVQVQVOsOsQVQVQVQVQVIDQVQzQzQVQVQVJiJiJiIUIUIUIURUIUIUQVQVOsQVlqlqlqlqQVQVMuQVQVQVQVQVQVQVQVQVQVlqQVQVQVQVOsQVQVQVQVQVQVQVQVQVQVQVQVQVQVhMQVQVQVQVQVQVHeQVuPQVQVQVQVbrOsQVlqlqlqlqQVQVQVQVQVTzTzTzhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhb
 QVQVQVQVQVQVlqhMHeOsQVQVQVlqOsQVQVJiJiJiIUIUIUIUIUIUIUQVQVQVlqlqQVQVQVQVQVQVQVQVQVQVQVQVOsQVQVQVQVQVQVQVQVCxQVQVQVQVQVQVQVQVHeQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVbrlqlqlqlqlqlqTzTzTzTzTzTzTzTzhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhb
-mhlqQVQVQVQVQVQVHeQVQVQVQVQVOsQVQVJiJiJiIUIUIUIUIUIUIUQVQVQVQVQVQVQVQVQVQVQVlqQVQVQVQVQVQVQVQVQVlqQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVhMQVQVQVlqQVTzTzTzTzTzTzTzTzTzTzTzhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhb
+QVlqQVQVQVQVQVQVHeQVQVQVQVQVOsQVQVJiJiJiIUIUIUIUIUIUIUQVQVQVQVQVQVQVQVQVQVQVlqQVQVQVQVQVQVQVQVQVlqQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVQVhMQVQVQVlqQVTzTzTzTzTzTzTzTzTzTzTzhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhbhb
 "}

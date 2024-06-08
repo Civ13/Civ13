@@ -496,14 +496,6 @@
 	reg_number = ""
 	color = "#8383C2"
 
-/obj/structure/vehicleparts/axis/heavy/adrian
-	name = "Type-9 Adrian"
-	speeds = 4
-	speedlist = list(1=12,2=8,3=6,4=5)
-	reg_number = ""
-	color = "#555346"
-	vehicle_type = "apc"
-
 /obj/structure/vehicleparts/axis/heavy/t90a
 	name = "T-90A"
 	speeds = 4
@@ -613,6 +605,20 @@
 		var/pickedname = pick(tank_names_usa)
 		tank_names_soviet -= pickedname
 		name = "[name] \'[pickedname]\'"
+
+/obj/structure/vehicleparts/axis/heavy/bmv1_1
+	name = "BMV-1 mk. I"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=6,4=4)
+	reg_number = ""
+	color = "#4D5D53"
+
+/obj/structure/vehicleparts/axis/heavy/smf1_a
+	name = "SMF I mod. A"
+	speeds = 4
+	speedlist = list(1=10,2=7,3=6,4=4)
+	reg_number = ""
+	color = "#555346"
 
 /obj/structure/vehicleparts/axis/car
 	name = "car axis"

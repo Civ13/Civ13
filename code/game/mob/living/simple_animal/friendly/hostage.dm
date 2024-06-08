@@ -62,31 +62,35 @@ var/global/civvies_killed = list()
 	..()
 	if(uniquenum in civvies_killed)
 		return
-	var/killer = "none"
+	var/killer
 	var/obj/map_metadata/campaign/CM = map
 	var/obj/map_metadata/bank_robbery/BR = map
 	var/obj/map_metadata/kandahar/SA = map
 
+	civvies_killed += list(uniquenum)
 	if (map.ID == MAP_CAMPAIGN && CM)
+		killer = "Unknown"
 		if (harmer_factions["Redmenia"] > harmer_factions["Blugoslavia"])
 			killer = "Redmenia"
 		else if (harmer_factions["Redmenia"] < harmer_factions["Blugoslavia"])
 			killer = "Blugoslavia"
 		else if (harmer_factions["Redmenia"] == harmer_factions["Blugoslavia"] && harmer_factions["Blugoslavia"] > 0)
 			killer = "both factions"
-		if (killer != "none")
-			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
-			civvies_killed += list(uniquenum)
+		if (killer)
 			switch(killer)
-				if("Blugoslavia")
+				if ("Blugoslavia")
 					if(announce_death)
 						to_chat(world, "<font size=4>The <b>[name]</b> was killed by <font color='blue'><b>[killer]</b></font>!</font>")
 					CM.civilians_killed["Blugoslavia"]++
-				if("Redmenia")
+				if ("Redmenia")
 					if(announce_death)
 						to_chat(world, "<font size=4>The <b>[name]</b> was killed by <font color='red'><b>[killer]</b></font>!</font>")
 					CM.civilians_killed["Redmenia"]++
-			harmer_factions = list("Redmenia" = 0, "Blugoslavia" = 0)
+				if ("Unknown")
+					if(announce_death)
+						to_chat(world, "<font size=4>The <b>[name]</b> was killed by <font color='red'><b>[killer]</b></font>!</font>")
+					CM.civilians_killed["Unknown"]++
+			var/msg = "Civilian ([name]-[uniquenum]) killed by [killer] at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>)!"
 			game_log("CIVDEATH: [msg]")
 			message_admins(msg)
 
@@ -98,8 +102,7 @@ var/global/civvies_killed = list()
 		else if (harmer_factions["Police"] == harmer_factions["Robbers"] && harmer_factions["Robbers"] > 0)
 			killer = "both sides"
 
-		if (killer != "none")
-			civvies_killed += list(uniquenum)
+		if (killer)
 			switch(killer)
 				if("Robbers")
 					to_chat(world, "<font size=2>A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>!</font>")
@@ -118,8 +121,7 @@ var/global/civvies_killed = list()
 			killer = "Mujahideen"
 		else if (harmer_factions["DRA"] > (harmer_factions["Mujahideen"]||harmer_factions["Soviets"]))
 			killer = "DRA"
-		if (killer != "none")
-			civvies_killed = list(uniquenum)
+		if (killer)
 			switch(killer)
 				if("Soviets")
 					to_chat(world, "A <b>[name]</b> has been killed by the <font color='red'><b>[killer]</b></font>. The alliance is losing local support!")

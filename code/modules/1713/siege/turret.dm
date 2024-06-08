@@ -1314,3 +1314,45 @@
 		weapons.Add(new/obj/structure/cannon/modern/tank/japanese37(src))
 		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/type99/type97tank(src))
 		..()
+
+
+/obj/structure/turret/bmv1
+	turret_color = "#3d5931"
+	turret_icon = "char1_turret"
+	name = "BMV-1 mk. I"
+
+	gunner_x = 9
+	gunner_y = -2
+
+	loader_x = -9
+	loader_y = -2
+
+	New()
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat.setup(src)
+		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
+		loader_seat.setup(src)
+		weapons.Add(new/obj/structure/cannon/modern/tank/bmv75(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/dp28/dt28(src))
+		..()
+
+
+/obj/structure/turret/smf1
+	turret_color = "#555346"
+	turret_icon = "t34_turret"
+	name = "SMF I mod. A"
+
+	gunner_x = 9
+	gunner_y = -2
+
+	loader_x = -9
+	loader_y = -2
+
+	New()
+		gunner_seat = new /obj/structure/bed/chair/gunner(src.loc)
+		gunner_seat.setup(src)
+		loader_seat = new /obj/structure/bed/chair/loader(src.loc)
+		loader_seat.setup(src)
+		weapons.Add(new/obj/structure/cannon/modern/tank/smf75(src))
+		weapons.Add(new/obj/item/weapon/gun/projectile/automatic/dp28/dt28(src))
+		..()

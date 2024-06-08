@@ -180,6 +180,10 @@
 		return TRUE
 
 /obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf)
+	if (istype(O, /obj/structure/drone))
+		var/obj/structure/drone/D = O
+		if (D.flying)
+			return TRUE
 	for(var/obj/covers/repairedfloor/rope/R in loc)
 		return TRUE
 	if (istype(O) && O.checkpass(PASSGLASS))

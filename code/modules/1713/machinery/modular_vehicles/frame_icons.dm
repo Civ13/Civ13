@@ -191,7 +191,11 @@
 				else
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=EAST)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
@@ -208,7 +212,11 @@
 				if (override_frame_icon && !override_applied)
 					tempstate = override_frame_icon
 					override_applied = TRUE
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=NORTH)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
@@ -258,7 +266,11 @@
 				else
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=WEST)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
@@ -275,7 +287,11 @@
 				if (override_frame_icon && !override_applied)
 					tempstate = override_frame_icon
 					override_applied = TRUE
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=SOUTH)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=SOUTH)
 				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
@@ -325,7 +341,11 @@
 				else
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10.5, dir=SOUTH)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=SOUTH)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=SOUTH)
 				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
@@ -342,7 +362,11 @@
 				if (override_frame_icon && !override_applied)
 					tempstate = override_frame_icon
 					override_applied = TRUE
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=EAST)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=EAST)
 				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)
@@ -392,7 +416,11 @@
 				else
 					ticon = normal_icon
 				var/tempstate = "[w_right[1]]"
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=NORTH)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=NORTH)
 				if (w_right.len <= 8)
 					if (axis)
 						if (override_color)
@@ -409,7 +437,11 @@
 				if (override_frame_icon && !override_applied)
 					tempstate = override_frame_icon
 					override_applied = TRUE
-				var/image/tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
+				var/image/tmpimg1
+				if (istype(axis, (/obj/structure/vehicleparts/axis/heavy/bmv1_1)))
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=9, dir=WEST)
+				else
+					tmpimg1 = image(icon=ticon, icon_state=tempstate, layer=10, dir=WEST)
 				if (w_front.len <= 8)
 					if (axis)
 						if (override_color)

@@ -109,7 +109,10 @@
 	title = "RDF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
-/*
+
+/datum/job/redfaction/armored // Remember to remove this later
+	spawn_location = "JoinLateRed_Reinforcement"
+
 /datum/job/redfaction/armored/sl
 	title = "RDF Armored Squadleader"
 	squad = 5
@@ -124,7 +127,6 @@
 	title = "RDF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
-*/
 
 /datum/job/redfaction/engineer
 	title = "RDF Engineer"
@@ -178,7 +180,7 @@
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/key/redfaction, slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/redfaction(H), slot_l_store)
 
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -191,7 +193,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/plastique/c4(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/flare_pouch/normal_full (H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/flare_pouch/normal_full(H), slot_r_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/g3/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/g3(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	else if (!findtext(title, "Armored"))

@@ -109,7 +109,7 @@
 	title = "BAF Recon"
 	squad = 4
 	rank_abbreviation = "4-Recon"
-/*
+
 /datum/job/bluefaction/armored/sl
 	title = "BAF Armored Squadleader"
 	is_squad_leader = TRUE
@@ -124,7 +124,6 @@
 	title = "BAF Anti-Tank"
 	squad = 6
 	rank_abbreviation = "6-AT"
-*/
 
 /datum/job/bluefaction/engineer
 	title = "BAF Engineer"
@@ -176,7 +175,7 @@
 	else if (findtext(title, "Commander"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
 	else if (findtext(title, "Armored"))
-		H.equip_to_slot_or_del(new /obj/item/weapon/key/bluefaction, slot_l_store)
+		H.equip_to_slot_or_del(new /obj/item/weapon/key/bluefaction(H), slot_l_store)
 
 	if (findtext(title, "Sniper") || findtext(title, "Recon"))
 		H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -189,7 +188,7 @@
 		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m1911(H), slot_l_store)
 	else if (findtext(title, "Engineer"))
 		H.equip_to_slot_or_del(new /obj/item/weapon/plastique/c4(H), slot_l_store)
-		H.equip_to_slot_or_del(new /obj/item/flare_pouch/normal_full (H), slot_r_store)
+		H.equip_to_slot_or_del(new /obj/item/flare_pouch/normal_full(H), slot_r_store)
 		var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(H)
 		H.equip_to_slot_or_del(HGUN, slot_shoulder)
 	else if (!findtext(title, "Armored"))

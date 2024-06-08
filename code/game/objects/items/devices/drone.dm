@@ -15,8 +15,8 @@
 		toggle(H)
 
 /obj/item/drone_controller/secondary_attack_self(var/mob/living/human/H)
-	if(secondary_action && connected_drone && connected_drone.has_special)
-		to_chat(H, SPAN_DANGER("You press the detonate button."))
+	if(secondary_action && connected_drone && connected_drone.special)
+		to_chat(H, SPAN_DANGER("You press the [connected_drone.special] button."))
 		connected_drone.do_special(H)
 
 /obj/item/drone_controller/proc/toggle(var/mob/living/human/H)
@@ -62,6 +62,7 @@
 	if(!is_moving)	return
 	if(!connected_drone)	return
 	if(!connected_drone.can_move)	return
+	if(connected_drone.can_fly && !connected_drone.flying)	return
 	if(connected_drone.broken)	return
 	if(executing_move)	return
 	executing_move = TRUE
@@ -76,6 +77,8 @@
 	if(connected_drone && connected_drone.can_fly && !connected_drone.broken)
 		to_chat(controller, SPAN_NOTICE("You [connected_drone.flying ? "decent \the [src] to the ground." : "fly \the [src] into the air."]"))
 		connected_drone.toggle_state()
+	else if(connected_drone.broken)
+		to_chat(controller, SPAN_NOTICE("You try to [connected_drone.flying ? "decent \the [src] to the ground but nothing happens." : "fly \the [src] into the air but nothing happens.."]"))
 
 /obj/structure/drone
 	name = "drone"
@@ -92,7 +95,7 @@
 	var/flying = FALSE
 
 	var/obj/item/weapon/grenade/payload = null
-	var/has_special = FALSE
+	var/special = null
 
 	var/movement_sound = 'sound/machines/rc_car.ogg'
 
@@ -112,41 +115,52 @@
 			connected_controller = RC
 			connected_controller.connected_drone = src
 			to_chat(user, SPAN_NOTICE("You connect \the [src] to \the [connected_controller]."))
-			return
 		else
 			to_chat(user, SPAN_WARNING("\The [src] is already connected to a controller."))
-			return
-	if(broken && istype(I, /obj/item/weapon/weldingtool))
+		return
+	if((istype(I, /obj/item/weapon/weldingtool) || istype(I, /obj/item/taperoll)) && broken)
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, 100, src))
-			visible_message("[user] sucessfully repairs \the [src].")
+			visible_message("[user] repairs \the [src].")
 			broken = FALSE
-			return
+		return
+	if(istype(I, /obj/item/weapon/grenade) && !payload && special && !flying)
+		visible_message("[user] starts attaching the [I] to \the [src]...")
+		if (do_after(user, 100, src))
+			visible_message("[user] attaches the [I] to \the [src].")
+			user.remove_from_mob(I)
+			I.loc = src
+			payload = I
 	else
 		..()
 
 /obj/structure/drone/proc/toggle_state()
-	if(can_fly)
+	if(!can_fly)
+		return
+	if(!broken && can_move)
 		can_move = FALSE
+		if (connected_controller)
+			connected_controller.is_moving = FALSE
 		if(!flying)
 			animate(src, pixel_y = 16, time = starting_snd_len, easing = CUBIC_EASING | EASE_IN)
 			playsound(loc, starting_snd, 50, FALSE, 2)
+			icon_state = "[initial(icon_state)]_flying"
 			spawn(starting_snd_len)
 				can_move = TRUE
 				flying = TRUE
 				sinkable = FALSE
-				icon_state = "[initial(icon_state)]_flying"
+				layer = 8
 				running_sound()
 		else
-			
 			playsound(loc, ending_snd, 50, FALSE, 2)
 			spawn(5)
 				animate(src, pixel_y = 0, time = 5, easing = BOUNCE_EASING | EASE_OUT)
 				spawn(5)
-					can_move = TRUE
+					can_move = FALSE
 					flying = FALSE
 					sinkable = TRUE
 					icon_state = initial(icon_state)
+					layer = initial(layer)
 
 /obj/structure/drone/proc/try_destroy()
 	if (health <= 0)
@@ -162,24 +176,53 @@
 	return
 
 /obj/structure/drone/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			health -= 100
-		if (2.0)
-			health -= 50
-			if (prob(40))
+	if (flying)
+		var/crash = FALSE
+		switch(severity)
+			if (1.0)
+				health -= 70
+				crash = TRUE
+			if (2.0)
+				health -= 25
+				if (prob(75))
+					crash = TRUE
+			if (3.0)
+				if (prob(25))
+					crash = TRUE
+		try_destroy()
+		if (crash && src)
+			toggle_state()
+	else
+		switch(severity)
+			if (1.0)
+				health -= 100
 				broken = TRUE
 				visible_message(SPAN_DANGER("\The [src] breaks down!"))
 				if (connected_controller)
 					connected_controller.is_moving = FALSE
-		if (3.0)
-			health -= 25
-	try_destroy()
+			if (2.0)
+				health -= 50
+				if (prob(40))
+					broken = TRUE
+					visible_message(SPAN_DANGER("\The [src] breaks down!"))
+					if (connected_controller)
+						connected_controller.is_moving = FALSE
+			if (3.0)
+				health -= 25
+		try_destroy()
 
 /obj/structure/drone/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage * 0.1
-	visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
-	try_destroy()
+	if (flying)
+		if (prob(60))
+			health -= proj.damage * 0.1
+			visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
+		else if (prob(10))
+			visible_message(SPAN_DANGER("\The [src]\'s propeller is hit, shooting it down!"))
+			toggle_state()
+	else
+		health -= proj.damage * 0.1
+		visible_message(SPAN_DANGER("\The [src] is hit by \the [proj.name]!"))
+		try_destroy()
 
 /obj/structure/drone/Destroy()
 	if (connected_controller)
@@ -204,7 +247,7 @@
 	name = "Goliath SdKfz. 302"
 	desc = "The SdKfz. 302, also known as the Goliath, is a remote-controlled tracked mine carrying either 60 or 100 kg of high explosives. It is used for destroying tanks, disrupting dense infantry formations, and the demolition of buildings or bridges."
 	movement_delay = 4.5
-	has_special = TRUE
+	special = "detonate"
 	heavy_armor_penetration = 40
 
 /obj/structure/drone/goliath/do_special()
@@ -286,5 +329,22 @@
 	running_snd = list('sound/machines/drone_active1.ogg', 'sound/machines/drone_active2.ogg', 'sound/machines/drone_active3.ogg')
 	ending_snd = 'sound/machines/drone_shutdown.ogg'
 
+/obj/structure/drone/flying/do_special()
+	if (payload)
+		var/turf/T = get_turf(src)
+		payload.pixel_x = pixel_x
+		payload.pixel_y = pixel_y
+		payload.loc = T
+		payload.activate()
+		if (flying)
+			animate(payload, pixel_y = 0, time = 5, easing = LINEAR_EASING)
+		payload = null
+	return
+
 /obj/structure/drone/flying/Move()
 	..()
+
+/obj/structure/drone/flying/grenade
+	name = "drone"
+	desc = "A flying drone. This one is capable of carrying and releasing grenades."
+	special = "release"

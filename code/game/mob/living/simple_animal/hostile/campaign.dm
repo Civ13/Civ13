@@ -24,16 +24,16 @@
 	mob_size = MOB_MEDIUM
 	starves = FALSE
 	behaviour = "hostile"
-	faction = PIRATES
+	faction = REDFACTION
 	ranged = 1
 	rapid = 0
 	firedelay = 15
-	projectiletype = /obj/item/projectile/bullet/rifle/a762x39
-	grenade_type = /obj/item/weapon/grenade/coldwar/m67
 	casingtype = null
 	language = new/datum/language/redmenian
-	stop_automated_movement = TRUE
+	stop_automated_movement = FALSE
 	wander = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/a762x39
+	grenade_type = /obj/item/weapon/grenade/coldwar/m67
 	New()
 		..()
 		firedelay += pick(-1,0,1)
@@ -54,16 +54,17 @@
 	icon_dead = "rng_sl_dead"
 	maxHealth = 150
 	health = 150
-	rapid = 0
+	rapid = 1
 	firedelay = 8
 	role = "officer"
+	projectiletype = /obj/item/projectile/bullet/rifle/a762x51
 	New()
 		..()
 		icon_state = "rng_sl"
 		icon_living = icon_state
 		icon_dead = "[icon_state]_dead"
 		grenades = 1
-		gun = new/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103(src)
+		gun = new/obj/item/weapon/gun/projectile/submachinegun/g3(src)
 
 /mob/living/simple_animal/hostile/human/redmenian_ng/medic
 	name = "NGR corpsman"
