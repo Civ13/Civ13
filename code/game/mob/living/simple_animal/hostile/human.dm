@@ -80,7 +80,7 @@
 			if (H.faction_text == faction && s_language.name == language.name)
 				if (findtext(message, "medic!") && target_action != "helping" && target_action != "bandaging" && target_action != "drag" && target_action != "moving")
 					if (H.getTotalDmg()>30)
-						say("!!Coming!", language)
+						say("!! Coming!", language)
 						target_action = "moving"
 						target_mob = null
 						target_obj = speaker
@@ -185,9 +185,6 @@
 	if (grenades && prob(5) && target_mob in view(7,src))
 		var/enemies_in_sight = 0
 		for(var/mob/living/L in range(3,target_mob))
-			if (map.ID == MAP_CAMPAIGN && istype(L, /mob/living/simple_animal/civilian)) // Please don't shoot civilians
-				break
-
 			if (L.faction == src.faction)
 				break
 			else if (ishuman(L))
@@ -201,16 +198,14 @@
 		if (enemies_in_sight >= 3 && grenades)
 			grenades--
 			var/obj/item/weapon/grenade/GN = new grenade_type(loc)
+			GN.activate(src)
 			throw_item(GN,target_mob)
-			GN.active = TRUE
-			spawn(GN.det_time)
-				GN.prime()
 	spawn(1)
 		if (world.time>last_fire+firedelay)
 			last_fire = world.time
 			switch(rapid)
 				if (0) //singe-shot
-					Shoot(target_mob, src.loc, src)
+					Shoot(target_mob)
 					if(casingtype)
 						new casingtype
 				if (1) //semi-auto
@@ -218,7 +213,7 @@
 					var/s_timer = 1
 					for(var/i = 1, i<= shots, i++)
 						spawn(s_timer)
-							Shoot(target_mob, src.loc, src)
+							Shoot(target_mob)
 							if(casingtype)
 								new casingtype(get_turf(src))
 						s_timer += 3
@@ -227,25 +222,24 @@
 					var/s_timer = 1
 					for(var/i = 1, i<= shots, i++)
 						spawn(s_timer)
-							Shoot(target_mob, src.loc, src)
+							Shoot(target_mob)
 							if(casingtype)
 								new casingtype(get_turf(src))
 						s_timer += 2
 	return
 
-/mob/living/simple_animal/hostile/human/proc/Shoot(var/target, var/start, var/user, var/bullet = 0)
-	if(target == start || !gun)
-		return
+/mob/living/simple_animal/hostile/human/proc/Shoot(var/target)
+	if(!gun)	return
+	var/obj/item/projectile/projectile = new projectiletype(get_turf(src))
+	if(!projectile)	return
+	playsound(src, gun.fire_sound, 100, TRUE)
 
-	var/obj/item/projectile/A = new projectiletype(get_turf(user))
-	playsound(user, gun.fire_sound, 100, TRUE)
-	if(!A)	return
-	var/def_zone = "chest"
+	var/target_zone = "chest"
 	if (prob(20))
-		def_zone = "head"
+		target_zone = "head"
 	else if (prob(15))
-		def_zone = pick("l_arm","r_arm","r_leg","l_leg")
-	A.launch(target, user, src.gun, def_zone, rand(-1,1), rand(-1,1))
+		target_zone = pick("l_arm","r_arm","r_leg","l_leg")
+	gun.process_projectile(projectile, src, target, target_zone)
 	set_light(3)
 	spawn(5)
 		set_light(0)
