@@ -142,7 +142,7 @@
 				else
 					civilians_evacuated["Blugoslavia"]++
 				qdel(CVL)
-	for(var/turf/T in get_area_turfs(/area/caribbean/pirates/land))
+	for(var/turf/T in get_area_turfs(/area/caribbean/faction1/collector))
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
