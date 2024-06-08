@@ -1221,15 +1221,15 @@
 	tocreate = list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/bmv1/rf, /obj/structure/vehicleparts/movement/tracks/char1/right_front, /obj/structure/bed/chair/drivers/tank),
 	"2,1" = list(/obj/structure/vehicleparts/frame/bmv1/front),
-	"3,1" = list(/obj/structure/vehicleparts/frame/bmv1/lf, /obj/structure/vehicleparts/movement/tracks/char1/left_front),
+	"3,1" = list(/obj/structure/vehicleparts/frame/bmv1/lf, /obj/structure/vehicleparts/movement/tracks/char1/left_front, /obj/structure/bed/chair/mgunner/dt28, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt),
 
 	"1,2" = list(/obj/structure/vehicleparts/frame/bmv1/right/door),
 	"2,2" = list(/obj/structure/vehicleparts/frame/bmv1/center, /obj/structure/turret/bmv1),
-	"3,2" = list(/obj/structure/vehicleparts/frame/bmv1/left),
+	"3,2" = list(/obj/structure/vehicleparts/frame/bmv1/left, /obj/structure/shellrack/full75),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/bmv1/rb, /obj/structure/vehicleparts/movement/tracks/char1/right_back, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel, /obj/structure/engine/internal/diesel/premade/chiha),
-	"2,3" = list(/obj/structure/vehicleparts/frame/bmv1/back),
-	"3,3" = list(/obj/structure/vehicleparts/frame/bmv1/lb, /obj/structure/vehicleparts/movement/tracks/char1/left_back)
+	"2,3" = list(/obj/structure/vehicleparts/frame/bmv1/back, /obj/structure/shellrack/full75),
+	"3,3" = list(/obj/structure/vehicleparts/frame/bmv1/lb, /obj/structure/vehicleparts/movement/tracks/char1/left_back, /obj/item/weapon/reagent_containers/food/drinks/teapot/filled)
 	)
 
 /obj/effects/premadevehicles/tank/smf1
@@ -1242,15 +1242,15 @@
 	"2,1" = list(/obj/structure/vehicleparts/frame/smf1/front, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt),
 	"3,1" = list(/obj/structure/vehicleparts/frame/smf1/lf, /obj/structure/vehicleparts/movement/tracks/t34/left_front, /obj/structure/bed/chair/drivers/tank),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/smf1/right, /obj/structure/shellrack/full76),
-	"2,2" = list(/obj/structure/vehicleparts/frame/smf1/fc, /obj/structure/turret/smf1),
-	"3,2" = list(/obj/structure/vehicleparts/frame/smf1/left, /obj/structure/shellrack/full76),
+	"1,2" = list(/obj/structure/vehicleparts/frame/smf1/right, /obj/structure/shellrack/full75),
+	"2,2" = list(/obj/structure/vehicleparts/frame/smf1/fc, /obj/structure/turret/smf1, /obj/structure/shellrack/full75),
+	"3,2" = list(/obj/structure/vehicleparts/frame/smf1/left),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/smf1/right/door),
-	"2,3" = list(/obj/structure/vehicleparts/frame/smf1/bc, /obj/structure/shellrack/full76),
-	"3,3" = list(/obj/structure/vehicleparts/frame/smf1/left/door, /obj/item/weapon/storage/toolbox/emergency),
+	"2,3" = list(/obj/structure/vehicleparts/frame/smf1/bc),
+	"3,3" = list(/obj/structure/vehicleparts/frame/smf1/left/door),
 
-	"1,4" = list(/obj/structure/vehicleparts/frame/smf1/rb, /obj/structure/vehicleparts/movement/tracks/t34/right_back, /obj/structure/engine/internal/diesel/premade/chiha),
+	"1,4" = list(/obj/structure/vehicleparts/frame/smf1/rb, /obj/structure/vehicleparts/movement/tracks/t34/right_back, /obj/structure/engine/internal/diesel/premade/chiha, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
 	"2,4" = list(/obj/structure/vehicleparts/frame/smf1/back),
-	"3,4" = list(/obj/structure/vehicleparts/frame/smf1/lb, /obj/structure/vehicleparts/movement/tracks/t34/left_back, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
+	"3,4" = list(/obj/structure/vehicleparts/frame/smf1/lb, /obj/structure/vehicleparts/movement/tracks/t34/left_back, /obj/structure/shellrack/full75)
 	)

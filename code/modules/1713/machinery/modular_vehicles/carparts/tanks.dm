@@ -1117,7 +1117,7 @@
 
 /obj/structure/vehicleparts/frame/bmv1/left
 	icon_state = "char1_frame_steel_middle_left"
-	w_left = list("char1_middle_left_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+	w_left = list("char1_middle_left_frame",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bmv1/left/door
 	icon_state = "char1_frame_steel_middle_left"
 	w_left = list("char1_middle_left_frame",TRUE,TRUE,40,40,TRUE,TRUE)
@@ -1125,7 +1125,7 @@
 
 /obj/structure/vehicleparts/frame/bmv1/right
 	icon_state = "char1_frame_steel_middle_right"
-	w_right = list("char1_middle_right_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+	w_right = list("char1_middle_right_frame",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bmv1/right/door
 	icon_state = "char1_frame_steel_middle_right"
 	w_right = list("char1_middle_right_frame",TRUE,TRUE,40,40,TRUE,TRUE)
@@ -1137,16 +1137,19 @@
 	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bmv1/lb
 	icon_state = "char1_frame_steel_back_left"
-	w_back = list("char1_back_left_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_back = list("char1_back_left_frame",TRUE,TRUE,30,30,TRUE,TRUE)
+	w_front = list("c_door",TRUE,TRUE,5,5,TRUE, TRUE)
 	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+	w_right = list("c_wall",TRUE,TRUE,5,5,FALSE,FALSE)
+	doorcode = 668643
 
 /obj/structure/vehicleparts/frame/bmv1/rf
 	icon_state = "char1_frame_steel_front_right"
-	w_front = list("char1_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
+	w_front = list("char1_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/bmv1/lf
 	icon_state = "char1_frame_steel_front_left"
-	w_front = list("char1_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+	w_front = list("char1_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
 	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/smf1
@@ -1164,7 +1167,7 @@
 
 /obj/structure/vehicleparts/frame/smf1/left
 	icon_state = "t34_frame_steel_middle_front_left"
-	w_left = list("t34_middle_front_left_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+	w_left = list("t34_middle_front_left_frame",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/smf1/left/door
 	icon_state = "t34_frame_steel_middle_back_left"
 	w_left = list("t34_middle_back_left_frame",TRUE,TRUE,40,40,TRUE,TRUE)
@@ -1172,7 +1175,7 @@
 
 /obj/structure/vehicleparts/frame/smf1/right
 	icon_state = "t34_frame_steel_middle_front_right"
-	w_right = list("t34_middle_front_right_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+	w_right = list("t34_middle_front_right_frame",TRUE,TRUE,40,40,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/smf1/right/door
 	icon_state = "t34_frame_steel_middle_back_right"
 	w_right = list("t34_middle_back_right_frame",TRUE,TRUE,40,40,TRUE,TRUE)
