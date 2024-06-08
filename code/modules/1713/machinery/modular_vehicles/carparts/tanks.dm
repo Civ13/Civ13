@@ -532,7 +532,6 @@
 	override_frame_icon = "mt_left_frame"
 /obj/structure/vehicleparts/frame/t90a/left/door
 	w_left = list("mt_left_door_frame",TRUE,TRUE,90,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/t90a/right
@@ -541,7 +540,6 @@
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/t90a/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,90,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
@@ -589,7 +587,6 @@
 	override_frame_icon = "mt_left_frame"
 /obj/structure/vehicleparts/frame/t72/left/door
 	w_left = list("mt_left_door_frame",TRUE,TRUE,90,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/t72/right
@@ -598,7 +595,6 @@
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/t72/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,90,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
@@ -645,7 +641,6 @@
 	override_frame_icon = "mt_left_frame"
 /obj/structure/vehicleparts/frame/t55/left/door
 	w_left = list("mt_left_door_frame",TRUE,TRUE,80,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/t55/right
@@ -654,7 +649,6 @@
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/t55/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,80,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
@@ -702,7 +696,6 @@
 	override_frame_icon = "mt_left_frame"
 /obj/structure/vehicleparts/frame/leopard/left/door
 	w_left = list("mt_left_door_frame",TRUE,TRUE,60,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
 /obj/structure/vehicleparts/frame/leopard/right
@@ -711,7 +704,6 @@
 	override_frame_icon = "mt_right_frame"
 /obj/structure/vehicleparts/frame/leopard/right/door
 	w_right = list("mt_right_door_frame",TRUE,TRUE,60,30,TRUE,TRUE)
-	// doorcode = 668643
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
@@ -1057,3 +1049,152 @@
 	icon_state = "m41_frame_steel_back_right"
 	w_back = list("m41_back_right_frame",TRUE,TRUE,25,25,FALSE,FALSE)
 	w_right = list("none",TRUE,TRUE,25,25,FALSE,FALSE)
+
+
+/obj/structure/vehicleparts/frame/char1
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	pixel_x = -32
+	pixel_y = -32
+/obj/structure/vehicleparts/frame/char1/front
+	icon_state = "char1_frame_steel_front_middle"
+	w_front = list("char1_front_middle_frame",TRUE,TRUE,80,80,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/char1/center
+	icon_state = "char1_frame_steel_middle"
+/obj/structure/vehicleparts/frame/char1/back
+	icon_state = "char1_frame_steel_back_middle"
+	w_back = list("char1_back_middle_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/char1/left
+	icon_state = "char1_frame_steel_middle_left"
+	w_left = list("char1_middle_left_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/char1/left/door
+	icon_state = "char1_frame_steel_middle_left"
+	w_left = list("char1_middle_left_frame",TRUE,TRUE,50,50,TRUE,TRUE)
+	doorcode = 4975
+
+/obj/structure/vehicleparts/frame/char1/right
+	icon_state = "char1_frame_steel_middle_right"
+	w_right = list("char1_middle_right_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/char1/right/door
+	icon_state = "char1_frame_steel_middle_right"
+	w_right = list("char1_middle_right_frame",TRUE,TRUE,50,50,TRUE,TRUE)
+	doorcode = 4975
+
+/obj/structure/vehicleparts/frame/char1/rb
+	icon_state = "char1_frame_steel_back_right"
+	w_back = list("char1_back_right_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,50,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/char1/lb
+	icon_state = "char1_frame_steel_back_left"
+	w_back = list("char1_back_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,50,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/char1/rf
+	icon_state = "char1_frame_steel_front_right"
+	w_front = list("char1_front_right_frame",TRUE,TRUE,80,80,FALSE,FALSE,TRUE)
+	w_right = list("none",TRUE,TRUE,50,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/char1/lf
+	icon_state = "char1_frame_steel_front_left"
+	w_front = list("char1_front_left_frame",TRUE,TRUE,80,80,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,50,50,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmv1
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	pixel_x = -32
+	pixel_y = -32
+/obj/structure/vehicleparts/frame/bmv1/front
+	icon_state = "char1_frame_steel_front_middle"
+	w_front = list("char1_front_middle_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bmv1/center
+	icon_state = "char1_frame_steel_middle"
+/obj/structure/vehicleparts/frame/bmv1/back
+	icon_state = "char1_frame_steel_back_middle"
+	w_back = list("char1_back_middle_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmv1/left
+	icon_state = "char1_frame_steel_middle_left"
+	w_left = list("char1_middle_left_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/bmv1/left/door
+	icon_state = "char1_frame_steel_middle_left"
+	w_left = list("char1_middle_left_frame",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 668643
+
+/obj/structure/vehicleparts/frame/bmv1/right
+	icon_state = "char1_frame_steel_middle_right"
+	w_right = list("char1_middle_right_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/bmv1/right/door
+	icon_state = "char1_frame_steel_middle_right"
+	w_right = list("char1_middle_right_frame",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 668643
+
+/obj/structure/vehicleparts/frame/bmv1/rb
+	icon_state = "char1_frame_steel_back_right"
+	w_back = list("char1_back_right_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bmv1/lb
+	icon_state = "char1_frame_steel_back_left"
+	w_back = list("char1_back_left_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/bmv1/rf
+	icon_state = "char1_frame_steel_front_right"
+	w_front = list("char1_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
+	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/bmv1/lf
+	icon_state = "char1_frame_steel_front_left"
+	w_front = list("char1_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/smf1
+	icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	normal_icon = 'icons/obj/vehicles/tankparts96x96.dmi'
+	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
+	pixel_x = -32
+	pixel_y = -32
+/obj/structure/vehicleparts/frame/smf1/front
+	icon_state = "t34_frame_steel_front_middle"
+	w_front = list("t34_front_middle_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/smf1/back
+	icon_state = "t34_frame_steel_back"
+	w_back = list("t34_back_middle_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+
+/obj/structure/vehicleparts/frame/smf1/left
+	icon_state = "t34_frame_steel_middle_front_left"
+	w_left = list("t34_middle_front_left_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/smf1/left/door
+	icon_state = "t34_frame_steel_middle_back_left"
+	w_left = list("t34_middle_back_left_frame",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 932145
+
+/obj/structure/vehicleparts/frame/smf1/right
+	icon_state = "t34_frame_steel_middle_front_right"
+	w_right = list("t34_middle_front_right_frame",TRUE,TRUE,40,40,FALSE,FALSE,TRUE)
+/obj/structure/vehicleparts/frame/smf1/right/door
+	icon_state = "t34_frame_steel_middle_back_right"
+	w_right = list("t34_middle_back_right_frame",TRUE,TRUE,40,40,TRUE,TRUE)
+	doorcode = 932145
+
+/obj/structure/vehicleparts/frame/smf1/rb
+	icon_state = "t34_frame_steel_back_right"
+	w_back = list("t34_back_right_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/smf1/bc
+	icon_state = "t34_frame_steel_middle_back"
+/obj/structure/vehicleparts/frame/smf1/lb
+	icon_state = "t34_frame_steel_back_left"
+	w_back = list("t34_back_left_frame",TRUE,TRUE,30,30,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/smf1/rf
+	icon_state = "t34_frame_steel_front_right"
+	w_front = list("t34_front_right_frame",TRUE,TRUE,50,50,FALSE,FALSE,TRUE)
+	w_right = list("none",TRUE,TRUE,40,40,FALSE,FALSE)
+/obj/structure/vehicleparts/frame/smf1/fc
+	icon_state = "t34_frame_steel_middle_front"
+/obj/structure/vehicleparts/frame/smf1/lf
+	icon_state = "t34_frame_steel_front_left"
+	w_front = list("t34_front_left_frame",TRUE,TRUE,50,50,FALSE,FALSE)
+	w_left = list("none",TRUE,TRUE,40,40,FALSE,FALSE)

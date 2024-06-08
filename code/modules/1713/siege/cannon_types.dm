@@ -441,6 +441,20 @@
 	caliber = 115
 	anchored = TRUE
 
+/obj/structure/cannon/modern/tank/bmv75
+	name = "BMV-TC 75mm"
+	desc = "A 75mm Redmenian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxrange = 30
+	caliber = 75
+
+/obj/structure/cannon/modern/tank/smf75
+	name = "SMF TKN 75mm"
+	desc = "A 75mm Blugoslavian tank-based cannon."
+	icon_state = "tank_cannon"
+	maxrange = 30
+	caliber = 75
+
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
