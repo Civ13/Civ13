@@ -199,6 +199,15 @@
 
 				else if (istype(T, /turf/floor/dirt) && istype(H))
 					if (T.available_dirt > 0)
+						if (H.a_intent == I_GRAB)
+							if(!SH.heldclod)
+								visible_message("<span class = 'notice'>[user] shovels up clod.</span>", "<span class = 'notice'>You shovel up clod.</span>")
+								playsound(src, 'sound/items/dig_shovel.ogg', 100, TRUE)
+								var/obj/item/S = new /obj/item/dirtclod(SH)
+								SH.heldclod = S
+								SH.update_icon()
+								T.available_dirt -= 1
+								return
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)

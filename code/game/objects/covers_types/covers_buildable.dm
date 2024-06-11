@@ -69,6 +69,9 @@
 					health = (20*stage)
 					qdel(W)
 					return
+	else if(istype(W, /obj/item/dirtclod))
+		to_chat(user, SPAN_WARNING("This clod is too small to shape into a block, add more dirt to this!"))
+		return
 	..()
 
 /obj/covers/clay_wall

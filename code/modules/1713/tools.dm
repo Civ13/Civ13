@@ -133,11 +133,53 @@
 	slot_flags = SLOT_BACK|SLOT_BELT
 	var/dig_speed = 7
 	var/usespeed = 1.5
+	var/obj/item/dirtclod/heldclod
 	default_material = "iron"
 	force_divisor = 0.25
 	thrown_force_divisor = 0.15
 	health = 25
 	maxhealth = 25
+
+/obj/item/weapon/material/shovel/Destroy()
+	if(heldclod)
+		QDEL_NULL(heldclod)
+	return ..()
+
+/obj/item/weapon/material/shovel/throw_at(atom/target, _range, _speed, _thrower)
+	if(istype(src, /obj/item/weapon/material/shovel))
+		if(heldclod && isturf(loc))
+			if(prob(66)) // More than likely.
+				var/turf/T = get_edge_target_turf(loc, get_dir(loc, get_step_away(target, loc))) // Throw somewhere inbetween the target turf and the thrower.
+				heldclod.forceMove(loc)
+				heldclod.throw_at(T, 2, 30)
+				visible_message(SPAN_WARNING("\The [src]'s clod goes flying!"))
+				heldclod = null
+	update_icon() 
+	. = ..()
+
+/obj/item/weapon/material/shovel/attack(mob/living/M, mob/living/user)
+	. = ..()
+	if(. && heldclod && get_turf(M))
+		if(prob(66)) // More than likely, still.
+			heldclod.forceMove(get_turf(M))
+			heldclod.throw_at_random(TRUE, 2, 14)
+			visible_message(SPAN_WARNING("\The [src]'s clod goes flying!"))
+			heldclod = null
+		update_icon()
+
+/obj/item/weapon/material/shovel/attack_turf(turf/T, mob/living/user)
+	user.setClickCooldown(cooldownw) // Default attack cooldown.
+	if(heldclod && T)
+		heldclod.forceMove(T)
+		heldclod = null
+		playsound(T,'sound/items/empty_shovel.ogg', 100, TRUE)
+		update_icon() // todo enable update icon with rpoper dirt sprites
+
+/obj/item/weapon/material/shovel/update_icon()
+	if(heldclod)
+		icon_state = "dirt[initial(icon_state)]"
+	else
+		icon_state = "[initial(icon_state)]"
 
 /obj/item/weapon/material/shovel/steel
 	material = "steel"
