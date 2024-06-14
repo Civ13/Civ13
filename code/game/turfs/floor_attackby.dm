@@ -176,7 +176,7 @@
 		var/obj/item/weapon/material/shovel/SH = C
 		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
-				if (T.icon == 'icons/turf/snow.dmi' && istype(H))a
+				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
 					if (T.available_snow <= 0)
 						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 						return
