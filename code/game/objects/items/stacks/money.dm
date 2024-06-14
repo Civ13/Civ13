@@ -112,10 +112,10 @@
 			icon_suffix = ""
 		if (50 to 99)
 			icon_suffix = "50"
-		if (100 to 249)
+		if (100 to 299)
 			icon_suffix = "100"
-		if (250 to 499)
-			icon_suffix = "250"
+		if (300 to 499)
+			icon_suffix = "300"
 		if (500 to INFINITY)
 			icon_suffix = "500"
 	icon_state = "ruble[icon_suffix]"
