@@ -153,7 +153,7 @@
 
 /obj/item/stack/money/european/britpound5
 	name = "5 British Pound"
-	desc = "A 5 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
+	desc = "A 5 British Pound Sterling banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
 	singular_name = "5 Pound note"
 	icon_state = "5britpound" 
 	amount = 1
@@ -161,7 +161,7 @@
 
 /obj/item/stack/money/european/britpound10
 	name = "10 British Pound"
-	desc = "A 10 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
+	desc = "A 10 British Pound Sterling banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
 	singular_name = "10 Pound note"
 	icon_state = "10britpound" 
 	amount = 1
@@ -169,7 +169,7 @@
 
 /obj/item/stack/money/european/britpound20
 	name = "20 British Pound"
-	desc = "A 20 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
+	desc = "A 20 British Pound Sterling banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
 	singular_name = "20 Pound note"
 	icon_state = "20britpound" 
 	amount = 1
@@ -177,7 +177,7 @@
 
 /obj/item/stack/money/european/britpound50
 	name = "50 British Pound"
-	desc = "A 50 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
+	desc = "A 50 British Pound Sterling banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
 	singular_name = "50 Pound note"
 	icon_state = "50britpound" 
 	amount = 1
@@ -374,6 +374,7 @@
 /obj/item/stack/money/dollar100
 	name = "100 Dollar Bill"
 	desc = "Paper bank note valued at one-hundred dollars"
+	singular_name = "100 Dollar note"
 	icon_state = "100dollar"
 	value = 100
 	amount = 1
