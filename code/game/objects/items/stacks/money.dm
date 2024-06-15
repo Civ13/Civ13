@@ -139,6 +139,9 @@
 	real_value = 1
 	novariants = TRUE
 
+// -------------------------------------------------
+// BRITISH POUND
+// -------------------------------------------------
 
 /obj/item/stack/money/european/britpound5
 	name = "5 British Pound"
@@ -171,6 +174,10 @@
 	icon_state = "50britpound" 
 	amount = 1
 	value = 1
+
+// -------------------------------------------------
+// EURO
+// -------------------------------------------------
 
 /obj/item/stack/money/european/euro5
 	name = "5 Euro Note"
