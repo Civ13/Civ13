@@ -252,7 +252,7 @@
 			icon_suffix = "_4"
 		if (500 to INFINITY)
 			icon_suffix = "_5"
-	icon_state = icon_state + icon_suffix
+	icon_state = "[initial(icon_state)][icon_suffix]"
 
 /obj/item/stack/money/yen
 	name = "yen"
