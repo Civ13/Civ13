@@ -137,7 +137,7 @@
 	w_class = ITEM_SIZE_SMALL // fits in pockets
 	value = 1
 	real_value = 1
-	var/novariants = TRUE
+	novariants = TRUE
 
 
 /obj/item/stack/money/european/britpound5
@@ -233,7 +233,7 @@
 	return ..()
 
 /obj/item/stack/money/european/update_icon()
-	var/stack_suffix = ""
+	var/icon_suffix = ""
 	switch(amount)
 		if (1 to 49)
 			icon_suffix = ""
@@ -245,6 +245,7 @@
 			icon_suffix = "_4"
 		if (500 to INFINITY)
 			icon_suffix = "_5"
+	icon_state = icon_state + icon_suffix
 
 /obj/item/stack/money/yen
 	name = "yen"
