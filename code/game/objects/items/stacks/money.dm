@@ -145,7 +145,7 @@
 
 /obj/item/stack/money/european/britpound
 	name = "1 British Pound"
-	desc = "A 1 British Pound coin, its outer ring made of gold coloured nickel-brass, and its inner ring a silver coloured nickel-plated alloy. Engraved upon it is a side-view of the British monarch."
+	desc = "A coin representing the 1 British Pound Sterling, its outer ring made of gold coloured nickel-brass, and its inner ring a silver coloured nickel-plated alloy. Engraved upon it is a side-view of the British monarch."
 	singular_name = "coin"
 	icon_state = "britpound" 
 	amount = 1
