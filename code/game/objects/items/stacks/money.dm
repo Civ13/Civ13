@@ -187,43 +187,59 @@
 // EURO
 // -------------------------------------------------
 
+/obj/item/stack/money/european/euro
+	name = "1 Euro Coin"
+	desc = "A 1 Euro coin, with a symbol of one of the member states engraved upon it, its silver-coloured inner ring made of a cooper-nickel alloy, and its gold-coloured outer ring made of a copper-zinc-nickel alloy"
+	singular_name = "coin"
+	icon_state = "euro" 
+	amount = 1
+	value = 1
+
+/obj/item/stack/money/european/euro2
+	name = "2 Euro Coin"
+	desc = "A 2 Euro coin, with a symbol of one of the member states engraved upon it, its gold-coloured inner ring made of a copper-zinc-nickel alloy, and its silver-coloured outer ring made of a cooper-nickel alloy"
+	singular_name = "coin"
+	icon_state = "2euro" 
+	amount = 1
+	value = 1
+
 /obj/item/stack/money/european/euro5
 	name = "5 Euro Note"
 	desc = "A 5 Euro banknote, depicting bridges and arches/doorways in Classical architecture with a mixture of green, blue and a touch of yellow. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
-	icon_state = "5 Euro note" 
+	singular_name = "5 Euro note"
+	icon_state = "5euro" 
 	amount = 1
 	value = 1
 
 /obj/item/stack/money/european/euro10
 	name = "10 Euro Note"
 	desc = "A 10 Euro banknote, depicting bridges and arches/doorways in Romanesque architecture with a mixture of various shades of red. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
-	icon_state = "10 Euro note" 
+	singular_name = "10 Euro note"
+	icon_state = "10euro" 
 	amount = 1
 	value = 1
 
 /obj/item/stack/money/european/euro20
 	name = "20 Euro Note"
 	desc = "A 20 Euro banknote, depicting bridges and arches/doorways in Gothic architecture with a mixture of shades of blue, some red and a touch of green. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
-	icon_state = "20 Euro note" 
+	singular_name = "20 Euro note"
+	icon_state = "20euro" 
 	amount = 1
 	value = 1
 
 /obj/item/stack/money/european/euro50
 	name = "50 Euro Note"
 	desc = "A 50 Euro banknote, depicting bridges and arches/doorways in the Rennaissance era with a mixture of yellow, orange and a touch of brown. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
-	icon_state = "50 Euro note" 
+	singular_name = "50 Euro note"
+	icon_state = "50euro" 
 	amount = 1
 	value = 1
 
 /obj/item/stack/money/european/euro100
 	name = "100 Euro Note"
 	desc = "A 100 Euro banknote, depicting bridges and arches/doorways in the Baroque and Rococo style with a mixture of green and yellow. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
-	icon_state = "100 Euro note" 
+	singular_name = "100 Euro note"
+	icon_state = "100euro" 
 	amount = 1
 	value = 1
 
