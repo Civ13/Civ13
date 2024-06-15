@@ -143,10 +143,18 @@
 // BRITISH POUND
 // -------------------------------------------------
 
+/obj/item/stack/money/european/britpound
+	name = "1 British Pound"
+	desc = "A 1 British Pound coin, its outer ring made of gold coloured nickel-brass, and its inner ring a silver coloured nickel-plated alloy. Engraved upon it is a side-view of the British monarch."
+	singular_name = "coin"
+	icon_state = "britpound" 
+	amount = 1
+	value = 1
+
 /obj/item/stack/money/european/britpound5
 	name = "5 British Pound"
 	desc = "A 5 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
-	singular_name = "pound"
+	singular_name = "5 Pound note"
 	icon_state = "5britpound" 
 	amount = 1
 	value = 1
@@ -154,7 +162,7 @@
 /obj/item/stack/money/european/britpound10
 	name = "10 British Pound"
 	desc = "A 10 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
-	singular_name = "pound"
+	singular_name = "10 Pound note"
 	icon_state = "10britpound" 
 	amount = 1
 	value = 1
@@ -162,7 +170,7 @@
 /obj/item/stack/money/european/britpound20
 	name = "20 British Pound"
 	desc = "A 20 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
-	singular_name = "pound"
+	singular_name = "20 Pound note"
 	icon_state = "20britpound" 
 	amount = 1
 	value = 1
@@ -170,7 +178,7 @@
 /obj/item/stack/money/european/britpound50
 	name = "50 British Pound"
 	desc = "A 50 British Pound banknote, with the British monarch's face imprinted upon it, and coined by the Bank of England."
-	singular_name = "pound"
+	singular_name = "50 Pound note"
 	icon_state = "50britpound" 
 	amount = 1
 	value = 1
@@ -183,7 +191,7 @@
 	name = "5 Euro Note"
 	desc = "A 5 Euro banknote, depicting bridges and arches/doorways in Classical architecture with a mixture of green, blue and a touch of yellow. Imprinted upon it is the flag of the European Union"
 	singular_name = "euro"
-	icon_state = "5euro" 
+	icon_state = "5 Euro note" 
 	amount = 1
 	value = 1
 
@@ -191,7 +199,7 @@
 	name = "10 Euro Note"
 	desc = "A 10 Euro banknote, depicting bridges and arches/doorways in Romanesque architecture with a mixture of various shades of red. Imprinted upon it is the flag of the European Union"
 	singular_name = "euro"
-	icon_state = "10euro" 
+	icon_state = "10 Euro note" 
 	amount = 1
 	value = 1
 
@@ -199,7 +207,7 @@
 	name = "20 Euro Note"
 	desc = "A 20 Euro banknote, depicting bridges and arches/doorways in Gothic architecture with a mixture of shades of blue, some red and a touch of green. Imprinted upon it is the flag of the European Union"
 	singular_name = "euro"
-	icon_state = "20euro" 
+	icon_state = "20 Euro note" 
 	amount = 1
 	value = 1
 
@@ -207,7 +215,7 @@
 	name = "50 Euro Note"
 	desc = "A 50 Euro banknote, depicting bridges and arches/doorways in the Rennaissance era with a mixture of yellow, orange and a touch of brown. Imprinted upon it is the flag of the European Union"
 	singular_name = "euro"
-	icon_state = "50euro" 
+	icon_state = "50 Euro note" 
 	amount = 1
 	value = 1
 
@@ -215,14 +223,14 @@
 	name = "100 Euro Note"
 	desc = "A 100 Euro banknote, depicting bridges and arches/doorways in the Baroque and Rococo style with a mixture of green and yellow. Imprinted upon it is the flag of the European Union"
 	singular_name = "euro"
-	icon_state = "100euro" 
+	icon_state = "100 Euro note" 
 	amount = 1
 	value = 1
 
 /obj/item/stack/money/european/euro200
 	name = "200 Euro Note"
 	desc = "A 200 Euro banknote, depicting bridges and arches/doorways in Art Noveau style with a mixture of ywllow, some blue and some brown. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
+	singular_name = "200 Euro note"
 	icon_state = "200euro" 
 	amount = 1
 	value = 1
@@ -230,7 +238,7 @@
 /obj/item/stack/money/european/euro500
 	name = "500 Euro Note"
 	desc = "A 500 Euro banknote, depicting bridges and arches/doorways in Modern architecture with a mixture of purple and a touch of gold. Imprinted upon it is the flag of the European Union"
-	singular_name = "euro"
+	singular_name = "500 Euro note"
 	icon_state = "500euro" 
 	amount = 1
 	value = 1
