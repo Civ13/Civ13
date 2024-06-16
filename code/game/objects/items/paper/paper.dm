@@ -50,6 +50,49 @@
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 
+/obj/item/weapon/paper/official/fna
+	base_icon = "official"
+	name = "official fna document"
+	icon_state = "Decree_empty"
+	faction = ""
+	color1 = "#000000"
+	color2 = "#FFFFFF"
+
+/obj/item/weapon/paper/official/fna/document
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign Nations Alliance (FNA)."
+	icon_state = "fna_doc"
+
+/obj/item/weapon/official/fna/document_stamped
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign nations Alliance (FNA), which also appears to be stamped."
+	icon_state = "fna_doc_stamped"
+
+/obj/item/weapon/official/fna/document_stamped2
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign nations Alliance (FNA), which also appears to be stamped."
+	icon_state = "fna_doc_stamped2"
+
+/obj/item/weapon/official/fna/document_stamped3
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign nations Alliance (FNA), which also appears to be stamped."
+	icon_state = "fna_doc_stamped3"
+
+/obj/item/weapon/official/fna/document_denied
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign nations Alliance (FNA), which also appears to be stamped for denial."
+	icon_state = "fna_doc_denied"
+
+/obj/item/weapon/official/fna/document_approved
+	name = "Official FNA Document"
+	desc = "An official document printed by the Foreign nations Alliance (FNA), which also appears to be stamped for approval."
+	icon_state = "fna_doc_approved"
+
+/obj/item/weapon/official/fna/document_warrant
+	name = "Official FNA Document"
+	desc = "An official warrant printed by the Foreign nations Alliance (FNA), which also appears to be stamped and contains details and a photograph of the targeted individual."
+	icon_state = "fna_warrant"
+
 /obj/item/weapon/paper/entry_permit
 	name = "entry permit"
 	desc = "A permit granting right of entry to a specified country"
