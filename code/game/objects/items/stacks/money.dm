@@ -157,6 +157,34 @@
 	real_value = 1
 	novariants = TRUE
 
+/obj/item/stack/money/fictional
+	name = ""
+	desc = ""
+	singular_name = ""
+	icon_state = ""
+	flags = CONDUCT
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	throw_speed = 8
+	throw_range = 10
+	amount = 1
+	max_amount = 500
+	attack_verb = list("hit")
+	w_class = ITEM_SIZE_SMALL // fits in pockets
+	value = 1
+	real_value = 1
+	novariants = TRUE
+
+// -------------------------------------------------
+// FICTIONAL: Arstotzka Credit
+// Art and code - goldenfreddycl
+// -------------------------------------------------
+
+/obj/item/stack/money/fictional/arstotzkacredit
+	name = "Arstotzka Credit"
+	desc = "The singular banknote of the official Arstotzka Credit, minted and printed by the Ministry of Trade, and seen as the only legal tender within the borders of Arstotzka. Glory to Arstotzka."
+	singular_name = "Arstotzka Credit"
+	icon_state = "arstotzkacredit"
 
 // -------------------------------------------------
 // CHINESE FENG SHUI
@@ -170,7 +198,7 @@
 	icon_state = "fengshui"
 	amount = 1
 	value = 1
-	
+
 // -------------------------------------------------
 // BRITISH POUND
 // Art and code - goldenfreddycl
@@ -190,7 +218,7 @@
 	singular_name = "5 Pound note"
 	icon_state = "5britpound" 
 	amount = 1
-	value = 1
+	value = 5
 
 /obj/item/stack/money/european/britpound10
 	name = "10 British Pound"
@@ -198,7 +226,7 @@
 	singular_name = "10 Pound note"
 	icon_state = "10britpound" 
 	amount = 1
-	value = 1
+	value = 10
 
 /obj/item/stack/money/european/britpound20
 	name = "20 British Pound"
@@ -206,7 +234,7 @@
 	singular_name = "20 Pound note"
 	icon_state = "20britpound" 
 	amount = 1
-	value = 1
+	value = 20
 
 /obj/item/stack/money/european/britpound50
 	name = "50 British Pound"
@@ -214,7 +242,7 @@
 	singular_name = "50 Pound note"
 	icon_state = "50britpound" 
 	amount = 1
-	value = 1
+	value = 50
 
 // -------------------------------------------------
 // EURO
@@ -235,7 +263,7 @@
 	singular_name = "coin"
 	icon_state = "2euro" 
 	amount = 1
-	value = 1
+	value = 2
 
 /obj/item/stack/money/european/euro5
 	name = "5 Euro Note"
@@ -243,7 +271,7 @@
 	singular_name = "5 Euro note"
 	icon_state = "5euro" 
 	amount = 1
-	value = 1
+	value = 5
 
 /obj/item/stack/money/european/euro10
 	name = "10 Euro Note"
@@ -251,7 +279,7 @@
 	singular_name = "10 Euro note"
 	icon_state = "10euro" 
 	amount = 1
-	value = 1
+	value = 10
 
 /obj/item/stack/money/european/euro20
 	name = "20 Euro Note"
@@ -259,7 +287,7 @@
 	singular_name = "20 Euro note"
 	icon_state = "20euro" 
 	amount = 1
-	value = 1
+	value = 20
 
 /obj/item/stack/money/european/euro50
 	name = "50 Euro Note"
@@ -267,7 +295,7 @@
 	singular_name = "50 Euro note"
 	icon_state = "50euro" 
 	amount = 1
-	value = 1
+	value = 50
 
 /obj/item/stack/money/european/euro100
 	name = "100 Euro Note"
@@ -275,7 +303,7 @@
 	singular_name = "100 Euro note"
 	icon_state = "100euro" 
 	amount = 1
-	value = 1
+	value = 100
 
 /obj/item/stack/money/european/euro200
 	name = "200 Euro Note"
@@ -283,7 +311,7 @@
 	singular_name = "200 Euro note"
 	icon_state = "200euro" 
 	amount = 1
-	value = 1
+	value = 200
 
 /obj/item/stack/money/european/euro500
 	name = "500 Euro Note"
@@ -291,13 +319,51 @@
 	singular_name = "500 Euro note"
 	icon_state = "500euro" 
 	amount = 1
-	value = 1
+	value = 500
 
 /obj/item/stack/money/european/New()
 	update_icon()
 	return ..()
 
 /obj/item/stack/money/european/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "_2"
+		if (100 to 299)
+			icon_suffix = "_3"
+		if (300 to 499)
+			icon_suffix = "_4"
+		if (500 to INFINITY)
+			icon_suffix = "_5"
+	icon_state = "[initial(icon_state)][icon_suffix]"
+
+/obj/item/stack/money/asian/New()
+		update_icon()
+	return ..()
+
+/obj/item/stack/money/asian/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "_2"
+		if (100 to 299)
+			icon_suffix = "_3"
+		if (300 to 499)
+			icon_suffix = "_4"
+		if (500 to INFINITY)
+			icon_suffix = "_5"
+	icon_state = "[initial(icon_state)][icon_suffix]"
+
+/obj/item/stack/money/fictional/New()
+		update_icon()
+	return ..()
+
+/obj/item/stack/money/fictional/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (1 to 49)
