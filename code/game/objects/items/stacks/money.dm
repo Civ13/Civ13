@@ -139,8 +139,41 @@
 	real_value = 1
 	novariants = TRUE
 
+/obj/item/stack/money/asian
+	name = ""
+	desc = ""
+	singular_name = ""
+	icon_state = ""
+	flags = CONDUCT
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	throw_speed = 8
+	throw_range = 10
+	amount = 1
+	max_amount = 500
+	attack_verb = list("hit")
+	w_class = ITEM_SIZE_SMALL // fits in pockets
+	value = 1
+	real_value = 1
+	novariants = TRUE
+
+
+// -------------------------------------------------
+// CHINESE FENG SHUI
+// Art and code - goldenfreddycl
+// -------------------------------------------------
+
+/obj/item/stack/money/asian/fengshui
+	name = "Feng Shui Coin"
+	desc = "An ancient chinese currency, adopting a unique design as it is quite larger than more conventional currency and features a square-shaped hole in the middle, as well as chinese writing embedded in its design. Typically made of copper alloys."
+	singular_name = "coin"
+	icon_state = "fengshui"
+	amount = 1
+	value = 1
+	
 // -------------------------------------------------
 // BRITISH POUND
+// Art and code - goldenfreddycl
 // -------------------------------------------------
 
 /obj/item/stack/money/european/britpound
@@ -185,6 +218,7 @@
 
 // -------------------------------------------------
 // EURO
+// Art and code - goldenfreddycl
 // -------------------------------------------------
 
 /obj/item/stack/money/european/euro
