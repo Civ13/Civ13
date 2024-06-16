@@ -185,6 +185,8 @@
 	desc = "The singular banknote of the official Arstotzka Credit, minted and printed by the Ministry of Trade, and seen as the only legal tender within the borders of Arstotzka. Glory to Arstotzka."
 	singular_name = "Arstotzka Credit"
 	icon_state = "arstotzkacredit"
+	amount = 1
+	value = 1
 
 // -------------------------------------------------
 // CHINESE FENG SHUI
