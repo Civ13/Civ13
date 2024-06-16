@@ -30,7 +30,7 @@ obj/structure/bell_stand
 	if (cooldown_bell_stand == FALSE)
 		cooldown_bell_stand = TRUE
 		icon_state = "bell_stand_ringing"
-		world << sound('sound/effects/church_bells.ogg', repeat = TRUE, wait = TRUE, channel = 777)
+		world << sound('sound/effects/bell_stand.ogg', repeat = TRUE, wait = TRUE, channel = 777)
 		visible_message("<span class='warning'>[H] rings the church bell!</span>")
 		to_chat(world, "<font size = 5>\icon[src] <span class='warning'>The church bell is ringing.</span></font>")
 		spawn(16 SECONDS)
