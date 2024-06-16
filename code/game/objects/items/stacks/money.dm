@@ -346,8 +346,6 @@
 	update_icon()
 	return ..()
 
-//e
-
 /obj/item/stack/money/asian/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
