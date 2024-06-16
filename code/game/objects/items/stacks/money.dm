@@ -343,7 +343,7 @@
 	icon_state = "[initial(icon_state)][icon_suffix]"
 
 /obj/item/stack/money/asian/New()
-		update_icon()
+	update_icon()
 	return ..()
 
 /obj/item/stack/money/asian/update_icon()
@@ -362,7 +362,7 @@
 	icon_state = "[initial(icon_state)][icon_suffix]"
 
 /obj/item/stack/money/fictional/New()
-		update_icon()
+	update_icon()
 	return ..()
 
 /obj/item/stack/money/fictional/update_icon()
