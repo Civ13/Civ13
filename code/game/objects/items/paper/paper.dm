@@ -54,9 +54,9 @@
 	base_icon = "official"
 	name = "official fna document"
 	icon_state = "Decree_empty"
-	var/faction = ""
-	var/color1 = "#000000"
-	var/color2 = "#FFFFFF"
+	faction = ""
+	color1 = "#000000"
+	color2 = "#FFFFFF"
 
 /obj/item/weapon/paper/official/fna/document
 	name = "Official FNA Document"
