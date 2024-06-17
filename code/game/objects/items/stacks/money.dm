@@ -57,41 +57,23 @@
 	flags = CONDUCT
 
 /obj/item/stack/money/real/New()
-	if (map.ordinal_age >= 4)
-		if (map.ID == MAP_BANK_ROBBERY)
-			name = "Dollar Bill"
-			desc = "Paper bank note valued at 1 dollar."
-			singular_name = "Dollar Bill"
-			icon_state = "dollar"
-			value = 1
-			novariants = FALSE
-			flags = FALSE
-			update_icon()
-			return ..()
-		else
-			name = "Dollar Bill"
-			desc = "Paper bank note valued at one dollar."
-			singular_name = "Dollar Bill"
-			icon_state = "dollar"
-			value = 4
-			novariants = FALSE
-			flags = FALSE
-			update_icon()
-			return ..()
-	else if (map.ordinal_age == 3)
-		name = "spanish reales"
-		desc = "A small silver coin."
-		singular_name = "real"
-		icon_state = "silvercoin_pile"
-		value = 1
-		return ..()
-	else
-		name = "pfennige"
-		desc = "A small silver coin."
-		singular_name = "pfennig"
-		icon_state = "silvercoin_pile"
-		value = 1
-		return ..()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/real/update_icon
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "50"
+		if (100 to 299)
+			icon_suffix = "100"
+		if (300 to 499)
+			icon_suffix = "300"
+		if (500 to INFINITY)
+			icon_suffix = "500"
+	icon_state = "real[icon_suffix]"
 
 /obj/item/stack/money/rubles
 	name = "Soviet Ruble"
