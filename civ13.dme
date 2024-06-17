@@ -596,6 +596,7 @@
 #include "code\game\objects\map_metadata\yeltsin.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\map_metadata\zhenbao.dm"
+#include "code\game\objects\map_metadata\landing_at_constantinopoli.dm"
 #include "code\game\objects\structures\appliances.dm"
 #include "code\game\objects\structures\barricades.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
