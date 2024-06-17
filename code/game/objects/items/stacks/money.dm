@@ -684,6 +684,23 @@
 	value = 0.1
 	flags = CONDUCT
 
+/obj/item/stack/money/coppercoin/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/coppercoin/New()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 124)
+			icon_suffix = ""
+		if (125 to 249)
+			icon_suffix = "_2"
+		if (250 to 374)
+			icon_suffix = "_3"
+		if (375 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "coppercoin_pile[icon_suffix]"
+
 /obj/item/stack/money/coppercoin/twohundred
 	amount = 20
 
@@ -696,6 +713,23 @@
 	value = 1
 	flags = CONDUCT
 
+/obj/item/stack/money/silvercoin/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/silvercoin/New()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 124)
+			icon_suffix = ""
+		if (125 to 249)
+			icon_suffix = "_2"
+		if (250 to 374)
+			icon_suffix = "_3"
+		if (375 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "silvercoin_pile[icon_suffix]"
+
 /obj/item/stack/money/silvercoin/twohundred
 	amount = 20
 
@@ -707,6 +741,23 @@
 	amount = 1
 	value = 4
 	flags = CONDUCT
+
+/obj/item/stack/money/goldcoin/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/goldcoin/New()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 124)
+			icon_suffix = ""
+		if (125 to 249)
+			icon_suffix = "_2"
+		if (250 to 374)
+			icon_suffix = "_3"
+		if (375 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "goldcoin_pile[icon_suffix]"
 
 /obj/item/stack/money/bitcoin
 	name = "bitcoin"
