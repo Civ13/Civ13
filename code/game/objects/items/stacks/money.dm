@@ -176,7 +176,7 @@
 	novariants = TRUE
 
 // -------------------------------------------------
-// FICTIONAL: Arstotzka Credit
+// FICTIONAL:
 // Art and code - goldenfreddycl
 // -------------------------------------------------
 
@@ -504,71 +504,58 @@
 /obj/item/stack/money/escudo
 	name = "spanish escudos"
 	desc = "A gold coin. Worth 16 reales."
-	singular_name = "escudo"
-	icon_state = "20dollar"
+	singular_name = "coin"
+	icon_state = "escudo"
 	amount = 1
 	value = 16
 
 	flags = CONDUCT
 /obj/item/stack/money/escudo/New()
-	if (map.ordinal_age >= 4) //Not being called
-		name = "20 Dollar Bill"
-		desc = "Paper bank note valued at twenty dollars."
-		icon_state = "20dollar"
-		value = 80
-		novariants = FALSE
-		flags = FALSE
-		update_icon()
-		return ..()
-	else if (map.ordinal_age == 3)
-		name = "spanish escudos"
-		desc = "A gold coin. Worth 16 reales."
-		singular_name = "escudo"
-		icon_state = "goldcoin_pile"
-		value = 16
-		return ..()
-	else
-		name = "gulden"
-		desc = "A gold coin, worth 60 kreuzers or 240 pfennige."
-		singular_name = "gulden"
-		icon_state = "goldcoin_pile"
-		value = 60
-		return ..()
+	update_icon()
+	return ..()
+
+/obj/item/stack/money/escudo/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "50"
+		if (100 to 299)
+			icon_suffix = "100"
+		if (300 to 499)
+			icon_suffix = "300"
+		if (500 to INFINITY)
+			icon_suffix = "500"
+	icon_state = "escudo[icon_suffix]"
+	
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
 	desc = "A large gold coin, the largest in circulation. Worth 32 reales."
-	singular_name = "doubloon"
-	icon_state = "50dollar"
+	singular_name = "coin"
+	icon_state = "dobloon"
 	amount = 1
 	value = 32
 	flags = CONDUCT
 
 /obj/item/stack/money/doubloon/New()
-	if (map.ordinal_age >= 4)
-		name = "50 Dollar Bill"
-		desc = "Paper bank note valued at fifty dollars."
-		singular_name = "50 Dollar Bill"
-		icon_state = "50dollar"
-		flags = FALSE
-		value = 200
-		novariants = FALSE
-		update_icon()
-		return ..()
-	else if (map.ordinal_age == 3)
-		name = "spanish doubloons"
-		desc = "A large gold coin, the largest in circulation. Worth 32 reales."
-		singular_name = "doubloon"
-		icon_state = "goldcoin_pile"
-		value = 32
-		return ..()
-	else
-		name = "thaler"
-		desc = "A valuable gold coin, worth 2 gulden or 120 kreuzers or 480 pfennige."
-		singular_name = "thalers"
-		icon_state = "goldcoin_pile"
-		value = 120
-		return ..()
+	update_icon()
+	return ..()
 
+/obj/item/stack/money/doubloon/update_icon()
+		var/icon_suffix = ""
+	switch(amount)
+		if (1 to 49)
+			icon_suffix = ""
+		if (50 to 99)
+			icon_suffix = "50"
+		if (100 to 299)
+			icon_suffix = "100"
+		if (300 to 499)
+			icon_suffix = "300"
+		if (500 to INFINITY)
+			icon_suffix = "500"
+	icon_state = "dobloon[icon_suffix]"
 
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
