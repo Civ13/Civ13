@@ -65,13 +65,13 @@
 		if (1 to 49)
 			icon_suffix = ""
 		if (50 to 99)
-			icon_suffix = "50"
+			icon_suffix = "_2"
 		if (100 to 299)
-			icon_suffix = "100"
+			icon_suffix = "_3"
 		if (300 to 499)
-			icon_suffix = "300"
+			icon_suffix = "_4"
 		if (500 to INFINITY)
-			icon_suffix = "500"
+			icon_suffix = "_5"
 	icon_state = "real[icon_suffix]"
 
 /obj/item/stack/money/rubles
@@ -501,13 +501,13 @@
 		if (1 to 49)
 			icon_suffix = ""
 		if (50 to 99)
-			icon_suffix = "50"
+			icon_suffix = "_2"
 		if (100 to 299)
-			icon_suffix = "100"
+			icon_suffix = "_3"
 		if (300 to 499)
-			icon_suffix = "300"
+			icon_suffix = "_4"
 		if (500 to INFINITY)
-			icon_suffix = "500"
+			icon_suffix = "_5"
 	icon_state = "escudo[icon_suffix]"
 
 /obj/item/stack/money/doubloon
@@ -529,13 +529,13 @@
 		if (1 to 49)
 			icon_suffix = ""
 		if (50 to 99)
-			icon_suffix = "50"
+			icon_suffix = "_2"
 		if (100 to 299)
-			icon_suffix = "100"
+			icon_suffix = "_3"
 		if (300 to 499)
-			icon_suffix = "300"
+			icon_suffix = "_4"
 		if (500 to INFINITY)
-			icon_suffix = "500"
+			icon_suffix = "_5"
 	icon_state = "dobloon[icon_suffix]"
 
 /obj/item/stack/money/goldnugget
@@ -688,7 +688,7 @@
 	update_icon()
 	return ..()
 
-/obj/item/stack/money/coppercoin/New()
+/obj/item/stack/money/coppercoin/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (1 to 124)
@@ -717,7 +717,7 @@
 	update_icon()
 	return ..()
 
-/obj/item/stack/money/silvercoin/New()
+/obj/item/stack/money/silvercoin/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (1 to 124)
@@ -746,7 +746,7 @@
 	update_icon()
 	return ..()
 
-/obj/item/stack/money/goldcoin/New()
+/obj/item/stack/money/goldcoin/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (1 to 124)
