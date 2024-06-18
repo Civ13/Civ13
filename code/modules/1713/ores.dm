@@ -15,6 +15,7 @@
 	pixel_x = rand(0,16)-8
 	pixel_y = rand(0,8)-8
 	process_radioactivity()
+	update_icon()
 	..()
 
 /obj/item/stack/ore/proc/process_radioactivity()
@@ -25,6 +26,19 @@
 
 	spawn(100)
 		process_radioactivity()
+
+/obj/item/stack/ore/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (1 to 12)
+			icon_suffix = ""
+		if (13 to 24)
+			icon_suffix = "_2"
+		if (25 to 36)
+			icon_suffix = "_3"
+		if (37 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "[initial(icon_state)][icon_suffix]"
 
 /obj/item/stack/ore/iron
 	name = "iron ore"
