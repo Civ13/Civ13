@@ -87,6 +87,23 @@
 	value = 3
 	flags = CONDUCT
 
+/obj/item/stack/material/iron/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/iron/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-iron[icon_suffix]"
+
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
 
@@ -114,6 +131,23 @@
 	value = 2
 	flags = CONDUCT
 
+/obj/item/stack/material/bronze/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/bronze/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-bronze[icon_suffix]"
+
 /obj/item/stack/material/copper
 	name = "copper"
 	icon_state = "sheet-copper"
@@ -121,6 +155,23 @@
 	apply_colour = TRUE
 	value = 1
 	flags = CONDUCT
+
+/obj/item/stack/material/copper/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/copper/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-copper[icon_suffix]"
 
 /obj/item/stack/material/tin
 	name = "tin"
@@ -130,12 +181,46 @@
 	value = 3
 	flags = CONDUCT
 
+/obj/item/stack/material/tin/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/tin/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-tin[icon_suffix]"
+
 /obj/item/stack/material/plastic
 	name = "plastic"
 	icon_state = "sheet-plastic"
 	default_type = "plastic"
 	apply_colour = TRUE
 	value = 3
+
+/obj/item/stack/material/plastic/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/plastic/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-plastic[icon_suffix]"
 
 /obj/item/stack/material/lead
 	name = "lead"
@@ -145,11 +230,43 @@
 	value = 3
 	flags = CONDUCT
 
+/obj/item/stack/material/lead/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/lead/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-lead[icon_suffix]"
+
 /obj/item/stack/material/sandstone
 	name = "sandstone"
 	icon_state = "sheet-sandstone"
 	default_type = "sandstone"
 	value = 2
+
+/obj/item/stack/material/sandstone/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/sandstone/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 32)
+			icon_suffix = "_2"
+		if (33 to INFINITY)
+			icon_suffix = "_3"
+	icon_state = "sheet-sandstone[icon_suffix]"
 
 /obj/item/stack/material/stone
 	name = "stone block"
@@ -163,12 +280,44 @@
 	default_type = "stonebrick"
 	value = 1
 
+/obj/item/stack/material/stonebrick/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/stonebrick/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 32)
+			icon_suffix = "_2"
+		if (33 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-stonebrick[icon_suffix]"
+
 /obj/item/stack/material/clay
 	name = "clay lump"
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claylump"
 	default_type = "clay"
 	value = 2
+
+/obj/item/stack/material/clay/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/clay/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "claylump[icon_suffix]"
 
 /obj/item/stack/material/clay/attackby(obj/item/W as obj, mob/user as mob)
 	if (map.ID == MAP_GULAG13)
@@ -200,6 +349,21 @@
 	icon_state = "sheet-marble"
 	default_type = "marble"
 	value = 3
+
+/obj/item/stack/material/marble/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/steel/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 33)
+			icon_suffix = "_2"
+		if (34 to INFINITY)
+			icon_suffix = "_3"
+	icon_state = "sheet-marble[icon_suffix]"
 
 /obj/item/stack/material/diamond
 	name = "diamond"
@@ -310,6 +474,21 @@
 	dried_type = /obj/item/stack/material/tobacco
 	dry_size = 9
 
+/obj/item/stack/material/tobacco_green/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/tobacco_green/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 32)
+			icon_suffix = "_2"
+		if (33 to 50)
+			icon_suffix = "_3"
+	icon_state = "tobacco_green[icon_suffix]"
+
 /obj/item/stack/material/tobacco
 	name = "dried tobacco leaves"
 	icon_state = "tobacco"
@@ -317,6 +496,21 @@
 	value = 3
 	w_class = ITEM_SIZE_TINY
 	flammable = TRUE
+
+/obj/item/stack/material/tobacco/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/tobacco/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 32)
+			icon_suffix = "_2"
+		if (33 to 50)
+			icon_suffix = "_3"
+	icon_state = "tobacco[icon_suffix]"
 
 /obj/item/stack/material/coca
 	name = "coca leaves"
@@ -372,12 +566,46 @@
 	value = 40
 	flags = CONDUCT
 
+/obj/item/stack/material/gold/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/gold/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-gold[icon_suffix]"
+
 /obj/item/stack/material/silver
 	name = "silver"
 	icon_state = "sheet-silver"
 	default_type = "silver"
 	value = 20
 	flags = CONDUCT
+
+/obj/item/stack/material/silver/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/silver/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-silver[icon_suffix]"
 
 /obj/item/stack/material/steel
 	name = "steel"
@@ -386,6 +614,23 @@
 	value = 5
 	max_amount = 2000
 	flags = CONDUCT
+
+/obj/item/stack/material/steel/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/steel/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-metal[icon_suffix]"
 
 /obj/item/stack/material/steel/twentyfive
 	amount = 25
@@ -400,6 +645,23 @@
 	var/onfire = FALSE
 	var/ash_production = FALSE
 	var/splitting_in_progress = FALSE
+	
+/obj/item/stack/material/wood/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/steel/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "logs[icon_suffix]"
 
 /obj/item/stack/material/wood/twentyfive
 	amount = 25
@@ -561,6 +823,23 @@
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
+/obj/item/stack/material/cloth/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/cloth/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-cloth[icon_suffix]"
+
 /obj/item/stack/material/rettedfabric
 	name = "retted fabric"
 	icon_state = "sheet-rettedfabric"
@@ -623,6 +902,22 @@
 	value = 2
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
+	
+/obj/item/stack/material/leather/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/leather/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 16)
+			icon_suffix = ""
+		if (17 to 33)
+			icon_suffix = "_2"
+		if (34 to INFINITY)
+			icon_suffix = "_3"
+	icon_state = "sheet-leather[icon_suffix]"
+
 /*
 /obj/item/stack/material/scales/gator_scale  //placeholder for alternative scaly hide crafting
 	name = "alligator scales"
@@ -651,6 +946,7 @@
 	value = 3
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
+
 /obj/item/stack/material/pelt/bearpelt/brown
 	name = "brown bear pelt"
 	desc = "A pelt from a skinned bear."
@@ -855,12 +1151,46 @@
 	dropsound = 'sound/effects/drop_glass.ogg'
 	value = 3
 
+/obj/item/stack/material/glass/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/glass/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-glass[icon_suffix]"
+
 /obj/item/stack/material/glass/reinforced
 	name = "reinforced glass"
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
 	value = 6
 	flags = CONDUCT
+
+/obj/item/stack/material/glass/reinforced/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/glass/reinforced/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-rglass[icon_suffix]"
 
 /obj/item/stack/material/bone
 	name = "bones"
