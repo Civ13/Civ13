@@ -297,7 +297,7 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("hydrogen" = 1, "sulfur" = 1, "oxygen" = 3)
 	result_amount = 5
 
-/datum/chemical_reaction/sulfurous_acid
+/datum/chemical_reaction/n_methylmorpholine_n_oxide
 	name = "N-Methylmorpholine N-oxide"
 	id = "n_methylmorpholine_n_oxide"
 	result = "n_methylmorpholine_n_oxide"
