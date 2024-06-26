@@ -269,13 +269,6 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("calcium" = 1, "carbon" = 12, "hydrogen" = 22, "oxygen" = 14)
 	result_amount = 3
 
-/datum/chemical_reaction/sodium_hydroxide
-	name = "Sodium Hydroxide"
-	id = "sodium_hydroxide"
-	result = "sodium_hydroxide"
-	required_reagents = list("sodium" = 2, "sulfur" = 1)
-	result_amount = 3
-
 /datum/chemical_reaction/sodium_sulfide
 	name = "Sodium Sulfide"
 	id = "sodium_sulfide"
