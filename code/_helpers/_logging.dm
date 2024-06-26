@@ -52,11 +52,15 @@
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]"
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]")
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) AHELP:**__ **[name]** [text]")
 
 /proc/discord_mentorhelp_log(name,text)
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) MENTORHELP:**__ **[name]** [text]"
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) MHELP:**__ **[name]** [text]")
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) MHELP:**__ **[name]** [text]")
 
 /proc/discord_adminpm_log(name,text,aname)
 	var/admindiary = file("admin.log")
