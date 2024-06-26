@@ -280,7 +280,7 @@ datum/admins/proc/print_chemical_reactions()
 	name = "Sodium Hydroxide"
 	id = "sodium_hydroxide"
 	result = "sodium_hydroxide"
-	required_reagents = list("sodium" = 2, "sulfur" = 1)
+	required_reagents = list("sodium" = 2, "hydrogen" = 1, "oxygen" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/sulfurous_acid
