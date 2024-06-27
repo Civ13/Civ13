@@ -354,7 +354,7 @@
 	update_icon()
 	return ..()
 
-/obj/item/stack/material/steel/update_icon()
+/obj/item/stack/material/marble/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (0 to 16)
@@ -650,7 +650,7 @@
 	update_icon()
 	return ..()
 
-/obj/item/stack/material/steel/update_icon()
+/obj/item/stack/material/wood/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
 		if (0 to 12)

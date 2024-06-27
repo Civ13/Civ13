@@ -241,6 +241,69 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 15, "hydrogen" = 12)
 	result_amount = 25
 
+/datum/chemical_reaction/ethanoic_acid
+	name = "Ethanoic Acid"
+	id = "ethanoic_acid"
+	result = "ethanoic_acid"
+	required_reagents = list("carbon" = 2, "hydrogen" = 4, "oxygen" = 2)
+	result_amount = 8
+
+/datum/chemical_reaction/calcium_chloride
+	name = "Calcium Chloride"
+	id = "calcium_chloride"
+	result = "calcium_chloride"
+	required_reagents = list("calcium carbonate" = 1, "chlorine" = 2)
+	result_amount = 3
+
+/datum/chemical_reaction/gluconic_acid
+	name = "Gluconic Acid"
+	id = "gluconic_acid"
+	result = "gluconic_acid"
+	required_reagents = list("carbon" = 6, "hydrogen" = 12, "oxygen" = 7)
+	result_amount = 25
+
+/datum/chemical_reaction/calcium_gluconate
+	name = "Calcium Gluconate"
+	id = "calcium_gluconate"
+	result = "calcium_gluconate"
+	required_reagents = list("calcium" = 1, "carbon" = 12, "hydrogen" = 22, "oxygen" = 14)
+	result_amount = 3
+
+/datum/chemical_reaction/sodium_sulfide
+	name = "Sodium Sulfide"
+	id = "sodium_sulfide"
+	result = "sodium_sulfide"
+	required_reagents = list("sodium" = 2, "sulfur" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/sodium_hydroxide
+	name = "Sodium Hydroxide"
+	id = "sodium_hydroxide"
+	result = "sodium_hydroxide"
+	required_reagents = list("sodium" = 2, "hydrogen" = 1, "oxygen" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/sulfurous_acid
+	name = "Sulfurous Acid"
+	id = "sulfurous_acid"
+	result = "sulfurous_acid"
+	required_reagents = list("hydrogen" = 2, "sulfur" = 1, "oxygen" = 3)
+	result_amount = 6
+
+/datum/chemical_reaction/hydrogen_sulfites
+	name = "Hydrogen Sulfites"
+	id = "hydrogen_sulfites"
+	result = "hydrogen_sulfites"
+	required_reagents = list("hydrogen" = 1, "sulfur" = 1, "oxygen" = 3)
+	result_amount = 5
+
+/datum/chemical_reaction/n_methylmorpholine_n_oxide
+	name = "N-Methylmorpholine N-oxide"
+	id = "n_methylmorpholine_n_oxide"
+	result = "n_methylmorpholine_n_oxide"
+	required_reagents = list("carbon" = 5, "hydrogen" = 11, "nitrogen" = 1, "oxygen" = 2)
+	result_amount = 19
+
 // Mostly used for vegetable oil extraction, paints, adhesives, industrial cleaning agents & fuel
 /datum/chemical_reaction/hexane
 	name = "Hexane"
