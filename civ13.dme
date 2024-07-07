@@ -513,6 +513,7 @@
 #include "code\game\objects\map_metadata\kenobis_weeb_shit.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\kursk.dm"
+#include "code\game\objects\map_metadata\landing_at_constantinopoli.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\long_march.dm"
