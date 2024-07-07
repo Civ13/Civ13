@@ -1742,7 +1742,7 @@ obj/structure/vending/idfammo
 	products = list(
 		/obj/item/clothing/shoes/combat = 15,
 		/obj/item/clothing/shoes/soldiershoes = 10,
-		/obj/item/clothing/under/syria_fsa = 5,
+		/obj/item/clothing/under/syrian_salv = 5,
 		/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki = 20,
 		/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969 = 10,
 		/obj/item/clothing/accessory/armor/coldwar/plates/platecarrier = 15,

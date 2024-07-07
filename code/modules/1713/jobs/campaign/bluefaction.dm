@@ -161,7 +161,7 @@
 	else if (findtext(title, "Armored"))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_tanker(H), slot_head)
 	else if ((findtext(title, "Sniper") || findtext(title, "Recon")) && (A.climate == "taiga" || A.climate == "tundra"))
-		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ach/white(H), slot_head)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)

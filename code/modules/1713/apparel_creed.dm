@@ -26,7 +26,7 @@
 	item_state = "ac_armor"
 	worn_state = "ac_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 65, arrow = 80, gun = 10, energy = 15, bomb = 40, bio = 20, rad = 10)
+	armor = list(melee = 65, arrow = 80, gun = ARMOR_CLASS, energy = 15, bomb = 40, bio = 20, rad = 10)
 	value = 45
 	slowdown = 0.2
 	health = 42
@@ -127,7 +127,7 @@
 	worn_state = "ac_gauntlets"
 	body_parts_covered = HANDS
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 20, arrow = 40, gun = 10, energy = 8, bomb = 15, bio = 10, rad = 5)
+	armor = list(melee = 20, arrow = 40, gun = ARMOR_CLASS, energy = 8, bomb = 15, bio = 10, rad = 5)
 	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
 	health = 25

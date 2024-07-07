@@ -173,7 +173,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 10, gun = ARMOR_CLASS*2, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday1
 	name = "american flag mask"
@@ -183,7 +183,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 10, gun = ARMOR_CLASS*2, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday2
 	name = "clown mask"
@@ -193,7 +193,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 10, gun = ARMOR_CLASS*2, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday3
 	name = "clown mask"
@@ -203,7 +203,7 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 10, gun = ARMOR_CLASS*2, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/mask/payday4
 	name = "clown mask"
@@ -213,4 +213,4 @@ The bee, of course, flies anyway because bees don't care what humans think is im
 	flags_inv = HIDEEARS|HIDEFACE
 	body_parts_covered = HEAD|FACE|EYES
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 50, arrow = 10, gun = 50, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 10, gun = ARMOR_CLASS*2, energy = 0, bomb = 15, bio = 0, rad = FALSE)

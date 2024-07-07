@@ -60,6 +60,8 @@
 	icon_state = "bcj"
 	item_state = "bcj"
 	body_parts_covered = UPPER_TORSO|ARMS
+	armor = list(melee = 5, arrow = 2, gun = ARMOR_CLASS*2, energy = 15, bomb = 5, bio = 30, rad = 20)
+
 
 /obj/item/clothing/suit/blugojacket/flak //only issued to the commander
 	name = "Blugoslavian Flak Jacket."
@@ -68,7 +70,7 @@
 	item_state = "bcj"
 	body_parts_covered = UPPER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 5, arrow = 2, gun = 2, energy = 15, bomb = 5, bio = 30, rad = 20)
+	armor = list(melee = 5, arrow = 2, gun = ARMOR_CLASS*2, energy = 15, bomb = 5, bio = 30, rad = 20)
 	slowdown = 0.1
 
 /obj/item/clothing/suit/gorillasuit

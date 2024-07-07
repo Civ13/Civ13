@@ -104,14 +104,14 @@
 
 /obj/item/clothing/head/impcaptaincap
 	name = "imperial naval officer cap"
-	desc = "A tight fitting green cap."
+	desc = "a tight fitting green cap."
 	icon_state = "repofficer_navcaptain"
 	item_state = "repofficer_navcaptain"
 	worn_state = "repofficer_navcaptain"
 
 /obj/item/clothing/head/impstormcap
 	name = "imperial black field cap"
-	desc = "A tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
+	desc = "a tight fitting black cap worn by Stormtrooper CORPS Officers, Naval Lieutenants, and Technicians."
 	icon_state = "impofficer_stormofficer"
 	item_state = "impofficer_stormofficer"
 	worn_state = "impofficer_stormofficer"
@@ -141,28 +141,28 @@
 
 /obj/item/clothing/head/repcaptaincap
 	name = "republic naval officer cap"
-	desc = "A tight fitting green cap."
+	desc = "a tight fitting green cap."
 	icon_state = "repnavalcaptain_cap"
 	item_state = "repnavalcaptain_cap"
 	worn_state = "repnavalcaptain_cap"
 
 /obj/item/clothing/head/repensigncap
 	name = "republic naval ensign cap"
-	desc = "A tight fitting blue grey cap."
+	desc = "a tight fitting blue grey cap."
 	icon_state = "repensign_cap"
 	item_state = "repensign_cap"
 	worn_state = "repensign_cap"
 
 /obj/item/clothing/head/repmedicalcap
 	name = "republic medical officer cap"
-	desc = "A tight fitting grey cap."
+	desc = "a tight fitting grey cap."
 	icon_state = "repmedicalofficer_cap"
 	item_state = "repmedicalofficer_cap"
 	worn_state = "repmedicalofficer_cap"
 
 /obj/item/clothing/head/impofficercap
 	name = "imperial officer cap"
-	desc = "A tight fitting grey cap."
+	desc = "a tight fitting grey cap."
 	icon_state = "impofficer_stormofficer"
 	item_state = "impofficer_stormofficer"
 	worn_state = "impofficer_stormofficer"
@@ -177,7 +177,7 @@
 	worn_state = "white"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 45, arrow = 70, gun = 50, energy = 45, bomb = 35, bio = 15, rad = FALSE)
+	armor = list(melee = 45, arrow = 70, gun = ARMOR_CLASS*2, energy = 45, bomb = 35, bio = 15, rad = FALSE)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -191,7 +191,7 @@
 	worn_state = "redboots"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 70, gun = 60, energy = 65, bomb = 35, bio = 15, rad = FALSE)
+	armor = list(melee = 55, arrow = 70, gun = ARMOR_CLASS*2, energy = 65, bomb = 35, bio = 15, rad = FALSE)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -205,7 +205,7 @@
 	worn_state = "senateboots"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 70, gun = 60, energy = 65, bomb = 35, bio = 15, rad = FALSE)
+	armor = list(melee = 55, arrow = 70, gun = ARMOR_CLASS*2, energy = 65, bomb = 35, bio = 15, rad = FALSE)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -219,7 +219,7 @@
 	worn_state = "replicant_gloves"
 	body_parts_covered = HANDS
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 45, arrow = 50, gun = 50, energy = 45, bomb = 35, bio = 15, rad = FALSE)
+	armor = list(melee = 45, arrow = 50, gun = ARMOR_CLASS*2, energy = 45, bomb = 35, bio = 15, rad = FALSE)
 	cold_protection = HANDS
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -233,7 +233,7 @@
 	worn_state = "veryblack"
 	body_parts_covered = HANDS
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 10, arrow = 5, gun = 5, energy = 2, bomb = 5, bio = 5, rad = FALSE)
+	armor = list(melee = 10, arrow = 5, gun = ARMOR_CLASS, energy = 2, bomb = 5, bio = 5, rad = FALSE)
 	cold_protection = HANDS
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	health = 40
@@ -247,7 +247,7 @@
 	item_state = "replicant_armor"
 	worn_state = "replicant_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 55, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = ARMOR_CLASS*3, energy = 55, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -259,7 +259,7 @@
 	item_state = "redguard"
 	worn_state = "redguard"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 75, arrow = 90, gun = 95, energy = 75, bomb = 100, bio = 20, rad = FALSE)
+	armor = list(melee = 75, arrow = 90, gun = ARMOR_CLASS*3, energy = 75, bomb = 100, bio = 20, rad = FALSE)
 	value = 70
 	slowdown = 0.9
 	health = 60
@@ -271,7 +271,7 @@
 	item_state = "senateguard"
 	worn_state = "senateguard"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 75, arrow = 90, gun = 95, energy = 75, bomb = 100, bio = 20, rad = FALSE)
+	armor = list(melee = 75, arrow = 90, gun = ARMOR_CLASS*4, energy = 75, bomb = 100, bio = 20, rad = FALSE)
 	value = 70
 	slowdown = 0.9
 	health = 60
@@ -283,7 +283,7 @@
 	item_state = "reppilot_armor"
 	worn_state = "reppilot_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 25, arrow = 50, gun = 55, energy = 40, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 25, arrow = 50, gun = ARMOR_CLASS*3, energy = 40, bomb = 50, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -295,7 +295,7 @@
 	item_state = "repmp_armor"
 	worn_state = "repmp_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 25, arrow = 50, gun = 55, energy = 40, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 25, arrow = 50, gun = ARMOR_CLASS*3, energy = 40, bomb = 50, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -307,7 +307,7 @@
 	item_state = "repsgt_armor"
 	worn_state = "repsgt_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = ARMOR_CLASS*3, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -331,7 +331,7 @@
 	item_state = "replieutenant_armor"
 	worn_state = "replieutenant_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = ARMOR_CLASS*3, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -343,7 +343,7 @@
 	item_state = "repcommando"
 	worn_state = "repcommando"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 55, arrow = 95, gun = 85, energy = 55, bomb = 60, bio = 10, rad = FALSE)
+	armor = list(melee = 55, arrow = 95, gun = ARMOR_CLASS*4, energy = 55, bomb = 60, bio = 10, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -355,7 +355,7 @@
 	item_state = "repcaptain_armor"
 	worn_state = "repcaptain_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 90, gun = 75, energy = 45, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 90, gun = ARMOR_CLASS*3, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -367,7 +367,7 @@
 	item_state = "repcommander_armor"
 	worn_state = "repcommander_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 55, arrow = 95, gun = 85, energy = 45, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 95, gun = ARMOR_CLASS*4, energy = 45, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -379,7 +379,7 @@
 	item_state = "stormtrooper_armor"
 	worn_state = "stormtrooper_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 96, gun = 88, energy = 50, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 96, gun = ARMOR_CLASS*4, energy = 50, bomb = 50, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 75
@@ -391,7 +391,7 @@
 	item_state = "stormsurgeon_armor"
 	worn_state = "stormsurgeon_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 45, arrow = 86, gun = 68, energy = 40, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 86, gun = ARMOR_CLASS*3, energy = 40, bomb = 40, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.2
 	health = 75
@@ -403,7 +403,7 @@
 	item_state = "stormradio_armor"
 	worn_state = "stormradio_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 35, arrow = 66, gun = 58, energy = 35, bomb = 25, bio = 20, rad = FALSE)
+	armor = list(melee = 35, arrow = 66, gun = ARMOR_CLASS*3, energy = 35, bomb = 25, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 0.85
 	health = 57
@@ -418,7 +418,7 @@
 	worn_state = "redguard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 80, gun = 85, energy = 65, bomb = 40, bio = 30, rad = FALSE)
+	armor = list(melee = 60, arrow = 80, gun = ARMOR_CLASS*4, energy = 65, bomb = 40, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/senateguard
 	name = "Imperial Senate Guard Helmet"
@@ -428,7 +428,7 @@
 	worn_state = "senateguard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 80, gun = 85, energy = 65, bomb = 40, bio = 30, rad = FALSE)
+	armor = list(melee = 60, arrow = 80, gun = ARMOR_CLASS*4, energy = 65, bomb = 40, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/ARF
 	name = "Phase I Replicant ARF Helmet"
@@ -438,7 +438,7 @@
 	worn_state = "repARF_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 45, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*4, energy = 45, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/airborne
 	name = "Phase I Replicant Airborne Helmet"
@@ -448,7 +448,7 @@
 	worn_state = "repairborne_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 35, arrow = 50, gun = 35, energy = 55, bomb = 40, bio = 30, rad = FALSE)
+	armor = list(melee = 35, arrow = 50, gun = ARMOR_CLASS*4, energy = 55, bomb = 40, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormtrooper
 	name = "Stormtrooper Helmet"
@@ -458,7 +458,7 @@
 	worn_state = "repstormtrooper_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
+	armor = list(melee = 35, arrow = 60, gun = ARMOR_CLASS*4, energy = 50, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormsurgeon
 	name = "Storm-Surgeon Helmet"
@@ -468,7 +468,7 @@
 	worn_state = "stormsurgeon_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 35, arrow = 60, gun = 65, energy = 50, bomb = 30, bio = 30, rad = FALSE)
+	armor = list(melee = 35, arrow = 60, gun = ARMOR_CLASS*3, energy = 50, bomb = 30, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/stormradio
 	name = "Stormtrooper Radio Technician Helmet"
@@ -478,7 +478,7 @@
 	worn_state = "stormradio_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 55, energy = 50, bomb = 20, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 50, bomb = 20, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant
 	name = "Phase I Replicant Trooper Helmet"
@@ -488,7 +488,7 @@
 	worn_state = "replicant_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 50, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 50, bomb = 30, bio = 20, rad = FALSE)
 	flash_protection = FLASH_PROTECTION_MODERATE
 	var/ear_safety = 2
 /obj/item/clothing/head/helmet/replicant/atrt
@@ -499,7 +499,7 @@
 	worn_state = "replicant_atrt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 45, gun = 45, energy = 45, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 45, gun = ARMOR_CLASS*3, energy = 45, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/radio
 	name = "Phase I Replicant Radio Technician Helmet"
@@ -509,7 +509,7 @@
 	worn_state = "replicant_radiotech"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 50, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 50, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/engi
 	name = "Replicant Engineer Helmet"
@@ -519,7 +519,7 @@
 	worn_state = "replicant_engi"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 50, bomb = 40, bio = 40, rad = 35)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 50, bomb = 40, bio = 40, rad = 35)
 
 
 /obj/item/clothing/head/helmet/replicant2
@@ -530,7 +530,7 @@
 	worn_state = "replicant_helmet2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 60, gun = 40, energy = 58, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 60, gun = ARMOR_CLASS*3, energy = 58, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/commando
 	name = "Replicant Commando Helmet"
@@ -540,7 +540,7 @@
 	worn_state = "replicant_commando"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 65, gun = 45, energy = 60, bomb = 30, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 65, gun = ARMOR_CLASS*3, energy = 60, bomb = 30, bio = 25, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant2/blizzard
 	name = "Phase II Replicant Trooper Helmet"
@@ -550,7 +550,7 @@
 	worn_state = "replicant_blizzard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 60, gun = 40, energy = 58, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 60, gun = ARMOR_CLASS*3, energy = 58, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant2501st
 	name = "Phase II 501st Replicant Trooper Helmet"
@@ -560,7 +560,7 @@
 	worn_state = "replicant_helmet2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 60, gun = 40, energy = 58, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 60, gun = ARMOR_CLASS*3, energy = 58, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/pilot
 	name = "Phase I Replicant Pilot Helmet"
@@ -570,7 +570,7 @@
 	worn_state = "reppilot_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 55, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/MP
 	name = "Phase I Replicant MP Helmet"
@@ -580,7 +580,7 @@
 	worn_state = "repmp_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 45, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 45, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/sgt
 	name = "Phase I Replicant Sergeant Helmet"
@@ -590,7 +590,7 @@
 	worn_state = "repsgt_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 55, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/lt
 	name = "Phase I Replicant Lieutenant Helmet"
@@ -600,7 +600,7 @@
 	worn_state = "replt_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 55, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/captain
 	name = "Phase I Replicant Captain Helmet"
@@ -610,7 +610,7 @@
 	worn_state = "repcaptain_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 55, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/replicant/commander
 	name = "Phase I Replicant Commander Helmet"
@@ -620,7 +620,7 @@
 	worn_state = "repcommander_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 55, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 55, bomb = 30, bio = 20, rad = FALSE)
 
 // OFFICER UNIFORMS //
 
@@ -841,7 +841,7 @@
 	worn_state = "rebel_helmet1"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 30, arrow = 50, gun = 40, energy = 45, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 50, gun = ARMOR_CLASS*3, energy = 45, bomb = 30, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/rebel/New()
 	..()

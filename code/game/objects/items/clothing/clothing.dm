@@ -22,6 +22,16 @@
 	var/rag_amount = 1
 	secondary_action = TRUE
 
+
+/obj/item/clothing/New()
+	..()
+	var/armor_class = get_armor_class()
+	if(armor_class > 0)
+		desc += " This provides [armor_class] level protection of."
+
+/obj/item/clothing/proc/get_armor_class()
+	return round(armor["gun"] / ARMOR_CLASS)
+
 /obj/item/clothing/secondary_attack_self(mob/living/human/user)
 	if (secondary_action && ripable && rag_amount > 0)
 		to_chat(user, SPAN_WARNING("You start ripping apart \the [src]..."))

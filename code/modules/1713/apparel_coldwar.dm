@@ -200,7 +200,7 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -212,7 +212,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	ripable = FALSE
@@ -224,7 +224,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
+	armor = list(melee = 60, arrow = 20, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 32, rad = 20)
 	var/slots = 3
 	ripable = FALSE
 
@@ -421,7 +421,7 @@
 	worn_state = "m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/ushelmet/un
@@ -500,7 +500,7 @@
 	worn_state = "cvc_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 75, gun = 50, energy = 15, bomb = 70, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 75, gun = ARMOR_CLASS*3, energy = 15, bomb = 70, bio = 20, rad = FALSE)
 
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
@@ -511,7 +511,7 @@
 	worn_state = "korea_m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/usm1/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -530,7 +530,7 @@
 	worn_state = "korea_m1_tan_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/ustannet/verb/toggle_color()
 	set category = null
@@ -565,7 +565,7 @@
 	worn_state = "korea_m1_green_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_medic
 	name = "M1 Medic Helmet"
@@ -575,7 +575,7 @@
 	worn_state = "korea_m1_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_2lt
 	name = "M1 2nd LT Helmet"
@@ -585,7 +585,7 @@
 	worn_state = "korea_m1_2nd_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_1lt
 	name = "M1 1st LT Helmet"
@@ -595,7 +595,7 @@
 	worn_state = "korea_m1_1st_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_cap
 	name = "M1 Captain Helmet"
@@ -605,7 +605,7 @@
 	worn_state = "korea_m1_cpt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /* Ghillie Suits*/
 
@@ -676,7 +676,6 @@
 	icon_state = "chinese_ushanka_up"
 	item_state = "chinese_ushanka_up"
 	worn_state = "chinese_ushanka_up"
-	cold_protection = HEAD
 
 /obj/item/clothing/head/chinese_ushanka/down
 	icon_state = "chinese_ushanka"
@@ -703,7 +702,7 @@
 	worn_state = "chi_korea_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized
@@ -714,7 +713,7 @@
 	worn_state = "chi_korea_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 35, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS*2, energy = 25, bomb = 55, bio = 20, rad = FALSE)
 	health = 100
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter
@@ -744,7 +743,6 @@
 	item_state = "ushanka_new_up"
 	worn_state = "ushanka_new_up"
 	flags_inv = BLOCKHEADHAIR
-	cold_protection = HEAD
 
 /obj/item/clothing/head/sov_ushanka_new/down
 	icon_state = "ushanka_new"
@@ -782,20 +780,13 @@
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
 	body_parts_covered = HEAD
-	cold_protection = HEAD
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
-	desc = "A beret worn by the Soviet and Russian Airborne Forces."
+	desc = "A beret worn by the Russian Airborn Forces."
 	icon_state = "beret_rus_vdv"
 	item_state = "beret_rus_vdv"
 	body_parts_covered = HEAD
-
-/obj/item/clothing/head/beret_rus_vdv/modern
-	name = "VDV beret"
-	desc = "A beret worn by the Russian Airborne Forces."
-	icon_state = "beret_rus_vdv_modern"
-	item_state = "beret_rus_vdv_modern"
 
 /obj/item/clothing/head/beret_rus_spez
 	name = "Spetznaz beret"
@@ -1011,7 +1002,7 @@
 	item_state = "tatba"
 	worn_state = "tatba"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 55, arrow = 95, gun = 50, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 95, gun = ARMOR_CLASS*3, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 1
@@ -1033,7 +1024,7 @@
 	worn_state = "ssh_68_sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 75, gun = ARMOR_CLASS*3, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/ssh_68/med
 	icon_state = "ssh_68med"
@@ -1057,7 +1048,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*3, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	weight = 5
@@ -1069,7 +1060,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
@@ -1095,7 +1086,7 @@
 	item_state = "6b2"
 	worn_state = "6b2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 30, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*2, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slowdown = 0.2
@@ -1108,7 +1099,7 @@
 	item_state = "6b5"
 	worn_state = "6b5"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 70, arrow = 95, gun = 70, energy = 30, bomb = 70, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 95, gun = ARMOR_CLASS*4, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
@@ -1122,7 +1113,7 @@
 	item_state = "flakjacket"
 	worn_state = "flakjacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 75, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 75, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.2
 
@@ -1133,7 +1124,7 @@
 	item_state = "flakjacket1969"
 	worn_state = "flakjacket1969"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 75, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 75, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.2
 
@@ -1144,7 +1135,7 @@
 	item_state = "6b1"
 	worn_state = "6b1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 80, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 80, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.1
 
@@ -1164,8 +1155,10 @@
 
 /obj/item/weapon/storage/belt/ugl/soviet/filled/New()
 	..()
-	for (var/i=1, i<= 4, i++)
-		new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
+	new/obj/item/weapon/grenade/frag/ugl/vog25(src)
 	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
 	new/obj/item/weapon/grenade/smokebomb/ugl/vog25(src)
 
@@ -1225,42 +1218,43 @@
 /obj/item/weapon/storage/belt/destructionpouch/New()
 	..()
 	new /obj/item/weapon/grenade/smokebomb(src)
-	for (var/i=1, i<=3, i++)
-		new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
+	new /obj/item/weapon/grenade/antitank/stg24_bundle(src)
 	new /obj/item/weapon/grenade/ww2/stg1924(src)
 	new /obj/item/weapon/grenade/ww2/stg1924(src)
 
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh
 /obj/item/weapon/storage/belt/smallpouches/soviet_ppsh/New()
 	..()
-	for (var/i=1, i<=4, i++)
-		new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
+	new /obj/item/ammo_magazine/c762x25_ppsh(src)
 
 /obj/item/weapon/storage/belt/smallpouches/chinese_rifle
 /obj/item/weapon/storage/belt/smallpouches/chinese_rifle/New()
 	..()
-	for (var/i=1, i<=4, i++)
-		new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
 
 /obj/item/weapon/storage/belt/smallpouches/us_stanag
 /obj/item/weapon/storage/belt/smallpouches/us_stanag/New()
 	..()
-	for (var/i=1, i<=3, i++)
-		new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
+	new /obj/item/ammo_magazine/m16(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/un_fal
 /obj/item/weapon/storage/belt/smallpouches/un_fal/New()
 	..()
-	for (var/i=1, i<=3, i++)
-		new /obj/item/ammo_magazine/fal(src)
+	new /obj/item/ammo_magazine/fal(src)
+	new /obj/item/ammo_magazine/fal(src)
+	new /obj/item/ammo_magazine/fal(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-
-/obj/item/weapon/storage/belt/smallpouches/fal
-/obj/item/weapon/storage/belt/smallpouches/fal/New()
-	..()
-	for (var/i=1, i<=4, i++)
-		new /obj/item/ammo_magazine/fal(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/New()
@@ -1269,14 +1263,6 @@
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/ammo_magazine/ak74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-
-/obj/item/weapon/storage/belt/smallpouches/ak74
-/obj/item/weapon/storage/belt/smallpouches/ak74/New()
-	..()
-	new /obj/item/weapon/grenade/modern/f1(src)
-	new /obj/item/ammo_magazine/ak74(src)
-	new /obj/item/ammo_magazine/ak74(src)
-	new /obj/item/ammo_magazine/ak74(src)
 
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt
 /obj/item/weapon/storage/belt/smallpouches/green/sov_74/alt/New()
@@ -1289,8 +1275,8 @@
 /obj/item/weapon/storage/belt/smallpouches/green/rpk74
 /obj/item/weapon/storage/belt/smallpouches/green/rpk74/New()
 	..()
-	new /obj/item/ammo_magazine/rpk74(src)
-	new /obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
+	new/obj/item/ammo_magazine/rpk74(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 	new /obj/item/weapon/grenade/coldwar/rgd5(src)
 
@@ -1377,7 +1363,7 @@
 /obj/item/weapon/storage/belt/smallpouches/green/m14
 /obj/item/weapon/storage/belt/smallpouches/green/m14/New()
 	..()
-	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
+	new /obj/item/weapon/grenade/smokebomb(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/ammo_magazine/m14(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
@@ -1415,11 +1401,11 @@
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
-/obj/item/weapon/storage/belt/smallpouches/hk417
-/obj/item/weapon/storage/belt/smallpouches/hk417/New()
+/obj/item/weapon/storage/belt/smallpouches/mk18
+/obj/item/weapon/storage/belt/smallpouches/mk18/New()
 	..()
-	new /obj/item/ammo_magazine/scarh(src)
-	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/mk18(src)
+	new /obj/item/ammo_magazine/mk18(src)
 	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
@@ -1438,8 +1424,7 @@
 	new /obj/item/ammo_magazine/sten2(src)
 	new /obj/item/weapon/grenade/smokebomb/m18smoke(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
-
-/* Cold War Balaclavas */
+/* Cold War Balaclavas*/
 
 /obj/item/clothing/mask/balaclava
 	name = "black balaclava"
@@ -1451,28 +1436,6 @@
 	flags_inv = HIDEFACE
 	w_class = ITEM_SIZE_TINY
 	heat_protection = HEAD|FACE|EYES
-	cold_protection = HEAD|FACE|EYES
-
-/obj/item/clothing/mask/balaclava/snow
-	name = "snow balaclava"
-	desc = "A white balaclava, covering the face."
-	icon_state = "snowclava"
-	item_state = "snowclava"
-	worn_state = "snowclava"
-
-/obj/item/clothing/mask/balaclava/green
-	name = "snow balaclava"
-	desc = "A green balaclava, covering the face."
-	icon_state = "swatclava"
-	item_state = "swatclava"
-	worn_state = "swatclava"
-
-/obj/item/clothing/mask/balaclava/skull
-	name = "skull face balaclava"
-	desc = "A balaclava with a skull imprint, covering the face."
-	icon_state = "skullclava"
-	item_state = "skullclava"
-	worn_state = "skullclava"
 
 /obj/item/clothing/mask/headscarfgrey ////German Toque head scarf Issued to soldiers during WW2 to wear as a neck warmer
 	name = "grey headscarf"
@@ -1487,8 +1450,6 @@
 	min_cold_protection_temperature = HELMET_MIN_COLD_PROTECTION_TEMPERATURE*2
 	flammable = TRUE
 	cold_protection = HEAD|FACE
-
-/* Headscarves */
 
 /obj/item/clothing/mask/headscarfgrey/asbestos
 	name = "Asbestos headscarf"
@@ -1545,11 +1506,54 @@
 		..()
 		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/stack/medical/bruise_pack)
 
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/sksm
+	New()
+		..()
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+		new/obj/item/ammo_magazine/sksm(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/svd
+	New()
+		..()
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+		new/obj/item/ammo_magazine/svd(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/ak74
+	New()
+		..()
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
+		new/obj/item/ammo_magazine/ak74(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/blue/akdrum
+	New()
+		..()
+		new/obj/item/ammo_magazine/rpk47/drum(hold)
+		new/obj/item/ammo_magazine/rpk47/drum(hold)
+		new/obj/item/ammo_magazine/rpk47/drum(hold)
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing/red/m16
+	New()
+		..()
+		new/obj/item/ammo_magazine/m16(hold)
+		new/obj/item/ammo_magazine/m16(hold)
+		new/obj/item/ammo_magazine/m16(hold)
+
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin
 	New()
 		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
 
 /obj/item/clothing/accessory/storage/webbing/green_webbing/mosin/sniper
 	New()
@@ -1560,8 +1564,9 @@
 /obj/item/clothing/accessory/storage/webbing/green_webbing/m24
 	New()
 		..()
-		for (var/i=1, i<= 3, i++)
-			new/obj/item/ammo_magazine/m24(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
+		new/obj/item/ammo_magazine/mosin(hold)
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
@@ -1671,7 +1676,7 @@
 
 /obj/item/clothing/accessory/storage/webbing/light
 	name = "light webbing"
-	desc = "A light webbing, with lower capacity but permitting fast movement."
+	desc = "a light webbing, with lower capacity but permitting fast movement."
 	slots = 3
 	icon_state = "german_vest"
 	item_state = "german_vest"
@@ -1688,20 +1693,28 @@
 /obj/item/clothing/accessory/storage/webbing/light/chinese/gewehr98
 	New()
 		..()
-		for (var/i=1, i<= 5, i++)
-			new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
+		new/obj/item/ammo_magazine/gewehr98(hold)
 
 /obj/item/clothing/accessory/storage/webbing/light/chinese/ak47
 	New()
 		..()
-		for (var/i=1, i<= 4, i++)
-			new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
+		new/obj/item/ammo_magazine/ak47(hold)
 
 /obj/item/clothing/accessory/storage/webbing/light/chinese/sks
 	New()
 		..()
-		for (var/i=1, i<= 5, i++)
-			new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
+		new/obj/item/ammo_magazine/sks(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest
 	name = "US Army webbing"
@@ -1717,43 +1730,55 @@
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
+		new /obj/item/ammo_magazine/m16(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/m60
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
+		new /obj/item/ammo_magazine/b762(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/m249
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
+		new /obj/item/ammo_magazine/m249(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/c6
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
+		new /obj/item/ammo_magazine/c6can(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/sten
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
+		new /obj/item/ammo_magazine/sten2(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_vest/springfield
 	New()
 		..()
 		new /obj/item/stack/medical/bruise_pack/gauze(hold)
-		for (var/i=1, i<=4, i++)
-			new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
+		new /obj/item/ammo_magazine/springfield(hold)
 
 /obj/item/clothing/accessory/storage/webbing/us_bandolier
 	name = "US Army bandolier"
@@ -1778,8 +1803,18 @@
 /obj/item/clothing/accessory/storage/webbing/shotgun_bandolier/filled_buckshot
 	New()
 		..()
-		for (var/i=1, i<=12, i++)
-			new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
+		new /obj/item/ammo_casing/shotgun/buckshot(hold)
 
 /obj/item/clothing/accessory/storage/webbing/m79_vest
 	name = "US Army M79 Vest"
@@ -1794,8 +1829,14 @@
 /obj/item/clothing/accessory/storage/webbing/m79_vest/filled
 	New()
 		..()
-		for (var/i=1, i<=8, i++)
-			new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
 
 /obj/item/clothing/accessory/storage/webbing/shell40mm
 	name = "Grenadier Webbing"
@@ -1806,10 +1847,14 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
-		for (var/i=1, i<=5, i++)
-			new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
-		for (var/i=1, i<=3, i++)
-			new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/frag/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/shell40mm(hold)
 
 /obj/item/clothing/accessory/storage/webbing/vog25
 	name = "Grenadier Webbing"
@@ -1820,10 +1865,14 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/weapon/grenade/frag/ugl,/obj/item/weapon/grenade/smokebomb/ugl,/obj/item/weapon/grenade/chemical/ugl,/obj/item/weapon/key)
-		for (var/i=1, i<=5, i++)
-			new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
-		for (var/i=1, i<=3, i++)
-			new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/frag/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
+		new /obj/item/weapon/grenade/smokebomb/ugl/vog25(hold)
 
 /obj/item/clothing/accessory/storage/webbing/survival
 	name = "survival webbing"
@@ -1926,7 +1975,7 @@
 
 /obj/item/clothing/suit/nbcponcho
 	name = "NBC poncho"
-	desc = "A NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
+	desc = "a NBC poncho,very light and easy to put on, made to protect against biological, chemical and nuclear threats."
 	icon_state = "nbcponcho"
 	item_state = "nbcponcho"
 	worn_state = "nbcponcho"
@@ -1948,7 +1997,7 @@
 	name = "astronaut helmet"
 	desc = "A grey helmet, made to protect against low pressure, temperature and radioactive threa"
 	icon_state = "astronaut"
-	armor = list(melee = 20, arrow = 10, gun = 5, energy = 10, bomb = 35, bio = 150, rad = 195)
+	armor = list(melee = 20, arrow = 10, gun = ARMOR_CLASS, energy = 10, bomb = 35, bio = 150, rad = 195)
 
 /obj/item/clothing/suit/astronaut
 	name = "astronaut suit"
@@ -1987,7 +2036,7 @@
 	item_state = "toughguy"
 	worn_state = "toughguy"
 	body_parts_covered = HANDS
-	armor = list(melee = 30, arrow = 5, gun = 5, energy = 15, bomb = 30, bio = 10, rad = FALSE)
+	armor = list(melee = 30, arrow = 5, gun = ARMOR_CLASS, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	slot_flags = SLOT_GLOVES
 
 /obj/item/clothing/shoes/toughguy
@@ -2019,7 +2068,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "redguardcap"
 	worn_state = "redguardcap"
 	body_parts_covered = HEAD
-	armor = list(melee = 5, arrow = FALSE, gun = 1, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	/* Sovie apparel 70-80'ss*/
 
 /obj/item/clothing/under/afghanka
@@ -2061,16 +2110,6 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "sov_klmk"
 	worn_state = "sov_klmk"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-
-/obj/item/clothing/under/sov_klmk/alt
-	icon_state = "sov_klmk_alt"
-	item_state = "sov_klmk_alt"
-	worn_state = "sov_klmk_alt"
-
-/obj/item/clothing/under/sov_klmk/yellow
-	icon_state = "sov_klmk_yellow"
-	item_state = "sov_klmk_yellow"
-	worn_state = "sov_klmk_yellow"
 
 /obj/item/clothing/under/sov_kzs
 	name = "KZS camo uniform"
@@ -2142,7 +2181,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "bxsuit"
 	worn_state = "bxsuit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
+	armor = list(melee = 140, arrow = 200, gun = ARMOR_CLASS*4, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
 
 /obj/item/clothing/suit/a6b45 //isn't this armor? || Note @FantasticFwoosh- (29/08/2020) Ratnik Programme russian armor is developed in 2016 this is classified in the wrong era.
@@ -2152,31 +2191,31 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b45"
 	worn_state = "a6b45"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
+	armor = list(melee = 103, arrow = 110, gun = ARMOR_CLASS*4, energy = 67, bomb = 70, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
 	flags = CONDUCT
 
 /obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
-	desc = "A heavy NIJ level IV vest."
+	desc = "a heavy NIJ level IV vest."
 	icon_state = "heavypolice"
 	item_state = "heavypolice"
 	worn_state = "heavypolice"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 50, arrow = 40, gun = 112, energy = 68, bomb = 40, bio = 32, rad = 20)
+	armor = list(melee = 50, arrow = 40, gun = ARMOR_CLASS*3, energy = 68, bomb = 40, bio = 32, rad = 20)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
 
 /obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
-	desc = "A heavy NIJ level III vest."
+	desc = "a heavy NIJ level III vest."
 	icon_state = "mediumvest"
 	item_state = "mediumvest"
 	worn_state = "mediumvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 30, arrow = 40, gun = 84, energy = 47, bomb = 35, bio = 29, rad = 10)
+	armor = list(melee = 30, arrow = 40, gun = ARMOR_CLASS*3, energy = 47, bomb = 35, bio = 29, rad = 10)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -2188,7 +2227,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b44"
 	worn_state = "a6b44"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 80, arrow = 100, gun = 93, energy = 56, bomb = 64, bio = 40, rad = 36)
+	armor = list(melee = 80, arrow = 100, gun = ARMOR_CLASS*3, energy = 56, bomb = 64, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
 	flags = CONDUCT
@@ -2200,7 +2239,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b28"
 	worn_state = "a6b28"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
+	armor = list(melee = 74, arrow = 87, gun = ARMOR_CLASS*3, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
 	ripable = FALSE
 	flags = CONDUCT
@@ -2213,7 +2252,7 @@ obj/item/clothing/head/chinaguardcap
 	worn_state = "viet_pith"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/vchelmet/two
@@ -2225,7 +2264,18 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "viet_pith3"
 	worn_state = "viet_pith3"
 
-/obj/item/clothing/head/helmet/modern/hardhat
+/obj/item/clothing/head/helmet/modern/hardhaty
+	name = "yellow hard hat"
+	desc = "A yellow hard hat used by the workers."
+	icon_state = "hardhat_yellow"
+	item_state = "hardhat_yellow"
+	worn_state = "hardhat_yellow"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = ARMOR_CLASS, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
+
+/obj/item/clothing/head/helmet/modern/hardhatw
 	name = "white hard hat"
 	desc = "A white hard hat used by the workers."
 	icon_state = "hardhat_white"
@@ -2233,22 +2283,19 @@ obj/item/clothing/head/chinaguardcap
 	worn_state = "hardhat_white"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 65, arrow = 15, gun = 5, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	armor = list(melee = 65, arrow = 15, gun = ARMOR_CLASS, energy = 5, bomb = 55, bio = 10, rad = FALSE)
 	health = 30
 
-/obj/item/clothing/head/helmet/modern/hardhat/yellow
-	name = "yellow hard hat"
-	desc = "A yellow hard hat used by the workers."
-	icon_state = "hardhat_yellow"
-	item_state = "hardhat_yellow"
-	worn_state = "hardhat_yellow"
-
-/obj/item/clothing/head/helmet/modern/hardhat/orange
+/obj/item/clothing/head/helmet/modern/hardhato
 	name = "orange hard hat"
-	desc = "An orange hard hat used by the workers."
+	desc = "A orange hard hat used by the workers."
 	icon_state = "hardhat_orange"
 	item_state = "hardhat_orange"
 	worn_state = "hardhat_orange"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 65, arrow = 15, gun = ARMOR_CLASS, energy = 5, bomb = 55, bio = 10, rad = FALSE)
+	health = 30
 
 //yare yare daze.
 

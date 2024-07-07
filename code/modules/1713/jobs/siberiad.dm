@@ -24,11 +24,11 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
 //mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 //gun
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
-//belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/hk417(H), slot_belt)
+
+
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black/insig(H), slot_head)
 //glove
@@ -85,7 +85,7 @@
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles/ballistic(H), slot_eyes)
 //mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/snow(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/red = new /obj/item/clothing/accessory/armband/french(null)
@@ -109,9 +109,9 @@
 	var/rand_helmet = rand(1,3)
 	switch(rand_helmet)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 //glove
@@ -186,9 +186,9 @@
 	var/rand_helmet = rand(1,3)
 	switch(rand_helmet)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 //glove
@@ -248,9 +248,9 @@
 	var/rand_helmet = rand(1,4)
 	switch(rand_helmet)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (4)
@@ -325,9 +325,9 @@
 	var/rand_helmet = rand(1,4)
 	switch(rand_helmet)
 		if (1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt/two(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white/alt(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/white(H), slot_head)
 		if (4)
@@ -443,7 +443,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 //mask
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/green(H), slot_wear_mask)
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
 //armor
@@ -671,7 +671,7 @@
 			if (2)
 				H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
 			if (3)
-				H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava/green(H), slot_wear_mask)
+				H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 //gloves
 	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 

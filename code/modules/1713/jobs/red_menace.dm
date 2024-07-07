@@ -469,7 +469,7 @@
 			if (prob(50))
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk(H), slot_w_uniform)
 			else
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk/alt(H), slot_w_uniform)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/sov_klmk(H), slot_w_uniform)
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
 		if (3)
@@ -1028,7 +1028,7 @@
 				H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/hazard(H), slot_wear_suit)
 				H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick(H), slot_gloves)
 			//head
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhat/yellow(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/hardhaty(H), slot_head)
 			//back
 				H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/full(H), slot_belt)
 				H.equip_to_slot_or_del(new /obj/item/weapon/material/shovel/steel(H), slot_back)

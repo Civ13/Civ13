@@ -1787,7 +1787,7 @@
 			uniform.attackby(two, H)
 		if (3)
 			uniform.attackby(three, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/ak74(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
 //head
 	var/randhat = rand(1,3)
 	switch (randhat)
@@ -1949,7 +1949,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak47(H), slot_belt)
 		if (5)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/fal(H), slot_shoulder)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/fal(H), slot_belt)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/un_fal(H), slot_belt)
 //head
 	var/randhat1 = rand (1,3)
 	var/randhat2 = rand (1,2)

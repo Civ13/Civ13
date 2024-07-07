@@ -893,7 +893,7 @@
 	worn_state = "roman_d"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = ARMOR_CLASS, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
 	var/uncolored1 = TRUE
 	var/patterncolor = 0
@@ -926,7 +926,7 @@
 	worn_state = "roman_c"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = ARMOR_CLASS, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	health = 40
 	var/uncolored1 = TRUE
 	var/patterncolor = 0

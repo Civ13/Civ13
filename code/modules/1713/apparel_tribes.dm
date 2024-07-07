@@ -30,7 +30,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	icon_state = "chitin_helmet"
 	item_state = "chitin_helmet"
 	worn_state = "chitin_helmet"
-	armor = list(melee = 30, arrow = 19, gun = 12, energy = 18, bomb = 18, bio = 19, rad = FALSE)
+	armor = list(melee = 30, arrow = 19, gun = ARMOR_CLASS, energy = 18, bomb = 18, bio = 19, rad = FALSE)
 
 /obj/item/clothing/suit/armor/chitin
 	name = "chitin chestplate"
@@ -39,7 +39,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "chitin_armor"
 	worn_state = "chitin_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 50, arrow = 15, gun = 5, energy = 15, bomb = 25, bio = 0, rad = FALSE) //weaker than bronze, stronger than bone.
+	armor = list(melee = 50, arrow = 15, gun = ARMOR_CLASS, energy = 15, bomb = 25, bio = 0, rad = FALSE) //weaker than bronze, stronger than bone.
 	slowdown = 0.90
 	health = 30
 
@@ -55,7 +55,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "sauronhelmet"
 	worn_state = "sauronhelmet"
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	armor = list(melee = 80, arrow = 90, gun = ARMOR_CLASS*2, energy = 20, bomb = 70, bio = 20, rad = 45)
 	value = 70
 	slowdown = 1
 	health = 90
@@ -67,7 +67,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "sauronarmor"
 	worn_state = "sauronarmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 95, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	armor = list(melee = 95, arrow = 90, gun = ARMOR_CLASS*2, energy = 20, bomb = 70, bio = 20, rad = 45)
 	value = 70
 	slowdown = 1
 	health = 90
@@ -79,7 +79,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "ork_plate_elite"
 	worn_state = "ork_plate_elite"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
+	armor = list(melee = 70, arrow = 90, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = 45)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -91,7 +91,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "ork_plate_commander"
 	worn_state = "ork_plate_commander"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
+	armor = list(melee = 80, arrow = 90, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = 45)
 	value = 50
 	slowdown = 1.5
 	health = 60
@@ -134,7 +134,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "spearmanhelmet"
 	body_parts_covered = HEAD|FACE|EYES
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/orc_captain
 	name = "orc captain helm"
@@ -144,7 +144,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "captainhelmet"
 	body_parts_covered = HEAD|FACE|EYES
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/orc_grunt
 	name = "orc grunt helm"
@@ -154,7 +154,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "grunthelmet"
 	body_parts_covered = HEAD|FACE
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = ARMOR_CLASS, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/suit/armor/ork_urukhai
 	name = "orc urukhai armor"
@@ -163,7 +163,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "urukhai_armor"
 	worn_state = "urukhai_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
+	armor = list(melee = 60, arrow = 40, gun = ARMOR_CLASS, energy = 15, bomb = 40, bio = 20, rad = 25)
 	value = 50
 	slowdown = 1.7
 	health = 50
@@ -176,7 +176,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "whitehand_armor"
 	worn_state = "whitehand_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
+	armor = list(melee = 60, arrow = 40, gun = ARMOR_CLASS, energy = 15, bomb = 40, bio = 20, rad = 25)
 	value = 50
 	slowdown = 1.7
 	health = 50
@@ -189,7 +189,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "grunt_armor"
 	worn_state = "grunt_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 50, arrow = 35, gun = 6, energy = 10, bomb = 35, bio = 20, rad = 20)
+	armor = list(melee = 50, arrow = 35, gun = ARMOR_CLASS, energy = 10, bomb = 35, bio = 20, rad = 20)
 	value = 50
 	slowdown = 1.7
 	health = 50
@@ -202,7 +202,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "ork_warrior"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	armor = list(melee = 75, arrow = 60, gun = ARMOR_CLASS, energy = 8, bomb = 25, bio = 15, rad = FALSE)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -216,7 +216,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	worn_state = "ork_gauntlet"
 	body_parts_covered = HANDS
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	armor = list(melee = 75, arrow = 60, gun = ARMOR_CLASS, energy = 8, bomb = 25, bio = 15, rad = FALSE)
 	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
@@ -496,7 +496,7 @@ wip pending sprites
 	item_state = "arbit"
 	worn_state = "arbit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 85, arrow = 90, gun = 35, energy = 65, bomb = 70, bio = 20, rad = FALSE) //better more futuristic stats than platemail.
+	armor = list(melee = 85, arrow = 90, gun = ARMOR_CLASS*3, energy = 65, bomb = 70, bio = 20, rad = FALSE) //better more futuristic stats than platemail.
 	value = 100
 	slowdown = 1.2 //less slowdown than platemail
 	health = 60
@@ -544,7 +544,7 @@ wip pending sprites
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE
 	w_class = ITEM_SIZE_TINY
-	armor = list(melee = 20, arrow = 15, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE) //equal to japanese face mask.
+	armor = list(melee = 20, arrow = 15, gun = ARMOR_CLASS, energy = 15, bomb = 55, bio = 20, rad = FALSE) //equal to japanese face mask.
 
 	/* - 5b. Fantasy Materials*/
 

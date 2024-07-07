@@ -571,7 +571,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -624,7 +624,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -634,7 +634,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/c8/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7/c8(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -677,9 +677,9 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
 	uniform.attackby(carrier, H)
@@ -733,7 +733,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -743,7 +743,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -784,7 +784,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -794,7 +794,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
 	H.equip_to_slot_or_del(HGUN, slot_l_hand)
@@ -805,7 +805,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/shellbox(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/hg85(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive/m16_breacher(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/olive(H), slot_belt)
 
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_wear_id)
@@ -837,7 +837,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -847,7 +847,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)
@@ -886,7 +886,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -933,7 +933,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -943,7 +943,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/gunbox/emplacement(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/foldable_shovel/trench/etool(H), slot_l_store)
@@ -979,7 +979,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo(H), slot_w_uniform)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -989,7 +989,7 @@
 	uniform.attackby(plates1, H)
 	uniform.attackby(plates2, H)
 //equipment
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
 
 	var/obj/item/weapon/gun/projectile/submachinegun/c7/HGUN = new/obj/item/weapon/gun/projectile/submachinegun/c7(H)
 	H.equip_to_slot_or_del(HGUN, slot_shoulder)

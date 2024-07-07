@@ -48,12 +48,12 @@
 	var/chance = 0
 	if (istype(A, /turf/wall))
 		var/turf/wall/W = A
-		if (istype(A, /turf/wall/rockwall) || istype(A, /turf/wall/indestructable)) //can't penetrate cave walls or indestructable ones
+		if (istype(A, /turf/wall/rockwall) || istype(A, /turf/wall/indestructable))//can't penetrate cave walls or indestructable ones
 			return FALSE
 		else
-			// 3% chance for rifles to penetrate a brick wall, 30% for a wood wall
-			chance = round((damage/(W.material ? W.material.integrity : 175)) * 15)
-			// Half of that for MGs, buffed since their accuracy was allegedly fixed
+			// 21% chance for rifles to penetrate a brick wall, 62% for a wood wall
+			chance = round((damage/(W.material ? W.material.integrity : 175)) * 150)
+			// 1/3rd of that for MGs, buffed since their accuracy was fixed
 			if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 				chance /= 2
 
@@ -69,12 +69,13 @@
 /obj/item/projectile/bullet/pellet
 	name = "shrapnel" //'shrapnel' sounds more dangerous (i.e. cooler) than 'pellet'
 	damage = 20
-	icon_state = "pellets" //TODO: would be nice to have it's own icon state
-	var/pellets = 10		//number of pellets
+	icon_state = "bullet" //TODO: would be nice to have it's own icon state
+	var/pellets = 4			//number of pellets
 	var/range_step = 2		//projectile will lose a fragment each time it travels this distance. Can be a non-integer.
 	var/base_spread = 90	//lower means the pellets spread more across body parts. If zero then this is considered a shrapnel explosion instead of a shrapnel cone
 	var/spread_step = 10	//higher means the pellets spread more across body parts with distance
-	kill_count = 6 			// Range of 6 tiles
+	armor_penetration = ARMOR_CLASS*2
+	kill_count = 6 // Range of 6 tiles
 
 /obj/item/projectile/bullet/pellet/Bumped()
 	. = ..()
@@ -137,6 +138,58 @@
 /obj/item/projectile/bullet/pistol/strong //revolvers and matebas
 	damage = 60
 
+/obj/item/projectile/bullet/pellet/poo
+	name = "poop"
+	damage = 0
+	armor_penetration = 1000
+	penetrating = 1000
+	spread_step = 1000
+	icon = 'icons/effects/pooeffect.dmi'
+	icon_state = "poop2"
+	item_state = "poop"
+
+
+/obj/item/projectile/bullet/pellet/poo/on_hit(var/atom/target, var/blocked = FALSE)
+	if (isturf(target))
+		playsound(src.loc, "sound/effects/squishy.ogg", 40, 1)
+		var/turf/T = src.loc
+		new /obj/effect/decal/cleanable/poo(T)
+	..()
+
+/obj/item/projectile/bullet/pellet/a50cal
+	damage = DAMAGE_OH_GOD + 95
+	penetrating = 10
+	armor_penetration = 5
+
+/obj/item/projectile/bullet/pellet/a50cal_ap
+	damage = DAMAGE_MEDIUM + 5
+	penetrating = 100
+	armor_penetration = 80
+
+/obj/item/projectile/bullet/pellet/a50cal_he
+	damage = DAMAGE_LOW + 20
+	penetrating = 12
+	armor_penetration = 15
+	atype = "HE"
+
+/obj/item/projectile/bullet/pellet/a50cal_he/on_impact(var/atom/A) 	//Dont ask how, it works
+	impact_effect(effect_transform)
+	playsound(src, "ric_sound", 50, TRUE, -2)
+	if (istype(A, /turf))
+		var/turf/T = A
+		if (atype == "HE")
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 1, 0, 2, 1)
+		else
+			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
+				T.ChangeTurf(/turf/floor/dirt/burned)
+			explosion(T, 1, 0, 1, 1)
+	spawn(50)
+		if (src)
+			qdel(src)
+	return TRUE
+
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
 	check_armor = "melee"
@@ -150,6 +203,14 @@
 
 //Should do about 80 damage at 1 tile distance (adjacent), and 50 damage at 3 tiles distance.
 //Overall less damage than slugs in exchange for more damage at very close range and more embedding
+/obj/item/projectile/bullet/pellet/buckshot
+	name = "buckshot pellet"
+	damage = 10
+	pellets = 18
+	spread_step = 1
+	base_spread = 19
+	range_step = 3
+
 /obj/item/projectile/bullet/pellet/rubber
 	name = "rubbershot"
 	damage = 0
@@ -158,7 +219,7 @@
 	range_step = 3
 	agony = 8.5
 	embed = FALSE
-	icon_state = "pellets"
+	icon_state = "buckshot"
 
 /obj/item/projectile/bullet/pellet/rubberball
 	name = "rubber ball"
@@ -169,7 +230,7 @@
 	range_step = 3
 	agony = 13
 	embed = TRUE
-	icon_state = "pellets"
+	icon_state = "buckshot"
 
 /* "Rifle" rounds */
 
@@ -187,4 +248,3 @@
 	invisibility = 101
 	damage = TRUE
 	embed = FALSE
-	sharp = FALSE
