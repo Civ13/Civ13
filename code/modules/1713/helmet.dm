@@ -21,5 +21,6 @@
 
 /obj/item/clothing/head/helmet/block_check(var/obj/item/projectile/proj)
 	if (!proj || proj.nodamage || proj.is_shrapnel)
+		playsound(src, "helmet_hit_sound", 60, TRUE, -6)
 		return prob(90)
 	return FALSE
