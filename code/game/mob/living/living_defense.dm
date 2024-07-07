@@ -78,35 +78,30 @@
 		stun_effect_act(P.stun, P.agony, def_zone, P)
 
 	//Armor
-	var/absorb = run_armor_check(def_zone, P.check_armor, P.armor_penetration, damage_source = P)
+	var/armor = getarmor(def_zone, P.check_armor)
 	var/proj_sharp = is_sharp(P)
 	var/proj_edge = P.edge
-	if ((proj_sharp || proj_edge) && prob(getarmor(def_zone, P.check_armor)))
+	if ((proj_sharp || proj_edge) && armor)
 		proj_sharp = FALSE
 		proj_edge = FALSE
-
+	//Bullet
+	var/penetration = P.armor_penetration
 	var/damage = P.damage
-
+	
+	if(armor > 0)
+		if(armor < penetration)
+			damage *= (penetration / armor)
+		else
+			playsound(src, "armor_hit_sound", 50, TRUE, -2)
+			damage = P.damage * 0.05
+	H.damage_armor(def_zone, (P.damage - damage) * 0.1)
 	if (ishuman(src))
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
-		var/instadeath = 0
-		if (def_zone == "eyes")
-			instadeath = 10
-		else if (def_zone == "mouth")
-			instadeath = 10
-		else if (def_zone == "head")
-			instadeath = 5
-		if (instadeath > 0)
-			if (prob(instadeath))
-				adjustBrainLoss(rand(30,60))
-				H.instadeath_check()
 	if (!P.nodamage)
-		apply_damage(damage, P.damage_type, def_zone, absorb, P, sharp=proj_sharp, edge=proj_edge)
+		apply_damage(damage, P.damage_type, def_zone, FALSE, P, sharp=proj_sharp, edge=proj_edge)
 
-	P.on_hit(src, absorb, def_zone)
-
-	return absorb
+	P.on_hit(src, 0, def_zone)
 
 //Handles the effects of "stun" weapons
 /mob/living/proc/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone, var/used_weapon=null)
@@ -203,7 +198,6 @@
 			spawn(6)
 				qdel(O)
 			return
-
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5
 		if (istype(O, /obj/item))
@@ -238,9 +232,7 @@
 
 //This is called when the mob is thrown into a dense turf
 /mob/living/proc/turf_collision(var/turf/T, var/speed)
-	visible_message(SPAN_DANGER("[src] slams into \the [T]!"))
 	take_organ_damage(speed*5)
-	T.add_blood(src)
 
 /mob/living/proc/near_wall(var/direction,var/distance=1)
 	var/turf/T = get_step(get_turf(src),direction)
@@ -275,9 +267,6 @@
 	if (fire_stacks > 0 && !on_fire)
 		on_fire = TRUE
 		set_light(light_range + 3)
-		light_color = "#FF9900"
-		if (stat == CONSCIOUS)
-			emote("scream")
 		update_fire()
 
 /mob/living/proc/ExtinguishMob()
@@ -285,8 +274,6 @@
 		on_fire = FALSE
 		fire_stacks = 0
 		set_light(max(0, light_range - 3))
-		light_color = null
-		playsound(src, 'sound/items/cig_snuff.ogg', 50, TRUE) //A little sizzle as you're put out.
 		update_fire()
 
 /mob/living/proc/update_fire()
@@ -446,4 +433,3 @@ var/obj/human_fire_overlay_lying = null
 			hud_used.hide_actions_toggle.screen_loc = hud_used.ButtonNumberToScreenCoords(button_number+1)
 			//hud_used.SetButtonCoords(hud_used.hide_actions_toggle,button_number+1)
 		client.screen += hud_used.hide_actions_toggle*/
-
