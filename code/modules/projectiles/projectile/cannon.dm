@@ -256,7 +256,7 @@
 /obj/item/projectile/shell/cannonball/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, artillery_in, 50, TRUE, -2)
-	sleep(1.5)
+	sleep(0.9)
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "cannonball")
