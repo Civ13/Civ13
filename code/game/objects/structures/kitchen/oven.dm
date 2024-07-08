@@ -250,7 +250,8 @@
 
 /obj/structure/oven/fireplace/proc/keep_sound_on()
     if (on && looping && fuel > 0)
-        playsound(get_turf(src), "sound/effects/fireplace-" + rand(1, 6) + ".ogg", 65, TRUE, -1)
+		var/loop_random = rand(1,6)
+        playsound(get_turf(src), "sound/effects/fireplace-" + text(rand(1,6)) + ".ogg", 65, TRUE, -1)
         spawn(50) // 6 seconds
             keep_sound_on()
 
