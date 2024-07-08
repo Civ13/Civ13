@@ -137,25 +137,7 @@
 
 /obj/item/projectile/bullet/pistol/strong //revolvers and matebas
 	damage = 60
-
-/obj/item/projectile/bullet/pellet/poo
-	name = "poop"
-	damage = 0
-	armor_penetration = 1000
-	penetrating = 1000
-	spread_step = 1000
-	icon = 'icons/effects/pooeffect.dmi'
-	icon_state = "poop2"
-	item_state = "poop"
-
-
-/obj/item/projectile/bullet/pellet/poo/on_hit(var/atom/target, var/blocked = FALSE)
-	if (isturf(target))
-		playsound(src.loc, "sound/effects/squishy.ogg", 40, 1)
-		var/turf/T = src.loc
-		new /obj/effect/decal/cleanable/poo(T)
-	..()
-
+	
 /obj/item/projectile/bullet/pellet/a50cal
 	damage = DAMAGE_OH_GOD + 95
 	penetrating = 10
