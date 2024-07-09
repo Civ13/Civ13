@@ -620,7 +620,7 @@
 							if (hit)
 								playsound(target, pick('sound/effects/aircraft/effects/missile1.ogg','sound/effects/aircraft/effects/missile2.ogg'), 60, TRUE)
 								spawn(10)
-									playsound(target, "artillery_in", 60, TRUE)
+									playsound(target, "artillery_in", 240, FALSE, 8)
 								spawn (10)
 									if (explosion)
 										explosion(target, 1, 2, 3, 4)
@@ -756,7 +756,7 @@
 												break
 
 								if (hit)
-									playsound(target, "artillery_in", 70, TRUE)
+									playsound(target, "artillery_in", 280, FALSE, 8)
 									spawn (10)
 										if (explosion)
 											if (istype(fired_shell, /obj/item/cannon_ball/mortar_shell))
