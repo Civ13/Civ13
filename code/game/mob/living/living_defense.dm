@@ -98,6 +98,17 @@
 	if (ishuman(src))
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
+		var/instadeath = 0
+		if (def_zone == "eyes")
+			instadeath = 10
+		else if (def_zone == "mouth")
+			instadeath = 10
+		else if (def_zone == "head")
+			instadeath = 5
+		if (instadeath > 0)
+			if (prob(instadeath))
+				adjustBrainLoss(rand(30,60))
+				H.instadeath_check()
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, FALSE, P, sharp=proj_sharp, edge=proj_edge)
 
