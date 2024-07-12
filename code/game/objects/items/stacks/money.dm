@@ -691,14 +691,16 @@
 /obj/item/stack/money/coppercoin/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
-		if (1 to 124)
+		if (1 to 49)
 			icon_suffix = ""
-		if (125 to 249)
+		if (50 to 99)
 			icon_suffix = "_2"
-		if (250 to 374)
+		if (100 to 299)
 			icon_suffix = "_3"
-		if (375 to INFINITY)
+		if (300 to 499)
 			icon_suffix = "_4"
+		if (500 to INFINITY)
+			icon_suffix = "_5"
 	icon_state = "coppercoin_pile[icon_suffix]"
 
 /obj/item/stack/money/coppercoin/twohundred
@@ -720,18 +722,20 @@
 /obj/item/stack/money/silvercoin/update_icon()
 	var/icon_suffix = ""
 	switch(amount)
-		if (1 to 124)
+		if (1 to 49)
 			icon_suffix = ""
-		if (125 to 249)
+		if (50 to 99)
 			icon_suffix = "_2"
-		if (250 to 374)
+		if (100 to 299)
 			icon_suffix = "_3"
-		if (375 to INFINITY)
+		if (300 to 499)
 			icon_suffix = "_4"
+		if (500 to INFINITY)
+			icon_suffix = "_5"
 	icon_state = "silvercoin_pile[icon_suffix]"
 
 /obj/item/stack/money/silvercoin/twohundred
-	amount = 20
+	amount = 200
 
 /obj/item/stack/money/goldcoin
 	name = "gold coins"
