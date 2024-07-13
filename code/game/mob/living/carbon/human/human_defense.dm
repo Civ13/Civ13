@@ -604,7 +604,7 @@ bullet_act
 	var/hit_zone = get_zone_with_miss_chance(target_zone, src)
 
 	if (!hit_zone)
-		visible_message("<span class='danger'>\The [user] misses [src] with \the [I]!</span>")
+		user.visible_message("<span class='danger'>\The [user] misses [src] with \the [I]!</span>", "<span class='danger'>You miss [src] with \the [I]!")
 		return null
 
 	if (check_shields(I.force, I, user, target_zone, "the [I.name]"))
@@ -615,7 +615,7 @@ bullet_act
 
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting || affecting.is_stump())
-		user << "<span class='danger'>They are missing that limb!</span>"
+		to_chat(user, SPAN_DANGER("They are missing that limb!"))
 		return null
 
 	return hit_zone
