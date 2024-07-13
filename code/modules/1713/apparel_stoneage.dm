@@ -214,7 +214,7 @@
 	icon_state = "bone_helmet"
 	item_state = "bone_helmet"
 	worn_state = "bone_helmet"
-	armor = list(melee = 25, arrow = 15, gun = ARMOR_CLASS, energy = 16, bomb = 16, bio = 16, rad = FALSE)
+	armor = list(melee = 25, arrow = 15, gun = 10, energy = 16, bomb = 16, bio = 16, rad = FALSE)
 
 /obj/item/clothing/suit/woodarmor
 	name = "primitive wood armor"
@@ -350,7 +350,7 @@
 	item_state = "iogplate"
 	body_parts_covered = FACE|EYES
 	flags = CONDUCT
-	armor = list(melee = 80, arrow = 70, gun = ARMOR_CLASS*2, energy = 20, bomb = 40, bio = 25, rad = FALSE)
+	armor = list(melee = 80, arrow = 70, gun = 90, energy = 20, bomb = 40, bio = 25, rad = FALSE)
 
 /obj/item/clothing/mask/salamon
 	name = "gold plated mask"
@@ -359,7 +359,7 @@
 	item_state = "salamon"
 	flags = CONDUCT
 	body_parts_covered = FACE|EYES
-	armor = list(melee = 5, arrow = 14, gun = ARMOR_CLASS, energy = 20, bomb = 10, bio = 10, rad = FALSE)
+	armor = list(melee = 5, arrow = 14, gun = 10, energy = 20, bomb = 10, bio = 10, rad = FALSE)
 
 /////////////////////////////
 
@@ -385,69 +385,25 @@
 /obj/item/weapon/storage/backpack/quiver/full/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
-	new /obj/item/ammo_casing/arrow/bronze(src)
+	for (var/i=1, i<=14, i++)
+		new /obj/item/ammo_casing/arrow/bronze(src)
 
 /obj/item/weapon/storage/backpack/quiver/medieval/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
-	new /obj/item/ammo_casing/arrow/iron(src)
+	for (var/i=1, i<=14, i++)
+		new /obj/item/ammo_casing/arrow/iron(src)
 
 /obj/item/weapon/storage/backpack/quiver/crossbow/New()
 	..()
 	can_hold = list(/obj/item/ammo_casing/bolt, /obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow, /obj/item/weapon/material/pilum)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
-	new /obj/item/ammo_casing/bolt/iron(src)
+	for (var/i=1, i<=14, i++)
+		new /obj/item/ammo_casing/bolt/iron(src)
 
 /obj/item/weapon/storage/backpack/quiver/poison/New()
 	..()
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
-	new /obj/item/ammo_casing/arrow/vial/poisonous(src)
+	for (var/i=1, i<=10, i++)
+		new /obj/item/ammo_casing/arrow/vial/poisonous(src)
 
 /obj/item/clothing/under/leaves_skirt/au_naturel
 	name = "au naturel leaf covering"
@@ -463,17 +419,5 @@
 
 /obj/item/weapon/storage/backpack/quiver/modern/New()
 	..()
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
-	new /obj/item/ammo_casing/arrow/modern(src)
+	for (var/i=1, i<=14, i++)
+		new /obj/item/ammo_casing/arrow/modern(src)
