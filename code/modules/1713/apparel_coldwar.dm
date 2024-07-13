@@ -1138,7 +1138,7 @@
 	armor = list(melee = 65, arrow = 80, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.1
-
+1
 /* Cold War Belts*/
 
 /obj/item/weapon/storage/belt/ugl
@@ -1415,6 +1415,14 @@
 	new /obj/item/ammo_magazine/p90(src)
 	new /obj/item/ammo_magazine/p90(src)
 	new /obj/item/weapon/grenade/smokebomb(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	
+/obj/item/weapon/storage/belt/smallpouches/hk417
+/obj/item/weapon/storage/belt/smallpouches/hk417/New()
+	..()
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/ammo_magazine/scarh(src)
+	new /obj/item/weapon/pill_pack/tramadol(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 
 /obj/item/weapon/storage/belt/smallpouches/sten

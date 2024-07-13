@@ -28,7 +28,10 @@
 //gun
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
 
-
+//belt
+	H.equip_to_slot_or_del(new 
+	(H), slot_belt)
+	
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black/insig(H), slot_head)
 //glove
