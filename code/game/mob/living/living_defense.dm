@@ -244,6 +244,8 @@
 //This is called when the mob is thrown into a dense turf
 /mob/living/proc/turf_collision(var/turf/T, var/speed)
 	take_organ_damage(speed*5)
+	visible_message(SPAN_DANGER("[src] slams into \the [T]!"))
+
 
 /mob/living/proc/near_wall(var/direction,var/distance=1)
 	var/turf/T = get_step(get_turf(src),direction)
