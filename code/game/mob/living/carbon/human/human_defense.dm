@@ -24,7 +24,7 @@ bullet_act
 		else
 			visible_message("<span class = 'notice'>[user] starts to circumcise [src]...</span>")
 			if (do_after(user, 90, src) && !circumcised)
-				visible_message("<span class = 'notice'>[user] successfully circumcises [src].</span>")
+				visible_message(SPAN_NOTICE("[user] successfully circumcises [src]."))
 				circumcised = TRUE
 				return
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
