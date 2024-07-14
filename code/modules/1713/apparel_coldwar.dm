@@ -200,7 +200,7 @@
 	item_state = "swat"
 	worn_state = "swat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -212,7 +212,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 70, arrow = 80, gun = 78, energy = 40, bomb = 20, bio = 44, rad = 40)
+	armor = list(melee = 80, arrow = 80, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 44, rad = 40)
 	var/slots = 6
 	ripable = FALSE
 	ripable = FALSE
@@ -224,7 +224,7 @@
 	item_state = "policevest"
 	worn_state = "policevest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 20, gun = 74, energy = 40, bomb = 20, bio = 32, rad = 20)
+	armor = list(melee = 60, arrow = 20, gun = ARMOR_CLASS*3, energy = 40, bomb = 20, bio = 32, rad = 20)
 	var/slots = 3
 	ripable = FALSE
 
@@ -421,7 +421,7 @@
 	worn_state = "m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/ushelmet/un
@@ -500,7 +500,7 @@
 	worn_state = "cvc_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, arrow = 75, gun = 50, energy = 15, bomb = 70, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 75, gun = ARMOR_CLASS*3, energy = 15, bomb = 70, bio = 20, rad = FALSE)
 
 /* Korean war Helmets */
 /obj/item/clothing/head/helmet/korean/usm1
@@ -511,7 +511,7 @@
 	worn_state = "korea_m1_standard"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/usm1/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -530,7 +530,7 @@
 	worn_state = "korea_m1_tan_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/ustannet/verb/toggle_color()
 	set category = null
@@ -565,7 +565,7 @@
 	worn_state = "korea_m1_green_netting"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_medic
 	name = "M1 Medic Helmet"
@@ -575,7 +575,7 @@
 	worn_state = "korea_m1_medic"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_2lt
 	name = "M1 2nd LT Helmet"
@@ -585,7 +585,7 @@
 	worn_state = "korea_m1_2nd_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_1lt
 	name = "M1 1st LT Helmet"
@@ -595,7 +595,7 @@
 	worn_state = "korea_m1_1st_lt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/korean/us_cap
 	name = "M1 Captain Helmet"
@@ -605,7 +605,7 @@
 	worn_state = "korea_m1_cpt"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = ARMOR_CLASS*2, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /* Ghillie Suits*/
 
@@ -676,7 +676,6 @@
 	icon_state = "chinese_ushanka_up"
 	item_state = "chinese_ushanka_up"
 	worn_state = "chinese_ushanka_up"
-	cold_protection = HEAD
 
 /obj/item/clothing/head/chinese_ushanka/down
 	icon_state = "chinese_ushanka"
@@ -703,7 +702,7 @@
 	worn_state = "chi_korea_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized
@@ -714,7 +713,7 @@
 	worn_state = "chi_korea_helm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 35, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = ARMOR_CLASS*2, energy = 25, bomb = 55, bio = 20, rad = FALSE)
 	health = 100
 
 /obj/item/clothing/head/helmet/modern/chi_korea_helmet/modernized/winter
@@ -744,7 +743,6 @@
 	item_state = "ushanka_new_up"
 	worn_state = "ushanka_new_up"
 	flags_inv = BLOCKHEADHAIR
-	cold_protection = HEAD
 
 /obj/item/clothing/head/sov_ushanka_new/down
 	icon_state = "ushanka_new"
@@ -782,11 +780,10 @@
 	item_state = "fieldcap_afghanka"
 	worn_state = "fieldcap_afghanka"
 	body_parts_covered = HEAD
-	cold_protection = HEAD
 
 /obj/item/clothing/head/beret_rus_vdv
 	name = "VDV beret"
-	desc = "A beret worn by the Soviet and Russian Airborne Forces."
+	desc = "A beret worn by the Russian Airborn Forces."
 	icon_state = "beret_rus_vdv"
 	item_state = "beret_rus_vdv"
 	body_parts_covered = HEAD
@@ -1011,7 +1008,7 @@
 	item_state = "tatba"
 	worn_state = "tatba"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 55, arrow = 95, gun = 50, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 95, gun = ARMOR_CLASS*3, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 1
@@ -1033,7 +1030,7 @@
 	worn_state = "ssh_68_sovhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 75, gun = 40, energy = 24, bomb = 66, bio = 25, rad = FALSE)
+	armor = list(melee = 55, arrow = 75, gun = ARMOR_CLASS*3, energy = 24, bomb = 66, bio = 25, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/ssh_68/med
 	icon_state = "ssh_68med"
@@ -1057,7 +1054,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*3, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	weight = 5
@@ -1069,7 +1066,7 @@
 	item_state = "6b3"
 	worn_state = "6b3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 60, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
@@ -1095,7 +1092,7 @@
 	item_state = "6b2"
 	worn_state = "6b2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 67, arrow = 95, gun = 30, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 67, arrow = 95, gun = ARMOR_CLASS*2, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slowdown = 0.2
@@ -1108,7 +1105,7 @@
 	item_state = "6b5"
 	worn_state = "6b5"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 70, arrow = 95, gun = 70, energy = 30, bomb = 70, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 95, gun = ARMOR_CLASS*4, energy = 30, bomb = 70, bio = 20, rad = FALSE)
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
@@ -1122,7 +1119,7 @@
 	item_state = "flakjacket"
 	worn_state = "flakjacket"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 75, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 75, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.2
 
@@ -1133,7 +1130,7 @@
 	item_state = "flakjacket1969"
 	worn_state = "flakjacket1969"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 75, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 75, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.2
 
@@ -1144,7 +1141,7 @@
 	item_state = "6b1"
 	worn_state = "6b1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 65, arrow = 80, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 80, gun = ARMOR_CLASS*2, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 60
 	slowdown = 0.1
 
@@ -1987,7 +1984,7 @@
 	item_state = "toughguy"
 	worn_state = "toughguy"
 	body_parts_covered = HANDS
-	armor = list(melee = 30, arrow = 5, gun = 5, energy = 15, bomb = 30, bio = 10, rad = FALSE)
+	armor = list(melee = 30, arrow = 5, gun = ARMOR_CLASS, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	slot_flags = SLOT_GLOVES
 
 /obj/item/clothing/shoes/toughguy
@@ -2019,7 +2016,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "redguardcap"
 	worn_state = "redguardcap"
 	body_parts_covered = HEAD
-	armor = list(melee = 5, arrow = FALSE, gun = 1, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
+	armor = list(melee = 5, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	/* Sovie apparel 70-80'ss*/
 
 /obj/item/clothing/under/afghanka
@@ -2142,7 +2139,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "bxsuit"
 	worn_state = "bxsuit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
-	armor = list(melee = 140, arrow = 200, gun = 150, energy = 100, bomb = 100, bio = 100, rad = 80)
+	armor = list(melee = 140, arrow = 200, gun = ARMOR_CLASS*4, energy = 100, bomb = 100, bio = 100, rad = 80)
 	ripable = FALSE
 
 /obj/item/clothing/suit/a6b45 //isn't this armor? || Note @FantasticFwoosh- (29/08/2020) Ratnik Programme russian armor is developed in 2016 this is classified in the wrong era.
@@ -2152,31 +2149,31 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b45"
 	worn_state = "a6b45"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 103, arrow = 110, gun = 110, energy = 67, bomb = 70, bio = 40, rad = 36)
+	armor = list(melee = 103, arrow = 110, gun = ARMOR_CLASS*4, energy = 67, bomb = 70, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
 	flags = CONDUCT
 
 /obj/item/clothing/suit/heavyvest1 // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "heavy vest"
-	desc = "A heavy NIJ level IV vest."
+	desc = "a heavy NIJ level IV vest."
 	icon_state = "heavypolice"
 	item_state = "heavypolice"
 	worn_state = "heavypolice"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 50, arrow = 40, gun = 112, energy = 68, bomb = 40, bio = 32, rad = 20)
+	armor = list(melee = 50, arrow = 40, gun = ARMOR_CLASS*3, energy = 68, bomb = 40, bio = 32, rad = 20)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
 
 /obj/item/clothing/suit/medvest // Is designative of armor grade/type but not a armor itself. Please replace with identifiable/recognizable armor.
 	name = "medium vest"
-	desc = "A heavy NIJ level III vest."
+	desc = "a heavy NIJ level III vest."
 	icon_state = "mediumvest"
 	item_state = "mediumvest"
 	worn_state = "mediumvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 30, arrow = 40, gun = 84, energy = 47, bomb = 35, bio = 29, rad = 10)
+	armor = list(melee = 30, arrow = 40, gun = ARMOR_CLASS*3, energy = 47, bomb = 35, bio = 29, rad = 10)
 	var/slots = 6
 	ripable = FALSE
 	flags = CONDUCT
@@ -2188,7 +2185,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b44"
 	worn_state = "a6b44"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 80, arrow = 100, gun = 93, energy = 56, bomb = 64, bio = 40, rad = 36)
+	armor = list(melee = 80, arrow = 100, gun = ARMOR_CLASS*3, energy = 56, bomb = 64, bio = 40, rad = 36)
 	var/slots = 4
 	ripable = FALSE
 	flags = CONDUCT
@@ -2200,7 +2197,7 @@ obj/item/clothing/head/chinaguardcap
 	item_state = "a6b28"
 	worn_state = "a6b28"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 74, arrow = 87, gun = 83, energy = 67, bomb = 56, bio = 40, rad = 36)
+	armor = list(melee = 74, arrow = 87, gun = ARMOR_CLASS*3, energy = 67, bomb = 56, bio = 40, rad = 36)
 	var/slots = 3
 	ripable = FALSE
 	flags = CONDUCT
@@ -2213,7 +2210,7 @@ obj/item/clothing/head/chinaguardcap
 	worn_state = "viet_pith"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 45, gun = ARMOR_CLASS*2, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	health = 24
 
 /obj/item/clothing/head/helmet/modern/vchelmet/two

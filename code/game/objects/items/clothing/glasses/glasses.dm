@@ -228,4 +228,4 @@
 	icon_state = "tactical_goggles"
 	item_state = "tactical_goggles"
 	body_parts_covered = EYES
-	armor = list(melee = 15, arrow = 90, gun = 25, energy = 15, bomb = 25, bio = 20, rad = 20)
+	armor = list(melee = 15, arrow = 90, gun = ARMOR_CLASS, energy = 15, bomb = 25, bio = 20, rad = 20)
