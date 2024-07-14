@@ -510,6 +510,20 @@ bullet_act
 
 	return siemens_coefficient
 
+//this proc returns the Siemens coefficient of electrical resistivity for a particular external organ.
+/mob/living/human/proc/get_siemens_coefficient_organ(var/obj/item/organ/external/def_zone)
+	if (!def_zone)
+		return 1.0
+
+	var/siemens_coefficient = species.siemens_coefficient
+
+	var/list/clothing_items = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes) // What all are we checking?
+	for (var/obj/item/clothing/C in clothing_items)
+		if (istype(C) && (C.body_parts_covered & def_zone.body_part)) // Is that body part being targeted covered?
+			siemens_coefficient *= C.siemens_coefficient
+
+	return siemens_coefficient
+
 //this proc returns the armor value for a particular external organ.
 /mob/living/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
@@ -524,15 +538,21 @@ bullet_act
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
 				protection += C.armor[type]
-			if (C.accessories.len)
-				for (var/obj/item/clothing/accessory/AC in C.accessories)
-					if (AC.body_parts_covered & def_zone.body_part)
-						protection += AC.armor[type]
-						if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
-							var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
-							for (var/obj/item/weapon/armorplates/plt in ACP.hold)
-								if (type == "melee" || type == "arrow" || type == "gun")
-									protection += 10
+				if (C.accessories.len)
+					for (var/obj/item/clothing/accessory/AC in C.accessories)
+						if (AC.body_parts_covered & def_zone.body_part)
+							protection += AC.armor[type]
+							if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
+								var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
+								for (var/obj/item/weapon/armorplates/plt in ACP.hold)
+									if (type == "melee" || type == "arrow" || type == "gun")
+										protection += plt.protection
+				if(istype(C, /obj/item/clothing/suit/storage))
+					var/obj/item/clothing/suit/storage/S = C
+					for (var/obj/item/weapon/armorplates/P in S.pockets)
+						if (type == "melee" || type == "arrow" || type == "gun")
+							protection += P.protection
+
 	return protection
 
 /mob/living/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
@@ -545,13 +565,18 @@ bullet_act
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & affecting.body_part)
-				C.health -= dmg
-				C.check_health()
+				if(istype(C, /obj/item/clothing/head/helmet) || istype(C, /obj/item/clothing/suit/armor))
+					C.health -= dmg
+					C.check_health()
 			if (C.accessories.len)
 				for (var/obj/item/clothing/accessory/AC in C.accessories)
 					if (AC.body_parts_covered & affecting.body_part)
 						AC.health -= dmg
+						if(AC.health <= 0)
+							C.remove_accessory(src,AC)
 						AC.check_health()
+			C.update_icon()
+			C.update_clothing_icon()
 	return TRUE
 
 /mob/living/human/proc/check_head_coverage()
