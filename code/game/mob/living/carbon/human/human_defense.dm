@@ -5,6 +5,8 @@ bullet_act
 
 */
 
+#define ARMOR_CLASS 20
+
 /mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if (stat != DEAD)
