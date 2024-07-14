@@ -23,6 +23,7 @@
 	faction1 = JAPANESE
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
+	ambience = list('sound/ambience/ship1.ogg')
 	songs = list(
 		"The Great Escape:1" = 'sound/music/the_great_escape.ogg')
 	gamemode = "Prison Simulation"
