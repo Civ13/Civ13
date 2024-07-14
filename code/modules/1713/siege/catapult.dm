@@ -230,7 +230,7 @@
 							hit = TRUE
 
 					if (hit)
-						playsound(target, "artillery_in", 70, TRUE)
+						playsound(target, "artillery_in", 100, FALSE)
 						spawn (10)
 							var/target_area_original_integrity = target_area.artillery_integrity
 							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
