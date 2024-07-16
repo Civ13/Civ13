@@ -270,7 +270,7 @@
 			addictions[ad] = 0
 
 //death
-	if (getBrainLoss() > 60 || getTotalDmg() > 150)
+	if (getBrainLoss() > 60)
 		death()
 
 // disease stuff
@@ -949,7 +949,7 @@
 	else				//ALIVE. LIGHTS ARE ON
 		updatehealth()	//TODO
 
-		if (health <= config.health_threshold_dead || (species.has_organ["brain"] && !has_brain()))
+		if ((species.has_organ["brain"] && !has_brain()))
 			death()
 			blinded = TRUE
 			silent = FALSE
@@ -1418,10 +1418,6 @@
 		Weaken(20)
 		if (prob(1))
 			adjustOxyLoss(10)
-	if (getBruteLoss() >= 150)
-		spawn(1200)
-			if (getBruteLoss() >= 150)
-				death()
 
 /mob/living/human/proc/handle_hud_list()
 	if (stat == DEAD)
@@ -2018,7 +2014,7 @@
 						return
 
 /mob/living/human/proc/instadeath_check()
-	if (getBrainLoss() > 60 || getTotalDmg() > 150)
+	if (getBrainLoss() > 60)
 		death()
 		return
 	else
