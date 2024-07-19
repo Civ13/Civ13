@@ -9,14 +9,10 @@ mhelp,ask an angel
 admeme,god
 admins,gods
 afk,i am busy
-bluepill,stupid
 brb,be right back
-bruh,man
-bunga,barbarian
 cuck,weakling
 dope,nice
 faggot,nancy boy
-femboy,effeminate boy
 feminazi,woman
 Fortnite,game
 fuk,fuck
@@ -31,7 +27,6 @@ idgaf,I don't give a fuck
 idk,I don't know
 incel,weakling
 joker 2019,clown
-libtard,idiot
 lmao,hahaha
 lol,hahaha
 mfw,oh boy
@@ -41,15 +36,11 @@ omg,oh my god
 OwO,hmm
 UwU,hmm
 pm the admins,pray to the gods
-redpill,smart
 roblox,game
 rofl,hahaha
 smh,oh boy
-soyboy,weakling
 SS13,game
 unbased,that's stupid
-unga,barbarian
-we live in a society,we reside in a human community
 wdym,what do you mean
 wtf,what the fuck
 yeet,throw
