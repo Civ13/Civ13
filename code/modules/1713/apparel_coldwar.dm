@@ -775,6 +775,13 @@
 	item_state = "sov_officercap2"
 	worn_state = "sov_officercap2"
 
+/obj/item/clothing/head/coldwar/cafr_officer
+	name = "cafr officer cap"
+	desc = "A cap worn by CAFR officers."
+	icon_state = "cafr_officercap"
+	item_state = "cafr_officercap"
+	worn_state = "cafr_officercap"
+
 /obj/item/clothing/head/fieldcap/afghanka
 	name = "Afghanka field cap"
 	desc = "A field cap issued to Soviet forces in the 1980s."

@@ -379,6 +379,20 @@
 		else
 			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 
+/datum/species/proc/get_random_kazakh_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_kazakh)) + " " + capitalize(pick(last_names_kazakh) + "a")
+		else
+			return capitalize(pick(first_names_male_kazakh)) + " " + capitalize(pick(last_names_kazakh))
+
+/datum/species/proc/get_random_tajik_name(var/gender)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_tajik)) + " " + capitalize(pick(last_names_tajik) + "a")
+		else
+			return capitalize(pick(first_names_male_tajik)) + " " + capitalize(pick(last_names_tajik))
+
 /datum/species/proc/get_random_ukrainian_name(var/gender)
 	if (!name_language)
 		if (gender == FEMALE)
