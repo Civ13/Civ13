@@ -58,7 +58,7 @@
 ///TSFSR military crate costs ///
 #define GUNPOWDERCOST_TSFSR 25
 #define SKSCOST_TSFSR 500
-#define AKMCOST_TSFSR 1000
+#define AKMCOST_TSFSR 900 // Level 1/10 AKM factory in Uzbekistan
 #define AK74COST_TSFSR 1200
 #define SVDCOST_TSFSR 1000
 #define MOSINCOST_TSFSR 500
