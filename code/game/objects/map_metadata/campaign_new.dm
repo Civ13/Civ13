@@ -254,7 +254,7 @@
 	title = "Campaign"
 	lobby_icon = 'icons/lobby/campaign1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
-	respawn_delay = 3 MINUTES
+	respawn_delay = 0
 	no_winner = "The battle is going on."
 	victory_time = 45 MINUTES
 	grace_wall_timer = 5 MINUTES
