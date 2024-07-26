@@ -943,6 +943,38 @@ Proc for attack log creation, because really why not
 		redfaction += H
 	return redfaction
 
+/proc/getcafrmobs(var/alive = FALSE)
+	var/list/cafr = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/cafr))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		cafr += H
+	return cafr
+
+/proc/gettsfsrmobs(var/alive = FALSE)
+	var/list/tsfsr = list()
+	for (var/mob/living/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/tsfsr))
+			continue
+		if (istype(H, /mob/living/human/corpse))
+			continue
+		tsfsr += H
+	return tsfsr
+
 /proc/getfitmobs(var/faction)
 
 	var/list/mobs = null
@@ -995,6 +1027,10 @@ Proc for attack log creation, because really why not
 			mobs = getbluefactionmobs(0)
 		if (REDFACTION)
 			mobs = getredfactionmobs(0)
+		if (CAFR)
+			mobs = getcafrmobs(0)
+		if (TSFSR)
+			mobs = gettsfsrmobs(0)
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)
 		for (var/mob/m in mobs)

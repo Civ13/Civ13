@@ -27,6 +27,8 @@ var/list/alive_polish = list()
 var/list/alive_italian = list()
 var/list/alive_bluefaction = list()
 var/list/alive_redfaction = list()
+var/list/alive_cafr = list()
+var/list/alive_tsfsr = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -55,7 +57,8 @@ var/list/heavily_injured_polish = list()
 var/list/heavily_injured_italian = list()
 var/list/heavily_injured_bluefaction = list()
 var/list/heavily_injured_redfaction = list()
-
+var/list/heavily_injured_cafr = list()
+var/list/heavily_injured_tsfsr = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
@@ -84,6 +87,8 @@ var/list/dead_polish = list()
 var/list/dead_italian = list()
 var/list/dead_bluefaction = list()
 var/list/dead_redfaction = list()
+var/list/dead_cafr = list()
+var/list/dead_tsfsr = list()
 
 var/list/recently_died = list()
 
@@ -202,6 +207,14 @@ var/list/recently_died = list()
 				dead = dead_redfaction
 				injured = heavily_injured_redfaction
 				alive = alive_redfaction
+			if (CAFR)
+				dead = dead_cafr
+				injured = heavily_injured_cafr
+				alive = alive_cafr
+			if (TSFSR)
+				dead = dead_tsfsr
+				injured = heavily_injured_tsfsr
+				alive = alive_tsfsr
 	return list(alive, dead, injured)
 
 /mob/living/human/death()

@@ -34,6 +34,8 @@
 	i2faction[25] = ITALIAN
 	i2faction[26] = BLUEFACTION
 	i2faction[27] = REDFACTION
+	i2faction[28] = CAFR
+	i2faction[29] = TSFSR
 	for (var/i in TRUE to 24)
 		var/faction = i2faction[i]
 		src << "<i># of [faction] total members:</i> <b>[soldiers[faction]]</b>"

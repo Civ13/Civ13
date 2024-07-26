@@ -50,6 +50,9 @@
 #define WELSH_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "d'o", "d'u", "fa", "fe", "fi", "fo", "fu", "ga", "ge", "gi", "go", "gu", "ha", "he", "hi", "ho", "hu", "la", "le", "li", "lo", "lu", "ma", "me", "mi", "pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va")
 #define SCOTS_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "ba", "be", "bi", "bu", "ca", "ce", "ci", "co", "cu", "da", "de", "di", "do", "du", "d'a", "d'e", "d'i", "sii", "so", "soo", "su", "suu", "ta", "taa", "te", "tee", "ti", "tii", "to", "too", "tu", "tuu", "wa", "waa", "we", "wee", "wi", "wii", "wo", "woo", "wu", "wuu", "ya", "yaa", "ye", "yee", "yi", "yii", "yo", "yoo", "yu", "yuu")
 #define DROID_SYLLABLES list("0", "1", "01", "10", "101", "010", "1010", "0101", "10101", "01010", "101010", "010101", "101010", "0101010", "1010101")
+#define CA_KIPCHAK_TURKIC_SYLLABLES list("a","ba","be","bi","bo","bu","da","de","di","do","du","ga","ge","gi","go","gu","ka","ke","ki","ko","ku","la","le","li","lo","lu","ma","me","mi","mo","mu","na","ne","ni","no","nu","pa","pe","pi","po","pu","ra","re","ri","ro","ru","sa","se","si","so","su","ta","te","ti","to","tu","va","ve","vi","vo","vu","ya","ye","yi","yo","yu")
+#define CA_OGHUZ_TURKIC_SYLLABLES list("a","ba","be","bi","bo","bu","ca","ce","ci","co","cu","da","de","di","do","du","fa","fe","fi","fo","fu","ga","ge","gi","go","gu","ha","he","hi","ho","hu","ja","je","ji","jo","ju","ka","ke","ki","ko","ku","la","le","li","lo","lu","ma","me","mi","mo","mu","na","ne","ni","no","nu","pa","pe","pi","po","pu","ra","re","ri","ro","ru","sa","se","si","so","su","şa","şe","şi","şo","şu","ta","te","ti","to","tu","va","ve","vi","vo","vu","ya","ye","yi","yo","yu")
+#define CA_KARLUK_TURKIC_SYLLABLES list("a","ba","be","bi","bo","bu","da","de","di","do","du","fa","fe","fi","fo","fu","ga","ge","gi","go","gu","ha","he","hi","ho","hu","ja","je","ji","jo","ju","ka","ke","ki","ko","ku","la","le","li","lo","lu","ma","me","mi","mo","mu","na","ne","ni","no","nu","pa","pe","pi","po","pu","ra","re","ri","ro","ru","sa","se","si","so","su","ta","te","ti","to","tu","va","ve","vi","vo","vu","ya","ye","yi","yo","yu")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -153,7 +156,16 @@
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DARI_SYLLABLES
-	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/pashto = 30)
+	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/pashto = 30, /datum/language/farsi = 80, /datum/language/tajik = 95)
+
+/datum/language/tajik
+	name = "Tajik"
+	desc = "Salaam, dost-e man!"
+	key = "ta"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = DARI_SYLLABLES
+	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/pashto = 30, /datum/language/farsi = 80, /datum/language/dari = 95)
 
 /datum/language/farsi
 	name = "Farsi"
@@ -162,7 +174,7 @@
 	colour = "Arabic"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = FARSI_SYLLABLES
-	mutual_intelligibility = list(/datum/language/arab = 30, /datum/language/pashto = 30, /datum/language/dari = 80)
+	mutual_intelligibility = list(/datum/language/arab = 30, /datum/language/pashto = 30, /datum/language/dari = 80, /datum/language/tajik = 80)
 
 /datum/language/pashto
 	name = "Pashto"
@@ -172,6 +184,51 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = PASHTO_SYLLABLES
 	mutual_intelligibility = list(/datum/language/arab = 20, /datum/language/dari = 30)
+
+/datum/language/kazakh
+	name = "Kazakh"
+	desc = "Sälem!"
+	key = "kz"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CA_KIPCHAK_TURKIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/kyrgyz = 60, /datum/language/turkmen = 40, /datum/language/uzbek = 40, /datum/language/uyghur = 40)
+
+/datum/language/kyrgyz
+	name = "Kyrgyz"
+	desc = "Salam!"
+	key = "ky"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CA_KIPCHAK_TURKIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/kazakh = 60, /datum/language/turkmen = 40, /datum/language/uzbek = 40, /datum/language/uyghur = 40)
+
+/datum/language/turkmen
+	name = "Turkmen"
+	desc = "Salam!"
+	key = "tr"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CA_OGHUZ_TURKIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/kyrgyz = 40, /datum/language/kazakh = 40, /datum/language/uzbek = 40, /datum/language/uyghur = 40)
+
+/datum/language/uzbek
+	name = "Uzbek"
+	desc = "Salom!"
+	key = "uz"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CA_KARLUK_TURKIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/kyrgyz = 40, /datum/language/kazakh = 40, /datum/language/turkmen = 40, /datum/language/uyghur = 60)
+
+/datum/language/uyghur
+	name = "Uyghur"
+	desc = "Salom!"
+	key = "uy"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CA_KARLUK_TURKIC_SYLLABLES
+	mutual_intelligibility = list(/datum/language/kyrgyz = 40, /datum/language/kazakh = 40, /datum/language/turkmen = 40, /datum/language/uzbek = 60)
 
 /datum/language/chechen
 	name = "Chechen"

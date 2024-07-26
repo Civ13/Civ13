@@ -157,7 +157,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!lastKnownCkey)
 		return
 	
-	if (map && (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP))
+	if (map && (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR))
 		if (!client.holder)
 			to_chat(client, SPAN_WARNING("<font size=5>You cannot ghost in the campaign.</font>"))
 			return
@@ -393,6 +393,24 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	set desc = "Follow and haunt a living Redmenian."
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(REDFACTION)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+
+/mob/observer/ghost/verb/follow_cafr(input in getfitmobs(CAFR)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a CAFR soldier"
+	set desc = "Follow and haunt a living CAFR soldier."
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(CAFR)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+
+/mob/observer/ghost/verb/follow_tsfsr(input in getfitmobs(TSFSR)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a TSFSR soldier"
+	set desc = "Follow and haunt a living TSFSR soldier."
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(TSFSR)
 		if (mobs[input])
 			ManualFollow(mobs[input])
 

@@ -167,6 +167,18 @@
 					if (H.original_job.base_type_flag() == REDFACTION)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (CAFR)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == CAFR)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (TSFSR)
+			for (var/mob/living/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == TSFSR)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
 /proc/total_n_of_side(x)

@@ -215,6 +215,8 @@ var/polish_toggled = TRUE
 var/italian_toggled = TRUE
 var/bluefaction_toggled = TRUE
 var/redfaction_toggled = TRUE
+var/cafr_toggled = TRUE
+var/tsfsr_toggled = TRUE
 
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
@@ -253,6 +255,8 @@ var/redfaction_toggled = TRUE
 	choices += "ITALIAN ([italian_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "BLUEFACTION ([bluefaction_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "REDFACTION ([redfaction_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "CAFR ([cafr_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "TSFSR ([tsfsr_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -368,7 +372,14 @@ var/redfaction_toggled = TRUE
 		redfaction_toggled = !redfaction_toggled
 		world << "<span class = 'warning'>The Redfaction faction has been [redfaction_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Redfaction faction 'enabled' setting to [redfaction_toggled].", key_name(src))
-
+	else if (findtext(choice, "CAFR"))
+		cafr_toggled = !cafr_toggled
+		world << "<span class = 'warning'>The CAFR faction has been [cafr_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the CAFR faction 'enabled' setting to [cafr_toggled].", key_name(src))
+	else if (findtext(choice, "TSFSR"))
+		tsfsr_toggled = !tsfsr_toggled
+		world << "<span class = 'warning'>The TSFSR faction has been [tsfsr_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the TSFSR faction 'enabled' setting to [tsfsr_toggled].", key_name(src))
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -396,6 +407,8 @@ var/polish_forceEnabled = FALSE
 var/italian_forceEnabled = FALSE
 var/bluefaction_forceEnabled = FALSE
 var/redfaction_forceEnabled = FALSE
+var/cafr_forceEnabled = FALSE
+var/tsfsr_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -434,6 +447,8 @@ var/redfaction_forceEnabled = FALSE
 	choices += "POLISH ([polish_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "BLUEFACTION ([bluefaction_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "REDFACTION ([redfaction_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "CAFR ([cafr_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "TSFSR ([tsfsr_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -620,6 +635,8 @@ var/redfaction_forceEnabled = FALSE
 	var/total_italian = alive_italian.len + dead_italian.len + heavily_injured_italian.len
 	var/total_bluefaction = alive_bluefaction.len + dead_bluefaction.len + heavily_injured_bluefaction.len
 	var/total_redfaction = alive_redfaction.len + dead_redfaction.len + heavily_injured_redfaction.len
+	var/total_cafr = alive_cafr.len + dead_cafr.len + heavily_injured_cafr.len
+	var/total_tsfsr = alive_tsfsr.len + dead_tsfsr.len + heavily_injured_tsfsr.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -648,6 +665,8 @@ var/redfaction_forceEnabled = FALSE
 	var/mortality_coefficient_italian = 0
 	var/mortality_coefficient_bluefaction = 0
 	var/mortality_coefficient_redfaction = 0
+	var/mortality_coefficient_cafr = 0
+	var/mortality_coefficient_tsfsr = 0
 
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
@@ -730,6 +749,12 @@ var/redfaction_forceEnabled = FALSE
 	if (dead_redfaction.len > 0)
 		mortality_coefficient_redfaction = dead_redfaction.len/total_redfaction
 
+	if (dead_cafr.len > 0)
+		mortality_coefficient_cafr = dead_cafr.len/total_cafr
+	
+	if (dead_tsfsr.len > 0)
+		mortality_coefficient_tsfsr = dead_tsfsr.len/total_tsfsr
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -757,6 +782,8 @@ var/redfaction_forceEnabled = FALSE
 	var/mortality_italian = round(mortality_coefficient_italian*100)
 	var/mortality_bluefaction = round(mortality_coefficient_bluefaction*100)
 	var/mortality_redfaction = round(mortality_coefficient_redfaction*100)
+	var/mortality_cafr = round(mortality_coefficient_cafr*100)
+	var/mortality_tsfsr = round(mortality_coefficient_tsfsr*100)
 
 	var/fact1 = "British"
 	var/fact2 = "Pirates"
@@ -785,6 +812,8 @@ var/redfaction_forceEnabled = FALSE
 	var/fact25 = "Italian"
 	var/fact26 = "Blugoslavia"
 	var/fact27 = "Redmenia"
+	var/fact28 = "CAFR"
+	var/fact29 = "Turkestan SFSR"
 
 	if (map.ID == MAP_WHITERUN)
 		fact3 = "Stormcloaks"
@@ -871,7 +900,9 @@ var/redfaction_forceEnabled = FALSE
 	var/msg25 = "[fact25]: [alive_italian.len] alive, [heavily_injured_italian.len] heavily injured or unconscious, [dead_italian.len] deceased. Mortality rate: [mortality_italian]%"
 	var/msg26 = "[fact26]: [alive_bluefaction.len] alive, [heavily_injured_bluefaction.len] heavily injured or unconscious, [dead_bluefaction.len] deceased. Mortality rate: [mortality_bluefaction]%"
 	var/msg27 = "[fact27]: [alive_redfaction.len] alive, [heavily_injured_redfaction.len] heavily injured or unconscious, [dead_redfaction.len] deceased. Mortality rate: [mortality_redfaction]%"
-	
+	var/msg28 = "[fact28]: [alive_cafr.len] alive, [heavily_injured_cafr.len] heavily injured or unconscious, [dead_cafr.len] deceased. Mortality rate: [mortality_cafr]%"
+	var/msg29 = "[fact29]: [alive_tsfsr.len] alive, [heavily_injured_tsfsr.len] heavily injured or unconscious, [dead_tsfsr.len] deceased. Mortality rate: [mortality_tsfsr]%"
+
 
 	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
 
@@ -975,6 +1006,10 @@ var/redfaction_forceEnabled = FALSE
 		msg26 = null
 	if (map && !map.faction_organization.Find(REDFACTION))
 		msg27 = null
+	if (map && !map.faction_organization.Find(CAFR))
+		msg28 = null
+	if (map && !map.faction_organization.Find(TSFSR))
+		msg29 = null
 
 	var/public = "Yes"
 
@@ -1041,6 +1076,10 @@ var/redfaction_forceEnabled = FALSE
 				world << "<font size=3>[msg26]</font>"
 			if (msg27)
 				world << "<font size=3>[msg27]</font>"
+			if (msg28)
+				world << "<font size=3>[msg28]</font>"
+			if (msg29)
+				world << "<font size=3>[msg29]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
