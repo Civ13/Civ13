@@ -132,6 +132,17 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
+"bE" = (
+/obj/covers/wood/alt,
+/obj/structure/table/rack/shelf/wooden,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/turf/floor/beach/sand/desert,
+/area/caribbean/desert/buildings{
+	name = "Buildings"
+	})
 "bG" = (
 /obj/structure/window/barrier/sandbag{
 	icon_state = "sandbag";
@@ -1764,6 +1775,22 @@
 	dir = 8
 	},
 /area/caribbean/nomads/desert)
+"vd" = (
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/beach/sand/desert,
+/area/caribbean/nomads/desert)
 "ve" = (
 /obj/covers/wood/alt,
 /obj/structure/closet/crate/pepelsibirsk/mosin,
@@ -2387,6 +2414,25 @@
 	},
 /turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
+"CC" = (
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/structure/table/rack/shelf/wooden,
+/obj/covers/wood/alt,
+/turf/floor/beach/sand/desert,
+/area/caribbean/desert/buildings{
+	name = "Buildings"
+	})
 "CD" = (
 /obj/covers/romanroad,
 /obj/effect/decal/cleanable/dirt,
@@ -3639,6 +3685,14 @@
 	dir = 8
 	},
 /turf/floor/dirt/dust,
+/area/caribbean/nomads/desert)
+"RP" = (
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "RU" = (
 /obj/structure/window/barrier/sandbag{
@@ -5313,7 +5367,7 @@ BO
 GQ
 GQ
 GQ
-GQ
+RP
 hB
 xm
 xm
@@ -5424,7 +5478,7 @@ BO
 GQ
 GQ
 GQ
-GQ
+vd
 yX
 ri
 xm
@@ -26942,8 +26996,8 @@ Yh
 Rv
 VU
 cR
-cR
-cR
+CC
+bE
 cR
 ve
 Rv

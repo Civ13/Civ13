@@ -1059,9 +1059,11 @@
 "mO" = (
 /obj/structure/window/barrier/sandbag{
 	icon_state = "sandbag";
-	dir = 8
+	dir = 1
 	},
-/obj/structure/religious/remains,
+/obj/structure/window/barrier/sandbag{
+	dir = 4
+	},
 /turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
 "mW" = (
@@ -1150,14 +1152,24 @@
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "nY" = (
-/obj/structure/window/barrier/railing/stone{
-	icon_state = "stone";
-	dir = 4;
-	color = "#fcdc7b"
-	},
-/obj/structure/window/barrier/sandbag,
-/turf/floor/beach/sand,
-/area/caribbean/nomads/desert)
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/structure/table/rack/shelf/wooden,
+/obj/covers/wood/alt,
+/turf/floor/beach/sand/desert,
+/area/caribbean/desert/buildings{
+	name = "Buildings"
+	})
 "nZ" = (
 /obj/structure/bed/chair/drivers/car/dark{
 	dir = 1
@@ -1316,6 +1328,13 @@
 	name = "SupplyCAFR"
 	},
 /turf/floor/beach/sand/desert,
+/area/caribbean/nomads/desert)
+"pF" = (
+/obj/structure/wild/rock,
+/obj/structure/window/barrier/sandbag{
+	dir = 4
+	},
+/turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
 "pJ" = (
 /obj/structure/grille/chainlinkfence{
@@ -1560,6 +1579,15 @@
 	dir = 1
 	},
 /turf/floor/dirt/dust,
+/area/caribbean/nomads/desert)
+"tf" = (
+/obj/structure/window/barrier/railing/stone{
+	icon_state = "stone";
+	dir = 8;
+	color = "#fcdc7b"
+	},
+/obj/structure/window/barrier/sandbag,
+/turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
 "to" = (
 /obj/effect/floor_decal/desert_edge{
@@ -3548,14 +3576,16 @@
 /turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "QJ" = (
-/obj/structure/window/barrier/sandbag{
-	icon_state = "sandbag";
-	dir = 8
-	},
-/obj/structure/window/barrier/sandbag,
-/obj/structure/religious/remains,
-/turf/floor/beach/sand,
-/area/caribbean/nomads/desert)
+/obj/covers/wood/alt,
+/obj/structure/table/rack/shelf/wooden,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/turf/floor/beach/sand/desert,
+/area/caribbean/desert/buildings{
+	name = "Buildings"
+	})
 "QN" = (
 /obj/structure/window/barrier/sandbag{
 	icon_state = "sandbag";
@@ -4068,13 +4098,9 @@
 /area/caribbean/nomads/desert)
 "VY" = (
 /obj/structure/window/barrier/sandbag{
-	icon_state = "sandbag";
-	dir = 1
+	dir = 4
 	},
-/obj/structure/window/barrier/sandbag{
-	icon_state = "sandbag";
-	dir = 8
-	},
+/obj/structure/window/barrier/sandbag,
 /turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
 "Wa" = (
@@ -4091,6 +4117,22 @@
 	dir = 6
 	},
 /turf/floor/dirt/dust,
+/area/caribbean/nomads/desert)
+"Wq" = (
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/item/weapon/material/shovel/trench/foldable/etool,
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "Wt" = (
 /obj/item/weapon/wrench,
@@ -4180,12 +4222,12 @@
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/desert)
 "Xo" = (
-/obj/structure/window/barrier/sandbag{
-	icon_state = "sandbag";
-	dir = 8
-	},
-/obj/structure/window/barrier/sandbag,
-/turf/floor/beach/sand,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/item/stack/material/barbwire/twnt,
+/obj/structure/table/rack/shelf/wooden,
+/turf/floor/beach/sand/desert,
 /area/caribbean/nomads/desert)
 "Xr" = (
 /obj/covers/romanroad,
@@ -5323,7 +5365,7 @@ BO
 GQ
 GQ
 GQ
-GQ
+Xo
 hB
 xm
 xm
@@ -5434,7 +5476,7 @@ BO
 GQ
 GQ
 GQ
-GQ
+Wq
 yX
 ri
 xm
@@ -14792,8 +14834,8 @@ GQ
 GQ
 Lr
 bX
-VY
-QJ
+Be
+GG
 lr
 Mj
 YV
@@ -14901,10 +14943,10 @@ GQ
 GQ
 GQ
 bX
-bG
-bG
 Be
-nY
+Be
+Be
+Sl
 lr
 Mj
 YV
@@ -15011,7 +15053,7 @@ GQ
 GQ
 GQ
 bX
-Be
+jF
 Be
 Be
 Be
@@ -15882,9 +15924,9 @@ GQ
 GQ
 GQ
 bX
-bG
-mO
-Xo
+Be
+GG
+Be
 mu
 GQ
 GQ
@@ -17098,12 +17140,12 @@ GQ
 GQ
 GQ
 Wz
+mO
+EM
 Be
 Be
-Be
-Be
-Be
-Be
+EM
+VY
 JA
 GQ
 GQ
@@ -17211,8 +17253,8 @@ GQ
 GQ
 rv
 HG
-Be
-Be
+mO
+VY
 GJ
 rv
 GQ
@@ -22233,7 +22275,7 @@ Be
 Be
 Be
 Be
-Tr
+tf
 lr
 Mj
 YV
@@ -22341,10 +22383,10 @@ GQ
 GQ
 rv
 HG
-Be
-Be
-Xe
-jF
+EM
+EM
+pF
+VY
 lr
 Mj
 YV
@@ -26952,8 +26994,8 @@ Yh
 Rv
 VU
 cR
-cR
-cR
+nY
+QJ
 cR
 ve
 Rv
