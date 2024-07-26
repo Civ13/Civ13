@@ -71,7 +71,7 @@
 #define MOSINAMMOCOST_TSFSR 100
 #define MAKAROVAMMOCOST_TSFSR 50
 #define SIXB1COST_TSFSR 300
-#define SIXB2COST_TSFSR 1000
+#define SIXB2COST_TSFSR 900 // Level 1/10 6B2 factory in Kazakhstan
 /////////////////////////////////
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign
