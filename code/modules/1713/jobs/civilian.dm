@@ -117,53 +117,6 @@
 
 	return TRUE
 
-/datum/job/civilian/banker
-	title = "Banker"
-	en_meaning = "Master of Funds"
-	rank_abbreviation = "Banker"
-
-
-	spawn_location = "JoinLateCivB"
-	is_officer = TRUE
-	whitelisted = TRUE
-	is_vip = TRUE
-
-	is_1713 = TRUE
-
-
-	min_positions = 1
-	max_positions = 1
-
-/datum/job/civilian/banker/equip(var/mob/living/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
-//	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony's funds. Organize your men and tax the poor!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.make_businessman()
-
-	return TRUE
-
 /datum/job/civilian/bank_teller
 	title = "Teller"
 	en_meaning = "Bank Teller"
@@ -177,6 +130,63 @@
 
 	min_positions = 1
 	max_positions = 2
+
+/datum/job/civilian/banker
+	title = "Banker"
+	en_meaning = "Finance Minister"
+	rank_abbreviation = "Banker"
+	can_be_female = TRUE
+	spawn_location = "JoinLateCivB"
+	is_merchant = TRUE
+	is_officer = TRUE
+	is_commander = TRUE
+
+	whitelisted = TRUE
+	is_1713 = TRUE
+
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/banker/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+	
+	H.add_note("Role", " You are a <b>[title]</b>, the leader of this colony's funds.")
+	H.add_note("Command", " You answer directly to the Colonial Administration. Bank Tellers are your subordinates. The bank is property of Central Administration and YOU are the trusted manager.")
+	H.add_note("You & the Governor", "The government isn't your Boss, nor are you his, however when it comes to colonial funds, you have equal authority and therefore a say. You must make sure the Governor does not waste our funds!")
+	H.add_note("Job Summary", "• Make sure the Governor doesnt waste our money. • Complain to CA if they do. • Manage the bank. • Follow the guidelines, tax people, pay their wages. • Manage your subordinates.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.make_businessman()
+
+	return TRUE
+
 
 /datum/job/civilian/bank_teller/equip(var/mob/living/human/H)
 	if (!H)	return FALSE

@@ -1,6 +1,6 @@
 /var/list/all_ui_styles = list(
 	"1713Style",
-//	"NewStyle",
+	"NewStyle",
 	"LiteWebStyle",
 	"FoFStyle",
 	)
