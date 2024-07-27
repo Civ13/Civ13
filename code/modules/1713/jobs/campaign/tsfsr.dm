@@ -142,6 +142,9 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/armband/redfaction(null)
+	uniform.attackby(armband, H)
 
 //helmet
 	if (findtext(title, "Squad Leader") && !findtext(title, "Armored"))
