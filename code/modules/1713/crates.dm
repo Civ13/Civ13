@@ -1117,7 +1117,7 @@ obj/structure/closet/crate/airdrops/weapons
 				/obj/item/ammo_magazine/mosinbox = 10)
 
 /obj/structure/closet/crate/pepelsibirsk/ppsh
-	name = "ak-74 crate"
+	name = "ppsh crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"

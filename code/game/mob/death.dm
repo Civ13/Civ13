@@ -32,7 +32,7 @@
 				qdel(animation)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 					spawn(5)
 						to_chat(client, "<font size=6>You have died!</font>")
 				else
@@ -76,7 +76,7 @@
 				qdel(src)
 			if (client)
 				client.movement_busy = FALSE
-				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+				if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 					spawn(5)
 						to_chat(client, "<font size=6>You have died!</font>")
 				else
@@ -130,7 +130,7 @@
 
 	if (client)
 		client.movement_busy = FALSE
-		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+		if (map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 			spawn(5)
 				to_chat(client, "<font size=6>You have died!</font>")
 		else

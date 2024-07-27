@@ -129,7 +129,7 @@ var/global/redirect_all_players = null
 	else
 		if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
-		else if (map.ID == MAP_CAMPAIGN)
+		else if (map.ID ==  MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 			output += "<p><a href='byond://?src=\ref[src];join_campaign=1'>Join Game!</a></p>"
 		else if (map.civilizations && !map.nomads)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
@@ -213,7 +213,7 @@ var/global/redirect_all_players = null
 		new_player_panel_proc()
 
 	if (href_list["observe"])
-		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP) && !client.holder)
+		if ((map.ID == MAP_CAMPAIGN || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR) && !client.holder)
 			WWalert(src,"You cannot observe during this round.","Error")
 			return TRUE
 
@@ -469,6 +469,8 @@ var/global/redirect_all_players = null
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
+			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				LateChoicesCampaignNew(factjob)
 		else
 			if (config.discordurl)
 				WWalert(src, "This round is part of an event. You need to be part of one of the two factions to participate. Visit the discord for more information: [config.discordurl]")
@@ -694,6 +696,102 @@ var/global/redirect_all_players = null
 				AttemptLateSpawn(href_list["SelectedJob"])
 				return
 
+			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
+					if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
+						return
+				if(findtext(href_list["SelectedJob"],"CAFR"))
+					var/obj/map_metadata/campaign_new/MC = map
+					if(findtext(href_list["SelectedJob"],"Squad 1"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_blue["Squad 1"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_blue["Squad 1"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_blue["Squad 1"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"Squad 2"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_blue["Squad 2"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_blue["Squad 2"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_blue["Squad 2"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"Squad 3"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_blue["Squad 3"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_blue["Squad 3"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_blue["Squad 3"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"CAFR Doctor"))
+						MC.squad_jobs_blue["none"]["Doctor"]--
+
+					else if(findtext(href_list["SelectedJob"],"CAFR Officer"))
+						MC.squad_jobs_blue["none"]["Officer"]--
+					else if(findtext(href_list["SelectedJob"],"CAFR Commander"))
+						MC.squad_jobs_blue["none"]["Commander"]--
+						
+					else if(findtext(href_list["SelectedJob"],"CAFR Recon"))
+						MC.squad_jobs_blue["Recon"]["Sniper"]--
+					else if(findtext(href_list["SelectedJob"],"CAFR Anti-Tank"))
+						MC.squad_jobs_blue["AT"]["Anti-Tank"]--
+					else if(findtext(href_list["SelectedJob"],"CAFR Armored Crew"))
+						MC.squad_jobs_blue["Armored"]["Crew"]--
+					else if(findtext(href_list["SelectedJob"],"CAFR Engineer"))
+						MC.squad_jobs_blue["Engineer"]["Engineer"]--
+					AttemptLateSpawn(href_list["SelectedJob"])
+					return
+
+				else if (findtext(href_list["SelectedJob"],"TSFSR"))
+					var/obj/map_metadata/campaign_new/MC = map
+					if(findtext(href_list["SelectedJob"],"Squad 1"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_red["Squad 1"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_red["Squad 1"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_red["Squad 1"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"Squad 2"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_red["Squad 2"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_red["Squad 2"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_red["Squad 2"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"Squad 3"))
+						if (findtext(href_list["SelectedJob"],"Sniper"))
+							MC.squad_jobs_red["Squad 3"]["Sniper"]--
+						if (findtext(href_list["SelectedJob"],"Machinegunner"))
+							MC.squad_jobs_red["Squad 3"]["Machinegunner"]--
+						if (findtext(href_list["SelectedJob"],"Des. Marksman"))
+							MC.squad_jobs_red["Squad 3"]["Des. Marksman"]--
+
+					else if(findtext(href_list["SelectedJob"],"TSFSR Doctor"))
+						MC.squad_jobs_red["none"]["Doctor"]--
+
+					else if(findtext(href_list["SelectedJob"],"TSFSR Officer"))
+						MC.squad_jobs_red["none"]["Officer"]--
+					else if(findtext(href_list["SelectedJob"],"TSFSR Commander"))
+						MC.squad_jobs_red["none"]["Commander"]--
+
+					else if(findtext(href_list["SelectedJob"],"TSFSR Recon"))
+						MC.squad_jobs_red["Recon"]["Sniper"]--
+					else if(findtext(href_list["SelectedJob"],"TSFSR Anti-Tank"))
+						MC.squad_jobs_red["AT"]["Anti-Tank"]--
+					else if(findtext(href_list["SelectedJob"],"TSFSR Armored Crew"))
+						MC.squad_jobs_red["Armored"]["Crew"]--
+					else if(findtext(href_list["SelectedJob"],"TSFSR Engineer"))
+						MC.squad_jobs_red["Engineer"]["Engineer"]--
+					AttemptLateSpawn(href_list["SelectedJob"])
+					return
+			else if (findtext(href_list["SelectedJob"],"TSFSR"))
+				AttemptLateSpawn(href_list["SelectedJob"])
+				return
 //Kandahar DRA spawnpoints
 		if (map && map.ID == MAP_KANDAHAR)
 			var/obj/map_metadata/kandahar/MP = map
@@ -1042,7 +1140,7 @@ var/global/redirect_all_players = null
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 
 	//squads
-	if (ishuman(character) && map.ID != MAP_CAMPAIGN && map.ID != MAP_ROTSTADT)
+	if (ishuman(character) && map.ID != MAP_CAMPAIGN && map.ID != CAMPAIGN_MAP_LIST_AND_NOT_MAPID && map.ID != MAP_ROTSTADT)
 		var/mob/living/human/H = character
 		if (H.original_job_title == "FBI officer" || H.original_job_title == "KGB officer")
 			H.verbs += /mob/living/human/proc/find_hvt
@@ -1270,6 +1368,10 @@ var/global/redirect_all_players = null
 		dat += "[alive_bluefaction.len] Blugoslavians "
 	if (REDFACTION in map.faction_organization)
 		dat += "[alive_redfaction.len] Redmenians "
+	if (CAFR in map.faction_organization)
+		dat += "[alive_cafr.len] CAFR soldiers "
+	if (TSFSR in map.faction_organization)
+		dat += "[alive_tsfsr.len] TSFSR soldiers "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -1303,6 +1405,8 @@ var/global/redirect_all_players = null
 		POLISH = FALSE,
 		BLUEFACTION = FALSE,
 		REDFACTION = FALSE,
+		CAFR = FALSE,
+		TSFSR = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -1403,6 +1507,12 @@ var/global/redirect_all_players = null
 			job_is_available = FALSE
 		
 		if (istype(job, /datum/job/redfaction) && !redfaction_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/cafr) && !cafr_toggled)
+			job_is_available = FALSE
+		
+		if (istype(job, /datum/job/tsfsr) && !tsfsr_toggled)
 			job_is_available = FALSE
 
 		// check if the job is admin-locked or disabled codewise

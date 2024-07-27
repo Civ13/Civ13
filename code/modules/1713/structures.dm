@@ -762,7 +762,7 @@
 	desc = "A hotbulb engine in operation."
 	icon_state = "hotbulb_on"
 /obj/structure/props/engineprops/dieselgeni
-	name = "diesel genertator"
+	name = "diesel generator"
 	desc = "A diesel generator in operation."
 	icon_state = "diesel_on"
 /obj/structure/props/engineprops/hesselman
@@ -1155,6 +1155,11 @@
 	icon_state = "blugoslavia"
 	name = "Blugoslavia Flag"
 	desc = "The flag of Blugoslavia."
+
+/obj/structure/flag/cafr
+	icon_state = "cafr"
+	name = "CAFR Flag"
+	desc = "The flag of the Central Asian Federal Republic."
 
 /obj/structure/flag/pole
 	icon_state = "flagpole_blank"
