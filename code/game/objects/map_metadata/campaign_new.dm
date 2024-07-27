@@ -34,6 +34,14 @@
 #define MAKAROVAMMOCOST_CAFR 50
 #define SIXB1COST_CAFR 300
 #define SIXB2COST_CAFR 1000
+#define ARTILLERYCOST_CAFR 1500
+#define SHELLCOST_CAFR 1000
+#define MORTARCOST_CAFR 1200
+#define MSHELLCOST_CAFR 800
+#define KAMAZCOST_CAFR 1500
+#define BMD2COST_CAFR 5000
+#define T55COST_CAFR 8000
+#define T72COST_CAFR 10000
 /////////////////////////////////
 
 /// TSFSR civilian crate costs ///
@@ -72,6 +80,14 @@
 #define MAKAROVAMMOCOST_TSFSR 50
 #define SIXB1COST_TSFSR 300
 #define SIXB2COST_TSFSR 900 // Level 1/10 6B2 factory in Kazakhstan
+#define ARTILLERYCOST_TSFSR 1500
+#define SHELLCOST_TSFSR 1000
+#define MORTARCOST_TSFSR 1200
+#define MSHELLCOST_TSFSR 800
+#define KAMAZCOST_TSFSR 1500
+#define BMD2COST_TSFSR 5000
+#define T55COST_TSFSR 8000
+#define T72COST_TSFSR 10000
 /////////////////////////////////
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign
@@ -118,6 +134,14 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_CAFR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_CAFR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_CAFR),
+			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_CAFR),
+			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_CAFR),
+			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_CAFR),
+			list("artillery shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_CAFR),
+			list("KAMAZ truck", /obj/effects/premadevehicles/truck/kamaz,KAMAZCOST_CAFR),
+			list("BMD-2 IFV", /obj/effects/premadevehicles/apc/bmd2,BMD2COST_CAFR),
+			list("T-55 tank", /obj/effects/premadevehicles/tank/t55,T55COST_CAFR),
+			list("T-72 tank", /obj/effects/premadevehicles/tank/t72,T72COST_CAFR),
 		)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign/tsfsr
@@ -161,6 +185,14 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_TSFSR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_TSFSR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_TSFSR),
+			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_TSFSR),
+			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_TSFSR),
+			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_TSFSR),
+			list("artillery shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_TSFSR),
+			list("KAMAZ truck", /obj/effects/premadevehicles/truck/kamaz,KAMAZCOST_TSFSR),
+			list("BMD-2 IFV", /obj/effects/premadevehicles/apc/bmd2,BMD2COST_TSFSR),
+			list("T-55 tank", /obj/effects/premadevehicles/tank/t55,T55COST_TSFSR),
+			list("T-72 tank", /obj/effects/premadevehicles/tank/t72,T72COST_TSFSR),
 		)
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign/company(user)
