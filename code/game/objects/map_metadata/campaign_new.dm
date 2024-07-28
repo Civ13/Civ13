@@ -34,6 +34,7 @@
 #define MAKAROVAMMOCOST_CAFR 50
 #define SIXB1COST_CAFR 300
 #define SIXB2COST_CAFR 1000
+#define SCOPECOST_CAFR 500
 #define ARTILLERYCOST_CAFR 1500
 #define SHELLCOST_CAFR 1000
 #define MORTARCOST_CAFR 1200
@@ -80,6 +81,7 @@
 #define MAKAROVAMMOCOST_TSFSR 50
 #define SIXB1COST_TSFSR 300
 #define SIXB2COST_TSFSR 900 // Level 1/10 6B2 factory in Kazakhstan
+#define SCOPECOST_TSFSR 500
 #define ARTILLERYCOST_TSFSR 1500
 #define SHELLCOST_TSFSR 1000
 #define MORTARCOST_TSFSR 1200
@@ -134,6 +136,7 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_CAFR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_CAFR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_CAFR),
+			list("sniper scope crate (5)", /obj/structure/closet/crate/scopes,SCOPECOST_CAFR),
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_CAFR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_CAFR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_CAFR),
@@ -185,6 +188,7 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_TSFSR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_TSFSR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_TSFSR),
+			list("sniper scope crate (5)", /obj/structure/closet/crate/scopes,SCOPECOST_TSFSR),
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_TSFSR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_TSFSR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_TSFSR),
@@ -289,7 +293,7 @@
 	respawn_delay = 0
 	no_winner = "The battle is going on."
 	victory_time = 45 MINUTES
-	grace_wall_timer = 5 MINUTES
+	grace_wall_timer = 8 MINUTES
 	can_spawn_on_base_capture = TRUE
 	faction_organization = list(
 		TSFSR,
@@ -303,7 +307,7 @@
 	ordinal_age = 7
 	faction_distribution_coeffs = list(TSFSR = 0.5, CAFR = 0.5)
 	battle_name = "battle of Emberburg"
-	mission_start_message = "<font size=4><b>5 minutes</b> until the battle begins. The CAFR must hold the road tunnel for 45 minutes to achieve victory.</font>"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The CAFR must hold the road tunnel for 45 minutes to achieve victory.</font>"
 	faction1 = TSFSR
 	faction2 = CAFR
 	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
@@ -503,7 +507,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = SPAN_RED("The <b>CAFR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		var/message = SPAN_BLUE("The <b>CAFR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		
 		show_global_battle_report(null)
@@ -513,7 +517,7 @@
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = SPAN_BLUE("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+			message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		show_global_battle_report(null)

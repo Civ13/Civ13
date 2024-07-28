@@ -1174,4 +1174,11 @@ obj/structure/closet/crate/airdrops/weapons
 	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/clothing/accessory/armor/coldwar/plates/b2 = 5)
 
+/obj/structure/closet/crate/scopes
+	name = "sniper scope crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 5)
+
 #undef DYNAMIC_AMT
