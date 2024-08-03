@@ -168,7 +168,8 @@
 	
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	
 	if (findtext(title, "Engineer"))
 		H.setStat("strength", STAT_VERY_HIGH)
 		H.setStat("crafting", STAT_VERY_HIGH)
