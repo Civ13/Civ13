@@ -108,6 +108,9 @@
 					var/dt = world.time - GN.last_shot_time
 					if(dt > GN.firemodes[GN.sel_mode].burst_delay)
 						GN.Fire(A,H,params)
+					else
+						spawn(GN.last_shot_time + GN.firemodes[GN.sel_mode].burst_delay - world.time)
+							GN.Fire(A,H,params)
 		if (istype(H.buckled, /obj/structure/bed/chair/commander)) //TO DO TODO: move it to wheels.dm
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P
 			if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
