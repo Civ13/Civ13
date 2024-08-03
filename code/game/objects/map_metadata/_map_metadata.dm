@@ -257,6 +257,8 @@ var/civmax_research = list(230,230,230)
 	var/ar_to_close_timeleft = 0
 
 	var/no_hardcore = FALSE
+	var/is_campaign_map = FALSE
+
 /obj/map_metadata/New()
 	..()
 	map = src

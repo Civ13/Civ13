@@ -34,7 +34,8 @@
 #define MAKAROVAMMOCOST_CAFR 50
 #define SIXB1COST_CAFR 300
 #define SIXB2COST_CAFR 1000
-#define SCOPECOST_CAFR 500
+#define PUCOST_CAFR 500
+#define PSO1COST_CAFR 800
 #define ARTILLERYCOST_CAFR 1500
 #define SHELLCOST_CAFR 1000
 #define MORTARCOST_CAFR 1200
@@ -81,7 +82,8 @@
 #define MAKAROVAMMOCOST_TSFSR 50
 #define SIXB1COST_TSFSR 300
 #define SIXB2COST_TSFSR 900 // Level 1/10 6B2 factory in Kazakhstan
-#define SCOPECOST_TSFSR 500
+#define PUCOST_TSFSR 500
+#define PSO1COST_TSFSR 800
 #define ARTILLERYCOST_TSFSR 1500
 #define SHELLCOST_TSFSR 1000
 #define MORTARCOST_TSFSR 1200
@@ -136,7 +138,8 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_CAFR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_CAFR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_CAFR),
-			list("sniper scope crate (5)", /obj/structure/closet/crate/scopes,SCOPECOST_CAFR),
+			list("PU (Mosin/SVT) scope crate (5)", /obj/structure/closet/crate/scopes/pu,PUCOST_CAFR),
+			list("PSO-1 (Dovetail) scope crate (5)", /obj/structure/closet/crate/scopes/pso1,PSO1COST_CAFR),
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_CAFR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_CAFR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_CAFR),
@@ -188,7 +191,8 @@
 			list("9x18mm ammunition crate (240)", /obj/structure/closet/crate/pepelsibirsk/ninex18mm,MAKAROVAMMOCOST_TSFSR),
 			list("6B1 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb1,SIXB1COST_TSFSR),
 			list("6B2 vest crate (5)", /obj/structure/closet/crate/pepelsibirsk/sixb2,SIXB2COST_TSFSR),
-			list("sniper scope crate (5)", /obj/structure/closet/crate/scopes,SCOPECOST_TSFSR),
+			list("PU (Mosin/SVT) scope crate (5)", /obj/structure/closet/crate/scopes/pu,PUCOST_TSFSR),
+			list("PSO-1 (Dovetail) scope crate (5)", /obj/structure/closet/crate/scopes/pso1,PSO1COST_TSFSR),
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_TSFSR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_TSFSR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_TSFSR),
@@ -290,7 +294,7 @@
 	title = "Campaign"
 	lobby_icon = 'icons/lobby/campaign1.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
-	respawn_delay = 0
+	respawn_delay = 2 MINUTES
 	no_winner = "The battle is going on."
 	victory_time = 45 MINUTES
 	grace_wall_timer = 8 MINUTES
@@ -303,6 +307,7 @@
 		list(TSFSR) = /area/caribbean/faction1,
 		list(CAFR) = /area/caribbean/british/land/inside/objective,
 		)
+	is_campaign_map = TRUE
 	age = "1976"
 	ordinal_age = 7
 	faction_distribution_coeffs = list(TSFSR = 0.5, CAFR = 0.5)
@@ -693,3 +698,138 @@
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+/obj/map_metadata/campaign_new/campaign2a
+	ID = MAP_CAMPAIGN_2A
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
+	battle_name = "Battle of Samarkand"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The Turkestan SFSR must hold the madrasa for 45 minutes to achieve victory.</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	faction_organization = list(
+		CAFR,
+		TSFSR)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/british/land/inside/objective,
+		list(CAFR) = /area/caribbean/faction2,
+		)
+	can_spawn_on_base_capture = FALSE
+
+/obj/map_metadata/campaign_new/campaign2a/update_win_condition()
+	// Win when timer reaches zero
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+		
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		no_loop_ca = TRUE
+		return FALSE
+	// German major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// German minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE
+
+/obj/map_metadata/campaign_new/campaign2b
+	ID = MAP_CAMPAIGN_2B
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
+	battle_name = "Battle of Samarkand"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The Central Asian Federal Republic must hold the madrasa for 45 minutes to achieve victory.</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/faction1,
+		list(CAFR) = /area/caribbean/british/land/inside/objective,
+		)
+	can_spawn_on_base_capture = FALSE

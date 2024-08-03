@@ -575,7 +575,7 @@
 "gJ" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
-	amount = 2000
+	amount = 1500
 	},
 /turf/floor/beach/sand/desert,
 /area/caribbean/british/land/inside/objective)
@@ -1490,7 +1490,7 @@
 "sn" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
-	max_amount = 1500
+	amount = 1500
 	},
 /turf/floor/beach/sand,
 /area/caribbean/tribes/caves)
@@ -1908,7 +1908,7 @@
 /obj/effect/floor_decal/desert_edge,
 /obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
-	max_amount = 1500
+	amount = 1500
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/nomads/desert)
@@ -2269,7 +2269,7 @@
 "AU" = (
 /obj/structure/table/wood,
 /obj/item/stack/money/rubles{
-	max_amount = 1500
+	amount = 1500
 	},
 /turf/floor/beach/sand,
 /area/caribbean/nomads/desert)
@@ -3187,7 +3187,7 @@
 "LZ" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
-	max_amount = 1500
+	amount = 1500
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/nomads/desert)
@@ -4056,7 +4056,7 @@
 "VH" = (
 /obj/structure/closet/crate/empty,
 /obj/item/stack/money/rubles{
-	max_amount = 1500
+	amount = 1500
 	},
 /turf/floor/beach/sand/dark,
 /area/caribbean/tribes/caves)

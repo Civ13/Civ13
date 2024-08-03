@@ -1181,4 +1181,18 @@ obj/structure/closet/crate/airdrops/weapons
 	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 5)
 
+/obj/structure/closet/crate/scopes/pu
+	name = "mosin/svt scope crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pu = 5)
+
+/obj/structure/closet/crate/scopes/pso1
+	name = "pso-1 scope crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1 = 5)
+
 #undef DYNAMIC_AMT
