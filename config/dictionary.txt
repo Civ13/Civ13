@@ -21,7 +21,7 @@ femboy,effeminate boy
 feminazi,woman
 Fortnite,game
 fuk,fuck
-tldr,to long dident read
+tldr,to long didn't read
 gamer,brother
 gamergirl,woman
 gamers rise up,brothers let's fight
@@ -40,11 +40,11 @@ lol,hahaha
 mfw,oh boy
 rekt,wrecked
 cope and seethe,deal with it
-sussy, suspicious
-sigma,Peak performance
+sussy,suspicious
+sigma,peak performance
 pog,awesome
 poggers,awesome
-cringe, embarrassing
+cringe,embarrassing
 Minecraft,game
 noob,newbie
 omg,oh my god
@@ -54,7 +54,7 @@ pm the admins,pray to the gods
 redpill,smart
 roblox,game
 rofl,hahaha
-gyatt,Got damm
+gyatt,god damm
 rizz,charisma
 smh,oh boy
 soyboy,weakling
@@ -64,4 +64,3 @@ unga,barbarian
 we live in a society,we reside in a human community
 wdym,what do you mean
 wtf,what the fuck
-yeet,throw
