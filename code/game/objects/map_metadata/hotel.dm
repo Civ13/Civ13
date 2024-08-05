@@ -21,8 +21,10 @@
 	faction1 = GERMAN
 	faction2 = RUSSIAN
 	ordinal_age = 6
+	valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
 	songs = list(
 		"Red Army Choir - Katyusha:1" = 'sound/music/katyusha.ogg')
+	ambience = list('sound/ambience/battle1.ogg')
 	gamemode = "King of the Hill"
 	grace_wall_timer = 1800
 
