@@ -104,6 +104,16 @@
 	male_tts_voice = "Maxim"
 	female_tts_voice = "Tatyana"
 
+/datum/job/tsfsr
+	default_language = "Russian"
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
+
+/datum/job/cafr
+	default_language = "Tajik"
+	male_tts_voice = "Maxim"
+	female_tts_voice = "Tatyana"
+
 /datum/job/finnish
 	default_language = "Finnish"
 	additional_languages = list("Russian" = 40)

@@ -14,12 +14,14 @@ brb,be right back
 bruh,man
 bunga,barbarian
 cuck,weakling
+kek,laughing
 dope,nice
 faggot,nancy boy
 femboy,effeminate boy
 feminazi,woman
 Fortnite,game
 fuk,fuck
+tldr,too long didn't read
 gamer,brother
 gamergirl,woman
 gamers rise up,brothers let's fight
@@ -33,8 +35,16 @@ incel,weakling
 joker 2019,clown
 libtard,idiot
 lmao,hahaha
+lmfao,laughing my fucking ass off
 lol,hahaha
 mfw,oh boy
+rekt,wrecked
+cope and seethe,deal with it
+sussy,suspicious
+sigma,peak performance
+pog,awesome
+poggers,awesome
+cringe,embarrassing
 Minecraft,game
 noob,newbie
 omg,oh my god
@@ -44,6 +54,8 @@ pm the admins,pray to the gods
 redpill,smart
 roblox,game
 rofl,hahaha
+gyatt,god damm
+rizz,charisma
 smh,oh boy
 soyboy,weakling
 SS13,game
@@ -52,4 +64,3 @@ unga,barbarian
 we live in a society,we reside in a human community
 wdym,what do you mean
 wtf,what the fuck
-yeet,throw

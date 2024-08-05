@@ -29,6 +29,24 @@
 			adjusted = TRUE
 			update_clothing_icon()
 
+/obj/item/clothing/under/cafr_newiform
+	name = "cafr uniform"
+	desc = "A camouflage uniform issued by the Central Asian Federal Republic."
+	icon_state = "cafr_newiform"
+	item_state = "cafr_newiform"
+	worn_state = "cafr_newiform"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/suit/storage/jacket/afghanka/cafr
+	name = "cafr afghanka coat"
+	desc = "An Afghanka coat made with the CAFR camouflage pattern."
+	icon_state = "cafr_pattern_afghanka"
+	item_state = "cafr_pattern_afghanka"
+	worn_state = "cafr_pattern_afghanka"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+
 /datum/job/cafr
 	faction = "Human"
 	title = "Central Asian Federal Republic"
@@ -174,8 +192,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 	
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/afghanka/cafr(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/cafr_newiform(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka/cafr(H), slot_wear_suit)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/armband = new /obj/item/clothing/accessory/armband/bluefaction(null)
 	uniform.attackby(armband, H)
@@ -197,11 +215,11 @@
 			if(1)
 				H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68(H), slot_head)
 			if(2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/head/fieldcap/afghanka(H), slot_head)
+				H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka/nomads(H), slot_head)
 	
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	if (findtext(title, "Engineer"))
 		H.setStat("strength", STAT_VERY_HIGH)
 		H.setStat("crafting", STAT_VERY_HIGH)
