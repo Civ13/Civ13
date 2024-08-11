@@ -1,6 +1,7 @@
 /// CAFR civilian crate costs ///
 #define WOODCOST_CAFR 50
 #define IRONCOST_CAFR 50
+#define STEELCOST_CAFR 80
 #define GLASSCOST_CAFR 50
 #define STONECOST_CAFR 50
 #define VEGETABLESCOST_CAFR 30
@@ -18,7 +19,8 @@
 /////////////////////////////////
 
 ///CAFR military crate costs ///
-#define GUNPOWDERCOST_CAFR 25
+#define GUNPOWDERCOST_CAFR 22.5 // Level 1/10 gunpowder factory in Tajikistan
+#define SUICIDEVESTCOST_CAFR 400
 #define SKSCOST_CAFR 500
 #define AKMCOST_CAFR 1000
 #define AK74COST_CAFR 1200
@@ -26,6 +28,7 @@
 #define MOSINCOST_CAFR 500
 #define PPSHCOST_CAFR 400
 #define MAKAROVCOST_CAFR 150
+#define PKMCOST_CAFR 300
 #define WW2SURPLUSUNIFORMCOST_CAFR 200
 #define AFGHANKACOST_CAFR 250
 #define RGD5COST_CAFR 800
@@ -35,11 +38,11 @@
 #define SIXB1COST_CAFR 300
 #define SIXB2COST_CAFR 1000
 #define PUCOST_CAFR 500
-#define PSO1COST_CAFR 800
+#define PSO1COST_CAFR 720 // Level 1/10 PSO-1 factory in Kyrgyzstan
 #define ARTILLERYCOST_CAFR 1500
 #define SHELLCOST_CAFR 1000
 #define MORTARCOST_CAFR 1200
-#define MSHELLCOST_CAFR 800
+#define MSHELLCOST_CAFR 720 // Level 1/10 mortar shell factory in Kyrgyzstan
 #define KAMAZCOST_CAFR 1500
 #define BMD2COST_CAFR 5000
 #define T55COST_CAFR 8000
@@ -49,6 +52,7 @@
 /// TSFSR civilian crate costs ///
 #define WOODCOST_TSFSR 50
 #define IRONCOST_TSFSR 50
+#define STEELCOST_TSFSR 80
 #define GLASSCOST_TSFSR 50
 #define STONECOST_TSFSR 50
 #define VEGETABLESCOST_TSFSR 30
@@ -67,6 +71,7 @@
 
 ///TSFSR military crate costs ///
 #define GUNPOWDERCOST_TSFSR 25
+#define SUICIDEVESTCOST_TSFSR 400
 #define SKSCOST_TSFSR 500
 #define AKMCOST_TSFSR 900 // Level 1/10 AKM factory in Uzbekistan
 #define AK74COST_TSFSR 1200
@@ -74,6 +79,7 @@
 #define MOSINCOST_TSFSR 500
 #define PPSHCOST_TSFSR 400
 #define MAKAROVCOST_TSFSR 150
+#define PKMCOST_TSFSR 300
 #define WW2SURPLUSUNIFORMCOST_TSFSR 200
 #define AFGHANKACOST_TSFSR 250
 #define RGD5COST_TSFSR 800
@@ -91,7 +97,7 @@
 #define KAMAZCOST_TSFSR 1500
 #define BMD2COST_TSFSR 5000
 #define T55COST_TSFSR 8000
-#define T72COST_TSFSR 10000
+#define T72COST_TSFSR 9000 // Level 1/10 T-72 factory in Kazakhstan
 /////////////////////////////////
 
 /obj/structure/pepelsibirsk_radio/supply_radio/no_scam/campaign
@@ -102,6 +108,7 @@
 	civ_catalogue = list( //type name, path, price
 			list("wood crate", /obj/structure/closet/crate/wood, WOODCOST_CAFR),
 			list("iron crate", /obj/structure/closet/crate/iron, IRONCOST_CAFR),
+			list("steel crate", /obj/structure/closet/crate/steel, STEELCOST_CAFR),
 			list("glass crate", /obj/structure/closet/crate/glass, GLASSCOST_CAFR),
 			list("stone crate", /obj/structure/closet/crate/stone, STONECOST_CAFR),
 			list("vegetables crate", /obj/structure/closet/crate/rations/vegetables, VEGETABLESCOST_CAFR),
@@ -123,6 +130,8 @@
 		)
 	mil_catalogue = list(
 			list("gunpowder barrel", /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,GUNPOWDERCOST_CAFR),
+			list("gunpowder barrel bomb", /obj/item/weapon/grenade/bomb,GUNPOWDERCOST_CAFR),
+			list("suicide vest crate (4)", /obj/structure/closet/crate/suicidevests,SUICIDEVESTCOST_CAFR),
 			list("sks crate (5)", /obj/structure/closet/crate/pepelsibirsk/sks,SKSCOST_CAFR),
 			list("akm crate (5)", /obj/structure/closet/crate/pepelsibirsk/akm,AKMCOST_CAFR),
 			list("ak-74 crate (5)", /obj/structure/closet/crate/pepelsibirsk/ak74,AK74COST_CAFR),
@@ -130,6 +139,7 @@
 			list("mosin-nagant crate (10)", /obj/structure/closet/crate/pepelsibirsk/mosin,MOSINCOST_CAFR),
 			list("PPSh-41 crate (2)", /obj/structure/closet/crate/pepelsibirsk/ppsh,PPSHCOST_CAFR),
 			list("makarov crate (5)", /obj/structure/closet/crate/pepelsibirsk/makarov,MAKAROVCOST_CAFR),
+			list("PKM crate (1)", /obj/structure/closet/crate/airdrops/soviet/pkm,PKMCOST_CAFR),
 			list("surplus red army uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/surplus_ww2,WW2SURPLUSUNIFORMCOST_CAFR),
 			list("afghanka uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/sov_uniforms,AFGHANKACOST_CAFR),
 			list("frag grenade crate (12)", /obj/structure/closet/crate/pepelsibirsk/rgd5,RGD5COST_CAFR),
@@ -143,7 +153,7 @@
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_CAFR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_CAFR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_CAFR),
-			list("artillery shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_CAFR),
+			list("mortar shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_CAFR),
 			list("KAMAZ truck", /obj/effects/premadevehicles/truck/kamaz,KAMAZCOST_CAFR),
 			list("BMD-2 IFV", /obj/effects/premadevehicles/apc/bmd2,BMD2COST_CAFR),
 			list("T-55 tank", /obj/effects/premadevehicles/tank/t55,T55COST_CAFR),
@@ -155,6 +165,7 @@
 	civ_catalogue = list( //type name, path, price
 			list("wood crate", /obj/structure/closet/crate/wood,WOODCOST_TSFSR),
 			list("iron crate", /obj/structure/closet/crate/iron,IRONCOST_TSFSR),
+			list("steel crate", /obj/structure/closet/crate/steel,IRONCOST_TSFSR),
 			list("glass crate", /obj/structure/closet/crate/glass,GLASSCOST_TSFSR),
 			list("stone crate", /obj/structure/closet/crate/stone,STONECOST_TSFSR),
 			list("vegetables crate", /obj/structure/closet/crate/rations/vegetables,VEGETABLESCOST_TSFSR),
@@ -176,6 +187,8 @@
 		)
 	mil_catalogue = list(
 			list("gunpowder barrel", /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,GUNPOWDERCOST_TSFSR),
+			list("gunpowder barrel bomb", /obj/item/weapon/grenade/bomb,GUNPOWDERCOST_TSFSR),
+			list("suicide vest crate (4)", /obj/structure/closet/crate/suicidevests,SUICIDEVESTCOST_TSFSR),
 			list("sks crate (5)", /obj/structure/closet/crate/pepelsibirsk/sks,SKSCOST_TSFSR),
 			list("akm crate (5)", /obj/structure/closet/crate/pepelsibirsk/akm,AKMCOST_TSFSR),
 			list("ak-74 crate (5)", /obj/structure/closet/crate/pepelsibirsk/ak74,AK74COST_TSFSR),
@@ -183,6 +196,7 @@
 			list("mosin-nagant crate (10)", /obj/structure/closet/crate/pepelsibirsk/mosin,MOSINCOST_TSFSR),
 			list("PPSh-41 crate (2)", /obj/structure/closet/crate/pepelsibirsk/ppsh,PPSHCOST_TSFSR),
 			list("makarov crate (5)", /obj/structure/closet/crate/pepelsibirsk/makarov,MAKAROVCOST_TSFSR),
+			list("PKM crate (1)", /obj/structure/closet/crate/airdrops/soviet/pkm,PKMCOST_TSFSR),
 			list("surplus red army uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/surplus_ww2,WW2SURPLUSUNIFORMCOST_TSFSR),
 			list("afghanka uniform crate (5)", /obj/structure/closet/crate/pepelsibirsk/sov_uniforms,AFGHANKACOST_TSFSR),
 			list("frag grenade crate (12)", /obj/structure/closet/crate/pepelsibirsk/rgd5,RGD5COST_TSFSR),
@@ -196,7 +210,7 @@
 			list("towed artillery", /obj/structure/cannon/modern,ARTILLERYCOST_TSFSR),
 			list("artillery shells", /obj/structure/closet/crate/ww2/artillery_shells,SHELLCOST_TSFSR),
 			list("foldable mortar", /obj/structure/cannon/mortar/foldable/generic,MORTARCOST_TSFSR),
-			list("artillery shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_TSFSR),
+			list("mortar shells", /obj/structure/closet/crate/ww2/mortar_shells,MSHELLCOST_TSFSR),
 			list("KAMAZ truck", /obj/effects/premadevehicles/truck/kamaz,KAMAZCOST_TSFSR),
 			list("BMD-2 IFV", /obj/effects/premadevehicles/apc/bmd2,BMD2COST_TSFSR),
 			list("T-55 tank", /obj/effects/premadevehicles/tank/t55,T55COST_TSFSR),
@@ -292,7 +306,7 @@
 /obj/map_metadata/campaign_new
 	ID = MAP_CAMPAIGN_NEW
 	title = "Campaign"
-	lobby_icon = 'icons/lobby/campaign1.png'
+	lobby_icon = 'icons/lobby/campaign2.png'
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/desert)
 	respawn_delay = 2 MINUTES
 	no_winner = "The battle is going on."
@@ -833,3 +847,134 @@
 		list(CAFR) = /area/caribbean/british/land/inside/objective,
 		)
 	can_spawn_on_base_capture = FALSE
+
+/obj/map_metadata/campaign_new/campaign3a
+	ID = MAP_CAMPAIGN_3A
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
+	battle_name = "Battle of Bokhtar"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The Central Asian Federal Republic must hold the command post at the eastern end of the bridge for 45 minutes to achieve victory!.</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/faction1,
+		list(CAFR) = /area/caribbean/british/land/outside/objective,
+		)
+
+/obj/map_metadata/campaign_new/campaign3b
+	ID = MAP_CAMPAIGN_3B
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
+	battle_name = "Battle of Bokhtar"
+	victory_time = 25 MINUTES
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The Turkestan SFSR must hold the command post at the eastern end of the bridge for 25 minutes to achieve victory!.</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/british/land/outside/objective,
+		list(CAFR) = /area/caribbean/faction1,
+		)
+
+/obj/map_metadata/campaign_new/campaign3b/update_win_condition()
+	// Win when timer reaches zero
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+		
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		no_loop_ca = TRUE
+		return FALSE
+	// German major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// German minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE

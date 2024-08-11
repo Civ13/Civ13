@@ -1195,4 +1195,19 @@ obj/structure/closet/crate/airdrops/weapons
 	icon_closed = "mil_crate_closed"
 	paths = list(/obj/item/weapon/attachment/scope/adjustable/sniper_scope/pso1 = 5)
 
+/obj/structure/closet/crate/suicidevests
+	name = "suicide vest crate"
+	icon_state = "mil_crate_closed"
+	icon_opened = "mil_crate_opened"
+	icon_closed = "mil_crate_closed"
+	paths = list(/obj/item/weapon/grenade/suicide_vest = 4)
+
+/obj/structure/closet/crate/rublecrate
+	name = "ruble crate"
+	icon_state = "crate"
+	icon_opened = "crateopen"
+	icon_closed = "crate"
+	color = "#bcc625"
+	paths = list(/obj/item/stack/money/rubles/fivehundred = 3)
+
 #undef DYNAMIC_AMT
