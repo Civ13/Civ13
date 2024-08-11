@@ -264,7 +264,7 @@
 	if (!client)
 		return
 
-	var/view_dist = client.view + 4
+	var/view_dist = client.view + 5 // + reserve so that when moving the load is not visible [translated]
 
 	var/view_x_offset = 0
 	var/view_y_offset = 0
@@ -286,11 +286,14 @@
 			if(get_dist(tmpimg, view_loc) < view_dist)
 				client.images.Remove(tmpimg)
 
-	for (var/obj/structure/turret/T in view(view_dist, view_loc))
+	for (var/obj/structure/turret/T in range(view_dist, view_loc))
 		client.images += T.turret_image
 		client.images += T.turret_roof_image
 
-	for (var/obj/structure/turret/T in view(1,client))
+	if (buckled && looking)
+		return
+
+	for (var/obj/structure/turret/T in range(1, view_loc))
 
 		var/obj/structure/vehicleparts/frame/turret_vehicle = null
 		var/obj/structure/vehicleparts/frame/client_vehicle = null
@@ -309,7 +312,8 @@
 /mob/living/human/proc/process_vehicle_roofs()
 	if (!client)
 		return
-	var/view_dist = client.view + 4 // + reserve so that when moving the load is not visible [translated]
+
+	var/view_dist = client.view + 5 // + reserve so that when moving the load is not visible [translated]
 
 	var/view_x_offset = 0
 	var/view_y_offset = 0
@@ -334,17 +338,15 @@
 				client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
 		found = FRL
-	for (var/obj/structure/vehicleparts/frame/FR in view(view_dist, view_loc))
+	for (var/obj/structure/vehicleparts/frame/FR in range(view_dist, view_loc))
 		if (found)
-			if (FR.axis != found.axis && FR != found)
+			if ((FR.axis != found.axis && FR != found) || (buckled && looking))
 				client.images += FR.roof
 			else
 				client.images -= FR.roof
 		else
-			if (locate(FR) in view(view_dist, view_loc))
+			if (locate(FR) in range(view_dist, view_loc))
 				client.images += FR.roof
-			else
-				client.images -= FR.roof
 
 /mob/living/human/proc/process_static_roofs()
 	if (!client)
