@@ -102,6 +102,9 @@
 	icon_state = "ruble[icon_suffix]"
 	// TO-DO: Check if the parent update_icon proc has to be called
 
+/obj/item/stack/money/rubles/fivehundred
+	amount = 500
+
 /obj/item/stack/money/european
 	name = ""
 	desc = ""
