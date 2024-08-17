@@ -37,6 +37,21 @@
 /turf/floor/wood/alt/eleven
 	icon_state = "woodalt11"
 
+/turf/floor/gravel
+	name = "gravel"
+	icon_state = "gravel"
+
+/turf/floor/gravel/New()
+	dir = pick(SOUTH, NORTH, EAST, WEST)
+
+/turf/floor/gravel/alt
+	icon_state = "gravel_alt"
+/turf/floor/gravel/dust
+	icon_state = "gravel_dust"
+
+/turf/floor/rocky
+	name = "rocky floor"
+	icon_state = "rockyfloor"
 
 /turf/floor/blackslateroof
 	name = "roof"

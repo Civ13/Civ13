@@ -155,8 +155,8 @@ var/list/sky_drop_map = list()
 
 /turf/floor/broken_floor
 	name = "hole"
-	icon = 'icons/turf/areas.dmi'
-	icon_state = "black"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "openspace"
 	density = FALSE
 	var/turf/floorbelowz
 	// "push" floors for effects, like the bottom deck of the ship. It pushes you into a direction if you fall that way.
