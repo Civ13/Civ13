@@ -560,6 +560,20 @@
 	else
 		return
 
+/obj/structure/barricade/stone_h/cliffside
+	name = "cliffside"
+	desc = "A cliffside. It seems like you can put a ladder on this."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "cliffside"
+	health = 30000
+	maxhealth = 30000
+	pixel_y = -4
+
+/obj/structure/barricade/stone_h/cliffside/New()
+	return
+
+/obj/structure/barricade/stone_h/cliffside/corner
+	icon_state = "cliffside_corner"
 
 /obj/structure/barricade/jap_h
 	name = "shingled stone wall"

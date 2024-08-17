@@ -978,3 +978,290 @@
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+/obj/map_metadata/campaign_new/campaign4a
+	ID = MAP_CAMPAIGN_4A
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
+	battle_name = "Route to Alma-Ata"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. The Turkestan Soviet Federative Socialist Republic must hold the far-northern end of the path for 45 minutes to achieve victory!.</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/british/land/outside/objective,
+		list(CAFR) = /area/caribbean/faction1,
+		)
+
+/obj/map_metadata/campaign_new/campaign4a/update_win_condition()
+	// Win when timer reaches zero
+	if (world.time >= victory_time)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+		
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		no_loop_ca = TRUE
+		return FALSE
+	// German major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// German minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
+				next_win = world.time + short_win_time(CAFR)
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	else
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			world << "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE
+
+/obj/map_metadata/campaign_new/campaign4b
+	ID = MAP_CAMPAIGN_4B
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
+	battle_name = "Route to Alma-Ata"
+	mission_start_message = "<font size=4><b>8 minutes</b> until the battle begins. 40 points for victory!</font>"
+	squad_jobs_red = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	squad_jobs_blue = list(
+		"Squad 1" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 2" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Squad 3" = list("Corpsman" = 2, "Machinegunner" = 1),
+		"Recon" = list("Sniper" = 4),
+		"Armored" = list("Crew" = 8),
+		"AT" = list("Anti-Tank" = 3),
+		"Engineer" = list("Engineer" = 3),
+		"none" = list("Commander" = 1, "Officer" = 3, "Doctor" = 2),
+	)
+	roundend_condition_sides = list(
+		list(TSFSR) = /area/caribbean/faction1,
+		list(CAFR) = /area/caribbean/british/land/outside/objective,
+		)
+	var/tsfsr_points = 0
+	var/cafr_points = 0
+	var/a1_control = "none"
+	var/a2_control = "none"
+	var/a3_control = "none"
+	var/a4_control = "none"
+
+/obj/map_metadata/campaign_new/campaign4b/proc/points_check()
+	if (processes.ticker.playtime_elapsed > 8 MINUTES)
+		var/c1 = 0
+		var/c2 = 0
+		var/cust_color = "white"
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/one/outside))
+				if (H.faction_text == faction2 && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == faction1 && H.stat == CONSCIOUS)
+					c2++
+		if (c1 == c2 && c1 != 0)
+			a1_control = "none"
+			cust_color="white"
+		else if (c1 > c2)
+			a1_control = "Central Asian Federal Republic"
+			cust_color="blue"
+			cafr_points++
+		else if (c2 > c1)
+			a1_control = "Turkestan Soviet Federative Socialist Republic"
+			cust_color="red"
+			tsfsr_points++
+		if (a1_control != "none")
+			if (a1_control == "Turkestan Soviet Federative Socialist Republic")
+				cust_color = "red"
+			else
+				cust_color = "blue"
+			world << "<big><font color='[cust_color]'><b>Southern Road</b>: [a1_control]</font></big>"
+		else
+			world << "<big><b>Southern Road</b>: Nobody</big>"
+		c1 = 0
+		c2 = 0
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/two))
+				if (H.faction_text == faction2 && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == faction1 && H.stat == CONSCIOUS)
+					c2++
+		if (c1 == c2 && c1 != 0)
+			a2_control = "none"
+			cust_color="white"
+		else if (c1 > c2)
+			a2_control = "Central Asian Federal Republic"
+			cust_color="blue"
+			cafr_points++
+		else if (c2 > c1)
+			a2_control = "Turkestan Soviet Federative Socialist Republic"
+			cust_color="red"
+			tsfsr_points++
+		if (a2_control != "none")
+			if (a2_control == "Turkestan Soviet Federative Socialist Republic")
+				cust_color = "red"
+			else
+				cust_color = "blue"
+			world << "<big><font color='[cust_color]'><b>Mountain Ledge</b>: [a2_control]</font></big>"
+		else
+			world << "<big><b>Mountain Ledge</b>: Nobody</big>"
+		c1 = 0
+		c2 = 0
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/three))
+				if (H.faction_text == faction2 && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == faction1 && H.stat == CONSCIOUS)
+					c2++
+		if (c1 == c2 && c1 != 0)
+			a3_control = "none"
+			cust_color="white"
+		else if (c1 > c2)
+			a3_control = "Central Asian Federal Republic"
+			cust_color="blue"
+			cafr_points++
+		else if (c2 > c1)
+			a3_control = "Turkestan Soviet Federative Socialist Republic"
+			cust_color="red"
+			tsfsr_points++
+		if (a3_control != "none")
+			if (a3_control == "Turkestan Soviet Federative Socialist Republic")
+				cust_color = "red"
+			else
+				cust_color = "blue"
+			world << "<big><font color='[cust_color]'><b>Mountain Tunnels</b>: [a3_control]</font></big>"
+		else
+			world << "<big><b>Mountain Tunnels</b>: Nobody</big>"
+		c1 = 0
+		c2 = 0
+		for (var/mob/living/human/H in player_list)
+			var/area/temp_area = get_area(H)
+			if (istype(temp_area, /area/caribbean/no_mans_land/capturable/four/outside))
+				if (H.faction_text == faction2 && H.stat == CONSCIOUS)
+					c1++
+				else if (H.faction_text == faction1 && H.stat == CONSCIOUS)
+					c2++
+		if (c1 == c2 && c1 != 0)
+			a4_control = "none"
+			cust_color="white"
+		else if (c1 > c2)
+			a4_control = "Central Asian Federal Republic"
+			cust_color="blue"
+			cafr_points++
+		else if (c2 > c1)
+			a4_control = "Turkestan Soviet Federative Socialist Republic"
+			cust_color="red"
+			tsfsr_points++
+		if (a4_control != "none")
+			if (a4_control == "Turkestan Soviet Federative Socialist Republic")
+				cust_color = "red"
+			else
+				cust_color = "blue"
+			world << "<big><font color='[cust_color]'><b>Northern Road</b>: [a4_control]</font></big>"
+		else
+			world << "<big><b>Northern Road</b>: Nobody</big>"
+	world << "<big><b>Current Points:</big></b>"
+	world << "<big>Central Asian Federal Republic: [cafr_points]</big>"
+	world << "<big>Turkestan Soviet Federative Socialist Republic: [tsfsr_points]</big>"
+	spawn(300)
+		points_check()
+
+/obj/map_metadata/campaign_new/campaign4b/New()
+	..()
+	spawn(3000)
+		points_check()
+
+
+/obj/map_metadata/campaign_new/campaign4b/update_win_condition()
+	if (processes.ticker.playtime_elapsed > 12 MINUTES)
+		if (tsfsr_points < 40 && cafr_points < 40)
+			return TRUE
+		if (tsfsr_points >= 40 && tsfsr_points > cafr_points)
+			if (win_condition_spam_check)
+				return FALSE
+			ticker.finished = TRUE
+			var/message = "The <b>TSFSR</b> has reached [tsfsr_points] points and won!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			show_global_battle_report(null)
+			win_condition_spam_check = TRUE
+			return FALSE
+		if (cafr_points >= 40 && cafr_points > tsfsr_points)
+			if (win_condition_spam_check)
+				return FALSE
+			ticker.finished = TRUE
+			var/message = "The <b>CAFR</b> has reached [cafr_points] points and won!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			show_global_battle_report(null)
+			win_condition_spam_check = TRUE
+			return FALSE
+	return TRUE
