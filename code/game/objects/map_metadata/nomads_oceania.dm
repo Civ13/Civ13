@@ -23,7 +23,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Didgeridoo:1" = 'sound/music/didgeridoo.ogg',)
+		"Hot Hot Hot:1" = 'sound/music/Hot Hot Hot.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
