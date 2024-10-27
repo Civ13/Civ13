@@ -337,7 +337,7 @@ Example for later use:
 	name = "Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 75
-/obj/random/plants/tree/spawn_choices()
+/obj/random/plants/tree_lowchance/spawn_choices()
 	return list(
 				/obj/structure/wild/tree/live_tree = 1,
 				/obj/structure/wild/tallgrass = 1,
