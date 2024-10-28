@@ -533,6 +533,7 @@
 #include "code\game\objects\map_metadata\nomads_divide.dm"
 #include "code\game\objects\map_metadata\nomads_europe.dm"
 #include "code\game\objects\map_metadata\nomads_extended.dm"
+#include "code\game\objects\map_metadata\nomads_gaia.dm"
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_island.dm"
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
