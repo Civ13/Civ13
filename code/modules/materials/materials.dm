@@ -250,6 +250,18 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/rope
 	flags = MATERIAL_UNMELTABLE
 
+/material/twine
+	name = "twine"
+	icon_colour = "#FFFFFF"
+	hardness = 10
+	cut_delay = 5
+	shard_type = null
+	tableslam_noise = null
+	sheet_singular_name = "coil"
+	sheet_plural_name = "coils"
+	stack_type = /obj/item/stack/material/
+	flags = MATERIAL_UNMELTABLE
+
 /material/tobacco
 	name = "tobacco"
 	icon_colour = "#FFFFFE"

@@ -1,5 +1,6 @@
 /obj/item/weapon/material/kitchen
 	icon = 'icons/obj/kitchen.dmi'
+	icon = 'icons/obj/primitive/tools.dmi'
 
 /*
  * Utensils
@@ -98,6 +99,18 @@
 	sharp = TRUE
 	var/atk_mode = SLASH
 	var/suicide = FALSE // for the hari kiri action
+/obj/item/weapon/material/kitchen/utensil/knife/primitive_knife_1
+	name = "knife"
+	desc = "A knife for eating with. Can cut through any food."
+	icon_state = "primitive_knife_1"
+	item_state = "knife"
+	material = "stone"
+	applies_material_colour = FALSE
+	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
+	scoop_food = FALSE
+	slot_flags = SLOT_BELT|SLOT_POCKET//|SLOT_MASK
+	edge = TRUE
+	sharp = TRUE
 
 /obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
 	if (!ishuman(user))

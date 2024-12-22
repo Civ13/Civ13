@@ -42,6 +42,114 @@
 	block_chance = 10
 	cooldownw = 7
 
+/obj/item/weapon/material/primitive_axehead_1
+    name = "Axehead"
+    icon = 'icons/obj/primitive/tools.dmi'
+    sharp = TRUE
+    edge = FALSE
+    desc = "An axehead you can attach to a handle."
+    icon_state = "primitive_axehead_1"
+    material = "stone"
+    default_material = "stone"
+    applies_material_colour = FALSE
+    throw_speed = 7
+    throw_range = 7
+    force_divisor = 0.2
+    thrown_force_divisor = 0.4
+    value = 3
+    block_chance = 10
+    cooldownw = 7
+/obj/item/weapon/material/primitive_knifehead_1
+    name = "knifehead"
+    icon = 'icons/obj/primitive/tools.dmi'
+    sharp = TRUE
+    edge = FALSE
+    desc = "A knifehead you can attach to a handle."
+    icon_state = "primitive_knifehead_1"
+    material = "stone"
+    default_material = "stone"
+    applies_material_colour = FALSE
+    throw_speed = 7
+    throw_range = 7
+    force_divisor = 0.2
+    thrown_force_divisor = 0.4
+    value = 3
+    block_chance = 10
+    cooldownw = 7
+
+/obj/item/weapon/material/rock
+    name = "rock"
+    icon = 'icons/obj/primitive/tools.dmi'
+    sharp = FALSE
+    edge = FALSE
+    desc = "A rock"
+    icon_state = "rock"
+    material = "stone"
+    default_material = "stone"
+    applies_material_colour = FALSE
+    throw_speed = 7
+    throw_range = 7
+    force_divisor = 0.2
+    thrown_force_divisor = 0.4
+    value = 3
+    block_chance = 10
+    cooldownw = 7
+	
+/obj/item/weapon/material/rock/attackby(obj/item/weapon/W as obj, mob/user as mob)
+    if (istype(W, /obj/item/weapon/material/rock))
+        user.setClickCooldown(10)  // Set cooldown for 10 deciseconds (1 second)
+        var/obj/item/weapon/material/rock/R = W
+        if (user.a_intent == I_HARM)
+            user << "You hit the rocks together..."
+            playsound(src, 'sound/effects/chop.ogg', 100, 1) // Play chop sound effect
+            if (prob(20)) // 20% probability of success
+                user << "You manage to shape the axehead from the rocks."
+                var/obj/item/weapon/material/primitive_axehead_1/newaxehead = new /obj/item/weapon/material/primitive_axehead_1()
+                if (!user.put_in_hands(newaxehead))
+                    newaxehead.loc = user.loc // Fallback to placing it on the ground if hands are full
+                qdel(R)
+                qdel(src)
+            return
+        else if (user.a_intent == I_GRAB)
+            user << "You hit the rocks together..."
+            playsound(src, 'sound/effects/chop.ogg', 100, 1) // Play chop sound effect
+            if (prob(20)) // 20% probability of success
+                user << "You manage to shape the knifehead from the rocks."
+                var/obj/item/weapon/material/primitive_knifehead_1/newknifehead = new /obj/item/weapon/material/primitive_knifehead_1()
+                if (!user.put_in_hands(newknifehead))
+                    newknifehead.loc = user.loc // Fallback to placing it on the ground if hands are full
+                qdel(R)
+                qdel(src)
+            return
+    ..()
+/obj/item/weapon/material/primitive_handle
+	name = "crude handle"
+	sharp = FALSE
+	edge = FALSE
+	material = "wood"
+	applies_material_colour = FALSE
+	desc = "A basic stick with a slot on top to attach something. Can be made into simple tools"
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
+	icon_state = "primitive_handle"
+	item_state = "debranched_stick"
+	icon = 'icons/obj/primitive/tools.dmi'
+	throw_speed = 7
+	throw_range = 7
+	force_divisor = 0.2 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
+	attack_verb = list("jabbed","hit","bashed")
+	value = 3
+	block_chance = 10
+	cooldownw = 7
+/obj/item/weapon/material/handle/primitive/twined
+	name = "twined handle"
+	desc = "Ready for crafting!"
+	icon = 'icons/obj/primitive/tools.dmi'
+	icon_state = "primitive_handle_twined"
+	applies_material_colour = FALSE
+	material = "wood"
+
+
 /obj/item/weapon/material/trowel
 	name = "planting trowel"
 	sharp = FALSE
@@ -374,6 +482,20 @@
 	chopping_speed = 1.7
 	health = 20
 	maxhealth = 20
+/obj/item/weapon/material/hatchet/primitive
+	name = "hatchet"
+	desc = "A sharp axe blade upon a short crude handle."
+	icon = 'icons/obj/primitive/tools.dmi'
+	icon_state = "primitive_axe_1"
+	item_state = "stonehatchet"
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
+	chopping_speed = 1.55
+	health = 10
+	maxhealth = 10
+	material = "stone"
+	default_material = "stone"
+	applies_material_colour = FALSE
 
 /obj/item/weapon/material/hatchet/steel
 	chopping_speed = 1.55

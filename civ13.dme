@@ -1164,5 +1164,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\campaign\campaign4b.dmm"
+#include "maps\nomads\nomads_gaia.dmm"
 // END_INCLUDE
