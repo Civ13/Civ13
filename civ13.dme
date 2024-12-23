@@ -623,6 +623,7 @@
 #include "code\game\objects\structures\morgue.dm"
 #include "code\game\objects\structures\noticeboard.dm"
 #include "code\game\objects\structures\optable.dm"
+#include "code\game\objects\structures\ore_deposits.dm"
 #include "code\game\objects\structures\piano.dm"
 #include "code\game\objects\structures\plant_pots.dm"
 #include "code\game\objects\structures\railing.dm"
