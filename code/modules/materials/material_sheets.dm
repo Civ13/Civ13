@@ -386,6 +386,13 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/twine
+	icon = 'icons/obj/primitive/tools.dmi'
+	name = "Twine"
+	icon_state = "twine"
+	default_type = "twine"
+	value = 2
+	flammable = TRUE
 /obj/item/stack/material/hemp
 	name = "Hemp"
 	icon_state = "hemp"

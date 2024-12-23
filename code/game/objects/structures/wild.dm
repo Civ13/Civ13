@@ -529,7 +529,37 @@ var/list/seed_list_jungle
 	density = FALSE
 	health = 40
 	maxhealth = 40
+	var/twine_amount = 5
 
+/obj/structure/wild/bush/attack_hand(var/mob/living/human/H)
+	if (H.a_intent == I_GRAB)
+		H << "You start looking for some twine..."
+		if (do_after(H, 50, H.loc) && twine_amount > 0)
+			H << "You find twine!"
+			twine_amount--
+			var/obj/item/stack/material/twine/newtwine = new/obj/item/stack/material/twine(src.loc)
+			H.put_in_hands(newtwine)
+			twine_regen()
+		return
+	else
+		..()
+/obj/structure/wild/smallbush/attack_hand(var/mob/living/human/H)
+	if (H.a_intent == I_GRAB)
+		H << "You start looking for some twine..."
+		if (do_after(H, 50, H.loc) && twine_amount > 0)
+			H << "You find twine!"
+			twine_amount--
+			var/obj/item/stack/material/twine/newtwine = new/obj/item/stack/material/twine(src.loc)
+			H.put_in_hands(newtwine)
+		return
+	else
+		..()
+
+/obj/structure/wild/bush/proc/twine_regen()
+	spawn(18000)
+		if (src && twine_amount < 5)
+			twine_amount++
+		return
 /obj/structure/wild/bush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>\The [src] is burned away.</span>")
@@ -584,6 +614,7 @@ var/list/seed_list_jungle
 	density = FALSE
 	health = 20
 	maxhealth = 20
+	var/twine_amount = 5
 
 /obj/structure/wild/smallbush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)

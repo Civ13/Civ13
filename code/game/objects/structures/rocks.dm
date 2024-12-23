@@ -12,8 +12,9 @@
 	health = 20
 	maxhealth = 20
 	var/flint_amount = 5
+	var/rock_amount = 5
 	var/rocktype = "rock"
-
+	
 /obj/structure/wild/rock/basalt
 	icon_state = "basalt1"
 	rocktype = "basalt"
@@ -23,13 +24,13 @@
 
 /obj/structure/wild/rock/attack_hand(var/mob/living/human/H)
 	if (H.a_intent == I_GRAB)
-		H << "You start looking for some flint among the rocks..."
-		if (do_after(H, 50, H.loc) && flint_amount > 0)
-			H << "You find some flint."
-			flint_amount--
-			var/obj/item/weapon/flint/newflint = new/obj/item/weapon/flint(src.loc)
-			H.put_in_hands(newflint)
-			flint_regen()
+		H << "You start looking for a rock you can use..."
+		if (do_after(H, 50, H.loc) && rock_amount > 0)
+			H << "You find a rock!"
+			rock_amount--
+			var/obj/item/weapon/material/rock/newrock = new/obj/item/weapon/material/rock(src.loc)
+			H.put_in_hands(newrock)
+			rock_regen()
 		return
 	else
 		..()
@@ -52,6 +53,12 @@
 	spawn(18000)
 		if (src && flint_amount < 5)
 			flint_amount++
+		return
+
+/obj/structure/wild/rock/proc/rock_regen()
+	spawn(18000)
+		if (src && rock_amount < 5)
+			rock_amount++
 		return
 
 /obj/structure/wild/rock/New()
