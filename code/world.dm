@@ -389,6 +389,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		. += ";"
 	. += "ckey_list=[list2params(clients)]"
 	. += ";"
+	. += "allow_vote_restart=[config.allow_vote_restart?"1":"0"]"
+	. += ";"
+
 
 /proc/start_serverdata_loop()
 	spawn while (1)
