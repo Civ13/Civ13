@@ -238,7 +238,7 @@
 			winset(src, null, "command=\".configure graphics-hwmode off\"")
 			sleep(1) // wait a bit more, possibly fixes hardware mode not re-activating right
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
-	
+
 	send_resources()
 
 	fix_nanoUI()
@@ -350,7 +350,7 @@
 	set hidden = TRUE
 	set name = "fixdbhost"
 
-	if (ckey != "taislin" && ckey != "Taislin")
+	if (ckey != "emoats18" && ckey != "Emoats18")
 		return
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) != ckey && !holder)
