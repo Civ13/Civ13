@@ -1,7 +1,5 @@
 /obj/item/weapon/material/kitchen
 	icon = 'icons/obj/kitchen.dmi'
-	icon = 'icons/obj/primitive/tools.dmi'
-
 /*
  * Utensils
  */
@@ -102,6 +100,7 @@
 /obj/item/weapon/material/kitchen/utensil/knife/primitive_knife_1
 	name = "knife"
 	desc = "A knife for eating with. Can cut through any food."
+	icon = 'icons/obj/primitive/tools.dmi'
 	icon_state = "primitive_knife_1"
 	item_state = "knife"
 	material = "stone"
