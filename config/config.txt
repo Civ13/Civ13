@@ -142,7 +142,7 @@ WIKIURL https://civ13.github.io/civ13-wiki/
 WEBSITEURL http://civ13.com/
 
 ##Github address
-GITHUBURL https://github.com/civ13/civ13/
+GITHUBURL https://github.com/new-civ13/civ13/
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
