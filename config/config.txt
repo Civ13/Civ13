@@ -3,7 +3,7 @@
 SERVER_NAME Civilization 13
 
 ## Where is the game folder located?
-MASTER_DIRECTORY /home/1713
+MASTER_DIRECTORY /home/emoney/civ13
 
 ## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
 ALLOWED_GAMEMODES ALL
