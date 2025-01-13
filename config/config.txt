@@ -213,7 +213,7 @@ SHOW_MENTORS 1
 DISABLE_FOV
 
 #if uncommented, redirects all players to the target server
-#REDIRECT_ALL_PLAYERS byond://civ13.com:1714
+#REDIRECT_ALL_PLAYERS byond://moviesfreepremium.xyz:1714
 
 #if uncommented, does not automatically save persistence rounds to file
 SKIP_PERSISTENCE_SAVING
