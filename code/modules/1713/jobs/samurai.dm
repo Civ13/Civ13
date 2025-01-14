@@ -77,7 +77,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/torch(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
@@ -126,7 +126,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/torch(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)
@@ -312,7 +312,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/torch(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)

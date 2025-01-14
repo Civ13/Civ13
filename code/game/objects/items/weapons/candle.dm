@@ -30,30 +30,18 @@
 	icon_state = "candle[i][lit ? "_lit" : ""]"
 
 
-/obj/item/weapon/flame/candle/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/item/weapon/flame/candle/attackby(obj/item/I as obj, mob/user as mob)
+	if(I.ignition_source)
+		light()
+		update_icon()
+		return
 	..()
-	if (istype(W, /obj/item/weapon/flame/lighter))
-		var/obj/item/weapon/flame/lighter/L = W
-		if (L.lit)
-			light()
-	else if (istype(W, /obj/item/weapon/flame/match))
-		var/obj/item/weapon/flame/match/M = W
-		if (M.lit)
-			light()
-	else if (istype(W, /obj/item/weapon/flame/candle))
-		var/obj/item/weapon/flame/candle/C = W
-		if (C.lit)
-			light()
-	else if (istype(W, /obj/item/flashlight))
-		var/obj/item/flashlight/F = W
-		if(F.on)
-			light()
-	update_icon()
 
 
 /obj/item/weapon/flame/candle/proc/light(var/flavor_text = "<span class='notice'>\The [usr] lights the [name].</span>")
 	if (!lit)
 		lit = TRUE
+		ignition_source = TRUE
 		for (var/mob/O in viewers(usr, null))
 			O.show_message(flavor_text, TRUE)
 		set_light(CANDLE_LUM)
@@ -74,6 +62,7 @@
 /obj/item/weapon/flame/candle/attack_self(mob/user as mob)
 	if (lit)
 		lit = FALSE
+		ignition_source = FALSE
 		update_icon()
 		set_light(0)
 

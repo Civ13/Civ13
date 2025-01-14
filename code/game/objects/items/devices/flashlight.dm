@@ -42,17 +42,16 @@
 
 /obj/item/flashlight/attack(mob/living/human/M as mob, mob/user as mob)
 	add_fingerprint(user)
-	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HARM)
-		if (on && world.time > cooloff)
-			M.adjustBurnLoss(rand(7,10))
-			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
-			user.do_attack_animation(M)
-			if (prob(5))
-				M.fire_stacks += 1
-			M.IgniteMob()
-			playsound(src, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
-			cooloff = world.time+10
-			return
+	if(ignition_source && user.a_intent == I_HARM && world.time > cooloff)
+		M.adjustBurnLoss(rand(7,10))
+		user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
+		user.do_attack_animation(M)
+		if (prob(5))
+			M.fire_stacks += 1
+		M.IgniteMob()
+		playsound(src, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
+		cooloff = world.time+10
+		return
 
 	if (on && user.targeted_organ == "eyes")
 
@@ -235,7 +234,7 @@
 	icon_state = "flareW"
 	flame_base_tint = "#07d800"
 	var/mob/living/human/caller = null
-	
+
 	var/attack_direction = "NORTH"
 	var/list/attack_direction_list = list("NORTH", "EAST", "SOUTH", "WEST")
 

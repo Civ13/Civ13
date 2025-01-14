@@ -52,6 +52,8 @@ What is the naming convention for planes or layers?
 
 #define HUD_PLANE 15
 
+#define ABOVE_HUD_PLANE 16
+
 #define LIGHTING_PLANE 3
 
 #define ROOF_PLANE 2

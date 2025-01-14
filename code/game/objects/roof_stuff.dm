@@ -24,20 +24,18 @@
 	var/switch_area = TRUE
 	var/image/roof_overlay
 
-/obj/roof/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/roof/attackby(obj/item/I as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(src)
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 	if (flammable)
-		if (istype(W, /obj/item/flashlight/torch))
-			var/obj/item/flashlight/torch/T = W
-			if (T.on)
-				health -= 15
-				if (prob(30))
-					new/obj/effect/fire(loc)
-					visible_message(SPAN_DANGER("The roof catches fire!"))
-			return
-	if (istype(W, /obj/item/weapon/hammer))
+		if(I.ignition_source)
+			health -= 15
+			if (prob(30))
+				new/obj/effect/fire(loc)
+				visible_message(SPAN_DANGER("The roof catches fire!"))
+		return
+	if (istype(I, /obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "You start removing \the [src]...")
 		if (do_after(user, 60, src) && src)
@@ -45,11 +43,11 @@
 			qdel(src)
 			return
 	else
-		switch(W.damtype)
+		switch(I.damtype)
 			if ("fire")
-				health -= W.force * TRUE
+				health -= I.force * TRUE
 			if ("brute")
-				health -= W.force * 0.20
+				health -= I.force * 0.20
 		return
 	..()
 

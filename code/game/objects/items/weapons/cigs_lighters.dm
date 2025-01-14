@@ -16,12 +16,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/weapon/flame
 	var/lit = FALSE
 
-/proc/isflamesource(A)
-	if (istype(A, /obj/item/weapon/flame))
-		var/obj/item/weapon/flame/F = A
-		return (F.lit)
-	return FALSE
-
 ///////////
 //MATCHES//
 ///////////
@@ -55,6 +49,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/weapon/flame/match/proc/burn_out()
 	lit = FALSE
+	ignition_source = FALSE
 	burnt = TRUE
 	damtype = "brute"
 	icon_state = "match_burnt"
@@ -103,6 +98,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/smokable/proc/light(var/flavor_text = "[usr] lights the [name].")
 	if (!lit)
 		lit = TRUE
+		ignition_source = TRUE
 		damtype = "fire"
 		playsound(src, 'sound/items/cig_light.ogg', 75, TRUE, -1)//Play the nice sound.
 		if (reagents.get_reagent_amount("plasma")) // the plasma explodes when exposed to fire
@@ -154,6 +150,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			if (!nomessage)
 				M << "<span class='notice'>Your [name] goes out, and you empty the ash.</span>"
 			lit = FALSE
+			ignition_source = FALSE
 			icon_state = icon_off
 			item_state = icon_off
 			M.update_inv_wear_mask(0)
@@ -161,19 +158,19 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			M.update_inv_r_hand(1)
 		processing_objects -= src
 
-/obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/item/clothing/mask/smokable/attackby(obj/item/I as obj, mob/user as mob)
 	..()
-	if (isflamesource(W) ||istype(W, /obj/item/flashlight))
+	if (I.ignition_source)
 		var/text = matchmes
-		if (istype(W, /obj/item/weapon/flame/match))
+		if (istype(I, /obj/item/weapon/flame/match))
 			text = matchmes
-		else if (istype(W, /obj/item/weapon/flame/lighter/zippo))
+		else if (istype(I, /obj/item/weapon/flame/lighter/zippo))
 			text = zippomes
-		else if (istype(W, /obj/item/weapon/flame/lighter))
+		else if (istype(I, /obj/item/weapon/flame/lighter))
 			text = lightermes
 		text = replacetext(text, "USER", "[user]")
 		text = replacetext(text, "NAME", "[name]")
-		text = replacetext(text, "FLAME", "[W.name]")
+		text = replacetext(text, "FLAME", "[I.name]")
 		light(text)
 
 /obj/item/clothing/mask/smokable/attack(var/mob/living/M, var/mob/living/user, def_zone)
@@ -350,6 +347,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/smokable/pipe/light(var/flavor_text = "[usr] lights the [name].")
 	if (!lit && smoketime)
 		lit = TRUE
+		ignition_source = TRUE
 		damtype = "fire"
 		icon_state = icon_on
 		item_state = icon_on
@@ -366,6 +364,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (lit == TRUE)
 		user.visible_message("<span class='notice'>[user] puts out [src].</span>", "<span class='notice'>You put out [src].</span>")
 		lit = FALSE
+		ignition_source = FALSE
 		icon_state = icon_off
 		item_state = icon_off
 		processing_objects -= src
@@ -377,11 +376,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		reagents.clear_reagents()
 		name = "empty [initial(name)]"
 
-/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
-
+/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/I as obj, mob/user as mob)
 	..()
-	if (istype(W, /obj/item/stack/material/tobacco))
-		var/obj/item/stack/material/tobacco/G = W
+	if (istype(I, /obj/item/stack/material/tobacco))
+		var/obj/item/stack/material/tobacco/G = I
 		if (smoketime)
 			user << "<span class='notice'>[src] is already packed.</span>"
 			return
@@ -392,8 +390,8 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			G.amount -= 1
 		else
 			qdel(G)
-	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
-		var/obj/item/weapon/reagent_containers/pill/opium/G = W
+	else if (istype(I, /obj/item/weapon/reagent_containers/pill/opium))
+		var/obj/item/weapon/reagent_containers/pill/opium/G = I
 		if (smoketime)
 			user << "<span class='notice'>[src] is already packed.</span>"
 			return
@@ -402,8 +400,8 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		name = "opium-packed [initial(name)]"
 		qdel(G)
 
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/peyote))
-		var/obj/item/weapon/reagent_containers/food/snacks/grown/peyote/G = W
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/peyote))
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/peyote/G = I
 		if (smoketime)
 			user << "<span class='notice'>[src] is already packed.</span>"
 			return
@@ -412,8 +410,8 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		name = "peyote-packed [initial(name)]"
 		qdel(G)
 
-	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
-		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = W
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = I
 		if (!G.dry)
 			user << "<span class='notice'>[G] must be dried before you stuff it into [src].</span>"
 			return
@@ -426,17 +424,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		name = "[G.name]-packed [initial(name)]"
 		qdel(G)
 
-	else if (istype(W, /obj/item/weapon/flame/lighter))
-		var/obj/item/weapon/flame/lighter/L = W
-		if (L.lit)
-			light("<span class='notice'>[user] manages to light their [name] with [W].</span>")
+	else if (I.ignition_source)
+		light("<span class='notice'>[user] manages to light their [name] with [I].</span>")
 
-	else if (istype(W, /obj/item/weapon/flame/match))
-		var/obj/item/weapon/flame/match/M = W
-		if (M.lit)
-			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	else if (istype(W, /obj/item/flashlight))
-		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
@@ -459,31 +449,22 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "crackpipeoff"
 	chem_volume = 15
 
-/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	..()
-	if (istype(W, /obj/item/weapon/reagent_containers/pill/crack))
-		var/obj/item/weapon/reagent_containers/pill/crack/G = W
+/obj/item/clothing/mask/smokable/pipe/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, /obj/item/weapon/reagent_containers/pill/crack))
+		var/obj/item/weapon/reagent_containers/pill/crack/G = I
 		if (smoketime)
 			user << "<span class='notice'>[src] is already stuffed.</span>"
 			return
 		smoketime = 300
 		reagents.add_reagent("crack",5)
 		name = "crack-stuffed [initial(name)]"
-		visible_message("<span class='notice'> [user] stuffs their [src] with some [W].</span>")
+		visible_message("<span class='notice'> [user] stuffs their [src] with some [I].</span>")
 		if (G.amount > 1)
 			G.amount -= 1
 		else
 			qdel(G)
-	else if (istype(W, /obj/item/weapon/flame/lighter))
-		var/obj/item/weapon/flame/lighter/L = W
-		if (L.lit)
-			light("<span class='notice'>[user] manages to light their [name] with the [W].</span>")
-	else if (istype(W, /obj/item/weapon/flame/match))
-		var/obj/item/weapon/flame/match/M = W
-		if (M.lit)
-			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	else if (istype(W, /obj/item/flashlight))
-		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
+	else
+		..()
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
@@ -536,6 +517,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (!lit)
 			playsound(src, sound_toggleON, 30, FALSE)
 			lit = TRUE
+			ignition_source = TRUE
 			icon_state = "[base_state]on"
 			item_state = "[base_state]on"
 			if (!istype(src, /obj/item/weapon/flame/lighter/zippo) )
@@ -552,6 +534,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		else
 			playsound(src, sound_toggleOFF, 30, FALSE)
 			lit = FALSE
+			ignition_source = FALSE
 			icon_state = "[base_state]"
 			item_state = "[base_state]"
 			set_light(0)

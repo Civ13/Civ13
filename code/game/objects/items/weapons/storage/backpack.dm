@@ -510,7 +510,7 @@
 		new /obj/item/stack/medical/splint(src)
 		new /obj/item/weapon/material/kitchen/utensil/knife/bone(src)
 		new /obj/item/stack/material/rope(src)
-		new /obj/item/flashlight/torch(src)
+		new /obj/item/torch(src)
 		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
 		new /obj/item/clothing/mask/smokable/cigarette/joint(src)
 		new /obj/item/clothing/mask/smokable/cigarette/joint(src)

@@ -104,7 +104,7 @@
 		T.move_delay = 0
 	return TRUE
 
-/obj/covers/Destroy()			
+/obj/covers/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)
@@ -192,10 +192,10 @@
 	else
 		return ..()
 
-/obj/covers/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+/obj/covers/attackby(obj/item/I as obj, mob/user as mob)
+	if (istype(I, /obj/item/weapon/wrench) && not_movable)
 		return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (istype(I, /obj/item/weapon/hammer))
 		if (!wall)
 			to_chat(user, "You start removing \the [src]...")
 			if (do_after(user, 50, src))
@@ -204,42 +204,41 @@
 				return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		if (istype(W, /obj/item/weapon/poster/religious))
-			to_chat(user, "You start placing the [W] on the [src]...")
+		if (istype(I, /obj/item/weapon/poster/religious))
+			to_chat(user, "You start placing the [I] on the [src]...")
 			if (do_after(user, 70, src))
-				visible_message("[user] places the [W] on the [src].")
+				visible_message("[user] places the [I] on the [src].")
 				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
-				var/obj/item/weapon/poster/religious/P = W
+				var/obj/item/weapon/poster/religious/P = I
 				RP.religion = P.religion
 				RP.symbol = P.symbol
 				RP.color1 = P.color1
 				RP.color2 = P.color2
-				user.drop_from_inventory(W)
-				qdel(W)
+				user.drop_from_inventory(I)
+				qdel(I)
 				return
-		if (istype(W, /obj/item/weapon/poster/faction))
-			to_chat(user, "You start placing the [W] on the [src]...")
+		if (istype(I, /obj/item/weapon/poster/faction))
+			to_chat(user, "You start placing the [I] on the [src]...")
 			if (do_after(user, 70, src))
-				visible_message("[user] places the [W] on the [src].")
+				visible_message("[user] places the [I] on the [src].")
 				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
-				var/obj/item/weapon/poster/faction/P = W
+				var/obj/item/weapon/poster/faction/P = I
 				RP.faction = P.faction
 				RP.bstyle = P.bstyle
 				RP.color1 = P.color1
 				RP.color2 = P.color2
-				user.drop_from_inventory(W)
-				qdel(W)
+				user.drop_from_inventory(I)
+				qdel(I)
 				return
-		if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
-			var/obj/item/flashlight/torch/T = W
-			if (prob(33) && T.on)
+		if (I.ignition_source && wood == TRUE)
+			if (prob(33))
 				onfire = TRUE
 				visible_message("<span class='danger'>\The [src] catches fire!</span>")
 				start_fire()
 				message_admins("[user.name] ([user.ckey]) started a fire with a torch at [src.name] ([src.x],[src.y],[src.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
 				log_game("[user.name] ([user.ckey]) started a fire with a torch at [src.name] ([src.x],[src.y],[src.z])")
-		if (istype(W, /obj/item/stack))
-			var/obj/item/stack/S = W
+		if (istype(I, /obj/item/stack))
+			var/obj/item/stack/S = I
 			if (S.amount <= 0)
 				qdel(S)
 			else
@@ -248,11 +247,11 @@
 				user.do_attack_animation(src)
 				return
 		else
-			switch(W.damtype)
+			switch(I.damtype)
 				if ("fire")
-					health -= W.force * 0.7
+					health -= I.force * 0.7
 				if ("brute")
-					health -= W.force * 0.2
+					health -= I.force * 0.2
 
 		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 		user.do_attack_animation(src)

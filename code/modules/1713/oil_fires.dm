@@ -10,15 +10,15 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
-/obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
+/obj/structure/oil_spring/attackby(obj/item/I as obj, mob/living/user as mob)
 	if (counter <= 0)
 		user << "<span class='warning'>\The [src] is dry!</span>"
 		if (counter < 0)
 			counter = 0
 		return
 
-	if (istype(O, /obj/item/weapon/reagent_containers))
-		var/obj/item/weapon/reagent_containers/RG = O
+	if (istype(I, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/RG = I
 		if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
 			if (counter > 0)
 				RG.reagents.add_reagent("petroleum", min(RG.volume - RG.reagents.total_volume, 10))
@@ -31,17 +31,15 @@
 				refill()
 				return
 
-	else if (istype(O, /obj/item/flashlight/torch))
-		var/obj/item/flashlight/torch/OO = O
-		if (counter > 0 && OO.on)
-			user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
-			counter = 0
-			timeout = world.time + 1800
-			refill()
-			oil_explode()
-			update_icon()
-			qdel(O)
-			return
+	else if (I.ignition_source && counter > 0)
+		user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
+		counter = 0
+		timeout = world.time + 1800
+		refill()
+		oil_explode()
+		update_icon()
+		qdel(I)
+		return
 
 /obj/structure/oil_spring/update_icon()
 	..()
@@ -241,13 +239,11 @@
 	desc = "It's black and greasy."
 	basecolor="#030303"
 
-/obj/effect/decal/cleanable/blood/oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/flashlight/torch))
-		var/obj/item/flashlight/torch/OO = W
-		if (OO.on)
-			user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
-			ignite_turf(src.loc, 18, 20)
-			return
+/obj/effect/decal/cleanable/blood/oil/attackby(obj/item/I as obj, mob/user as mob)
+	if (I.ignition_source)
+		user.visible_message("<span class = 'red'>[user.name] sets \the [src] on fire!</span>", "<span class = 'red'>You set \the [src] on fire!</span>")
+		ignite_turf(src.loc, 18, 20)
+		return
 
 /obj/effect/decal/cleanable/blood/oil/dry()
 	return

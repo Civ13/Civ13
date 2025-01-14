@@ -25,6 +25,7 @@
 	var/powered = FALSE
 	var/quality = 0
 	var/unacidable = FALSE	//For acids interactions, called at Chemistry-Reagents-Compounds.dm
+	var/ignition_source = FALSE // Whether this object can act as an ignition source for objects that can be ignited in some way.
 
 	var/can_buckle = FALSE
 	var/buckle_movable = FALSE

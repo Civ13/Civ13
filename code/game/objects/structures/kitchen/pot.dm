@@ -30,7 +30,7 @@
 
 /obj/structure/pot/New()
 	..()
-	processing_objects += src
+	processing_objects |= src
 	reagents = new /datum/reagents(100, src)
 
 /obj/structure/pot/Del()

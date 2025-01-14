@@ -63,6 +63,7 @@
 	value = 1
 	cooldownw = 6
 	flammable = TRUE
+	fuel_value = 80
 	var/sharpened = FALSE
 
 	var/ants = FALSE

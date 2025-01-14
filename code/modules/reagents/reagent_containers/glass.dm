@@ -19,7 +19,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		/mob/living/simple_animal/goat/female, /mob/living/simple_animal/sheep/female,
 		/mob/living/simple_animal/pig_gilt, /obj/structure/oil_spring,
 		/obj/structure/refinery, /obj/structure/distillery, /obj/structure/oilwell,
-		/obj/structure/heatsource, /obj/item/flashlight/lantern, /obj/item/stack/ammopart,
+		/obj/structure/heatsource, /obj/item/torch/lantern, /obj/item/stack/ammopart,
 		/obj/structure/vehicle, /obj/structure/fuelpump, /obj/item/stack/ore, /obj/structure/pot
 		)
 
@@ -177,7 +177,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			return
 
 		user.visible_message("<span class='warning'>[user] smashes the potato against \the container.</span>", "<span class='notice'>You smash the potato and extract its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
-		reagents.add_reagent("potato", 5)	
+		reagents.add_reagent("potato", 5)
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/agave))  //liquid transfer?

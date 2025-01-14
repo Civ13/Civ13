@@ -320,7 +320,7 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 7, "hydrogen" = 16)
 	result_amount = 20
 
-// Primarily used for fuel 
+// Primarily used for fuel
 /datum/chemical_reaction/octane
 	name = "Octane"
 	id = "octane"
@@ -360,7 +360,7 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("carbon" = 7, "hydrogen" = 8)
 	result_amount = 5
 
-// Mostly used for chromatography, tissue prossessing, degreasing, inks, chemical synthesis 
+// Mostly used for chromatography, tissue prossessing, degreasing, inks, chemical synthesis
 /datum/chemical_reaction/xylene
 	name = "Xylene"
 	id = "xylene"
@@ -403,7 +403,7 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("boron" = 1, "fluorine" = 3)
 	result_amount = 1
 
-// Mostly used polymerization, agriculture, welding fuel & fuel 
+// Mostly used polymerization, agriculture, welding fuel & fuel
 /datum/chemical_reaction/ethylene
 	name = "Ethylene"
 	id = "ethylene"
@@ -838,18 +838,10 @@ datum/admins/proc/print_chemical_reactions()
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
 	e.set_up(round (created_volume/4, TRUE), exloc, FALSE, FALSE)
-	var/obj/item/flashlight/torch/T
-	var/obj/item/weapon/flame/F
-	for(T in range(2,src))
-		if (T.on == TRUE)
+	for(var/obj/item/I in range(2,src))
+		if(I.ignition_source)
 			e.start()
 			holder.clear_reagents()
-		break
-	for(F in range(2,src))
-		if (F.lit == TRUE)
-			e.start()
-			holder.clear_reagents()
-		break
 	var/mob/living/human/H
 	for(H in range(2,src))
 		var/obj/item/clothing/mask/smokable/C

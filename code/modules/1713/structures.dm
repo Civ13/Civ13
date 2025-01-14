@@ -72,15 +72,13 @@
 			attached = "animal"
 			qdel(L)
 			return
-	else if (istype(O, /obj/item/flashlight/lantern))
-		var/obj/item/flashlight/lantern/LT = O
+	else if (istype(O, /obj/item/torch/lantern))
+		var/obj/item/torch/lantern/LT = O
 		to_chat(user, SPAN_NOTICE("You tie \the [O] to \the [src]."))
 		LT.anchored = TRUE
-		LT.on = TRUE
+		LT.setActive(TRUE)
 		LT.update_icon()
 		LT.icon_state = "lantern-on_pole"
-		LT.on_state = "lantern-on_pole"
-		LT.off_state = "lantern_pole"
 		attached_ob = O
 		user.drop_from_inventory(O)
 		O.forceMove(loc)
@@ -89,9 +87,9 @@
 /obj/structure/barricade/wood_pole/attack_hand(mob/living/user as mob)
 	if (!isliving(user))
 		return
-	if (attached_ob && istype(attached_ob, /obj/item/flashlight/lantern))
+	if (attached_ob && istype(attached_ob, /obj/item/torch/lantern))
 		to_chat(user, SPAN_NOTICE("You remove \the [attached_ob] from \the [src]."))
-		var/obj/item/flashlight/lantern/O = attached_ob
+		var/obj/item/torch/lantern/O = attached_ob
 		O.anchored = FALSE
 		O.forceMove(user.loc)
 		user.put_in_hands(O)
@@ -99,13 +97,11 @@
 		return
 /obj/structure/barricade/wood_pole/Destroy()
 	if (attached_ob != null)
-		if (istype(attached_ob, /obj/item/flashlight/lantern))
-			var/obj/item/flashlight/lantern/LT = attached_ob
+		if (istype(attached_ob, /obj/item/torch/lantern))
+			var/obj/item/torch/lantern/LT = attached_ob
 			LT.anchored = FALSE
 			LT.icon_state = "lantern"
-			LT.on = FALSE
-			LT.on_state = "lantern-on"
-			LT.off_state = "lantern"
+			LT.setActive(FALSE)
 			LT.update_icon()
 			attached_ob = null
 	..()
@@ -1619,8 +1615,8 @@
 	else
 		pixel_y = 0
 	if (storage && storage.contents.len > 0)
-		for (var/obj/item/flashlight/torch/TOR in src.storage.contents)
-			if (TOR.on == TRUE)
+		for (var/obj/item/torch/TOR in src.storage.contents)
+			if (TOR.ignition_source)
 				icon_state = "torch_stand1_on"
 				set_light(1)
 				light_color = "#FCDA7C"
@@ -1632,8 +1628,8 @@
 				light_color = null
 				light_range = 0
 				return
-		for (var/obj/item/flashlight/lantern/LAN in src.storage.contents)
-			if (LAN.on == TRUE)
+		for (var/obj/item/torch/lantern/LAN in src.storage.contents)
+			if (LAN.active == TRUE)
 				icon_state = "torch_stand_lantern_on"
 				set_light(1)
 				light_color = "#FCDA7C"
@@ -1653,7 +1649,7 @@
 	storage.storage_slots = 1
 	storage.max_w_class = 2
 	storage.max_storage_space = max_storage*3
-	storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
+	storage.can_hold = list(/obj/item/torch, /obj/item/torch/lantern)
 	update_icon()
 
 /obj/structure/torch_stand/Destroy()
@@ -1683,14 +1679,14 @@
 
 /obj/structure/torch_stand/full/New()
 	..()
-	new /obj/item/flashlight/torch/on(src.storage)
+	new /obj/item/torch/on(src.storage)
 	update_icon()
 
 /obj/structure/torch_stand/lantern
 
 /obj/structure/torch_stand/lantern/New()
 	..()
-	new /obj/item/flashlight/lantern/on(src.storage)
+	new /obj/item/torch/lantern/on(src.storage)
 	update_icon()
 
 //////////////////////////CAMONET/////////////////////////////////

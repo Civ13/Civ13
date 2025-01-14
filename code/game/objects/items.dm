@@ -27,6 +27,8 @@
 	var/amount = 1
 	var/value = 0 //the cost of an item.
 
+	var/fuel_value = 0	// The fuel this item provides for items that need to be fueled with a flammable material.
+
 	var/fertilizer_value = 0 // the value as fertilizer
 
 	var/sharpness = 0
@@ -81,7 +83,7 @@
 
 	var/dried_type = null //Item, that will appear after drying (or dehydrating) process
 	var/dry_size = null //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
-	
+
 	var/is_contraband = FALSE //For now, used by dogs to detect the contraband item
 
 /obj/item/New()
@@ -518,7 +520,7 @@ var/list/global/slot_flags_enumeration = list(
 
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
-		if (H != user)	
+		if (H != user)
 			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src) // The following to line 531 is a gutted mob.visible_message(), consider updating the proc to have a list of ignored mobs as an argument.
 
 			for (var/I in see)

@@ -149,7 +149,7 @@
 /obj/item/weapon/storage/belt/leather/shaman/New()
 	..()
 	new /obj/item/weapon/reagent_containers/food/snacks/grown/peyote(src)
-	new /obj/item/flashlight/torch(src)
+	new /obj/item/torch(src)
 	new /obj/item/stack/medical/bruise_pack/bint/leather(src)
 	new /obj/item/stack/material/rope(src)
 	new /obj/item/weapon/material/handle(src)
