@@ -130,7 +130,7 @@ SERVER 192.210.161.174:23999
 DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://civ13.com/wiki/index.php?title=Rules
+RULESURL https://new-civ13.github.io/civ13-wiki/Rules
 
 ## discord address
 DISCORDURL https://discord.gg/TYrtJZDwSt
