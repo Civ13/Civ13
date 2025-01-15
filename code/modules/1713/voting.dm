@@ -199,6 +199,8 @@
 		to_chat(world, "<big><font color='yellow'><b><i>[election_desc]</i></b></big></font>")
 		for(var/i in vote_options)
 			to_chat(world, "<font color='yellow'><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[i]</i></b></font>")
+		log_admin("[user.ckey] triggered a ballot box vote.")
+		message_admins("[user.ckey] triggered a ballot box vote.")
 		start_timer(1200)
 
 /obj/structure/voting/proc/start_timer(var/time = 1800)
