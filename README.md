@@ -13,7 +13,7 @@ Civ13 (formerly 1713) is a game based on Space Station 13 code, which features s
 
 
 ## Civ13 Discord
-[![discord](https://discordapp.com/api/guilds/468979034571931648/widget.png)](https://civ13.com/discord)
+[![discord](https://discord.com/api/guilds/1328179627297865799/widget.png)](https://discord.gg/TYrtJZDwSt)
 
 
 ## Official Website
@@ -38,7 +38,7 @@ You will need a windows machine or a virtual machine running it from another OS.
 
 Disclaimer:
 Python scripts will not function appropriately when Hosting within a Windows or WSL environment and support for such usage will not be provided.
-Most scripts are called externally by our [Discord bot](https://github.com/Valgorithms/Civilizationbot) which will be required for a proper installation.
+Most scripts are called externally by our [Discord bot](https://github.com/New-Civ13/Civilizationbot) which will be required for a proper installation.
 
 ### Windows
 1. Install both [BYOND](https://www.byond.com/download/) and [Python 3](https://www.python.org/downloads/windows/)
