@@ -15,8 +15,8 @@
 
 	var/active = FALSE		//Use setActive() to alter.
 	var/light_intensity = 3	//Luminosity when active.
-	var/fuel = 300			//How long the torch will stay active (in 2*seconds).
-	var/fuellimit = 300
+	var/fuel = 1800			//How long the torch will stay active (in 2*seconds).
+	var/fuellimit = 1800
 
 //Alter the "active" Variable
 /obj/item/torch/proc/setActive(var/_active)

