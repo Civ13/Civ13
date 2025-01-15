@@ -372,6 +372,16 @@ Example for later use:
 				/obj/structure/wild/tree_stump = 1,
 				/obj/structure/wild/smallbush/winter = 1)
 
+/obj/random/ore_deposits
+	name = "Ore Deposits"
+	icon_state = "hematite_deposit"
+	spawn_nothing_percentage = 5
+/obj/random/ore_deposits/spawn_choices()
+	return list(
+				/obj/structure/wild/ore_deposits/hematite_deposit = 1,
+				/obj/structure/wild/ore_deposits/malachite_deposit = 1,
+				/obj/structure/wild/ore_deposits/cassiterite_deposit = 1)
+
 /obj/item/weapon/hiddenstash
 	name = "Hidden Stach"
 	desc = "Ooooh what could be inside??? If you see this report it to a developer"
