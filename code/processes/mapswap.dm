@@ -725,21 +725,21 @@
 
 		/// WASTELAND MODES //
 		if ("After the Fall")
-			world << "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			world << "<font color='yellow'><big>After the Fall</big><br>The world has long since become lost and desolate. Can you survive?</big><br><b>Wiki Guide: https://new-civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 			map.gamemode = "After the Fall"
 			map.is_zombie = FALSE
 			map.hasnukes = FALSE
 			return
 
 		if ("Nuclear")
-			world << "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			world << "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://new-civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 			map.gamemode = "Nuclear"
 			map.is_zombie = FALSE
 			map.hasnukes = TRUE
 			return
 
 		if ("Zombie Apocalypse")
-			world << "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+			world << "<font color='yellow'><big>Zombie Apocalypse</big><br>Something has gone terribly wrong. Monsters roam the world and society has fallen. Can you survive?</big><br><b>Wiki Guide: https://new-civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 			map.gamemode = "Zombie Apocalypse"
 			map.is_zombie = TRUE
 			map.hasnukes = FALSE
