@@ -219,7 +219,7 @@
 
 	if (health_percentage <= 75 && health_percentage > 50)//Is the person a little hurt?
 		msg += "<span class='warning'><b>[T.He] looks somewhat wounded.\n</b></span>"
-	
+
 	if (health_percentage <= 50 && health_percentage > 25)//Hurt.
 		msg += "<span class='warning'><b>[T.He] looks wounded.</b></span>\n"
 
@@ -267,8 +267,6 @@
 		msg += is_bleeding[limb]
 	for (var/implant in get_visible_implants(0))
 		msg += "<span class='danger'>[src] [T.has] \a [implant] sticking out of [T.his] flesh!</span>\n"
-	if (gender == MALE && circumcised && !w_uniform && !wear_suit)
-		msg += "<span class='danger'>[src] is circumcised!</span>\n"
 
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
 	if (O && O.get_teeth() < O.max_teeth)

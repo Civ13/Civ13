@@ -105,7 +105,6 @@
 	var/shoveling = FALSE
 	var/buriedalive = FALSE
 
-	var/circumcised = FALSE
 	var/ptsd = 0
 	var/hygiene = 200
 	var/mood_modifier = 1

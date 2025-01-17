@@ -2,12 +2,11 @@
 /datum/job/arab/civilian/chechen/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_chechen_name(H.gender)
 	H.real_name = H.name
-	H.circumcised = TRUE
 
 /datum/job/arab/civilian/chechen/leader
 	title = "Chechen Warlord"
 	spawn_location = "JoinLateCCWL"
-	
+
 	is_commander = TRUE
 	is_officer = TRUE
 	is_grozny = TRUE
@@ -597,7 +596,7 @@
 		if (2)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/sov_74(H), slot_belt)
-	
+
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
 
 	H.s_tone = rand(-32,-24)
@@ -767,7 +766,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sovietbala(H), slot_wear_mask)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
-	
+
 	var/randarmwruspez = rand(1,3)
 	switch (randarmwruspez)
 		if (1)
