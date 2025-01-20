@@ -190,32 +190,38 @@ the HUD updates properly! */
 			else
 				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 		else
-			var/image/holderf = perp.hud_list[BASE_FACTION]
-			holderf.icon = 'icons/mob/hud_1713.dmi'
-			holderf.plane = HUD_PLANE
-			holderf.icon_state = ""
 			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
-				if (viewer == perp)
-					holderf.icon_state = "civp" //player hud
-				else if (perp.civilization == "none")
-					holderf.icon_state = "" //nomads are yellow
-				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
-					holderf.icon_state = "civp" //same faction is green
-				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
-					holderf.icon_state = "civpl" //same faction is green
-				else if (viewer.civilization != "none" && perp.civilization != "none" && (viewer.declared_war_against(perp) || perp.declared_war_against(viewer)))
+				if (viewer.civilization != "none" && perp.civilization != "none" && (viewer.declared_war_against(perp) || perp.declared_war_against(viewer)))
+					var/image/holderf = perp.hud_list[FACTION_TO_ENEMIES]
+					holderf.icon = 'icons/mob/hud_1713.dmi'
+					holderf.plane = HUD_PLANE
 					holderf.icon_state = "civpe" //enemy faction is red
-				else
-					holderf.icon_state = "" //other factions are neutral
-				perp.hud_list[BASE_FACTION] = holderf
-				if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
-					P.Client.images += perp.hud_list[BASE_FACTION]
-				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
-					P.Client.images += perp.hud_list[BASE_FACTION]
-				else if (viewer.civilization != "none" && perp.civilization != "none" && (viewer.declared_war_against(perp) || perp.declared_war_against(viewer)))
-					P.Client.images += perp.hud_list[BASE_FACTION]
-				else
+					perp.hud_list[FACTION_TO_ENEMIES] = holderf
 					P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
+				else
+					var/image/holderf = perp.hud_list[BASE_FACTION]
+					holderf.icon = 'icons/mob/hud_1713.dmi'
+					holderf.plane = HUD_PLANE
+					holderf.icon_state = ""
+
+					if (viewer == perp)
+						holderf.icon_state = "civp" //player hud
+					else if (perp.civilization == "none")
+						holderf.icon_state = "" //nomads are yellow
+					else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
+						holderf.icon_state = "civp" //same faction is green
+					else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
+						holderf.icon_state = "civpl" //same faction is green
+					else
+						holderf.icon_state = "" //other factions are neutral
+
+					perp.hud_list[BASE_FACTION] = holderf
+					if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
+						P.Client.images += perp.hud_list[BASE_FACTION]
+					else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
+						P.Client.images += perp.hud_list[BASE_FACTION]
+					else
+						P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 /datum/arranged_hud_process
 	var/client/Client
 	var/mob/Mob

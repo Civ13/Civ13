@@ -171,8 +171,9 @@
 					var/list/other_civs = list("Cancel")
 					for (var/other_civ in map.custom_civs)
 						if (other_civ != U.civilization)
-							other_civs.Add(other_civ)
-							can_declare_war = TRUE
+							if (!(other_civ in map.custom_civs[U.civilization][11]))
+								other_civs.Add(other_civ)
+								can_declare_war = TRUE
 
 					if(can_declare_war)
 						var/enemy_civ = WWinput(usr, "Who to declare war on?", "Declaration of War", "Cancel", other_civs)
