@@ -395,6 +395,10 @@
 				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 			else
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
+
+			if (civilization != "none" && H.civilization != "none" && (declared_war_against(H) || H.declared_war_against(src)))
+				msg += "<br><i>[T.He] [T.is] an enemy!</b>.</i>"
+
 			if (user.find_trait("Empathetic"))
 				var/md
 				switch(mood)

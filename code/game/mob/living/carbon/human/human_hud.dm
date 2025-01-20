@@ -203,8 +203,10 @@ the HUD updates properly! */
 					holderf.icon_state = "civp" //same faction is green
 				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
 					holderf.icon_state = "civpl" //same faction is green
+				else if (viewer.civilization != "none" && perp.civilization != "none" && (viewer.declared_war_against(perp) || perp.declared_war_against(viewer)))
+					holderf.icon_state = "civpe" //enemy faction is red
 				else
-					holderf.icon_state = "" //other factions are red
+					holderf.icon_state = "civpn" //other factions are neutral
 				perp.hud_list[BASE_FACTION] = holderf
 				if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
 					P.Client.images += perp.hud_list[BASE_FACTION]
