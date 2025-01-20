@@ -167,25 +167,31 @@
 		else
 			if (map.custom_civs[U.civilization][4] != null)
 				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+					var/can_declare_war = FALSE
 					var/list/other_civs = list("Cancel")
 					for (var/other_civ in map.custom_civs)
 						if (other_civ != U.civilization)
 							other_civs.Add(other_civ)
+							can_declare_war = TRUE
 
-					var/enemy_civ = WWinput(usr, "Who to declare war on?", "Declaration of War", "Cancel", other_civs)
+					if(can_declare_war)
+						var/enemy_civ = WWinput(usr, "Who to declare war on?", "Declaration of War", "Cancel", other_civs)
 
-					if (enemy_civ == "Cancel")
-						return
+						if (enemy_civ == "Cancel")
+							return
+						else
+							map.custom_civs[U.civilization][11].Add(enemy_civ)
+							to_world("<big>[U.civilization] declare war on [enemy_civ]!</big>")
+							log_attack("WAR: FACTION ENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) declare war on [enemy_civ]!")
 					else
-						map.custom_civs[U.civilization][11].Add(enemy_civ)
-						to_world("<big>[U.civilization] declare war on [enemy_civ]!</big>")
-						log_attack("WAR: FACTION ENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) declare war on [enemy_civ]!")
+						to_chat(usr, SPAN_DANGER("There is no one else to declare war on!"))
+						return
 				else
 					to_chat(usr, SPAN_DANGER("You are not the Leader, so you can't declare war."))
 					return
 			else
 				to_chat(usr, SPAN_DANGER("There is no Leader, so you can't declare war."))
-
+				return
 	else
 		to_chat(usr, SPAN_DANGER("You cannot declare war in this map."))
 		return
@@ -206,21 +212,25 @@
 		else
 			if (map.custom_civs[U.civilization][4] != null)
 				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-					var/list/enemy_civs = list("Cancel") + map.custom_civs[U.civilization][11]
-					var/enemy_civ = WWinput(usr, "Who to make peace with?", "Make Peace", "Cancel", enemy_civs)
+					if(map.custom_civs[U.civilization][11].len > 0)
+						var/list/enemy_civs = list("Cancel") + map.custom_civs[U.civilization][11]
+						var/enemy_civ = WWinput(usr, "Who to make peace with?", "Make Peace", "Cancel", enemy_civs)
 
-					if (enemy_civ == "Cancel")
-						return
+						if (enemy_civ == "Cancel")
+							return
+						else
+							map.custom_civs[U.civilization][11].Remove(enemy_civ)
+							to_world("<big>[U.civilization] end their war against [enemy_civ]!</big>")
+							log_attack("WAR: FACTION UNENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) end their war against [enemy_civ]!")
 					else
-						map.custom_civs[U.civilization][11].Remove(enemy_civ)
-						to_world("<big>[U.civilization] end their war against [enemy_civ]!</big>")
-						log_attack("WAR: FACTION UNENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) end their war against [enemy_civ]!")
+						to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
+						return
 				else
 					to_chat(usr, SPAN_DANGER("You are not the Leader, so you can't make peace."))
 					return
 			else
 				to_chat(usr, SPAN_DANGER("There is no Leader, so you can't make peace."))
-
+				return
 	else
 		to_chat(usr, SPAN_DANGER("You cannot make peace in this map."))
 		return
