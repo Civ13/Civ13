@@ -3,7 +3,7 @@
 
 /*
  Get the turf that `A` resides in, regardless of any containers.
- 
+
  Use in favor of `A.loc` or `src.loc` so that things work correctly when
  stored inside an inventory, locker, or other container.
  */

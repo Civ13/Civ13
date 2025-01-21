@@ -6,6 +6,7 @@
 		verbs += /mob/living/human/proc/become_leader
 		verbs += /mob/living/human/proc/declare_war
 		verbs += /mob/living/human/proc/make_peace
+		verbs += /mob/living/human/proc/list_wars
 		verbs += /mob/proc/faction_list
 		verbs += /mob/proc/religion_list
 		verbs += /mob/living/human/proc/create_company
@@ -19,6 +20,7 @@
 		verbs += /mob/living/human/proc/become_leader
 		verbs += /mob/living/human/proc/declare_war
 		verbs += /mob/living/human/proc/make_peace
+		verbs += /mob/living/human/proc/list_wars
 		verbs += /mob/proc/religion_list
 		verbs += /mob/living/human/proc/create_religion
 		verbs += /mob/living/human/proc/abandon_religion
@@ -30,6 +32,7 @@
 	verbs += /mob/living/human/proc/become_leader
 	verbs += /mob/living/human/proc/declare_war
 	verbs += /mob/living/human/proc/make_peace
+	verbs += /mob/living/human/proc/list_wars
 	verbs += /mob/proc/faction_list
 	verbs += /mob/proc/religion_list
 	verbs += /mob/living/human/proc/create_religion
@@ -181,9 +184,13 @@
 						if (enemy_civ == "Cancel")
 							return
 						else
+							var/declare_str = "declares"
+							if (is_plural_string(U.civilization))
+								declare_str = "declare"
+
 							map.custom_civs[U.civilization][11].Add(enemy_civ)
-							to_world("<big>[U.civilization] declare war on [enemy_civ]!</big>")
-							log_attack("WAR: FACTION ENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) declare war on [enemy_civ]!")
+							to_world("<big>[U.civilization] [declare_str] war on [enemy_civ]!</big>")
+							log_attack("WAR: FACTION ENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) [declare_str] war on [enemy_civ]!")
 					else
 						to_chat(usr, SPAN_DANGER("There is no one else to declare war on!"))
 						return
@@ -220,9 +227,13 @@
 						if (enemy_civ == "Cancel")
 							return
 						else
+							var/end_str = "ends"
+							if (is_plural_string(U.civilization))
+								end_str = "end"
+
 							map.custom_civs[U.civilization][11].Remove(enemy_civ)
-							to_world("<big>[U.civilization] end their war against [enemy_civ]!</big>")
-							log_attack("WAR: FACTION UNENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) end their war against [enemy_civ]!")
+							to_world("<big>[U.civilization] [end_str] their war against [enemy_civ]!</big>")
+							log_attack("WAR: FACTION UNENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) [end_str] their war against [enemy_civ]!")
 					else
 						to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
 						return
@@ -234,6 +245,31 @@
 				return
 	else
 		to_chat(usr, SPAN_DANGER("You cannot make peace in this map."))
+		return
+
+/mob/living/human/proc/list_wars()
+	set name = "List Wars"
+	set category = "Faction"
+	var/mob/living/human/U
+
+	if (istype(src, /mob/living/human))
+		U = src
+	else
+		return
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+		if (U.civilization == "none")
+			to_chat(usr, "You are not part of any faction.")
+			return
+		else
+			if(map.custom_civs[U.civilization][11].len > 0)
+				to_chat(usr, SPAN_DANGER("You are at war with:"))
+				for (var/enemy_civ in map.custom_civs[U.civilization][11])
+					to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+			else
+				to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
+				return
+	else
+		to_chat(usr, SPAN_DANGER("You cannot check wars in this map."))
 		return
 
 /mob/living/human/proc/declared_war_against(var/M)
