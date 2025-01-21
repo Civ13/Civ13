@@ -160,7 +160,7 @@ the HUD updates properly! */
 
 	// clear nomads hud iconms in nomads game mode
 	if (map.nomads)
-		if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
+		if (viewer.original_job_title == "Nomad")
 			var/list/nomad_hud_icons = list("civp", "civpl", "civpe", "civpn")
 			for (var/image/img in P.Client.images)
 				if (img.icon_state in nomad_hud_icons)
