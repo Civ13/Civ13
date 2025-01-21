@@ -604,60 +604,60 @@
 			return capitalize(pick(first_names_male_iroquois))
 
 /datum/species/proc/get_random_sioux_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_sioux))
-        else
-            return capitalize(pick(first_names_male_sioux))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_sioux))
+		else
+			return capitalize(pick(first_names_male_sioux))
 
 /datum/species/proc/get_random_apache_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_apache))
-        else
-            return capitalize(pick(first_names_male_apache))
+	if (!name_language)
+	//	if (gender == FEMALE)
+	//		return capitalize(pick(first_names_female_apache))
+	//	else
+		return capitalize(pick(first_names_male_apache))
 
 /datum/species/proc/get_random_navajo_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_navajo))
-        else
-            return capitalize(pick(first_names_male_navajo))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_navajo))
+		else
+			return capitalize(pick(first_names_male_navajo))
 
 /datum/species/proc/get_random_chinook_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_chinook))
-        else
-            return capitalize(pick(first_names_male_chinook))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_chinook))
+		else
+			return capitalize(pick(first_names_male_chinook))
 
 /datum/species/proc/get_random_comanche_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_comanche))
-        else
-            return capitalize(pick(first_names_male_comanche))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_comanche))
+		else
+			return capitalize(pick(first_names_male_comanche))
 
 /datum/species/proc/get_random_mayan_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_mayan))
-        else
-            return capitalize(pick(first_names_male_mayan))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_mayan))
+		else
+			return capitalize(pick(first_names_male_mayan))
 
 /datum/species/proc/get_random_aztec_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_aztec))
-        else
-            return capitalize(pick(first_names_male_aztec))
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_aztec))
+		else
+			return capitalize(pick(first_names_male_aztec))
 
 /datum/species/proc/get_random_hawaiian_name(var/gender)
-    if (!name_language)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_hawaiian))
-        else
-            return capitalize(pick(first_names_male_hawaiian))
+	if (!name_language)
+		// if (gender == FEMALE)
+		//     return capitalize(pick(first_names_female_hawaiian))
+		// else
+		return capitalize(pick(first_names_male_hawaiian))
 
 /datum/species/proc/get_random_korean_name(var/gender)
 	if (!name_language)

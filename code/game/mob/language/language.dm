@@ -376,10 +376,10 @@
 
 /datum/language/proc/get_random_apache_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
     if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_apache))
-        else
-            return capitalize(pick(first_names_male_apache))
+        //if (gender == FEMALE)
+        //    return capitalize(pick(first_names_female_apache))
+       // else
+        return capitalize(pick(first_names_male_apache))
 
     var/full_name = "Cochise"
     return full_name
@@ -436,10 +436,10 @@
 
 /datum/language/proc/get_random_hawaiian_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
     if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_hawaiian))
-        else
-            return capitalize(pick(first_names_male_hawaiian))
+        //if (gender == FEMALE)
+        //    return capitalize(pick(first_names_female_hawaiian))
+        //else
+        return capitalize(pick(first_names_male_hawaiian))
 
     var/full_name = "Kamehameha"
     return full_name
