@@ -160,7 +160,7 @@ var/list/gamemode_cache = list()
 	var/skip_persistence_saving = FALSE
 
 	// webhook stuff
-	var/webhook_can_fire = FALSE
+	var/webhook_can_fire = TRUE
 	var/webhook_address = null
 	var/webhook_key = null
 	
