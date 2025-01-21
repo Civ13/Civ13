@@ -19,14 +19,14 @@
 
 
 /proc/error(msg)
-	//webhook_send_runtime("## ERROR: [msg][log_end]")
+	webhook_send_runtime("## ERROR: [msg][log_end]")
 	world.log << "## ERROR: [msg][log_end]"
 
 
 #define WARNING(MSG) warning("[MSG] in [__FILE__] at line [__LINE__] src: [src] usr: [usr].")
 //print a warning message to world.log
 /proc/warning(msg)
-	//webhook_send_runtime("## WARNING: [msg][log_end]")
+	webhook_send_runtime("## WARNING: [msg][log_end]")
 	world.log << "## WARNING: [msg][log_end]"
 
 //print a testing-mode debug message to world.log
