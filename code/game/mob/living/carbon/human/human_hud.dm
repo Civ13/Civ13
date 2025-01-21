@@ -200,27 +200,27 @@ the HUD updates properly! */
 				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 		else
 			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
-				var/image/holderf = perp.hud_list[BASE_FACTION]
-				holderf.icon = 'icons/mob/hud_1713.dmi'
-				holderf.plane = HUD_PLANE
-				holderf.icon_state = ""
+
+				var/image/hudicon = image('icons/mob/hud_1713.dmi', P.Client)
+				hudicon.loc = perp
+				hudicon.plane = HUD_PLANE
+				hudicon.icon_state = ""
 
 				if (perp.civilization == "none")
-					holderf.icon_state = "" // nomad
+					hudicon.icon_state = "" // nomad
 				else if (perp.civilization == viewer.civilization)
 					if (perp.leader == TRUE)
-						holderf.icon_state = "civpl" // friendly leader
+						hudicon.icon_state = "civpl" // friendly leader
 					else
-						holderf.icon_state = "civp" // friendly
+						hudicon.icon_state = "civp" // friendly
 				else
 					if (viewer.declared_war_against(perp) || perp.declared_war_against(viewer))
-						holderf.icon_state = "civpe" // enemy
+						hudicon.icon_state = "civpe" // enemy
 					else
 
-						holderf.icon_state = "civpn" // neutral
+						hudicon.icon_state = "civpn" // neutral
 
-				perp.hud_list[BASE_FACTION] = holderf
-				P.Client.images += perp.hud_list[BASE_FACTION]
+				P.Client.images += hudicon
 
 /datum/arranged_hud_process
 	var/client/Client
