@@ -612,10 +612,10 @@
 
 /datum/species/proc/get_random_apache_name(var/gender)
 	if (!name_language)
-	//	if (gender == FEMALE)
-	//		return capitalize(pick(first_names_female_apache))
-	//	else
-		return capitalize(pick(first_names_male_apache))
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_apache))
+		else
+			return capitalize(pick(first_names_male_apache))
 
 /datum/species/proc/get_random_navajo_name(var/gender)
 	if (!name_language)
@@ -654,10 +654,10 @@
 
 /datum/species/proc/get_random_hawaiian_name(var/gender)
 	if (!name_language)
-		// if (gender == FEMALE)
-		//     return capitalize(pick(first_names_female_hawaiian))
-		// else
-		return capitalize(pick(first_names_male_hawaiian))
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_hawaiian))
+		else
+			return capitalize(pick(first_names_male_hawaiian))
 
 /datum/species/proc/get_random_korean_name(var/gender)
 	if (!name_language)
