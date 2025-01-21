@@ -200,27 +200,27 @@ the HUD updates properly! */
 				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 		else
 			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
+				if (can_process_hud(perp))
+					var/image/hudicon = image('icons/mob/hud_1713.dmi', P.Client)
+					hudicon.loc = perp
+					hudicon.plane = HUD_PLANE
+					hudicon.icon_state = ""
 
-				var/image/hudicon = image('icons/mob/hud_1713.dmi', P.Client)
-				hudicon.loc = perp
-				hudicon.plane = HUD_PLANE
-				hudicon.icon_state = ""
-
-				if (perp.civilization == "none")
-					hudicon.icon_state = "" // nomad
-				else if (perp.civilization == viewer.civilization)
-					if (perp.leader == TRUE)
-						hudicon.icon_state = "civpl" // friendly leader
+					if (perp.civilization == "none")
+						hudicon.icon_state = "" // nomad
+					else if (perp.civilization == viewer.civilization)
+						if (perp.leader == TRUE)
+							hudicon.icon_state = "civpl" // friendly leader
+						else
+							hudicon.icon_state = "civp" // friendly
 					else
-						hudicon.icon_state = "civp" // friendly
-				else
-					if (viewer.declared_war_against(perp) || perp.declared_war_against(viewer))
-						hudicon.icon_state = "civpe" // enemy
-					else
+						if (viewer.declared_war_against(perp) || perp.declared_war_against(viewer))
+							hudicon.icon_state = "civpe" // enemy
+						else
 
-						hudicon.icon_state = "civpn" // neutral
+							hudicon.icon_state = "civpn" // neutral
 
-				P.Client.images += hudicon
+					P.Client.images += hudicon
 
 /datum/arranged_hud_process
 	var/client/Client
