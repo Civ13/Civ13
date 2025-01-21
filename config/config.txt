@@ -2,6 +2,9 @@
 ## IMPORTANT: Don't include special characters such as ' in here
 SERVER_NAME Civilization 13
 
+## Where is the game folder located?
+MASTER_DIRECTORY /home/emoney/civ13
+
 ## DO WE AUTOADMIN LOCALHOST? YES? YEAH?
 LOCALHOST_AUTOADMIN
 

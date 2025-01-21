@@ -68,7 +68,7 @@ var/list/gamemode_cache = list()
 
 	var/ssd_invisibility_timer = 10
 
-	//var/masterdir = "/home/emoney/civ13" do something about this
+	var/masterdir = "/home/emoney/civ13"
 
 	var/serverurl
 	var/server
@@ -200,6 +200,9 @@ var/list/gamemode_cache = list()
 
 		if (type == "config")
 			switch (name)
+				if ("master_directory")
+					masterdir = value
+
 				if("localhost_autoadmin")
 					localhost_autoadmin = TRUE
 
