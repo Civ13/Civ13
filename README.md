@@ -45,9 +45,11 @@ Most scripts are called externally by our [Discord bot](https://github.com/New-C
 
 2. Download this repository, preferably with GitHub or another git program if you want to keep it updated.
 
-3. Open civ13.dme with BYOND DreamMaker and compile.
+3. Replace host ckey with your own in config/host.txt
 
-4. Open civ13.dmb with BYOND DreamSeeker to launch the server.
+4. Open civ13.dme with BYOND DreamMaker and compile.
+
+5. Open civ13.dmb with BYOND DreamSeeker to launch the server.
 
 
 ### Linux
