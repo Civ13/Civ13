@@ -397,7 +397,7 @@
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 
 			if (civilization != "none" && H.civilization != "none" && (declared_war_against(H) || H.declared_war_against(src)))
-				msg += "<br><i>[T.He] [T.is] an enemy!</b>.</i>"
+				msg += "<br><font color='red'><i>[T.He] [T.is] an enemy!</b>.</font></i>"
 
 			if (user.find_trait("Empathetic"))
 				var/md

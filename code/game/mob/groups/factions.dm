@@ -261,10 +261,39 @@
 			to_chat(usr, "You are not part of any faction.")
 			return
 		else
-			if(map.custom_civs[U.civilization][11].len > 0)
-				to_chat(usr, SPAN_DANGER("You are at war with:"))
-				for (var/enemy_civ in map.custom_civs[U.civilization][11])
-					to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+			var/list/you_declared = list()
+			var/list/they_declared = list()
+			var/list/both_declared = list()
+
+			for (var/enemy_civ in map.custom_civs[U.civilization][11])
+				you_declared.Add(enemy_civ)
+
+			for (var/other_civ in map.custom_civs)
+				if (other_civ != U.civilization)
+					if (U.civilization in map.custom_civs[other_civ][11])
+						they_declared.Add(other_civ)
+
+			for (var/enemy_civ in you_declared)
+				if (enemy_civ in they_declared)
+					you_declared.Remove(enemy_civ)
+					they_declared.Remove(enemy_civ)
+					both_declared.Add(enemy_civ)
+
+			if (both_declared.len + you_declared.len + they_declared.len > 0)
+				if(both_declared.len > 0)
+					to_chat(usr, "Mutual aggression:")
+					for (var/enemy_civ in both_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+
+				if(you_declared.len > 0)
+					to_chat(usr, "You declared war on them:")
+					for (var/enemy_civ in you_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+
+				if(they_declared.len > 0)
+					to_chat(usr, "They declared war on you:")
+					for (var/enemy_civ in they_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
 			else
 				to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
 				return
