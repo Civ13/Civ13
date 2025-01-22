@@ -14,7 +14,7 @@
 	var/list/biomes = list("tundra", "temperate", "sea", "desert", "jungle", "savanna", "taiga", "semiarid")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
-/* 
+/*
 /////// Plant seeds; (Different than structure code, this is object code for the seed and stack handling...)
 */
 
@@ -157,7 +157,7 @@
 	color = "#2e8d2e"
 	biomes = list()
 
-/* 
+/*
 /////// Vegetable seeds.
 * Organic
 
@@ -957,7 +957,7 @@
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
-		spawn(600) // 1 minute 
+		spawn(600) // 1 minute
 			var/turf/t = null
 			var/area/a = null
 			if (src)
@@ -977,7 +977,7 @@
 						for (var/k in seasons)
 							if (season == k)
 								count++
-				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
+				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_TESTING).Find(map.ID))
 					stageGrowth()
 			growth()
 
