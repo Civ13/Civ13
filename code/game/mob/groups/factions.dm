@@ -4,6 +4,9 @@
 		verbs += /mob/living/human/proc/abandon_faction
 		verbs += /mob/living/human/proc/transfer_faction
 		verbs += /mob/living/human/proc/become_leader
+		verbs += /mob/living/human/proc/declare_war
+		verbs += /mob/living/human/proc/make_peace
+		verbs += /mob/living/human/proc/list_wars
 		verbs += /mob/proc/faction_list
 		verbs += /mob/proc/religion_list
 		verbs += /mob/living/human/proc/create_company
@@ -15,6 +18,9 @@
 		verbs += /mob/living/human/proc/abandon_faction
 		verbs += /mob/living/human/proc/transfer_faction
 		verbs += /mob/living/human/proc/become_leader
+		verbs += /mob/living/human/proc/declare_war
+		verbs += /mob/living/human/proc/make_peace
+		verbs += /mob/living/human/proc/list_wars
 		verbs += /mob/proc/religion_list
 		verbs += /mob/living/human/proc/create_religion
 		verbs += /mob/living/human/proc/abandon_religion
@@ -24,6 +30,9 @@
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction
 	verbs += /mob/living/human/proc/become_leader
+	verbs += /mob/living/human/proc/declare_war
+	verbs += /mob/living/human/proc/make_peace
+	verbs += /mob/living/human/proc/list_wars
 	verbs += /mob/proc/faction_list
 	verbs += /mob/proc/religion_list
 	verbs += /mob/living/human/proc/create_religion
@@ -97,7 +106,7 @@
 		H.faction_perms = list(1,1,1,1)
 		map.custom_faction_nr += newname
 												//ind						mil					med			leader money	symbol	main color	backcolor, sales tax, business tax
-		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2,10,10))
+		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0,choosesymbol,choosecolor1,choosecolor2,10,10,list()))
 		map.custom_civs += newnamev
 		to_chat(usr, "<big>You are now the leader of the <b>[newname]</b> faction.</big>")
 		return
@@ -144,6 +153,173 @@
 	src << "You left your faction. You are now a Nomad."
 	remove_commander()
 	return TRUE
+
+/mob/living/human/proc/declare_war()
+	set name = "Declare War"
+	set category = "Faction"
+	var/mob/living/human/U
+
+	if (istype(src, /mob/living/human))
+		U = src
+	else
+		return
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+		if (U.civilization == "none")
+			to_chat(usr, "You are not part of any faction.")
+			return
+		else
+			if (map.custom_civs[U.civilization][4] != null)
+				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+					var/can_declare_war = FALSE
+					var/list/other_civs = list("Cancel")
+					for (var/other_civ in map.custom_civs)
+						if (other_civ != U.civilization)
+							if (!(other_civ in map.custom_civs[U.civilization][11]))
+								other_civs.Add(other_civ)
+								can_declare_war = TRUE
+
+					if(can_declare_war)
+						var/enemy_civ = WWinput(usr, "Who to declare war on?", "Declaration of War", "Cancel", other_civs)
+
+						if (enemy_civ == "Cancel")
+							return
+						else
+							var/declare_str = "declares"
+							if (is_plural_string(U.civilization))
+								declare_str = "declare"
+
+							map.custom_civs[U.civilization][11].Add(enemy_civ)
+							to_world("<big>[U.civilization] [declare_str] war on [enemy_civ]!</big>")
+							log_attack("WAR: FACTION ENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) [declare_str] war on [enemy_civ]!")
+					else
+						to_chat(usr, SPAN_DANGER("There is no one else to declare war on!"))
+						return
+				else
+					to_chat(usr, SPAN_DANGER("You are not the Leader, so you can't declare war."))
+					return
+			else
+				to_chat(usr, SPAN_DANGER("There is no Leader, so you can't declare war."))
+				return
+	else
+		to_chat(usr, SPAN_DANGER("You cannot declare war in this map."))
+		return
+
+/mob/living/human/proc/make_peace()
+	set name = "Make Peace"
+	set category = "Faction"
+	var/mob/living/human/U
+
+	if (istype(src, /mob/living/human))
+		U = src
+	else
+		return
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+		if (U.civilization == "none")
+			to_chat(usr, "You are not part of any faction.")
+			return
+		else
+			if (map.custom_civs[U.civilization][4] != null)
+				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+					if(map.custom_civs[U.civilization][11].len > 0)
+						var/list/enemy_civs = list("Cancel") + map.custom_civs[U.civilization][11]
+						var/enemy_civ = WWinput(usr, "Who to make peace with?", "Make Peace", "Cancel", enemy_civs)
+
+						if (enemy_civ == "Cancel")
+							return
+						else
+							var/end_str = "ends"
+							if (is_plural_string(U.civilization))
+								end_str = "end"
+
+							map.custom_civs[U.civilization][11].Remove(enemy_civ)
+							to_world("<big>[U.civilization] [end_str] their war against [enemy_civ]!</big>")
+							log_attack("WAR: FACTION UNENEMY: [U.civilization] (Leader: [U.ckey]/[U.real_name]) [end_str] their war against [enemy_civ]!")
+					else
+						to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
+						return
+				else
+					to_chat(usr, SPAN_DANGER("You are not the Leader, so you can't make peace."))
+					return
+			else
+				to_chat(usr, SPAN_DANGER("There is no Leader, so you can't make peace."))
+				return
+	else
+		to_chat(usr, SPAN_DANGER("You cannot make peace in this map."))
+		return
+
+/mob/living/human/proc/list_wars()
+	set name = "List Wars"
+	set category = "Faction"
+	var/mob/living/human/U
+
+	if (istype(src, /mob/living/human))
+		U = src
+	else
+		return
+	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+		if (U.civilization == "none")
+			to_chat(usr, "You are not part of any faction.")
+			return
+		else
+			var/list/you_declared = list()
+			var/list/they_declared = list()
+			var/list/both_declared = list()
+
+			for (var/enemy_civ in map.custom_civs[U.civilization][11])
+				you_declared.Add(enemy_civ)
+
+			for (var/other_civ in map.custom_civs)
+				if (other_civ != U.civilization)
+					if (U.civilization in map.custom_civs[other_civ][11])
+						they_declared.Add(other_civ)
+
+			for (var/enemy_civ in you_declared)
+				if (enemy_civ in they_declared)
+					you_declared.Remove(enemy_civ)
+					they_declared.Remove(enemy_civ)
+					both_declared.Add(enemy_civ)
+
+			if (both_declared.len + you_declared.len + they_declared.len > 0)
+				if(both_declared.len > 0)
+					to_chat(usr, "Mutual aggression:")
+					for (var/enemy_civ in both_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+
+				if(you_declared.len > 0)
+					to_chat(usr, "You declared war on them:")
+					for (var/enemy_civ in you_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+
+				if(they_declared.len > 0)
+					to_chat(usr, "They declared war on you:")
+					for (var/enemy_civ in they_declared)
+						to_chat(usr, SPAN_DANGER("[enemy_civ]"))
+			else
+				to_chat(usr, SPAN_DANGER("You are not at war with anyone!"))
+				return
+	else
+		to_chat(usr, SPAN_DANGER("You cannot check wars in this map."))
+		return
+
+/mob/living/human/proc/declared_war_against(var/M)
+	var/mob/living/human/U
+	var/mob/living/human/O
+
+	if (istype(M, /mob/living/human))
+		O = M
+	else
+		return FALSE
+
+	if (istype(src, /mob/living/human))
+		U = src
+	else
+		return FALSE
+
+	if (U.civilization == "none" || O.civilization == "none")
+		return FALSE
+
+	return (O.civilization in map.custom_civs[U.civilization][11])
+
 
 /mob/living/human/proc/transfer_faction()
 	set name = "Transfer Faction Leadership"
@@ -449,7 +625,7 @@
 	var/bstyle = "prop_lead"
 	flammable = TRUE
 	force = 0
-	flags 
+	flags
 
 /obj/item/weapon/poster/faction/lead
 	bstyle = "prop_lead"
@@ -459,7 +635,7 @@
 	bstyle = "prop_mil1"
 /obj/item/weapon/poster/faction/mil2
 	bstyle = "prop_mil2"
-	
+
 /obj/structure/poster/faction/red
 	faction = "Redmenia"
 	color2 = "#d60000"

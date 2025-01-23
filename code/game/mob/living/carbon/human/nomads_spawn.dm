@@ -373,7 +373,7 @@
 					give_languages()
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
-	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_GAIA))
+	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_GAIA || map.ID == MAP_NOMADS_TESTING))
 		switch (mob_area.climate)
 			if ("tundra","taiga")
 				add_language("Old Norse",TRUE)

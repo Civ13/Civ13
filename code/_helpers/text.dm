@@ -369,3 +369,10 @@ proc/TextPreview(var/string,var/len=40)
 	return msg
 
 #define gender2text(gender) capitalize(gender)
+
+
+/proc/is_plural_string(var/str)
+	if (str[length(str)] == "s")
+		return TRUE
+	else
+		return FALSE
