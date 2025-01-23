@@ -545,6 +545,7 @@
 #include "code\game\objects\map_metadata\nomads_oceania.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_persistence_beta.dm"
+#include "code\game\objects\map_metadata\nomads_riverside.dm"
 #include "code\game\objects\map_metadata\nomads_stranded.dm"
 #include "code\game\objects\map_metadata\nomads_uk.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
