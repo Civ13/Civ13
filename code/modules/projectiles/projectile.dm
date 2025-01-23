@@ -382,7 +382,7 @@
 
 	if (!target_mob)
 		return
-	
+
 	if (hit_zone && istype(src, /obj/item/projectile/shell))
 		var/obj/item/projectile/shell/S = src
 		if(S.initiated)
@@ -510,7 +510,7 @@
 	var/passthrough_message = null
 	var/is_trench = istype(T, /turf/floor/trench)
 
-	if(fired_from_turret && fired_from_axis) // A bullet fired from a turret has no obstacles inside the vehicle where it was fired
+	if(fired_from_axis) // A bullet fired from a tank has no obstacles inside the vehicle where it was fired
 		for (var/obj/structure/vehicleparts/frame/F in T)
 			if(fired_from_axis && fired_from_axis == F.axis)
 				forceMove(T)
