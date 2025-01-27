@@ -19,7 +19,7 @@ var/changelog_hash	  = ""
 
 var/round_progressing = TRUE
 
-var/datum/configuration/config	  = null
+var/datum/configuration/config = null
 
 var/Debug2 = FALSE
 var/datum/debug/debugobj

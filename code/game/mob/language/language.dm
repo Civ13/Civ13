@@ -365,84 +365,84 @@
 	return full_name
 
 /datum/language/proc/get_random_sioux_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_sioux))
-        else
-            return capitalize(pick(first_names_male_sioux))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_sioux))
+		else
+			return capitalize(pick(first_names_male_sioux))
 
-    var/full_name = "Tatanka"
-    return full_name
+	var/full_name = "Tatanka"
+	return full_name
 
 /datum/language/proc/get_random_apache_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_apache))
-        else
-            return capitalize(pick(first_names_male_apache))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_apache))
+		else
+			return capitalize(pick(first_names_male_apache))
 
-    var/full_name = "Cochise"
-    return full_name
+	var/full_name = "Cochise"
+	return full_name
 
 /datum/language/proc/get_random_navajo_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_navajo))
-        else
-            return capitalize(pick(first_names_male_navajo))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_navajo))
+		else
+			return capitalize(pick(first_names_male_navajo))
 
-    var/full_name = "Ashkii"
-    return full_name
+	var/full_name = "Ashkii"
+	return full_name
 
 /datum/language/proc/get_random_chinook_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_chinook))
-        else
-            return capitalize(pick(first_names_male_chinook))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_chinook))
+		else
+			return capitalize(pick(first_names_male_chinook))
 
-    var/full_name = "Chikamin"
-    return full_name
+	var/full_name = "Chikamin"
+	return full_name
 
 /datum/language/proc/get_random_comanche_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_comanche))
-        else
-            return capitalize(pick(first_names_male_comanche))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_comanche))
+		else
+			return capitalize(pick(first_names_male_comanche))
 
-    var/full_name = "Quanah"
-    return full_name
+	var/full_name = "Quanah"
+	return full_name
 
 /datum/language/proc/get_random_mayan_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_mayan))
-        else
-            return capitalize(pick(first_names_male_mayan))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_mayan))
+		else
+			return capitalize(pick(first_names_male_mayan))
 
-    var/full_name = "Balam"
-    return full_name
+	var/full_name = "Balam"
+	return full_name
 
 /datum/language/proc/get_random_aztec_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_aztec))
-        else
-            return capitalize(pick(first_names_male_aztec))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_aztec))
+		else
+			return capitalize(pick(first_names_male_aztec))
 
-    var/full_name = "Cuauhtemoc"
-    return full_name
+	var/full_name = "Cuauhtemoc"
+	return full_name
 
 /datum/language/proc/get_random_hawaiian_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
-    if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_hawaiian))
-        else
-            return capitalize(pick(first_names_male_hawaiian))
+	if (!syllables || !syllables.len)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_hawaiian))
+		else
+			return capitalize(pick(first_names_male_hawaiian))
 
-    var/full_name = "Kamehameha"
-    return full_name
+	var/full_name = "Kamehameha"
+	return full_name
 
 /datum/language/proc/get_random_filipino_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)

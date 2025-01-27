@@ -164,6 +164,7 @@ var/list/gamemode_cache = list()
 	var/webhook_address = null
 	var/webhook_key = null
 	
+	var/localhost_autoadmin = FALSE
 
 	var/new_round_webhook_color = ""
 	var/new_round_mention_webhook_url = ""
@@ -199,9 +200,11 @@ var/list/gamemode_cache = list()
 
 		if (type == "config")
 			switch (name)
-
 				if ("master_directory")
 					masterdir = value
+
+				if("localhost_autoadmin")
+					localhost_autoadmin = TRUE
 
 				if ("allowed_gamemodes")
 					allowedgamemodes = value
