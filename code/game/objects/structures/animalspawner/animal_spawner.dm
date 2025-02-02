@@ -19,8 +19,8 @@
 	var/wanderer_holder = 18000 //30 minutes to roll the chance for the wanderer to go out
 	var/wanderer_cooldown = FALSE
 
-/obj/structure/animalspawner/attackby(obj/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/material/pickaxe) && empty)
+/obj/structure/animalspawner/attackby(obj/item/I, mob/user as mob)
+	if((I.tool_flags & TOOL_PICKAXE) && empty)
 		if (do_after(user,65,src))
 			user << "<span class='notice'>You break apart \the [src].</span>"
 			new /obj/item/stack/material/stone(loc)

@@ -92,7 +92,7 @@ var/radial_menus = list()
 	var/starting_angle = 0
 	var/ending_angle = 360
 	var/zone = 360
-	var/min_angle = 45 //Defaults are setup for this value, if you want to make the menu more dense these will need changes.
+	var/min_angle = 60 //Defaults are setup for this value, if you want to make the menu more dense these will need changes.
 	var/max_elements
 	var/pages = 1
 	var/current_page = 1

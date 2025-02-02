@@ -6,8 +6,8 @@
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
 
 	var/nodrop = FALSE
-	var/list/actions = list() //list of /datum/action's that this item has.
-	var/image/blood_overlay = null //this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
+	var/list/actions = list()		//list of /datum/action's that this item has.
+	var/image/blood_overlay = null	//this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
 	var/image/shit_overlay = null
 	var/image/piss_overlay = null
 	var/abstract = FALSE
@@ -18,29 +18,35 @@
 	var/burning = null
 	var/hitsound = null
 	var/storage_cost = null
-	var/slot_flags = 0		//This is used to determine on which slots an item can fit.
-	var/no_attack_log = FALSE			//If it's an item we don't want to log attack_logs with, set this to TRUE
+	var/slot_flags = 0				//This is used to determine on which slots an item can fit.
+	var/no_attack_log = FALSE		//If it's an item we don't want to log attack_logs with, set this to TRUE
 	pass_flags = PASSTABLE
 	var/obj/item/master = null
-	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
+	var/list/attack_verb = list()	//Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
 	var/amount = 1
-	var/value = 0 //the cost of an item.
 
-	var/fuel_value = 0	// The fuel this item provides for items that need to be fueled with a flammable material.
-
-	var/fertilizer_value = 0 // the value as fertilizer
-
+	var/block_chance = 15
 	var/sharpness = 0
+	var/tool_flags = 0			// A bitmask for what behaviors a tool can have. See "tool_flags.dm" for flags.
+	var/tool_multiplier = 1		// Multiplier for tool speed.
 
-	var/heat_protection = FALSE //flags which determine which body parts are protected from heat. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
-	var/cold_protection = FALSE //flags which determine which body parts are protected from cold. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
-	var/max_heat_protection_temperature //Set this variable to determine up to which temperature (IN KELVIN) the item protects against heat damage. Keep at null to disable protection. Only protects areas set by heat_protection flags
-	var/min_cold_protection_temperature //Set this variable to determine down to which temperature (IN KELVIN) the item protects against cold damage. FALSE is NOT an acceptable number due to if (varname) tests!! Keep at null to disable protection. Only protects areas set by cold_protection flags
+	var/drawsound = null		// Sound played when this item is equipped in hand.
+	var/warning_played = null	// Chat warning played when this item is picked up.
+	var/training = FALSE		// Whether this item is a weapon used for training.
+
+	var/value = 0				//the cost of an item.
+	var/fuel_value = 0			// The fuel this item provides for items that need to be fueled with a flammable material.
+	var/fertilizer_value = 0	// the value as fertilizer
+
+	var/heat_protection = FALSE			//flags which determine which body parts are protected from heat. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
+	var/cold_protection = FALSE			//flags which determine which body parts are protected from cold. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
+	var/max_heat_protection_temperature	//Set this variable to determine up to which temperature (IN KELVIN) the item protects against heat damage. Keep at null to disable protection. Only protects areas set by heat_protection flags
+	var/min_cold_protection_temperature	//Set this variable to determine down to which temperature (IN KELVIN) the item protects against cold damage. FALSE is NOT an acceptable number due to if (varname) tests!! Keep at null to disable protection. Only protects areas set by cold_protection flags
 
 	var/datum/action/item_action/action = null
-	var/action_button_name //It is also the text which gets displayed on the action button. If not set it defaults to 'Use [name]'. If it's not set, there'll be no button.
-	var/action_button_is_hands_free = FALSE //If TRUE, bypass the restrained, lying, and stunned checks action buttons normally test for
+	var/action_button_name						//It is also the text which gets displayed on the action button. If not set it defaults to 'Use [name]'. If it's not set, there'll be no button.
+	var/action_button_is_hands_free = FALSE		//If TRUE, bypass the restrained, lying, and stunned checks action buttons normally test for
 
 	//This flag is used to determine when items in someone's inventory cover others. IE helmets making it so you can't see glasses, etc.
 	//It should be used purely for appearance. For gameplay effects caused by items covering body parts, use body_parts_covered.
@@ -49,16 +55,15 @@
 
 	var/item_flags = FALSE //Miscellaneous flags pertaining to equippable objects.
 
-	//var/heat_transfer_coefficient = TRUE //0 prevents all transfers, TRUE is invisible
-	var/gas_transfer_coefficient = TRUE // for leaking gas from turf to mask and vice-versa (for masks right now, but at some point, i'd like to include space helmets)
-	var/permeability_coefficient = TRUE // for chemicals/diseases
-	var/siemens_coefficient = TRUE // for electrical admittance/conductance (electrocution checks and shit)
-	var/slowdown = FALSE // How much clothing is slowing you down. Negative values speeds you up
-	var/canremove = TRUE //Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
+	var/gas_transfer_coefficient = TRUE		// for leaking gas from turf to mask and vice-versa (for masks right now, but at some point, i'd like to include space helmets)
+	var/permeability_coefficient = TRUE		// for chemicals/diseases
+	var/siemens_coefficient = TRUE			// for electrical admittance/conductance (electrocution checks and shit)
+	var/slowdown = FALSE					// How much clothing is slowing you down. Negative values speeds you up
+	var/canremove = TRUE					// Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
 	var/list/armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
-	var/zoomdevicename = null //name used for message when binoculars/scope is used
+	var/zoomdevicename = null				//name used for message when binoculars/scope is used
 
-	var/icon_override = null  //Used to override hardcoded clothing dmis in human clothing proc.
+	var/icon_override = null	//Used to override hardcoded clothing dmis in human clothing proc.
 
 	//** These specify item/icon overrides for _slots_
 
@@ -90,6 +95,7 @@
 	maxhealth = health
 	..()
 	maxhealth = health
+	force*=global_damage_modifier
 
 /obj/item/equipped()
 	..()
@@ -110,6 +116,16 @@
 		m.update_inv_l_hand()
 		loc = null
 	return ..()
+
+/obj/item/proc/drawsound(mob/user)
+	if (drawsound && !warning_played)
+		user.visible_message(SPAN_WARNING("<b>[user] draws a weapon!</b></span>"), SPAN_WARNING("<b>You draw a weapon!</b>"))
+		warning_played = TRUE
+		playsound(user, drawsound, 50, 1)
+	spawn(10)
+		warning_played = FALSE
+/obj/item/weapon/gun
+	var/gtype = "rifle"
 
 /obj/item/proc/has_edge()
 	. = FALSE
@@ -282,6 +298,7 @@
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
+	drawsound(user)
 	return
 
 // called when this item is removed from a storage item, which is passed on as S. The loc variable is already set to the new destination before this is called.
@@ -476,7 +493,37 @@ var/list/global/slot_flags_enumeration = list(
 //If a negative value is returned, it should be treated as a special return value for bullet_act() and handled appropriately.
 //For non-projectile attacks this usually means the attack is blocked.
 //Otherwise should return FALSE to indicate that the attack is not affected in any way.
-/obj/item/proc/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+/obj/item/proc/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
+	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
+	var/mob/living/human/H_user = user
+	var/isdefend = 1 //the defend tactic modifier
+	var/modif = 1
+	if (H_user.religion_check() == "Combat")
+		modif = 1.1
+	if (user.tactic == "defend")
+		isdefend = 1.2
+	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * modif*(0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+		user.visible_message("<font color='#E55300'><big>\The [user] parries [attack_text] with \the [src]!</big></font>")
+		var/mob/living/human/H = user
+		if (prob(50))
+			H.adaptStat("dexterity", 1)
+		else
+			H.adaptStat("strength", 1)
+		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
+		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+			health -= 5
+		else
+			health -= 0.5
+		if(istype(src, /obj/item/weapon/material))
+			var/obj/item/weapon/material/M = src
+			M.check_health()
+		if(prob(15))
+			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
+			user.drop_from_inventory(src)
+			throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
+
+		return TRUE
 	return FALSE
 
 /obj/item/proc/eyestab(mob/living/human/M as mob, mob/living/human/user as mob)

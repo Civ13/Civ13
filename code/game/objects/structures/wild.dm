@@ -152,32 +152,34 @@ var/list/seed_list_jungle
 	else
 		return ..()
 
-/obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/attackby(obj/item/I, mob/user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if (istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
-		var/obj/item/weapon/material/HT = W
+	if (I.tool_flags & TOOL_AXE)
+		var/obj/item/weapon/material/HT = I
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
-		if (do_after(user, 30*HT.chopping_speed, user.loc))
-			health = 0
-			try_destroy()
-			HT.health -= 0.25
-			if (HT.health <=0)
-				HT.shatter()
-			if (istype(user, /mob/living/human))
-				var/mob/living/human/H = user
-				H.adaptStat("strength", 1)
-			return
+
+		if(ishuman(user))
+			var/mob/living/human/H = user
+			if(do_after(user, 90 / H.getStatCoeff("strength") / I.tool_multiplier, user.loc))
+				health = 0
+				try_destroy()
+				HT.health -= 0.25
+				if (HT.health <=0)
+					HT.shatter()
+				if (istype(user, /mob/living/human))
+					H.adaptStat("strength", 1)
+				return
 	else
-		switch(W.damtype)
+		switch(I.damtype)
 			if ("fire")
-				health -= W.force * TRUE
+				health -= I.force * TRUE
 			if ("brute")
-				if (istype (W, /obj/item/projectile))
-					health -= W.force * 0.2
+				if (istype (I, /obj/item/projectile))
+					health -= I.force * 0.2
 				else
-					health -= W.force * 0.20
+					health -= I.force * 0.20
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 	user.do_attack_animation(src)
 	try_destroy()
@@ -220,16 +222,16 @@ var/list/seed_list_jungle
 		pixel_x = rand(-24,-8)
 		pixel_y = rand(0,16)
 
-/obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+/obj/structure/wild/tree/attackby(obj/item/I, mob/user as mob)
+	if((I.tool_flags & TOOL_KNIFE) && !(I.tool_flags & TOOL_AXE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		user.visible_message(SPAN_DANGER("[user] tries to chop down \the [src]!"), SPAN_DANGER("You try to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
 		try_destroy()
-	else
-		..()
+		return
+	..()
 
 /obj/structure/wild/tree/cactus
 	name = "cactus"
@@ -452,8 +454,8 @@ var/list/seed_list_jungle
 	branches = 0
 	max_branches = 0
 
-/obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
+/obj/structure/wild/palm/attackby(obj/item/I, mob/user as mob)
+	if((I.tool_flags & TOOL_KNIFE) && user.a_intent == I_HELP)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 			to_chat(user, SPAN_WARNING("You need to have a pot in one of your hands in order to extract palm sap."))
@@ -585,9 +587,9 @@ var/list/seed_list_jungle
 	health = 20
 	maxhealth = 20
 
-/obj/structure/wild/smallbush/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/smallbush/attackby(obj/item/I, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
+	if((I.tool_flags & TOOL_KNIFE) && user.a_intent == I_HELP)
 		user.do_attack_animation(src)
 		if (seedtimer == 1)
 			to_chat(user, SPAN_NOTICE("You harvest some seeds."))
@@ -727,10 +729,10 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/dead_jungleflora.dmi'
 	deadicon_state = "[rand(1,30)]"
 
-/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/junglebush/attackby(obj/item/I as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if(I.tool_flags & TOOL_KNIFE)
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			if (prob(25) && radiation < 15)
@@ -927,8 +929,8 @@ var/list/seed_list_jungle
 			dropleaves.update_strings()
 		qdel(src)
 
-/obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+/obj/structure/wild/jungle/attackby(obj/item/I as obj, mob/user as mob)
+	if(I.tool_flags & TOOL_KNIFE)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		user.visible_message(SPAN_DANGER("[user] tries to chop down \the [src]!"), SPAN_DANGER("You try to chop down \the [src]!"))
@@ -997,9 +999,9 @@ var/list/seed_list_jungle
 	..()
 	icon_state = "cinchona1"
 
-/obj/structure/wild/junglebush/cinchona/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/wild/junglebush/cinchona/attackby(obj/item/I, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if(I.tool_flags & TOOL_KNIFE)
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			to_chat(user, SPAN_NOTICE("You harvest some of the cinchona."))

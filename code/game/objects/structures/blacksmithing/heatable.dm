@@ -30,6 +30,7 @@
 			if(temperature > 500 && istype(src, /obj/item/heatable/forged))
 				var/obj/item/heatable/forged/F = src
 				F.quenched = TRUE
+				F.updatestats()
 			to_chat(user, "<span class='italics'>You cool the [src].</span>")
 			temperature = 100
 			playsound(loc, 'sound/machines/hiss.ogg', 70, 1)

@@ -83,10 +83,10 @@
 				return TRUE
 	return ..()
 
-/obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wirecutters))
+/obj/structure/barbwire/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/weapon/wirecutters))
 		if (anchored)
-			user.visible_message(SPAN_NOTICE("\The [user] starts to cut through \the [src] with \the [W]."))
+			user.visible_message(SPAN_NOTICE("\The [user] starts to cut through \the [src] with \the [I]."))
 			if (!do_after(user,60))
 				user.visible_message(SPAN_NOTICE("\The [user] decides not to cut through \the [src]."))
 				return
@@ -95,9 +95,9 @@
 			qdel(src)
 			return
 
-	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
+	else if((I.tool_flags & TOOL_KNIFE) || (I.tool_flags & TOOL_AXE))
 		if (anchored)
-			user.visible_message(SPAN_NOTICE("\The [user] starts to hack through \the [src] with \the [W]."))
+			user.visible_message(SPAN_NOTICE("\The [user] starts to hack through \the [src] with \the [I]."))
 			if (!do_after(user,120))
 				user.visible_message(SPAN_NOTICE("\The [user] decides to hack through \the [src]."))
 				return
@@ -110,7 +110,7 @@
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					var/obj/item/organ/external/affecting = null
-					if (istype(H.l_hand, /obj/item/weapon/material/kitchen/utensil/knife) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || istype(H.l_hand, /obj/item/weapon/material/hatchet) || istype(H.l_hand, /obj/item/weapon/material/shovel/trench/foldable/etool))
+					if((I.tool_flags & TOOL_KNIFE) || (I.tool_flags & TOOL_AXE))
 						affecting = H.get_organ("l_hand")
 					else
 						affecting = H.get_organ("r_hand")

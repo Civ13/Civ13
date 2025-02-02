@@ -30,7 +30,7 @@
 		absorb -= 1
 	var/dmg = 0
 	if (damage_source)
-		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		if (istype(damage_source, /obj/item/weapon/melee) || (damage_source.tool_flags & TOOL_AXE) || istype(damage_source, /obj/item/heatable/forged/weapon))
 			dmg = 8
 		else
 			dmg = 0.8
@@ -87,7 +87,7 @@
 	//Bullet
 	var/penetration = P.armor_penetration
 	var/damage = P.damage
-	
+
 	if(armor > 0)
 		if(armor < penetration)
 			damage *= (penetration / armor)
@@ -109,7 +109,7 @@
 			if (prob(instadeath))
 				adjustBrainLoss(rand(30,60))
 				H.instadeath_check()
-				
+
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, FALSE, P, sharp=proj_sharp, edge=proj_edge)
 

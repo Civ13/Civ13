@@ -85,6 +85,7 @@
 	sharp = TRUE
 	edge =  TRUE
 	w_class = ITEM_SIZE_TINY
+	tool_flags = TOOL_AXE
 
 /obj/item/weapon/material/thrown/throwing_knife1
 	name = "steel throwing knife"

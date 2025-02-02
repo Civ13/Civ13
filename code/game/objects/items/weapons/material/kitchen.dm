@@ -98,6 +98,7 @@
 	sharp = TRUE
 	var/atk_mode = SLASH
 	var/suicide = FALSE // for the hari kiri action
+	tool_flags = TOOL_KNIFE
 
 /obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
 	if (!ishuman(user))

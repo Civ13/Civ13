@@ -66,7 +66,7 @@ var/set_dir = null // Set the variable outside of any scopes
         set_dir = direction
 
     // Adjust direction to cardinal directions if intermediate directions are given
-    // Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
+    // Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum
     // NORTH is 1 and EAST is 4, so NORTHEAST is 5
 
     // Also much faster than a switch with if/else and OR
@@ -127,10 +127,10 @@ var/set_dir = null // Set the variable outside of any scopes
 	var/progress = FALSE
 	incomplete = TRUE
 
-/obj/structure/window/barrier/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
+/obj/structure/window/barrier/sandbag/incomplete/attackby(obj/item/I, mob/user as mob)
 	//user.dir = get_dir(user, src)
-	if (istype(O, /obj/item/weapon/barrier/sandbag))
-		var/obj/item/weapon/barrier/sandbag/bag = O
+	if (istype(I, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = I
 		if (bag.sand_amount <= 0)
 			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
 			return
@@ -143,15 +143,15 @@ var/set_dir = null // Set the variable outside of any scopes
 				new/obj/structure/window/barrier/sandbag(loc, user, dir)
 				qdel(src)
 			user.visible_message(SPAN_DANGER("[user] puts the sandbag onto \the [src]."), SPAN_DANGER("You put the sandbag onto \the [src]."))
-			qdel(O)
-	else if (istype(O, /obj/item/weapon/material/shovel))
-		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [O.name]."), SPAN_WARNING("You start dismantling the [src] using the [O.name]."))
+			qdel(I)
+	else if (I.item_flags & TOOL_SHOVEL)
+		user.visible_message(SPAN_WARNING("[user] starts dismantling the [src] using the [I.name]."), SPAN_WARNING("You start dismantling the [src] using the [I.name]."))
 		var/decon_time = 200
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			decon_time /= 1.5*H.getStatCoeff("crafting")
+			decon_time /= 1.5 * H.getStatCoeff("crafting")
 		if (do_after(user, decon_time, src))
-			user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [O.name]."), SPAN_DANGER("You finish dismantling the [src] using the [O.name]."))
+			user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src] using the [I.name]."), SPAN_DANGER("You finish dismantling the [src] using the [I.name]."))
 			var/turf = get_turf(src)
 			new /obj/item/weapon/barrier/sandbag(turf)
 			qdel(src)

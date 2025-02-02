@@ -48,44 +48,20 @@
 					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
-				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
+		if (I.fuel_value)
+			if(istype(I, /obj/item/stack))
+				var/obj/item/stack/S = I
+				H << "You place a chunk of \the [S] in \the [src], refueling it."
+				fuel += S.fuel_value/70
+				S.use(1)
 				return
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
-				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/leaf))
-				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/dung))	// FUEL +1
-				fuel += I.amount+1
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
-				fuel += I.amount*2.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
-				fuel += I.amount*3
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+			fuel += I.amount*I.fuel_value/70
+			H << "You place \the [I] in \the [src], refueling it."
+			qdel(I)
+			return
 
-			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
+		if (istype(I, /obj/item/stack))
+			if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
 				iron += I.amount
 				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)
@@ -263,44 +239,21 @@
 					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				fuel += I.amount
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))
-				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/leaf))
-				fuel += I.amount+0.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/dung))
-				fuel += I.amount+1
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				fuel += I.amount*2.5
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))
-				fuel += I.amount*3
-				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return				  //INPUT 1
 
-			else if (istype(I, /obj/item/stack/money/goldcoin))
+		if (I.fuel_value)
+			if(istype(I, /obj/item/stack))
+				var/obj/item/stack/S = I
+				H << "You place a chunk of \the [S] in \the [src], refueling it."
+				fuel += S.fuel_value/70
+				S.use(1)
+				return
+			fuel += I.amount*I.fuel_value/70
+			H << "You place \the [I] in \the [src], refueling it."
+			qdel(I)
+			return
+
+		if (istype(I, /obj/item/stack))
+			if (istype(I, /obj/item/stack/money/goldcoin))
 				gold += I.amount/5
 				H << "You place \the [I] in \the [src], smelting it."
 				qdel(I)

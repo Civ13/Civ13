@@ -62,7 +62,8 @@
 	if(wielded && default_parry_check(user, attacker, damage_source) && prob(15))
 		user.visible_message("<font color='#E55300'>\The [user] parries [attack_text] with \the [src]!</font>")
 		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
-		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		var/obj/item/I = damage_source
+		if (istype(damage_source, /obj/item/weapon/melee) || (I?.tool_flags & TOOL_AXE) || istype(damage_source, /obj/item/heatable/forged/weapon))
 			health -= 5
 		else
 			health-= 0.5
@@ -91,6 +92,7 @@
 	attack_verb = list("attacked", "chopped", "cleaved", "torn", "cut")
 	applies_material_colour = 0
 	chopping_speed = 1
+	tool_flags = TOOL_AXE
 
 /obj/item/weapon/material/twohanded/fireaxe/afterattack(atom/A as mob|obj|turf|area, mob/user as mob, proximity)
 	if(!proximity) return

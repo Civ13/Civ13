@@ -1276,7 +1276,7 @@ RECIPE: /material/tin/,beer can,/obj/item/weapon/reagent_containers/food/drinks/
 //*********************************************************
 
 RECIPE: /material/copper/,copper coins,/obj/item/stack/money/coppercoin,1,35,0,1,none,0,0,0,8,null
-RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,3,55,0,1,none,0,0,0,8,null
+RECIPE: /material/copper/,copper lamp,/obj/item/torch/lantern/copper,3,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,large copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_large,5,120,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
@@ -1406,7 +1406,7 @@ RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,
 //*********************| BRONZE |*************************
 //********************************************************
 
-RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/flashlight/lantern/bronze,4,60,0,1,none,15,0,0,8,null
+RECIPE: /material/bronze/,bronze etsy lamp,/obj/item/torch/lantern/bronze,4,60,0,1,none,15,0,0,8,null
 RECIPE: /material/bronze/,ashtray,/obj/item/weapon/material/ashtray/bronze,3,30,0,1,none,20,0,0,8,null
 
 //*********************| BRONZE WEAPONS & TOOLS |*************************
@@ -1436,7 +1436,7 @@ RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze
 
 RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,torch,/obj/item/torch,2,60,0,1,none,0,0,0,8,null
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
 
@@ -1699,7 +1699,7 @@ RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,
 
 RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 RECIPE: /material/iron/,keychain,/obj/item/weapon/storage/belt/keychain,1,30,0,1,none,28,0,0,8,null
-RECIPE: /material/iron/,lantern,/obj/item/flashlight/lantern,4,140,0,1,none,28,0,0,8,null
+RECIPE: /material/iron/,lantern,/obj/item/torch/lantern,4,140,0,1,none,28,0,0,8,null
 
 //*********************| IRON LOCOMOTIVES & TRACKS |**************************
 

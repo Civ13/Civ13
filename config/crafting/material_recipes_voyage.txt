@@ -129,7 +129,6 @@ RECIPE: /material/steel/,cautery,/obj/item/weapon/surgery/cautery,8,50,0,1,healt
 RECIPE: /material/iron/,syringe,/obj/item/weapon/reagent_containers/syringe,6,25,0,1,none,35,0,55,8,null
 RECIPE: /material/iron/,splints,/obj/item/stack/medical/splint,5,75,0,1,none,35,0,44,8,null
 RECIPE: /material/iron/,iron shank,/obj/item/weapon/material/kitchen/utensil/knife/shank/iron,4,20,0,1,none,50,44,0,8,null
-RECIPE: /material/iron/,iron anvil,/obj/structure/anvil,45,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,50,220,1,1,production,0,55,0,8,null
 RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,18,120,1,1,production,0,0,16,8,null
 grinder,/obj/structure/meat_grinder,19,120,1,1,production,0,0,90,8,null
@@ -149,7 +148,7 @@ RECIPE: /material/bronze/,bronze bone setter,/obj/item/weapon/surgery/bonesetter
 RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze,6,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,25,250,1,1,religious & decoration,10,0,0,8,bronze
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,5,60,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,torch,/obj/item/torch,5,60,0,1,none,0,0,0,8,null
 RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,100,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,wood bowl,/obj/item/kitchen/wood_bowl,3,40,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,3,40,0,1,kitchen,0,0,0,8,null
@@ -220,18 +219,24 @@ RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysm
 RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,5,30,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,35,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,35,150,1,1,none,26,0,0,8,null
-RECIPE: /material/clay/,unfired ingot mold,/obj/item/weapon/clay/mold,6,40,0,1,molds,0,0,0,8,null
-RECIPE: /material/clay/,unfired axehead mold,/obj/item/weapon/clay/mold/axehead,8,40,0,1,molds,0,0,0,8,null
-RECIPE: /material/clay/,unfired spearhead mold,/obj/item/weapon/clay/mold/spearhead,5,40,0,1,molds,0,0,0,8,null
-RECIPE: /material/clay/,unfired pickaxe mold,/obj/item/weapon/clay/mold/pickaxe,7,40,0,1,molds,0,0,0,8,null
-RECIPE: /material/clay/,unfired shovel mold,/obj/item/weapon/clay/mold/shovel,7,40,0,1,molds,0,0,0,8,null
-RECIPE: /material/clay/,unfired arrowhead mold,/obj/item/weapon/clay/mold/arrowhead,3,40,0,1,molds,0,0,0,8,null
+
+RECIPE: /material/clay/,ingot mold,/obj/item/claymold/ingot,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,hammer mold,/obj/item/claymold/hammer,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,pickaxe mold,/obj/item/claymold/pickaxe,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,hatchet mold,/obj/item/claymold/hatchet,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,shovel mold,/obj/item/claymold/shovel,3,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,tongs mold,/obj/item/claymold/tongs,2,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,anvil mold,/obj/item/claymold/anvil,6,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,knife mold,/obj/item/claymold/knife,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,spear mold,/obj/item/claymold/spear,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,arrowhead mold,/obj/item/claymold/arrowhead,1,40,0,1,molds,0,0,0,8,null
+RECIPE: /material/clay/,crucible,/obj/item/heatable/crucible,4,40,0,1,molds,0,0,0,8,null
 
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,8,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,5,95,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver statue,/obj/structure/religious/statue,25,250,1,1,none,10,0,0,8,silver
 
-RECIPE: /material/copper/,copper lamp,/obj/item/flashlight/lantern/copper,8,55,0,1,none,0,0,0,8,null
+RECIPE: /material/copper/,copper lamp,/obj/item/torch/lantern/copper,8,55,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,small copper pot,/obj/item/weapon/reagent_containers/glass/small_pot/copper_small,14,90,0,1,none,0,0,0,8,null
 RECIPE: /material/copper/,handbell,/obj/item/weapon/handbell,7,50,0,1,none,40,0,0,8,null
 RECIPE: /material/copper/,copper arm bangles,/obj/item/clothing/accessory/armband/armbangle/copper,5,95,0,1,none,0,0,0,8,null

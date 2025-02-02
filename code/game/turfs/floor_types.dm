@@ -75,6 +75,7 @@
 	icon_state = "plating"
 	floor_type = null
 	intact = FALSE
+	is_diggable = FALSE
 
 /turf/floor/plating/ex_act(severity)
 		//set src in oview(1)
@@ -227,6 +228,7 @@
 	name = "beach"
 	icon = 'icons/misc/beach.dmi'
 	initial_flooring = null
+	is_diggable = FALSE
 
 /turf/floor/beach/drywater
 	name = "dry riverbed"
@@ -248,6 +250,7 @@
 	is_diggable = TRUE
 	available_sand = 22
 	initial_flooring = /decl/flooring/sand_beach
+	is_diggable = TRUE
 
 /turf/floor/beach/sand/edges
 	name = "sand"

@@ -295,6 +295,10 @@
 			icon_suffix = "_4"
 	icon_state = "sheet-stonebrick[icon_suffix]"
 
+/obj/item/stack/material/stonebrick/ten/New()
+	amount = 10
+	return ..()
+
 /obj/item/stack/material/clay
 	name = "clay lump"
 	icon = 'icons/obj/claystuff.dmi'
@@ -688,7 +692,7 @@
 			start_fire()
 			user.visible_message(SPAN_RED("[user.name] sets \the [src] on fire!"), SPAN_RED("You set \the [src] on fire!"))
 			return
-	if (istype(I, /obj/item/weapon/material/hatchet))
+	if (I.tool_flags & TOOL_AXE)
 		// var/obj/item/weapon/material/hatchet/SH = T
 		// Check if there's enough material
 		if (src.amount < 2)

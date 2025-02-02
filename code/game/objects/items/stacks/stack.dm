@@ -100,6 +100,8 @@
 		if (usr)
 			usr.remove_from_mob(src)
 		qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
+	else
+		update_icon()
 	return TRUE
 
 /*
@@ -1865,13 +1867,13 @@
 	else if (recipe.result_type == /obj/item/stack/arrowhead/stone)
 		produced = 4
 	else if (recipe.result_type == /obj/item/stack/arrowhead/copper)
-		produced = 4
+		produced = 8
 	else if (recipe.result_type == /obj/item/stack/arrowhead/bronze)
-		produced = 4
+		produced = 8
 	else if (recipe.result_type == /obj/item/stack/arrowhead/iron)
-		produced = 4
+		produced = 8
 	else if (recipe.result_type == /obj/item/stack/arrowhead/steel)
-		produced = 4
+		produced = 8
 	else if (recipe.result_type == /obj/item/stack/arrowhead/vial)
 		produced = 4
 	if (recipe.result_type == /obj/structure/sink/well || recipe.result_type == /obj/structure/sink/well/sandstone || recipe.result_type == /obj/structure/sink/well/marble)
@@ -1896,7 +1898,7 @@
 		else if (inpt > 150)
 			inpt = 150
 		required = 2*(inpt/75)
-	
+
 	if (recipe.result_type == /obj/structure/barbwire)
 		var/barbwire_amount = 0
 		for (var/obj/structure/barbwire/B in get_turf(user))

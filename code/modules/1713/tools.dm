@@ -16,7 +16,7 @@
 	edge = FALSE
 	slot_flags = SLOT_BELT
 	flammable = TRUE
-	var/usespeed = 1.5
+	tool_multiplier = 1.5
 
 /obj/item/weapon/plough/attack_self(var/mob/living/L)
 	var/turf/T = get_turf(L)
@@ -31,7 +31,7 @@
 	item_state = "iplough"
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	sharp = TRUE
-	usespeed = 2.1
+	tool_multiplier = 2.1
 	flags = CONDUCT
 
 /obj/item/weapon/foldable
@@ -132,16 +132,17 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 	var/dig_speed = 7
-	var/usespeed = 1.5
+	tool_multiplier = 1.5
 	default_material = "iron"
 	force_divisor = 0.25
 	thrown_force_divisor = 0.15
 	health = 25
 	maxhealth = 25
+	tool_flags = TOOL_SHOVEL
 
 /obj/item/weapon/material/shovel/steel
 	material = "steel"
-	usespeed = 2
+	tool_multiplier = 2
 	default_material = "steel"
 	health = 50
 	maxhealth = 50
@@ -150,7 +151,7 @@
 /obj/item/weapon/material/shovel/bone
 	icon_state = "shovel_bone"
 	desc = "A shovel made out of some bone."
-	usespeed = 0.6
+	tool_multiplier = 0.6
 	default_material = "bone"
 	health = 7.5
 	maxhealth = 7.5
@@ -161,7 +162,7 @@
 	name = "foldable shovel"
 	icon_state = "trench_shovel"
 	item_state = "lopata"
-	usespeed = 0.9
+	tool_multiplier = 0.9
 	dig_speed = 7
 	var/path = /obj/item/weapon/foldable_shovel
 	secondary_action = TRUE
@@ -179,13 +180,13 @@
 	icon_state = "trench_shovel"
 	dig_speed = 7
 	force = 35
-	usespeed = 0.8
+	tool_multiplier = 0.8
 
 /obj/item/weapon/material/shovel/trench/foldable
 	name = "foldable entrenching tool"
 	desc = "A foldable shovel used specifically for digging and moving dirt."
 	icon_state = "trench_shovel"
-	usespeed = 0.8
+	tool_multiplier = 0.8
 	var/path = /obj/item/weapon/foldable_shovel/trench
 	secondary_action = TRUE
 
@@ -193,7 +194,7 @@
 	name = "foldable entrenching tool"
 	desc = "A foldable shovel used for digging dirt and moving dirt. It can be also as a improvised hatchet."
 	icon_state = "etool"
-	usespeed = 0.8
+	tool_multiplier = 0.8
 	chopping_speed = 3.1
 	path = /obj/item/weapon/foldable_shovel/trench/etool
 
@@ -208,7 +209,7 @@
 	name = "german entrenching tool"
 	desc = "A foldable shovel used specifically for digging and moving dirt."
 	icon_state = "etool"
-	usespeed = 0.8
+	tool_multiplier = 0.8
 	path = /obj/item/weapon/foldable_shovel/trench/german
 
 /obj/item/weapon/material/shovel/spade
@@ -220,11 +221,11 @@
 	throwforce = 20.0
 	w_class = ITEM_SIZE_SMALL
 	weight = 1.18
-	usespeed = 0.8
+	tool_multiplier = 0.8
 	dig_speed = 7
 
 /obj/item/weapon/material/shovel/spade/wood
-	usespeed = 0.4
+	tool_multiplier = 0.4
 	dig_speed = 7
 	default_material = "wood"
 	material = "wood"
@@ -277,7 +278,7 @@
 	icon_state = "lopata"
 	item_state = "lopata"
 	dig_speed = 7
-	usespeed = 0.9
+	tool_multiplier = 0.9
 
 /obj/item/weapon/material/pickaxe
 	name = "pickaxe"
@@ -292,29 +293,29 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 	default_material = "iron"
-	var/usespeed = 2
 	force_divisor = 0.35
 	thrown_force_divisor = 0.25
 	health = 25
 	maxhealth = 25
+	tool_flags = TOOL_PICKAXE
 
 /obj/item/weapon/material/pickaxe/steel
 	material = "steel"
-	usespeed = 3
+	tool_multiplier = 3
 	default_material = "steel"
 	health = 50
 	maxhealth = 50
 
 /obj/item/weapon/material/pickaxe/bone
 	icon_state = "pickaxe_bone"
-	usespeed = 1
+	tool_multiplier = 1
 	default_material = "bone"
 	health = 7.50
 	maxhealth = 7.50
 
 
 /obj/item/weapon/material/pickaxe/stone
-	usespeed = 1.5
+	tool_multiplier = 1.5
 	icon_state = "spickaxe"
 	default_material = "stone"
 	health = 15
@@ -334,7 +335,7 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK
-	usespeed = 5
+	tool_multiplier = 5
 	health = 350
 	maxhealth = 350
 
@@ -418,114 +419,6 @@
 	flammable = FALSE
 	//Designs possible are "smooth", "cave", "brick", "cobbled", "tiled"
 	design = "smooth"
-
-/obj/item/weapon/material/shovel/attack_self(mob/user)
-	var/turf/floor/TB = get_turf(user)
-	if (istype(TB, /turf/floor/beach/water))
-		return
-	var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
-	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
-	if (input == "Cancel")
-		return
-	else if (input == "Tunnel")
-		/*if (!(locate(/obj/roof/, (user.x,user.y,user.z-1)))
-			user << "<span class='notice'>You try to dig, but something hard is underneath!</span>"
-			return*/ //TO DO TO STOP PEOPLE FROM DIGGING ITNO BUNKERS LATER, TAISLIN PLZ FIX K THX!
-		if (!(locate(/obj/structure/multiz/) in user.loc) && user.z == 1)
-			TB = locate(user.x,user.y,user.z+1)
-			for (var/obj/OB in TB)
-				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
-					to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
-					return
-			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
-				to_chat(user, SPAN_NOTICE("You can't dig up on that type of floor!"))
-				return
-			var/digging_tunnel_time = 400
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				digging_tunnel_time /= H.getStatCoeff("strength")
-				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-			user.visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='notice'>You start digging up.</span>")
-			if (do_after(user, digging_tunnel_time, user.loc))
-				if (!TB.is_diggable)
-					return
-				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
-				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
-				user.visible_message("<span class='danger'>[user] finishes digging up!</span>", "<span class='notice'>You finish digging up.</span>")
-				if (ishuman(user))
-					var/mob/living/human/H = user
-					H.adaptStat("crafting", 1)
-					H.adaptStat("strength", 1)
-			return
-		if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
-			if (user.z <= 1)
-				to_chat(user, SPAN_NOTICE("You can't dig a tunnel here, the bedrock is right below."))
-				return
-			else
-				var/digging_tunnel_time = 200
-				if (ishuman(user))
-					var/mob/living/human/H = user
-					digging_tunnel_time /= H.getStatCoeff("strength")
-					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-				user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
-				if (do_after(user, digging_tunnel_time, user.loc))
-					if (!TB.is_diggable)
-						return
-					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
-					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
-					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
-					if (istype(BL, /turf/floor/dirt/underground))
-						BL.ChangeTurf(/turf/floor/dirt)
-					user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
-					if (ishuman(user))
-						var/mob/living/human/H = user
-						H.adaptStat("crafting", 1)
-						H.adaptStat("strength", 1)
-				return
-		else if (locate(/obj/structure/multiz/) in user.loc)
-			to_chat(user, SPAN_WARNING("There already is something here."))
-			return
-		else if (!TB.is_diggable)
-			to_chat(user, SPAN_WARNING("You cannot dig a hole here!"))
-			return
-	else if (input == "Irrigation Channel")
-		user.visible_message("<span class='notice'>[user] starts to dig an irrigation channel.</span>", "<span class='notice'>You start to dig an irrigation channel.</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
-		if (do_after(user, 25, src))
-			user.visible_message("<span class='notice'>[user] makes an irrigation channel.</span>", "<span class='notice'>You make an irrigation channel.</span>", "<span class='notice'>You finish and the sounds cease.</span>")
-			TB.irrigate("empty")
-			return
-		return
-	else if  (input == "Grave")
-		if (istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
-			return
-		else
-			if (locate(/obj/structure/multiz) in user.loc)
-				user << "<span class='notice'>There is a tunnel entrance here!</span>"
-				return
-			user.visible_message("[user] starts digging up a grave...", "<span class='notice'>You start digging up a grave...</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
-			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 100, src))
-				to_chat(user, SPAN_NOTICE("You finish digging the grave."))
-				new/obj/structure/religious/grave(user.loc)
-				return
-			else
-				return
-	else if  (input == "Pit Latrine")
-		if (istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
-			return
-		else
-			if (locate(/obj/structure/multiz) in user.loc)
-				to_chat(user, SPAN_NOTICE("There is a tunnel entrance here!"))
-				return
-			user.visible_message("[user] starts digging up a pit latrine...", "<span class='notice'>You start digging up a pit latrine...</span>", "<span class='notice'>You hear the sound of dirt being excavated nearby.</span>")
-			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 150, src))
-				to_chat(user, SPAN_NOTICE("You finish digging the pit latrine."))
-				new/obj/structure/toilet/pit_latrine(user.loc)
-				return
-			else
-				return
-
 
 /obj/structure/grapplehook
 	name = "grappling hook"
@@ -628,3 +521,120 @@
 	deployed = FALSE
 	update_icon()
 	return
+
+
+
+
+////////////////////
+// Tool Behaviors //
+////////////////////
+
+
+/obj/item/attack_self(mob/user)
+	var/turf/T = get_turf(user)
+	if (istype(T, /turf/floor/beach/water))
+		return
+
+	if(tool_flags & TOOL_SHOVEL)
+		var/display = list("Tunnel", "Grave", "Irrigation Channel", "Pit Latrine","Cancel")
+		var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
+
+		if (input == "Cancel")
+			return ..()
+
+		else if (input == "Tunnel")
+			if(locate(/obj/structure/multiz/) in user.loc)
+				to_chat(user, SPAN_NOTICE("You a tunnel here, one already exists!"))
+				return
+
+			var/turf/current_turf = get_turf(user)
+			var/turf/opposing_turf
+			var/turf/dig_into_turf
+			var/z_shift
+			if(user.z <= 1)
+				z_shift = 1
+				opposing_turf = locate(user.x, user.y, user.z + z_shift)
+				dig_into_turf = opposing_turf
+			else
+				z_shift = -1
+				opposing_turf = locate(user.x, user.y, user.z + z_shift)
+				dig_into_turf = current_turf
+
+			if(!dig_into_turf.is_diggable)
+				to_chat(user, SPAN_WARNING("This turf isn't diggable!"))
+				return
+
+			var/obj/covers/dig_into_cover = (locate(/obj/covers) in opposing_turf)
+			if(dig_into_cover)
+				to_chat(user, SPAN_WARNING("There's a floor in the way! Dig the tunnel then place a floor!"))
+
+			for(var/obj/O in opposing_turf)
+				var/obj/covers/C = istype(O, /obj/covers)
+				if((C && C.density) || opposing_turf.density)
+					to_chat(user, SPAN_WARNING("There's a wall in the way!"))
+				if(C || O.density)
+					to_chat(user, SPAN_WARNING("There's something in the way!"))
+
+			var/digging_tunnel_time = 400
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				digging_tunnel_time /= H.getStatCoeff("strength")
+				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+			user.visible_message("<span class='danger'>[user] starts digging a tunnel!</span>", "<span class='notice'>You start a tunnel.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!T.is_diggable)
+					return
+				var/top_turf = (z_shift < 0) ? current_turf : opposing_turf
+				var/bottom_turf = (z_shift < 0) ? opposing_turf : current_turf
+				new /obj/structure/multiz/ladder/ww2/tunneltop(top_turf)
+				new /obj/structure/multiz/ladder/ww2/tunnelbottom(bottom_turf)
+				user.visible_message("<span class='danger'>[user] finishes digging a tunnel!</span>", "<span class='notice'>You finish a tunnel.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+				return
+
+		else if (input == "Irrigation Channel")
+			if(!istype(T, /turf/floor))
+				return
+			var/turf/floor/F = T
+			user.visible_message("<span class='notice'>[user] starts to dig an irrigation channel.</span>", "<span class='notice'>You start to dig an irrigation channel.</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
+			if (do_after(user, 25, src))
+				user.visible_message("<span class='notice'>[user] makes an irrigation channel.</span>", "<span class='notice'>You make an irrigation channel.</span>", "<span class='notice'>You finish and the sounds cease.</span>")
+				F.irrigate("empty")
+				return
+			return
+
+		else if  (input == "Grave")
+			if (istype(T, /turf/floor/broken_floor) || istype(T, /turf/wall) || istype(T, /turf/floor/wood) || istype(T, /turf/floor/wood_broken) || istype(T, /turf/floor/ship) || istype(T, /turf/floor/carpet) || istype(T, /turf/floor/plating/cobblestone) || istype(T, /turf/floor/plating/concrete) || istype(T, /turf/floor/plating/stone_old))
+				return
+			else
+				if (locate(/obj/structure/multiz) in user.loc)
+					user << "<span class='notice'>There is a tunnel entrance here!</span>"
+					return
+				user.visible_message("[user] starts digging up a grave...", "<span class='notice'>You start digging up a grave...</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, 100, src))
+					to_chat(user, SPAN_NOTICE("You finish digging the grave."))
+					new/obj/structure/religious/grave(user.loc)
+					return
+				else
+					return
+
+		else if  (input == "Pit Latrine")
+			if (istype(T, /turf/wall) || istype(T, /turf/floor/wood) || istype(T, /turf/floor/wood_broken) || istype(T, /turf/floor/ship) || istype(T, /turf/floor/carpet) || istype(T, /turf/floor/broken_floor) || istype(T, /turf/floor/plating/cobblestone) || istype(T, /turf/floor/plating/concrete) || istype(T, /turf/floor/plating/stone_old))
+				return
+			else
+				if (locate(/obj/structure/multiz) in user.loc)
+					to_chat(user, SPAN_NOTICE("There is a tunnel entrance here!"))
+					return
+				user.visible_message("[user] starts digging up a pit latrine...", "<span class='notice'>You start digging up a pit latrine...</span>", "<span class='notice'>You hear the sound of dirt being excavated nearby.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, 150, src))
+					to_chat(user, SPAN_NOTICE("You finish digging the pit latrine."))
+					new/obj/structure/toilet/pit_latrine(user.loc)
+					return
+				else
+					return

@@ -231,7 +231,8 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+			var/obj/item/I = damage_source
+			if (istype(damage_source, /obj/item/weapon/melee) || (I?.tool_flags & TOOL_AXE) || istype(damage_source, /obj/item/heatable/forged/weapon))
 				health -= 10
 			else
 				health--

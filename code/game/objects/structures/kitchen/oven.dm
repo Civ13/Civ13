@@ -15,6 +15,7 @@
 	var/consume_itself = FALSE
 	var/looping = FALSE //for campfires
 	var/cooking_time = 50
+
 /obj/structure/oven/update_icon()
 	if (on)
 		icon_state = "[base_state]_on"
@@ -25,6 +26,9 @@
 	if (!istype(H))
 		return
 
+	if(istype(I, /obj/item/torch))
+		return
+
 	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
 		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
 		H << "You place the [POT] on top of the [src]."
@@ -33,38 +37,14 @@
 		POT.on_stove = TRUE
 		return TRUE
 
-	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
-		fuel += I.amount
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/bamboo))
-		fuel += I.amount
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
-		fuel += I.amount+0.5
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/leaf))
-		fuel += I.amount+0.5
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/dung))	// FUEL +1
-		fuel += I.amount+1
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
-		fuel += I.amount*2.5
-		H << "You place \the [I] in \the [src], refueling it."
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
-		fuel += I.amount*3
+	if (I.fuel_value)
+		if(istype(I, /obj/item/stack))
+			var/obj/item/stack/S = I
+			H << "You place a chunk of \the [S] in \the [src], refueling it."
+			fuel += S.fuel_value/70
+			S.use(1)
+			return
+		fuel += I.amount*I.fuel_value/70
 		H << "You place \the [I] in \the [src], refueling it."
 		qdel(I)
 		return
@@ -101,6 +81,7 @@
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		ignition_source = TRUE
 		fire_loop()
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
@@ -118,6 +99,7 @@
 		spawn (cooking_time)
 			if (!looping)
 				on = FALSE
+				ignition_source = FALSE
 				set_light(0)
 				update_icon()
 				if(prob(15))
@@ -228,102 +210,6 @@
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
-
-/obj/structure/oven/fireplace
-	name = "campfire"
-	desc = "A campfire made with wood logs."
-	icon = 'icons/obj/kitchen.dmi'
-	icon_state = "fireplace"
-	layer = 2.9
-	density = FALSE
-	anchored = TRUE
-	flags = OPENCONTAINER | NOREACT
-	base_state = "fireplace"
-	on = FALSE
-	max_space = 5
-	fuel = 4
-	consume_itself = TRUE
-	looping = TRUE
-	cooking_time = 300
-	light_power = 0.75
-	light_color = "#E38F46"
-
-/obj/structure/oven/fireplace/proc/keep_sound_on()
-	if (on && looping && fuel > 0)
-		playsound(get_turf(src), "sound/effects/fireplace-[rand(1, 6)].ogg", 75, TRUE, -1)
-		spawn(50) // 6 seconds
-			keep_sound_on()
-
-/obj/structure/oven/fireplace/proc/keep_fire_on()
-	if (on && looping && fuel > 0)
-		set_light(5)
-		update_icon()
-		fire_loop()
-		spawn(600) // 1 minute
-			keep_fire_on()
-	else
-		on = FALSE
-		set_light(0)
-		return
-
-/obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
-	if (!on && fuel > 0)
-		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
-		on = TRUE
-		keep_fire_on()
-		keep_sound_on()
-	else if (on)
-		H.visible_message(SPAN_NOTICE("[H] extinguishes \the [name]."), SPAN_NOTICE("You extinguish \the [name]."))
-		on = FALSE
-		set_light(0)
-		update_icon()
-	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-
-/obj/structure/oven/fireplace/proc/smoke_signals()
-	for (var/mob/living/human/HH in range(25,src))
-		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
-			var/currdir = "somewhere"
-			if (z == HH.z)
-				if (y < HH.y)
-					currdir = "south"
-				if (y > HH.y)
-					currdir = "north"
-				if (y == HH.y)
-					currdir = ""
-				if (x <= HH.x)
-					currdir = "[currdir]west"
-				if (x > HH.x)
-					currdir = "[currdir]east"
-				if (x == HH.x)
-					currdir = ""
-			if (currdir != "somewhere" && currdir != "")
-				to_chat(HH, "<b>You see some smoke signals [currdir] of you...</b>")
-
-/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
-	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
-		H << "You produce some smoke signals."
-		smoke_signals()
-	else
-		..()
-
-/obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
-	if (icon_state == "[base_state]_on" && ishuman(M))
-		M.apply_damage(rand(2,4), BURN, "l_leg")
-		M.apply_damage(rand(2,4), BURN, "r_leg")
-		M.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))
-
-/obj/structure/oven/fireplace/pit
-	name = "fire pit"
-	desc = "A small pit surrounded by stones used for housing fires."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "ringed_campfire"
-	density = TRUE
-	anchored = TRUE
-	base_state = "ringed_campfire"
-	consume_itself = FALSE
-	cooking_time = 150
-	light_power = 0.85
-	light_color = "#E38F46"
 
 /obj/structure/oven/verb/empty()
 	set category = null

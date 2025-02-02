@@ -7,11 +7,11 @@
 	icon = 'icons/obj/blacksmithing.dmi'
 	icon_state = "claycrucible"
 	var/itemNum = 0
-	var/itemLimit = 12
+	var/itemLimit = 24
 	var/list/contained = list()
 	var/list/meltPoints = list()
 	var/list/meltProgress = list()
-	var/latentHeat = 650
+	var/latentHeat = 300
 	var/liquid = 0
 	var/minMelt = null
 	var/list/valid_reactions = list()
@@ -293,6 +293,12 @@
 /* Crucible Reactions Initialize */
 ///////////////////////////////////
 
+/datum/crucible_reaction/
+	var/list/reqpaths
+	var/list/respaths
+	var/reactiontemp = 25
+	var/exothermic = TRUE
+
 GLOBAL_LIST(crucible_reactions_list)
 GLOBAL_LIST(crucible_reactants)
 
@@ -314,35 +320,3 @@ GLOBAL_LIST(crucible_reactants)
 		if(!GLOB.crucible_reactions_list[reqpath])
 			GLOB.crucible_reactions_list[reqpath] = list()
 		GLOB.crucible_reactions_list[reqpath].Add(C)
-
-
-
-////////////////////////
-/* Crucible Reactions */
-////////////////////////
-
-/datum/crucible_reaction/
-	var/list/reqpaths
-	var/list/respaths
-	var/reactiontemp = 25
-	var/exothermic = TRUE
-
-/datum/crucible_reaction/coppernugget
-	reqpaths = list("/obj/item/stack/ore/copper" = 1, "/obj/item/stack/ore/coal" = 1)
-	respaths = list("/obj/item/stack/ore/coppernugget" = 1)
-	reactiontemp = 700
-
-/datum/crucible_reaction/copperingot
-	reqpaths = list("/obj/item/stack/ore/coppernugget" = INGOT_VALUE)
-	respaths = list("/obj/item/heatable/ingot/copper" = 1)
-	reactiontemp = 1100
-
-/datum/crucible_reaction/zincbrass
-	reqpaths = list("/obj/item/heatable/ingot/copper" = 2, "/obj/item/stack/ore/zinc" = INGOT_VALUE)
-	respaths = list("/obj/item/heatable/ingot/brass" = 3)
-	reactiontemp = 910
-
-/datum/crucible_reaction/blistersteel
-	reqpaths = list("/obj/item/heatable/ingot/wroughtiron" = 1, "/obj/item/stack/ore/coal" = INGOT_VALUE)
-	respaths = list("/obj/item/heatable/ingot/blistersteel" = 1)
-	reactiontemp = 1100

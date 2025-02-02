@@ -122,7 +122,7 @@
 	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/gun/projectile/attackby(obj/item/M as obj, mob/user as mob)
-	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
+	if ((M.tool_flags & TOOL_KNIFE) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(alert(user,"Ae you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!","Serial number filing","Yes","No"))
 			if ("No")
 				return

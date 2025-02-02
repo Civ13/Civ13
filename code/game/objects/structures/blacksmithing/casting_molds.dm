@@ -1,27 +1,3 @@
-
-
-//////////////////
-/* Hand Bellows */
-//////////////////
-
-/obj/item/handbellows
-	name = "\improper hand bellows"
-	icon = 'icons/obj/blacksmithing.dmi'
-	icon_state = "handbellows"
-	var/nextuse = 0
-	var/usedelay = 20
-
-/obj/item/handbellows/proc/reset()
-	nextuse = world.time + usedelay
-
-/obj/item/handbellows/proc/ready()
-	if(world.time - nextuse >= 0)
-		reset()
-		playsound(loc, 'sound/effects/woosh.ogg', 85, TRUE)
-		return TRUE
-	return FALSE
-
-
 ////////////////
 /* Clay Molds */
 ////////////////
@@ -31,11 +7,11 @@
 	icon = 'icons/obj/blacksmithing.dmi'
 	icon_state = "axemold"
 	var/fired = TRUE
-	var/mold_result = /obj/item/heatable/ingot
+	var/obj/mold_result = /obj/item/heatable/ingot
 	var/ingot_value = 1
 	var/list/allowed_metals = list()
 	var/cool_time = 30
-	var/metal_contained = null
+	var/metal_contained = null			// Type path of material ingot as string
 
 /obj/item/claymold/New()
 	..()
@@ -97,9 +73,9 @@
 /obj/item/claymold/proc/result()
 	var/new_item
 	if(ispath(mold_result, /obj/item/heatable/forged))
-		var/obj/item/heatable/ingot/I = metal_contained
+		var/obj/item/heatable/ingot/I = text2path(metal_contained)
 		var/obj/item/heatable/forged/F = new mold_result(get_turf(src))
-		F.update_values(metal_contained, initial(I.temperature), initial(I.multiplier),
+		F.update_values(text2path(metal_contained), initial(I.temperature), initial(I.multiplier),
 						initial(I.namemodifier), ingot_value, initial(I.iconmodifier))
 		new_item = F
 	else if(ispath(mold_result, /obj/item/heatable/ingot))
@@ -121,32 +97,3 @@
 		var/cooled = cool_time / initial(cool_time)
 		i += rgb(400*cooled, 200*cooled*cooled, 100*cooled*cooled)
 		overlays += i
-
-/obj/item/claymold/hammer
-	name = "\improper hammer mold"
-	icon = 'icons/obj/blacksmithing.dmi'
-	icon_state = "hammermold"
-	mold_result = /obj/item/heatable/forged/hammer
-	allowed_metals = list(
-		"/obj/item/heatable/ingot/copper"
-		)
-
-/obj/item/claymold/pickaxe
-	name = "\improper pickaxe mold"
-	icon = 'icons/obj/blacksmithing.dmi'
-	icon_state = "pickaxemold"
-	mold_result = /obj/item/heatable/forged/pickaxe
-	ingot_value = 2
-	allowed_metals = list(
-		"/obj/item/heatable/ingot/copper"
-		)
-
-/obj/item/claymold/ingot
-	name = "\improper ingot mold"
-	icon = 'icons/obj/blacksmithing.dmi'
-	icon_state = "ingotmold"
-	mold_result = /obj/item/heatable/ingot
-	allowed_metals = list(
-		"/obj/item/heatable/ingot/copper",
-		"/obj/item/heatable/ingot/brass"
-		)

@@ -18,7 +18,7 @@
 				to_chat(user, "<span class='notice'>A whole lot of good that hammer's gonna do you without a handle...</span>")
 				return
 		var/obj/item/heatable/forged/hammer/H = I
-		if(do_after(user, (iron*20)/H.getmultiplier(), target = src))
+		if(do_after(user, (iron*15)/H.getmultiplier(), target = src))
 			//Audio
 			playsound(loc, 'sound/effects/clang.ogg', 70, 1)
 			//Temperature Check

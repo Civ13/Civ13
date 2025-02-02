@@ -1,0 +1,6 @@
+#define TOOL_AXE		(1<<0)
+#define TOOL_PICKAXE	(1<<1)
+#define TOOL_SHOVEL		(1<<2)
+#define TOOL_KNIFE		(1<<3)
+#define TOOL_HAMMER		(1<<4)
+#define TOOL_SLEDGE		(1<<4)

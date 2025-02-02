@@ -170,10 +170,9 @@
 		return
 
 
-	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
+	else if (C.tool_flags & TOOL_SHOVEL || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
-		var/obj/item/weapon/material/shovel/SH = C
 		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
 				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
@@ -183,7 +182,7 @@
 					H.shoveling = TRUE
 					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+					if (!do_after(user, (60 / H.getStatCoeff("strength") / C.tool_multiplier)))
 						H.shoveling = FALSE
 						return
 					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
@@ -202,7 +201,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, (60 / H.getStatCoeff("strength") / C.tool_multiplier)))
 							user.visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -217,7 +216,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, (40 / H.getStatCoeff("strength") / C.tool_multiplier)))
 							user.visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
@@ -232,7 +231,7 @@
 			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
 				user.visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
+				if (do_after(user, (150 / H.getStatCoeff("strength") / C.tool_multiplier)))
 					user.visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
 					H.adaptStat("strength", 1)
 					radiation *= 0.1
@@ -270,8 +269,7 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/material/pickaxe) || istype(C, /obj/item/weapon/material/kitchen/utensil))
-		var/obj/item/weapon/material/pickaxe/SH = C
+	else if ((C.tool_flags & TOOL_PICKAXE) || istype(C, /obj/item/weapon/material/kitchen/utensil))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
@@ -283,7 +281,7 @@
 			T.mining_in_progress = TRUE
 			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
+			if (do_after(user, (240 / H.getStatCoeff("strength") / C.tool_multiplier)))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					var/turf/floor/dirt/underground/empty/TT = src
@@ -291,7 +289,7 @@
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
-			if (!do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
+			if (!do_after(user, (240 / H.getStatCoeff("strength") / C.tool_multiplier)))
 				T.mining_in_progress = FALSE // In case we abort mid-way.
 				return
 			collapse_check()
@@ -484,7 +482,6 @@
 			to_chat(user, SPAN_WARNING("You can't plant here. Find a ploughed plot."))
 			return
 	else if (istype(C, /obj/item/weapon/plough))
-		var/obj/item/weapon/plough/PL = C
 		var/turf/T = get_turf(src)
 		if (user.a_intent == I_DISARM)
 			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
@@ -492,7 +489,7 @@
 					to_chat(user, SPAN_WARNING("You can't make a dirt road here."))
 					return
 				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
-				if (do_after(user, 50/PL.usespeed, user.loc))
+				if (do_after(user, 50 / C.tool_multiplier, user.loc))
 					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
 					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
@@ -515,12 +512,12 @@
 				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
-				if (do_after(user, 50/PL.usespeed, user.loc))
+				if (do_after(user, 50 / C.tool_multiplier, user.loc))
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 				var/mob/living/human/H = user
-				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
+				if (do_after(user, (70 / H.getStatCoeff("farming")) / C.tool_multiplier, user.loc))
 					if (istype(T, /turf/floor/dirt/flooded))
 						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
 						if (ishuman(user))
@@ -631,16 +628,16 @@
 		// Repairs.
 	return ..()
 
-/turf/floor/mining/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/material/pickaxe))
+/turf/floor/mining/attackby(obj/item/I, mob/user as mob)
+	if (I.tool_flags & TOOL_PICKAXE)
 		var/mob/living/human/H = user
 		if (istype(H))
 			if(src.mining_in_progress)
-				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor with \the [C.name]."))
+				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor with \the [I.name]."))
 				return
 			// Set mining_in_progress to TRUE to indicate the process has started.
 			src.mining_in_progress = TRUE
-			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
+			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [I.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [I.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 320/(H.getStatCoeff("strength"))
 			if (do_after(user, timera))
@@ -648,21 +645,21 @@
 				src.mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
 			else
 				src.mining_in_progress = FALSE // In case we abort mid-way.
-			return ..(C, user)
-	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			return ..(I, user)
+	else if (istype(I, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
-		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = I
 		if (ET.reagents.total_volume > 0)
 			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
 			return
 		if (istype(H))
-			user.visible_message(SPAN_NOTICE("[user] starts to carefully examine \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
+			user.visible_message(SPAN_NOTICE("[user] starts to carefully examine \the [src] with \the [I.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [I.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			var/timera = 110/(H.getStatCoeff("dexterity"))
 			if (do_after(user, timera))
-				extracting_proc(H, C)
+				extracting_proc(H, I)
 		else
-			return ..(C, user)
+			return ..(I, user)
 
 /turf/proc/extracting_proc(var/mob/living/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
 	if (!H || !src || !E)

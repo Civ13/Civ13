@@ -33,39 +33,15 @@
 					visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 					qdel(src)
 					return
-		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += (240)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/ore/charcoal))
-			fuel += (80)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/weapon/branch))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/bamboo))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/material/leaf))
-			fuel += (30)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
-			qdel(W)
-			return
-		else if (istype(W, /obj/item/stack/dung))
-			fuel += (60)*W.amount
-			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
+		else if (W.fuel_value)
+			if(istype(W, /obj/item/stack))
+				var/obj/item/stack/S = W
+				user << "You place a chunk of \the [S] in \the [src], refueling it."
+				fuel += S.fuel_value/70
+				S.use(1)
+				return
+			fuel += W.amount*W.fuel_value/70
+			user << "You place \the [W] in \the [src], refueling it."
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/glass) && !istype(W, /obj/item/weapon/reagent_containers/glass/rag))

@@ -14,7 +14,7 @@
 	var/list/biomes = list("tundra", "temperate", "sea", "desert", "jungle", "savanna", "taiga", "semiarid")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
-/* 
+/*
 /////// Plant seeds; (Different than structure code, this is object code for the seed and stack handling...)
 */
 
@@ -157,7 +157,7 @@
 	color = "#2e8d2e"
 	biomes = list()
 
-/* 
+/*
 /////// Vegetable seeds.
 * Organic
 
@@ -957,7 +957,7 @@
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
-		spawn(600) // 1 minute 
+		spawn(600) // 1 minute
 			var/turf/t = null
 			var/area/a = null
 			if (src)
@@ -991,8 +991,8 @@
 	else if(prob(20))
 		stage += 1
 
-/obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
+/obj/structure/farming/plant/attackby(obj/item/I as obj, mob/user as mob)
+	if ((I.tool_flags & TOOL_AXE) || (I.tool_flags & TOOL_KNIFE))
 		if (stage < readyStageMin) // destroy
 			to_chat(user, SPAN_WARNING("You uproot the [name]."))
 			qdel(src)

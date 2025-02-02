@@ -16,6 +16,7 @@
 	sharpness = 25
 	var/stat = "swords"
 	cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
+	tool_flags = TOOL_KNIFE
 
 
 /obj/item/weapon/material/sword/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")

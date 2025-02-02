@@ -1805,7 +1805,7 @@
 	item_state = "samurai_lord3"
 	worn_state = "samurai_lord3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 85, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 	health = 60

@@ -374,6 +374,7 @@
 	chopping_speed = 1.7
 	health = 20
 	maxhealth = 20
+	tool_flags = TOOL_AXE
 
 /obj/item/weapon/material/hatchet/steel
 	chopping_speed = 1.55
@@ -410,6 +411,7 @@
 	chopping_speed = 1.6
 	health = 15
 	maxhealth = 15
+	tool_flags = TOOL_KNIFE
 
 /obj/item/weapon/material/machete1
 	name = "machete"
@@ -429,6 +431,7 @@
 	block_chance = 15
 	cooldownw = 5
 	chopping_speed = 1.6
+	tool_flags = TOOL_KNIFE
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
@@ -484,6 +487,7 @@
 	block_chance = 12
 	cooldownw = 6
 	chopping_speed = 2.7
+	tool_flags = TOOL_AXE
 
 /obj/item/weapon/material/minihoe // -- Numbers
 	name = "mini hoe"
