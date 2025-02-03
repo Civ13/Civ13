@@ -71,8 +71,8 @@
 							F.update_values(ingottype, temperature, matmultiplier, namemodifier, ingotvalue, iconmodifier)
 						count--
 				else
-					var/obj/item/stack/S = new result(loc)
-					S.amount = count
+					var/obj/item/stack/S = result
+					new S(loc, count)
 				qdel(src)
 			else
 				attackby(I, user)

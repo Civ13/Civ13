@@ -56,7 +56,7 @@
 	if(temperature <= 20)
 		processing_objects -= src
 		return
-	temperature -= round(temperature * 0.04)
+	temperature -= round(temperature * 0.025)
 	updatesprites()
 
 /obj/item/heatable/examine(mob/user)

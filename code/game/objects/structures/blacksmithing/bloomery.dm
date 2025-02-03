@@ -136,6 +136,10 @@
 			processing_objects -= src
 			return
 
+		// Adjust Resource Values
+		ore -= amount * matperiron
+		fuel -= amount * matperiron / oretofuel
+
 		// Create Bloom
 		while(amount > 0)
 			var/obj/item/heatable/bloom/B = new /obj/item/heatable/bloom(loc)
@@ -144,10 +148,6 @@
 			amount -= change
 			B.temperature = 1400
 			B.updatesprites()
-
-		// Adjust Resource Values
-		ore -= amount * matperiron
-		fuel -= amount * matperiron / oretofuel
 
 		// Reset
 		active = FALSE

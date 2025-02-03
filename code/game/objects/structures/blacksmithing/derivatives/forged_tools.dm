@@ -175,7 +175,7 @@
 /obj/item/heatable/forged/tongs/wooden/attack_self(mob/living/user)
 	var/check = holding
 	..()
-	if(check)
+	if(check && holding.temperature > 100)
 		use_counter--
 	if(use_counter <= 0)
 		to_chat(user, SPAN_WARNING("The tongs burn up and fall apart!"))

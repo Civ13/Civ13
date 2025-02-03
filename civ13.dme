@@ -1183,5 +1183,4 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\nomads\nomads_gaia.dmm"
-#include "maps\nomads\nomads_mediterranean.dmm"
 // END_INCLUDE
