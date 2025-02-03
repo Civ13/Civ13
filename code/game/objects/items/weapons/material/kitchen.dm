@@ -1,6 +1,5 @@
 /obj/item/weapon/material/kitchen
 	icon = 'icons/obj/kitchen.dmi'
-
 /*
  * Utensils
  */
@@ -99,6 +98,20 @@
 	var/atk_mode = SLASH
 	var/suicide = FALSE // for the hari kiri action
 	tool_flags = TOOL_KNIFE
+
+/obj/item/weapon/material/kitchen/utensil/knife/primitive_knife_1
+	name = "knife"
+	desc = "A knife for eating with. Can cut through any food."
+	icon = 'icons/obj/primitive/tools.dmi'
+	icon_state = "primitive_knife_1"
+	item_state = "knife"
+	material = "stone"
+	applies_material_colour = FALSE
+	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
+	scoop_food = FALSE
+	slot_flags = SLOT_BELT|SLOT_POCKET//|SLOT_MASK
+	edge = TRUE
+	sharp = TRUE
 
 /obj/item/weapon/material/kitchen/utensil/knife/proc/handle_suicide(mob/living/user)
 	if (!ishuman(user))
@@ -457,41 +470,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
 	..()
 	name = "bone knife"
-
-/obj/item/weapon/material/kitchen/utensil/knife/circumcision
-	name = "circumcision knife"
-	desc = "A small knife with a bone handle, used to perform circumcisions."
-	icon = 'icons/obj/kitchen.dmi'
-	icon_state = "circumcision"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.1
-
-/obj/item/weapon/material/kitchen/utensil/knife/circumcision/New()
-	..()
-	name = "circumcision knife"
-
-/obj/item/weapon/material/kitchen/utensil/knife/circumcision/attack(target as mob, mob/living/user as mob)
-	if (istype(target, /mob/living/human))
-		var/mob/living/human/H = target
-		if (user.a_intent == I_HELP && H.gender == MALE)
-			if (H.circumcised)
-				user << "<span class = 'notice'>[H] is already circumcised!</span>"
-				return
-			else
-				visible_message("<span class = 'notice'>[user] starts to circumcise [H]...</span>")
-				if (do_after(user, 90, H) && !H.circumcised)
-					visible_message("<span class = 'notice'>[user] successfully circumcises [H].</span>")
-					H.circumcised = TRUE
-					return
-				else
-					return ..()
-		else
-			return ..()
-	else
-		return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	return ..()

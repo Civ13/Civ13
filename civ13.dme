@@ -548,6 +548,7 @@
 #include "code\game\objects\map_metadata\nomads_oceania.dm"
 #include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads_persistence_beta.dm"
+#include "code\game\objects\map_metadata\nomads_riverside.dm"
 #include "code\game\objects\map_metadata\nomads_stranded.dm"
 #include "code\game\objects\map_metadata\nomads_uk.dm"
 #include "code\game\objects\map_metadata\nomads_wasteland.dm"
@@ -626,6 +627,7 @@
 #include "code\game\objects\structures\morgue.dm"
 #include "code\game\objects\structures\noticeboard.dm"
 #include "code\game\objects\structures\optable.dm"
+#include "code\game\objects\structures\ore_deposits.dm"
 #include "code\game\objects\structures\piano.dm"
 #include "code\game\objects\structures\plant_pots.dm"
 #include "code\game\objects\structures\railing.dm"
@@ -1180,5 +1182,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+#include "maps\nomads\nomads_gaia.dmm"
 #include "maps\nomads\nomads_mediterranean.dmm"
 // END_INCLUDE

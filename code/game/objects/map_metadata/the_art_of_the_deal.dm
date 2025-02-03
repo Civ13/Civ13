@@ -20,7 +20,7 @@
 	var/fac_nr = 3
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "The Deal"
-	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.<br>Please read the manual: https://civ13.github.io/civ13-wiki/The_Art_of_the_Deal</font>"
+	mission_start_message = "<font size=4><b>4</b> corporations are fighting for control of the disks.<br>Please read the manual: https://new-civ13.github.io/civ13-wiki/The_Art_of_the_Deal</font>"
 	var/winner_name = "Unknown"
 	var/list/winner_ckeys = list()
 	faction1 = CIVILIAN

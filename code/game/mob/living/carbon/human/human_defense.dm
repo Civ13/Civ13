@@ -19,16 +19,6 @@ bullet_act
 	for (var/obj/item/weapon/grab/G in grabbed_by)
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
-	if (user.a_intent == I_HELP && gender == MALE && istype(W,/obj/item/weapon/material/kitchen/utensil/knife/circumcision))
-		if (circumcised)
-			to_chat(user, SPAN_NOTICE("[src]is already circumcised!</span>"))
-			return
-		else
-			visible_message(SPAN_NOTICE("[user] starts to circumcise [src]..."))
-			if (do_after(user, 90, src) && !circumcised)
-				visible_message(SPAN_NOTICE("[user] successfully circumcises [src]."))
-				circumcised = TRUE
-				return
 
 				 // Butchering mobs with a knife on harm intent.
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
@@ -194,7 +184,7 @@ bullet_act
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
 					else
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
-						
+
 		else if (!map.civilizations && !map.nomads && !map.is_RP)
 			var/mob/living/human/Huser = P.firer
 			if (src.stat != DEAD && src.faction_text != Huser.faction_text)
@@ -361,7 +351,7 @@ bullet_act
 							qdel(P)
 							return
 
-		
+
 
 		var/KD_check = FALSE
 
@@ -378,7 +368,7 @@ bullet_act
 		if (prob(P.KD_chance/2) && !KD_check && !(locate(/obj/structure/vehicleparts/frame) in get_turf(src)) && !istype(P, /obj/item/projectile/bullet/pellet/buckshot) && !istype(P, /obj/item/projectile/bullet/shotgun))
 			SpinAnimation(5,1)
 			// Get the turf behind by getting the dir from the firer to us
-			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir) 
+			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)
 			if (behind)
 				if (behind.density || (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind))
 					var/turf/slammed_into = behind

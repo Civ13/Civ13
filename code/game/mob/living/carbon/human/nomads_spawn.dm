@@ -373,7 +373,7 @@
 					give_languages()
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 
-	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_GAIA))
+	else if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_GAIA || map.ID == MAP_NOMADS_TESTING))
 		switch (mob_area.climate)
 			if ("tundra","taiga")
 				add_language("Old Norse",TRUE)
@@ -553,6 +553,46 @@
 				possible_h_list = list("Orange","Light Brown","Red","Brown")
 				possible_e_list = list("Brown","Green")
 				possible_s_range = list(-15,-30)
+
+		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
+
+	else if (map.ID == MAP_NOMADS_RIVERSIDE)
+		switch (mob_area.climate)
+			if ("temperate")
+				for (var/datum/language/english/A in languages)
+					default_language = A
+				name = species.get_random_english_name(gender)
+				real_name = name
+				add_note("Known Languages", "English")
+				possible_h_list = list("Light Brown","Dark Brown","Black", "Blond")
+				possible_e_list = list("Brown","Green","Blue")
+				possible_s_range = list(-15,-30)
+
+			if ("taiga")
+				add_language("German",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/german/A in languages)
+					default_language = A
+				name = species.get_random_german_name(gender)
+				real_name = name
+				add_note("Known Languages", "German")
+				possible_h_list = list("Light Brown","Dark Brown","Black", "Blond")
+				possible_e_list = list("Blue","Green")
+				possible_s_range = list(-15,-30)
+
+			if ("semiarid")
+				add_language("French",TRUE)
+				remove_language("English")
+				remove_note("Known Languages","English")
+				for (var/datum/language/french/A in languages)
+					default_language = A
+				name = species.get_random_french_name(gender)
+				real_name = name
+				add_note("Known Languages","French")
+				possible_h_list = list("Light Brown","Dark Brown","Black", "Blond")
+				possible_e_list = list("Blue","Green","Brown")
+				possible_s_range = list(-20,-45)
 
 		update_character_appearance(possible_e_list, possible_h_list, possible_s_range)
 

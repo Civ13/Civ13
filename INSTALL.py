@@ -31,7 +31,7 @@ os.system("unzip {}.{}_byond_linux.zip".format(byond_version_major,byond_version
 os.system("sudo mkdir /usr/share/man/man6")
 os.system("make install -C byond")
 print("Cloning the github...")
-os.system("sudo git clone https://github.com/civ13/civ13 civ13-git")
+os.system("sudo git clone https://github.com/new-civ13/civ13 civ13-git")
 
 print("Building binaries...")
 
@@ -56,7 +56,7 @@ print("Updating the config...")
 with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'r') as file :
   filedata = file.read()
 
-filedata = filedata.replace("/home/1713", mdir)
+filedata = filedata.replace("/home/emoney/civ13", mdir)
 
 with open(os.path.join(mdir,cdir,"scripts/paths.txt"), 'w') as file:
   file.write(filedata)

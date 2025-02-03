@@ -170,7 +170,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
-	
+
 	H.add_note("Role", " You are a <b>[title]</b>, the leader of this colony's funds.")
 	H.add_note("Command", " You answer directly to the Colonial Administration. Bank Tellers are your subordinates. The bank is property of Central Administration and YOU are the trusted manager.")
 	H.add_note("You & the Governor", "The government isn't your Boss, nor are you his, however when it comes to colonial funds, you have equal authority and therefore a say. You must make sure the Governor does not waste our funds!")
@@ -2107,7 +2107,6 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/expensive/yellow(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/factionyellow(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/map(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/circumcision(H), slot_l_hand)
 
 	var/obj/item/clothing/head/custom/kippa/kippa = new /obj/item/clothing/head/custom/kippa(null)
 	kippa.color = "#fac331"

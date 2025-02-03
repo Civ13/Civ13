@@ -69,6 +69,7 @@ var/world_is_open = TRUE
 
 #define RECOMMENDED_VERSION 514
 /world/New()
+
 #ifdef USE_BYOND_TRACY
 	#warn USE_BYOND_TRACY is enabled
 	init_byond_tracy()
@@ -329,7 +330,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /proc/load_configuration()
 	config = new /datum/configuration()
-	config.load("config/config.txt", "config")
+	config.load("./config/config.txt", "config")
 
 /world/proc/update_status()
 

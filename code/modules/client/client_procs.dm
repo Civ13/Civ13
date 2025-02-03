@@ -172,7 +172,9 @@
 
 	/*Admin Authorisation: */
 
-	load_admins()
+	load_admins() // Holy shit?
+
+
 
 	holder = admin_datums[ckey]
 
@@ -199,12 +201,19 @@
 			del(src)
 			return
 
-	var/host_file_text = file2text("config/host.txt")
-	if (ckey(host_file_text) == ckey && !holder)
+	var/static/list/localhost_addresses = list("127.0.0.1","::1")
+	if(config.localhost_autoadmin && (!address && !world.port) || (address in localhost_addresses))
 		holder = new("Host", FALSE, ckey)
 		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
 		if (directory[ckey])
 			A.associate(directory[ckey])
+
+	//var/host_file_text = file2text("config/host.txt")
+	//if (ckey(host_file_text) == ckey && !holder)
+	//	holder = new("Host", FALSE, ckey)
+	//	var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+	//	if (directory[ckey])
+	//		A.associate(directory[ckey])
 
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))

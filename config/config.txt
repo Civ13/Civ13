@@ -3,7 +3,10 @@
 SERVER_NAME Civilization 13
 
 ## Where is the game folder located?
-MASTER_DIRECTORY /home/1713
+MASTER_DIRECTORY /home/emoney/civ13
+
+## DO WE AUTOADMIN LOCALHOST? YES? YEAH?
+LOCALHOST_AUTOADMIN
 
 ## If this server is running: Persistence mode, RP maps only, TDM only, or both (PERSISTENCE RP TDM ALL).
 ALLOWED_GAMEMODES ALL
@@ -130,19 +133,19 @@ SERVER 192.210.161.174:23999
 DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://civ13.com/wiki/index.php?title=Rules
+RULESURL https://new-civ13.github.io/civ13-wiki/Rules
 
 ## discord address
-DISCORDURL https://civ13.com/discord
+DISCORDURL https://discord.gg/TYrtJZDwSt
 
 ## Wiki address
-WIKIURL https://civ13.github.io/civ13-wiki/
+WIKIURL https://new-civ13.github.io/civ13-wiki/
 
 ## Website address
 WEBSITEURL http://civ13.com/
 
 ##Github address
-GITHUBURL https://github.com/civ13/civ13/
+GITHUBURL https://github.com/new-civ13/civ13/
 
 ##Github repo id
 ##This can be found by going to https://api.github.com/users/<user name here>/repos
@@ -213,14 +216,14 @@ SHOW_MENTORS 1
 DISABLE_FOV
 
 #if uncommented, redirects all players to the target server
-#REDIRECT_ALL_PLAYERS byond://civ13.com:1714
+#REDIRECT_ALL_PLAYERS byond://moviesfreepremium.xyz:1714
 
 #if uncommented, does not automatically save persistence rounds to file
 SKIP_PERSISTENCE_SAVING
 
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
-#WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads
+#WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/eternal
 #WEBHOOK_KEY
 
 LANGUAGE english

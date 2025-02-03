@@ -315,7 +315,6 @@
 /datum/job/american/idf/give_random_name(var/mob/living/human/H)
 	H.name = H.species.get_random_hebrew_name(H.gender)
 	H.real_name = H.name
-	H.circumcised = TRUE
 
 /datum/job/american/idf/lieutenant
 	title = "Segen"
@@ -1660,7 +1659,7 @@
 	uniform.attackby(web, H)
 //back
 	var/loadout = rand(1,3)
-	switch (loadout) 
+	switch (loadout)
 		if (1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/hk417/att(H), slot_shoulder)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/hk(H), slot_belt)
