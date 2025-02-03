@@ -167,17 +167,19 @@
 	desc = "Tongs for picking up hot stuff, but they're wooden so they wont last more than several uses."
 	icon = 'icons/obj/blacksmithing.dmi'
 	icon_state = "tongs"
-	var/use_counter = 3
+	var/use_counter = 4
 	iconmodifier = "wood"
 	namemodifier = "wood"
 	ingottype = null
 
-/obj/item/heatable/forged/tongs/wooden/attack_self(mob/living/user)
-	var/check = holding
+/obj/item/heatable/forged/tongs/wooden/afterattack(atom/target, mob/user, proximity_flag)
 	..()
+	var/check = holding
 	if(check && holding.temperature > 100)
 		use_counter--
 	if(use_counter <= 0)
+		holding.forceMove(get_turf(src))
+		holding = null
 		to_chat(user, SPAN_WARNING("The tongs burn up and fall apart!"))
 		qdel(src)
 
