@@ -12,7 +12,7 @@
 	var/oretofuel = 3				// How much ore 1 fuel produces. Keep everything evenly divisible.
 	var/matperiron = INGOT_VALUE	// Amount of ore and fuel needed for one iron bar (in bloom).
 	var/active = FALSE
-	var/timer = 100					// Time till ore produced, discounting aeration.
+	var/timer = 65					// Time till ore produced, discounting aeration.
 	var/heat = 5					// How many ticks until the bloomery will shut off due to lack of heat.
 	var/nextaeration = 0
 	var/aerationdecrease = 5		// Amount of time saved by aerating the bloomery.

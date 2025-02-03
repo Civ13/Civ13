@@ -59,7 +59,13 @@
 			hammerblows -= anvilmodifier * H.getmultiplier()
 			//Finished Product
 			if(hammerblows <= 0)
-				if(!ispath(result, /obj/item/stack/material))
+				if(ispath(result, /obj/item/stack/material))
+					var/obj/item/stack/S = result
+					new S(loc, count)
+				else if(ispath(result, /obj/item/heatable/ingot))
+					var/obj/item/heatable/ingot/ingot = result
+					new ingot(loc, count)
+				else
 					while(count > 0)
 						var/obj/O = new result(loc)
 						if(ispath(O, /obj/item/heatable/ingot))
@@ -70,9 +76,6 @@
 							var/obj/item/heatable/forged/F = O
 							F.update_values(ingottype, temperature, matmultiplier, namemodifier, ingotvalue, iconmodifier)
 						count--
-				else
-					var/obj/item/stack/S = result
-					new S(loc, count)
 				qdel(src)
 			else
 				attackby(I, user)

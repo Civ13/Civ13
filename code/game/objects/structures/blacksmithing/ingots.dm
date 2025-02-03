@@ -13,6 +13,18 @@
 	var/namemodifier
 	var/meltingpoint = 1000
 
+/obj/item/heatable/ingot/New(var/loc, var/_amount = 0)
+	..()
+	if(_amount)
+		amount = _amount
+	for(var/obj/item/heatable/ingot/I in loc)
+		if(istype(I, type))
+			var/change = min(amount, I.stacklimit - I.amount)
+			I.add(change)
+			consume(change)
+			if(amount <= 0)
+				break
+
 /obj/item/heatable/ingot/attackby(obj/item/I, mob/user, params)
 	if(I.type == type)
 		var/obj/item/heatable/ingot/X = I

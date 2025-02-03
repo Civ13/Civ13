@@ -56,9 +56,7 @@
 	for(var/M in contained)
 		var/i = contained[M]
 		if(ispath(text2path(M), /obj/item/heatable/ingot))
-			var/obj/item/heatable/ingot/ingot = new M(user.loc)
-			ingot.amount = 0
-			ingot.add(i)
+			new M(user.loc, i)
 			useMetal(itemLimit, M)
 		else
 			while(i > 0)
