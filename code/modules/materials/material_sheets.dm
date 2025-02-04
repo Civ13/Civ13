@@ -295,9 +295,8 @@
 			icon_suffix = "_4"
 	icon_state = "sheet-stonebrick[icon_suffix]"
 
-/obj/item/stack/material/stonebrick/ten/New()
+/obj/item/stack/material/stonebrick/ten
 	amount = 10
-	return ..()
 
 /obj/item/stack/material/clay
 	name = "clay lump"

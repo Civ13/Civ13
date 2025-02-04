@@ -24,6 +24,7 @@
 			consume(change)
 			if(amount <= 0)
 				break
+	name = "[initial(name)][(amount != 1) ? "s" : ""]"
 
 /obj/item/heatable/ingot/attackby(obj/item/I, mob/user, params)
 	if(I.type == type)
@@ -52,6 +53,7 @@
 			usr.remove_from_mob(src)
 		qdel(src)
 		return
+	name = "[initial(name)][(amount != 1) ? "s" : ""]"
 	updatesprites()
 
 /obj/item/heatable/ingot/proc/add(var/add)
@@ -71,4 +73,9 @@
 	else
 		amount += add
 
+	name = "[initial(name)][(amount != 1) ? "s" : ""]"
 	updatesprites()
+
+/obj/item/heatable/ingot/examine(mob/user)
+	..()
+	to_chat(user, "There's [amount] ingot[(amount != 1) ? "s" : ""] in the stack.")

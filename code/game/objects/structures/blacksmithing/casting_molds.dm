@@ -97,3 +97,7 @@
 		var/cooled = cool_time / initial(cool_time)
 		i += rgb(400*cooled, 200*cooled*cooled, 100*cooled*cooled)
 		overlays += i
+
+/obj/item/claymold/examine(mob/user)
+	..()
+	to_chat(user, "This claymold requires [ingot_value] ingot[(ingot_value != 1) ? "s" : ""].")
