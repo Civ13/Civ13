@@ -79,7 +79,7 @@
 					for (var/thing in toc2)
 						if (!isnum(thing))
 							toc2 -= thing
-				if ("list", list())
+				if ("list")
 					for (var/thing in toc2)
 						if (!islist(thing))
 							toc2 -= thing

@@ -155,8 +155,9 @@
 
 /datum/category_item/player_setup_item/New()
 	..()
-	var/datum/category_collection/player_setup_collection/psc = category.collection
-	pref = psc.preferences
+	//TODO: Fix for OpenDream
+	//var/datum/category_collection/player_setup_collection/psc = category.collection
+	//pref = psc.preferences
 
 /datum/category_item/player_setup_item/Destroy()
 	pref = null

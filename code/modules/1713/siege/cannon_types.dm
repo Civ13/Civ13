@@ -170,63 +170,6 @@
 				break
 		if (!found)
 			return
-		if (!loaded)
-			var/obj/item/cannon_ball/W
-			if (src.z == world.maxz)
-				if (prob(25))
-					W = new/obj/item/cannon_ball/chainshot(src)
-				else
-					if (prob(50))
-						W = new/obj/item/cannon_ball/grapeshot(src)
-					else
-						W = new/obj/item/cannon_ball(src)
-			else
-				W = new/obj/item/cannon_ball(src)
-			loaded = W
-			distance = 13+rand(-5,5)
-			get_target_coords()
-			target_x += rand(-5,5)
-			var/turf/TF = locate(src.x + target_x, src.y + target_y)
-			if (!TF)
-				return FALSE
-
-			var/obj/item/projectile/shell/S = new loaded.subtype(loc)
-			S.damage = loaded.damage
-			S.atype = loaded.atype
-			S.caliber = loaded.caliber
-			S.heavy_armor_penetration = loaded.heavy_armor_penetration
-			S.name = loaded.name
-			S.starting = get_turf(src)
-			loaded = null
-			if (S.atype == "grapeshot")
-				var/tot = pick(3,4)
-				for(var/i = 1, i<= tot,i++)
-					var/obj/item/projectile/shell/S1 = new S.type(loc)
-					S1.damage = S.damage
-					S1.atype = S.atype
-					S1.caliber = S.caliber
-					S1.heavy_armor_penetration = S.heavy_armor_penetration
-					S1.name = S.name
-					S1.starting = get_turf(src)
-					S1.launch(TF, null, src, rand(-2,2), 0)
-			else
-				S.launch(TF, null, src, 0, 0)
-			// screen shake
-			for (var/mob/m in player_list)
-				if (m.client)
-					var/abs_dist = abs(m.x - x) + abs(m.y - y)
-					if (abs_dist <= 15)
-						shake_camera(m, 3, (5 - (abs_dist/10)))
-			// smoke
-			spawn (rand(3,4))
-				new/obj/effect/effect/smoke/chem(get_step(src, dir))
-			spawn (rand(5,6))
-				new/obj/effect/effect/smoke/chem(get_step(src, dir))
-			// sound
-			spawn (rand(1,2))
-				var/turf/t1 = get_turf(src)
-				playsound(t1, "artillery_out", 100, TRUE)
-				playsound(t1, "artillery_out_distant", 100, TRUE)
 
 /obj/structure/cannon/modern/tank/german75
 	name = "7.5cm KwK 40"

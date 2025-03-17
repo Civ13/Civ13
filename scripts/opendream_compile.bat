@@ -1,0 +1,1 @@
+"D:\GitHub\OpenDream\bin\DMCompiler\DMCompiler.exe" "D:\GitHub\Civ13\civ13.dme"

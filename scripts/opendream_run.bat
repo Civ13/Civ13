@@ -1,0 +1,1 @@
+"D:\GitHub\OpenDream\bin\Content.Server\OpenDreamServer.exe" "D:\GitHub\Civ13\civ13.json"

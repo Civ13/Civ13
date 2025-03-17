@@ -45,9 +45,10 @@ Example for later use:
 	if (build_path)
 		for (var/i = 1, i <= number_to_spawn, i++)
 		var/atom/A = new build_path(src.loc)
-		if(pixel_x || pixel_y)
-			A.pixel_x = pixel_x
-			A.pixel_y = pixel_y
+//TODO: FIX for OD
+//		if(pixel_x || pixel_y)
+//			A.pixel_x = pixel_x
+//			A.pixel_y = pixel_y
 
 // Returns an associative list in format path:weight
 /obj/random/proc/spawn_choices()
