@@ -939,7 +939,7 @@
 
 /client/verb/startmovingup()
 	set name = ".startmovingup"
-	set instant = TRUE
+	
 	if (mob)
 		mob.movement_northsouth = NORTH
 		try
@@ -983,7 +983,7 @@
 
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
-	set instant = TRUE
+	
 	if (mob)
 		mob.movement_northsouth = SOUTH
 		try
@@ -1025,7 +1025,7 @@
 					mob.transform = M
 /client/verb/startmovingright()
 	set name = ".startmovingright"
-	set instant = TRUE
+	
 	if (mob)
 		mob.movement_eastwest = EAST
 		try
@@ -1064,7 +1064,7 @@
 					mob.transform = M
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
-	set instant = TRUE
+	
 	if (mob)
 		mob.movement_eastwest = WEST
 		try
@@ -1103,7 +1103,7 @@
 					mob.transform = M
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
-	set instant = TRUE
+	
 	if (mob && mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
 		for(var/obj/item/drone_controller/RC in mob)
@@ -1112,7 +1112,7 @@
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
-	set instant = TRUE
+	
 	if (mob && mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
 		for(var/obj/item/drone_controller/RC in mob)
@@ -1121,7 +1121,7 @@
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
-	set instant = TRUE
+	
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
 		for(var/obj/item/turret_controls/C in mob)
@@ -1132,7 +1132,7 @@
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
-	set instant = TRUE
+	
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
 		for(var/obj/item/turret_controls/C in mob)

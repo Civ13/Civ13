@@ -215,9 +215,9 @@
 			switch(producttype_name)
 				if("ham")
 					new/obj/item/weapon/pigleg/salted(loc)
-				else if("cod")
+				if("cod")
 					new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
-				else if("sausage")
+				if("sausage")
 					new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
 		producttype = null // Reset the product type variable to allow the next cycle of salting.
 

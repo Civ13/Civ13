@@ -1021,7 +1021,7 @@
 					return
 				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
-				user.visible_message("<span class='danger'>[user] finishes digging \the tunnel entrance.</span>", "<span class='danger'>You finish digging \the tunnel entrance.</span>")
+				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)
@@ -1043,7 +1043,7 @@
 				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
 				if (istype(BL, /turf/floor/dirt/underground))
 					BL.ChangeTurf(/turf/floor/dirt)
-				user.visible_message("<span class='danger'>[user] finishes digging \the tunnel entrance.</span>", "<span class='danger'>You finish digging \the tunnel entrance.</span>")
+				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					H.adaptStat("crafting", 1)

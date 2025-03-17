@@ -1,6 +1,6 @@
 /client/verb/update_ping(time as num)
 	set hidden = TRUE
-	set instant = TRUE
+	
 	set name = ".update_ping"
 	var/ping = pingfromtime(time)
 	last_ping = max(ping, 0)
@@ -10,7 +10,7 @@
 
 /client/verb/display_ping(time as num)
 	set hidden = TRUE
-	set instant = TRUE
+	
 	set name = ".display_ping"
 	src << "<span class='notice'>Round trip ping took [round(pingfromtime(time),1)]ms</span>"
 

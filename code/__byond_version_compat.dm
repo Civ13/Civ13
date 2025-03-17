@@ -9,9 +9,6 @@
 #error You need version 515.1610 or higher
 #endif
 
-// Keep savefile compatibilty at minimum supported level
-/savefile/byond_version = MIN_COMPILER_VERSION
-
 // So we want to have compile time guarantees these methods exist on local type
 // We use wrappers for this in case some part of the api ever changes, and to make their function more clear
 // For the record: GLOBAL_VERB_REF would be useless as verbs can't be global.

@@ -34,7 +34,7 @@
 	..()
 
 
-	if (!isnewplayer(src))
+	if (client && !isnewplayer(src))
 		src << browse(null, "window=playersetup;")
 
 	spawn (10)

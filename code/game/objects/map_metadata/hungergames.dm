@@ -262,7 +262,7 @@
 /obj/map_metadata/hunger_games/proc/close_area(var/artc = null)
 	if (closed_areas.len >= 5)
 		return
-	if (!artc || artc in closed_areas)
+	if (!artc || (artc in closed_areas))
 		return
 
 	switch(artc)
