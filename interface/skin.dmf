@@ -96,6 +96,12 @@ macro "macro"
 		name = "CTRL+SHIFT+G"
 		command = ".configure graphics-hwmode on"
 	elem 
+		name = "ALT+L"
+		command = "looc"
+	elem "ooc"
+		name = "O"
+		command = "ooc"
+	elem 
 		name = "CTRL+Q"
 		command = ".northwest"
 	elem 
@@ -116,12 +122,6 @@ macro "macro"
 	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
-	elem "ooc"
-		name = "O"
-		command = "ooc"
-	elem 
-		name = "ALT+L"
-		command = "looc"
 	elem 
 		name = "F12"
 		command = "ChangeHUD"
@@ -266,6 +266,9 @@ macro "hotkeymode"
 		name = "L"
 		command = "attack-direction"
 	elem 
+		name = "ALT+L"
+		command = "looc"
+	elem 
 		name = "CTRL+L"
 		command = "attack-direction"
 	elem 
@@ -274,6 +277,9 @@ macro "hotkeymode"
 	elem 
 		name = "N"
 		command = "tactic-intent"
+	elem "ooc"
+		name = "O"
+		command = "ooc"
 	elem 
 		name = "Q"
 		command = ".northwest"
@@ -295,6 +301,9 @@ macro "hotkeymode"
 	elem 
 		name = "T"
 		command = ".say"
+	elem 
+		name = "CTRL+T"
+		command = "asay"
 	elem 
 		name = "U"
 		command = "secondary-intent-change"
@@ -329,9 +338,6 @@ macro "hotkeymode"
 		name = "Z+UP"
 		command = "disactivation"
 	elem 
-		name = ","
-		command = "m-intent-prone"
-	elem 
 		name = "Numpad1"
 		command = "zone_sel_right_lower"
 	elem 
@@ -356,26 +362,20 @@ macro "hotkeymode"
 		name = "F1"
 		command = "adminhelp"
 	elem 
-		name = "F2"
-		command = "mentorhelp"
-	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
 	elem 
-		name = "CTRL+T"
-		command = "asay"
-	elem "ooc"
-		name = "O"
-		command = "ooc"
-	elem 
-		name = "ALT+L"
-		command = "looc"
+		name = "F2"
+		command = "mentorhelp"
 	elem 
 		name = "F3"
 		command = ".me"
 	elem 
 		name = "F12"
 		command = "ChangeHUD"
+	elem 
+		name = ","
+		command = "m-intent-prone"
 
 
 menu "menu"
@@ -786,7 +786,7 @@ window "infowindow"
 	elem "infowindow"
 		type = MAIN
 		pos = 476,0
-		size = 420x477
+		size = 640x280
 		anchor1 = -1,-1
 		anchor2 = -1,-1
 		background-color = #271a0c
@@ -798,12 +798,12 @@ window "infowindow"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
-		outer-size = 436x493
-		inner-size = 420x477
+		outer-size = 656x296
+		inner-size = 640x280
 	elem "info"
 		type = INFO
-		pos = 0,24
-		size = 420x453
+		pos = 0,15
+		size = 640x265
 		anchor1 = 0,5
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
@@ -825,7 +825,7 @@ window "rpane"
 	elem "rpane"
 		type = MAIN
 		pos = 476,0
-		size = 420x457
+		size = 640x480
 		anchor1 = -1,-1
 		anchor2 = -1,-1
 		background-color = #271a0c
@@ -836,12 +836,11 @@ window "rpane"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
-		outer-size = 436x473
-		inner-size = 420x457
+		outer-size = 656x496
 	elem "rpanewindow"
 		type = CHILD
 		pos = 0,0
-		size = 420x482
+		size = 640x505
 		anchor1 = 0,0
 		anchor2 = 100,100
 		background-color = #d38c3f
@@ -853,7 +852,7 @@ window "rpane"
 	elem "Title"
 		type = LABEL
 		pos = 0,0
-		size = 420x20
+		size = 640x21
 		anchor1 = 0,0
 		anchor2 = 100,4
 		font-family = "Bookman Old Style"
