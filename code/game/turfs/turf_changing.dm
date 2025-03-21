@@ -1,7 +1,9 @@
 //Creates a new turf
-/turf/proc/ChangeTurf(var/turf/N, var/tell_universe=1, var/force_lighting_update = FALSE)
-	if (!N)
+/turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE)
+	if (!path)
 		return
+	if(path == type)
+		return src
 
 	// This makes sure that turfs are not changed to space when one side is part of a zone
 	overlays.Cut()
@@ -11,7 +13,7 @@
 	var/old_lighting_overlay = lighting_overlay
 	var/list/old_lighting_corners = corners
 	var/old_radiation = radiation
-	var/turf/W = new N( locate(x, y, z) )
+	var/turf/W = new path(src)
 
 	W.levelupdate()
 	. =  W
@@ -41,6 +43,8 @@
 
 	fix_broken_daylights()
 	update_icon()
+
+	return W
 
 /turf/proc/transport_properties_from(turf/other)
 	if(!istype(other, src.type))
