@@ -19141,6 +19141,15 @@
 /obj/covers/cobblestone/stairs,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/taiga)
+"TM" = (
+/obj/covers/steelplating,
+/obj/roof/clay,
+/obj/structure/money_printer,
+/obj/item/stack/material/cloth{
+	amount = 50
+	},
+/turf/floor/broken_floor,
+/area/caribbean/nomads/taiga)
 "TN" = (
 /obj/structure/table/wood,
 /obj/item/weapon/pen,
@@ -119889,7 +119898,7 @@ bY
 Fx
 BJ
 Dg
-AZ
+TM
 Fx
 jf
 AQ
