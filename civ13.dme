@@ -749,6 +749,7 @@
 #include "code\modules\1713\custom_apparel.dm"
 #include "code\modules\1713\doctor_handbook.dm"
 #include "code\modules\1713\equip_box.dm"
+#include "code\modules\1713\fiatcurrency.dm"
 #include "code\modules\1713\flying_objects.dm"
 #include "code\modules\1713\football.dm"
 #include "code\modules\1713\forensics.dm"
