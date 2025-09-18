@@ -30,7 +30,7 @@
 
 /obj/map_metadata/konstantinovka/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_modernday == TRUE && (istype(J, /datum/job/american/idf) || istype(J, /datum/job/russian/modern_rifleman)))
+	if (J.is_modernday == TRUE && (istype(J, /datum/job/american/usmc_lieutenant/east_europe) || istype(J, /datum/job/russian/modern_rifleman)))
 		. = TRUE
 	else
 		. = FALSE

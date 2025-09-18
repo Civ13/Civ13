@@ -1695,3 +1695,29 @@
 	H.setStat("machinegun", STAT_MEDIUM_LOW)
 
 	return TRUE
+
+// /datum/job/american/delta_force
+// 	title = "Delta Force Operator"
+// 	rank_abbreviation = "Spc."
+// 	default_language = "English"
+// 	additional_languages = list("Arabic" = 60)
+// 	spawn_location = "JoinLateREB"
+
+// 	is_coldwar = FALSE
+// 	is_modernday = FALSE
+// 	is_syria = TRUE
+// 	uses_squads = TRUE
+
+// 	min_positions = 1
+// 	max_positions = 5
+
+/datum/job/american/usmc_lieutenant/east_europe
+/datum/job/american/usmc_lieutenant/east_europe/equip(var/mob/living/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot(new /obj/item/clothing/under/us_uni/us_camo_woodland(H), slot_w_uniform)
+//head
+	return TRUE
