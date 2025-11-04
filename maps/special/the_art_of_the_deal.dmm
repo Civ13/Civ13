@@ -2037,6 +2037,12 @@
 	color = "#c1eccc"
 	},
 /area/caribbean/roofed)
+"ahD" = (
+/obj/structure/grille/chainlinkfence{
+	dir = 8
+	},
+/turf/floor/beach/sand,
+/area/caribbean/nomads/forest)
 "ahN" = (
 /obj/structure/window/classic/metal{
 	not_disassemblable = 1;
@@ -2177,6 +2183,12 @@
 "apS" = (
 /turf/floor/dirt/dust,
 /area/caribbean/void/caves)
+"apT" = (
+/obj/structure/bed/chair/wood/red{
+	dir = 4
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "aqi" = (
 /obj/structure/props/junk,
 /turf/floor/dirt/dust,
@@ -2244,10 +2256,6 @@
 	color = "#ece8c1"
 	},
 /area/caribbean/roofed)
-"auF" = (
-/obj/structure/sign/orthodox1,
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
 "auP" = (
 /obj/structure/sign/n5{
 	pixel_y = -32
@@ -2329,8 +2337,7 @@
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
 "ayB" = (
-/obj/covers/wood_wall/nordic,
-/turf/floor/grass,
+/turf/wall/stone/marble,
 /area/caribbean/nomads/forest)
 "ayE" = (
 /obj/effect/floor_decal/industrial/warning/dust{
@@ -2389,13 +2396,6 @@
 /obj/item/stack/farming/seeds/hemp,
 /turf/floor/plating/tiled,
 /area/caribbean/roofed/temperate)
-"aDe" = (
-/mob/living/simple_animal/seagull,
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/beach/sand,
-/area/caribbean/nomads/forest)
 "aDn" = (
 /obj/structure/lamp/lamp_big/alwayson/white,
 /turf/floor/wood/fancywood,
@@ -2772,6 +2772,11 @@
 	color = "#c1eccc"
 	},
 /area/caribbean/roofed)
+"bfi" = (
+/obj/structure/table/rack/shelf/wooden,
+/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "bfD" = (
 /obj/structure/grille/fence/picket,
 /turf/floor/dirt/dust,
@@ -2805,12 +2810,6 @@
 	color = "#ecc1cc"
 	},
 /area/caribbean/roofed)
-"biv" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/dirt,
-/area/caribbean/nomads/forest)
 "biz" = (
 /obj/structure/wild/tree/live_tree,
 /turf/floor/dirt/dust,
@@ -3132,10 +3131,6 @@
 /obj/item/weapon/stool/prison,
 /turf/floor/plating/steel,
 /area/caribbean/prison/jail)
-"bDO" = (
-/obj/structure/table/wood,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "bEk" = (
 /obj/structure/table/rack/coatrack,
 /obj/structure/lamp/lamp_big/alwayson,
@@ -3213,6 +3208,12 @@
 	pixel_x = -32
 	},
 /turf/floor/grass,
+/area/caribbean/nomads/forest)
+"bIg" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 1
+	},
+/turf/floor/beach/sand,
 /area/caribbean/nomads/forest)
 "bIv" = (
 /obj/covers/steelplating/white{
@@ -3500,6 +3501,12 @@
 /obj/structure/window/clean/reinforced,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
+"bYb" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/r{
+	dir = 4
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "bYp" = (
 /obj/covers/wood/alt/four,
 /obj/structure/curtain/open/red{
@@ -3699,6 +3706,12 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
+"clb" = (
+/obj/structure/potted_plant{
+	dir = 5
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "clC" = (
 /turf/floor/delivery{
 	name = "Barbershop"
@@ -3988,6 +4001,15 @@
 	name = "Mc Donald's"
 	},
 /area/caribbean/nomads/forest)
+"cxx" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/forest)
 "cyh" = (
 /obj/covers/marble_checkerboard,
 /obj/structure/sink/kitchen{
@@ -4022,6 +4044,12 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
+"czS" = (
+/obj/structure/table/modern/billiard{
+	dir = 1
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "czY" = (
 /obj/item/weapon/storage/box/firstaid,
 /turf/floor/plating/road,
@@ -4068,10 +4096,6 @@
 "cEQ" = (
 /obj/structure/machinery/construction_crane,
 /turf/floor/dirt,
-/area/caribbean/nomads/forest)
-"cFu" = (
-/obj/structure/bed/chair/sofa/left,
-/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "cFP" = (
 /obj/effect/floor_decal/corner_kafel/red/diagonal,
@@ -4324,12 +4348,6 @@
 /obj/effect/spawner/objspawner/door/red,
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
-"cVg" = (
-/obj/structure/potted_plant{
-	dir = 10
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "cVn" = (
 /obj/covers/carpet/blackcarpet,
 /obj/structure/roulette,
@@ -4531,6 +4549,10 @@
 	layer = 2
 	},
 /turf/floor/plating/road,
+/area/caribbean/nomads/forest)
+"deG" = (
+/obj/structure/oven/stove,
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "dfn" = (
 /obj/structure/bed/chair/steel/alt/red{
@@ -4974,6 +4996,12 @@
 /obj/structure/lamp/lamp_big/alwayson,
 /turf/floor/plating/road,
 /area/caribbean/roofed/temperate)
+"dHE" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 8
+	},
+/turf/floor/beach/sand,
+/area/caribbean/nomads/forest)
 "dIC" = (
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 1
@@ -5088,12 +5116,6 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/roofed/temperate)
-"dRu" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/beach/sand,
-/area/caribbean/nomads/forest)
 "dRJ" = (
 /obj/effect/floor_decal/corner_kafel/red/diagonal,
 /obj/structure/sign/securearea{
@@ -5218,16 +5240,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/claycup,
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
-"dXl" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 8
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
-"dXo" = (
-/obj/structure/bed/chair/wood/red,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "dXy" = (
 /obj/structure/lamp/lamp_big/alwayson/white,
 /obj/structure/bed/custsofa/right{
@@ -5436,12 +5448,6 @@
 /obj/item/weapon/book/manual/aotd_law,
 /turf/floor/wood/fancywood,
 /area/caribbean/roofed)
-"eqP" = (
-/obj/structure/mine_support/stone/ionic{
-	density = 1
-	},
-/turf/floor/plating/marble/tile,
-/area/caribbean/nomads/forest)
 "erQ" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#D2C273"
@@ -5469,6 +5475,12 @@
 /turf/floor/delivery{
 	name = "McKellen Car Dealership"
 	},
+/area/caribbean/nomads/forest)
+"etX" = (
+/obj/structure/table/modern/billiard{
+	dir = 6
+	},
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "euA" = (
 /turf/floor/delivery{
@@ -5504,19 +5516,18 @@
 	dir = 10
 	},
 /area/caribbean/roofed/temperate)
+"ewH" = (
+/obj/structure/table/modern,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "ewR" = (
 /obj/structure/table/modern,
 /obj/item/weapon/crowbar,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
 "ewT" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 8
-	},
-/turf/floor/plating/cobblestone/vertical/dark,
+/obj/structure/simple_door/key_door/anyone/doubledoor/marble,
+/turf/floor/grass,
 /area/caribbean/nomads/forest)
 "exq" = (
 /turf/floor/plating/road/yellowline{
@@ -5580,12 +5591,6 @@
 /obj/structure/fitness/weightlifter,
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
-"eBN" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
 "eCn" = (
 /obj/structure/reagent_dispensers/fountain,
 /turf/floor/plating/steel,
@@ -5601,6 +5606,12 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed/temperate)
+"eEX" = (
+/obj/structure/potted_plant{
+	dir = 10
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "eFi" = (
 /obj/structure/sign/xray{
 	pixel_x = -32
@@ -5615,6 +5626,9 @@
 	},
 /turf/floor/plating/tiled/dark,
 /area/caribbean/roofed)
+"eFP" = (
+/turf/floor/plating/concrete,
+/area/caribbean/nomads/forest)
 "eFX" = (
 /obj/structure/potted_plant{
 	dir = 5
@@ -5799,13 +5813,6 @@
 	},
 /turf/floor/dirt,
 /area/caribbean/roofed/temperate)
-"eUq" = (
-/obj/structure/wild/tallgrass,
-/obj/structure/grille/chainlinkfence{
-	dir = 4
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
 "eVG" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/paper_bin,
@@ -5867,6 +5874,10 @@
 	color = "#ece8c1"
 	},
 /area/caribbean/roofed)
+"eZw" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/l,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "eZA" = (
 /obj/structure/lamp/lamp_big/alwayson{
 	dir = 8
@@ -5927,10 +5938,6 @@
 /obj/covers/jail/steeljail,
 /turf/floor/plating/steel,
 /area/caribbean/prison/jail)
-"fdv" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/r,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "fdB" = (
 /obj/structure/multiz/stairs_wood{
 	dir = 5
@@ -5961,6 +5968,10 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
+"feW" = (
+/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,
+/turf/floor/plating/concrete,
+/area/caribbean/nomads/forest)
 "ffH" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#5472C7"
@@ -6007,12 +6018,6 @@
 	},
 /turf/floor/dirt,
 /area/caribbean/roofed/temperate)
-"fij" = (
-/obj/structure/potted_plant{
-	dir = 4
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "fiQ" = (
 /obj/structure/filingcabinet,
 /obj/item/weapon/folder/yellow,
@@ -6077,15 +6082,6 @@
 /obj/item/clothing/under/customuniform/short,
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
-"fmt" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
 "fmW" = (
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,
@@ -6213,12 +6209,6 @@
 	color = "#ece8c1"
 	},
 /area/caribbean/roofed)
-"ftl" = (
-/obj/structure/shelf,
-/obj/item/weapon/reagent_containers/glass/fire_extinguisher,
-/obj/item/weapon/reagent_containers/glass/bucket,
-/turf/floor/plating/concrete,
-/area/caribbean/nomads/forest)
 "ftz" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/weapon/storage/toolbox/mechanical,
@@ -6338,6 +6328,12 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
+"fCj" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/forest)
 "fCp" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#5472C7"
@@ -6410,12 +6406,6 @@
 /obj/structure/simple_door/key_door/anyone/nordic,
 /turf/floor/dirt/dust,
 /area/caribbean/roofed/temperate)
-"fEJ" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/l{
-	dir = 8
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "fEO" = (
 /obj/covers/generic_wall{
 	color = "#b8a481"
@@ -6475,11 +6465,6 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
-"fHZ" = (
-/obj/structure/shelf,
-/obj/item/weapon/storage/toolbox/emergency,
-/turf/floor/plating/concrete,
-/area/caribbean/nomads/forest)
 "fIs" = (
 /obj/structure/barricade/antitank{
 	alpha = 0
@@ -7073,12 +7058,6 @@
 /obj/structure/lamp/lamp_big/alwayson,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed/temperate)
-"gpF" = (
-/obj/structure/table/modern/billiard{
-	dir = 10
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "gpK" = (
 /obj/covers/tatami,
 /obj/effect/floor_decal/tatami/cee{
@@ -7340,9 +7319,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"gFl" = (
-/turf/floor/wood,
-/area/caribbean/nomads/forest)
 "gFz" = (
 /obj/structure/table,
 /obj/covers/steelplating,
@@ -7368,6 +7344,13 @@
 /obj/structure/table/rack/shelf,
 /turf/floor/plating/steel,
 /area/caribbean/prison/jail)
+"gIX" = (
+/obj/structure/sink/kitchen{
+	dir = 8;
+	pixel_x = 14
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "gJD" = (
 /obj/structure/window/classic/reinforced,
 /obj/structure/curtain/open/blue,
@@ -7480,8 +7463,11 @@
 /turf/wall/cement,
 /area/caribbean/roofed/temperate)
 "gTn" = (
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
+/obj/structure/lamp/lamp_big/alwayson/white{
+	dir = 8
+	},
+/turf/floor/plating/steel,
+/area/caribbean/roofed/temperate)
 "gUd" = (
 /turf/floor/dirt,
 /area/caribbean/roofed/temperate)
@@ -7587,6 +7573,12 @@
 /obj/structure/wild/smallbush,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
+"hab" = (
+/obj/structure/grille/chainlinkfence{
+	dir = 4
+	},
+/turf/floor/beach/sand,
+/area/caribbean/nomads/forest)
 "hae" = (
 /obj/covers/carpet/arcade,
 /obj/covers/disco,
@@ -7651,12 +7643,6 @@
 /area/caribbean/no_mans_land/invisible_wall/one{
 	color = "#34adc2"
 	})
-"hdY" = (
-/obj/structure/mine_support/stone/ionic{
-	density = 1
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "heX" = (
 /obj/structure/lamp/lamp_big/alwayson{
 	dir = 1
@@ -7895,12 +7881,6 @@
 	},
 /turf/floor/dirt/dust,
 /area/caribbean/nomads/forest)
-"hrW" = (
-/obj/structure/bed/chair/wood/red{
-	dir = 8
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "hrZ" = (
 /obj/item/weapon/paper,
 /obj/item/weapon/paper,
@@ -7912,12 +7892,6 @@
 "hsq" = (
 /obj/item/flashlight,
 /turf/floor/dirt,
-/area/caribbean/nomads/forest)
-"hsE" = (
-/obj/structure/bed/chair/wood/red{
-	dir = 4
-	},
-/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "htb" = (
 /obj/structure/lamp/lamp_big/alwayson{
@@ -8140,10 +8114,6 @@
 	color = "#ecc1cc"
 	},
 /area/caribbean/roofed)
-"hGn" = (
-/obj/structure/sign/orthodox3,
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
 "hGq" = (
 /obj/structure/sign/casino{
 	pixel_x = -16;
@@ -8213,6 +8183,10 @@
 	dir = 4
 	},
 /turf/floor/plating/road,
+/area/caribbean/nomads/forest)
+"hMY" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/r,
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "hNo" = (
 /obj/structure/table/rack/shelf,
@@ -8499,6 +8473,15 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed)
+"ihq" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "iiQ" = (
 /obj/covers/steelplating,
 /obj/structure/table/glass,
@@ -8651,18 +8634,14 @@
 	ambience = list('sound/ambience/nightclub.ogg');
 	forced_ambience = list('sound/ambience/nightclub.ogg')
 	})
-"ipi" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/l,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "ipU" = (
 /obj/structure/fuelpump/premade/yamaha/gasoline,
 /turf/floor/plating/road,
 /area/caribbean/roofed/temperate)
-"irf" = (
-/obj/structure/potted_plant{
-	dir = 5
-	},
+"iqP" = (
+/obj/structure/window/classic/marblefull,
+/obj/structure/curtain/open/blue,
+/obj/covers/jail/steeljail,
 /turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "ism" = (
@@ -8673,12 +8652,6 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
-"iuK" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/r{
-	dir = 8
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "ivn" = (
 /obj/covers/carpet/whitecarpet,
 /turf/floor/plating/marble/black,
@@ -8706,7 +8679,7 @@
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
 "ixg" = (
-/turf/wall/stone/marble,
+/turf/floor/wood,
 /area/caribbean/nomads/forest)
 "ixr" = (
 /obj/structure/grille/chainlinkfence,
@@ -8736,6 +8709,12 @@
 /obj/covers/cobblestone/stairs,
 /turf/floor/grass,
 /area/caribbean/nomads/forest)
+"iBo" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/r{
+	dir = 8
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "iCj" = (
 /obj/covers/carpet/bluecarpet,
 /obj/structure/sign/painting9{
@@ -8763,10 +8742,6 @@
 /obj/covers/sandstone/tile/decorative,
 /turf/floor/plating/marble/ornate,
 /area/caribbean/roofed)
-"iDg" = (
-/obj/covers/cobblestone/stairs,
-/turf/floor/beach/sand,
-/area/caribbean/nomads/forest)
 "iDT" = (
 /obj/covers/wood/alt/four,
 /obj/structure/lamp/lamp_big/alwayson{
@@ -8784,6 +8759,11 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"iED" = (
+/obj/structure/table/wood,
+/obj/structure/TV/television/active,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "iET" = (
 /obj/structure/window/classic,
 /obj/structure/roof_support/admin,
@@ -8795,12 +8775,6 @@
 /obj/structure/grille/ironfence,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
-"iFC" = (
-/obj/structure/table/modern/billiard{
-	dir = 8
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "iGp" = (
 /obj/structure/simple_door/wood,
 /turf/floor/wood,
@@ -8812,6 +8786,12 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
+"iGZ" = (
+/obj/structure/table/modern/billiard{
+	dir = 8
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "iHl" = (
 /obj/structure/rails/split/switcher,
 /turf/floor/dirt/dust,
@@ -8957,6 +8937,10 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"iRS" = (
+/obj/covers/wood_wall/nordic,
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "iRT" = (
 /obj/covers/steelplating/white{
 	color = "#c5e9b2";
@@ -9107,6 +9091,9 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"iYJ" = (
+/turf/floor/carpet/orangecarpet,
+/area/caribbean/nomads/forest)
 "iZw" = (
 /obj/structure/sign/traffic,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -9638,10 +9625,6 @@
 	},
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
-"jGX" = (
-/obj/structure/closet/fridge,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "jHj" = (
 /obj/structure/table/wood,
 /obj/structure/lamp/lamp_small{
@@ -9722,6 +9705,12 @@
 /area/caribbean/no_mans_land/invisible_wall/one{
 	color = "#34adc2"
 	})
+"jLC" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/l{
+	dir = 4
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "jMF" = (
 /obj/structure/lamp/lamp_big/alwayson/white,
 /turf/floor/plating/marble/decorative_tile,
@@ -10003,15 +9992,17 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
+"kdl" = (
+/obj/structure/table/modern/table,
+/obj/item/weapon/newspaper,
+/turf/floor/wood,
+/area/caribbean/nomads/forest)
 "kdu" = (
 /obj/structure/lamp/lamp_big/alwayson/white{
 	dir = 8
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed/temperate)
-"kdG" = (
-/turf/floor/plating/concrete,
-/area/caribbean/nomads/forest)
 "kdW" = (
 /obj/structure/lamp/lamp_big/alwayson/white{
 	dir = 4
@@ -10142,6 +10133,10 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
+"kkT" = (
+/obj/structure/bed/chair/sofa,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "kkY" = (
 /obj/structure/curtain/open/yellow{
 	pixel_y = 32
@@ -10227,6 +10222,10 @@
 /obj/structure/closet/safe/blue,
 /turf/floor/plating/tiled/dark,
 /area/caribbean/roofed)
+"kqP" = (
+/obj/structure/oven/grill/gas,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "kre" = (
 /obj/covers/carpet/blackcarpet,
 /obj/structure/reagent_dispensers/largebarrel/ale,
@@ -10273,12 +10272,6 @@
 /obj/covers/jail/steeljail,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
-"ksS" = (
-/obj/structure/grille/chainlinkfence{
-	dir = 4
-	},
-/turf/floor/beach/sand,
-/area/caribbean/nomads/forest)
 "ktc" = (
 /obj/structure/bed/chair/steel/alt/red,
 /obj/effect/floor_decal/corner_oldtile/red/diagonal,
@@ -10475,12 +10468,6 @@
 	dir = 10
 	},
 /area/caribbean/roofed/temperate)
-"kKb" = (
-/obj/structure/potted_plant{
-	dir = 6
-	},
-/turf/floor/wood,
-/area/caribbean/nomads/forest)
 "kKh" = (
 /obj/structure/lamp/lamp_big/alwayson{
 	dir = 8
@@ -10584,10 +10571,6 @@
 	dir = 10
 	},
 /area/caribbean/roofed/temperate)
-"kQA" = (
-/obj/structure/table/modern,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "kQJ" = (
 /obj/structure/multiz/ladder/ww2/stairsdown{
 	dir = 1
@@ -10655,6 +10638,12 @@
 	},
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
+"kVT" = (
+/obj/structure/potted_plant{
+	dir = 8
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "kWI" = (
 /obj/covers/tatami,
 /obj/effect/floor_decal/tatami/angle{
@@ -10752,12 +10741,6 @@
 /obj/effect/floor_decal/corner/paleblue/border,
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"laY" = (
-/obj/structure/table/modern/billiard{
-	dir = 6
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "lbw" = (
 /obj/covers/marble_checkerboard,
 /obj/covers/marble_grid,
@@ -10975,6 +10958,12 @@
 	dir = 10
 	},
 /area/caribbean/roofed/temperate)
+"lqD" = (
+/obj/structure/mine_support/stone/ionic{
+	density = 1
+	},
+/turf/floor/plating/marble/tile,
+/area/caribbean/nomads/forest)
 "lqS" = (
 /obj/structure/grille/chainlinkfence{
 	dir = 8
@@ -11089,6 +11078,10 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
+"lBk" = (
+/obj/structure/table/modern/billiard,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "lBA" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/clothing/suit/storage/jacket/checkered_suit,
@@ -11127,11 +11120,6 @@
 "lDE" = (
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /turf/floor/plating/road,
-/area/caribbean/nomads/forest)
-"lFa" = (
-/obj/structure/table/modern/table,
-/obj/item/weapon/newspaper,
-/turf/floor/wood,
 /area/caribbean/nomads/forest)
 "lGd" = (
 /obj/structure/table/wood,
@@ -11222,6 +11210,10 @@
 /obj/structure/vending/undercover_apparel,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
+"lKB" = (
+/obj/structure/simple_door/key_door/anyone/doubledoor/marble,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "lKW" = (
 /obj/covers/wood/alt/four,
 /obj/structure/closet/crate/lead{
@@ -11258,16 +11250,6 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
-"lMa" = (
-/obj/structure/potted_plant{
-	dir = 9;
-	icon = 'icons/obj/flora/plants.dmi';
-	icon_state = "plant-37";
-	layer = 4;
-	pixel_x = -4
-	},
-/turf/floor/wood,
-/area/caribbean/nomads/forest)
 "lMG" = (
 /obj/covers/carpet/arcade,
 /obj/covers/disco,
@@ -11715,6 +11697,10 @@
 	},
 /turf/floor/plating/marble/ornate,
 /area/caribbean/roofed)
+"mmP" = (
+/obj/structure/table/wood,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "mnd" = (
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/roofed/temperate)
@@ -11746,12 +11732,6 @@
 	color = "#ecc1cc"
 	},
 /area/caribbean/roofed)
-"mnY" = (
-/obj/structure/table/modern/billiard{
-	dir = 4
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "moF" = (
 /obj/covers/steelplating,
 /obj/structure/gate/elevator_door,
@@ -12164,10 +12144,6 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
-"mRy" = (
-/obj/structure/bed/chair/comfy/fancy_sofa,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "mSS" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/item/clothing/suit/storage/jacket/custom/haori_jacket,
@@ -12295,6 +12271,15 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
+"mYf" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 8
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "mYj" = (
 /obj/structure/simple_door/key_door/anyone/wood,
 /turf/floor/plating/marble/tile,
@@ -12419,10 +12404,6 @@
 	},
 /turf/floor/dirt/ploughed,
 /area/caribbean/nomads/forest)
-"nfh" = (
-/obj/structure/simple_door/key_door/anyone/doubledoor/marble,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "nfr" = (
 /obj/structure/grille/chainlinkfence,
 /obj/structure/grille/chainlinkfence/corner,
@@ -12453,9 +12434,6 @@
 	dir = 1
 	},
 /turf/floor/plating/road,
-/area/caribbean/nomads/forest)
-"nil" = (
-/turf/floor/plating/marble/tile,
 /area/caribbean/nomads/forest)
 "niL" = (
 /obj/structure/sign/traffic/zebracrossing{
@@ -12718,6 +12696,10 @@
 /obj/structure/grille/chainlinkfence/corner,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/forest)
+"nyC" = (
+/obj/structure/sign/rent,
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "nzH" = (
 /obj/structure/table/rack/shelf,
 /obj/structure/lamp/lamp_big/alwayson{
@@ -12746,10 +12728,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"nCT" = (
-/obj/structure/oven/stove,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "nDM" = (
 /obj/structure/grille/chainlinkfence{
 	dir = 4
@@ -12889,12 +12867,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"nOh" = (
-/obj/structure/potted_plant{
-	dir = 1
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "nOI" = (
 /obj/structure/multiz/ladder/ww2/stairsdown,
 /obj/structure/railing{
@@ -13139,12 +13111,6 @@
 /obj/structure/roof_support/admin,
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
-"ohE" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/turf/floor/plating/cobblestone/vertical/dark,
-/area/caribbean/nomads/forest)
 "oiq" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/reagent_containers/food/snacks/jellysandwich,
@@ -13204,12 +13170,20 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
+"omR" = (
+/obj/structure/bed/chair/wood/red,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "omX" = (
 /obj/structure/lamp/lamp_big/alwayson/white{
 	dir = 1
 	},
 /turf/floor/carpet/redcarpet,
 /area/caribbean/roofed)
+"ond" = (
+/obj/structure/table/rack/coatrack,
+/turf/floor/wood,
+/area/caribbean/nomads/forest)
 "one" = (
 /obj/structure/table/modern/table,
 /obj/item/weapon/pen,
@@ -13421,10 +13395,6 @@
 /obj/structure/lamp/lamp_small/alwayson,
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/roofed/temperate)
-"ozU" = (
-/obj/structure/table/modern/billiard,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "oBr" = (
 /obj/structure/multiz/ladder/ww2/stairsup,
 /turf/floor/plating/steel,
@@ -13496,6 +13466,12 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed)
+"oDF" = (
+/obj/structure/grille/chainlinkfence{
+	dir = 4
+	},
+/turf/floor/beach/water,
+/area/caribbean/nomads/forest)
 "oDH" = (
 /obj/structure/lamp/lamp_big/alwayson{
 	dir = 4
@@ -13518,12 +13494,6 @@
 /obj/covers/carpet/orangecarpet,
 /turf/floor/plating/marble/ornate,
 /area/caribbean/roofed)
-"oEN" = (
-/obj/structure/grille/chainlinkfence{
-	dir = 4
-	},
-/turf/floor/beach/water,
-/area/caribbean/nomads/forest)
 "oEY" = (
 /turf/floor/plating/road/whiteline{
 	dir = 5
@@ -13545,10 +13515,6 @@
 /obj/item/weapon/pen/fancy,
 /turf/floor/wood,
 /area/caribbean/roofed)
-"oGv" = (
-/obj/structure/bed/chair/sofa/right,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "oGA" = (
 /obj/covers/cobblestone/stairs,
 /obj/structure/sign/court{
@@ -13826,6 +13792,10 @@
 	dir = 10
 	},
 /area/caribbean/roofed/temperate)
+"oXR" = (
+/obj/structure/window/classic/marblefull,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "oXY" = (
 /obj/structure/filingcabinet,
 /obj/structure/lamp/lamp_big/alwayson/white,
@@ -13865,10 +13835,6 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
-"oZH" = (
-/obj/structure/simple_door/key_door/anyone/doubledoor/marble,
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
 "oZX" = (
 /obj/structure/gate/blast/garage{
 	dir = 8
@@ -13924,10 +13890,6 @@
 /obj/structure/simple_door/key_door/anyone/wood,
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
-"pdv" = (
-/obj/structure/table/rack/coatrack,
-/turf/floor/wood,
-/area/caribbean/nomads/forest)
 "pdI" = (
 /obj/structure/lamp/lamp_big/alwayson,
 /obj/structure/table/modern,
@@ -13996,6 +13958,13 @@
 	dir = 4
 	},
 /turf/floor/beach/water,
+/area/caribbean/nomads/forest)
+"pgK" = (
+/mob/living/simple_animal/seagull,
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/beach/sand,
 /area/caribbean/nomads/forest)
 "pht" = (
 /obj/structure/vehicleparts/frame/car/van/rf,
@@ -14158,6 +14127,12 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
+"poA" = (
+/obj/structure/grille/chainlinkfence{
+	dir = 4
+	},
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "poM" = (
 /obj/structure/grille/chainlinkfence,
 /obj/structure/grille/chainlinkfence/corner,
@@ -14271,9 +14246,6 @@
 	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/roofed/temperate)
-"puK" = (
-/turf/floor/carpet/orangecarpet,
-/area/caribbean/nomads/forest)
 "pva" = (
 /obj/structure/table/modern/table,
 /obj/structure/lamp/lamp_big/alwayson{
@@ -14323,6 +14295,12 @@
 /obj/structure/grille/chainlinkfence/corner,
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/forest)
+"pwp" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/beach/sand,
+/area/caribbean/nomads/forest)
 "pwE" = (
 /obj/structure/table/modern/table,
 /obj/covers/carpet/redcarpet,
@@ -14371,16 +14349,6 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
-"pAe" = (
-/obj/structure/sign/rent,
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
-"pBv" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/l{
-	dir = 4
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "pCd" = (
 /obj/covers/tatami,
 /obj/structure/bed/bedroll,
@@ -14496,12 +14464,6 @@
 	},
 /turf/floor/plating/marble/decorative_tile,
 /area/caribbean/roofed)
-"pKz" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
 "pKM" = (
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
@@ -14541,6 +14503,16 @@
 	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/roofed/temperate)
+"pPj" = (
+/obj/structure/potted_plant{
+	dir = 9;
+	icon = 'icons/obj/flora/plants.dmi';
+	icon_state = "plant-37";
+	layer = 4;
+	pixel_x = -4
+	},
+/turf/floor/wood,
+/area/caribbean/nomads/forest)
 "pPr" = (
 /obj/covers/carpet/blackcarpet,
 /obj/structure/sign/painting11{
@@ -14673,6 +14645,13 @@
 /obj/effect/floor_decal/corner/paleblue/bordercorner,
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
+"pSC" = (
+/obj/structure/wild/tallgrass,
+/obj/structure/grille/chainlinkfence{
+	dir = 4
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "pSV" = (
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/roofed/temperate)
@@ -14758,6 +14737,12 @@
 	},
 /turf/wall/stone,
 /area/caribbean/roofed/temperate)
+"pVu" = (
+/obj/structure/table/modern/billiard{
+	dir = 4
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "pVz" = (
 /obj/structure/sign/logo/red{
 	pixel_x = 32
@@ -15062,17 +15047,16 @@
 	color = "#c1e1ec"
 	},
 /area/caribbean/roofed)
+"qsq" = (
+/obj/structure/bed/chair/comfy/fancy_sofa/l{
+	dir = 8
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "qtD" = (
 /obj/structure/gate/blast,
 /turf/floor/plating/marble/decorative_tile,
 /area/caribbean/roofed)
-"quw" = (
-/obj/structure/sink/kitchen{
-	dir = 8;
-	pixel_x = 14
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "qux" = (
 /obj/covers/generic_wall{
 	color = "#a1ccc6"
@@ -15138,6 +15122,10 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"qwT" = (
+/obj/structure/wild/tallgrass,
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "qxd" = (
 /obj/structure/sign/traffic/stop,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -15167,11 +15155,6 @@
 /obj/effect/spawner/objspawner/door/red,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
-"qyM" = (
-/obj/structure/table/wood,
-/obj/structure/TV/television/active,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "qzK" = (
 /obj/covers/wood,
 /obj/structure/table/wood,
@@ -15194,18 +15177,6 @@
 	},
 /obj/structure/grille/chainlinkfence/corner,
 /turf/floor/dirt,
-/area/caribbean/nomads/forest)
-"qEr" = (
-/obj/structure/grille/chainlinkfence{
-	dir = 8
-	},
-/turf/floor/grass,
-/area/caribbean/nomads/forest)
-"qEQ" = (
-/obj/structure/grille/chainlinkfence{
-	dir = 8
-	},
-/turf/floor/beach/water,
 /area/caribbean/nomads/forest)
 "qER" = (
 /obj/effect/floor_decal/corner/paleblue/border{
@@ -15240,11 +15211,9 @@
 /area/caribbean/no_mans_land/invisible_wall{
 	icon_state = "red1"
 	})
-"qFL" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 1
-	},
-/turf/floor/beach/sand,
+"qGj" = (
+/obj/structure/bed/chair/sofa/left,
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "qHs" = (
 /obj/structure/curtain/open/green{
@@ -15294,6 +15263,11 @@
 	color = "#ece8c1"
 	},
 /area/caribbean/roofed)
+"qJX" = (
+/obj/structure/sign/traffic/zebracrossing,
+/obj/structure/sign/traffic/zebracrossing,
+/turf/floor/plating/road,
+/area/caribbean/nomads/forest)
 "qKr" = (
 /obj/structure/sign/mcd/pole,
 /turf/floor/plating/cobblestone/vertical/dark,
@@ -15631,11 +15605,6 @@
 /obj/item/weapon/weldingtool,
 /turf/floor/dirt,
 /area/caribbean/nomads/forest)
-"rdW" = (
-/obj/structure/table/rack/shelf/wooden,
-/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "ren" = (
 /obj/structure/closet/anchored,
 /obj/item/clothing/head/surgical_cap,
@@ -15709,6 +15678,10 @@
 	color = "#ece8c1"
 	},
 /area/caribbean/roofed)
+"rkO" = (
+/obj/covers/cobblestone/stairs,
+/turf/floor/beach/sand,
+/area/caribbean/nomads/forest)
 "rkU" = (
 /obj/structure/sign/securearea{
 	desc = "Private property.";
@@ -15906,13 +15879,6 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
-"rvL" = (
-/obj/structure/table/modern/table,
-/obj/structure/potted_plant{
-	dir = 5
-	},
-/turf/floor/wood,
-/area/caribbean/nomads/forest)
 "rvZ" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#5472C7"
@@ -16006,12 +15972,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/prison/jail)
-"rAz" = (
-/obj/structure/grille/chainlinkfence{
-	dir = 4
-	},
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
 "rBm" = (
 /obj/item/weapon/disk/program/squadtracker,
 /obj/structure/closet/anchored,
@@ -16222,21 +16182,21 @@
 	},
 /turf/floor/plating/tiled/woodh,
 /area/caribbean/roofed/temperate)
+"rOC" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/obj/structure/window/barrier/railing/stone{
+	dir = 8
+	},
+/turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/forest)
 "rPf" = (
 /obj/structure/barricade/tires,
 /obj/structure/barricade/car{
 	icon_state = "car3"
 	},
 /turf/floor/dirt,
-/area/caribbean/nomads/forest)
-"rPE" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 4
-	},
-/turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean/nomads/forest)
 "rQk" = (
 /obj/structure/window/barrier/railing/stone{
@@ -16342,6 +16302,12 @@
 "rWK" = (
 /obj/effect/autoassembler,
 /turf/floor/plating/cobblestone/vertical/dark,
+/area/caribbean/nomads/forest)
+"rWY" = (
+/obj/structure/table/modern/billiard{
+	dir = 10
+	},
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "rXr" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
@@ -16483,10 +16449,6 @@
 "shf" = (
 /turf/floor/plating/white,
 /area/caribbean/prison/jail)
-"shr" = (
-/obj/structure/wild/tallgrass,
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
 "shs" = (
 /obj/structure/railing,
 /turf/floor/broken_floor,
@@ -16568,6 +16530,12 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"smE" = (
+/obj/structure/potted_plant{
+	dir = 6
+	},
+/turf/floor/wood,
+/area/caribbean/nomads/forest)
 "smP" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#D2C273"
@@ -16976,6 +16944,12 @@
 	},
 /turf/wall/stone,
 /area/caribbean/roofed/temperate)
+"sHt" = (
+/obj/structure/bed/chair/wood/red{
+	dir = 8
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "sHD" = (
 /obj/structure/optable{
 	color = "#a7d1cc";
@@ -17178,6 +17152,9 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
+"sVi" = (
+/turf/floor/plating/marble/tile,
+/area/caribbean/nomads/forest)
 "sVs" = (
 /obj/covers/wood_wall{
 	icon_state = "divider10"
@@ -17206,6 +17183,12 @@
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine,
 /turf/floor/plating/tiled,
 /area/caribbean/roofed/temperate)
+"sVZ" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 8
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "sWo" = (
 /obj/structure/bookcase{
 	icon_state = "book-5"
@@ -17484,9 +17467,9 @@
 	},
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
-"tqV" = (
-/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,
-/turf/floor/plating/concrete,
+"tsp" = (
+/obj/structure/bed/chair/comfy/fancy_sofa,
+/turf/floor/plating/marble/raw,
 /area/caribbean/nomads/forest)
 "tsq" = (
 /obj/structure/simple_door/key_door/anyone/singledoor/privacy,
@@ -17503,6 +17486,13 @@
 /obj/structure/window/classic/metal,
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
+"tuh" = (
+/obj/structure/table/modern/table,
+/obj/structure/potted_plant{
+	dir = 5
+	},
+/turf/floor/wood,
+/area/caribbean/nomads/forest)
 "tuu" = (
 /obj/effect/floor_decal/industrial/warning/dust,
 /turf/floor/plating/road/yellowline{
@@ -17550,12 +17540,6 @@
 	},
 /turf/floor/plating/cobblestone/vertical,
 /area/caribbean/roofed/temperate)
-"txs" = (
-/obj/structure/bed/chair/comfy/fancy_sofa/r{
-	dir = 4
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "txx" = (
 /obj/structure/sign/painting11{
 	pixel_y = 32
@@ -17830,6 +17814,10 @@
 	color = "#ecc1cc"
 	},
 /area/caribbean/roofed)
+"tUr" = (
+/obj/structure/sign/orthodox3,
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "tUC" = (
 /obj/structure/window/classic/metal,
 /obj/effect/floor_decal/corner_kafel/red/diagonal,
@@ -17921,17 +17909,18 @@
 /obj/item/weapon/stool/prison,
 /turf/floor/plating/steel,
 /area/caribbean/prison/jail)
-"tZn" = (
-/obj/structure/closet/anchored,
-/obj/item/weapon/storage/toolbox/mechanical,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "tZs" = (
 /obj/structure/sign/flag/green,
 /obj/structure/roof_support/admin,
 /obj/covers/brick_wall,
 /turf/wall/brick,
 /area/caribbean/roofed/temperate)
+"tZE" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "tZT" = (
 /obj/covers/marble_checkerboard/pink,
 /obj/structure/sink/kitchen{
@@ -18175,12 +18164,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"uoT" = (
-/obj/structure/window/barrier/railing/stone{
-	dir = 8
-	},
-/turf/floor/beach/sand,
-/area/caribbean/nomads/forest)
 "upm" = (
 /obj/effect/landmark{
 	name = "JoinLateCivE"
@@ -18257,12 +18240,6 @@
 	},
 /turf/floor/plating/marble/decorative_tile,
 /area/caribbean/roofed)
-"usW" = (
-/obj/structure/table/modern/billiard{
-	dir = 1
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "uti" = (
 /obj/covers/carpet/blackcarpet,
 /obj/structure/sink/kitchen{
@@ -18678,16 +18655,18 @@
 /area/caribbean/no_mans_land/invisible_wall/one{
 	color = "#34adc2"
 	})
+"uWG" = (
+/obj/covers/cobblestone/stairs{
+	dir = 1
+	},
+/turf/floor/grass,
+/area/caribbean/nomads/forest)
 "uWW" = (
 /obj/structure/toilet{
 	dir = 8
 	},
 /turf/floor/plating/steel,
 /area/caribbean/prison/jail)
-"uXb" = (
-/obj/structure/oven/grill/gas,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "uXl" = (
 /obj/structure/table/wood,
 /obj/structure/computer/nopower/aotd/civilian{
@@ -18862,6 +18841,11 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
+"vju" = (
+/obj/structure/closet/anchored,
+/obj/item/weapon/storage/toolbox/mechanical,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "vjw" = (
 /obj/effect/floor_decal/industrial/warning/dust{
 	dir = 4;
@@ -18998,6 +18982,12 @@
 	},
 /turf/floor/plating/steel,
 /area/caribbean/roofed/temperate)
+"vrA" = (
+/obj/structure/mine_support/stone/ionic{
+	density = 1
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "vrS" = (
 /obj/covers/marble_checkerboard,
 /obj/covers/marble_grid,
@@ -19130,6 +19120,10 @@
 	},
 /turf/floor/plating/concrete,
 /area/caribbean/roofed/temperate)
+"vxv" = (
+/obj/structure/sign/orthodox1,
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "vyw" = (
 /turf/wall/brick,
 /area/caribbean/roofed/temperate)
@@ -19240,10 +19234,6 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"vIg" = (
-/obj/structure/sign/orthodox2,
-/turf/wall/stone/marble,
-/area/caribbean/nomads/forest)
 "vIV" = (
 /obj/structure/bed/chair/wood/alt,
 /turf/floor/wood,
@@ -19462,10 +19452,6 @@
 	},
 /turf/floor/plating/road,
 /area/caribbean/roofed/temperate)
-"waG" = (
-/obj/structure/bed/chair/sofa,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "waV" = (
 /obj/structure/window/barrier/railing/stone,
 /turf/floor/beach/water,
@@ -19484,6 +19470,10 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
+"wcq" = (
+/obj/structure/sign/orthodox2,
+/turf/wall/stone/marble,
+/area/caribbean/nomads/forest)
 "wcX" = (
 /obj/effect/floor_decal/corner_kafel/green/diagonal,
 /obj/structure/lamp/lamp_big/alwayson{
@@ -19641,12 +19631,6 @@
 	},
 /turf/floor/plating/marble/tile,
 /area/caribbean/roofed)
-"wmK" = (
-/obj/structure/potted_plant{
-	dir = 8
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "wmX" = (
 /obj/structure/table/rack/shelf,
 /obj/item/stack/ore/diamond,
@@ -19693,6 +19677,17 @@
 /obj/item/mirror,
 /turf/wall/wood,
 /area/caribbean/roofed)
+"wtR" = (
+/obj/structure/shelf,
+/obj/item/weapon/storage/toolbox/emergency,
+/turf/floor/plating/concrete,
+/area/caribbean/nomads/forest)
+"wuc" = (
+/obj/structure/potted_plant{
+	dir = 1
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "wvV" = (
 /obj/structure/grille/chainlinkfence,
 /obj/structure/barbwire{
@@ -19756,10 +19751,6 @@
 /obj/item/clothing/mask/sterile,
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
-"wyZ" = (
-/obj/structure/window/classic/marblefull,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "wza" = (
 /obj/structure/closet/safe/green,
 /turf/floor/plating/tiled/dark,
@@ -19768,13 +19759,19 @@
 /obj/structure/grille/chainlinkfence{
 	dir = 8
 	},
-/turf/floor/beach/sand,
+/turf/floor/grass,
 /area/caribbean/nomads/forest)
 "wzA" = (
 /obj/structure/bed/wood,
 /obj/item/weapon/bedsheet/brown,
 /turf/floor/plating/tiled,
 /area/caribbean/roofed/temperate)
+"wzC" = (
+/obj/structure/window/barrier/railing/stone{
+	dir = 4
+	},
+/turf/floor/dirt,
+/area/caribbean/nomads/forest)
 "wzS" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#5472C7"
@@ -20222,6 +20219,12 @@
 /area/caribbean/no_mans_land/invisible_wall{
 	icon_state = "red1"
 	})
+"xas" = (
+/obj/structure/potted_plant{
+	dir = 4
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "xaG" = (
 /obj/structure/npc_vendor/bouncer,
 /obj/structure/lamp/lamp_big/alwayson/white{
@@ -20359,6 +20362,12 @@
 	ambience = list('sound/ambience/nightclub2.ogg');
 	forced_ambience = list('sound/ambience/nightclub2.ogg')
 	})
+"xmd" = (
+/obj/structure/grille/chainlinkfence{
+	dir = 8
+	},
+/turf/floor/beach/water,
+/area/caribbean/nomads/forest)
 "xmi" = (
 /obj/item/weapon/reagent_containers/glass/bucket,
 /obj/item/weapon/mop,
@@ -20381,12 +20390,6 @@
 /obj/structure/window/classic/reinforced,
 /turf/floor/wood,
 /area/caribbean/roofed/temperate)
-"xnm" = (
-/obj/structure/potted_plant{
-	pixel_x = 10
-	},
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "xnw" = (
 /obj/structure/shower,
 /obj/structure/curtain/open/shower,
@@ -20457,6 +20460,12 @@
 /obj/item/weapon/pen,
 /turf/floor/plating/marble/decorative_tile,
 /area/caribbean/roofed)
+"xtg" = (
+/obj/structure/potted_plant{
+	pixel_x = 10
+	},
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "xtj" = (
 /obj/structure/sign/nosmoking2{
 	pixel_y = 32
@@ -20617,6 +20626,10 @@
 "xGb" = (
 /turf/floor/broken_floor,
 /area/caribbean)
+"xGF" = (
+/obj/structure/closet/fridge,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "xGT" = (
 /obj/effect/floor_decal/corner_kafel/white/diagonal{
 	color = "#D2C273"
@@ -20643,12 +20656,6 @@
 	dir = 9
 	},
 /area/caribbean/supply)
-"xIj" = (
-/obj/structure/window/classic/marblefull,
-/obj/structure/curtain/open/blue,
-/obj/covers/jail/steeljail,
-/turf/floor/plating/marble/raw,
-/area/caribbean/nomads/forest)
 "xIB" = (
 /obj/covers/carpet/purplecarpet,
 /obj/structure/bed/chair/comfy/fancy_sofa/l{
@@ -20768,18 +20775,15 @@
 	},
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
+"xPY" = (
+/obj/structure/shelf,
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher,
+/obj/item/weapon/reagent_containers/glass/bucket,
+/turf/floor/plating/concrete,
+/area/caribbean/nomads/forest)
 "xQl" = (
 /obj/effect/autoassembler,
 /turf/floor/plating/road,
-/area/caribbean/nomads/forest)
-"xQp" = (
-/obj/covers/cobblestone/stairs{
-	dir = 1
-	},
-/obj/structure/window/barrier/railing/stone{
-	dir = 8
-	},
-/turf/floor/grass,
 /area/caribbean/nomads/forest)
 "xQs" = (
 /obj/effect/floor_decal/corner_kafel/green/diagonal,
@@ -20838,11 +20842,8 @@
 /turf/floor/plating/white,
 /area/caribbean/roofed/temperate)
 "xRP" = (
-/obj/structure/lamp/lamp_big/alwayson/white{
-	dir = 8
-	},
-/turf/floor/plating/steel,
-/area/caribbean/roofed/temperate)
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "xRZ" = (
 /obj/structure/table/rack/shelf/wooden,
 /obj/structure/lamp/lamp_big/alwayson{
@@ -21068,6 +21069,10 @@
 	},
 /turf/floor/wood,
 /area/caribbean/roofed)
+"ydN" = (
+/obj/structure/bed/chair/sofa/right,
+/turf/floor/plating/marble/raw,
+/area/caribbean/nomads/forest)
 "yeA" = (
 /obj/structure/table/modern/retable,
 /obj/item/weapon/paper,
@@ -48670,31 +48675,31 @@ pNY
 mWT
 mWT
 fUd
-ixg
-qEr
-qEr
-qEr
-qEr
-qEr
-qEr
-ixg
-qEr
-qEr
-qEr
+ayB
+wzd
+wzd
+wzd
+wzd
+wzd
+wzd
+ayB
+wzd
+wzd
+wzd
 ouz
 qwj
 ouz
-ixg
+ayB
 qwj
 sBL
-wzd
-wzd
-ixg
-wzd
-wzd
-wzd
-qEQ
-ixg
+ahD
+ahD
+ayB
+ahD
+ahD
+ahD
+xmd
+ayB
 gmO
 gmO
 gmO
@@ -49339,17 +49344,17 @@ bSd
 gWF
 ofA
 fUd
-ixg
-ixg
-shr
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
+ayB
+ayB
+qwT
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
 ofA
 eif
 oNw
@@ -49561,17 +49566,17 @@ ofA
 gWF
 ofA
 ezJ
-ixg
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-hsE
-hsE
-hsE
-ixg
+ayB
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+apT
+apT
+apT
+ayB
 ofA
 eif
 oNw
@@ -49783,17 +49788,17 @@ ofA
 gWF
 ofA
 bSd
-ixg
-gTn
-gTn
-gTn
-gTn
-hsE
-gTn
-gTn
-gTn
-gTn
-xIj
+ayB
+xRP
+xRP
+xRP
+xRP
+apT
+xRP
+xRP
+xRP
+xRP
+iqP
 ofA
 eif
 oNw
@@ -50005,24 +50010,24 @@ ofA
 gWF
 bSd
 bSd
-ixg
-gTn
-gTn
-hGn
-gTn
-bDO
-bDO
-bDO
-bDO
-gTn
-xIj
-pKz
-ixg
-dRu
-ixg
-aDe
-ixg
-dRu
+ayB
+xRP
+xRP
+tUr
+xRP
+mmP
+mmP
+mmP
+mmP
+xRP
+iqP
+tZE
+ayB
+pwp
+ayB
+pgK
+ayB
+pwp
 oNw
 oNw
 uFQ
@@ -50227,25 +50232,25 @@ jXN
 qfa
 eif
 jXN
-ixg
-gTn
-gTn
-vIg
-dXo
-bDO
-bDO
-bDO
-bDO
-gTn
-xIj
-nOh
-gTn
-gTn
-gTn
-gTn
-gTn
-irf
-qFL
+ayB
+xRP
+xRP
+wcq
+omR
+mmP
+mmP
+mmP
+mmP
+xRP
+iqP
+wuc
+xRP
+xRP
+xRP
+xRP
+xRP
+clb
+bIg
 oNw
 uFQ
 uFQ
@@ -50446,28 +50451,28 @@ pNY
 aUR
 mWT
 wYH
-ixg
+ayB
 jXN
 ofA
-ixg
-ixg
-ixg
-auF
-gTn
-bDO
-bDO
-bDO
-bDO
-gTn
-ixg
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-iDg
+ayB
+ayB
+ayB
+vxv
+xRP
+mmP
+mmP
+mmP
+mmP
+xRP
+ayB
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+rkO
 oNw
 uFQ
 uFQ
@@ -50674,22 +50679,22 @@ ofA
 ofA
 ofA
 qMK
-ixg
-xnm
-hrW
-hrW
-hrW
-gTn
-gTn
-wyZ
-gTn
-hdY
-gTn
-gTn
-hdY
-gTn
-gTn
-iDg
+ayB
+xtg
+sHt
+sHt
+sHt
+xRP
+xRP
+oXR
+xRP
+vrA
+xRP
+xRP
+vrA
+xRP
+xRP
+rkO
 oNw
 uFQ
 uFQ
@@ -50896,22 +50901,22 @@ ofA
 qMK
 ofA
 ofA
-ixg
-ixg
-gTn
-gTn
-gTn
-gTn
-gTn
-wyZ
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-qFL
+ayB
+ayB
+xRP
+xRP
+xRP
+xRP
+xRP
+oXR
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -51115,25 +51120,25 @@ jXN
 qfa
 ofA
 ofA
-ixg
-ixg
-ixg
-ixg
-ixg
-gTn
-gTn
-pBv
-txs
-gTn
-wyZ
-gTn
-gTn
-mnY
-ozU
-gTn
-cFu
-gTn
-qFL
+ayB
+ayB
+ayB
+ayB
+ayB
+xRP
+xRP
+jLC
+bYb
+xRP
+oXR
+xRP
+xRP
+pVu
+lBk
+xRP
+qGj
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -51337,25 +51342,25 @@ jXN
 gWF
 ofA
 ofA
-ixg
 ayB
-ayB
-ayB
-ayB
-gTn
-fdv
-gTn
-gTn
-gTn
-wyZ
-gTn
-gTn
-usW
-laY
-gTn
-waG
-gTn
-qFL
+iRS
+iRS
+iRS
+iRS
+xRP
+hMY
+xRP
+xRP
+xRP
+oXR
+xRP
+xRP
+czS
+etX
+xRP
+kkT
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -51555,29 +51560,29 @@ pNY
 pNY
 mWT
 jiq
-biv
-pAe
-pKz
-pKz
-ixg
-pdv
-lFa
-rvL
+wzC
+nyC
+tZE
+tZE
 ayB
-gTn
-mRy
-gTn
-gTn
-qyM
-wyZ
-gTn
-gTn
-gpF
-iFC
-gTn
-oGv
-gTn
-qFL
+ond
+kdl
+tuh
+iRS
+xRP
+tsp
+xRP
+xRP
+iED
+oXR
+xRP
+xRP
+rWY
+iGZ
+xRP
+ydN
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -51776,30 +51781,30 @@ pNY
 pNY
 pNY
 mWT
-ewT
-xQp
-eqP
-nil
-eqP
-xIj
-gFl
-gFl
-puK
-ayB
-puK
-ipi
-gTn
-gTn
-gTn
-wyZ
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-qFL
+rOC
+mYf
+lqD
+sVi
+lqD
+iqP
+ixg
+ixg
+iYJ
+iRS
+iYJ
+eZw
+xRP
+xRP
+xRP
+oXR
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -51998,30 +52003,30 @@ bwW
 pNY
 pNY
 mWT
-ohE
-eBN
-nil
-nil
-nil
-oZH
-gFl
-gFl
-puK
-puK
-puK
-gTn
-iuK
-fEJ
-gTn
-wyZ
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-qFL
+fCj
+uWG
+sVi
+sVi
+sVi
+ewT
+ixg
+ixg
+iYJ
+iYJ
+iYJ
+xRP
+iBo
+qsq
+xRP
+oXR
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -52220,30 +52225,30 @@ pNY
 pNY
 pNY
 mWT
-rPE
-fmt
-eqP
-nil
-eqP
-xIj
-gFl
-gFl
-puK
-ayB
-puK
-gTn
-gTn
-gTn
-gTn
-wyZ
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-qFL
+cxx
+ihq
+lqD
+sVi
+lqD
+iqP
+ixg
+ixg
+iYJ
+iRS
+iYJ
+xRP
+xRP
+xRP
+xRP
+oXR
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -52443,29 +52448,29 @@ pNY
 pNY
 mWT
 xvk
-dXl
-ixg
-dXl
-dXl
-ixg
-kKb
-gFl
-lMa
+sVZ
 ayB
-gTn
-gTn
-gTn
-gTn
-gTn
-nfh
-gTn
-hdY
-kQA
-kQA
-hdY
-gTn
-gTn
-qFL
+sVZ
+sVZ
+ayB
+smE
+ixg
+pPj
+iRS
+xRP
+xRP
+xRP
+xRP
+xRP
+lKB
+xRP
+vrA
+ewH
+ewH
+vrA
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -52669,25 +52674,25 @@ ofA
 gWF
 ofA
 ofA
-ixg
 ayB
+iRS
+iRS
+iRS
+iRS
+xRP
+xRP
+xRP
+xRP
+kVT
 ayB
-ayB
-ayB
-gTn
-gTn
-gTn
-gTn
-wmK
-ixg
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-qFL
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+bIg
 oNw
 uFQ
 uFQ
@@ -52891,25 +52896,25 @@ ofA
 gWF
 ofA
 ofA
-ixg
-ixg
-ixg
-ixg
-ixg
-gTn
-kQA
-kQA
-kQA
-kQA
-ixg
-cVg
-gTn
-jGX
-rdW
-gTn
-gTn
-fij
-qFL
+ayB
+ayB
+ayB
+ayB
+ayB
+xRP
+ewH
+ewH
+ewH
+ewH
+ayB
+eEX
+xRP
+xGF
+bfi
+xRP
+xRP
+xas
+bIg
 oNw
 uFQ
 uFQ
@@ -53114,23 +53119,23 @@ gWF
 ofA
 ofA
 bSd
-ixg
-tZn
-gTn
-ixg
-gTn
-gTn
-gTn
-gTn
-uXb
-ixg
-dXl
-ixg
-uoT
-ixg
-uoT
-ixg
-uoT
+ayB
+vju
+xRP
+ayB
+xRP
+xRP
+xRP
+xRP
+kqP
+ayB
+sVZ
+ayB
+dHE
+ayB
+dHE
+ayB
+dHE
 oNw
 oNw
 uFQ
@@ -53336,16 +53341,16 @@ gWF
 ofA
 bSd
 ofA
-ixg
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-gTn
-nCT
-ixg
+ayB
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+xRP
+deG
+ayB
 ofA
 eif
 eif
@@ -53558,16 +53563,16 @@ gWF
 ofA
 ofA
 ofA
-ixg
-gTn
-gTn
-ixg
-gTn
-quw
-jGX
-kQA
-ixg
-ixg
+ayB
+xRP
+xRP
+ayB
+xRP
+gIX
+xGF
+ewH
+ayB
+ayB
 ofA
 eif
 eif
@@ -53776,20 +53781,20 @@ pNY
 mWT
 mWT
 ofA
-ixg
+ayB
 ofA
 ofA
 bSd
-ixg
-ixg
-gTn
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
+ayB
+ayB
+xRP
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
 ofA
 eif
 eif
@@ -54002,14 +54007,14 @@ ofA
 ofA
 ofA
 ofA
-kdG
-kdG
-kdG
-kdG
-fHZ
-ftl
-tqV
-ixg
+eFP
+eFP
+eFP
+eFP
+wtR
+xPY
+feW
+ayB
 ofA
 ofA
 ofA
@@ -54217,21 +54222,21 @@ rTh
 bwW
 pNY
 pNY
+bdh
+bdh
 pNY
 pNY
 pNY
 pNY
 pNY
-pNY
-pNY
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-ixg
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+ayB
 ofA
 ofA
 qMK
@@ -54439,21 +54444,21 @@ pNY
 pNY
 pNY
 pNY
+bdh
+qJX
 pNY
 pNY
 pNY
 pNY
 pNY
-pNY
-pNY
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-ixg
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+ayB
 ofA
 ofA
 ofA
@@ -54661,21 +54666,21 @@ rTh
 bwW
 pNY
 pNY
+bdh
+bdh
 pNY
 pNY
 pNY
 pNY
 pNY
-pNY
-pNY
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-ixg
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+ayB
 ofA
 qMK
 ofA
@@ -54884,20 +54889,20 @@ pNY
 pNY
 pNY
 mWT
-mWT
+qxd
 ofA
 ofA
 ofA
 ofA
 ofA
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-kdG
-ixg
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+eFP
+ayB
 ofA
 ofA
 ofA
@@ -55108,18 +55113,18 @@ pNY
 mWT
 mWT
 ofA
-ixg
+ayB
 ofA
 ofA
 ofA
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
-ixg
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
+ayB
 qMK
 ofA
 qMK
@@ -55774,33 +55779,33 @@ pNY
 mWT
 mWT
 ofA
-ixg
+ayB
 afg
 afg
 afg
-ixg
+ayB
 afg
 afg
 afg
 afg
-ixg
+ayB
 afg
 afg
 afg
-ixg
-eUq
+ayB
+pSC
 afg
 afg
 wTN
-ksS
-ksS
-ixg
-ksS
-ksS
-ksS
-ksS
-oEN
-rAz
+hab
+hab
+ayB
+hab
+hab
+hab
+hab
+oDF
+poA
 vjn
 vjn
 vjn
@@ -66626,7 +66631,7 @@ qvD
 osg
 mrl
 mrl
-xRP
+gTn
 sqq
 gXX
 jLq
@@ -89449,9 +89454,9 @@ pKM
 aPx
 mrl
 mrl
-xRP
+gTn
 mrl
-xRP
+gTn
 sfq
 ufS
 lpT
@@ -93610,8 +93615,8 @@ xGb
 xGb
 kir
 acH
-xRP
-xRP
+gTn
+gTn
 mrl
 kir
 acO
