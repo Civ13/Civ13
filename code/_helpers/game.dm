@@ -1,12 +1,12 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
 
-/proc/dopage(src,target)
+/proc/dopage(source_obj,target)
 	var/href_list
 	var/href
-	href_list = params2list("src=\ref[src]&[target]=1")
-	href = "src=\ref[src];[target]=1"
-	//src:temphtml = null
-	src:Topic(href, href_list)
+	href_list = params2list("src=\ref[source_obj]&[target]=1")
+	href = "src=\ref[source_obj];[target]=1"
+	//source_obj:temphtml = null
+	source_obj:Topic(href, href_list)
 	return null
 
 /*/proc/get_area(O)

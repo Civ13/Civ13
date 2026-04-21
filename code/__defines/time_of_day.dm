@@ -49,7 +49,7 @@ var/list/time_of_day2ticks = list(
 			return pick(c_times_of_day)
 	#endif
 
-/proc/progress_time_of_day(var/caller = null, var/force = FALSE)
+/proc/progress_time_of_day(var/caller_ref = null, var/force = FALSE)
 	if(config.daynight_on || force)
 		var/TOD_position_in_list = 1
 		for (var/v in 1 to times_of_day.len)
@@ -62,7 +62,7 @@ var/list/time_of_day2ticks = list(
 
 		for (var/v in 1 to times_of_day.len)
 			if (v == TOD_position_in_list)
-				update_lighting(times_of_day[v], admincaller = caller)
+				update_lighting(times_of_day[v], admincaller = caller_ref)
 
 /proc/TOD_loop()
 	spawn while (1)

@@ -43,7 +43,7 @@
 /* function_as_path must be an absolute path because compile errors are better than runtime errors
  * it might work if you supply a relative path due to the way splittext() works, but don't - Kachnov */
 
-/process/callproc/proc/queue(object, function_as_path, args = null, time = 10)
+/process/callproc/proc/queue(object, function_as_path, proc_args = null, time = 10)
 	// turn "/object/proc/name" into "name"
 	var/list/function_as_list = splittext(path2text(function_as_path), "/")
 	var/function = function_as_list[function_as_list.len]
@@ -53,7 +53,7 @@
 		var/callproc_helper/C = helpers[1]
 		C.object = object
 		C.function = function
-		C.args = args
+		C.args = proc_args
 		C.time = world.time + time
 		helpers -= C
 		queue += C

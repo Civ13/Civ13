@@ -4,7 +4,7 @@
 	var/priority = FALSE	//steps with higher priority would be attempted first
 	var/req_open = TRUE		// TRUE means the part must be cut open, FALSE means it doesn't
 	// type path referencing tools that can be used for this step, and how well are they suited for it
-	var/list/allowed_tools = list(1 = list("/obj/item/cursedtreasure",100)) //so its not used
+	var/list/allowed_tools = alist(1 = list("/obj/item/cursedtreasure",100)) //so its not used
 	// type paths referencing races that this step applies to.
 	var/list/allowed_species = null
 	var/list/disallowed_species = null
@@ -80,7 +80,7 @@
 /obj/item/proc/can_do_surgery(mob/living/M, mob/living/user)
 	if(!ishuman(M))
 		return TRUE
-		
+
 	var/mob/living/human/H = M
 	var/obj/item/organ/external/affected = H.get_organ(user.targeted_organ)
 	if(affected)
