@@ -5,7 +5,7 @@ echo "Setting up BYOND."
 rm -rf "BYOND"
 mkdir -p "BYOND"
 cd "BYOND"
-curl "https://www.byond.com/download/build/516/516.1659_byond_linux.zip" -o byond.zip
+curl "https://www.byond.com/download/build/516/516.1681_byond_linux.zip" -o byond.zip
 unzip -o byond.zip
 cd byond
 make here
