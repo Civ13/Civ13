@@ -266,7 +266,7 @@ proc/admin_notice(var/message, var/rights)
 	var/dat = {"
 		[common_browser_style]
 		<br>
-		<center><b><big>Game Panel</big></b></center><hr>\n
+		<center><big><b>Game Panel</b></big></center><hr>\n
 		"}
 		//		<A href='?src=\ref[src];c_mode=1'>Change Game Mode</A><br>
 /*	if (master_mode == "secret")

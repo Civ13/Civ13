@@ -256,7 +256,7 @@
 	else if (istype(A, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/AM = A
 
-		if (!(load_method & AM.mag_type) || (caliber != AM.caliber && !AM in src.good_mags))
+		if (!(load_method & AM.mag_type) || (caliber != AM.caliber && !(AM in src.good_mags)))
 			return // incompatible
 		if (bad_magazine_types.Find(AM.type))
 			return //incompatible

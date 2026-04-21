@@ -43,7 +43,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Hauptmann of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Hauptmann of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -89,7 +89,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Oberleutenant of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Oberleutenant of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -135,7 +135,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Leutenant of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Leutenant of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -367,7 +367,7 @@
 	uniform.attackby(armband, H)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the commander of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the commander of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the remaining german troops.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -858,7 +858,7 @@
 	uniform.attackby(armband, H)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the commander of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the commander of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the german troops and organize them to victory.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

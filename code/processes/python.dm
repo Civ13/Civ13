@@ -11,7 +11,7 @@
 /process/python/fire()
 	return
 
-/process/python/proc/execute(var/command, var/list/args = list())
+/process/python/proc/execute(var/command, var/list/py_args = list())
 	if (! shell())
 		return FALSE
 	if (world.realtime - last < 300)
@@ -19,7 +19,7 @@
 		return FALSE
 
 	if(world.realtime > last+300)
-		for (var/argument in args)
+		for (var/argument in py_args)
 			command = "[command] [argument]"
 		log_debug("Executing python3 command '[command]'")
 		last = world.realtime

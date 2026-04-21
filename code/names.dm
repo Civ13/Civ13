@@ -170,35 +170,25 @@ var/list/last_names_iroquois  = file2list("config/names/last_iroquois.txt")
 
 var/list/first_names_male_sioux = file2list("config/names/first_male_sioux.txt")
 var/list/first_names_female_sioux = file2list("config/names/first_female_sioux.txt")
-var/list/last_names_sioux = file2list("config/names/last_sioux.txt")
 
 var/list/first_names_male_apache = file2list("config/names/first_male_apache.txt")
-var/list/first_names_female_apache = file2list("config/names/first_female_apache.txt")
-var/list/last_names_apache = file2list("config/names/last_apache.txt")
 
 var/list/first_names_male_navajo = file2list("config/names/first_male_navajo.txt")
 var/list/first_names_female_navajo = file2list("config/names/first_female_navajo.txt")
-var/list/last_names_navajo = file2list("config/names/last_navajo.txt")
 
 var/list/first_names_male_chinook = file2list("config/names/first_male_chinook.txt")
 var/list/first_names_female_chinook = file2list("config/names/first_female_chinook.txt")
-var/list/last_names_chinook = file2list("config/names/last_chinook.txt")
 
 var/list/first_names_male_comanche = file2list("config/names/first_male_comanche.txt")
 var/list/first_names_female_comanche = file2list("config/names/first_female_comanche.txt")
-var/list/last_names_comanche = file2list("config/names/last_comanche.txt")
 
 var/list/first_names_male_mayan = file2list("config/names/first_male_mayan.txt")
 var/list/first_names_female_mayan = file2list("config/names/first_female_mayan.txt")
-var/list/last_names_mayan = file2list("config/names/last_mayan.txt")
 
 var/list/first_names_male_aztec = file2list("config/names/first_male_aztec.txt")
 var/list/first_names_female_aztec = file2list("config/names/first_female_aztec.txt")
-var/list/last_names_aztec = file2list("config/names/last_aztec.txt")
 
 var/list/first_names_male_hawaiian = file2list("config/names/first_male_hawaiian.txt")
-var/list/first_names_female_hawaiian = file2list("config/names/first_female_hawaiian.txt")
-var/list/last_names_hawaiian = file2list("config/names/last_hawaiian.txt")
 
 var/list/first_names_male_filipino = file2list("config/names/first_male_filipino.txt")
 var/list/first_names_female_filipino  = file2list("config/names/first_female_filipino.txt")

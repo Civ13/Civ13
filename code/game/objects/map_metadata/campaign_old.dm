@@ -164,7 +164,7 @@
 	src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
-	dat += "<b><big>Welcome, [key].</big></b>"
+	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
@@ -333,8 +333,8 @@
 			message = "The battle is over! The [current_winner] was victorious [current_loser][battle_name ? "in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		game_log(message)
-		world << "<b><big>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
-		world << "<b><big>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
+		world << "<big><b>Civilians Rescued:</b> <font color='blue'>Blugoslavia</font> [civilians_evacuated["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_evacuated["Redmenia"]]</big>"
+		world << "<big><b>Civilians Killed:</b> <font color='blue'>Blugoslavia</font> [civilians_killed["Blugoslavia"]], <font color='red'>Redmenia</font> [civilians_killed["Redmenia"]]</big>"
 		game_log("Civilians Rescued: Blugoslavia [civilians_evacuated["Blugoslavia"]], Redmenia [civilians_evacuated["Redmenia"]]")
 		game_log("Civilians Killed: Blugoslavia [civilians_killed["Blugoslavia"]], Redmenia [civilians_killed["Redmenia"]]")
 		game_log("Scores: [scores["Blugoslavia"]], [scores["Redmenia"]]")

@@ -170,7 +170,7 @@ By design, d1 is the smallest direction and d2 is the highest
 		if(T)
 			for (var/obj/structure/cable/CB in range(1, src))
 				if (cable_color == CB.cable_color)
-					if (!CB in connections)
+					if (!(CB in connections))
 						connections += CB
 	return connections
 

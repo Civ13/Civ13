@@ -283,7 +283,7 @@
 		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
 		<br>
 		<center>
-		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
+		<a href='?src=\ref[src];fire=1'><big><b>FIRE!</b></big></a>
 		</center>
 
 		</body>

@@ -71,7 +71,7 @@
 	webhook_send("status_update", query)
 
 /proc/webhook_send(method, data)
-	if (!config.webhook_can_fire)
+	if (!config || !config.webhook_can_fire)
 		return
 	if (!config.webhook_address || !config.webhook_key)
 		return

@@ -40,7 +40,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
 	uniform.attackby(h, H)
-	world << "<b><big>[H.real_name] is the British Lord!</big></b>"
+	world << "<big><b>[H.real_name] is the British Lord!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -385,7 +385,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/broadsword(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/steel(H), slot_l_hand)
-	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
+	world << "<big><b>[H.real_name] is the French Lord!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -730,7 +730,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
 	uniform.attackby(h, H)
 
-	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
+	world << "<big><b>[H.real_name] is the French Lord!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the Leader of the Templar Knights in the Holy Land. Defend Christianity!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1028,7 +1028,7 @@
 	uniform.attackby(thrown3, H)
 	uniform.attackby(thrown4, H)
 
-	world << "<b><big>[H.real_name] is the Emir!</big></b>"
+	world << "<big><b>[H.real_name] is the Emir!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the military leader of this group of soldiers. Defeat the crusaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1369,7 +1369,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
-	world << "<b><big>[H.real_name] is the Bohemian Lord!</big></b>"
+	world << "<big><b>[H.real_name] is the Bohemian Lord!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this state. Organize your subjects!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1418,7 +1418,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/hall(H), slot_l_store)
 
-	world << "<b><big>[H.real_name] is the Bohemian Retainer!</big></b>"
+	world << "<big><b>[H.real_name] is the Bohemian Retainer!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the retainer to the Lord of this state. Recruit staff to serve the lord in the castle and keep them well mannered! Keep the lord safe!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

@@ -199,7 +199,7 @@
 									A.icon_state = "monsoon"
 									A.weather = WEATHER_EXTREME
 									A.weather_intensity = weather_intensity
-								else if (WEATHER_WET)
+								if (WEATHER_WET)
 									A.icon_state = "rain1"
 									A.weather = WEATHER_WET
 									A.weather_intensity = weather_intensity

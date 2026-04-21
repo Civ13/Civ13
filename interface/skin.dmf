@@ -1,7 +1,7 @@
 macro "macro"
 	elem 
 		name = "Tab"
-		command = ".winset \"mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
+		command = ".winset \"mainwindow.macro=hotkeymode mapwindow.map.focus=true\""
 	elem 
 		name = "Center+REP"
 		command = ".center"
@@ -96,6 +96,12 @@ macro "macro"
 		name = "CTRL+SHIFT+G"
 		command = ".configure graphics-hwmode on"
 	elem 
+		name = "ALT+L"
+		command = "looc"
+	elem "ooc"
+		name = "O"
+		command = "ooc"
+	elem 
 		name = "CTRL+Q"
 		command = ".northwest"
 	elem 
@@ -116,12 +122,6 @@ macro "macro"
 	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
-	elem "ooc"
-		name = "O"
-		command = "ooc"
-	elem 
-		name = "ALT+L"
-		command = "looc"
 	elem 
 		name = "F12"
 		command = "ChangeHUD"
@@ -129,7 +129,7 @@ macro "macro"
 macro "hotkeymode"
 	elem 
 		name = "Tab"
-		command = ".winset \"mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true\""
+		command = ".winset \"mainwindow.macro=macro input.focus=true\""
 	elem 
 		name = "Center+REP"
 		command = ".center"
@@ -266,6 +266,9 @@ macro "hotkeymode"
 		name = "L"
 		command = "attack-direction"
 	elem 
+		name = "ALT+L"
+		command = "looc"
+	elem 
 		name = "CTRL+L"
 		command = "attack-direction"
 	elem 
@@ -274,6 +277,9 @@ macro "hotkeymode"
 	elem 
 		name = "N"
 		command = "tactic-intent"
+	elem "ooc"
+		name = "O"
+		command = "ooc"
 	elem 
 		name = "Q"
 		command = ".northwest"
@@ -295,6 +301,9 @@ macro "hotkeymode"
 	elem 
 		name = "T"
 		command = ".say"
+	elem 
+		name = "CTRL+T"
+		command = "asay"
 	elem 
 		name = "U"
 		command = "secondary-intent-change"
@@ -328,9 +337,6 @@ macro "hotkeymode"
 	elem "disactivation"
 		name = "Z+UP"
 		command = "disactivation"
-	elem
-		name = ","
-		command = "m-intent-prone"
 	elem 
 		name = "Numpad1"
 		command = "zone_sel_right_lower"
@@ -356,27 +362,20 @@ macro "hotkeymode"
 		name = "F1"
 		command = "adminhelp"
 	elem 
-		name = "F2"
-		command = "mentorhelp"
-	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
 	elem 
-		name = "CTRL+T"
-		command = "asay"
-	elem "ooc"
-		name = "O"
-		command = "ooc"
-	elem 
-		name = "ALT+L"
-		command = "looc"
+		name = "F2"
+		command = "mentorhelp"
 	elem 
 		name = "F3"
 		command = ".me"
 	elem 
 		name = "F12"
 		command = "ChangeHUD"
-
+	elem 
+		name = ","
+		command = "m-intent-prone"
 
 menu "menu"
 	elem 
@@ -504,174 +503,50 @@ menu "menu"
 		category = "&Help"
 		saved-params = "is-checked"
 
-
-window "chemdispenser"
-	elem "chemdispenser"
-		type = MAIN
-		pos = 372,0
-		size = 340x480
-		anchor1 = none
-		anchor2 = none
-		is-visible = false
-		saved-params = "pos;size;is-minimized;is-maximized"
-		title = "Chem Dispenser"
-		statusbar = false
-	elem "energy"
-		type = LABEL
-		pos = 8,24
-		size = 56x16
-		anchor1 = none
-		anchor2 = none
-		saved-params = ""
-		text = "Energy: 25"
-	elem "eject"
-		type = BUTTON
-		pos = 264,4
-		size = 72x20
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "[Insert beaker]"
-		command = "skincmd \"chemdispenser;eject\""
-	elem "amountc"
-		type = BUTTON
-		pos = 208,4
-		size = 48x20
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "[Other]"
-		command = "skincmd \"chemdispenser;amountc\""
-	elem "amount3"
-		type = BUTTON
-		pos = 176,4
-		size = 24x20
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "[30]"
-		command = "skincmd \"chemdispenser;amount30\""
-	elem "amount2"
-		type = BUTTON
-		pos = 144,4
-		size = 24x20
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "[20]"
-		command = "skincmd \"chemdispenser;amount20\""
-	elem "amount1"
-		type = BUTTON
-		pos = 112,4
-		size = 24x20
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "[10]"
-		command = "skincmd \"chemdispenser;amount10\""
-	elem "amount"
-		type = LABEL
-		pos = 4,4
-		size = 100x20
-		anchor1 = none
-		anchor2 = none
-		font-size = 12
-		saved-params = ""
-		text = "Amount: 30"
-	elem "child1"
-		type = CHILD
-		pos = 0,40
-		size = 340x440
-		anchor1 = none
-		anchor2 = none
-		saved-params = "splitter"
-		left = "chemdispenser_reagents"
-		is-vert = false
-
-window "chemdispenser_reagents"
-	elem "chemdispenser_reagents"
-		type = MAIN
-		pos = 372,0
-		size = 340x448
-		anchor1 = none
-		anchor2 = none
-		saved-params = "pos;size;is-minimized;is-maximized"
-		titlebar = false
-		statusbar = false
-		can-close = false
-		can-minimize = false
-		can-resize = false
-		is-pane = true
-		can-scroll = vertical
-	elem "template_dispense"
-		type = BUTTON
-		pos = 256,8
-		size = 64x32
-		anchor1 = none
-		anchor2 = none
-		is-visible = false
-		saved-params = "is-checked"
-		text = "Dispense"
-		command = ""
-		is-flat = true
-	elem "template_name"
-		type = LABEL
-		pos = 18,8
-		size = 230x32
-		anchor1 = none
-		anchor2 = none
-		font-size = 15
-		is-visible = false
-		saved-params = ""
-		text = "Chloral Hydrate"
-		image-mode = stretch
-
 window "mainwindow"
 	elem "mainwindow"
 		type = MAIN
-		pos = 281,0
-		size = 640x440
-		anchor1 = none
-		anchor2 = none
+		size = 800x440
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		background-color = #000000
 		is-default = true
+		statusbar = false
+		is-maximized = true
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Civilization 13"
-		titlebar = false
-		is-maximized = true
 		icon = 'icons\\taskbar.png'
-		keep-aspect = true
-		macro = "macro"
+		macro = "hotkeymode"
+		menu = "menu"
 	elem "mainvsplit"
 		type = CHILD
-		pos = 0,0
-		size = 640x440
+		size = 0x0
 		anchor1 = 0,0
 		anchor2 = 100,100
 		background-color = #271a0c
 		saved-params = "splitter"
+		left = "mapwindow"
 		right = "rpane"
 		is-vert = true
-		splitter = 75
 
 window "mapwindow"
 	elem "mapwindow"
 		type = MAIN
-		pos = 372,0
-		size = 640x480
-		anchor1 = none
-		anchor2 = none
+		pos = 476,0
+		size = 800x480
+		anchor1 = -1,-1
+		anchor2 = -1,-1
+		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
-		titlebar = false
-		statusbar = false
-		can-close = false
-		can-minimize = false
-		can-resize = false
 		is-pane = true
+		outer-size = 658x549
+		outer-pos = 476,0
+		inner-pos = 9,38
+		screen-size = 1920x1020
 	elem "map"
 		type = MAP
 		pos = 0,0
-		size = 640x480
+		size = 800x480
 		anchor1 = 0,0
 		anchor2 = 100,100
 		font-family = "sans-serif"
@@ -681,125 +556,88 @@ window "mapwindow"
 		on-show = ".winset\"mainwindow.mainvsplit.left=mapwindow\""
 		on-hide = ".winset\"mainwindow.mainvsplit.left=\""
 
+window "rpane"
+	elem "rpane"
+		type = MAIN
+		pos = 281,0
+		size = 480x480
+		anchor1 = -1,-1
+		anchor2 = -1,-1
+		background-color = #271a0c
+		saved-params = "pos;size;is-minimized;is-maximized"
+		is-pane = true
+	elem "rpanewindow"
+		type = CHILD
+		pos = 0,0
+		size = 480x445
+		anchor1 = 0,0
+		anchor2 = 100,100
+		saved-params = "splitter"
+		left = "infowindow"
+		right = "outputwindow"
+		is-vert = false
+
 window "outputwindow"
 	elem "outputwindow"
 		type = MAIN
-		pos = 372,0
-		size = 640x480
-		anchor1 = none
-		anchor2 = none
+		pos = 0,0
+		size = 480x480
+		anchor1 = -1,-1
+		anchor2 = -1,-1
 		background-color = #392611
 		saved-params = "pos;size;is-minimized;is-maximized"
-		titlebar = false
-		statusbar = false
-		can-close = false
-		can-minimize = false
-		can-resize = false
 		is-pane = true
 		can-scroll = vertical
-	elem "hotkey_toggle"
-		type = BUTTON
-		pos = 546,459
-		size = 92x20
-		anchor1 = 100,100
-		anchor2 = none
-		font-family = "Book Antiqua"
-		font-size = 8
-		text-color = #e1e1d7
-		background-color = #392611
-		saved-params = "is-checked"
-		text = "Hotkey Toggle"
-		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
-		button-type = pushbox
-	elem "saybutton"
-		type = BUTTON
-		pos = 502,459
-		size = 40x20
-		anchor1 = 100,100
-		anchor2 = none
-		font-family = "Book Antiqua"
-		font-size = 8
-		text-color = #e1e1d7
-		background-color = #392611
-		saved-params = "is-checked"
-		text = "Chat"
-		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
-		button-type = pushbox
-	elem "input"
-		type = INPUT
-		pos = 2,459
-		size = 496x20
-		anchor1 = 0,100
-		anchor2 = 100,100
-		font-family = "Book Antiqua"
-		font-size = 8
-		background-color = #a68b7d
-		is-default = true
-		border = sunken
-		saved-params = ""
 	elem "output"
 		type = OUTPUT
 		pos = 0,0
-		size = 640x456
+		size = 480x450
 		anchor1 = 0,0
 		anchor2 = 100,100
 		font-family = "Book Antiqua,Bookman Old Style,@SimSun-ExtB"
 		font-size = 9
+		text-color = #e1e1d7
 		background-color = #392611
 		is-default = true
 		saved-params = "max-lines"
 		style = ".system {color:#ff0000;}"
 		max-lines = 0
-
-window "browserwindow"
-	elem "browserwindow"
-		type = MAIN
-		pos = 372,0
-		size = 640x480
-		anchor1 = none
-		anchor2 = none
-		saved-params = "pos;size;is-minimized;is-maximized"
-		title = "Browser"
-		statusbar = false
-		is-pane = true
-	elem "browser"
-		type = BROWSER
-		pos = 0,0
-		size = 638x503
-		anchor1 = 0,0
+	elem "input"
+		type = INPUT
+		pos = 2,452
+		size = 496x20
+		anchor1 = 0,100
 		anchor2 = 100,100
-		background-color = #ffffff
+		font-family = "Book Antiqua"
+		font-size = 8
+		text-color = #e1e1d7
+		background-color = #a68b7d
 		is-default = true
+		border = sunken
 		saved-params = ""
-		on-show = ".winset\"rpane.infob.is-visible=true?rpane.infob.pos=130,0;rpane.textb.is-visible=true;rpane.browseb.is-visible=true;rpane.browseb.is-checked=true;rpane.rpanewindow.pos=0,30;rpane.rpanewindow.size=0x0;rpane.rpanewindow.left=browserwindow\""
-		on-hide = ".winset\"rpane.infob.is-visible=true?rpane.infob.is-checked=true rpane.infob.pos=65,0 rpane.rpanewindow.left=infowindow:rpane.rpanewindow.left=textwindow rpane.textb.is-visible=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0\""
 
 window "infowindow"
 	elem "infowindow"
-		type = MAIN
-		pos = 372,0
-		size = 420x477
-		anchor1 = none
-		anchor2 = none
+		type = MAIN	
+		pos = 281,0
+		size = 480x480
+		anchor1 = -1,-1
+		anchor2 = -1,-1
+		text-color = #e1e1d7
 		background-color = #271a0c
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Info"
-		titlebar = false
-		statusbar = false
-		can-close = false
-		can-minimize = false
-		can-resize = false
 		is-pane = true
 	elem "info"
 		type = INFO
-		pos = 0,24
-		size = 420x453
+		pos = 0,15
+		size = 480x465
 		anchor1 = 0,5
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
 		font-size = 8
 		text-color = #e1e1d7
-		background-color = #271a0c
+		background-color = #392611
 		is-default = true
 		drop-zone = false
 		saved-params = ""
@@ -808,97 +646,4 @@ window "infowindow"
 		tab-background-color = #271a0c
 		tab-font-family = "Book Antiqua"
 		tab-font-size = 9
-		on-show = ".winset\"rpane.infob.is-visible=true;rpane.browseb.is-visible=true?rpane.infob.pos=130,0:rpane.infob.pos=65,0 rpane.textb.is-visible=true rpane.infob.is-checked=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=infowindow\""
-		on-hide = ".winset\"rpane.infob.is-visible=false;rpane.browseb.is-visible=true?rpane.browseb.is-checked=true rpane.rpanewindow.left=browserwindow:rpane.textb.is-visible=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=\""
-
-window "rpane"
-	elem "rpane"
-		type = MAIN
-		pos = 372,0
-		size = 420x457
-		anchor1 = none
-		anchor2 = none
-		background-color = #271a0c
-		saved-params = "pos;size;is-minimized;is-maximized"
-		titlebar = false
-		statusbar = false
-		can-close = false
-		can-minimize = false
-		can-resize = false
-		is-pane = true
-	elem "rpanewindow"
-		type = CHILD
-		pos = 0,0
-		size = 420x482
-		anchor1 = 0,0
-		anchor2 = 100,100
-		background-color = #271a0c
-		saved-params = "splitter"
-		left = "buttons"
-		right = "outputwindow"
-		is-vert = false
-		splitter = 30
-	elem "Title"
-		type = LABEL
-		pos = 0,0
-		size = 420x20
-		anchor1 = 0,0
-		anchor2 = 100,4
-		font-family = "Bookman Old Style"
-		font-size = 12
-		font-style = "bold italic"
-		text-color = #e1e1d7
-		background-color = #271a0c
-		saved-params = ""
-		text = "Civilization 13"
-
-window "text_editor"
-	elem "text_editor"
-		type = MAIN
-		pos = 372,0
-		size = 360x488
-		anchor1 = none
-		anchor2 = none
-		is-visible = false
-		border = sunken
-		saved-params = "pos;size;is-minimized;is-maximized"
-		title = "Text Editor"
-		can-minimize = false
-		can-resize = false
-	elem "exit"
-		type = BUTTON
-		pos = 248,456
-		size = 104x24
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "Exit without saving"
-		command = ""
-	elem "save"
-		type = BUTTON
-		pos = 128,456
-		size = 104x24
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "Save"
-		command = ""
-	elem "saveexit"
-		type = BUTTON
-		pos = 8,456
-		size = 104x24
-		anchor1 = none
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "Save + Exit"
-		command = ""
-	elem "textedit"
-		type = INPUT
-		pos = 0,0
-		size = 360x448
-		anchor1 = none
-		anchor2 = none
-		border = line
-		saved-params = ""
-		multi-line = true
-
+		on-show = ".winset\"rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=infowindow\""

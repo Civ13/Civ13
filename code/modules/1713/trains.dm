@@ -318,7 +318,7 @@
 	for (var/mob/living/L in oldloc)
 		L.loc = loc
 	for (var/obj/O in oldloc)
-		if (O.anchored && O in transporting)
+		if (O.anchored && (O in transporting))
 			O.loc = loc
 	if (connected)
 		connected.Move(oldloc, dir)
@@ -483,7 +483,7 @@
 	..()
 
 /obj/structure/trains/storage/attack_hand(mob/user as mob)
-	if (istype(user, /mob/living/human) && user in range(1,src))
+	if (istype(user, /mob/living/human) && (user in range(1,src)))
 		storage.open(user)
 		update_icon()
 	else

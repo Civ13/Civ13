@@ -706,13 +706,13 @@ Note that amputating the affected organ does in fact remove the infection from t
 			switch(W.damage_type)
 				if (BURN)
 					burn_dam += W.damage
-				else if (PIERCE)
+				if (PIERCE)
 					brute_dam += W.damage
 					pierce_dam += W.damage
-				else if (CUT)
+				if (CUT)
 					brute_dam += W.damage
 					cut_dam += W.damage
-				else if (BRUISE)
+				if (BRUISE)
 					brute_dam += W.damage
 					blunt_dam += W.damage
 		if (W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
@@ -899,12 +899,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 		holder = owner
 	if (!holder)
 		return
-	if (holder.handcuffed && body_part in list(ARM_LEFT, ARM_RIGHT, HAND_LEFT, HAND_RIGHT))
+	if (holder.handcuffed && (body_part in list(ARM_LEFT, ARM_RIGHT, HAND_LEFT, HAND_RIGHT)))
 		holder.visible_message(\
 			"\The [holder.handcuffed.name] falls off of [holder.name].",\
 			"\The [holder.handcuffed.name] falls off you.")
 		holder.drop_from_inventory(holder.handcuffed)
-	if (holder.legcuffed && body_part in list(FOOT_LEFT, FOOT_RIGHT, LEG_LEFT, LEG_RIGHT))
+	if (holder.legcuffed && (body_part in list(FOOT_LEFT, FOOT_RIGHT, LEG_LEFT, LEG_RIGHT)))
 		holder.visible_message(\
 			"\The [holder.legcuffed.name] falls off of [holder.name].",\
 			"\The [holder.legcuffed.name] falls off you.")

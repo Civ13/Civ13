@@ -63,7 +63,7 @@
 		if (choosecolor1 == null || choosecolor1 == "")
 			return
 
-		choosecolor2 = input(H, "Choose the secondary/background color:", "Color" , "#FFFFFF", "color")
+		choosecolor2 = WWinput(H, "Choose the secondary/background color:", "Color" , "#FFFFFF", "color")
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
 

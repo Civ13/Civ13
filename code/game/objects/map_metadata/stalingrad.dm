@@ -191,7 +191,7 @@
 	else
 		cust_color = "blue"
 	world << "<big><font color='[cust_color]'><b>City Hall</b>: [a3_control]</font></big>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
 	spawn(300)
@@ -382,7 +382,7 @@
 			world << "<big><font color='[cust_color]'><b>Hospital</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>Hospital</b>: Nobody</big>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Germans: [ger_points]</big>"
 	world << "<big>Soviets: [sov_points]</big>"
 	spawn(300)

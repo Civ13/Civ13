@@ -640,7 +640,7 @@
 		visible_message("<span class='danger'>The frame gets wrecked!</span>")
 		update_icon()
 		broken = TRUE
-	else if (!axis in contents)
+	else if (!(axis in contents))
 		axis = null
 		mwheel = null
 		..()

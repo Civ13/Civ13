@@ -37,7 +37,7 @@
 		return FALSE //unsuitable weapon
 
 	if(user.pacifist)
-		to_chat(src, "<font color='yellow'><b><big>I don't want to fight!</big></b></font>")
+		to_chat(src, "<font color='yellow'><big><b>I don't want to fight!</b></big></font>")
 		return FALSE
 
 	user.visible_message("<span class='danger'>\The [user] begins to slit [src]'s throat with \the [W]!</span>")

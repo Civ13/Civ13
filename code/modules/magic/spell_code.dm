@@ -266,7 +266,7 @@
 
 	var/list/valid_targets = view_or_range(range, holder, selection_type)
 	for(var/target in targets)
-		if(!target in valid_targets)
+		if(!(target in valid_targets))
 			return 0
 	return 1
 

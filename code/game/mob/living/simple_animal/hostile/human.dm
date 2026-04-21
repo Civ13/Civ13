@@ -182,7 +182,7 @@
 ////////////////////RANGED///////////////////////////////
 
 /mob/living/simple_animal/hostile/human/proc/OpenFire(target_mob)
-	if (grenades && prob(5) && target_mob in view(7,src))
+	if (grenades && prob(5) && (target_mob in view(7,src)))
 		var/enemies_in_sight = 0
 		for(var/mob/living/L in range(3,target_mob))
 			if (L.faction == src.faction)
@@ -481,7 +481,7 @@
 					stance = HOSTILE_STANCE_ATTACK
 
 		if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
-			if (target_mob && target_mob in ListTargets(12))
+			if (target_mob && (target_mob in ListTargets(12)))
 				if ((SA_attackable(target_mob)))
 					set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 					stance = HOSTILE_STANCE_ATTACK

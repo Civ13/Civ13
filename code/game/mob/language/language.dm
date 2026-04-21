@@ -376,10 +376,7 @@
 
 /datum/language/proc/get_random_apache_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
     if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_apache))
-        else
-            return capitalize(pick(first_names_male_apache))
+        return capitalize(pick(first_names_male_apache))
 
     var/full_name = "Cochise"
     return full_name
@@ -436,10 +433,7 @@
 
 /datum/language/proc/get_random_hawaiian_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
     if (!syllables || !syllables.len)
-        if (gender == FEMALE)
-            return capitalize(pick(first_names_female_hawaiian))
-        else
-            return capitalize(pick(first_names_male_hawaiian))
+        return capitalize(pick(first_names_male_hawaiian))
 
     var/full_name = "Kamehameha"
     return full_name
@@ -526,7 +520,7 @@
 		return stars(input)
 
 	// If the input is cached already, move it to the end of the cache and return it
-	if (input in scramble_cache && !hearer)
+	if ((input in scramble_cache) && !hearer)
 		var/n = scramble_cache[input]
 		scramble_cache -= input
 		scramble_cache[input] = n
@@ -927,7 +921,7 @@
 
 // Can we speak this language, as opposed to just understanding it?
 /mob/proc/can_speak(datum/language/speaking)
-	return (universal_speak || (speaking && speaking.flags & INNATE) || speaking in languages)
+	return (universal_speak || (speaking && speaking.flags & INNATE) || (speaking in languages))
 
 /mob/proc/get_language_prefix()
 	return config.language_prefixes[1]

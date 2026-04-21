@@ -35,7 +35,7 @@
 
 /datum/category_item/player_setup_item/player_global/settings/content(var/mob/user)
 	. = list()
-	. += "<b><big>Preferences</big></b><br><br>"
+	. += "<big><b>Preferences</b></big><br><br>"
 	. += "<table>"
 	var/mob/pref_mob = preference_mob()
 	for (var/cp in get_client_preferences())

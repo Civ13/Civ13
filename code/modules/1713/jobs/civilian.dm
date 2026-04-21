@@ -3676,7 +3676,7 @@
 	var/obj/item/clothing/accessory/armband/spanish/republican/white = new /obj/item/clothing/accessory/armband/spanish/republican(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Captain of the Republican Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Captain of the Republican Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

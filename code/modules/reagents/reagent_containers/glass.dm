@@ -50,7 +50,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	else
 		to_chat(user, SPAN_NOTICE("It is empty."))
 	if (!is_open_container())
-		to_chat(user, SPAN_NOTICE("\the airtight lid seals it completely!"))
+		to_chat(user, SPAN_NOTICE("the airtight lid seals it completely!"))
 
 /obj/item/weapon/reagent_containers/glass/self_feed_message(var/mob/user)
 	user.visible_message("<span class='notice'>[src] drinks from \the [src].</span>", "<span class='notice'>You swallow a gulp from \the [src].</span>") // Different perspectives from different point of views of the 	clients.
@@ -63,10 +63,10 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	if (!(istype(src,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
 		if (is_open_container())
 			playsound(src,'sound/effects/Lid_Removal_Bottle_mono.ogg',50,1)
-			user.visible_message("<span class = 'notice'>[usr] puts \the lid on \the [src].</span>", "<span class = 'notice'>You put the lid on \the [src].</span>")
+			user.visible_message("<span class = 'notice'>[usr] puts the lid on \the [src].</span>", "<span class = 'notice'>You put the lid on \the [src].</span>")
 			flags &= ~OPENCONTAINER
 		else
-			user.visible_message("<span class = 'notice'>[usr] takes \the lid off \the [src].</span>", "<span class = 'notice'>You take the lid off \the [src].</span>")
+			user.visible_message("<span class = 'notice'>[usr] takes the lid off \the [src].</span>", "<span class = 'notice'>You take the lid off \the [src].</span>")
 			flags |= OPENCONTAINER
 	update_icon()
 
@@ -121,7 +121,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] smashes the grapes against \the container.</span>", "<span class='notice'>You smash the grapes into its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
+		user.visible_message("<span class='warning'>[user] smashes the grapes against the container.</span>", "<span class='notice'>You smash the grapes into its juice inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("grapejuice", 5)
 		qdel(W)
 		return
@@ -131,7 +131,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			return
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
-		user.visible_message("<span class='warning'>[user] grinds the cinchona plant against \the container.</span>", "<span class='notice'>You grind the cinchona plant into quinine inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
+		user.visible_message("<span class='warning'>[user] grinds the cinchona plant against the container.</span>", "<span class='notice'>You grind the cinchona plant into quinine inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("quinine", 10)
 		qdel(W)
 		return
@@ -142,7 +142,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] grinds the olives against \the container.</span>", "<span class='notice'>You grind the olives into an olive oil mixture inside \the container.</span>", "<span class='notice'>You hear \the sound of something grinding.</span>")
+		user.visible_message("<span class='warning'>[user] grinds the olives against the container.</span>", "<span class='notice'>You grind the olives into an olive oil mixture inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("olive_oil", 6)
 		qdel(W)
 		return
@@ -153,7 +153,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] crushes the juniper berry against \the container.</span>", "<span class='notice'>You crush the juniper berry to extract its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something crushing.</span>")
+		user.visible_message("<span class='warning'>[user] crushes the juniper berry against the container.</span>", "<span class='notice'>You crush the juniper berry to extract its juice inside the container.</span>", "<span class='notice'>You hear the sound of something crushing.</span>")
 		reagents.add_reagent("juniper_juice", 6)
 		qdel(W)
 		return
@@ -164,7 +164,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] smashes and grinds the animal fat inside \the container.</span>", "<span class='notice'>You smash and grind the animal fat inside \the container into a mixture of lard.</span>", "<span class='notice'>You hear \the sound of repetitive grinding and smashing.</span>")
+		user.visible_message("<span class='warning'>[user] smashes and grinds the animal fat inside the container.</span>", "<span class='notice'>You smash and grind the animal fat inside the container into a mixture of lard.</span>", "<span class='notice'>You hear the sound of repetitive grinding and smashing.</span>")
 		reagents.add_reagent("lard", 10)
 		qdel(W)
 		return
@@ -176,7 +176,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
 
-		user.visible_message("<span class='warning'>[user] smashes the potato against \the container.</span>", "<span class='notice'>You smash the potato and extract its juice inside \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
+		user.visible_message("<span class='warning'>[user] smashes the potato against the container.</span>", "<span class='notice'>You smash the potato and extract its juice inside the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
 		reagents.add_reagent("potato", 5)	
 		qdel(W)
 		return
@@ -187,7 +187,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] rips up the agave leaf against \the container.</span>", "<span class='notice'>You rip up the agave leaf and collect its nectar inside \the container.</span>", "<span class='notice'>You hear \the sound of something ripping.</span>")
+		user.visible_message("<span class='warning'>[user] rips up the agave leaf against the container.</span>", "<span class='notice'>You rip up the agave leaf and collect its nectar inside the container.</span>", "<span class='notice'>You hear the sound of something ripping.</span>")
 		reagents.add_reagent("agave", 10)
 		qdel(W)
 		return
@@ -198,7 +198,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] crushes the sapote fruit against \the container.</span>", "<span class='notice'>You crush the sapote fruit and let its juice seep into \the container.</span>", "<span class='notice'>You hear \the sound of something crushing.</span>")
+		user.visible_message("<span class='warning'>[user] crushes the sapote fruit against the container.</span>", "<span class='notice'>You crush the sapote fruit and let its juice seep into the container.</span>", "<span class='notice'>You hear the sound of something crushing.</span>")
 		reagents.add_reagent("sapotejuice", 4)
 		qdel(W)
 		return
@@ -209,7 +209,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[src] smashes the apple against \the container.</span>", "<span class='notice'>You smash the apple against \the container and let its juice seep into \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
+		user.visible_message("<span class='warning'>[src] smashes the apple against the container.</span>", "<span class='notice'>You smash the apple against the container and let its juice seep into the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
 		reagents.add_reagent("applejuice", 10)
 		qdel(W)
 		return
@@ -220,7 +220,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[src] smashes the sapodilla against \the container.</span>", "<span class='notice'>You smash the sapodilla and let its juice seep inside \the container.</span>", "<span class='notice'>You hear \the sound of something smashing.</span>")
+		user.visible_message("<span class='warning'>[src] smashes the sapodilla against the container.</span>", "<span class='notice'>You smash the sapodilla and let its juice seep inside the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
 		reagents.add_reagent("sapodillajuice", 10)
 		qdel(W)
 		return
@@ -231,7 +231,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering \the container.")
+		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering the container.")
 		reagents.add_reagent("fish", 5)
 		qdel(W)
 		return
@@ -242,7 +242,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
 			return
-		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering \the container.")
+		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering the container.")
 		reagents.add_reagent("fish", 5)
 		qdel(W)
 		return
@@ -294,7 +294,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	else if(istype(W, /obj/item/stack/material/rope)) //Lard candle making
 		if (reagents.get_reagent_amount("lard") >= 5)
 			var/obj/item/stack/material/rope/R = W
-			user.visible_message("<span class='warning'>[user] starts to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You start to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You hear \the sound of something shaping.</span>")
+			user.visible_message("<span class='warning'>[user] starts to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You start to dip the <span class='notice'>[R.name]</span> into the <span class='notice'>[src.name]</span>, shaping a candle.</span>", "<span class='notice'>You hear the sound of something shaping.</span>")
 			if(do_after(user, 40, user))
 				reagents.remove_reagent("lard", 5)
 				new/obj/item/weapon/flame/candle/lard(user.loc)
@@ -982,26 +982,31 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	volume = 550
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap/fueleddiesel
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("diesel",550)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/highcap/fueledgasoline
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("gasoline",550)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("diesel",450)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("gasoline",450)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledethanol
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("pethanol",450)
@@ -1013,11 +1018,13 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	volume = 180
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("gasoline",180)
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueleddiesel
+	density = 0
 	New()
 		..()
 		reagents.add_reagent("diesel",180)

@@ -173,7 +173,7 @@ var/global/redirect_all_players = null
 
 	if (client.status_tabs && statpanel("Status") && ticker)
 		stat("")
-		stat(stat_header("Lobby"))
+		stat("Lobby")
 		stat("")
 
 		// by counting observers, our playercount now looks more impressive - Kachnov
@@ -1227,7 +1227,7 @@ var/global/redirect_all_players = null
 
 	//<body style='background-color:#1D2951; color:#ffffff'>
 	var/list/dat = list("<center>")
-	dat += "<b><big>Welcome, [key].</big></b>"
+	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"

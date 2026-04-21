@@ -37,7 +37,7 @@
 		. = FALSE
 
 /obj/map_metadata/sekigahara/proc/points_check()
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Eastern Army: [scores["Eastern Army"]]</big>"
 	world << "<big>Western Army: [scores["Western Army"]]</big>"
 	spawn(300)

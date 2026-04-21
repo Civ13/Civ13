@@ -160,7 +160,7 @@
 
 /proc/log_to_dd(text)
 	world.log << text //this comes before the config check because it can't possibly runtime
-	if (config.log_world_output)
+	if (config && config.log_world_output)
 		game_log("DD_OUTPUT", text)
 
 /proc/log_misc(text)

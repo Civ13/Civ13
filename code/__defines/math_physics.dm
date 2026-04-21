@@ -35,9 +35,6 @@
 #define TICKS_IN_DAY 		24*60*60*10
 #define TICKS_IN_SECOND 	10
 
-#define SIMPLE_SIGN(X) ((X) < 0 ? -1 : 1)
-#define SIGN(X)		((X) ? SIMPLE_SIGN(X) : 0)
-
 #define ROOT2_FAST 1.41421
 
 #define RAND_F(LOW, HIGH) (rand()*(HIGH-LOW) + LOW)

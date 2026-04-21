@@ -332,7 +332,7 @@
 	spawn(600) // 1 minute
 		points_check()
 		spawn(300)
-			world << "<big><b>Current Points:</big></b>"
+			world << "<big><b>Current Points:</b></big>"
 			world << "<big>Mujahideen: [muj_points]</big>"
 			world << "<big>Soviets and DRA: [sov_points]</big>"
 

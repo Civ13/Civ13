@@ -54,7 +54,7 @@
 	return FALSE
 
 /obj/map_metadata/alleyway/proc/points_check()
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>"
 	world << "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>"
 	spawn(300)

@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/fix_vein
 	priority = 2
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/cable_coil",75),
@@ -60,7 +60,7 @@
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/fix_dead_tissue		//Debridement
 	priority = 2
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife",75),
@@ -107,7 +107,7 @@
 
 /datum/surgery_step/treat_necrosis
 	priority = 2
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/reagent_containers/dropper",100),
 		2 = list("/obj/item/weapon/reagent_containers/glass/bottle",75),
 		3 = list("/obj/item/weapon/reagent_containers/glass/bucket",50),
@@ -179,7 +179,7 @@
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/sterilize
 	priority = 2
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/stack/medical/advanced/sulfa",100),
 		2 = list("/obj/item/weapon/reagent_containers/spray", 100),
 		3 = list("/obj/item/stack/medical/advanced/bruise_pack",50),

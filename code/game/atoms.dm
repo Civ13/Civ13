@@ -501,14 +501,14 @@
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
 		return
 	if(user.pacifist)
-		to_chat(src, "<font color='yellow'><b><big>I don't want to bite!</big></b></font>")
+		to_chat(src, "<font color='yellow'><big><b>I don't want to bite!</b></big></font>")
 		return
 	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
 		var/limbcheck = user.targeted_organ
 		if (limbcheck == "random")
 			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
-		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm") || user.werewolf)
+		if((limbcheck in list("l_hand","r_hand","l_arm","r_arm")) || user.werewolf)
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
 				to_chat(user, SPAN_NOTICE("[src] is missing that body part."))

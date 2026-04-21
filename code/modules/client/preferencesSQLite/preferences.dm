@@ -115,7 +115,7 @@ var/list/preferences_datums = list()
 	<body><center><big><b>PREFERENCES<br><br>
 	"}
 	dat += player_setup.header()
-	dat += "</big></b><br><HR></center>"
+	dat += "</b></big><br><HR></center>"
 	dat += player_setup.content(user)
 
 	var/datlist = splittext(dat, "<br>")

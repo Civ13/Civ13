@@ -33,9 +33,8 @@
 		living_mob_list += src
 	..()
 
-
-	if (!isnewplayer(src))
-		src << browse(null, "window=playersetup;")
+	if (!isnewplayer(src) && !istype(src, /mob/dview) && src.client)
+		src.client << browse(null, "window=playersetup;")
 
 	spawn (10)
 		if (client)
@@ -692,9 +691,10 @@
 	if (.)
 		if (client.status_tabs && statpanel("Status") && ticker)
 			stat("")
-			stat(stat_header("Server"))
+			stat("Server")
 			stat("")
-			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
+			stat("Players Online:", "[clients.len]")
+			stat("Playing, Observing, Lobby:", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
 			stat("Round Duration:", roundduration2text_days())
 			stat("Game ID:", "<b>[game_id]</b>")
 			stat("")
@@ -748,7 +748,7 @@
 		if (client.holder && client.status_tabs)
 			if (statpanel("Status"))
 				stat("")
-				stat(stat_header("Developer"))
+				stat("Developer")
 				stat("")
 				if (processes.time_track && movementMachine)
 					stat("CPU (Average) (Movement Scheduler (Average)):","[world.cpu]% ([ceil(processes.time_track.stored_averages["cpu"])]%) ([ceil(movementMachine.last_cpu)]% ([ceil(movementMachine.average_cpu)]%))")

@@ -16,7 +16,7 @@
 		return target_zone == "mouth"
 
 /datum/surgery_step/generic/cut_face
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife",75),
@@ -47,7 +47,7 @@
 		target.losebreath += 10
 
 /datum/surgery_step/face/mend_vocal
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 	)
@@ -74,7 +74,7 @@
 		target.losebreath += 10
 
 /datum/surgery_step/face/fix_face
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/retractor",100),
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",55),
@@ -104,7 +104,7 @@
 		target.apply_damage(10, BRUTE, affected, sharp=1, sharp=1)
 
 /datum/surgery_step/face/cauterize
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
 		3 = list("/obj/item/clothing/mask/smokable/cigarette/cigar",60),

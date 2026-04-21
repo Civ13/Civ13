@@ -213,7 +213,7 @@
 
 /obj/structure/turret/proc/rotate_to_target()
 	if(azimuth_to_target)
-		var/delta_azimuth = sign(azimuth_to_target)
+		var/delta_azimuth = ((azimuth_to_target) ? ((azimuth_to_target) < 0 ? -1 : 1) : 0)
 		azimuth += delta_azimuth
 		clamp_azimuth(azimuth)
 		azimuth_to_target -= delta_azimuth
@@ -538,7 +538,7 @@
 
 /obj/structure/turret/course/rotate_to_target()
 	if(azimuth_to_target)
-		var/delta_azimuth = sign(azimuth_to_target)
+		var/delta_azimuth = ((azimuth_to_target) ? ((azimuth_to_target) < 0 ? -1 : 1) : 0)
 		azimuth += delta_azimuth
 		clamp_azimuth(azimuth)
 		azimuth_to_target -= delta_azimuth

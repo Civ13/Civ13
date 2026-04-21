@@ -92,7 +92,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 	if (M == user && user.a_intent != I_HARM)
 		return FALSE
 	if (user.pacifist)
-		to_chat(src, "<font color='yellow'><b><big>I don't want to fight!</big></b></font>")
+		to_chat(src, "<font color='yellow'><big><b>I don't want to fight!</b></big></font>")
 		return FALSE
 	if (ishuman(user))
 		var/mob/living/human/H = user

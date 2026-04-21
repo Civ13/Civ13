@@ -84,7 +84,7 @@
 							i[3]-=50
 		
 			if (MAP_ALLEYWAY)
-				if (civilization && civilization in map.scores)
+				if ((civilization && civilization) in map.scores)
 					switch (civilization)
 						if ("Yamaguchi-Gumi")
 							if (original_job)
@@ -104,7 +104,7 @@
 										map.scores["Yamaguchi-Gumi"] += 1
 
 			if (MAP_YELTSIN)
-				if (civilization && civilization in map.scores)
+				if ((civilization && civilization) in map.scores)
 					switch (civilization)
 						if ("Russian Army")
 							if (original_job)
@@ -130,7 +130,7 @@
 							to_chat(world, "<font color='red' size=4>The <b>Dutch Army</b> Commander has been killed!</font>")
 			
 			if (MAP_CAPITOL_HILL)
-				if (civilization && civilization in map.scores)
+				if ((civilization && civilization) in map.scores)
 					switch (civilization)
 						if ("National Guard")
 							map.scores["Militia"] += 1
@@ -218,7 +218,7 @@
 								to_chat(world, "<font color='red' size=2>A <b>Mujahideen Group Leader</b> has been killed!</font>")
 
 			if (MAP_SEKIGAHARA)
-				if (civilization && civilization in map.scores)
+				if ((civilization && civilization) in map.scores)
 					switch (civilization)
 						if ("Eastern Army")
 							switch (original_job.title)
@@ -245,27 +245,27 @@
 					var/mob/living/human/killer = last_harmed
 					if (ishuman(killer))
 						map.scores[killer.nationality] -= 12
-						to_chat(world, "<b><big>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>")
+						to_chat(world, "<big><b>A United Nations Doctor has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</b></big>")
 						killer.nationality = "Exiled"
 				if (faction_text == CIVILIAN && original_job_title == "United Nations Engineer")
 					var/mob/living/human/killer = last_harmed
 					if (ishuman(killer))
 						map.scores[killer.nationality] -= 10
 						killer.nationality = "Exiled"
-						to_chat(world, "<b><big>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</big></b>")
+						to_chat(world, "<big><b>A United Nations Engineer has been killed! The elders are furious and have put a bounty on [killer.real_name], a [killer.original_job_title]! Bring his head to your altar for a generous reward!</b></big>")
 				if (faction_text == CIVILIAN && original_job_title == "United Nations Soldier")
 					map.scores["Blugisi"] -= 4
 					map.scores["Yellowagwana"] -= 4
 					map.scores["Redkantu"] -= 4
-					to_chat(world, "<b><big>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>")
+					to_chat(world, "<big><b>A United Nations Soldier has been killed. The United Nations have lowered their financial support in the region. The local population is paying the consequences!</b></big>")
 				if (faction_text == CIVILIAN && original_job_title == "Local Policeman")
 					map.scores["Blugisi"] -= 4
 					map.scores["Yellowagwana"] -= 4
 					map.scores["Redkantu"] -= 4
-					to_chat(world, "<b><big>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>")
+					to_chat(world, "<big><b>A Local Policeman has been killed! The local population is in shock and lowered their support for the warbands!</b></big>")
 		*/
 			if (MAP_THE_ART_OF_THE_DEAL)
-				if (civilization && civilization in map.scores)
+				if ((civilization && civilization) in map.scores)
 					if (civilization == "Paramedics")
 						map.scores[last_harmed.civilization] -= 500
 					else if (civilization == "Government")
@@ -460,9 +460,9 @@
 				for(var/l=1, l <= map.custom_company[stocky].len, l++)
 					if (map.custom_company[stocky][l][1] == src)
 						map.custom_company[stocky][l][1] = null
-	src << browse(null, "window=memory")
 
 	if (client)
+		src << browse(null, "window=memory")
 		client.movement_busy = FALSE
 
 	//Handle species-specific deaths.

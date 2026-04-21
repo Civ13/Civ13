@@ -699,7 +699,7 @@
 					TS.icon_state = "shellHE"
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
-				else if ("AP")
+				if ("AP")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
 					TS.atype = "AP"
 					TS.caliber = caliber
@@ -708,7 +708,7 @@
 					TS.icon_state = "shellAP"
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
-				else if ("APCR")
+				if ("APCR")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
 					TS.atype = "APCR"
 					TS.caliber = caliber

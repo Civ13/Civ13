@@ -61,7 +61,7 @@
 		check_oil()
 
 /obj/map_metadata/nomads_extended/cross_message(faction)
-	return "<b><big>The grace wall is lifted!</big></b>"
+	return "<big><b>The grace wall is lifted!</b></big>"
 
 
 /obj/map_metadata/nomads_extended/job_enabled_specialcheck(var/datum/job/J)

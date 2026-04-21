@@ -256,7 +256,7 @@
 	spawn(600) // 1 minute
 		points_check()
 		spawn(5)
-			world << "<big><b>Current Points:</big></b>"
+			world << "<big><b>Current Points:</b></big>"
 			world << "<big>British: [british_points]</big>"
 			world << "<big>Russian: [rus_points]</big>"
 	

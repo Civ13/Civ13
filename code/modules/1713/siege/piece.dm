@@ -946,7 +946,7 @@
 		Increase/Decrease angle: <a href='?src=\ref[src];azimuth_10minus=1'>-10</a> | <a href='?src=\ref[src];azimuth_1minus=1'>-1</a> | <a href='?src=\ref[src];set_azimuth=1'>[azimuth] azimuth</a> | <a href='?src=\ref[src];azimuth_1plus=1'>+1</a> | <a href='?src=\ref[src];azimuth_10plus=1'>+10</a><br><br>
 		<br>
 		<center>
-		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
+		<a href='?src=\ref[src];fire=1'><big><b>FIRE!</b></big></a>
 		</center>
 		</body>
 		</html>

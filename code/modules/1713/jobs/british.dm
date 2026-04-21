@@ -39,7 +39,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Captain of the Royal Navy ship!</big></b>"
+	world << "<big><b>[H.real_name] is the Captain of the Royal Navy ship!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -80,7 +80,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Quartermaster of the Royal Navy ship!</big></b>"
+	world << "<big><b>[H.real_name] is the Quartermaster of the Royal Navy ship!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Captain</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -123,7 +123,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Boatswain of the Royal Navy ship!</big></b>"
+	world << "<big><b>[H.real_name] is the Boatswain of the Royal Navy ship!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -644,7 +644,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Captain of the British Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Captain of the British Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -690,7 +690,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the 1st Lieutenant of the British Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 1st Lieutenant of the British Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -736,7 +736,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the 2nd Lieutenant of the British Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 2nd Lieutenant of the British Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -957,7 +957,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap_tropical(H), slot_head)
 //weapons
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Lieutenant of the British POWs!</big></b>"
+	world << "<big><b>[H.real_name] is the Lieutenant of the British POWs!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the POWs and their behaviour. The organizationa and survival of POWs relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

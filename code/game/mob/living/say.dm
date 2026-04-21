@@ -153,7 +153,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_ears))
 				listening |= M
 				continue
-			if (M.loc && M.locs[1] in hearturfs)
+			if (M.loc && (M.locs[1] in hearturfs))
 				listening |= M
 
 	var/speech_bubble_test = say_test(message)

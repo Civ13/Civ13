@@ -154,7 +154,7 @@
 			usr << "<span class='notice'>You remove the [W.name] from the bundle.</span>"
 
 			if (pages.len <= 1)
-				var/obj/item/weapon/paper/P = src[1]
+				var/obj/item/weapon/paper/P = src
 				usr.drop_from_inventory(src)
 				usr.put_in_hands(P)
 				qdel(src)

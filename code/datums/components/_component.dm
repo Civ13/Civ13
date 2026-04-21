@@ -350,8 +350,6 @@
 		return null
 	var/datum/component/C = dc[c_type]
 	if(C)
-		if(length_char(C))
-			C = C[1]
 		if(C.type == c_type)
 			return C
 	return null

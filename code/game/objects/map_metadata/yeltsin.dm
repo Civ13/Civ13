@@ -295,7 +295,7 @@
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Parliamental Hall</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Parliamental Hall</b>!</big>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Militia: [scores["Militia"]]</big>"
 	world << "<big>Russian Army: [scores["Russian Army"]]</big>"
 //	world << "<big>Militia: [ger_points]</big>"

@@ -278,7 +278,7 @@ var/no_loop_capitol = FALSE
 				world << "<big><font color='[cust_color]'>[prev_control]</font> lost the <b>Senate</b>!</big>"
 			else
 				world << "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Senate</b>!</big>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>National Guard: [scores["National Guard"]]</big>"
 	world << "<big>Militia: [scores["Militia"]]</big>"
 //	world << "<big>Militia: [ger_points]</big>"

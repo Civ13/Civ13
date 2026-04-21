@@ -165,7 +165,7 @@
 				world << "<font size=3>The [prev_control] have lost the <b>Village!</b><font>"
 			else
 				world << "<font size=3>The [a3_control] have captured the <b>Village!</b><font>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Americans: [usa_points]</big>"
 	world << "<big>Japanese: [jap_points]</big>"
 	spawn(300)

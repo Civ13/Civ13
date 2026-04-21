@@ -125,7 +125,7 @@
 
 	var/input_stamp = WWinput(user, "Choose a stamp to change to.", "Choose a stamp.", show_stamps[1], show_stamps)
 
-	if (user && src in user.contents)
+	if (user && (src in user.contents))
 
 		var/obj/item/weapon/stamp/chosen_stamp = stamps[capitalize(input_stamp)]
 

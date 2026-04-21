@@ -480,7 +480,7 @@
 	uniform.attackby(SS_hauptsturmfuhrer, H)
 	uniform.attackby(ss_sadler, H)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Hauptsturmfuhrer of the German Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Hauptsturmfuhrer of the German Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the SS troops and organize them to find and apprehend the UPA partisans.")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

@@ -1275,7 +1275,7 @@
 	update_icon()
 	if (istype(A, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/AM = A
-		if (caliber != AM.caliber && !AM in src.good_mags)
+		if (caliber != AM.caliber && !(AM in src.good_mags))
 			return // incompatible
 	..()
 

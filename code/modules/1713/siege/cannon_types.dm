@@ -190,12 +190,12 @@
 			if (!TF)
 				return FALSE
 
-			var/obj/item/projectile/shell/S = new loaded.subtype(loc)
-			S.damage = loaded.damage
-			S.atype = loaded.atype
-			S.caliber = loaded.caliber
-			S.heavy_armor_penetration = loaded.heavy_armor_penetration
-			S.name = loaded.name
+			var/obj/item/projectile/shell/S = new W.subtype(loc)
+			S.damage = W.damage
+			S.atype = W.atype
+			S.caliber = W.caliber
+			S.heavy_armor_penetration = W.heavy_armor_penetration
+			S.name = W.name
 			S.starting = get_turf(src)
 			loaded = null
 			if (S.atype == "grapeshot")

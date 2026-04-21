@@ -10,14 +10,12 @@ json_token
 	eof
 
 json_reader
-	var
-		list
-			string		= list("'", "\"")
-			symbols 	= list("{", "}", "\[", "]", ":", "\"", "'", ",")
-			sequences 	= list("b" = 8, "t" = 9, "n" = 10, "f" = 12, "r" = 13)
-			tokens
-		json
-		i = 1
+	var/list/string		= list("'", "\"")
+	var/list/symbols 	= list("{", "}", "\[", "]", ":", "\"", "'", ",")
+	var/list/sequences 	= list("b" = 8, "t" = 9, "n" = 10, "f" = 12, "r" = 13)
+	var/list/tokens
+	var/json
+	var/i = 1
 
 
 	proc

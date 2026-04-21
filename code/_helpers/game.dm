@@ -1,12 +1,12 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
 
-/proc/dopage(src,target)
+/proc/dopage(source_obj,target)
 	var/href_list
 	var/href
-	href_list = params2list("src=\ref[src]&[target]=1")
-	href = "src=\ref[src];[target]=1"
-	//src:temphtml = null
-	src:Topic(href, href_list)
+	href_list = params2list("src=\ref[source_obj]&[target]=1")
+	href = "src=\ref[source_obj];[target]=1"
+	//source_obj:temphtml = null
+	source_obj:Topic(href, href_list)
 	return null
 
 /*/proc/get_area(O)
@@ -161,7 +161,7 @@ proc
 			if (Y1==Y2)
 				return TRUE //Light cannot be blocked on same tile
 			else
-				var/s = SIGN(Y2-Y1)
+				var/s = ((Y2-Y1) ? ((Y2-Y1) < 0 ? -1 : 1) : 0)
 				Y1+=s
 				while (Y1!=Y2)
 					T=locate(X1,Y1,Z)
@@ -171,8 +171,8 @@ proc
 		else
 			var/m=(32*(Y2-Y1)+(PY2-PY1))/(32*(X2-X1)+(PX2-PX1))
 			var/b=(Y1+PY1/32-0.015625)-m*(X1+PX1/32-0.015625) //In tiles
-			var/signX = SIGN(X2-X1)
-			var/signY = SIGN(Y2-Y1)
+			var/signX = ((X2-X1) ? ((X2-X1) < 0 ? -1 : 1) : 0)
+			var/signY = ((Y2-Y1) ? ((Y2-Y1) < 0 ? -1 : 1) : 0)
 			if (X1<X2)
 				b+=m
 			while (X1!=X2 || Y1!=Y2)
@@ -184,7 +184,6 @@ proc
 				if (T.opacity)
 					return FALSE
 		return TRUE
-#undef SIGN
 
 proc/isInSight(var/atom/A, var/atom/B)
 	var/turf/Aturf = get_turf(A)

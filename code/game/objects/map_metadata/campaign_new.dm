@@ -414,7 +414,7 @@
 	src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
-	dat += "<b><big>Welcome, [key].</big></b>"
+	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"
@@ -1230,7 +1230,7 @@
 			world << "<big><font color='[cust_color]'><b>Northern Road</b>: [a4_control]</font></big>"
 		else
 			world << "<big><b>Northern Road</b>: Nobody</big>"
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Central Asian Federal Republic: [cafr_points]</big>"
 	world << "<big>Turkestan Soviet Federative Socialist Republic: [tsfsr_points]</big>"
 	spawn(300)

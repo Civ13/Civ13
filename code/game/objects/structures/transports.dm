@@ -86,7 +86,7 @@
 	if (!src)
 		return
 	if (driver)
-		if (!driver in range(2,src))
+		if (!(driver in range(2,src)))
 			ontop -= driver
 			driver.pixel_x = 0
 			driver.pixel_y = 0

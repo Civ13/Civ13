@@ -62,7 +62,7 @@
 	return FALSE
 
 /obj/map_metadata/african_warlords/proc/points_check()
-	world << "<big><b>Current Points:</big></b>"
+	world << "<big><b>Current Points:</b></big>"
 	world << "<big>Yellowagwana: [scores["Yellowagwana"]]</big>"
 	world << "<big>Blugisi: [scores["Blugisi"]]</big>"
 	spawn(300)

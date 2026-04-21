@@ -80,18 +80,18 @@ var/global/list/GlobalPool = list()
 		return FALSE
 	return TRUE
 
-/datum/proc/Prepare(args)
-	if (islist(args))
-		New(arglist(args))
+/datum/proc/Prepare(construct_args)
+	if (islist(construct_args))
+		New(arglist(construct_args))
 	else
-		New(args)
+		New(construct_args)
 
-/atom/movable/Prepare(args)
-	var/list/args_list = args
+/atom/movable/Prepare(construct_args)
+	var/list/args_list = construct_args
 	if (istype(args_list) && args_list.len)
-		loc = args[1]
+		loc = construct_args[1]
 	else
-		loc = args
+		loc = construct_args
 	..()
 
 var/list/excluded_vars = list("animate_movement", "contents", "loc", "locs", "parent_type", "vars", "verbs", "type")

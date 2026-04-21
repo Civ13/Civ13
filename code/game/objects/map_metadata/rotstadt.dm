@@ -177,7 +177,7 @@ var/no_loop_rot = FALSE
 	src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
-	dat += "<b><big>Welcome, [key].</big></b>"
+	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
 	dat += "<br>"

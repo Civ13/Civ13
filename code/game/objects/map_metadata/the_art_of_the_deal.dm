@@ -752,7 +752,7 @@
 		real_name = chosen_name
 		voice = chosen_name
 		is_undercover = TRUE
-		to_chat(src, "<b><big>You go undercover.</big></b>")
+		to_chat(src, "<big><b>You go undercover.</b></big>")
 		return
 	else
 		switch(original_job_title)
@@ -765,7 +765,7 @@
 				name = "Detective [hidden_name]"
 				voice = "Detective [hidden_name]"
 		is_undercover = FALSE
-		to_chat(src, "<b><big>You are now revealing your identity again.</big></b>")
+		to_chat(src, "<big><b>You are now revealing your identity again.</b></big>")
 		return
 
 /obj/item/clothing/accessory/armband/policebadge

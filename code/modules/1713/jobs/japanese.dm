@@ -54,7 +54,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the Captain of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Captain of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -105,7 +105,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the 1st Lieutenant of the Japanese forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 1st Lieutenant of the Japanese forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -156,7 +156,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the 2nd Lieutenant of the Japanese forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 2nd Lieutenant of the Japanese forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. Second to 1st Lieutenant. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -478,7 +478,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the Captain of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Captain of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -535,7 +535,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the 1st Lieutenant of the Japanese forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 1st Lieutenant of the Japanese forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -592,7 +592,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the 2nd Lieutenant of the Japanese forces!</big></b>"
+	world << "<big><b>[H.real_name] is the 2nd Lieutenant of the Japanese forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. Second to 1st Lieutenant. The whole operation relies on you and your orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1281,7 +1281,7 @@
 	KC.attackby(G2,H)
 	H.equip_to_slot_or_del(KC, slot_wear_id)
 	give_random_name(H)
-	world << "<b><big>[H.real_name] is the Camp Director of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Camp Director of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the guards and organize the POWs.")
 	H.setStat("strength", STAT_MAX)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1490,7 +1490,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the Lieutenant of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Lieutenant of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship or company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1547,7 +1547,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the Sub-Lieutenant of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Sub-Lieutenant of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the 2nd highest ranking officer present. Your job is to command half of the forces.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1604,7 +1604,7 @@
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
 		H.f_style = pick("Shaved","Short Facial Hair","Goatee")
-	world << "<b><big>[H.real_name] is the Ensign of the Japanese Forces!</big></b>"
+	world << "<big><b>[H.real_name] is the Ensign of the Japanese Forces!</b></big>"
 	H.add_note("Role", "You are a <b>[title]</b>, the 3rd highest ranking officer present. Your job is to command half of the forces.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

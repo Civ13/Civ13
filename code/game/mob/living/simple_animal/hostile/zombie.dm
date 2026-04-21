@@ -106,10 +106,10 @@
 				playsound(src.loc, sound2play, 100, TRUE)
 
 /mob/living/simple_animal/hostile/human/zombie/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
-	if (hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(25))
+	if ((hit_zone in list("r_leg", "l_leg", "l_arm", "r_arm")) && prob(25))
 		visible_message(SPAN_NOTICE("[user] tried to strike \the [src] but missed!"))
 		return
-	else if (hit_zone in list("r_foot", "l_foot", "l_hand", "r_hand") && prob(40))
+	else if ((hit_zone in list("r_foot", "l_foot", "l_hand", "r_hand")) && prob(40))
 		visible_message(SPAN_NOTICE("[user] tried to strike \the [src] but missed!"))
 		return
 
@@ -138,7 +138,7 @@
 			health = 0
 			death()
 	else
-		if (limb in list("r_leg", "l_leg", "l_arm", "r_arm") && prob(50))
+		if ((limb in list("r_leg", "l_leg", "l_arm", "r_arm")) && prob(50))
 			bodyparts -= "[limb]_s"
 			visible_message("[src]'s [parse_zone(limb)] gets severed!")
 			var/tmplimb = limb
