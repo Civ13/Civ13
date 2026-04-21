@@ -100,7 +100,7 @@
 
 /obj/structure/animalspawner/wolfcave/proc/process_cub(var/is_cub = FALSE, var/mob/living/simple_animal/hostile/wolf/C, var/loc)
 	if(is_cub)
-		new/mob/living/simple_animal/hostile/wolf(loc)
+		new/mob/living/simple_animal/hostile/wolf{cub = TRUE}(loc)
 	return
 
 /obj/structure/animalspawner/wolfcave/proc/wolf_out()

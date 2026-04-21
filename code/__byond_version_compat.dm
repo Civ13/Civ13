@@ -10,7 +10,7 @@
 #endif
 
 // Keep savefile compatibilty at minimum supported level
-var/byond_version = MIN_COMPILER_VERSION
+/savefile/byond_version = MIN_COMPILER_VERSION
 
 // So we want to have compile time guarantees these methods exist on local type
 // We use wrappers for this in case some part of the api ever changes, and to make their function more clear

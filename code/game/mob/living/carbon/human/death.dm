@@ -84,7 +84,7 @@
 							i[3]-=50
 		
 			if (MAP_ALLEYWAY)
-				if ((civilization && civilization) in map.scores)
+				if (civilization && (civilization in map.scores))
 					switch (civilization)
 						if ("Yamaguchi-Gumi")
 							if (original_job)
