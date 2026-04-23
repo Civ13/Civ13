@@ -238,7 +238,7 @@
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
 	var/t1 = text("<HTML style='line-height: 1.8;'><HEAD>[common_browser_style]<title>Crafting</title></HEAD><body bgcolor='#392611' style='border-color: #392611;'><br><tt><center><strong><font color='white' size='4'>[]</font><br><font color='white' size='3'>Amount Left: []</strong></font><br><br><font color='white' size='2'>", src, amount)
-	for (var/i=1;i<=recipe_list.len,i++)
+	for (var/i=1;i<=recipe_list.len;i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
 			t1 += "<hr>"

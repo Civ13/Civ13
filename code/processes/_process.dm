@@ -140,6 +140,14 @@
 /process/proc/fire()
 	return
 
+// Called by a parent subsystem instead of the scheduler.
+// Initializes the tick budget so PROCESS_TICK_CHECK works correctly inside fire().
+/process/proc/fire_as_member()
+	run_time_tick_usage = world.tick_usage
+	if (run_time_tick_usage_allowance == -1)
+		run_time_tick_usage_allowance = 10 // safe default: 10% budget per member
+	return fire()
+
 /process/proc/setup()
 	return
 

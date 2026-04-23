@@ -303,7 +303,7 @@
 						if ("patrol", "stop patrolling", "follow")
 							command_levels["patrol"] = command_level_to_dog
 							command_levels["anything"] = command_level_to_dog
-s
+
 /mob/living/simple_animal/complex_animal/dog/can_wander_specialcheck()
 	if (faction && pulledby && check_can_command(list("master", "team"), pulledby))
 		return FALSE

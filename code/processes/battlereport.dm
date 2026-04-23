@@ -6,8 +6,9 @@
 	var/next_can_grant_points = -1
 
 /process/battle_report/setup()
-	name = "Battle Report"
-	schedule_interval = 1 SECOND
+	name = "battle report"
+	is_subsystem_member = TRUE
+	schedule_interval = 2 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_IRRELEVANT
 	processes.battle_report = src

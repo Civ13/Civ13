@@ -85,6 +85,8 @@ var/global/processScheduler/processScheduler
 		var/process/P = new process_path(src)
 		if (P.is_subsystem_member || (process_path in deferredSetupList))
 			if (P.is_subsystem_member)
+				// Set up the process so it can register itself to the global processes list
+				P.setup()
 				// We still want it in the nameToProcessMap for manual access
 				nameToProcessMap[P.name] = P
 			continue

@@ -1086,7 +1086,7 @@
 	if (isturf(loc) && rand(1,1000) == 1)
 		var/turf/T = loc
 		if (T.get_lumcount() == 0)
-			playsound_local(src,pick(scarySounds),50, TRUE, -1)*/s
+			playsound_local(src,pick(scarySounds),50, TRUE, -1)*/
 
 /mob/living/human/handle_stomach()
 	spawn(0)

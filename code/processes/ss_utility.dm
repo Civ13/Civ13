@@ -1,8 +1,7 @@
 /process/ss_utility
 	var/next_ping_track = 0
 	var/next_time_track = 0
-	var/next_vote = 0
-	
+
 /process/ss_utility/setup()
 	name = "Utility Subsystem"
 	schedule_interval = 10 // 1 second
@@ -10,40 +9,37 @@
 	processes.ss_utility = src
 
 /process/ss_utility/fire()
-	// Info logic (formerly info.dm)
-	// (info.fire was empty, only statProcess had content)
-	
-	// Time Track logic (formerly time_track.dm)
+	// NanoUI updates
+	if (processes.nanoUI)
+		processes.nanoUI.fire_as_member()
+
+	// Scheduler (delayed task execution)
+	if (processes.scheduler)
+		processes.scheduler.fire_as_member()
+
+	// Vote logic
+	if (processes.vote)
+		processes.vote.fire_as_member()
+
+	// Callproc (train timers etc.)
+	if (processes.callproc)
+		processes.callproc.fire_as_member()
+
+	// Time Track (every 1 second)
 	if (world.time >= next_time_track)
-		do_time_track()
+		if (processes.time_track)
+			processes.time_track.fire_as_member()
 		next_time_track = world.time + 10
-		
-	// Ping Track logic (formerly ping_track.dm)
+
+	// Ping Track (every 0.5 seconds)
 	if (world.time >= next_ping_track)
-		do_ping_track()
+		if (processes.ping_track)
+			processes.ping_track.fire_as_member()
 		next_ping_track = world.time + 5
-		
-	// Vote logic (formerly vote.dm)
-	if (world.time >= next_vote)
-		if (vote) vote.process()
-		next_vote = world.time + 10
 
-	// Client logic (formerly client.dm)
-	for (var/client/C in clients)
-		C.process()
-		PROCESS_TICK_CHECK
-
-/process/ss_utility/proc/do_time_track()
-	// Ported from time_track.dm
-	var/process/time_track/TT = processes.time_track
-	if (TT)
-		TT.fire()
-
-/process/ss_utility/proc/do_ping_track()
-	// Ported from ping_track.dm
-	var/process/ping_track/PT = processes.ping_track
-	if (PT)
-		PT.fire()
+	// Client processing
+	if (processes.client)
+		processes.client.fire_as_member()
 
 /process/ss_utility/statProcess()
 	..()

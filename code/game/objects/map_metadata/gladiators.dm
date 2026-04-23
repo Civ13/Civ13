@@ -1,4 +1,3 @@
-K
 /obj/map_metadata/gladiators
 	ID = MAP_GLADIATORS
 	title = "Gladiators"

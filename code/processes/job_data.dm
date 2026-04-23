@@ -8,7 +8,8 @@
 
 /process/job_data/setup()
 	name = "job data"
-	schedule_interval = 1 SECOND
+	is_subsystem_member = TRUE
+	schedule_interval = 2 SECONDS
 	start_delay = 0 SECONDS
 	fires_at_gamestates = list()
 	priority = PROCESS_PRIORITY_IRRELEVANT
