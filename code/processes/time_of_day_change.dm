@@ -5,8 +5,9 @@
 	var/setup_lighting = FALSE
 
 /process/time_of_day_change/setup()
-	name = "time of day change process"
-	schedule_interval = 1 SECONDS
+	name = "time of day change"
+	is_subsystem_member = TRUE
+	schedule_interval = 2 SECONDS
 	fires_at_gamestates = list() // this doesn't fire normally
 	priority = PROCESS_PRIORITY_HIGH
 	always_runs = TRUE

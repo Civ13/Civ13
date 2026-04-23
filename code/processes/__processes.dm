@@ -42,6 +42,14 @@ var/datum/process_list/processes = new
 	var/process/python/python = null
 	var/process/self_cleaning/self_cleaning = null
 	var/process/job_data/job_data = null
+	
+	// Subsystems
+	var/process/ss_utility/ss_utility = null
+	var/process/ss_environment/ss_environment = null
+	var/process/ss_game/ss_game = null
+	var/process/ss_combat/ss_combat = null
+	var/process/ss_life/ss_life = null
+	var/process/ss_cleanup/ss_cleanup = null
 
 	// recorded number of processes
 	var/next_get_num_processes = -1

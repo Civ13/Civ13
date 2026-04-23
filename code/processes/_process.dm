@@ -37,6 +37,9 @@
 	 */
 	// Process name
 	var/name
+	
+	// If TRUE, the scheduler will not add this process automatically
+	var/is_subsystem_member = FALSE
 
 	// Process schedule interval
 	// This controls how often the process would run under ideal conditions.
@@ -393,3 +396,14 @@
 	if (!.)
 		spawn (schedule_interval)
 			main.last_twenty_run_times[src]:Cut()
+
+/datum/subsystem_module
+	var/name = "module"
+	var/process/parent = null
+	var/disabled = FALSE
+
+/datum/subsystem_module/New(process/P)
+	parent = P
+
+/datum/subsystem_module/proc/fire()
+	return

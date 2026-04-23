@@ -12,7 +12,8 @@
 
 /process/weather/setup()
 	name = "weather"
-	schedule_interval = 10 SECONDS
+	is_subsystem_member = TRUE
+	schedule_interval = 1 SECONDS
 	start_delay = 2 SECONDS
 	next_can_mod_weather = world.realtime + 100
 	next_can_change_weather = world.realtime + 12000

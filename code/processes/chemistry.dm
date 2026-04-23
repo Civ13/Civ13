@@ -5,6 +5,7 @@
 
 /process/chemistry/setup()
 	name = "chemistry"
+	is_subsystem_member = TRUE
 	schedule_interval = 1 SECOND
 	active_holders = list()
 	chemical_reactions = chemical_reactions_list

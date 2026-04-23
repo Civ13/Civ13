@@ -5,6 +5,7 @@
 
 /process/ticker/setup()
 	name = "ticker process"
+	is_subsystem_member = TRUE
 	schedule_interval = 2 SECONDS
 
 	lastTickerTime = world.timeofday

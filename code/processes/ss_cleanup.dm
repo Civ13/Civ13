@@ -1,0 +1,12 @@
+/process/ss_cleanup
+	
+/process/ss_cleanup/setup()
+	name = "Cleanup Subsystem"
+	schedule_interval = 50 // 5 seconds
+	priority = PROCESS_PRIORITY_LOW
+	processes.ss_cleanup = src
+
+/process/ss_cleanup/fire()
+	// Garbage collection
+	if (processes.garbage)
+		processes.garbage.fire()
