@@ -249,8 +249,6 @@
 	if (isnull(M)) return
 	if (isnull(M.key)) return
 	if (ishuman(M))
-		//Fibers
-		add_fibers(M)
 		//Add the list if it does not exist.
 		if (!fingerprintshidden)
 			fingerprintshidden = list()
