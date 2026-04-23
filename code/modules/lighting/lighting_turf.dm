@@ -3,6 +3,7 @@
 	luminosity		   = TRUE
 
 	var/window_coeff = 0.25
+	var/window_coeff_dirty = TRUE
 
 	var/list/affecting_lights	   // List of light sources affecting this turf.
 	var/tmp/atom/movable/lighting_overlay/lighting_overlay // Our lighting overlay.
@@ -21,6 +22,11 @@
 		var/area/A = get_area(src)
 		if (A.dynamic_lighting)
 			lighting_build_overlay()
+
+/turf/proc/get_window_coeff()
+	if (window_coeff_dirty)
+		calculate_window_coeff()
+	return window_coeff
 
 // Causes any affecting light sources to be queued for a visibility update, for example a door got opened.
 /turf/proc/reconsider_lights()
@@ -142,15 +148,16 @@
 	return corners
 
 /turf/proc/calculate_window_coeff()
-	var/area/src_area = get_area(src)
-	window_coeff = 0.5
+	var/area/src_area = loc
 	if (src_area && src_area.location == AREA_OUTSIDE)
 		window_coeff = 1.0
-
-	window_coeff = min(window_coeff, 1)
+	else
+		window_coeff = 0.5
 
 	for (var/datum/lighting_corner/C in corners)
 		C.window_coeff = window_coeff
+
+	window_coeff_dirty = FALSE
 
 
 // don't put this proc anywhere other than where it already is, because it checks for the lack of lighting overlays - Kachnov

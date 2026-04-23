@@ -21,6 +21,9 @@
 
 	var/TOD = "Midday"
 
+	var/last_color
+	var/last_luminosity
+
 /atom/movable/lighting_overlay/pre_bullet_act(var/obj/item/projectile/P)
 	return FALSE
 
@@ -71,18 +74,15 @@
 
 		qdel(src)
 		return
-
-	T.calculate_window_coeff()
-
+	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
 	blend_mode = BLEND_MULTIPLY
 
-	var/list/L = copylist(color)
+	var/list/L = color
 	if (!islist(L))
 		L = list()
 
 	var/anylums = FALSE
 
-	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.window_coeff
 	for (var/datum/lighting_corner/C in T.corners)
 		var/i = 0
 
@@ -114,5 +114,10 @@
 		L[i + 1]   = adjusted_g * .
 		L[i + 2]   = adjusted_b * .
 
-	color  = L
-	luminosity = (anylums > 0)
+	var/new_luminosity = (anylums > 0)
+
+	if (color && islist(color) && color ~= L && luminosity == new_luminosity)
+		return
+
+	color = L.Copy()
+	luminosity = new_luminosity

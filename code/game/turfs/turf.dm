@@ -320,7 +320,7 @@ var/const/enterloopsanity = 100
 /turf/New()
 	..()
 	levelupdate()
-
+	calculate_window_coeff()
 
 /turf/proc/initialize()
 	return
