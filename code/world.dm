@@ -103,7 +103,7 @@ var/world_is_open = TRUE
 	processScheduler = new
 
 	spawn(1)
-		processScheduler.deferSetupfor (/process/ticker)
+		processScheduler.deferSetupFor (/process/ticker)
 		processScheduler.setup()
 		setup_everything()
 //		master_controller.setup()
@@ -379,7 +379,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += "world.address=[world.address]"
 	. += ";"
 	. += "round_timer=[roundduration2text()]"
-	. += ";" 
+	. += ";"
 	if (map)
 		. += "map=[map.title]"
 		. += ";"

@@ -34,7 +34,7 @@
 
 /process/scheduler/statProcess()
 	..()
-	stat(null, "[scheduled_tasks.len] task\s")
+	stat(null, "[scheduled_tasks.len] tasks")
 
 /process/scheduler/htmlProcess()
 	return ..() + "[scheduled_tasks.len] tasks"

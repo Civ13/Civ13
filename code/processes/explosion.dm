@@ -202,7 +202,7 @@
 	T = get_step(s, turn(direction,90))
 	explosion_spread(T, spread_power, turn(direction,90))
 	T = get_step(s, turn(direction,-90))
-	explosion_spread(T, spread_power, turn(direction,90))
+	explosion_spread(T, spread_power, turn(direction,-90))
 
 /process/explosion/proc/queue(var/datum/explosiondata/data)
 	if (!data) return

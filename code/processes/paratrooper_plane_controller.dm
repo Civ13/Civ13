@@ -13,11 +13,11 @@
 	processes.paratrooper_plane = src
 
 /process/paratrooper_plane/fire()
-	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Paratrooper"] || !latejoin_turfs["Paratrooper"]:len)
+	if (altitude <= first_nonlethal_altitude || !latejoin_turfs["Paratrooper"] || !latejoin_turfs["Paratrooper"].len)
 		return
 	try
 		if (!my_turfs.len)
-			if (latejoin_turfs["Paratrooper"] && latejoin_turfs["Paratrooper"]:len)
+			if (latejoin_turfs["Paratrooper"] && latejoin_turfs["Paratrooper"].len)
 				for (var/turf/T in range(10, latejoin_turfs["Paratrooper"][1]))
 					my_turfs += T
 

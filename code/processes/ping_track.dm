@@ -21,11 +21,7 @@
 		return
 	var/clients_checked = 0
 
-	while (current_list.len)
-
-		var/client/C = current_list[current_list.len]
-		--current_list.len
-
+	for (var/client/C in current_list)
 		if (!C)
 			continue
 

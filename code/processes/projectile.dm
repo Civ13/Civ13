@@ -33,7 +33,7 @@
 /process/projectile/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(projectile_list)
 	if (current_list.len > 500)
-		current_list.len = min(current_list.len, 500)
+		current_list.len = 500
 /process/projectile/statProcess()
 	..()
 	stat(null, "[projectile_list.len] projectiles")

@@ -26,17 +26,5 @@
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
 
-	// delete casings
-/*
-	for (var/loc in turf2casings)
-		if (turf2casings[loc] >= 2 && turf2casings[loc] <= 9)
-			var/deleted = 0
-			for (var/obj/item/ammo_casing/A in loc)
-				bullet_casings -= A
-				qdel(A)
-				++deleted
-				if (deleted >= turf2casings[loc]-1)
-					break
-*/
 /process/casings/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(bullet_casings)

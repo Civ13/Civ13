@@ -50,30 +50,22 @@ var/list/delayed_garbage = list()
 	while (destroyed.len && --checkRemain >= 0)
 		if (remaining_force_dels <= 0)
 			#ifdef GC_DEBUG
-//			testing("GC: Reached max force dels per tick [dels] vs [maxDels]")
 			#endif
 			break // Server's already pretty pounded, everything else can wait 2 seconds
 		var/refID = destroyed[1]
 		var/GCd_at_time = destroyed[refID]
 		if (GCd_at_time > time_to_kill)
 			#ifdef GC_DEBUG
-//			testing("GC: [refID] not old enough, breaking at [world.time] for [GCd_at_time - time_to_kill] deciseconds until [GCd_at_time + collection_timeout]")
 			#endif
 			break // Everything else is newer, skip them
 		var/datum/A = locate(refID)
 		#ifdef GC_DEBUG
-//		testing("GC: [refID] old enough to test: GCd_at_time: [GCd_at_time] time_to_kill: [time_to_kill] current: [world.time]")
 		#endif
 		if (A && A.gcDestroyed == GCd_at_time) // So if something else coincidently gets the same ref, it's not deleted by mistake
 			#ifdef GC_FINDREF
 			LocateReferences(A)
 			#endif
 			// Something's still referring to the qdel'd object.  Kill it.
-
-			// hey stop fucking spamming me when I start up the server - Kachnov
-//			if (world.time > 6000)
-//				testing("GC: -- \ref[A] | [A.type] was unable to be GC'd and was deleted --")
-
 			logging["[A.type]"]++
 			del(A)
 
@@ -81,7 +73,6 @@ var/list/delayed_garbage = list()
 			remaining_force_dels--
 		else
 			#ifdef GC_DEBUG
-//			testing("GC: [refID] properly GC'd at [world.time] with timeout [GCd_at_time]")
 			#endif
 			soft_dels++
 		tick_dels++

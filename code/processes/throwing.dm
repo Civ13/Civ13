@@ -84,7 +84,7 @@
 								AM.finished_throwing()
 						if (1)
 							if (AM && AM.original_target &&((((AM.y < AM.original_target.y && AM.dy == NORTH) || (AM.y > AM.original_target.y && AM.dy == SOUTH)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
-								// only stop when we've gonea the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
+								// only stop when we've gone a the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
 								if (AM.error < 0)
 									var/atom/step = get_step(AM, AM.dx)
 									var/area/A = get_area(step)

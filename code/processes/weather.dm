@@ -41,11 +41,9 @@
 				spawn(600)
 					map.blizzard = TRUE
 					change_weather(WEATHER_EXTREME)
-					//world << "<big>The blizzard is in full force!</big>"
 					spawn(rand(2400,3600))
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
-						//world << "<big>The blizzard has passed.</big>"
 	if (map && (season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
 		if (prob(1) || map.triggered_heatwave)
 			if(prob(50)|| map.triggered_heatwave)
@@ -74,8 +72,6 @@
 				spawn(600)
 					map.sandstorm = TRUE
 					change_weather(WEATHER_EXTREME)
-					//world << "<big>A sandstorm has arrived in this area!</big>"
 					spawn(rand(3000,3600))
 						map.sandstorm = FALSE
-						//world << "<big>The sandstorm has subsided.</big>"
 						change_weather(WEATHER_NONE)

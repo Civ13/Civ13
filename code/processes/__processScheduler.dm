@@ -69,7 +69,7 @@ var/global/processScheduler/processScheduler
  * this treatment.
  */
 
-/processScheduler/proc/deferSetupfor (var/processPath)
+/processScheduler/proc/deferSetupFor (var/processPath)
 	if (!(processPath in deferredSetupList))
 		deferredSetupList += processPath
 
