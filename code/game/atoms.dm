@@ -103,11 +103,6 @@
 /atom/proc/CheckExit()
 	return TRUE
 
-// If you want to use this, the atom must have the PROXMOVE flag, and the moving
-// atom must also have the PROXMOVE flag currently to help with lag. ~ ComicIronic
-/atom/proc/HasProximity(atom/movable/AM as mob|obj)
-	return
-
 /atom/proc/emp_act(var/severity)
 	return
 

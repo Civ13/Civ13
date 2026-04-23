@@ -236,11 +236,6 @@ var/const/enterloopsanity = 100
 		for (var/atom/movable/thing in range(1))
 			if (objects > enterloopsanity) break
 			objects++
-			spawn(0)
-				if (A)
-					A.HasProximity(thing, TRUE)
-					if ((thing && A) && (thing.flags & PROXMOVE))
-						thing.HasProximity(A, TRUE)
 	return
 
 /turf/proc/adjacent_fire_act(turf/floor/source, temperature, volume)
