@@ -21,7 +21,7 @@
 
 	var/TOD = "Midday"
 
-	var/last_color
+	var/list/last_color
 	var/last_luminosity
 
 /atom/movable/lighting_overlay/pre_bullet_act(var/obj/item/projectile/P)
