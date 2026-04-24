@@ -172,10 +172,12 @@
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
 					if (((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220)) || simplehunger < 180)
+						ai_tick_delay = 0
 						check_food() // animals will search for crops, grass, and so on
 					else
 						// Throttle AI logic for aggressive/idle stances
 						if (stance == HOSTILE_STANCE_ATTACK || stance == HOSTILE_STANCE_ALERT)
+							ai_tick_delay = 0
 							do_behaviour(behaviour) // fast processing for active aggro
 						else
 							ai_tick_delay++
@@ -266,20 +268,20 @@
 					turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				if (!target_mob || !(target_mob in view(7, src)) || target_mob.stat != CONSCIOUS)
+				if (!target_mob || !(target_mob in view(idle_vision_range, src)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					stance_step = 0
 			if (HOSTILE_STANCE_TIRED)
 				stance_step++
 				if (stance_step >= 5) //rests for 5 ticks
-					if (target_mob && (target_mob in view(7, src)))
+					if (target_mob && (target_mob in view(idle_vision_range, src)))
 						stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 					else
 						stance = HOSTILE_STANCE_IDLE
 
 			if (HOSTILE_STANCE_ALERT)
 				var/found_mob = FALSE
-				if (target_mob && (target_mob in view(7, src)))
+				if (target_mob && (target_mob in view(aggro_vision_range, src)))
 					if ((SA_attackable(target_mob)))
 						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 						stance_step++
@@ -325,14 +327,14 @@
 				turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				if (!target_mob || !(target_mob in view(7, src)) || target_mob.stat != CONSCIOUS)
+				if (!target_mob || !(target_mob in view(idle_vision_range, src)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
 						if (target_mob && get_dist(target_mob,src)>1)
 							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
-				if (target_mob && (target_mob in view(7, src)))
+				if (target_mob && (target_mob in view(aggro_vision_range, src)))
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK

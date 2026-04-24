@@ -3,7 +3,7 @@
 /process/lighting_overlays/setup()
 	name = "lighting overlays process"
 	is_subsystem_member = TRUE
-	schedule_interval = 1 SECOND
+	schedule_interval = 0.5 SECOND
 	start_delay = 1 SECOND
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH
@@ -11,7 +11,14 @@
 	processes.lighting_overlays = src
 
 /process/lighting_overlays/fire()
+	var/queue_length = lighting_update_overlays.len
 	var/max_updates_per_tick = 100
+
+	// Scale max_updates_per_tick based on queue length
+	if (queue_length > 500)
+		log_debug("lighting_overlays: Warning - queue length is [queue_length], scaling processing rate")
+		max_updates_per_tick = min(queue_length, max_updates_per_tick * 2)
+
 	var/count = 0
 	var/list/update_list = lighting_update_overlays.Copy()
 	for (var/atom/movable/lighting_overlay/L in update_list)

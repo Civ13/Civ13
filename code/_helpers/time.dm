@@ -21,8 +21,7 @@ var/global/time_offset = 0
 /proc/get_game_time()
     if (world.time != last_world_time)
         last_world_time = world.time
-        if (world.tick_usage > 100)
-            time_offset += (world.tick_usage - 100) * 0.01
+        time_offset = (world.tick_usage > 100) ? (world.tick_usage - 100) * 0.01 : 0
         cached_game_time = world.time + (time_offset + world.tick_usage * 0.01) * world.tick_lag
 
     return cached_game_time
@@ -72,6 +71,7 @@ var/round_start_time = 0
 
 /hook/roundstart/proc/start_timer()
 	round_start_time = world.time
+	time_offset = 0
 	return TRUE
 
 /proc/roundduration2text()

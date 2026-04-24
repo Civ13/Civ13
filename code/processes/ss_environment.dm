@@ -7,6 +7,7 @@
 	name = "Environment Subsystem"
 	schedule_interval = 10 // 1 second
 	priority = PROCESS_PRIORITY_MEDIUM
+	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	processes.ss_environment = src
 
 /process/ss_environment/fire()

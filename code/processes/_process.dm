@@ -151,10 +151,9 @@
 /process/proc/fire_as_member()
 	if (disabled || paused)
 		return
-	// Check if enough time has elapsed since last fire_as_member() call
-	if ((TimeOfGame - last_fire_as_member) < schedule_interval)
+	if (!may_fire())
 		return
-	last_fire_as_member = TimeOfGame
+	last_fire_as_member = world.time
 	run_time_tick_usage = world.tick_usage
 	if (run_time_tick_usage_allowance == -1)
 		run_time_tick_usage_allowance = 10 // safe default: 10% budget per member
