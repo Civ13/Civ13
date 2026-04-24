@@ -21,27 +21,27 @@
 		health = maxhealth
 
 /obj/structure/window/barrier/attack_hand(var/mob/user as mob)
-    if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
-        if (dismantlable && user.a_intent == I_HARM)
-            user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
-            if (do_after(user, 200, src))
-                user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
-                var/turf = get_turf(src)
+	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
+		if (dismantlable && user.a_intent == I_HARM)
+			user.visible_message(SPAN_DANGER("[user] starts dismantling the [src]."), SPAN_DANGER("You start dismantling the [src]."))
+			if (do_after(user, 200, src))
+				user.visible_message(SPAN_DANGER("[user] finishes dismantling the [src]."), SPAN_DANGER("You finish dismantling the [src]."))
+				var/turf = get_turf(src)
 
-                if (!istype(src, /obj/structure/window/barrier/incomplete))
-                    for (var/v in TRUE to rand(4,6))
-                        new /obj/item/weapon/barrier(turf)
-                else
-                    var/obj/structure/window/barrier/incomplete/I = src
-                    for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-                        new /obj/item/weapon/barrier(turf)
-                qdel(src)
+				if (!istype(src, /obj/structure/window/barrier/incomplete))
+					for (var/v in TRUE to rand(4,6))
+						new /obj/item/weapon/barrier(turf)
+				else
+					var/obj/structure/window/barrier/incomplete/I = src
+					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
+						new /obj/item/weapon/barrier(turf)
+				qdel(src)
 
-        else if (user.a_intent == I_GRAB)
-            var/mob/living/H = user
-            if (istype(H) && can_climb(H))
-                H.dir = get_dir(H, src)
-                do_climb(H)
+		else if (user.a_intent == I_GRAB)
+			var/mob/living/H = user
+			if (istype(H) && can_climb(H))
+				H.dir = get_dir(H, src)
+				do_climb(H)
 
 /obj/structure/window/barrier/ex_act(severity)
 	switch(severity)
@@ -59,39 +59,39 @@
 var/set_dir = null // Set the variable outside of any scopes
 
 /obj/structure/window/barrier/New(location, var/mob/creator, direction)
-    loc = location
-    flags |= ON_BORDER
+	loc = location
+	flags |= ON_BORDER
 
-    if (creator && ismob(creator))
-        set_dir = direction
+	if (creator && ismob(creator))
+		set_dir = direction
 
-    // Adjust direction to cardinal directions if intermediate directions are given
-    // Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
-    // NORTH is 1 and EAST is 4, so NORTHEAST is 5
+	// Adjust direction to cardinal directions if intermediate directions are given
+	// Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
+	// NORTH is 1 and EAST is 4, so NORTHEAST is 5
 
-    // Also much faster than a switch with if/else and OR
+	// Also much faster than a switch with if/else and OR
 
-    if (set_dir & EAST)
-        dir = EAST
-    else if (set_dir & WEST)
-        dir = WEST
-    else
-        dir = set_dir
+	if (set_dir & EAST)
+		dir = EAST
+	else if (set_dir & WEST)
+		dir = WEST
+	else
+		dir = set_dir
 
-    // Adjust layer and direction based on the final direction
-    switch (dir)
-        if (NORTH)
-            layer = MOB_LAYER - 1.01
-            pixel_y = FALSE
-        if (SOUTH)
-            layer = MOB_LAYER + 2
-            pixel_y = FALSE
-        if (EAST)
-            layer = MOB_LAYER - 0.05
-            pixel_x = FALSE
-        if (WEST)
-            layer = MOB_LAYER - 0.05
-            pixel_x = FALSE
+	// Adjust layer and direction based on the final direction
+	switch (dir)
+		if (NORTH)
+			layer = MOB_LAYER - 1.01
+			pixel_y = FALSE
+		if (SOUTH)
+			layer = MOB_LAYER + 2
+			pixel_y = FALSE
+		if (EAST)
+			layer = MOB_LAYER - 0.05
+			pixel_x = FALSE
+		if (WEST)
+			layer = MOB_LAYER - 0.05
+			pixel_x = FALSE
 
 
 //incomplete sandbag structures

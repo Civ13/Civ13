@@ -94,14 +94,14 @@ Get the ultimate area of `A`, similarly to [get_turf].
 
 #define forrange(x) for (var/v = 1 to x)
 
-#define to_chat(target, message)							target << message
-#define to_world(message)								   world << message
-#define to_world_log(message)							   world.log << message
+#define to_chat(target, message)						target << message
+#define to_world(message)								world << message
+#define to_world_log(message)							world.log << message
 #define sound_to(target, sound)							 target << sound
 #define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
-#define close_browser(target, browser_name)                 target << browse(null, browser_name)
-#define show_image(target, image)                           target << (image)
-#define send_rsc(target, rsc_content, rsc_name)             target << browse_rsc(rsc_content, rsc_name)
+#define close_browser(target, browser_name)				 target << browse(null, browser_name)
+#define show_image(target, image)						 target << (image)
+#define send_rsc(target, rsc_content, rsc_name)			 target << browse_rsc(rsc_content, rsc_name)
 
 #define MAP_IMAGE_PATH "nano/images/[GLOB.using_map.path]/"
 

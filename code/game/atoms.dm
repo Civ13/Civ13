@@ -474,7 +474,7 @@
 
 	if(user.handcuffed && prob(45) && !user.incapacitated(INCAPACITATION_FORCELYING))//User can fail to kick smbd if cuffed
 		user.visible_message(SPAN_DANGER("[user.name] loses \his balance while trying to kick \the [src]."), \
-                    " You lost your balance.")
+					" You lost your balance.")
 		user.Weaken(1)
 		return
 

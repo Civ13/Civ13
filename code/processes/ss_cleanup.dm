@@ -14,7 +14,3 @@
 	// Python bridge
 	if (processes.python)
 		processes.python.fire_as_member()
-
-	// Paratrooper plane controller
-	if (processes.paratrooper_plane)
-		processes.paratrooper_plane.fire_as_member()

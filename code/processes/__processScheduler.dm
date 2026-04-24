@@ -83,17 +83,13 @@ var/global/processScheduler/processScheduler
 	// Add all the processes we can find, except for the ticker
 	for (process_path in subtypesof(/process))
 		var/process/P = new process_path(src)
-		if (P.is_subsystem_member || (process_path in deferredSetupList))
-			if (P.is_subsystem_member)
-				// Set up the process so it can register itself to the global processes list
-				P.setup()
-				// We still want it in the nameToProcessMap for manual access
-				nameToProcessMap[P.name] = P
+		if (P.is_subsystem_member)
+			// Set up the process so it can register itself to the global processes list
+			P.setup()
+			// We still want it in the nameToProcessMap for manual access
+			nameToProcessMap[P.name] = P
 			continue
 		addProcess(P)
-
-	for (process_path in deferredSetupList)
-		addProcess(new process_path(src))
 
 	return TRUE
 

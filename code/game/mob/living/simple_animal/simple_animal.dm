@@ -79,6 +79,13 @@
 	var/enroute = FALSE
 	var/stance_step = FALSE
 	var/can_bite_limbs_off = FALSE
+	var/ai_tick_delay = 0 // Throttle AI logic in Life()
+	var/ai_tick_delay_max = 3 // Idle ticks between AI logic runs
+
+	var/vision_range = 7 //How big of an area to search for targets in, a vision of 7 attempts to find targets as soon as they walk into screen view
+	var/aggro_vision_range = 7 //If a mob is aggro, we search in this radius.
+	var/idle_vision_range = 7 //If a mob is just idling around, it's vision range is limited to this.
+
 	//SoundFX
 	var/hostilesounds = list()
 	var/wandersounds = list()
@@ -167,7 +174,14 @@
 					if (((stance==HOSTILE_STANCE_IDLE || stance==HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220)) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
 					else
-						do_behaviour(behaviour)
+						// Throttle AI logic for aggressive/idle stances
+						if (stance == HOSTILE_STANCE_ATTACK || stance == HOSTILE_STANCE_ALERT)
+							do_behaviour(behaviour) // fast processing for active aggro
+						else
+							ai_tick_delay++
+							if (ai_tick_delay >= ai_tick_delay_max)
+								do_behaviour(behaviour)
+								ai_tick_delay = 0
 
 	//Speaking
 	if (!client && speak_chance)
@@ -252,20 +266,20 @@
 					turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				if (!target_mob || !((target_mob in ListTargets(7))) || target_mob.stat != CONSCIOUS)
+				if (!target_mob || !(target_mob in view(7, src)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					stance_step = 0
 			if (HOSTILE_STANCE_TIRED)
 				stance_step++
 				if (stance_step >= 5) //rests for 5 ticks
-					if (target_mob && (target_mob in ListTargets(7)))
+					if (target_mob && (target_mob in view(7, src)))
 						stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 					else
 						stance = HOSTILE_STANCE_IDLE
 
 			if (HOSTILE_STANCE_ALERT)
 				var/found_mob = FALSE
-				if (target_mob && (target_mob in ListTargets(7)))
+				if (target_mob && (target_mob in view(7, src)))
 					if ((SA_attackable(target_mob)))
 						stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 						stance_step++
@@ -311,14 +325,14 @@
 				turns_since_move = FALSE
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
-				if (!target_mob || !(target_mob in ListTargets(10)) || target_mob.stat != CONSCIOUS)
+				if (!target_mob || !(target_mob in view(7, src)) || target_mob.stat != CONSCIOUS)
 					target_mob = FindTarget()
 					if (target_mob)
 						stance = HOSTILE_STANCE_ATTACK
 						if (target_mob && get_dist(target_mob,src)>1)
 							AttackTarget()
 			if (HOSTILE_STANCE_TIRED,HOSTILE_STANCE_ALERT)
-				if (target_mob && (target_mob in ListTargets(10)))
+				if (target_mob && (target_mob in view(7, src)))
 					if ((SA_attackable(target_mob)))
 						set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 						stance = HOSTILE_STANCE_ATTACK

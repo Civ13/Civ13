@@ -21,6 +21,8 @@ var/global/time_offset = 0
 /proc/get_game_time()
     if (world.time != last_world_time)
         last_world_time = world.time
+        if (world.tick_usage > 100)
+            time_offset += (world.tick_usage - 100) * 0.01
         cached_game_time = world.time + (time_offset + world.tick_usage * 0.01) * world.tick_lag
 
     return cached_game_time

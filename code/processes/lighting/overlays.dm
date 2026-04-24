@@ -3,7 +3,7 @@
 /process/lighting_overlays/setup()
 	name = "lighting overlays process"
 	is_subsystem_member = TRUE
-	schedule_interval = 0.5 SECONDS
+	schedule_interval = 1 SECOND
 	start_delay = 1 SECOND
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH
@@ -13,7 +13,8 @@
 /process/lighting_overlays/fire()
 	var/max_updates_per_tick = 100
 	var/count = 0
-	for (var/atom/movable/lighting_overlay/L in lighting_update_overlays)
+	var/list/update_list = lighting_update_overlays.Copy()
+	for (var/atom/movable/lighting_overlay/L in update_list)
 		if (count++ >= max_updates_per_tick)
 			break
 

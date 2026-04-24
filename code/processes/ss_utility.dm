@@ -21,10 +21,6 @@
 	if (processes.vote)
 		processes.vote.fire_as_member()
 
-	// Callproc (train timers etc.)
-	if (processes.callproc)
-		processes.callproc.fire_as_member()
-
 	// Time Track (every 1 second)
 	if (world.time >= next_time_track)
 		if (processes.time_track)

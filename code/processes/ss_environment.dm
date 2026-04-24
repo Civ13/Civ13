@@ -5,7 +5,7 @@
 
 /process/ss_environment/setup()
 	name = "Environment Subsystem"
-	schedule_interval = 20 // 2 seconds
+	schedule_interval = 10 // 1 second
 	priority = PROCESS_PRIORITY_MEDIUM
 	processes.ss_environment = src
 

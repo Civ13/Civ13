@@ -174,11 +174,6 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 	//set reagent data
 	B.data["donor"] = src
-	/*
-	if (!B.data["virus2"])
-		B.data["virus2"] = list()
-	B.data["virus2"] |= virus_copylist(virus2)
-	*/
 	B.data["antibodies"] = antibodies
 	B.data["blood_DNA"] = copytext(dna.unique_enzymes,1,0)
 	B.data["blood_type"] = copytext(dna.b_type,1,0)
@@ -212,13 +207,6 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 /mob/living/human/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)
 	if (!injected || !istype(injected))
 		return
-
-/*	var/list/sniffles = virus_copylist(injected.data["virus2"])
-	for (var/ID in sniffles)
-		var/datum/disease2/disease/sniffle = sniffles[ID]
-		infect_virus2(src,sniffle,1)
-	if (injected.data["antibodies"] && prob(5))
-		antibodies |= injected.data["antibodies"]*/
 	var/list/chems = list()
 	chems = params2list(injected.data["trace_chem"])
 	for (var/C in chems)
@@ -323,10 +311,6 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 			B.blood_DNA[source.data["blood_DNA"]] = source.data["blood_type"]
 		else
 			B.blood_DNA[source.data["blood_DNA"]] = "O+"
-
-/*	// Update virus information.
-	if (source.data["virus2"])
-		B.virus2 = virus_copylist(source.data["virus2"])*/
 
 	B.fluorescent  = FALSE
 	B.invisibility = FALSE

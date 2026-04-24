@@ -13,21 +13,21 @@
 	var/progress = FALSE
 
 /obj/structure/window/barrier/snowwall/attack_hand(var/mob/user as mob)
-    if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
-        if (dismantlable && user.a_intent == I_HARM)
-            visible_message("<span class='danger'>[user] starts dismantling the snow barricade.</span>", "<span class='danger'>You start dismantling the snow barricade.</span>")
-            if (do_after(user, 200, src))
-                visible_message("<span class='danger'>[user] finishes dismantling the snow barricade.</span>", "<span class='danger'>You finish dismantling the snow barricade.</span>")
-                var/turf = get_turf(src)
+	if (locate(src) in range(user, 1)) // TODO: Somehow make the user face what they are dismantling.
+		if (dismantlable && user.a_intent == I_HARM)
+			visible_message("<span class='danger'>[user] starts dismantling the snow barricade.</span>", "<span class='danger'>You start dismantling the snow barricade.</span>")
+			if (do_after(user, 200, src))
+				visible_message("<span class='danger'>[user] finishes dismantling the snow barricade.</span>", "<span class='danger'>You finish dismantling the snow barricade.</span>")
+				var/turf = get_turf(src)
 
-                if (!istype(src, /obj/structure/window/barrier/snowwall/incomplete))
-                    for (var/v in TRUE to rand(4,6))
-                        new /obj/item/weapon/snowwall(turf)
-                else
-                    var/obj/structure/window/barrier/snowwall/incomplete/I = src
-                    for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
-                        new /obj/item/weapon/snowwall(turf)
-                qdel(src)
+				if (!istype(src, /obj/structure/window/barrier/snowwall/incomplete))
+					for (var/v in TRUE to rand(4,6))
+						new /obj/item/weapon/snowwall(turf)
+				else
+					var/obj/structure/window/barrier/snowwall/incomplete/I = src
+					for (var/v in TRUE to (1 + pick(I.progress-1, I.progress)))
+						new /obj/item/weapon/snowwall(turf)
+				qdel(src)
 
 
 //incomplete snowwall structures

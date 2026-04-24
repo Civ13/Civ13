@@ -3,7 +3,7 @@
 /process/projectile/setup()
 	name = "projectile movement"
 	is_subsystem_member = TRUE
-	schedule_interval = 0.03 SECONDS
+	schedule_interval = 0.1 SECONDS
 	start_delay = 1 SECOND
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_VERY_HIGH
@@ -34,6 +34,9 @@
 /process/projectile/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(projectile_list)
 	if (current_list.len > 500)
+		for (var/i = current_list.len, i > 500, i--)
+			var/obj/item/projectile/P = current_list[i]
+			if (P) qdel(P)
 		current_list.len = 500
 /process/projectile/statProcess()
 	..()

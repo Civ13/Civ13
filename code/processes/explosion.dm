@@ -8,7 +8,7 @@
 /process/explosion/setup()
 	name = "explosion"
 	is_subsystem_member = TRUE
-	schedule_interval = 0.05 SECONDS
+	schedule_interval = 0.1 SECONDS
 	work_queue = list()
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH

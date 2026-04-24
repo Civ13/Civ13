@@ -63,6 +63,11 @@
 	lighting_overlay_list -= src
 	..()
 
+/proc/copylist(var/list/L)
+	if (!L || !islist(L))
+		return list()
+	return L.Copy()
+
 /atom/movable/lighting_overlay/proc/update_overlay()
 	var/turf/T = loc
 	if (!T || !istype(T)) // Erm...
@@ -77,9 +82,7 @@
 	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
 	blend_mode = BLEND_MULTIPLY
 
-	var/list/L = color
-	if (!islist(L))
-		L = list()
+	var/list/L = color ? copylist(color) : list()
 
 	var/anylums = FALSE
 
@@ -116,7 +119,7 @@
 
 	var/new_luminosity = (anylums > 0)
 
-	if (color && islist(color) && color ~= L && luminosity == new_luminosity)
+	if (color && islist(color) && color == L && luminosity == new_luminosity)
 		return
 
 	color = L.Copy()

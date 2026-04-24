@@ -304,7 +304,6 @@ proc/is_complete_print(var/print)
 /obj/item/weapon/forensics/sample_kit
 	name = "fingerprint powder"
 	desc = "A jar containing aluminum powder and a specialized brush."
-	icon_state = "m_glass"
 	w_class = ITEM_SIZE_SMALL
 	icon_state = "dust"
 	var/evidence_type = "fingerprint"

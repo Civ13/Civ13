@@ -17,7 +17,6 @@ var/datum/process_list/processes = new
 	var/process/nanoUI/nanoUI = null
 	var/process/scheduler/scheduler = null
 	var/process/vote/vote = null
-	var/process/callproc/callproc = null
 	var/process/time_track/time_track = null
 	var/process/ping_track/ping_track = null
 	var/process/client/client = null
@@ -59,11 +58,11 @@ var/datum/process_list/processes = new
 	// SSCleanup members
 	var/process/garbage/garbage = null
 	var/process/python/python = null
-	var/process/paratrooper_plane/paratrooper_plane = null
 
 	// --- Standalone processes (run directly by the main scheduler) ---
 	// (processes not yet migrated to a subsystem remain here)
-
+	var/process/callproc/callproc = null
+	
 	// --- Internal tracking ---
 	var/next_get_num_processes = -1
 	var/last_num_processes = 0

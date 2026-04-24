@@ -9,17 +9,24 @@
 
 /process/ss_combat/fire()
 	// Projectiles
-	if (processes.projectile)
+	// Check fires_at_gamestates to respect process gamestate restrictions
+	if (processes.projectile && (processes.projectile.fires_at_gamestates.len == 0 || (ticker && processes.projectile.fires_at_gamestates.Find(ticker.current_state))))
+		processes.projectile.run_time_tick_usage_allowance = 8 // Explicit budget: 8% per member
 		processes.projectile.fire_as_member()
 
 	// Throwing
-	if (processes.throwing)
+	// Check fires_at_gamestates to respect process gamestate restrictions
+	if (processes.throwing && (processes.throwing.fires_at_gamestates.len == 0 || (ticker && processes.throwing.fires_at_gamestates.Find(ticker.current_state))))
+		processes.throwing.run_time_tick_usage_allowance = 8 // Explicit budget: 8% per member
 		processes.throwing.fire_as_member()
 
-	// Movement
-	if (processes.movement)
-		processes.movement.fire_as_member()
+	// TODO: processes.movement does not exist - this was dead code
+	// Commenting out as there is no movement process defined
+	// if (processes.movement)
+	//	processes.movement.fire_as_member()
 
 	// Explosions
-	if (processes.explosion)
+	// Check fires_at_gamestates to respect process gamestate restrictions (explosion only runs in PLAYING/FINISHED)
+	if (processes.explosion && (processes.explosion.fires_at_gamestates.len == 0 || (ticker && processes.explosion.fires_at_gamestates.Find(ticker.current_state))))
+		processes.explosion.run_time_tick_usage_allowance = 8 // Explicit budget: 8% per member
 		processes.explosion.fire_as_member()
