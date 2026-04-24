@@ -1,5 +1,11 @@
 #!/bin/bash
 set -e
+echo "Setting up the system for BYOND compilation."
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt upgrade
+sudo apt install python3 wget git unzip make sudo
+sudo apt install libstdc++6:i386 libgcc1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses5 libncurses5:i386
 
 echo "Setting up BYOND."
 rm -rf "BYOND"
