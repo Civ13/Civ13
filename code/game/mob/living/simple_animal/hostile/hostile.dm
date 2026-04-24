@@ -75,6 +75,7 @@
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
+		return
 	if (target_mob in view(aggro_vision_range, src))
 		stance = HOSTILE_STANCE_ATTACK
 		walk_to(src, target_mob, TRUE, move_to_delay)

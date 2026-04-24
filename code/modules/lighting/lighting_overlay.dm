@@ -119,8 +119,21 @@
 
 	var/new_luminosity = (anylums > 0)
 
-	if (color && islist(color) && color == L && luminosity == new_luminosity)
-		return
+	// Check against last values for early return
+	if (last_color && islist(last_color) && last_luminosity == new_luminosity)
+		var/identical = TRUE
+		if (L.len != last_color.len)
+			identical = FALSE
+		else
+			for (var/i = 1; i <= L.len; i++)
+				if (L[i] != last_color[i])
+					identical = FALSE
+					break
+		if (identical)
+			return
 
+	// Update last values and apply changes
+	last_color = L.Copy()
+	last_luminosity = new_luminosity
 	color = L.Copy()
 	luminosity = new_luminosity
