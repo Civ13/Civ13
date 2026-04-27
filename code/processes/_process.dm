@@ -37,6 +37,9 @@
 	 */
 	// Process name
 	var/name
+	
+	// If TRUE, the scheduler will not add this process automatically
+	var/is_subsystem_member = FALSE
 
 	// Process schedule interval
 	// This controls how often the process would run under ideal conditions.
@@ -60,6 +63,10 @@
 
 	// Records the time (1/10s timeoftick) at which the process last began running
 	var/tmp/run_start = 0
+
+	// Records the time (1/10s timeoftick) at which fire_as_member() was last called
+	// Used to enforce schedule_interval when the process is run as a member
+	var/tmp/last_fire_as_member = 0
 
 	// Records the number of times this process has been killed and restarted
 	var/tmp/times_killed = 0
@@ -111,6 +118,7 @@
 	name = "process"
 	schedule_interval = 50
 	run_start = 0
+	last_fire_as_member = 0
 	ticks = 0
 	last_task = 0
 	current = null
@@ -136,6 +144,22 @@
 
 /process/proc/fire()
 	return
+
+// Called by a parent subsystem instead of the scheduler.
+// Initializes the tick budget so PROCESS_TICK_CHECK works correctly inside fire().
+// Respects the member's schedule_interval to prevent excessive firing.
+/process/proc/fire_as_member()
+	if (disabled || paused)
+		return
+	if (!may_fire())
+		return
+	last_fire_as_member = world.time
+	run_time_tick_usage = world.tick_usage
+	if (run_time_tick_usage_allowance == -1)
+		run_time_tick_usage_allowance = 10 // safe default: 10% budget per member
+	started()
+	. = fire()
+	finished()
 
 /process/proc/setup()
 	return
@@ -393,3 +417,14 @@
 	if (!.)
 		spawn (schedule_interval)
 			main.last_twenty_run_times[src]:Cut()
+
+/datum/subsystem_module
+	var/name = "module"
+	var/process/parent = null
+	var/disabled = FALSE
+
+/datum/subsystem_module/New(process/P)
+	parent = P
+
+/datum/subsystem_module/proc/fire()
+	return

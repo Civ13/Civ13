@@ -6,9 +6,6 @@
 	var/atom/target
 //These vars are related to how mobs locate and target
 	var/robust_searching = 0 //By default, mobs have a simple searching method, set this to 1 for the more scrutinous searching (stat_attack, stat_exclusive, etc), should be disabled on most mobs
-	var/vision_range = 9 //How big of an area to search for targets in, a vision of 9 attempts to find targets as soon as they walk into screen view
-	var/aggro_vision_range = 9 //If a mob is aggro, we search in this radius. Defaults to 9 to keep in line with original simple mob aggro radius
-	var/idle_vision_range = 9 //If a mob is just idling around, it's vision range is limited to this. Defaults to 9 to keep in line with original simple mob aggro radius
 	var/search_objects = 0 //If we want to consider objects when searching around, set this to 1. If you want to search for objects while also ignoring mobs until hurt, set it to 2. To completely ignore mobs, even when attacked, set it to 3
 	var/list/wanted_objects = list() //A list of objects that will be checked against to attack, should we have search_objects enabled
 	var/stat_attack = 0 //Mobs with stat_attack to 1 will attempt to attack things that are unconscious, Mobs with stat_attack set to 2 will attempt to attack the dead.
@@ -19,7 +16,7 @@
 	var/atom/T = null
 	if(!istype(src,/mob/living/simple_animal/hostile/human))
 		stop_automated_movement = FALSE
-	var/list/the_targets = ListTargets(7) // range that simple_animal will look for targets
+	var/list/the_targets = ListTargets(idle_vision_range) // range that simple_animal will look for targets
 	if (behaviour == "hostile")
 		stance = HOSTILE_STANCE_ATTACK
 		for(var/mob/living/ML in the_targets)
@@ -78,17 +75,18 @@
 /mob/living/simple_animal/proc/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
-	if (target_mob in ListTargets(8))
+		return
+	if (target_mob in view(aggro_vision_range, src))
 		stance = HOSTILE_STANCE_ATTACK
 		walk_to(src, target_mob, TRUE, move_to_delay)
-	else if (target_mob in ListTargets(10))
+	else if (target_mob in view(idle_vision_range, src))
 		walk_to(src, target_mob, TRUE, move_to_delay)
 
 /mob/living/simple_animal/proc/AttackTarget()
 	if (!target_mob || !SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(8)))
+	if (!(target_mob in view(aggro_vision_range, src)))
 		LostTarget()
 		return FALSE
 	if (get_dist(src, target_mob) <= 1)	//Attacking
@@ -149,8 +147,8 @@
 	walk(src, FALSE)
 
 
-/mob/living/simple_animal/proc/ListTargets(var/dist = 8)
-	var/list/L = viewers(dist,src)
+/mob/living/simple_animal/proc/ListTargets(var/dist = 7)
+	var/list/L = view(dist, src)
 	return L
 
 /mob/living/simple_animal/proc/DestroySurroundings()

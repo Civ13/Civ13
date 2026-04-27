@@ -7,13 +7,7 @@ var/list/exterior_turfs = list(/turf/floor/grass,
 var/list/interior_areas = list(/area/caribbean/houses,
 							)
 
-// atmos stuff
-///turf/var/zone/zone
 /turf/var/open_directions
-
-///turf/var/needs_air_update = FALSE
-///turf/var/datum/gas_mixture/air
-
 
 /turf
 	name = "turf"
@@ -64,17 +58,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/overlay_priority = 0
 
 	map_storage_saved_vars = "icon_state;name"
-
-/turf/New()
-	..()
-	for (var/atom/movable/AM as mob|obj in src)
-		spawn( FALSE )
-			Entered(AM)
-			return
-	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
-		new_turfs |= src
-	turfs |= src
-
 
 /turf/CanPass(atom/movable/mover, turf/target, height=1.5,air_group=0)
 	if (!target) return FALSE
@@ -236,11 +219,6 @@ var/const/enterloopsanity = 100
 		for (var/atom/movable/thing in range(1))
 			if (objects > enterloopsanity) break
 			objects++
-			spawn(0)
-				if (A)
-					A.HasProximity(thing, TRUE)
-					if ((thing && A) && (thing.flags & PROXMOVE))
-						thing.HasProximity(A, TRUE)
 	return
 
 /turf/proc/adjacent_fire_act(turf/floor/source, temperature, volume)
@@ -319,8 +297,16 @@ var/const/enterloopsanity = 100
 
 /turf/New()
 	..()
-	levelupdate()
+	for (var/atom/movable/AM as mob|obj in src)
+		spawn( FALSE )
+			Entered(AM)
+			return
+	if (ticker && ticker.current_state == GAME_STATE_PLAYING)
+		new_turfs |= src
+	turfs |= src
 
+	levelupdate()
+	calculate_window_coeff()
 
 /turf/proc/initialize()
 	return
@@ -473,11 +459,6 @@ var/const/enterloopsanity = 100
 
 	if (istype(M))
 		for (var/obj/effect/decal/cleanable/blood/B in contents)
-	/*		if (!B.blood_DNA)
-				B.blood_DNA = list()
-			if (!B.blood_DNA[M.dna.unique_enzymes])
-				B.blood_DNA[M.dna.unique_enzymes] = M.dna.b_type
-				B.virus2 = virus_copylist(M.virus2)*/
 			return TRUE //we bloodied the floor
 		blood_splatter(src,M.get_blood(M.vessel),1)
 		return TRUE //we bloodied the floor

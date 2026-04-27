@@ -21,6 +21,9 @@
 
 	var/TOD = "Midday"
 
+	var/list/last_color
+	var/last_luminosity
+
 /atom/movable/lighting_overlay/pre_bullet_act(var/obj/item/projectile/P)
 	return FALSE
 
@@ -60,6 +63,11 @@
 	lighting_overlay_list -= src
 	..()
 
+/proc/copylist(var/list/L)
+	if (!L || !islist(L))
+		return list()
+	return L.Copy()
+
 /atom/movable/lighting_overlay/proc/update_overlay()
 	var/turf/T = loc
 	if (!T || !istype(T)) // Erm...
@@ -71,18 +79,13 @@
 
 		qdel(src)
 		return
-
-	T.calculate_window_coeff()
-
+	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
 	blend_mode = BLEND_MULTIPLY
 
-	var/list/L = copylist(color)
-	if (!islist(L))
-		L = list()
+	var/list/L = color ? copylist(color) : list()
 
 	var/anylums = FALSE
 
-	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.window_coeff
 	for (var/datum/lighting_corner/C in T.corners)
 		var/i = 0
 
@@ -114,5 +117,23 @@
 		L[i + 1]   = adjusted_g * .
 		L[i + 2]   = adjusted_b * .
 
-	color  = L
-	luminosity = (anylums > 0)
+	var/new_luminosity = (anylums > 0)
+
+	// Check against last values for early return
+	if (last_color && islist(last_color) && last_luminosity == new_luminosity)
+		var/identical = TRUE
+		if (L.len != last_color.len)
+			identical = FALSE
+		else
+			for (var/i = 1; i <= L.len; i++)
+				if (L[i] != last_color[i])
+					identical = FALSE
+					break
+		if (identical)
+			return
+
+	// Update last values and apply changes
+	last_color = L.Copy()
+	last_luminosity = new_luminosity
+	color = L.Copy()
+	luminosity = new_luminosity

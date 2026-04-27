@@ -88,8 +88,8 @@ Example for later use:
 	return list(
 				/obj/item/weapon/gun/projectile/submachinegun/ak74 = 25,
 				/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = 25,
-                /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 25,
-                /obj/item/weapon/gun/projectile/submachinegun/ak74m = 25)
+				/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u = 25,
+				/obj/item/weapon/gun/projectile/submachinegun/ak74m = 25)
 
 /obj/random/gun/ak_modern
 	name = "random modern ak"
@@ -145,20 +145,20 @@ Example for later use:
 	icon_state = "dice"
 
 /obj/random/magazine/ak47
-    name = "random ak magazine"
-    icon_state = "magazine"
+	name = "random ak magazine"
+	icon_state = "magazine"
 /obj/random/magazine/ak47/spawn_choices()
 	return list(
 				/obj/item/ammo_magazine/ak47 = 95,
-                /obj/item/ammo_magazine/ak47/drum = 5)
+				/obj/item/ammo_magazine/ak47/drum = 5)
 
 /obj/random/magazine/ak74
-    name = "random ak magazine"
-    icon_state = "magazine"
+	name = "random ak magazine"
+	icon_state = "magazine"
 /obj/random/magazine/ak74/spawn_choices()
 	return list(
 				/obj/item/ammo_magazine/ak74 = 95,
-                /obj/item/ammo_magazine/ak74/drum = 5)
+				/obj/item/ammo_magazine/ak74/drum = 5)
 
 /obj/random/magazine/western_random
 	name = "random western magazine"
@@ -171,12 +171,12 @@ Example for later use:
 				/obj/item/ammo_magazine/p90 = 15)
 
 /obj/random/magazine/german
-    name = "random german magazine"
-    icon_state = "magazine"
+	name = "random german magazine"
+	icon_state = "magazine"
 /obj/random/magazine/german/spawn_choices()
 	return list(
 				/obj/item/ammo_magazine/gewehr98 = 90,
-                /obj/item/ammo_magazine/fg42 = 10,
+				/obj/item/ammo_magazine/fg42 = 10,
 				/obj/item/ammo_magazine/g43 = 10)
 
 ////////////////////////////
@@ -276,8 +276,8 @@ Example for later use:
 /obj/random/medical/bandage/spawn_choices()
 	return list(
 				/obj/item/stack/medical/advanced/sulfa/small = 1,
-                /obj/item/stack/medical/advanced/herbs/small = 1,
-                /obj/item/stack/medical/bruise_pack/bint/small = 1)
+				/obj/item/stack/medical/advanced/herbs/small = 1,
+				/obj/item/stack/medical/bruise_pack/bint/small = 1)
 
 /obj/random/medical/drugs
 	name = "Medical Drugs"
@@ -286,7 +286,7 @@ Example for later use:
 /obj/random/medical/drugs/spawn_choices()
 	return list(
 				/obj/item/weapon/reagent_containers/syringe/morphine = 1,
-                /obj/item/weapon/reagent_containers/syringe/thc = 1)
+				/obj/item/weapon/reagent_containers/syringe/thc = 1)
 
 ////////////////Barricades, Mines & Trees////////////////
 /obj/random/mine/ap

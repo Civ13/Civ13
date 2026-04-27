@@ -69,7 +69,7 @@ var/global/processScheduler/processScheduler
  * this treatment.
  */
 
-/processScheduler/proc/deferSetupfor (var/processPath)
+/processScheduler/proc/deferSetupFor (var/processPath)
 	if (!(processPath in deferredSetupList))
 		deferredSetupList += processPath
 
@@ -79,14 +79,17 @@ var/global/processScheduler/processScheduler
 		del(src)
 		return FALSE
 
-	var/process
+	var/process_path
 	// Add all the processes we can find, except for the ticker
-	for (process in subtypesof(/process))
-		if (!(process in deferredSetupList))
-			addProcess(new process(src))
-
-	for (process in deferredSetupList)
-		addProcess(new process(src))
+	for (process_path in subtypesof(/process))
+		var/process/P = new process_path(src)
+		if (P.is_subsystem_member)
+			// Set up the process so it can register itself to the global processes list
+			P.setup()
+			// We still want it in the nameToProcessMap for manual access
+			nameToProcessMap[P.name] = P
+			continue
+		addProcess(P)
 
 	return TRUE
 
@@ -140,7 +143,8 @@ var/global/processScheduler/processScheduler
 					message_admins("Process '[p.name]' is hung and will be restarted.")
 
 /processScheduler/proc/queueProcesses()
-	for (var/process/p in get_priority_ordered_processes())
+	var/current_time = world.time
+	for (var/process/p in priority_ordered_processes)
 		// Don't double-queue, don't queue running processes
 		if (p.disabled || p.running || p.queued || !p.idle)
 			continue
@@ -149,7 +153,7 @@ var/global/processScheduler/processScheduler
 			continue
 
 		// If the process should be running by now, go ahead and queue it
-		if (world.time >= (last_queued[p] + p.schedule_interval))
+		if (current_time >= (last_queued[p] + p.schedule_interval))
 			setQueuedProcessState(p)
 
 

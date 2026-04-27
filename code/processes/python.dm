@@ -2,7 +2,8 @@
 	var/last = 0
 /process/python/setup()
 	name = "python"
-	schedule_interval = 5 SECONDS
+	is_subsystem_member = TRUE
+	schedule_interval = 2 SECONDS
 	start_delay = 1 SECOND
 	fires_at_gamestates = list()
 	priority = PROCESS_PRIORITY_IRRELEVANT

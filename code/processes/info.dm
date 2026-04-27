@@ -1,19 +1,8 @@
-/process/info
-
-/process/info/setup()
+/datum/subsystem_module/info
 	name = "info"
-	schedule_interval = 1 SECOND
-	start_delay = 10 SECONDS
-	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
-	priority = PROCESS_PRIORITY_IRRELEVANT
-	processes.info = src
 
-/process/info/fire()
+/datum/subsystem_module/info/fire()
 	return
 
-/process/info/statProcess()
-	..()
+/datum/subsystem_module/info/proc/statProcess()
 	stat(null, "Current BYOND tick: #[world.time/world.tick_lag]")
-
-/process/info/htmlProcess()
-	return ..() + "Current BYOND tick: #[world.time/world.tick_lag]"

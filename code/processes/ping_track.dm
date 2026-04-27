@@ -5,6 +5,7 @@
 
 /process/ping_track/setup()
 	name = "Ping Tracking"
+	is_subsystem_member = TRUE
 	schedule_interval = 0.5 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_LOW
@@ -21,11 +22,7 @@
 		return
 	var/clients_checked = 0
 
-	while (current_list.len)
-
-		var/client/C = current_list[current_list.len]
-		--current_list.len
-
+	for (var/client/C in current_list)
 		if (!C)
 			continue
 

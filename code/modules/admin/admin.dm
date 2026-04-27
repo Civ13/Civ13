@@ -264,7 +264,6 @@ proc/admin_notice(var/message, var/rights)
 	if (!check_rights(R_ADMIN))	return
 
 	var/dat = {"
-		[common_browser_style]
 		<br>
 		<center><big><b>Game Panel</b></big></center><hr>\n
 		"}
@@ -285,7 +284,7 @@ proc/admin_notice(var/message, var/rights)
 		<A href='?src=\ref[src];modify_world_var=1'>Modify a World Variable (may not be an object or list)</A><br><br>
 		"}
 
-	dat = "<center><big>[dat]</big></center>"
+	dat = "<html>[common_browser_style]<center><big>[dat]</big></center></html>"
 
 	usr << browse(dat, "window=admin2;size=400x500")
 	return

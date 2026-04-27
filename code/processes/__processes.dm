@@ -2,48 +2,68 @@
 var/datum/process_list/processes = new
 
 /datum/process_list
-	var/process/battle_report/battle_report = null
-	var/process/burning_objs/burning_objs = null
-	var/process/burning_turfs/burning_turfs = null
-	var/process/callproc/callproc = null
-	var/process/chemistry/chemistry = null
-	var/process/client/client = null
-	var/process/dog/dog = null
-	var/process/explosion/explosion = null
-	var/process/garbage/garbage = null
-	var/process/info/info = null
-	var/process/casings/casings = null
-	var/process/cleanables/cleanables = null
-	var/process/lighting_sources/lighting_sources = null
-	var/process/lighting_overlays/lighting_overlays = null
-	var/process/map/map = null
-	var/process/mapswap/mapswap = null
-	var/process/epochswap/epochswap = null
-	var/process/gamemode/gamemode = null
-	var/process/mob/mob = null
-	var/process/movement/movement = null
+
+	// --- Subsystems (top-level scheduler entries) ---
+	var/process/ss_utility/ss_utility = null
+	var/process/ss_environment/ss_environment = null
+	var/process/ss_game/ss_game = null
+	var/process/ss_combat/ss_combat = null
+	var/process/ss_life/ss_life = null
+	var/process/ss_cleanup/ss_cleanup = null
+
+	// --- Subsystem Members (driven by subsystems, not the main scheduler) ---
+
+	// SSUtility members
 	var/process/nanoUI/nanoUI = null
-	var/process/obj/obj = null
-	var/process/paratrooper_plane/paratrooper_plane = null
-	var/process/ping_track/ping_track = null
-	var/process/projectile/projectile = null
-	var/process/RNG/RNG = null
 	var/process/scheduler/scheduler = null
-	var/process/throwing/throwing = null
-	var/process/ticker/ticker = null
+	var/process/vote/vote = null
+	var/process/time_track/time_track = null
+	var/process/ping_track/ping_track = null
+	var/process/client/client = null
+
+	// SSEnvironment members
 	var/process/time_of_day/time_of_day = null
 	var/process/time_of_day_change/time_of_day_change = null
-	var/process/time_track/time_track = null
-	var/process/vote/vote = null
 	var/process/weather/weather = null
-	var/process/zoom_scopes/zoom_scopes = null
-	var/process/zoom_mobs/zoom_mobs = null
-	var/process/supply/supply = null
-	var/process/python/python = null
+	var/process/lighting_sources/lighting_sources = null
+	var/process/lighting_overlays/lighting_overlays = null
+	var/process/cleanables/cleanables = null
+	var/process/casings/casings = null
 	var/process/self_cleaning/self_cleaning = null
-	var/process/job_data/job_data = null
 
-	// recorded number of processes
+	// SSGame members
+	var/process/ticker/ticker = null
+	var/process/gamemode/gamemode = null
+	var/process/job_data/job_data = null
+	var/process/mapswap/mapswap = null
+	var/process/epochswap/epochswap = null
+	var/process/supply/supply = null
+	var/process/map/map = null
+	var/process/battle_report/battle_report = null
+
+	// SSCombat members
+	var/process/projectile/projectile = null
+	var/process/throwing/throwing = null
+	var/process/movement/movement = null
+	var/process/explosion/explosion = null
+
+	// SSLife members
+	var/process/mob/mob = null
+	var/process/obj/obj = null
+	var/process/dog/dog = null
+	var/process/chemistry/chemistry = null
+	var/process/burning_objs/burning_objs = null
+	var/process/burning_turfs/burning_turfs = null
+
+	// SSCleanup members
+	var/process/garbage/garbage = null
+	var/process/python/python = null
+
+	// --- Standalone processes (run directly by the main scheduler) ---
+	// (processes not yet migrated to a subsystem remain here)
+	var/process/callproc/callproc = null
+	
+	// --- Internal tracking ---
 	var/next_get_num_processes = -1
 	var/last_num_processes = 0
 

@@ -15,7 +15,6 @@ proc/is_complete_print(var/print)
 	new /obj/item/weapon/storage/box/fingerprints(src)
 	new /obj/item/weapon/reagent_containers/spray/luminol(src)
 	new /obj/item/weapon/forensics/sample_kit(src)
-	new /obj/item/weapon/forensics/sample_kit/powder(src)
 	new /obj/item/weapon/storage/box/csi_markers(src)
 	new /obj/item/clothing/gloves/color/white
 	new /obj/item/device/uv_light(src)
@@ -182,42 +181,6 @@ proc/is_complete_print(var/print)
 	number = 7
 
 
-//Fibers proc
-
-/atom/var/list/suit_fibers = list()
-
-/atom/proc/add_fibers(mob/living/human/M)
-	if(M.gloves && istype(M.gloves,/obj/item/clothing/gloves))
-		var/obj/item/clothing/gloves/G = M.gloves
-		if(G.transfer_blood) //bloodied gloves transfer blood to touched objects
-			if(add_blood(G.bloody_hands_mob)) //only reduces the bloodiness of our gloves if the item wasn't already bloody
-				G.transfer_blood--
-	else if(M.bloody_hands)
-		if(add_blood(M.bloody_hands_mob))
-			M.bloody_hands--
-
-	if(!suit_fibers) suit_fibers = list()
-	var/fibertext
-	var/item_multiplier = istype(src,/obj/item)?1.2:1
-	var/suit_coverage = 0
-	if(M.wear_suit)
-		fibertext = "Material from \a [M.wear_suit]."
-		if(prob(10*item_multiplier) && !(fibertext in suit_fibers))
-			suit_fibers += fibertext
-		suit_coverage = M.wear_suit.body_parts_covered
-
-	if(M.w_uniform && (M.w_uniform.body_parts_covered & ~suit_coverage))
-		fibertext = "Fibers from \a [M.w_uniform]."
-		if(prob(15*item_multiplier) && !(fibertext in suit_fibers))
-			suit_fibers += fibertext
-
-	if(M.gloves && (M.gloves.body_parts_covered & ~suit_coverage))
-		fibertext = "Material from a pair of [M.gloves.name]."
-		if(prob(20*item_multiplier) && !(fibertext in suit_fibers))
-			suit_fibers += "Material from a pair of [M.gloves.name]."
-
-	truncate_oldest(suit_fibers, 20)
-
 //Sample kits
 
 /obj/item/weapon/forensics/sample
@@ -237,9 +200,7 @@ proc/is_complete_print(var/print)
 		icon_state = "fingerprint1"
 
 /obj/item/weapon/forensics/sample/proc/copy_evidence(var/atom/supplied)
-	if(supplied.suit_fibers && supplied.suit_fibers.len)
-		evidence = supplied.suit_fibers.Copy()
-		supplied.suit_fibers.Cut()
+	return
 
 /obj/item/weapon/forensics/sample/proc/merge_evidence(var/obj/item/weapon/forensics/sample/supplied, var/mob/user)
 	if(!supplied.evidence || !supplied.evidence.len)
@@ -268,11 +229,6 @@ proc/is_complete_print(var/print)
 			qdel(O)
 		return 1
 	return ..()
-
-/obj/item/weapon/forensics/sample/fibers
-	name = "fiber bag"
-	desc = "Used to hold fiber evidence for the detective."
-	icon_state = "fiberbag"
 
 /obj/item/weapon/forensics/sample/print
 	name = "fingerprint card"
@@ -346,15 +302,12 @@ proc/is_complete_print(var/print)
 		supplied.fingerprints.Cut()
 
 /obj/item/weapon/forensics/sample_kit
-	name = "fiber collection kit"
-	desc = "A magnifying glass and tweezers. Used to lift suit fibers."
-	icon_state = "m_glass"
+	name = "fingerprint powder"
+	desc = "A jar containing aluminum powder and a specialized brush."
 	w_class = ITEM_SIZE_SMALL
-	var/evidence_type = "fiber"
-	var/evidence_path = /obj/item/weapon/forensics/sample/fibers
-
-/obj/item/weapon/forensics/sample_kit/proc/can_take_sample(var/mob/user, var/atom/supplied)
-	return (supplied.suit_fibers && supplied.suit_fibers.len)
+	icon_state = "dust"
+	var/evidence_type = "fingerprint"
+	var/evidence_path = /obj/item/weapon/forensics/sample/print
 
 /obj/item/weapon/forensics/sample_kit/proc/take_sample(var/mob/user, var/atom/supplied)
 	var/obj/item/weapon/forensics/sample/S = new evidence_path(get_turf(user), supplied)
@@ -371,14 +324,8 @@ proc/is_complete_print(var/print)
 		user << SPAN_WARNING("You are unable to locate any [evidence_type]s on \the [A].")
 		return ..()
 
-/obj/item/weapon/forensics/sample_kit/powder
-	name = "fingerprint powder"
-	desc = "A jar containing aluminum powder and a specialized brush."
-	icon_state = "dust"
-	evidence_type = "fingerprint"
-	evidence_path = /obj/item/weapon/forensics/sample/print
 
-/obj/item/weapon/forensics/sample_kit/powder/can_take_sample(var/mob/user, var/atom/supplied)
+/obj/item/weapon/forensics/sample_kit/proc/can_take_sample(var/mob/user, var/atom/supplied)
 	return (supplied.fingerprints && supplied.fingerprints.len)
 
 //Swabs
@@ -590,20 +537,17 @@ proc/is_complete_print(var/print)
 
 /obj/item/weapon/forensics/slide
 	name = "microscope slide"
-	desc = "A pair of thin glass panes used in the examination of samples beneath a microscope. Used with fibers and GSR swab tests to examine the samples in the microscope. To empty them, use in hand."
+	desc = "A pair of thin glass panes used in the examination of samples beneath a microscope. Used with GSR swab tests to examine the samples in the microscope. To empty them, use in hand."
 	icon_state = "slide"
 	w_class = ITEM_SIZE_TINY
 	var/obj/item/weapon/forensics/swab/has_swab
-	var/obj/item/weapon/forensics/sample/fibers/has_sample
 
 /obj/item/weapon/forensics/slide/attackby(var/obj/item/W, var/mob/living/human/user)
-	if(has_swab || has_sample)
+	if(has_swab)
 		usr << SPAN_WARNING("There is already a sample in the slide.")
 		return
 	if(istype (W, /obj/item/weapon/forensics/swab))
 		has_swab = W
-	else if(istype(W, /obj/item/weapon/forensics/sample/fibers))
-		has_sample = W
 	else
 		usr << SPAN_WARNING("You don't think this will fit.")
 		return
@@ -613,24 +557,19 @@ proc/is_complete_print(var/print)
 	update_icon()
 
 /obj/item/weapon/forensics/slide/attack_self(var/mob/user)
-	if(has_swab || has_sample)
+	if(has_swab)
 		usr << SPAN_NOTICE("You remove the sample from the [src].")
 		if(has_swab)
 			user.put_in_hands(has_swab)
 			has_swab = null
-		if(has_sample)
-			user.put_in_hands(has_sample)
-			has_sample = null
 		update_icon()
 		return
 
 /obj/item/weapon/forensics/slide/update_icon()
-	if(!has_swab && !has_sample)
+	if(!has_swab)
 		icon_state = "slide"
 	else if(has_swab)
 		icon_state = "slideswab"
-	else if(has_sample)
-		icon_state = "slidefiber"
 
 //MACHINERY
 
@@ -689,17 +628,6 @@ proc/is_complete_print(var/print)
 				report.info += "Residue from a [swab.gsr] detected."
 			else
 				report.info += "No gunpowder residue found."
-
-		else if(slide.has_sample)
-			var/obj/item/weapon/forensics/sample/fibers/fibers = slide.has_sample
-			report.name = "Fiber report #[++report_num]: [fibers.name]"
-			report.info = "<b>Scanned item:</b><br>[fibers.name]<br><br>"
-			if(fibers.evidence)
-				report.info += "Miscroscopic analysis on provided sample has determined the presence of unique fiber strings.<br><br>"
-				for(var/fiber in fibers.evidence)
-					report.info += SPAN_NOTICE("Most likely match for fibers: [fiber]<br><br>")
-			else
-				report.info += "No fibers found."
 		else
 			report.name = "Empty slide report #[report_num]"
 			report.info = "Analysis suggests that there's nothing in this slide."

@@ -242,7 +242,7 @@
 	return ..()
 
 /turf/floor/dirt/proc/soil_nutrition_recover()
-	spawn(12000) // Every 20 minutes the soil will recover
+	spawn(rand(12000,12010)) // Every 20 minutes the soil will recover. Randomised values to prevent all the turfs from running it at the same time lagging the game
 		if(!istype(src, /turf/floor/dirt)) // It could be that the turf has ceased to be dirt during the wait
 			return
 		if(soil_nutrition < max_soil_nutrition)

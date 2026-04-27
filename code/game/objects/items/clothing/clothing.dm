@@ -56,30 +56,30 @@
 	return FALSE
 
 /obj/item/clothing/examine(mob/user)
-    ..(user)
-    var/healthp = (health/initial(health))*100
-    switch (healthp)
-        if (-100 to 30)
-            to_chat(user, "<font color='#7f0000'>Seems to be practically falling apart!</font>")
-        if (31 to 55)
-            to_chat(user, "<font color='#a74510'>Seems to be in very bad condition.</font>")
-        if (56 to 75)
-            to_chat(user, "<font color='#cccc00'>Seems to be in a rough condition.</font>")
-        if (76 to 90)
-            to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
-        if (91 to 1000)
-            to_chat(user, "<font color='#245319'>Seems to be in very good condition.</font>")
-    switch (dirtyness)
-        if (-100 to 29)
-            to_chat(user, "Looks clean.")
-        if (30 to 49)
-            to_chat(user, "Looks a bit dirty.")
-        if (50 to 70)
-            to_chat(user, "Looks very dirty!")
-        if (71 to 200)
-            to_chat(user, "Looks extremely dirty!")
-    if (fleas)
-        to_chat(user, "<b>\The [src] is infested with fleas!</b>")
+	..(user)
+	var/healthp = (health/initial(health))*100
+	switch (healthp)
+		if (-100 to 30)
+			to_chat(user, "<font color='#7f0000'>Seems to be practically falling apart!</font>")
+		if (31 to 55)
+			to_chat(user, "<font color='#a74510'>Seems to be in very bad condition.</font>")
+		if (56 to 75)
+			to_chat(user, "<font color='#cccc00'>Seems to be in a rough condition.</font>")
+		if (76 to 90)
+			to_chat(user, "<font color='#4d5319'>Seems to be in a somewhat decent condition.</font>")
+		if (91 to 1000)
+			to_chat(user, "<font color='#245319'>Seems to be in very good condition.</font>")
+	switch (dirtyness)
+		if (-100 to 29)
+			to_chat(user, "Looks clean.")
+		if (30 to 49)
+			to_chat(user, "Looks a bit dirty.")
+		if (50 to 70)
+			to_chat(user, "Looks very dirty!")
+		if (71 to 200)
+			to_chat(user, "Looks extremely dirty!")
+	if (fleas)
+		to_chat(user, "<b>\The [src] is infested with fleas!</b>")
 ///////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/head/helmet
@@ -227,20 +227,20 @@ BLIND	 // can't see anything
 	return FALSE // return TRUE to cancel attack_hand()
 
 /obj/item/clothing/gloves/attackby(obj/item/weapon/W, mob/user)
-    if (istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/surgery/scalpel))
-        if (clipped)
-            to_chat(user, SPAN_NOTICE("\The [src] have already been clipped!"))
-            update_icon()
-            return
+	if (istype(W, /obj/item/weapon/wirecutters) || istype(W, /obj/item/weapon/surgery/scalpel))
+		if (clipped)
+			to_chat(user, SPAN_NOTICE("\The [src] have already been clipped!"))
+			update_icon()
+			return
 
-        playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
-        user.visible_message("<span class='red'>[user] cuts the fingertips off of the [src].</span>",
-                             "<span class='red'>You cut the fingertips off of the [src].</span>")
+		playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
+		user.visible_message("<span class='red'>[user] cuts the fingertips off of the [src].</span>",
+							 "<span class='red'>You cut the fingertips off of the [src].</span>")
 
-        clipped = TRUE
-        name = "modified [name]"
-        desc = "[desc]<br>They have had the fingertips cut off of them."
-        return
+		clipped = TRUE
+		name = "modified [name]"
+		desc = "[desc]<br>They have had the fingertips cut off of them."
+		return
 
 /*
 * HEAD(s)

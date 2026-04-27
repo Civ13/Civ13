@@ -103,11 +103,6 @@
 /atom/proc/CheckExit()
 	return TRUE
 
-// If you want to use this, the atom must have the PROXMOVE flag, and the moving
-// atom must also have the PROXMOVE flag currently to help with lag. ~ ComicIronic
-/atom/proc/HasProximity(atom/movable/AM as mob|obj)
-	return
-
 /atom/proc/emp_act(var/severity)
 	return
 
@@ -254,8 +249,6 @@
 	if (isnull(M)) return
 	if (isnull(M.key)) return
 	if (ishuman(M))
-		//Fibers
-		add_fibers(M)
 		//Add the list if it does not exist.
 		if (!fingerprintshidden)
 			fingerprintshidden = list()
@@ -481,7 +474,7 @@
 
 	if(user.handcuffed && prob(45) && !user.incapacitated(INCAPACITATION_FORCELYING))//User can fail to kick smbd if cuffed
 		user.visible_message(SPAN_DANGER("[user.name] loses \his balance while trying to kick \the [src]."), \
-                    " You lost your balance.")
+					" You lost your balance.")
 		user.Weaken(1)
 		return
 
