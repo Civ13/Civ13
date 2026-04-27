@@ -1362,7 +1362,7 @@ var/global/list/damage_icon_parts = list()
 
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
-		var/image/I = image("icon"='icons/misc/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=8)
+		var/image/I = image("icon"='icons/misc/beach.dmi', "icon_state"="[D.icon_state]_ov", "layer"=FIRE_LAYER)
 		if (lying || prone)
 			var/matrix/M = matrix()
 			M.Scale(size_multiplier)
@@ -1374,7 +1374,8 @@ var/global/list/damage_icon_parts = list()
 	else
 		if (plane==FLOOR_PLANE)
 			plane=GAME_PLANE
-	if (update_icons)   update_icons()
+	if (update_icons)
+		update_icons()
 
 /mob/living/human/proc/update_surgery(var/update_icons=1)
 	overlays_standing[SURGERY_LEVEL] = null

@@ -1073,6 +1073,11 @@
 	if (!..())
 		return
 
+	if (buckled && istype(buckled, /obj/structure/bed/chair/drivers))
+		hud_used.add_vehicle_hud(src)
+	else
+		hud_used.remove_vehicle_hud(src)
+
 	return TRUE
 
 /mob/living/human/handle_random_events()
