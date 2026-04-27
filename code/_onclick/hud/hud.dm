@@ -205,7 +205,50 @@ var/list/global_huds = list(
 /datum/hud
 	var/mob/mymob
 	var/list/obj/screen/plane_master/plane_masters = list()
-/datum/hud/New(mob/owner)
+	var/list/obj/screen/vehicle/vehicle_hud = list()
+
+/datum/hud/proc/add_vehicle_hud(var/mob/living/human/H)
+	if (vehicle_hud.len)
+		return
+	var/obj/screen/vehicle/V
+	V = new /obj/screen/vehicle/direction()
+	V.screen_loc = "14,15"
+	V.parentmob = H
+	vehicle_hud += V
+	H.HUDprocess += V
+	V = new /obj/screen/vehicle/turn_left()
+	V.screen_loc = "13,15"
+	V.parentmob = H
+	vehicle_hud += V
+	V = new /obj/screen/vehicle/turn_right()
+	V.screen_loc = "15,15"
+	V.parentmob = H
+	vehicle_hud += V
+	V = new /obj/screen/vehicle/gear_down()
+	V.screen_loc = "13,14"
+	V.parentmob = H
+	vehicle_hud += V
+	V = new /obj/screen/vehicle/current_gear()
+	V.screen_loc = "14,14"
+	V.parentmob = H
+	vehicle_hud += V
+	H.HUDprocess += V
+	V = new /obj/screen/vehicle/gear_up()
+	V.screen_loc = "15,14"
+	V.parentmob = H
+	vehicle_hud += V
+	if (mymob && mymob.client)
+		mymob.client.screen |= vehicle_hud
+
+/datum/hud/proc/remove_vehicle_hud(var/mob/living/human/H)
+	if (!vehicle_hud.len)
+		return
+	if (H && H.client)
+		H.client.screen -= vehicle_hud
+	for (var/obj/screen/vehicle/V in vehicle_hud)
+		H.HUDprocess -= V
+		qdel(V)
+	vehicle_hud.Cut()
 
 /datum/hud/New(mob/owner)
 	mymob = owner
@@ -217,9 +260,13 @@ var/list/global_huds = list(
 		if (mymob)
 			mymob.client.screen |= instance
 	..()
+
 /datum/hud/Destroy()
 	if(plane_masters.len)
 		for(var/thing in plane_masters)
 			qdel(plane_masters[thing])
 		plane_masters.Cut()
+	if(vehicle_hud.len)
+		remove_vehicle_hud()
 	return ..()
+
