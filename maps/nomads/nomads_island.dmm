@@ -88,7 +88,7 @@
 "bV" = (/obj/structure/sink/puddle,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bW" = (/obj/structure/anthill,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)
 "bX" = (/obj/structure/anthill,/turf/floor/dirt/jungledirt,/area/caribbean/nomads/forest/Jungle)
-"bY" = (/obj/map_metadata/nomads_island,/turf/wall/indestructable/black{layer = 6},/area/caribbean/void/caves)
+"bY" = (/obj/map_metadata/nomads/island,/turf/wall/indestructable/black{layer = 6},/area/caribbean/void/caves)
 "bZ" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "ca" = (/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle/lava_west/two)
 "cb" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest/Jungle/lava_west/two)

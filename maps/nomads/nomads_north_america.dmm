@@ -59,7 +59,7 @@
 "CC" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "Dd" = (/obj/effect/spawner/mobspawner/sheep_f,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "DB" = (/turf/floor/winter,/area/caribbean/nomads/forest/snow)
-"Eo" = (/obj/map_metadata/nomads_north_america,/turf/wall/indestructable/black,/area/caribbean/admin)
+"Eo" = (/obj/map_metadata/nomads/north_america,/turf/wall/indestructable/black,/area/caribbean/admin)
 "Fc" = (/turf/floor/beach/water,/area/caribbean/nomads/forest/Jungle)
 "Fk" = (/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/nomads/forest)
 "Fl" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/snow)

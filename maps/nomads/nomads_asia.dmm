@@ -45,7 +45,7 @@
 "en" = (/obj/structure/barricade/sandstone_v,/obj/structure/window/barrier/railing{dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/nomads/semiarid)
 "et" = (/obj/effect/floor_decal/grass_edge/dead{dir = 5},/turf/floor/beach/sand/dark,/area/caribbean/nomads/forest)
 "eJ" = (/obj/structure/barricade/sandstone_v,/turf/floor/beach/sand/desert,/area/caribbean/nomads/semiarid)
-"eZ" = (/obj/map_metadata/nomads_asia,/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
+"eZ" = (/obj/map_metadata/nomads/asia,/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
 "fk" = (/obj/covers/clay_wall/sumerian,/obj/roof/clay,/turf/floor/beach/sand/desert,/area/caribbean/nomads/semiarid)
 "fp" = (/obj/covers/wood_ship,/turf/floor/beach/water/flooded,/area/caribbean/desert)
 "fr" = (/obj/covers/wood/stairs{dir = 4},/turf/floor/beach/sand,/area/caribbean/desert)

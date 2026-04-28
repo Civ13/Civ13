@@ -1,32 +1,12 @@
 
-/obj/map_metadata/nomads_wasteland
+/obj/map_metadata/nomads/wasteland
 	ID = MAP_NOMADS_WASTELAND
 	title = "Wasteland"
-	lobby_icon = 'icons/lobby/civ13.gif'
-	no_winner ="The round is proceeding normally."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // 10 minutes!
-	has_hunger = TRUE
-
-	faction_organization = list(
-		CIVILIAN,)
-
-	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british
-		)
 	age = "2013"
-	civilizations = TRUE
-
-	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the civilizations"
 	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
-	faction1 = CIVILIAN
-	availablefactions = list("Nomad")
-	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+	
 	research_active = TRUE
-	nomads = TRUE
 	gamemode = "Nuclear Wasteland"
 	ordinal_age = 8
 	default_research = 230
@@ -41,10 +21,9 @@
 	age8_done = TRUE
 	hasnukes = TRUE
 
-/obj/map_metadata/nomads_wasteland/New()
+/obj/map_metadata/nomads/wasteland/New()
 	..()
 	spawn(18000)
-		seasons()
 		var/randtimer = rand(72000,108000)
 		if (hasnukes)
 			nuke_proc(randtimer)
@@ -52,10 +31,7 @@
 		else
 			supplydrop_proc()
 
-/obj/map_metadata/nomads_wasteland/cross_message(faction)
-	return ""
-
-/obj/map_metadata/nomads_wasteland/proc/nuke_proc(var/timer=72000)
+/obj/map_metadata/nomads/wasteland/proc/nuke_proc(var/timer=72000)
 	if (processes.ticker.playtime_elapsed > timer && hasnukes)
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
@@ -74,7 +50,7 @@
 		spawn(600) // 1 minute
 			nuke_proc(timer)
 	return
-/obj/map_metadata/nomads_wasteland/proc/supplydrop_proc()
+/obj/map_metadata/nomads/wasteland/proc/supplydrop_proc()
 	if ((global_radiation >= 280 && hasnukes)||is_zombie == TRUE)
 		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
@@ -111,17 +87,10 @@
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
 
-/obj/map_metadata/nomads_wasteland/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
-
 //////////////////////////////////
 ////////Wasteland 2///////////////
 
-/obj/map_metadata/nomads_wasteland/two
+/obj/map_metadata/nomads/wasteland/two
 	ID = MAP_NOMADS_WASTELAND_2
 	title = "Wasteland II"
 	gamemode = "Wasteland"
@@ -133,6 +102,6 @@
 	songs = list(
 		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
 
-/obj/map_metadata/nomads_wasteland/two/proc/zombies(var/start = TRUE)
+/obj/map_metadata/nomads/wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
 		S.activated = start

@@ -495,7 +495,7 @@
 "kH" = (/obj/structure/wild/jungle{icon_state = "tree2"},/turf/floor/dirt/dust,/area/caribbean/nomads/forest/Jungle)
 "kJ" = (/turf/wall/indestructable/black,/area/caribbean/admin)
 "kK" = (/obj/covers/marble_grid,/obj/covers/carpet/redcarpet,/obj/structure/table/modern/retable,/obj/structure/sink/kitchen,/turf/floor/dirt/dust,/area/caribbean/admin)
-"kL" = (/obj/map_metadata/nomads_europe,/turf/wall/indestructable/black,/area/caribbean/admin)
+"kL" = (/obj/map_metadata/nomads/europe,/turf/wall/indestructable/black,/area/caribbean/admin)
 "kM" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/winter,/area/caribbean/nomads/taiga)
 "kO" = (/obj/covers/marble_grid,/obj/covers/carpet/redcarpet,/obj/structure/pot,/turf/floor/dirt/dust,/area/caribbean/admin)
 "kP" = (/obj/covers/marble_grid,/obj/covers/carpet/redcarpet,/obj/structure/table/rack/coatrack,/turf/floor/dirt/dust,/area/caribbean/admin)

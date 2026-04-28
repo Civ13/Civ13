@@ -79,7 +79,7 @@ var/world_is_open = TRUE
 		LIBCALL(extools, "maptick_initialize")()
 #endif
 
-	if (map && istype(map,/obj/map_metadata/nomads_persistence_beta))
+	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
 	config.post_load()
 

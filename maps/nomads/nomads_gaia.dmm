@@ -243,7 +243,7 @@
 "Yh" = (/obj/effect/spawner/mobspawner/lion,/turf/floor/dirt/dust,/area/caribbean/void/caves)
 "Yj" = (/obj/effect/spawner/objspawner/medpine,/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)
 "Yn" = (/obj/effect/spawner/objspawner/palm,/turf/floor/grass,/area/caribbean/sea/sea)
-"Yt" = (/obj/map_metadata/nomads_gaia,/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
+"Yt" = (/obj/map_metadata/nomads/gaia,/turf/wall/indestructable/black{layer = 6},/area/caribbean/admin)
 "YG" = (/obj/structure/fish,/turf/floor/beach/water/flooded,/area/caribbean/nomads/forest/Jungle)
 "YM" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/colonies/swamp)
 "YN" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/nomads/taiga)

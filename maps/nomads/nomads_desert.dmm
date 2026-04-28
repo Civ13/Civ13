@@ -145,7 +145,7 @@
 "cO" = (/obj/effect/spawner/mobspawner/horse,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cP" = (/turf/floor/dirt/dust,/area/caribbean/admin)
 "cQ" = (/obj/structure/religious/remains,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
-"cR" = (/obj/map_metadata/nomads_desert{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/floor/dirt/dust,/area/caribbean/admin)
+"cR" = (/obj/map_metadata/nomads/desert{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/floor/dirt/dust,/area/caribbean/admin)
 "cS" = (/obj/structure/wild/rock/basalt,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "cT" = (/obj/item/stack/farming/seeds/tea,/turf/floor/beach/sand,/area/caribbean/nomads/desert)
 "cU" = (/obj/structure/wild/burnedbush,/mob/living/simple_animal/leech,/turf/floor/dirt/dust,/area/caribbean/nomads/desert)

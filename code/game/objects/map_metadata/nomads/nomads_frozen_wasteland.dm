@@ -1,32 +1,12 @@
-/obj/map_metadata/nomads_frozen_wasteland
+/obj/map_metadata/nomads/frozen_wasteland
 	ID = MAP_NOMADS_FROZEN_WASTELAND
 	title = "Frozen Wasteland"
-	lobby_icon = 'icons/lobby/civ13.gif'
-	no_winner ="The round is proceeding normally."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // 10 minutes!
-	has_hunger = TRUE
-
-	faction_organization = list(
-		CIVILIAN,)
-
-	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british
-		)
 	is_wasteland = TRUE
 	age = "2013"
-	civilizations = TRUE
-
-	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the civilizations"
 	mission_start_message = "<big>The world has become desolate and frozen.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
 	ambience = list('sound/ambience/desert.ogg')
-	faction1 = CIVILIAN
-	availablefactions = list("Nomad")
-	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
-	nomads = TRUE
+
 	gamemode = "Frozen Wasteland"
 	ordinal_age = 8
 	default_research = 230
@@ -39,18 +19,12 @@
 	age6_done = TRUE
 	age7_done = TRUE
 	age8_done = TRUE
-
-
 	hasnukes = FALSE
 	is_zombie = FALSE
 
-/obj/map_metadata/nomads_frozen_wasteland/New()
+/obj/map_metadata/nomads/frozen_wasteland/New()
 	..()
 	spawn(10)
-
-
-	spawn(10)
-		seasons()
 		var/randtimer = rand(10,20)
 		if (hasnukes)
 			nuke_proc(randtimer)
@@ -58,10 +32,7 @@
 		else
 			supplydrop_proc()
 
-/obj/map_metadata/nomads_frozen_wasteland/cross_message(faction)
-	return ""
-
-/obj/map_metadata/nomads_frozen_wasteland/proc/nuke_proc(var/timer=15)
+/obj/map_metadata/nomads/frozen_wasteland/proc/nuke_proc(var/timer=15)
 	if (processes.ticker.playtime_elapsed > timer && hasnukes )
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
@@ -81,7 +52,7 @@
 			nuke_proc(timer)
 	return
 
-/obj/map_metadata/nomads_frozen_wasteland/proc/supplydrop_proc()
+/obj/map_metadata/nomads/frozen_wasteland/proc/supplydrop_proc()
 	if ((global_radiation >= 280 && hasnukes)||(is_zombie == TRUE))
 		var/droptype = pick("supplies","food","weapons","military","medicine","rad","cold")
 		var/turf/locationt = pick(supplydrop_turfs)
@@ -117,13 +88,7 @@
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
 
-/obj/map_metadata/nomads_frozen_wasteland/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-
-/obj/map_metadata/nomads_frozen_wasteland/proc/zombies(var/start = TRUE)
+/obj/map_metadata/nomads/frozen_wasteland/proc/zombies(var/start = TRUE)
 	if (is_zombie == TRUE)
 		for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
 			S.activated = start

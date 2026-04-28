@@ -86,7 +86,7 @@
 "bH" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/nomads/forest)
 "bI" = (/turf/floor/dirt,/area/caribbean/sea/sea)
 "bJ" = (/turf/floor/dirt/underground,/area/caribbean/nomads/taiga)
-"bK" = (/obj/map_metadata/nomads_mediterranean{invisibility = 0; name = "control"},/turf/wall/indestructable/black,/area/caribbean/void/caves)
+"bK" = (/obj/map_metadata/nomads/mediterranean{invisibility = 0; name = "control"},/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "bL" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/colonies/swamp)
 "bM" = (/obj/structure/wild/burnedbush,/turf/floor/dirt,/area/caribbean/colonies/swamp)
 "bN" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest)

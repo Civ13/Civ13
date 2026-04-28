@@ -109,7 +109,7 @@
 "Ax" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/semiarid)
 "Az" = (/turf/floor/grass,/turf/floor/grass,/turf/floor/grass,/area/caribbean/nomads/forest)
 "AB" = (/obj/structure/wild/berrybush/amar,/turf/floor/grass,/turf/floor/grass,/turf/floor/grass,/turf/floor/grass,/area/caribbean/nomads/forest)
-"AE" = (/obj/map_metadata/nomads_oceania,/turf/wall/indestructable/black,/area/caribbean/admin)
+"AE" = (/obj/map_metadata/nomads/oceania,/turf/wall/indestructable/black,/area/caribbean/admin)
 "AP" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/nomads/forest)
 "Bd" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "Bk" = (/obj/effect/spawner/objspawner/jungle,/turf/floor/grass,/area/caribbean/colonies/jungle)

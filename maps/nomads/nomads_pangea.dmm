@@ -142,7 +142,7 @@
 "eg" = (/obj/item/stack/farming/seeds/mushroom,/turf/floor/grass,/area/caribbean/nomads/forest)
 "eh" = (/mob/living/simple_animal/frog,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest)
 "ei" = (/obj/item/stack/farming/seeds/mushroom,/turf/floor/winter/grass,/area/caribbean/nomads/taiga)
-"ej" = (/obj/map_metadata/nomads_pangea{invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 6},/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"ej" = (/obj/map_metadata/nomads/pangea{invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 6},/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ek" = (/obj/structure/sink/puddle,/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "el" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "em" = (/obj/structure/wild/burnedtree,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/nomads/forest)
