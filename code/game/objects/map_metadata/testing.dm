@@ -16,7 +16,7 @@
 		)
 	age = "2013"
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = ""
 	mission_start_message = ""

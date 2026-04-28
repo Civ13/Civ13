@@ -90,7 +90,7 @@
 "bL" = (/obj/structure/wild/smallbush,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
 "bM" = (/obj/effect/spawner/mobspawner/penguins,/turf/floor/beach/water/ice/salty{icon_state = "seashallow_frozen"; water_level = 65},/area/caribbean/nomads/taiga)
 "bN" = (/turf/wall/rockwall,/area/caribbean/nomads/taiga)
-"bO" = (/obj/map_metadata/nomads_ice_age{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 6},/area/caribbean/nomads/taiga)
+"bO" = (/obj/map_metadata/nomads/ice_age{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/wall/indestructable/black{layer = 6},/area/caribbean/nomads/taiga)
 "cb" = (/turf/wall/indestructable/black{layer = 6},/area/caribbean/nomads/taiga)
 "cd" = (/turf/floor/winter,/area/caribbean/nomads/taiga)
 "dc" = (/obj/effect/spawner/orespawner,/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/void/caves/special)

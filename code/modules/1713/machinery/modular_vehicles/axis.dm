@@ -283,7 +283,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				MV.dir = OPPOSITE_DIR(dir)
 			else
 				MV.dir = dir
-			MV.forceMove(get_step(MV.loc, MV.dir))
+			MV.forceMove(get_step(MV.loc, m_dir))
 			MV.update_icon()
 		if (istype(M, /mob/living))
 			var/mob/living/ML = M
@@ -464,32 +464,30 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				MV.axis = src
 				MV.connected = FM
 				FM.mwheel = MV
+	
 	for(var/obj/structure/vehicleparts/movement/MV in wheels)
 		//Front-Right, Front-Left, Back-Right,Back-Left; FR, FL, BR, BL
 		if (MV.connected == corners[1])
 			MV.reversed = FALSE
 		else if (MV.connected == corners[2])
-			if (MV.ntype == "wheel")
-				MV.reversed = TRUE
-			else
-				MV.reversed = FALSE
+			MV.reversed = FALSE
 		else if (MV.connected == corners[3])
 			if (MV.ntype == "wheel")
-				MV.reversed = TRUE
-			else
 				MV.reversed = FALSE
+			else
+				MV.reversed = TRUE
 		else if (MV.connected == corners[4])
 			if (MV.ntype == "wheel")
-				MV.reversed = TRUE
+				MV.reversed = FALSE
 			else
 				MV.reversed = TRUE
-		else
-			return
-
+		
+		// Immediately sync the direction
 		if (MV.reversed)
 			MV.dir = OPPOSITE_DIR(dir)
 		else
 			MV.dir = dir
+		MV.update_icon()
 	if (corners[1] != null && corners[2] != null && corners[3] != null && corners[4] != null)
 		return TRUE
 	else
@@ -760,6 +758,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				chooseturret += "_turret"
 		dir = 1
 		new/obj/effect/autoassembler(locate(x+2,y-2,z))
+		check_corners()
+		check_matrix()
 		to_chat(H, SPAN_NOTICE("Vehicle assembled."))
 		for (var/obj/O in components)
 			O.update_icon()

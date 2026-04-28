@@ -168,7 +168,7 @@
 "Wd" = (/obj/structure/oil_spring,/turf/floor/grass,/area/caribbean/nomads/forest/Jungle)
 "Wh" = (/obj/effect/spawner/objspawner/tree,/turf/floor/dirt,/area/caribbean/nomads/forest/Jungle)
 "WV" = (/obj/structure/flag/blugoslavia,/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/nomads/forest)
-"Xf" = (/obj/map_metadata/nomads_persistence_beta,/turf/wall/rockwall,/area/caribbean/void/caves)
+"Xf" = (/obj/map_metadata/nomads/persistence_beta,/turf/wall/rockwall,/area/caribbean/void/caves)
 "XD" = (/obj/effect/spawner/objspawner/tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/sea/temperate)
 "Yu" = (/obj/item/weapon/gun/projectile/automatic/stationary/blugoslavia,/obj/item/ammo_magazine/emptybelt/filled_762x54,/obj/item/ammo_magazine/emptybelt/filled_762x54,/turf/floor/plating/steel,/area/caribbean/nomads/forest)
 "Yy" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

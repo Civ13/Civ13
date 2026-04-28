@@ -2,7 +2,7 @@
 "ab" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/semiarid)
 "ac" = (/turf/floor/beach/sand/desert,/area/caribbean/nomads/desert)
 "ad" = (/turf/floor/dirt/underground/sandy,/area/caribbean/void/caves)
-"ae" = (/obj/map_metadata/nomads_africa,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"ae" = (/obj/map_metadata/nomads/africa,/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "af" = (/turf/wall/rockwall,/area/caribbean/void/caves)
 "ag" = (/turf/floor/grass/jungle/savanna,/area/caribbean/nomads/forest/savanna)
 "ah" = (/turf/floor/dirt/dust,/area/caribbean/nomads/semiarid)

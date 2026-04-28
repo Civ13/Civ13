@@ -1,10 +1,10 @@
-/obj/map_metadata/nomads_persistence_beta
+/obj/map_metadata/nomads/persistence_beta
 	ID = MAP_NOMADS_PERSISTENCE_BETA
 	title = "Nations RP (Persistence BETA)"
 	lobby_icon = 'icons/lobby/campaign.png'
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	
 	respawn_delay = 3000 // 5 minutes
-	has_hunger = TRUE
+
 	faction_organization = list(
 		PIRATES,
 		CIVILIAN)
@@ -14,16 +14,16 @@
 		list(CIVILIAN) = /area/caribbean/british,
 		)
 	age = "2023"
-	no_winner = "The round is proceeding normally."
+	
 	is_RP = TRUE
-	civilizations = TRUE
+
 	faction_distribution_coeffs = list(PIRATES = 0.5, CIVILIAN = 0.5)
 	battle_name = "the nations"
 	faction1 = PIRATES
 	faction2 = CIVILIAN
 	availablefactions = list("Redmenian Civilian", "Blugoslavian Civilian")
 	mission_start_message = "<big>Two modern countries govern this land. The grace wall will end in <b>2 DAYS</b>. This is an event round, both factions will go into TOTAL WAR and must capture and hold the most petrolium spring as possible.</big>"
-	ambience = list('sound/ambience/jungle1.ogg')
+
 	nomads = FALSE
 	availablefactions_run = FALSE
 	songs = list(
@@ -43,7 +43,7 @@
 	grace_wall_timer = 2 DAYS
 	force_mapgen = TRUE
 
-/obj/map_metadata/nomads_persistence_beta/New()
+/obj/map_metadata/nomads/persistence_beta/New()
 	..()
 	civname_a = "Redmenian Nation"
 	civname_b = "Blugoslavian Nation"
@@ -54,10 +54,9 @@
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
 	spawn(18000)
-		seasons()
 		config.no_respawn_delays = FALSE
 
-/obj/map_metadata/nomads_persistence_beta/cross_message(faction)
+/obj/map_metadata/nomads/persistence_beta/cross_message(faction)
 	var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 	for (var/mob/M in player_list)
 		M.client << warning_sound
@@ -69,7 +68,7 @@
 	else
 		return ""
 
-/obj/map_metadata/nomads_persistence_beta/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+/obj/map_metadata/nomads/persistence_beta/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
@@ -84,7 +83,7 @@
 			return !faction1_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/nomads_persistence_beta/proc/captured_enemy_capital(var/faction)
+/obj/map_metadata/nomads/persistence_beta/proc/captured_enemy_capital(var/faction)
 	switch (faction)
 		if ("Redmenia")
 			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)
@@ -98,7 +97,7 @@
 			world << "<font size = 5><b>BLUGOSLAVIA HAS CAPTURED THE REDMENIAN CAPITAL.</b></font>"
 	return
 
-/obj/map_metadata/nomads_persistence_beta/proc/lost_control_enemy_capital(var/faction)
+/obj/map_metadata/nomads/persistence_beta/proc/lost_control_enemy_capital(var/faction)
 	switch (faction)
 		if ("Redmenia")
 			var/warning_sound = sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = TRUE, channel = 777)

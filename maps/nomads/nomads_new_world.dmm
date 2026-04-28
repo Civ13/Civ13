@@ -5,7 +5,7 @@
 "ae" = (/turf/wall/rockwall,/area/caribbean/void/caves/special)
 "af" = (/turf/floor/dirt/underground/sandy,/area/caribbean/void/caves)
 "ag" = (/obj/structure/fish,/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/semiarid)
-"ah" = (/obj/map_metadata/nomads_new_world{invisibility = 0; name = "control"},/turf/wall/rockwall,/area/caribbean/void/caves)
+"ah" = (/obj/map_metadata/nomads/new_world{invisibility = 0; name = "control"},/turf/wall/rockwall,/area/caribbean/void/caves)
 "ai" = (/obj/structure/fish/cod,/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads/taiga)
 "aj" = (/obj/effect/spawner/mobspawner/wolves/white,/turf/floor/dirt/winter,/area/caribbean/nomads/taiga)
 "ak" = (/obj/structure/fish,/turf/floor/beach/water/deep,/area/caribbean/sea/sea)

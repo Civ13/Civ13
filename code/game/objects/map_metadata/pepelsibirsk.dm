@@ -29,7 +29,7 @@ var/global/datum/external_relations/external_relations = new()
 	ordinal_age = 7
 	civilizations = TRUE
 	nomads = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big><b>Following a limited thermonuclear exchange which saw most central authorities in the northern hemisphere collapse, it appears Pepelsibirsk was left mostly untouched. You must bring the city to prosperity!</b></big>"

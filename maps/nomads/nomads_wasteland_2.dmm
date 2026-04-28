@@ -838,7 +838,7 @@
 "qh" = (/obj/structure/table/modern/retable,/obj/structure/radio/transmitter_receiver,/turf/floor/plating/road,/area/caribbean/void/caves)
 "qi" = (/obj/structure/table/modern/retable,/obj/structure/radio/transmitter,/turf/floor/plating/road,/area/caribbean/void/caves)
 "qj" = (/obj/structure/bed/chair{dir = 1; icon_state = "chair"},/turf/floor/plating/road,/area/caribbean/void/caves)
-"qk" = (/obj/map_metadata/nomads_wasteland/two{invisibility = 0},/obj/structure/sign/custom/golden,/turf/wall/indestructable/black,/area/caribbean/admin)
+"qk" = (/obj/map_metadata/nomads/wasteland/two{invisibility = 0},/obj/structure/sign/custom/golden,/turf/wall/indestructable/black,/area/caribbean/admin)
 "ql" = (/obj/covers/marble_grid,/obj/covers/carpet/redcarpet,/obj/structure/table/rack/coatrack,/turf/floor/dirt/dust,/area/caribbean/admin)
 "qm" = (/obj/covers/marble_grid,/obj/covers/carpet/redcarpet,/obj/structure/table/modern/retable,/obj/structure/cutting_board,/turf/floor/dirt/dust,/area/caribbean/admin)
 "qn" = (/obj/covers/road,/obj/structure/table/modern/retable,/obj/item/weapon/paper_bin,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/void/caves)

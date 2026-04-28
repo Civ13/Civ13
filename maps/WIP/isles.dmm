@@ -366,7 +366,7 @@
 "hb" = (/obj/structure/fish,/turf/floor/beach/water/shallowsaltwater,/area/caribbean/nomads/forest/Jungle)
 "hc" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/nomads/forest/Jungle)
 "hd" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)
-"he" = (/obj/map_metadata/nomads_island{invisibility = 0},/turf/wall/indestructable/black,/area/caribbean/void/caves)
+"he" = (/obj/map_metadata/nomads/island{invisibility = 0},/turf/wall/indestructable/black,/area/caribbean/void/caves)
 "hf" = (/obj/structure/fish,/turf/floor/beach/water/deep/jungle,/area/caribbean/nomads/forest/Jungle)
 "hg" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/plating/stone_old,/area/caribbean/nomads/forest/Jungle)
 "hh" = (/obj/structure/wild/jungle,/obj/structure/wild/junglebush{icon_state = "21"},/turf/floor/grass/jungle,/area/caribbean/nomads/forest/Jungle)

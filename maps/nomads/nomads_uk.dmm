@@ -1,7 +1,7 @@
 "aj" = (/obj/structure/torch_stand/lantern,/obj/item/weapon/reagent_containers/glass/barrel/whiskey,/turf/floor/plating/cobblestone/dark,/area/caribbean/void/caves)
 "aM" = (/obj/effect/spawner/mobspawner/pig/gilt,/turf/floor/grass,/area/caribbean/nomads)
 "aX" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/forest)
-"bq" = (/obj/map_metadata/nomads_uk,/turf/wall/indestructable/black,/area/caribbean/admin)
+"bq" = (/obj/map_metadata/nomads/uk,/turf/wall/indestructable/black,/area/caribbean/admin)
 "bA" = (/obj/effect/spawner/mobspawner/fox,/turf/floor/grass,/area/caribbean/nomads)
 "bQ" = (/obj/effect/spawner/objspawner/tree,/turf/floor/grass,/area/caribbean/forest)
 "cd" = (/obj/covers/carpet/redcarpet,/obj/covers/carpet,/obj/structure/bed/chair/throne,/obj/item/clothing/head/helmet/gold_crown_diamond,/obj/item/weapon/material/scepter,/obj/roof,/turf/floor/wood,/area/caribbean/nomads)

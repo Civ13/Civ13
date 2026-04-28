@@ -289,7 +289,7 @@
 	spawn(1)
 		water_overlay = image(icon='icons/misc/beach.dmi')
 		water_overlay.icon_state= "[icon_state]_ov"
-		water_overlay.layer= 10
+		water_overlay.layer= 10.1
 
 /turf/floor/beach/water/coastwater
 	name = "coast water"

@@ -1,5 +1,5 @@
 /// Controls how many buckets should be kept, each representing a tick. (1 minutes worth)
-#define BUCKET_LEN (world.fps*1*60)
+#define BUCKET_LEN 600
 /// Helper for getting the correct bucket for a given timer
 #define BUCKET_POS(timer) (((round((timer.timeToRun - SStimer.head_offset) / world.tick_lag)+1) % BUCKET_LEN)||BUCKET_LEN)
 /// Gets the maximum time at which timers will be invoked from buckets, used for deferring to secondary queue

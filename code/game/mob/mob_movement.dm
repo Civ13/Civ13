@@ -1039,7 +1039,12 @@
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"right")
 			for(var/obj/item/turret_controls/C in H)
-				C.start_rotation(1)
+				if (!C.is_rotating)
+					C.start_rotation(1)
+				else
+					if (C.rotating_dir == -1)
+						C.stop_rotation()
+
 			for(var/obj/item/drone_controller/RC in H)
 				if(H.using_drone)
 					RC.start_move_drone(EAST)
@@ -1078,7 +1083,11 @@
 			for(var/obj/item/vehicleparts/wheel/modular/MW in H)
 				MW.turndir(mob,"left")
 			for(var/obj/item/turret_controls/C in H)
-				C.start_rotation(-1)
+				if (!C.is_rotating)
+					C.start_rotation(-1)
+				else
+					if (C.rotating_dir == 1)
+						C.stop_rotation()
 			for(var/obj/item/drone_controller/RC in H)
 				if(H.using_drone)
 					RC.start_move_drone(WEST)
@@ -1106,7 +1115,7 @@
 	set instant = TRUE
 	if (mob && mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
-		for(var/obj/item/drone_controller/RC in mob)
+		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
 
@@ -1115,7 +1124,7 @@
 	set instant = TRUE
 	if (mob && mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
-		for(var/obj/item/drone_controller/RC in mob)
+		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
 
@@ -1124,9 +1133,7 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
-		for(var/obj/item/turret_controls/C in mob)
-			C.stop_rotation()
-		for(var/obj/item/drone_controller/RC in mob)
+		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
 
@@ -1135,8 +1142,6 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
-		for(var/obj/item/turret_controls/C in mob)
-			C.stop_rotation()
-		for(var/obj/item/drone_controller/RC in mob)
+		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()

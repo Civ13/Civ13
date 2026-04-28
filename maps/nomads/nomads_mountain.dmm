@@ -11,7 +11,7 @@
 "k" = (/turf/floor/beach/water,/area/caribbean/void/caves/level8)
 "l" = (/turf/wall/indestructable/black,/area/caribbean/void/caves/level1)
 "m" = (/turf/floor/dirt,/area/caribbean/admin)
-"n" = (/obj/map_metadata/nomads_mountain{invisibility = 0; name = "control"},/turf/floor/dirt,/area/caribbean/admin)
+"n" = (/obj/map_metadata/nomads/mountain{invisibility = 0; name = "control"},/turf/floor/dirt,/area/caribbean/admin)
 "o" = (/turf/wall/indestructable/black,/area/caribbean/void/caves/level2)
 "p" = (/turf/wall/indestructable/black,/area/caribbean/void/caves/level3)
 "q" = (/turf/wall/indestructable/black,/area/caribbean/void/caves/level4)

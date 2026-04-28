@@ -1,30 +1,11 @@
 
-/obj/map_metadata/nomads_extended
+/obj/map_metadata/nomads/extended
 	ID = MAP_NOMADS_EXTENDED
 	title = "Nomads: Oil Rush"
-	lobby_icon = 'icons/lobby/civ13.gif'
-	no_winner ="The round is proceeding normally."
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // q0 minutes!
-	has_hunger = TRUE
 
-	faction_organization = list(
-		CIVILIAN,)
-
-	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british
-		)
-	civilizations = TRUE
-	var/tribes_nr = 1
-	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the civilizations"
 	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
-	ambience = list('sound/ambience/jungle1.ogg')
-	faction1 = CIVILIAN
-	availablefactions = list("Nomad")
-	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
-	nomads = TRUE
+
+	songs = list("Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Oil Rush"
 	ordinal_age = 5
 	age = "1903"
@@ -38,14 +19,13 @@
 	grace_wall_timer = 24000
 
 	var/oiltarget = 3000
-/obj/map_metadata/nomads_extended/New()
+
+/obj/map_metadata/nomads/extended/New()
 	..()
 	spawn(1200)
 		check_oil()
-	spawn(18000)
-		seasons()
 
-/obj/map_metadata/nomads_extended/proc/check_oil()
+/obj/map_metadata/nomads/extended/proc/check_oil()
 	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 		if (custom_faction_nr.len >= 1)
 			world << "<big><b>Current Status:</b></big>"
@@ -60,16 +40,10 @@
 	spawn(1200)
 		check_oil()
 
-/obj/map_metadata/nomads_extended/cross_message(faction)
+/obj/map_metadata/nomads/extended/cross_message(faction)
 	return "<big><b>The grace wall is lifted!</b></big>"
 
-
-/obj/map_metadata/nomads_extended/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
-/obj/map_metadata/nomads_extended/update_win_condition()
+/obj/map_metadata/nomads/extended/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
 	for(var/i = 1, i <= custom_faction_nr.len, i++)
