@@ -158,8 +158,8 @@
 /datum/vehicle_template
 	var/name = "Vehicle Template"
 	var/datum/vehicle_configuration/config
-	var/list/wheel_configs = alist()  // Indexed by position
-	var/default_walls = alist()        // Indexed by direction
+	var/alist/wheel_configs = alist()  // Indexed by position
+	var/alist/default_walls = alist()        // Indexed by direction
 
 	/// Create a complete vehicle from this template
 	proc/build_vehicle(var/obj/spawn_location)

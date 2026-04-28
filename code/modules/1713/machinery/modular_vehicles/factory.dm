@@ -6,18 +6,14 @@
 var/global/datum/vehicle_factory/vehicle_factory = new()
 
 /datum/vehicle_factory
-	var/static/list/templates = list()
+	var/static/alist/templates = alist()
 
 	New()
 		..()
-		build_templates()
-
-	/// Build all premade vehicle templates
-	proc/build_templates()
 		// Light Vehicles
 		templates["jeep"] = new /datum/vehicle_template(
 			name = "Jeep",
-			wconfig = new /datum/vehicle_configuration("Jeep", "light", 2.5, 200, 15),
+			config = new /datum/vehicle_configuration("Jeep", "light", 2.5, 200, 15),
 			wheel_configs = alist(
 				"front_left" = "standard_wheel",
 				"front_right" = "standard_wheel",
@@ -34,7 +30,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["truck"] = new /datum/vehicle_template(
 			name = "Truck",
-			wconfig = new /datum/vehicle_configuration("Truck", "medium", 1.8, 350, 25),
+			config = new /datum/vehicle_configuration("Truck", "medium", 1.8, 350, 25),
 			wheel_configs = alist(
 				"front_left" = "armored_wheel",
 				"front_right" = "armored_wheel",
@@ -52,7 +48,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 		// Armored Vehicles
 		templates["btr80"] = new /datum/vehicle_template(
 			name = "BTR-80 APC",
-			wconfig = new /datum/vehicle_configuration("BTR-80", "apc", 1.6, 450, 35),
+			config = new /datum/vehicle_configuration("BTR-80", "apc", 1.6, 450, 35),
 			wheel_configs = alist(
 				"front_left" = "btr80_wheel_front_left",
 				"front_right" = "btr80_wheel_front_right",
@@ -69,7 +65,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["mtlb"] = new /datum/vehicle_template(
 			name = "MT-LB APC",
-			wconfig = new /datum/vehicle_configuration("MT-LB", "apc", 1.4, 500, 40),
+			config = new /datum/vehicle_configuration("MT-LB", "apc", 1.4, 500, 40),
 			wheel_configs = alist(
 				"front_left" = "mtlb_track_left_front",
 				"front_right" = "mtlb_track_right_front",
@@ -87,7 +83,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 		// Tanks
 		templates["t34"] = new /datum/vehicle_template(
 			name = "T-34 Tank",
-			wconfig = new /datum/vehicle_configuration("T-34", "heavy", 0.9, 600, 55),
+			config = new /datum/vehicle_configuration("T-34", "heavy", 0.9, 600, 55),
 			wheel_configs = alist(
 				"front_left" = "t34_track_left_front",
 				"front_right" = "t34_track_right_front",
@@ -104,7 +100,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["is3"] = new /datum/vehicle_template(
 			name = "IS-3 Tank",
-			wconfig = new /datum/vehicle_configuration("IS-3", "heavy", 0.8, 650, 60),
+			config = new /datum/vehicle_configuration("IS-3", "heavy", 0.8, 650, 60),
 			wheel_configs = alist(
 				"front_left" = "is3_track_left_front",
 				"front_right" = "is3_track_right_front",
@@ -121,7 +117,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["is2"] = new /datum/vehicle_template(
 			name = "IS-2 Tank",
-			wconfig = new /datum/vehicle_configuration("IS-2", "heavy", 0.85, 630, 58),
+			config = new /datum/vehicle_configuration("IS-2", "heavy", 0.85, 630, 58),
 			wheel_configs = alist(
 				"front_left" = "is2_track_left_front",
 				"front_right" = "is2_track_right_front",
@@ -138,7 +134,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["char1"] = new /datum/vehicle_template(
 			name = "Char-B1 Tank",
-			wconfig = new /datum/vehicle_configuration("Char-B1", "heavy", 1.1, 550, 50),
+			config = new /datum/vehicle_configuration("Char-B1", "heavy", 1.1, 550, 50),
 			wheel_configs = alist(
 				"front_left" = "char1_track_left_front",
 				"front_right" = "char1_track_right_front",
@@ -155,7 +151,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["m41"] = new /datum/vehicle_template(
 			name = "M41 Walker Bulldog",
-			wconfig = new /datum/vehicle_configuration("M41", "heavy", 1.2, 400, 30),
+			config = new /datum/vehicle_configuration("M41", "heavy", 1.2, 400, 30),
 			wheel_configs = alist(
 				"front_left" = "m41_track_left_front",
 				"front_right" = "m41_track_right_front",
@@ -172,7 +168,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["bmd2"] = new /datum/vehicle_template(
 			name = "BMD-2 APC",
-			wconfig = new /datum/vehicle_configuration("BMD-2", "apc", 1.2, 350, 25),
+			config = new /datum/vehicle_configuration("BMD-2", "apc", 1.2, 350, 25),
 			wheel_configs = alist(
 				"front_left" = "bmd2_track_left_front",
 				"front_right" = "bmd2_track_right_front",
@@ -189,7 +185,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["bradley"] = new /datum/vehicle_template(
 			name = "M2 Bradley IFV",
-			wconfig = new /datum/vehicle_configuration("Bradley", "apc", 1.4, 450, 35),
+			config = new /datum/vehicle_configuration("Bradley", "apc", 1.4, 450, 35),
 			wheel_configs = alist(
 				"front_left" = "bradley_track_left_front",
 				"front_right" = "bradley_track_right_front",
@@ -206,7 +202,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["hago"] = new /datum/vehicle_template(
 			name = "Type 95 Ha-Go",
-			wconfig = new /datum/vehicle_configuration("Ha-Go", "heavy", 1.3, 300, 20),
+			config = new /datum/vehicle_configuration("Ha-Go", "heavy", 1.3, 300, 20),
 			wheel_configs = alist(
 				"front_left" = "hago_track_left_front",
 				"front_right" = "hago_track_right_front",
@@ -223,7 +219,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		templates["m113"] = new /datum/vehicle_template(
 			name = "M113 APC",
-			wconfig = new /datum/vehicle_configuration("M113", "apc", 1.7, 300, 15),
+			config = new /datum/vehicle_configuration("M113", "apc", 1.7, 300, 15),
 			wheel_configs = alist(
 				"front_left" = "m113_track_left_front",
 				"front_right" = "m113_track_right_front",
@@ -308,14 +304,6 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		return axis
 
-	/// Get list of available templates
-	proc/get_template_list()
-		var/list/result = list()
-		for (var/id in templates)
-			var/datum/vehicle_template/T = templates[id]
-			result[id] = T.name
-		return result
-
 	/// Debug: Print template info
 	proc/debug_templates()
 		for (var/id in templates)
@@ -331,17 +319,15 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 	set name = "Spawn Modular Vehicle"
 
 	if (!holder)
-		return
-	
-	if (!check_rights(R_SPAWN))
+		src << "<font color='red'>Error: Admin-PM-Panel: Only administrators may use this command.</font>"
 		return
 
-	var/list/templates = vehicle_factory.get_template_list()
-	var/template_id = input(usr, "Select a vehicle template:", "Vehicle Factory") as null|anything in templates
+	var/list/templates = list("jeep", "truck", "btr80", "mtlb", "t34", "is3", "is2", "char1", "m41", "bmd2", "bradley", "hago", "m113")
+	var/template_id = WWinput(usr, "Select a vehicle template:", "Vehicle Factory", WWinput_first_choice(templates), WWinput_list_or_null(templates))
 	if (!template_id)
 		return
 
-	var/direction_text = input(usr, "Select direction:", "Vehicle Factory") as null|anything in list("NORTH", "SOUTH", "EAST", "WEST")
+	var/direction_text = WWinput(usr, "Select direction:", "Vehicle Factory", "SOUTH", list("NORTH", "SOUTH", "EAST", "WEST"))
 	if (!direction_text)
 		return
 
