@@ -183,13 +183,13 @@
 	if(selected_weapon > weapons.len)
 		selected_weapon = 1
 
-/obj/structure/turret/proc/icrease_target_azimuth(var/value)
+/obj/structure/turret/proc/increase_target_azimuth(var/value)
 	azimuth_to_target += value
 	if(stopped_rotation_time != 0 && world.time - stopped_rotation_time > 0.1)
 		stopped_rotation_time = 0
 		rotate_to_target()
 
-/obj/structure/turret/proc/icrease_target_distance(var/value)
+/obj/structure/turret/proc/increase_target_distance(var/value)
 	distance += value
 	if(distance < 5)
 		distance = 5
@@ -966,7 +966,7 @@
 
 /obj/structure/turret/pzvi
 	turret_color = "#585A5C"
-	turret_icon = "pziv_turret"
+	turret_icon = "tiger_tank"
 	name = "PZ-VI"
 
 	turret_x = 0

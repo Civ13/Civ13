@@ -519,9 +519,9 @@
 		rotating_dir = 0
 		return
 	if (rotating_dir > 0)
-		turret.icrease_target_azimuth(1)
+		turret.increase_target_azimuth(1)
 	else if (rotating_dir < 0)
-		turret.icrease_target_azimuth(-1)
+		turret.increase_target_azimuth(-1)
 
 	spawn(0.1)
 		rotate()
@@ -530,9 +530,9 @@
 	if(!turret)
 		return
 	if(distance > 0)
-		turret.icrease_target_distance(1)
+		turret.increase_target_distance(1)
 	else
-		turret.icrease_target_distance(-1)
+		turret.increase_target_distance(-1)
 
 /obj/item/turret_controls/attack_self(mob/living/human/user)
 	if(!turret)

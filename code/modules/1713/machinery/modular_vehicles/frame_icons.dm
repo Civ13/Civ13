@@ -12,122 +12,65 @@
 		movemento = image(icon=mwheel.icon, loc=src, icon_state=mwheel.icon_state, layer=6, dir=mwheel.dir)
 		if (mwheel.ntype == "track")
 			movemento.color = axis.color
+			var/_offset = 32
 			if (istype(mwheel, /obj/structure/vehicleparts/movement/tracks/mtlb/) || istype(mwheel, /obj/structure/vehicleparts/movement/tracks/m113))
-				if (axis.corners[1] == src || axis.corners[2] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 28
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -28
-						if (WEST)
-							movemento.pixel_x = -28
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = 28
-							movemento.pixel_y = 0
-				else if (axis.corners[3] == src || axis.corners[4] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -28
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 28
-						if (WEST)
-							movemento.pixel_x = 28
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = -28
-							movemento.pixel_y = 0
-			if (istype(mwheel, /obj/structure/vehicleparts/movement/tracks/bmd2/))
-				if (axis.corners[1] == src || axis.corners[2] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 20
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -20
-						if (WEST)
-							movemento.pixel_x = -20
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = 20
-							movemento.pixel_y = 0
-				else if (axis.corners[3] == src || axis.corners[4] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -20
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 20
-						if (WEST)
-							movemento.pixel_x = 20
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = -20
-							movemento.pixel_y = 0
-			else
-				if (axis.corners[1] == src || axis.corners[2] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 32
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -32
-						if (WEST)
-							movemento.pixel_x = -32
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = 32
-							movemento.pixel_y = 0
-				else if (axis.corners[3] == src || axis.corners[4] == src)
-					switch(dir)
-						if (NORTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = -32
-						if (SOUTH)
-							movemento.pixel_x = 0
-							movemento.pixel_y = 32
-						if (WEST)
-							movemento.pixel_x = 32
-							movemento.pixel_y = 0
-						if (EAST)
-							movemento.pixel_x = -32
-							movemento.pixel_y = 0
+				_offset = 28
+			else if (istype(mwheel, /obj/structure/vehicleparts/movement/tracks/bmd2/))
+				_offset = 20
+			if (axis.corners[1] == src || axis.corners[2] == src)
+				switch(dir)
+					if (NORTH)
+						movemento.pixel_x = 0
+						movemento.pixel_y = _offset
+					if (SOUTH)
+						movemento.pixel_x = 0
+						movemento.pixel_y = -_offset
+					if (WEST)
+						movemento.pixel_x = -_offset
+						movemento.pixel_y = 0
+					if (EAST)
+						movemento.pixel_x = _offset
+						movemento.pixel_y = 0
+			else if (axis.corners[3] == src || axis.corners[4] == src)
+				switch(dir)
+					if (NORTH)
+						movemento.pixel_x = 0
+						movemento.pixel_y = -_offset
+					if (SOUTH)
+						movemento.pixel_x = 0
+						movemento.pixel_y = _offset
+					if (WEST)
+						movemento.pixel_x = _offset
+						movemento.pixel_y = 0
+					if (EAST)
+						movemento.pixel_x = -_offset
+						movemento.pixel_y = 0
 			overlays += movemento
 		else if (mwheel.ntype == "wheel")
 			switch(dir)
 				if (NORTH)
-					if (mwheel.dir == dir)
+					if (axis.corners[1] == src || axis.corners[3] == src) // Right side
 						movemento.pixel_x = 16
 						movemento.pixel_y = 0
-					else if (mwheel.dir == OPPOSITE_DIR(dir))
+					else if (axis.corners[2] == src || axis.corners[4] == src) // Left side
 						movemento.pixel_x = -16
 						movemento.pixel_y = 0
-					overlays += movemento
 				if (SOUTH)
-					if (mwheel.dir == dir)
+					if (axis.corners[1] == src || axis.corners[3] == src) // Right side
 						movemento.pixel_x = -16
 						movemento.pixel_y = 0
-					else if (mwheel.dir == OPPOSITE_DIR(dir))
+					else if (axis.corners[2] == src || axis.corners[4] == src) // Left side
 						movemento.pixel_x = 16
 						movemento.pixel_y = 0
-					overlays += movemento
 				if (WEST)
-					if (mwheel.dir == OPPOSITE_DIR(dir))
+					if (axis.corners[2] == src || axis.corners[4] == src) // Show near-side (Left) wheels
 						movemento.pixel_x = 0
 						movemento.pixel_y = -22
-						overlays += movemento
 				if (EAST)
-					if (mwheel.dir == dir)
+					if (axis.corners[1] == src || axis.corners[3] == src) // Show near-side (Right) wheels
 						movemento.pixel_x = 0
 						movemento.pixel_y = -22
-						overlays += movemento
+			overlays += movemento
 	if (!noroof && axis)
 		roof = image(icon=icon, loc=src, icon_state="roof_steel[rand(1,4)]", layer=10)
 		roof.overlays.Cut()
