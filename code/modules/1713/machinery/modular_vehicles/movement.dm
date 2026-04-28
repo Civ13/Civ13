@@ -106,7 +106,6 @@
 					var/movement_type = src.type_name
 					if (wconfig)
 						movement_type = wconfig.type_name
-
 					if (movement_type == "wheel")
 						reversed = (corner_idx > 2)  // Back wheels are reversed
 					else if (movement_type == "track")
