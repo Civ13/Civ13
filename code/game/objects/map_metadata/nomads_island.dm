@@ -16,7 +16,7 @@
 		)
 	age = "5000 B.C."
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settle down. Will they be able to work together?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

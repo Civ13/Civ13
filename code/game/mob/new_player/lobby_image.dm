@@ -3,13 +3,13 @@
 /obj/effect/lobby_image
 	name = "Lobby"
 	desc = ""
-	icon = 'icons/lobby/civ13.gif'
-	icon_state = ""
+	icon = 'icons/lobby/civ13.dmi'
+	icon_state = "civ13"
 	screen_loc = "WEST,SOUTH"
 	var/list/stored_img = list()
 
 /obj/effect/lobby_image/initialize()
-	if (map && map.lobby_icon)
+	if (map && map.lobby_icon != "")
 		var/F = file(map.lobby_icon)
 		if (F)
 			icon = F

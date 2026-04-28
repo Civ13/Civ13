@@ -103,7 +103,6 @@ var/global/redirect_all_players = null
 	// don't know if the above actually works
 
 	var/output_stylized = {"
-	<br>
 	<html>
 	<head>
 	[common_browser_style]
@@ -138,7 +137,7 @@ var/global/redirect_all_players = null
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
-	var/height = 250
+	var/height = 280
 	if (client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CMP )
@@ -147,7 +146,7 @@ var/global/redirect_all_players = null
 	output += "</div>"
 
 	client << browse(null, "window=playersetup;")
-	client << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=275x[height];can_close=0;can_resize=0")
+	client << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=280x[height];can_close=0;can_resize=0")
 	return
 
 /mob/new_player/Stat()

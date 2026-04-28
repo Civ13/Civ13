@@ -15,7 +15,7 @@
 		list(CIVILIAN) = /area/caribbean/british
 		)
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

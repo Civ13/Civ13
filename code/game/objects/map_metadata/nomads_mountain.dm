@@ -16,7 +16,7 @@
 		)
 	age = "5000 B.C."
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>Your people has lived in the mountains for ages. Now, its time to expand and dig deeper, but as your ancestors always said, the deeper you dig, the more dangerous it gets...</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

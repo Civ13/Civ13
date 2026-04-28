@@ -16,7 +16,7 @@
 		)
 	age = "2013"
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>The world is on the verge of nuclear war... The nukes will drop in 2 to 3:30 hours. Then the world will become a wasteland. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"

@@ -15,7 +15,7 @@
 		)
 	age = "2015 A.D."
 	civilizations = TRUE
-	var/tribes_nr = 1
+
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Stranded Island"
 	mission_start_message = "<big>The ship has crashed and people are still washing ashore. Will they be able to work together to survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
