@@ -6,7 +6,7 @@
 /obj/screen/vehicle/direction
 	name = "direction"
 	icon_state = "forward"
-	screen_loc = "15,15"
+	screen_loc = "14,15"
 	process_flag = TRUE
 
 /obj/screen/vehicle/direction/process()

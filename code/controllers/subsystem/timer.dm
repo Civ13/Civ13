@@ -488,24 +488,23 @@ SUBSYSTEM_DEF(timer)
 
 	// Find the correct bucket for this timed event
 	var/bucket_pos = BUCKET_POS(src)
-	if (bucket_list[bucket_pos])
-		var/datum/timedevent/bucket_head = bucket_list[bucket_pos]
-		SStimer.bucket_count++
+	var/datum/timedevent/bucket_head = bucket_list[bucket_pos]
+	SStimer.bucket_count++
 
-		// If there is no timed event at this position, then the bucket is 'empty'
-		// and we can just set this event to that position
-		if (!bucket_head)
-			bucket_list[bucket_pos] = src
-			return
+	// If there is no timed event at this position, then the bucket is 'empty'
+	// and we can just set this event to that position
+	if (!bucket_head)
+		bucket_list[bucket_pos] = src
+		return
 
-		// Otherwise, we merely add this timed event into the bucket, which is a
-		// circularly doubly-linked list
-		if (!bucket_head.prev)
-			bucket_head.prev = bucket_head
-		next = bucket_head
-		prev = bucket_head.prev
-		next.prev = src
-		prev.next = src
+	// Otherwise, we merely add this timed event into the bucket, which is a
+	// circularly doubly-linked list
+	if (!bucket_head.prev)
+		bucket_head.prev = bucket_head
+	next = bucket_head
+	prev = bucket_head.prev
+	next.prev = src
+	prev.next = src
 
 /**
   * Returns a string of the type of the callback for this timer

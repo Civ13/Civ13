@@ -119,6 +119,125 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 			),
 		)
 
+		templates["is2"] = new /datum/vehicle_template(
+			name = "IS-2 Tank",
+			wconfig = new /datum/vehicle_configuration("IS-2", "heavy", 0.85, 630, 58),
+			wheel_configs = alist(
+				"front_left" = "is2_track_left_front",
+				"front_right" = "is2_track_right_front",
+				"back_left" = "is2_track_left_back",
+				"back_right" = "is2_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["char1"] = new /datum/vehicle_template(
+			name = "Char-B1 Tank",
+			wconfig = new /datum/vehicle_configuration("Char-B1", "heavy", 1.1, 550, 50),
+			wheel_configs = alist(
+				"front_left" = "char1_track_left_front",
+				"front_right" = "char1_track_right_front",
+				"back_left" = "char1_track_left_back",
+				"back_right" = "char1_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["m41"] = new /datum/vehicle_template(
+			name = "M41 Walker Bulldog",
+			wconfig = new /datum/vehicle_configuration("M41", "heavy", 1.2, 400, 30),
+			wheel_configs = alist(
+				"front_left" = "m41_track_left_front",
+				"front_right" = "m41_track_right_front",
+				"back_left" = "m41_track_left_back",
+				"back_right" = "m41_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["bmd2"] = new /datum/vehicle_template(
+			name = "BMD-2 APC",
+			wconfig = new /datum/vehicle_configuration("BMD-2", "apc", 1.2, 350, 25),
+			wheel_configs = alist(
+				"front_left" = "bmd2_track_left_front",
+				"front_right" = "bmd2_track_right_front",
+				"back_left" = "bmd2_track_left_back",
+				"back_right" = "bmd2_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["bradley"] = new /datum/vehicle_template(
+			name = "M2 Bradley IFV",
+			wconfig = new /datum/vehicle_configuration("Bradley", "apc", 1.4, 450, 35),
+			wheel_configs = alist(
+				"front_left" = "bradley_track_left_front",
+				"front_right" = "bradley_track_right_front",
+				"back_left" = "bradley_track_left_back",
+				"back_right" = "bradley_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["hago"] = new /datum/vehicle_template(
+			name = "Type 95 Ha-Go",
+			wconfig = new /datum/vehicle_configuration("Ha-Go", "heavy", 1.3, 300, 20),
+			wheel_configs = alist(
+				"front_left" = "hago_track_left_front",
+				"front_right" = "hago_track_right_front",
+				"back_left" = "hago_track_left_back",
+				"back_right" = "hago_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
+		templates["m113"] = new /datum/vehicle_template(
+			name = "M113 APC",
+			wconfig = new /datum/vehicle_configuration("M113", "apc", 1.7, 300, 15),
+			wheel_configs = alist(
+				"front_left" = "m113_track_left_front",
+				"front_right" = "m113_track_right_front",
+				"back_left" = "m113_track_left_back",
+				"back_right" = "m113_track_right_back",
+			),
+			default_walls = alist(
+				"front" = "c_armoredfront",
+				"back" = "c_armoredwall",
+				"left" = "c_armoredwall",
+				"right" = "c_armoredwall",
+			),
+		)
+
 	/// Spawn a complete vehicle from template
 	proc/spawn_vehicle(template_id, turf/location, direction = NORTH)
 		if (!templates[template_id])
@@ -164,6 +283,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 			frames[pos_name] = frame
 			axis.components += frame
 
+		axis.check_corners()
 		// Attach wheels/tracks
 		for (var/pos_name in template.wheel_configs)
 			var/obj/structure/vehicleparts/frame/frame = frames[pos_name]
@@ -171,7 +291,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 				continue
 
 			var/datum/wheel_config/wheel_config = get_wheel_config(template.wheel_configs[pos_name])
-			var/obj/structure/vehicleparts/movement/movement = new frame.loc.type(wheel_config)
+			var/obj/structure/vehicleparts/movement/movement = new frame.type(wheel_config)
 			if (movement)
 				// Initialize with config
 				movement.wconfig = wheel_config
@@ -205,3 +325,41 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 // Global helper function for easy spawning
 /proc/spawn_vehicle(template_id, turf/location, direction = NORTH)
 	return vehicle_factory.spawn_vehicle(template_id, location, direction)
+
+/client/proc/spawn_modular_vehicle()
+	set category = "Admin"
+	set name = "Spawn Modular Vehicle"
+
+	if (!holder)
+		return
+	
+	if (!check_rights(R_SPAWN))
+		return
+
+	var/list/templates = vehicle_factory.get_template_list()
+	var/template_id = input(usr, "Select a vehicle template:", "Vehicle Factory") as null|anything in templates
+	if (!template_id)
+		return
+
+	var/direction_text = input(usr, "Select direction:", "Vehicle Factory") as null|anything in list("NORTH", "SOUTH", "EAST", "WEST")
+	if (!direction_text)
+		return
+
+	var/direction = NORTH
+	switch(direction_text)
+		if("NORTH") direction = NORTH
+		if("SOUTH") direction = SOUTH
+		if("EAST") direction = EAST
+		if("WEST") direction = WEST
+
+	var/turf/T = get_turf(usr)
+	if (!T)
+		return
+
+	var/obj/structure/vehicleparts/axis/axis = vehicle_factory.spawn_vehicle(template_id, T, direction)
+	if (axis)
+		to_chat(usr, "Successfully spawned [axis.name] at [T.x], [T.y], [T.z].")
+		message_admins("[key_name(src)] spawned a vehicle, [axis.name] ([T.x], [T.y], [T.z])", key_name(src))
+		log_admin("[key_name(src)] spawned a vehicle, [axis.name] ([T.x], [T.y], [T.z])")
+	else
+		to_chat(usr, "Failed to spawn vehicle.")

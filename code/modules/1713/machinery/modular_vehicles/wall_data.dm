@@ -69,7 +69,7 @@
 		var/rel_dir = get_relative_dir(world_dir, axis_dir)
 		var/datum/wall_config/W = get_wall(rel_dir)
 		if (!W || W.wall_type == "")
-			return FALSE // Solid hull if no wall/door
+			return TRUE
 		return !W.blocks_passage()
 
 	/// Check if exit is possible to a world direction given vehicle orientation

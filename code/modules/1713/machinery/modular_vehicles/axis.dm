@@ -470,18 +470,15 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		if (MV.connected == corners[1])
 			MV.reversed = FALSE
 		else if (MV.connected == corners[2])
-			if (MV.ntype == "wheel")
-				MV.reversed = TRUE
-			else
-				MV.reversed = FALSE
+			MV.reversed = FALSE
 		else if (MV.connected == corners[3])
 			if (MV.ntype == "wheel")
 				MV.reversed = FALSE
 			else
-				MV.reversed = FALSE
+				MV.reversed = TRUE
 		else if (MV.connected == corners[4])
 			if (MV.ntype == "wheel")
-				MV.reversed = TRUE
+				MV.reversed = FALSE
 			else
 				MV.reversed = TRUE
 		

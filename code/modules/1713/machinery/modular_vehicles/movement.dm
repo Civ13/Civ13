@@ -304,3 +304,82 @@
 	load_config(wconfig)
 
 // Additional type stubs for IS-2, T-34, Char-B1, M41, etc. follow same pattern
+/obj/structure/vehicleparts/movement/tracks/is2/left_front/New()
+	..()
+	wconfig = get_wheel_config("is2_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/is2/right_front/New()
+	..()
+	wconfig = get_wheel_config("is2_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/is2/left_back/New()
+	..()
+	wconfig = get_wheel_config("is2_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/is2/right_back/New()
+	..()
+	wconfig = get_wheel_config("is2_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/t34/left_front/New()
+	..()
+	wconfig = get_wheel_config("t34_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/t34/right_front/New()
+	..()
+	wconfig = get_wheel_config("t34_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/t34/left_back/New()
+	..()
+	wconfig = get_wheel_config("t34_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/t34/right_back/New()
+	..()
+	wconfig = get_wheel_config("t34_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/char1/left_front/New()
+	..()
+	wconfig = get_wheel_config("char1_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/char1/right_front/New()
+	..()
+	wconfig = get_wheel_config("char1_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/char1/left_back/New()
+	..()
+	wconfig = get_wheel_config("char1_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/char1/right_back/New()
+	..()
+	wconfig = get_wheel_config("char1_track_right_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m41/left_front/New()
+	..()
+	wconfig = get_wheel_config("m41_track_left_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m41/right_front/New()
+	..()
+	wconfig = get_wheel_config("m41_track_right_front")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m41/left_back/New()
+	..()
+	wconfig = get_wheel_config("m41_track_left_back")
+	load_config(wconfig)
+
+/obj/structure/vehicleparts/movement/tracks/m41/right_back/New()
+	..()
+	wconfig = get_wheel_config("m41_track_right_back")
+	load_config(wconfig)

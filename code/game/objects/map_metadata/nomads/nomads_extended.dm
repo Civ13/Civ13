@@ -41,11 +41,7 @@
 		check_oil()
 
 /obj/map_metadata/nomads/extended/cross_message(faction)
-	return "<big><b>The grace wall is lifted!</b></big>"/obj/map_metadata/nomads/extended/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
+	return "<big><b>The grace wall is lifted!</b></big>"
 
 /obj/map_metadata/nomads/extended/update_win_condition()
 	if (win_condition_spam_check)

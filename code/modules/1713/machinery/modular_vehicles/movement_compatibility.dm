@@ -9,7 +9,6 @@
 	movement_icon = "tracks_end_m"
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	ntype = "track"
-	var/left = FALSE
 
 /obj/structure/vehicleparts/movement/tracks/middle
 	icon_state = "tracks_cover"

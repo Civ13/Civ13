@@ -25,8 +25,4 @@
 
 /obj/map_metadata/nomads/continental/cross_message(faction)
 	if (faction == CIVILIAN)
-		return "<big><b>As the world technological level advances, new shipbuilding techniques make us at last be able to navigate the oceans...</b></big>"/obj/map_metadata/nomads/continental/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_nomad == TRUE)
-		. = TRUE
-	else
-		. = FALSE
+		return "<big><b>As the world technological level advances, new shipbuilding techniques make us at last be able to navigate the oceans...</b></big>"

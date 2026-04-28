@@ -338,13 +338,278 @@ var/global/list/WHEEL_CONFIGS = list()
 		side = "right",
 	)
 
-	// NOTE: Additional tank types (IS-2, T-34, Char-B1, M41, etc.) follow same pattern
-	// For brevity, showing MT-LB, BMD-2, Bradley, and IS-3 patterns
-	// These would be expanded similarly in production
+	/// IS-2 Tracks
+	WHEEL_CONFIGS["is2_track_left_front"] = new /datum/wheel_config(
+		name = "IS-2 Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "is2_tracks_left_front",
+		base_icon_state = "is2_tracks_left_front",
+		movement_icon_state = "is2_tracks_left_front_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["is2_track_right_front"] = new /datum/wheel_config(
+		name = "IS-2 Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "is2_tracks_right_front",
+		base_icon_state = "is2_tracks_right_front",
+		movement_icon_state = "is2_tracks_right_front_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["is2_track_left_back"] = new /datum/wheel_config(
+		name = "IS-2 Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "is2_tracks_left_back",
+		base_icon_state = "is2_tracks_left_back",
+		movement_icon_state = "is2_tracks_left_back_m",
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["is2_track_right_back"] = new /datum/wheel_config(
+		name = "IS-2 Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "is2_tracks_right_back",
+		base_icon_state = "is2_tracks_right_back",
+		movement_icon_state = "is2_tracks_right_back_m",
+		position = "back",
+		side = "right",
+	)
+
+	/// T-34 Tracks
+	WHEEL_CONFIGS["t34_track_left_front"] = new /datum/wheel_config(
+		name = "T-34 Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "t34_tracks_left_front",
+		base_icon_state = "t34_tracks_left_front",
+		movement_icon_state = "t34_tracks_left_front_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["t34_track_right_front"] = new /datum/wheel_config(
+		name = "T-34 Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "t34_tracks_right_front",
+		base_icon_state = "t34_tracks_right_front",
+		movement_icon_state = "t34_tracks_right_front_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["t34_track_left_back"] = new /datum/wheel_config(
+		name = "T-34 Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "t34_tracks_left_back",
+		base_icon_state = "t34_tracks_left_back",
+		movement_icon_state = "t34_tracks_left_back_m",
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["t34_track_right_back"] = new /datum/wheel_config(
+		name = "T-34 Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "t34_tracks_right_back",
+		base_icon_state = "t34_tracks_right_back",
+		movement_icon_state = "t34_tracks_right_back_m",
+		position = "back",
+		side = "right",
+	)
+
+	/// Char-B1 Tracks
+	WHEEL_CONFIGS["char1_track_left_front"] = new /datum/wheel_config(
+		name = "Char-B1 Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "char1_tracks_left_front",
+		base_icon_state = "char1_tracks_left_front",
+		movement_icon_state = "char1_tracks_left_front_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["char1_track_right_front"] = new /datum/wheel_config(
+		name = "Char-B1 Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "char1_tracks_right_front",
+		base_icon_state = "char1_tracks_right_front",
+		movement_icon_state = "char1_tracks_right_front_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["char1_track_left_back"] = new /datum/wheel_config(
+		name = "Char-B1 Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "char1_tracks_left_back",
+		base_icon_state = "char1_tracks_left_back",
+		movement_icon_state = "char1_tracks_left_back_m",
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["char1_track_right_back"] = new /datum/wheel_config(
+		name = "Char-B1 Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "char1_tracks_right_back",
+		base_icon_state = "char1_tracks_right_back",
+		movement_icon_state = "char1_tracks_right_back_m",
+		position = "back",
+		side = "right",
+	)
+
+	/// M41 Walker Bulldog Tracks
+	WHEEL_CONFIGS["m41_track_left_front"] = new /datum/wheel_config(
+		name = "M41 Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "m41_tracks_left_front",
+		base_icon_state = "m41_tracks_left_front",
+		movement_icon_state = "m41_tracks_left_front_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["m41_track_right_front"] = new /datum/wheel_config(
+		name = "M41 Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "m41_tracks_right_front",
+		base_icon_state = "m41_tracks_right_front",
+		movement_icon_state = "m41_tracks_right_front_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["m41_track_left_back"] = new /datum/wheel_config(
+		name = "M41 Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "m41_tracks_left_back",
+		base_icon_state = "m41_tracks_left_back",
+		movement_icon_state = "m41_tracks_left_back_m",
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["m41_track_right_back"] = new /datum/wheel_config(
+		name = "M41 Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts96x96.dmi',
+		icon_state = "m41_tracks_right_back",
+		base_icon_state = "m41_tracks_right_back",
+		movement_icon_state = "m41_tracks_right_back_m",
+		position = "back",
+		side = "right",
+	)
+
+	/// Ha-Go Tracks
+	WHEEL_CONFIGS["hago_track_left_front"] = new /datum/wheel_config(
+		name = "Ha-Go Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts.dmi',
+		icon_state = "hago_tracks_l",
+		base_icon_state = "hago_tracks_l",
+		movement_icon_state = "hago_tracks_l_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["hago_track_right_front"] = new /datum/wheel_config(
+		name = "Ha-Go Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts.dmi',
+		icon_state = "hago_tracks_r",
+		base_icon_state = "hago_tracks_r",
+		movement_icon_state = "hago_tracks_r_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["hago_track_left_back"] = new /datum/wheel_config(
+		name = "Ha-Go Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts.dmi',
+		icon_state = "hago_tracks_l",
+		base_icon_state = "hago_tracks_l",
+		movement_icon_state = "hago_tracks_l_m",
+		is_reversed = TRUE,
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["hago_track_right_back"] = new /datum/wheel_config(
+		name = "Ha-Go Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/tankparts.dmi',
+		icon_state = "hago_tracks_r",
+		base_icon_state = "hago_tracks_r",
+		movement_icon_state = "hago_tracks_r_m",
+		is_reversed = TRUE,
+		position = "back",
+		side = "right",
+	)
+
+	/// M113 Tracks
+	WHEEL_CONFIGS["m113_track_left_front"] = new /datum/wheel_config(
+		name = "M113 Track (Left Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/apcparts.dmi',
+		icon_state = "m113_tracks_end_left",
+		base_icon_state = "m113_tracks_end_left",
+		movement_icon_state = "m113_tracks_end_left_m",
+		position = "front",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["m113_track_right_front"] = new /datum/wheel_config(
+		name = "M113 Track (Right Front)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/apcparts.dmi',
+		icon_state = "m113_tracks_end_right",
+		base_icon_state = "m113_tracks_end_right",
+		movement_icon_state = "m113_tracks_end_right_m",
+		position = "front",
+		side = "right",
+	)
+
+	WHEEL_CONFIGS["m113_track_left_back"] = new /datum/wheel_config(
+		name = "M113 Track (Left Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/apcparts.dmi',
+		icon_state = "m113_tracks_end_left",
+		base_icon_state = "m113_tracks_end_left",
+		movement_icon_state = "m113_tracks_end_left_m",
+		is_reversed = TRUE,
+		position = "back",
+		side = "left",
+	)
+
+	WHEEL_CONFIGS["m113_track_right_back"] = new /datum/wheel_config(
+		name = "M113 Track (Right Back)",
+		type_name = "track",
+		icon = 'icons/obj/vehicles/apcparts.dmi',
+		icon_state = "m113_tracks_end_right",
+		base_icon_state = "m113_tracks_end_right",
+		movement_icon_state = "m113_tracks_end_right_m",
+		is_reversed = TRUE,
+		position = "back",
+		side = "right",
+	)
 
 	return WHEEL_CONFIGS
-
-/world/New()
-	..()
-	// Wheel configs are now initialized lazily via get_wheel_config() to avoid
-	// map load order issues.
