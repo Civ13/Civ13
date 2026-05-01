@@ -5,7 +5,7 @@
 
 /process/ss_environment/setup()
 	name = "Environment Subsystem"
-	schedule_interval = 10 // 1 second
+	schedule_interval = 10 // 1 seconds
 	priority = PROCESS_PRIORITY_MEDIUM
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	processes.ss_environment = src
@@ -22,14 +22,6 @@
 		if (processes.weather)
 			processes.weather.fire_as_member()
 		next_weather = world.time + 50
-
-	// Lighting logic (every 1 second)
-	if (world.time >= next_lighting)
-		if (processes.lighting_sources)
-			processes.lighting_sources.fire_as_member()
-		if (processes.lighting_overlays)
-			processes.lighting_overlays.fire_as_member()
-		next_lighting = world.time + 10
 
 	// Cleanup tasks (every 10 seconds)
 	if (world.time >= next_cleanup)

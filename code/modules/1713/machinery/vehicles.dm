@@ -10,6 +10,7 @@
 	flammable = FALSE
 	var/broken_icon = 'icons/obj/vehicles/vehicleparts_damaged.dmi'
 	var/normal_icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	var/datum/wheel_config/wconfig = null
 /////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"

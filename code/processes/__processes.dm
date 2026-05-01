@@ -25,8 +25,6 @@ var/datum/process_list/processes = new
 	var/process/time_of_day/time_of_day = null
 	var/process/time_of_day_change/time_of_day_change = null
 	var/process/weather/weather = null
-	var/process/lighting_sources/lighting_sources = null
-	var/process/lighting_overlays/lighting_overlays = null
 	var/process/cleanables/cleanables = null
 	var/process/casings/casings = null
 	var/process/self_cleaning/self_cleaning = null
@@ -63,6 +61,10 @@ var/datum/process_list/processes = new
 	// (processes not yet migrated to a subsystem remain here)
 	var/process/callproc/callproc = null
 	
+	// Lighting members are separate because they run too often
+	var/process/lighting_sources/lighting_sources = null
+	var/process/lighting_overlays/lighting_overlays = null
+
 	// --- Internal tracking ---
 	var/next_get_num_processes = -1
 	var/last_num_processes = 0
