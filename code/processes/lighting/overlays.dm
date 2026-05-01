@@ -15,7 +15,7 @@
 
 	// Scale max_updates_per_tick based on queue length
 	if (queue_length > 1000)
-		log_debug("lighting_overlays: Warning - queue length is [queue_length], scaling processing rate")
+		//log_debug("lighting_overlays: Warning - queue length is [queue_length], scaling processing rate")
 		max_updates_per_tick = min(queue_length, max_updates_per_tick * 2)
 
 	var/count = 0
