@@ -1226,152 +1226,151 @@ var/global/redirect_all_players = null
 
 	//<body style='background-color:#1D2951; color:#ffffff'>
 	var/list/dat = list("<center>")
-	dat += "<big><b>Welcome, [key].</b></big>"
+	dat += "<font size=5><b>Welcome, [key].</b></font>"
 	dat += "<br>"
-	dat += "Round Duration: [roundduration2text_days()]"
+	dat += "<font size=4>Round Duration: [roundduration2text_days()]</font>"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: "
+	dat += "<font size=4><b>Current Autobalance Status</b>:</font>"
 	if (BRITISH in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/twotribes))
-			dat += "[alive_french.len] Red Tribesmen "
+			dat += "<font size=4>[alive_french.len] Red Tribesmen </font>"
 		else
-			dat += "[alive_british.len] British "
+			dat += "<font size=4>[alive_british.len] British </font>"
 	if (PORTUGUESE in map.faction_organization)
-		dat += "[alive_portuguese.len] Portuguese "
+		dat += "<font size=4>[alive_portuguese.len] Portuguese </font>"
 	if (FRENCH in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/twotribes))
-			dat += "[alive_french.len] Blue Tribesmen "
+			dat += "<font size=4>[alive_french.len] Blue Tribesmen </font>"
 		else
-			dat += "[alive_french.len] French "
+			dat += "<font size=4>[alive_french.len] French </font>"
 	if (SPANISH in map.faction_organization)
-		dat += "[alive_spanish.len] Spanish "
+		dat += "<font size=4>[alive_spanish.len] Spanish </font>"
 	if (DUTCH in map.faction_organization)
-		dat += "[alive_dutch.len] Dutch "
+		dat += "<font size=4>[alive_dutch.len] Dutch </font>"
 	if (ITALIAN in map.faction_organization)
-		dat += "[alive_dutch.len] Italian "
+		dat += "<font size=4>[alive_dutch.len] Italian </font>"
 	if (PIRATES in map.faction_organization)
-		dat += "[alive_pirates.len] Pirates "
+		dat += "<font size=4>[alive_pirates.len] Pirates </font>"
 	if (INDIANS in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_indians.len] Blugisi "
+			dat += "<font size=4>[alive_indians.len] Blugisi </font>"
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
-			dat += "[alive_indians.len] Wartribe Mercenary "
+			dat += "<font size=4>[alive_indians.len] Wartribe Mercenary </font>"
 		else if (map && istype(map, /obj/map_metadata/east_los_santos))
-			dat += "[alive_indians.len] Ballas "
+			dat += "<font size=4>[alive_indians.len] Ballas </font>"
 		else
-			dat += "[alive_indians.len] Natives "
+			dat += "<font size=4>[alive_indians.len] Natives </font>"
 	if (CIVILIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/tsaritsyn))
-			dat += "[alive_civilians.len] Soviets "
+			dat += "<font size=4>[alive_civilians.len] Soviets </font>"
 		else if (map && istype(map, /obj/map_metadata/african_warlords))
-			dat += "[alive_civilians.len] Yellowagwana "
+			dat += "<font size=4>[alive_civilians.len] Yellowagwana </font>"
 		else if (map && istype(map, /obj/map_metadata/tadojsville))
-			dat += "[alive_civilians.len] UN Peacekeepers "
+			dat += "<font size=4>[alive_civilians.len] UN Peacekeepers </font>"
 		else if (map && istype(map, /obj/map_metadata/capitol_hill))
-			dat += "[alive_civilians.len] Rioters "
+			dat += "<font size=4>[alive_civilians.len] Rioters </font>"
 		else if (map && istype(map, /obj/map_metadata/yeltsin))
-			dat += "[alive_civilians.len] Soviet Remnants "
+			dat += "<font size=4>[alive_civilians.len] Soviet Remnants </font>"
 		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
-			dat += "[alive_civilians.len] Confederates "
+			dat += "<font size=4>[alive_civilians.len] Confederates </font>"
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
-			dat += "[alive_civilians.len] Rebels "
+			dat += "<font size=4>[alive_civilians.len] Rebels </font>"
 		else if (map && istype(map, /obj/map_metadata/ruhr_uprising))
-			dat += "[alive_civilians.len] Revolutionaries "
+			dat += "<font size=4>[alive_civilians.len] Revolutionaries </font>"
 		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat += "[alive_civilians.len] Policemen "
+			dat += "<font size=4>[alive_civilians.len] Policemen </font>"
 		else if (map && istype(map, /obj/map_metadata/drug_bust))
-			dat += "[alive_civilians.len] Policemen and Federal Agents "
+			dat += "<font size=4>[alive_civilians.len] Policemen and Federal Agents </font>"
 		else if (map && istype(map, /obj/map_metadata/long_march))
-			dat += "[alive_civilians.len] Chinese Red Army "
+			dat += "<font size=4>[alive_civilians.len] Chinese Red Army </font>"
 		else if (map && istype(map, /obj/map_metadata/holdmadrid))
-			dat += "[alive_civilians.len] Republican "
+			dat += "<font size=4>[alive_civilians.len] Republican </font>"
 		else
-			dat += "[alive_civilians.len] Civilians "
+			dat += "<font size=4>[alive_civilians.len] Civilians </font>"
 	if (GREEK in map.faction_organization)
-		dat += "[alive_greek.len] Greeks "
+		dat += "<font size=4>[alive_greek.len] Greeks </font>"
 	if (ROMAN in map.faction_organization)
-		dat += "[alive_roman.len] Romans "
+		dat += "<font size=4>[alive_roman.len] Romans </font>"
 	if (ARAB in map.faction_organization)
 		if (map && (istype(map, /obj/map_metadata/kandahar) || istype(map, /obj/map_metadata/hill_3234) || istype(map, /obj/map_metadata/magistral)))
-			dat += "[alive_arab.len] Mujahideen "
+			dat += "<font size=4>[alive_arab.len] Mujahideen </font>"
 		else if (map && istype(map, /obj/map_metadata/syria))
-			dat += "[alive_arab.len] Syrian Government Soldiers "
+			dat += "<font size=4>[alive_arab.len] Syrian Government Soldiers </font>"
 		else
-			dat += "[alive_arab.len] Arabs "
+			dat += "<font size=4>[alive_arab.len] Arabs </font>"
 	if (JAPANESE in map.faction_organization)
-		dat += "[alive_japanese.len] Japanese "
+		dat += "<font size=4>[alive_japanese.len] Japanese </font>"
 	if (RUSSIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/yeltsin))
-			dat += "[alive_russian.len] Russian Army "
+			dat += "<font size=4>[alive_russian.len] Russian Army </font>"
 		else if (map && istype(map, /obj/map_metadata/bank_robbery))
-			dat +="[alive_russian.len] Robbers "
+			dat +="<font size=4>[alive_russian.len] Robbers </font>"
 		else if (map && istype(map, /obj/map_metadata/drug_bust))
-			dat +="[alive_russian.len] Rednikov Mobsters "
+			dat +="<font size=4>[alive_russian.len] Rednikov Mobsters </font>"
 		else if (map && istype(map, /obj/map_metadata/eft_factory))
-			dat +="[alive_russian.len] BEAR PMCs "
+			dat +="<font size=4>[alive_russian.len] BEAR PMCs </font>"
 		else
 			if (map && (map.ordinal_age == 6 || map.ordinal_age == 7))
-				dat += "[alive_russian.len] Soviets "
+				dat += "<font size=4>[alive_russian.len] Soviets </font>"
 			else
-				dat += "[alive_russian.len] Russians "
+				dat += "<font size=4>[alive_russian.len] Russians </font>"
 	if (CHECHEN in map.faction_organization)
-		dat += "[alive_chechen.len] Chechens "
+		dat += "<font size=4>[alive_chechen.len] Chechens </font>"
 	if (FINNISH in map.faction_organization)
-		dat += "[alive_finnish.len] Finnish "
+		dat += "<font size=4>[alive_finnish.len] Finnish </font>"
 	if (NORWEGIAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/clash))
-			dat += "[alive_norwegian.len] Bear Clan Vikings "
+			dat += "<font size=4>[alive_norwegian.len] Bear Clan Vikings </font>"
 		else
-			dat += "[alive_norwegian.len] Norwegians "
+			dat += "<font size=4>[alive_norwegian.len] Norwegians </font>"
 	if (SWEDISH in map.faction_organization)
-		dat += "[alive_swedish.len] Swedes "
+		dat += "<font size=4>[alive_swedish.len] Swedes </font>"
 	if (DANISH in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/clash))
-			dat += "[alive_danish.len] Raven Clan Vikings "
+			dat += "<font size=4>[alive_danish.len] Raven Clan Vikings </font>"
 		else
-			dat += "[alive_danish.len] Danes "
+			dat += "<font size=4>[alive_danish.len] Danes </font>"
 	if (GERMAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/ruhr_uprising))
-			dat += "[alive_german.len] Reactionaries "
+			dat += "<font size=4>[alive_german.len] Reactionaries </font>"
 		else
-			dat += "[alive_german.len] German "
+			dat += "<font size=4>[alive_german.len] German </font>"
 	if (AMERICAN in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/arab_town))
-			dat += "[alive_american.len] Israeli "
+			dat += "<font size=4>[alive_american.len] Israeli </font>"
 		else if (map && istype(map, /obj/map_metadata/capitol_hill))
-			dat += "[alive_american.len] American Government "
+			dat += "<font size=4>[alive_american.len] American Government </font>"
 		else if (map && istype(map, /obj/map_metadata/missionary_ridge))
-			dat += "[alive_american.len] Union Soldiers "
+			dat += "<font size=4>[alive_american.len] Union Soldiers </font>"
 		else if (map && istype(map, /obj/map_metadata/tantiveiv))
-			dat += "[alive_american.len] Imperials "
+			dat += "<font size=4>[alive_american.len] Imperials </font>"
 		else if (map && istype(map, /obj/map_metadata/east_los_santos))
-			dat += "[alive_american.len] Grove Street "
+			dat += "<font size=4>[alive_american.len] Grove Street </font>"
 		else if (map && istype(map, /obj/map_metadata/eft_factory))
-			dat += "[alive_american.len] USEC PMCs "
+			dat += "<font size=4>[alive_american.len] USEC PMCs </font>"
 		else if (map && istype(map, /obj/map_metadata/syria))
-			dat += "[alive_american.len] Syrian Rebels "
+			dat += "<font size=4>[alive_american.len] Syrian Rebels </font>"
 		else
-			dat += "[alive_american.len] American "
+			dat += "<font size=4>[alive_american.len] American </font>"
 	if (VIETNAMESE in map.faction_organization)
-		dat += "[alive_vietnamese.len] Vietnamese "
+		dat += "<font size=4>[alive_vietnamese.len] Vietnamese </font>"
 	if (CHINESE in map.faction_organization)
 		if (map && istype(map, /obj/map_metadata/long_march))
-			dat += "[alive_chinese.len] Chinese National Army "
+			dat += "<font size=4>[alive_chinese.len] Chinese National Army </font>"
 		else
-			dat += "[alive_chinese.len] Chinese "
+			dat += "<font size=4>[alive_chinese.len] Chinese </font>"
 	if (FILIPINO in map.faction_organization)
-		dat += "[alive_filipino.len] Filipino "
+		dat += "<font size=4>[alive_filipino.len] Filipino </font>"
 	if (POLISH in map.faction_organization)
-		dat += "[alive_polish.len] Poles "
+		dat += "<font size=4>[alive_polish.len] Poles </font>"
 	if (BLUEFACTION in map.faction_organization)
-		dat += "[alive_bluefaction.len] Blugoslavians "
+		dat += "<font size=4>[alive_bluefaction.len] Blugoslavians </font>"
 	if (REDFACTION in map.faction_organization)
-		dat += "[alive_redfaction.len] Redmenians "
+		dat += "<font size=4>[alive_redfaction.len] Redmenians </font>"
 	if (CAFR in map.faction_organization)
-		dat += "[alive_cafr.len] CAFR soldiers "
+		dat += "<font size=4>[alive_cafr.len] CAFR soldiers </font>"
 	if (TSFSR in map.faction_organization)
-		dat += "[alive_tsfsr.len] TSFSR soldiers "
-	dat += "<br>"
+		dat += "<font size=4>[alive_tsfsr.len] TSFSR soldiers </font>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
 
@@ -1640,21 +1639,21 @@ var/global/redirect_all_players = null
 							if (temp_name == "Spanish")
 								temp_name = "Spanish"
 
-				var/side_name = "<b><h1><big>[temp_name]</big></h1></b>&&[job.base_type_flag()]&&"
+				var/side_name = "<b><big>[temp_name]</big></b>&&[job.base_type_flag()]&&"
 				if (side_name)
-					dat += "<br>[side_name]"
+					dat += "<br>[side_name]<br><hr>"
 
-			var/extra_span = "<b>"
-			var/end_extra_span = "</b>"
+			var/extra_span = "<b><font size=3>"
+			var/end_extra_span = "</font></b>"
 			if (job.is_officer && !job.is_commander)
-				extra_span = "<b><font size=2>"
-				end_extra_span = "</font></b><br>"
+				extra_span = "<b><font size=4>"
+				end_extra_span = "</font></b>"
 			else if (job.is_commander)
-				extra_span = "<b><font size=3>"
-				end_extra_span = "</font></b><br>"
+				extra_span = "<b><font size=5>"
+				end_extra_span = "</font></b>"
 			else if (job.is_squad_leader)
-				extra_span = "<br><b><font size=2>"
-				end_extra_span = "</font></b><br>"
+				extra_span = "<br><b><font size=4>"
+				end_extra_span = "</font></b>"
 
 			if (!job.en_meaning)
 				if (job_is_available)

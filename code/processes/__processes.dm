@@ -42,7 +42,6 @@ var/datum/process_list/processes = new
 	// SSCombat members
 	var/process/projectile/projectile = null
 	var/process/throwing/throwing = null
-	var/process/movement/movement = null
 	var/process/explosion/explosion = null
 
 	// SSLife members
