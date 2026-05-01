@@ -165,6 +165,9 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 						axis.wheel.control = O // or frame? usually it's the seat or frame
 					O.anchored = TRUE
 
+		// Initialise axis geometry first; MouseDrop() depends on corners
+		axis.check_corners()
+
 		// Link movement parts to frames
 		for (var/obj/structure/vehicleparts/movement/M in spawned_movement)
 			var/obj/structure/vehicleparts/frame/F = locate() in M.loc
@@ -172,7 +175,6 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 				M.MouseDrop(F)
 
 		// Initialize axis
-		axis.check_corners()
 		axis.check_matrix()
 
 		for (var/obj/F in axis.components)

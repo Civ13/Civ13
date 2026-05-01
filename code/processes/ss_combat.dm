@@ -2,7 +2,7 @@
 
 /process/ss_combat/setup()
 	name = "Combat Subsystem"
-	schedule_interval = 0.1
+	schedule_interval = 0.1 SECONDS
 	priority = PROCESS_PRIORITY_VERY_HIGH
 	always_runs = TRUE
 	processes.ss_combat = src
