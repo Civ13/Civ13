@@ -6,232 +6,99 @@
 var/global/datum/vehicle_factory/vehicle_factory = new()
 
 /datum/vehicle_factory
-	var/static/alist/templates = alist()
+	var/alist/templates = alist()
 
 	New()
 		..()
 		// Light Vehicles
-		templates["jeep"] = new /datum/vehicle_template(
-			name = "Jeep",
-			config = new /datum/vehicle_configuration("Jeep", "light", 2.5, 200, 15),
-			wheel_configs = alist(
-				"front_left" = "standard_wheel",
-				"front_right" = "standard_wheel",
-				"back_left" = "standard_wheel_reversed",
-				"back_right" = "standard_wheel_reversed"
-			),
-			default_walls = alist(
-				"front" = "c_windshield",
-				"back" = "c_wall",
-				"left" = "c_windowdoor",
-				"right" = "c_windowdoor"
-			),
+		templates["jeep"] = new /datum/vehicle_template()
+		templates["jeep"].name = "Jeep"
+		templates["jeep"].config = new /datum/vehicle_configuration("Jeep", "light", 2.5, 200, 15)
+		templates["jeep"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/frame/car/type95/rf, /obj/structure/vehicleparts/movement, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline),
+			"2,1" = list(/obj/structure/vehicleparts/frame/car/type95/lf, /obj/structure/vehicleparts/movement, /obj/structure/engine/internal/gasoline/premade/v6),
+			"1,2" = list(/obj/structure/vehicleparts/frame/car/type95/rc, /obj/structure/bed/chair/carseat/right),
+			"2,2" = list(/obj/structure/vehicleparts/frame/car/type95/lc, /obj/structure/bed/chair/drivers/car),
+			"1,3" = list(/obj/structure/vehicleparts/frame/car/type95/rb, /obj/structure/vehicleparts/movement/reversed),
+			"2,3" = list(/obj/structure/vehicleparts/frame/car/type95/lb, /obj/structure/vehicleparts/movement/reversed)
 		)
 
-		templates["truck"] = new /datum/vehicle_template(
-			name = "Truck",
-			config = new /datum/vehicle_configuration("Truck", "medium", 1.8, 350, 25),
-			wheel_configs = alist(
-				"front_left" = "armored_wheel",
-				"front_right" = "armored_wheel",
-				"back_left" = "armored_wheel_reversed",
-				"back_right" = "armored_wheel_reversed"
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_wall",
-				"left" = "c_windowdoor",
-				"right" = "c_windowdoor"
-			),
+		templates["truck"] = new /datum/vehicle_template()
+		templates["truck"].name = "Truck"
+		templates["truck"].config = new /datum/vehicle_configuration("Truck", "medium", 1.8, 350, 25)
+		templates["truck"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/frame/car/type94/rf, /obj/structure/vehicleparts/movement, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
+			"2,1" = list(/obj/structure/vehicleparts/frame/car/type94/lf, /obj/structure/vehicleparts/movement, /obj/structure/engine/internal/gasoline/premade/v6),
+			"1,2" = list(/obj/structure/vehicleparts/frame/car/type94/rc, /obj/structure/bed/chair/carseat/right),
+			"2,2" = list(/obj/structure/vehicleparts/frame/car/type94/lc, /obj/structure/bed/chair/drivers/car),
+			"1,3" = list(/obj/structure/vehicleparts/frame/car/right),
+			"2,3" = list(/obj/structure/vehicleparts/frame/car/left),
+			"1,4" = list(/obj/structure/vehicleparts/frame/car/right),
+			"2,4" = list(/obj/structure/vehicleparts/frame/car/left),
+			"1,5" = list(/obj/structure/vehicleparts/frame/car/right, /obj/structure/vehicleparts/movement/reversed),
+			"2,5" = list(/obj/structure/vehicleparts/frame/car/left, /obj/structure/vehicleparts/movement/reversed)
 		)
 
 		// Armored Vehicles
-		templates["btr80"] = new /datum/vehicle_template(
-			name = "BTR-80 APC",
-			config = new /datum/vehicle_configuration("BTR-80", "apc", 1.6, 450, 35),
-			wheel_configs = alist(
-				"front_left" = "btr80_wheel_front_left",
-				"front_right" = "btr80_wheel_front_right",
-				"back_left" = "btr80_wheel_back_left",
-				"back_right" = "btr80_wheel_back_right",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
+		templates["btr80"] = new /datum/vehicle_template()
+		templates["btr80"].name = "BTR-80 APC"
+		templates["btr80"].axis_type = /obj/structure/vehicleparts/axis/heavy
+		templates["btr80"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/frame/btr80/rf, /obj/structure/vehicleparts/movement, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
+			"2,1" = list(/obj/structure/vehicleparts/frame/btr80/lf, /obj/structure/vehicleparts/movement, /obj/structure/engine/internal/diesel/premade/v6),
+			"1,2" = list(/obj/structure/vehicleparts/frame/btr80/rfc, /obj/structure/bed/chair/office/dark),
+			"2,2" = list(/obj/structure/vehicleparts/frame/btr80/lfc, /obj/structure/bed/chair/drivers/car),
+			"1,3" = list(/obj/structure/vehicleparts/frame/btr80/rbc, /obj/structure/bed/chair/office/dark),
+			"2,3" = list(/obj/structure/vehicleparts/frame/btr80/lbc, /obj/structure/bed/chair/office/dark),
+			"1,4" = list(/obj/structure/vehicleparts/frame/btr80/rb, /obj/structure/vehicleparts/movement/reversed),
+			"2,4" = list(/obj/structure/vehicleparts/frame/btr80/lb, /obj/structure/vehicleparts/movement/reversed)
 		)
 
-		templates["mtlb"] = new /datum/vehicle_template(
-			name = "MT-LB APC",
-			config = new /datum/vehicle_configuration("MT-LB", "apc", 1.4, 500, 40),
-			wheel_configs = alist(
-				"front_left" = "mtlb_track_left_front",
-				"front_right" = "mtlb_track_right_front",
-				"back_left" = "mtlb_track_left_back",
-				"back_right" = "mtlb_track_right_back",
-			),
-			default_walls = list(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
+		templates["mtlb"] = new /datum/vehicle_template()
+		templates["mtlb"].name = "MT-LB APC"
+		templates["mtlb"].axis_type = /obj/structure/vehicleparts/axis/heavy
+		templates["mtlb"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/frame/mtlb/rf, /obj/structure/vehicleparts/movement/tracks, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
+			"2,1" = list(/obj/structure/vehicleparts/frame/mtlb/lf, /obj/structure/vehicleparts/movement/tracks, /obj/structure/engine/internal/diesel/premade/v6),
+			"1,2" = list(/obj/structure/vehicleparts/frame/mtlb/rfc, /obj/structure/bed/chair/office/dark),
+			"2,2" = list(/obj/structure/vehicleparts/frame/mtlb/lfc, /obj/structure/bed/chair/drivers/car),
+			"1,3" = list(/obj/structure/vehicleparts/frame/mtlb/rbc, /obj/structure/bed/chair/office/dark),
+			"2,3" = list(/obj/structure/vehicleparts/frame/mtlb/lbc, /obj/structure/bed/chair/office/dark),
+			"1,4" = list(/obj/structure/vehicleparts/frame/mtlb/rb, /obj/structure/vehicleparts/movement/tracks/reversed),
+			"2,4" = list(/obj/structure/vehicleparts/frame/mtlb/lb, /obj/structure/vehicleparts/movement/tracks/reversed)
 		)
 
 		// Tanks
-		templates["t34"] = new /datum/vehicle_template(
-			name = "T-34 Tank",
-			config = new /datum/vehicle_configuration("T-34", "heavy", 0.9, 600, 55),
-			wheel_configs = alist(
-				"front_left" = "t34_track_left_front",
-				"front_right" = "t34_track_right_front",
-				"back_left" = "t34_track_left_back",
-				"back_right" = "t34_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
+		templates["t34"] = new /datum/vehicle_template()
+		templates["t34"].name = "T-34 Tank"
+		templates["t34"].axis_type = /obj/structure/vehicleparts/axis/heavy/t34
+		templates["t34"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_front, /obj/structure/vehicleparts/frame/t34/rf, /obj/structure/bed/chair/mgunner/dt28),
+			"2,1" = list(/obj/structure/vehicleparts/frame/t34/front, /obj/item/ammo_magazine/dp/dt, /obj/item/ammo_magazine/dp/dt),
+			"3,1" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_front, /obj/structure/vehicleparts/frame/t34/lf, /obj/structure/bed/chair/drivers/tank),
+			"1,2" = list(/obj/structure/vehicleparts/frame/t34/right, /obj/structure/shellrack/full76),
+			"2,2" = list(/obj/structure/vehicleparts/frame/t34/fc, /obj/structure/turret/t34),
+			"3,2" = list(/obj/structure/vehicleparts/frame/t34/left, /obj/structure/shellrack/full76),
+			"1,3" = list(/obj/structure/vehicleparts/frame/t34/right/door),
+			"2,3" = list(/obj/structure/vehicleparts/frame/t34/bc, /obj/structure/shellrack/full76),
+			"3,3" = list(/obj/structure/vehicleparts/frame/t34/left/door),
+			"1,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/right_back, /obj/structure/vehicleparts/frame/t34/rb, /obj/structure/engine/internal/diesel/premade/chiha),
+			"2,4" = list(/obj/structure/vehicleparts/frame/t34/back),
+			"3,4" = list(/obj/structure/vehicleparts/movement/tracks/t34/left_back, /obj/structure/vehicleparts/frame/t34/lb, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel)
 		)
 
-		templates["is3"] = new /datum/vehicle_template(
-			name = "IS-3 Tank",
-			config = new /datum/vehicle_configuration("IS-3", "heavy", 0.8, 650, 60),
-			wheel_configs = alist(
-				"front_left" = "is3_track_left_front",
-				"front_right" = "is3_track_right_front",
-				"back_left" = "is3_track_left_back",
-				"back_right" = "is3_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["is2"] = new /datum/vehicle_template(
-			name = "IS-2 Tank",
-			config = new /datum/vehicle_configuration("IS-2", "heavy", 0.85, 630, 58),
-			wheel_configs = alist(
-				"front_left" = "is2_track_left_front",
-				"front_right" = "is2_track_right_front",
-				"back_left" = "is2_track_left_back",
-				"back_right" = "is2_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["char1"] = new /datum/vehicle_template(
-			name = "Char-B1 Tank",
-			config = new /datum/vehicle_configuration("Char-B1", "heavy", 1.1, 550, 50),
-			wheel_configs = alist(
-				"front_left" = "char1_track_left_front",
-				"front_right" = "char1_track_right_front",
-				"back_left" = "char1_track_left_back",
-				"back_right" = "char1_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["m41"] = new /datum/vehicle_template(
-			name = "M41 Walker Bulldog",
-			config = new /datum/vehicle_configuration("M41", "heavy", 1.2, 400, 30),
-			wheel_configs = alist(
-				"front_left" = "m41_track_left_front",
-				"front_right" = "m41_track_right_front",
-				"back_left" = "m41_track_left_back",
-				"back_right" = "m41_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["bmd2"] = new /datum/vehicle_template(
-			name = "BMD-2 APC",
-			config = new /datum/vehicle_configuration("BMD-2", "apc", 1.2, 350, 25),
-			wheel_configs = alist(
-				"front_left" = "bmd2_track_left_front",
-				"front_right" = "bmd2_track_right_front",
-				"back_left" = "bmd2_track_left_back",
-				"back_right" = "bmd2_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["bradley"] = new /datum/vehicle_template(
-			name = "M2 Bradley IFV",
-			config = new /datum/vehicle_configuration("Bradley", "apc", 1.4, 450, 35),
-			wheel_configs = alist(
-				"front_left" = "bradley_track_left_front",
-				"front_right" = "bradley_track_right_front",
-				"back_left" = "bradley_track_left_back",
-				"back_right" = "bradley_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["hago"] = new /datum/vehicle_template(
-			name = "Type 95 Ha-Go",
-			config = new /datum/vehicle_configuration("Ha-Go", "heavy", 1.3, 300, 20),
-			wheel_configs = alist(
-				"front_left" = "hago_track_left_front",
-				"front_right" = "hago_track_right_front",
-				"back_left" = "hago_track_left_back",
-				"back_right" = "hago_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
-		)
-
-		templates["m113"] = new /datum/vehicle_template(
-			name = "M113 APC",
-			config = new /datum/vehicle_configuration("M113", "apc", 1.7, 300, 15),
-			wheel_configs = alist(
-				"front_left" = "m113_track_left_front",
-				"front_right" = "m113_track_right_front",
-				"back_left" = "m113_track_left_back",
-				"back_right" = "m113_track_right_back",
-			),
-			default_walls = alist(
-				"front" = "c_armoredfront",
-				"back" = "c_armoredwall",
-				"left" = "c_armoredwall",
-				"right" = "c_armoredwall",
-			),
+		templates["bradley"] = new /datum/vehicle_template()
+		templates["bradley"].name = "M2 Bradley IFV"
+		templates["bradley"].axis_type = /obj/structure/vehicleparts/axis/heavy
+		templates["bradley"].tocreate = list(
+			"1,1" = list(/obj/structure/vehicleparts/frame/bradley/rf, /obj/structure/vehicleparts/movement/tracks, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueleddiesel),
+			"2,1" = list(/obj/structure/vehicleparts/frame/bradley/lf, /obj/structure/vehicleparts/movement/tracks, /obj/structure/engine/internal/diesel/premade/v6),
+			"1,2" = list(/obj/structure/vehicleparts/frame/bradley/rfc, /obj/structure/bed/chair/office/dark),
+			"2,2" = list(/obj/structure/vehicleparts/frame/bradley/lfc, /obj/structure/bed/chair/drivers/car),
+			"1,3" = list(/obj/structure/vehicleparts/frame/bradley/rbc, /obj/structure/bed/chair/office/dark),
+			"2,3" = list(/obj/structure/vehicleparts/frame/bradley/lbc, /obj/structure/bed/chair/office/dark),
+			"1,4" = list(/obj/structure/vehicleparts/frame/bradley/rb, /obj/structure/vehicleparts/movement/tracks/reversed),
+			"2,4" = list(/obj/structure/vehicleparts/frame/bradley/lb, /obj/structure/vehicleparts/movement/tracks/reversed)
 		)
 
 	/// Spawn a complete vehicle from template
@@ -241,66 +108,75 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 
 		var/datum/vehicle_template/template = templates[template_id]
 
-		// Create axis
-		var/obj/structure/vehicleparts/axis/axis = new(location)
-		axis.name = template.config.name
+		var/vmaxx = 1
+		var/vmaxy = 1
+		for (var/coords in template.tocreate)
+			var/list/C = splittext(coords, ",")
+			if (C.len != 2) continue
+			var/dx = text2num(C[1])
+			var/dy = text2num(C[2])
+			if (dx > vmaxx) vmaxx = dx
+			if (dy > vmaxy) vmaxy = dy
+
+		// Create axis at the same relative position as premade.dm (max_x, 1)
+		var/turf/axis_turf = locate(location.x + vmaxx, location.y + 1, location.z)
+		if (!axis_turf) axis_turf = location
+		
+		var/obj/structure/vehicleparts/axis/axis = new template.axis_type(axis_turf)
+		axis.name = template.name
 		axis.dir = direction
+		if (template.custom_color)
+			axis.color = template.custom_color
 
-		// Create frames in a 2x2 grid (front-left, front-right, back-left, back-right)
-		var/list/frame_positions = list(
-			list(0, 1, "front_left"),   // x, y, position_name
-			list(1, 1, "front_right"),
-			list(0, 0, "back_left"),
-			list(1, 0, "back_right"),
-		)
+		var/list/spawned_frames = list()
+		var/list/spawned_movement = list()
 
-		var/list/frames = list()
-		for (var/list/pos_data in frame_positions)
-			var/turf/frame_turf = locate(location.x + pos_data[1], location.y + pos_data[2], location.z)
-			if (!frame_turf)
-				continue
+		for (var/coords in template.tocreate)
+			var/list/C = splittext(coords, ",")
+			if (C.len != 2) continue
+			var/dx = text2num(C[1])
+			var/dy = text2num(C[2])
+			var/turf/T = locate(location.x + dx, location.y + dy, location.z)
+			if (!T) continue
 
-			var/obj/structure/vehicleparts/frame/frame = new(frame_turf)
-			frame.axis = axis
-			frame.name = "[template.config.name] Frame"
-			frame.dir = direction
+			for (var/typepath in template.tocreate[coords])
+				var/obj/O = new typepath(T)
+				O.dir = direction
+				
+				if (istype(O, /obj/structure/vehicleparts/frame))
+					var/obj/structure/vehicleparts/frame/F = O
+					F.axis = axis
+					if (!(F in axis.components))
+						axis.components += F
+					F.anchored = TRUE
+					spawned_frames += F
+				
+				else if (istype(O, /obj/structure/vehicleparts/movement))
+					spawned_movement += O
 
-			// Set walls based on position
-			var/pos_name = pos_data[3]
-			if (pos_name == "front_left")
-				frame.initialize_walls(template.default_walls["front"], template.default_walls["back"], template.default_walls["left"], template.default_walls["right"])
-			else if (pos_name == "front_right")
-				frame.initialize_walls(template.default_walls["front"], template.default_walls["back"], template.default_walls["right"], template.default_walls["left"])
-			else if (pos_name == "back_left")
-				frame.initialize_walls(template.default_walls["back"], template.default_walls["front"], template.default_walls["left"], template.default_walls["right"])
-			else if (pos_name == "back_right")
-				frame.initialize_walls(template.default_walls["back"], template.default_walls["front"], template.default_walls["right"], template.default_walls["left"])
+				else if (istype(O, /obj/structure/engine/internal))
+					axis.engine = O
+					O.anchored = TRUE
 
-			frames[pos_name] = frame
-			axis.components += frame
+				else if (istype(O, /obj/structure/bed/chair/drivers))
+					var/obj/structure/bed/chair/drivers/D = O
+					axis.wheel = D.wheel
+					if (axis.wheel)
+						axis.wheel.control = O // or frame? usually it's the seat or frame
+					O.anchored = TRUE
 
-		axis.check_corners()
-		// Attach wheels/tracks
-		for (var/pos_name in template.wheel_configs)
-			var/obj/structure/vehicleparts/frame/frame = frames[pos_name]
-			if (!frame || !frame.loc)
-				continue
-
-			var/datum/wheel_config/wheel_config = get_wheel_config(template.wheel_configs[pos_name])
-			var/obj/structure/vehicleparts/movement/movement = new frame.type(wheel_config)
-			if (movement)
-				// Initialize with config
-				movement.wconfig = wheel_config
-				if (wheel_config)
-					movement.name = wheel_config.name
-					movement.icon = wheel_config.icon
-					movement.icon_state = wheel_config.icon_state
-				// Simulate MouseDrop to attach to frame
-				movement.MouseDrop(frame)
+		// Link movement parts to frames
+		for (var/obj/structure/vehicleparts/movement/M in spawned_movement)
+			var/obj/structure/vehicleparts/frame/F = locate() in M.loc
+			if (F)
+				M.MouseDrop(F)
 
 		// Initialize axis
 		axis.check_corners()
 		axis.check_matrix()
+
+		for (var/obj/F in axis.components)
+			F.update_icon()
 
 		return axis
 
@@ -322,7 +198,7 @@ var/global/datum/vehicle_factory/vehicle_factory = new()
 		src << "<font color='red'>Error: Admin-PM-Panel: Only administrators may use this command.</font>"
 		return
 
-	var/list/templates = list("jeep", "truck", "btr80", "mtlb", "t34", "is3", "is2", "char1", "m41", "bmd2", "bradley", "hago", "m113")
+	var/list/templates = list("jeep", "truck", "btr80", "mtlb", "t34", "bradley")
 	var/template_id = WWinput(usr, "Select a vehicle template:", "Vehicle Factory", WWinput_first_choice(templates), WWinput_list_or_null(templates))
 	if (!template_id)
 		return

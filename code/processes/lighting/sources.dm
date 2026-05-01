@@ -2,8 +2,7 @@
 
 /process/lighting_sources/setup()
 	name = "lighting sources process"
-	is_subsystem_member = TRUE
-	schedule_interval = 1 SECOND
+	schedule_interval = 0.1 SECONDS
 	start_delay = 1 SECOND
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_HIGH

@@ -4,7 +4,6 @@
 
 /obj/structure/vehicleparts/movement
 	name = "wheel"
-	var/datum/wheel_config/wconfig = null
 	layer = 2.99
 	crushable = FALSE
 	var/broken = FALSE

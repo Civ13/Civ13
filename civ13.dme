@@ -290,6 +290,7 @@
 #include "code\game\mob\living\simple_animal\hostile\panther.dm"
 #include "code\game\mob\living\simple_animal\hostile\pirate.dm"
 #include "code\game\mob\living\simple_animal\hostile\pmc.dm"
+#include "code\game\mob\living\simple_animal\hostile\police.dm"
 #include "code\game\mob\living\simple_animal\hostile\russian.dm"
 #include "code\game\mob\living\simple_animal\hostile\russo-jap.dm"
 #include "code\game\mob\living\simple_animal\hostile\sabertooth.dm"
@@ -1171,5 +1172,5 @@
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\nomads\nomads_wasteland_2.dmm"
+#include "maps\1943\smallingrad.dmm"
 // END_INCLUDE

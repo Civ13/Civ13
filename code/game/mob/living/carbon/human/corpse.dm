@@ -709,6 +709,31 @@ mob/living/human/corpse/russian_soviet_tanker
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
+
+/mob/living/human/corpse/police
+	gender = MALE
+	h_style = "Fade"
+
+/mob/living/human/corpse/police/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Police Officer")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(30,45))
+		name = "Police Officer"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+
 /mob/living/human/corpse/pmc
 	gender = MALE
 

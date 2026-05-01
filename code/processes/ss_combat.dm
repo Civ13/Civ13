@@ -2,7 +2,7 @@
 
 /process/ss_combat/setup()
 	name = "Combat Subsystem"
-	schedule_interval = 1 // Every tick
+	schedule_interval = 0.1
 	priority = PROCESS_PRIORITY_VERY_HIGH
 	always_runs = TRUE
 	processes.ss_combat = src
@@ -11,7 +11,7 @@
 	// Projectiles
 	// Check fires_at_gamestates to respect process gamestate restrictions
 	if (processes.projectile && (processes.projectile.fires_at_gamestates.len == 0 || (ticker && processes.projectile.fires_at_gamestates.Find(ticker.current_state))))
-		processes.projectile.run_time_tick_usage_allowance = 8 // Explicit budget: 8% per member
+		processes.projectile.run_time_tick_usage_allowance = 20 // Explicit budget: 8% per member
 		processes.projectile.fire_as_member()
 
 	// Throwing
@@ -19,11 +19,6 @@
 	if (processes.throwing && (processes.throwing.fires_at_gamestates.len == 0 || (ticker && processes.throwing.fires_at_gamestates.Find(ticker.current_state))))
 		processes.throwing.run_time_tick_usage_allowance = 8 // Explicit budget: 8% per member
 		processes.throwing.fire_as_member()
-
-	// TODO: processes.movement does not exist - this was dead code
-	// Commenting out as there is no movement process defined
-	// if (processes.movement)
-	//	processes.movement.fire_as_member()
 
 	// Explosions
 	// Check fires_at_gamestates to respect process gamestate restrictions (explosion only runs in PLAYING/FINISHED)

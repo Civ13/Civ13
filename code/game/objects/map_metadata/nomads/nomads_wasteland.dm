@@ -87,8 +87,9 @@
 	spawn(rand(36000, 72000))
 		supplydrop_proc()
 
-//////////////////////////////////
-////////Wasteland 2///////////////
+///////////////////////////////////////////////
+////////Wasteland 2: Electric Boogaloo/////////
+///////////////////////////////////////////////
 
 /obj/map_metadata/nomads/wasteland/two
 	ID = MAP_NOMADS_WASTELAND_2
@@ -105,3 +106,20 @@
 /obj/map_metadata/nomads/wasteland/two/proc/zombies(var/start = TRUE)
 	for(var/obj/effect/spawner/mobspawner/zombies/special/S in world)
 		S.activated = start
+
+
+/////////////////////////////////////////////////
+////////Wasteland 3: Return of the Antman////////
+/////////////////////////////////////////////////
+
+/obj/map_metadata/nomads/wasteland/three
+	ID = MAP_NOMADS_WASTELAND_3
+	title = "Wasteland III"
+	gamemode = "Wasteland"
+	hasnukes = FALSE
+	is_zombie = FALSE
+	lobby_icon = 'icons/lobby/wasteland3.png'
+	mission_start_message = "<big>The Great Radiance has rewritten the DNA of the survivors. In the ruins of the old world, the line between man and beast has blurred. Adapt to your new form, scavenge the toxic wastes, and prove that you are the one meant to inherit the earth.</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/Civilizations_and_Nomads</b>"
+	ambience = list('sound/ambience/desert.ogg')
+	songs = list(
+		"Blawan - Why They Hide Their Bodies Under My Garage?:1" = 'sound/music/whytheyhidetheirbodies.ogg',)
