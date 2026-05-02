@@ -138,6 +138,9 @@ var/list/gamemode_cache = list()
 	var/hub_body = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
+	// if the server is running on opendream instead of byond
+	var/opendream = FALSE
+
 	// dumb memes
 	var/allow_dabbing = FALSE
 
@@ -237,6 +240,8 @@ var/list/gamemode_cache = list()
 					config.hub_body = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
+				if ("opendream")
+					config.opendream = value
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE

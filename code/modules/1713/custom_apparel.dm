@@ -854,7 +854,7 @@
 /obj/item/clothing/head/helmet/montefortino
 	name = "bronze montefortino helmet"
 	desc = "A conical bronce helmet with cheekplates."
-	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "montefortino"
 	item_state = "montefortino"
 	worn_state = "montefortino"
@@ -887,7 +887,7 @@
 /obj/item/clothing/head/helmet/roman_decurion/nomads
 	name = "roman decurion helmet"
 	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
-	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
@@ -920,7 +920,7 @@
 /obj/item/clothing/head/helmet/roman_centurion/nomads
 	name = "roman centurion helmet"
 	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
-	icon_override = "code/modules/1713/clothing/head.dmi"
+	icon_override = "icons/obj/clothing/head.dmi"
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"

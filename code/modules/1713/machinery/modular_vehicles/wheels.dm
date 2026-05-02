@@ -98,6 +98,7 @@
 	if (control.axis.currentspeed < 0)
 		control.axis.currentspeed = 0
 	control.axis.currentspeed++
+	tochat(H, "DEBUG You increase the speed.")
 	if (control.axis.currentspeed>control.axis.speeds)
 		control.axis.currentspeed = control.axis.speeds
 

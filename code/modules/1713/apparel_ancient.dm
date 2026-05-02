@@ -400,7 +400,7 @@
 /obj/item/clothing/head/helmet/roman
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
-	icon_override = 'code/modules/1713/clothing/head.dmi'
+	icon_override = 'icons/obj/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -412,7 +412,7 @@
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "roman decurion helmet"
 	desc = "An iron helmet, used by decurions. Officers within the cavalry of the roman army."
-	icon_override = 'code/modules/1713/clothing/head.dmi'
+	icon_override = 'icons/obj/clothing/head.dmi'
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
@@ -424,7 +424,7 @@
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "roman centurion helmet"
 	desc = "An iron helmet, used by centurions. Officers within the infantry of the roman army."
-	icon_override = 'code/modules/1713/clothing/head.dmi'
+	icon_override = 'icons/obj/clothing/head.dmi'
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -641,7 +641,7 @@
 /obj/item/clothing/head/helmet/roman/nomads
 	name = "roman legionary helmet"
 	desc = "The typical helmet of the roman army."
-	icon_override = 'code/modules/1713/clothing/head.dmi'
+	icon_override = 'icons/obj/clothing/head.dmi'
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
