@@ -102,7 +102,7 @@
 					return "Ruhr Red Army"
 				if ("MAGISTRAL")
 					return "DRA Army"
-				if ("BANK_ROBBERY" || "DRUG_BUST")
+				if ("BANK_ROBBERY", "DRUG_BUST")
 					return "Police Department"
 				if ("LONG_MARCH")
 					return "Red Army"
@@ -230,7 +230,7 @@
 				switch(map.ID)
 					if ("ARAB_TOWN")
 						return "Hezbollah"
-					if ("KANDAHAR" || "HILL_3234" || "MAGISTRAL")
+					if ("KANDAHAR", "HILL_3234", "MAGISTRAL")
 						return "Mujahideen"
 					if ("SYRIA")
 						return "Syrian Armed Forces"
