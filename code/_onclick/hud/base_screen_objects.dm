@@ -23,10 +23,10 @@
 	var/process_flag = FALSE
 	var/hideflag = FALSE
 
-/obj/screen/New(_name = "unnamed", _screen_loc = "7,7", mob/living/_parentmob, _icon, _icon_state)
+/obj/screen/New(_name, _screen_loc, mob/living/_parentmob, _icon, _icon_state)
 	parentmob = _parentmob
-	name = _name
-	screen_loc = _screen_loc
+	if (_name) name = _name
+	if (_screen_loc) screen_loc = _screen_loc
 	if (parentmob && parentmob.client)
 		icon = parentmob.client.prefs.UI_file
 	if (_icon)

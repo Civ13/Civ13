@@ -1,31 +1,36 @@
-/var/obj/effect/lobby_image = new/obj/effect/lobby_image()
+/var/obj/screen/lobby_image/lobby_image = new/obj/screen/lobby_image()
 
-/obj/effect/lobby_image
+/obj/screen/lobby_image
 	name = "Lobby"
 	desc = ""
 	icon = 'icons/lobby/civ13.dmi'
 	icon_state = "civ13"
 	screen_loc = "WEST,SOUTH"
+	plane = HUD_PLANE
+	layer = 21 // Ensure it is above the black cover objects
 	var/list/stored_img = list()
 
-/obj/effect/lobby_image/initialize()
-	if (map && map.lobby_icon != "")
-		var/F = file(map.lobby_icon)
-		if (F)
-			icon = F
-
-/obj/effect/lobby_image/New()
-	..()
-	spawn(600)
+/obj/screen/lobby_image/New()
+	..() // Call parent New() to ensure proper initialization of /obj/screen
+	spawn(600) // Delay for Battle Royale specific updates
 		if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 			update_icon_proc()
 
-/obj/effect/lobby_image/proc/update_icon_proc()
+/obj/screen/lobby_image/initialize()
+	if (map && map.lobby_icon != "") // Check if a custom lobby icon is specified
+		var/F = file(map.lobby_icon) // Attempt to load the file
+		if (F) // If the file exists, use it
+			icon = F
+		else // If the file doesn't exist, log an error and fall back to the default
+			log_admin("Lobby image file not found: [map.lobby_icon]")
+			icon = 'icons/lobby/civ13.dmi' // Fallback to the default lobby image
+
+/obj/screen/lobby_image/proc/update_icon_proc()
 	spawn(100)
 		update_icon()
 		update_icon_proc()
 		
-/obj/effect/lobby_image/update_icon()
+/obj/screen/lobby_image/update_icon()
 	..()
 	if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 		stored_img = list()
