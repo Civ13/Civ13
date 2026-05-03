@@ -32,7 +32,6 @@
 
 /process/epochswap/setup()
 	name = "epochswap"
-	is_subsystem_member = TRUE
 	schedule_interval = 5 SECONDS
 	start_delay = 5 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
@@ -138,7 +137,6 @@
 
 /process/mapswap/setup()
 	name = "mapswap"
-	is_subsystem_member = TRUE
 	schedule_interval = 5 SECONDS
 	start_delay = 5 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)
@@ -367,7 +365,6 @@
 
 /process/gamemode/setup()
 	name = "gamemode"
-	is_subsystem_member = TRUE
 	schedule_interval = 5 SECONDS
 	start_delay = 5 SECONDS
 	fires_at_gamestates = list()

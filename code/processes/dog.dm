@@ -2,7 +2,6 @@
 
 /process/dog/setup()
 	name = "dog process"
-	is_subsystem_member = TRUE
 	schedule_interval = 0.2 SECONDS
 	start_delay = 0.5 MINUTES
 	fires_at_gamestates = list(GAME_STATE_PLAYING, GAME_STATE_FINISHED)

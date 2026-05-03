@@ -60,7 +60,7 @@
 		message.maptext_y = TILE_SIZE*1
 		message.maptext = "<center><span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black;\">[desired_text]</span></center>"
 		if(target)
-			if (config.opendream && target != owner)
+			if (config.opendream && !(message in target.images))
 				target.images += message
 			else if (!config.opendream)
 				target.images += message

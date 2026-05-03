@@ -3,7 +3,6 @@
 
 /process/client/setup()
 	name = "client"
-	is_subsystem_member = TRUE
 	schedule_interval = 2 SECONDS
 	start_delay = 10
 	fires_at_gamestates = list()

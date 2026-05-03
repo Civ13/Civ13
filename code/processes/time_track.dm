@@ -15,7 +15,6 @@
 
 /process/time_track/setup()
 	name = "time tracking"
-	is_subsystem_member = TRUE
 	schedule_interval = 1 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	averages.len = 10
