@@ -589,19 +589,13 @@ window "outputwindow"
 		is-pane = true
 		can-scroll = vertical
 	elem "output"
-		type = OUTPUT
+		type = BROWSER
 		pos = 0,0
 		size = 480x450
 		anchor1 = 0,0
 		anchor2 = 100,100
-		font-family = "Book Antiqua,Bookman Old Style,@SimSun-ExtB"
-		font-size = 9
-		text-color = #e1e1d7
 		background-color = #392611
-		is-default = true
-		saved-params = "max-lines"
-		style = ".system {color:#ff0000;}"
-		max-lines = 0
+		saved-params = ""
 	elem "input"
 		type = INPUT
 		pos = 2,452

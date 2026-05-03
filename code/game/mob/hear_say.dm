@@ -9,6 +9,9 @@
 			//Or someone snoring.  So we make it where they won't hear it.
 		return
 
+	if (!alt_message)
+		alt_message = message
+
 	//make sure the air can transmit speech - hearer's side
 	original_message = message
 

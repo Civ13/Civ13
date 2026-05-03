@@ -973,6 +973,7 @@
 #include "code\modules\admin\view_variables\reference_tracking.dm"
 #include "code\modules\admin\view_variables\topic.dm"
 #include "code\modules\admin\view_variables\view_variables.dm"
+#include "code\modules\chat\chat.dm"
 #include "code\modules\client\asset_cache.dm"
 #include "code\modules\client\client_defines.dm"
 #include "code\modules\client\client_procs.dm"

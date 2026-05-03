@@ -598,6 +598,9 @@
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
+/obj/structure/vehicleparts/frame/t72/right/door/coded
+	doorcode = 4975
+
 /obj/structure/vehicleparts/frame/t72/rb
 	w_right = list("c_wall",TRUE,TRUE,90,90,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,50,50,FALSE,FALSE)

@@ -54,7 +54,7 @@
 		message.plane = CHAT_PLANE
 		message.maptext_width = TILE_SIZE*7
 		if (config.opendream)
-			message.maptext_x = (maptext_width * -0.5)
+			message.maptext_x = 0
 		else
 			message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		message.maptext_y = TILE_SIZE*1

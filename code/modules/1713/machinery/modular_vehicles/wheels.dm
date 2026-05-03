@@ -167,6 +167,9 @@
 	icon_state = "driver_tank"
 	flammable = FALSE
 
+/obj/structure/bed/chair/drivers/tank/anchored
+	anchored = TRUE
+
 /obj/structure/bed/chair/drivers/user_unbuckle_mob(mob/user)
 	var/mob/living/M = unbuckle_mob()
 	if (axis)

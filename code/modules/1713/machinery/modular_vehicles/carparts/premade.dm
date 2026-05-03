@@ -664,8 +664,8 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf, /obj/structure/vehicleparts/movement/tracks/right),
 	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf, /obj/structure/vehicleparts/movement/tracks/left),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc, /obj/structure/bed/chair/drivers/tank{anchored = 1}),
-	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc, /obj/structure/bed/chair/office/dark{anchored = 1}, /obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30),
+	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc, /obj/structure/bed/chair/drivers/tank/anchored),
+	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc, /obj/structure/bed/chair/office/dark/anchored, /obj/item/weapon/gun/projectile/automatic/stationary/breda30/hull, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30, /obj/item/ammo_magazine/breda30),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb, /obj/structure/vehicleparts/movement/tracks/left/reversed, /obj/structure/engine/internal/gasoline/premade/l3),
 	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb, /obj/structure/vehicleparts/movement/tracks/right/reversed, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline),
@@ -680,8 +680,8 @@
 	"1,1" = list(/obj/structure/vehicleparts/frame/l3/rf, /obj/structure/vehicleparts/movement/tracks/right),
 	"2,1" = list(/obj/structure/vehicleparts/frame/l3/lf/cc, /obj/structure/vehicleparts/movement/tracks/left),
 
-	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc, /obj/structure/bed/chair/drivers/tank{anchored = 1}),
-	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc, /obj/structure/bed/chair/office/dark{anchored = 1}, /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe),
+	"1,2" = list(/obj/structure/vehicleparts/frame/l3/rc, /obj/structure/bed/chair/drivers/tank/anchored),
+	"2,2" = list(/obj/structure/vehicleparts/frame/l3/lc, /obj/structure/bed/chair/office/dark/anchored, /obj/item/weapon/gun/projectile/automatic/stationary/solothurn/italian/stationary, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe, /obj/item/ammo_magazine/a20mm_aphe),
 
 	"1,3" = list(/obj/structure/vehicleparts/frame/l3/rb, /obj/structure/vehicleparts/movement/tracks/left/reversed, /obj/structure/engine/internal/gasoline/premade/l3),
 	"2,3" = list(/obj/structure/vehicleparts/frame/l3/lb, /obj/structure/vehicleparts/movement/tracks/right/reversed, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline),
@@ -880,7 +880,7 @@
 	"2,2" = list(/obj/structure/vehicleparts/frame/t72, /obj/structure/shellrack/autoloader/full125/, /obj/structure/turret/t64bm),
 	"3,2" = list(/obj/structure/vehicleparts/frame/t72/left),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/t72/right/door{doorcode = 4975}),
+	"1,3" = list(/obj/structure/vehicleparts/frame/t72/right/door/coded),
 	"2,3" = list(/obj/structure/vehicleparts/frame/t72),
 	"3,3" = list(/obj/structure/vehicleparts/frame/t72/left),
 

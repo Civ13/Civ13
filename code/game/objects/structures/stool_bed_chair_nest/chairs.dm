@@ -221,6 +221,9 @@
 /obj/structure/bed/chair/office/dark
 	icon_state = "officechair_dark"
 
+/obj/structure/bed/chair/office/dark/anchored
+	anchored = TRUE
+
 /obj/structure/bed/chair/office/New()
 	..()
 	var/image/I = image(icon, "[icon_state]_over")

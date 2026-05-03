@@ -76,6 +76,11 @@
 					for (var/client/C in clients)
 						if (C.ckey == ckey)
 							C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
+	if (href_list["chat_ready"])
+		if (chat)
+			chat.on_ready()
+		return
+
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
@@ -242,6 +247,9 @@
 	send_resources()
 
 	fix_nanoUI()
+
+	chat = new(src)
+	chat.load()
 
 	spawn (1)
 		log_to_db()
