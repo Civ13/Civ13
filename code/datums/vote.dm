@@ -56,6 +56,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(null,"window=vote")
 				reset()
 			else
+				voting.Cut()
 				for (var/client/C in voting)
 					if (C)
 						C << browse(vote.interface(C),"window=vote")
