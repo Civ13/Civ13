@@ -870,10 +870,10 @@
 			if(80 to INFINITY)
 				icon_state = "mood1"
 		if(old_icon && old_icon != icon_state)
-			if(old_mood > L.mood)
-				src << "<span class='warning'>My mood gets worse.</span>"
+			if(L && old_mood > L.mood)
+				L << "<span class='warning'>My mood gets worse.</span>"
 			else
-				src << "<span class='info'>My mood gets better.</span>"
+				L << "<span class='info'>My mood gets better.</span>"
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"

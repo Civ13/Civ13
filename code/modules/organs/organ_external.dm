@@ -1303,8 +1303,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 		owner.drop_from_inventory(owner.l_ear)
 		owner.drop_from_inventory(owner.r_ear)
 		owner.drop_from_inventory(owner.wear_mask)
+		var/mob/living/human/prev_owner = owner
 		spawn(1)
-			owner.update_hair()
+			if (prev_owner)
+				prev_owner.update_hair()
 	..()
 
 /obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list())

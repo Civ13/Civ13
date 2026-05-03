@@ -22,9 +22,3 @@
 	// Chemistry
 	if (processes.chemistry)
 		processes.chemistry.fire_as_member()
-
-	// Hazards
-	if (processes.burning_objs)
-		processes.burning_objs.fire_as_member()
-	if (processes.burning_turfs)
-		processes.burning_turfs.fire_as_member()

@@ -1739,13 +1739,17 @@ var/global/redirect_all_players = null
 		chosen_species = all_species[client.prefs.species]
 		use_species_name = chosen_species.get_station_variant() //Only used by pariahs atm.
 
-	if (chosen_species && use_species_name)
-		// Have to recheck admin due to no usr at roundstart. Latejoins are fine though.
-		if (is_species_whitelisted(chosen_species) || has_admin_rights())
-			new_character = new mobtype(loc, use_species_name)
+	new_character = null
+
+	if (chosen_species && use_species_name && (is_species_whitelisted(chosen_species) || has_admin_rights()))
+		new_character = new mobtype(loc, use_species_name)
 
 	if (!new_character)
 		new_character = new mobtype(loc)
+
+	// Safety check - prevent the runtime
+	if (!new_character)
+		return
 
 	new_character.stopDumbDamage = TRUE
 	new_character.lastarea = get_area(loc)

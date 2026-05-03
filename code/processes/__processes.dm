@@ -35,7 +35,6 @@ var/datum/process_list/processes = new
 	var/process/job_data/job_data = null
 	var/process/mapswap/mapswap = null
 	var/process/epochswap/epochswap = null
-	var/process/supply/supply = null
 	var/process/map/map = null
 	var/process/battle_report/battle_report = null
 
@@ -49,8 +48,6 @@ var/datum/process_list/processes = new
 	var/process/obj/obj = null
 	var/process/dog/dog = null
 	var/process/chemistry/chemistry = null
-	var/process/burning_objs/burning_objs = null
-	var/process/burning_turfs/burning_turfs = null
 
 	// SSCleanup members
 	var/process/garbage/garbage = null

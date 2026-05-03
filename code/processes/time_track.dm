@@ -34,7 +34,10 @@
 
 	if (!first_run)
 		var/tick_drift = max(0, (((current_realtime - last_tick_realtime) - (current_byondtime - last_tick_byond_time)) / world.tick_lag))
-		dilation = tick_drift / (current_tickcount - last_tick_tickcount) * 100
+		if ((current_tickcount - last_tick_tickcount) * 100 == 0)
+			dilation = 0
+		else
+			dilation = tick_drift / (current_tickcount - last_tick_tickcount) * 100
 	else
 		first_run = FALSE
 

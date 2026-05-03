@@ -28,10 +28,6 @@
 			processes.epochswap.fire_as_member()
 		next_mapswap = world.time + 50
 
-	// Supply logic
-	if (processes.supply)
-		processes.supply.fire_as_member()
-
 	// Map tick
 	if (processes.map)
 		processes.map.fire_as_member()
