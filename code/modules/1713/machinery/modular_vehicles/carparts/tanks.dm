@@ -705,7 +705,7 @@
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
 
-/obj/structure/vehicleparts/frame/leopard/left/door/coded
+/obj/structure/vehicleparts/frame/leopard/right/door/coded
 	doorcode = 5970
 
 /obj/structure/vehicleparts/frame/leopard/right
