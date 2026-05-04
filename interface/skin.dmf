@@ -555,7 +555,16 @@ window "mapwindow"
 		saved-params = "icon-size"
 		on-show = ".winset\"mainwindow.mainvsplit.left=mapwindow\""
 		on-hide = ".winset\"mainwindow.mainvsplit.left=\""
-
+	elem "pregameBrowser"
+		type = BROWSER
+		pos = 0,0
+		size = 800x480
+		anchor1 = 0,0
+		anchor2 = 100,100
+		is-visible = false
+		saved-params = ""
+		auto-format = false
+		
 window "rpane"
 	elem "rpane"
 		type = MAIN
@@ -588,20 +597,15 @@ window "outputwindow"
 		saved-params = "pos;size;is-minimized;is-maximized"
 		is-pane = true
 		can-scroll = vertical
-	elem "output"
-		type = OUTPUT
+	elem "browser_chat"
+		type = BROWSER
 		pos = 0,0
 		size = 480x450
 		anchor1 = 0,0
 		anchor2 = 100,100
-		font-family = "Book Antiqua,Bookman Old Style,@SimSun-ExtB"
-		font-size = 9
-		text-color = #e1e1d7
 		background-color = #392611
-		is-default = true
-		saved-params = "max-lines"
-		style = ".system {color:#ff0000;}"
-		max-lines = 0
+		is-default = false
+		saved-params = ""
 	elem "input"
 		type = INPUT
 		pos = 2,452
@@ -612,9 +616,17 @@ window "outputwindow"
 		font-size = 8
 		text-color = #e1e1d7
 		background-color = #a68b7d
-		is-default = true
+		is-default = false
 		border = sunken
 		saved-params = ""
+	elem "hidden_output"
+		type = OUTPUT
+		pos = 0,0
+		size = 1x1
+		anchor1 = 0,0
+		anchor2 = 0,0
+		is-visible = false
+		is-default = true
 
 window "infowindow"
 	elem "infowindow"

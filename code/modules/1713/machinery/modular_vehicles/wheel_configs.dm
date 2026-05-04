@@ -7,7 +7,6 @@ var/global/list/WHEEL_CONFIGS = list()
 /proc/get_wheel_config(name)
 	if (!WHEEL_CONFIGS.len)
 		build_all()
-	world.log << "Retrieving wheel config: [name]"
 	if (!WHEEL_CONFIGS[name])
 		world.log << "ERROR: Wheel config [name] not found!"
 	return WHEEL_CONFIGS[name]

@@ -1874,7 +1874,7 @@
 	},
 /obj/structure/vehicleparts/axis/car{
 	color = "#444444";
-	speedlist = list(7,5,4,2.5,1.8)
+	speedlist = alist(7,5,4,2.5,1.8)
 	},
 /obj/structure/bed/chair/drivers,
 /turf/floor/dirt/dust,
@@ -3732,7 +3732,7 @@
 	},
 /obj/structure/vehicleparts/axis/car{
 	color = "#444444";
-	speedlist = list(7,5,4,2.5,1.8)
+	speedlist = alist(7,5,4,2.5,1.8)
 	},
 /turf/floor/plating/cobblestone/vertical/dark,
 /area/caribbean)

@@ -260,29 +260,40 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 /proc/shake_camera(mob/M, duration, strength=1)
 	if (!M || !M.client || M.shakecamera || M.stat || isEye(M))
 		return
+
 	M.shakecamera = TRUE
+
 	spawn(1)
-		if (isnull(M))
+		if (isnull(M) || !M.client)
+			if(M) M.shakecamera = FALSE
 			return
 
-		if (!M.client)
+		var/atom/oldeye = M.client.eye
+		var/turf/origin = get_turf(M)
+		if (!origin)
+			if (M) M.shakecamera = FALSE
 			return
 
-		var/atom/oldeye=M.client.eye
+		var/obj/effect/temp_eye = new /obj/effect(origin)
+		for (var/x = 0; x < duration; x++)
+			if (!M || !M.client)
+				break
 
-		var/x
+			temp_eye.loc = locate(
+				dd_range(1, origin.x + rand(-strength, strength), world.maxx),
+				dd_range(1, origin.y + rand(-strength, strength), world.maxy),
+				origin.z
+			)
+			M.client.eye = temp_eye
+			sleep(1)
+
+		// Restore original eye
+		if (M && M.client)
+			M.client.eye = oldeye
+
+		qdel(temp_eye)
 		if (M)
-			for (x=0; x<duration; x++)
-				if (M.client)
-					if (M.client.eye)
-						M.client.eye = locate(dd_range(1,M.loc.x+rand(-strength,strength),world.maxx),dd_range(1,M.loc.y+rand(-strength,strength),world.maxy),M.loc.z)
-						sleep(1)
-			if (M && M.client)
-				if (M.client.eye)
-					M.client.eye=oldeye
-			if (M)
-				M.shakecamera = FALSE
-
+			M.shakecamera = FALSE
 
 /proc/findname(msg)
 	for (var/mob/M in mob_list)

@@ -122,7 +122,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/announce_result()
 		var/list/winners = get_result()
-		var/text
+		var/text = ""
 		if (!winners.len)
 			if (default)
 				winners += default
@@ -200,7 +200,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (mode)
 			if (vote && vote >= 1 && vote <= choices.len)
 				if (current_votes[ckey])
-					choices[choices[current_votes[ckey]]]--
+					choices[choices[current_votes[ckey]]] = max(0, choices[choices[current_votes[ckey]]]-1)
 				voted += usr.ckey
 				choices[choices[vote]]++	//check this
 				current_votes[ckey] = vote
@@ -359,6 +359,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				round_progressing = FALSE
 				to_chat(world, "<font color='red'><b>Round start has been delayed.</b></font>")
 			time_remaining = round(config.vote_period/10)
+
+			for (var/client/C in clients)
+				if (C)
+					C << browse(interface(C), "window=vote;size=400x600")
+
 			callback = _callback
 			return TRUE
 		return FALSE

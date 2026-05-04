@@ -241,7 +241,7 @@ var/list/gamemode_cache = list()
 				if ("hub_banner_url")
 					config.hub_banner_url = value
 				if ("opendream")
-					config.opendream = value
+					config.opendream = text2num(value)
 
 				if ("use_recursive_explosions")
 					use_recursive_explosions = TRUE
@@ -496,6 +496,8 @@ var/list/gamemode_cache = list()
 		world.visibility = TRUE
 	else
 		world.visibility = FALSE
+	if (config.opendream)
+		log_world("Running on OpenDream mode.")
 
 /datum/configuration/proc/post_load()
 	return

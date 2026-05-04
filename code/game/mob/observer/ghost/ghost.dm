@@ -58,7 +58,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		if (body.real_name)
 			name = body.real_name
 		else
-			if (body.mind.name)
+			if (body && body.mind && body.mind.name)
 				name = body.mind.name
 			else
 				if (gender == MALE)

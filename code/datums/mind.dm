@@ -106,6 +106,11 @@
 	memory += "[new_text]<BR>"
 
 /datum/mind/proc/show_memory(mob/recipient)
+	if (!recipient)
+		return
+	var/client/C = recipient.client
+	if(!C)
+		return
 	var/output = "<b>You are <span style = 'font-size: 1.25em; color: #E1E1FF'>[current.real_name]</span></b><hr>"
 	for (var/title in notes)
 		output += "<br><br>"

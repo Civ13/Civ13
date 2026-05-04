@@ -21,7 +21,6 @@ var/list/delayed_garbage = list()
 
 /process/garbage/setup()
 	name = "garbage"
-	is_subsystem_member = TRUE
 	schedule_interval = 5 SECONDS
 	start_delay = 0.3 SECONDS
 

@@ -1,0 +1,78 @@
+/* Civilization 13 Modern Chat Styling */
+body {
+    background-color: #392611;
+    color: #e1e1d7;
+    font-family: "Book Antiqua", "Bookman Old Style", serif;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+}
+
+#chat-container {
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    scrollbar-face-color: #a68b7d;
+    scrollbar-shadow-color: #271a0c;
+    scrollbar-highlight-color: #e1e1d7;
+    scrollbar-3dlight-color: #a68b7d;
+    scrollbar-darkshadow-color: #000000;
+    scrollbar-track-color: #392611;
+    scrollbar-arrow-color: #271a0c;
+}
+
+/* Modern scrollbar for Chromium-based BYOND */
+#chat-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+#chat-container::-webkit-scrollbar-track {
+    background: #392611;
+}
+
+#chat-container::-webkit-scrollbar-thumb {
+    background: #a68b7d;
+    border: 2px solid #392611;
+    border-radius: 4px;
+}
+
+#chat-container::-webkit-scrollbar-thumb:hover {
+    background: #bda294;
+}
+
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    word-wrap: break-word;
+}
+
+.message {
+    line-height: 1.3;
+    opacity: 0;
+    animation: fadeIn 0.2s forwards ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Standard SS13 styles fallback */
+.notice { color: #5cb85c; }
+.warning { color: #f0ad4e; font-weight: bold; }
+.danger { color: #d9534f; font-weight: bold; }
+.admin { color: #9b59b6; font-weight: bold; }
+.ooc { color: #3498db; font-weight: bold; }
+
+a {
+    color: #a68b7d;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #e1e1d7;
+}

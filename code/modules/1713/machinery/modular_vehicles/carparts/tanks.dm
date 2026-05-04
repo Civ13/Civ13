@@ -543,6 +543,9 @@
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
 
+/obj/structure/vehicleparts/frame/t90a/right/door/coded
+	doorcode = 4975
+
 /obj/structure/vehicleparts/frame/t90a/rb
 	w_right = list("c_wall",TRUE,TRUE,90,90,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,50,50,FALSE,FALSE)
@@ -597,6 +600,9 @@
 	w_right = list("mt_right_door_frame",TRUE,TRUE,90,30,TRUE,TRUE)
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
+
+/obj/structure/vehicleparts/frame/t72/right/door/coded
+	doorcode = 4975
 
 /obj/structure/vehicleparts/frame/t72/rb
 	w_right = list("c_wall",TRUE,TRUE,90,90,FALSE,FALSE)
@@ -698,6 +704,10 @@
 	w_left = list("mt_left_door_frame",TRUE,TRUE,60,30,TRUE,TRUE)
 	override_roof_icon = "mt_left_door_roof"
 	override_frame_icon = "mt_left_door_frame"
+
+/obj/structure/vehicleparts/frame/leopard/right/door/coded
+	doorcode = 5970
+
 /obj/structure/vehicleparts/frame/leopard/right
 	w_right = list("mt_right_frame",TRUE,TRUE,60,35,FALSE,FALSE)
 	override_roof_icon = "mt_right_roof"
@@ -763,6 +773,10 @@
 	doorcode = 668643
 	override_roof_icon = "mt_right_door_roof"
 	override_frame_icon = "mt_right_door_frame"
+
+/obj/structure/vehicleparts/frame/omw22_2/right/door/coded
+	doorcode = 5970
+
 /obj/structure/vehicleparts/frame/omw22_2/rb
 	w_right = list("c_wall",TRUE,TRUE,50,40,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,50,40,FALSE,FALSE)
@@ -824,6 +838,10 @@
 	doorcode = 932145
 	override_roof_icon = "baf1_bcr"
 	override_frame_icon = "mt_right_door_frame"
+
+/obj/structure/vehicleparts/frame/baf1_a/right/door/coded
+	doorcode = 9950
+
 /obj/structure/vehicleparts/frame/baf1_a/rb
 	w_right = list("c_wall",TRUE,TRUE,40,35,FALSE,FALSE)
 	w_back = list("mt_right_back_frame",TRUE,TRUE,40,35,FALSE,FALSE)

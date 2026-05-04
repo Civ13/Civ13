@@ -9,6 +9,9 @@
 			//Or someone snoring.  So we make it where they won't hear it.
 		return
 
+	if (!alt_message)
+		alt_message = message
+
 	//make sure the air can transmit speech - hearer's side
 	original_message = message
 
@@ -98,6 +101,7 @@
 				H.add_language("[lname]", FALSE)
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
+
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
 	to_chat(src, message)

@@ -2,7 +2,6 @@
 	var/last = 0
 /process/python/setup()
 	name = "python"
-	is_subsystem_member = TRUE
 	schedule_interval = 2 SECONDS
 	start_delay = 1 SECOND
 	fires_at_gamestates = list()

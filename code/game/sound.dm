@@ -420,8 +420,14 @@ var/list/charge_sounds_generic_female = list(
 var/const/FALLOFF_SOUNDS = 0.5
 
 /mob/proc/playsound_local(var/turf/turf_source, soundin, vol as num, vary, frequency, falloff, is_global)
-	if (!client || ear_deaf > 0)	return
+	if (!client || ear_deaf > 0)
+		return
+	if (!vol || vol <= 0)
+		return
 	soundin = get_sfx(soundin)
+
+	if (!soundin || soundin == "/sound")
+		return	// Invalid sound, don't play anything
 
 	var/distance = -1
 

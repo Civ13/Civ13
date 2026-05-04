@@ -12,6 +12,9 @@
 	var/totalPlayersReady = 0
 	var/desired_job = null // job title. This is for join queues.
 	var/datum/job/delayed_spawning_as_job = null // job title. Self explanatory.
+
+	var/pregameBrowserLoaded = FALSE
+	
 	universal_speak = TRUE
 
 	invisibility = 101
@@ -228,6 +231,8 @@ var/global/redirect_all_players = null
 			src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS cant last forever yo
 
 			observer.started_as_observer = TRUE
+			if (config && config.opendream)
+				client?.unload_pregame()
 			close_spawn_windows()
 			var/turf/T = get_turf(locate(1,1,world.maxz))
 			if (T)
@@ -1739,13 +1744,17 @@ var/global/redirect_all_players = null
 		chosen_species = all_species[client.prefs.species]
 		use_species_name = chosen_species.get_station_variant() //Only used by pariahs atm.
 
-	if (chosen_species && use_species_name)
-		// Have to recheck admin due to no usr at roundstart. Latejoins are fine though.
-		if (is_species_whitelisted(chosen_species) || has_admin_rights())
-			new_character = new mobtype(loc, use_species_name)
+	new_character = null
+
+	if (chosen_species && use_species_name && (is_species_whitelisted(chosen_species) || has_admin_rights()))
+		new_character = new mobtype(loc, use_species_name)
 
 	if (!new_character)
 		new_character = new mobtype(loc)
+
+	// Safety check - prevent the runtime
+	if (!new_character)
+		return
 
 	new_character.stopDumbDamage = TRUE
 	new_character.lastarea = get_area(loc)
@@ -1795,6 +1804,8 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/close_spawn_windows()
 	src << browse(null, "window=latechoices") //closes late choices window
 	src << browse(null, "window=playersetup") //closes the player setup window
+	if (config && config.opendream)
+		client?.unload_pregame()
 
 /mob/new_player/proc/has_admin_rights()
 	return check_rights(R_ADMIN, FALSE, src)

@@ -1,0 +1,84 @@
+/**
+ * Chat module for browser-based chat interface.
+ */
+
+/client
+	var/datum/chat/chat
+	var/obj/screen/lobby_image/lobby_image_obj
+
+/datum/chat
+	var/client/client
+	var/is_ready = FALSE
+	var/list/message_queue = list()
+
+/datum/chat/New(client/C)
+	src.client = C
+
+/datum/chat/proc/load()
+	if (!client)
+		return
+	
+	client << browse_rsc('code/js/purify.min.js', "purify.min.js")
+	// No longer sending individual CSS/JS as they are inlined for reliability
+	client << browse('interface/chat/chat.html', "window=browser_chat")
+	// world.log << "DEBUG: Chat loading for [client.ckey]"
+
+/datum/chat/proc/on_ready()
+	is_ready = TRUE
+	for (var/message in message_queue)
+		send_message(message)
+	message_queue.Cut()
+
+#define MAX_CHAT_QUEUE 200
+
+/datum/chat/proc/send_message(message)
+	if (!client)
+		return
+	
+	if (!is_ready)
+		if (message_queue.len >= MAX_CHAT_QUEUE)
+			message_queue.Cut(1, 2) // drop oldest
+		message_queue += message
+		return
+
+	// Escape message for JS
+	var/escaped_message = json_encode(list("message" = message))
+	client << output(escaped_message, "browser_chat:receiveMessage")
+
+/**
+ * Global chat wrapper to replace the to_chat macro functionality.
+ */
+/proc/to_chat_wrapper(target, message)
+	if (!target || !message)
+		return
+
+	if (istype(target, /client))
+		var/client/C = target
+		if (C.chat)
+			C.chat.send_message(message)
+		else
+			C << message
+			world.log << "to_chat_wrapper: [C.ckey] has no chat datum, message dropped: [message]"
+		return
+
+	if (istype(target, /mob))
+		var/mob/M = target
+		if (M.client)
+			to_chat_wrapper(M.client, message)
+		else
+			// Fallback for mobs without clients (logs or similar)
+			M << message
+		return
+
+	if (istype(target, /list))
+		for (var/T in target)
+			to_chat_wrapper(T, message)
+		return
+
+	if (target == world)
+		for (var/client/C in clients)
+			to_chat_wrapper(C, message)
+		return
+
+	// Final fallback
+	target << message

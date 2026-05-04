@@ -15,7 +15,6 @@
 
 /process/time_track/setup()
 	name = "time tracking"
-	is_subsystem_member = TRUE
 	schedule_interval = 1 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	averages.len = 10
@@ -34,7 +33,10 @@
 
 	if (!first_run)
 		var/tick_drift = max(0, (((current_realtime - last_tick_realtime) - (current_byondtime - last_tick_byond_time)) / world.tick_lag))
-		dilation = tick_drift / (current_tickcount - last_tick_tickcount) * 100
+		if ((current_tickcount - last_tick_tickcount) * 100 == 0)
+			dilation = 0
+		else
+			dilation = tick_drift / (current_tickcount - last_tick_tickcount) * 100
 	else
 		first_run = FALSE
 

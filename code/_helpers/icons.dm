@@ -251,29 +251,6 @@ icon
 			upper.MapColors((255-TONE[1])/(255-gray),0,0,0, FALSE,(255-TONE[2])/(255-gray),0,0, FALSE,0,(255-TONE[3])/(255-gray),0, FALSE,0,0,0, FALSE,0,0,1)
 			Blend(upper, ICON_ADD)
 
-	// Take the minimum color of two icons; combine transparency as if blending with ICON_ADD
-	proc/MinColors(icon)
-		var/icon/I = new(src)
-		I.Opaque()
-		I.Blend(icon, ICON_SUBTRACT)
-		Blend(I, ICON_SUBTRACT)
-
-	// Take the maximum color of two icons; combine opacity as if blending with ICON_OR
-	proc/MaxColors(icon)
-		var/icon/I
-		if (isicon(icon))
-			I = new(icon)
-		else
-			// solid color
-			I = new(src)
-			I.Blend("#000000", ICON_OVERLAY)
-			I.SwapColor("#000000", null)
-			I.Blend(icon, ICON_OVERLAY)
-		var/icon/J = new(src)
-		J.Opaque()
-		I.Blend(J, ICON_SUBTRACT)
-		Blend(I, ICON_OR)
-
 	// make this icon fully opaque--transparent pixels become black
 	proc/Opaque(background = "#000000")
 		SwapColor(null, background)
@@ -805,30 +782,6 @@ proc/getIconMask(atom/A)//By yours truly. Creates a dynamic mask for a mob/whate
 		//Also, icons cannot directly set icon_state. Slower than changing variables but whatever.
 		alpha_mask.Blend(image_overlay,ICON_OR)//OR so they are lumped together in a nice overlay.
 	return alpha_mask//And now return the mask.
-
-/mob/proc/AddCamoOverlay(atom/A)//A is the atom which we are using as the overlay.
-	var/icon/opacity_icon = new(A.icon, A.icon_state)//Don't really care for overlays/underlays.
-	//Now we need to culculate overlays+underlays and add them together to form an image for a mask.
-	//var/icon/alpha_mask = getFlatIcon(src)//Accurate but SLOW. Not designed for running each tick. Could have other uses I guess.
-	var/icon/alpha_mask = getIconMask(src)//Which is why I created that proc. Also a little slow since it's blending a bunch of icons together but good enough.
-	opacity_icon.AddAlphaMask(alpha_mask)//Likely the main source of lag for this proc. Probably not designed to run each tick.
-	opacity_icon.ChangeOpacity(0.4)//Front end for MapColors so it's fast. 0.5 means half opacity and looks the best in my opinion.
-	for (var/i=0,i<5,i++)//And now we add it as overlays. It's faster than creating an icon and then merging it.
-		var/image/I = image("icon" = opacity_icon, "icon_state" = A.icon_state, "layer" = layer+0.8)//So it's above other stuff but below weapons and the like.
-		switch(i)//Now to determine offset so the result is somewhat blurred.
-			if (1)	I.pixel_x--
-			if (2)	I.pixel_x++
-			if (3)	I.pixel_y--
-			if (4)	I.pixel_y++
-		overlays += I//And finally add the overlay.
-
-/proc/getHologramIcon(icon/A, safety=1)//If safety is on, a new icon is not created.
-	var/icon/flat_icon = safety ? A : new(A)//Has to be a new icon to not constantly change the same icon.
-	flat_icon.ColorTone(rgb(125,180,225))//Let's make it bluish.
-	flat_icon.ChangeOpacity(0.5)//Make it half transparent.
-	var/icon/alpha_mask = new('icons/effects/effects.dmi', "scanline")//Scanline effect.
-	flat_icon.AddAlphaMask(alpha_mask)//Finally, let's mix in a distortion effect.
-	return flat_icon
 
 //For photo camera.
 /proc/build_composite_icon(atom/A)

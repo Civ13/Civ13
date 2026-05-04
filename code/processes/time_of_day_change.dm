@@ -6,7 +6,6 @@
 
 /process/time_of_day_change/setup()
 	name = "time of day change"
-	is_subsystem_member = TRUE
 	schedule_interval = 2 SECONDS
 	fires_at_gamestates = list() // this doesn't fire normally
 	priority = PROCESS_PRIORITY_HIGH
@@ -27,16 +26,15 @@
 		log_admin(M)
 		message_admins(M)
 
-	if (!setup_lighting)
-		for (var/lighting_overlay in lighting_overlay_list)
-			var/atom/movable/lighting_overlay/LO = lighting_overlay
-			if (LO.invisibility)
-				LO.invisibility = 0
-			CHECK_TICK
-		setup_lighting = TRUE
+	for (var/lighting_overlay in lighting_overlay_list)
+		var/atom/movable/lighting_overlay/LO = lighting_overlay
+		LO.invisibility = 0
+		CHECK_TICK
+	setup_lighting = TRUE
 
+	var/m_lighting_z = max_lighting_z()
 	for (var/turf/T in turfs)
-		if (T.z <= max_lighting_z())
+		if (T.z <= m_lighting_z)
 			var/area/a = T.loc
 
 			var/areacheck = TRUE
@@ -51,9 +49,9 @@
 
 		// regardless of whether or not we use dynamic lighting here
 		// we still need to change the TOD to prevent Vampire dusting
-		for (var/atom/movable/lighting_overlay/LO in T.contents)
-			LO.TOD = time_of_day
-
+		if (T.contents.len)
+			for (var/atom/movable/lighting_overlay/LO in T.contents)
+				LO.TOD = time_of_day
 		CHECK_TICK
 
 	if (announce)

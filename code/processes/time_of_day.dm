@@ -5,7 +5,6 @@ var/TOD_may_automatically_change = FALSE
 
 /process/time_of_day/setup()
 	name = "time of day cycle"
-	is_subsystem_member = TRUE
 	schedule_interval = 10 SECONDS
 	start_delay = 2 SECONDS
 	fires_at_gamestates = list(GAME_STATE_PLAYING)

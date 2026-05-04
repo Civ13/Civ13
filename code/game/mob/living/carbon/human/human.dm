@@ -873,9 +873,8 @@ var/list/coefflist = list()
 				if (status == "")
 					status = " OK"
 
-				src << output(text("\t [] []:[][]",status==" OK"?"<span class = 'notice'>":"<span class = 'warning'> ", capitalize(org.name), status, "</span>"), TRUE)
-
-
+				var/prefix = (status == " OK") ? "<span class='notice'>" : "<span class='warning'>"
+				src << "\t[prefix] [capitalize(org.name)]:[status] </span>"
 
 
 /mob/living/human/print_flavor_text(var/shrink = TRUE)

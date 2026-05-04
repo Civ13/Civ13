@@ -774,3 +774,10 @@ proc/dd_sortedTextList(list/incoming)
 
 #define listequal(A, B) (A.len == B.len && !length(A^B))
 
+//since alist "len" doesn't work in OD yet
+proc/alist_length(list/L)
+    var/count = 0
+    // The `for (var/k in L)` iteration works for both normal lists and alists
+    for (var/k in L)
+        count++
+    return count

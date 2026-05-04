@@ -94,6 +94,9 @@ var/world_is_open = TRUE
 //	load_mods()
 	//end-emergency fix
 
+	lobby_titlecard = new /datum/titlecard()
+	lobby_titlecard.set_pregame_html()
+	
 	update_status()
 
 	..()

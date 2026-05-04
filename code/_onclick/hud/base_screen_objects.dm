@@ -23,10 +23,10 @@
 	var/process_flag = FALSE
 	var/hideflag = FALSE
 
-/obj/screen/New(_name = "unnamed", _screen_loc = "7,7", mob/living/_parentmob, _icon, _icon_state)
+/obj/screen/New(_name, _screen_loc, mob/living/_parentmob, _icon, _icon_state)
 	parentmob = _parentmob
-	name = _name
-	screen_loc = _screen_loc
+	if (_name) name = _name
+	if (_screen_loc) screen_loc = _screen_loc
 	if (parentmob && parentmob.client)
 		icon = parentmob.client.prefs.UI_file
 	if (_icon)
@@ -870,10 +870,10 @@
 			if(80 to INFINITY)
 				icon_state = "mood1"
 		if(old_icon && old_icon != icon_state)
-			if(old_mood > L.mood)
-				src << "<span class='warning'>My mood gets worse.</span>"
+			if(L && old_mood > L.mood)
+				L << "<span class='warning'>My mood gets worse.</span>"
 			else
-				src << "<span class='info'>My mood gets better.</span>"
+				L << "<span class='info'>My mood gets better.</span>"
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"
