@@ -125,6 +125,7 @@
 #include "code\datums\hud.dm"
 #include "code\datums\mind.dm"
 #include "code\datums\progressbar.dm"
+#include "code\datums\titlecard.dm"
 #include "code\datums\vote.dm"
 #include "code\datums\weakref.dm"
 #include "code\datums\win_condition.dm"

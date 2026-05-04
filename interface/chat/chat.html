@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -64,16 +65,41 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Standard SS13 styles fallback */
-        .notice { color: #5cb85c; }
-        .warning { color: #f0ad4e; font-weight: bold; }
-        .danger { color: #d9534f; font-weight: bold; }
-        .admin { color: #9b59b6; font-weight: bold; }
-        .ooc { color: #3498db; font-weight: bold; }
+        .notice {
+            color: #5cb85c;
+        }
+
+        .warning {
+            color: #f0ad4e;
+            font-weight: bold;
+        }
+
+        .danger {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .admin {
+            color: #9b59b6;
+            font-weight: bold;
+        }
+
+        .ooc {
+            color: #3498db;
+            font-weight: bold;
+        }
 
         a {
             color: #a68b7d;
@@ -84,7 +110,9 @@
             color: #e1e1d7;
         }
     </style>
+    <title>Civilization 13 Chat</title>
 </head>
+
 <body style="background-color: #392611; color: #e1e1d7;">
     <div id="chat-container">
         <div id="messages"></div>
@@ -102,7 +130,7 @@
 
         function receiveMessage(data) {
             let messageHtml = '';
-            
+
             if (typeof data === 'string' && data.charAt(0) === '{') {
                 try {
                     const parsed = JSON.parse(data);
@@ -126,9 +154,9 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
             messageDiv.innerHTML = messageHtml;
-            
+
             messagesContainer.appendChild(messageDiv);
-            
+
             // Smooth auto-scroll
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
@@ -145,4 +173,5 @@
         window.location.href = '?chat_ready=1';
     </script>
 </body>
+
 </html>

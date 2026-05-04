@@ -31,7 +31,8 @@
 	my_client = client
 	sight |= SEE_TURFS
 	player_list |= src
-
+	if (config && config.opendream)
+		src.client?.load_pregame()
 	new_player_panel()
 
 	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))

@@ -53,6 +53,8 @@ var/custom_event_msg = null
 // Bomb cap!
 var/max_explosion_range = 14
 
+var/global/datum/titlecard/lobby_titlecard
+
 // Announcer intercom, because too much stuff creates an intercom for one message then hard del()s it.
 //var/global/obj/item/radio/intercom/global_announcer = new(null)
 

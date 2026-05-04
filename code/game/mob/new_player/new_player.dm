@@ -12,6 +12,9 @@
 	var/totalPlayersReady = 0
 	var/desired_job = null // job title. This is for join queues.
 	var/datum/job/delayed_spawning_as_job = null // job title. Self explanatory.
+
+	var/pregameBrowserLoaded = FALSE
+	
 	universal_speak = TRUE
 
 	invisibility = 101
