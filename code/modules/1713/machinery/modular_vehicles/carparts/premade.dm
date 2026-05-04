@@ -1017,7 +1017,7 @@
 	"2,2" = list(/obj/structure/vehicleparts/frame/baf1_a, /obj/structure/turret/m1abrams),
 	"3,2" = list(/obj/structure/vehicleparts/frame/baf1_a/left, /obj/structure/shellrack/full120),
 
-	"1,3" = list(/obj/structure/vehicleparts/frame/baf1_a/right/door),
+	"1,3" = list(/obj/structure/vehicleparts/frame/baf1_a/right/door/coded),
 	"2,3" = list(/obj/structure/vehicleparts/frame/baf1_a),
 	"3,3" = list(/obj/structure/vehicleparts/frame/baf1_a/left),
 
