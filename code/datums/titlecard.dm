@@ -82,12 +82,15 @@ var/global/pregameHTML = null
 				C.load_pregame()
 
 /client/proc/load_pregame()
-	if (config && !config.opendream)
-		return
-	if (!pregameHTML || !src) return
-	src << browse(pregameHTML, "window=pregameBrowser")
-	winshow(src, "pregameBrowser", TRUE)
+	if (config && config.opendream)
+		if (!pregameHTML || !src) return
+		src << browse(pregameHTML, "window=pregameBrowser")
+		winshow(src, "pregameBrowser", TRUE)
 
-	if (isnewplayer(src.mob))
-		var/mob/new_player/new_player = src.mob
-		new_player.pregameBrowserLoaded = TRUE
+		if (isnewplayer(src.mob))
+			var/mob/new_player/new_player = src.mob
+			new_player.pregameBrowserLoaded = TRUE
+
+/client/proc/unload_pregame()
+	src << browse("", "window=pregameBrowser")
+	winshow(src, "pregameBrowser", FALSE)

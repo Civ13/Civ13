@@ -20,7 +20,7 @@
 		return TRUE
 
 /datum/surgery_step/generic/cut_open
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife",75),
@@ -64,7 +64,7 @@
 		affected.createwound(CUT, 10)
 
 /datum/surgery_step/generic/clamp_bleeders
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/material/rope",50),
@@ -100,7 +100,7 @@
 		affected.createwound(CUT, 10)
 
 /datum/surgery_step/generic/retract_skin
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/retractor",100),
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",70),
@@ -157,7 +157,7 @@
 		target.apply_damage(12, BRUTE, affected, sharp=1)
 
 /datum/surgery_step/generic/cauterize
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
 		3 = list("/obj/item/clothing/mask/smokable/cigarette/cigar",60),
@@ -194,7 +194,7 @@
 		target.apply_damage(3, BURN, affected)
 
 /datum/surgery_step/generic/amputate
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/bone_saw",100),
 		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",30),

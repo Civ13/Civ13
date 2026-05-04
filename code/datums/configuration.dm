@@ -496,6 +496,8 @@ var/list/gamemode_cache = list()
 		world.visibility = TRUE
 	else
 		world.visibility = FALSE
+	if (config.opendream)
+		log_world("Running on OpenDream mode.")
 
 /datum/configuration/proc/post_load()
 	return

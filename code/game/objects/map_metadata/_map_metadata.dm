@@ -45,7 +45,7 @@ var/civmax_research = list(230,230,230)
 	var/mosinonly = FALSE
 	var/squads = 1
 	var/fob_spawns = FALSE
-	var/list/faction1_squads = alist(
+	var/list/faction1_squads = list(
 		1 = list(),
 		2 = list(),
 		3 = list(),
@@ -54,7 +54,7 @@ var/civmax_research = list(230,230,230)
 		6 = list(),
 		7 = list(),
 	)
-	var/list/faction2_squads = alist(
+	var/list/faction2_squads = list(
 		1 = list(),
 		2 = list(),
 		3 = list(),
@@ -63,7 +63,7 @@ var/civmax_research = list(230,230,230)
 		6 = list(),
 		7 = list(),
 	)
-	var/list/faction1_squad_leaders = alist(
+	var/list/faction1_squad_leaders = list(
 		1 = null,
 		2 = null,
 		3 = null,
@@ -72,7 +72,7 @@ var/civmax_research = list(230,230,230)
 		6 = null,
 		7 = null,
 	)
-	var/list/faction2_squad_leaders = alist(
+	var/list/faction2_squad_leaders = list(
 		1 = null,
 		2 = null,
 		3 = null,

@@ -16,7 +16,7 @@
 
 
 /datum/surgery_step/open_encased/saw
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/bone_saw",100),
 		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
 		3 = list("/obj/item/weapon/material/hatchet",75),
@@ -68,7 +68,7 @@
 
 
 /datum/surgery_step/open_encased/retract
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/retractor",100),
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",70),
@@ -128,7 +128,7 @@
 		affected.fracture()
 
 /datum/surgery_step/open_encased/close
-	allowed_tools = alist(
+	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/retractor",100),
 		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
 		3 = list("/obj/item/weapon/crowbar",70),

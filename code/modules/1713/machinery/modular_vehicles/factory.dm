@@ -6,7 +6,7 @@
 var/global/datum/vehicle_factory/vehicle_factory = new()
 
 /datum/vehicle_factory
-	var/alist/templates = alist()
+	var/alist/templates = list()
 
 	New()
 		..()

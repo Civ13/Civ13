@@ -231,6 +231,8 @@ var/global/redirect_all_players = null
 			src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS cant last forever yo
 
 			observer.started_as_observer = TRUE
+			if (config && config.opendream)
+				client?.unload_pregame()
 			close_spawn_windows()
 			var/turf/T = get_turf(locate(1,1,world.maxz))
 			if (T)
@@ -1802,6 +1804,8 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/close_spawn_windows()
 	src << browse(null, "window=latechoices") //closes late choices window
 	src << browse(null, "window=playersetup") //closes the player setup window
+	if (config && config.opendream)
+		client?.unload_pregame()
 
 /mob/new_player/proc/has_admin_rights()
 	return check_rights(R_ADMIN, FALSE, src)
