@@ -35,4 +35,4 @@ function receiveMessage(data) {
 window.receiveMessage = receiveMessage;
 
 // Notify BYOND that we are ready
-window.location.href = '?chat_ready=1';
+window.location.href = 'byond://?chat_ready=1';

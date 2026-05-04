@@ -270,27 +270,28 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 
 		var/atom/oldeye = M.client.eye
 		var/turf/origin = get_turf(M)
+		if (!origin)
+			if (M) M.shakecamera = FALSE
+			return
 
+		var/obj/effect/temp_eye = new /obj/effect(origin)
 		for (var/x = 0; x < duration; x++)
 			if (!M || !M.client)
 				break
 
-			// Quick & Dirty: Create a temporary movable atom so OpenDream doesn't complain
-			var/obj/effect/temp_eye = new(locate(
+			temp_eye.loc = locate(
 				dd_range(1, origin.x + rand(-strength, strength), world.maxx),
 				dd_range(1, origin.y + rand(-strength, strength), world.maxy),
 				origin.z
-			))
-
+			)
 			M.client.eye = temp_eye
 			sleep(1)
-
-			qdel(temp_eye)   // Clean up immediately
 
 		// Restore original eye
 		if (M && M.client)
 			M.client.eye = oldeye
 
+		qdel(temp_eye)
 		if (M)
 			M.shakecamera = FALSE
 

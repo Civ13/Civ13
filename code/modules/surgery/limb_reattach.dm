@@ -17,7 +17,7 @@
 		return !isnull(organ_data)
 
 /datum/surgery_step/limb/attach
-	allowed_tools = list(1 = list("/obj/item/organ/external",100))
+	allowed_tools = alist(1 = list("/obj/item/organ/external",100))
 
 	min_duration = 50
 	max_duration = 70
@@ -44,7 +44,7 @@
 		target.apply_damage(10, BRUTE, null, sharp=1)
 
 /datum/surgery_step/limb/connect
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/material/rope",50),

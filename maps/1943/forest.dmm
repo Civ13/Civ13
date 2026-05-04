@@ -712,7 +712,7 @@
 "nJ" = (/obj/structure/bed/chair/office/dark,/obj/structure/vehicleparts/frame/car/rf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/german)
 "nK" = (/obj/structure/bed/chair/drivers,/obj/structure/vehicleparts/frame/car/lf/truck{noroof = 0},/turf/floor/plating/road,/area/caribbean/german)
 "nL" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/vehicleparts/frame/car/rf,/obj/structure/vehicleparts/movement,/turf/floor/plating/road,/area/caribbean/german)
-"nM" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/vehicleparts/axis/car{name = "Opel Blitz"; color = "#636351"; speedlist = list(7,5,3.8,2.4,1.4)},/turf/floor/plating/road,/area/caribbean/german)
+"nM" = (/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/frame/car/lf,/obj/structure/vehicleparts/movement/reversed{icon_state = "wheel_t_dark"; dir = 1},/obj/structure/vehicleparts/axis/car{name = "Opel Blitz"; color = "#636351"; speedlist = alist(7,5,3.8,2.4,1.4)},/turf/floor/plating/road,/area/caribbean/german)
 "nN" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/plating/tiled,/area/caribbean/german/inside)
 "nO" = (/obj/structure/radio/receiver/loudspeaker/faction1,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/german)
 "nP" = (/obj/structure/closet/crate/rations/beer,/turf/floor/plating/tiled,/area/caribbean/german/inside)

@@ -117,6 +117,7 @@
     <div id="chat-container">
         <div id="messages"></div>
     </div>
+    <script src="purify.min.js"></script>
     <script>
         const chatContainer = document.getElementById('chat-container');
         const messagesContainer = document.getElementById('messages');
@@ -153,8 +154,7 @@
 
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
-            messageDiv.innerHTML = messageHtml;
-
+            messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, { USE_PROFILES: { html: true } });
             messagesContainer.appendChild(messageDiv);
 
             // Smooth auto-scroll
@@ -170,7 +170,7 @@
         window.receiveMessage = receiveMessage;
 
         // Notify BYOND that we are ready
-        window.location.href = '?chat_ready=1';
+        window.location.href = 'byond://?chat_ready=1';
     </script>
 </body>
 

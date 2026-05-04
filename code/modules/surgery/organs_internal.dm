@@ -16,7 +16,7 @@
 //				CHEST INTERNAL ORGAN SURGERY					//
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/internal/fix_organ
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/stack/medical/advanced/bruise_pack",100),
 		2 = list("/obj/item/stack/medical/advanced/herbs",100),
 		3 = list("/obj/item/stack/medical/bruise_pack",100),
@@ -102,7 +102,7 @@
 
 /datum/surgery_step/internal/detatch_organ
 
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/knife",75),
@@ -164,7 +164,7 @@
 
 /datum/surgery_step/internal/remove_organ
 
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/fork",20),
@@ -220,7 +220,7 @@
 		affected.createwound(BRUISE, 20)
 
 /datum/surgery_step/internal/replace_organ
-	allowed_tools = list(1 = list("/obj/item/organ",100))
+	allowed_tools = alist(1 = list("/obj/item/organ",100))
 
 	min_duration = 60
 	max_duration = 80

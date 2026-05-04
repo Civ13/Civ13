@@ -4,7 +4,7 @@
 	var/priority = FALSE	//steps with higher priority would be attempted first
 	var/req_open = TRUE		// TRUE means the part must be cut open, FALSE means it doesn't
 	// type path referencing tools that can be used for this step, and how well are they suited for it
-	var/alist/allowed_tools = list(1 = list("/obj/item/cursedtreasure",100)) //so its not used
+	var/alist/allowed_tools = alist(1 = list("/obj/item/cursedtreasure",100)) //so its not used
 	// type paths referencing races that this step applies to.
 	var/list/allowed_species = null
 	var/list/disallowed_species = null
@@ -21,7 +21,8 @@
 	//returns how well the tool is suited for this step. from 1 to 100 (to be used as a prob of suceeding)
 	proc/tool_quality(obj/item/TT, var/mob/living/human/user)
 		var/quality = FALSE
-		for (var/i = 1, i <= allowed_tools.len, i++)
+		var/alist_len = alist_length(allowed_tools)
+		for (var/i = 1, i <= alist_len, i++)
 			if (istype(TT, text2path(allowed_tools[i][1])))
 				quality = allowed_tools[i][2]
 		if (istype(user, /mob/living/human))

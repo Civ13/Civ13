@@ -18,6 +18,7 @@
 	if (!client)
 		return
 	
+	client << browse_rsc('code/js/purify.min.js', "purify.min.js")
 	// No longer sending individual CSS/JS as they are inlined for reliability
 	client << browse('interface/chat/chat.html', "window=browser_chat")
 	// world.log << "DEBUG: Chat loading for [client.ckey]"
@@ -28,11 +29,15 @@
 		send_message(message)
 	message_queue.Cut()
 
+#define MAX_CHAT_QUEUE 200
+
 /datum/chat/proc/send_message(message)
 	if (!client)
 		return
 	
 	if (!is_ready)
+		if (message_queue.len >= MAX_CHAT_QUEUE)
+			message_queue.Cut(1, 2) // drop oldest
 		message_queue += message
 		return
 
@@ -53,6 +58,7 @@
 			C.chat.send_message(message)
 		else
 			C << message
+			world.log << "to_chat_wrapper: [C.ckey] has no chat datum, message dropped: [message]"
 		return
 
 	if (istype(target, /mob))

@@ -39,7 +39,7 @@
 		affected.createwound(CUT, 20)
 
 /datum/surgery_step/cavity/make_space
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/scalpel",100),
 		2 = list("/obj/item/weapon/surgery/scalpel/bronze",100),
 		3 = list("/obj/item/weapon/pen",75),
@@ -69,7 +69,7 @@
 
 /datum/surgery_step/cavity/close_space
 	priority = TRUE
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
 		3 = list("/obj/item/clothing/mask/smokable/cigarette/cigar",60),
@@ -99,7 +99,7 @@
 
 /datum/surgery_step/cavity/place_item
 	priority = 0
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item",100),
 	)
 
@@ -145,7 +145,7 @@
 //////////////////////////////////////////////////////////////////
 
 /datum/surgery_step/internal/implant_removal
-	allowed_tools = list(
+	allowed_tools = alist(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/wirecutters",75),
 		3 = list("/obj/item/weapon/material/kitchen/utensil/fork",35),
