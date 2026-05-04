@@ -142,8 +142,8 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		for (var/I in hear)
 			if (ismob(I))
 				var/mob/M = I
-				listening += M
-				hearturfs += M.locs[1]
+				listening |= M
+				hearturfs |= M.locs[1]
 			else if (isobj(I))
 				var/obj/O = I
 				hearturfs += O.locs[1]

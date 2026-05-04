@@ -102,6 +102,7 @@
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
+
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
 	to_chat(src, message)
 	if (speaker && message2 != "")

@@ -4,6 +4,7 @@
 
 /client
 	var/datum/chat/chat
+	var/obj/screen/lobby_image/lobby_image_obj
 
 /datum/chat
 	var/client/client
@@ -18,7 +19,7 @@
 		return
 	
 	// No longer sending individual CSS/JS as they are inlined for reliability
-	client << browse('interface/chat/chat.html', "window=output")
+	client << browse('interface/chat/chat.html', "window=browser_chat")
 	// world.log << "DEBUG: Chat loading for [client.ckey]"
 
 /datum/chat/proc/on_ready()
@@ -37,7 +38,7 @@
 
 	// Escape message for JS
 	var/escaped_message = json_encode(list("message" = message))
-	client << output(escaped_message, "output:receiveMessage")
+	client << output(escaped_message, "browser_chat:receiveMessage")
 
 /**
  * Global chat wrapper to replace the to_chat macro functionality.

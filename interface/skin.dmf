@@ -588,13 +588,14 @@ window "outputwindow"
 		saved-params = "pos;size;is-minimized;is-maximized"
 		is-pane = true
 		can-scroll = vertical
-	elem "output"
+	elem "browser_chat"
 		type = BROWSER
 		pos = 0,0
 		size = 480x450
 		anchor1 = 0,0
 		anchor2 = 100,100
 		background-color = #392611
+		is-default = false
 		saved-params = ""
 	elem "input"
 		type = INPUT
@@ -606,9 +607,17 @@ window "outputwindow"
 		font-size = 8
 		text-color = #e1e1d7
 		background-color = #a68b7d
-		is-default = true
+		is-default = false
 		border = sunken
 		saved-params = ""
+	elem "hidden_output"
+		type = OUTPUT
+		pos = 0,0
+		size = 1x1
+		anchor1 = 0,0
+		anchor2 = 0,0
+		is-visible = false
+		is-default = true
 
 window "infowindow"
 	elem "infowindow"

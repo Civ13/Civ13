@@ -52,17 +52,18 @@
 		message.target = target
 		message.owner = owner
 		message.plane = CHAT_PLANE
-		message.maptext_width = TILE_SIZE*7
 		if (config.opendream)
+			message.maptext_width = TILE_SIZE*5
 			message.maptext_x = 0
+			message.plane = CHAT_PLANE
+			message.layer = 35
 		else
-			message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
+			message.maptext_width = TILE_SIZE*7
+			message.maptext_x = (message.maptext_width * -0.5)-TILE_SIZE*2.5
 		message.maptext_y = TILE_SIZE*1
 		message.maptext = "<center><span style=\"font-family: 'Small Fonts'; -dm-text-outline: 1 black;\">[desired_text]</span></center>"
 		if(target)
-			if (config.opendream && !(message in target.images))
-				target.images += message
-			else if (!config.opendream)
+			if (!(message in target.images))
 				target.images += message
 			target.overlay_cleaner(message)
 		spawn(50)

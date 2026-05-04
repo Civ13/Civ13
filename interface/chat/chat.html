@@ -97,6 +97,9 @@
          * Receives a message from BYOND.
          * @param {string|object} data - The message text or a JSON object.
          */
+        let lastMessage = '';
+        let lastMessageTime = 0;
+
         function receiveMessage(data) {
             let messageHtml = '';
             
@@ -112,6 +115,13 @@
             }
 
             if (!messageHtml) return;
+
+            // Deduplication for OpenDream/BYOND glitches
+            if (messageHtml === lastMessage && (Date.now() - lastMessageTime) < 100) {
+                return;
+            }
+            lastMessage = messageHtml;
+            lastMessageTime = Date.now();
 
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
