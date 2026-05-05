@@ -54,7 +54,7 @@
 	var/next_fire_time = 0
 
 	var/sel_mode = 1 //index of the currently selected mode
-	var/list/firemodes = list()
+	var/list/datum/firemode/firemodes = list()
 	var/firemode_type = /datum/firemode //for subtypes that need custom firemode data
 
 	//aiming system stuff

@@ -330,7 +330,19 @@ proc/TextPreview(var/string,var/len=40)
 /proc/create_text_tag(var/tagname, var/tagdesc = tagname, var/client/C = null)
 	if (!(C && C.is_preference_enabled(/datum/client_preference/chat_tags)))
 		return tagdesc
-	return "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='[tagname]'" + (tagdesc ? " alt='[tagdesc]'" : "") + ">"
+	
+	var/display_text = tagdesc
+	// Use specific labels/symbols if tagdesc is generic or empty
+	if (!display_text || display_text == tagname || display_text == "[tagname]:")
+		switch(tagname)
+			if("pm_in") display_text = "PM &rarr;"
+			if("pm_out_alt") display_text = "PM &larr;"
+			if("pm_other") display_text = "PM &harr;"
+			if("asay") display_text = "A-SAY"
+			if("a-discord") display_text = "A-DISC"
+			else display_text = uppertext(tagname)
+
+	return "<span class='text_tag tag-[tagname]'>[display_text]</span>"
 
 /proc/contains_az09(var/input)
 	for (var/i=1, i<=length(input), i++)

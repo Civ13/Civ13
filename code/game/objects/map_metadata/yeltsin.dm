@@ -237,8 +237,8 @@
 					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 					win_condition_spam_check = TRUE
 					return FALSE
-				last_win_condition = win_condition.hash
-				return TRUE
+			last_win_condition = win_condition.hash
+			return TRUE
 
 
 

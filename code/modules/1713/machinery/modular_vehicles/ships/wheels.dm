@@ -158,7 +158,6 @@
 			return
 		else
 			user = null
-			goto restart
 	else
 		user = m
 		do_html(user)

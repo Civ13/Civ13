@@ -174,6 +174,7 @@ proc/slur(phrase)
 			//if (9,10)	newletter="<b>[newletter]</b>"
 			//if (11,12)	newletter="<big>[newletter]</big>"
 			//if (13)	newletter="<small>[newletter]</small>"
+			else	// 9-14 (excluding 15): no change to newletter
 		newphrase+="[newletter]";counter-=1
 	return html_encode(newphrase)
 
@@ -381,7 +382,7 @@ proc/is_blind(A)
 					else										// Everyone else (dead people who didn't ghost yet, etc.)
 						lname = name
 				lname = "<span class='name'>[lname]</span> "
-			M << "<span class='deadsay'>" + create_text_tag("dead", "DEAD:", M.client) + " [lname][follow][message]</span>"
+			to_chat(M, "<span class='deadsay'>" + create_text_tag("dead", "DEAD:", M.client) + " [lname][follow][message]</span>")
 
 //Announces that a ghost has joined/left, mainly for use with wizards
 /proc/announce_ghost_joinleave(O, var/joined_ghosts = TRUE, var/message = "")

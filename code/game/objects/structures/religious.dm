@@ -968,7 +968,9 @@ obj/structure/religious/monument
 		if (findtext(i, "obj_"))
 			var/image/timg = image(icon, i)
 			overlays += timg
-	color=get_material_by_name(statue_material).icon_colour
+	var/material/M = get_material_by_name(statue_material)
+	if (M)
+		color = M.icon_colour
 
 /obj/structure/religious/statue/king
 	statue_layers = list("cl_king", "obj_spear", "obj_shield2")

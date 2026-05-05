@@ -52,7 +52,6 @@
 		spawn(vehicle_m_delay+1)
 			movement_processes--
 			movementloop()
-			return FALSE
 	else
 		return TRUE
 

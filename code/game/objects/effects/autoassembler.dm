@@ -28,7 +28,7 @@
 						central = F
 		if (!central)
 			world.log << "<b>Axis error! ([x],[y])</b>"
-			return FALSE
+			return
 		//now connect all the frames
 		for (var/obj/structure/vehicleparts/frame/A in rangeto)
 			if (!A.axis)
@@ -160,4 +160,4 @@
 				LP.desc = "A vehicle registration plate reading <b>[LP.reg_number]</b>."
 //		world.log << "[central.axis] assembly complete."
 		qdel(src)
-		return TRUE
+		return

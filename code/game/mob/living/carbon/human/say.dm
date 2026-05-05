@@ -137,6 +137,12 @@
 
 
 /mob/living/human/say_quote(var/message, var/datum/language/speaking = null)
+	if (speaking && !istype(speaking, /datum/language))
+		if (ismob(speaking))
+			var/mob/living/M = speaking
+			speaking = M.get_default_language()
+		else
+			speaking = null
 	var/verb = "says"
 	var/ending = copytext(message, length(message))
 

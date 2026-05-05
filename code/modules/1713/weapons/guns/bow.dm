@@ -134,7 +134,7 @@
 	loaded = list()
 	update_icon()
 
-/obj/item/weapon/gun/projectile/bow/Fire()
+/obj/item/weapon/gun/projectile/bow/Fire(atom/target, mob/living/user, clickparams = null, pointblank = FALSE, reflex = FALSE, forceburst = -1, force = FALSE, accuracy_mod = 1)
 	..()
 	update_icon()
 

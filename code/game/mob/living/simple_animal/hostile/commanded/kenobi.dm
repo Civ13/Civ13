@@ -43,7 +43,7 @@
 		behaviour = "wander"
 		faction = CIVILIAN
 		gun = new/obj/item/weapon/gun/projectile/pistol/ww2/nambu(src)
-		if (!(behaviour = "defends") || !(behaviour = "hostile"))
+		if (behaviour != "defends" && behaviour != "hostile")
 			icon_state = "monkey_kenobi"
 		else
 			icon_state = "monkey_kenobi_hostile"

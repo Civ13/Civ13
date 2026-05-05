@@ -209,7 +209,6 @@
 			spawn(300)
 				close_area(ar_to_close)
 				closing_areas()
-				return ar_to_close_string
 	else
 		return "too many areas closed"
 

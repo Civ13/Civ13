@@ -291,7 +291,7 @@
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
+	restart:
 	var/found_gunner = FALSE
 	for (var/obj/structure/bed/chair/gunner/G in M.loc)
 		found_gunner = TRUE
@@ -685,7 +685,7 @@
 						spawn (rand(1,2))
 							var/turf/t1 = get_turf(src)
 							playsound(t1, "artillery_out", 100, TRUE)
-							playsound(t1, "artillery_out_distant", 100, TRUE)
+							playsound(t1, "artillery_out_distance", 100, TRUE)
 
 						// actual hit somewhere (or not)
 						if (istype(src, /obj/structure/cannon/modern/tank))
@@ -1008,7 +1008,10 @@
 		point_x = ceil(i * cos(-actual_azimuth))
 		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
-			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
+			aiming_line = new('icons/effects/Targeted.dmi', src, "point")
+			aiming_line.pixel_x = point_x
+			aiming_line.pixel_y = point_y
+			aiming_line.layer = 14
 			aiming_line.alpha = 255 - (i / 1.15)
 			user.client.images += aiming_line
 
@@ -1027,10 +1030,16 @@
 		point_x = ceil(i * cos(-actual_azimuth))
 		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
-			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
+			aiming_line = new('icons/effects/Targeted.dmi', src, "point")
+			aiming_line.pixel_x = point_x
+			aiming_line.pixel_y = point_y
+			aiming_line.layer = 14
 			aiming_line.alpha = 255 - (i / 4)
 			user.client.images += aiming_line
-	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", pixel_x = point_x, pixel_y = point_y, layer = 14)
+	aiming_line = new('icons/effects/Targeted.dmi', src, "cannon_target")
+	aiming_line.pixel_x = point_x
+	aiming_line.pixel_y = point_y
+	aiming_line.layer = 14
 	user.client.images += aiming_line
 
 /obj/structure/cannon/verb/rotate_left()

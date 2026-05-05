@@ -29,7 +29,7 @@
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
+	restart:
 	if (user && user != m)
 		if (user.client)
 			return

@@ -339,7 +339,6 @@
 		if (!automovement)
 			playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
 			on = FALSE
-			return FALSE
 		process_rail_movement()
 		rail_movement()
 		rail_sound()

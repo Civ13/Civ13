@@ -26,7 +26,9 @@ var/datum/debug/debugobj
 
 var/join_motd = null
 
+
 var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
+
 
 var/season = "SPRING"
 var/game_hour = 0

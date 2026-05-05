@@ -108,16 +108,6 @@
 			else
 				H << "<span class = 'warning'>You can't smelt this.</span>"
 				return
-
-			var/space = max_space
-			for (var/obj/item/II in contents)
-				space -= II.w_class
-			if (space <= 0 || space - I.w_class < 0)
-				H << "<span class = 'warning'>\The [name] is full.</span>"
-				return
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
@@ -341,15 +331,6 @@
 			else
 				H << "<span class = 'warning'>You can't smelt this.</span>"
 				return
-			var/space = max_space
-			for (var/obj/item/II in contents)
-				space -= II.w_class
-			if (space <= 0 || space - I.w_class < 0)
-				H << "<span class = 'warning'>\The [name] is full.</span>"
-				return
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")

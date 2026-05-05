@@ -9,7 +9,7 @@
 	if (join_motd)
 		spawn (10)
 			if (src && src.client)
-				to_chat(src, "<div class='info'>Game ID: <div class='danger'>[game_id ? game_id : "Unknown"]</div></div>")
+				to_chat(src, "<div class='info'>Game ID: <span style='color:#ff3737'>[game_id ? game_id : "Unknown"]</span></div>")
 				see_personalized_MOTD()
 
 	if (!mind)
@@ -35,7 +35,7 @@
 		src.client?.load_pregame()
 	new_player_panel()
 
-	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
+	if (client && client.is_preference_enabled(/datum/client_preference/fit_viewport))
 		client.fit_viewport()
 
 	spawn (1)

@@ -170,7 +170,7 @@ the HUD updates properly! */
 			shared_job_check = TRUE
 		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
 			shared_job_check = TRUE
-		if (istype(src, /mob/living/human))
+		if (ishuman(M))
 			if (M.original_job_title != perp.original_job_title && map.civilizations == TRUE)
 				shared_job_check = FALSE
 			else if (M.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")

@@ -824,8 +824,8 @@ bullet_act
 							FB.owner = null
 						FB.last_owner = src
 						FB.pickup(src)
-						return
 						src.do_attack_animation(get_step(loc,src.dir))
+						return
 				else
 					src.football = FB
 					FB.owner = src

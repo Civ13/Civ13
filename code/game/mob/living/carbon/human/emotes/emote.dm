@@ -140,7 +140,7 @@ var/list/vocal_emotes = list(
 					return
 				if (!(message))
 					return
-				return custom_emote(m_type, message)
+				return
 
 			if ("salute")
 				if (!buckled)

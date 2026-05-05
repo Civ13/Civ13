@@ -389,8 +389,10 @@
 
 			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
 				msg += "<br><i>You recognize [T.him] as a member of your faction, <b>[civilization]</b>.</i>"
-				if (map.custom_civs[H.civilization][4] != null)
-					if (map.custom_civs[H.civilization][4].real_name == real_name)
+				var/list/civ_data = map.custom_civs[H.civilization]
+				if (civ_data[4] != null)
+					var/mob/living/human/L = civ_data[4]
+					if (L.real_name == real_name)
 						msg += "<br><b>[T.He] is the leader of your faction.</b>"
 
 			else if (civilization == "none")
@@ -421,8 +423,11 @@
 			var/mob/living/human/H = user
 			if (H.civilization != "none")
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
-				if (map && map.custom_civs[H.civilization][4] && map.custom_civs[H.civilization][4].real_name == H.real_name)
-					msg += "<br><b>You are the leader of your group.</b>"
+				var/list/civ_data = map.custom_civs[H.civilization]
+				if (civ_data && civ_data[4])
+					var/mob/living/human/L = civ_data[4]
+					if (L.real_name == H.real_name)
+						msg += "<br><b>You are the leader of your group.</b>"
 		if (left_factions.len && ishuman(user))
 			for (var/i in left_factions)
 				if (i[2]>world.realtime)

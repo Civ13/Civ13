@@ -21,7 +21,7 @@
 	//For SINGLE_CASING or SPEEDLOADER guns
 	var/max_shells = FALSE			//the number of casings that will fit inside
 	var/ammo_type = null		//the type of ammo that the gun comes preloaded with
-	var/list/loaded = list()	//stored ammo
+	var/list/obj/item/ammo_casing/loaded = list()	//stored ammo
 
 	//For MAGAZINE guns
 	var/magazine_type = null	//the type of magazine that the gun comes preloaded with

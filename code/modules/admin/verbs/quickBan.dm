@@ -240,7 +240,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 			var/faction = input("What faction?") in list(BRITISH, PIRATES, CIVILIAN, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, ITALIAN, GREEK, ROMAN, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, VIETNAMESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, CHECHEN, FILIPINO, CHINESE, POLISH, BLUEFACTION, REDFACTION, CAFR, TSFSR)
 			fields["type_specific_info"] = faction
 
-	reenter_bantime
+	reenter_bantime:
 
 	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
 	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
@@ -282,7 +282,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	fields["ban_date"] = replacetext(time2text(world.realtime, "DDD MMM DD hh:mm:ss YYYY"), ":", ".")
 
-	reenter_reason
+	reenter_reason:
 	fields["reason"] = input(src, "Provide a reason for the ban.") as text
 	if (!fields["reason"])
 		goto reenter_reason
@@ -333,7 +333,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	fields["test"] = "test"
 
 /* the actual banning procedure */
-/proc/quickBan_ban(var/list/fields, var/client/banner)
+/proc/quickBan_ban(var/list/fields, var/client/banner = null)
 
 	if (!fields)
 		fields = list()
@@ -345,12 +345,15 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	//txt database
 	text2file("[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]];[banckey];[bancID];[banip];|||","SQL/bans.txt")
-
+	var/M = ""
 	if (banner)
 		banner << "<span class = 'notice'>You have successfully banned [banckey]/[bancID]/[banip]. This ban [lowertext(expire_info)]."
-	var/M = "[key_name(banner)] banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
+		M = "[key_name(banner)] banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
+		message_admins(M, key_name(banner))
+	else
+		M = "An admin on Discord banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
+		message_admins(M, "Admin on Discord")
 	log_admin(M)
-	message_admins(M, key_name(banner))
 	// kick whoever got banned if they're on
 	if (lowertext(fields["type"]) == "server")
 		for (var/client/C in clients)
@@ -504,6 +507,6 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	fields["banned_by"] = banner
 
-	quickBan_ban(fields, src)
+	quickBan_ban(fields, null)
 
 	return "successful."

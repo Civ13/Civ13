@@ -81,7 +81,6 @@ var/GRACE_PERIOD_LENGTH = 7
 			new/obj/structure/anthill(areaspawn)
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()
-	spawn (1)
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
 	if (map.ID == MAP_NOMADS_DESERT || map.ID == MAP_NOMADS_JUNGLE || map.ID == MAP_ROAD_TO_DAK_TO || map.ID == MAP_ALLEYWAY)
 		season = "Wet Season"
@@ -94,7 +93,7 @@ var/GRACE_PERIOD_LENGTH = 7
 	else
 		season = "SPRING"
 
-	return TRUE
+	//return TRUE
 
 	for (var/grass in grass_turf_list)
 

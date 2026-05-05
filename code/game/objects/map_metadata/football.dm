@@ -174,8 +174,8 @@
 			points_check()
 			scorers_check()
 			return FALSE
-		last_win_condition = win_condition.hash
-		return TRUE
+	last_win_condition = win_condition.hash
+	return TRUE
 
 /obj/map_metadata/football/faction1_can_cross_blocks()
 	return ((processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods) && !stopped)
@@ -503,8 +503,8 @@
 			points_check()
 			scorers_check()
 			return FALSE
-		last_win_condition = win_condition.hash
-		return TRUE
+	last_win_condition = win_condition.hash
+	return TRUE
 
 /obj/map_metadata/football_cmp/faction1_can_cross_blocks()
 	return ((processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods) && !stopped)

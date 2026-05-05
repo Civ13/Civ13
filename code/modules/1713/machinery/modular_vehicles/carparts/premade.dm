@@ -77,7 +77,8 @@
 	spawn(10)
 		for (var/ix=1,ix<=5,ix++)
 			for(var/iy=1, iy<=5, iy++)
-				if (tocreate["[ix],[iy]"] && islist(tocreate["[ix],[iy]"]) && tocreate["[ix],[iy]"].len)
+				var/list/creation_list = tocreate["[ix],[iy]"]
+				if (istype(creation_list) && creation_list.len)
 					var/turf/T = get_turf(locate(src.x+ix,src.y+iy,src.z))
 					if (T)
 						for(var/pt in tocreate["[ix],[iy]"])

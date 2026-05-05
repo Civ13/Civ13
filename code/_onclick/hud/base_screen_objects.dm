@@ -515,7 +515,9 @@
 		return
 	
 	alpha = 255
-	icon_state = "cross[clamp(round(usr.get_active_hand().get_dispersion_range(usr), 3), 3, 30)]"
+	if (istype(usr.get_active_hand(), /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/GN = usr.get_active_hand()
+		icon_state = "cross[clamp(round(GN.get_dispersion_range(usr), 3), 3, 30)]"
 	screen_loc = "[usr.client.mouse_screen_x]:[usr.client.mouse_screen_pixel_x - 16],[usr.client.mouse_screen_y]:[usr.client.mouse_screen_pixel_y - 16]"
 
 /obj/screen/aiming_cross/proc/update()
@@ -626,18 +628,21 @@
 	update_icon()
 
 /obj/screen/bodytemp/update_icon()
+	var/mob/living/human/H = parentmob
+	if (!istype(H))
+		return
 	//TODO: precalculate all of this stuff when the species datum is created
-	var/base_temperature = parentmob:species.body_temperature
+	var/base_temperature = H.species.body_temperature
 	if (base_temperature == null) //some species don't have a set metabolic temperature
-		base_temperature = (parentmob:species.heat_level_1 + parentmob:species.cold_level_1)/2
+		base_temperature = (H.species.heat_level_1 + H.species.cold_level_1)/2
 
 	var/temp_step
-	if (parentmob:bodytemperature >= base_temperature)
-		temp_step = (parentmob:species.heat_level_1 - base_temperature)/4
+	if (H.bodytemperature >= base_temperature)
+		temp_step = (H.species.heat_level_1 - base_temperature)/4
 
-		if (parentmob:bodytemperature >= parentmob:species.heat_level_1)
+		if (H.bodytemperature >= H.species.heat_level_1)
 			icon_state = "temp4"
-		else if (parentmob:bodytemperature >= base_temperature + temp_step*3)
+		else if (H.bodytemperature >= base_temperature + temp_step*3)
 			icon_state = "temp3"
 		else if (parentmob:bodytemperature >= base_temperature + temp_step*2)
 			icon_state = "temp2"
@@ -646,16 +651,16 @@
 		else
 			icon_state = "temp0"
 
-	else if (parentmob:bodytemperature < base_temperature)
-		temp_step = (base_temperature - parentmob:species.cold_level_1)/4
+	else if (H.bodytemperature < base_temperature)
+		temp_step = (base_temperature - H.species.cold_level_1)/4
 
-		if (parentmob:bodytemperature <= parentmob:species.cold_level_1)
+		if (H.bodytemperature <= H.species.cold_level_1)
 			icon_state = "temp-4"
-		else if (parentmob:bodytemperature <= base_temperature - temp_step*3)
+		else if (H.bodytemperature <= base_temperature - temp_step*3)
 			icon_state = "temp-3"
-		else if (parentmob:bodytemperature <= base_temperature - temp_step*2)
+		else if (H.bodytemperature <= base_temperature - temp_step*2)
 			icon_state = "temp-2"
-		else if (parentmob:bodytemperature <= base_temperature - temp_step*1)
+		else if (H.bodytemperature <= base_temperature - temp_step*1)
 			icon_state = "temp-1"
 		else
 			icon_state = "temp0"

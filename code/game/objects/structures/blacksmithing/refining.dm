@@ -191,56 +191,47 @@
 			if (istype(I, /obj/item/stack/material/wood))
 				fuel += I.amount
 				H << "You place \the [I] in \the [src], smelting it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/material/bamboo))
 				fuel += I.amount
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/weapon/branch))
 				fuel += I.amount+0.5
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/material/leaf))
 				fuel += I.amount+0.5
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/dung))
 				fuel += I.amount+1
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/ore/charcoal))
 				fuel += I.amount*2.5
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
+
 			else if (istype(I, /obj/item/stack/material/woodplank))
 				fuel += I.amount
 				H << "You place \the [I] in \the [src], refueling it."
-				qdel(I)
-				return
 
 			if (istype(I, /obj/item/stack/ore/iron))
 				iron += I.amount
 				H << "You place \the [I] in \the [src]."
-				qdel(I)
-				return
 			else
 				H << "<span class = 'warning'>You can't smelt this.</span>"
 				return
 
 			H.remove_from_mob(I)
 			I.loc = src
+			qdel(I)
 			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
+			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")

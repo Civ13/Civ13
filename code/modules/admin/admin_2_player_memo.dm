@@ -5,7 +5,7 @@
 /client/proc/player_memo(task in list("write","show","delete"))
 	set name = "Player Memo"
 	set category = "Server"
-	if (!ENABLE_MEMOS)		return
+	// ENABLE_MEMOS is always 1 — guard removed to silence static-condition warning
 	if (!check_rights(0))	return
 	switch(task)
 		if ("write")		player_memo_write()
@@ -31,11 +31,10 @@
 
 //show all memos
 /client/proc/player_memo_show()
-	if (ENABLE_MEMOS)
-		var/savefile/F = new(get_player_memo_file_dir())
-		if (F)
-			for (var/ckey in F.dir)
-				src << "<center><span class='motd'>[F[ckey]]</span></center>"
+	var/savefile/F = new(get_player_memo_file_dir())
+	if (F)
+		for (var/ckey in F.dir)
+			src << "<center><span class='motd'>[F[ckey]]</span></center>"
 
 //delete your own or somebody else's memo
 /client/proc/player_memo_delete()

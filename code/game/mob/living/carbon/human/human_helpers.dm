@@ -405,4 +405,3 @@
 			update_fire(1)
 			adjustOxyLoss(10)
 			return
-	return

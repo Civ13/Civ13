@@ -133,9 +133,11 @@
 	if (civilization == null || civilization == "none")
 		return FALSE
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
-	if (map.custom_civs[civilization][4] != null)
-		if (map.custom_civs[civilization][4].real_name == real_name)
-			map.custom_civs[civilization][4] = null
+	var/list/civ_data = map.custom_civs[civilization]
+	if (civ_data[4] != null)
+		var/mob/living/human/L = civ_data[4]
+		if (L.real_name == real_name)
+			civ_data[4] = null
 	civilization = "none"
 	name = replacetext(real_name,"[title] ","")
 	title = ""
@@ -159,8 +161,10 @@
 			to_chat(usr, "You are not part of any faction.")
 			return
 		else
-			if (map.custom_civs[U.civilization][4] != null)
-				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+			var/list/civ_data = map.custom_civs[U.civilization]
+			if (civ_data[4] != null)
+				var/mob/living/human/L = civ_data[4]
+				if (L.real_name == U.real_name)
 					var/list/closemobs = list("Cancel")
 					for (var/mob/living/human/M in range(4,loc))
 						if (M.civilization == U.civilization)

@@ -113,7 +113,7 @@ var/global/FREQM = rand(101,120)
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
+	restart:
 	if (user && user != m)
 		if (user.client)
 			return
@@ -384,7 +384,7 @@ var/global/FREQM = rand(101,120)
 				used_radios += radio
 				if (radio.freq == tfreq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio_broadcast(msg, radio)
-			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
+			for (var/obj/item/weapon/radio/radio in range(1,get_turf(hearer)))
 				if (radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
@@ -610,7 +610,7 @@ var/global/FREQM = rand(101,120)
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
+	restart:
 	if (user && user != m)
 		if (user.client)
 			return

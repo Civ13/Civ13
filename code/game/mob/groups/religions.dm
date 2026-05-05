@@ -115,9 +115,11 @@
 			to_chat(usr, SPAN_DANGER("You cannot leave a religion while part of its clergy!"))
 			return
 		else
-			if (map.custom_religions[U.religion][1] != null)
-				if (map.custom_religions[U.religion][1].real_name == U.real_name)
-					map.custom_religions[U.religion][1] = null
+			var/list/rel_data = map.custom_religions[U.religion]
+			if (rel_data[1] != null)
+				var/mob/living/human/L = rel_data[1]
+				if (L.real_name == U.real_name)
+					rel_data[1] = null
 			U.religion = "none"
 			U.religion_type = "none"
 			U.religion_style = "none"

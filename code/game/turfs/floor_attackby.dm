@@ -706,7 +706,8 @@
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			if (H)
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("copper").icon_colour]><b>copper</font></b> ore!"))
+				var/material/M = get_material_by_name("copper")
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>copper</font></b> ore!"))
 				H.adaptStat("strength", 1)
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
@@ -716,7 +717,8 @@
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				mineral.amount *= 2
 			if (H)
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("tin").icon_colour]><b>tin</font></b> ore!"))
+				var/material/M = get_material_by_name("tin")
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>tin</font></b> ore!"))
 				H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -728,7 +730,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("iron").icon_colour]><b>iron</font></b> ore!"))
+			var/material/M = get_material_by_name("iron")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>iron</font></b> ore!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -776,7 +779,8 @@
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					if (H)
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("lead").icon_colour]><b>lead</font> ore</b>!"))
+						var/material/M = get_material_by_name("lead")
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
 						H.adaptStat("strength", 1)
 			change_the_turf()
 			return
@@ -809,7 +813,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("silver").icon_colour]><b>silver</font> ore</b>!"))
+			var/material/M = get_material_by_name("silver")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>silver</font> ore</b>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -819,7 +824,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("gold").icon_colour]><b>gold</font> ore</b>!"))
+			var/material/M = get_material_by_name("gold")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>gold</font> ore</b>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -829,7 +835,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[get_material_by_name("diamond").icon_colour]><b>diamonds</b></font>!"))
+			var/material/M = get_material_by_name("diamond")
+			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -840,7 +847,8 @@
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
 				new/obj/item/stack/material/fossil(src)
 			if (H)
-				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[get_material_by_name("bone").icon_colour]><b>fossil</font></b>!"))
+				var/material/M = get_material_by_name("bone")
+				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[M.icon_colour]><b>fossil</font></b>!"))
 				H.adaptStat("strength", 1)
 			change_the_turf()
 			return
@@ -850,7 +858,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("sandstone").icon_colour]><b>sandstone</font> rocks</b>!"))
+			var/material/M = get_material_by_name("sandstone")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>sandstone</font> rocks</b>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -862,7 +871,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!"))
+			var/material/M = get_material_by_name("marble")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -884,7 +894,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[get_material_by_name("marble").icon_colour]><b>marble</font> rocks</b>!"))
+			var/material/M = get_material_by_name("marble")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
 			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
@@ -894,7 +905,8 @@
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
-			to_chat(H, SPAN_GREEN_BOLD("You found some usable <font color=[get_material_by_name("stone").icon_colour]><b>stone</font> rocks</b>!"))
+			var/material/M = get_material_by_name("stone")
+			to_chat(H, SPAN_GREEN_BOLD("You found some usable <font color=[M.icon_colour]><b>stone</font> rocks</b>!"))
 			H.adaptStat("strength", 1)
 	change_the_turf()
 	return

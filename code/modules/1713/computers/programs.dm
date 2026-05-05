@@ -771,10 +771,11 @@
 /datum/program/monkeysoftmail/does_checks_proc()
 	..()
 	if (tmp_comp_vars["mail_snd"] && origin)
-		if (map && islist(map.emails[tmp_comp_vars["mail_snd"]]))
-			for(var/i, i <= map.emails[tmp_comp_vars["mail_snd"]].len, i++)
-				if (istype(map.emails[tmp_comp_vars["mail_snd"]][i], /datum/email))
-					var/datum/email/em =  map.emails[tmp_comp_vars["mail_snd"]][i]
+		var/list/email_list = map.emails[tmp_comp_vars["mail_snd"]]
+		if (map && islist(email_list))
+			for(var/i, i <= email_list.len, i++)
+				if (istype(email_list[i], /datum/email))
+					var/datum/email/em = email_list[i]
 					if (!em.read)
 						playsound(origin.loc,'sound/machines/computer/mail.ogg',60)
 						origin.visible_message("<big><font color='yellow'>\icon[getFlatIcon(origin)]You've got mail!</font></big>")
@@ -816,11 +817,11 @@
 			cname = "mail@[mdomain]"
 		if (tmp_comp_vars["mail_snd"] == "Sender")
 			tmp_comp_vars["mail_snd"] = cname
-		mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
-		if (islist(map.emails[cname]) && map.emails[cname].len>=1)
-			for(var/i = map.emails[cname].len, i > 0, i--)
-				if (istype(map.emails[cname][i], /datum/email))
-					var/datum/email/em =  map.emails[cname][i]
+		var/list/email_list = map.emails[cname]
+		if (islist(email_list) && email_list.len>=1)
+			for(var/i = email_list.len, i > 0, i--)
+				if (istype(email_list[i], /datum/email))
+					var/datum/email/em = email_list[i]
 					if (em.read)
 						mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 					else
@@ -857,10 +858,11 @@
 	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
 	if (href_list["mail"])
 		if (href_list["mail"]=="99999")
-			if (islist(map.emails[cname]) && map.emails[cname].len>=1)
-				for(var/i = map.emails[cname].len, i > 0, i--)
-					if (istype(map.emails[cname][i], /datum/email))
-						var/datum/email/em =  map.emails[cname][i]
+			var/list/email_list = map.emails[cname]
+			if (islist(email_list) && email_list.len>=1)
+				for(var/i = email_list.len, i > 0, i--)
+					if (istype(email_list[i], /datum/email))
+						var/datum/email/em = email_list[i]
 						if (em.read)
 							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
 						else

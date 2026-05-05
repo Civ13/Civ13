@@ -37,6 +37,7 @@ var/global/list/dictionary_list = list()
 	qdel(src) //we're done
 
 /datum/global_init/Destroy()
+	..()
 	return TRUE
 
 /var/game_id = null
@@ -428,7 +429,7 @@ var/global/nextsave = 0
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-					var/dmsg =  "<IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]: [tempmsg[2]]</font></b>"
+					var/dmsg =  "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]: [tempmsg[2]]</font></b>"
 					to_chat(world, dmsg)
 					log_discord(dmsg)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
@@ -444,7 +445,7 @@ var/global/nextsave = 0
 
 					for (var/client/C in admins)
 						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
-							C << "<span class='admin_channel'><IMG src='\ref[text_tag_icons.icon]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
+							C << "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>"
 					log_discord_asay(msg)
 			fdel(G)
 			G << ""

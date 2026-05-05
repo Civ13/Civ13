@@ -219,9 +219,12 @@ var/list/recently_died = list()
 
 /mob/living/human/death()
 	if (original_job_title == "Nomad")
-		if (civilization != "none" && map.custom_civs[civilization][4])
-			if (map.custom_civs[civilization][4].real_name == real_name)
-				map.custom_civs[civilization][4] = null
+		if (civilization != "none" && map.custom_civs[civilization])
+			var/list/civ_data = map.custom_civs[civilization]
+			if (civ_data[4])
+				var/mob/living/human/L = civ_data[4]
+				if (L.real_name == real_name)
+					civ_data[4] = null
 	BATTLEREPORT_VARIABLE_CHECK(src)
 		if (!istype(src, /mob/living/human/corpse))
 			var/list/lists = get_battle_report_lists()

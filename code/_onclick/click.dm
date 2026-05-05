@@ -5,11 +5,11 @@
 	that's a lot of code duplication and is hard to maintain.
 	Note that this proc can be overridden, and is in the case of screen objects.*/
 /atom/Click(var/location, var/control, var/params)
-	if (src)
+	if (src && usr)
 		usr.ClickOn(src, params)
 
 /atom/DblClick(var/location, var/control, var/params)
-	if (src)
+	if (src && usr)
 		usr.DblClickOn(src, params)
 
 /*	Standard mob ClickOn()
@@ -23,6 +23,8 @@
 	* item/afterattack(atom,user,adjacent,params) - used both ranged and adjacent
 	* mob/RangedAttack(atom,params) - used only ranged, only used for tk and laser eyes but could be changed */
 /mob/proc/ClickOn(var/atom/A, var/params)
+	if (!isatom(A))
+		return
 	if (world.time <= next_click) // Hard check, before anything else, to avoid crashing
 		return
 	next_click = world.time + 1
@@ -445,6 +447,8 @@
 		facedir(direction)
 
 /mob/proc/scramble(var/turf/floor/F)
+	if (!isturf(F))
+		return
 	if (F.density)
 		return FALSE
 	if (stat || buckled || paralysis || stunned || sleeping || (status_flags & FAKEDEATH) || restrained() || (weakened > 10))

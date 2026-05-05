@@ -67,7 +67,7 @@
 
 	var/list/pinned = list()			// List of things pinning this creature to walls (see living_defense.dm)
 	var/list/embedded = list()		  // Embedded items, since simple mobs don't have organs.
-	var/list/languages = list()		 // For speaking/listening.
+	var/list/datum/language/languages = list()		 // For speaking/listening.
 	var/list/speak_emote = list("says") // Verbs used when speaking. Defaults to 'say' if speak_emote is null.
 	var/emote_type = TRUE		// Define emote default type, TRUE for seen emotes, 2 for heard emotes
 	var/facing_dir = null   // Used for the ancient art of moonwalking.
@@ -96,8 +96,8 @@
 
 	var/datum/hud/hud_used = null
 
-	var/list/grab_list = list()
-	var/list/grabbed_by = list()
+	var/list/obj/item/weapon/grab/grab_list = list()
+	var/list/obj/item/weapon/grab/grabbed_by = list()
 	var/list/requests = list()
 
 	var/in_throw_mode = FALSE
@@ -135,7 +135,7 @@
 
 //Wizard mode, but can be used in other modes thanks to the brand new "Give Spell" badmin button
 	//Reused for Magic
-	var/mob/list/spell_list = list()
+	var/list/spell_list = list()
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
 	mouse_drop_pointer = MOUSE_ACTIVE_POINTER
@@ -172,11 +172,11 @@
 	var/flavor_text = ""
 
 
-	var/list/HUDneed = list() // What HUD object need see
-	var/list/HUDinventory = list()
-	var/list/HUDfrippery = list()//�a�����ee e ���a��ee
-	var/list/HUDprocess = list() //What HUD object need process
-	var/list/HUDtech = list()
+	var/list/obj/screen/HUDneed = list() // What HUD object need see
+	var/list/obj/screen/HUDinventory = list()
+	var/list/obj/screen/HUDfrippery = list()
+	var/list/obj/screen/HUDprocess = list() //What HUD object need process
+	var/list/obj/screen/HUDtech = list()
 	var/defaultHUD = "" //Default mob hud
 
 	var/scrambling = FALSE //For crawling.

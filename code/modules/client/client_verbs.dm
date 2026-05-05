@@ -199,7 +199,7 @@
 
 	else
 		for (var/client/C in admins)
-			if (R_ADMIN & C.holder.rights || (!R_MOD & C.holder.rights && !R_MENTOR & C.holder.rights))
+			if (R_ADMIN & C.holder.rights || (!(C.holder.rights & R_MOD) && !(C.holder.rights & R_MENTOR)))
 				if (!C.holder.fakekey)
 					adminmsg += "\t[C] is a [C.holder.rank]\n"
 					num_admins_online++
@@ -346,7 +346,7 @@
 				else
 					display_name = "<span class = 'ping'>[holder.OOC_rank()]</span> [display_name]"
 
-			target << "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>"
+			to_chat(target, "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
 
 /client/verb/looc(msg as text)
 	set name = "LOOC"
@@ -448,7 +448,7 @@
 			admin_stuff += "/([key])"
 			if (t != src)
 				admin_stuff += "([admin_jump_link(mob, t.holder)])"
-		t << "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", t) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>"
+		to_chat(t, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", t) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
 
 
 	for (var/client/adm in admins)	//Now send to all admins that weren't in range.
@@ -456,7 +456,7 @@
 			var/admin_stuff = "/([key])([admin_jump_link(mob, adm.holder)])"
 			var/prefix = "(R)"
 
-			adm << "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", adm) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>"
+			to_chat(adm, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", adm) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
 
 /mob/proc/get_looc_source()
 	return src
