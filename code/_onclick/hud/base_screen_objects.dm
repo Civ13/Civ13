@@ -644,9 +644,9 @@
 			icon_state = "temp4"
 		else if (H.bodytemperature >= base_temperature + temp_step*3)
 			icon_state = "temp3"
-		else if (parentmob:bodytemperature >= base_temperature + temp_step*2)
+		else if (H.bodytemperature >= base_temperature + temp_step*2)
 			icon_state = "temp2"
-		else if (parentmob:bodytemperature >= base_temperature + temp_step*1)
+		else if (H.bodytemperature >= base_temperature + temp_step*1)
 			icon_state = "temp1"
 		else
 			icon_state = "temp0"

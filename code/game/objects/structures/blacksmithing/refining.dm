@@ -229,8 +229,8 @@
 
 			H.remove_from_mob(I)
 			I.loc = src
-			qdel(I)
 			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
+			qdel(I)
 			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
