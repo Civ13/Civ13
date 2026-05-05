@@ -36,7 +36,7 @@
 	var/mob/living/human/driver = null
 
 	//matrix/turning stuff
-	var/list/corners = list()
+	var/list/corners = list(null, null, null, null)
 	var/list/matrix = list()
 	var/matrix_l = 0
 	var/matrix_h = 0

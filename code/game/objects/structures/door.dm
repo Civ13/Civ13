@@ -244,8 +244,8 @@
 		CheckHardness()
 	else
 		attack_hand(user)
-	return TRUE // for key_doors
 	..()
+	return TRUE // for key_doors
 //MOAR KEYPAD
 /obj/structure/simple_door/proc/update_lock_overlay()
 	if(haslock)

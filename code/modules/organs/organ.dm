@@ -231,7 +231,7 @@ var/list/organ_cache = list()
 	else
 		germ_level -= 2 //at germ_level == 1000, this will cure the infection in 5 minutes
 
-/obj/item/organ/proc/take_damage(amount, var/silent=0)
+/obj/item/organ/proc/take_damage(amount, silent = 0)
 
 	damage = between(0, damage + amount, max_damage)
 

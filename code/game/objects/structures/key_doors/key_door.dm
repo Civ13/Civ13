@@ -252,7 +252,6 @@ var/list/nonbreaking_types = list(
 
 	if (!locked)
 		return TryToSwitchState(user)
-		return
 	else
 		if (world.time < next_attack_hand)
 			return

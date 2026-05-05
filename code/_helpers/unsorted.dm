@@ -23,10 +23,9 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	if (!( istext(HTMLstring) ))
 		CRASH("Given non-text argument!")
 		return
-	else
-		if (length(HTMLstring) != 7)
-			CRASH("Given non-HTML argument!")
-			return
+	if (length(HTMLstring) != 7)
+		CRASH("Given non-HTML argument!")
+		return
 	var/textr = copytext(HTMLstring, 2, 4)
 	var/textg = copytext(HTMLstring, 4, 6)
 	var/textb = copytext(HTMLstring, 6, 8)
@@ -43,7 +42,6 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	if (length(textb) < 2)
 		textr = text("0[]", textb)
 	return text("#[][][]", textr, textg, textb)
-	return
 
 //Returns the middle-most value
 /proc/dd_range(var/low, var/high, var/num)
@@ -947,8 +945,6 @@ proc/is_hot(obj/item/W as obj)
 			return 3500*/
 		else
 			return FALSE
-
-	return FALSE
 
 //Whether or not the given item counts as cutting with an edge in terms of removing limbs
 /proc/has_edge(obj/O as obj)

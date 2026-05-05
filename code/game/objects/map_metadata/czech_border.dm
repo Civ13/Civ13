@@ -145,5 +145,4 @@ obj/map_metadata/czech_border/roundend_condition_def2name(define)
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
-			return !faction2_can_cross_blocks()
 	return FALSE

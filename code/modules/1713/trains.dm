@@ -654,14 +654,13 @@
 		visible_message("[user] turns off \the [src].", "You turn off \the [src].")
 		automovement = FALSE
 		update_icon()
-		return
+		return ..()
 	else
 		on = TRUE
 		visible_message("[user] turns on \the [src].", "You turn on \the [src].")
 		locomotive()
 		update_icon()
-		return
-	..()
+		return ..()
 
 /obj/structure/trains/locomotive/proc/locomotive()
 	if (!on)

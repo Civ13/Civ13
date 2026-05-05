@@ -755,7 +755,7 @@ obj/structure/religious/monument
 				for (var/mob/living/human/HH in range(10,loc))
 					if (diseasedone == FALSE)
 						HH.disease = TRUE
-						if (99)
+						if (prob(99))
 							HH.disease_type = "flu"
 						else
 							HH.disease_type = "plague"
@@ -935,7 +935,6 @@ obj/structure/religious/monument
 				else
 					user << "Not enough favour points."
 					return
-			return
 	else
 		user << "You failed to communicate with the gods. You need drugs to connect yourself with the astral plane."
 		return

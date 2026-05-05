@@ -475,22 +475,22 @@
 		if (mob_area.weather == WEATHER_EXTREME && season == "WINTER" && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
 			loc_temp = -10
 
-	for (var/obj/structure/brazier/BR in range(3, src))
+	for (var/obj/structure/brazier/BR in range(3, A))
 		if (BR.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	for (var/obj/structure/heatsource/HS in range(3, src))
+	for (var/obj/structure/heatsource/HS in range(3, A))
 		if (HS.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	for (var/obj/structure/oven/fireplace/FP in range(1, src))
+	for (var/obj/structure/oven/fireplace/FP in range(1, A))
 		if (FP.on)
 			if (loc_temp < 22)
 				loc_temp = 22
 				break
-	for (var/obj/structure/engine/EN in range(1, src))
+	for (var/obj/structure/engine/EN in range(1, A))
 		if (EN.on)
 			if (loc_temp < 22)
 				loc_temp = 22

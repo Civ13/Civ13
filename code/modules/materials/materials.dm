@@ -53,7 +53,10 @@ var/list/name_to_material
 /proc/get_material_by_name(name)
 	if (!name_to_material)
 		populate_material_list()
-	return name_to_material[name]
+	var/colour_temp = "#FF0000"
+	if (name_to_material[name])
+		colour_temp = name_to_material[name]
+	return colour_temp
 
 /proc/material_display_name(name)
 	var/material/material = get_material_by_name(name)
