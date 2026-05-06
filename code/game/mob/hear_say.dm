@@ -357,9 +357,9 @@
 
 /mob/proc/on_hear_radio(var/obj/destination = null, var/fullmessage)
 	if (destination)
-		src << "\icon[getFlatIcon(destination)] [fullmessage]"
+		to_chat(src, "\icon[getFlatIcon(destination)] [fullmessage]")
 	else
-		src << fullmessage
+		to_chat(src, fullmessage)
 
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)

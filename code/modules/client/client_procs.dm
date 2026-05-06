@@ -250,6 +250,9 @@
 
 	chat = new(src)
 	chat.load()
+	
+	init_statpanel()
+	winset(src, "mainwindow", "macro=macro")
 
 	spawn (1)
 		log_to_db()
@@ -439,7 +442,7 @@
 
 /client/Stat()
 	..()
-	sleep(10)
+	update_statpanel()
 /*
 // Clients aren't datums so we have to define these procs indpendently.
 // These verbs are called for all key press and release events

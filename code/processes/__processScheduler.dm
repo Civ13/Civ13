@@ -392,13 +392,13 @@ var/global/processScheduler/processScheduler
 		var/process/process = nameToProcessMap[processName]
 		process.disable()
 
-/processScheduler/proc/statProcesses()
+/processScheduler/proc/statProcesses(client/C)
 	if (!isRunning)
-		stat("Processes", "Scheduler not running")
+		C.add_stat("Processes", "Scheduler not running")
 		return
-	stat("Processes", "[processes.len] (R [running.len] / Q [queued.len] / I [idle.len])")
+	C.add_stat("Processes", "[processes.len] (R [running.len] / Q [queued.len] / I [idle.len])")
 	for (var/process/p in processes)
-		p.statProcess()
+		p.statProcess(C)
 
 /processScheduler/proc/htmlProcesses()
 	. = "<html><body>"

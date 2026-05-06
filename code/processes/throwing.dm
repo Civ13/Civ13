@@ -164,9 +164,9 @@
 	if (current_list.len > 100)
 		current_list.len = min(current_list.len, 100)
 
-/process/throwing/statProcess()
-	..()
-	stat(null, "[thrown_list.len] moving atoms")
+/process/throwing/statProcess(client/C)
+	..(C)
+	C.add_stat("[thrown_list.len] moving atoms")
 
 /process/throwing/htmlProcess()
 	return ..() + "[thrown_list.len] moving atoms"

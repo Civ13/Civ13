@@ -32,9 +32,9 @@
 /process/scheduler/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(scheduled_tasks)
 
-/process/scheduler/statProcess()
-	..()
-	stat(null, "[scheduled_tasks.len] tasks")
+/process/scheduler/statProcess(client/C)
+	..(C)
+	C.add_stat("[scheduled_tasks.len] tasks")
 
 /process/scheduler/htmlProcess()
 	return ..() + "[scheduled_tasks.len] tasks"

@@ -1,5 +1,8 @@
 macro "macro"
 	elem 
+		name = "Return"
+		command = ".winset \"input.focus=true\""
+	elem 
 		name = "Tab"
 		command = ".winset \"mainwindow.macro=hotkeymode mapwindow.map.focus=true\""
 	elem 
@@ -127,6 +130,9 @@ macro "macro"
 		command = "ChangeHUD"
 
 macro "hotkeymode"
+	elem 
+		name = "Return"
+		command = ".winset \"input.focus=true\""
 	elem 
 		name = "Tab"
 		command = ".winset \"mainwindow.macro=macro input.focus=true\""
@@ -616,7 +622,7 @@ window "outputwindow"
 		font-size = 8
 		text-color = #e1e1d7
 		background-color = #a68b7d
-		is-default = false
+		is-default = true
 		border = sunken
 		saved-params = ""
 	elem "hidden_output"
@@ -640,22 +646,13 @@ window "infowindow"
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Info"
 		is-pane = true
-	elem "info"
-		type = INFO
+	elem "browser_info"
+		type = BROWSER
 		pos = 0,15
 		size = 480x465
 		anchor1 = 0,5
 		anchor2 = 100,100
-		font-family = "Book Antiqua"
-		font-size = 8
-		text-color = #e1e1d7
 		background-color = #392611
-		is-default = true
-		drop-zone = false
+		is-default = false
 		saved-params = ""
-		highlight-color = #ff8040
-		tab-text-color = #e1e1d7
-		tab-background-color = #271a0c
-		tab-font-family = "Book Antiqua"
-		tab-font-size = 9
 		on-show = ".winset\"rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=infowindow\""

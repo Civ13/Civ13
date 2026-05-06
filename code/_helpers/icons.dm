@@ -612,12 +612,13 @@ The _flatIcons list is a cache for generated icon files.
 */
 
 // Creates a single icon from a given /atom or /image.  Only the first argument is required.
-proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DEFAULT, always_use_defdir = FALSE)
+proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DEFAULT, always_use_defdir = FALSE, no_anim = TRUE)
 	// We start with a blank canvas, otherwise some icon procs crash silently
-	var/icon/flat = icon('icons/effects/effects.dmi', "icon_state"="nothing") // Final flattened icon
-	if (!A)
-		return flat
-	if (A.alpha <= 0)
+	var/static/icon/flat_template = icon('icons/32x32.dmi', "nothing")
+	var/icon/flat = icon(flat_template)
+	flat.Insert(icon('icons/effects/effects.dmi', "nothing"), "", SOUTH, 1, 0)
+	flat.Scale(32, 32) // Force into memory as single state
+	if (!A || A.alpha <= 0)
 		return flat
 	var/noIcon = FALSE
 
@@ -744,7 +745,7 @@ proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DE
 					add = icon(I:icon, I:icon_state)
 		else // 'I' is an appearance object.
 		
-			add = getFlatIcon(new/image(I), curdir, curicon, curstate, curblend, always_use_defdir)
+			add = getFlatIcon(new/image(I), curdir, curicon, curstate, curblend, always_use_defdir, no_anim)
 
 		// Find the new dimensions of the flat icon to fit the added overlay
 		addX1 = min(flatX1, I:pixel_x+1)
@@ -768,11 +769,22 @@ proc/getFlatIcon(image/A, defdir=2, deficon=null, defstate="", defblend=BLEND_DE
 		flat.Blend(add, iconmode, I:pixel_x + 2 - flatX1, I:pixel_y + 2 - flatY1)
 
 	if (A.color)
-		flat.Blend(A.color, ICON_MULTIPLY)
+		if (islist(A.color))
+			flat.MapColors(arglist(A.color))
+		else
+			flat.Blend(A.color, ICON_MULTIPLY)
 	if (A.alpha < 255)
 		flat.Blend(rgb(255, 255, 255, A.alpha), ICON_MULTIPLY)
 
-	return icon(flat, "", SOUTH)
+	flat.Crop(1, 1, 32, 32)
+	
+	if(no_anim)
+		//Clean up repeated frames
+		var/icon/cleaned = new /icon()
+		cleaned.Insert(flat, "", SOUTH, 1, 0)
+		return cleaned
+	else
+		return icon(flat, "", SOUTH)
 
 proc/getIconMask(atom/A)//By yours truly. Creates a dynamic mask for a mob/whatever. /N
 	var/icon/alpha_mask = new(A.icon,A.icon_state)//So we want the default icon and icon state of A.

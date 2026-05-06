@@ -809,8 +809,8 @@
 /mob/living/simple_animal/Stat()
 	..()
 
-	if (statpanel("Status") && show_stat_health)
-		stat(null, "Health: [round((health / maxHealth) * 100)]%")
+	if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status") && show_stat_health)
+		client.add_stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
 /mob/living/simple_animal/proc/unregisterSpawner()
 	if (origin != null)

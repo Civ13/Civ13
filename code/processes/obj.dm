@@ -24,9 +24,9 @@
 /process/obj/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(processing_objects)
 
-/process/obj/statProcess()
-	..()
-	stat(null, "[processing_objects.len] objects in the vital loop")
+/process/obj/statProcess(client/C)
+	..(C)
+	C.add_stat("[processing_objects.len] objects in the vital loop")
 
 /process/obj/htmlProcess()
 	return ..() + "[processing_objects.len] objects in the vital loop"
