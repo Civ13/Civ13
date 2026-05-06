@@ -493,4 +493,4 @@
 
 		spawn(10)
 			check_pressure(user, target_zone)
-			return TRUE
+			return

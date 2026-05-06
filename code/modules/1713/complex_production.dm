@@ -210,15 +210,16 @@
 			else
 				visible_message(SPAN_NOTICE("The products in the salting container swell up and fully salt."))
 		saltamount = 0 // TODO: RE-work the system to remove intervals of '10' depending on how much product is loaded, and then attack_hand() to begin the salting process, time to salt would depend by product.
+		var/amt = contents.len
 		for (var/obj/item/I in contents)
 			qdel(I)	// Clear the contents list.
-			switch(producttype_name)
-				if("ham")
-					new/obj/item/weapon/pigleg/salted(loc)
-				if("cod")
-					new/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
-				if("sausage")
-					new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
+		for(var/i = 1 to amt)
+			if(producttype_name == "ham")
+				new /obj/item/weapon/pigleg/salted(loc)
+			else if(producttype_name == "cod")
+				new /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted(loc)
+			else if(producttype_name == "sausage")
+				new /obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
 		producttype = null // Reset the product type variable to allow the next cycle of salting.
 
 ///////////////////////////////LARGE/DEHYDRATOR///////////////////////////////

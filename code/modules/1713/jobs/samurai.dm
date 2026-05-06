@@ -98,9 +98,6 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
-
-	return TRUE
-
 /datum/job/japanese/ashigaru_ranged
 	title = "Tobu Enkyori Ashigaru"
 	en_meaning = "Ranged Eastern Infantryman"

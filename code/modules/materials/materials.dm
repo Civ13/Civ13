@@ -26,7 +26,7 @@
 */
 
 // Assoc list containing all material datums indexed by name.
-var/list/name_to_material
+var/list/material/name_to_material
 //Returns the material the object is made of, if applicable.
 //Will we ever need to return more than one value here? Or should we just return the "dominant" material.
 /obj/proc/get_material()
@@ -53,7 +53,9 @@ var/list/name_to_material
 /proc/get_material_by_name(name)
 	if (!name_to_material)
 		populate_material_list()
-	return name_to_material[name]
+	if (name && name_to_material[name])
+		return name_to_material[name]
+	return null
 
 /proc/material_display_name(name)
 	var/material/material = get_material_by_name(name)
@@ -167,7 +169,7 @@ var/list/name_to_material
 	if (islist(composite_material))
 		for (var/material_string in composite_material)
 			temp_matter[material_string] = composite_material[material_string]
-	else if (SHEET_MATERIAL_AMOUNT)
+	else
 		temp_matter[name] = SHEET_MATERIAL_AMOUNT
 	return temp_matter
 

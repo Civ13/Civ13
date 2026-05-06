@@ -10,7 +10,7 @@
 		// epicenter = locate(epicenter.x+devestation_range)
 
 */
-	src = null	//so we don't abort once src is deleted
+
 	var/datum/explosiondata/data = new
 	data.epicenter = epicenter
 	data.devastation_range = devastation_range

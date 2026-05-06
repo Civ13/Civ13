@@ -102,14 +102,14 @@
 					return
 
 				// Determine reversed state based on corner position
-					var/movement_type = src.type_name
-					if (wconfig)
-						movement_type = wconfig.type_name
-					if (movement_type == "wheel")
-						reversed = (corner_idx > 2)  // Back wheels are reversed
-					else if (movement_type == "track")
-						reversed = (corner_idx > 2)  // Tracks may reverse differently
-					dir = VP.axis.dir
+				var/movement_type = src.type_name
+				if (wconfig)
+					movement_type = wconfig.type_name
+				if (movement_type == "wheel")
+					reversed = (corner_idx > 2)  // Back wheels are reversed
+				else if (movement_type == "track")
+					reversed = (corner_idx > 2)  // Tracks may reverse differently
+				dir = VP.axis.dir
 
 				VP.axis.wheels += src
 				axis = VP.axis

@@ -339,7 +339,6 @@
 		if (!automovement)
 			playsound(src.loc, 'sound/machines/train/stopping.ogg', 100, TRUE)
 			on = FALSE
-			return FALSE
 		process_rail_movement()
 		rail_movement()
 		rail_sound()
@@ -654,14 +653,13 @@
 		visible_message("[user] turns off \the [src].", "You turn off \the [src].")
 		automovement = FALSE
 		update_icon()
-		return
+		return ..()
 	else
 		on = TRUE
 		visible_message("[user] turns on \the [src].", "You turn on \the [src].")
 		locomotive()
 		update_icon()
-		return
-	..()
+		return ..()
 
 /obj/structure/trains/locomotive/proc/locomotive()
 	if (!on)

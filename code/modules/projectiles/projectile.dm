@@ -460,10 +460,11 @@
 	return TRUE
 
 /obj/item/projectile/proc/get_angle()
-	var/angle = trajectory.return_angle()
-	if (angle < 0)
-		angle = 180 + (180 - abs(angle))
-	return angle
+	if (trajectory)
+		var/angle = trajectory.return_angle()
+		if (angle < 0)
+			angle = 180 + (180 - abs(angle))
+		return angle
 
 /obj/item/projectile/proc/get_distance()
 	return permutated.len

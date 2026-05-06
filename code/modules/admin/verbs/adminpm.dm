@@ -96,8 +96,8 @@
 					else
 						adminhelp(reply)													//sender has left, adminhelp instead
 				return
-	src << "<span class='pm'><span class='out'>" + create_text_tag("pm_out_alt", "PM", src) + " to <span class='name'>[get_options_bar(C, holder ? TRUE : FALSE, holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>"
-	C << "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[[recieve_pm_type] PM\]</b> <span class='name'>[get_options_bar(src, C.holder ? TRUE : FALSE, C.holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>"
+	to_chat(src, "<span class='pm'><span class='out'>" + create_text_tag("pm_out_alt", "PM", src) + " to <span class='name'>[get_options_bar(C, holder ? TRUE : FALSE, holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>")
+	to_chat(C, "<span class='pm'><span class='in'>" + create_text_tag("pm_in", "", C) + " <b>\[[recieve_pm_type] PM\]</b> <span class='name'>[get_options_bar(src, C.holder ? TRUE : FALSE, C.holder ? TRUE : FALSE, TRUE)]</span>: <span class='message'>[msg]</span></span></span>")
 
 	discord_adminpm_log(key_name(src),msg,key_name(C))
 
@@ -124,11 +124,9 @@
 
 /proc/cmd_admin_pm_fromdiscord(var/client/C, var/msg = null, var/sender_name = "admins")
 	//get message text, limit it's length.and clean/escape html
-	if (!msg)
-		msg = input(src,"Message:", "Private message to [C.ckey]") as text|null
-
-		if (!msg)	return
-		if (!C)	return
+	
+	if (!msg)	return
+	if (!C)	return
 
 	C.pm_sender = sender_name
 

@@ -42,14 +42,6 @@
 
 	if (istype(src, /turf/wall/indestructable))
 		return
-	else return ..()
-
-	// this code is no longer used - you need c4 to get through walls now - Kachnov
-
-	/* not sure what this shitcode is so its disabled - Kachnov
-	if (!user.)
-		user << "<span class='warning'>You don't have the dexterity to do this!</span>"
-		return*/
 
 	//get the user's location
 	if (!istype(user.loc, /turf))

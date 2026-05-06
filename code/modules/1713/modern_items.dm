@@ -364,7 +364,7 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/list/barrel = list()
+	var/list/obj/item/weapon/reagent_containers/glass/barrel/barrel = list()
 	var/volume = 0
 	var/volume_et = 0
 	var/volume_di = 0
@@ -692,7 +692,7 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/list/barrel = list()
+	var/list/obj/item/weapon/reagent_containers/glass/barrel/barrel = list()
 	var/volume = 0
 	var/active = FALSE
 	var/plastic = 0

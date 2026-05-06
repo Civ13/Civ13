@@ -15,7 +15,7 @@
 	var/ui_title = "Chemical Dispenser"
 	var/amount = 30
 	var/accept_glass = FALSE //At FALSE ONLY accepts glass containers. Kinda misleading varname.
-	var/atom/beaker = null
+	var/obj/item/weapon/reagent_containers/beaker = null
 	var/list/dispensable_reagents = list()
 	var/stat = 0
 	var/is_medical = TRUE
@@ -133,15 +133,15 @@
 	data["glass"] = accept_glass
 	var beakerContents[0]
 	var beakerCurrentVolume = FALSE
-	if (beaker && beaker:reagents && beaker:reagents.reagent_list.len)
-		for (var/datum/reagent/R in beaker:reagents.reagent_list)
+	if (beaker && beaker.reagents && beaker.reagents.reagent_list.len)
+		for (var/datum/reagent/R in beaker.reagents.reagent_list)
 			beakerContents.Add(list(list("name" = R.name, "volume" = R.volume))) // list in a list because Byond merges the first list...
 			beakerCurrentVolume += R.volume
 	data["beakerContents"] = beakerContents
 
 	if (beaker)
 		data["beakerCurrentVolume"] = beakerCurrentVolume
-		data["beakerMaxVolume"] = beaker:volume
+		data["beakerMaxVolume"] = beaker.volume
 	else
 		data["beakerCurrentVolume"] = null
 		data["beakerMaxVolume"] = null
@@ -649,7 +649,7 @@
 	icon_state = "mixer0b"
 //	use_power = TRUE
 //	idle_power_usage = 20
-	var/beaker = null
+	var/obj/item/weapon/reagent_containers/beaker = null
 	var/obj/item/weapon/storage/pill_bottle/loaded_pill_bottle = null
 	var/mode = FALSE
 	var/condi = FALSE
@@ -727,7 +727,7 @@
 		return
 
 	if (beaker)
-		var/datum/reagents/R = beaker:reagents
+		var/datum/reagents/R = beaker.reagents
 		if (href_list["analyze"])
 			var/dat = ""
 			if (!condi)
@@ -788,7 +788,7 @@
 			return
 		else if (href_list["eject"])
 			if (beaker)
-				beaker:loc = loc
+				beaker.loc = loc
 				beaker = null
 				reagents.clear_reagents()
 				icon_state = "mixer0b"

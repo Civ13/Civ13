@@ -227,8 +227,6 @@ obj/item/weapon/gun/projectile/ancient/tanegashima
 
 /obj/item/weapon/gun/projectile/ancient/unload_ammo(mob/user, var/allow_dump=1)
 	return
-	// you cant, sorry
-	..()
 
 /obj/item/weapon/gun/projectile/ancient/handle_post_fire()
 	..()

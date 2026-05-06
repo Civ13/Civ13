@@ -73,6 +73,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		if (!(scores["Yellowagwana"] >= 30 || scores["Blugisi"] >= 30))
+			last_win_condition = win_condition.hash
 			return TRUE
 		ticker.finished = TRUE
 		var/message = ""
@@ -92,8 +93,7 @@
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			win_condition_spam_check = TRUE
 			return FALSE
-		last_win_condition = win_condition.hash
-		return TRUE
+	last_win_condition = win_condition.hash
 	return TRUE
 ///////////map specific objs/////////
 /obj/structure/altar/darkstone/sacrifice

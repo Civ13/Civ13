@@ -92,9 +92,9 @@
  * Returns [QDEL_HINT_QUEUE]
  */
 /datum/proc/Destroy(force=FALSE)
+	SHOULD_CALL_PARENT(TRUE)
 	if (GLOB.nanomanager)
 		GLOB.nanomanager.close_uis(src) // In the future, we will remove this, as will the replacement of nanoui with tgui
-	SHOULD_CALL_PARENT(TRUE)
 	tag = null
 	datum_flags &= ~DF_USE_TAG //In case something tries to REF us
 	weak_reference = null	//ensure prompt GCing of weakref.

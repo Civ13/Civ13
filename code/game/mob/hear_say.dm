@@ -9,6 +9,13 @@
 			//Or someone snoring.  So we make it where they won't hear it.
 		return
 
+	if (language && !istype(language, /datum/language))
+		if (ismob(language))
+			var/mob/living/M = language
+			language = M.get_default_language()
+		else
+			language = null
+
 	if (!alt_message)
 		alt_message = message
 
@@ -67,6 +74,13 @@
 	if (animal)
 		language = null
 	var/track = null
+	if (language && !istype(language, /datum/language))
+		if (ismob(language))
+			var/mob/living/M = language
+			language = M.get_default_language()
+		else
+			language = null
+
 	if (isghost(src))
 		if (italics && is_preference_enabled(/datum/client_preference/ghost_radio))
 			return

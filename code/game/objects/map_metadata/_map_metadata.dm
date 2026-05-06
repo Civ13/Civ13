@@ -45,7 +45,7 @@ var/civmax_research = list(230,230,230)
 	var/mosinonly = FALSE
 	var/squads = 1
 	var/fob_spawns = FALSE
-	var/list/faction1_squads = alist(
+	var/list/list/faction1_squads = alist(
 		1 = list(),
 		2 = list(),
 		3 = list(),
@@ -54,7 +54,7 @@ var/civmax_research = list(230,230,230)
 		6 = list(),
 		7 = list(),
 	)
-	var/list/faction2_squads = alist(
+	var/list/list/faction2_squads = alist(
 		1 = list(),
 		2 = list(),
 		3 = list(),
@@ -63,7 +63,7 @@ var/civmax_research = list(230,230,230)
 		6 = list(),
 		7 = list(),
 	)
-	var/list/faction1_squad_leaders = alist(
+	var/list/mob/living/human/faction1_squad_leaders = alist(
 		1 = null,
 		2 = null,
 		3 = null,
@@ -72,7 +72,7 @@ var/civmax_research = list(230,230,230)
 		6 = null,
 		7 = null,
 	)
-	var/list/faction2_squad_leaders = alist(
+	var/list/mob/living/human/faction2_squad_leaders = alist(
 		1 = null,
 		2 = null,
 		3 = null,
@@ -129,10 +129,10 @@ var/civmax_research = list(230,230,230)
 	var/nomads = FALSE
 	var/has_hunger = FALSE
 	var/list/custom_faction_nr = list()
-	var/list/custom_civs = list()
-	var/list/custom_religions = list()
+	var/list/list/custom_civs = list()
+	var/list/list/custom_religions = list()
 	var/list/custom_religion_nr = list()
-	var/list/custom_company = list() //name; percentage; realized (withdrawable) profits
+	var/list/list/custom_company = list() //name; percentage; realized (withdrawable) profits
 	var/list/custom_company_nr = list()
 	var/list/custom_company_value = list()
 	var/list/sales_registry = list()
@@ -206,10 +206,10 @@ var/civmax_research = list(230,230,230)
 
 	var/orespawners = 0
 
-	var/list/globalmarketplace = list()
+	var/list/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
 	var/list/pending_warrants = list()
-	var/list/emails = list("support@monkeysoft.ug" = list())
+	var/list/list/emails = list("support@monkeysoft.ug" = list())
 
 	var/list/assign_precursors = list(
 		"Rednikov Industries" = list("verdine crystals","indigon crystals","galdonium crystals"),
@@ -1245,6 +1245,7 @@ var/civmax_research = list(230,230,230)
 	if (value == 0)
 		return
 	for (var/i in map.globalmarketplace)
-		if (map.globalmarketplace[i][7]==0 && map.globalmarketplace[i][5]=="bank" && map.globalmarketplace[i][2] && map.globalmarketplace[i][1]==tfaction)
-			if (istype(map.globalmarketplace[i][2],/mob/living/human))
-				map.marketplaceaccounts[map.globalmarketplace[i][2].name] += value/2.5
+		var/list/entry = map.globalmarketplace[i]
+		if (entry[7]==0 && entry[5]=="bank" && entry[2] && entry[1]==tfaction)
+			if (istype(entry[2],/mob/living/human))
+				map.marketplaceaccounts[entry[1]] += value/2.5

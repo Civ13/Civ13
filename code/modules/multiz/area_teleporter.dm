@@ -22,7 +22,6 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 			spawn(600) // 1 minute
 				AT.Simple_Down()
 				do_once = FALSE
-				return TRUE
 	else
 		return FALSE
 
@@ -48,7 +47,6 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 			spawn(600) // 1 minute
 				AT.Simple_Up()
 				do_once = FALSE
-				return TRUE
 	else
 		return FALSE
 
@@ -88,7 +86,6 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 							O.updateturf()
 				for(var/mob/M in get_area(src))
 					M.z = BT.z	//Teleport to destination's z level.
-				return
 
 /obj/effect/area_teleporter/proc/Simple_Up()
 	if (movement_location == "UP")

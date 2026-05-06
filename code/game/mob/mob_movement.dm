@@ -89,7 +89,6 @@
 		return (!mover.density || !density || lying || prone)
 	else
 		return (!mover.density || !density || lying || prone)
-	return
 
 /mob/proc/setMoveCooldown(var/timeout)
 	if (client)
@@ -733,7 +732,7 @@
 			else
 				. = mob.SelfMove(n, direct)
 
-			skipgrab
+			skipgrab:
 
 			#define STOMP_TIME 1
 

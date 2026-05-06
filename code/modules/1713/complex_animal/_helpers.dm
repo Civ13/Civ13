@@ -27,7 +27,6 @@
 					return TRUE
 		// we aren't an unfriendly type, so ignore them
 		return TRUE
-	return TRUE
 
 // return values: TRUE = M is a friendly mob, FALSE = M is a hostile mob
 /mob/living/simple_animal/complex_animal/proc/assess_friendlyness(var/mob/M)

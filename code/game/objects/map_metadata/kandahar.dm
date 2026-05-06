@@ -377,7 +377,6 @@
 				return TRUE
 		else
 			return !faction1_can_cross_blocks()
-			return !faction2_can_cross_blocks()
 	return FALSE
 
 

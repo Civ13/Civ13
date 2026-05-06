@@ -69,7 +69,7 @@
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
+	restart:
 	if (!anchored)
 		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
 		user = null
@@ -147,7 +147,7 @@
 			spawn (rand(1,2))
 				var/turf/t1 = get_turf(src)
 				playsound(t1, 'sound/effects/catapult.ogg', 100, TRUE)
-				playsound(t1, "artillery_out_distant", 100, TRUE)
+				playsound(t1, "artillery_out_distance", 100, TRUE)
 
 			// actual hit somewhere (or not)
 			var/turf/target = get_turf(src)

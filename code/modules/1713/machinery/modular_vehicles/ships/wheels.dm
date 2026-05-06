@@ -150,7 +150,6 @@
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
-	restart
 	if (!anchored)
 		user << "<span class = 'danger'>You need to fix it to the floor before using.</span>"
 		user = null
@@ -159,7 +158,6 @@
 			return
 		else
 			user = null
-			goto restart
 	else
 		user = m
 		do_html(user)

@@ -945,4 +945,3 @@
 		else
 			sourceturf.ChangeTurf(/turf/floor/dirt)
 			return
-		return

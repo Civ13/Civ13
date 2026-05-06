@@ -122,13 +122,15 @@ var/list/slot_equipment_priority = list( \
 
 //Returns the thing in our active hand
 /mob/proc/get_active_hand()
-	if (hand)	return l_hand
-	else		return r_hand
+	if (hand)
+		return l_hand
+	return r_hand
 
 //Returns the thing in our inactive hand
 /mob/proc/get_inactive_hand()
-	if (hand)	return r_hand
-	else		return l_hand
+	if (hand)
+		return r_hand
+	return l_hand
 
 //Puts the item into your l_hand if possible and calls all necessary triggers/updates. returns TRUE on success.
 /mob/proc/put_in_l_hand(var/obj/item/W)

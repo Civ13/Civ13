@@ -82,8 +82,6 @@
 
 /obj/item/weapon/gun/projectile/flintlock/unload_ammo(mob/user, var/allow_dump=1)
 	return
-	// you cant, sorry
-	..()
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()

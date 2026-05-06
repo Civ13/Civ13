@@ -490,7 +490,8 @@
 	var/mob/new_player/M = new /mob/new_player()
 	if (!client)
 		log_game("[key] AM failed due to disconnect.")
-		qdel(M)
+		if (M)
+			qdel(M)
 		return
 
 	M.key = key
@@ -571,7 +572,6 @@
 				if (e && H.lying)
 					if (((e.status & ORGAN_BROKEN && !(e.status & ORGAN_SPLINTED)) || e.status & ORGAN_BLEEDING) && (H.getBruteLoss() + H.getBurnLoss() >= 100))
 						return TRUE
-						break
 		return FALSE
 
 /mob/MouseDrop(mob/M as mob)

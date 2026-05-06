@@ -21,7 +21,7 @@ var/global/list/chemical_reagents_list				//list of all /datum/reagent datums in
 var/global/list/landmarks_list = list()				//list of all landmarks created
 var/global/list/paradrop_landmarks = list()
 var/global/list/surgery_steps = list()				//list of all surgery steps  |BS12
-var/global/list/joblist = list()					//list of all jobstypes
+var/global/list/datum/job/joblist = list()					//list of all jobstypes
 
 var/global/list/HUDdatums = list()
 
@@ -92,10 +92,10 @@ var/global/list/playable_species = list("Human")	// A list of ALL playable speci
 var/global/list/male_body_builds = list()
 var/global/list/female_body_builds = list()
 	//Hairstyles
-var/global/list/hair_styles_list = list()			//stores /datum/sprite_accessory/hair indexed by name
+var/global/list/datum/sprite_accessory/hair/hair_styles_list = list()			//stores /datum/sprite_accessory/hair indexed by name
 var/global/list/hair_styles_male_list = list()
 var/global/list/hair_styles_female_list = list()
-var/global/list/facial_hair_styles_list = list()	//stores /datum/sprite_accessory/facial_hair indexed by name
+var/global/list/datum/sprite_accessory/facial_hair/facial_hair_styles_list = list()	//stores /datum/sprite_accessory/facial_hair indexed by name
 var/global/list/facial_hair_styles_male_list = list()
 var/global/list/facial_hair_styles_female_list = list()
 var/global/list/skin_styles_female_list = list()		//unused
@@ -103,8 +103,8 @@ var/global/list/skin_styles_female_list = list()		//unused
 var/global/list/exclude_jobs = list()
 
 //spawn
-var/global/list/latejoin_turfs = list()
-var/global/list/supplydrop_turfs = list()
+var/global/list/list/latejoin_turfs = list()
+var/global/list/list/supplydrop_turfs = list()
 
 var/global/faction1_supply_points = 1600
 var/global/faction2_supply_points = 1600

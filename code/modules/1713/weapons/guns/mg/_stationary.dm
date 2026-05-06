@@ -54,7 +54,7 @@
 		stopped_using(used_by_mob, FALSE)
 	..()
 
-/obj/item/weapon/gun/projectile/automatic/stationary/Fire(atom/A, mob/user)
+/obj/item/weapon/gun/projectile/automatic/stationary/Fire(atom/A, mob/user, clickparams = null, pointblank = FALSE, reflex = FALSE, forceburst = -1, force = FALSE, accuracy_mod = 1)
 	if(A == src)
 		if(firemodes.len > 1)
 			var/datum/firemode/new_mode = switch_firemodes(user)

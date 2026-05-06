@@ -109,7 +109,7 @@ var/loaded_admins = FALSE
 		text2file("[nc[1]];[nc[2]];[nc[3]]|||",F)
 
 
-	deadminned
+	deadminned:
 	if (!admin_datums)
 		loaded_admins = TRUE
 		return

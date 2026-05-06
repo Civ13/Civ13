@@ -12,9 +12,7 @@ var/list/dreams = list(
 			sleep(rand(40,70))
 			if (paralysis <= 0)
 				dreaming = FALSE
-				return FALSE
 		dreaming = FALSE
-		return TRUE
 
 /mob/living/human/proc/handle_dreams()
 	if (client && !dreaming && prob(5))

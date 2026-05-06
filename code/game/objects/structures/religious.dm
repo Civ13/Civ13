@@ -755,7 +755,7 @@ obj/structure/religious/monument
 				for (var/mob/living/human/HH in range(10,loc))
 					if (diseasedone == FALSE)
 						HH.disease = TRUE
-						if (99)
+						if (prob(99))
 							HH.disease_type = "flu"
 						else
 							HH.disease_type = "plague"
@@ -935,7 +935,6 @@ obj/structure/religious/monument
 				else
 					user << "Not enough favour points."
 					return
-			return
 	else
 		user << "You failed to communicate with the gods. You need drugs to connect yourself with the astral plane."
 		return
@@ -969,7 +968,9 @@ obj/structure/religious/monument
 		if (findtext(i, "obj_"))
 			var/image/timg = image(icon, i)
 			overlays += timg
-	color=get_material_by_name(statue_material).icon_colour
+	var/material/M = get_material_by_name(statue_material)
+	if (M)
+		color = M.icon_colour
 
 /obj/structure/religious/statue/king
 	statue_layers = list("cl_king", "obj_spear", "obj_shield2")

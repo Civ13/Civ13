@@ -429,6 +429,12 @@ var/const/FALLOFF_SOUNDS = 0.5
 	if (!soundin || soundin == "/sound")
 		return	// Invalid sound, don't play anything
 
+	// In OpenDream, sound() requires a file ref, not a plain string path.
+	// Passing a raw string produces a malformed /sound with name="/sound".
+	if (!isfile(soundin))
+		world.log << "Tried to play invalid sound: [soundin]"
+		return
+
 	var/distance = -1
 
 	var/sound/S = sound(soundin)

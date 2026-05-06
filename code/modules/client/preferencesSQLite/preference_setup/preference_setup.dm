@@ -1,7 +1,5 @@
 // These are not flags, binary operations not intended
-#define TOPIC_NOACTION FALSE
-#define TOPIC_HANDLED TRUE
-#define TOPIC_REFRESH 2
+// Defines moved to __DEFINES/topic.dm
 
 
 /datum/category_group/player_setup_category/general_preferences

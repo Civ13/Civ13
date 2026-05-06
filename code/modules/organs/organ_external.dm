@@ -247,7 +247,7 @@
 	return (vital || brute_dam + burn_dam + additional_damage <= max_damage)
 
 
-/obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null)
+/obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null, silent = 0)
 	brute = round(brute * species.brute_mod, 0.1)
 	burn = round(burn * species.burn_mod, 0.1)
 	if((brute <= 0) && (burn <= 0))
@@ -1309,8 +1309,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 				prev_owner.update_hair()
 	..()
 
-/obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list())
-	..(brute, burn, sharp, edge, used_weapon, forbidden_limbs)
+/obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list(), silent = 0)
+	..(brute, burn, sharp, edge, used_weapon, silent = silent)
 	if (!disfigured)
 		if (brute_dam > 40)
 			if (prob(50))

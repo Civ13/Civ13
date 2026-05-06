@@ -85,10 +85,15 @@
 		point_x = ceil(i * cos(-actual_azimuth))
 		point_y = ceil(i * sin(-actual_azimuth))
 		if (point_x != 0 || point_y != 0)
-			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", pixel_x = point_x, pixel_y = point_y, layer = 14)
+			aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="point", layer = 14)
 			aiming_line.alpha = 255 - (i / 4)
+			aiming_line.pixel_x = point_x
+			aiming_line.pixel_y = point_y
+
 			user.client.images += aiming_line
-	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", pixel_x = point_x, pixel_y = point_y, layer = 14)
+	aiming_line = new('icons/effects/Targeted.dmi', loc = src, icon_state="cannon_target", layer = 14)
+	aiming_line.pixel_x = point_x
+	aiming_line.pixel_y = point_y
 	user.client.images += aiming_line
 
 /obj/structure/turret/update_icon()

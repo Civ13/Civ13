@@ -18,7 +18,7 @@
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	var/vehicle_type = "car"
-	var/list/wheels = list()
+	var/list/obj/structure/vehicleparts/movement/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
 	var/maxpower = 50
@@ -29,14 +29,14 @@
 	var/vehicle_m_delay = 1
 	var/obj/item/vehicleparts/wheel/modular/wheel = null
 	var/reverse = FALSE
-	var/list/transporting = list()
-	var/list/components = list()
+	var/list/atom/movable/transporting = list()
+	var/list/obj/structure/vehicleparts/components = list()
 	var/current_weight = 5
 	var/lastmovementloop = 0
 	var/mob/living/human/driver = null
 
 	//matrix/turning stuff
-	var/list/corners = list()
+	var/list/obj/corners = list(null, null, null, null)
 	var/list/matrix = list()
 	var/matrix_l = 0
 	var/matrix_h = 0

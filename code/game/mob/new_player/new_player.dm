@@ -93,7 +93,7 @@ var/global/redirect_all_players = null
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
-			new_player << "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"
+			to_chat(new_player, "<span class = 'ping'><small>["\["]LOBBY["\]"]</small></span> <span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]")
 
 	return TRUE
 
@@ -141,7 +141,7 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
 	var/height = 280
-	if (client.holder)
+	if (client && client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CMP )
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
@@ -420,9 +420,6 @@ var/global/redirect_all_players = null
 			return TRUE
 		else
 			return
-		close_spawn_windows()
-		AttemptLateSpawn("Nomad")
-		return TRUE
 
 	if (href_list["join_campaign"])
 

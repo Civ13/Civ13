@@ -226,7 +226,7 @@
 			spawn (rand(1,2))
 				var/turf/t1 = get_turf(src)
 				playsound(t1, "artillery_out", 100, TRUE)
-				playsound(t1, "artillery_out_distant", 100, TRUE)
+				playsound(t1, "artillery_out_distance", 100, TRUE)
 
 /obj/structure/cannon/modern/tank/german75
 	name = "7.5cm KwK 40"

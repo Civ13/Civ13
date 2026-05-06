@@ -156,7 +156,6 @@
 			if (H.faction_text == faction1)
 				return TRUE
 			return !faction1_can_cross_blocks()
-			return !faction2_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/tadojsville/cross_message(faction)

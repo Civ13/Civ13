@@ -270,7 +270,6 @@
 		else
 			MoveToTarget()
 			return "move"
-	return "none"
 
 /mob/living/simple_animal/hostile/human/MoveToTarget()
 	if (!target_mob || !SA_attackable(target_mob))

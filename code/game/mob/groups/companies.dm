@@ -114,11 +114,13 @@
 	if (company == "Global")
 		return FALSE
 
-	if (!map.custom_company[company] || !map.custom_company[company].len)
+	var/list/company_list = map.custom_company[company]
+	if (!istype(company_list) || !company_list.len)
 		return FALSE
 
-	for(var/i=1,i<=map.custom_company[company].len,i++)
-		if (map.custom_company[company][i][1] == H && map.custom_company[company][i][2] > 0)
+	for(var/i=1,i<=company_list.len,i++)
+		var/list/member_data = company_list[i]
+		if (member_data[1] == H && member_data[2] > 0)
 			return TRUE
 
 	return FALSE

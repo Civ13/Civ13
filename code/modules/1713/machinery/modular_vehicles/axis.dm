@@ -222,10 +222,12 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for(var/obj/item/ammo_casing/AC in T)
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
-			for(var/obj/item/I in TT && !(I in transporting))
-				qdel(I)
-			for(var/obj/effect/fire/BO in T && !(BO in transporting))
-				qdel(BO)
+			for(var/obj/item/I in TT)
+				if (!(I in transporting))
+					qdel(I)
+			for(var/obj/effect/fire/BO in T)
+				if (!(BO in transporting))
+					qdel(BO)
 			var/canpass = FALSE
 			for(var/obj/covers/CVV in T)
 				if (!CVV.density)
@@ -261,9 +263,6 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				return TRUE
 			else
 				return FALSE
-		return FALSE
-
-	return TRUE
 
 /obj/structure/vehicleparts/axis/proc/do_move()
 	add_transporting()

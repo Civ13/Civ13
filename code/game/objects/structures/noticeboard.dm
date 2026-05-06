@@ -161,5 +161,3 @@
 		else
 			H << "You cannot send this by mail. Only paper is accepted."
 			return
-
-	..()

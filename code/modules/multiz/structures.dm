@@ -112,6 +112,11 @@
 	)
 
 	if (do_after(M, 10, src))
+		M.visible_message(
+			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
+			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
+			"You hear the grunting and clanging of a metal ladder being used."
+		)
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
 		// pulling/grabbing people with you
 		if (istop)
@@ -136,11 +141,6 @@
 			for (var/obj/item/I in M)
 				I.update_light()
 			return
-		M.visible_message(
-			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
-			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
-			"You hear the grunting and clanging of a metal ladder being used."
-		)
 
 /mob/living/human/var/laddervision = null
 
@@ -393,13 +393,12 @@
 		if (M.pulling != null)
 			M.pulling.loc = target.loc
 		M.loc = target.loc
-		return
-
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
 			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
 			"You hear the grunting and clanging of a metal ladder being used."
 		)
+		return
 
 /obj/structure/multiz/ladder/ww2/teleporter/one
 	area_id = "1"

@@ -267,6 +267,13 @@ proc/listclearnulls(list/list)
 	while (Li <= L.len && Ri <= R.len)
 		var/client/rL = L[Li]
 		var/client/rR = R[Ri]
+		// Skip null clients (disconnected players) gracefully
+		if (!rL)
+			Li++
+			continue
+		if (!rR)
+			Ri++
+			continue
 		if (sorttext(rL.ckey, rR.ckey) == order)
 			result += L[Li++]
 		else

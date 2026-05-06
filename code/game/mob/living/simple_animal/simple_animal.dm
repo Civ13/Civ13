@@ -379,11 +379,11 @@
 				if (GUN_TYPE_BOW)
 					H.adaptStat("bows", 1)
 
+	if (!proj || proj.nodamage)
+		return FALSE
+
 	adjustBruteLoss(proj.damage)
 	return FALSE
-
-	if (!proj || proj.nodamage)
-		return
 
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()

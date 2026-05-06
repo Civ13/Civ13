@@ -12,6 +12,7 @@
 
 /mob/living/human/proc/in_mood(no_mood_check_treshold = 38)
 	return TRUE //This is temporary! TO DO TODO: Return this function after reworking mood restoration and mood buff/debuff system
+/*
 	//checking mood for doing anything
 	if (world.timeofday<src.last_mood_check) //prevent mood check spam
 		src.mood -= 0.25
@@ -25,6 +26,7 @@
 		src << "<span class='warning'>You are not in the mood to do this. Relax first.</span>"
 		src.last_mood_check = world.timeofday + 45
 		return FALSE
+*/
 
 // TO DO TODO: Make this universal proc for all expirience gains
 /mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 0, EPIC_fail_chance = 0)
@@ -579,7 +581,7 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/tmp/slots[4][3] //[row][slot in row] - food/snacks item list which dries
+	var/tmp/obj/item/slots[4][3] //[row][slot in row] - food/snacks item list which dries
 	var/tmp/obj/item/weapon/storage/internal/storage //storage for dryed raw items (for algorithm purpose)
 	var/tmp/current_process_id = "" //for control of only one process at time to one dehydrator
 
@@ -590,9 +592,9 @@
 	icon_state = "empty"
 	for (var/R=1,R<5,R++)
 		for (var/P=1,P<4,P++)
-			if (slots[R][P])
-				if (!findtext(slots[R][P],"busy"))
-					overlays += image(I, src, "[slots[R][P].icon_state][!!findtext(slots[R][P].name,"_ROTATED_") ? "R" : ""]", OBJ_LAYER+0.1, NORTH, 4+5*P, 1-6*R)
+			if (isobj(slots[R][P]))
+				var/obj/item/I_slot = slots[R][P]
+				overlays += image(I, src, "[I_slot.icon_state][!!findtext(I_slot.name,"_ROTATED_") ? "R" : ""]", OBJ_LAYER+0.1, NORTH, 4+5*P, 1-6*R)
 
 /obj/structure/dehydrator/proc/split_size(from_int, is_rotated = FALSE)
 	var/rows = from_int % 4
@@ -629,7 +631,8 @@
 	slots[slot_row][slot_pos] = null
 
 /obj/structure/dehydrator/proc/clean_from(slot_row, slot_pos)
-	var/list/sizeHV = split_size(slots[slot_row][slot_pos].dry_size, !!findtext(slots[slot_row][slot_pos].name, "_ROTATED_"))
+	var/obj/item/I = slots[slot_row][slot_pos]
+	var/list/sizeHV = split_size(I.dry_size, !!findtext(I.name, "_ROTATED_"))
 	for (var/W=0, W<sizeHV[1], W++)
 		for (var/H=0, H<sizeHV[2], H++)
 			slots[slot_row+H][slot_pos+W] = null
@@ -783,8 +786,9 @@
 					if (dry_timer >= TIME_TO_DRY)
 						pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))
 						P = new I.dried_type(null)
-						is_rotated = !!findtext(slots[pos[1]][pos[2]].name, "_ROTATED_")
-						sizeHV = split_size(slots[pos[1]][pos[2]].dry_size, is_rotated)
+						var/obj/item/I_s = slots[pos[1]][pos[2]]
+						is_rotated = !!findtext(I_s.name, "_ROTATED_")
+						sizeHV = split_size(I_s.dry_size, is_rotated)
 						put_in_place(P, pos, sizeHV, is_rotated)
 						if (!P.dried_type)
 							set_dry_timer(P, TIME_TO_DRY+1)
@@ -1622,8 +1626,8 @@
 	anchored = TRUE
 	density = TRUE
 	flammable = TRUE
-	var/list/base = list()
-	var/list/copy = list()
+	var/list/obj/item/base = list()
+	var/list/obj/item/copy = list()
 	var/copying = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -1848,7 +1852,7 @@
 	slot_flags = null
 	var/max_capacity = 5
 	var/brand = ""
-	var/list/stored = list()
+	var/list/obj/item/stored = list()
 	var/open = TRUE
 	var/sealed = FALSE
 	var/customcolor1 = null

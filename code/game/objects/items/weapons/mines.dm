@@ -266,7 +266,7 @@
 	spawn(3)
 		if (src)
 			qdel(src)
-			return TRUE
+			return
 
 /obj/item/mine/boobytrap
 	name = "booby trap"

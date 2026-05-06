@@ -23,9 +23,7 @@
 			spawn(rand(4800,6000))
 				if (clients.len>5)
 					volcano_eruption()
-					return TRUE
-				else
-					return FALSE
+				return
 		else
 			return FALSE
 	else

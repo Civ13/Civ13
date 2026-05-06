@@ -475,8 +475,6 @@
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
 
-
-			return
 		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
 			return

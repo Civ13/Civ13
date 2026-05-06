@@ -115,7 +115,7 @@
 			after_cast(targets) //generates the sparks, smoke, target messages etc.
 		else
 			break
-	while(time != number_of_channels && do_after(user, time_between_channels, incapacitation_flags = INCAPACITATION_KNOCKOUT|INCAPACITATION_FORCELYING|INCAPACITATION_STUNNED, same_direction=1))
+	while(time != number_of_channels && do_after(user, time_between_channels, incapacitation_flags = INCAPACITATION_KNOCKOUT|INCAPACITATION_FORCELYING|INCAPACITATION_STUNNED))
 	after_spell(targets, user, time) //When we are done with the spell completely.
 
 /spell/proc/cast(list/targets, mob/user, var/channel_duration) //the actual meat of the spell

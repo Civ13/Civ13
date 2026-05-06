@@ -4,39 +4,39 @@ var/global/processScheduler/processScheduler
 /processScheduler
 	parent_type = /datum
 	// Processes known by the scheduler
-	var/tmp/process/list/processes = list()
+	var/tmp/list/processes = list()
 
 	// Processes known by the scheduler, ordered by priority
-	var/tmp/process/list/priority_ordered_processes = list()
+	var/tmp/list/priority_ordered_processes = list()
 
 	// Processes that are currently running
-	var/tmp/process/list/running = list()
+	var/tmp/list/running = list()
 
 	// Processes that are idle
-	var/tmp/process/list/idle = list()
+	var/tmp/list/idle = list()
 
 	// Processes that are queued to run
-	var/tmp/process/list/queued = list()
+	var/tmp/list/queued = list()
 
 	// Process name -> process object map
-	var/tmp/process/list/nameToProcessMap = list()
+	var/tmp/list/nameToProcessMap = list()
 
-	var/tmp/process/list/priorityToProcessMap = list()
+	var/tmp/list/priorityToProcessMap = list()
 
 	// Process last queued times (world time)
-	var/tmp/process/list/last_queued = list()
+	var/tmp/list/last_queued = list()
 
 	// Process last start times (real time)
-	var/tmp/process/list/last_start = list()
+	var/tmp/list/last_start = list()
 
 	// Process last run durations
-	var/tmp/process/list/last_run_time = list()
+	var/tmp/list/last_run_time = list()
 
 	// Per process list of the last 20 durations
-	var/tmp/process/list/last_twenty_run_times = list()
+	var/tmp/list/last_twenty_run_times = list()
 
 	// Process highest run time
-	var/tmp/process/list/highest_run_time = list()
+	var/tmp/list/highest_run_time = list()
 
 	// How long to sleep between runs (set to tick_lag in New)
 	var/tmp/scheduler_sleep_interval = 0

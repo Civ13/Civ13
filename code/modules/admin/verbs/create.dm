@@ -12,7 +12,7 @@
 	var/list/types = list()
 
 	while (TRUE)
-		retype
+		retype:
 		var/_type = input(src, "What is the type you want in the crate? Cancel to stop.") as text
 
 		if (lowertext(_type) == "cancel")

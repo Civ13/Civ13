@@ -1,7 +1,7 @@
 /mob/living/human/proc/change_appearance(var/flags = APPEARANCE_ALL_HAIR, var/location = src, var/mob/user = src, var/check_species_whitelist = TRUE, var/list/species_whitelist = list(), var/list/species_blacklist = list(), var/datum/topic_state/_state = default_state)
 	var/datum/nano_module/appearance_changer/AC = new(location, src, check_species_whitelist, species_whitelist, species_blacklist)
 	AC.flags = flags
-	AC.ui_interact(user, state = _state)
+	AC.ui_interact(user, _state = _state)
 
 /mob/living/human/proc/change_species(var/new_species)
 	if (!new_species)
