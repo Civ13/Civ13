@@ -1248,5 +1248,4 @@ var/civmax_research = list(230,230,230)
 		var/list/entry = map.globalmarketplace[i]
 		if (entry[7]==0 && entry[5]=="bank" && entry[2] && entry[1]==tfaction)
 			if (istype(entry[2],/mob/living/human))
-				var/mob/living/human/H = entry[2]
 				map.marketplaceaccounts[entry[1]] += value/2.5
