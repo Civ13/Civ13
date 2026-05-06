@@ -707,7 +707,8 @@
 				mineral.amount *= 2
 			if (H)
 				var/material/M = get_material_by_name("copper")
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>copper</font></b> ore!"))
+				var/ore_colour = M ? M.icon_colour : "#b87333"
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
 				H.adaptStat("strength", 1)
 		else
 			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
