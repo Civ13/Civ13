@@ -214,7 +214,7 @@ datum/admins/proc/print_chemical_reactions()
 		var/turf/T = get_turf(container)
 		var/list/seen = viewers(4, T)
 		for (var/mob/M in seen)
-			M.show_message("<span class='notice'>\icon[container] [mix_message]</span>", TRUE)
+			M.show_message("<span class='notice'>\icon[getFlatIcon(container)] [mix_message]</span>", TRUE)
 		playsound(T, reaction_sound, 80, TRUE)
 
 //obtains any special data that will be provided to the reaction products

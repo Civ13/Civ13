@@ -530,15 +530,15 @@
 		if (user.faction_text == "ARAB")
 			if (user.a_intent == I_HELP)
 				if (already_coerced)
-					user << SPAN_WARNING("\icon[src] No way! Leave me alone!")
+					user << SPAN_WARNING("\icon[getFlatIcon(src)] No way! Leave me alone!")
 					return
 				if (package_given)
-					user << SPAN_WARNING("\icon[src] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
+					user << SPAN_WARNING("\icon[getFlatIcon(src)] You blood-thirsty savages, the Soviets and the DRA are actually helping this country!")
 					already_coerced = TRUE
 					return
 				if (user.original_job_title != "Mujahideen Imam" && user.original_job_title != "Mujahideen Warchief")
 					if (prob(50))
-						user << SPAN_WARNING("\icon[src] I refuse!")
+						user << SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!")
 						already_coerced = TRUE
 						return
 					if (prob(30))
@@ -548,7 +548,7 @@
 					qdel(src)
 					return
 				if (prob(30))
-					user << SPAN_WARNING("\icon[src] I refuse!")
+					user << SPAN_WARNING("\icon[getFlatIcon(src)] I refuse!")
 					already_coerced = TRUE
 					return
 				if (prob(50))

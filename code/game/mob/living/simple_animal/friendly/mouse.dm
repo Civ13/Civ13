@@ -92,7 +92,7 @@
 				dmod = 2
 			if (find_trait("Strong Immune System"))
 				dmod = 0.2
-			M << "<span class = 'notice'>\icon[src] Squeek!</span>"
+			M << "<span class = 'notice'>\icon[getFlatIcon(src)] Squeek!</span>"
 			M << 'sound/effects/mousesqueek.ogg'
 			target_mob = M
 			stance = HOSTILE_STANCE_ATTACK

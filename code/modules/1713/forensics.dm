@@ -719,7 +719,7 @@ proc/is_complete_print(var/print)
 		return
 
 /obj/machinery/dnaforensics/proc/complete_scan()
-	src.visible_message(SPAN_NOTICE("\icon[src] makes an insistent chime."), 2)
+	src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] makes an insistent chime."), 2)
 	playsound(loc, 'sound/machines/computer/beep.ogg', 80, TRUE)
 	update_icon()
 	if(bloodsamp)

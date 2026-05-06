@@ -204,7 +204,7 @@ var/list/VVckey_edit = list("key", "ckey")
 
 	else if (isicon(variable))
 		usr << "Variable appears to be <b>ICON</b>."
-		variable = "\icon[variable]"
+		variable = "\icon[getFlatIcon(variable)]"
 		default = "icon"
 
 	else if (istype(variable,/atom) || istype(variable,/datum))
@@ -411,7 +411,7 @@ var/list/VVckey_edit = list("key", "ckey")
 
 			else if (isicon(var_value))
 				usr << "Variable appears to be <b>ICON</b>."
-				var_value = "\icon[var_value]"
+				var_value = "\icon[getFlatIcon(var_value)]"
 				class = "icon"
 
 			else if (istype(var_value,/atom) || istype(var_value,/datum))
@@ -472,7 +472,7 @@ var/list/VVckey_edit = list("key", "ckey")
 
 		else if (isicon(var_value))
 			usr << "Variable appears to be <b>ICON</b>."
-			var_value = "\icon[var_value]"
+			var_value = "\icon[getFlatIcon(var_value)]"
 			default = "icon"
 
 		else if (istype(var_value,/atom) || istype(var_value,/datum))

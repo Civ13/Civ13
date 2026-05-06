@@ -243,13 +243,13 @@ var/global/list/valid_coordinates = list()
 							if (abs(coordy - inputy) <= 15)
 								valid_coords_check = TRUE
 				if (!valid_coords_check)
-					src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+					src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
 					return
 				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
 					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-						src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+						src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
 						return
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] artillery on the way on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Artillery Rear Section, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] artillery on the way on [inputx],[inputy]. Stay clear. Over.\"</font>"
 				playsound(loc, "radio_chatter", 250, FALSE)
 				map.artillery_count--
 				map.artillery_last = world.time
@@ -284,13 +284,13 @@ var/global/list/valid_coordinates = list()
 							if (abs(coordy - inputy) <= 15)
 								valid_coords_check = TRUE
 				if (!valid_coords_check)
-					src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+					src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
 					return
 				for (var/mob/living/human/friendlies in range(7, locate(inputx,inputy,src.z)))
 					if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-						src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+						src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
 						return
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
+				src << "\icon[getFlatIcon(radio)] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
 				playsound(loc, "radio_chatter", 250, FALSE)
 				map.artillery_count--
 				map.artillery_last = world.time

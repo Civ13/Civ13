@@ -168,7 +168,7 @@
 	if (!isobserver(user))
 		user.visible_message("<font size=1>[user.name] looks at \the [src].</font>", "<font size =1>You look at \the [src].</font>")
 
-	to_chat(user, "\icon[src] That's [f_name] [suffix]")
+	to_chat(user, "\icon[getFlatIcon(src)] That's [f_name] [suffix]")
 
 	if(desc) // If the description is not null.
 		to_chat(user, desc)
