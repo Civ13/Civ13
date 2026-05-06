@@ -134,7 +134,7 @@
 		return FALSE
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
 	var/list/civ_data = map.custom_civs[civilization]
-	if (civ_data[4] != null)
+	if (civ_data && civ_data[4] != null)
 		var/mob/living/human/L = civ_data[4]
 		if (L.real_name == real_name)
 			civ_data[4] = null
