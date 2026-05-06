@@ -1310,7 +1310,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	..()
 
 /obj/item/organ/external/head/take_damage(brute, burn, sharp, edge, used_weapon = null, list/forbidden_limbs = list(), silent = 0)
-	..(brute, burn, sharp, edge, used_weapon, forbidden_limbs)
+	..(brute, burn, sharp, edge, used_weapon, silent = silent)
 	if (!disfigured)
 		if (brute_dam > 40)
 			if (prob(50))
