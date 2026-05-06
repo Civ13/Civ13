@@ -162,7 +162,7 @@
 			return
 		else
 			var/list/civ_data = map.custom_civs[U.civilization]
-			if (civ_data[4] != null)
+			if (civ_data && civ_data[4] != null)
 				var/mob/living/human/L = civ_data[4]
 				if (L.real_name == U.real_name)
 					var/list/closemobs = list("Cancel")
