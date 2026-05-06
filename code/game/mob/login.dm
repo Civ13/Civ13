@@ -23,7 +23,7 @@
 						if (matches)	matches += " and "
 						matches += "ID ([client.computer_id])"
 						// if one of us is the host, don't show us this warning. Because we're probably testing.
-						if (M && M.client && !(M.client.holder.rights == 65535) && !(client.holder.rights == 65535))
+						if (M && M.client && !(M.client.holder && M.client.holder.rights == 65535) && !(client.holder && client.holder.rights == 65535))
 							spawn(0) WWalert(src, "You have logged in already with another key this round, please log out of this one NOW or risk being banned!", "Warning!")
 /*
 				if (matches)

@@ -25,6 +25,10 @@
 	blend_mode = BLEND_MULTIPLY
 	invisibility	 = INVISIBILITY_LEVEL_TWO
 	appearance_flags = NO_CLIENT_COLOR | PLANE_MASTER// | KEEP_TOGETHER
+#ifdef OPENDREAM
+	render_target = "*opendream_lighting_plane"
+	color = "#ffffff"
+#endif
 	mouse_opacity = 0
 
 /obj/screen/plane_master/hud
