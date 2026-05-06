@@ -28,20 +28,30 @@
 		all_verbs += mob.verbs
 
 	var/list/admin_categories = list("Server", "Admin", "Debug", "Bans", "Special", "Fun", "Nomads")
+	var/target_tab = lowertext(statpanel_tab)
 
 	for (var/v in all_verbs)
-		if (!v || v:hidden)
-			continue
-		var/category = v:category
-		if (!category || category == "General")
+		if (!v) continue
+		
+		var/v_category = ""
+		var/v_name = ""
+		try
+			v_category = v:category
+			v_name = v:name
+		catch
 			continue
 
-		var/display_category = category
-		if (category in admin_categories)
+		if (!v_category)
+			continue
+
+		var/display_category = v_category
+		if (v_category in admin_categories)
 			display_category = "Admin"
 		
-		if (display_category == statpanel_tab)
-			verbs_data += list(list("name" = v:name, "command" = v:name, "category" = category))
+		if (lowertext(display_category) == target_tab)
+			v_name = replacetext(v_name, "\"", "'")
+			v_name = replacetext(v_name, "\n", " ")
+			verbs_data += list(list("name" = v_name, "command" = v_name, "category" = v_category))
 		
 		add_stat_tab(display_category)
 

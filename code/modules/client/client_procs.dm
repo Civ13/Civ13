@@ -419,7 +419,7 @@
 	return FALSE
 
 /client/verb/character_setup()
-	set name = "Character & Preferences Setup"
+	set name = "Character Preferences Setup"
 	set category = "OOC"
 	if (prefs)
 		prefs.ShowChoices(usr)
